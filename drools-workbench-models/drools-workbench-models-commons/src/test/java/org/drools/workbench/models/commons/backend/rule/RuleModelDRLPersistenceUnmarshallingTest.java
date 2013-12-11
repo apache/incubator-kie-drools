@@ -26,7 +26,9 @@ import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
+import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionGlobalCollectionAdd;
+import org.drools.workbench.models.datamodel.rule.ActionSetField;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.CEPWindow;
 import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
@@ -36,6 +38,8 @@ import org.drools.workbench.models.datamodel.rule.ExpressionUnboundFact;
 import org.drools.workbench.models.datamodel.rule.ExpressionVariable;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
+import org.drools.workbench.models.datamodel.rule.FieldNature;
+import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
@@ -1980,6 +1984,43 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals("0",constraint.getValue());
         assertEquals("==",constraint.getOperator());
         assertEquals(1,constraint.getConstraintValueType());
+    }
+
+    @Test
+    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1039639 - GRE doesn't recognize MVEL inline lists when opening rule")
+    public void testMVELInlineList() throws Exception {
+        String drl = "" +
+                "rule \"Borked\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    c : Company( )\n" +
+                "  then\n" +
+                "    c.setEmps( [\"item1\", \"item2\"] );\n" +
+                "end";
+
+        addModelField("Company",
+                "emps",
+                "java.util.List",
+                "List");
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                dmo );
+        assertEquals( 1,
+                m.rhs.length );
+        assertTrue( m.rhs[0] instanceof ActionSetField);
+        ActionSetField actionSetField = (ActionSetField) m.rhs[0];
+
+        assertEquals("c", actionSetField.getVariable());
+
+        assertEquals(1, actionSetField.getFieldValues().length);
+
+        ActionFieldValue actionFieldValue = actionSetField.getFieldValues()[0];
+
+        assertEquals("[\"item1\", \"item2\"]",actionFieldValue.getValue());
+        assertEquals("emps",actionFieldValue.getField());
+        assertEquals(FieldNatureType.TYPE_FORMULA, actionFieldValue.getNature());
+        assertEquals("Collection",actionFieldValue.getType());
+
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
