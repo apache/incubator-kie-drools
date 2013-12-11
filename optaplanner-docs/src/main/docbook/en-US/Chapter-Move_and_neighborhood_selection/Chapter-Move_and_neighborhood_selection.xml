@@ -823,10 +823,61 @@
 
       <para>It's mostly used in construction heuristics.</para>
 
+      <note>
+        <para>If the choosen construction heuristic implies sorting, for example <literal>FIRST_FIT_DECREASING</literal>
+        implies that the <literal>EntitySelector</literal> is sorted, there is no need to explicitly configure a
+        <literal>Selector</literal> with sorting. If you do explicitely configure the <literal>Selector</literal>, it
+        overwrites the default settings of that construction heuristic.</para>
+      </note>
+
+      <section xml:id="sortedSelectionBySorterManner">
+        <title>Sorted selection by <literal>SorterManner</literal></title>
+
+        <para>Some <literal>Selector</literal> types implement a <literal>SorterManner</literal> out of the box:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><literal>EntitySelector</literal> supports:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para><literal>DECREASING_DIFFICULTY</literal>: Sorts the planning entities according to decreasing
+                <link linkend="planningEntityDifficulty">planning entity difficulty</link>. Requires that planning
+                entity difficulty is annotated on the domain model.</para>
+
+                <programlisting language="xml">    &lt;entitySelector&gt;
+      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      &lt;selectionOrder&gt;SORTED&lt;/selectionOrder&gt;
+      &lt;sorterManner&gt;DECREASING_DIFFICULTY&lt;/sorterManner&gt;
+    &lt;/entitySelector&gt;</programlisting>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para><literal>ValueSelector</literal> supports:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para><literal>INCREASING_STRENGTH</literal>: Sorts the planning values according to increasing <link
+                linkend="planningValueStrength">planning value strength</link>. Requires that planning value strength is
+                annotated on the domain model.</para>
+
+                <programlisting language="xml">    &lt;valueSelector&gt;
+      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      &lt;selectionOrder&gt;SORTED&lt;/selectionOrder&gt;
+      &lt;sorterManner&gt;INCREASING_STRENGTH&lt;/sorterManner&gt;
+    &lt;/valueSelector&gt;</programlisting>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </itemizedlist>
+      </section>
+
       <section xml:id="sortedSelectionByComparator">
         <title>Sorted selection by <literal>Comparator</literal></title>
 
-        <para>The easiest way to sort a <literal>Selector</literal> is with a plain old
+        <para>An easy way to sort a <literal>Selector</literal> is with a plain old
         <literal>Comparator</literal>:</para>
 
         <programlisting language="java">public class CloudProcessDifficultyComparator implements Comparator&lt;CloudProcess&gt; {
@@ -840,7 +891,8 @@
 
 }</programlisting>
 
-        <para>You 'll also need to configure it (unless it's annotated applied for this optimization algorithm):</para>
+        <para>You 'll also need to configure it (unless it's annotated on the domain model and automatically applied by
+        the optimization algorithm):</para>
 
         <programlisting language="xml">    &lt;entitySelector&gt;
       &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
@@ -894,8 +946,8 @@
 
 }</programlisting>
 
-        <para>You 'll also need to configure it (unless it's annotated and automatically applied for this optimization
-        algorithm):</para>
+        <para>You 'll also need to configure it (unless it's annotated on the domain model and automatically applied by
+        the optimization algorithm):</para>
 
         <programlisting language="xml">    &lt;entitySelector&gt;
       &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
@@ -905,7 +957,7 @@
     &lt;/entitySelector&gt;</programlisting>
       </section>
 
-      <section xml:id="sortedSelectionBySelectionFilter">
+      <section xml:id="sortedSelectionBySelectionSorter">
         <title>Sorted selection by <literal>SelectionSorter</literal></title>
 
         <para>Alternatively, you can also use the interface <literal>SelectionSorter</literal> directly:</para>
