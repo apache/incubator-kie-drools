@@ -46,11 +46,14 @@ public class ProcessGetInputHandler extends PropertyHandler implements Handler {
         
         Object result = super.start(uri, localName, attrs, parser);
         if(result instanceof Variable){
-            String structureRef = repository.getGlobalItemDefinitions().get((String)((Variable)result).getMetaData("ItemSubjectRef"));
-            if(structureRef != null){
-                repository.getProcessDesc(mainProcessId).getInputs().put(((Variable)result).getName(), structureRef);
-            }else{
-                repository.getProcessDesc(mainProcessId).getInputs().put(((Variable)result).getName(), ((Variable)result).getType().getStringType());
+            String metaData = (String)((Variable)result).getMetaData("ItemSubjectRef");
+            if(metaData != null){
+            String structureRef = repository.getGlobalItemDefinitions().get(metaData);
+                if(structureRef != null){
+                    repository.getProcessDesc(mainProcessId).getInputs().put(((Variable)result).getName(), structureRef);
+                }else{
+                    repository.getProcessDesc(mainProcessId).getInputs().put(((Variable)result).getName(), ((Variable)result).getType().getStringType());
+                }
             }
         }
         

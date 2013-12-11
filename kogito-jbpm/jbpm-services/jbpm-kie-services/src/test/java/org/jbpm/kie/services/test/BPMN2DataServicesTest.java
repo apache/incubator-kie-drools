@@ -44,6 +44,7 @@ import org.jbpm.services.task.impl.model.TaskDefImpl;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.KieServices;
@@ -136,6 +137,7 @@ public class BPMN2DataServicesTest extends AbstractBaseTest {
         processes.add("repo/processes/general/signal.bpmn");
         processes.add("repo/processes/general/import.bpmn");
         processes.add("repo/processes/general/callactivity.bpmn");
+        processes.add("repo/processes/itemrefissue/itemrefissue.bpmn");
         
         InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
         File pom = new File("target/kmodule", "pom.xml");
@@ -251,5 +253,22 @@ public class BPMN2DataServicesTest extends AbstractBaseTest {
         assertEquals(1, reusableProcesses.size());
         
         assertEquals("signal", reusableProcesses.iterator().next());
+    }
+    
+    @Test
+    public void itemRefIssue(){
+        assertNotNull(deploymentService);
+        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        
+        String processId = "itemrefissue";
+        
+
+        Map<String, String> processData = bpmn2Service.getProcessData(processId);
+        assertNotNull(processData);
+        
     }
 }
