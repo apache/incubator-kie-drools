@@ -42,8 +42,8 @@
       still work)</para></listitem>
       <listitem><para>Start Eclipse</para></listitem>
       <listitem><para>Select "Install New Software ..." from the Help menu. Add the Drools and jBPM update
-      site <link xlink:href="http://downloads.jboss.org/jbpm/release/6.0.0.Final/org.drools.updatesite/">
-      http://downloads.jboss.org/jbpm/release/6.0.0.Final/org.drools.updatesite/</link>.  You should see
+      site <link xlink:href="http://downloads.jboss.org/jbpm/release/6.0.0.Final/updatesite/">
+      http://downloads.jboss.org/jbpm/release/6.0.0.Final/updatesite/</link>.  You should see
       the plugins as shown below.  Note that you can also download and unzip the Drools and jBPM update site
       to your local file system and use that as local update site instead.</para>
       
