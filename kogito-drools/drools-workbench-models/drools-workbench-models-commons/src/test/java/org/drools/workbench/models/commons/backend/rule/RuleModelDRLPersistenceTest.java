@@ -794,6 +794,7 @@ public class RuleModelDRLPersistenceTest {
         m.addLhsItem( cp );
 
         String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
+        System.out.println( result );
 
         assertTrue( result.indexOf( "exists (Person( age == 42 )) " ) > 0 );
         checkMarshallUnmarshall( result, m );

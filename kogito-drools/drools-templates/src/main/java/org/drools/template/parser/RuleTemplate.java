@@ -40,10 +40,20 @@ public class RuleTemplate {
 
     private TemplateContainer templateContainer;
 
+    private boolean replaceOptionals;
+
     public RuleTemplate(final String n, final TemplateContainer tc) {
         name = n;
         columns = new ArrayList<TemplateColumn>();
         templateContainer = tc;
+        this.replaceOptionals = true;
+    }
+
+    public RuleTemplate(final String n, final TemplateContainer tc, boolean replaceOptionals) {
+        name = n;
+        columns = new ArrayList<TemplateColumn>();
+        templateContainer = tc;
+        this.replaceOptionals = replaceOptionals;
     }
 
     public String getName() {
@@ -80,6 +90,9 @@ public class RuleTemplate {
      * if (column is empty) do not show the line.
      */
     private String replaceOptionals(String contents) {
+        if (!replaceOptionals) {
+            return contents;
+        }
         try {
             final Pattern pattern = Pattern.compile("@\\{(.[^}]*)\\}");
             final Collection<String> columns = getColumnNames();

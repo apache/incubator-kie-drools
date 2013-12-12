@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,38 +13,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.models.datamodel.rule;
+package org.drools.workbench.models.commons.backend.rule;
+
+import java.util.Set;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.DataType;
-
-import java.util.Map;
+import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
+import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
+import org.drools.workbench.models.datamodel.rule.ActionSetField;
+import org.drools.workbench.models.datamodel.rule.ActionUpdateField;
+import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.ConnectiveConstraint;
+import org.drools.workbench.models.datamodel.rule.DSLSentence;
+import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.FieldConstraint;
+import org.drools.workbench.models.datamodel.rule.FieldNatureType;
+import org.drools.workbench.models.datamodel.rule.FreeFormLine;
+import org.drools.workbench.models.datamodel.rule.FromAccumulateCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.FromCollectCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.IAction;
+import org.drools.workbench.models.datamodel.rule.IFactPattern;
+import org.drools.workbench.models.datamodel.rule.IPattern;
+import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
+import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 
 /**
- * A Rule Model Visitor to extract Interpolation Variables (Template Keys)
+ * A Rule Model Visitor to extract Interpolation Variables (Template Keys). This version
+ * also identifies whether components of a RuleModel use non-template constraints.
  */
-public class RuleModelVisitor {
+public class GeneratorContextRuleModelVisitor {
 
     private IFactPattern factPattern;
     private RuleModel model = new RuleModel();
-    private Map<InterpolationVariable, Integer> vars;
+    private Set<InterpolationVariable> vars;
+    private boolean hasNonTemplateOutput;
 
-    public RuleModelVisitor() {
+    public GeneratorContextRuleModelVisitor() {
         //Empty constructor for Errai marshalling
     }
 
-    public RuleModelVisitor( Map<InterpolationVariable, Integer> vars ) {
+    public GeneratorContextRuleModelVisitor( Set<InterpolationVariable> vars ) {
         this.vars = vars;
     }
 
-    public RuleModelVisitor( IPattern pattern,
-                             Map<InterpolationVariable, Integer> vars ) {
+    public GeneratorContextRuleModelVisitor( IPattern pattern,
+                                             Set<InterpolationVariable> vars ) {
         this.vars = vars;
         this.model.addLhsItem( pattern );
     }
 
-    public RuleModelVisitor( IAction action,
-                             Map<InterpolationVariable, Integer> vars ) {
+    public GeneratorContextRuleModelVisitor( IAction action,
+                                             Set<InterpolationVariable> vars ) {
         this.vars = vars;
         this.model.addRhsItem( action );
     }
@@ -64,9 +88,8 @@ public class RuleModelVisitor {
                 pos = end + 1;
                 InterpolationVariable var = new InterpolationVariable( varName,
                                                                        DataType.TYPE_OBJECT );
-                if ( !vars.containsKey( var ) ) {
-                    vars.put( var,
-                              vars.size() );
+                if ( !vars.contains( var ) ) {
+                    vars.add( var );
                 }
             }
         }
@@ -115,9 +138,10 @@ public class RuleModelVisitor {
                                                                    afv.getType(),
                                                                    factType,
                                                                    afv.getField() );
-            if ( afv.getNature() == FieldNatureType.TYPE_TEMPLATE && !vars.containsKey( var ) ) {
-                vars.put( var,
-                          vars.size() );
+            if ( afv.getNature() == FieldNatureType.TYPE_TEMPLATE && !vars.contains( var ) ) {
+                vars.add( var );
+            } else {
+                hasNonTemplateOutput = true;
             }
         }
     }
@@ -129,9 +153,10 @@ public class RuleModelVisitor {
                                                                    afv.getType(),
                                                                    factType,
                                                                    afv.getField() );
-            if ( afv.getNature() == FieldNatureType.TYPE_TEMPLATE && !vars.containsKey( var ) ) {
-                vars.put( var,
-                          vars.size() );
+            if ( afv.getNature() == FieldNatureType.TYPE_TEMPLATE && !vars.contains( var ) ) {
+                vars.add( var );
+            } else {
+                hasNonTemplateOutput = true;
             }
         }
     }
@@ -143,10 +168,10 @@ public class RuleModelVisitor {
                                                                    afv.getType(),
                                                                    factType,
                                                                    afv.getField() );
-            if ( afv.getNature() == FieldNatureType.TYPE_TEMPLATE && !vars.containsKey( var ) ) {
-                vars.put( var,
-                          vars.size() );
-
+            if ( afv.getNature() == FieldNatureType.TYPE_TEMPLATE && !vars.contains( var ) ) {
+                vars.add( var );
+            } else {
+                hasNonTemplateOutput = true;
             }
         }
     }
@@ -222,9 +247,10 @@ public class RuleModelVisitor {
                                                                sfc.getFieldType(),
                                                                ( factPattern == null ? "" : factPattern.getFactType() ),
                                                                sfc.getFieldName() );
-        if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == sfc.getConstraintValueType() && !vars.containsKey( var ) ) {
-            vars.put( var,
-                      vars.size() );
+        if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == sfc.getConstraintValueType() && !vars.contains( var ) ) {
+            vars.add( var );
+        } else {
+            hasNonTemplateOutput = true;
         }
 
         //Visit Connection constraints
@@ -235,9 +261,10 @@ public class RuleModelVisitor {
                                                                          cc.getFieldType(),
                                                                          ( factPattern == null ? "" : factPattern.getFactType() ),
                                                                          cc.getFieldName() );
-                if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == cc.getConstraintValueType() && !vars.containsKey( ccVar ) ) {
-                    vars.put( ccVar,
-                              vars.size() );
+                if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == cc.getConstraintValueType() && !vars.contains( ccVar ) ) {
+                    vars.add( ccVar );
+                } else {
+                    hasNonTemplateOutput = true;
                 }
 
             }
@@ -254,9 +281,10 @@ public class RuleModelVisitor {
                                                                genericType,
                                                                factType,
                                                                sfexp.getFieldName() );
-        if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == sfexp.getConstraintValueType() && !vars.containsKey( var ) ) {
-            vars.put( var,
-                      vars.size() );
+        if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == sfexp.getConstraintValueType() && !vars.contains( var ) ) {
+            vars.add( var );
+        } else {
+            hasNonTemplateOutput = true;
         }
 
         //Visit Connection constraints
@@ -267,13 +295,17 @@ public class RuleModelVisitor {
                                                                          genericType,
                                                                          factType,
                                                                          cc.getFieldName() );
-                if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == cc.getConstraintValueType() && !vars.containsKey( ccVar ) ) {
-                    vars.put( ccVar,
-                              vars.size() );
+                if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == cc.getConstraintValueType() && !vars.contains( ccVar ) ) {
+                    vars.add( ccVar );
+                } else {
+                    hasNonTemplateOutput = true;
                 }
             }
         }
+    }
 
+    public boolean hasNonTemplateOutput() {
+        return hasNonTemplateOutput;
     }
 
 }
