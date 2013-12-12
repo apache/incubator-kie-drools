@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
-import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.ActionExecuteWorkItem;
@@ -3251,9 +3250,7 @@ public class GuidedDTDRLPersistenceTest {
 
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
 
-        //Row 0 should become an IPattern in the resulting RuleModel as it contains getValue()s for all Template fields in the BRL Column
-        //Row 1 should *NOT* become an IPattern in the resulting RuleModel as it does *NOT* contain getValue()s for all Template fields in the BRL Column
-        //Row 2 should *NOT* become an IPattern in the resulting RuleModel as it does *NOT* contain getValue()s for all Template fields in the BRL Column
+        // All 3 rows should render, as the code is now lower down for skipping columns with empty cells
         String[][] data = new String[][]{
                 new String[]{ "1", "desc", "Gargamel", "Pupa", "50" },
                 new String[]{ "2", "desc", "Gargamel", "", "50" },
@@ -3392,7 +3389,7 @@ public class GuidedDTDRLPersistenceTest {
                         dtData,
                         rm );
 
-        assertEquals( 1,
+        assertEquals( 2,
                       rm.lhs.length );
         assertEquals( "Baddie",
                       ( (FactPattern) rm.lhs[ 0 ] ).getFactType() );
@@ -3412,6 +3409,31 @@ public class GuidedDTDRLPersistenceTest {
         assertEquals( "Gargamel",
                       result1Fp1Con1.getValue() );
 
+        // examine the second pattern
+        FactPattern result1Fp2 = (FactPattern) rm.lhs[ 1 ];
+        assertEquals( 2,
+                      result0Fp2.getConstraintList().getConstraints().length );
+
+        SingleFieldConstraint result1Fp2Con1 = (SingleFieldConstraint) result0Fp2.getConstraint( 0 );
+        assertEquals( BaseSingleFieldConstraint.TYPE_TEMPLATE,
+                      result1Fp2Con1.getConstraintValueType() );
+        assertEquals( "name",
+                      result1Fp2Con1.getFieldName() );
+        assertEquals( "==",
+                      result1Fp2Con1.getOperator() );
+        assertEquals( "$name",
+                      result1Fp2Con1.getValue() );
+
+        SingleFieldConstraint result1Fp2Con2 = (SingleFieldConstraint) result0Fp2.getConstraint( 1 );
+        assertEquals( BaseSingleFieldConstraint.TYPE_TEMPLATE,
+                      result1Fp2Con2.getConstraintValueType() );
+        assertEquals( "age",
+                      result1Fp2Con2.getFieldName() );
+        assertEquals( "==",
+                      result1Fp2Con2.getOperator() );
+        assertEquals( "$age",
+                      result1Fp2Con2.getValue() );
+
         //Row 2
         List<DTCellValue52> dtRowData2 = DataUtilities.makeDataRowList( data[ 2 ] );
         TemplateDataProvider rowDataProvider2 = new GuidedDTTemplateDataProvider( allColumns,
@@ -3423,7 +3445,7 @@ public class GuidedDTDRLPersistenceTest {
                         dtData,
                         rm );
 
-        assertEquals( 1,
+        assertEquals( 2,
                       rm.lhs.length );
         assertEquals( "Baddie",
                       ( (FactPattern) rm.lhs[ 0 ] ).getFactType() );
@@ -3443,6 +3465,31 @@ public class GuidedDTDRLPersistenceTest {
         assertEquals( "Gargamel",
                       result2Fp1Con1.getValue() );
 
+        // examine the second pattern
+        FactPattern result2Fp2 = (FactPattern) rm.lhs[ 1 ];
+        assertEquals( 2,
+                      result0Fp2.getConstraintList().getConstraints().length );
+
+        SingleFieldConstraint result2Fp2Con1 = (SingleFieldConstraint) result0Fp2.getConstraint( 0 );
+        assertEquals( BaseSingleFieldConstraint.TYPE_TEMPLATE,
+                      result2Fp2Con1.getConstraintValueType() );
+        assertEquals( "name",
+                      result2Fp2Con1.getFieldName() );
+        assertEquals( "==",
+                      result2Fp2Con1.getOperator() );
+        assertEquals( "$name",
+                      result2Fp2Con1.getValue() );
+
+        SingleFieldConstraint result2Fp2Con2 = (SingleFieldConstraint) result0Fp2.getConstraint( 1 );
+        assertEquals( BaseSingleFieldConstraint.TYPE_TEMPLATE,
+                      result2Fp2Con2.getConstraintValueType() );
+        assertEquals( "age",
+                      result2Fp2Con2.getFieldName() );
+        assertEquals( "==",
+                      result2Fp2Con2.getOperator() );
+        assertEquals( "$age",
+                      result2Fp2Con2.getValue() );
+
     }
 
     @Test
@@ -3451,9 +3498,7 @@ public class GuidedDTDRLPersistenceTest {
 
         GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
 
-        //Row 0 should become an IPattern in the resulting RuleModel as it contains getValue()s for all Template fields in the BRL Column
-        //Row 1 should *NOT* become an IPattern in the resulting RuleModel as it does *NOT* contain getValue()s for all Template fields in the BRL Column
-        //Row 2 should *NOT* become an IPattern in the resulting RuleModel as it does *NOT* contain getValue()s for all Template fields in the BRL Column
+        // All 3 rows should render, as the code is now lower down for skipping columns with empty cells
         String[][] data = new String[][]{
                 new String[]{ "1", "desc", "Gargamel", "Pupa", "50" },
                 new String[]{ "2", "desc", "Gargamel", "", "50" },
@@ -3525,6 +3570,8 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
         String drl = p.marshal( dtable );
 
+        System.out.println( drl );
+
         //Row 0
         ruleStartIndex = drl.indexOf( "//from row number: 1" );
         assertFalse( ruleStartIndex == -1 );
@@ -3541,9 +3588,9 @@ public class GuidedDTDRLPersistenceTest {
         pattern1StartIndex = drl.indexOf( "Baddie( name == \"Gargamel\" )",
                                           ruleStartIndex );
         assertFalse( pattern1StartIndex == -1 );
-        pattern2StartIndex = drl.indexOf( "Smurf( name == \"Pupa\" , age == 50 )",
+        pattern2StartIndex = drl.indexOf( "Smurf( age == 50 )",
                                           ruleStartIndex );
-        assertTrue( pattern2StartIndex == -1 );
+        assertFalse( pattern2StartIndex == -1 );
 
         //Row 2
         ruleStartIndex = drl.indexOf( "//from row number: 3" );
@@ -3551,9 +3598,9 @@ public class GuidedDTDRLPersistenceTest {
         pattern1StartIndex = drl.indexOf( "Baddie( name == \"Gargamel\" )",
                                           ruleStartIndex );
         assertFalse( pattern1StartIndex == -1 );
-        pattern2StartIndex = drl.indexOf( "Smurf( name == \"Pupa\" , age == 50 )",
+        pattern2StartIndex = drl.indexOf( "Smurf( name == \"Pupa\" )",
                                           ruleStartIndex );
-        assertTrue( pattern2StartIndex == -1 );
+        assertFalse( pattern2StartIndex == -1 );
 
     }
 
@@ -3563,9 +3610,7 @@ public class GuidedDTDRLPersistenceTest {
 
         GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
 
-        //Row 0 should become an IPattern in the resulting RuleModel as it contains getValue()s for all Template fields in the BRL Column
-        //Row 1 should *NOT* become an IPattern in the resulting RuleModel as it does *NOT* contain getValue()s for all Template fields in the BRL Column
-        //Row 2 should *NOT* become an IPattern in the resulting RuleModel as it does *NOT* contain getValue()s for all Template fields in the BRL Column
+        // All 3 rows should render, as the code is now lower down for skipping columns with empty cells
         String[][] data = new String[][]{
                 new String[]{ "1", "desc", "Pupa", "50" },
                 new String[]{ "2", "desc", "", "50" },
@@ -3637,6 +3682,8 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
         String drl = p.marshal( dtable );
 
+        System.out.println( drl );
+
         //Row 0
         ruleStartIndex = drl.indexOf( "//from row number: 1" );
         assertFalse( ruleStartIndex == -1 );
@@ -3653,9 +3700,9 @@ public class GuidedDTDRLPersistenceTest {
         pattern1StartIndex = drl.indexOf( "Baddie( name == \"Gargamel\" )",
                                           ruleStartIndex );
         assertFalse( pattern1StartIndex == -1 );
-        pattern2StartIndex = drl.indexOf( "Smurf( name == \"Pupa\" , age == 50 )",
+        pattern2StartIndex = drl.indexOf( "Smurf( age == 50 )",
                                           ruleStartIndex );
-        assertTrue( pattern2StartIndex == -1 );
+        assertFalse( pattern2StartIndex == -1 );
 
         //Row 2
         ruleStartIndex = drl.indexOf( "//from row number: 3" );
@@ -3663,9 +3710,9 @@ public class GuidedDTDRLPersistenceTest {
         pattern1StartIndex = drl.indexOf( "Baddie( name == \"Gargamel\" )",
                                           ruleStartIndex );
         assertFalse( pattern1StartIndex == -1 );
-        pattern2StartIndex = drl.indexOf( "Smurf( name == \"Pupa\" , age == 50 )",
+        pattern2StartIndex = drl.indexOf( "Smurf( name == \"Pupa\" )",
                                           ruleStartIndex );
-        assertTrue( pattern2StartIndex == -1 );
+        assertFalse( pattern2StartIndex == -1 );
 
     }
 
@@ -3744,9 +3791,7 @@ public class GuidedDTDRLPersistenceTest {
 
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
 
-        //Row 0 should become an IPattern in the resulting RuleModel as it contains getValue()s for all Template fields in the BRL Column
-        //Row 1 should *NOT* become an IPattern in the resulting RuleModel as it does *NOT* contain getValue()s for all Template fields in the BRL Column
-        //Row 2 should *NOT* become an IPattern in the resulting RuleModel as it does *NOT* contain getValue()s for all Template fields in the BRL Column
+        // All three rows are entered, some columns with optional data
         String[][] data = new String[][]{
                 new String[]{ "1", "desc", "Gargamel", "Pupa", "50" },
                 new String[]{ "2", "desc", "Gargamel", "", "50" },
@@ -3865,10 +3910,12 @@ public class GuidedDTDRLPersistenceTest {
                      dtRowData1,
                      rm );
 
-        assertEquals( 1,
+        assertEquals( 2,
                       rm.rhs.length );
         assertEquals( "Baddie",
                       ( (ActionInsertFact) rm.rhs[ 0 ] ).getFactType() );
+        assertEquals( "Smurf",
+                      ( (ActionInsertFact) rm.rhs[ 1 ] ).getFactType() );
 
         // examine the first action
         ActionInsertFact result1Action1 = (ActionInsertFact) rm.rhs[ 0 ];
@@ -3883,6 +3930,27 @@ public class GuidedDTDRLPersistenceTest {
         assertEquals( "Gargamel",
                       result1Action1FieldValue1.getValue() );
 
+        // examine the second action
+        ActionInsertFact result1Action2 = (ActionInsertFact) rm.rhs[ 1 ];
+        assertEquals( 2,
+                      result1Action2.getFieldValues().length );
+
+        ActionFieldValue result1Action2FieldValue1 = (ActionFieldValue) result1Action2.getFieldValues()[ 0 ];
+        assertEquals( DataType.TYPE_STRING,
+                      result1Action2FieldValue1.getType() );
+        assertEquals( "name",
+                      result1Action2FieldValue1.getField() );
+        assertEquals( "$name",
+                      result1Action2FieldValue1.getValue() );
+
+        ActionFieldValue result1Action2FieldValue2 = (ActionFieldValue) result1Action2.getFieldValues()[ 1 ];
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      result1Action2FieldValue2.getType() );
+        assertEquals( "age",
+                      result1Action2FieldValue2.getField() );
+        assertEquals( "$age",
+                      result1Action2FieldValue2.getValue() );
+
         //Row 2
         List<DTCellValue52> dtRowData2 = DataUtilities.makeDataRowList( data[ 2 ] );
         TemplateDataProvider rowDataProvider2 = new GuidedDTTemplateDataProvider( allColumns,
@@ -3893,10 +3961,12 @@ public class GuidedDTDRLPersistenceTest {
                      dtRowData2,
                      rm );
 
-        assertEquals( 1,
+        assertEquals( 2,
                       rm.rhs.length );
         assertEquals( "Baddie",
                       ( (ActionInsertFact) rm.rhs[ 0 ] ).getFactType() );
+        assertEquals( "Smurf",
+                      ( (ActionInsertFact) rm.rhs[ 1 ] ).getFactType() );
 
         // examine the first action
         ActionInsertFact result2Action1 = (ActionInsertFact) rm.rhs[ 0 ];
@@ -3911,6 +3981,27 @@ public class GuidedDTDRLPersistenceTest {
         assertEquals( "Gargamel",
                       result2Action1FieldValue1.getValue() );
 
+        // examine the second action
+        ActionInsertFact result2Action2 = (ActionInsertFact) rm.rhs[ 1 ];
+        assertEquals( 2,
+                      result2Action2.getFieldValues().length );
+
+        ActionFieldValue result2Action2FieldValue1 = (ActionFieldValue) result2Action2.getFieldValues()[ 0 ];
+        assertEquals( DataType.TYPE_STRING,
+                      result2Action2FieldValue1.getType() );
+        assertEquals( "name",
+                      result2Action2FieldValue1.getField() );
+        assertEquals( "$name",
+                      result2Action2FieldValue1.getValue() );
+
+        ActionFieldValue result3Action2FieldValue2 = (ActionFieldValue) result2Action2.getFieldValues()[ 1 ];
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      result3Action2FieldValue2.getType() );
+        assertEquals( "age",
+                      result3Action2FieldValue2.getField() );
+        assertEquals( "$age",
+                      result3Action2FieldValue2.getValue() );
+
     }
 
     @Test
@@ -3919,9 +4010,7 @@ public class GuidedDTDRLPersistenceTest {
 
         GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
 
-        //Row 0 should become an IPattern in the resulting RuleModel as it contains getValue()s for all Template fields in the BRL Column
-        //Row 1 should *NOT* become an IPattern in the resulting RuleModel as it does *NOT* contain getValue()s for all Template fields in the BRL Column
-        //Row 2 should *NOT* become an IPattern in the resulting RuleModel as it does *NOT* contain getValue()s for all Template fields in the BRL Column
+        // All three rows are entered, some columns with optional data
         String[][] data = new String[][]{
                 new String[]{ "1", "desc", "Gargamel", "Pupa", "50" },
                 new String[]{ "2", "desc", "Gargamel", "", "50" },
@@ -4010,6 +4099,7 @@ public class GuidedDTDRLPersistenceTest {
 
         //Row 1
         ruleStartIndex = drl.indexOf( "//from row number: 2" );
+        int ruleEndIndex = drl.indexOf( "//from row number: 3" );
         assertFalse( ruleStartIndex == -1 );
         action1StartIndex = drl.indexOf( "Baddie $b = new Baddie();",
                                          ruleStartIndex );
@@ -4023,16 +4113,16 @@ public class GuidedDTDRLPersistenceTest {
 
         action2StartIndex = drl.indexOf( "Smurf fact0 = new Smurf();",
                                          ruleStartIndex );
-        assertTrue( action2StartIndex == -1 );
-        action2StartIndex = drl.indexOf( "fact0.setName( \"Pupa\" );",
+        assertFalse( action2StartIndex == -1 );
+        action2StartIndex = drl.indexOf( "fact0.setName(",
                                          ruleStartIndex );
-        assertTrue( action2StartIndex == -1 );
+        assertFalse( action2StartIndex < ruleEndIndex );
         action2StartIndex = drl.indexOf( "fact0.setAge( 50 );",
                                          ruleStartIndex );
-        assertTrue( action2StartIndex == -1 );
+        assertFalse( action2StartIndex == -1 );
         action2StartIndex = drl.indexOf( "insert( fact0 );",
                                          ruleStartIndex );
-        assertTrue( action2StartIndex == -1 );
+        assertFalse( action2StartIndex == -1 );
 
         //Row 2
         ruleStartIndex = drl.indexOf( "//from row number: 3" );
@@ -4049,16 +4139,16 @@ public class GuidedDTDRLPersistenceTest {
 
         action2StartIndex = drl.indexOf( "Smurf fact0 = new Smurf();",
                                          ruleStartIndex );
-        assertTrue( action2StartIndex == -1 );
+        assertFalse( action2StartIndex == -1 );
         action2StartIndex = drl.indexOf( "fact0.setName( \"Pupa\" );",
                                          ruleStartIndex );
-        assertTrue( action2StartIndex == -1 );
+        assertFalse( action2StartIndex == -1 );
         action2StartIndex = drl.indexOf( "fact0.setAge( 50 );",
                                          ruleStartIndex );
         assertTrue( action2StartIndex == -1 );
         action2StartIndex = drl.indexOf( "insert( fact0 );",
                                          ruleStartIndex );
-        assertTrue( action2StartIndex == -1 );
+        assertFalse( action2StartIndex == -1 );
     }
 
     @Test
@@ -4067,9 +4157,7 @@ public class GuidedDTDRLPersistenceTest {
 
         GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
 
-        //Row 0 should become an IPattern in the resulting RuleModel as it contains getValue()s for all Template fields in the BRL Column
-        //Row 1 should *NOT* become an IPattern in the resulting RuleModel as it does *NOT* contain getValue()s for all Template fields in the BRL Column
-        //Row 2 should *NOT* become an IPattern in the resulting RuleModel as it does *NOT* contain getValue()s for all Template fields in the BRL Column
+        // All three rows are entered, some columns with optional data
         String[][] data = new String[][]{
                 new String[]{ "1", "desc", "Pupa", "50" },
                 new String[]{ "2", "desc", "", "50" },
@@ -4158,6 +4246,7 @@ public class GuidedDTDRLPersistenceTest {
 
         //Row 1
         ruleStartIndex = drl.indexOf( "//from row number: 2" );
+        int ruleEndIndex = drl.indexOf( "//from row number: 3" );
         assertFalse( ruleStartIndex == -1 );
         action1StartIndex = drl.indexOf( "Baddie fact0 = new Baddie();",
                                          ruleStartIndex );
@@ -4171,16 +4260,16 @@ public class GuidedDTDRLPersistenceTest {
 
         action2StartIndex = drl.indexOf( "Smurf fact1 = new Smurf();",
                                          ruleStartIndex );
-        assertTrue( action2StartIndex == -1 );
+        assertFalse( action2StartIndex == -1 );
         action2StartIndex = drl.indexOf( "fact1.setName( \"Pupa\" );",
                                          ruleStartIndex );
-        assertTrue( action2StartIndex == -1 );
+        assertFalse( action2StartIndex < ruleEndIndex );
         action2StartIndex = drl.indexOf( "fact1.setAge( 50 );",
                                          ruleStartIndex );
-        assertTrue( action2StartIndex == -1 );
+        assertFalse( action2StartIndex == -1 );
         action2StartIndex = drl.indexOf( "insert( fact1 );",
                                          ruleStartIndex );
-        assertTrue( action2StartIndex == -1 );
+        assertFalse( action2StartIndex == -1 );
 
         //Row 2
         ruleStartIndex = drl.indexOf( "//from row number: 3" );
@@ -4197,16 +4286,16 @@ public class GuidedDTDRLPersistenceTest {
 
         action2StartIndex = drl.indexOf( "Smurf fact1 = new Smurf();",
                                          ruleStartIndex );
-        assertTrue( action2StartIndex == -1 );
+        assertFalse( action2StartIndex == -1 );
         action2StartIndex = drl.indexOf( "fact1.setName( \"Pupa\" );",
                                          ruleStartIndex );
-        assertTrue( action2StartIndex == -1 );
+        assertFalse( action2StartIndex == -1 );
         action2StartIndex = drl.indexOf( "fact1.setAge( 50 );",
                                          ruleStartIndex );
         assertTrue( action2StartIndex == -1 );
         action2StartIndex = drl.indexOf( "insert( fact1 );",
                                          ruleStartIndex );
-        assertTrue( action2StartIndex == -1 );
+        assertFalse( action2StartIndex == -1 );
     }
 
     @Test

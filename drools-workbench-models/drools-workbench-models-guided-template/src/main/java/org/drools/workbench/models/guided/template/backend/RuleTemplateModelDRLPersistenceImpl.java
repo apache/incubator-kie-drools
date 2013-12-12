@@ -18,16 +18,32 @@ package org.drools.workbench.models.guided.template.backend;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.drools.template.DataProvider;
 import org.drools.template.DataProviderCompiler;
 import org.drools.template.objects.ArrayDataProvider;
+import org.drools.workbench.models.commons.backend.rule.DRLConstraintValueBuilder;
+import org.drools.workbench.models.commons.backend.rule.GeneratorContext;
+import org.drools.workbench.models.commons.backend.rule.GeneratorContextFactory;
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
 import org.drools.workbench.models.commons.backend.rule.RuleModelPersistence;
+import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
+import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.ConnectiveConstraint;
+import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
+import org.drools.workbench.models.datamodel.rule.FreeFormLine;
+import org.drools.workbench.models.datamodel.rule.FromCollectCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.IFactPattern;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +53,8 @@ import org.slf4j.LoggerFactory;
  */
 public class RuleTemplateModelDRLPersistenceImpl
         extends RuleModelDRLPersistenceImpl {
+
+    private static final Pattern patternTemplateKey = Pattern.compile( "@\\{(.+?)\\}" );
 
     private static final Logger log = LoggerFactory.getLogger( RuleTemplateModelDRLPersistenceImpl.class );
     private static final RuleModelPersistence INSTANCE = new RuleTemplateModelDRLPersistenceImpl();
@@ -49,6 +67,332 @@ public class RuleTemplateModelDRLPersistenceImpl
         return INSTANCE;
     }
 
+    protected LHSPatternVisitor getLHSPatternVisitor( final boolean isDSLEnhanced,
+                                                      final StringBuilder buf,
+                                                      final String nestedIndentation,
+                                                      final boolean isNegated ) {
+        return new LHSPatternVisitor( isDSLEnhanced,
+                                      bindingsPatterns,
+                                      bindingsFields,
+                                      constraintValueBuilder,
+                                      buf,
+                                      nestedIndentation,
+                                      isNegated );
+    }
+
+    @Override
+    protected RHSActionVisitor getRHSActionVisitor( final boolean isDSLEnhanced,
+                                                    final StringBuilder buf,
+                                                    final String indentation ) {
+        return new RHSActionVisitor( isDSLEnhanced,
+                                     bindingsPatterns,
+                                     bindingsFields,
+                                     constraintValueBuilder,
+                                     buf,
+                                     indentation );
+    }
+
+    public static class LHSPatternVisitor extends RuleModelDRLPersistenceImpl.LHSPatternVisitor {
+
+        public LHSPatternVisitor( final boolean isDSLEnhanced,
+                                  final Map<String, IFactPattern> bindingsPatterns,
+                                  final Map<String, FieldConstraint> bindingsFields,
+                                  final DRLConstraintValueBuilder constraintValueBuilder,
+                                  final StringBuilder b,
+                                  final String indentation,
+                                  final boolean isPatternNegated ) {
+            super( isDSLEnhanced,
+                   bindingsPatterns,
+                   bindingsFields,
+                   constraintValueBuilder,
+                   b,
+                   indentation,
+                   isPatternNegated );
+        }
+
+        @Override
+        public void preGenerateConstraints( GeneratorContext gctx ) {
+            buf.append( "@code{hasOutput" + gctx.getDepth() + "_" + gctx.getOffset() + " = false}" );
+        }
+
+        @Override
+        public void preGenerateNestedConnector( GeneratorContext gctx ) {
+            if ( gctx.getVarsInScope().size() > 0 ) {
+                buf.append( "@if{(" );
+                for ( String var : gctx.getVarsInScope() ) {
+                    buf.append( var + " != empty || " );
+                }
+                buf.delete( buf.length() - 4, buf.length() );
+
+                GeneratorContext parentContext = gctx.getParent();
+                if ( parentContext != null ) {
+                    Set<String> parentVarsInScope = new HashSet<String>( parentContext.getVarsInScope() );
+                    parentVarsInScope.removeAll( gctx.getVarsInScope() );
+                    if ( parentVarsInScope.size() > 0 ) {
+                        buf.append( ") && !(" );
+                        for ( String var : parentVarsInScope ) {
+                            buf.append( var + " == empty && " );
+                        }
+                        buf.delete( buf.length() - 4, buf.length() );
+                    }
+                }
+                buf.append( ") || hasNonTemplateOutput" ).append( gctx.getDepth() + "_" + gctx.getOffset() ).append( "}" );
+            } else {
+                GeneratorContext parentContext = gctx.getParent();
+                if ( parentContext != null ) {
+                    Set<String> parentVarsInScope = new HashSet<String>( parentContext.getVarsInScope() );
+                    parentVarsInScope.removeAll( gctx.getVarsInScope() );
+                    if ( parentVarsInScope.size() > 0 ) {
+                        buf.append( "@if{!(" );
+                        for ( String var : parentVarsInScope ) {
+                            buf.append( var + " == empty || " );
+                        }
+                        buf.delete( buf.length() - 4, buf.length() );
+                        buf.append( ")}" );
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void postGenerateNestedConnector( GeneratorContext gctx ) {
+            if ( gctx.getVarsInScope().size() > 0 ) {
+                buf.append( "@end{}" );
+            } else {
+                GeneratorContext parentContext = gctx.getParent();
+                if ( parentContext != null ) {
+                    Set<String> parentVarsInScope = new HashSet<String>( parentContext.getVarsInScope() );
+                    parentVarsInScope.removeAll( gctx.getVarsInScope() );
+                    if ( parentVarsInScope.size() > 0 ) {
+                        buf.append( "@end{}" );
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void preGenerateNestedConstraint( GeneratorContext gctx ) {
+            if ( gctx.getVarsInScope().size() > 0 ) {
+                buf.append( "@if{!(" );
+                for ( String var : gctx.getVarsInScope() ) {
+                    buf.append( var + " == empty && " );
+                }
+                buf.delete( buf.length() - 4, buf.length() );
+                buf.append( ") || hasNonTemplateOutput" ).append( gctx.getDepth() + "_" + gctx.getOffset() ).append( "}" );
+            }
+        }
+
+        @Override
+        public void postGenerateNestedConstraint( GeneratorContext gctx ) {
+            if ( gctx.getVarsInScope().size() > 0 ) {
+                buf.append( "@end{}" );
+            }
+        }
+
+        @Override
+        protected void generateConstraint( final FieldConstraint constr,
+                                           GeneratorContext gctx ) {
+            boolean generateTemplateCheck = isTemplateKey( constr );
+
+            if ( generateTemplateCheck ) {
+                if ( constr instanceof SingleFieldConstraint && ( (SingleFieldConstraint) constr ).getConnectives() != null ) {
+                    // if there are connectives, and the first is a template key, then all templates keys must be checked up front
+                    // individual connectives, that have template keys, will still need to be checked too.
+                    SingleFieldConstraint sconstr = (SingleFieldConstraint) constr;
+                    buf.append( "@if{" + ( (SingleFieldConstraint) constr ).getValue() + " != empty" );
+                    for ( int j = 0; j < sconstr.getConnectives().length; j++ ) {
+                        final ConnectiveConstraint conn = sconstr.getConnectives()[ j ];
+                        if ( conn.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_TEMPLATE ) {
+                            buf.append( " || " + conn.getValue() + " != empty" );
+                        }
+                    }
+                    buf.append( "}" );
+                } else {
+                    buf.append( "@if{" + ( (SingleFieldConstraint) constr ).getValue() + " != empty}" );
+                }
+            }
+            super.generateConstraint( constr,
+                                      gctx );
+            buf.append( "@code{hasOutput" + gctx.getDepth() + "_" + gctx.getOffset() + " = true}" );
+            if ( generateTemplateCheck ) {
+                buf.append( "@end{}" );
+            }
+        }
+
+        private boolean isTemplateKey( FieldConstraint nestedConstr ) {
+            return nestedConstr instanceof BaseSingleFieldConstraint && ( (BaseSingleFieldConstraint) nestedConstr ).getConstraintValueType() == BaseSingleFieldConstraint.TYPE_TEMPLATE;
+        }
+
+        public void generateSeparator( FieldConstraint constr,
+                                       GeneratorContext gctx ) {
+            if ( !gctx.isHasOutput() ) {
+                return;
+            }
+
+            boolean generateTemplateCheck = isTemplateKey( constr );
+            if ( generateTemplateCheck ) {
+                buf.append( "@if{ hasOutput" + gctx.getDepth() + "_" + gctx.getOffset() + "}" );
+            }
+
+            preGenerateNestedConnector( gctx );
+            if ( gctx.getDepth() == 0 ) {
+                buf.append( ", " );
+            } else {
+                CompositeFieldConstraint cconstr = (CompositeFieldConstraint) gctx.getParent().getFieldConstraint();
+                buf.append( cconstr.getCompositeJunctionType() + " " );
+            }
+            postGenerateNestedConnector( gctx );
+            if ( generateTemplateCheck ) {
+                buf.append( "@end{}" );
+            }
+        }
+
+        protected void addConnectiveFieldRestriction( final StringBuilder buf,
+                                                      final int type,
+                                                      final String fieldType,
+                                                      String operator,
+                                                      final Map<String, String> parameters,
+                                                      final String value,
+                                                      final ExpressionFormLine expression,
+                                                      GeneratorContext gctx,
+                                                      boolean spaceBeforeOperator ) {
+            boolean generateTemplateCheck = type == BaseSingleFieldConstraint.TYPE_TEMPLATE;
+            if ( generateTemplateCheck ) {
+                buf.append( "@if{" + value + " != empty}" );
+            }
+
+            if ( generateTemplateCheck && operator.startsWith( "||" ) || operator.startsWith( "&&" ) ) {
+                spaceBeforeOperator = false;
+                buf.append( "@if{ hasOutput" + gctx.getDepth() + "_" + gctx.getOffset() + "} " );// add space here, due to split operator
+                buf.append( operator.substring( 0, 2 ) );
+                buf.append( "@end{}" );
+                operator = operator.substring( 2 );
+            }
+
+            super.addConnectiveFieldRestriction( buf, type, fieldType, operator, parameters, value, expression, gctx, spaceBeforeOperator );
+
+            if ( generateTemplateCheck ) {
+                buf.append( "@code{hasOutput" + gctx.getDepth() + "_" + gctx.getOffset() + " = true}" );
+                buf.append( "@end{}" );
+            }
+        }
+
+        @Override
+        public void visitFreeFormLine( final FreeFormLine ffl ) {
+            final Matcher matcherTemplateKey = patternTemplateKey.matcher( ffl.getText() );
+
+            boolean found = matcherTemplateKey.find();
+            if ( found ) {
+                buf.append( "@if{" );
+                boolean addAnd = false;
+                while ( found ) {
+                    String varName = matcherTemplateKey.group( 1 );
+                    if ( addAnd ) {
+                        buf.append( " && " );
+                    }
+                    buf.append( varName + " != empty" );
+                    addAnd = true;
+                    found = matcherTemplateKey.find();
+                }
+                buf.append( "}" );
+                super.visitFreeFormLine( ffl );
+                buf.append( "@end{}" );
+            } else {
+                // no variables found
+                super.visitFreeFormLine( ffl );
+            }
+        }
+
+        public void visitFromCollectCompositeFactPattern( final FromCollectCompositeFactPattern pattern,
+                                                          final boolean isSubPattern ) {
+
+            if ( pattern.getRightPattern() instanceof FreeFormLine ) {
+                // this allows MVEL to skip the collect, if any vars are empty
+                // note this actually duplicates another inner check for the FFL itself
+                // @TODO the FFL should get a reference to the parent, so it can avoid this duplication.
+                final FreeFormLine ffl = (FreeFormLine) pattern.getRightPattern();
+                final Matcher matcherTemplateKey = patternTemplateKey.matcher( ffl.getText() );
+
+                boolean found = matcherTemplateKey.find();
+                if ( found ) {
+                    buf.append( "@if{" );
+                    boolean addAnd = false;
+                    while ( found ) {
+                        String varName = matcherTemplateKey.group( 1 );
+                        if ( addAnd ) {
+                            buf.append( " && " );
+                        }
+                        buf.append( varName + " != empty" );
+                        addAnd = true;
+                        found = matcherTemplateKey.find();
+                    }
+                    buf.append( "}" );
+                    super.visitFromCollectCompositeFactPattern( pattern,
+                                                                isSubPattern );
+                    buf.append( "@end{}" );
+                    found = matcherTemplateKey.find();
+                } else {
+                    // no variables found
+                    super.visitFromCollectCompositeFactPattern( pattern,
+                                                                isSubPattern );
+                }
+            } else {
+                super.visitFromCollectCompositeFactPattern( pattern,
+                                                            isSubPattern );
+            }
+        }
+    }
+
+    public static class RHSActionVisitor extends RuleModelDRLPersistenceImpl.RHSActionVisitor {
+
+        public RHSActionVisitor( final boolean isDSLEnhanced,
+                                 final Map<String, IFactPattern> bindingsPatterns,
+                                 final Map<String, FieldConstraint> bindingsFields,
+                                 final DRLConstraintValueBuilder constraintValueBuilder,
+                                 final StringBuilder b,
+                                 final String indentation ) {
+            super( isDSLEnhanced,
+                   bindingsPatterns,
+                   bindingsFields,
+                   constraintValueBuilder,
+                   b,
+                   indentation );
+        }
+
+        protected void generateSetMethodCall( String variableName,
+                                              ActionFieldValue fieldValue ) {
+            buf.append( "@if{" + fieldValue.getValue() + " != empty}" );
+            super.generateSetMethodCall( variableName,
+                                         fieldValue );
+            buf.append( "@end{}" );
+        }
+
+        @Override
+        public void visitFreeFormLine( FreeFormLine ffl ) {
+            final Matcher matcherTemplateKey = patternTemplateKey.matcher( ffl.getText() );
+            boolean found = matcherTemplateKey.find();
+            if ( found ) {
+                buf.append( "@if{" );
+                boolean addAnd = false;
+                while ( found ) {
+                    String varName = matcherTemplateKey.group( 1 );
+                    if ( addAnd ) {
+                        buf.append( " && " );
+                    }
+                    buf.append( varName + " != empty" );
+                    addAnd = true;
+                    found = matcherTemplateKey.find();
+                }
+                buf.append( "}" );
+                super.visitFreeFormLine( ffl );
+                buf.append( "@end{}" );
+            } else {
+                // no variables found
+                super.visitFreeFormLine( ffl );
+            }
+        }
+    }
+
     @Override
     public String marshal( final RuleModel model ) {
 
@@ -57,12 +401,17 @@ public class RuleTemplateModelDRLPersistenceImpl
         log.debug( "ruleTemplate:\n{}",
                    ruleTemplate );
 
+        System.out.println( ruleTemplate );
+
+        log.debug( "generated template:\n{}", ruleTemplate );
+
         final DataProvider dataProvider = chooseDataProvider( model );
         final DataProviderCompiler tplCompiler = new DataProviderCompiler();
         final String generatedDrl = tplCompiler.compile( dataProvider,
-                                                         new ByteArrayInputStream( ruleTemplate.getBytes() ) );
-        log.debug( "generated drl:\n{}",
-                   generatedDrl );
+                                                         new ByteArrayInputStream( ruleTemplate.getBytes() ),
+                                                         false );
+
+        log.debug( "generated drl:\n{}", generatedDrl );
 
         return generatedDrl;
     }
@@ -73,10 +422,11 @@ public class RuleTemplateModelDRLPersistenceImpl
         bindingsFields = new HashMap<String, FieldConstraint>();
 
         StringBuilder buf = new StringBuilder();
+        StringBuilder header = new StringBuilder();
 
         //Build rule
         this.marshalRuleHeader( model,
-                                buf );
+                                header );
         super.marshalMetadata( buf,
                                model );
         super.marshalAttributes( buf,
@@ -91,7 +441,12 @@ public class RuleTemplateModelDRLPersistenceImpl
                           model,
                           isDSLEnhanced );
         this.marshalFooter( buf );
-        return buf.toString();
+
+        for ( GeneratorContext gc : GeneratorContextFactory.getGeneratorContexts() ) {
+            header.append( "@code{hasNonTemplateOutput" + gc.getDepth() + "_" + gc.getOffset() + " = " + gc.hasNonTemplateOutput() + "}" );
+        }
+
+        return header.append( buf ).toString();
     }
 
     private DataProvider chooseDataProvider( final RuleModel model ) {
