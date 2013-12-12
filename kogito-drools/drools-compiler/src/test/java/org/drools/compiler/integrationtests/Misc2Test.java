@@ -55,7 +55,6 @@ import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
-import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.KieBaseConfiguration;
@@ -4829,6 +4828,54 @@ public class Misc2Test extends CommonTestMethodBase {
         public Serializable getValue() {
             return value;
         }
+    }
+
+    @Test(timeout = 10000)
+    public void testInfiniteLoopUpdatingWithRBTreeIndexing() {
+        // BZ-1040032
+        String drl =
+                "import org.drools.compiler.Person\n" +
+                "rule R when\n" +
+                "    $p : Person()\n" +
+                "    exists Person( age > $p.age, name.contains($p.name.substring(0, 1)) )\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+
+        Person[] ps = new Person[4];
+        FactHandle[] fhs = new FactHandle[4];
+
+        ps[0] = new Person("a", 5);
+        ps[1] = new Person("b", 5);
+        ps[2] = new Person("d", 10);
+        ps[3] = new Person("a", 15);
+
+        fhs[0] = ks.insert(ps[0]);
+        fhs[1] = ks.insert(ps[1]);
+        fhs[2] = ks.insert(ps[2]);
+        fhs[3] = ks.insert(ps[3]);
+
+        ps[0].setName("c");
+        ks.update(fhs[0], ps[0]);
+        ks.fireAllRules();
+
+        ps[2].setName("b");
+        ks.update(fhs[2], ps[2]);
+        ks.fireAllRules();
+
+        ps[2].setName("d");
+        ks.update(fhs[2], ps[2]);
+        ks.fireAllRules();
+
+        ps[1].setName("c");
+        ks.update(fhs[1], ps[1]);
+        ks.fireAllRules();
+
+        ps[3].setName("d");
+        ks.update(fhs[3], ps[3]);
+        ks.fireAllRules();
     }
 }
 
