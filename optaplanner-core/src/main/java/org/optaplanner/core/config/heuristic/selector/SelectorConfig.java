@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
@@ -95,11 +96,20 @@ public abstract class SelectorConfig {
         if (variableName != null) {
             variableDescriptor = entityDescriptor.getVariableDescriptor(variableName);
             if (variableDescriptor == null) {
-                throw new IllegalArgumentException("The selectorConfig (" + this
-                        + ") has a variableName (" + variableName
-                        + ") for planningEntityClass (" + entityDescriptor.getPlanningEntityClass()
-                        + ") that is not annotated as a planning variable.\n" +
-                        "Check your planning entity implementation's annotated methods.");
+                if (entityDescriptor.getPropertyDescriptor(variableName) == null) {
+                    throw new IllegalArgumentException("The selectorConfig (" + this
+                            + ") has a variableName (" + variableName
+                            + ") for planningEntityClass (" + entityDescriptor.getPlanningEntityClass()
+                            + ") that does not have that as a getter.\n"
+                            + "Check the spelling of the variableName (" + variableName + ").");
+                } else {
+                    throw new IllegalArgumentException("The selectorConfig (" + this
+                            + ") has a variableName (" + variableName
+                            + ") for planningEntityClass (" + entityDescriptor.getPlanningEntityClass()
+                            + ") that is not annotated as a planning variable.\n"
+                            + "Check if your planning entity's getter has the annotation "
+                            + PlanningVariable.class.getSimpleName() + ".");
+                }
             }
         } else {
             Collection<PlanningVariableDescriptor> variableDescriptors = entityDescriptor

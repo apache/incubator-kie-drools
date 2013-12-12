@@ -20,6 +20,7 @@ import org.optaplanner.core.impl.solution.Solution;
 
 /**
  * A {@link Score} that supports {@link #isFeasible()}.
+ * @see Score
  */
 public interface FeasibilityScore<S extends FeasibilityScore> extends Score<S> {
 
