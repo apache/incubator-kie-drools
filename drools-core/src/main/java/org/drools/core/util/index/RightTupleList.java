@@ -332,5 +332,9 @@ public class RightTupleList
         other.index = index;
         other.iterator = iterator;
         other.size = size;
+
+        for ( RightTuple current = first; current != null; current = (RightTuple)current.getNext()) {
+            current.setMemory(other);
+        }
     }
 }

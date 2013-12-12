@@ -308,5 +308,9 @@ public class LeftTupleList
         other.index = index;
         other.iterator = iterator;
         other.size = size;
+
+        for ( LeftTuple current = first; current != null; current = (LeftTuple)current.getNext()) {
+            current.setMemory(other);
+        }
     }
 }
