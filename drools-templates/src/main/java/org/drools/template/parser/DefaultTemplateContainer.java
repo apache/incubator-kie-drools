@@ -38,11 +38,22 @@ public class DefaultTemplateContainer implements TemplateContainer {
 
     private Map<String, RuleTemplate> templates = new HashMap<String, RuleTemplate>();
 
+    private boolean replaceOptionals;
+
     public DefaultTemplateContainer(final String template) {
-        this(DefaultTemplateContainer.class.getResourceAsStream(template));
+        this(DefaultTemplateContainer.class.getResourceAsStream(template), true);
     }
 
     public DefaultTemplateContainer(final InputStream templateStream) {
+        this(templateStream, true);
+    }
+
+    public DefaultTemplateContainer(final String template, boolean replaceOptionals) {
+        this(DefaultTemplateContainer.class.getResourceAsStream(template), replaceOptionals);
+    }
+
+    public DefaultTemplateContainer(final InputStream templateStream, boolean replaceOptionals) {
+        this.replaceOptionals = replaceOptionals;
         parseTemplate(templateStream);
         validateTemplate();
     }
@@ -79,7 +90,7 @@ public class DefaultTemplateContainer implements TemplateContainer {
                         inHeader = false;
                         String quotedName = trimmed.substring(8).trim();
                         quotedName = quotedName.substring(1, quotedName.length() - 1);
-                        template = new RuleTemplate(quotedName, this);
+                        template = new RuleTemplate(quotedName, this, replaceOptionals );
                         addTemplate(template);
 
                     } else if (trimmed.startsWith("package")) {

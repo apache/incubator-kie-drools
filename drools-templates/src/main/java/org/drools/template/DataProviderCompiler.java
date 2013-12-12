@@ -54,7 +54,47 @@ public class DataProviderCompiler {
      */
     public String compile(final DataProvider dataProvider,
                           final InputStream templateStream) {
-        TemplateContainer tc = new DefaultTemplateContainer(templateStream);
+        return compile(dataProvider,templateStream, true );
+    }
+
+    /**
+     * Generates DRL from a data provider for the spreadsheet data and templates.
+     *
+     * @param dataProvider the data provider for the spreadsheet data
+     * @param listener     a template data listener
+     * @return the generated DRL text as a String
+     */
+    public String compile(final DataProvider dataProvider,
+                          final TemplateDataListener listener) {
+        return compile(dataProvider, listener, true);
+    }
+
+    /**
+     * Generates DRL from a data provider for the spreadsheet data and templates.
+     *
+     * @param dataProvider the data provider for the spreadsheet data
+     * @param template     the string containing the template resource name
+     * @return the generated DRL text as a String
+     */
+    public String compile(final DataProvider dataProvider,
+                          final String template,
+                          boolean replaceOptionals) {
+        final InputStream templateStream = this.getClass().getResourceAsStream(template);
+        return compile(dataProvider,
+                       templateStream);
+    }
+
+    /**
+     * Generates DRL from a data provider for the spreadsheet data and templates.
+     *
+     * @param dataProvider   the data provider for the spreadsheet data
+     * @param templateStream the InputStream for reading the templates
+     * @return the generated DRL text as a String
+     */
+    public String compile(final DataProvider dataProvider,
+                          final InputStream templateStream,
+                          boolean replaceOptionals) {
+        DefaultTemplateContainer tc = new DefaultTemplateContainer(templateStream, replaceOptionals);
         closeStream(templateStream);
         return compile(dataProvider,
                        new TemplateDataListener(tc));
@@ -68,7 +108,8 @@ public class DataProviderCompiler {
      * @return the generated DRL text as a String
      */
     public String compile(final DataProvider dataProvider,
-                          final TemplateDataListener listener) {
+                          final TemplateDataListener listener,
+                          boolean replaceOptionals) {
         List<DataListener> listeners = new ArrayList<DataListener>();
         listeners.add(listener);
         processData(dataProvider,
