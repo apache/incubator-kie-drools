@@ -21,8 +21,12 @@ import java.util.Stack;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.core.beliefsystem.abductive.Abductive;
+import org.drools.core.rule.AbductiveQuery;
+import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Package;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.Query;
@@ -72,8 +76,13 @@ public class RuleBuildContext extends PackageBuildContext {
         this.declarationResolver.setPackage(pkg);
         this.ruleDescr = ruleDescr;
 
-        if (ruleDescr instanceof QueryDescr) {
-            this.rule = new Query(ruleDescr.getName());
+        if ( ruleDescr instanceof QueryDescr ) {
+            AnnotationDescr abductive = ruleDescr.getAnnotation( Abductive.class.getSimpleName() );
+            if ( abductive == null ) {
+                this.rule = new Query( ruleDescr.getName() );
+            } else {
+                this.rule = new AbductiveQuery( ruleDescr.getName(), abductive.getValue( "mode" ) );
+            }
         } else {
             this.rule = new Rule(ruleDescr.getName());
         }

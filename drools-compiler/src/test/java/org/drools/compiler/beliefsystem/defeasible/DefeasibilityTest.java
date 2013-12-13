@@ -59,7 +59,7 @@ public class DefeasibilityTest {
         kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
 
         KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.JTMS );
+        ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.DEFEASIBLE );
 
         StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession( ksConf, null );
         return kSession;
@@ -623,6 +623,5 @@ public class DefeasibilityTest {
         session.delete( handle1 );
         assertEquals( 0, session.fireAllRules() );
     }
-
 
 }
