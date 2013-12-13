@@ -1987,7 +1987,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1039639 - GRE doesn't recognize MVEL inline lists when opening rule")
     public void testMVELInlineList() throws Exception {
         String drl = "" +
                 "rule \"Borked\"\n" +

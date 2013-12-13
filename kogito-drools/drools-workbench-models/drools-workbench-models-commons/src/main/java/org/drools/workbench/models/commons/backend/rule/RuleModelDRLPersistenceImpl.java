@@ -2230,7 +2230,11 @@ public class RuleModelDRLPersistenceImpl
                 return new ActionWorkItemFieldValue( field, DataType.TYPE_NUMERIC_FLOAT, "WorkItem", wiParam, Float.class.getName() );
             }
         }
-        return new ActionFieldValue( field, adjustParam( dataType, value, isJavaDialect ), dataType );
+        ActionFieldValue fieldValue = new ActionFieldValue( field, adjustParam( dataType, value, isJavaDialect ), dataType );
+        if (dataType == DataType.TYPE_COLLECTION) {
+            fieldValue.setNature(FieldNatureType.TYPE_FORMULA);
+        }
+        return fieldValue;
     }
 
     private boolean isJavaIdentifier( String name ) {
@@ -2257,6 +2261,8 @@ public class RuleModelDRLPersistenceImpl
             return DataType.TYPE_NUMERIC_BIGDECIMAL;
         } else if ( param.endsWith( "I" ) || ( isJavaDialect && param.startsWith( "new java.math.BigInteger" ) ) ) {
             return DataType.TYPE_NUMERIC_BIGINTEGER;
+        } else if ( param.startsWith( "[" ) && param.endsWith( "]" ) ) {
+            return DataType.TYPE_COLLECTION;
         }
         return DataType.TYPE_NUMERIC;
     }
