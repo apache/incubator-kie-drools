@@ -30,6 +30,7 @@ import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Location;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
 
 public class VehicleRoutingPanel extends SolutionPanel {
@@ -110,9 +111,12 @@ public class VehicleRoutingPanel extends SolutionPanel {
                 Customer newCustomer;
                 if (schedule instanceof TimeWindowedVehicleRoutingSolution) {
                     TimeWindowedCustomer newTimeWindowedCustomer = new TimeWindowedCustomer();
-                    newTimeWindowedCustomer.setMilliReadyTime(10000);
-                    newTimeWindowedCustomer.setMilliDueTime(100000);
-                    newTimeWindowedCustomer.setMilliServiceDuration(10000);
+                    TimeWindowedDepot timeWindowedDepot = (TimeWindowedDepot) schedule.getDepotList().get(0);
+                    int windowTime = (timeWindowedDepot.getMilliDueTime() - timeWindowedDepot.getMilliReadyTime()) / 4;
+                    int readyTime = demandRandom.nextInt(windowTime * 3);
+                    newTimeWindowedCustomer.setMilliReadyTime(readyTime);
+                    newTimeWindowedCustomer.setMilliDueTime(readyTime + windowTime);
+                    newTimeWindowedCustomer.setMilliServiceDuration(Math.min(10000, windowTime / 2));
                     newCustomer = newTimeWindowedCustomer;
                 } else {
                     newCustomer = new Customer();
