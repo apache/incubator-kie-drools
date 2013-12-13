@@ -30,6 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
+import org.drools.compiler.Address;
 import org.drools.compiler.Person;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
@@ -508,5 +509,53 @@ public class JpaPersistentStatefulSessionTest {
         } catch (IllegalStateException e) {
 
         }
+    }
+
+    @Test
+    public void testFromNodeWithModifiedCollection() {
+        // DROOLS-376
+        String str = "";
+        str += "package org.drools.test\n";
+        str += "import org.drools.compiler.Person\n";
+        str += "import org.drools.compiler.Address\n";
+        str += "rule rule1\n";
+        str += "when\n";
+        str += " $p: Person($list : addresses)\n";
+        str += " $a: Address(street == \"y\") from $list\n";
+        str += "then\n";
+        str += " $list.add( new Address(\"z\") );\n";
+        str += " $list.add( new Address(\"w\") );\n";
+        str += "end\n";
+        str += "\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        int sessionId = ksession.getId();
+
+        Person p1 = new Person("John");
+        p1.addAddress(new Address("x"));
+        p1.addAddress(new Address("y"));
+
+        ksession.insert( p1 );
+
+        ksession.fireAllRules();
+
+        assertEquals( 4,
+                      p1.getAddresses().size() );
+
+        ksession.dispose();
+
+        // Should not fail here
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId, kbase, null, env);
     }
 }
