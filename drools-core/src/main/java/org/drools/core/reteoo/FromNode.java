@@ -149,11 +149,12 @@ public class FromNode extends LeftTupleSource
             if( map != null ) {
                 TupleKey key = PersisterHelper.createTupleKey(leftTuple);
                 List<FactHandle> list = map.get( key );
-                if( list == null || list.isEmpty() ) {
-                    map.remove( key );
-                } else {
+                if( list != null && ! list.isEmpty() ) {
                     // it is a linked list, so the operation is fairly efficient
                     _handle = ((java.util.LinkedList<ProtobufMessages.FactHandle>)list).removeFirst();
+                    if( list.isEmpty() ) {
+                        map.remove(key);
+                    }
                 }
             }
         }
