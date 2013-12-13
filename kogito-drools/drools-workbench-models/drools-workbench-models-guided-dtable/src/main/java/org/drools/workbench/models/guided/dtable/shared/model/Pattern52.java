@@ -106,6 +106,36 @@ public class Pattern52
         return result;
     }
 
+    /**
+     * Clones this pattern instance.
+     *
+     * @return The cloned instance.
+     */
+    public Pattern52 clonePattern() {
+        Pattern52 cloned = new Pattern52();
+        cloned.setBoundName(getBoundName());
+        cloned.setChildColumns(new ArrayList<ConditionCol52>(getChildColumns()));
+        cloned.setEntryPointName(getEntryPointName());
+        cloned.setFactType(getFactType());
+        cloned.setNegated(isNegated());
+        cloned.setWindow(getWindow());
+        return cloned;
+    }
+
+    /**
+     * Update this pattern instance properties with the given ones from other pattern instance.
+     *
+     * @param other The pattern to obtain the properties to set.
+     */
+    public void update(Pattern52 other) {
+        setBoundName(other.getBoundName());
+        setChildColumns(other.getChildColumns());
+        setEntryPointName(other.getEntryPointName());
+        setFactType(other.getFactType());
+        setNegated(other.isNegated());
+        setWindow(other.getWindow());
+    }
+
     public String getFactType() {
         return factType;
     }

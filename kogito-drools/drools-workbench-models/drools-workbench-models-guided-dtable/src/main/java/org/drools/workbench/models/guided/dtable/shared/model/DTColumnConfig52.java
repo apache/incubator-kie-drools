@@ -85,8 +85,10 @@ public class DTColumnConfig52
         }
 
         // Field: default value.
-        if ( !isEqualOrNull( this.getDefaultValue(),
-                other.getDefaultValue() ) ) {
+        // NOTE: Compare using getDefaultValueAsString because then if data types differs it will appear as changed field.
+        // And data type can be changed due to legacy implementations (see ConditionPopup#makeDefaultValueWidget)
+        if ( !isEqualOrNull( this.getDefaultValueAsString(),
+                other.getDefaultValueAsString() ) ) {
             result.add(new BaseColumnFieldDiffImpl(FIELD_DEFAULT_VALUE, this.getDefaultValueAsString(), other.getDefaultValueAsString()));
         }
 

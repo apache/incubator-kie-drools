@@ -54,4 +54,16 @@ public class ActionInsertFactFieldsPattern extends Pattern52 {
         this.isInsertedLogically = isInsertedLogically;
     }
 
+    @Override
+    public ActionInsertFactFieldsPattern clonePattern() {
+        ActionInsertFactFieldsPattern cloned = (ActionInsertFactFieldsPattern) super.clonePattern();
+        cloned.setInsertedLogically(isInsertedLogically);
+        return cloned;
+    }
+
+    @Override
+    public void update(Pattern52 other) {
+        super.update(other);
+        setInsertedLogically(((ActionInsertFactFieldsPattern)other).isInsertedLogically);
+    }
 }
