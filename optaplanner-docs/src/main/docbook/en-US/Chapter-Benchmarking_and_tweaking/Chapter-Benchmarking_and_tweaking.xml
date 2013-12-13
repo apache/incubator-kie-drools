@@ -152,6 +152,14 @@
       because it is generated if absent. The inputSolutionFile is read by a <link
       linkend="problemIO">ProblemIO</link>.</para>
 
+      <note>
+        <para>Use a forward slash (<literal>/</literal>) as the file separator (for example in the element
+        <literal>&lt;inputSolutionFile&gt;</literal>). That will work on any platform (including Windows).</para>
+
+        <para>Do not use backslash (<literal>\</literal>) as the file separator: that breaks portability because it does
+        not work on Linux and Mac.</para>
+      </note>
+
       <para>To lower verbosity, the common part of multiple <literal>&lt;solverBenchmark&gt;</literal> elements can be
       extracted to the <literal>&lt;inheritedSolverBenchmark&gt;</literal> element. Yet, every property can still be
       overwritten per <literal>&lt;solverBenchmark&gt;</literal> element. Note that inherited solver phases such as
