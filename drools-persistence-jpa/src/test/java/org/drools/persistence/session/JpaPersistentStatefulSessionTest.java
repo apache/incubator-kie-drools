@@ -32,6 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
+import org.drools.Address;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
@@ -302,10 +303,10 @@ public class JpaPersistentStatefulSessionTest {
         sscs.addInterceptor(new FireAllRulesInterceptor());
         sscs.addInterceptor(new LoggingInterceptor());
         List<?> list = new ArrayList<Object>();
-        ksession.setGlobal( "list", list );
-        ksession.insert( 1 );
-        ksession.insert( 2 );
-        ksession.insert( 3 );
+        ksession.setGlobal("list", list);
+        ksession.insert(1);
+        ksession.insert(2);
+        ksession.insert(3);
         ksession.getWorkItemManager().completeWorkItem(0, null);
         assertEquals( 3, list.size() );
     }
@@ -338,12 +339,12 @@ public class JpaPersistentStatefulSessionTest {
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         List<?> list = new ArrayList<Object>();
     
-        ksession.setGlobal( "list",
-                            list );
+        ksession.setGlobal("list",
+                           list);
     
         ksession.insert( 1 );
         ksession.insert( 2 );
-        ksession.insert( 3 );
+        ksession.insert(3);
         ksession.getAgenda().getAgendaGroup("badfocus").setFocus();
     
         ksession.fireAllRules();
@@ -394,7 +395,6 @@ public class JpaPersistentStatefulSessionTest {
         assertEquals("com.example.CustomJPAProcessInstanceManagerFactory", sessionConfig.getProcessInstanceManagerFactory());
     }
 
-
     @Test
     public void testTraitsSerialization() throws Exception {
         String drl = "package org.drools.persistence.kie.persistence.session\n" +
@@ -404,17 +404,17 @@ public class JpaPersistentStatefulSessionTest {
                      "import org.drools.persistence.session.JpaPersistentStatefulSessionTest.Door\n" +
                      "\n" +
                      "declare trait WoodenDoor\n" +
-                     "    from : String\n" +
-                     "    to : String\n" +
-                     "    wood : String\n" +
+                     " from : String\n" +
+                     " to : String\n" +
+                     " wood : String\n" +
                      "end\n" +
                      "\n" +
                      "rule \"wooden door\"\n" +
-                     "    no-loop\n" +
-                     "    when\n" +
-                     "        $door : Door()\n" +
-                     "    then\n" +
-                     "        WoodenDoor woodenDoor = don( $door, WoodenDoor.class );\n" +
+                     " no-loop\n" +
+                     " when\n" +
+                     " $door : Door()\n" +
+                     " then\n" +
+                     " WoodenDoor woodenDoor = don( $door, WoodenDoor.class );\n" +
                      "end";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -426,7 +426,7 @@ public class JpaPersistentStatefulSessionTest {
             fail( kbuilder.getErrors().toString() );
         }
 
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
 
@@ -468,7 +468,38 @@ public class JpaPersistentStatefulSessionTest {
             this.toLocation = toLocation;
         }
     }
+     @Test
+    public void testFromNodeWithModifiedCollection() {
+        // DROOLS-376
+        String str = "";
+        str += "package org.drools.test\n";
+        str += "import org.drools.Person\n";
+        str += "import org.drools.Address\n";
+        str += "rule rule1\n";
+        str += "when\n";
+        str += " $p: Person($list : addresses)\n";
+        str += " $a: Address(street == \"y\") from $list\n";
+        str += "then\n";
+        str += " $list.add( new Address(\"z\") );\n";
+        str += " $list.add( new Address(\"w\") );\n";
+        str += "end\n";
+        str += "\n";
 
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+        ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+
+        ksession.insert(new Door());
+        ksession.fireAllRules();
+    }
 
 }
