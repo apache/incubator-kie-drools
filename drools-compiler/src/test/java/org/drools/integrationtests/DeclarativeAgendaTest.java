@@ -1,6 +1,7 @@
 package org.drools.integrationtests;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.drools.CommonTestMethodBase;
@@ -16,6 +17,7 @@ import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.AgendaGroupPoppedEvent;
 import org.drools.event.rule.AgendaGroupPushedEvent;
 import org.drools.event.rule.BeforeActivationFiredEvent;
+import org.drools.event.rule.DebugAgendaEventListener;
 import org.drools.event.rule.RuleFlowGroupActivatedEvent;
 import org.drools.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -362,6 +364,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
+        ksession.addEventListener( new DebugAgendaEventListener(  ) );
         FactHandle go0 = ksession.insert( "go0" );
         FactHandle go1 = ksession.insert( "go1" );
         FactHandle go2 = ksession.insert( "go2" );
@@ -834,6 +837,104 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         ksession.update(fireCancelRule, "fireCancelRule");
         ksession.fireAllRules();
         assertEquals(2, list.size());
+
+        ksession.dispose();
+    }
+
+
+    @Test
+    public void testExplicitUndercutWithDeclarativeAgenda() {
+
+        String drl = "package org.drools.test;\n" +
+                     "\n" +
+                     "import " + Activation.class.getName() + "; \n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare Foo\n" +
+                     " type : String\n" +
+                     " value : double\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare Bar\n" +
+                     " type : String\n" +
+                     " total : double\n" +
+                     "end\n" +
+                     "\n" +
+                     "\n" +
+                     "rule \"Init\"\n" +
+                     "when\n" +
+                     "then\n" +
+                     " insert( new Foo( \"first\", 10 ) );\n" +
+                     " insert( new Foo( \"first\", 11 ) );\n" +
+                     " insert( new Foo( \"second\", 20 ) );\n" +
+                     " insert( new Foo( \"second\", 22 ) );\n" +
+                     " insert( new Foo( \"third\", 30 ) );\n" +
+                     " insert( new Foo( \"third\", 40 ) );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Accumulate\"\n" +
+                     "salience 100\n" +
+                     "dialect \"mvel\"\n" +
+                     " when\n" +
+                     " $type : String() from [ \"first\", \"second\", \"third\" ]\n" +
+                     " accumulate ( Foo( type == $type, $value : value ),\n" +
+                     " $total : sum( $value );\n" +
+                     " $total > 0 )\n" +
+                     " then\n" +
+                     " insert(new Bar($type, $total));\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"handle all Bars of type first\"\n" +
+                     "@Undercuts( others )\n" +
+                     " when\n" +
+                     " $bar : Bar( type == 'first', $total : total )\n" +
+                     " then\n" +
+                     " System.out.println( \"First bars \" + $total );\n" +
+                     " list.add( $total );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"handle all Bars of type second\"\n" +
+                     "@Undercuts( others )\n" +
+                     " when\n" +
+                     " $bar : Bar( type == 'second', $total : total )\n" +
+                     " then\n" +
+                     " System.out.println( \"Second bars \" + $total );\n" +
+                     " list.add( $total );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"others\"\n" +
+                     " when\n" +
+                     " $bar : Bar( $total : total )\n" +
+                     " then\n" +
+                     " System.out.println( \"Other bars \" + $total );\n" +
+                     " list.add( $total );\n" +
+                     "end\n" +
+                     "\n" +
+                     "\n" +
+                     "rule \"Undercut\"\n" +
+                     "@activationListener( 'direct' ) \n" +
+                     "when\n" +
+                     " $m : Activation( $handles : factHandles )\n" +
+                     " $v : Activation( rule.name == $m.Undercuts, factHandles == $handles )\n" +
+                     "then\n" +
+                     " System.out.println( \"Activation of rule \" + $m.getRule().getName() + \" overrides \" + $v.getRule().getName() + \" for tuple \" + $handles );\n" +
+                     " kcontext.cancelActivation( $v );\n" +
+                     "end\n" +
+                     "\n" +
+                     "\n";
+
+        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( DeclarativeAgendaOption.ENABLED );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, drl );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( 21.0, 42.0, 70.0 ), list );
 
         ksession.dispose();
     }
