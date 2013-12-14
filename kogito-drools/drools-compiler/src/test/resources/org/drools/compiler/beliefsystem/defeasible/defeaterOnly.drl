@@ -10,6 +10,7 @@ declare X
     id  : int   @key
 end
 
+declare entry-point "neg" end
 
 rule "Init"
 when
@@ -31,13 +32,4 @@ when
 then
     System.out.println( "This should not happen" );
     list.add( $x );
-end
-
-
-
-// TODO Needed to init entry point, remove
-rule "Foo"
-when
-    $o : Object() from entry-point "neg"
-then
 end
