@@ -76,6 +76,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -2895,4 +2896,34 @@ public class Misc2Test extends CommonTestMethodBase {
         ks.update(fhs[3], ps[3]);
         ks.fireAllRules();
     }
+
+    @Test
+    public void testConstraintOnSerializable() {
+        // DROOLS-372
+        String str =
+                "import org.drools.integrationtests.Misc2Test.SerializableValue\n" +
+        "rule R\n" +
+        "when\n" +
+        "  SerializableValue( value == \"1\" )\n" +
+        "then\n" +
+        "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.insert(new SerializableValue("0"));
+        ksession.fireAllRules();
+    }
+
+
+
+    public static class SerializableValue {
+        private final Serializable value;
+        public SerializableValue(Serializable value) {
+            this.value = value;
+        }
+        public Serializable getValue() {
+            return value;
+        }
+    }
+
 }
