@@ -257,5 +257,12 @@ public class TraitRegistry implements Externalizable {
     }
 
 
-
+    public void dispose() {
+        traits.clear();
+        traitables.clear();
+        if ( masks != null ) {
+            masks.clear();
+        }
+        hierarchy.clear();
+    }
 }

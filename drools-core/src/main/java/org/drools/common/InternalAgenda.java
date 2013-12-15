@@ -187,6 +187,4 @@ public interface InternalAgenda
      * @return
      */
     public ActivationsFilter getActivationsFilter();
-    
-    
 }

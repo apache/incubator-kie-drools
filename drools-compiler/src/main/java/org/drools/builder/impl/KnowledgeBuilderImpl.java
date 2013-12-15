@@ -110,4 +110,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     public boolean hasResults(ResultSeverity... severities) {
         return pkgBuilder.hasProblems(severities);
     }
+
+    public void dispose() {
+        this.pkgBuilder.dispose();
+    }
 }

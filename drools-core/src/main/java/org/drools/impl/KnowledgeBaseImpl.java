@@ -33,6 +33,7 @@ import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
+import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalRuleBase;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
@@ -80,11 +81,13 @@ import org.drools.event.knowlegebase.impl.BeforeRuleAddedEventImpl;
 import org.drools.event.knowlegebase.impl.BeforeRuleRemovedEventImpl;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooStatefulSession;
+import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
+import org.drools.util.CompositeClassLoader;
 
 public class KnowledgeBaseImpl
     implements
@@ -259,6 +262,23 @@ public class KnowledgeBaseImpl
     
     public Set<String> getEntryPointIds() {
         return this.ruleBase.getEntryPointIds();
+    }
+
+    public void dispose() {
+        for ( KnowledgePackage kp : getKnowledgePackages() ) {
+            ((KnowledgePackageImp) kp).pkg.getDialectRuntimeRegistry().clear();
+        }
+        CompositeClassLoader root = ((ReteooRuleBase)this.getRuleBase()).getRootClassLoader();
+        for ( ClassLoader sub : new ArrayList<ClassLoader>( root.getClassLoaders() ) ) {
+            if ( sub instanceof JavaDialectRuntimeData.PackageClassLoader ) {
+                (( JavaDialectRuntimeData.PackageClassLoader ) sub ).dispose();
+            }
+            root.removeClassLoader( sub );
+        }
+
+        this.mappedKnowledgeBaseListeners.clear();
+        ((AbstractRuleBase) this.ruleBase).dispose();
+        root.dispose();
     }
 
     public static class KnowledgeBaseEventListenerWrapper

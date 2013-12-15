@@ -40,6 +40,7 @@ import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
 import org.drools.time.impl.ExpressionIntervalTimer;
 import org.drools.time.impl.Timer;
+import org.drools.util.CompositeClassLoader;
 
 import java.io.Externalizable;
 import java.io.IOException;

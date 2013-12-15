@@ -240,4 +240,8 @@ public class ClassFieldAccessorCache {
         }
     }
 
+    public void dispose() {
+        this.cacheByClassLoader.clear();
+        this.classLoader = null;
+    }
 }

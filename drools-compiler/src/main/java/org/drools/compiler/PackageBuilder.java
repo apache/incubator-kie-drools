@@ -93,6 +93,7 @@ import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.reteoo.ReteooRuleBase;
+import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.Function;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.JavaDialectRuntimeData;
@@ -107,6 +108,7 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.dialect.DialectError;
+import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl;
@@ -3393,6 +3395,16 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
     public String getDefaultDialect() {
         return this.defaultDialect;
+    }
+
+    public void dispose() {
+        for ( PackageRegistry pkgRegistry : this.getPackageRegistry().values() ) {
+            DialectRuntimeRegistry dialects = pkgRegistry.getPackage().getDialectRuntimeRegistry();
+            JavaDialectRuntimeData java = (JavaDialectRuntimeData) dialects.getDialectData( JavaDialect.ID );
+            java.dispose();
+        }
+        this.rootClassLoader.dispose();
+        this.getPackageRegistry().clear();
     }
 
     public static class MissingPackageNameException extends IllegalArgumentException {
