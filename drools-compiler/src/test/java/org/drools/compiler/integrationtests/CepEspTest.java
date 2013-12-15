@@ -4374,4 +4374,80 @@ public class CepEspTest extends CommonTestMethodBase {
 
         ksession.dispose();
     }
+
+    @Test
+    public void testExpirationOnModification() throws InterruptedException {
+        //DROOLS-374
+        String drl = "\n" +
+                     "import java.util.*;\n" +
+                     "global List list; " +
+
+                     "declare SomeEvent\n" +
+                     "    @role( event )\n" +
+                     "    @expires( 200ms )\n" +
+                     "  done : boolean = false \n" +
+                     "end\n" +
+
+                     "rule Count \n" +
+                     "  no-loop \n " +
+                     "    when " +
+                     "        $ev : SomeEvent( done == false  ) " +
+                     "        accumulate ( SomeEvent() over window:time( 10s )," +
+                     "                     $num : count( 1 ) )\n" +
+                     "    then\n" +
+                            // ok, modifies should never happen. But they are allowed, and if they do happen, the behaviour should be consistent
+                     "        modify ( $ev ) { setDone( true ); } " +
+                     "        list.add( $num ); \n" +
+                     "end\n" +
+
+                     "rule Init \n" +
+                     "    when\n" +
+                     "      $s : String() " +
+                     "    then\n" +
+                     "      retract( $s ); " +
+                     "      insert( new SomeEvent() ); " +
+                     "end\n" +
+
+                     "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        baseConfig.setOption( RuleEngineOption.PHREAK );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        //init stateful knowledge session
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sessionConfig, null );
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ArrayList list = new ArrayList( );
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( "go" );
+        ksession.fireAllRules();
+
+        clock.advanceTime( 100, TimeUnit.MILLISECONDS );
+
+        ksession.insert( "go" );
+        ksession.fireAllRules();
+
+        clock.advanceTime( 500, TimeUnit.MILLISECONDS );
+
+        ksession.insert( "go" );
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( 1L, 2L, 1L ), list );
+
+        ksession.dispose();
+    }
+
+
 }
