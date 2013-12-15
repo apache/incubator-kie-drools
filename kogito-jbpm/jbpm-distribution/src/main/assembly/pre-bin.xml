@@ -44,7 +44,7 @@
         <exclude>org.jbpm:jbpm-human-task-core</exclude>
         <exclude>org.jbpm:jbpm-human-task-workitems</exclude>
         <exclude>org.jbpm:jbpm-human-task-audit</exclude>
-        <include>org.jbpm:jbpm-human-task-jpa</include>
+        <exclude>org.jbpm:jbpm-human-task-jpa</exclude>
         <exclude>org.jbpm:jbpm-shared-services</exclude>
         <exclude>org.jbpm:jbpm-test</exclude>
         <exclude>org.jbpm:jbpm-runtime-manager</exclude>
