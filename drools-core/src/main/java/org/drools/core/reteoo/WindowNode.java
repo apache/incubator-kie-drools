@@ -273,6 +273,7 @@ public class WindowNode extends ObjectSource
 
         if ( rightTuple != null && rightTuple.getRightTupleSink().getRightInputOtnId().equals(getRightInputOtnId()) ) {
             modifyPreviousTuples.removeRightTuple();
+            rightTuple.reAdd();
             modifyRightTuple( rightTuple, context, wm );
         } else {
             // RightTuple does not exist for this node, so create and continue as assert
