@@ -56,8 +56,8 @@ KieBase kbase = kieContainer.newKieBase( kbaseConf );</programlisting>
   <section>
     <title>KieScanner</title>
 
-    <para>The <code>KieScanner</code> allows continous monitoring of your Maven repository
-    to check for a new release of a Kie project has been installed. A new release is deployed it in
+    <para>The <code>KieScanner</code> allows continuous monitoring of your Maven repository
+    to check whether a new release of a Kie project has been installed. A new release is deployed in
     the <code>KieContainer</code> wrapping that project. The use of the <code>KieScanner</code>
     requires kie-ci.jar to be on the classpath.</para>
 

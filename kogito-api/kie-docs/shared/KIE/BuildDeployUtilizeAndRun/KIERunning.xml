@@ -304,10 +304,10 @@ logger.close();</programlisting>
       only difference being that the StatelessKieSession executes <code>fireAllRules()</code> at the
       end before disposing the session.  The commands can be created using the
         <code>CommandExecutor</code> .The Javadocs provide the full list of the allowed comands
-      using the <code>CommandExecutor</code> .</para>
+      using the <code>CommandExecutor</code>.</para>
     <para>setGlobal and getGlobal are two commands relevant to both Drools and jBPM. </para>
-    <para>Set Global calls setGlobal underneath. The optional boolean indicates on whether the
-      command should return value as part of the <code>ExecutionResults</code>. If true it uses the
+    <para>Set Global calls setGlobal underneath. The optional boolean indicates whether the
+      command should return the global's value as part of the <code>ExecutionResults</code>. If true it uses the
       same name as the global name. A String can be used instead of the boolean, if an alternative
       name is desired.</para>
     <para>
@@ -644,7 +644,7 @@ ut.commit();</programlisting>
     <para>To use a JPA, the Environment must be set with both the
     <code>EntityManagerFactory</code> and the <code>TransactionManager</code>.
     If rollback occurs the ksession state is also rolled back, hence it is possible
-    continue to use it after a rollback. To load a previously persisted
+    to continue to use it after a rollback. To load a previously persisted
     KieSession you'll need the id, as shown below:</para>
 
     <example>

@@ -377,7 +377,7 @@ KieContainer kieContainer = kieServices.newKieContainer( releaseId );</programli
     <title>Defining a KieModule programmatically</title>
 
     <para>It is also possible to define the <code>KieBase</code>s and <code>KieSession</code>s
-    belonging to a KieModule programmatically instead of the declarative defination in the
+    belonging to a KieModule programmatically instead of the declarative definition in the
     kmodule.xml file. The same programmatic API also allows in explicitly adding the file containing the
     Kie artifacts instead of automatically read them from the resources folder of your project.
     To do that it is necessary to create a <code>KieFileSystem</code>, a sort of virtual file
@@ -448,7 +448,7 @@ kfs.write( "src/main/resources/KBase1/ruleSet1.drl", stringContainingAValidDRL )
     </example>
 
     <para>This example shows that it is possible to add the Kie artifacts both as plain Strings and
-    as <code>Resource</code>s. In the later case the <code>Resource</code>s can be created by the
+    as <code>Resource</code>s. In the latter case the <code>Resource</code>s can be created by the
     <code>KieResources</code> factory, also provided by the <code>KieServices</code>. The
     <code>KieResources</code> provides many convenient factory methods to convert an <code>InputStream</code>,
     a <code>URL</code>, a <code>File</code>, or a <code>String</code> representing a path of your file
@@ -468,7 +468,7 @@ kfs.write( "src/main/resources/KBase1/ruleSet1.drl", stringContainingAValidDRL )
     <para>Normally the type of a <code>Resource</code> can be inferred from the extension of the name
     used to add it to the <code>KieFileSystem</code>. However it also possible to not follow the Kie
     conventions about file extensions and explicitly assign a specific <code>ResourceType</code>
-    to a<code>Resource</code> as shown below:</para>
+    to a <code>Resource</code> as shown below:</para>
 
     <example>
       <title>Creating and adding a Resource with an explicit type</title>
