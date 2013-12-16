@@ -9,8 +9,8 @@
       >https://github.com/droolsjbpm/drools/tree/6.0.x/drools-examples-api</link></para>
   <para>Each example is described below, the order starts with the simplest (most of the options are defaulted) and working
     its way up to more complex use cases.</para>
-  <para>The Deploy use cases shown below, all involve <code>mvn install</code>. Remote deployment of JARs in
-    Maven is well covered is Maven literature. Utilize refers to the initial act of loading the
+  <para>The Deploy use cases shown below all involve <code>mvn install</code>. Remote deployment of JARs in
+    Maven is well covered in Maven literature. Utilize refers to the initial act of loading the
     resources and providing access to the KIE runtimes. Where as Run refers to the act of
     interacting with those runtimes.</para>
   
@@ -304,7 +304,7 @@ private List&lt;Integer> useKieSession(String name) {
     </example>
     <para>In the previous examples the classpath KieContainer used. This example creates a dynamic
       KieContainer as specified by the  ReleaseId. The ReleaseId uses Maven conventions for group
-      id, artifact id and version. It also obey's LATEST and SNAPSHOT for versions.</para>
+      id, artifact id and version. It also obeys LATEST and SNAPSHOT for versions.</para>
     <example>
       <title>Utilize and Run - Java</title>
       <programlisting language="JAVA">KieServices ks = KieServices.Factory.get();
@@ -339,7 +339,7 @@ kSession.fireAllRules();</programlisting>
     </example>
     <para>Any KieModule can be loaded from a Resource location and added to the KieRepository. Once
       deployed in the KieRepository it can be resolved via its ReleaseId. Note neither Maven or kie-ci are
-      needed here. It will not setup a transitive dependency parent classloader.</para>
+      needed here. It will not set up a transitive dependency parent classloader.</para>
     <example>
       <title>Utilize and Run - Java</title>
       <programlisting language="JAVA">KieServices ks = KieServices.Factory.get();
@@ -456,7 +456,7 @@ kSession.fireAllRules();</programlisting>
       <programlisting>mvn install</programlisting>
     </example>
     <para>This programmatically builds a KieModule. It populates the model that represents the
-      ReleaseId and  kmodule.xml, as well as add the relevant resources. A pom.xml is generated from
+      ReleaseId and  kmodule.xml, and it adds the relevant resources. A pom.xml is generated from
       the ReleaseId.</para>
     <example>
       <title>Utilize and Run - Java</title>
@@ -489,7 +489,7 @@ kSession.fireAllRules();</programlisting>
         <para>Project: kiemoduelmodel-example</para>
       </listitem>
       <listitem>
-        <para>Summary: Programmaticaly buid a KieModule, by creating its kmodule.xml meta model
+        <para>Summary: Programmaticaly build a KieModule, by creating its kmodule.xml meta model
           resources. </para>
       </listitem>
     </itemizedlist>

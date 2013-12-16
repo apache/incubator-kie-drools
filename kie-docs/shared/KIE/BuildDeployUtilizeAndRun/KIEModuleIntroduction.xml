@@ -7,7 +7,7 @@
   xmlns:ns2="http://www.w3.org/1998/Math/MathML" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Introduction</title>
   <para>6.0 introduces a new configuration and convention approach to building knowledge bases,
-    instead of the using the programmatic builder approach in 5.x. The builder is still
+    instead of using the programmatic builder approach in 5.x. The builder is still
     available to fall back on, as it's used for the tooling integration.</para>
   <para>Building now uses Maven, and aligns with Maven practices. A KIE project or module is simply
     a Maven Java project or module; with an additional metadata file META-INF/kmodule.xml. The
@@ -16,7 +16,7 @@
     BluePrints.</para>
   <para>While standard Maven can build and package KIE resources, it will not provide validation at
     build time. There is a Maven plugin which is recommended to use to get build time validation. The
-    plugin also pre-generates many classes, making the runtime loading faster too.</para>
+    plugin also generates many classes, making the runtime loading faster too.</para>
   <para>The example project layout and Maven POM descriptor is illustrated in the screenshot</para>
   <figure>
     <title>Example project layout and Maven POM</title>
@@ -33,7 +33,7 @@
     for discovery of the JAR and its contents.</para>
   <para>Maven can either 'mvn install' to deploy a KieModule to the local machine, where all other
     applications on the local machine use it. Or it can 'mvn deploy' to push the KieModule to a
-    remote Maven repository. Building the Application wil pull in the KieModule and populating the
+    remote Maven repository. Building the Application will pull in the KieModule and populate the
     local Maven repository in the process.</para>
   <figure>
     <title>Example project layout and Maven POM</title>

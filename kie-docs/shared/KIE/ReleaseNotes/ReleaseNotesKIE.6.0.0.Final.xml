@@ -83,7 +83,8 @@ KieBaseModel kieBaseModel1 = kmodule.newKieBaseModel("KBase2").addInclude("KBase
     <example xmlns:ns2="http://www.w3.org/1998/Math/MathML">
       <title>Utilize and Run - Java</title>
       <programlisting language="JAVA">KieServices ks = KieServices.Factory.get();
-KieContainer kContainer = ks.newKieContainer(ks.newReleaseId("org.mygroup", "myartefact", "1.0"));
+KieContainer kContainer = ks.newKieContainer(
+        ks.newReleaseId("org.mygroup", "myartefact", "1.0") );
 
 KieSession kSession = kContainer.newKieSession("ksession1");
 kSession.insert(new Message("Dave", "Hello, HAL. Do you read me, HAL?"));
@@ -93,7 +94,8 @@ kSession.fireAllRules();</programlisting>
       classpath. For stateful KieSessions the existing sessions are incrementally updated.</para>
     <example xmlns:ns2="http://www.w3.org/1998/Math/MathML">
       <title>Dynamically Update - Java</title>
-      <programlisting language="JAVA">KieContainer kContainer.updateToVersion( ks.newReleaseId("org.mygroup", "myartefact", "1.1") );</programlisting>
+      <programlisting language="JAVA">KieContainer kContainer.updateToVersion(
+                ks.newReleaseId("org.mygroup", "myartefact", "1.1") );</programlisting>
     </example>
   </section>
 
