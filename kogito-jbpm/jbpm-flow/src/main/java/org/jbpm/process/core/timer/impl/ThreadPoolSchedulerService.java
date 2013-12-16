@@ -21,6 +21,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -64,7 +65,20 @@ public class ThreadPoolSchedulerService implements GlobalSchedulerService {
     public void initScheduler(TimerService globalTimerService) {
         this.globalTimerService = globalTimerService;
         
-        this.scheduler = new ScheduledThreadPoolExecutor(poolSize);
+        this.scheduler = new ScheduledThreadPoolExecutor(poolSize, new ThreadFactory() {
+			
+			@Override
+			public Thread newThread(Runnable runnable) {
+				
+				return new Thread(runnable) {
+
+					@Override
+					public void interrupt() {
+						// do nothing to not impact parts like transaction log in bitronix
+					}
+				};
+			}
+		});
     }
 
     @Override

@@ -190,6 +190,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     @After
     public void tearDown() throws Exception {
         clearHistory();
+        disposeRuntimeManager();
         if (setupDataSource) {
             if (emf != null) {
                 emf.close();
@@ -199,8 +200,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
                 ds.close();
                 ds = null;
             }
-        }
-        disposeRuntimeManager();
+        }        
     }
 
     /**
