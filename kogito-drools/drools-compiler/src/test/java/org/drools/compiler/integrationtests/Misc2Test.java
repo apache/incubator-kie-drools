@@ -4877,5 +4877,55 @@ public class Misc2Test extends CommonTestMethodBase {
         ks.update(fhs[3], ps[3]);
         ks.fireAllRules();
     }
+
+    public static class AA {
+        int id;
+        public AA( int i ) { this.id = i; }
+        public boolean match( Long value ) { return true; }
+        public boolean equals( Object o ) {
+            if ( this == o ) return true;
+            if ( o == null || getClass() != o.getClass() ) return false;
+            AA aa = (AA) o;
+            if ( id != aa.id ) return false;
+            return true;
+        }
+        public int hashCode() { return id; }
+    }
+    public static class BB {
+        public Integer getValue() { return 42; }
+    }
+
+    @Test
+    @Ignore
+    public void testJitting() {
+        // DROOLS-185
+        String str =
+                " import org.drools.compiler.integrationtests.Misc2Test.AA; " +
+                " import org.drools.compiler.integrationtests.Misc2Test.BB; " +
+                " global java.util.List list; \n" +
+                " " +
+                " rule R \n " +
+                " when \n" +
+                "    BB( $v : value ) \n" +
+                "    $a : AA( match( $v ) ) \n" +
+                " then \n" +
+                "   list.add( $a ); \n" +
+                " end \n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        ksession.insert( new BB() );
+        for ( int j = 0; j < 100; j++ ) {
+            ksession.insert( new AA( j ) );
+            ksession.fireAllRules();
+        }
+
+        assertEquals( 100, list.size() );
+    }
+
 }
 
