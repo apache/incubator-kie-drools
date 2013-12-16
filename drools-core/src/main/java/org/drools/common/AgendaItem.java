@@ -104,12 +104,12 @@ public class AgendaItem
     }
 
     /**
-     * Construct.
      *
+     * @param activationNumber
      * @param tuple
-     *            The tuple.
-     * @param rule
-     *            The rule.
+     * @param salience
+     * @param context
+     * @param rtn
      */
     public AgendaItem(final long activationNumber,
                       final LeftTuple tuple,
@@ -233,7 +233,7 @@ public class AgendaItem
                 LogicalDependency tmp = dep.getNext();
                 removeBlocked( dep );
                 AgendaItem justified = ( AgendaItem ) dep.getJustified();
-                if (justified.getBlockers().isEmpty() ) {
+                if ( justified.getBlockers().isEmpty() && justified.isActivated() ) {
                     // the match is no longer blocked, so stage it
                     agenda.getStageActivationsGroup().addActivation( justified );
                 }                
@@ -326,7 +326,7 @@ public class AgendaItem
         if ( this.agendaGroup != null ) {
             this.agendaGroup.remove( this );
         }
-        this.activated = false;
+        this.activated = blockers != null && ! blockers.isEmpty();
         this.index = -1;
     }
     

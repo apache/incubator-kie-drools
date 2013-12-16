@@ -3,6 +3,7 @@ package org.drools.rule.constraint;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.DroolsQuery;
 import org.drools.base.extractors.ArrayElementReader;
+import org.drools.base.extractors.MVELObjectClassFieldReader;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
@@ -123,7 +124,11 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     protected String getAccessedClass() {
-        return extractor instanceof ClassFieldReader ? ((ClassFieldReader)extractor).getClassName() : null;
+        return extractor instanceof ClassFieldReader ?
+               ((ClassFieldReader)extractor).getClassName() :
+               extractor instanceof MVELObjectClassFieldReader ?
+               ((MVELObjectClassFieldReader)extractor).getClassName() :
+               null;
     }
 
     public void setReadAccessor(InternalReadAccessor readAccessor) {
@@ -206,7 +211,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                 }
             }
 
-            if (!isDynamic && invocationCounter.getAndIncrement() == JIT_THRESOLD) {
+            if (!TEST_JITTING && !isDynamic && invocationCounter.getAndIncrement() == JIT_THRESOLD) {
                 jitEvaluator(object, workingMemory, leftTuple);
             }
         }

@@ -507,4 +507,11 @@ public class ReteooRuleBase extends AbstractRuleBase {
             }
         }
     }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        this.reteooBuilder.dispose();
+        this.reteooBuilder = null;
+    }
 }

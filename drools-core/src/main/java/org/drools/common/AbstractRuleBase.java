@@ -23,6 +23,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.TripleStore;
 import org.drools.definition.process.Process;
@@ -1385,4 +1386,27 @@ abstract public class AbstractRuleBase
         return this.getConfiguration().getComponentFactory().getTraitRegistry();
     }
 
+    public void dispose() {
+        Iterator iter = statefulSessions.iterator();
+        for ( Object o = iter.next(); o != null; o = iter.next() ) {
+            ((StatefulSession) o).dispose();
+        }
+
+        pkgs.clear();
+        processes.clear();
+        classTypeDeclaration.clear();
+
+        if ( this.declarationClassLoader != null ) {
+            this.declarationClassLoader.dispose();
+            declarationClassLoader = null;
+        }
+
+        this.getTraitRegistry().dispose();
+        this.getGlobals().clear();
+        this.getClassFieldAccessorCache().dispose();
+        this.getPackagesMap().clear();
+
+        this.rootClassLoader.dispose();
+        this.rootClassLoader = null;
+    }
 }

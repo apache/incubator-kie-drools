@@ -185,6 +185,10 @@ public class ReteooBuilder
         ordered = true;
     }
 
+    public void dispose() {
+        this.rules.clear();
+    }
+
     public static class RuleSequenceComparator
         implements
         Comparator {

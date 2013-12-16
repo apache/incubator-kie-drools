@@ -326,5 +326,9 @@ public class RightTupleList
         other.hashCode = hashCode;
         other.index = index;
         other.iterator = iterator;
+
+        for ( RightTuple current = first; current != null; current = (RightTuple)current.getNext()) {
+            current.setMemory(other);
+        }
     }
 }

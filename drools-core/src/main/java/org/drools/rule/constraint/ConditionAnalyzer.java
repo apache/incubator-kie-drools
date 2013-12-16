@@ -205,11 +205,11 @@ public class ConditionAnalyzer {
             expression.firstExpression = analyzeNode(main);
             if (accessor instanceof DynamicGetAccessor) {
                 AccessorNode accessorNode = (AccessorNode)((DynamicGetAccessor)accessor).getSafeAccessor();
-                expression.addInvocation(analyzeAccessor(accessorNode, null));
+                expression.addInvocation(analyzeAccessorInvocation(accessorNode, node, null, null));
             } else if (accessor instanceof AccessorNode) {
                 AccessorNode accessorNode = (AccessorNode)accessor;
                 while (accessorNode != null) {
-                    expression.addInvocation(analyzeAccessor(accessorNode, null));
+                    expression.addInvocation(analyzeAccessorInvocation(accessorNode, node, null, null));
                     accessorNode = accessorNode.getNextNode();
                 }
             } else {
@@ -239,7 +239,7 @@ public class ConditionAnalyzer {
             }
             Class<?> variableType = getVariableType(variableName);
             return new VariableExpression(variableName,
-                                          analyzeExpressionNode(((AccessorNode) accessor).getNextNode()),
+                                          analyzeExpressionNode(((AccessorNode) accessor).getNextNode(),node,variableType),
                                           variableType != null ? variableType : node.getEgressType());
         }
 
@@ -254,7 +254,7 @@ public class ConditionAnalyzer {
                 String variableName = (String)(variableAccessor.getProperty());
                 Class<?> variableType = getVariableType(variableName);
                 if (variableType != null) {
-                    return new VariableExpression(variableName, analyzeExpressionNode(accessorNode), variableType);
+                    return new VariableExpression(variableName, analyzeExpressionNode(accessorNode, node, variableType), variableType);
                 } else {
                     if (node.getLiteralValue() instanceof ParserContext) {
                         ParserContext pCtx = (ParserContext)node.getLiteralValue();
@@ -281,10 +281,10 @@ public class ConditionAnalyzer {
             throw new RuntimeException("Null accessor on node: " + node);
         }
 
-        return analyzeAccessor(accessor);
+        return analyzeNodeAccessor(accessor, node);
     }
 
-    private Expression analyzeAccessor(Accessor accessor) {
+    private Expression analyzeNodeAccessor(Accessor accessor, ASTNode node) {
         AccessorNode accessorNode;
         if (accessor instanceof DynamicGetAccessor) {
             accessorNode = (AccessorNode)((DynamicGetAccessor)accessor).getSafeAccessor();
@@ -304,7 +304,7 @@ public class ConditionAnalyzer {
                     accessorNode = accessorNode.getNextNode();
                 }
             } else {
-                return analyzeAccessor(accessorNode);
+                return analyzeNodeAccessor(accessorNode,node);
             }
         }
 
@@ -317,7 +317,7 @@ public class ConditionAnalyzer {
             }
         }
 
-        return analyzeExpressionNode(accessorNode);
+        return analyzeExpressionNode(accessorNode, node, null);
     }
 
     private boolean isStaticAccessor(AccessorNode accessorNode) {
@@ -352,12 +352,12 @@ public class ConditionAnalyzer {
         return new EvaluatedExpression(invocation);
     }
 
-    private EvaluatedExpression analyzeExpressionNode(AccessorNode accessorNode) {
+    private EvaluatedExpression analyzeExpressionNode(AccessorNode accessorNode, ASTNode containingNode, Class<?> variableType) {
         if (accessorNode == null) return null;
         EvaluatedExpression expression = new EvaluatedExpression();
         Invocation invocation = null;
         while (accessorNode != null) {
-            invocation = analyzeAccessor(accessorNode, invocation);
+            invocation = analyzeAccessorInvocation(accessorNode, containingNode, invocation, variableType);
             if (invocation != null) {
                 expression.addInvocation(invocation);
             }
@@ -366,9 +366,9 @@ public class ConditionAnalyzer {
         return expression;
     }
 
-    private Invocation analyzeAccessor(AccessorNode accessorNode, Invocation formerInvocation) {
+    private Invocation analyzeAccessorInvocation(AccessorNode accessorNode, ASTNode containingNode, Invocation formerInvocation, Class<?> variableType) {
         if (accessorNode instanceof GetterAccessor) {
-            return new MethodInvocation(((GetterAccessor)accessorNode).getMethod(), conditionClass);
+            return new MethodInvocation(((GetterAccessor)accessorNode).getMethod(), variableType == null ? conditionClass : variableType.getName());
         }
 
         if (accessorNode instanceof MethodAccessor) {
@@ -450,7 +450,7 @@ public class ConditionAnalyzer {
         }
 
         if (accessorNode instanceof ThisValueAccessor) {
-            return new MethodInvocation(null);
+            return new ThisInvocation(accessorNode.getNextNode() == null ? containingNode.getEgressType() : Object.class);
         }
 
         throw new RuntimeException("Unknown AccessorNode type: " + accessorNode.getClass().getName());
@@ -911,6 +911,7 @@ public class ConditionAnalyzer {
                         return iMethod;
                     }
                 }
+                return null;
             }
             try {
                 return clazz.getMethod(method.getName(), method.getParameterTypes());
@@ -929,6 +930,20 @@ public class ConditionAnalyzer {
 
         public Class<?> getReturnType() {
             return method != null ? method.getReturnType() : Object.class;
+        }
+    }
+
+    public static class ThisInvocation extends MethodInvocation {
+        private final Class<?> thisClass;
+
+        public ThisInvocation(Class<?> thisClass) {
+            super(null);
+            this.thisClass = thisClass;
+        }
+
+        @Override
+        public Class<?> getReturnType() {
+            return thisClass;
         }
     }
 

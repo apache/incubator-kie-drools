@@ -501,6 +501,14 @@ public class JavaDialectRuntimeData
         reload();
     }
 
+    public void dispose() {
+        this.store.clear();
+        this.invokerLookups.clear();
+        this.classLookups.clear();
+        this.classLoader = null;
+        this.rootClassLoader = null;
+    }
+
     public String toString() {
         return this.getClass().getName() + getStore().toString();
     }
@@ -655,6 +663,10 @@ public class JavaDialectRuntimeData
             };
         }
 
+        public void dispose() {
+            this.store.dispose();
+            this.rootClassLoader = null;
+        }
     }
 
     /**

@@ -76,6 +76,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -2801,6 +2802,128 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals(1, list.size());
         assertEquals("working", list.get(0));
+    }
+
+
+
+    @Test
+    public void testAssertWithEquality() {
+        // DROOLS-296
+        String drl = "import java.util.Date\n" +
+                     "global java.util.List list\n" +
+                     "" +
+                     "declare Bar\n" +
+                     " a : int @key \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule Init1 when\n" +
+                     "  String() " +
+                     "then\n" +
+                     " insert( new Bar( 0 ) );" +
+                     "end\n" +
+                     "\n" +
+                     "rule Init2 when\n" +
+                     "  Integer() " +
+                     "then\n" +
+                     " insert( new Bar( 0 ) ) ;" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Test rule\"\n" +
+                     "when\n" +
+                     " $x: Bar( )\n" +
+                     "then\n" +
+                     " System.out.println( $x );\n" +
+                     "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert( "fo" );
+        ksession.insert( 13 );
+
+        ksession.fireAllRules();
+    }
+
+    @Test(timeout = 10000)
+    public void testInfiniteLoopUpdatingWithRBTreeIndexing() {
+        // BZ-1040032
+        String drl =
+                "import org.drools.Person\n" +
+                "rule R when\n" +
+                "    $p : Person()\n" +
+                "    exists Person( age > $p.age, name.contains($p.name.substring(0, 1)) )\n" +
+                "then\n" +
+                "   System.out.println( $p ); " +
+                "end";
+
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+
+        Person[] ps = new Person[4];
+        FactHandle[] fhs = new FactHandle[4];
+
+        ps[0] = new Person("a", 5);
+        ps[1] = new Person("b", 5);
+        ps[2] = new Person("d", 10);
+        ps[3] = new Person("a", 15);
+
+        fhs[0] = ks.insert(ps[0]);
+        fhs[1] = ks.insert(ps[1]);
+        fhs[2] = ks.insert(ps[2]);
+        fhs[3] = ks.insert(ps[3]);
+
+        ps[0].setName("c");
+        ks.update(fhs[0], ps[0]);
+        ks.fireAllRules();
+
+        ps[2].setName("b");
+        ks.update(fhs[2], ps[2]);
+        ks.fireAllRules();
+
+        ps[2].setName("d");
+        ks.update(fhs[2], ps[2]);
+        ks.fireAllRules();
+
+        ps[1].setName("c");
+        ks.update(fhs[1], ps[1]);
+        ks.fireAllRules();
+
+        ps[3].setName("d");
+        ks.update(fhs[3], ps[3]);
+        ks.fireAllRules();
+    }
+
+    @Test
+    public void testConstraintOnSerializable() {
+        // DROOLS-372
+        String str =
+                "import org.drools.integrationtests.Misc2Test.SerializableValue\n" +
+        "rule R\n" +
+        "when\n" +
+        "  SerializableValue( value == \"1\" )\n" +
+        "then\n" +
+        "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.insert(new SerializableValue("0"));
+        ksession.fireAllRules();
+    }
+
+
+
+    public static class SerializableValue {
+        private final Serializable value;
+        public SerializableValue(Serializable value) {
+            this.value = value;
+        }
+        public Serializable getValue() {
+            return value;
+        }
     }
 
 }
