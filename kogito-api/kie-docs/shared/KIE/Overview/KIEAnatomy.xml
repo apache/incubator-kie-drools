@@ -32,7 +32,7 @@
   <para>It was determined that the Guvnor brand leaked too much from its intended role; such as the authoring
     metaphors, like Decision Tables, being considered Guvnor components instead of Drools components. This wasn't
     helped by the monolithic projects structure used in 5.x for Guvnor. In 6.0 Guvnor's focus has been narrowed to
-    encapsulates the set of UberFire plugins that provide the basis for building a web based IDE. Such as Maven
+    encapsulate the set of UberFire plugins that provide the basis for building a web based IDE. Such as Maven
     integration for building and deploying, management of Maven repositories and activity notifications via inboxes.
     Drools and jBPM build workbench distributions using Uberfire as the base and including a set of plugins, such as
     Guvnor, along with their own plugins for things like decision tables, guided editors, BPMN2 designer, human tasks.
