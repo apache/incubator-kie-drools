@@ -23,7 +23,10 @@ import org.drools.workbench.models.datamodel.auditlog.AuditLog;
 import org.drools.workbench.models.datamodel.imports.HasImports;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.packages.HasPackageName;
+import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.DecisionTableAuditLogFilter;
+import org.drools.workbench.models.guided.dtable.shared.model.adaptors.FactPatternPattern52Adaptor;
 
 /**
  * This is a decision table model for a guided editor. It is not template or XLS
@@ -136,8 +139,18 @@ public class GuidedDecisionTable52 implements HasImports,
         for ( CompositeColumn<?> cc : conditionPatterns ) {
             if ( cc instanceof Pattern52 ) {
                 final Pattern52 p = (Pattern52) cc;
-                if ( p.getBoundName().equals( boundName ) ) {
+                if ( p.isBound() && p.getBoundName().equals( boundName ) ) {
                     return p;
+                }
+            } else if ( cc instanceof BRLConditionColumn ) {
+                final BRLConditionColumn brlConditionColumn = (BRLConditionColumn) cc;
+                for ( IPattern p : brlConditionColumn.getDefinition() ) {
+                    if ( p instanceof FactPattern ) {
+                        final FactPattern fp = (FactPattern) p;
+                        if ( fp.isBound() && fp.getBoundName().equals( boundName ) ) {
+                            return new FactPatternPattern52Adaptor( fp );
+                        }
+                    }
                 }
             }
         }
