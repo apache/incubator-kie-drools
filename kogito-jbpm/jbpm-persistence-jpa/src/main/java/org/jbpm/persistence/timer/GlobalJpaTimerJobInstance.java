@@ -20,12 +20,15 @@ import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
+import org.drools.core.time.SelfRemovalJobContext;
 import org.drools.core.time.Trigger;
+import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.persistence.jpa.JDKCallableJobCommand;
 import org.drools.persistence.jpa.JpaTimerJobInstance;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.process.core.timer.impl.GlobalTimerService.DisposableCommandService;
+import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
 
 /**
  * Extension to the regular <code>JpaTimerJobInstance</code> that makes use of
@@ -57,6 +60,8 @@ public class GlobalJpaTimerJobInstance extends JpaTimerJobInstance {
             }
             commandService = ((GlobalTimerService) scheduler).getCommandService(getJobContext());            
             commandService.execute( command );
+            GlobalJPATimerJobFactoryManager timerService = ((GlobalJPATimerJobFactoryManager)((GlobalTimerService) scheduler).getTimerJobFactoryManager());
+            timerService.removeTimerJobInstance(((DefaultJobHandle)getJobHandle()).getTimerJobInstance());
             
             return null;
         } catch( Exception e ) { 
@@ -69,4 +74,15 @@ public class GlobalJpaTimerJobInstance extends JpaTimerJobInstance {
         }
     }
 
+    private Integer getSessionIdFromContext() {
+    	JobContext context = getJobContext();
+    	if (getJobContext() instanceof SelfRemovalJobContext) {
+    		context = ((SelfRemovalJobContext) getJobContext()).getJobContext();
+        } 
+    	if (context instanceof ProcessJobContext) {
+    		return ((ProcessJobContext) context).getSessionId();
+    	} else {
+    		return -1;
+    	}
+    }
 }

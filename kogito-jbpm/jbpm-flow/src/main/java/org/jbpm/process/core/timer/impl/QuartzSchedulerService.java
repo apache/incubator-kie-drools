@@ -383,4 +383,5 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
 	public boolean retryEnabled() {
 		return false;
 	}
+
 }
