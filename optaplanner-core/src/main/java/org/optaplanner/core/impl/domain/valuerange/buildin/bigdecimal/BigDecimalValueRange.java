@@ -84,6 +84,14 @@ public class BigDecimalValueRange extends AbstractValueRange<BigDecimal> {
     }
 
     @Override
+    public boolean contains(BigDecimal value) {
+        if (value == null || value.compareTo(from) < 0 || value.compareTo(to) >= 0) {
+            return false;
+        }
+        return value.subtract(from).remainder(incrementUnit).compareTo(BigDecimal.ZERO) == 0;
+    }
+
+    @Override
     public Iterator<BigDecimal> createOriginalIterator() {
         return new OriginalBigDecimalValueRangeIterator();
     }

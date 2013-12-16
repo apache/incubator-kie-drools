@@ -45,6 +45,19 @@ public class ListValueRangeTest {
     }
 
     @Test
+    public void contains() {
+        assertEquals(true, new ListValueRange<Integer>(Arrays.asList(0, 2, 5, 10)).contains(5));
+        assertEquals(false, new ListValueRange<Integer>(Arrays.asList(0, 2, 5, 10)).contains(4));
+        assertEquals(false, new ListValueRange<Integer>(Arrays.asList(0, 2, 5, 10)).contains(null));
+        assertEquals(true, new ListValueRange<Integer>(Arrays.asList(100, 120, 5, 7, 8)).contains(7));
+        assertEquals(false, new ListValueRange<Integer>(Arrays.asList(100, 120, 5, 7, 8)).contains(9));
+        assertEquals(true, new ListValueRange<Integer>(Arrays.asList(-15, 25, 0)).contains(-15));
+        assertEquals(false, new ListValueRange<Integer>(Arrays.asList(-15, 25, 0)).contains(-14));
+        assertEquals(true, new ListValueRange<String>(Arrays.asList("b", "z", "a")).contains("a"));
+        assertEquals(false, new ListValueRange<String>(Arrays.asList("b", "z", "a")).contains("n"));
+    }
+
+    @Test
     public void createOriginalIterator() {
         assertAllElementsOfIterator(new ListValueRange<Integer>(Arrays.asList(0, 2, 5, 10)).createOriginalIterator(), 0, 2, 5, 10);
         assertAllElementsOfIterator(new ListValueRange<Integer>(Arrays.asList(100, 120, 5, 7, 8)).createOriginalIterator(), 100, 120, 5, 7, 8);

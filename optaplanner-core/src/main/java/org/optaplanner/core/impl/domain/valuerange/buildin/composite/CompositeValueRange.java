@@ -74,6 +74,16 @@ public class CompositeValueRange<T> extends AbstractValueRange<T> {
     }
 
     @Override
+    public boolean contains(T value) {
+        for (ValueRange<T> childValueRange : childValueRangeList) {
+            if (childValueRange.contains(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public Iterator<T> createOriginalIterator() {
         List<Iterator<T>> iteratorList = new ArrayList<Iterator<T>>(childValueRangeList.size());
         for (ValueRange<T> childValueRange : childValueRangeList) {

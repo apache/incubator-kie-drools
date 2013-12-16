@@ -57,6 +57,17 @@ public class IntValueRange extends AbstractValueRange<Integer> {
     }
 
     @Override
+    public boolean contains(Integer value) {
+        if (value == null || value < from || value >= to) {
+            return false;
+        }
+        if (incrementUnit == 1) {
+            return true;
+        }
+        return ((long) value - (long) from) % incrementUnit == 0;
+    }
+
+    @Override
     public Integer get(long index) {
         if (index < 0L || index >= getSize()) {
             throw new IndexOutOfBoundsException("The index (" + index + ") must be >= 0 and < size ("

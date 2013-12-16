@@ -1,5 +1,6 @@
 package org.optaplanner.core.impl.domain.valuerange.buildin.composite;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import org.junit.Test;
@@ -18,6 +19,12 @@ public class EmptyValueRangeTest {
     @Test(expected = IndexOutOfBoundsException.class)
     public void get() {
         new EmptyValueRange<Integer>().get(0L);
+    }
+
+    @Test
+    public void contains() {
+        assertEquals(false, new EmptyValueRange<Integer>().contains(5));
+        assertEquals(false, new EmptyValueRange<Integer>().contains(null));
     }
 
     @Test

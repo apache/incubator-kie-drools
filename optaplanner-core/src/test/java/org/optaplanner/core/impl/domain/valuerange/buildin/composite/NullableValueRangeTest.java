@@ -48,6 +48,16 @@ public class NullableValueRangeTest {
     }
 
     @Test
+    public void contains() {
+        assertEquals(true, new NullableValueRange<Integer>(new ListValueRange<Integer>(Arrays.asList(0, 2, 5, 10))).contains(5));
+        assertEquals(false, new NullableValueRange<Integer>(new ListValueRange<Integer>(Arrays.asList(0, 2, 5, 10))).contains(4));
+        assertEquals(true, new NullableValueRange<Integer>(new ListValueRange<Integer>(Arrays.asList(0, 2, 5, 10))).contains(null));
+        assertEquals(true, new NullableValueRange<String>(new ListValueRange<String>(Arrays.asList("b", "z", "a"))).contains("a"));
+        assertEquals(false, new NullableValueRange<String>(new ListValueRange<String>(Arrays.asList("b", "z", "a"))).contains("n"));
+        assertEquals(true, new NullableValueRange<String>(new ListValueRange<String>(Arrays.asList("b", "z", "a"))).contains(null));
+    }
+
+    @Test
     public void createOriginalIterator() {
         assertAllElementsOfIterator(new NullableValueRange<Integer>(new ListValueRange<Integer>(Arrays.asList(0, 2, 5, 10))).createOriginalIterator(), 0, 2, 5, 10, null);
         assertAllElementsOfIterator(new NullableValueRange<Integer>(new ListValueRange<Integer>(Arrays.asList(100, 120, 5, 7, 8))).createOriginalIterator(), 100, 120, 5, 7, 8, null);

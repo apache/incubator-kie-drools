@@ -60,6 +60,14 @@ public class NullableValueRange<T> extends AbstractValueRange<T> {
     }
 
     @Override
+    public boolean contains(T value) {
+        if (value == null) {
+            return true;
+        }
+        return childValueRange.contains(value);
+    }
+
+    @Override
     public Iterator<T> createOriginalIterator() {
         return IteratorUtils.chainedIterator(childValueRange.createOriginalIterator(),
                 new NullValueRangeIterator());

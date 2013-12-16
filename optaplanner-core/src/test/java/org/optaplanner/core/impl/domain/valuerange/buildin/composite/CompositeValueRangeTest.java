@@ -56,6 +56,18 @@ public class CompositeValueRangeTest {
     }
 
     @Test
+    public void contains() {
+        assertEquals(true, createCompositeValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(5));
+        assertEquals(false, createCompositeValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(4));
+        assertEquals(true, createCompositeValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(-15));
+        assertEquals(false, createCompositeValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(-14));
+        assertEquals(true, createCompositeValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(-1));
+        assertEquals(false, createCompositeValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(1));
+        assertEquals(true, createCompositeValueRange(Arrays.asList("a", "b"), Arrays.asList("c"), Arrays.asList("d")).contains("c"));
+        assertEquals(false, createCompositeValueRange(Arrays.asList("a", "b"), Arrays.asList("c"), Arrays.asList("d")).contains("n"));
+    }
+
+    @Test
     public void createOriginalIterator() {
         assertAllElementsOfIterator(createCompositeValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1))
                 .createOriginalIterator(), 0, 2, 5, 10, -15, 25, -1);

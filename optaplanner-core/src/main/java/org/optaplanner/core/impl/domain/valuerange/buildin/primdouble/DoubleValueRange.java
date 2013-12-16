@@ -40,6 +40,14 @@ public class DoubleValueRange extends AbstractValueRange<Double> {
     }
 
     @Override
+    public boolean contains(Double value) {
+        if (value == null) {
+            return false;
+        }
+        return value >= from && value < to;
+    }
+
+    @Override
     public Iterator<Double> createOriginalIterator() {
         // In theory, we can implement this by using Math.nextAfter(). But in practice, no one could use it.
         throw new IllegalStateException("The " + getClass().getSimpleName() + " is not countable.");

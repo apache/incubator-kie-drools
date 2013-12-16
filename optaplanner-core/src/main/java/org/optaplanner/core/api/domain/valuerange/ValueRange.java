@@ -49,6 +49,12 @@ public interface ValueRange<T> {
     T get(long index);
 
     /**
+     * @param value sometimes null
+     * @return true if the ValueRange contains that value
+     */
+    boolean contains(T value);
+
+    /**
      * Select the elements in original (natural) order.
      * @return never null
      * @throws IllegalStateException if {@link #isCountable} returns false

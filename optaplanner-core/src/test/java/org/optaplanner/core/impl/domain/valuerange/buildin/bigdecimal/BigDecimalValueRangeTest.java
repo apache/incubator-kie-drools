@@ -20,6 +20,7 @@ public class BigDecimalValueRangeTest {
         assertEquals(0L, new BigDecimalValueRange(new BigDecimal("7.0"), new BigDecimal("7.0")).getSize());
         // IncrementUnit
         assertEquals(5L, new BigDecimalValueRange(new BigDecimal("0.0"), new BigDecimal("10.0"), new BigDecimal("2.0")).getSize());
+        assertEquals(5L, new BigDecimalValueRange(new BigDecimal("-1.0"), new BigDecimal("9.0"), new BigDecimal("2.0")).getSize());
         assertEquals(4L, new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.4"), new BigDecimal("5.1")).getSize());
     }
 
@@ -31,7 +32,26 @@ public class BigDecimalValueRangeTest {
         assertEquals(new BigDecimal("-4.94"), new BigDecimalValueRange(new BigDecimal("-5.00"), new BigDecimal("25.00")).get(6L));
         // IncrementUnit
         assertEquals(new BigDecimal("6.0"), new BigDecimalValueRange(new BigDecimal("0.0"), new BigDecimal("10.0"), new BigDecimal("2.0")).get(3L));
+        assertEquals(new BigDecimal("5.0"), new BigDecimalValueRange(new BigDecimal("-1.0"), new BigDecimal("9.0"), new BigDecimal("2.0")).get(3L));
         assertEquals(new BigDecimal("115.3"), new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.4"), new BigDecimal("5.1")).get(3L));
+    }
+
+    @Test
+    public void contains() {
+        assertEquals(true, new BigDecimalValueRange(new BigDecimal("0"), new BigDecimal("10")).contains(new BigDecimal("3")));
+        assertEquals(false, new BigDecimalValueRange(new BigDecimal("0"), new BigDecimal("10")).contains(new BigDecimal("10")));
+        assertEquals(false, new BigDecimalValueRange(new BigDecimal("0"), new BigDecimal("10")).contains(null));
+        assertEquals(true, new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.0")).contains(new BigDecimal("100.0")));
+        assertEquals(false, new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.0")).contains(new BigDecimal("99.9")));
+        assertEquals(true, new BigDecimalValueRange(new BigDecimal("-5.3"), new BigDecimal("25.2")).contains(new BigDecimal("-5.2")));
+        assertEquals(false, new BigDecimalValueRange(new BigDecimal("-5.3"), new BigDecimal("25.2")).contains(new BigDecimal("-5.4")));
+        // IncrementUnit
+        assertEquals(true, new BigDecimalValueRange(new BigDecimal("0.0"), new BigDecimal("10.0"), new BigDecimal("2.0")).contains(new BigDecimal("2.0")));
+        assertEquals(false, new BigDecimalValueRange(new BigDecimal("0.0"), new BigDecimal("10.0"), new BigDecimal("2.0")).contains(new BigDecimal("3.0")));
+        assertEquals(true, new BigDecimalValueRange(new BigDecimal("-1.0"), new BigDecimal("9.0"), new BigDecimal("2.0")).contains(new BigDecimal("1.0")));
+        assertEquals(false, new BigDecimalValueRange(new BigDecimal("-1.0"), new BigDecimal("9.0"), new BigDecimal("2.0")).contains(new BigDecimal("2.0")));
+        assertEquals(true, new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.4"), new BigDecimal("5.1")).contains(new BigDecimal("115.3")));
+        assertEquals(false, new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.4"), new BigDecimal("5.1")).contains(new BigDecimal("115.0")));
     }
 
     @Test
@@ -48,6 +68,9 @@ public class BigDecimalValueRangeTest {
         assertAllElementsOfIterator(new BigDecimalValueRange(new BigDecimal("0.0"), new BigDecimal("10.0"), new BigDecimal("2.0"))
                 .createOriginalIterator(), new BigDecimal("0.0"), new BigDecimal("2.0"), new BigDecimal("4.0"),
                 new BigDecimal("6.0"), new BigDecimal("8.0"));
+        assertAllElementsOfIterator(new BigDecimalValueRange(new BigDecimal("-1.0"), new BigDecimal("9.0"), new BigDecimal("2.0"))
+                .createOriginalIterator(), new BigDecimal("-1.0"), new BigDecimal("1.0"), new BigDecimal("3.0"),
+                new BigDecimal("5.0"), new BigDecimal("7.0"));
         assertAllElementsOfIterator(new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.4"), new BigDecimal("5.1"))
                 .createOriginalIterator(), new BigDecimal("100.0"), new BigDecimal("105.1"), new BigDecimal("110.2"),
                 new BigDecimal("115.3"));
@@ -71,6 +94,9 @@ public class BigDecimalValueRangeTest {
         when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
         assertElementsOfIterator(new BigDecimalValueRange(new BigDecimal("0.0"), new BigDecimal("10.0"), new BigDecimal("2.0"))
                 .createRandomIterator(workingRandom), new BigDecimal("6.0"), new BigDecimal("0.0"));
+        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
+        assertElementsOfIterator(new BigDecimalValueRange(new BigDecimal("-1.0"), new BigDecimal("9.0"), new BigDecimal("2.0"))
+                .createRandomIterator(workingRandom), new BigDecimal("5.0"), new BigDecimal("-1.0"));
         when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
         assertElementsOfIterator(new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.4"), new BigDecimal("5.1"))
                 .createRandomIterator(workingRandom), new BigDecimal("115.3"), new BigDecimal("100.0"));

@@ -50,6 +50,11 @@ public class ListValueRange<T> extends AbstractValueRange<T> {
     }
 
     @Override
+    public boolean contains(T value) {
+        return list.contains(value);
+    }
+
+    @Override
     public Iterator<T> createOriginalIterator() {
         return list.iterator();
     }
