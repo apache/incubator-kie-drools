@@ -83,7 +83,7 @@ KieContainer kContainer = kieServices.getKieClasspathContainer();</programlistin
   <section xml:id="theKmoduleXmlFile">
     <title>The kmodule.xml file</title>
 
-    <para>As anticipated in the former section the kmodule.xml file is the place where it is possible
+    <para>As explained in the former section, the kmodule.xml file is the place where it is possible
     to declaratively configure the <code>KieBase</code>(s) and <code>KieSession</code>(s) that can be
     created from a KIE project.</para>
 
@@ -233,7 +233,7 @@ KieContainer kContainer = kieServices.getKieClasspathContainer();</programlistin
       </tgroup>
     </table>
 
-    <para>In the same way also all attributes of the ksession tag (except of course the name)
+    <para>Similarly all attributes of the ksession tag (except of course the name)
     have meaningful default. They are listed and described in the following table:</para>
 
     <table>
@@ -254,7 +254,7 @@ KieContainer kContainer = kieServices.getKieClasspathContainer();</programlistin
             <entry>name</entry>
             <entry>none</entry>
             <entry>any</entry>
-            <entry>The name with which retrieve this KieSession from the KieContainer.
+            <entry>Unique name of this KieSession. Used to fetch the KieSession from the KieContainer.
             This is the only mandatory attribute.</entry>
           </row>
 
@@ -331,12 +331,12 @@ KieSession kieSession1 = kContainer.newKieSession(); // returns KSession2_1</pro
     </example>
 
     <para>Since a Kie project is also a Maven project the groupId, artifactId and version declared
-    in the pom.xml file are also used to generate a <code>ReleaseId</code> that uniquely identify
-    this project inside your application. This also allows to create a new KieContainer from that
+    in the pom.xml file are used to generate a <code>ReleaseId</code> that uniquely identifies
+    this project inside your application. This allows creation of a new KieContainer from the
     project by simply passing its <code>ReleaseId</code> to the <code>KieServices</code>.</para>
 
     <example>
-      <title>Creating a KieContainer of an existing project retriving it by ReleaseId</title>
+      <title>Creating a KieContainer of an existing project by ReleaseId</title>
 
       <programlisting language="java">KieServices kieServices = KieServices.Factory.get();
 ReleaseId releaseId = kieServices.newReleaseId( "org.acme", "myartifact", "1.0" );
@@ -347,7 +347,7 @@ KieContainer kieContainer = kieServices.newKieContainer( releaseId );</programli
   <section xml:id="buildingWithMaven">
     <title>Building with Maven</title>
     <para>
-      The KIE plugin for Maven ensures that artefact resources are validated and pre-compiled, it is recommended that this is used at all times. To use the plugin simple add it to the build
+      The KIE plugin for Maven ensures that artifact resources are validated and pre-compiled, it is recommended that this is used at all times. To use the plugin simply add it to the build
       section of the Maven pom.xml
      </para>
     
@@ -377,8 +377,8 @@ KieContainer kieContainer = kieServices.newKieContainer( releaseId );</programli
     <title>Defining a KieModule programmatically</title>
 
     <para>It is also possible to define the <code>KieBase</code>s and <code>KieSession</code>s
-    belonging to a KieModule programmatically instead of declaratively define them in the
-    kmodule.xml file. The same programmatic API also allows to explicitly add the file containing the
+    belonging to a KieModule programmatically instead of the declarative defination in the
+    kmodule.xml file. The same programmatic API also allows in explicitly adding the file containing the
     Kie artifacts instead of automatically read them from the resources folder of your project.
     To do that it is necessary to create a <code>KieFileSystem</code>, a sort of virtual file
     system, and add all the resources contained in your project to it.</para>
@@ -394,10 +394,10 @@ KieContainer kieContainer = kieServices.newKieContainer( releaseId );</programli
       </mediaobject>
     </figure>
 
-    <para>Like all other Kie core component you can obtain an instance of the <code>KieFileSystem</code> from
-    the <code>KieServices</code>. One of the thing that for sure it will be necessary to add to this file
-    system is the kmodule.xml configuration file. As anticipated above Kie also provides a convenient fluent
-    API, implemented by the <code>KieModuleModel</code>, to programmatically create this file.</para>
+    <para>Like all other Kie core components you can obtain an instance of the <code>KieFileSystem</code> from
+    the <code>KieServices</code>. The kmodule.xml configuration file must be added to the filesystem. This is a
+    mandatory step. Kie also provides a convenient fluent API, implemented by the <code>KieModuleModel</code>,
+      to programmatically create this file.</para>
 
     <figure>
       <title>KieModuleModel</title>
@@ -448,7 +448,7 @@ kfs.write( "src/main/resources/KBase1/ruleSet1.drl", stringContainingAValidDRL )
     </example>
 
     <para>This example shows that it is possible to add the Kie artifacts both as plain Strings and
-    as <code>Resource</code>s. In this second case the <code>Resource</code>s can be created by the
+    as <code>Resource</code>s. In the later case the <code>Resource</code>s can be created by the
     <code>KieResources</code> factory, also provided by the <code>KieServices</code>. The
     <code>KieResources</code> provides many convenient factory methods to convert an <code>InputStream</code>,
     a <code>URL</code>, a <code>File</code>, or a <code>String</code> representing a path of your file
@@ -467,8 +467,8 @@ kfs.write( "src/main/resources/KBase1/ruleSet1.drl", stringContainingAValidDRL )
 
     <para>Normally the type of a <code>Resource</code> can be inferred from the extension of the name
     used to add it to the <code>KieFileSystem</code>. However it also possible to not follow the Kie
-    conventions about file extension and then explicitly assign a specific <code>ResourceType</code>
-    to a<code>Resource</code> as in the following example</para>
+    conventions about file extensions and explicitly assign a specific <code>ResourceType</code>
+    to a<code>Resource</code> as shown below:</para>
 
     <example>
       <title>Creating and adding a Resource with an explicit type</title>
@@ -479,8 +479,7 @@ kfs.write( "src/main/resources/myDrl.txt",
                       .setResourceType(ResourceType.DRL) );</programlisting>
     </example>
 
-    <para>After having added to the <code>KieFileSystem</code> all the resources that has to be
-    included into the project, it is possible to build it by passing the <code>KieFileSystem</code>
+    <para>Add all the resources to the <code>KieFileSystem</code> and build it by passing the <code>KieFileSystem</code>
     to a <code>KieBuilder</code></para>
 
     <figure>
@@ -494,8 +493,8 @@ kfs.write( "src/main/resources/myDrl.txt",
       </mediaobject>
     </figure>
 
-    <para>When a the contents of a <code>KieFileSystem</code> is successfully built, the <code>KieModule</code>
-    resulting from this compilation is automatically added to the <code>KieRepository</code>.
+    <para>When the contents of a <code>KieFileSystem</code> are successfully built, the resulting <code>KieModule</code>
+    is automatically added to the <code>KieRepository</code>.
     The <code>KieRepository</code> is a singleton acting as a repository for all the available <code>KieModule</code>s.</para>
 
     <figure>
@@ -532,10 +531,10 @@ KieContainer kieContainer = kieServices.newKieContainer(kieServices.getRepositor
     created directly from the classpath.</para>
 
     <para>It is a best practice to check the compilation results. The <code>KieBuilder</code>
-    can report compilation results of 3 different severities: ERROR, WARNING and INFO. An ERROR
+    reports compilation results of 3 different severities: ERROR, WARNING and INFO. An ERROR
     indicates that the compilation of the project failed and in the case no <code>KieModule</code> is
-    produced and then nothing is added to the <code>KieRepository</code>. WARNING and INFO results
-    can be ignored, but are available for inspection nonetheless.</para>
+    produced and nothing is added to the <code>KieRepository</code>. WARNING and INFO results
+    can be ignored, but are available for inspection.</para>
 
     <example>
       <title>Checking that a compilation didn't produce any error</title>
@@ -555,8 +554,8 @@ assertEquals( 0, kieBuilder.getResults().getMessages( Message.Level.ERROR ).size
     probably ideal for most use cases, but in some deployments the user
     might want to prevent the rule update and report it as an error.</para>
 
-    <para>Changing the default severity for a result type is configured
-    like any other option in Drools and can be done by API
+    <para>Changing the default severity for a result type, configured
+    like any other option in Drools, can be done by API
     calls, system properties or configuration files. As of this version,
     Drools supports configurable result severity for rule updates and function
     updates. To configure it using system properties or configuration files,

@@ -7,10 +7,10 @@
     "drools-examples-api" contains a number of examples, and can be found at GitHub:</para>
   <para><link xlink:href="https://github.com/droolsjbpm/drools/tree/6.0.x/drools-examples-api"
       >https://github.com/droolsjbpm/drools/tree/6.0.x/drools-examples-api</link></para>
-  <para>Each example is described below, the order starts with the simplest and most default working
+  <para>Each example is described below, the order starts with the simplest (most of the options are defaulted) and working
     its way up to more complex use cases.</para>
-  <para>The Deploy use cases here all involve <code>mvn install</code>. Remote deployment of JARs in
-    Maven is well covered is Maven literature. Utilize refers to the initial act loading the
+  <para>The Deploy use cases shown below, all involve <code>mvn install</code>. Remote deployment of JARs in
+    Maven is well covered is Maven literature. Utilize refers to the initial act of loading the
     resources and providing access to the KIE runtimes. Where as Run refers to the act of
     interacting with those runtimes.</para>
   
@@ -21,7 +21,7 @@
       </listitem>
       <listitem>
         <para>Summary: Empty kmodule.xml KieModule on the classpath that includes all resources in a
-          single default KieBase . The example shows the retrieval of the default KieSession from
+          single default KieBase. The example shows the retrieval of the default KieSession from
           the classpath.</para>
       </listitem>
     </itemizedlist>
@@ -42,7 +42,7 @@
     
     <para>ks.getKieClasspathContainer() returns the KieContainer that contains the KieBases deployed
       onto the environment classpath. kContainer.newKieSession() creates the default KieSession.
-      Notice you no longer need to look up the KieBase, in orde to create the KieSession. The
+      Notice that you no longer need to look up the KieBase, in order to create the KieSession. The
       KieSession knows which KieBase it's associated with, and use that, which in this case is the
       default KieBase.</para>
     <example>
@@ -107,7 +107,7 @@ kSession.fireAllRules();</programlisting>
         <para>Project: kiebase-inclusion.</para>
       </listitem>
       <listitem>
-        <para>Summary: 'kmodule.xml' demonstrate that one KieBase can include the resources from
+        <para>Summary: 'kmodule.xml' demonstrates that one KieBase can include the resources from
           another KieBase, from another KieModule. In this case it inherits the named KieBase from
           the 'name-kiesession' example. The included KieBase can be from the current KieModule or
           any other KieModule that is in the pom.xml dependency list.</para>
@@ -191,12 +191,12 @@ kSession.fireAllRules();</programlisting>
       <listitem>
         <para>Summary: Demonstrates that the 'kmodule.xml'  can contain any number of KieBase or
           KieSession declarations. Introduces the 'packages' attribute to select the folders for the
-          resources to be included inthe .</para>
+          resources to be included in the KieBase.</para>
       </listitem>
     </itemizedlist>
     <para>kmodule.xml produces 6 different named KieBases. 'kbase1' includes all resources from the
       KieModule. The other KieBases include resources from other selected folders, via the
-      'packages' attribute. Note the use wildcard '*' use, to select this package and all packages
+      'packages' attribute. Note the use of wildcard '*', to select this package and all packages
       below it. </para>
     <example>
       <title>Author - kmodule.xml</title>
@@ -232,7 +232,7 @@ kSession.fireAllRules();</programlisting>
       <programlisting>mvn install</programlisting>
     </example>
     <para>Only part of the example is included below, as there is a test method per KieSession, but
-      each one is a repetitino of the other, with just different list expectations.</para>
+      each one is a repetition of the other, with different list expectations.</para>
     <example>
       <title>Utilize and Run - Java</title>
       <programlisting language="JAVA">@Test
@@ -304,7 +304,7 @@ private List&lt;Integer> useKieSession(String name) {
     </example>
     <para>In the previous examples the classpath KieContainer used. This example creates a dynamic
       KieContainer as specified by the  ReleaseId. The ReleaseId uses Maven conventions for group
-      id, artifact id and version. It also obey's LATEST and  SNAPSHOT for versions.</para>
+      id, artifact id and version. It also obey's LATEST and SNAPSHOT for versions.</para>
     <example>
       <title>Utilize and Run - Java</title>
       <programlisting language="JAVA">KieServices ks = KieServices.Factory.get();
@@ -338,7 +338,7 @@ kSession.fireAllRules();</programlisting>
       <programlisting>mvn install</programlisting>
     </example>
     <para>Any KieModule can be loaded from a Resource location and added to the KieRepository. Once
-      in the KieRepository it can be resolved via its ReleaseId. Note neither Maven or kie-ci are
+      deployed in the KieRepository it can be resolved via its ReleaseId. Note neither Maven or kie-ci are
       needed here. It will not setup a transitive dependency parent classloader.</para>
     <example>
       <title>Utilize and Run - Java</title>
@@ -395,13 +395,13 @@ kSession.fireAllRules();</programlisting>
     </example>
   </section>
   <section>
-    <title>KieModule with Dependant KieModule</title>
+    <title>KieModule with Dependent KieModule</title>
     <itemizedlist>
       <listitem>
         <para>Project: kie-module-form-multiple-files</para>
       </listitem>
       <listitem>
-        <para>Summary: Programmatically provide the list of dependant KieModules, without any Maven
+        <para>Summary: Programmatically provide the list of dependant KieModules, without using Maven
           to resolve anything.</para>
       </listitem>
     </itemizedlist>
@@ -413,8 +413,8 @@ kSession.fireAllRules();</programlisting>
       <programlisting>mvn install</programlisting>
     </example>
     <para>Creates two resources. One is for the main KieModule 'exRes1' the other is for the
-      dependency 'exRes2'. Even though kie-ci is not present and thus Maven is not there to resolve
-      the dependencies, this shows how you can manually specify the dependency KieModules, for the
+      dependency 'exRes2'. Even though kie-ci is not present and thus Maven is not available to resolve
+      the dependencies, this shows how you can manually specify the dependent KieModules, for the
       vararg.</para>
     <example>
       <title>Utilize and Run - Java</title>
@@ -456,7 +456,7 @@ kSession.fireAllRules();</programlisting>
       <programlisting>mvn install</programlisting>
     </example>
     <para>This programmatically builds a KieModule. It populates the model that represents the
-      ReleaseId and  kmodule.xml, as well as added the resources tht. A pom.xml is generated from
+      ReleaseId and  kmodule.xml, as well as add the relevant resources. A pom.xml is generated from
       the ReleaseId.</para>
     <example>
       <title>Utilize and Run - Java</title>
@@ -489,7 +489,7 @@ kSession.fireAllRules();</programlisting>
         <para>Project: kiemoduelmodel-example</para>
       </listitem>
       <listitem>
-        <para>Summary: Programmaticaly buid a KieModule, by creating its kmodule.xml meta models
+        <para>Summary: Programmaticaly buid a KieModule, by creating its kmodule.xml meta model
           resources. </para>
       </listitem>
     </itemizedlist>
@@ -498,7 +498,7 @@ kSession.fireAllRules();</programlisting>
       <programlisting>mvn install</programlisting>
     </example>
     <para>This programmatically builds a KieModule. It populates the model that represents the
-      ReleaseId and  kmodule.xml, as well as added the resources tht. A pom.xml is generated from
+      ReleaseId and  kmodule.xml, as well as add the relevant resources. A pom.xml is generated from
       the ReleaseId.</para>
     <example>
       <title>Utilize and Run - Java</title>
