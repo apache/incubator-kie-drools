@@ -59,7 +59,7 @@
     <section>
       <title>KieRuntime</title>
 
-      <para>The <code>KieRuntime</code> provides further methods that
+      <para>The <code>KieRuntime</code> provides methods that
       are applicable to both rules and processes, such as setting globals and
       registering channels. ("Exit point" is an obsolete synonym for "channel".)</para>
 
@@ -112,7 +112,7 @@ ksession.setGlobal("list", list);           </programlisting>
 
     <para>The event package provides means to be notified of rule engine
       events, including rules firing, objects being asserted, etc. This allows
-      you, for instance, to separate logging and auditing activities from the
+      separation of logging and auditing activities from the
       main part of your application (and the rules).</para>
 
     <para>The <code>KieRuntimeEventManager</code> interface is
@@ -303,12 +303,12 @@ logger.close();</programlisting>
     <para>The <code>CommandExecutor</code> allows for commands to be executed on those sessions, the
       only difference being that the StatelessKieSession executes <code>fireAllRules()</code> at the
       end before disposing the session.  The commands can be created using the
-        <code>CommandExecutor</code> .The Javadocs provides the full list of the provided comands
-      using the  <code>CommandExecutor</code> .</para>
-    <para>SetGloban and getGlobal are two commands relevant to both Drools and jBPM. </para>
+        <code>CommandExecutor</code> .The Javadocs provide the full list of the allowed comands
+      using the <code>CommandExecutor</code> .</para>
+    <para>setGlobal and getGlobal are two commands relevant to both Drools and jBPM. </para>
     <para>Set Global calls setGlobal underneath. The optional boolean indicates on whether the
-      command should return value as part of the  <code>ExecutionResults</code>. If true it uses the
-      same name as the global name. A String cna be used instead of the boolean, if an alternative
+      command should return value as part of the <code>ExecutionResults</code>. If true it uses the
+      same name as the global name. A String can be used instead of the boolean, if an alternative
       name is desired.</para>
     <para>
       <example>
@@ -330,7 +330,7 @@ ExecutionResults bresults =
 Cheese stilton = bresults.getValue( "stilton" );
 </programlisting>
     </example>
-    <para>The examples above all execute single commands.  The <code>BatchExecution</code>
+    <para>All the above examples execute single commands.  The <code>BatchExecution</code>
       represents a composite command, created from a list of commands. It will iterate over the list
       and execute each command in turn. This means you can insert some objects, start a process,
       call fireAllRules and execute a query, all in a single <code>execute(...)</code> call, which
@@ -343,7 +343,7 @@ Cheese stilton = bresults.getValue( "stilton" );
     <para>Any command, in the batch, that has an out identifier set will add its results to the
       returned <code>ExecutionResults</code> instance. Let's look at a simple example to see how
       this works. The example presented includes command from the Drools and jBPM, for the sake of
-      illustartion. They are covered in more detail in the Drool and jBPM specific sections.</para>
+      illustration. They are covered in more detail in the Drool and jBPM specific sections.</para>
     <example>
       <title>BatchExecution Command</title>
       <programlisting language="java">StatelessKieSession ksession = kbase.newStatelessKieSession();
@@ -371,7 +371,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
 
     <para>The <code>StatelessKieSession</code> wraps the
     <code>KieSession</code>, instead of extending it. Its main
-    focus is on decision service type scenarios. It avoids the need to call
+    focus is on the decision service type scenarios. It avoids the need to call
     <code>dispose()</code>. Stateless sessions do not support iterative
     insertions and the method call <code>fireAllRules()</code> from Java code;
     the act of calling <code>execute()</code> is a single-shot method that
@@ -427,7 +427,7 @@ ksession.execute( collection );</programlisting>
     <code>ExecutionResults</code>.</para>
 
     <para><code>StatelessKieSession</code> supports globals, scoped in a
-    number of ways. I'll cover the non-command way first, as commands are
+    number of ways. We cover the non-command way first, as commands are
     scoped to a specific execution call. Globals can be resolved in three
     ways.</para>
 
@@ -496,7 +496,7 @@ results.getValue( "Get People" );</programlisting>
   <section>
     <title>Marshalling</title>
 
-    <para>The <code>KieMarshallers</code> is used to marshal and unmarshal
+    <para>The <code>KieMarshallers</code> are used to marshal and unmarshal
     KieSessions.</para>
 
     <figure>
@@ -510,8 +510,8 @@ results.getValue( "Get People" );</programlisting>
       </mediaobject>
     </figure>
 
-    <para>An instance of the <code>KieMarshallers</code> can be retrieved from the <code>KieServices</code>
-    and at the simplest the it can be used as follows:</para>
+    <para>An instance of the <code>KieMarshallers</code> can be retrieved from the <code>KieServices</code>.
+    A simple example is shown below:</para>
 
     <example>
       <title>Simple Marshaller Example</title>
@@ -525,23 +525,23 @@ baos.close();
 </programlisting>
     </example>
 
-    <para>However, with marshalling you need more flexibility when dealing
-    with referenced user data. To achieve this we have the
+    <para>However, with marshalling, you will need more flexibility when dealing
+    with referenced user data. To achieve this use the
     <code>ObjectMarshallingStrategy</code> interface. Two implementations are
     provided, but users can implement their own. The two supplied strategies
     are <code>IdentityMarshallingStrategy</code> and
     <code>SerializeMarshallingStrategy</code>.
-    <code>SerializeMarshallingStrategy</code> is the default, as used in the
+    <code>SerializeMarshallingStrategy</code> is the default, as shown in the
     example above, and it just calls the <code>Serializable</code> or
     <code>Externalizable</code> methods on a user instance.
-    <code>IdentityMarshallingStrategy</code> instead creates an integer id for
+    <code>IdentityMarshallingStrategy</code> creates an integer id for
     each user object and stores them in a Map, while the id is written to the
     stream. When unmarshalling it accesses the
     <code>IdentityMarshallingStrategy</code> map to retrieve the instance.
     This means that if you use the <code>IdentityMarshallingStrategy</code>,
     it is stateful for the life of the Marshaller instance and will create ids
     and keep references to all objects that it attempts to marshal. Below is
-    he code to use an Identity Marshalling Strategy.</para>
+    the code to use an Identity Marshalling Strategy.</para>
 
     <example>
       <title>IdentityMarshallingStrategy</title>
@@ -556,12 +556,11 @@ baos.close();
 </programlisting>
     </example>
 
-    <para>For added flexability we can't assume that a single strategy is
-    suitable. Therefore we have added the
-    <code>ObjectMarshallingStrategyAcceptor</code> interface that each Object
-    Marshalling Strategy contains. The Marshaller has a chain of strategies,
-    and when it attempts to read or write a user object it iterates the
-    strategies asking if they accept responsability for marshalling the user
+    <para>Im most cases, a single strategy is insufficient. For added flexibility, the
+    <code>ObjectMarshallingStrategyAcceptor</code> interface can be used.
+    This Marshaller has a chain of strategies,
+    and while reading or writing a user object it iterates the
+    strategies asking if they accept responsibility for marshalling the user
     object. One of the provided implementations is
     <code>ClassFilterAcceptor</code>. This allows strings and wild cards to be
     used to match class names. The default is "*.*", so in the above example
@@ -596,7 +595,7 @@ baos.close();
     <para>Also note that if you are using scheduled matches (i.e. some
     of your rules use timers or calendars) they are marshallable only if,
     before you use it, you configure your KieSession to use a
-    trackable timer job factory manager as it follows:</para>
+    trackable timer job factory manager as follows:</para>
 
     <example>
       <title>Configuring a trackable timer job factory manager</title>
@@ -644,7 +643,7 @@ ut.commit();</programlisting>
 
     <para>To use a JPA, the Environment must be set with both the
     <code>EntityManagerFactory</code> and the <code>TransactionManager</code>.
-    If rollback occurs the ksession state is also rolled back, so it is possible
+    If rollback occurs the ksession state is also rolled back, hence it is possible
     continue to use it after a rollback. To load a previously persisted
     KieSession you'll need the id, as shown below:</para>
 
@@ -680,7 +679,7 @@ ut.commit();</programlisting>
 
     <para>The jdbc JTA data source would have to be configured first. Bitronix
     provides a number of ways of doing this, and its documentation should be
-    contsulted for details. For a quick start, here is the programmatic
+    consulted for details. For a quick start, here is the programmatic
     approach:</para>
 
     <example>
@@ -699,7 +698,7 @@ ds.init();
     </example>
 
     <para>Bitronix also provides a simple embedded JNDI service, ideal for
-    testing. To use it add a jndi.properties file to your META-INF and add the
+    testing. To use it, add a jndi.properties file to your META-INF folder and add the
     following line to it:</para>
 
     <example>
