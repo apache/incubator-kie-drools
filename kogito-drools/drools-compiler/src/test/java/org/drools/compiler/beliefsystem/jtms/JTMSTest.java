@@ -356,7 +356,9 @@ public class JTMSTest {
                 "import org.drools.core.common.AgendaItem;" +
                 "import org.drools.compiler.Person;" +
                 "global java.util.List list;\n" + 
-                "\n" + 
+                "\n" +
+                "declare entry-point 'neg' end \n" +
+                "" +
                 "rule \"go1\"\n" + 
                 "when\n" + 
                 "    String( this == 'go1' )\n" + 
@@ -381,15 +383,8 @@ public class JTMSTest {
                 "    p.setNotInEqualTestObject(3); \n" +
                 "    insertLogical( p, 'neg' );\n" +                
                 "end\n" +                 
-                "\n" +
-                "rule \"init neg ep\"\n" + 
-                "when\n" + 
-                "    String( ) from entry-point 'neg' \n" + 
-                "then\n" +                
-                "end\n" +                 
-                "\n"                
-                ;
-        
+                "\n";
+
         StatefulKnowledgeSession kSession =  getSessionFromString( s );
         List list = new ArrayList();
         kSession.setGlobal( "list", list );

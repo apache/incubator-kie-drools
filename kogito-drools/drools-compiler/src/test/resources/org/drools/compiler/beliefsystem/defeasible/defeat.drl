@@ -24,7 +24,7 @@ declare Y
     id  : int   @key
 end
 
-
+declare entry-point "neg" end
 
 rule "Init"
 when
@@ -52,9 +52,3 @@ then
 end
 
 
-// TODO Needed to init entry point, remove
-rule "Foo"
-when
-    $o : Object() from entry-point "neg"
-then
-end
