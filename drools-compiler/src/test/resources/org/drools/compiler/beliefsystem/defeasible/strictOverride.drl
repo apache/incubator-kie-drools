@@ -24,7 +24,7 @@ declare Y
     id  : int   @key
 end
 
-
+declare entry-point "neg" end
 
 rule "Init"
 when
@@ -61,10 +61,4 @@ then
     insertLogical( new X( -1 ) );
 end
 
-rule "neg"
-when
-    o : Object( ) from entry-point "neg"
-then
-    System.out.println( o );
-end
 
