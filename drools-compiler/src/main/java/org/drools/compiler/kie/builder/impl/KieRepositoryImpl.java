@@ -4,7 +4,6 @@ import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsfor
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
@@ -57,8 +56,8 @@ public class KieRepositoryImpl
     }
 
     private final AtomicReference<ReleaseId> defaultGAV = new AtomicReference(new ReleaseIdImpl(DEFAULT_GROUP,
-            DEFAULT_ARTIFACT,
-            DEFAULT_VERSION));
+                                                                                                DEFAULT_ARTIFACT,
+                                                                                                DEFAULT_VERSION));
 
     public void setDefaultGAV(ReleaseId releaseId) {
         this.defaultGAV.set(releaseId);
@@ -86,13 +85,13 @@ public class KieRepositoryImpl
         KieModule kieModule = kieModuleRepo.load(releaseId);
         if (kieModule == null) {
             log.debug("KieModule Lookup. ReleaseId {} was not in cache, checking classpath",
-                    releaseId.toExternalForm());
+                      releaseId.toExternalForm());
             kieModule = checkClasspathForKieModule(releaseId);
         }
 
         if (kieModule == null) {
             log.debug("KieModule Lookup. ReleaseId {} was not in cache, checking maven repository",
-                    releaseId.toExternalForm());
+                      releaseId.toExternalForm());
             kieModule = loadKieModuleFromMavenRepo(releaseId, pomXml);
         }
 
@@ -108,8 +107,8 @@ public class KieRepositoryImpl
 
     private KieModule loadKieModuleFromMavenRepo(ReleaseId releaseId, byte[] pomXml) {
         return pomXml != null ?
-                getInternalKieScanner().loadArtifact(releaseId, new ByteArrayInputStream(pomXml)) :
-                getInternalKieScanner().loadArtifact(releaseId);
+               getInternalKieScanner().loadArtifact(releaseId, new ByteArrayInputStream(pomXml)) :
+               getInternalKieScanner().loadArtifact(releaseId);
     }
 
     private InternalKieScanner getInternalKieScanner() {
@@ -206,7 +205,7 @@ public class KieRepositoryImpl
     private static class KieModuleRepo {
 
         private final InternalKieScanner kieScanner;
-        private final Map<String, TreeMap<ComparableVersion, WeakReference<KieModule>>> kieModules = new HashMap<String, TreeMap<ComparableVersion, WeakReference<KieModule>>>();
+        private final Map<String, TreeMap<ComparableVersion, KieModule>> kieModules = new HashMap<String, TreeMap<ComparableVersion, KieModule>>();
         private final Map<ReleaseId, KieModule> oldKieModules = new HashMap<ReleaseId, KieModule>();
 
         private KieModuleRepo(InternalKieScanner kieScanner) {
@@ -217,19 +216,16 @@ public class KieRepositoryImpl
             ReleaseId releaseId = kieModule.getReleaseId();
             String ga = releaseId.getGroupId() + ":" + releaseId.getArtifactId();
 
-            TreeMap<ComparableVersion, WeakReference<KieModule>> artifactMap = kieModules.get(ga);
+            TreeMap<ComparableVersion, KieModule> artifactMap = kieModules.get(ga);
             if (artifactMap == null) {
-                artifactMap = new TreeMap<ComparableVersion, WeakReference<KieModule>>();
+                artifactMap = new TreeMap<ComparableVersion, KieModule>();
                 kieModules.put(ga, artifactMap);
             }
             ComparableVersion comparableVersion = new ComparableVersion(releaseId.getVersion());
             if (oldKieModules.get(releaseId) == null) {
-                WeakReference<KieModule> kieModuleWeakReference = artifactMap.get(comparableVersion);
-                if (kieModuleWeakReference != null && kieModuleWeakReference.get() != null) {
-                    oldKieModules.put(releaseId, kieModuleWeakReference.get());
-                }
+                oldKieModules.put(releaseId, artifactMap.get(comparableVersion));
             }
-            artifactMap.put(comparableVersion, new WeakReference<KieModule>(kieModule));
+            artifactMap.put(comparableVersion, kieModule);
         }
 
         private KieModule loadOldAndRemove(ReleaseId releaseId) {
@@ -242,81 +238,43 @@ public class KieRepositoryImpl
 
         KieModule load(ReleaseId releaseId, VersionRange versionRange) {
             String ga = releaseId.getGroupId() + ":" + releaseId.getArtifactId();
-            TreeMap<ComparableVersion, WeakReference<KieModule>> artifactMap = kieModules.get(ga);
+            TreeMap<ComparableVersion, KieModule> artifactMap = kieModules.get(ga);
             if ( artifactMap == null ) {
                 return null;
             }
 
             if (versionRange.fixed) {
-                ComparableVersion version = new ComparableVersion(releaseId.getVersion());
-                WeakReference<KieModule> kieModuleWeakReference = artifactMap.get(version);
-                KieModule kieModule = null;
-                if (kieModuleWeakReference != null) {
-                    kieModule = kieModuleWeakReference.get();
-                    if ( kieModule == null) {
-                        artifactMap.remove(version);
-                        if (artifactMap.isEmpty()) {
-                            kieModules.remove(ga);
-                        }
-                    } else if ( releaseId.isSnapshot() ) {
-                        String oldSnapshotVersion = ((ReleaseIdImpl)kieModule.getReleaseId()).getSnapshotVersion();
-                        String currentSnapshotVersion = kieScanner.getArtifactVersion(releaseId);
-                        if ( oldSnapshotVersion != null && currentSnapshotVersion != null &&
-                             new ComparableVersion(currentSnapshotVersion).compareTo(new ComparableVersion(oldSnapshotVersion)) > 0) {
-                            // if the snapshot currently available on the maven repo is newer than the cached one
-                            // return null to enforce the building of this newer version
-                            return null;
-                        }
+                KieModule kieModule = artifactMap.get(new ComparableVersion(releaseId.getVersion()));
+                if ( kieModule != null && releaseId.isSnapshot() ) {
+                    String oldSnapshotVersion = ((ReleaseIdImpl)kieModule.getReleaseId()).getSnapshotVersion();
+                    String currentSnapshotVersion = kieScanner.getArtifactVersion(releaseId);
+                    if ( oldSnapshotVersion != null && currentSnapshotVersion != null &&
+                         new ComparableVersion(currentSnapshotVersion).compareTo(new ComparableVersion(oldSnapshotVersion)) > 0) {
+                        // if the snapshot currently available on the maven repo is newer than the cached one
+                        // return null to enforce the building of this newer version
+                        return null;
                     }
                 }
                 return kieModule;
             }
 
-            Map.Entry<ComparableVersion, WeakReference<KieModule>> entry =
+            Map.Entry<ComparableVersion, KieModule> entry =
                     versionRange.upperBound == null ?
-                            artifactMap.lastEntry() :
-                            versionRange.upperInclusive ?
-                                    artifactMap.floorEntry(new ComparableVersion(versionRange.upperBound)) :
-                                    artifactMap.lowerEntry(new ComparableVersion(versionRange.upperBound));
+                    artifactMap.lastEntry() :
+                    versionRange.upperInclusive ?
+                        artifactMap.floorEntry(new ComparableVersion(versionRange.upperBound)) :
+                        artifactMap.lowerEntry(new ComparableVersion(versionRange.upperBound));
 
             if ( entry == null ) {
                 return null;
             }
 
-            KieModule kieModule = entry.getValue().get();
-            if (kieModule == null) {
-                artifactMap.remove(entry.getKey());
-                if (artifactMap.isEmpty()) {
-                    kieModules.remove(ga);
-                }
-                return null;
-            }
-
             if ( versionRange.lowerBound == null ) {
-                return kieModule;
+                return entry.getValue();
             }
 
             int comparison = entry.getKey().compareTo(new ComparableVersion(versionRange.lowerBound));
-            return comparison > 0 || (comparison == 0 && versionRange.lowerInclusive) ? kieModule : null;
-        }
-
-        private void cleanupEmptyRefs() {
-            Iterator<Map.Entry<String, TreeMap<ComparableVersion, WeakReference<KieModule>>>> i1 = kieModules.entrySet().iterator();
-            while (i1.hasNext()) {
-                Map.Entry<String, TreeMap<ComparableVersion, WeakReference<KieModule>>> e1 = i1.next();
-                Iterator<Map.Entry<ComparableVersion, WeakReference<KieModule>>> i2 = e1.getValue().entrySet().iterator();
-                while (i2.hasNext()) {
-                    Map.Entry<ComparableVersion, WeakReference<KieModule>> e2 = i2.next();
-                    if (e2.getValue().get() == null) {
-                        i2.remove();
-                        log.debug("Removing garbaged release " + e1.getKey() + ":" + e2.getKey());
-                    }
-                }
-                if (e1.getValue().isEmpty()) {
-                    i1.remove();
-                    log.debug("Removing garbaging artifact " + e1.getKey());
-                }
-            }
+            return comparison > 0 || (comparison == 0 && versionRange.lowerInclusive) ? entry.getValue() : null;
         }
     }
 
