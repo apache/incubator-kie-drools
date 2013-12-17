@@ -899,6 +899,26 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
+    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1043395 - big data")
+    public void testFreeFormLine() {
+        String drl = "rule rule1\n"
+                + "when\n"
+                + "then\n"
+                + "int test = (int)(1-0.8);\n"
+                + "System.out.println( \"Hello Mario!\" );\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+
+        assertNotNull( m );
+        assertEquals( 2, m.rhs.length );
+        assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
+        assertEquals( "int test = (int)(1-0.8);", ( (FreeFormLine) m.rhs[ 0 ] ).getText() );
+        assertTrue( m.rhs[ 1 ] instanceof FreeFormLine );
+        assertEquals( "System.out.println( \"Hello Mario!\" );", ( (FreeFormLine) m.rhs[ 1 ] ).getText() );
+    }
+
+    @Test
     public void testNestedFieldExpressions() {
         String drl =
                 "rule rule1\n"
