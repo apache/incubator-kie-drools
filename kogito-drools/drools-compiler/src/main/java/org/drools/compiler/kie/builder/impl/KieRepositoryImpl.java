@@ -76,6 +76,10 @@ public class KieRepositoryImpl
         return getKieModule(releaseId, null);
     }
 
+    public KieModule removeKieModule(ReleaseId releaseId) {
+        return kieModuleRepo.remove(releaseId);
+    }
+
     KieModule getOldKieModule(ReleaseId releaseId) {
         KieModule kieModule = kieModuleRepo.loadOldAndRemove(releaseId);
         return kieModule != null ? kieModule : getKieModule(releaseId);
@@ -210,6 +214,21 @@ public class KieRepositoryImpl
 
         private KieModuleRepo(InternalKieScanner kieScanner) {
             this.kieScanner = kieScanner;
+        }
+
+        KieModule remove(ReleaseId releaseId) {
+            KieModule removedKieModule = null;
+            String ga = releaseId.getGroupId() + ":" + releaseId.getArtifactId();
+            TreeMap<ComparableVersion, KieModule> artifactMap = kieModules.get(ga);
+            if (artifactMap != null) {
+                ComparableVersion comparableVersion = new ComparableVersion(releaseId.getVersion());
+                removedKieModule = artifactMap.remove(comparableVersion);
+                if (artifactMap.isEmpty()) {
+                    kieModules.remove(ga);
+                }
+            }
+            oldKieModules.remove(releaseId);
+            return removedKieModule;
         }
 
         void store(KieModule kieModule) {
