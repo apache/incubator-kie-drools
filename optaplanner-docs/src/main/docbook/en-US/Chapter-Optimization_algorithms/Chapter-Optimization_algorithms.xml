@@ -42,6 +42,12 @@
     the search space tends to blow up really fast. Adding only 1 extra planning entity or planning value can heavily
     multiply the running time of some algorithms.</para>
 
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Optimization_algorithms/cloudBalanceSearchSpaceSize.png"/>
+      </imageobject>
+    </mediaobject>
+
     <para>An algorithm that checks every possible solution (even with pruning) can easily run for billions of years on a
     single real-life planning problem. What we really want is to <emphasis role="bold">find the best solution in the
     limited time at our disposal</emphasis>. Planning competitions (such as the International Timetabling Competition)
@@ -79,10 +85,10 @@
     the best <emphasis>reusable</emphasis> software.</para>
 
     <para>The nature of NP-complete problems make scaling a prime concern. <emphasis role="bold">The result quality of a
-    small dataset guarantees nothing about the result quality of a large dataset.</emphasis> Scaling problems cannot be
-    mitigated by hardware purchases. Start testing with a production sized dataset as soon as possible. Don't asses
-    quality on small datasets (unless production encounters only such datasets). Instead, solve a production sized
-    dataset and compare with the results of longer execution, different algorithms and - if available - the human
+    small dataset guarantees nothing about the result quality of a large dataset.</emphasis> Scaling issues cannot be
+    mitigated by hardware purchases later on. Start testing with a production sized dataset as soon as possible. Don't
+    asses quality on small datasets (unless production encounters only such datasets). Instead, solve a production sized
+    dataset and compare the results of longer executions, different algorithms and - if available - the human
     planner.</para>
   </section>
 
