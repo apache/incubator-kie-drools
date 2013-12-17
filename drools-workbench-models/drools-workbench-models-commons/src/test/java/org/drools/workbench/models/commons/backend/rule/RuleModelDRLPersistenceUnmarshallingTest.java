@@ -29,6 +29,7 @@ import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionGlobalCollectionAdd;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;
+import org.drools.workbench.models.datamodel.rule.ActionUpdateField;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.CEPWindow;
 import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
@@ -2020,6 +2021,33 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals(FieldNatureType.TYPE_FORMULA, actionFieldValue.getNature());
         assertEquals("Collection",actionFieldValue.getType());
 
+    }
+
+    @Test
+    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1043395 -  Invalid rules in jboss-bpm-example (Big App) - can't be opened/validated in Guider Rule Editor")
+    public void testFunctionInRHS() throws Exception {
+        String drl = "" +
+                "rule \"Borked\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    application : Application( )\n" +
+                "  then\n" +
+                "    application.setApr( application.getApr() + 5 );\n" +
+                "    update( application )" +
+                "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                dmo);
+
+        assertTrue(m.rhs[0] instanceof ActionUpdateField);
+
+        ActionUpdateField field = (ActionUpdateField) m.rhs[0];
+        assertTrue(field.getFieldValues()[0] instanceof ActionFieldValue);
+        ActionFieldValue value = field.getFieldValues()[0];
+        assertEquals("apr", value.getField());
+        assertEquals("application.getApr() + 5", value.getValue());
+        assertEquals(3, value.getNature());
+        assertEquals("Numeric", value.getType());
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
