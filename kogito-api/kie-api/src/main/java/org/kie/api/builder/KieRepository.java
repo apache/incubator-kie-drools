@@ -60,4 +60,11 @@ public interface KieRepository {
      * @return The KieModule identified by the given releaseId or null if such KieModule doesn't exist
      */
     KieModule getKieModule(ReleaseId releaseId);
+
+    /**
+     * Remove a no longer useful KieModule, identified by the given ReleaseId, from this KieRepository
+     * @param releaseId The releaseId identifying the KieModule to be removed
+     * @return The removed KieModule or null if such KieModule didn't exist
+     */
+    KieModule removeKieModule(ReleaseId releaseId);
 }
