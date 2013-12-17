@@ -512,6 +512,30 @@ public class JpaPersistentStatefulSessionTest {
         ksession.fireAllRules();
     }
 
+    @Test
+    public void testGetCount() {
+        // BZ-1022374
+        String str = "";
+        str += "package org.kie.test\n";
+        str += "rule rule1\n";
+        str += "when\n";
+        str += "then\n";
+        str += " insertLogical( new String(\"a\") );\n";
+        str += "end\n";
+        str += "\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        ks.newKieBuilder( kfs ).buildAll();
+
+        KieBase kbase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase();
+        KieSession ksession = ks.getStoreServices().newKieSession( kbase, null, env );
+
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(1, ksession.getFactCount());
+    }
+
     @Traitable
     public static class Door implements Serializable {
 
