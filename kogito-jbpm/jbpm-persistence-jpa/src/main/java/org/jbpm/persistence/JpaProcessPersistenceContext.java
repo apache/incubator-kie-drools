@@ -78,11 +78,18 @@ public class JpaProcessPersistenceContext extends JpaPersistenceContext
      * </p>
      */
     public List<Long> getProcessInstancesWaitingForEvent(String type) {
-        Query processInstancesForEvent = getEntityManager().createNamedQuery( "ProcessInstancesWaitingForEvent" );
-        processInstancesForEvent.setFlushMode(FlushModeType.COMMIT);
-        processInstancesForEvent.setParameter( "type",
-                                               type );
-        return (List<Long>) processInstancesForEvent.getResultList();
+    	EntityManager entityManager = getEntityManager();
+    	if (entityManager != null) {
+	        Query processInstancesForEvent = getEntityManager().createNamedQuery( "ProcessInstancesWaitingForEvent" );
+	        processInstancesForEvent.setFlushMode(FlushModeType.COMMIT);
+	        processInstancesForEvent.setParameter( "type",
+	                                               type );
+	        return (List<Long>) processInstancesForEvent.getResultList();
+    	} else {
+    		// entity manager can be null when fireActivationCreated is
+    		// called on session unmarshalling
+    		return new ArrayList<Long>();
+    	}
     }
 
     public CorrelationKeyInfo persist(CorrelationKeyInfo correlationKeyInfo) {
