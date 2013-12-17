@@ -491,8 +491,7 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     }
 
     public long getFactCount() {
-        // TODO: implement this
-        return 0;
+        return commandService.execute( new GetFactCountCommand() );
     }
 
     public LiveQuery openLiveQuery(String query,
