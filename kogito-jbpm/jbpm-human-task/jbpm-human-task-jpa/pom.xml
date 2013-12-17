@@ -6,6 +6,7 @@
     <version>6.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>jbpm-human-task-jpa</artifactId>
+  <packaging>bundle</packaging>
   
   <name>jBPM :: JPA Human Task Persistence</name>
   <description>jBPM JPA Human Task Persistence</description>
@@ -94,7 +95,8 @@
               *
             </Import-Package>
             <Export-Package>
-              org.jbpm.services.task.*
+              org.jbpm.services.task.*,
+              org.jbpm.services.task.persistence.*
             </Export-Package>
           </instructions>
         </configuration>

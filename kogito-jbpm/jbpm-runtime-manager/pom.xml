@@ -123,13 +123,13 @@
       <artifactId>jbpm-human-task-workitems</artifactId>
     </dependency>
     <dependency>
-    	<groupId>org.jbpm</groupId>
-    	<artifactId>jbpm-human-task-audit</artifactId>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-human-task-audit</artifactId>
     </dependency>
     <dependency>
-    	<groupId>org.jbpm</groupId>
-    	<artifactId>jbpm-human-task-jpa</artifactId>
-    	<scope>runtime</scope>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-human-task-jpa</artifactId>
+      <scope>runtime</scope>
     </dependency>
   </dependencies>
   <build>
@@ -151,8 +151,10 @@
             <Bundle-SymbolicName>org.jbpm.runtime.manager</Bundle-SymbolicName>
             <Import-Package>
               !org.jbpm.runtime.manager*,
+              org.sonatype.aether.artifact;resolution:=optional,
+              org.kie.scanner;resolution:=optional,
               org.jboss.solder.core;resolution:=optional,
-              org.jboss.seam.transaction;resolution:=optional,
+              org.jbpm.services.task.audit;resolution:=optional,
               *,
             </Import-Package>
             <Private-Package></Private-Package>

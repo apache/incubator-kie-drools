@@ -9,6 +9,7 @@
     </parent>
  
     <artifactId>jbpm-human-task-audit</artifactId>
+    <packaging>bundle</packaging>
   
     <name>jBPM :: Human Task Audit</name>
   
@@ -118,4 +119,25 @@
         	<scope>test</scope>
         </dependency>
     </dependencies>
+    <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>org.jbpm.services.task.audit</Bundle-SymbolicName>
+            <Import-Package>
+              !org.jbpm.services.task,
+              *
+            </Import-Package>
+            <Private-Package></Private-Package>
+            <Export-Package>
+              org.jbpm.services.task*
+            </Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
