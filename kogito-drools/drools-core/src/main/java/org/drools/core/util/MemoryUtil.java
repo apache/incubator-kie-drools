@@ -33,7 +33,7 @@ public class MemoryUtil {
             return memoryUsage != null && memoryUsage.getUsed() * 100 / memoryUsage.getMax() >= threshold;
         }
 
-        private MemoryUsage getMemoryUsage() {
+        public MemoryUsage getMemoryUsage() {
             return memoryBean != null ? memoryBean.getUsage() : ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage();
         }
     }
