@@ -1648,6 +1648,11 @@ public class PatternBuilder
                 context.setDialect( dialect );
             }
         } else {
+            Declaration decl = context.getDeclarationResolver().getDeclarations( context.getRule() ).get(fieldName);
+            if (decl != null && decl.getExtractor() instanceof ClassFieldReader && "this".equals(((ClassFieldReader)decl.getExtractor()).getFieldName())) {
+                return decl.getExtractor();
+            }
+
             boolean alternatives = false;
             try {
                 Map<String, Class< ? >> declarations = getDeclarationsMap( descr, context, false );

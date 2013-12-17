@@ -396,4 +396,45 @@ public class CepEspTest {
         kSession.fireAllRules();
         assertEquals("2 facts in session", 2, kSession.getFactCount());
     }
+
+    @Test
+    public void testNotAfterOnDeclaration() {
+        // BZ-1039586
+        String drl =
+                "import org.drools.reteoo.integrationtests.CepEspTest.SimpleFact;\n" +
+                "declare SimpleFact\n" +
+                "    @role( event )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"TEST2\"\n" +
+                "    when\n" +
+                "        sf1: SimpleFact(status==\"code2\")\n" +
+                "        not ( SimpleFact($a: this, status==\"code3\", $a after[1ms, 2s] sf1 ) )\n" +
+                "    then\n" +
+                "        insert(new SimpleFact(\"OK\", \"OK\"));\n" +
+                "    end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        baseConfig.setOption( RuleEngineOption.RETEOO );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()) );
+        StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession( sessionConfig, null );
+
+        SessionPseudoClock clock = (SessionPseudoClock) kSession.<SessionClock>getSessionClock();
+
+        kSession.insert(new SimpleFact("id1", "code2"));
+        kSession.fireAllRules();
+        assertEquals("1 facts in session", 1, kSession.getFactCount());
+        clock.advanceTime(3, TimeUnit.SECONDS);
+        assertEquals("2 facts in session", 2, kSession.getFactCount());
+    }
 }
