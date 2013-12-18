@@ -28,7 +28,7 @@
        <section xml:id="wb.Roles">
               <title>Roles</title>
               
-              <para>The following roles are available:</para>
+              <para>The Workbench uses the following roles:</para>
               
               <itemizedlist>
                      <listitem>
@@ -53,40 +53,90 @@
               </itemizedlist>
          <section>
            <title>Admin</title>
-           <para>Administrates the BPMS system. Has full access rights to make any changes necessary. Also has the ability to add and remove users from the system.</para>
-         </section>
-         <section>
-           <title>Analyst</title>
-           <para>Creates rules, models, process flows, forms, dashboards and handles process change requests.</para>
+           <para>Administrates the BPMS system.<itemizedlist>
+          <listitem>
+            <para>Manages users</para>
+          </listitem>
+          <listitem>
+            <para>Manages VFS Repositories</para>
+          </listitem>
+          <listitem>
+            <para>Has full access to make any changes necessary</para>
+          </listitem>
+        </itemizedlist></para>
          </section>
          <section>
            <title>Developer</title>
-           <para>Implements code required for process to work. Mostly uses the JBDS connection to view processes, but may use the web tool occasionally.</para>
+           <para>Developer can do almost everything admin can do, except clone repositories.<itemizedlist>
+          <listitem>
+            <para>Manages rules, models, process flows, forms and dashboards</para>
+          </listitem>
+          <listitem>
+            <para>Manages the asset repository</para>
+          </listitem>
+          <listitem>
+            <para>Can create, build and deploy projects</para>
+          </listitem>
+          <listitem>
+            <para>Can use the JBDS connection to view processes</para>
+          </listitem>
+        </itemizedlist></para>
+         </section>
+         <section>
+           <title>Analyst</title>
+           <para>Analyst is a weaker version of developer and does not have access to the asset repository or the
+        ability to deploy projects.</para>
          </section>
          <section>
            <title>Business user</title>
-           <para>Daily user of the system to take actions on business tasks that are required for the processes to continue forward. Works primarily with the task lists.</para>
+           <para>Daily user of the system to take actions on business tasks that are required for the processes to
+        continue forward. Works primarily with the task lists.<itemizedlist>
+          <listitem>
+            <para>Does process management</para>
+          </listitem>
+          <listitem>
+            <para>Handles tasks and dashboards</para>
+          </listitem>
+        </itemizedlist></para>
          </section>
          <section>
            <title>Manager/Viewer-only User</title>
-           <para>Viewer of the system that is interested in statistics around the business processes and their performance, business indicators, and other reporting of the system and people who interact with the system.</para>
+           <para>Viewer of the system that is interested in statistics around the business processes and their
+        performance, business indicators, and other reporting of the system and people who interact with the system.<itemizedlist>
+          <listitem>
+            <para>Only has access to dashboards</para>
+          </listitem>
+        </itemizedlist></para>
          </section>
        </section>
+  
+  <section xml:id="wb.RestrictedAccess">
+    <title>Restricting access to repositories </title>
+    <para>It is possible to restrict access to repositories using roles and organizational groups. To let an user access
+      a repository. </para>
+    <para>The user either has to belong into a role that has access to the repository or to a role that belongs into an
+      orgazinational group that has access to the repository. These restrictions can be managed with the command line
+      config tool.</para>
+  </section>
+  
   <section xml:id="wb.CommandLineConfig">
   <title>Command line config tool</title>
-    <para>Provides capabilities to manage the system repository from command line.</para>
+    <para>Provides capabilities to manage the system repository from command line. System repository contains the data
+      about general workbench settings: how editors behave, organizational groups, security and other settings that are
+      not editable by the user. System repository exists in the .niogit folder, next to all the repositories that have
+      been created or cloned into the workbench.</para>
     <section>
-      <title>Modes</title>
+      <title>Config Tool Modes</title>
       <itemizedlist>
         <listitem>
-          <para>Online (default and recommended) - Connects to the Git repository on startup using Git server provided
+          <para>Online (default and recommended) - Connects to the Git repository on startup, using Git server provided
             by the KIE Workbench. All changes are made locally and published to upstream when:</para>
           <itemizedlist>
             <listitem>
               <para>"push-changes" command is explicitly executed</para>
             </listitem>
             <listitem>
-              <para>"exit" command will publish all local changes and exit</para>
+              <para>"exit" is used to close the tool</para>
             </listitem>
           </itemizedlist>
           </listitem>
@@ -107,8 +157,8 @@
         </row>
           <row>
             <entry>discard</entry>
-            <entry>Discards local changes without publishing them, cleans up temporary directories and quits this
-                command line tool</entry>
+            <entry>Discards local changes without publishing them, cleans up temporary directories and quits the command
+                line tool</entry>
           </row>
           <row>
             <entry>help</entry>
@@ -194,8 +244,8 @@
       <title>How to use</title>
       <para>The tool can be found from kie-config-cli-${version}-dist.zip. Execute the kie-config-cli.sh script and by
         default it will start in online mode asking for a Git url to connect to ( the default value is
-        git://localhost/system ). To connect to a remote server, replace the host and port with appropriate values, e.g.
-        git://kie-wb-host:9148/system.</para>
+        ssh://localhost/system ). To connect to a remote server, replace the host and port with appropriate values, e.g.
+        ssh://kie-wb-host/system.</para>
       <programlisting>./kie-config-cli.sh </programlisting>
       <para>To operate in offline mode, append the offline parameter to the kie-config-cli.sh command. This will change
         the behaviour and ask for a folder where the .niogit (system repository) is. If .niogit does not yet exist, the
