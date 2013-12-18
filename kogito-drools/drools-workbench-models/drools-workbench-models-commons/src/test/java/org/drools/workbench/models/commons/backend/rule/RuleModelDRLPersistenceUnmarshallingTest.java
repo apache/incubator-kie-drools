@@ -899,7 +899,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1043395 - big data")
     public void testFreeFormLine() {
         String drl = "rule rule1\n"
                 + "when\n"
@@ -909,7 +908,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "end";
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
-
         assertNotNull( m );
         assertEquals( 2, m.rhs.length );
         assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
@@ -2039,12 +2037,11 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals("[\"item1\", \"item2\"]",actionFieldValue.getValue());
         assertEquals("emps",actionFieldValue.getField());
         assertEquals(FieldNatureType.TYPE_FORMULA, actionFieldValue.getNature());
-        assertEquals("Collection",actionFieldValue.getType());
+        assertEquals(DataType.TYPE_COLLECTION, actionFieldValue.getType());
 
     }
 
     @Test
-    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1043395 -  Invalid rules in jboss-bpm-example (Big App) - can't be opened/validated in Guider Rule Editor")
     public void testFunctionInRHS() throws Exception {
         String drl = "" +
                 "rule \"Borked\"\n" +
@@ -2066,8 +2063,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         ActionFieldValue value = field.getFieldValues()[0];
         assertEquals("apr", value.getField());
         assertEquals("application.getApr() + 5", value.getValue());
-        assertEquals(3, value.getNature());
-        assertEquals("Numeric", value.getType());
+        assertEquals(FieldNatureType.TYPE_FORMULA, value.getNature());
+        assertEquals(DataType.TYPE_NUMERIC, value.getType());
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
