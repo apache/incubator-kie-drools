@@ -234,6 +234,46 @@ public class RuleTemplateModelDRLPersistenceTest {
     }
 
     @Test
+    public void testGeneratorFactoryReuse() {
+        TemplateModel m = new TemplateModel();
+        m.name = "t1";
+
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( DataType.TYPE_STRING );
+        con.setFieldName( "field1" );
+        con.setOperator( "==" );
+        con.setValue( "$f1" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE );
+        p.addConstraint( con );
+
+        SingleFieldConstraint con2 = new SingleFieldConstraint();
+        con.setFieldType( DataType.TYPE_STRING );
+        con2.setFieldName( "field2" );
+        con2.setOperator( "==" );
+        con2.setValue( "$f2" );
+        con2.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE );
+        p.addConstraint( con2 );
+
+        m.addLhsItem( p );
+
+        m.addRow( new String[]{ "foo", "bar" } );
+
+        String expected = "rule \"t1_0\"" +
+                "dialect \"mvel\"\n" +
+                "when \n"
+                + "Person( field1 == \"foo\", field2 == \"bar\" )"
+                + "then \n"
+                + "end";
+
+        checkMarshall( expected,
+                       m );
+
+        checkMarshall( expected,
+                       m );
+    }
+
+    @Test
     public void testCompositeConstraintsBothValues() {
         TemplateModel m = new TemplateModel();
         m.name = "t1";
