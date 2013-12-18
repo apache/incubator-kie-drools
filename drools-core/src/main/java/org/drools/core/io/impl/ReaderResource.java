@@ -56,10 +56,11 @@ public class ReaderResource  extends BaseResource implements InternalResource {
         }
         if ( encoding == null && reader instanceof InputStreamReader ) {
             this.encoding = ((InputStreamReader)reader).getEncoding();
+        } else {
+        	this.encoding = encoding;
         }
         this.reader = reader;
 
-        this.encoding = encoding;
         
         setResourceType( type );
         
