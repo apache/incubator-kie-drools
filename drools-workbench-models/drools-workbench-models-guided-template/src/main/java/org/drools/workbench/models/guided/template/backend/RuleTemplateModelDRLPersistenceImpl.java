@@ -406,8 +406,6 @@ public class RuleTemplateModelDRLPersistenceImpl
         log.debug( "ruleTemplate:\n{}",
                    ruleTemplate );
 
-        System.out.println( ruleTemplate );
-
         log.debug( "generated template:\n{}", ruleTemplate );
 
         final DataProvider dataProvider = chooseDataProvider( model );
