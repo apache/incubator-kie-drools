@@ -2201,4 +2201,17 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         assertEquals(Status.Completed, task2.getTaskData().getStatus());
         assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
     }
+    
+    @Test
+    public void testInvalidTask() {
+    	try {
+    		taskService.claim(-1, "Darth Vader");
+    	} catch (PermissionDeniedException e) {
+    		if ("Task '-1' not found".equals(e.getMessage())) {
+    			return;
+    		} else {
+    			throw e;
+    		}
+    	}
+    }
 }

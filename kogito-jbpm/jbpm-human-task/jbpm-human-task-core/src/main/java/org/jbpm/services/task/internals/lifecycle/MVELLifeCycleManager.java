@@ -242,6 +242,10 @@ public class MVELLifeCycleManager implements LifeCycleManager {
             final List<OperationCommand> commands = operations.get(operation);
 
             Task task = persistenceContext.findTask(taskId);
+            if (task == null) {
+            	String errorMessage = "Task '" + taskId + "' not found";
+                throw new PermissionDeniedException(errorMessage);
+            }
             User user = persistenceContext.findUser(userId);
             OrganizationalEntity targetEntity = null;
             if (targetEntityId != null && !targetEntityId.equals("")) {
