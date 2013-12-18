@@ -46,12 +46,6 @@ public class GeneratorContext {
         this.offset = offset;
     }
 
-    public GeneratorContext createChild() {
-        return GeneratorContextFactory.newGeneratorContext( this,
-                                                            depth + 1,
-                                                            childCount++ );
-    }
-
     public FieldConstraint getFieldConstraint() {
         return fieldConstraint;
     }

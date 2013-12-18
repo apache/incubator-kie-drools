@@ -23,25 +23,23 @@ import java.util.List;
  */
 public class GeneratorContextFactory {
 
-    private static List<GeneratorContext> contexts = new ArrayList<GeneratorContext>();
+    private List<GeneratorContext> contexts = new ArrayList<GeneratorContext>();
 
-    public static GeneratorContext newGeneratorContext() {
+    public GeneratorContext newGeneratorContext() {
         final GeneratorContext gc = new GeneratorContext();
         contexts.add( gc );
         return gc;
     }
 
-    public static GeneratorContext newGeneratorContext( GeneratorContext parent,
-                                                        int depth,
-                                                        int offset ) {
+    public GeneratorContext newChildGeneratorContext( GeneratorContext parent ) {
         final GeneratorContext gc = new GeneratorContext( parent,
-                                                          depth,
-                                                          offset );
+                                                          parent.getDepth() + 1,
+                                                          parent.getOffset() + 1 );
         contexts.add( gc );
         return gc;
     }
 
-    public static List<GeneratorContext> getGeneratorContexts() {
+    public List<GeneratorContext> getGeneratorContexts() {
         return contexts;
     }
 

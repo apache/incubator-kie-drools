@@ -67,14 +67,17 @@ public class RuleTemplateModelDRLPersistenceImpl
         return INSTANCE;
     }
 
+    @Override
     protected LHSPatternVisitor getLHSPatternVisitor( final boolean isDSLEnhanced,
                                                       final StringBuilder buf,
                                                       final String nestedIndentation,
-                                                      final boolean isNegated ) {
+                                                      final boolean isNegated,
+                                                      final GeneratorContextFactory generatorContextFactory ) {
         return new LHSPatternVisitor( isDSLEnhanced,
                                       bindingsPatterns,
                                       bindingsFields,
                                       constraintValueBuilder,
+                                      generatorContextFactory,
                                       buf,
                                       nestedIndentation,
                                       isNegated );
@@ -98,6 +101,7 @@ public class RuleTemplateModelDRLPersistenceImpl
                                   final Map<String, IFactPattern> bindingsPatterns,
                                   final Map<String, FieldConstraint> bindingsFields,
                                   final DRLConstraintValueBuilder constraintValueBuilder,
+                                  final GeneratorContextFactory generatorContextFactory,
                                   final StringBuilder b,
                                   final String indentation,
                                   final boolean isPatternNegated ) {
@@ -105,6 +109,7 @@ public class RuleTemplateModelDRLPersistenceImpl
                    bindingsPatterns,
                    bindingsFields,
                    constraintValueBuilder,
+                   generatorContextFactory,
                    b,
                    indentation,
                    isPatternNegated );
@@ -423,6 +428,7 @@ public class RuleTemplateModelDRLPersistenceImpl
 
         StringBuilder buf = new StringBuilder();
         StringBuilder header = new StringBuilder();
+        GeneratorContextFactory generatorContextFactory = new GeneratorContextFactory();
 
         //Build rule
         this.marshalRuleHeader( model,
@@ -433,16 +439,18 @@ public class RuleTemplateModelDRLPersistenceImpl
                                  model );
 
         buf.append( "\twhen\n" );
+
         super.marshalLHS( buf,
                           model,
-                          isDSLEnhanced );
+                          isDSLEnhanced,
+                          generatorContextFactory );
         buf.append( "\tthen\n" );
         super.marshalRHS( buf,
                           model,
                           isDSLEnhanced );
         this.marshalFooter( buf );
 
-        for ( GeneratorContext gc : GeneratorContextFactory.getGeneratorContexts() ) {
+        for ( GeneratorContext gc : generatorContextFactory.getGeneratorContexts() ) {
             header.append( "@code{hasNonTemplateOutput" + gc.getDepth() + "_" + gc.getOffset() + " = " + gc.hasNonTemplateOutput() + "}" );
         }
 

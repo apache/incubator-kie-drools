@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 import org.drools.core.util.StringUtils;
 import org.drools.workbench.models.commons.backend.rule.DRLConstraintValueBuilder;
 import org.drools.workbench.models.commons.backend.rule.GeneratorContext;
+import org.drools.workbench.models.commons.backend.rule.GeneratorContextFactory;
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
@@ -54,12 +55,14 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
     protected LHSPatternVisitor getLHSPatternVisitor( final boolean isDSLEnhanced,
                                                       final StringBuilder buf,
                                                       final String nestedIndentation,
-                                                      final boolean isNegated ) {
+                                                      final boolean isNegated,
+                                                      final GeneratorContextFactory generatorContextFactory ) {
         return new LHSPatternVisitor( isDSLEnhanced,
                                       rowDataProvider,
                                       bindingsPatterns,
                                       bindingsFields,
                                       constraintValueBuilder,
+                                      generatorContextFactory,
                                       buf,
                                       nestedIndentation,
                                       isNegated );
@@ -88,6 +91,7 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
                                   final Map<String, IFactPattern> bindingsPatterns,
                                   final Map<String, FieldConstraint> bindingsFields,
                                   final DRLConstraintValueBuilder constraintValueBuilder,
+                                  final GeneratorContextFactory generatorContextFactory,
                                   final StringBuilder b,
                                   final String indentation,
                                   final boolean isPatternNegated ) {
@@ -95,6 +99,7 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
                    bindingsPatterns,
                    bindingsFields,
                    constraintValueBuilder,
+                   generatorContextFactory,
                    b,
                    indentation,
                    isPatternNegated );
@@ -110,10 +115,10 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
 
         @Override
         protected void generateConstraint( final FieldConstraint constr,
-                                           GeneratorContext gctx) {
+                                           GeneratorContext gctx ) {
             if ( isValidFieldConstraint( constr ) ) {
                 super.generateConstraint( constr,
-                                          gctx);
+                                          gctx );
             }
         }
 
@@ -125,14 +130,13 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
                                                       final String value,
                                                       final ExpressionFormLine expression,
                                                       GeneratorContext gctx,
-                                                      final boolean spaceBeforeOperator   ) {
+                                                      final boolean spaceBeforeOperator ) {
             boolean generateTemplateCheck = type == BaseSingleFieldConstraint.TYPE_TEMPLATE;
-            if ( generateTemplateCheck && !gctx.isHasOutput() && operator.startsWith( "||") || operator.startsWith( "&&")  ) {
-                operator = operator.substring(2);
+            if ( generateTemplateCheck && !gctx.isHasOutput() && operator.startsWith( "||" ) || operator.startsWith( "&&" ) ) {
+                operator = operator.substring( 2 );
             }
-            super.addConnectiveFieldRestriction(buf, type, fieldType, operator, parameters, value, expression, gctx, true);
+            super.addConnectiveFieldRestriction( buf, type, fieldType, operator, parameters, value, expression, gctx, true );
         }
-
 
         @Override
         protected void buildTemplateFieldValue( final int type,

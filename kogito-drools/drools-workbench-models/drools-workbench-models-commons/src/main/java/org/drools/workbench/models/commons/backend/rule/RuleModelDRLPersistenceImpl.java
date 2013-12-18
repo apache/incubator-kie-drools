@@ -169,7 +169,8 @@ public class RuleModelDRLPersistenceImpl
         buf.append( "\twhen\n" );
         this.marshalLHS( buf,
                          model,
-                         isDSLEnhanced );
+                         isDSLEnhanced,
+                         new GeneratorContextFactory() );
         buf.append( "\tthen\n" );
         this.marshalRHS( buf,
                          model,
@@ -289,7 +290,8 @@ public class RuleModelDRLPersistenceImpl
      */
     protected void marshalLHS( final StringBuilder buf,
                                final RuleModel model,
-                               final boolean isDSLEnhanced ) {
+                               final boolean isDSLEnhanced,
+                               final GeneratorContextFactory generatorContextFactory ) {
         String indentation = "\t\t";
         String nestedIndentation = indentation;
         boolean isNegated = model.isNegated();
@@ -303,7 +305,8 @@ public class RuleModelDRLPersistenceImpl
             LHSPatternVisitor visitor = getLHSPatternVisitor( isDSLEnhanced,
                                                               buf,
                                                               nestedIndentation,
-                                                              isNegated );
+                                                              isNegated,
+                                                              generatorContextFactory );
             for ( IPattern cond : model.lhs ) {
                 visitor.visit( cond );
             }
@@ -321,11 +324,13 @@ public class RuleModelDRLPersistenceImpl
     protected LHSPatternVisitor getLHSPatternVisitor( final boolean isDSLEnhanced,
                                                       final StringBuilder buf,
                                                       final String nestedIndentation,
-                                                      final boolean isNegated ) {
+                                                      final boolean isNegated,
+                                                      final GeneratorContextFactory generatorContextFactory ) {
         return new LHSPatternVisitor( isDSLEnhanced,
                                       bindingsPatterns,
                                       bindingsFields,
                                       constraintValueBuilder,
+                                      generatorContextFactory,
                                       buf,
                                       nestedIndentation,
                                       isNegated );
@@ -408,11 +413,13 @@ public class RuleModelDRLPersistenceImpl
         private Map<String, IFactPattern> bindingsPatterns;
         private Map<String, FieldConstraint> bindingsFields;
         protected DRLConstraintValueBuilder constraintValueBuilder;
+        protected GeneratorContextFactory generatorContextFactory;
 
         public LHSPatternVisitor( final boolean isDSLEnhanced,
                                   final Map<String, IFactPattern> bindingsPatterns,
                                   final Map<String, FieldConstraint> bindingsFields,
                                   final DRLConstraintValueBuilder constraintValueBuilder,
+                                  final GeneratorContextFactory generatorContextFactory,
                                   final StringBuilder b,
                                   final String indentation,
                                   final boolean isPatternNegated ) {
@@ -420,6 +427,7 @@ public class RuleModelDRLPersistenceImpl
             this.bindingsPatterns = bindingsPatterns;
             this.bindingsFields = bindingsFields;
             this.constraintValueBuilder = constraintValueBuilder;
+            this.generatorContextFactory = generatorContextFactory;
             this.indentation = indentation;
             this.isPatternNegated = isPatternNegated;
             buf = b;
@@ -691,7 +699,7 @@ public class RuleModelDRLPersistenceImpl
         }
 
         private void generateConstraints( final FactPattern pattern ) {
-            GeneratorContext gctx = GeneratorContextFactory.newGeneratorContext();
+            GeneratorContext gctx = generatorContextFactory.newGeneratorContext();
             preGenerateConstraints( gctx );
             for ( int constraintIndex = 0; constraintIndex < pattern.getFieldConstraints().length; constraintIndex++ ) {
                 FieldConstraint constr = pattern.getConstraintList().getConstraints()[ constraintIndex ];
@@ -746,7 +754,7 @@ public class RuleModelDRLPersistenceImpl
                 CompositeFieldConstraint cfc = (CompositeFieldConstraint) con;
                 FieldConstraint[] nestedConstraints = cfc.getConstraints();
                 if ( nestedConstraints != null ) {
-                    GeneratorContext nestedGctx = gctx.createChild();
+                    GeneratorContext nestedGctx = generatorContextFactory.newChildGeneratorContext( gctx );
                     preGenerateConstraints( nestedGctx );
                     preGenerateNestedConstraint( gctx );
                     if ( gctx.getDepth() > 0 ) {
@@ -844,7 +852,7 @@ public class RuleModelDRLPersistenceImpl
         private void generateConnectiveFieldRestriction( SingleFieldConstraint constr,
                                                          Map<String, String> parameters,
                                                          GeneratorContext gctx ) {
-            GeneratorContext cctx = gctx.createChild();
+            GeneratorContext cctx = generatorContextFactory.newChildGeneratorContext( gctx );
             preGenerateConstraints( cctx );
             cctx.setFieldConstraint( constr );
             if ( constr instanceof SingleFieldConstraintEBLeftSide ) {
@@ -2192,13 +2200,13 @@ public class RuleModelDRLPersistenceImpl
                 boolean addFreeFormLine = line.trim().length() > 0;
                 if ( eqPos > 0 ) {
                     String field = line.substring( 0, eqPos ).trim();
-                    if ("java.text.SimpleDateFormat sdf".equals(field) || "org.drools.core.process.instance.WorkItemManager wim".equals(field)) {
+                    if ( "java.text.SimpleDateFormat sdf".equals( field ) || "org.drools.core.process.instance.WorkItemManager wim".equals( field ) ) {
                         addFreeFormLine = false;
                     }
                     String[] split = field.split( " " );
                     if ( split.length == 2 ) {
-                        factsType.put( split[1], split[0] );
-                        addFreeFormLine &= !isInsertedFact(lines, lineCounter, split[1]);
+                        factsType.put( split[ 1 ], split[ 0 ] );
+                        addFreeFormLine &= !isInsertedFact( lines, lineCounter, split[ 1 ] );
                     }
                 }
                 if ( addFreeFormLine ) {
@@ -2224,9 +2232,11 @@ public class RuleModelDRLPersistenceImpl
         }
     }
 
-    private boolean isInsertedFact(String[] lines, int lineCounter, String fact) {
-        for (int i = lineCounter; i < lines.length; i++) {
-            String line = lines[i].trim();
+    private boolean isInsertedFact( String[] lines,
+                                    int lineCounter,
+                                    String fact ) {
+        for ( int i = lineCounter; i < lines.length; i++ ) {
+            String line = lines[ i ].trim();
             if ( line.startsWith( "insert" ) ) {
                 if ( fact.equals( unwrapParenthesis( line ) ) ) {
                     return true;
