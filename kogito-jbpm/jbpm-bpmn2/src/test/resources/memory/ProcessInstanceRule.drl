@@ -1,0 +1,11 @@
+package org.jbpm;
+
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl
+
+rule CheckProcVar
+  ruleflow-group "memory-rule"
+  when
+    $pi : WorkflowProcessInstanceImpl( $fireball : variables['fireball'] )
+  then
+    ((String []) $fireball)[0] = "boom!";
+end

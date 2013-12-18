@@ -1,3 +1,4 @@
+bin/
 /target
 /local
 
@@ -13,15 +14,14 @@
 .DS_Store
 
 # Original jbpm ignores
-bin/
 *~
-*.tlog
 
 # Test info
 /settings*.xml
 /lib-jdbc/
 bitronix-default-config.properties
 *.db
+*.tlog
 
 # modules that don't exist in this branch
 /jbpm-human-task-war/
@@ -31,4 +31,3 @@ bitronix-default-config.properties
 # files used for external db testing
 jdbc_driver.jar
 db-settings.xml
-/jbpm-human-task/jbpm-human-task-audit/target/
