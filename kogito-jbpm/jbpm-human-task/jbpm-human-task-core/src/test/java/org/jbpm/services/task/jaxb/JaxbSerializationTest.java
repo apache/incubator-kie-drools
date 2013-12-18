@@ -31,6 +31,7 @@ public class JaxbSerializationTest extends AbstractSerializationTest {
     @Override
     public Object testRoundTrip(Object input) throws Exception {
         String xmlStr = convertJaxbObjectToString(input);
+        System.out.println(xmlStr);
         return convertStringToJaxbObject(xmlStr);
     }
 

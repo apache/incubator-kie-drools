@@ -1,6 +1,8 @@
 package org.jbpm.services.task.jaxb;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.InputStreamReader;
@@ -16,6 +18,11 @@ import java.util.Map;
 import java.util.Queue;
 
 import org.jbpm.services.task.MvelFilePath;
+import org.jbpm.services.task.commands.CancelDeadlineCommand;
+import org.jbpm.services.task.commands.CompositeCommand;
+import org.jbpm.services.task.commands.ProcessSubTaskCommand;
+import org.jbpm.services.task.commands.SkipTaskCommand;
+import org.jbpm.services.task.commands.StartTaskCommand;
 import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.commands.UserGroupCallbackTaskCommand;
 import org.jbpm.services.task.impl.factories.TaskFactory;
@@ -196,5 +203,43 @@ public abstract class AbstractSerializationTest {
                 throw e;
             }
         } 
+    }
+    
+    @Test
+    public void taskCompositeCommandCanBeSerialized() throws Exception { 
+    	addClassesToSerializationContext(CompositeCommand.class);
+    	addClassesToSerializationContext(StartTaskCommand.class);
+    	addClassesToSerializationContext(CancelDeadlineCommand.class);
+    	CompositeCommand<Void> cmd = new CompositeCommand<Void>(
+				new StartTaskCommand(1, "john"),
+				new CancelDeadlineCommand(1, true, false));
+    	
+    	CompositeCommand<?> returned = (CompositeCommand<?>) testRoundTrip(cmd);
+    	assertNotNull(returned);
+    	assertNotNull(returned.getMainCommand());
+    	assertTrue(returned.getMainCommand() instanceof StartTaskCommand);
+    	assertNotNull(returned.getCommands());
+    	assertEquals(1, returned.getCommands().length);
+ 
+    }
+    
+    @Test
+    public void taskCompositeCommandMultipleCanBeSerialized() throws Exception { 
+    	addClassesToSerializationContext(CompositeCommand.class);
+    	addClassesToSerializationContext(SkipTaskCommand.class);
+    	addClassesToSerializationContext(ProcessSubTaskCommand.class);
+    	addClassesToSerializationContext(CancelDeadlineCommand.class);
+    	CompositeCommand<Void> cmd = new CompositeCommand<Void>(
+    			new SkipTaskCommand(1, "john"),
+				new ProcessSubTaskCommand(1, "john"),
+				new CancelDeadlineCommand(1, true, true));
+    	
+    	CompositeCommand<?> returned = (CompositeCommand<?>) testRoundTrip(cmd);
+    	assertNotNull(returned);
+    	assertNotNull(returned.getMainCommand());
+    	assertTrue(returned.getMainCommand() instanceof SkipTaskCommand);
+    	assertNotNull(returned.getCommands());
+    	assertEquals(2, returned.getCommands().length);
+ 
     }
 }
