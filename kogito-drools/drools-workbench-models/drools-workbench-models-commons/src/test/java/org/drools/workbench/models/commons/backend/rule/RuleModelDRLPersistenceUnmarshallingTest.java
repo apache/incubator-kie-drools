@@ -1897,6 +1897,48 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
+    public void testMethodCall() {
+        // BZ-
+        String drl = "" +
+                "package org.mortgages;\n" +
+                "import org.mortgages.LoanApplication;\n" +
+                "import java.util.Map;\n" +
+                "rule \"my rule\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    a : LoanApplication( )\n" +
+                "    m : Map()\n" +
+                "  then\n" +
+                "    m.put(\"key\", a );\n" +
+                "end\n";
+
+        HashMap<String, String> globals = new HashMap<String, String>();
+
+        when(dmo.getPackageGlobals()).thenReturn(globals);
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+
+        assertEquals( 2, m.getImports().getImports().size() );
+        
+        assertTrue( m.rhs[ 0 ] instanceof ActionCallMethod );
+        ActionCallMethod mc = (ActionCallMethod) m.rhs[ 0 ];
+        assertEquals( "put", mc.getMethodName() );
+        assertEquals( "m", mc.getVariable() );
+        assertEquals( 1, mc.getState() );
+        assertEquals( 2, mc.getFieldValues().length );
+        
+        ActionFieldValue f1 = mc.getFieldValue(0);
+        assertEquals( "key", f1.getValue() );  // is this correct?
+        ActionFieldValue f2 = mc.getFieldValue(1);
+        assertEquals( "a", f2.getValue() );
+        
+        String marshalled = RuleModelDRLPersistenceImpl.getInstance().marshal(m);
+        System.out.println(marshalled);
+        assertEqualsIgnoreWhitespace( drl,
+                marshalled );
+    }
+
+    @Test
     public void testGlobalCollectionAdd() {
         // BZ-1013682
         String drl = "package org.mortgages;\n" +
