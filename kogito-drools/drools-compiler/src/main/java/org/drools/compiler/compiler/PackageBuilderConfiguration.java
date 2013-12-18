@@ -575,8 +575,16 @@ public class PackageBuilderConfiguration
         this.chainedProperties.mapStartsWith( temp,
                                               EvaluatorOption.PROPERTY_NAME,
                                               true );
-        for ( String className : temp.values() ) {
-            this.evaluatorRegistry.addEvaluatorDefinition( className );
+        for ( Entry<String, String> e: temp.entrySet()) {
+        	String key = e.getKey();
+        	// filtering out unused properties, to avoid failing when an old packagebuilder.conf
+        	// file is present on the classpath that did define these (for example when parsing
+        	// a rule in Eclipse plugin using old runtime)
+        	if ("drools.evaluator.equality".equals(key)
+        			|| ("drools.evaluator.comparable".equals(key))) {
+        		continue;
+        	}
+            this.evaluatorRegistry.addEvaluatorDefinition( e.getValue() );
         }
     }
 
