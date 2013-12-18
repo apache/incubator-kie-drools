@@ -898,6 +898,24 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
+    public void testFreeFormLine() {
+        String drl = "rule rule1\n"
+                + "when\n"
+                + "then\n"
+                + "int test = (int)(1-0.8);\n"
+                + "System.out.println( \"Hello Mario!\" );\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        assertNotNull( m );
+        assertEquals( 2, m.rhs.length );
+        assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
+        assertEquals( "int test = (int)(1-0.8);", ( (FreeFormLine) m.rhs[ 0 ] ).getText() );
+        assertTrue( m.rhs[ 1 ] instanceof FreeFormLine );
+        assertEquals( "System.out.println( \"Hello Mario!\" );", ( (FreeFormLine) m.rhs[ 1 ] ).getText() );
+    }
+
+    @Test
     public void testNestedFieldExpressions() {
         String drl =
                 "rule rule1\n"
@@ -1878,48 +1896,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    public void testMethodCall() {
-        // BZ-
-        String drl = "" +
-                "package org.mortgages;\n" +
-                "import org.mortgages.LoanApplication;\n" +
-                "import java.util.Map;\n" +
-                "rule \"my rule\"\n" +
-                "  dialect \"mvel\"\n" +
-                "  when\n" +
-                "    a : LoanApplication( )\n" +
-                "    m : Map()\n" +
-                "  then\n" +
-                "    m.put(\"key\", a );\n" +
-                "end\n";
-
-        HashMap<String, String> globals = new HashMap<String, String>();
-
-        when(dmo.getPackageGlobals()).thenReturn(globals);
-
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
-
-        assertEquals( 2, m.getImports().getImports().size() );
-        
-        assertTrue( m.rhs[ 0 ] instanceof ActionCallMethod );
-        ActionCallMethod mc = (ActionCallMethod) m.rhs[ 0 ];
-        assertEquals( "put", mc.getMethodName() );
-        assertEquals( "m", mc.getVariable() );
-        assertEquals( 1, mc.getState() );
-        assertEquals( 2, mc.getFieldValues().length );
-        
-        ActionFieldValue f1 = mc.getFieldValue(0);
-        assertEquals( "key", f1.getValue() );  // is this correct?
-        ActionFieldValue f2 = mc.getFieldValue(1);
-        assertEquals( "a", f2.getValue() );
-        
-        String marshalled = RuleModelDRLPersistenceImpl.getInstance().marshal(m);
-        System.out.println(marshalled);
-        assertEqualsIgnoreWhitespace( drl,
-                marshalled );
-    }
-
-    @Test
     public void testGlobalCollectionAdd() {
         // BZ-1013682
         String drl = "package org.mortgages;\n" +
@@ -2060,8 +2036,34 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals("[\"item1\", \"item2\"]",actionFieldValue.getValue());
         assertEquals("emps",actionFieldValue.getField());
         assertEquals(FieldNatureType.TYPE_FORMULA, actionFieldValue.getNature());
-        assertEquals("Collection",actionFieldValue.getType());
+        assertEquals(DataType.TYPE_COLLECTION, actionFieldValue.getType());
 
+    }
+
+    @Test
+    public void testFunctionInRHS() throws Exception {
+        String drl = "" +
+                "rule \"Borked\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    application : Application( )\n" +
+                "  then\n" +
+                "    application.setApr( application.getApr() + 5 );\n" +
+                "    update( application )" +
+                "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                dmo);
+
+        assertTrue(m.rhs[0] instanceof ActionUpdateField);
+
+        ActionUpdateField field = (ActionUpdateField) m.rhs[0];
+        assertTrue(field.getFieldValues()[0] instanceof ActionFieldValue);
+        ActionFieldValue value = field.getFieldValues()[0];
+        assertEquals("apr", value.getField());
+        assertEquals("application.getApr() + 5", value.getValue());
+        assertEquals(FieldNatureType.TYPE_FORMULA, value.getNature());
+        assertEquals(DataType.TYPE_NUMERIC, value.getType());
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,

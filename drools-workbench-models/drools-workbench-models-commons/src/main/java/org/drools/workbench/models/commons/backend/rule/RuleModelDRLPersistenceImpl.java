@@ -2100,7 +2100,8 @@ public class RuleModelDRLPersistenceImpl
         Map<String, String> factsType = new HashMap<String, String>();
 
         int lineCounter = -1;
-        for ( String line : rhs.split( "\n" ) ) {
+        String[] lines = rhs.split( "\n" );
+        for ( String line : lines ) {
             lineCounter++;
             if ( expandedDRLInfo.hasDsl ) {
                 String dslLine = expandedDRLInfo.dslStatementsInRhs.get( lineCounter );
@@ -2196,13 +2197,19 @@ public class RuleModelDRLPersistenceImpl
                 }
 
                 int eqPos = line.indexOf( '=' );
+                boolean addFreeFormLine = line.trim().length() > 0;
                 if ( eqPos > 0 ) {
                     String field = line.substring( 0, eqPos ).trim();
+                    if ("java.text.SimpleDateFormat sdf".equals(field) || "org.drools.core.process.instance.WorkItemManager wim".equals(field)) {
+                        addFreeFormLine = false;
+                    }
                     String[] split = field.split( " " );
                     if ( split.length == 2 ) {
-                        factsType.put( split[ 1 ], split[ 0 ] );
+                        factsType.put( split[1], split[0] );
+                        addFreeFormLine &= !isInsertedFact(lines, lineCounter, split[1]);
                     }
-                } else if ( line.trim().length() > 0 ) {
+                }
+                if ( addFreeFormLine ) {
                     FreeFormLine ffl = new FreeFormLine();
                     ffl.setText( line );
                     m.addRhsItem( ffl );
@@ -2223,6 +2230,18 @@ public class RuleModelDRLPersistenceImpl
                 dslLine = expandedDRLInfo.dslStatementsInRhs.get( ++lineCounter );
             }
         }
+    }
+
+    private boolean isInsertedFact(String[] lines, int lineCounter, String fact) {
+        for (int i = lineCounter; i < lines.length; i++) {
+            String line = lines[i].trim();
+            if ( line.startsWith( "insert" ) ) {
+                if ( fact.equals( unwrapParenthesis( line ) ) ) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private DSLSentence toDSLSentence( List<String> dslPatterns,
@@ -2325,7 +2344,7 @@ public class RuleModelDRLPersistenceImpl
             }
         }
         ActionFieldValue fieldValue = new ActionFieldValue( field, adjustParam( dataType, value, isJavaDialect ), dataType );
-        if ( dataType == DataType.TYPE_COLLECTION ) {
+        if ( dataType == DataType.TYPE_COLLECTION || dataType == DataType.TYPE_NUMERIC ) {
             fieldValue.setNature( FieldNatureType.TYPE_FORMULA );
         }
         return fieldValue;
