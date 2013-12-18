@@ -145,6 +145,8 @@ public class UrlResource extends BaseResource
                     //lets grab a copy and cache it in case we need it in future...
                     cacheStream();
                     lastMod = getCacheFile().lastModified();
+                    this.lastRead = lastMod;
+                    return fromCache();                    
                 }
             }
             this.lastRead = lastMod;
