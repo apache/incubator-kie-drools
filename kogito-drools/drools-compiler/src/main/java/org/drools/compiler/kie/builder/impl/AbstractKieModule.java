@@ -242,7 +242,7 @@ public abstract class AbstractKieModule
                                  KieBaseModel kieBaseModel,
                                  InternalKieModule kieModule) {
         for (String fileName : kieModule.getFileNames()) {
-            if (!fileName.endsWith(".properties") && filterFileInKBase(kieModule, kieBaseModel, fileName)) {
+            if (!fileName.startsWith(".") && !fileName.endsWith(".properties") && filterFileInKBase(kieModule, kieBaseModel, fileName)) {
                 assets.put(fileName, kieModule);
             }
         }

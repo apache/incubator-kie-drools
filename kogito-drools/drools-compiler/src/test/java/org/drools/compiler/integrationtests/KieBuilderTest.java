@@ -132,9 +132,8 @@ public class KieBuilderTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1044409")
     public void testKieBuilderWithDotFiles() {
-        //https://bugzilla.redhat.com/show_bug.cgi?id=1044409
+        // BZ-1044409
         final String KBASE_NAME = "kieBase";
         final String KSESSION_NAME = "kieSession";
 
