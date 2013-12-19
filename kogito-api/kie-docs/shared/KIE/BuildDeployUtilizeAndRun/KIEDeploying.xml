@@ -94,4 +94,103 @@ kScanner.start( 10000L );</programlisting>
     project. From this moment all the new <code>KieBase</code>s and <code>KieSession</code>s
     created from that <code>KieContainer</code> will use the new project version.</para>
   </section>
+  <section>
+    <title>Maven Versions and Dependencies</title>
+    <para>Maven supports a number of mechanisms to manage versioning and dependencies within applications. Modules can
+      be published with specific version numbers, or they can use the SNAPSHOT suffix. Dependencies can specify version
+      ranges to consume, or take avantage of SNAPSHOT mechanism.</para>
+    <para>StackOverflow provides a very good description for this, which is reproduced below.</para>
+    <para><link
+        xlink:href="http://stackoverflow.com/questions/30571/how-do-i-tell-maven-to-use-the-latest-version-of-a-dependency"
+        > http://stackoverflow.com/questions/30571/how-do-i-tell-maven-to-use-the-latest-version-of-a-dependency
+      </link></para>
+    
+    <para>If you always want to use the newest version, Maven has two keywords you can use as an alternative to version
+      ranges. You should use these options with care as you are no longer in control of the plugins/dependencies you are
+      using. </para>
+    
+    <para>When you depend on a plugin or a dependency, you can use the a version value of LATEST or RELEASE. LATEST
+      refers to the latest released or snapshot version of a particular artifact, the most recently deployed artifact in
+      a particular repository. RELEASE refers to the last non-snapshot release in the repository. In general, it is not
+      a best practice to design software which depends on a non-specific version of an artifact. If you are developing
+      software, you might want to use RELEASE or LATEST as a convenience so that you don't have to update version
+      numbers when a new release of a third-party library is released. When you release software, you should always make
+      sure that your project depends on specific versions to reduce the chances of your build or your project being
+      affected by a software release not under your control. Use LATEST and RELEASE with caution, if at all. </para>
+    
+    <para>See the POM Syntax section of the Maven book for more details. </para>
+    <para><link xlink:href="http://books.sonatype.com/mvnref-book/reference/pom-relationships-sect-pom-syntax.html"
+        >http://books.sonatype.com/mvnref-book/reference/pom-relationships-sect-pom-syntax.html </link></para>
+    <para><link
+        xlink:href="http://books.sonatype.com/mvnref-book/reference/pom-relationships-sect-project-dependencies.html"
+        >http://books.sonatype.com/mvnref-book/reference/pom-relationships-sect-project-dependencies.html</link></para>
+    <para>Here's an example illustrating the various options. In the Maven repository, com.foo:my-foo has the following
+      metadata:</para>
+    
+      <programlisting language="XML">&lt;metadata&gt;
+  &lt;groupId&gt;com.foo&lt;/groupId&gt;
+  &lt;artifactId&gt;my-foo&lt;/artifactId&gt;
+  &lt;version&gt;2.0.0&lt;/version&gt;
+  &lt;versioning&gt;
+    &lt;release&gt;1.1.1&lt;/release&gt;
+    &lt;versions&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;version&gt;1.0.1&lt;/version&gt;
+      &lt;version&gt;1.1&lt;/version&gt;
+      &lt;version&gt;1.1.1&lt;/version&gt;
+      &lt;version&gt;2.0.0&lt;/version&gt;
+    &lt;/versions&gt;
+    &lt;lastUpdated&gt;20090722140000&lt;/lastUpdated&gt;
+  &lt;/versioning&gt;
+&lt;/metadata&gt;</programlisting>
+    
+    <para>If a dependency on that artifact is required, you have the following options (other version ranges can be
+      specified of course, just showing the relevant ones here): Declare an exact version (will always resolve to
+      1.0.1): <programlisting>&lt;version&gt;[1.0.1]&lt;/version&gt;</programlisting> Declare an explicit version (will
+      always resolve to 1.0.1 unless a collision occurs, when Maven will select a matching version):
+      <programlisting>&lt;version&gt;1.0.1&lt;/version&gt;</programlisting> Declare a version range for all 1.x (will
+      currently resolve to 1.1.1): <programlisting>&lt;version&gt;[1.0.0,2.0.0)&lt;/version&gt;</programlisting> Declare
+      an open-ended version range (will resolve to 2.0.0):
+      <programlisting>&lt;version&gt;[1.0.0,)&lt;/version&gt;</programlisting> Declare the version as LATEST (will
+      resolve to 2.0.0): <programlisting>&lt;version&gt;LATEST&lt;/version&gt;</programlisting> Declare the version as
+      RELEASE (will resolve to 1.1.1): <programlisting>&lt;version&gt;RELEASE&lt;/version&gt;</programlisting>Note that
+      by default your own deployments will update the "latest" entry in the Maven metadata, but to update the "release"
+      entry, you need to activate the "release-profile" from the Maven super POM. You can do this with either
+      "-Prelease-profile" or "-DperformRelease=true" </para>
+    
+  </section>
+  <section>
+    <title>Settings.xml and Remote Repository Ssetup</title>
+    <para>The maven settings.xml is used to configure Maven execution. Detailed instructions can be found at the Maven
+      website:</para>
+    <para><link xlink:href="http://maven.apache.org/settings.html">http://maven.apache.org/settings.html</link></para>
+    <para> The settings.xml file can be located in 3 locations, the actual settings used is a merge of those 3
+      locations.</para>
+    <itemizedlist>
+        <listitem>
+        <para>The Maven install: $M2_HOME/conf/settings.xml</para>
+      </listitem>
+      <listitem>
+        <para>A user's install: ${user.home}/.m2/settings.xml<emphasis role="bold"/></para>
+      </listitem>
+      <listitem>
+        <para>Folder location specified by the system propert kie.maven.settings.custom</para>
+      </listitem>
+      </itemizedlist>
+    <para>The settings.xml is used to specify the location of remote repositories. It is important that you activate the
+      profile that specifies the remote repository, typically this can be done using "activeByDefault":</para>
+    <programlisting language="XML">&lt;profiles&gt;
+  &lt;profile&gt;
+    &lt;id&gt;profile-1&lt;/id&gt;
+    &lt;activation&gt;
+      &lt;activeByDefault&gt;true&lt;/activeByDefault&gt;
+    &lt;/activation&gt;
+    ...
+  &lt;/profile&gt;
+&lt;/profiles&gt;
+    </programlisting>
+    <para>Maven provides detailed documentation on using multiple remote repositories:</para>
+    <para><link xlink:href="http://maven.apache.org/guides/mini/guide-multiple-repositories.html"
+        >http://maven.apache.org/guides/mini/guide-multiple-repositories.html</link></para>
+  </section>
 </section>
