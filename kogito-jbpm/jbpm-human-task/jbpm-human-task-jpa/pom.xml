@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jbpm</groupId>
     <artifactId>jbpm-human-task</artifactId>
-    <version>6.1.0-SNAPSHOT</version>
+    <version>6.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>jbpm-human-task-jpa</artifactId>
   <packaging>bundle</packaging>
@@ -20,6 +20,8 @@
       <groupId>org.hibernate.javax.persistence</groupId>
       <artifactId>hibernate-jpa-2.0-api</artifactId>
     </dependency>
+    
+    <!-- OSGI -->
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
@@ -30,60 +32,10 @@
       <artifactId>org.osgi.compendium</artifactId>
       <scope>provided</scope>
     </dependency>
-    <!-- Following 2 dependencies needed for making the build work with JDK5 -->
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-xjc</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- Test -->
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-entitymanager</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.btm</groupId>
-      <artifactId>btm</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>
-    <testResources>
-      <testResource>
-        <directory>src/test/resources</directory>
-        <filtering>false</filtering>
-      </testResource>
-      <testResource>
-        <directory>src/test/filtered-resources</directory>
-        <filtering>true</filtering>
-      </testResource>
-    </testResources>
-
     <plugins>
-
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -99,22 +51,6 @@
               org.jbpm.services.task.persistence.*
             </Export-Package>
           </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
-        <!--  ensure that db files are deleted before _any_ run 
-              otherwise we get tests failing because of leftover db's -->
-        <artifactId>maven-clean-plugin</artifactId>
-        <configuration>
-          <filesets>
-            <fileset>
-              <directory>${basedir}</directory>
-              <includes>
-                <include>btm*</include>
-                <include>*.db</include>
-              </includes>
-            </fileset>
-          </filesets>
         </configuration>
       </plugin>
     </plugins>

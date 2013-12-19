@@ -72,13 +72,11 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
     @Test
     public void testNewTaskWithSinglePotentialOwner() {
-        
-        
-
+        String language = "en-UK";
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')  ],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "names = [ new I18NText( '" + language + "', 'This is my task name')] })";
 
 
         Task task = TaskFactory.evalTask(new StringReader(str));
@@ -87,11 +85,12 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         long taskId = task.getId();
 
         // Task should be assigned to the single potential owner and state set to Reserved
-
-
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task1.getTaskData().getStatus());
-        assertEquals("Bobba Fet", task1.getTaskData().getActualOwner().getId());
+        String potOwner = "Bobba Fet"; 
+        assertEquals(potOwner, task1.getTaskData().getActualOwner().getId());
+        
+        taskService.getTasksAssignedAsPotentialOwner(potOwner, language);
     }
 
     @Test

@@ -16,11 +16,12 @@ import org.jbpm.services.task.impl.model.xml.adapter.OrganizationalEntityXmlAdap
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.PeopleAssignments;
 import org.kie.api.task.model.User;
+import org.kie.internal.task.api.model.InternalPeopleAssignments;
 
 
 @XmlRootElement(name="people-assignments")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxbPeopleAssignments implements PeopleAssignments {
+public class JaxbPeopleAssignments implements InternalPeopleAssignments {
 
     @XmlElement(name="task-initiator")
     @XmlJavaTypeAdapter(value=OrganizationalEntityXmlAdapter.class)
@@ -34,6 +35,18 @@ public class JaxbPeopleAssignments implements PeopleAssignments {
     @XmlJavaTypeAdapter(value=OrganizationalEntityXmlAdapter.class)
     private List<OrganizationalEntity> businessAdministrators;
 
+    @XmlElement(name="excluded-owners")
+    @XmlJavaTypeAdapter(value=OrganizationalEntityXmlAdapter.class)
+    private List<OrganizationalEntity> excludedOwners;
+
+    @XmlElement(name="task-stakeholders")
+    @XmlJavaTypeAdapter(value=OrganizationalEntityXmlAdapter.class)
+    private List<OrganizationalEntity> taskStakeholders;
+
+    @XmlElement(name="recipients")
+    @XmlJavaTypeAdapter(value=OrganizationalEntityXmlAdapter.class)
+    private List<OrganizationalEntity> recipients;
+    
     public JaxbPeopleAssignments() { 
        // Default constructor for JAXB
     }
@@ -51,20 +64,71 @@ public class JaxbPeopleAssignments implements PeopleAssignments {
         return taskInitiator;
     }
 
+    public void setTaskInitiator(User taskInitiator) {
+        this.taskInitiator = taskInitiator;
+    }
+
     @Override
     public List<OrganizationalEntity> getPotentialOwners() {
         if( potentialOwners == null ) { 
-            potentialOwners = Collections.EMPTY_LIST;
+            potentialOwners = Collections.emptyList();
         }
         return Collections.unmodifiableList(potentialOwners);
+    }
+
+    public void setPotentialOwners(List<OrganizationalEntity> potentialOwners) {
+        this.potentialOwners = potentialOwners;
     }
 
     @Override
     public List<OrganizationalEntity> getBusinessAdministrators() {
         if( businessAdministrators == null ) { 
-            businessAdministrators = Collections.EMPTY_LIST;
+            businessAdministrators = Collections.emptyList();
         }
         return Collections.unmodifiableList(businessAdministrators);
+    }
+
+    public void setBusinessAdministrators(List<OrganizationalEntity> businessAdministrators) {
+        this.businessAdministrators = businessAdministrators;
+    }
+
+    @Override
+    public List<OrganizationalEntity> getExcludedOwners() {
+        if( excludedOwners == null ) { 
+            excludedOwners = Collections.emptyList();
+        }
+        return Collections.unmodifiableList(excludedOwners); 
+    }
+
+    @Override
+    public void setExcludedOwners(List<OrganizationalEntity> excludedOwners) {
+        this.excludedOwners = excludedOwners;
+    }
+
+    @Override
+    public List<OrganizationalEntity> getTaskStakeholders() {
+        if( taskStakeholders == null ) { 
+            taskStakeholders = Collections.emptyList();
+        }
+        return Collections.unmodifiableList(taskStakeholders); 
+    }
+
+    @Override
+    public void setTaskStakeholders(List<OrganizationalEntity> taskStakeholders) {
+        this.taskStakeholders = taskStakeholders;
+    }
+
+    @Override
+    public List<OrganizationalEntity> getRecipients() {
+        if( recipients == null ) { 
+            recipients = Collections.emptyList();
+        }
+        return Collections.unmodifiableList(recipients); 
+    }
+
+    @Override
+    public void setRecipients(List<OrganizationalEntity> recipients) {
+        this.recipients = recipients;
     }
 
     public void readExternal(ObjectInput arg0) throws IOException, ClassNotFoundException {
@@ -78,5 +142,6 @@ public class JaxbPeopleAssignments implements PeopleAssignments {
         throw new UnsupportedOperationException(methodName + " is not supported on the JAXB " + PeopleAssignments.class.getSimpleName()
                 + " implementation.");
     }
+
 
 }
