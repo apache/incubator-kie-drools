@@ -10,6 +10,7 @@
   <xi:include href="KIEBuilding.xml" />
   <xi:include href="KIEDeploying.xml" />
   <xi:include href="KIERunning.xml" />
+  <xi:include href="KIEDeployCheatSheets.xml" />
   <xi:include href="KIEExamples.xml" />
   
 </section>
