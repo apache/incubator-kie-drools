@@ -66,19 +66,33 @@
       </listitem>
 
       <listitem>
-        <para><emphasis role="bold"><literal>org.uberfire.nio.git.daemon.host</literal></emphasis>: If daemon enabled,
+        <para><emphasis role="bold"><literal>org.uberfire.nio.git.daemon.host</literal></emphasis>: If git daemon enabled,
         uses this property as local host identifier. Default: <literal>localhost</literal></para>
       </listitem>
 
       <listitem>
-        <para><emphasis role="bold"><literal>org.uberfire.nio.git.daemon.port</literal></emphasis>: If daemon enabled,
+        <para><emphasis role="bold"><literal>org.uberfire.nio.git.daemon.port</literal></emphasis>: If git daemon enabled,
         uses this property as port number. Default: <literal>9418</literal></para>
       </listitem>
 
       <listitem>
-        <para><emphasis role="bold"><literal>org.uberfire.nio.git.daemon.upload</literal></emphasis>: If daemon enabled,
-        uses this information to define if it's possible to push (upload) data to git. Default:
-        <literal>true</literal></para>
+        <para><emphasis role="bold"><literal>org.uberfire.nio.git.ssh.enabled</literal></emphasis>: Enables/disables
+          ssh daemon. Default: <literal>true</literal></para>
+      </listitem>
+      
+      <listitem>
+        <para><emphasis role="bold"><literal>org.uberfire.nio.git.ssh.host</literal></emphasis>: If ssh daemon enabled,
+          uses this property as local host identifier. Default: <literal>localhost</literal></para>
+      </listitem>
+      
+      <listitem>
+        <para><emphasis role="bold"><literal>org.uberfire.nio.git.ssh.port</literal></emphasis>: If ssh daemon enabled,
+          uses this property as port number. Default: <literal>8001</literal></para>
+      </listitem>
+      
+      <listitem>
+        <para><emphasis role="bold"><literal>org.uberfire.nio.git.ssh.cert.dir</literal></emphasis>: Location of the directory
+          <literal>.security</literal> where local certtificates will be stored. Default: working directory</para>
       </listitem>
 
       <listitem>
