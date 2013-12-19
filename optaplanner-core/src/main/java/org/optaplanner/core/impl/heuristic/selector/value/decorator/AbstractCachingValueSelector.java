@@ -73,8 +73,8 @@ public abstract class AbstractCachingValueSelector extends AbstractValueSelector
         return childValueSelector.getVariableDescriptor();
     }
 
-    public boolean isContinuous() {
-        return false;
+    public boolean isCountable() {
+        return true;
     }
 
     public long getSize(Object entity) {

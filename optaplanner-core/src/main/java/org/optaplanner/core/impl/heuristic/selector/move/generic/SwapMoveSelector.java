@@ -79,8 +79,8 @@ public class SwapMoveSelector extends GenericMoveSelector {
     // Worker methods
     // ************************************************************************
 
-    public boolean isContinuous() {
-        return leftEntitySelector.isContinuous() || rightEntitySelector.isContinuous();
+    public boolean isCountable() {
+        return leftEntitySelector.isCountable() && rightEntitySelector.isCountable();
     }
 
     public boolean isNeverEnding() {

@@ -51,8 +51,8 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
         return recordingEntitySelector.getEntityDescriptor();
     }
 
-    public boolean isContinuous() {
-        return recordingEntitySelector.isContinuous();
+    public boolean isCountable() {
+        return recordingEntitySelector.isCountable();
     }
 
     public boolean isNeverEnding() {

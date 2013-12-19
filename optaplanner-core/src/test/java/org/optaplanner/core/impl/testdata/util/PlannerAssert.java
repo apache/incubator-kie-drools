@@ -205,7 +205,7 @@ public class PlannerAssert extends Assert {
 
     public static void assertAllCodesOfMoveSelector(MoveSelector moveSelector, long size, String... codes) {
         assertAllCodesOfIterator(moveSelector.iterator(), codes);
-        assertEquals(false, moveSelector.isContinuous());
+        assertEquals(true, moveSelector.isCountable());
         assertEquals(false, moveSelector.isNeverEnding());
         if (size != DO_NOT_ASSERT_SIZE) {
             assertEquals(size, moveSelector.getSize());
@@ -220,7 +220,7 @@ public class PlannerAssert extends Assert {
         Iterator<Move> iterator = moveSelector.iterator();
         assertCodesOfIterator(iterator, codes);
         assertTrue(iterator.hasNext());
-        assertEquals(false, moveSelector.isContinuous());
+        assertEquals(true, moveSelector.isCountable());
         assertEquals(true, moveSelector.isNeverEnding());
         if (size != DO_NOT_ASSERT_SIZE) {
             assertEquals(size, moveSelector.getSize());
@@ -234,7 +234,7 @@ public class PlannerAssert extends Assert {
     public static void assertEmptyNeverEndingMoveSelector(MoveSelector moveSelector, long size) {
         Iterator<Move> iterator = moveSelector.iterator();
         assertFalse(iterator.hasNext());
-        assertEquals(false, moveSelector.isContinuous());
+        assertEquals(true, moveSelector.isCountable());
         assertEquals(true, moveSelector.isNeverEnding());
         if (size != DO_NOT_ASSERT_SIZE) {
             assertEquals(size, moveSelector.getSize());
@@ -247,7 +247,7 @@ public class PlannerAssert extends Assert {
 
     public static void assertAllCodesOfEntitySelector(EntitySelector entitySelector, long size, String... codes) {
         assertAllCodesOfIterator(entitySelector.iterator(), codes);
-        assertEquals(false, entitySelector.isContinuous());
+        assertEquals(true, entitySelector.isCountable());
         assertEquals(false, entitySelector.isNeverEnding());
         if (size != DO_NOT_ASSERT_SIZE) {
             assertEquals(size, entitySelector.getSize());
@@ -260,7 +260,7 @@ public class PlannerAssert extends Assert {
 
     public static void assertAllCodesOfPillarSelector(PillarSelector pillarSelector, long size, String... codes) {
         assertAllCodesOfIterator(pillarSelector.iterator(), codes);
-        assertEquals(false, pillarSelector.isContinuous());
+        assertEquals(true, pillarSelector.isCountable());
         assertEquals(false, pillarSelector.isNeverEnding());
         if (size != DO_NOT_ASSERT_SIZE) {
             assertEquals(size, pillarSelector.getSize());
@@ -275,7 +275,7 @@ public class PlannerAssert extends Assert {
     public static void assertAllCodesOfValueSelector(EntityIndependentValueSelector valueSelector, long size,
             String... codes) {
         assertAllCodesOfIterator(valueSelector.iterator(), codes);
-        assertEquals(false, valueSelector.isContinuous());
+        assertEquals(true, valueSelector.isCountable());
         assertEquals(false, valueSelector.isNeverEnding());
         if (size != DO_NOT_ASSERT_SIZE) {
             assertEquals(size, valueSelector.getSize());
@@ -290,7 +290,7 @@ public class PlannerAssert extends Assert {
     public static void assertAllCodesOfValueSelectorForEntity(ValueSelector valueSelector, Object entity,
             long size,  String... codes) {
         assertAllCodesOfIterator(valueSelector.iterator(entity), codes);
-        assertEquals(false, valueSelector.isContinuous());
+        assertEquals(true, valueSelector.isCountable());
         assertEquals(false, valueSelector.isNeverEnding());
         if (size != DO_NOT_ASSERT_SIZE) {
             assertEquals(size, valueSelector.getSize(entity));
@@ -305,7 +305,7 @@ public class PlannerAssert extends Assert {
     public static void assertAllCodesOfSubChainSelector(SubChainSelector subChainSelector, long size,
             String... codes) {
         assertAllCodesOfIterator(subChainSelector.iterator(), codes);
-        assertEquals(false, subChainSelector.isContinuous());
+        assertEquals(true, subChainSelector.isCountable());
         assertEquals(false, subChainSelector.isNeverEnding());
         if (size != DO_NOT_ASSERT_SIZE) {
             assertEquals(size, subChainSelector.getSize());

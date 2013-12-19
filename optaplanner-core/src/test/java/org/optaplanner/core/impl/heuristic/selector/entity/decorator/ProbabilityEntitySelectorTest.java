@@ -75,7 +75,7 @@ public class ProbabilityEntitySelectorTest {
         when(stepScopeA1.getWorkingRandom()).thenReturn(workingRandom);
         entitySelector.stepStarted(stepScopeA1);
 
-        assertEquals(false, entitySelector.isContinuous());
+        assertEquals(true, entitySelector.isCountable());
         assertEquals(true, entitySelector.isNeverEnding());
         assertEquals(4L, entitySelector.getSize());
         Iterator<Object> iterator = entitySelector.iterator();

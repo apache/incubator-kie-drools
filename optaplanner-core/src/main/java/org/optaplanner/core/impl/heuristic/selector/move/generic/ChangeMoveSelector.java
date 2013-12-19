@@ -50,8 +50,8 @@ public class ChangeMoveSelector extends GenericMoveSelector {
     // Worker methods
     // ************************************************************************
 
-    public boolean isContinuous() {
-        return entitySelector.isContinuous() || valueSelector.isContinuous();
+    public boolean isCountable() {
+        return entitySelector.isCountable() && valueSelector.isCountable();
     }
 
     public boolean isNeverEnding() {

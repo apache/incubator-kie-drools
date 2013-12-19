@@ -75,8 +75,8 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector implement
     // Worker methods
     // ************************************************************************
 
-    public boolean isContinuous() {
-        return false;
+    public boolean isCountable() {
+        return true;
     }
 
     public boolean isNeverEnding() {

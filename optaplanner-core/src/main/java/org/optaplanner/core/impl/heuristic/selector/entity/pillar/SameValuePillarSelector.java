@@ -129,8 +129,8 @@ public class SameValuePillarSelector extends AbstractSelector
     // Worker methods
     // ************************************************************************
 
-    public boolean isContinuous() {
-        return false;
+    public boolean isCountable() {
+        return true;
     }
 
     public boolean isNeverEnding() {

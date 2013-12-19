@@ -71,8 +71,8 @@ public class MoveListFactoryToMoveSelectorBridge extends AbstractMoveSelector
         cachedMoveList = null;
     }
 
-    public boolean isContinuous() {
-        return false;
+    public boolean isCountable() {
+        return true;
     }
 
     public boolean isNeverEnding() {

@@ -71,8 +71,8 @@ public abstract class AbstractCachingEntitySelector extends AbstractEntitySelect
         return childEntitySelector.getEntityDescriptor();
     }
 
-    public boolean isContinuous() {
-        return false;
+    public boolean isCountable() {
+        return true;
     }
 
     public long getSize() {

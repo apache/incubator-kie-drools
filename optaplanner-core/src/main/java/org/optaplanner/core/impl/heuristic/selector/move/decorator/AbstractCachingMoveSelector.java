@@ -66,8 +66,8 @@ public abstract class AbstractCachingMoveSelector extends AbstractMoveSelector i
         cachedMoveList = null;
     }
 
-    public boolean isContinuous() {
-        return false;
+    public boolean isCountable() {
+        return true;
     }
 
     public long getSize() {

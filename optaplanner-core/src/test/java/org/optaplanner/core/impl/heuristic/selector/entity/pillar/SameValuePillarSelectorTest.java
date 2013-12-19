@@ -159,7 +159,7 @@ public class SameValuePillarSelectorTest {
 
     private void assertAllCodesOfPillarSelector(PillarSelector pillarSelector, String... codes) {
         assertAllCodesOfIterator(pillarSelector.iterator(), codes);
-        assertEquals(false, pillarSelector.isContinuous());
+        assertEquals(true, pillarSelector.isCountable());
         assertEquals(false, pillarSelector.isNeverEnding());
         assertEquals(codes.length, pillarSelector.getSize());
     }

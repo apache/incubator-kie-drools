@@ -98,7 +98,7 @@ public class SelectorTestUtils {
                 return entityList.iterator();
             }
         });
-        when(entitySelector.isContinuous()).thenReturn(false);
+        when(entitySelector.isCountable()).thenReturn(true);
         when(entitySelector.isNeverEnding()).thenReturn(false);
         when(entitySelector.getSize()).thenReturn((long) entityList.size());
         return entitySelector;
@@ -124,7 +124,7 @@ public class SelectorTestUtils {
                 return valueList.iterator();
             }
         });
-        when(valueSelector.isContinuous()).thenReturn(false);
+        when(valueSelector.isCountable()).thenReturn(true);
         when(valueSelector.isNeverEnding()).thenReturn(false);
         when(valueSelector.getSize(any())).thenReturn((long) valueList.size());
         return valueSelector;
@@ -151,7 +151,7 @@ public class SelectorTestUtils {
                 return valueList.iterator();
             }
         });
-        when(valueSelector.isContinuous()).thenReturn(false);
+        when(valueSelector.isCountable()).thenReturn(true);
         when(valueSelector.isNeverEnding()).thenReturn(false);
         when(valueSelector.getSize(any())).thenReturn((long) valueList.size());
         when(valueSelector.getSize()).thenReturn((long) valueList.size());
@@ -167,7 +167,7 @@ public class SelectorTestUtils {
                 return moveList.iterator();
             }
         });
-        when(moveSelector.isContinuous()).thenReturn(false);
+        when(moveSelector.isCountable()).thenReturn(true);
         when(moveSelector.isNeverEnding()).thenReturn(false);
         when(moveSelector.getCacheType()).thenReturn(SelectionCacheType.JUST_IN_TIME);
         when(moveSelector.getSize()).thenReturn((long) moveList.size());

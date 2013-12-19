@@ -251,7 +251,7 @@ public class PlanningVariableDescriptor {
      */
     public boolean isContinuous() {
         // TODO not yet supported
-        return false;
+        return true;
     }
 
     public boolean isChained() {

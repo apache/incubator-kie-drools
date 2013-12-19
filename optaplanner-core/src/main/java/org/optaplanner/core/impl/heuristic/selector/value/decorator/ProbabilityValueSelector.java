@@ -91,8 +91,8 @@ public class ProbabilityValueSelector extends AbstractValueSelector
         return childValueSelector.getVariableDescriptor();
     }
 
-    public boolean isContinuous() {
-        return false;
+    public boolean isCountable() {
+        return true;
     }
 
     public boolean isNeverEnding() {

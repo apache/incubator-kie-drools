@@ -118,7 +118,7 @@ public class FromSolutionEntitySelectorTest {
             assertCode(code, iterator.next());
         }
         assertFalse(iterator.hasNext());
-        assertEquals(false, entitySelector.isContinuous());
+        assertEquals(true, entitySelector.isCountable());
         assertEquals(false, entitySelector.isNeverEnding());
         assertEquals(3L, entitySelector.getSize());
     }
@@ -209,7 +209,7 @@ public class FromSolutionEntitySelectorTest {
             assertCode(code, iterator.next());
         }
         assertTrue(iterator.hasNext());
-        assertEquals(false, entitySelector.isContinuous());
+        assertEquals(true, entitySelector.isCountable());
         assertEquals(true, entitySelector.isNeverEnding());
         assertEquals(3L, entitySelector.getSize());
     }

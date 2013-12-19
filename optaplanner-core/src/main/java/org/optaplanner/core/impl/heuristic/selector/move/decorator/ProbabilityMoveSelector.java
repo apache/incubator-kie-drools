@@ -85,8 +85,8 @@ public class ProbabilityMoveSelector extends AbstractMoveSelector implements Sel
         probabilityWeightTotal = -1.0;
     }
 
-    public boolean isContinuous() {
-        return false;
+    public boolean isCountable() {
+        return true;
     }
 
     public boolean isNeverEnding() {

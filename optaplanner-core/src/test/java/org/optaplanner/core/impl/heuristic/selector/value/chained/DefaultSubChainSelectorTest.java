@@ -188,7 +188,7 @@ public class DefaultSubChainSelectorTest {
 
     private void assertAllCodesOfSubChainSelector(SubChainSelector subChainSelector, String... codes) {
         assertAllCodesOfIterator(subChainSelector.iterator(), codes);
-        assertEquals(false, subChainSelector.isContinuous());
+        assertEquals(true, subChainSelector.isCountable());
         assertEquals(false, subChainSelector.isNeverEnding());
         assertEquals(codes.length, subChainSelector.getSize());
     }
@@ -467,7 +467,7 @@ public class DefaultSubChainSelectorTest {
         }
         assertTrue(subChainCountMap.isEmpty());
         assertTrue(iterator.hasNext());
-        assertEquals(false, subChainSelector.isContinuous());
+        assertEquals(true, subChainSelector.isCountable());
         assertEquals(true, subChainSelector.isNeverEnding());
         assertEquals((long) selectionSize, subChainSelector.getSize());
     }

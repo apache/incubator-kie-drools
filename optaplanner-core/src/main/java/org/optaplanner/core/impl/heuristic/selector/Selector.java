@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector;
 
 import java.util.Iterator;
 
+import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
@@ -32,17 +33,18 @@ import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
 public interface Selector extends SolverPhaseLifecycleListener {
 
     /**
-     * If true, then {@link #isNeverEnding()} is also true.
-     * @return true if any of the value ranges are continuous (as in for example every double value between 1.2 and 1.4)
+     * If false, then {@link #isNeverEnding()} is true.
+     * @return true if all the {@link ValueRange}s are countable
+     * (for example a double value range between 1.2 and 1.4 is not countable)
      */
-    boolean isContinuous();
+    boolean isCountable();
 
     /**
-     * Is true if {@link #isContinuous()} is true
+     * Is true if {@link #isCountable()} is false
      * or if this selector is in random order (for most cases).
      * Is never true when this selector is in shuffled order (which is less scalable but more exact).
      * @return true if the {@link Iterator#hasNext()} of the {@link Iterator} created by {@link Iterable#iterator()}
-     * never returns false.
+     * never returns false (except when it's empty).
      */
     boolean isNeverEnding();
 

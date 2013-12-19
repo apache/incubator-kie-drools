@@ -74,8 +74,8 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
     // Worker methods
     // ************************************************************************
 
-    public boolean isContinuous() {
-        return leftPillarSelector.isContinuous() || rightPillarSelector.isContinuous();
+    public boolean isCountable() {
+        return leftPillarSelector.isCountable() && rightPillarSelector.isCountable();
     }
 
     public boolean isNeverEnding() {

@@ -76,12 +76,12 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
     // Worker methods
     // ************************************************************************
 
-    public boolean isContinuous() {
-        return false; // TODO extract CountableValueRange
+    public boolean isCountable() {
+        return true; // TODO extract CountableValueRange
     }
 
     public boolean isNeverEnding() {
-        return randomSelection || isContinuous();
+        return randomSelection || !isCountable();
     }
 
     public long getSize(Object entity) {

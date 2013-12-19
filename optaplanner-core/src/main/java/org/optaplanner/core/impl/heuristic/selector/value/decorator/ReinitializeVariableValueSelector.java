@@ -63,8 +63,8 @@ public class ReinitializeVariableValueSelector extends AbstractValueSelector {
         return childValueSelector.getVariableDescriptor();
     }
 
-    public boolean isContinuous() {
-        return childValueSelector.isContinuous();
+    public boolean isCountable() {
+        return childValueSelector.isCountable();
     }
 
     public boolean isNeverEnding() {

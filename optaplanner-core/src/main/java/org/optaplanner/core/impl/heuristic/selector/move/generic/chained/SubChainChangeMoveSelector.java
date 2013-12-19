@@ -65,8 +65,8 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
     // Worker methods
     // ************************************************************************
 
-    public boolean isContinuous() {
-        return subChainSelector.isContinuous() || valueSelector.isContinuous();
+    public boolean isCountable() {
+        return subChainSelector.isCountable() && valueSelector.isCountable();
     }
 
     public boolean isNeverEnding() {

@@ -55,8 +55,8 @@ public class MoveIteratorFactoryToMoveSelectorBridge extends AbstractMoveSelecto
         scoreDirector = null;
     }
 
-    public boolean isContinuous() {
-        return false;
+    public boolean isCountable() {
+        return true;
     }
 
     public boolean isNeverEnding() {

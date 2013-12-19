@@ -87,8 +87,8 @@ public class EntityDependentSortingValueSelector extends AbstractValueSelector {
         return childValueSelector.getSize(entity);
     }
 
-    public boolean isContinuous() {
-        return false;
+    public boolean isCountable() {
+        return true;
     }
 
     public boolean isNeverEnding() {

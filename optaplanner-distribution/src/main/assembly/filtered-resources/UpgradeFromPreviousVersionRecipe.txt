@@ -3743,3 +3743,6 @@ After in *.java:
     import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 
 [IMPL_DETAIL] The *Descriptor classes have been moved into a descriptor package.
+
+[MINOR] Selector.isContinuous() has been renamed to isCountable and its boolean return value has been inverted.
+It's highly unlikely that your code uses isContinuous() because uncountable value ranges weren't supported yet.

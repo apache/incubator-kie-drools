@@ -90,8 +90,8 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
         return childEntitySelector.getEntityDescriptor();
     }
 
-    public boolean isContinuous() {
-        return false;
+    public boolean isCountable() {
+        return true;
     }
 
     public boolean isNeverEnding() {

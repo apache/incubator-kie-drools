@@ -58,8 +58,8 @@ public class FilteringMoveSelector extends AbstractMoveSelector {
         scoreDirector = null;
     }
 
-    public boolean isContinuous() {
-        return childMoveSelector.isContinuous();
+    public boolean isCountable() {
+        return childMoveSelector.isCountable();
     }
 
     public boolean isNeverEnding() {
