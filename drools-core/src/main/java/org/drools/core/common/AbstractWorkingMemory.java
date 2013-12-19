@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -113,6 +114,7 @@ import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.type.DateFormats;
 import org.drools.core.type.DateFormatsImpl;
+import org.drools.core.util.index.LeftTupleList;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessEventManager;
@@ -130,7 +132,6 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.rule.LiveQuery;
-import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 import org.kie.internal.event.rule.RuleEventListener;
@@ -1684,11 +1685,27 @@ public class AbstractWorkingMemory
      * Helper method
      */
     public Map getActivationParameters(Activation activation) {
+        if (activation instanceof RuleAgendaItem) {
+            RuleAgendaItem ruleAgendaItem = (RuleAgendaItem)activation;
+            LeftTupleList tupleList = ruleAgendaItem.getRuleExecutor().getLeftTupleList();
+            Map result = new TreeMap();
+            int i = 0;
+            for (LeftTuple tuple = tupleList.getFirst(); tuple != null; tuple = (LeftTuple) tuple.getNext()) {
+                Map params = getActivationParameters(tuple);
+                result.put("Parameters set [" + i++ + "]", (Entry[]) params.entrySet().toArray(new Entry[params.size()]));
+            }
+            return result;
+        } else {
+            return getActivationParameters(activation.getTuple());
+        }
+    }
+
+    private Map getActivationParameters(LeftTuple tuple) {
         Map result = new HashMap();
-        Declaration[] declarations = ((RuleTerminalNode) ((LeftTuple) activation.getTuple()).getLeftTupleSink()).getDeclarations();
+        Declaration[] declarations = ((RuleTerminalNode) tuple.getLeftTupleSink()).getDeclarations();
 
         for (int i = 0; i < declarations.length; i++) {
-            FactHandle handle = activation.getTuple().get(declarations[i]);
+            FactHandle handle = tuple.get(declarations[i]);
             if (handle instanceof InternalFactHandle) {
                 result.put(declarations[i].getIdentifier(),
                            declarations[i].getValue(this,
