@@ -1435,9 +1435,14 @@ public class RuleModelDRLPersistenceImpl
                     buf.append( ", " );
                 }
 
-                constraintValueBuilder.buildRHSFieldValue( buf,
-                                                           valueFunction.getType(),
-                                                           valueFunction.getValue() );
+                if ( valueFunction.isFormula() ) {
+                    buf.append( valueFunction.getValue() );
+                } else if ( valueFunction.getNature() == FieldNatureType.TYPE_VARIABLE ) {
+                    buf.append( valueFunction.getValue() );
+                } else {
+                    buildDefaultFieldValue( valueFunction,
+                                            buf );
+                }
             }
             buf.append( " );\n" );
 
