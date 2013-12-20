@@ -110,6 +110,9 @@ public class TaskContext implements org.kie.internal.task.api.TaskContext {
     }
     
     public TaskPersistenceContext getPersistenceContext() {
+    	if (persistenceContext == null) {
+    		throw new IllegalStateException("No task persistence context available");
+    	}
     	return persistenceContext;
     }
 

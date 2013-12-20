@@ -68,7 +68,7 @@ public class DefaultRuntimeEnvironment extends SimpleRuntimeEnvironment {
     }
     
     public void init() {
-        if (emf == null) {
+        if (emf == null && getEnvironmentTemplate().get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER) == null) {
             emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
         }   
         addToEnvironment(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);

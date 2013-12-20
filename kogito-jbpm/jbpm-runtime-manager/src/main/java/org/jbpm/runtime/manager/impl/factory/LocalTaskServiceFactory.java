@@ -40,6 +40,13 @@ public class LocalTaskServiceFactory implements TaskServiceFactory {
     }
     @Override
     public TaskService newTaskService() {
+    	// all to reuse an already given instance of task service instead of producing new one
+    	TaskService providedTaskService = (TaskService) ((SimpleRuntimeEnvironment) runtimeEnvironment)
+    													.getEnvironmentTemplate().get("org.kie.api.task.TaskService");
+    	if (providedTaskService != null) {
+    		return providedTaskService;
+    	}
+    	
         EntityManagerFactory emf = ((SimpleRuntimeEnvironment)runtimeEnvironment).getEmf();
         if (emf != null) {
             

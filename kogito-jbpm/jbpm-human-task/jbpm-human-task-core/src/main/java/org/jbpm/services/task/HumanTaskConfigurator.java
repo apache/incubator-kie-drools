@@ -73,23 +73,34 @@ public class HumanTaskConfigurator {
     private Set<TaskLifeCycleEventListener> listeners = new HashSet<TaskLifeCycleEventListener>();
     
     public HumanTaskConfigurator interceptor(int priority, Interceptor interceptor) {
+    	if (interceptor == null) {
+            return this;
+        }
     	this.insterceptors.add(new PriorityInterceptor(priority, interceptor));
     	return this;
     }
     
     public HumanTaskConfigurator listener(TaskLifeCycleEventListener listener) {
+    	if (listener == null) {
+            return this;
+        }
     	this.listeners.add(listener);
     	return this;
     }
     
     public HumanTaskConfigurator environment(Environment environment) {
-    	
+    	if (environment == null) {
+            return this;
+        }
     	this.environment = environment;
     	
     	return this;
     }
 
     public HumanTaskConfigurator entityManagerFactory(EntityManagerFactory emf) {
+    	if (emf == null) {
+            return this;
+        }
     	environment.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
         
         return this;

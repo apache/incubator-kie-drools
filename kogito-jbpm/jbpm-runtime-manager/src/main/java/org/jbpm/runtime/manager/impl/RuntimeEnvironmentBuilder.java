@@ -261,6 +261,9 @@ public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFacto
     }
     
     public RuntimeEnvironmentBuilder entityManagerFactory(Object emf) {
+    	if (emf == null) {
+            return this;
+        }
     	if (!(emf instanceof EntityManagerFactory)) {
     		throw new IllegalArgumentException("Argument is not of type EntityManagerFactory");
     	}
@@ -270,41 +273,62 @@ public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFacto
     }
     
     public RuntimeEnvironmentBuilder addAsset(Resource asset, ResourceType type) {
+    	if (asset == null || type == null) {
+            return this;
+        }
         this.runtimeEnvironment.addAsset(asset, type);
         return this;
     }
     
     public RuntimeEnvironmentBuilder addEnvironmentEntry(String name, Object value) {
+    	if (name == null || value == null) {
+            return this;
+        }
         this.runtimeEnvironment.addToEnvironment(name, value);
         
         return this;
     }
     
     public RuntimeEnvironmentBuilder addConfiguration(String name, String value) {
+    	if (name == null || value == null) {
+            return this;
+        }
         this.runtimeEnvironment.addToConfiguration(name, value);
         
         return this;
     }
     
     public RuntimeEnvironmentBuilder knowledgeBase(KieBase kbase) { 
+    	if (kbase == null) {
+            return this;
+        }
         this.runtimeEnvironment.setKieBase(kbase);
         
         return this;
     }
     
     public RuntimeEnvironmentBuilder userGroupCallback(UserGroupCallback callback) {
+    	if (callback == null) {
+            return this;
+        }
         this.runtimeEnvironment.setUserGroupCallback(callback);
     
         return this;
     }
     
     public RuntimeEnvironmentBuilder mapper(Mapper mapper) {
+    	if (mapper == null) {
+            return this;
+        }
         this.runtimeEnvironment.setMapper(mapper);
     
         return this;
     }
     
     public RuntimeEnvironmentBuilder registerableItemsFactory(RegisterableItemsFactory factory) { 
+    	if (factory == null) {
+            return this;
+        }
         this.runtimeEnvironment.setRegisterableItemsFactory(factory);
         
         return this;
@@ -316,6 +340,9 @@ public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFacto
     }
 
     public RuntimeEnvironmentBuilder schedulerService(Object globalScheduler) {
+    	if (globalScheduler == null) {
+            return this;
+        }
         if (!(globalScheduler instanceof GlobalSchedulerService)) {
         	throw new IllegalArgumentException("Argument is not of type GlobalSchedulerService");
         }
@@ -324,6 +351,9 @@ public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFacto
     }
     
     public RuntimeEnvironmentBuilder classLoader(ClassLoader cl) {
+    	if (cl == null) {
+            return this;
+        }
         this.runtimeEnvironment.setClassLoader(cl);        
         return this;
     }

@@ -47,7 +47,7 @@ public class TaskCommandExecutorImpl implements CommandService {
 
 	@Override
 	public Context getContext() {
-		if (this.commandService.equals(this)) {
+		if (this.commandService instanceof SelfExecutionCommandService) {
 			return new TaskContext();
 		}
 		return new TaskContext(commandService.getContext(), environment, taskEventSupport);

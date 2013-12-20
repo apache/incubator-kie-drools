@@ -25,6 +25,8 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 
 import org.jbpm.runtime.manager.impl.jpa.ContextMappingInfo;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.manager.Context;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationProperty;
@@ -43,7 +45,7 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 @SuppressWarnings("rawtypes")
 public class JPAMapper implements Mapper {
     
-    private EntityManagerFactory emf;
+	private EntityManagerFactory emf;
     
     public JPAMapper(EntityManagerFactory emf) {
         this.emf = emf;
@@ -52,37 +54,44 @@ public class JPAMapper implements Mapper {
     
     @Override
     public void saveMapping(Context context, Integer ksessionId) {
-       EntityManager em = emf.createEntityManager();
-       // handle transaction
-       em.joinTransaction();
-       em.persist(new ContextMappingInfo(resolveContext(context, em).getContextId().toString(), ksessionId));
-       
-       em.close();
+		EntityManagerInfo info = getEntityManager(context);
+		EntityManager em = info.getEntityManager();
+		em.persist(new ContextMappingInfo(resolveContext(context, em).getContextId().toString(), ksessionId));
+
+		if (!info.isShared()) {
+			em.close();
+		}
     }
 
     @Override
     public Integer findMapping(Context context) {
-        EntityManager em = emf.createEntityManager();
-        // handle transaction
-//        em.joinTransaction();
-        ContextMappingInfo contextMapping = findContextByContextId(resolveContext(context, em), em);
-        if (contextMapping != null) {
-            return contextMapping.getKsessionId();
+    	EntityManagerInfo info = getEntityManager(context);
+    	EntityManager em = info.getEntityManager();
+        try {
+		    ContextMappingInfo contextMapping = findContextByContextId(resolveContext(context, em), em);
+		    if (contextMapping != null) {
+		        return contextMapping.getKsessionId();
+		    }
+		    return null;
+        } finally {
+        	if (!info.isShared()) {
+        		em.close();
+        	}
         }
-        return null;
     }
 
     @Override
     public void removeMapping(Context context) {
-        EntityManager em = emf.createEntityManager();
-        // handle transaction
-        em.joinTransaction();
+    	EntityManagerInfo info = getEntityManager(context);
+    	EntityManager em = info.getEntityManager();
         
         ContextMappingInfo contextMapping = findContextByContextId(resolveContext(context, em), em);
         if (contextMapping != null) {
             em.remove(contextMapping);
         }
-        em.close();
+        if (!info.isShared()) {
+    		em.close();
+    	}
     }
     
     protected Context resolveContext(Context orig, EntityManager em) {
@@ -127,7 +136,8 @@ public class JPAMapper implements Mapper {
 
     @Override
     public Object findContextId(Integer ksessionId) {
-        EntityManager em = emf.createEntityManager();
+        EntityManagerInfo info = getEntityManager(null);
+    	EntityManager em = info.getEntityManager();
         try {
             Query findQuery = em.createNamedQuery("FindContextMapingByKSessionId").setParameter("ksessionId", ksessionId);
             ContextMappingInfo contextMapping = (ContextMappingInfo) findQuery.getSingleResult();
@@ -138,8 +148,49 @@ public class JPAMapper implements Mapper {
         } catch (NonUniqueResultException e) {
             return null;
         } finally {
-            em.close();
+        	if (!info.isShared()) {
+        		em.close();
+        	}
         }
+    }
+    
+    private EntityManagerInfo getEntityManager(Context context) {
+    	Environment env = null;
+    	if (context instanceof EnvironmentAwareProcessInstanceContext){
+    		env = ((EnvironmentAwareProcessInstanceContext) context).getEnvironment();
+    	}
+    	
+        if (env != null) {
+            EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+        	if (em != null) {
+        		return new EntityManagerInfo(em, true);
+        	}
+            EntityManagerFactory emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
+            if (emf != null) {
+            	return new EntityManagerInfo(emf.createEntityManager(), false);
+            }
+        } else {
+            return new EntityManagerInfo(emf.createEntityManager(), false);
+        }
+        throw new RuntimeException("Could not find EntityManager, both command-scoped EM and EMF in environment are null");
+    }
+    
+    private class EntityManagerInfo {
+    	private EntityManager entityManager;
+    	private boolean shared;
+    	
+		public EntityManagerInfo(EntityManager entityManager, boolean shared) {
+			this.entityManager = entityManager;
+			this.shared = shared;
+		}
+
+		public EntityManager getEntityManager() {
+			return entityManager;
+		}
+
+		public boolean isShared() {
+			return shared;
+		}
     }
 
 }
