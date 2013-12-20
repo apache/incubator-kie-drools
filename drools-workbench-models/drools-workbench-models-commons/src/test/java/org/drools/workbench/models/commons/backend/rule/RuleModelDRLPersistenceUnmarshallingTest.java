@@ -2109,6 +2109,35 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals(DataType.TYPE_NUMERIC, value.getType());
     }
 
+    @Test
+    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=986000 -  DRL-to-RuleModel marshalling improvements")
+    public void testFieldVars() throws Exception {
+        String drl = "" +
+                "rule \"Borked\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    Customer( var:contact )\n" +
+                "  then\n" +
+                "end";
+
+        addModelField("Company",
+                "contact",
+                "Contact",
+                "Contact");
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                dmo);
+
+        FactPattern pattern = (FactPattern) m.lhs[0];
+        SingleFieldConstraint constraint = (SingleFieldConstraint)pattern.getFieldConstraints()[0];
+
+        assertEquals("var",constraint.getFieldBinding());
+        assertEquals("Customer",constraint.getFactType());
+        assertEquals("contact",constraint.getFieldName());
+        assertEquals("Contact",constraint.getFieldType());
+
+    }
+
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
         final String cleanExpected = expected.replaceAll( "\\s+",
