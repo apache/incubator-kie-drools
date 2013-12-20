@@ -56,6 +56,7 @@ import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
@@ -1586,7 +1587,8 @@ public class RuleModelDRLPersistenceImpl
                   expandedDRLInfo.consequence != null ? expandedDRLInfo.consequence : (String) ruleDescr.getConsequence(),
                   isJavaDialect,
                   boundParams,
-                  expandedDRLInfo );
+                  expandedDRLInfo,
+                  dmo );
         return model;
     }
 
@@ -2099,7 +2101,8 @@ public class RuleModelDRLPersistenceImpl
                            String rhs,
                            boolean isJavaDialect,
                            Map<String, String> boundParams,
-                           ExpandedDRLInfo expandedDRLInfo ) {
+                           ExpandedDRLInfo expandedDRLInfo,
+                           PackageDataModelOracle dmo) {
         PortableWorkDefinition pwd = null;
         Map<String, List<String>> setStatements = new HashMap<String, List<String>>();
         Map<String, String> factsType = new HashMap<String, String>();
@@ -2187,14 +2190,34 @@ public class RuleModelDRLPersistenceImpl
                             acm.setVariable( variable );
                             acm.setState( 1 );
                             m.addRhsItem( acm );
-                            String params = unwrapParenthesis( line );
-                            for ( String param : params.split( "," ) ) {
+                            String[] params = unwrapParenthesis( line ).split(",");
+
+                            MethodInfo methodInfo = null;
+                            String variableType = boundParams.get(variable);
+                            if (variableType != null) {
+                                List<MethodInfo> methods = getMethodInfosForType(m, dmo, variableType);
+                                if (methods != null) {
+                                    for (MethodInfo method : methods) {
+                                        if (method.getName().equals(methodName) && method.getParams().size() == params.length) {
+                                            methodInfo = method;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            int i = 0;
+                            for ( String param : params ) {
                                 param = param.trim();
                                 if ( param.length() == 0 ) {
                                     continue;
                                 }
-                                String dataType = inferDataType( param, isJavaDialect );
-                                acm.addFieldValue( new ActionFieldFunction( null, adjustParam( dataType, param, isJavaDialect ), dataType ) );
+                                String dataType = methodInfo == null ?
+                                                  inferDataType( param, isJavaDialect ) :
+                                                  methodInfo.getParams().get(i++);
+                                ActionFieldFunction actionFiled = new ActionFieldFunction( null, adjustParam( dataType, param, isJavaDialect), dataType );
+                                actionFiled.setNature( inferFieldNature(param, boundParams) );
+                                acm.addFieldValue( actionFiled );
                             }
                         }
                         continue;
@@ -2235,6 +2258,37 @@ public class RuleModelDRLPersistenceImpl
                 dslLine = expandedDRLInfo.dslStatementsInRhs.get( ++lineCounter );
             }
         }
+    }
+
+    private int inferFieldNature(String param, Map<String, String> boundParams) {
+        if (param.startsWith("sdf.parse")) {
+            return FieldNatureType.TYPE_UNDEFINED;
+        }
+        if (boundParams.keySet().contains(param)) {
+            return FieldNatureType.TYPE_VARIABLE;
+        }
+        if (param.startsWith("\"")) {
+            return FieldNatureType.TYPE_LITERAL;
+        }
+        if (param.contains("+") || param.contains("-") || param.contains("*") || param.contains("/")) {
+            return FieldNatureType.TYPE_FORMULA;
+        }
+        return FieldNatureType.TYPE_UNDEFINED;
+    }
+
+    private List<MethodInfo> getMethodInfosForType(RuleModel m, PackageDataModelOracle dmo, String variableType) {
+        List<MethodInfo> methods = dmo.getProjectMethodInformation().get(variableType);
+        if (methods == null) {
+            for (String imp : m.getImports().getImportStrings()) {
+                if (imp.endsWith("." + variableType)) {
+                    methods = dmo.getProjectMethodInformation().get(imp);
+                    if (methods != null) {
+                        break;
+                    }
+                }
+            }
+        }
+        return methods;
     }
 
     private boolean isInsertedFact( String[] lines,
@@ -2392,7 +2446,7 @@ public class RuleModelDRLPersistenceImpl
                                 boolean isJavaDialect ) {
         if ( dataType == DataType.TYPE_DATE ) {
             return param.substring( "sdf.parse(\"".length(), param.length() - 2 );
-        } else if ( dataType == DataType.TYPE_STRING ) {
+        } else if ( dataType == DataType.TYPE_STRING  || (param.startsWith("\"") && param.endsWith("\""))) {
             return param.substring( 1, param.length() - 1 );
         } else if ( dataType == DataType.TYPE_NUMERIC_BIGDECIMAL || dataType == DataType.TYPE_NUMERIC_BIGINTEGER ) {
             if ( isJavaDialect ) {
@@ -2658,7 +2712,13 @@ public class RuleModelDRLPersistenceImpl
             }
             fieldConstraint.setFactType( factPattern.getFactType() );
 
-            return fieldConstraint;
+            ModelField field = findField(dmo.getProjectModelFields().get(factPattern.getFactType()),
+                                         fieldConstraint.getFieldName());
+
+            if ( field != null ) {
+                fieldConstraint.setFieldType(field.getType());
+            }
+             return fieldConstraint;
         }
 
         private SingleFieldConstraint createExpressionBuilderConstraint( FactPattern factPattern,
@@ -2810,9 +2870,11 @@ public class RuleModelDRLPersistenceImpl
 
         private ModelField findField( ModelField[] typeFields,
                                       String fieldName ) {
-            for ( ModelField typeField : typeFields ) {
-                if ( typeField.getName().equals( fieldName ) ) {
-                    return typeField;
+            if (typeFields != null && fieldName != null) {
+                for ( ModelField typeField : typeFields ) {
+                    if ( typeField.getName().equals( fieldName ) ) {
+                        return typeField;
+                    }
                 }
             }
             return null;
