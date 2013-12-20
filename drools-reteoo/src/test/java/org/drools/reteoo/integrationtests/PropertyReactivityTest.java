@@ -1069,9 +1069,9 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
         assertEquals(3, list.size());
 
-        assertTrue(list.contains(1));
-        assertTrue(list.contains(2));
-        assertTrue(list.contains(3));
+        assertEquals(3, list.get(0));
+        assertEquals(2, list.get(1));
+        assertEquals(1, list.get(2));
     }
 
     @PropertyReactive
