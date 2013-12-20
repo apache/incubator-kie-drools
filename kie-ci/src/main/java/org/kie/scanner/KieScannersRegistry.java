@@ -16,7 +16,7 @@ public class KieScannersRegistry {
         scanners.add(new WeakReference<InternalKieScanner>(scanner));
     }
 
-    public Collection<InternalKieScanner> getAllKieScanners() {
+    public static Collection<InternalKieScanner> getAllKieScanners() {
         List<InternalKieScanner> allScanners = new ArrayList<InternalKieScanner>();
         Iterator<WeakReference<InternalKieScanner>> i = scanners.iterator();
         while (i.hasNext()) {
