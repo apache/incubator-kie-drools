@@ -1978,7 +1978,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( 2, mc.getFieldValues().length );
 
         ActionFieldValue f1 = mc.getFieldValue( 0 );
-        assertEquals( "key", f1.getValue() );
+        assertEquals( "\"key\"", f1.getValue() );
         assertEquals( "java.lang.Object", f1.getType() );
         assertEquals( FieldNatureType.TYPE_LITERAL, f1.getNature() );
         ActionFieldValue f2 = mc.getFieldValue( 1 );
@@ -1988,7 +1988,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         String marshalled = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         System.out.println( marshalled );
-        // assertEqualsIgnoreWhitespace( drl, marshalled );
+        assertEqualsIgnoreWhitespace( drl, marshalled );
     }
 
     @Test

@@ -2446,7 +2446,7 @@ public class RuleModelDRLPersistenceImpl
                                 boolean isJavaDialect ) {
         if ( dataType == DataType.TYPE_DATE ) {
             return param.substring( "sdf.parse(\"".length(), param.length() - 2 );
-        } else if ( dataType == DataType.TYPE_STRING  || (param.startsWith("\"") && param.endsWith("\""))) {
+        } else if ( dataType == DataType.TYPE_STRING ) {
             return param.substring( 1, param.length() - 1 );
         } else if ( dataType == DataType.TYPE_NUMERIC_BIGDECIMAL || dataType == DataType.TYPE_NUMERIC_BIGINTEGER ) {
             if ( isJavaDialect ) {
