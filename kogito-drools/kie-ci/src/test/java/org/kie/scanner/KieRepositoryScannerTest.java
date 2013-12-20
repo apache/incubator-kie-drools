@@ -1,5 +1,6 @@
 package org.kie.scanner;
 
+import org.drools.compiler.kie.builder.impl.InternalKieScanner;
 import org.drools.core.util.FileManager;
 import org.junit.After;
 import org.junit.Before;
@@ -104,10 +105,14 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         repository.deployArtifact(releaseId2, kJar2, kPom);
 
         // since I am not calling start() on the scanner it means it won't have automatic scheduled scanning
-        KieScanner scanner = ks.newKieScanner(kieContainer);
+        InternalKieScanner scanner = (InternalKieScanner) ks.newKieScanner(kieContainer);
+        assertEquals(releaseId1, scanner.getCurrentReleaseId());
+        assertEquals(InternalKieScanner.Status.STOPPED, scanner.getStatus());
 
         // scan the maven repo to get the new kjar version and deploy it on the kcontainer
         scanner.scanNow();
+        assertEquals(releaseId2, scanner.getCurrentReleaseId());
+        assertEquals(InternalKieScanner.Status.STOPPED, scanner.getStatus());
 
         // create a ksesion and check it works as expected
         KieSession ksession2 = kieContainer.newKieSession("KSession1");
