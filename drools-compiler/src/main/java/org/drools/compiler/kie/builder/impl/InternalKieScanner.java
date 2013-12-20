@@ -9,6 +9,10 @@ import org.kie.api.runtime.KieContainer;
 
 public interface InternalKieScanner extends KieScanner {
 
+    public enum Status {
+        STARTING, SCANNING, UPDATING, RUNNING, STOPPED;
+    }
+
     void setKieContainer(KieContainer kieContainer);
 
     KieModule loadArtifact(ReleaseId releaseId);
@@ -16,4 +20,10 @@ public interface InternalKieScanner extends KieScanner {
     KieModule loadArtifact(ReleaseId releaseId, InputStream pomXML);
 
     String getArtifactVersion(ReleaseId releaseId);
+
+    ReleaseId getScannerReleaseId();
+
+    ReleaseId getCurrentReleaseId();
+
+    Status getStatus();
 }

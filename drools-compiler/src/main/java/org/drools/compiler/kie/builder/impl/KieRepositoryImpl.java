@@ -131,17 +131,13 @@ public class KieRepositoryImpl
             implements
             InternalKieScanner {
 
-        public void start(long pollingInterval) {
-        }
+        public void start(long pollingInterval) { }
 
-        public void stop() {
-        }
+        public void stop() { }
 
-        public void scanNow() {
-        }
+        public void scanNow() { }
 
-        public void setKieContainer(KieContainer kieContainer) {
-        }
+        public void setKieContainer(KieContainer kieContainer) { }
 
         public KieModule loadArtifact(ReleaseId releaseId) {
             return null;
@@ -153,6 +149,18 @@ public class KieRepositoryImpl
 
         public String getArtifactVersion(ReleaseId releaseId) {
             return null;
+        }
+
+        public ReleaseId getScannerReleaseId() {
+            return null;
+        }
+
+        public ReleaseId getCurrentReleaseId() {
+            return null;
+        }
+
+        public Status getStatus() {
+            return Status.STOPPED;
         }
     }
 

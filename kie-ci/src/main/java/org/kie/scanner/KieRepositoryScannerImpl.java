@@ -47,7 +47,12 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     private ArtifactResolver artifactResolver;
 
+    private Status status = Status.STARTING;
+
     public void setKieContainer(KieContainer kieContainer) {
+        if (this.kieContainer != null) {
+            throw new RuntimeException("Cannot change KieContainer on an already initialized KieScanner");
+        }
         this.kieContainer = kieContainer;
         ReleaseId releaseId = ((InternalKieContainer)kieContainer).getContainerReleaseId();
         if (releaseId == null) {
@@ -60,6 +65,8 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
         artifactResolver = getResolverFor(kieContainer.getReleaseId(), true);
         init();
+        KieScannersRegistry.register(this);
+        status = Status.STOPPED;
     }
 
     private ArtifactResolver getArtifactResolver() {
@@ -97,7 +104,19 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         Artifact artifact = getArtifactResolver().resolveArtifact(releaseId.toString());
         return artifact != null ? artifact.getVersion() : null;
     }
-    
+
+    public ReleaseId getScannerReleaseId() {
+        return ((InternalKieContainer)kieContainer).getContainerReleaseId();
+    }
+
+    public ReleaseId getCurrentReleaseId() {
+        return kieContainer.getReleaseId();
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
     private KieModule loadPomArtifact(ReleaseId releaseId) {
         ArtifactResolver resolver = getResolverFor(releaseId, false);
         if (resolver == null) {
@@ -181,9 +200,11 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
             timer.cancel();
             timer = null;
         }
+        status = Status.STOPPED;
     }
 
     private void startScanTask(long pollingInterval) {
+        status = Status.RUNNING;
         timer = new Timer(true);
         timer.schedule(new ScanTask(), pollingInterval, pollingInterval);
     }
@@ -191,19 +212,24 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     private class ScanTask extends TimerTask {
         public void run() {
             scanNow();
+            status = Status.RUNNING;
         }
     }
 
     public void scanNow() {
+        status = Status.SCANNING;
         Collection<Artifact> updatedArtifacts = scanForUpdates(usedDependencies);
         if (updatedArtifacts.isEmpty()) {
+            status = Status.STOPPED;
             return;
         }
+        status = Status.UPDATING;
         for (Artifact artifact : updatedArtifacts) {
             DependencyDescriptor depDescr = new DependencyDescriptor(artifact);
             updateKieModule(artifact, depDescr.getGav());
         }
         log.info("The following artifacts have been updated: " + updatedArtifacts);
+        status = Status.STOPPED;
     }
 
     private void updateKieModule(Artifact artifact, ReleaseId releaseId) {
