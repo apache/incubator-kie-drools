@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
+import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
@@ -1899,7 +1900,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testMethodCall() {
-        // BZ-
+        // BZ-1042511
         String drl = "" +
                 "package org.mortgages;\n" +
                 "import org.mortgages.LoanApplication;\n" +
@@ -1915,28 +1916,176 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         HashMap<String, String> globals = new HashMap<String, String>();
 
-        when(dmo.getPackageGlobals()).thenReturn(globals);
+        when( dmo.getPackageGlobals() ).thenReturn( globals );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertEquals( 2, m.getImports().getImports().size() );
-        
+
         assertTrue( m.rhs[ 0 ] instanceof ActionCallMethod );
         ActionCallMethod mc = (ActionCallMethod) m.rhs[ 0 ];
         assertEquals( "put", mc.getMethodName() );
         assertEquals( "m", mc.getVariable() );
         assertEquals( 1, mc.getState() );
         assertEquals( 2, mc.getFieldValues().length );
-        
-        ActionFieldValue f1 = mc.getFieldValue(0);
-        assertEquals( "key", f1.getValue() );  // is this correct?
-        ActionFieldValue f2 = mc.getFieldValue(1);
+
+        ActionFieldValue f1 = mc.getFieldValue( 0 );
+        assertEquals( "key", f1.getValue() );
+        ActionFieldValue f2 = mc.getFieldValue( 1 );
         assertEquals( "a", f2.getValue() );
-        
-        String marshalled = RuleModelDRLPersistenceImpl.getInstance().marshal(m);
-        System.out.println(marshalled);
+
+        String marshalled = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
+        System.out.println( marshalled );
         assertEqualsIgnoreWhitespace( drl,
-                marshalled );
+                                      marshalled );
+    }
+
+    @Test
+    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1045423")
+    public void testMethodCallCheckParameterDataTypes1() {
+        // BZ-1045423
+        String drl = "" +
+                "package org.mortgages;\n" +
+                "import org.mortgages.LoanApplication;\n" +
+                "import java.util.Map;\n" +
+                "rule \"my rule\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    a : LoanApplication( )\n" +
+                "    m : Map()\n" +
+                "  then\n" +
+                "    m.put(\"key\", a );\n" +
+                "end\n";
+
+        Map<String, List<MethodInfo>> methodInformation = new HashMap<String, List<MethodInfo>>();
+        List<MethodInfo> mapMethodInformation = new ArrayList<MethodInfo>();
+        mapMethodInformation.add( new MethodInfo( "put",
+                                                  Arrays.asList( new String[]{ "java.lang.Object", "java.lang.Object" } ),
+                                                  "void",
+                                                  "void",
+                                                  "java.util.Map" ) );
+
+        methodInformation.put( "java.util.Map", mapMethodInformation );
+
+        when( dmo.getProjectMethodInformation() ).thenReturn( methodInformation );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+
+        assertTrue( m.rhs[ 0 ] instanceof ActionCallMethod );
+        ActionCallMethod mc = (ActionCallMethod) m.rhs[ 0 ];
+        assertEquals( "put", mc.getMethodName() );
+        assertEquals( "m", mc.getVariable() );
+        assertEquals( 1, mc.getState() );
+        assertEquals( 2, mc.getFieldValues().length );
+
+        ActionFieldValue f1 = mc.getFieldValue( 0 );
+        assertEquals( "key", f1.getValue() );
+        assertEquals( "java.lang.Object", f1.getType() );
+        assertEquals( FieldNatureType.TYPE_LITERAL, f1.getNature() );
+        ActionFieldValue f2 = mc.getFieldValue( 1 );
+        assertEquals( "a", f2.getValue() );
+        assertEquals( "java.lang.Object", f2.getType() );
+        assertEquals( FieldNatureType.TYPE_VARIABLE, f2.getNature() );
+
+        String marshalled = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
+        System.out.println( marshalled );
+        assertEqualsIgnoreWhitespace( drl,
+                                      marshalled );
+    }
+
+    @Test
+    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1045423")
+    public void testMethodCallCheckParameterDataTypes2() {
+        // BZ-1045423
+        String drl = "" +
+                "package org.mortgages;\n" +
+                "import org.mortgages.MyType;\n" +
+                "rule \"my rule\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    t : MyType( )\n" +
+                "  then\n" +
+                "    t.doSomething( 1 * 2 );\n" +
+                "end\n";
+
+        Map<String, List<MethodInfo>> methodInformation = new HashMap<String, List<MethodInfo>>();
+        List<MethodInfo> mapMethodInformation = new ArrayList<MethodInfo>();
+        mapMethodInformation.add( new MethodInfo( "doSomething",
+                                                  Arrays.asList( new String[]{ DataType.TYPE_NUMERIC_INTEGER } ),
+                                                  "void",
+                                                  "void",
+                                                  "org.mortgages.MyType" ) );
+
+        methodInformation.put( "org.mortgages.MyType", mapMethodInformation );
+
+        when( dmo.getProjectMethodInformation() ).thenReturn( methodInformation );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+
+        assertTrue( m.rhs[ 0 ] instanceof ActionCallMethod );
+        ActionCallMethod mc = (ActionCallMethod) m.rhs[ 0 ];
+        assertEquals( "doSomething", mc.getMethodName() );
+        assertEquals( "t", mc.getVariable() );
+        assertEquals( 1, mc.getState() );
+        assertEquals( 1, mc.getFieldValues().length );
+
+        ActionFieldValue f1 = mc.getFieldValue( 0 );
+        assertEquals( "1 * 2", f1.getValue() );
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER, f1.getType() );
+        assertEquals( FieldNatureType.TYPE_FORMULA, f1.getNature() );
+
+        String marshalled = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
+        System.out.println( marshalled );
+        assertEqualsIgnoreWhitespace( drl,
+                                      marshalled );
+    }
+
+    @Test
+    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1045423")
+    public void testMethodCallCheckParameterDataTypes3() {
+        // BZ-1045423
+        String drl = "" +
+                "package org.mortgages;\n" +
+                "import org.mortgages.MyType;\n" +
+                "rule \"my rule\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    i : Integer( )\n" +
+                "    t : MyType( )\n" +
+                "  then\n" +
+                "    t.doSomething( i );\n" +
+                "end\n";
+
+        Map<String, List<MethodInfo>> methodInformation = new HashMap<String, List<MethodInfo>>();
+        List<MethodInfo> mapMethodInformation = new ArrayList<MethodInfo>();
+        mapMethodInformation.add( new MethodInfo( "doSomething",
+                                                  Arrays.asList( new String[]{ DataType.TYPE_NUMERIC_INTEGER } ),
+                                                  "void",
+                                                  "void",
+                                                  "org.mortgages.MyType" ) );
+
+        methodInformation.put( "org.mortgages.MyType", mapMethodInformation );
+
+        when( dmo.getProjectMethodInformation() ).thenReturn( methodInformation );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+
+        assertTrue( m.rhs[ 0 ] instanceof ActionCallMethod );
+        ActionCallMethod mc = (ActionCallMethod) m.rhs[ 0 ];
+        assertEquals( "doSomething", mc.getMethodName() );
+        assertEquals( "t", mc.getVariable() );
+        assertEquals( 1, mc.getState() );
+        assertEquals( 1, mc.getFieldValues().length );
+
+        ActionFieldValue f1 = mc.getFieldValue( 0 );
+        assertEquals( "i", f1.getValue() );
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER, f1.getType() );
+        assertEquals( FieldNatureType.TYPE_VARIABLE, f1.getNature() );
+
+        String marshalled = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
+        System.out.println( marshalled );
+        assertEqualsIgnoreWhitespace( drl,
+                                      marshalled );
     }
 
     @Test
@@ -2020,32 +2169,31 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "  then\n" +
                 "end";
 
-        addModelField("Company",
-                "emps",
-                "java.util.List",
-                "List");
+        addModelField( "Company",
+                       "emps",
+                       "java.util.List",
+                       "List" );
 
-        addModelField("java.util.List",
-                "size",
-                "int",
-                "Integer");
-
+        addModelField( "java.util.List",
+                       "size",
+                       "int",
+                       "Integer" );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
-                dmo );
+                                                                           dmo );
         assertEquals( 1,
-                m.lhs.length );
-        assertTrue( m.lhs[0] instanceof FactPattern);
-        FactPattern factPattern = (FactPattern) m.lhs[0];
-        assertEquals(1,
-                factPattern.getConstraintList().getConstraints().length);
-        assertTrue(factPattern.getConstraintList().getConstraints()[0] instanceof SingleFieldConstraintEBLeftSide);
-        SingleFieldConstraintEBLeftSide constraint = (SingleFieldConstraintEBLeftSide) factPattern.getConstraintList().getConstraints()[0];
-        assertEquals("size",constraint.getFieldName());
-        assertEquals("int",constraint.getFieldType());
-        assertEquals("0",constraint.getValue());
-        assertEquals("==",constraint.getOperator());
-        assertEquals(1,constraint.getConstraintValueType());
+                      m.lhs.length );
+        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
+        FactPattern factPattern = (FactPattern) m.lhs[ 0 ];
+        assertEquals( 1,
+                      factPattern.getConstraintList().getConstraints().length );
+        assertTrue( factPattern.getConstraintList().getConstraints()[ 0 ] instanceof SingleFieldConstraintEBLeftSide );
+        SingleFieldConstraintEBLeftSide constraint = (SingleFieldConstraintEBLeftSide) factPattern.getConstraintList().getConstraints()[ 0 ];
+        assertEquals( "size", constraint.getFieldName() );
+        assertEquals( "int", constraint.getFieldType() );
+        assertEquals( "0", constraint.getValue() );
+        assertEquals( "==", constraint.getOperator() );
+        assertEquals( 1, constraint.getConstraintValueType() );
     }
 
     @Test
@@ -2059,28 +2207,28 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "    c.setEmps( [\"item1\", \"item2\"] );\n" +
                 "end";
 
-        addModelField("Company",
-                "emps",
-                "java.util.List",
-                "List");
+        addModelField( "Company",
+                       "emps",
+                       "java.util.List",
+                       "List" );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
-                dmo );
+                                                                           dmo );
         assertEquals( 1,
-                m.rhs.length );
-        assertTrue( m.rhs[0] instanceof ActionSetField);
-        ActionSetField actionSetField = (ActionSetField) m.rhs[0];
+                      m.rhs.length );
+        assertTrue( m.rhs[ 0 ] instanceof ActionSetField );
+        ActionSetField actionSetField = (ActionSetField) m.rhs[ 0 ];
 
-        assertEquals("c", actionSetField.getVariable());
+        assertEquals( "c", actionSetField.getVariable() );
 
-        assertEquals(1, actionSetField.getFieldValues().length);
+        assertEquals( 1, actionSetField.getFieldValues().length );
 
-        ActionFieldValue actionFieldValue = actionSetField.getFieldValues()[0];
+        ActionFieldValue actionFieldValue = actionSetField.getFieldValues()[ 0 ];
 
-        assertEquals("[\"item1\", \"item2\"]",actionFieldValue.getValue());
-        assertEquals("emps",actionFieldValue.getField());
-        assertEquals(FieldNatureType.TYPE_FORMULA, actionFieldValue.getNature());
-        assertEquals(DataType.TYPE_COLLECTION, actionFieldValue.getType());
+        assertEquals( "[\"item1\", \"item2\"]", actionFieldValue.getValue() );
+        assertEquals( "emps", actionFieldValue.getField() );
+        assertEquals( FieldNatureType.TYPE_FORMULA, actionFieldValue.getNature() );
+        assertEquals( DataType.TYPE_COLLECTION, actionFieldValue.getType() );
 
     }
 
@@ -2096,18 +2244,18 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "    update( application )" +
                 "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
-                dmo);
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           dmo );
 
-        assertTrue(m.rhs[0] instanceof ActionUpdateField);
+        assertTrue( m.rhs[ 0 ] instanceof ActionUpdateField );
 
-        ActionUpdateField field = (ActionUpdateField) m.rhs[0];
-        assertTrue(field.getFieldValues()[0] instanceof ActionFieldValue);
-        ActionFieldValue value = field.getFieldValues()[0];
-        assertEquals("apr", value.getField());
-        assertEquals("application.getApr() + 5", value.getValue());
-        assertEquals(FieldNatureType.TYPE_FORMULA, value.getNature());
-        assertEquals(DataType.TYPE_NUMERIC, value.getType());
+        ActionUpdateField field = (ActionUpdateField) m.rhs[ 0 ];
+        assertTrue( field.getFieldValues()[ 0 ] instanceof ActionFieldValue );
+        ActionFieldValue value = field.getFieldValues()[ 0 ];
+        assertEquals( "apr", value.getField() );
+        assertEquals( "application.getApr() + 5", value.getValue() );
+        assertEquals( FieldNatureType.TYPE_FORMULA, value.getNature() );
+        assertEquals( DataType.TYPE_NUMERIC, value.getType() );
     }
 
     @Test
@@ -2121,21 +2269,21 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "  then\n" +
                 "end";
 
-        addModelField("Customer",
-                "contact",
-                "Contact",
-                "Contact");
+        addModelField( "Customer",
+                       "contact",
+                       "Contact",
+                       "Contact" );
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
-                dmo);
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           dmo );
 
-        FactPattern pattern = (FactPattern) m.lhs[0];
-        SingleFieldConstraint constraint = (SingleFieldConstraint)pattern.getFieldConstraints()[0];
+        FactPattern pattern = (FactPattern) m.lhs[ 0 ];
+        SingleFieldConstraint constraint = (SingleFieldConstraint) pattern.getFieldConstraints()[ 0 ];
 
-        assertEquals("var",constraint.getFieldBinding());
-        assertEquals("Customer",constraint.getFactType());
-        assertEquals("contact",constraint.getFieldName());
-        assertEquals("Contact",constraint.getFieldType());
+        assertEquals( "var", constraint.getFieldBinding() );
+        assertEquals( "Customer", constraint.getFactType() );
+        assertEquals( "contact", constraint.getFieldName() );
+        assertEquals( "Contact", constraint.getFieldType() );
 
     }
 
@@ -2150,46 +2298,46 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "  then"
                 + "end";
 
-        addModelField("Customer",
-                "contact",
-                "Contact",
-                "Contact");
-        addModelField("Contact",
-                "tel1",
-                "String",
-                "String");
+        addModelField( "Customer",
+                       "contact",
+                       "Contact",
+                       "Contact" );
+        addModelField( "Contact",
+                       "tel1",
+                       "String",
+                       "String" );
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
-                dmo);
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           dmo );
 
-        FactPattern pattern = (FactPattern) m.lhs[0];
-        SingleFieldConstraint constraint = (SingleFieldConstraint)pattern.getFieldConstraints()[0];
+        FactPattern pattern = (FactPattern) m.lhs[ 0 ];
+        SingleFieldConstraint constraint = (SingleFieldConstraint) pattern.getFieldConstraints()[ 0 ];
 
-        assertEquals("Customer",constraint.getFactType());
-        assertEquals("contact",constraint.getFieldName());
-        assertEquals("Contact",constraint.getFieldType());
+        assertEquals( "Customer", constraint.getFactType() );
+        assertEquals( "contact", constraint.getFieldName() );
+        assertEquals( "Contact", constraint.getFieldType() );
 
-        SingleFieldConstraintEBLeftSide constraint2 = (SingleFieldConstraintEBLeftSide) pattern.getFieldConstraints()[1];
-        assertEquals("tel1", constraint2.getFieldName());
-        assertEquals("java.lang.String", constraint2.getFieldType());
-        assertEquals("15", constraint2.getValue());
-        assertEquals(">", constraint2.getOperator());
+        SingleFieldConstraintEBLeftSide constraint2 = (SingleFieldConstraintEBLeftSide) pattern.getFieldConstraints()[ 1 ];
+        assertEquals( "tel1", constraint2.getFieldName() );
+        assertEquals( "java.lang.String", constraint2.getFieldType() );
+        assertEquals( "15", constraint2.getValue() );
+        assertEquals( ">", constraint2.getOperator() );
 
-        assertEquals(3, constraint2.getExpressionLeftSide().getParts());
-        ExpressionPart part1 = constraint2.getExpressionLeftSide().getParts().get(0);
-        assertEquals("Customer", part1.getName());
-        assertEquals("Customer", part1.getClassType());
-        assertEquals("Customer", part1.getGenericType());
+        assertEquals( 3, constraint2.getExpressionLeftSide().getParts() );
+        ExpressionPart part1 = constraint2.getExpressionLeftSide().getParts().get( 0 );
+        assertEquals( "Customer", part1.getName() );
+        assertEquals( "Customer", part1.getClassType() );
+        assertEquals( "Customer", part1.getGenericType() );
 
-        ExpressionPart part2 = constraint2.getExpressionLeftSide().getParts().get(1);
-        assertEquals("contact", part2.getName());
-        assertEquals("Contact", part2.getClassType());
-        assertEquals("Contact", part2.getGenericType());
+        ExpressionPart part2 = constraint2.getExpressionLeftSide().getParts().get( 1 );
+        assertEquals( "contact", part2.getName() );
+        assertEquals( "Contact", part2.getClassType() );
+        assertEquals( "Contact", part2.getGenericType() );
 
-        ExpressionPart part3 = constraint2.getExpressionLeftSide().getParts().get(2);
-        assertEquals("tel1", part3.getName());
-        assertEquals("java.lang.String", part3.getClassType());
-        assertEquals("String", part3.getGenericType());
+        ExpressionPart part3 = constraint2.getExpressionLeftSide().getParts().get( 2 );
+        assertEquals( "tel1", part3.getName() );
+        assertEquals( "java.lang.String", part3.getClassType() );
+        assertEquals( "String", part3.getGenericType() );
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
