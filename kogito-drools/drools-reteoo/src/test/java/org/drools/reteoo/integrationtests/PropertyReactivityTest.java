@@ -1,9 +1,9 @@
-package org.drools.compiler.integrationtests;
+package org.drools.reteoo.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.io.impl.ByteArrayResource;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.PropertyReactive;
@@ -1000,7 +1000,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         String str =
                 "package org.drools.test;\n" +
                 "\n" +
-                "import org.drools.compiler.integrationtests.PropertyReactivityTest.Klass4;\n" +
+                "import " + Klass4.class.getCanonicalName() + ";\n" +
                 "\n" +
                 "global java.util.List list;\n" +
                 "\n" +
