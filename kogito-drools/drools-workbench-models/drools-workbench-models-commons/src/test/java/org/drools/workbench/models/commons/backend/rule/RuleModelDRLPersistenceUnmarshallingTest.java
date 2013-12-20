@@ -35,6 +35,7 @@ import org.drools.workbench.models.datamodel.rule.CEPWindow;
 import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.ExpressionField;
+import org.drools.workbench.models.datamodel.rule.ExpressionPart;
 import org.drools.workbench.models.datamodel.rule.ExpressionUnboundFact;
 import org.drools.workbench.models.datamodel.rule.ExpressionVariable;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
@@ -2120,7 +2121,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "  then\n" +
                 "end";
 
-        addModelField("Company",
+        addModelField("Customer",
                 "contact",
                 "Contact",
                 "Contact");
@@ -2136,6 +2137,59 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals("contact",constraint.getFieldName());
         assertEquals("Contact",constraint.getFieldType());
 
+    }
+
+    @Test
+    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=986000 -  DRL-to-RuleModel marshalling improvements")
+    public void testSingleFieldConstraintEBLeftSide() throws Exception {
+        String drl = "" +
+                "rule \" broken \""
+                + "dialect \"mvel\""
+                + "  when"
+                + "    Customer( contact != null , contact.tel1 > \"15\" )"
+                + "  then"
+                + "end";
+
+        addModelField("Customer",
+                "contact",
+                "Contact",
+                "Contact");
+        addModelField("Contact",
+                "tel1",
+                "String",
+                "String");
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                dmo);
+
+        FactPattern pattern = (FactPattern) m.lhs[0];
+        SingleFieldConstraint constraint = (SingleFieldConstraint)pattern.getFieldConstraints()[0];
+
+        assertEquals("Customer",constraint.getFactType());
+        assertEquals("contact",constraint.getFieldName());
+        assertEquals("Contact",constraint.getFieldType());
+
+        SingleFieldConstraintEBLeftSide constraint2 = (SingleFieldConstraintEBLeftSide) pattern.getFieldConstraints()[1];
+        assertEquals("tel1", constraint2.getFieldName());
+        assertEquals("java.lang.String", constraint2.getFieldType());
+        assertEquals("15", constraint2.getValue());
+        assertEquals(">", constraint2.getOperator());
+
+        assertEquals(3, constraint2.getExpressionLeftSide().getParts());
+        ExpressionPart part1 = constraint2.getExpressionLeftSide().getParts().get(0);
+        assertEquals("Customer", part1.getName());
+        assertEquals("Customer", part1.getClassType());
+        assertEquals("Customer", part1.getGenericType());
+
+        ExpressionPart part2 = constraint2.getExpressionLeftSide().getParts().get(1);
+        assertEquals("contact", part2.getName());
+        assertEquals("Contact", part2.getClassType());
+        assertEquals("Contact", part2.getGenericType());
+
+        ExpressionPart part3 = constraint2.getExpressionLeftSide().getParts().get(2);
+        assertEquals("tel1", part3.getName());
+        assertEquals("java.lang.String", part3.getClassType());
+        assertEquals("String", part3.getGenericType());
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
