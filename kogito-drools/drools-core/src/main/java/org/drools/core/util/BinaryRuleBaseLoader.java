@@ -62,7 +62,7 @@ public class BinaryRuleBaseLoader {
         if ( classLoader == null ) {
             classLoader = Thread.currentThread().getContextClassLoader();
             if ( classLoader == null ) {
-                classLoader = this.getClass().getClassLoader();
+                classLoader = Thread.currentThread().getContextClassLoader();
             }
         }
         this.ruleBase = rb;
