@@ -1,12 +1,12 @@
 package org.drools.core.common;
 
-import org.kie.internal.utils.ClassLoaderUtil;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +22,8 @@ public class ProjectClassLoader extends ClassLoader {
                                                             new ClassNotFoundException("This is just a cached Exception. Disable non existing classes cache to see the actual one.") :
                                                             null;
 
+    private static boolean isIBM_JVM = System.getProperty("java.vendor").toLowerCase().contains("ibm");
+
     private Map<String, byte[]> store;
 
     private Map<String, ClassBytecode> definedTypes;
@@ -34,6 +36,30 @@ public class ProjectClassLoader extends ClassLoader {
 
     private ProjectClassLoader(ClassLoader parent) {
         super(parent);
+    }
+
+    public static class IBMClassLoader extends ProjectClassLoader {
+        private final boolean parentImplemntsFindReosources;
+
+        private IBMClassLoader(ClassLoader parent) {
+            super(parent);
+            Method m = null;
+            try {
+                m = parent.getClass().getMethod("findResources", String.class);
+            } catch (NoSuchMethodException e) { }
+            parentImplemntsFindReosources = m != null && m.getDeclaringClass() == parent.getClass();
+        }
+
+        @Override
+        protected Enumeration<URL> findResources(String name) throws IOException {
+            // if the parent doesn't implemnt this method call getResources directly on it
+            // see https://blogs.oracle.com/bhaktimehta/entry/ibm_jdk_and_classloader_getresources
+            return parentImplemntsFindReosources ? Collections.<URL>emptyEnumeration() : getParent().getResources(name);
+        }
+    }
+
+    private static ProjectClassLoader internalCreate(ClassLoader parent) {
+        return isIBM_JVM ? new IBMClassLoader(parent) : new ProjectClassLoader(parent);
     }
 
     public static ClassLoader getClassLoader(final ClassLoader classLoader,
@@ -58,14 +84,14 @@ public class ProjectClassLoader extends ClassLoader {
         if (parent == null) {
             parent = ProjectClassLoader.class.getClassLoader();
         }
-        return new ProjectClassLoader(parent);
+        return internalCreate(parent);
     }
 
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent) {
         if (parent == null) {
             return createProjectClassLoader();
         }
-        return parent instanceof ProjectClassLoader ? (ProjectClassLoader)parent : new ProjectClassLoader(parent);
+        return parent instanceof ProjectClassLoader ? (ProjectClassLoader)parent : internalCreate(parent);
     }
 
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent, Map<String, byte[]> store) {
@@ -158,11 +184,6 @@ public class ProjectClassLoader extends ClassLoader {
         if (CACHE_NON_EXISTING_CLASSES) {
             nonExistingClasses.remove(name);
         }
-    }
-
-    @Override
-    protected Enumeration<URL> findResources(String name) throws IOException {
-        return getParent().getResources(name);
     }
 
     @Override

@@ -1,9 +1,10 @@
 package org.drools.compiler.kie.builder.impl;
 
+import org.drools.compiler.kie.builder.impl.event.KieModuleDiscovered;
+import org.drools.compiler.kie.builder.impl.event.KieServicesEventListerner;
 import org.drools.core.util.StringUtils;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.compiler.kproject.xml.MinimalPomParser;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
@@ -18,6 +19,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -46,20 +48,19 @@ public class ClasspathKieProject extends AbstractKieProject {
 
     private Map<String, InternalKieModule>  kJarFromKBaseName = new HashMap<String, InternalKieModule>();
 
-    private KieRepository                   kr;
+    private final KieRepository kieRepository;
     
-    private ClassLoader                     cl;
+    private ClassLoader classLoader;
 
-    public ClasspathKieProject() {
-        this( KieServices.Factory.get().getRepository() );
+    private final WeakReference<KieServicesEventListerner> listener;
+
+    ClasspathKieProject(WeakReference<KieServicesEventListerner> listener) {
+        this.kieRepository = KieServices.Factory.get().getRepository();
+        this.listener = listener;
     }
 
-    public ClasspathKieProject(KieRepository kr) {
-        this.kr = kr;
-    }
-    
     public void init() {
-        this.cl = createProjectClassLoader();
+        this.classLoader = createProjectClassLoader();
         discoverKieModules();
         indexParts(kieModules.values(), kJarFromKBaseName);
     }
@@ -73,7 +74,7 @@ public class ClasspathKieProject extends AbstractKieProject {
         for ( String configFile : configFiles) {
             final Enumeration<URL> e;
             try {
-                e = cl.getResources(configFile );
+                e = classLoader.getResources(configFile );
             } catch ( IOException exc ) {
                 log.error( "Unable to find and build index of "+configFile+"." + exc.getMessage() );
                 return;
@@ -82,7 +83,7 @@ public class ClasspathKieProject extends AbstractKieProject {
             // Map of kmodule urls
             while ( e.hasMoreElements() ) {
                 URL url = e.nextElement();
-                log.info( "Found kmodule: " + url);
+                notifyKieModuleFound(url);
                 try {
                     InternalKieModule kModule = fetchKModule(url);
 
@@ -92,13 +93,20 @@ public class ClasspathKieProject extends AbstractKieProject {
 
                         log.debug( "Discovered classpath module " + releaseId.toExternalForm() );
 
-                        kr.addKieModule(kModule);
+                        kieRepository.addKieModule(kModule);
                     }
 
                 } catch ( Exception exc ) {
                     log.error( "Unable to build index of kmodule.xml url=" + url.toExternalForm() + "\n" + exc.getMessage() );
                 }
             }
+        }
+    }
+
+    private void notifyKieModuleFound(URL url) {
+        log.info( "Found kmodule: " + url);
+        if (listener != null && listener.get() != null) {
+            listener.get().onKieModuleDiscovered(new KieModuleDiscovered(url.toString()));
         }
     }
 
@@ -351,10 +359,10 @@ public class ClasspathKieProject extends AbstractKieProject {
     }
 
     public ClassLoader getClassLoader() {
-        return this.cl;
+        return this.classLoader;
     }
 
     public ClassLoader getClonedClassLoader() {
-        return createProjectClassLoader(cl.getParent());
+        return createProjectClassLoader(classLoader.getParent());
     }
 }
