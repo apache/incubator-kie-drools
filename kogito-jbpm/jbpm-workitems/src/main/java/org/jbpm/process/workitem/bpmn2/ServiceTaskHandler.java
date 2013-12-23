@@ -61,13 +61,13 @@ public class ServiceTaskHandler implements WorkItemHandler {
     
     public ServiceTaskHandler() {
         this.dcf = JaxWsDynamicClientFactory.newInstance();
-        this.classLoader = this.getClass().getClassLoader();
+        this.classLoader = Thread.currentThread().getContextClassLoader();
     }
     
     public ServiceTaskHandler(KieSession ksession) {
         this.dcf = JaxWsDynamicClientFactory.newInstance();
         this.ksession = ksession;
-        this.classLoader = this.getClass().getClassLoader();
+        this.classLoader = Thread.currentThread().getContextClassLoader();
     }
     
     public ServiceTaskHandler(KieSession ksession, ClassLoader classloader) {
@@ -80,7 +80,7 @@ public class ServiceTaskHandler implements WorkItemHandler {
         this.dcf = JaxWsDynamicClientFactory.newInstance();
         this.ksession = ksession;
         this.asyncTimeout = timeout;
-        this.classLoader = this.getClass().getClassLoader();
+        this.classLoader = Thread.currentThread().getContextClassLoader();
     }
 
     public void executeWorkItem(WorkItem workItem, final WorkItemManager manager) {

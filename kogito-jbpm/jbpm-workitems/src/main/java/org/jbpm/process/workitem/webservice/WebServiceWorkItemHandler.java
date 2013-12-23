@@ -60,7 +60,7 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
     public WebServiceWorkItemHandler(KieSession ksession) {
         this.dcf = JaxWsDynamicClientFactory.newInstance();
         this.ksession = ksession;
-        this.classLoader = this.getClass().getClassLoader();
+        this.classLoader = Thread.currentThread().getContextClassLoader();
     }
     
     public WebServiceWorkItemHandler(KieSession ksession, ClassLoader classloader) {
@@ -73,7 +73,7 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
         this.dcf = JaxWsDynamicClientFactory.newInstance();
         this.ksession = ksession;
         this.asyncTimeout = timeout;
-        this.classLoader = this.getClass().getClassLoader();
+        this.classLoader = Thread.currentThread().getContextClassLoader();
     }
 
     public void executeWorkItem(WorkItem workItem, final WorkItemManager manager) {

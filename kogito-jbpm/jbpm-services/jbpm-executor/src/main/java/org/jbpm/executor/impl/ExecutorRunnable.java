@@ -168,7 +168,7 @@ public class ExecutorRunnable implements Runnable {
     }
     
     protected ClassLoader getClassLoader(String deploymentId) {
-        ClassLoader cl = this.getClass().getClassLoader();
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
         if (deploymentId == null) {
             return cl;
         }

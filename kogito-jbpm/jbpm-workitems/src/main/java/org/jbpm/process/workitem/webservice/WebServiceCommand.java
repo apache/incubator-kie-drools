@@ -95,7 +95,7 @@ public class WebServiceCommand implements Command {
         String importNamespace = (String) workItem.getParameter("Namespace");
         if (importLocation != null && importLocation.trim().length() > 0 
                 && importNamespace != null && importNamespace.trim().length() > 0) {
-            Client client = dcf.createClient(importLocation, new QName(importNamespace, interfaceRef), this.getClass().getClassLoader(), null);
+            Client client = dcf.createClient(importLocation, new QName(importNamespace, interfaceRef), Thread.currentThread().getContextClassLoader(), null);
             clients.put(interfaceRef, client);
             return client;
         }

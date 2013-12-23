@@ -155,7 +155,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 			return ((InternalRuleBase) ((InternalKnowledgeBase) kruntime.getKieBase()).getRuleBase()).getRootClassLoader();
 		}
 		CompositeClassLoader result = new CompositeClassLoader();
-		result.addClassLoader(this.getClass().getClassLoader());
+		result.addClassLoader(Thread.currentThread().getContextClassLoader());
 		return result;
 	}
 	
