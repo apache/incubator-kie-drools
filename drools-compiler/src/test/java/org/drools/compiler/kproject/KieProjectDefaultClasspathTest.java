@@ -1,14 +1,21 @@
 package org.drools.compiler.kproject;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import org.drools.compiler.kie.builder.impl.InternalKieServices;
+import org.drools.compiler.kie.builder.impl.event.AbstractKieServicesEventListerner;
+import org.drools.compiler.kie.builder.impl.event.KieModuleDiscovered;
+import org.drools.compiler.kie.builder.impl.event.KieServicesEventListerner;
 import org.junit.Test;
 import org.drools.compiler.kie.builder.impl.ClasspathKieProject;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 
 public class KieProjectDefaultClasspathTest extends AbstractKnowledgeTest {
@@ -39,15 +46,29 @@ public class KieProjectDefaultClasspathTest extends AbstractKnowledgeTest {
             assertNotNull( cls );
             cls = Thread.currentThread().getContextClassLoader().loadClass( "org.drools.compiler.cdi.test.KProjectTestClassjar3" );
             assertNotNull( cls );
-            
-            ClasspathKieProject kProject =  new ClasspathKieProject();
-            
-            KieContainer kContainer = new KieContainerImpl(kProject, null);
-            
-             testEntry(new KProjectTestClassImpl( "jar1", kContainer ), "jar1");
-             testEntry(new KProjectTestClassImpl( "jar2", kContainer ), "jar2");
-             testEntry(new KProjectTestClassImpl( "jar3", kContainer ), "jar3");
-             testEntry(new KProjectTestClassImpl( "fol4", kContainer ), "fol4");
+
+            InternalKieServices ks = (InternalKieServices) KieServices.Factory.get();
+
+            final AtomicInteger kieModulesCounter = new AtomicInteger(0);
+            KieServicesEventListerner listener = new AbstractKieServicesEventListerner() {
+                @Override
+                public void onKieModuleDiscovered(KieModuleDiscovered event) {
+                    // skip kmodule.xml contained in test/resources
+                    if (!event.getKieModuleUrl().contains("test-classes")) {
+                        kieModulesCounter.incrementAndGet();
+                    }
+                }
+            };
+            ks.registerListener(listener);
+
+            KieContainer kContainer = ks.getKieClasspathContainer();
+
+            assertEquals(4, kieModulesCounter.get());
+
+            testEntry(new KProjectTestClassImpl( "jar1", kContainer ), "jar1");
+            testEntry(new KProjectTestClassImpl( "jar2", kContainer ), "jar2");
+            testEntry(new KProjectTestClassImpl( "jar3", kContainer ), "jar3");
+            testEntry(new KProjectTestClassImpl( "fol4", kContainer ), "fol4");
 
         } finally {
             Thread.currentThread().setContextClassLoader( origCl );
