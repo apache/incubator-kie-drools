@@ -1,5 +1,6 @@
 package org.drools.compiler.kie.builder.impl;
 
+import org.drools.compiler.kie.builder.impl.event.KieServicesEventListerner;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.audit.KnowledgeRuntimeLoggerProviderImpl;
@@ -31,16 +32,19 @@ import org.kie.api.persistence.jpa.KieStoreServices;
 import org.kie.api.runtime.KieContainer;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.Properties;
 
 import static org.drools.compiler.compiler.io.memory.MemoryFileSystem.readFromJar;
 
-public class KieServicesImpl implements KieServices {
+public class KieServicesImpl implements InternalKieServices {
     private ResourceFactoryService resourceFactory;
     
-    private volatile KieContainerImpl classpathKContainer;
+    private volatile KieContainer classpathKContainer;
     
     private final Object lock = new Object();
+
+    private WeakReference<KieServicesEventListerner> listener;
 
     public ResourceFactoryService getResourceFactory() {
         if ( resourceFactory == null ) {
@@ -61,7 +65,7 @@ public class KieServicesImpl implements KieServices {
             // these are heavy to create, don't want to end up with two
             synchronized ( lock ) {
                 if ( classpathKContainer == null ) {
-                    classpathKContainer =  new KieContainerImpl(new ClasspathKieProject(), null);
+                    classpathKContainer = newKieClasspathContainer();
                 }
             }        
         }
@@ -70,7 +74,7 @@ public class KieServicesImpl implements KieServices {
     }
 
     public KieContainer newKieClasspathContainer() {
-        return new KieContainerImpl(new ClasspathKieProject(), null);
+        return new KieContainerImpl(new ClasspathKieProject(listener), null);
     }
 
     public void nullKieClasspathContainer() {
@@ -163,6 +167,11 @@ public class KieServicesImpl implements KieServices {
 
     public Environment newEnvironment() {
         return EnvironmentFactory.newEnvironment();
+    }
+
+    @Override
+    public void registerListener(KieServicesEventListerner listener) {
+        this.listener = new WeakReference<KieServicesEventListerner>(listener);
     }
 }
 
