@@ -3746,3 +3746,5 @@ After in *.java:
 
 [MINOR] Selector.isContinuous() has been renamed to isCountable and its boolean return value has been inverted.
 It's highly unlikely that your code uses isContinuous() because uncountable value ranges weren't supported yet.
+
+[IMPL_DETAIL] SolutionDescriptor.isInitialized(Solution) now requires a ScoreDirector parameter too

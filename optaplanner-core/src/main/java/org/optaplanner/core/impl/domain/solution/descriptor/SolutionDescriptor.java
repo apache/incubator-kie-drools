@@ -44,6 +44,7 @@ import org.optaplanner.core.impl.domain.solution.cloner.PlanningCloneableSolutio
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListenerSupport;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
 
 public class SolutionDescriptor {
@@ -408,16 +409,20 @@ public class SolutionDescriptor {
     }
 
     /**
+     * @param scoreDirector never null
      * @param solution never null
-     * @return true if all the planning entities are initialized
+     * @return true if all the movable planning entities are initialized
      */
-    public boolean isInitialized(Solution solution) {
+    public boolean isInitialized(ScoreDirector scoreDirector, Solution solution) {
         for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
             Object entity = extractPlanningEntity(entityPropertyAccessor, solution);
             if (entity != null) {
                 PlanningEntityDescriptor entityDescriptor = getEntityDescriptor(entity.getClass());
                 if (!entityDescriptor.isInitialized(entity)) {
-                    return false;
+                    if (!entityDescriptor.hasMovableEntitySelectionFilter()
+                            || entityDescriptor.getMovableEntitySelectionFilter().accept(scoreDirector, entity)) {
+                        return false;
+                    }
                 }
             }
         }
@@ -427,7 +432,10 @@ public class SolutionDescriptor {
             for (Object entity : entityCollection) {
                 PlanningEntityDescriptor entityDescriptor = getEntityDescriptor(entity.getClass());
                 if (!entityDescriptor.isInitialized(entity)) {
-                    return false;
+                    if (!entityDescriptor.hasMovableEntitySelectionFilter()
+                            || entityDescriptor.getMovableEntitySelectionFilter().accept(scoreDirector, entity)) {
+                        return false;
+                    }
                 }
             }
         }
