@@ -23,36 +23,13 @@ import org.optaplanner.persistence.xstream.XStreamProblemIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class XStreamSolutionDao implements SolutionDao {
-
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+public abstract class XStreamSolutionDao extends AbstractSolutionDao {
 
     protected XStreamProblemIO xStreamProblemIO;
-    protected String dirName;
-    protected File dataDir;
 
     public XStreamSolutionDao(String dirName, Class... xstreamAnnotations) {
-        this.dirName = dirName;
-        dataDir = new File("data/" + dirName);
+        super(dirName);
         xStreamProblemIO = new XStreamProblemIO(xstreamAnnotations);
-        if (!dataDir.exists()) {
-            throw new IllegalStateException("The directory dataDir (" + dataDir.getAbsolutePath()
-                    + ") does not exist.\n" +
-                    " The working directory should be set to the directory that contains the data directory" +
-                    " (which is not the data directory itself).\n" +
-                    " The working directory is different in a git clone (optaplanner/optaplanner-examples)" +
-                    " and the release zip (examples).\n" +
-                    " In an IDE (IntelliJ, Eclipse, NetBeans), open the \"Run configuration\""
-                    + " to change the field \"Working directory\".");
-        }
-    }
-
-    public String getDirName() {
-        return dirName;
-    }
-
-    public File getDataDir() {
-        return dataDir;
     }
 
     public String getFileExtension() {
