@@ -50,7 +50,7 @@ public class Manners2009Importer extends AbstractTxtSolutionImporter {
         return new Manners2009InputBuilder();
     }
 
-    public class Manners2009InputBuilder extends TxtInputBuilder {
+    public static class Manners2009InputBuilder extends TxtInputBuilder {
 
         public Solution readSolution() throws IOException {
             Manners2009 manners2009 = new Manners2009();

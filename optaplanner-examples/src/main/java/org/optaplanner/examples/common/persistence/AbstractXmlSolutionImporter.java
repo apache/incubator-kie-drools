@@ -71,7 +71,7 @@ public abstract class AbstractXmlSolutionImporter extends AbstractSolutionImport
         return solution;
     }
 
-    public abstract class XmlInputBuilder extends InputBuilder {
+    public static abstract class XmlInputBuilder extends InputBuilder {
 
         protected File inputFile;
         protected Document document;

@@ -61,7 +61,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
         return new PatientAdmissionScheduleInputBuilder();
     }
 
-    public class PatientAdmissionScheduleInputBuilder extends TxtInputBuilder {
+    public static class PatientAdmissionScheduleInputBuilder extends TxtInputBuilder {
 
         private PatientAdmissionSchedule patientAdmissionSchedule;
 

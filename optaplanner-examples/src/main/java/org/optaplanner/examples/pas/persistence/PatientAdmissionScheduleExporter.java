@@ -41,7 +41,7 @@ public class PatientAdmissionScheduleExporter extends AbstractTxtSolutionExporte
         return new PatientAdmissionScheduleOutputBuilder();
     }
 
-    public class PatientAdmissionScheduleOutputBuilder extends TxtOutputBuilder {
+    public static class PatientAdmissionScheduleOutputBuilder extends TxtOutputBuilder {
 
         private PatientAdmissionSchedule patientAdmissionSchedule;
 

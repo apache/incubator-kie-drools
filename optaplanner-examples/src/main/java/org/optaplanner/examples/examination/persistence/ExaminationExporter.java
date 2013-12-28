@@ -46,7 +46,7 @@ public class ExaminationExporter extends AbstractTxtSolutionExporter {
         return new ExaminationOutputBuilder();
     }
 
-    public class ExaminationOutputBuilder extends TxtOutputBuilder {
+    public static class ExaminationOutputBuilder extends TxtOutputBuilder {
 
         private Examination examination;
 

@@ -71,7 +71,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter {
         return new ExaminationInputBuilder();
     }
 
-    public class ExaminationInputBuilder extends TxtInputBuilder {
+    public static class ExaminationInputBuilder extends TxtInputBuilder {
 
         public Solution readSolution() throws IOException {
             Examination examination = new Examination();

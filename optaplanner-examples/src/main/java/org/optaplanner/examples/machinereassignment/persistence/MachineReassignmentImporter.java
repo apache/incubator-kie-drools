@@ -79,7 +79,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter {
         return new MachineReassignmentInputBuilder();
     }
 
-    public class MachineReassignmentInputBuilder extends TxtInputBuilder {
+    public static class MachineReassignmentInputBuilder extends TxtInputBuilder {
 
         private MachineReassignment machineReassignment;
 

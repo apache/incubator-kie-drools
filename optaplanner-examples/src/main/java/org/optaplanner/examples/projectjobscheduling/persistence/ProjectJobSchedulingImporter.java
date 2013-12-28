@@ -60,7 +60,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter {
         return new ProjectJobSchedulingInputBuilder();
     }
 
-    public class ProjectJobSchedulingInputBuilder extends TxtInputBuilder {
+    public static class ProjectJobSchedulingInputBuilder extends TxtInputBuilder {
 
         private Schedule schedule;
 

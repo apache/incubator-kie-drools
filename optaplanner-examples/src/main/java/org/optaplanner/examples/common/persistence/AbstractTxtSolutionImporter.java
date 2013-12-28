@@ -91,7 +91,7 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
         }
     }
 
-    public abstract class TxtInputBuilder extends InputBuilder {
+    public static abstract class TxtInputBuilder extends InputBuilder {
 
         protected File inputFile;
         protected BufferedReader bufferedReader;

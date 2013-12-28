@@ -64,7 +64,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         return new VrpScheduleInputBuilder();
     }
 
-    public class VrpScheduleInputBuilder extends TxtInputBuilder {
+    public static class VrpScheduleInputBuilder extends TxtInputBuilder {
 
         private VehicleRoutingSolution schedule;
 

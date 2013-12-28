@@ -44,7 +44,7 @@ public class TravelingTournamentImporter extends AbstractTxtSolutionImporter {
         return new TravelingTournamentInputBuilder();
     }
 
-    public class TravelingTournamentInputBuilder extends TxtInputBuilder {
+    public static class TravelingTournamentInputBuilder extends TxtInputBuilder {
 
         public Solution readSolution() throws IOException {
             TravelingTournament travelingTournament = new TravelingTournament();

@@ -115,7 +115,7 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
 
     public abstract Solution readSolution(File inputFile);
 
-    public abstract class InputBuilder {
+    public static abstract class InputBuilder extends LoggingMain {
 
     }
 

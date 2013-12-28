@@ -44,7 +44,7 @@ public class CurriculumCourseExporter extends AbstractTxtSolutionExporter {
         return new CurriculumCourseOutputBuilder();
     }
 
-    public class CurriculumCourseOutputBuilder extends TxtOutputBuilder {
+    public static class CurriculumCourseOutputBuilder extends TxtOutputBuilder {
 
         private CourseSchedule schedule;
 

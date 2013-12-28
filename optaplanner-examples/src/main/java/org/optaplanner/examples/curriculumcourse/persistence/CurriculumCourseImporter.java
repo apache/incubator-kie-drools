@@ -59,7 +59,7 @@ public class CurriculumCourseImporter extends AbstractTxtSolutionImporter {
         return new CurriculumCourseInputBuilder();
     }
 
-    public class CurriculumCourseInputBuilder extends TxtInputBuilder {
+    public static class CurriculumCourseInputBuilder extends TxtInputBuilder {
 
         public Solution readSolution() throws IOException {
             CourseSchedule schedule = new CourseSchedule();

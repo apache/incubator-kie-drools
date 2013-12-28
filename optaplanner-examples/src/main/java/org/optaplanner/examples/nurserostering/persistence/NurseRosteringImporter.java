@@ -78,7 +78,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter {
         return new NurseRosteringInputBuilder();
     }
 
-    public class NurseRosteringInputBuilder extends XmlInputBuilder {
+    public static class NurseRosteringInputBuilder extends XmlInputBuilder {
 
         protected Map<String, ShiftDate> shiftDateMap;
         protected Map<String, Skill> skillMap;

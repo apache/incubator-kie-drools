@@ -44,7 +44,7 @@ public class MachineReassignmentExporter extends AbstractTxtSolutionExporter {
         return new MachineReassignmentOutputBuilder();
     }
 
-    public class MachineReassignmentOutputBuilder extends TxtOutputBuilder {
+    public static class MachineReassignmentOutputBuilder extends TxtOutputBuilder {
 
         private MachineReassignment machineReassignment;
 

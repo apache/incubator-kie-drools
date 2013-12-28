@@ -39,7 +39,7 @@ public class NurseRosteringExporter extends AbstractXmlSolutionExporter {
         return new NurseRosteringOutputBuilder();
     }
 
-    public class NurseRosteringOutputBuilder extends XmlOutputBuilder {
+    public static class NurseRosteringOutputBuilder extends XmlOutputBuilder {
 
         private NurseRoster nurseRoster;
 

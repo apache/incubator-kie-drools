@@ -46,7 +46,7 @@ public class TravelingTournamentExporter extends AbstractTxtSolutionExporter {
         return new TravelingTournamentOutputBuilder();
     }
 
-    public class TravelingTournamentOutputBuilder extends TxtOutputBuilder {
+    public static class TravelingTournamentOutputBuilder extends TxtOutputBuilder {
 
         private TravelingTournament travelingTournament;
 
