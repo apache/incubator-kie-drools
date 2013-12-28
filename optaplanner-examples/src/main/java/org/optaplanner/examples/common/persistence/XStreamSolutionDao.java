@@ -27,9 +27,9 @@ public abstract class XStreamSolutionDao implements SolutionDao {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    private XStreamProblemIO xStreamProblemIO;
-    private String dirName;
-    private File dataDir;
+    protected XStreamProblemIO xStreamProblemIO;
+    protected String dirName;
+    protected File dataDir;
 
     public XStreamSolutionDao(String dirName, Class... xstreamAnnotations) {
         this.dirName = dirName;
