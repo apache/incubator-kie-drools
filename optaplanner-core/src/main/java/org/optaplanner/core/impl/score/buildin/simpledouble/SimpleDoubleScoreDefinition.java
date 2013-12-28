@@ -53,7 +53,7 @@ public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleD
         return SimpleDoubleScore.class;
     }
 
-    public Score parseScore(String scoreString) {
+    public SimpleDoubleScore parseScore(String scoreString) {
         return SimpleDoubleScore.parseScore(scoreString);
     }
 

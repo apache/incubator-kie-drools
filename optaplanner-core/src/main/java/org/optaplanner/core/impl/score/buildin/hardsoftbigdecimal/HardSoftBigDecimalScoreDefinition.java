@@ -75,7 +75,7 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractScoreDefinition<H
         return HardSoftBigDecimalScore.class;
     }
 
-    public Score parseScore(String scoreString) {
+    public HardSoftBigDecimalScore parseScore(String scoreString) {
         return HardSoftBigDecimalScore.parseScore(scoreString);
     }
 

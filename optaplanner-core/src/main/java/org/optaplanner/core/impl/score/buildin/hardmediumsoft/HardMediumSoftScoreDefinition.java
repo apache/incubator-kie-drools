@@ -91,7 +91,7 @@ public class HardMediumSoftScoreDefinition extends AbstractScoreDefinition<HardM
         return HardMediumSoftScore.class;
     }
 
-    public Score parseScore(String scoreString) {
+    public HardMediumSoftScore parseScore(String scoreString) {
         return HardMediumSoftScore.parseScore(scoreString);
     }
 

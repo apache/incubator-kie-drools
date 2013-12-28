@@ -53,7 +53,7 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
         return SimpleLongScore.class;
     }
 
-    public Score parseScore(String scoreString) {
+    public SimpleLongScore parseScore(String scoreString) {
         return SimpleLongScore.parseScore(scoreString);
     }
 

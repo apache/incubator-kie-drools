@@ -62,7 +62,7 @@ public interface ScoreDefinition<S extends Score> {
      * @return never null
      * @see #parseScore(String)
      */
-    String formatScore(Score score);
+    String formatScore(S score);
 
     /**
      * Parses the {@link String} and returns a {@link Score}.
@@ -70,7 +70,7 @@ public interface ScoreDefinition<S extends Score> {
      * @return never null
      * @see #formatScore(Score)
      */
-    Score parseScore(String scoreString);
+    S parseScore(String scoreString);
 
     /**
      * See explanation in {@link Termination#calculateSolverTimeGradient(DefaultSolverScope)}.

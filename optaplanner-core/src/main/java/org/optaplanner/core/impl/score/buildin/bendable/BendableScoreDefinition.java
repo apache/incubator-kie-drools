@@ -90,7 +90,7 @@ public class BendableScoreDefinition extends AbstractScoreDefinition<BendableSco
         return BendableScore.class;
     }
 
-    public Score parseScore(String scoreString) {
+    public BendableScore parseScore(String scoreString) {
         return BendableScore.parseScore(hardLevelCount, softLevelCount, scoreString);
     }
 

@@ -55,7 +55,7 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
         return SimpleBigDecimalScore.class;
     }
 
-    public Score parseScore(String scoreString) {
+    public SimpleBigDecimalScore parseScore(String scoreString) {
         return SimpleBigDecimalScore.parseScore(scoreString);
     }
 

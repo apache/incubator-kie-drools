@@ -73,7 +73,7 @@ public class HardSoftScoreDefinition extends AbstractScoreDefinition<HardSoftSco
         return HardSoftScore.class;
     }
 
-    public Score parseScore(String scoreString) {
+    public HardSoftScore parseScore(String scoreString) {
         return HardSoftScore.parseScore(scoreString);
     }
 

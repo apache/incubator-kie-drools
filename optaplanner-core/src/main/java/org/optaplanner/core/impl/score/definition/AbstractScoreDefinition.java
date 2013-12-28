@@ -38,7 +38,7 @@ public abstract class AbstractScoreDefinition<S extends Score> implements ScoreD
         return null;
     }
 
-    public String formatScore(Score score) {
+    public String formatScore(S score) {
         return score.toString();
     }
 
