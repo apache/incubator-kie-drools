@@ -225,10 +225,33 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         ClassDefinition cdef = ruleBase.getTraitRegistry().getTraitable( coreKlass.getName() );
 
         if ( tdef == null ) {
-            throw new RuntimeDroolsException( "Unable to find Trait definition for class " + trait.getName() + ". It should have been DECLARED as a trait" );
+            if ( trait.getAnnotation( Trait.class ) != null ) {
+                try {
+                    if ( Thing.class.isAssignableFrom( trait ) ) {
+                        tdef = buildClassDefinition( trait, null );
+                    } else {
+                        throw new RuntimeDroolsException( "Unable to create definition for class " + trait +
+                                                          " : trait interfaces should extend " + Thing.class.getName() + " or be DECLARED as traits explicitly" );
+                    }
+                } catch ( IOException e ) {
+                    throw new RuntimeDroolsException( "Unable to create definition for class " + trait + " : " + e.getMessage() );
+                }
+                ruleBase.getTraitRegistry().addTrait( tdef );
+            } else {
+                throw new RuntimeDroolsException( "Unable to find Trait definition for class " + trait.getName() + ". It should have been DECLARED as a trait" );
+            }
         }
         if ( cdef == null ) {
-            throw new RuntimeDroolsException( "Unable to find Core class definition for class " + coreKlass.getName() + ". It should have been DECLARED as a trait" );
+            if ( core.getClass().getAnnotation( Traitable.class ) != null ) {
+                try {
+                    cdef = buildClassDefinition( core.getClass(), core.getClass() );
+                } catch ( IOException e ) {
+                    throw new RuntimeDroolsException( "Unable to create definition for class " + coreKlass.getName() + " : " + e.getMessage() );
+                }
+                ruleBase.getTraitRegistry().addTraitable( cdef );
+            } else {
+                throw new RuntimeDroolsException( "Unable to find Core class definition for class " + coreKlass.getName() + ". It should have been DECLARED as traitable" );
+            }
         }
 
         String proxyName = getProxyName( tdef, cdef );
@@ -317,7 +340,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         }
 
         try {
-            ruleBase.getTraitRegistry().addTraitable( buildWrapperClassDefinition( coreKlazz, wrapperClass ) );
+            ruleBase.getTraitRegistry().addTraitable( buildClassDefinition( coreKlazz, wrapperClass ) );
             return wrapperClass != null ? wrapperClass.newInstance() : null;
         } catch (InstantiationException e) {
             return null;
@@ -329,8 +352,8 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
     }
 
-    private ClassDefinition buildWrapperClassDefinition(Class<K> coreKlazz, Class<? extends CoreWrapper<K>> wrapperClass) throws IOException {
-        ClassFieldInspector inspector = new ClassFieldInspector( coreKlazz );
+    private ClassDefinition buildClassDefinition( Class<?> klazz, Class<?> wrapperClass ) throws IOException {
+        ClassFieldInspector inspector = new ClassFieldInspector( klazz );
 
         Package traitPackage = ruleBase.getPackagesMap().get( pack );
         if ( traitPackage == null ) {
@@ -340,15 +363,28 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         }
         ClassFieldAccessorStore store = traitPackage.getClassFieldAccessorStore();
 
-        String className = coreKlazz.getName() + "Wrapper";
-        String superClass = coreKlazz.getName();
-        String[] interfaces = new String[] {CoreWrapper.class.getName()};
-        ClassDefinition def = new ClassDefinition( className, superClass, interfaces );
-        Traitable tbl = wrapperClass.getAnnotation( Traitable.class );
-        def.setTraitable( true, tbl != null && tbl.logical() );
-        def.setDefinedClass( wrapperClass );
+        ClassDefinition def;
+        if ( ! klazz.isInterface() ) {
+            String className = wrapperClass.getName();
+            String superClass = wrapperClass != klazz ? klazz.getName() : klazz.getSuperclass().getName();
+            String[] interfaces = new String[] {CoreWrapper.class.getName()};
+            def = new ClassDefinition( className, superClass, interfaces );
+            def.setDefinedClass( wrapperClass );
 
-        Map<String, Field> fields = inspector.getFieldTypesField();
+            Traitable tbl = wrapperClass.getAnnotation( Traitable.class );
+            def.setTraitable( true, tbl != null && tbl.logical() );
+        } else {
+            String className = klazz.getName();
+            String superClass = Object.class.getName();
+            String[] interfaces = new String[ klazz.getInterfaces().length ];
+            for ( int j = 0; j <  klazz.getInterfaces().length; j++ ) {
+                interfaces[ j ] = klazz.getInterfaces()[ j ].getName();
+            }
+            def = new ClassDefinition( className, superClass, interfaces );
+            def.setDefinedClass( klazz );
+        }
+
+       Map<String, Field> fields = inspector.getFieldTypesField();
         for ( Field f : fields.values() ) {
             if ( f != null ) {
                 FieldDefinition fld = new FieldDefinition();
@@ -366,6 +402,10 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
         return def;
     }
+
+
+
+
 
     private Class<CoreWrapper<K>> buildCoreWrapper( Class<K> coreKlazz, ClassDefinition coreDef ) throws IOException, ClassNotFoundException {
 

@@ -137,7 +137,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                         if ( ! k.isTop() ) {
                             ((PropagationContextImpl) context).setModificationMask( -1L );
                         }
-                        //System.out.println(" MODIFY PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
+                        System.out.println(" MODIFY PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
                         this.sink.propagateModifyObject( factHandle,
                                 modifyPreviousTuples,
                                 context.adaptModificationMaskForObjectType( objectType, workingMemory ),
@@ -145,7 +145,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                         ((PropagationContextImpl) context).setModificationMask( originalMask );
 
                     } else {
-                        //System.out.println(" MODIFY PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
+                        System.out.println(" MODIFY PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
                         this.sink.propagateModifyObject( factHandle,
                                 modifyPreviousTuples,
                                 context.adaptModificationMaskForObjectType( objectType, workingMemory ),
@@ -153,7 +153,27 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                     }
 
                 } else {
-//                    System.out.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : MODIFY BLOCK !! " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
+                    System.out.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : MODIFY BLOCK !! " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
+                }
+            } else if ( factHandle.getObject() instanceof TraitableBean ) {
+                if ( typeMask != null && context.getModificationMask() == Long.MIN_VALUE ) {
+
+                    TraitableBean txBean = (TraitableBean) factHandle.getObject();
+                    TraitTypeMap tMap = (TraitTypeMap) txBean._getTraitMap();
+                    Collection<Thing> x = tMap.immediateParents( this.typeMask );
+                    Thing k = x.iterator().next();
+
+                    long originalMask = context.getModificationMask();
+                    if ( ! k.isTop() ) {
+                        ((PropagationContextImpl) context).setModificationMask( -1L );
+                    }
+
+                    ((PropagationContextImpl) context).setModificationMask( -1L );
+                    this.sink.propagateModifyObject( factHandle,
+                                                     modifyPreviousTuples,
+                                                     context.adaptModificationMaskForObjectType( objectType, workingMemory ),
+                                                     workingMemory );
+                    ((PropagationContextImpl) context).setModificationMask( originalMask );
                 }
             } else {
                 this.sink.propagateModifyObject( factHandle,

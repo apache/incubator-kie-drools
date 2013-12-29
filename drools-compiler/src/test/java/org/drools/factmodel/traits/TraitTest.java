@@ -4907,4 +4907,73 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
+
+
+    @Trait
+    public static interface SomeTrait<K> extends Thing<K> {
+        public String getFoo();
+        public void setFoo( String foo );
+    }
+
+    @Test
+    public void testTraitLegacyTraitableWithLegacyTrait() {
+        final String s1 = "package test;\n" +
+                          "import " + TraitTest.class.getName() + ".SomeTrait; \n" +
+                          "import org.drools.factmodel.traits.*; \n" +
+                          "global java.util.List list;\n" +
+                          "" +
+                          "rule \"Don ItemStyle\"\n" +
+                          "	when\n" +
+                          "	then\n" +
+                          "		don( new StudentImpl(), SomeTrait.class );\n" +
+                          "end\n";
+
+        final KnowledgeBase kbase = getKnowledgeBaseFromString(s1);
+        TraitFactory.setMode( mode, kbase );
+        ArrayList list = new ArrayList();
+
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.fireAllRules();
+
+        assertEquals( 2, knowledgeSession.getObjects().size() );
+    }
+
+    @Test
+    public void testIsALegacyTrait() {
+        final String s1 = "package test;\n" +
+                          "import " + TraitTest.class.getName() + ".SomeTrait; \n" +
+                          "import org.drools.factmodel.traits.*; \n" +
+                          "global java.util.List list;\n" +
+                          "" +
+                          "declare trait IStudent end \n" +
+                          "" +
+                          "rule \"Don ItemStyle\"\n" +
+                          "	when\n" +
+                          "	then\n" +
+                          "		insert( new StudentImpl() );\n" +
+                          "		don( new Entity(), IStudent.class );\n" +
+                          "end\n" +
+                          "" +
+                          "rule Check " +
+                          " when " +
+                          "  $s : StudentImpl() " +
+                          "  $e : Entity( this isA $s ) " +
+                          " then " +
+                          "  list.add( 1 ); " +
+                          " end ";
+
+        final KnowledgeBase kbase = getKnowledgeBaseFromString(s1);
+        TraitFactory.setMode( mode, kbase );
+        ArrayList list = new ArrayList();
+
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.fireAllRules();
+
+        assertEquals( Arrays.asList( 1 ), list );
+    }
+
 }
