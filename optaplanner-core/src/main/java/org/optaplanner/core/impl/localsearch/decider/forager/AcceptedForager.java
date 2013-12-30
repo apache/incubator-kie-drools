@@ -185,6 +185,14 @@ public class AcceptedForager extends AbstractForager {
     public void phaseEnded(LocalSearchSolverPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         deciderScoreComparatorFactory.phaseEnded(phaseScope);
+        scoreComparator = null;
+        selectedMoveCount = 0L;
+        acceptedMoveCount = 0L;
+        maxScoreAcceptedList = null;
+        maxAcceptedScore = null;
+        maxScoreUnacceptedList = null;
+        maxUnacceptedScore = null;
+        earlyPickedMoveScope = null;
     }
 
     @Override
