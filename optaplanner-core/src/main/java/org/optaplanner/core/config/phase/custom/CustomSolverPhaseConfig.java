@@ -37,15 +37,15 @@ public class CustomSolverPhaseConfig extends SolverPhaseConfig {
     // and also because the input config file should match the output config file
 
     @XStreamImplicit(itemFieldName = "customSolverPhaseCommandClass")
-    protected List<Class<CustomSolverPhaseCommand>> customSolverPhaseCommandClassList = null;
+    protected List<Class<? extends CustomSolverPhaseCommand>> customSolverPhaseCommandClassList = null;
 
     protected Boolean forceUpdateBestSolution = null;
 
-    public List<Class<CustomSolverPhaseCommand>> getCustomSolverPhaseCommandClassList() {
+    public List<Class<? extends CustomSolverPhaseCommand>> getCustomSolverPhaseCommandClassList() {
         return customSolverPhaseCommandClassList;
     }
 
-    public void setCustomSolverPhaseCommandClassList(List<Class<CustomSolverPhaseCommand>> customSolverPhaseCommandClassList) {
+    public void setCustomSolverPhaseCommandClassList(List<Class<? extends CustomSolverPhaseCommand>> customSolverPhaseCommandClassList) {
         this.customSolverPhaseCommandClassList = customSolverPhaseCommandClassList;
     }
 
@@ -72,7 +72,7 @@ public class CustomSolverPhaseConfig extends SolverPhaseConfig {
         }
         List<CustomSolverPhaseCommand> customSolverPhaseCommandList
                 = new ArrayList<CustomSolverPhaseCommand>(customSolverPhaseCommandClassList.size());
-        for (Class<CustomSolverPhaseCommand> customSolverPhaseCommandClass : customSolverPhaseCommandClassList) {
+        for (Class<? extends CustomSolverPhaseCommand> customSolverPhaseCommandClass : customSolverPhaseCommandClassList) {
             CustomSolverPhaseCommand customSolverPhaseCommand = ConfigUtils.newInstance(this,
                     "customSolverPhaseCommandClass", customSolverPhaseCommandClass);
             customSolverPhaseCommandList.add(customSolverPhaseCommand);
