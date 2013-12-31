@@ -170,7 +170,7 @@ public class ExtendsTest extends CommonTestMethodBase {
     @Test
     public void testIllegalExtendsLegacy() throws Exception {
         //Test Base Fact Type
-        genSession("test_ExtLegacyIllegal.drl",2);
+        genSession("test_ExtLegacyIllegal.drl",6);
 
     }
 
