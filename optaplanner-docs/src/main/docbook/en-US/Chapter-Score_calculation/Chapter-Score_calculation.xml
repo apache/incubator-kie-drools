@@ -344,6 +344,15 @@
     &lt;scoreDefinitionType&gt;HARD_MEDIUM_SOFT&lt;/scoreDefinitionType&gt;
     ...
   &lt;/scoreDirectorFactory&gt;</programlisting>
+
+      <para>Variants of this <literal>scoreDefinitionType</literal>:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><literal>HARD_MEDIUM_SOFT_LONG</literal>: Uses <literal>HardMediumSoftLongScore</literal> which has
+          <literal>long</literal> values instead of <literal>int</literal> values.</para>
+        </listitem>
+      </itemizedlist>
     </section>
 
     <section xml:id="bendableScore">
@@ -831,8 +840,8 @@
         <section xml:id="droolsScoreCalculationKieBase">
           <title>A KieBase (possibly defined by Drools Workbench)</title>
 
-          <para>If you prefer to build the <literal>KieBase</literal> yourself or if you're combining Planner with
-          KIE Workbench (formerly known as Guvnor), you can set the <literal>KieBase</literal> on the
+          <para>If you prefer to build the <literal>KieBase</literal> yourself or if you're combining Planner with KIE
+          Workbench (formerly known as Guvnor), you can set the <literal>KieBase</literal> on the
           <literal>SolverFactory</literal> before building the <literal>Solver</literal>:</para>
 
           <programlisting language="java">    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig.setKieBase(kieBase);</programlisting>
@@ -1069,10 +1078,11 @@ end</programlisting>
     <section xml:id="pointlessConstraints">
       <title>Pointless constraints</title>
 
-      <para>If you know a certain constraint can never be broken (or it is always broken), don't bother writing a score constraint for it. For
-      example in n queens, the score calculation doesn't check if multiple queens occupy the same column, because a
-      <literal>Queen</literal>'s <literal>column</literal> never changes and every <literal>Solution</literal> starts
-      with each <literal>Queen</literal> on a different <literal>column</literal>.</para>
+      <para>If you know a certain constraint can never be broken (or it is always broken), don't bother writing a score
+      constraint for it. For example in n queens, the score calculation doesn't check if multiple queens occupy the same
+      column, because a <literal>Queen</literal>'s <literal>column</literal> never changes and every
+      <literal>Solution</literal> starts with each <literal>Queen</literal> on a different
+      <literal>column</literal>.</para>
 
       <note>
         <para>Don't go overboard with this. If some datasets don't use a specific constraint but others do, just return

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.buildin.hardsoftlong;
+package org.optaplanner.core.impl.score.buildin.hardmediumsoftlong;
 
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScoreHolder;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreHolder;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 
-public class HardSoftLongScoreDefinition extends AbstractScoreDefinition<HardSoftLongScore> {
+public class HardMediumSoftLongScoreDefinition extends AbstractScoreDefinition<HardMediumSoftLongScore> {
 
-    private double hardScoreTimeGradientWeight = 0.75; // TODO this is a guess
+    private double hardScoreTimeGradientWeight = 0.50; // TODO this is a guess
+    private double mediumScoreTimeGradientWeight = 0.30; // TODO this is a guess
 
-    private HardSoftLongScore perfectMaximumScore = HardSoftLongScore.valueOf(0L, 0L);
-    private HardSoftLongScore perfectMinimumScore = HardSoftLongScore.valueOf(
-            Long.MIN_VALUE, Long.MIN_VALUE);
+    private HardMediumSoftLongScore perfectMaximumScore = HardMediumSoftLongScore.valueOf(0L, 0L, 0L);
+    private HardMediumSoftLongScore perfectMinimumScore = HardMediumSoftLongScore.valueOf(
+            Long.MIN_VALUE, Long.MIN_VALUE, Long.MIN_VALUE);
 
     public double getHardScoreTimeGradientWeight() {
         return hardScoreTimeGradientWeight;
@@ -47,21 +47,38 @@ public class HardSoftLongScoreDefinition extends AbstractScoreDefinition<HardSof
         }
     }
 
+    public double getMediumScoreTimeGradientWeight() {
+        return mediumScoreTimeGradientWeight;
+    }
+
+    /**
+     * It's recommended to use a number which can be exactly represented as a double,
+     * such as 0.5, 0.25, 0.75, 0.125, ... but not 0.1, 0.2, ...
+     * @param mediumScoreTimeGradientWeight 0.0 <= hardScoreTimeGradientWeight <= 1.0
+     */
+    public void setMediumScoreTimeGradientWeight(double mediumScoreTimeGradientWeight) {
+        this.mediumScoreTimeGradientWeight = mediumScoreTimeGradientWeight;
+        if (mediumScoreTimeGradientWeight < 0.0 || mediumScoreTimeGradientWeight > 1.0) {
+            throw new IllegalArgumentException("Property mediumScoreTimeGradientWeight ("
+                    + mediumScoreTimeGradientWeight + ") must be greater or equal to 0.0 and smaller or equal to 1.0.");
+        }
+    }
+
     @Override
-    public HardSoftLongScore getPerfectMaximumScore() {
+    public HardMediumSoftLongScore getPerfectMaximumScore() {
         return perfectMaximumScore;
     }
 
-    public void setPerfectMaximumScore(HardSoftLongScore perfectMaximumScore) {
+    public void setPerfectMaximumScore(HardMediumSoftLongScore perfectMaximumScore) {
         this.perfectMaximumScore = perfectMaximumScore;
     }
 
     @Override
-    public HardSoftLongScore getPerfectMinimumScore() {
+    public HardMediumSoftLongScore getPerfectMinimumScore() {
         return perfectMinimumScore;
     }
 
-    public void setPerfectMinimumScore(HardSoftLongScore perfectMinimumScore) {
+    public void setPerfectMinimumScore(HardMediumSoftLongScore perfectMinimumScore) {
         this.perfectMinimumScore = perfectMinimumScore;
     }
 
@@ -69,23 +86,23 @@ public class HardSoftLongScoreDefinition extends AbstractScoreDefinition<HardSof
     // Worker methods
     // ************************************************************************
 
-    public Class<HardSoftLongScore> getScoreClass() {
-        return HardSoftLongScore.class;
+    public Class<HardMediumSoftLongScore> getScoreClass() {
+        return HardMediumSoftLongScore.class;
     }
 
-    public HardSoftLongScore parseScore(String scoreString) {
-        return HardSoftLongScore.parseScore(scoreString);
+    public HardMediumSoftLongScore parseScore(String scoreString) {
+        return HardMediumSoftLongScore.parseScore(scoreString);
     }
 
-    public double calculateTimeGradient(HardSoftLongScore startScore, HardSoftLongScore endScore,
-            HardSoftLongScore score) {
+    public double calculateTimeGradient(HardMediumSoftLongScore startScore, HardMediumSoftLongScore endScore,
+            HardMediumSoftLongScore score) {
         if (score.compareTo(endScore) > 0) {
             return 1.0;
         } else if (score.compareTo(startScore) < 0) {
             return 0.0;
         }
         double timeGradient = 0.0;
-        double softScoreTimeGradientWeight = 1.0 - hardScoreTimeGradientWeight;
+        double softScoreTimeGradientWeight = 1.0 - hardScoreTimeGradientWeight - mediumScoreTimeGradientWeight;
         if (startScore.getHardScore() == endScore.getHardScore()) {
             timeGradient += hardScoreTimeGradientWeight;
         } else {
@@ -94,6 +111,18 @@ public class HardSoftLongScoreDefinition extends AbstractScoreDefinition<HardSof
             double hardTimeGradient = (double) hardScoreDelta / (double) hardScoreTotal;
             timeGradient += hardTimeGradient * hardScoreTimeGradientWeight;
         }
+
+        if (score.getMediumScore() >= endScore.getMediumScore()) {
+            timeGradient += mediumScoreTimeGradientWeight;
+        } else if (score.getMediumScore() <= startScore.getMediumScore()) {
+            // No change: timeGradient += 0.0
+        } else {
+            long mediumScoreTotal = endScore.getMediumScore() - startScore.getMediumScore();
+            long mediumScoreDelta = score.getMediumScore() - startScore.getMediumScore();
+            double mediumTimeGradient = (double) mediumScoreDelta / (double) mediumScoreTotal;
+            timeGradient += mediumTimeGradient * mediumScoreTimeGradientWeight;
+        }
+
         if (score.getSoftScore() >= endScore.getSoftScore()) {
             timeGradient += softScoreTimeGradientWeight;
         } else if (score.getSoftScore() <= startScore.getSoftScore()) {
@@ -108,7 +137,7 @@ public class HardSoftLongScoreDefinition extends AbstractScoreDefinition<HardSof
     }
 
     public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
-        return new HardSoftLongScoreHolder(constraintMatchEnabled);
+        return new HardMediumSoftLongScoreHolder(constraintMatchEnabled);
     }
 
 }

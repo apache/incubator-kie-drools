@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.score.buildin.hardmediumsoft;
+package org.optaplanner.core.api.score.buildin.hardmediumsoftlong;
 
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
@@ -22,41 +22,41 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.solution.Solution;
 
 /**
- * This {@link Score} is based on 3 levels of int constraints: hard, medium and soft.
+ * This {@link Score} is based on 3 levels of long constraints: hard, medium and soft.
  * Hard constraints have priority over medium constraints.
  * Medium constraints have priority over soft constraints.
  * <p/>
  * This class is immutable.
  * @see Score
  */
-public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore>
-        implements FeasibilityScore<HardMediumSoftScore> {
+public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftLongScore>
+        implements FeasibilityScore<HardMediumSoftLongScore> {
 
     private static final String HARD_LABEL = "hard";
     private static final String MEDIUM_LABEL = "medium";
     private static final String SOFT_LABEL = "soft";
 
-    public static HardMediumSoftScore parseScore(String scoreString) {
+    public static HardMediumSoftLongScore parseScore(String scoreString) {
         String[] levelStrings = parseLevelStrings(scoreString, HARD_LABEL, MEDIUM_LABEL, SOFT_LABEL);
-        int hardScore = Integer.parseInt(levelStrings[0]);
-        int mediumScore = Integer.parseInt(levelStrings[1]);
-        int softScore = Integer.parseInt(levelStrings[2]);
+        long hardScore = Long.parseLong(levelStrings[0]);
+        long mediumScore = Long.parseLong(levelStrings[1]);
+        long softScore = Long.parseLong(levelStrings[2]);
         return valueOf(hardScore, mediumScore, softScore);
     }
 
-    public static HardMediumSoftScore valueOf(int hardScore, int mediumScore, int softScore) {
-        return new HardMediumSoftScore(hardScore, mediumScore, softScore);
+    public static HardMediumSoftLongScore valueOf(long hardScore, long mediumScore, long softScore) {
+        return new HardMediumSoftLongScore(hardScore, mediumScore, softScore);
     }
 
     // ************************************************************************
     // Fields
     // ************************************************************************
 
-    private final int hardScore;
-    private final int mediumScore;
-    private final int softScore;
+    private final long hardScore;
+    private final long mediumScore;
+    private final long softScore;
 
-    private HardMediumSoftScore(int hardScore, int mediumScore, int softScore) {
+    private HardMediumSoftLongScore(long hardScore, long mediumScore, long softScore) {
         this.hardScore = hardScore;
         this.mediumScore = mediumScore;
         this.softScore = softScore;
@@ -68,7 +68,7 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
      * The hard score is usually a negative number because most use cases only have negative constraints.
      * @return higher is better, usually negative, 0 if no hard constraints are broken/fulfilled
      */
-    public int getHardScore() {
+    public long getHardScore() {
         return hardScore;
     }
 
@@ -80,7 +80,7 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
      * In a normal score comparison, the medium score is irrelevant if the 2 scores don't have the same score.
      * @return higher is better, usually negative, 0 if no hard constraints are broken/fulfilled
      */
-    public int getMediumScore() {
+    public long getMediumScore() {
         return mediumScore;
     }
 
@@ -92,7 +92,7 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
      * In a normal score comparison, the soft score is irrelevant if the 2 scores don't have the same hard and medium score.
      * @return higher is better, usually negative, 0 if no soft constraints are broken/fulfilled
      */
-    public int getSoftScore() {
+    public long getSoftScore() {
         return softScore;
     }
 
@@ -105,42 +105,42 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
      * @return true if the {@link #getHardScore()} is 0 or higher
      */
     public boolean isFeasible() {
-        return getHardScore() >= 0;
+        return getHardScore() >= 0L;
     }
 
-    public HardMediumSoftScore add(HardMediumSoftScore augment) {
-        return new HardMediumSoftScore(
+    public HardMediumSoftLongScore add(HardMediumSoftLongScore augment) {
+        return new HardMediumSoftLongScore(
                 hardScore + augment.getHardScore(),
                 mediumScore + augment.getMediumScore(),
                 softScore + augment.getSoftScore());
     }
 
-    public HardMediumSoftScore subtract(HardMediumSoftScore subtrahend) {
-        return new HardMediumSoftScore(
+    public HardMediumSoftLongScore subtract(HardMediumSoftLongScore subtrahend) {
+        return new HardMediumSoftLongScore(
                 hardScore - subtrahend.getHardScore(),
                 mediumScore - subtrahend.getMediumScore(),
                 softScore - subtrahend.getSoftScore());
     }
 
-    public HardMediumSoftScore multiply(double multiplicand) {
-        return new HardMediumSoftScore(
-                (int) Math.floor(hardScore * multiplicand),
-                (int) Math.floor(mediumScore * multiplicand),
-                (int) Math.floor(softScore * multiplicand));
+    public HardMediumSoftLongScore multiply(double multiplicand) {
+        return new HardMediumSoftLongScore(
+                (long) Math.floor(hardScore * multiplicand),
+                (long) Math.floor(mediumScore * multiplicand),
+                (long) Math.floor(softScore * multiplicand));
     }
 
-    public HardMediumSoftScore divide(double divisor) {
-        return new HardMediumSoftScore(
-                (int) Math.floor(hardScore / divisor),
-                (int) Math.floor(mediumScore / divisor),
-                (int) Math.floor(softScore / divisor));
+    public HardMediumSoftLongScore divide(double divisor) {
+        return new HardMediumSoftLongScore(
+                (long) Math.floor(hardScore / divisor),
+                (long) Math.floor(mediumScore / divisor),
+                (long) Math.floor(softScore / divisor));
     }
 
-    public HardMediumSoftScore power(double exponent) {
-        return new HardMediumSoftScore(
-                (int) Math.floor(Math.pow(hardScore, exponent)),
-                (int) Math.floor(Math.pow(mediumScore, exponent)),
-                (int) Math.floor(Math.pow(softScore, exponent)));
+    public HardMediumSoftLongScore power(double exponent) {
+        return new HardMediumSoftLongScore(
+                (long) Math.floor(Math.pow(hardScore, exponent)),
+                (long) Math.floor(Math.pow(mediumScore, exponent)),
+                (long) Math.floor(Math.pow(softScore, exponent)));
     }
 
     public Number[] toLevelNumbers() {
@@ -151,8 +151,8 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
         // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
             return true;
-        } else if (o instanceof HardMediumSoftScore) {
-            HardMediumSoftScore other = (HardMediumSoftScore) o;
+        } else if (o instanceof HardMediumSoftLongScore) {
+            HardMediumSoftLongScore other = (HardMediumSoftLongScore) o;
             return hardScore == other.getHardScore()
                     && mediumScore == other.getMediumScore()
                     && softScore == other.getSoftScore();
@@ -164,12 +164,12 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
         return ((((17 * 37)
-                + hardScore)) * 37
-                + mediumScore) * 37
-                + softScore;
+                + Long.valueOf(hardScore).hashCode())) * 37
+                + Long.valueOf(mediumScore).hashCode()) * 37
+                + Long.valueOf(softScore).hashCode();
     }
 
-    public int compareTo(HardMediumSoftScore other) {
+    public int compareTo(HardMediumSoftLongScore other) {
         // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (hardScore != other.getHardScore()) {
             if (hardScore < other.getHardScore()) {

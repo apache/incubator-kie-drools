@@ -41,6 +41,7 @@ import org.optaplanner.core.config.util.KeyAsElementMapConverter;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.hardsoftdouble.HardSoftDoubleScoreDefinition;
@@ -240,6 +241,8 @@ public class ScoreDirectorFactoryConfig {
                     return new HardSoftBigDecimalScoreDefinition();
                 case HARD_MEDIUM_SOFT:
                     return new HardMediumSoftScoreDefinition();
+                case HARD_MEDIUM_SOFT_LONG:
+                    return new HardMediumSoftLongScoreDefinition();
                 case BENDABLE:
                     if (bendableHardLevelCount == null || bendableSoftLevelCount == null) {
                         throw new IllegalArgumentException("With scoreDefinitionType (" + scoreDefinitionType
@@ -385,6 +388,7 @@ public class ScoreDirectorFactoryConfig {
         HARD_SOFT_DOUBLE,
         HARD_SOFT_BIG_DECIMAL,
         HARD_MEDIUM_SOFT,
+        HARD_MEDIUM_SOFT_LONG,
         BENDABLE,
     }
 
