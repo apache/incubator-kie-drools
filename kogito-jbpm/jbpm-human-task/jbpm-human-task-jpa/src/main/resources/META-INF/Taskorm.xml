@@ -1578,4 +1578,21 @@ where
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
+   
+   
+ 
+<named-query name="AttachmentsByTaskId">
+          <query>
+select
+     a
+from
+    TaskImpl t 
+    join t.taskData.attachments as  a  
+where 
+    t.id = :taskId
+          </query>
+          <!-- hint name="org.hibernate.timeout" value="200"/ -->
+      </named-query>
+      
+      
 </entity-mappings>

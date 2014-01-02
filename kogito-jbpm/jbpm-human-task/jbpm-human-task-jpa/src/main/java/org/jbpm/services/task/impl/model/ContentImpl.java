@@ -39,7 +39,7 @@ public class ContentImpl implements InternalContent {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="contentIdSeq")
-    private Long   id;
+    private Long   id = 0L;;
     
     @Lob
     @Column(length=2147483647)

@@ -57,6 +57,7 @@ public class AddAttachmentCommand extends UserGroupCallbackTaskCommand<Long> {
     public AddAttachmentCommand(Long taskId, Attachment attachment, Content content) {
     	this.taskId = taskId;
     	setAttachment(attachment);
+        setContent(content);
     }
 
 
@@ -118,7 +119,7 @@ public class AddAttachmentCommand extends UserGroupCallbackTaskCommand<Long> {
 
 	public void setContent(Content content) {
 		this.content = content;
-		if (attachment instanceof JaxbContent) {
+		if (content instanceof JaxbContent) {
         	this.jaxbContent = (JaxbContent) content;
         } else {
         	this.jaxbContent = new JaxbContent(content);

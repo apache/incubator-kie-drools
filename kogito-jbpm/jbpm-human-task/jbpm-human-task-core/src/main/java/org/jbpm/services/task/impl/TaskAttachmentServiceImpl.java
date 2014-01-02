@@ -16,6 +16,7 @@
 package org.jbpm.services.task.impl;
 
 import java.util.List;
+import org.jbpm.services.task.utils.ClassUtil;
 
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Content;
@@ -49,7 +50,7 @@ public class TaskAttachmentServiceImpl implements TaskAttachmentService {
         persistenceContext.persistContent(content);
         ((InternalAttachment) attachment).setContent(content);
         ((InternalTaskData) task.getTaskData()).addAttachment(attachment);
-        return content.getId();
+        return attachment.getId();
     }
 
     public void deleteAttachment(long taskId, long attachmentId) {
@@ -62,7 +63,9 @@ public class TaskAttachmentServiceImpl implements TaskAttachmentService {
     }
 
     public List<Attachment> getAllAttachmentsByTaskId(long taskId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+         return (List<Attachment>) persistenceContext.queryWithParametersInTransaction("AttachmentsByTaskId", 
+        		persistenceContext.addParametersToMap("taskId", taskId),
+                ClassUtil.<List<Attachment>>castClass(List.class));
     }
 
     public Attachment getAttachmentById(long attachId) {

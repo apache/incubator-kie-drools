@@ -4,25 +4,39 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 
 import org.kie.api.task.model.Attachment;
 import org.kie.internal.command.Context;
 
-@XmlRootElement(name="get-all-attachments-command")
+@XmlRootElement(name = "get-all-attachments-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetAllAttachmentsCommand extends TaskCommand<List<Attachment>> {
 
-	private static final long serialVersionUID = -4566088487597623910L;
+    private static final long serialVersionUID = -4566088487597623910L;
 
-	public GetAllAttachmentsCommand() {
-	}
-	
-	public GetAllAttachmentsCommand(Long taskId) {
-		this.taskId = taskId;
+    @XmlElement(name = "task-id")
+    @XmlSchemaType(name = "long")
+    private Long taskId;
+
+    public GetAllAttachmentsCommand() {
     }
 
-	public List<Attachment> execute(Context cntxt) {
+    public GetAllAttachmentsCommand(Long taskId) {
+        this.taskId = taskId;
+    }
+
+     public Long getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
+    }
+    
+    public List<Attachment> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         return context.getTaskAttachmentService().getAllAttachmentsByTaskId(taskId);
     }
