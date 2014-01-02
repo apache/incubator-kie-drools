@@ -4935,6 +4935,62 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( 100, list.size() );
     }
 
+
+    @Test
+    @Ignore
+    public void testQueryCorruption() {
+
+        String drl = "package drl;\n" +
+
+                     "declare Anon " +
+                     "    cld : String @key " +
+                     "    sup : String @key " +
+                     "end " +
+
+                     "rule Init " +
+                     "when " +
+                     "then " +
+                     "    insert( 'aa' ); " +
+                     "    insert( 'bb' ); " +
+                     "    insert( 'cc' ); " +
+                     "    insertLogical( new Anon( 'aa', 'bb' ) ); " +
+                     "    insertLogical( new Anon( 'cc', 'aa' ) ); " +
+                     "end " +
+
+                     "query unravel( String $g, String $c ) " +
+                     "    ( " +
+                     "        ( Anon( $g, $c ; ) and $c := String( this.contains( \"b\" ) ) ) " +
+                     "        or " +
+                     "        ( Anon( $g, $x ; ) and unravel( $x, $c ; ) ) " +
+                     "    ) " +
+                     "end " +
+
+                     "rule Check " +
+                     "when " +
+                     "    Anon( $e, $par ; ) " +
+                     "    unravel( $par, $comp ; ) " +
+                     "    ( Double() or eval( 1 == 1  ) ) " +
+                     "then\n" +
+                     "end\n" +
+
+                     "rule Mod " +
+                     "no-loop " +
+                     "when\n" +
+                     "    $a : Anon( ) " +
+                     "    ( Double() or eval( 1 == 1 ) ) " +
+                     "then " +
+                     "    modify ( $a ) { } " +
+                     "end " +
+                     "";
+
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.fireAllRules();
+
+    }
+
+
     @Test
     public void testPackagingJarWithTypeDeclarations() throws Exception {
         // BZ-1054823
