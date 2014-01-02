@@ -26,6 +26,7 @@ import org.drools.core.factmodel.traits.Entity;
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.MapWrapper;
 import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitRegistry;
@@ -4907,6 +4908,74 @@ public class TraitTest extends CommonTestMethodBase {
             assertTrue( csq.getCause() instanceof IllegalStateException );
         }
 
+    }
+
+
+    @Trait
+    public static interface SomeTrait<K> extends Thing<K> {
+        public String getFoo();
+        public void setFoo( String foo );
+    }
+
+    @Test
+    public void testTraitLegacyTraitableWithLegacyTrait() {
+        final String s1 = "package org.drools.compiler.factmodel.traits;\n" +
+                          "import " + TraitTest.class.getName() + ".SomeTrait; \n" +
+                          "import org.drools.core.factmodel.traits.*; \n" +
+                          "global java.util.List list;\n" +
+                          "" +
+                          "rule \"Don ItemStyle\"\n" +
+                          "	when\n" +
+                          "	then\n" +
+                          "		don( new StudentImpl(), SomeTrait.class );\n" +
+                          "end\n";
+
+        final KnowledgeBase kbase = getKieBaseFromString(s1);
+        TraitFactory.setMode( mode, kbase );
+        ArrayList list = new ArrayList();
+
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.fireAllRules();
+
+        assertEquals( 2, knowledgeSession.getObjects().size() );
+    }
+
+    @Test
+    public void testIsALegacyTrait() {
+        final String s1 = "package org.drools.compiler.factmodel.traits;\n" +
+                          "import " + TraitTest.class.getName() + ".SomeTrait; \n" +
+                          "import org.drools.core.factmodel.traits.*; \n" +
+                          "global java.util.List list;\n" +
+                          "" +
+                          "declare trait IStudent end \n" +
+                          "" +
+                          "rule \"Don ItemStyle\"\n" +
+                          "	when\n" +
+                          "	then\n" +
+                          "		insert( new StudentImpl() );\n" +
+                          "		don( new Entity(), IStudent.class );\n" +
+                          "end\n" +
+                          "" +
+                          "rule Check " +
+                          " when " +
+                          "  $s : StudentImpl() " +
+                          "  $e : Entity( this isA $s ) " +
+                          " then " +
+                          "  list.add( 1 ); " +
+                          " end ";
+
+        final KnowledgeBase kbase = getKieBaseFromString(s1);
+        TraitFactory.setMode( mode, kbase );
+        ArrayList list = new ArrayList();
+
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.fireAllRules();
+
+        assertEquals( Arrays.asList( 1 ), list );
     }
 
 }
