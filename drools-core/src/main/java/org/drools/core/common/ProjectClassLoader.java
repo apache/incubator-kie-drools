@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 
@@ -41,6 +42,8 @@ public class ProjectClassLoader extends ClassLoader {
     public static class IBMClassLoader extends ProjectClassLoader {
         private final boolean parentImplemntsFindReosources;
 
+        private static final Enumeration<URL> EMPTY_RESOURCE_ENUM = new Vector<URL>().elements();
+
         private IBMClassLoader(ClassLoader parent) {
             super(parent);
             Method m = null;
@@ -54,7 +57,7 @@ public class ProjectClassLoader extends ClassLoader {
         protected Enumeration<URL> findResources(String name) throws IOException {
             // if the parent doesn't implemnt this method call getResources directly on it
             // see https://blogs.oracle.com/bhaktimehta/entry/ibm_jdk_and_classloader_getresources
-            return parentImplemntsFindReosources ? Collections.<URL>emptyEnumeration() : getParent().getResources(name);
+            return parentImplemntsFindReosources ? EMPTY_RESOURCE_ENUM : getParent().getResources(name);
         }
     }
 
