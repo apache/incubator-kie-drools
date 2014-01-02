@@ -193,13 +193,51 @@
           <excludePackageNames>org.kie.asm*,org.kie.objenesis.*,org.kie.commons.jci.*</excludePackageNames>
         </configuration>
       </plugin>
-
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
         <configuration>
           <excludeFilterFile>src/main/findbugs/findbugs-exclude.xml</excludeFilterFile>
         </configuration>
+      </plugin>
+      
+      <!-- Version information for marshalling -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>parse-version</id>
+            <goals>
+              <goal>parse-version</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.google.code.maven-replacer-plugin</groupId>
+        <artifactId>replacer</artifactId>
+        <executions>
+          <execution>
+            <id>put-version-in-persister-helper</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>replace</goal>
+            </goals>
+            <configuration>
+              <basedir>${basedir}/src/main/java</basedir>
+              <includes>
+                <include>org/drools/core/marshalling/impl/PersisterHelper.java</include>
+              </includes>
+              <replacements>
+                <replacement>
+                  <token>final static String PROJECT_VERSION = ".*</token>
+                  <value>final static String PROJECT_VERSION = "${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}";</value>
+                </replacement>
+              </replacements>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

@@ -46,6 +46,12 @@ import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
 
 public class PersisterHelper {
+    
+    // This field is automatically updated by the replacer-plugin, 
+    //  which relies on the following line starting exactly the way
+    // the following line starts
+    final static String PROJECT_VERSION = "6.1.0";
+    
     public static WorkingMemoryAction readWorkingMemoryAction(MarshallerReaderContext context) throws IOException,
                                                                                               ClassNotFoundException {
         int type = context.readShort();
@@ -189,11 +195,12 @@ public class PersisterHelper {
     public static void writeToStreamWithHeader( MarshallerWriteContext context,
                                                 Message payload ) throws IOException {
         ProtobufMessages.Header.Builder _header = ProtobufMessages.Header.newBuilder();
-        // need to automate this version numbering somehow
+        
+        int [] version = getVersion(PROJECT_VERSION);
         _header.setVersion( ProtobufMessages.Version.newBuilder()
-                            .setVersionMajor( 5 )
-                            .setVersionMinor( 4 )
-                            .setVersionRevision( 0 )
+                            .setVersionMajor( version[0] )
+                            .setVersionMinor( version[1] )
+                            .setVersionRevision( version[2] )
                             .build() );
         
         writeStrategiesIndex( context, _header );
@@ -381,5 +388,16 @@ public class PersisterHelper {
                + (((long)b[7]) & 0xFF);
     }    
 
+    static int [] getVersion(String versionString) { 
+       int [] version = new int [3];
+       
+       String [] versionParts = versionString.split("\\.");
+       versionParts[2] = versionParts[2].replaceAll("(\\d+)-.*", "$1");
 
+       for( int i = 0; i < 3; ++i ) { 
+          version[i] = Integer.parseInt(versionParts[i]);
+       }
+       
+       return version;
+    }
 }
