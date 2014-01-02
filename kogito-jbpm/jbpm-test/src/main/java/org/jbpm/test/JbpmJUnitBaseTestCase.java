@@ -21,8 +21,10 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -122,7 +124,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     private AuditLogService logService;
     private WorkingMemoryInMemoryLogger inMemoryLogger;    
    
-    protected List<RuntimeEngine> activeEngines = new ArrayList<RuntimeEngine>();
+    protected Set<RuntimeEngine> activeEngines = new HashSet<RuntimeEngine>();
 
     /**
      * The most simple test case configuration:
@@ -367,7 +369,11 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     protected void disposeRuntimeManager() {
         if (!activeEngines.isEmpty()) {
             for (RuntimeEngine engine : activeEngines) {
-                manager.disposeRuntimeEngine(engine);
+            	try {
+            		manager.disposeRuntimeEngine(engine);
+            	} catch (Exception e) {
+            		logger.debug("Exception during dipose of runtime engine, might be already disposed - {}", e.getMessage());
+            	}
             }
             activeEngines.clear();
         }

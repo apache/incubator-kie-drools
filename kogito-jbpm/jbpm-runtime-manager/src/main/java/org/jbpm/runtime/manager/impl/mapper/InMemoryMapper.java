@@ -58,4 +58,7 @@ public class InMemoryMapper implements Mapper {
         return null;
     }
 
+    public boolean hasContext(Integer ksessionId) {
+    	return mapping.containsValue(ksessionId);
+    }
 }

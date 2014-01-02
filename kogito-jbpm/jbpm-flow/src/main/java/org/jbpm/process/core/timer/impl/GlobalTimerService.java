@@ -202,7 +202,7 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
             
         }
         
-        return jobFactoryManager.getCommandService();
+        return new DisposableCommandService(jobFactoryManager.getCommandService(), manager, runtime, schedulerService.retryEnabled());
     }
     
     public String getTimerServiceId() {
@@ -269,6 +269,9 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
         @Override
         public <T> T execute(Command<T> command) {
         	try {
+        		if (delegate == null) {
+        			return runtime.getKieSession().execute(command);
+        		}
         		return delegate.execute(command);
         	} catch (RuntimeException e) {
         		if (retry) {

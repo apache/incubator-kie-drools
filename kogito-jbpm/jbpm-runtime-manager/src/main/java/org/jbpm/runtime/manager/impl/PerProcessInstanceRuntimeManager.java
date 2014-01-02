@@ -28,6 +28,7 @@ import org.drools.persistence.TransactionManagerHelper;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.runtime.manager.impl.factory.CDITaskServiceFactory;
 import org.jbpm.runtime.manager.impl.mapper.EnvironmentAwareProcessInstanceContext;
+import org.jbpm.runtime.manager.impl.mapper.InMemoryMapper;
 import org.jbpm.runtime.manager.impl.tx.DestroySessionTransactionSynchronization;
 import org.jbpm.runtime.manager.impl.tx.DisposeSessionTransactionSynchronization;
 import org.kie.api.event.process.DefaultProcessEventListener;
@@ -146,10 +147,15 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     	if (isClosed()) {
     		throw new IllegalStateException("Runtime manager " + identifier + " is already closed");
     	}
-        removeLocalRuntime(runtime);
-        if (runtime instanceof Disposable && environment.usePersistence()) {
+    	removeLocalRuntime(runtime);
+    	if (runtime instanceof Disposable) {
+        	// special handling for in memory to not allow to dispose if there is any context in the mapper
+        	if (mapper instanceof InMemoryMapper && ((InMemoryMapper)mapper).hasContext(runtime.getKieSession().getId())){
+        		return;
+        	}
             ((Disposable) runtime).dispose();
         }
+        
     }
 
     @Override
@@ -183,7 +189,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         private RuntimeEngine runtime;
         
         MaintainMappingListener(Integer ksessionId, RuntimeEngine runtime) {
-            this.ksessionId = ksessionId;
+        	this.ksessionId = ksessionId;
             this.runtime = runtime;
         }
         @Override

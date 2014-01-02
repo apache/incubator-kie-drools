@@ -167,5 +167,6 @@ public class ProcessHumanTaskTest extends JbpmJUnitBaseTestCase {
 
         assertNodeTriggered(processInstance.getId(), "End");
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        manager.disposeRuntimeEngine(runtimeEngine);
     }
 }
