@@ -79,7 +79,12 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
      * @param typeName the identifier to set
      */
     public void setTypeName( String typeName ) {
-        this.type.setName( typeName );
+        if ( typeName.indexOf( '.' ) < 0 ) {
+            this.type.setName( typeName );
+        } else {
+            this.setNamespace( typeName.substring( 0, typeName.lastIndexOf( '.' ) ) );
+            this.type.setName( typeName.substring( typeName.lastIndexOf( '.' ) + 1 ) );
+        }
     }
 
     public QualifiedName getType() {
