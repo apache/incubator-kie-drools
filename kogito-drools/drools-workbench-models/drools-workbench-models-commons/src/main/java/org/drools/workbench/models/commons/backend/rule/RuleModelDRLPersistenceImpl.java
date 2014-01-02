@@ -2169,58 +2169,60 @@ public class RuleModelDRLPersistenceImpl
                 int argStart = line.indexOf( '(' );
                 if ( dotPos > 0 && argStart > dotPos ) {
                     String variable = line.substring( 0, dotPos ).trim();
-                    String methodName = line.substring( dotPos + 1, argStart ).trim();
-                    if ( isJavaIdentifier( methodName ) ) {
-                        if ( getSettedField( methodName ) != null ) {
-                            List<String> setters = setStatements.get( variable );
-                            if ( setters == null ) {
-                                setters = new ArrayList<String>();
-                                setStatements.put( variable, setters );
-                            }
-                            setters.add( line );
-                        } else if ( methodName.equals( "add" ) && expandedDRLInfo.hasGlobal( variable ) ) {
-                            String factName = line.substring( argStart + 1, line.lastIndexOf( ')' ) ).trim();
-                            ActionGlobalCollectionAdd actionGlobalCollectionAdd = new ActionGlobalCollectionAdd();
-                            actionGlobalCollectionAdd.setGlobalName( variable );
-                            actionGlobalCollectionAdd.setFactName( factName );
-                            m.addRhsItem( actionGlobalCollectionAdd );
-                        } else {
-                            ActionCallMethod acm = new ActionCallMethod();
-                            acm.setMethodName( methodName );
-                            acm.setVariable( variable );
-                            acm.setState( 1 );
-                            m.addRhsItem( acm );
-                            String[] params = unwrapParenthesis( line ).split(",");
+                    if (isJavaIdentifier(variable)) {
+                        String methodName = line.substring( dotPos + 1, argStart ).trim();
+                        if ( isJavaIdentifier( methodName ) ) {
+                            if ( getSettedField( methodName ) != null ) {
+                                List<String> setters = setStatements.get( variable );
+                                if ( setters == null ) {
+                                    setters = new ArrayList<String>();
+                                    setStatements.put( variable, setters );
+                                }
+                                setters.add( line );
+                            } else if ( methodName.equals( "add" ) && expandedDRLInfo.hasGlobal( variable ) ) {
+                                String factName = line.substring( argStart + 1, line.lastIndexOf( ')' ) ).trim();
+                                ActionGlobalCollectionAdd actionGlobalCollectionAdd = new ActionGlobalCollectionAdd();
+                                actionGlobalCollectionAdd.setGlobalName( variable );
+                                actionGlobalCollectionAdd.setFactName( factName );
+                                m.addRhsItem( actionGlobalCollectionAdd );
+                            } else {
+                                ActionCallMethod acm = new ActionCallMethod();
+                                acm.setMethodName( methodName );
+                                acm.setVariable( variable );
+                                acm.setState( 1 );
+                                m.addRhsItem( acm );
+                                String[] params = unwrapParenthesis( line ).split(",");
 
-                            MethodInfo methodInfo = null;
-                            String variableType = boundParams.get(variable);
-                            if (variableType != null) {
-                                List<MethodInfo> methods = getMethodInfosForType(m, dmo, variableType);
-                                if (methods != null) {
-                                    for (MethodInfo method : methods) {
-                                        if (method.getName().equals(methodName) && method.getParams().size() == params.length) {
-                                            methodInfo = method;
-                                            break;
+                                MethodInfo methodInfo = null;
+                                String variableType = boundParams.get(variable);
+                                if (variableType != null) {
+                                    List<MethodInfo> methods = getMethodInfosForType(m, dmo, variableType);
+                                    if (methods != null) {
+                                        for (MethodInfo method : methods) {
+                                            if (method.getName().equals(methodName) && method.getParams().size() == params.length) {
+                                                methodInfo = method;
+                                                break;
+                                            }
                                         }
                                     }
                                 }
-                            }
 
-                            int i = 0;
-                            for ( String param : params ) {
-                                param = param.trim();
-                                if ( param.length() == 0 ) {
-                                    continue;
+                                int i = 0;
+                                for ( String param : params ) {
+                                    param = param.trim();
+                                    if ( param.length() == 0 ) {
+                                        continue;
+                                    }
+                                    String dataType = methodInfo == null ?
+                                                      inferDataType( param, isJavaDialect ) :
+                                                      methodInfo.getParams().get(i++);
+                                    ActionFieldFunction actionFiled = new ActionFieldFunction( null, adjustParam( dataType, param, isJavaDialect), dataType );
+                                    actionFiled.setNature( inferFieldNature(param, boundParams) );
+                                    acm.addFieldValue( actionFiled );
                                 }
-                                String dataType = methodInfo == null ?
-                                                  inferDataType( param, isJavaDialect ) :
-                                                  methodInfo.getParams().get(i++);
-                                ActionFieldFunction actionFiled = new ActionFieldFunction( null, adjustParam( dataType, param, isJavaDialect), dataType );
-                                actionFiled.setNature( inferFieldNature(param, boundParams) );
-                                acm.addFieldValue( actionFiled );
                             }
+                            continue;
                         }
-                        continue;
                     }
                 }
 
