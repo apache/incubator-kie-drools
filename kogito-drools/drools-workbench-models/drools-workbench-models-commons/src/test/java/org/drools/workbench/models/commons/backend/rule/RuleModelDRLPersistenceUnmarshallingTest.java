@@ -919,6 +919,23 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
+    @Ignore(" GRE doesn't recognize formulas, calls on globals, etc. when reopening rule - https://bugzilla.redhat.com/show_bug.cgi?id=1013682 ")
+    public void testVarAssignment() {
+        String drl = "rule rule1\n"
+                + "when\n"
+                + " d : Double()\n"
+                + "then\n"
+                + "double test = d.doubleValue();\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        assertNotNull( m );
+        assertEquals( 1, m.rhs.length );
+        assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
+        assertEquals( "double test = d.doubleValue();", ( (FreeFormLine) m.rhs[ 0 ] ).getText() );
+    }
+
+    @Test
     public void testNestedFieldExpressions() {
         String drl =
                 "rule rule1\n"
