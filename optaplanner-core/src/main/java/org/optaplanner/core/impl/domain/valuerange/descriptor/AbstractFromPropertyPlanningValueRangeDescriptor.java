@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.impl.domain.valuerange.buildin.collection.ListValueRange;
@@ -34,6 +35,7 @@ public abstract class AbstractFromPropertyPlanningValueRangeDescriptor extends A
 
     protected final ReadMethodAccessor readMethodAccessor;
     protected boolean collectionWrapping;
+    protected boolean countable;
 
     public AbstractFromPropertyPlanningValueRangeDescriptor(
             PlanningVariableDescriptor variableDescriptor, boolean addNullInValueRange,
@@ -46,6 +48,12 @@ public abstract class AbstractFromPropertyPlanningValueRangeDescriptor extends A
                     + ") must have a valueRangeProviderAnnotation (" + valueRangeProviderAnnotation + ").");
         }
         processValueRangeProviderAnnotation(valueRangeProviderAnnotation);
+        if (addNullInValueRange && !countable) {
+            throw new IllegalStateException("The valueRangeDescriptor (" + this
+                    + ") is nullable, but not countable (" + countable + ").\n"
+                    + "Maybe the readMethod (" + readMethod + ") should return "
+                    + CountableValueRange.class.getSimpleName() + ".");
+        }
     }
 
     private void processValueRangeProviderAnnotation(ValueRangeProvider valueRangeProviderAnnotation) {
@@ -62,6 +70,16 @@ public abstract class AbstractFromPropertyPlanningValueRangeDescriptor extends A
                     + ") that does not return a " + Collection.class.getSimpleName()
                     + " or a " + ValueRange.class.getSimpleName() + ".");
         }
+        countable = collectionWrapping || CountableValueRange.class.isAssignableFrom(returnType);
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
+    @Override
+    public boolean isCountable() {
+        return countable;
     }
 
     protected ValueRange<?> readValueRange(Object bean) {

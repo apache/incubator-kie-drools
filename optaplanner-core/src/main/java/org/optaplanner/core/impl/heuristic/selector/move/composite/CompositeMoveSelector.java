@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.composite;
 
 import java.util.List;
 
+import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
@@ -45,7 +46,10 @@ public abstract class CompositeMoveSelector extends AbstractMoveSelector {
                         throw new IllegalStateException("The selector (" + this
                                 + ")'s non-last childMoveSelector (" + childMoveSelector
                                 + ") has neverEnding (" + childMoveSelector.isNeverEnding()
-                                + ") with randomSelection (" + randomSelection + ").");
+                                + ") with randomSelection (" + randomSelection + ")."
+                                + (childMoveSelector.isCountable() ? ""
+                                : "\nThe selector is not countable, check the "
+                                + ValueRange.class.getSimpleName() + "s involved."));
                     }
                 }
             }

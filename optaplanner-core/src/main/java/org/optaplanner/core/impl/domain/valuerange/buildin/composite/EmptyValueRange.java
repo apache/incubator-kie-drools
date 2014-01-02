@@ -4,17 +4,12 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
-import org.optaplanner.core.impl.domain.valuerange.AbstractValueRange;
+import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
 import org.optaplanner.core.impl.domain.valuerange.util.ValueRangeIterator;
 
-public class EmptyValueRange<T> extends AbstractValueRange<T> {
+public class EmptyValueRange<T> extends AbstractCountableValueRange<T> {
 
     public EmptyValueRange() {
-    }
-
-    @Override
-    public boolean isCountable() {
-        return true;
     }
 
     @Override

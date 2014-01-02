@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.collections.IteratorUtils;
+import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentPlanningValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.PlanningValueRangeDescriptor;
@@ -75,8 +76,9 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
 
     private void initSelectedPlanningValueList(AbstractSolverPhaseScope phaseScope) {
         if (valueRangeDescriptor.isEntityIndependent()) {
-            ValueRange<?> valueRange = ((EntityIndependentPlanningValueRangeDescriptor) valueRangeDescriptor)
-                    .extractValueRange(phaseScope.getWorkingSolution());
+            CountableValueRange<?> valueRange = (CountableValueRange<?>)
+                    ((EntityIndependentPlanningValueRangeDescriptor) valueRangeDescriptor).extractValueRange(
+                            phaseScope.getWorkingSolution());
             cachedPlanningValues = IteratorUtils.toList(
                     valueRange.createOriginalIterator(), (int) valueRange.getSize());
         } else {
@@ -93,7 +95,7 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
         if (cachedPlanningValues != null) {
             return cachedPlanningValues.iterator();
         } else {
-            ValueRange<?> valueRange = valueRangeDescriptor.extractValueRange(
+            CountableValueRange<?> valueRange = (CountableValueRange<?>)valueRangeDescriptor.extractValueRange(
                     scoreDirector.getWorkingSolution(), planningEntity);
             List<?> values = IteratorUtils.toList(valueRange.createOriginalIterator(), (int) valueRange.getSize());
             return values.iterator();

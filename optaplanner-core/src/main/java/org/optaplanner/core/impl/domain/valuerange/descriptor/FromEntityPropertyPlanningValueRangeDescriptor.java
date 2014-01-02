@@ -30,6 +30,10 @@ public class FromEntityPropertyPlanningValueRangeDescriptor extends AbstractFrom
         super(variableDescriptor, addNullInValueRange, readMethod);
     }
 
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
     @Override
     public boolean isEntityIndependent() {
         return false;

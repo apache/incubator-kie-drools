@@ -3,10 +3,11 @@ package org.optaplanner.core.impl.domain.valuerange.buildin.primdouble;
 import java.util.Iterator;
 import java.util.Random;
 
-import org.optaplanner.core.impl.domain.valuerange.AbstractValueRange;
+import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
+import org.optaplanner.core.impl.domain.valuerange.AbstractUncountableValueRange;
 import org.optaplanner.core.impl.domain.valuerange.util.ValueRangeIterator;
 
-public class DoubleValueRange extends AbstractValueRange<Double> {
+public class DoubleValueRange extends AbstractUncountableValueRange<Double> {
 
     private final double from;
     private final double to;
@@ -25,21 +26,6 @@ public class DoubleValueRange extends AbstractValueRange<Double> {
     }
 
     @Override
-    public boolean isCountable() {
-        return false;
-    }
-
-    @Override
-    public long getSize() {
-        throw new IllegalStateException("The " + getClass().getSimpleName() + " is not countable.");
-    }
-
-    @Override
-    public Double get(long index) {
-        throw new IllegalStateException("The " + getClass().getSimpleName() + " is not countable.");
-    }
-
-    @Override
     public boolean contains(Double value) {
         if (value == null) {
             return false;
@@ -47,11 +33,8 @@ public class DoubleValueRange extends AbstractValueRange<Double> {
         return value >= from && value < to;
     }
 
-    @Override
-    public Iterator<Double> createOriginalIterator() {
-        // In theory, we can implement this by using Math.nextAfter(). But in practice, no one could use it.
-        throw new IllegalStateException("The " + getClass().getSimpleName() + " is not countable.");
-    }
+    // In theory, we can implement createOriginalIterator() by using Math.nextAfter().
+    // But in practice, no one could use it.
 
     @Override
     public Iterator<Double> createRandomIterator(Random workingRandom) {

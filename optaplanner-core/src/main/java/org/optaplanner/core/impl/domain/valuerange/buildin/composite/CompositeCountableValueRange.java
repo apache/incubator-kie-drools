@@ -22,20 +22,21 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.collections.IteratorUtils;
-import org.optaplanner.core.impl.domain.valuerange.AbstractValueRange;
+import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
+import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.util.ValueRangeIterator;
 import org.optaplanner.core.impl.util.RandomUtils;
 
-public class CompositeValueRange<T> extends AbstractValueRange<T> {
+public class CompositeCountableValueRange<T> extends AbstractCountableValueRange<T> {
 
-    private final List<? extends ValueRange<T>> childValueRangeList;
+    private final List<? extends CountableValueRange<T>> childValueRangeList;
     private final long size;
 
-    public CompositeValueRange(List<? extends ValueRange<T>> childValueRangeList) {
+    public CompositeCountableValueRange(List<? extends CountableValueRange<T>> childValueRangeList) {
         this.childValueRangeList = childValueRangeList;
         long size = 0L;
-        for (ValueRange<T> childValueRange : childValueRangeList) {
+        for (CountableValueRange<T> childValueRange : childValueRangeList) {
             size +=  childValueRange.getSize();
         }
         this.size = size;
@@ -46,16 +47,6 @@ public class CompositeValueRange<T> extends AbstractValueRange<T> {
     }
 
     @Override
-    public boolean isCountable() {
-        for (ValueRange<T> childValueRange : childValueRangeList) {
-            if (!childValueRange.isCountable()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
     public long getSize() {
         return size;
     }
@@ -63,7 +54,7 @@ public class CompositeValueRange<T> extends AbstractValueRange<T> {
     @Override
     public T get(long index) {
         long remainingIndex = index;
-        for (ValueRange<T> childValueRange : childValueRangeList) {
+        for (CountableValueRange<T> childValueRange : childValueRangeList) {
             long childSize = childValueRange.getSize();
             if (remainingIndex < childSize) {
                 return childValueRange.get(remainingIndex);
@@ -75,7 +66,7 @@ public class CompositeValueRange<T> extends AbstractValueRange<T> {
 
     @Override
     public boolean contains(T value) {
-        for (ValueRange<T> childValueRange : childValueRangeList) {
+        for (CountableValueRange<T> childValueRange : childValueRangeList) {
             if (childValueRange.contains(value)) {
                 return true;
             }
@@ -86,7 +77,7 @@ public class CompositeValueRange<T> extends AbstractValueRange<T> {
     @Override
     public Iterator<T> createOriginalIterator() {
         List<Iterator<T>> iteratorList = new ArrayList<Iterator<T>>(childValueRangeList.size());
-        for (ValueRange<T> childValueRange : childValueRangeList) {
+        for (CountableValueRange<T> childValueRange : childValueRangeList) {
             iteratorList.add(childValueRange.createOriginalIterator());
         }
         return IteratorUtils.chainedIterator(iteratorList);
@@ -114,7 +105,7 @@ public class CompositeValueRange<T> extends AbstractValueRange<T> {
         public T next() {
             long index = RandomUtils.nextLong(workingRandom, size);
             long remainingIndex = index;
-            for (ValueRange<T> childValueRange : childValueRangeList) {
+            for (CountableValueRange<T> childValueRange : childValueRangeList) {
                 long childSize = childValueRange.getSize();
                 if (remainingIndex < childSize) {
                     return childValueRange.get(remainingIndex);

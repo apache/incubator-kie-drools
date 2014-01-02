@@ -4,11 +4,11 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
-import org.optaplanner.core.impl.domain.valuerange.AbstractValueRange;
+import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
 import org.optaplanner.core.impl.domain.valuerange.util.ValueRangeIterator;
 import org.optaplanner.core.impl.util.RandomUtils;
 
-public class IntValueRange extends AbstractValueRange<Integer> {
+public class IntValueRange extends AbstractCountableValueRange<Integer> {
 
     private final int from;
     private final int to;
@@ -44,11 +44,6 @@ public class IntValueRange extends AbstractValueRange<Integer> {
                     + " 's incrementUnit (" + incrementUnit
                     + ") must fit an integer number of times between from (" + from + ") and to (" + to + ").");
         }
-    }
-
-    @Override
-    public boolean isCountable() {
-        return true;
     }
 
     @Override

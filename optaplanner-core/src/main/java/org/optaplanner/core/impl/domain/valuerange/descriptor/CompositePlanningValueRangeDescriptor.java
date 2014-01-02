@@ -19,29 +19,43 @@ package org.optaplanner.core.impl.domain.valuerange.descriptor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
-import org.optaplanner.core.impl.domain.valuerange.buildin.composite.CompositeValueRange;
+import org.optaplanner.core.impl.domain.valuerange.buildin.composite.CompositeCountableValueRange;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
 
 public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValueRangeDescriptor
         implements EntityIndependentPlanningValueRangeDescriptor {
 
-    protected final List<PlanningValueRangeDescriptor> valueRangeDescriptorList;
+    protected final List<PlanningValueRangeDescriptor> childValueRangeDescriptorList;
     protected boolean entityIndependent;
 
     public CompositePlanningValueRangeDescriptor(
             PlanningVariableDescriptor variableDescriptor, boolean addNullInValueRange,
-            List<PlanningValueRangeDescriptor> valueRangeDescriptorList) {
+            List<PlanningValueRangeDescriptor> childValueRangeDescriptorList) {
         super(variableDescriptor, addNullInValueRange);
-        this.valueRangeDescriptorList = valueRangeDescriptorList;
+        this.childValueRangeDescriptorList = childValueRangeDescriptorList;
         entityIndependent = true;
-        for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
+        for (PlanningValueRangeDescriptor valueRangeDescriptor : childValueRangeDescriptorList) {
+            if (!valueRangeDescriptor.isCountable()) {
+                throw new IllegalStateException("The valueRangeDescriptor (" + this
+                        + ") has a childValueRangeDescriptor (" + valueRangeDescriptor
+                        + ") with countable (" + valueRangeDescriptor.isCountable() + ").");
+            }
             if (!valueRangeDescriptor.isEntityIndependent()) {
                 entityIndependent = false;
-                break;
             }
         }
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
+    @Override
+    public boolean isCountable() {
+        return true;
     }
 
     @Override
@@ -51,7 +65,7 @@ public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValue
 
     @Override
     public boolean isValuesCacheable() {
-        for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
+        for (PlanningValueRangeDescriptor valueRangeDescriptor : childValueRangeDescriptorList) {
             if (!valueRangeDescriptor.isValuesCacheable()) {
                 return false;
             }
@@ -60,22 +74,22 @@ public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValue
     }
 
     public ValueRange<?> extractValueRange(Solution solution, Object entity) {
-        List<ValueRange<?>> childValueRangeList = new ArrayList<ValueRange<?>>(valueRangeDescriptorList.size());
-        for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
-            childValueRangeList.add(valueRangeDescriptor.extractValueRange(solution, entity));
+        List<CountableValueRange<?>> childValueRangeList = new ArrayList<CountableValueRange<?>>(childValueRangeDescriptorList.size());
+        for (PlanningValueRangeDescriptor valueRangeDescriptor : childValueRangeDescriptorList) {
+            childValueRangeList.add((CountableValueRange) valueRangeDescriptor.extractValueRange(solution, entity));
         }
-        return doNullInValueRangeWrapping(new CompositeValueRange(childValueRangeList));
+        return doNullInValueRangeWrapping(new CompositeCountableValueRange(childValueRangeList));
     }
 
     @Override
     public ValueRange<?> extractValueRange(Solution solution) {
-        List<ValueRange<?>> childValueRangeList = new ArrayList<ValueRange<?>>(valueRangeDescriptorList.size());
-        for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
+        List<CountableValueRange<?>> childValueRangeList = new ArrayList<CountableValueRange<?>>(childValueRangeDescriptorList.size());
+        for (PlanningValueRangeDescriptor valueRangeDescriptor : childValueRangeDescriptorList) {
             EntityIndependentPlanningValueRangeDescriptor entityIndependentValueRangeDescriptor
                     = (EntityIndependentPlanningValueRangeDescriptor) valueRangeDescriptor;
-            childValueRangeList.add(entityIndependentValueRangeDescriptor.extractValueRange(solution));
+            childValueRangeList.add((CountableValueRange) entityIndependentValueRangeDescriptor.extractValueRange(solution));
         }
-        return doNullInValueRangeWrapping(new CompositeValueRange(childValueRangeList));
+        return doNullInValueRangeWrapping(new CompositeCountableValueRange(childValueRangeList));
     }
 
 }

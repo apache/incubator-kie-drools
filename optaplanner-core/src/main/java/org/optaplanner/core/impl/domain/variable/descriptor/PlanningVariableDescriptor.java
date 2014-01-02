@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
@@ -312,7 +313,11 @@ public class PlanningVariableDescriptor {
     }
 
     public long getValueCount(Solution solution, Object entity) {
-        return valueRangeDescriptor.extractValueRange(solution, entity).getSize();
+        if (!valueRangeDescriptor.isCountable()) {
+            // TODO report this better than just ignoring it
+            return 0L;
+        }
+        return ((CountableValueRange<?>) valueRangeDescriptor.extractValueRange(solution, entity)).getSize();
     }
 
     @Override

@@ -6,11 +6,11 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
-import org.optaplanner.core.impl.domain.valuerange.AbstractValueRange;
+import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
 import org.optaplanner.core.impl.domain.valuerange.util.ValueRangeIterator;
 import org.optaplanner.core.impl.util.RandomUtils;
 
-public class BigDecimalValueRange extends AbstractValueRange<BigDecimal> {
+public class BigDecimalValueRange extends AbstractCountableValueRange<BigDecimal> {
 
     private final BigDecimal from;
     private final BigDecimal to;
@@ -62,11 +62,6 @@ public class BigDecimalValueRange extends AbstractValueRange<BigDecimal> {
                     + " 's incrementUnit (" + incrementUnit
                     + ") must fit an integer number of times between from (" + from + ") and to (" + to + ").");
         }
-    }
-
-    @Override
-    public boolean isCountable() {
-        return true;
     }
 
     @Override

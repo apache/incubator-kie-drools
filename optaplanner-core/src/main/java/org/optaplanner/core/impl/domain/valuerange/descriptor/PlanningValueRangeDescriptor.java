@@ -27,6 +27,8 @@ public interface PlanningValueRangeDescriptor {
      */
     PlanningVariableDescriptor getVariableDescriptor();
 
+    boolean isCountable();
+
     boolean isEntityIndependent();
 
     boolean isValuesCacheable();

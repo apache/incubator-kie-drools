@@ -16,7 +16,7 @@ public class ValueRangeFactory {
      * @param to exclusive maximum, >= {@code from}
      * @return never null
      */
-    public static ValueRange<Integer> createIntValueRange(int from, int to) {
+    public static CountableValueRange<Integer> createIntValueRange(int from, int to) {
         return new IntValueRange(from, to);
     }
 
@@ -26,7 +26,7 @@ public class ValueRangeFactory {
      * @param incrementUnit > 0
      * @return never null
      */
-    public static ValueRange<Integer> createIntValueRange(int from, int to, int incrementUnit) {
+    public static CountableValueRange<Integer> createIntValueRange(int from, int to, int incrementUnit) {
         return new IntValueRange(from, to, incrementUnit);
     }
 
@@ -35,7 +35,7 @@ public class ValueRangeFactory {
      * @param from inclusive minimum
      * @param to exclusive maximum, >= {@code from}
      */
-    public static ValueRange<BigDecimal> createIntValueRange(BigDecimal from, BigDecimal to) {
+    public static CountableValueRange<BigDecimal> createBigDecimalValueRange(BigDecimal from, BigDecimal to) {
         return new BigDecimalValueRange(from, to);
     }
 
@@ -45,7 +45,7 @@ public class ValueRangeFactory {
      * @param to exclusive maximum, >= {@code from}
      * @param incrementUnit > 0
      */
-    public static ValueRange<BigDecimal> createIntValueRange(BigDecimal from, BigDecimal to, BigDecimal incrementUnit) {
+    public static CountableValueRange<BigDecimal> createBigDecimalValueRange(BigDecimal from, BigDecimal to, BigDecimal incrementUnit) {
         return new BigDecimalValueRange(from, to, incrementUnit);
     }
 
@@ -53,7 +53,7 @@ public class ValueRangeFactory {
      * @param from inclusive minimum
      * @param to exclusive maximum, >= {@code from}
      */
-    public static ValueRange<Double> createIntValueRange(double from, double to) {
+    public static ValueRange<Double> createDoubleValueRange(double from, double to) {
         return new DoubleValueRange(from, to);
     }
 

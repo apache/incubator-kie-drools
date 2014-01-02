@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.value;
 
 import java.util.Iterator;
 
+import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentPlanningValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
@@ -77,7 +78,7 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
     // ************************************************************************
 
     public boolean isCountable() {
-        return true; // TODO extract CountableValueRange
+        return valueRangeDescriptor.isCountable();
     }
 
     public boolean isNeverEnding() {
@@ -89,7 +90,7 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
     }
 
     public long getSize() {
-        return cachedValueRange.getSize();
+        return ((CountableValueRange<?>) cachedValueRange).getSize();
     }
 
     public Iterator<Object> iterator(Object entity) {
@@ -98,7 +99,7 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
 
     public Iterator<Object> iterator() {
         if (!randomSelection) {
-            return cachedValueRange.createOriginalIterator();
+            return ((CountableValueRange<Object>) cachedValueRange).createOriginalIterator();
         } else {
             return cachedValueRange.createRandomIterator(workingRandom);
         }

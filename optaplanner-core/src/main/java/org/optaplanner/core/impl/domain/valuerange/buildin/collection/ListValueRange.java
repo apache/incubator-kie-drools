@@ -20,20 +20,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import org.optaplanner.core.impl.domain.valuerange.AbstractValueRange;
+import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRandomIterator;
 
-public class ListValueRange<T> extends AbstractValueRange<T> {
+public class ListValueRange<T> extends AbstractCountableValueRange<T> {
 
     private final List<T> list;
 
     public ListValueRange(List<T> list) {
         this.list = list;
-    }
-
-    @Override
-    public boolean isCountable() {
-        return true;
     }
 
     @Override

@@ -31,6 +31,10 @@ public class FromSolutionPropertyPlanningValueRangeDescriptor extends AbstractFr
         super(variableDescriptor, addNullInValueRange, readMethod);
     }
 
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
     @Override
     public boolean isEntityIndependent() {
         return true;

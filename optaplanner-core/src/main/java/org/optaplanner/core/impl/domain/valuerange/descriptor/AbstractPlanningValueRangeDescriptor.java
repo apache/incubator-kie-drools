@@ -16,8 +16,9 @@
 
 package org.optaplanner.core.impl.domain.valuerange.descriptor;
 
+import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
-import org.optaplanner.core.impl.domain.valuerange.buildin.composite.NullableValueRange;
+import org.optaplanner.core.impl.domain.valuerange.buildin.composite.NullableCountableValueRange;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 
 public abstract class AbstractPlanningValueRangeDescriptor implements PlanningValueRangeDescriptor {
@@ -36,9 +37,13 @@ public abstract class AbstractPlanningValueRangeDescriptor implements PlanningVa
         return variableDescriptor;
     }
 
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
     protected <T> ValueRange<T> doNullInValueRangeWrapping(ValueRange<T> valueRange) {
         if (addNullInValueRange) {
-            valueRange = new NullableValueRange<T>(valueRange);
+            valueRange = new NullableCountableValueRange<T>((CountableValueRange) valueRange);
         }
         return valueRange;
     }

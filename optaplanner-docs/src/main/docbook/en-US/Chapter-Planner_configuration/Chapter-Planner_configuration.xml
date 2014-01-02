@@ -458,8 +458,9 @@ public class Queen {
         <para><link linkend="repeatedPlanning">Repeated planning</link> (especially <link
         linkend="realTimePlanning">real-time planning</link>) does not mix well with a nullable planning variable: every
         time the Solver starts or a problem fact change is made, the construction heuristics will try to initialize all
-        the null variables again, which can be a huge waste of time. One way to deal with this, is to change when a
-        planning entity should be reinitialized with an <literal>reinitializeVariableEntityFilter</literal>:</para>
+        the <literal>null</literal> variables again, which can be a huge waste of time. One way to deal with this, is to
+        change when a planning entity should be reinitialized with an
+        <literal>reinitializeVariableEntityFilter</literal>:</para>
 
         <programlisting language="java">    @PlanningVariable(..., nullable = true, reinitializeVariableEntityFilter = ReinitializeTaskFilter.class)
     public Worker getWorker() {
@@ -610,11 +611,11 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
         <section xml:id="valueRangeFactory">
           <title><literal>ValueRangeFactory</literal></title>
 
-          <para>Instead of a <literal>Collection</literal>, you can also return a <literal>ValueRange</literal>, build
-          by the <literal>ValueRangeFactory</literal>:</para>
+          <para>Instead of a <literal>Collection</literal>, you can also return a <literal>ValueRange</literal> or
+          <literal>CountableValueRange</literal>, build by the <literal>ValueRangeFactory</literal>:</para>
 
           <programlisting language="java">    @ValueRangeProvider(id = "delayRange")
-    public ValueRange&lt;Integer&gt; getDelayRange() {
+    public CountableValueRange&lt;Integer&gt; getDelayRange() {
         return ValueRangeFactory.createIntValueRange(0, 5000);
     }</programlisting>
 
@@ -626,10 +627,15 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
           in units of 200 pieces:</para>
 
           <programlisting language="java">    @ValueRangeProvider(id = "stockAmountRange")
-    public ValueRange&lt;Integer&gt; getStockAmountRange() {
+    public CountableValueRange&lt;Integer&gt; getStockAmountRange() {
          // Range: 0, 200, 400, 600, ..., 9999600, 9999800, 10000000
         return ValueRangeFactory.createIntValueRange(0, 10000000, 200);
     }</programlisting>
+
+          <note>
+            <para>Return <literal>CountableValueRange</literal> instead of <literal>ValueRange</literal> whenever
+            possible (so OptaPlanner knows it's countable).</para>
+          </note>
 
           <para>The <literal>ValueRangeFactory</literal> supports several value class types:</para>
 
@@ -640,7 +646,7 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
 
             <listitem>
               <para><literal>double</literal>: A floating point range which only supports random selection (because it
-              is uncountable).</para>
+              does not implement <literal>CountableValueRange</literal>).</para>
             </listitem>
 
             <listitem>

@@ -21,28 +21,24 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 
 import org.apache.commons.collections.IteratorUtils;
-import org.optaplanner.core.impl.domain.valuerange.AbstractValueRange;
+import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
+import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.util.ValueRangeIterator;
 import org.optaplanner.core.impl.util.RandomUtils;
 
-public class NullableValueRange<T> extends AbstractValueRange<T> {
+public class NullableCountableValueRange<T> extends AbstractCountableValueRange<T> {
 
-    private final ValueRange<T> childValueRange;
+    private final CountableValueRange<T> childValueRange;
     private final long size;
 
-    public NullableValueRange(ValueRange<T> childValueRange) {
+    public NullableCountableValueRange(CountableValueRange<T> childValueRange) {
         this.childValueRange = childValueRange;
         size = childValueRange.getSize() + 1L;
     }
 
     public ValueRange<T> getChildValueRange() {
         return childValueRange;
-    }
-
-    @Override
-    public boolean isCountable() {
-        return childValueRange.isCountable();
     }
 
     @Override
