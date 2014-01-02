@@ -334,6 +334,10 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 targetTraits = x.getCode( target );
             } else if ( target instanceof Thing ) {
                 targetTraits = ((TraitableBean) ((Thing) target).getCore()).getCurrentTypeCode();
+                if ( targetTraits == null && target instanceof TraitType ) {
+                    CodedHierarchy x = ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                    targetTraits = x.getCode( ((TraitType)target).getTraitName() );
+                }
             } else if ( target instanceof TraitableBean ) {
                 targetTraits = ((TraitableBean) target).getCurrentTypeCode();
             } else {
