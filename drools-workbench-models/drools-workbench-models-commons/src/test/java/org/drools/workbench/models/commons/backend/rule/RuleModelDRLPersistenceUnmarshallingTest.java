@@ -919,7 +919,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore(" GRE doesn't recognize formulas, calls on globals, etc. when reopening rule - https://bugzilla.redhat.com/show_bug.cgi?id=1013682 ")
     public void testVarAssignment() {
         String drl = "rule rule1\n"
                 + "when\n"
