@@ -5038,4 +5038,67 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
+
+    @Test
+    public void testIsASwappedArg() {
+
+        String drl = "package org.drools.test; " +
+                     "import org.drools.core.factmodel.traits.*; " +
+                     "import org.drools.compiler.factmodel.traits.*; " +
+                     "global java.util.List list; " +
+
+                     "declare Foo " +
+                     "@Traitable " +
+                     "  object : Object " +
+                     "end " +
+
+                     "declare Bar " +
+                     "@Traitable " +
+                     "end " +
+
+                     "declare trait IPerson end " +
+                     "declare trait IStudent end " +
+
+                     "rule Init " +
+                     "when " +
+                     "then " +
+                     "  Foo f = new Foo( new StudentImpl() ); " +
+                     "  don( f, IPerson.class ); " +
+                     "end " +
+
+                     "rule Match1 " +
+                     "when " +
+                     "  $f : Foo( $x : object ) " +
+                     "  $p : StudentImpl( this isA $f ) from $x " +
+                     "then " +
+                     "  list.add( 1 ); " +
+                     "end " +
+
+                     "rule Match2 " +
+                     "when " +
+                     "  $f : Foo( $x : object ) " +
+                     "  $p : StudentImpl( $f isA this ) from $x " +
+                     "then " +
+                     "  list.add( 2 ); " +
+                     "end " +
+
+                     "";
+
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        TraitFactory.setMode( mode, kbase );
+        ArrayList list = new ArrayList();
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( 1 ) );
+        assertTrue( list.contains( 2 ) );
+
+    }
+
+
 }

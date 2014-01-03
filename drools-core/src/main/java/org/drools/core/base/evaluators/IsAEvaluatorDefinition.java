@@ -282,8 +282,8 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 InternalReadAccessor leftExtractor, InternalFactHandle left,
                                 InternalReadAccessor rightExtractor, InternalFactHandle right) {
-            final Object value1 = leftExtractor.getValue( workingMemory, left );
-            final Object value2 = rightExtractor.getValue( workingMemory, right );
+            final Object value1 = leftExtractor.getValue( workingMemory, left != null ? left.getObject() : left );
+            final Object value2 = rightExtractor.getValue( workingMemory, right != null ? right.getObject() : right );
 
             Object target = value1;
             Object source = value2;
@@ -317,8 +317,15 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             BitSet targetTraits = null;
             if ( source instanceof Thing ) {
                 sourceTraits = ((TraitableBean) ((Thing) source).getCore()).getCurrentTypeCode();
+                if ( sourceTraits == null && source instanceof TraitType ) {
+                    CodedHierarchy x = ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                    sourceTraits = x.getCode( ((TraitType)source).getTraitName() );
+                }
             } else if ( source instanceof TraitableBean ) {
                 sourceTraits = ((TraitableBean) source).getCurrentTypeCode();
+            } else if ( source instanceof String ) {
+                CodedHierarchy x = ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                sourceTraits = x.getCode( source );
             } else {
                 TraitableBean tbean = lookForWrapper( source, workingMemory);
                 if ( tbean != null ) {
