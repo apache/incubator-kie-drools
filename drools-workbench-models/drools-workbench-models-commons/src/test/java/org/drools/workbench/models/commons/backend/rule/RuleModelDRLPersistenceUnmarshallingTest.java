@@ -60,20 +60,19 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
     private PackageDataModelOracle dmo;
     private Map<String, ModelField[]> packageModelFields = new HashMap<String, ModelField[]>();
+    private Map<String, String[]> projectJavaEnumDefinitions = new HashMap<String, String[]>();
 
     @Before
     public void setUp() throws Exception {
         dmo = mock( PackageDataModelOracle.class );
-        when(
-                dmo.getProjectModelFields()
-            ).thenReturn(
-                packageModelFields
-                        );
+        when( dmo.getProjectModelFields() ).thenReturn( packageModelFields );
+        when( dmo.getProjectJavaEnumDefinitions() ).thenReturn( projectJavaEnumDefinitions );
     }
 
     @After
     public void cleanUp() throws Exception {
         packageModelFields.clear();
+        projectJavaEnumDefinitions.clear();
     }
 
     private void addModelField( String factName,
@@ -94,6 +93,14 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         }
         packageModelFields.put( factName,
                                 modelFields );
+    }
+
+    private void addJavaEnumDefinition( final String factName,
+                                        final String fieldName,
+                                        final String[] values ) {
+        final String key = factName + "#" + fieldName;
+        projectJavaEnumDefinitions.put( key,
+                                        values );
     }
 
     @Test
@@ -938,33 +945,33 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     public void testRHSOrder() {
         String drl =
                 "rule \"Low Down Payment based on Appraisal\"\n" +
-                "  dialect \"mvel\"\n" +
-                "  ruleflow-group \"apr-calculation\"\n" +
-                "  salience -3\n" +
-                "  no-loop true\n" +
-                " when\n" +
-                "    appraised : Appraisal( )\n" +
-                "    application : Application( mortgageAmount > ( appraised.value * 8 / 10 ) )\n" +
-                " then\n" +
-                "    double ratio = application.getMortgageAmount().doubleValue() / appraised.getValue().doubleValue();\n" +
-                "    int brackets = (int)((ratio - 0.8) / 0.05);\n" +
-                "    brackets++;\n" +
-                "    double aprSurcharge = 0.75 * brackets;\n" +
-                "    System.out.println( \"aprSurcharge added is \" + aprSurcharge );\n" +
-                "    application.setApr(  application.getApr() + aprSurcharge );\n" +
-                "    System.out.println(\"Executed Rule: \" + drools.getRule().getName() );\n" +
-                "end";
+                        "  dialect \"mvel\"\n" +
+                        "  ruleflow-group \"apr-calculation\"\n" +
+                        "  salience -3\n" +
+                        "  no-loop true\n" +
+                        " when\n" +
+                        "    appraised : Appraisal( )\n" +
+                        "    application : Application( mortgageAmount > ( appraised.value * 8 / 10 ) )\n" +
+                        " then\n" +
+                        "    double ratio = application.getMortgageAmount().doubleValue() / appraised.getValue().doubleValue();\n" +
+                        "    int brackets = (int)((ratio - 0.8) / 0.05);\n" +
+                        "    brackets++;\n" +
+                        "    double aprSurcharge = 0.75 * brackets;\n" +
+                        "    System.out.println( \"aprSurcharge added is \" + aprSurcharge );\n" +
+                        "    application.setApr(  application.getApr() + aprSurcharge );\n" +
+                        "    System.out.println(\"Executed Rule: \" + drools.getRule().getName() );\n" +
+                        "end";
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
         assertNotNull( m );
         assertEquals( 7, m.rhs.length );
-        assertTrue( m.rhs[0] instanceof FreeFormLine );
-        assertTrue( m.rhs[1] instanceof FreeFormLine );
-        assertTrue( m.rhs[2] instanceof FreeFormLine );
-        assertTrue( m.rhs[3] instanceof FreeFormLine );
-        assertTrue( m.rhs[4] instanceof FreeFormLine );
-        assertTrue( m.rhs[5] instanceof ActionSetField );
-        assertTrue( m.rhs[6] instanceof FreeFormLine );
+        assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
+        assertTrue( m.rhs[ 1 ] instanceof FreeFormLine );
+        assertTrue( m.rhs[ 2 ] instanceof FreeFormLine );
+        assertTrue( m.rhs[ 3 ] instanceof FreeFormLine );
+        assertTrue( m.rhs[ 4 ] instanceof FreeFormLine );
+        assertTrue( m.rhs[ 5 ] instanceof ActionSetField );
+        assertTrue( m.rhs[ 6 ] instanceof FreeFormLine );
     }
 
     @Test
@@ -2381,6 +2388,136 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( "tel1", part3.getName() );
         assertEquals( "String", part3.getClassType() );
         assertEquals( "String", part3.getGenericType() );
+    }
+
+    @Test
+    @Ignore("See https://bugzilla.redhat.com/show_bug.cgi?id=1047879")
+    public void testEnumeration() throws Exception {
+        //https://bugzilla.redhat.com/show_bug.cgi?id=1047879
+        String drl = "import org.drools.workbench.models.commons.backend.rule.TestEnum;\n"
+                + "rule \"r1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "OuterClassWithEnums( outerField == TestEnum.VALUE1 )\n"
+                + "then\n"
+                + "end";
+
+        addModelField( "OuterClassWithEnums",
+                       "outerField",
+                       TestEnum.class.getSimpleName(),
+                       DataType.TYPE_COMPARABLE );
+
+        addJavaEnumDefinition( "OuterClassWithEnums",
+                               "outerField",
+                               new String[]{ "TestEnum.VALUE1=TestEnum.VALUE1", "TestEnum.VALUE2=TestEnum.VALUE2" } );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           dmo );
+
+        FactPattern pattern = (FactPattern) m.lhs[ 0 ];
+        assertEquals( 1,
+                      pattern.getNumberOfConstraints() );
+        assertTrue( pattern.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        SingleFieldConstraint constraint = (SingleFieldConstraint) pattern.getConstraint( 0 );
+
+        assertEquals( "OuterClassWithEnums",
+                      constraint.getFactType() );
+        assertEquals( "outerField",
+                      constraint.getFieldName() );
+        assertEquals( DataType.TYPE_COMPARABLE,
+                      constraint.getFieldType() );
+        assertEquals( "==",
+                      constraint.getOperator() );
+        assertEquals( "TestEnum.VALUE1",
+                      constraint.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_ENUM,
+                      constraint.getConstraintValueType() );
+
+        final String drl2 = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
+        assertEqualsIgnoreWhitespace( drl,
+                                      drl2 );
+    }
+
+    @Test
+    @Ignore("See https://bugzilla.redhat.com/show_bug.cgi?id=1047879")
+    public void testEnumerationNestedClasses() throws Exception {
+        //https://bugzilla.redhat.com/show_bug.cgi?id=1047879
+        String drl = "import org.drools.workbench.models.commons.backend.rule.TestEnum;\n"
+                + "rule \"r1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "OuterClassWithEnums( innerClass.innerField == TestEnum.VALUE1 )\n"
+                + "then\n"
+                + "end";
+
+        addModelField( "OuterClassWithEnums",
+                       "innerClass",
+                       "InnerClassWithEnums",
+                       "InnerClassWithEnums" );
+        addModelField( "InnerClassWithEnums",
+                       "innerField",
+                       TestEnum.class.getSimpleName(),
+                       DataType.TYPE_COMPARABLE );
+
+        addJavaEnumDefinition( "InnerClassWithEnums",
+                               "innerField",
+                               new String[]{ "TestEnum.VALUE1=TestEnum.VALUE1", "TestEnum.VALUE2=TestEnum.VALUE2" } );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           dmo );
+
+        FactPattern pattern = (FactPattern) m.lhs[ 0 ];
+        assertEquals( 1,
+                      pattern.getNumberOfConstraints() );
+        assertTrue( pattern.getConstraint( 0 ) instanceof SingleFieldConstraintEBLeftSide );
+
+        final SingleFieldConstraintEBLeftSide constraint = (SingleFieldConstraintEBLeftSide) pattern.getConstraint( 0 );
+        assertEquals( 3,
+                      constraint.getExpressionLeftSide().getParts().size() );
+
+        assertTrue( constraint.getExpressionLeftSide().getParts().get( 0 ) instanceof ExpressionUnboundFact );
+        final ExpressionUnboundFact eubf = ( (ExpressionUnboundFact) constraint.getExpressionLeftSide().getParts().get( 0 ) );
+        assertEquals( "OuterClassWithEnums",
+                      eubf.getName() );
+        assertEquals( "OuterClassWithEnums",
+                      eubf.getClassType() );
+        assertEquals( "OuterClassWithEnums",
+                      eubf.getGenericType() );
+
+        assertTrue( constraint.getExpressionLeftSide().getParts().get( 1 ) instanceof ExpressionField );
+        final ExpressionField ef1 = ( (ExpressionField) constraint.getExpressionLeftSide().getParts().get( 1 ) );
+        assertEquals( "innerClass",
+                      ef1.getName() );
+        assertEquals( "InnerClassWithEnums",
+                      ef1.getClassType() );
+        assertEquals( "InnerClassWithEnums",
+                      ef1.getGenericType() );
+
+        assertTrue( constraint.getExpressionLeftSide().getParts().get( 2 ) instanceof ExpressionField );
+        final ExpressionField ef2 = ( (ExpressionField) constraint.getExpressionLeftSide().getParts().get( 2 ) );
+        assertEquals( "innerField",
+                      ef2.getName() );
+        assertEquals( "TestEnum",
+                      ef2.getClassType() );
+        assertEquals( DataType.TYPE_COMPARABLE,
+                      ef2.getGenericType() );
+
+        assertEquals( "OuterClassWithEnums",
+                      constraint.getFactType() );
+        assertEquals( "innerField",
+                      constraint.getFieldName() );
+        assertEquals( "TestEnum",
+                      constraint.getFieldType() );
+        assertEquals( "==",
+                      constraint.getOperator() );
+        assertEquals( "TestEnum.VALUE1",
+                      constraint.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_ENUM,
+                      constraint.getConstraintValueType() );
+
+        final String drl2 = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
+        assertEqualsIgnoreWhitespace( drl,
+                                      drl2 );
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
