@@ -22,9 +22,9 @@ import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
 
-public class FromEntityPropertyPlanningValueRangeDescriptor extends AbstractFromPropertyPlanningValueRangeDescriptor {
+public class FromEntityPropertyValueRangeDescriptor extends AbstractFromPropertyValueRangeDescriptor {
 
-    public FromEntityPropertyPlanningValueRangeDescriptor(
+    public FromEntityPropertyValueRangeDescriptor(
             PlanningVariableDescriptor variableDescriptor, boolean addNullInValueRange,
             Method readMethod) {
         super(variableDescriptor, addNullInValueRange, readMethod);

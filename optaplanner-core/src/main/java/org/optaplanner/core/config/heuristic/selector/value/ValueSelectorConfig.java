@@ -26,8 +26,8 @@ import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
-import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentPlanningValueRangeDescriptor;
-import org.optaplanner.core.impl.domain.valuerange.descriptor.PlanningValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
@@ -206,7 +206,7 @@ public class ValueSelectorConfig extends SelectorConfig {
     private ValueSelector buildBaseValueSelector(
             HeuristicConfigPolicy configPolicy, PlanningVariableDescriptor variableDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        PlanningValueRangeDescriptor valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
+        ValueRangeDescriptor valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
         if (valueRangeDescriptor.isEntityIndependent()) {
             // FromSolutionPropertyValueSelector caches by design, so it uses the minimumCacheType
             if (variableDescriptor.isPlanningValuesCacheable()) {
@@ -221,7 +221,7 @@ public class ValueSelectorConfig extends SelectorConfig {
                 }
             }
             return new FromSolutionPropertyValueSelector(
-                    (EntityIndependentPlanningValueRangeDescriptor) valueRangeDescriptor,
+                    (EntityIndependentValueRangeDescriptor) valueRangeDescriptor,
                     minimumCacheType, randomSelection);
         } else {
             // TODO should we ignore the minimumCacheType so it can be cached on changeMoves too?

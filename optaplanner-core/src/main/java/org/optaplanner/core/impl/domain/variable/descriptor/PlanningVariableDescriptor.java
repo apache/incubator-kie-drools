@@ -33,10 +33,10 @@ import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
-import org.optaplanner.core.impl.domain.valuerange.descriptor.CompositePlanningValueRangeDescriptor;
-import org.optaplanner.core.impl.domain.valuerange.descriptor.FromEntityPropertyPlanningValueRangeDescriptor;
-import org.optaplanner.core.impl.domain.valuerange.descriptor.FromSolutionPropertyPlanningValueRangeDescriptor;
-import org.optaplanner.core.impl.domain.valuerange.descriptor.PlanningValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.valuerange.descriptor.CompositeValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.valuerange.descriptor.FromEntityPropertyValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.valuerange.descriptor.FromSolutionPropertyValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
@@ -54,7 +54,7 @@ public class PlanningVariableDescriptor {
     private final PropertyAccessor variablePropertyAccessor;
     private boolean chained;
 
-    private PlanningValueRangeDescriptor valueRangeDescriptor;
+    private ValueRangeDescriptor valueRangeDescriptor;
     private boolean nullable;
     private SelectionFilter reinitializeVariableEntityFilter;
     private SelectionSorter increasingStrengthSorter;
@@ -142,8 +142,8 @@ public class PlanningVariableDescriptor {
                     + " annotated property (" + variablePropertyAccessor.getName()
                     + ") that has no valueRangeProviderRefs (" + Arrays.toString(valueRangeProviderRefs) + ").");
         }
-        List<PlanningValueRangeDescriptor> valueRangeDescriptorList
-                = new ArrayList<PlanningValueRangeDescriptor>(valueRangeProviderRefs.length);
+        List<ValueRangeDescriptor> valueRangeDescriptorList
+                = new ArrayList<ValueRangeDescriptor>(valueRangeProviderRefs.length);
         boolean addNullInValueRange = nullable && valueRangeProviderRefs.length == 1;
         for (String valueRangeProviderRef : valueRangeProviderRefs) {
             valueRangeDescriptorList.add(buildValueRangeDescriptor(descriptorPolicy, valueRangeProviderRef, addNullInValueRange));
@@ -151,18 +151,18 @@ public class PlanningVariableDescriptor {
         if (valueRangeDescriptorList.size() == 1) {
             valueRangeDescriptor = valueRangeDescriptorList.get(0);
         } else {
-            valueRangeDescriptor = new CompositePlanningValueRangeDescriptor(this, nullable, valueRangeDescriptorList);
+            valueRangeDescriptor = new CompositeValueRangeDescriptor(this, nullable, valueRangeDescriptorList);
         }
     }
 
-    private PlanningValueRangeDescriptor buildValueRangeDescriptor(DescriptorPolicy descriptorPolicy,
+    private ValueRangeDescriptor buildValueRangeDescriptor(DescriptorPolicy descriptorPolicy,
             String valueRangeProviderRef, boolean addNullInValueRange) {
         if (descriptorPolicy.hasFromSolutionValueRangeProvider(valueRangeProviderRef)) {
             Method readMethod = descriptorPolicy.getFromSolutionValueRangeProvider(valueRangeProviderRef);
-            return new FromSolutionPropertyPlanningValueRangeDescriptor(this, addNullInValueRange, readMethod);
+            return new FromSolutionPropertyValueRangeDescriptor(this, addNullInValueRange, readMethod);
         } else if (descriptorPolicy.hasFromEntityValueRangeProvider(valueRangeProviderRef)) {
             Method readMethod = descriptorPolicy.getFromEntityValueRangeProvider(valueRangeProviderRef);
-            return new FromEntityPropertyPlanningValueRangeDescriptor(this, addNullInValueRange, readMethod);
+            return new FromEntityPropertyValueRangeDescriptor(this, addNullInValueRange, readMethod);
         } else {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + entityDescriptor.getPlanningEntityClass()
@@ -259,7 +259,7 @@ public class PlanningVariableDescriptor {
         return reinitializeVariableEntityFilter;
     }
 
-    public PlanningValueRangeDescriptor getValueRangeDescriptor() {
+    public ValueRangeDescriptor getValueRangeDescriptor() {
         return valueRangeDescriptor;
     }
 

@@ -20,7 +20,7 @@ import java.util.Iterator;
 
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
-import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentPlanningValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleListener;
@@ -33,13 +33,13 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 public class FromSolutionPropertyValueSelector extends AbstractValueSelector
         implements EntityIndependentValueSelector, SelectionCacheLifecycleListener {
 
-    protected final EntityIndependentPlanningValueRangeDescriptor valueRangeDescriptor;
+    protected final EntityIndependentValueRangeDescriptor valueRangeDescriptor;
     protected final SelectionCacheType cacheType;
     protected final boolean randomSelection;
 
     protected ValueRange<Object> cachedValueRange = null;
 
-    public FromSolutionPropertyValueSelector(EntityIndependentPlanningValueRangeDescriptor valueRangeDescriptor,
+    public FromSolutionPropertyValueSelector(EntityIndependentValueRangeDescriptor valueRangeDescriptor,
             SelectionCacheType cacheType, boolean randomSelection) {
         this.valueRangeDescriptor = valueRangeDescriptor;
         this.cacheType = cacheType;

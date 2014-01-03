@@ -25,19 +25,19 @@ import org.optaplanner.core.impl.domain.valuerange.buildin.composite.CompositeCo
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
 
-public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValueRangeDescriptor
-        implements EntityIndependentPlanningValueRangeDescriptor {
+public class CompositeValueRangeDescriptor extends AbstractValueRangeDescriptor
+        implements EntityIndependentValueRangeDescriptor {
 
-    protected final List<PlanningValueRangeDescriptor> childValueRangeDescriptorList;
+    protected final List<ValueRangeDescriptor> childValueRangeDescriptorList;
     protected boolean entityIndependent;
 
-    public CompositePlanningValueRangeDescriptor(
+    public CompositeValueRangeDescriptor(
             PlanningVariableDescriptor variableDescriptor, boolean addNullInValueRange,
-            List<PlanningValueRangeDescriptor> childValueRangeDescriptorList) {
+            List<ValueRangeDescriptor> childValueRangeDescriptorList) {
         super(variableDescriptor, addNullInValueRange);
         this.childValueRangeDescriptorList = childValueRangeDescriptorList;
         entityIndependent = true;
-        for (PlanningValueRangeDescriptor valueRangeDescriptor : childValueRangeDescriptorList) {
+        for (ValueRangeDescriptor valueRangeDescriptor : childValueRangeDescriptorList) {
             if (!valueRangeDescriptor.isCountable()) {
                 throw new IllegalStateException("The valueRangeDescriptor (" + this
                         + ") has a childValueRangeDescriptor (" + valueRangeDescriptor
@@ -65,7 +65,7 @@ public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValue
 
     @Override
     public boolean isValuesCacheable() {
-        for (PlanningValueRangeDescriptor valueRangeDescriptor : childValueRangeDescriptorList) {
+        for (ValueRangeDescriptor valueRangeDescriptor : childValueRangeDescriptorList) {
             if (!valueRangeDescriptor.isValuesCacheable()) {
                 return false;
             }
@@ -75,7 +75,7 @@ public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValue
 
     public ValueRange<?> extractValueRange(Solution solution, Object entity) {
         List<CountableValueRange<?>> childValueRangeList = new ArrayList<CountableValueRange<?>>(childValueRangeDescriptorList.size());
-        for (PlanningValueRangeDescriptor valueRangeDescriptor : childValueRangeDescriptorList) {
+        for (ValueRangeDescriptor valueRangeDescriptor : childValueRangeDescriptorList) {
             childValueRangeList.add((CountableValueRange) valueRangeDescriptor.extractValueRange(solution, entity));
         }
         return doNullInValueRangeWrapping(new CompositeCountableValueRange(childValueRangeList));
@@ -84,9 +84,9 @@ public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValue
     @Override
     public ValueRange<?> extractValueRange(Solution solution) {
         List<CountableValueRange<?>> childValueRangeList = new ArrayList<CountableValueRange<?>>(childValueRangeDescriptorList.size());
-        for (PlanningValueRangeDescriptor valueRangeDescriptor : childValueRangeDescriptorList) {
-            EntityIndependentPlanningValueRangeDescriptor entityIndependentValueRangeDescriptor
-                    = (EntityIndependentPlanningValueRangeDescriptor) valueRangeDescriptor;
+        for (ValueRangeDescriptor valueRangeDescriptor : childValueRangeDescriptorList) {
+            EntityIndependentValueRangeDescriptor entityIndependentValueRangeDescriptor
+                    = (EntityIndependentValueRangeDescriptor) valueRangeDescriptor;
             childValueRangeList.add((CountableValueRange) entityIndependentValueRangeDescriptor.extractValueRange(solution));
         }
         return doNullInValueRangeWrapping(new CompositeCountableValueRange(childValueRangeList));

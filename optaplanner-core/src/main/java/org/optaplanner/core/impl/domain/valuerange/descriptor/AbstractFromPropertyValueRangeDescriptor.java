@@ -31,13 +31,13 @@ import org.optaplanner.core.impl.domain.common.ReadMethodAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 
-public abstract class AbstractFromPropertyPlanningValueRangeDescriptor extends AbstractPlanningValueRangeDescriptor {
+public abstract class AbstractFromPropertyValueRangeDescriptor extends AbstractValueRangeDescriptor {
 
     protected final ReadMethodAccessor readMethodAccessor;
     protected boolean collectionWrapping;
     protected boolean countable;
 
-    public AbstractFromPropertyPlanningValueRangeDescriptor(
+    public AbstractFromPropertyValueRangeDescriptor(
             PlanningVariableDescriptor variableDescriptor, boolean addNullInValueRange,
             Method readMethod) {
         super(variableDescriptor, addNullInValueRange);

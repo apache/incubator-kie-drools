@@ -23,9 +23,8 @@ import java.util.Random;
 
 import org.apache.commons.collections.IteratorUtils;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
-import org.optaplanner.core.api.domain.valuerange.ValueRange;
-import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentPlanningValueRangeDescriptor;
-import org.optaplanner.core.impl.domain.valuerange.descriptor.PlanningValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
@@ -37,7 +36,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 @Deprecated
 public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
 
-    private PlanningValueRangeDescriptor valueRangeDescriptor;
+    private ValueRangeDescriptor valueRangeDescriptor;
 
     private PlanningValueSelectionOrder selectionOrder = PlanningValueSelectionOrder.ORIGINAL;
     private PlanningValueSelectionPromotion selectionPromotion = PlanningValueSelectionPromotion.NONE; // TODO
@@ -77,7 +76,7 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
     private void initSelectedPlanningValueList(AbstractSolverPhaseScope phaseScope) {
         if (valueRangeDescriptor.isEntityIndependent()) {
             CountableValueRange<?> valueRange = (CountableValueRange<?>)
-                    ((EntityIndependentPlanningValueRangeDescriptor) valueRangeDescriptor).extractValueRange(
+                    ((EntityIndependentValueRangeDescriptor) valueRangeDescriptor).extractValueRange(
                             phaseScope.getWorkingSolution());
             cachedPlanningValues = IteratorUtils.toList(
                     valueRange.createOriginalIterator(), (int) valueRange.getSize());
