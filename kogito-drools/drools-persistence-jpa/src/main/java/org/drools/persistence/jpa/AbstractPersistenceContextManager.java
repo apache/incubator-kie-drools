@@ -140,6 +140,7 @@ public abstract class AbstractPersistenceContextManager {
                 cmdScopedEntityManager.close();
             }
             this.env.set( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, null );
+            this.txm.putResource(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, null );
             this.internalCmdScopedEntityManagerFlag = false;
         }
     }
