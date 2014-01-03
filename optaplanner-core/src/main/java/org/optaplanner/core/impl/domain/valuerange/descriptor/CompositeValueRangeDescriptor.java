@@ -63,16 +63,6 @@ public class CompositeValueRangeDescriptor extends AbstractValueRangeDescriptor
         return entityIndependent;
     }
 
-    @Override
-    public boolean isValuesCacheable() {
-        for (ValueRangeDescriptor valueRangeDescriptor : childValueRangeDescriptorList) {
-            if (!valueRangeDescriptor.isValuesCacheable()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public ValueRange<?> extractValueRange(Solution solution, Object entity) {
         List<CountableValueRange<?>> childValueRangeList = new ArrayList<CountableValueRange<?>>(childValueRangeDescriptorList.size());
         for (ValueRangeDescriptor valueRangeDescriptor : childValueRangeDescriptorList) {

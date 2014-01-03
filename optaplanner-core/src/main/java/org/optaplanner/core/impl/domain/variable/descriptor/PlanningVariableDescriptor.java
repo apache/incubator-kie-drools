@@ -303,9 +303,9 @@ public class PlanningVariableDescriptor {
         variablePropertyAccessor.executeSetter(entity, value);
     }
 
-    @Deprecated
-    public boolean isPlanningValuesCacheable() {
-        return valueRangeDescriptor.isValuesCacheable();
+    public boolean isValueRangeImmutableDuringPhase() {
+        // TODO if chained and not entityCountStable return false
+        return true;
     }
 
     public SelectionSorter getIncreasingStrengthSorter() {

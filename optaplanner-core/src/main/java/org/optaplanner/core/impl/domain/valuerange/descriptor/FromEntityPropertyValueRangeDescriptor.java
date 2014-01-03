@@ -40,11 +40,6 @@ public class FromEntityPropertyValueRangeDescriptor extends AbstractFromProperty
     }
 
     @Override
-    public boolean isValuesCacheable() {
-        return false;
-    }
-
-    @Override
     public ValueRange<?> extractValueRange(Solution solution, Object entity) {
         return readValueRange(entity);
     }

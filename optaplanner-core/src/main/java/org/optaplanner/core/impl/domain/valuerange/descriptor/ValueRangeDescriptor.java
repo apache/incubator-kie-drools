@@ -39,8 +39,6 @@ public interface ValueRangeDescriptor {
      */
     boolean isEntityIndependent();
 
-    boolean isValuesCacheable();
-
     /**
      * @param solution never null
      * @param entity never null. To avoid this parameter,

@@ -209,7 +209,7 @@ public class ValueSelectorConfig extends SelectorConfig {
         ValueRangeDescriptor valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
         if (valueRangeDescriptor.isEntityIndependent()) {
             // FromSolutionPropertyValueSelector caches by design, so it uses the minimumCacheType
-            if (variableDescriptor.isPlanningValuesCacheable()) {
+            if (variableDescriptor.isValueRangeImmutableDuringPhase()) {
                 if (minimumCacheType.compareTo(SelectionCacheType.PHASE) < 0) {
                     // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
                     minimumCacheType = SelectionCacheType.PHASE;
