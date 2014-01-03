@@ -24,6 +24,7 @@ import static org.junit.Assert.fail;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.junit.Test;
+import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
@@ -42,6 +44,7 @@ import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.AccessType;
 import org.kie.internal.task.api.model.ContentData;
+import org.kie.internal.task.api.model.InternalComment;
 import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 import org.kie.internal.task.api.model.InternalPeopleAssignments;
 import org.kie.internal.task.api.model.InternalTaskData;
@@ -2212,5 +2215,49 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
     			throw e;
     		}
     	}
+    }
+    
+    @Test
+    public void testCompleteWithComments() {       
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ],businessAdministrators = [ new User('Administrator') ], }),";
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+
+        long taskId = task.getId();
+        
+        List<Comment> comments = taskService.getAllCommentsByTaskId(taskId);
+        assertNotNull(comments);
+        assertEquals(0, comments.size());
+        
+        User user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Bobba Fet");
+        
+        Comment comment = TaskModelProvider.getFactory().newComment();
+        ((InternalComment)comment).setAddedAt(new Date());
+        ((InternalComment)comment).setAddedBy(user);
+        ((InternalComment)comment).setText("Simple test comment");
+        taskService.addComment(taskId, comment);
+        
+        comments = taskService.getAllCommentsByTaskId(taskId);
+        assertNotNull(comments);
+        assertEquals(1, comments.size());
+
+        // Go straight from Ready to Inprogress
+        taskService.start(taskId, "Darth Vader");
+
+        Task task1 = taskService.getTaskById(taskId);
+        assertEquals(Status.InProgress, task1.getTaskData().getStatus());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
+
+        // Check is Complete
+        taskService.complete(taskId, "Darth Vader", null);
+
+        Task task2 = taskService.getTaskById(taskId);
+        assertEquals(Status.Completed, task2.getTaskData().getStatus());
+        assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
     }
 }
