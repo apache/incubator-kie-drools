@@ -53,6 +53,8 @@ public enum BeliefSystemType {
             return SIMPLE;
         } else if( JTMS.getId().equalsIgnoreCase( id ) ) {
             return JTMS;
+        } else if( DEFEASIBLE.getId().equalsIgnoreCase( id ) ) {
+            return DEFEASIBLE;
         }
         throw new IllegalArgumentException( "Illegal enum value '" + id + "' for BeliefSystem" );
     }
