@@ -15,9 +15,11 @@
  */
 package org.drools.compiler.conf;
 
+import org.drools.core.BeliefSystemType;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieServices;
+import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
@@ -60,6 +62,30 @@ public class KnowledgeSessionConfigurationTest {
         assertEquals( "realtime",
                       config.getProperty( ClockTypeOption.PROPERTY_NAME ) );
     }
-    
+
+
+    @Test
+    public void testBeliefSystemType() {
+        config.setOption( BeliefSystemTypeOption.get( BeliefSystemType.JTMS.toString() ) );
+
+        assertEquals( BeliefSystemTypeOption.get( BeliefSystemType.JTMS.toString() ),
+                      config.getOption( BeliefSystemTypeOption.class ) );
+
+        // checking the string based getProperty() method
+        assertEquals( BeliefSystemType.JTMS.getId(),
+                      config.getProperty( BeliefSystemTypeOption.PROPERTY_NAME ) );
+
+        // setting the options using the string based setProperty() method
+        config.setProperty( BeliefSystemTypeOption.PROPERTY_NAME,
+                            BeliefSystemType.DEFEASIBLE.getId() );
+
+        // checking the type safe getOption() method
+        assertEquals( BeliefSystemTypeOption.get( BeliefSystemType.DEFEASIBLE.getId() ),
+                      config.getOption( BeliefSystemTypeOption.class ) );
+        // checking the string based getProperty() method
+        assertEquals( BeliefSystemType.DEFEASIBLE.getId(),
+                      config.getProperty( BeliefSystemTypeOption.PROPERTY_NAME ) );
+    }
+
 
 }
