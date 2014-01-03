@@ -2391,7 +2391,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("See https://bugzilla.redhat.com/show_bug.cgi?id=1047879")
     public void testEnumeration() throws Exception {
         //https://bugzilla.redhat.com/show_bug.cgi?id=1047879
         String drl = "import org.drools.workbench.models.commons.backend.rule.TestEnum;\n"
@@ -2439,7 +2438,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("See https://bugzilla.redhat.com/show_bug.cgi?id=1047879")
     public void testEnumerationNestedClasses() throws Exception {
         //https://bugzilla.redhat.com/show_bug.cgi?id=1047879
         String drl = "import org.drools.workbench.models.commons.backend.rule.TestEnum;\n"
