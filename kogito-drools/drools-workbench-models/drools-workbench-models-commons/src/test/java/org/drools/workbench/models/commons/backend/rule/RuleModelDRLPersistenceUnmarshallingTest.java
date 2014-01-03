@@ -1015,7 +1015,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         ExpressionUnboundFact expressionUnboundFact = ( (ExpressionUnboundFact) ebLeftSide.getExpressionLeftSide().getParts().get( 0 ) );
         assertEquals( "Person",
                       expressionUnboundFact.getName() );
-        assertEquals( "org.test.Person",
+        assertEquals( "Person",
                       expressionUnboundFact.getClassType() );
         assertEquals( "Person",
                       expressionUnboundFact.getGenericType() );
@@ -1090,7 +1090,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         ExpressionUnboundFact expressionUnboundFact = ( (ExpressionUnboundFact) ebLeftSide.getExpressionLeftSide().getParts().get( 0 ) );
         assertEquals( "Person",
                       expressionUnboundFact.getName() );
-        assertEquals( "org.test.Person",
+        assertEquals( "Person",
                       expressionUnboundFact.getClassType() );
         assertEquals( "Person",
                       expressionUnboundFact.getGenericType() );
@@ -1200,7 +1200,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         ExpressionUnboundFact expressionUnboundFact = ( (ExpressionUnboundFact) ebLeftSide.getExpressionLeftSide().getParts().get( 0 ) );
         assertEquals( "Person",
                       expressionUnboundFact.getName() );
-        assertEquals( "org.test.Person",
+        assertEquals( "Person",
                       expressionUnboundFact.getClassType() );
         assertEquals( "Person",
                       expressionUnboundFact.getGenericType() );
@@ -1740,7 +1740,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         ExpressionUnboundFact expressionUnboundFact = ( (ExpressionUnboundFact) ebLeftSide.getExpressionLeftSide().getParts().get( 0 ) );
         assertEquals( "Person",
                       expressionUnboundFact.getName() );
-        assertEquals( "org.test.Person",
+        assertEquals( "Person",
                       expressionUnboundFact.getClassType() );
         assertEquals( "Person",
                       expressionUnboundFact.getGenericType() );
@@ -1818,7 +1818,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         ExpressionUnboundFact expressionUnboundFact = ( (ExpressionUnboundFact) ebLeftSide.getExpressionLeftSide().getParts().get( 0 ) );
         assertEquals( "ParentType",
                       expressionUnboundFact.getName() );
-        assertEquals( "org.test.ParentType",
+        assertEquals( "ParentType",
                       expressionUnboundFact.getClassType() );
         assertEquals( "ParentType",
                       expressionUnboundFact.getGenericType() );
@@ -2438,6 +2438,54 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
+    public void testFullyQualifiedClassNameEnumeration() throws Exception {
+        //https://bugzilla.redhat.com/show_bug.cgi?id=1047879
+        String drl = "import org.drools.workbench.models.commons.backend.rule.TestEnum;\n"
+                + "import org.drools.workbench.models.commons.backend.rule.OuterClassWithEnums;\n"
+                + "rule \"r1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "OuterClassWithEnums( outerField == TestEnum.VALUE1 )\n"
+                + "then\n"
+                + "end";
+
+        addModelField( "org.drools.workbench.models.commons.backend.rule.OuterClassWithEnums",
+                       "outerField",
+                       TestEnum.class.getSimpleName(),
+                       DataType.TYPE_COMPARABLE );
+
+        addJavaEnumDefinition( "org.drools.workbench.models.commons.backend.rule.OuterClassWithEnums",
+                               "outerField",
+                               new String[]{ "TestEnum.VALUE1=TestEnum.VALUE1", "TestEnum.VALUE2=TestEnum.VALUE2" } );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           dmo );
+
+        FactPattern pattern = (FactPattern) m.lhs[ 0 ];
+        assertEquals( 1,
+                      pattern.getNumberOfConstraints() );
+        assertTrue( pattern.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        SingleFieldConstraint constraint = (SingleFieldConstraint) pattern.getConstraint( 0 );
+
+        assertEquals( "OuterClassWithEnums",
+                      constraint.getFactType() );
+        assertEquals( "outerField",
+                      constraint.getFieldName() );
+        assertEquals( DataType.TYPE_COMPARABLE,
+                      constraint.getFieldType() );
+        assertEquals( "==",
+                      constraint.getOperator() );
+        assertEquals( "TestEnum.VALUE1",
+                      constraint.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_ENUM,
+                      constraint.getConstraintValueType() );
+
+        final String drl2 = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
+        assertEqualsIgnoreWhitespace( drl,
+                                      drl2 );
+    }
+
+    @Test
     public void testEnumerationNestedClasses() throws Exception {
         //https://bugzilla.redhat.com/show_bug.cgi?id=1047879
         String drl = "import org.drools.workbench.models.commons.backend.rule.TestEnum;\n"
@@ -2489,6 +2537,89 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( "InnerClassWithEnums",
                       ef1.getClassType() );
         assertEquals( "InnerClassWithEnums",
+                      ef1.getGenericType() );
+
+        assertTrue( constraint.getExpressionLeftSide().getParts().get( 2 ) instanceof ExpressionField );
+        final ExpressionField ef2 = ( (ExpressionField) constraint.getExpressionLeftSide().getParts().get( 2 ) );
+        assertEquals( "innerField",
+                      ef2.getName() );
+        assertEquals( "TestEnum",
+                      ef2.getClassType() );
+        assertEquals( DataType.TYPE_COMPARABLE,
+                      ef2.getGenericType() );
+
+        assertEquals( "OuterClassWithEnums",
+                      constraint.getFactType() );
+        assertEquals( "innerField",
+                      constraint.getFieldName() );
+        assertEquals( "TestEnum",
+                      constraint.getFieldType() );
+        assertEquals( "==",
+                      constraint.getOperator() );
+        assertEquals( "TestEnum.VALUE1",
+                      constraint.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_ENUM,
+                      constraint.getConstraintValueType() );
+
+        final String drl2 = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
+        assertEqualsIgnoreWhitespace( drl,
+                                      drl2 );
+    }
+
+    @Test
+    public void testFullyQualifiedClassNameEnumerationNestedClasses() throws Exception {
+        //https://bugzilla.redhat.com/show_bug.cgi?id=1047879
+        String drl = "import org.drools.workbench.models.commons.backend.rule.TestEnum;\n"
+                + "import org.drools.workbench.models.commons.backend.rule.OuterClassWithEnums;\n"
+                + "import org.drools.workbench.models.commons.backend.rule.OuterClassWithEnums.InnerClassWithEnums;\n"
+                + "rule \"r1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "OuterClassWithEnums( innerClass.innerField == TestEnum.VALUE1 )\n"
+                + "then\n"
+                + "end";
+
+        addModelField( "org.drools.workbench.models.commons.backend.rule.OuterClassWithEnums",
+                       "innerClass",
+                       "org.drools.workbench.models.commons.backend.rule.OuterClassWithEnums$InnerClassWithEnums",
+                       "OuterClassWithEnums$InnerClassWithEnums" );
+        addModelField( "org.drools.workbench.models.commons.backend.rule.OuterClassWithEnums$InnerClassWithEnums",
+                       "innerField",
+                       TestEnum.class.getSimpleName(),
+                       DataType.TYPE_COMPARABLE );
+
+        addJavaEnumDefinition( "org.drools.workbench.models.commons.backend.rule.OuterClassWithEnums$InnerClassWithEnums",
+                               "innerField",
+                               new String[]{ "TestEnum.VALUE1=TestEnum.VALUE1", "TestEnum.VALUE2=TestEnum.VALUE2" } );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           dmo );
+
+        FactPattern pattern = (FactPattern) m.lhs[ 0 ];
+        assertEquals( 1,
+                      pattern.getNumberOfConstraints() );
+        assertTrue( pattern.getConstraint( 0 ) instanceof SingleFieldConstraintEBLeftSide );
+
+        final SingleFieldConstraintEBLeftSide constraint = (SingleFieldConstraintEBLeftSide) pattern.getConstraint( 0 );
+        assertEquals( 3,
+                      constraint.getExpressionLeftSide().getParts().size() );
+
+        assertTrue( constraint.getExpressionLeftSide().getParts().get( 0 ) instanceof ExpressionUnboundFact );
+        final ExpressionUnboundFact eubf = ( (ExpressionUnboundFact) constraint.getExpressionLeftSide().getParts().get( 0 ) );
+        assertEquals( "OuterClassWithEnums",
+                      eubf.getName() );
+        assertEquals( "OuterClassWithEnums",
+                      eubf.getClassType() );
+        assertEquals( "OuterClassWithEnums",
+                      eubf.getGenericType() );
+
+        assertTrue( constraint.getExpressionLeftSide().getParts().get( 1 ) instanceof ExpressionField );
+        final ExpressionField ef1 = ( (ExpressionField) constraint.getExpressionLeftSide().getParts().get( 1 ) );
+        assertEquals( "innerClass",
+                      ef1.getName() );
+        assertEquals( "OuterClassWithEnums$InnerClassWithEnums",
+                      ef1.getClassType() );
+        assertEquals( "OuterClassWithEnums$InnerClassWithEnums",
                       ef1.getGenericType() );
 
         assertTrue( constraint.getExpressionLeftSide().getParts().get( 2 ) instanceof ExpressionField );

@@ -2782,8 +2782,7 @@ public class RuleModelDRLPersistenceImpl
 
             fieldName = setFieldBindingOnContraint( fieldName, con );
             String classType = getFQFactType( factPattern.getFactType() );
-            con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( factPattern,
-                                                                               classType ) );
+            con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( factPattern ) );
 
             parseExpression( classType, fieldName, con.getExpressionLeftSide() );
 
@@ -2968,6 +2967,7 @@ public class RuleModelDRLPersistenceImpl
                         con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_ENUM );
                     } else if ( isEnumerationValue( factPattern,
                                                     con ) ) {
+                        type = DataType.TYPE_COMPARABLE;
                         con.setConstraintValueType( SingleFieldConstraint.TYPE_ENUM );
                     } else if ( value.indexOf( '.' ) > 0 && boundParams.containsKey( value.substring( 0, value.indexOf( '.' ) ).trim() ) ) {
                         con.setExpressionValue( parseExpression( null, value, new ExpressionFormLine() ) );
@@ -3003,20 +3003,29 @@ public class RuleModelDRLPersistenceImpl
 
         private boolean isEnumerationValue( FactPattern factPattern,
                                             BaseSingleFieldConstraint con ) {
-            String key = null;
+            String factType = null;
+            String fieldName = null;
             if ( con instanceof SingleFieldConstraintEBLeftSide ) {
                 SingleFieldConstraintEBLeftSide sfcex = (SingleFieldConstraintEBLeftSide) con;
                 List<ExpressionPart> sfcexParts = sfcex.getExpressionLeftSide().getParts();
-                key = sfcexParts.get( sfcexParts.size() - 1 ).getPrevious().getClassType() + "#" + sfcex.getFieldName();
+                factType = sfcexParts.get( sfcexParts.size() - 1 ).getPrevious().getClassType();
+                fieldName = sfcex.getFieldName();
             } else if ( con instanceof SingleFieldConstraint ) {
-                key = factPattern.getFactType() + "#" + ( (SingleFieldConstraint) con ).getFieldName();
+                factType = factPattern.getFactType();
+                fieldName = ( (SingleFieldConstraint) con ).getFieldName();
             } else if ( con instanceof ConnectiveConstraint ) {
-                key = factPattern.getFactType() + "#" + ( (ConnectiveConstraint) con ).getFieldName();
+                factType = factPattern.getFactType();
+                fieldName = ( (ConnectiveConstraint) con ).getFieldName();
             }
-            if ( key == null ) {
+
+            if ( factType == null || fieldName == null ) {
                 return false;
             }
-            Map<String, String[]> projectJavaEnumDefinitions = dmo.getProjectJavaEnumDefinitions();
+
+            final String fullyQualifiedFactType = getFQFactType( factType );
+            final String key = fullyQualifiedFactType + "#" + fieldName;
+            final Map<String, String[]> projectJavaEnumDefinitions = dmo.getProjectJavaEnumDefinitions();
+
             return projectJavaEnumDefinitions.containsKey( key );
         }
     }
