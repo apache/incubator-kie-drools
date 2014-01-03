@@ -2105,6 +2105,7 @@ public class RuleModelDRLPersistenceImpl
                            PackageDataModelOracle dmo) {
         PortableWorkDefinition pwd = null;
         Map<String, List<String>> setStatements = new HashMap<String, List<String>>();
+        Map<String, Integer> setStatementsPosition = new HashMap<String, Integer>();
         Map<String, String> factsType = new HashMap<String, String>();
 
         int lineCounter = -1;
@@ -2178,7 +2179,8 @@ public class RuleModelDRLPersistenceImpl
                                     setters = new ArrayList<String>();
                                     setStatements.put( variable, setters );
                                 }
-                                setters.add( line );
+                                setStatementsPosition.put( variable, lineCounter );
+                                setters.add(line);
                             } else if ( methodName.equals( "add" ) && expandedDRLInfo.hasGlobal( variable ) ) {
                                 String factName = line.substring( argStart + 1, line.lastIndexOf( ')' ) ).trim();
                                 ActionGlobalCollectionAdd actionGlobalCollectionAdd = new ActionGlobalCollectionAdd();
@@ -2250,7 +2252,7 @@ public class RuleModelDRLPersistenceImpl
         for ( Map.Entry<String, List<String>> entry : setStatements.entrySet() ) {
             ActionSetField action = new ActionSetField( entry.getKey() );
             addSettersToAction( entry.getValue(), action, isJavaDialect );
-            m.addRhsItem( action );
+            m.addRhsItem( action, setStatementsPosition.get(entry.getKey()) );
         }
 
         if ( expandedDRLInfo.hasDsl ) {
