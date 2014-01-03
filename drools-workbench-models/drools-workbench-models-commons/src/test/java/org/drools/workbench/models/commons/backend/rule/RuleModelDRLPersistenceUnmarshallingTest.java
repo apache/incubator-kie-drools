@@ -935,7 +935,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore
     public void testRHSOrder() {
         String drl =
                 "rule \"Low Down Payment based on Appraisal\"\n" +
