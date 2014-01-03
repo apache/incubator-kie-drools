@@ -935,6 +935,40 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
+    @Ignore
+    public void testRHSOrder() {
+        String drl =
+                "rule \"Low Down Payment based on Appraisal\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  ruleflow-group \"apr-calculation\"\n" +
+                "  salience -3\n" +
+                "  no-loop true\n" +
+                " when\n" +
+                "    appraised : Appraisal( )\n" +
+                "    application : Application( mortgageAmount > ( appraised.value * 8 / 10 ) )\n" +
+                " then\n" +
+                "    double ratio = application.getMortgageAmount().doubleValue() / appraised.getValue().doubleValue();\n" +
+                "    int brackets = (int)((ratio - 0.8) / 0.05);\n" +
+                "    brackets++;\n" +
+                "    double aprSurcharge = 0.75 * brackets;\n" +
+                "    System.out.println( \"aprSurcharge added is \" + aprSurcharge );\n" +
+                "    application.setApr(  application.getApr() + aprSurcharge );\n" +
+                "    System.out.println(\"Executed Rule: \" + drools.getRule().getName() );\n" +
+                "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        assertNotNull( m );
+        assertEquals( 7, m.rhs.length );
+        assertTrue( m.rhs[0] instanceof FreeFormLine );
+        assertTrue( m.rhs[1] instanceof FreeFormLine );
+        assertTrue( m.rhs[2] instanceof FreeFormLine );
+        assertTrue( m.rhs[3] instanceof FreeFormLine );
+        assertTrue( m.rhs[4] instanceof FreeFormLine );
+        assertTrue( m.rhs[5] instanceof ActionSetField );
+        assertTrue( m.rhs[6] instanceof FreeFormLine );
+    }
+
+    @Test
     public void testNestedFieldExpressions() {
         String drl =
                 "rule rule1\n"
