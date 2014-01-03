@@ -70,7 +70,7 @@ public abstract class AbstractKieProject implements KieProject {
                         defaultKieBase = kieBaseModel;
                     } else {
                         defaultKieBase = null;
-                        log.warn("Found more than one defualt KieBase: disabling all. KieBases will be accessible only by name");
+                        log.warn("Found more than one default KieBase: disabling all. KieBases will be accessible only by name");
                     }
                 }
 
