@@ -4978,4 +4978,64 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( Arrays.asList( 1 ), list );
     }
 
+
+    @Test
+    public void testClassLiteralsWithOr() {
+
+        String drl = "package org.drools.test; " +
+                     "import org.drools.factmodel.traits.*; " +
+                     "global java.util.List list; " +
+
+                     "declare Foo " +
+                     "@Traitable " +
+                     "end " +
+
+                     "declare trait A end " +
+                     "declare trait B end " +
+
+                     "rule Init " +
+                     "when " +
+                     "then " +
+                     "  Foo f = new Foo(); " +
+                     "  insert( f ); " +
+                     "end " +
+
+                     "rule One " +
+                     "when " +
+                     "  $f : Foo( this not isA A ) " +
+                     "then " +
+                     "  don( $f, A.class ); " +
+                     "end " +
+
+                     "rule Two " +
+                     "when " +
+                     "  $f : Foo( this not isA B ) " +
+                     "then " +
+                     "  don( $f, B.class ); " +
+                     "end " +
+
+                     "rule Check " +
+                     "when " +
+                     "    $f : Foo( this isA B || this isA A ) " +
+                     "then " +
+                     "  list.add( 1 ); " +
+                     "end " +
+
+                     "";
+
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        TraitFactory.setMode( mode, kbase );
+        ArrayList list = new ArrayList();
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( 1 ), list );
+
+    }
+
+
 }
