@@ -35,4 +35,35 @@ public class DefeasibleBeliefSystem extends JTMSBeliefSystem  {
     }
 
 
+    public void insert(LogicalDependency node,
+                       BeliefSet beliefSet,
+                       PropagationContext context,
+                       ObjectTypeConf typeConf) {
+        boolean wasEmpty = beliefSet.isEmpty();
+        boolean wasNegated = beliefSet.isNegated();
+        boolean wasUndecided = beliefSet.isUndecided();
+
+        super.insert( node, beliefSet, context, typeConf );
+
+        if ( ! wasEmpty && ! wasUndecided
+             && ! beliefSet.isUndecided() && ! beliefSet.isEmpty() ) {
+
+            DefeasibleBeliefSet dbs = (DefeasibleBeliefSet) beliefSet;
+
+            if ( ! wasNegated && beliefSet.isNegated() ) {
+                InternalFactHandle fh = dbs.getPositiveFactHandle();
+                NamedEntryPoint pep =  ((NamedEntryPoint) fh.getEntryPoint());
+                pep.getEntryPointNode().retractObject( fh, context, typeConf, pep.getInternalWorkingMemory() );
+
+                insertBelief( node, typeConf, dbs, context, wasEmpty, wasNegated, false );
+            } else if ( wasNegated && ! beliefSet.isNegated() ) {
+                InternalFactHandle fh = dbs.getNegativeFactHandle();
+                ((NamedEntryPoint) fh.getEntryPoint()).delete( fh, context.getRuleOrigin(), node.getJustifier() );
+
+                insertBelief( node, typeConf, dbs, context, wasEmpty, wasNegated, false );
+            }
+        }
+
+    }
+
 }

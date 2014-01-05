@@ -181,8 +181,10 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         // adds the references that defeat the current node
         if (Arrays.binarySearch(potentialSuperior.getDefeats(), rule.getName()) >= 0 ||
             Arrays.binarySearch(potentialSuperior.getDefeats(), rule.getPackage() + "." + rule.getName()) >= 0) {
-            potentialSuperior.addDefeated(potentialInferior);
-            return true;
+            if ( "neg".equals( potentialSuperior.getValue() ) ^ "neg".equals( potentialInferior.getValue() ) ) {
+                potentialSuperior.addDefeated(potentialInferior);
+                return true;
+            }
         }
         return false;
     }
