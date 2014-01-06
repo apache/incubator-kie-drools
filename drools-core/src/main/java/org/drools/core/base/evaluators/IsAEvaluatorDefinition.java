@@ -296,7 +296,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                                            VariableContextEntry context, InternalFactHandle right ) {
 
             Object target = ((VariableRestriction.ObjectVariableContextEntry) context).left;
-            Object source = right.getObject();
+            Object source = context.getFieldExtractor().getValue( workingMemory, right.getObject() );
 
             return compare( source, target, workingMemory );
         }
@@ -304,8 +304,8 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         public boolean evaluateCachedRight( InternalWorkingMemory workingMemory,
                                             VariableContextEntry context, InternalFactHandle left ) {
 
-            Object target = left.getObject();
-            Object source = context.getObject();
+            Object target = context.getFieldExtractor().getValue( workingMemory, left.getObject() );
+            Object source = ((VariableRestriction.ObjectVariableContextEntry) context).right;
 
             return compare( source, target, workingMemory );
         }
