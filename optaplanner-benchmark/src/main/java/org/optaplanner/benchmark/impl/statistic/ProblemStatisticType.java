@@ -20,7 +20,6 @@ import org.optaplanner.benchmark.impl.ProblemBenchmark;
 import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.calculatecount.CalculateCountProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.improvingsteppercentage.ImprovingStepPercentageProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.memoryuse.MemoryUseProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.movecountperstep.MoveCountPerStepProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.stepscore.StepScoreProblemStatistic;
@@ -31,7 +30,6 @@ public enum ProblemStatisticType implements StatisticType {
     CALCULATE_COUNT_PER_SECOND,
     BEST_SOLUTION_MUTATION,
     MOVE_COUNT_PER_STEP,
-    @Deprecated IMPROVING_STEP_PERCENTAGE,
     MEMORY_USE;
 
     public ProblemStatistic create(ProblemBenchmark problemBenchmark) {
@@ -46,8 +44,6 @@ public enum ProblemStatisticType implements StatisticType {
                 return new BestSolutionMutationProblemStatistic(problemBenchmark);
             case MOVE_COUNT_PER_STEP:
                 return new MoveCountPerStepProblemStatistic(problemBenchmark);
-            case IMPROVING_STEP_PERCENTAGE:
-                return new ImprovingStepPercentageProblemStatistic(problemBenchmark);
             case MEMORY_USE:
                 return new MemoryUseProblemStatistic(problemBenchmark);
             default:

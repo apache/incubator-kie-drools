@@ -456,29 +456,6 @@
                                                     </#list>
                                                 </div>
                                             </div>
-                                        <#elseif problemStatistic.problemStatisticType.name() == "IMPROVING_STEP_PERCENTAGE">
-                                            <div class="tabbable tabs-right">
-                                                <ul class="nav nav-tabs">
-                                                    <#assign itemIndex = 0>
-                                                    <#list problemStatistic.moveClasses as moveClass>
-                                                        <li<#if itemIndex == 0> class="active"</#if>>
-                                                            <a href="#problemStatistic_${problemStatistic.anchorId}_${reportHelper.escapeHtmlId(moveClass.canonicalName)}" data-toggle="tab">${moveClass.getSimpleName()}</a>
-                                                        </li>
-                                                        <#assign itemIndex = itemIndex + 1>
-                                                    </#list>
-                                                </ul>
-                                                <div class="tab-content">
-                                                    <#assign itemIndex = 0>
-                                                    <#list problemStatistic.moveClasses as moveClass>
-                                                        <div class="tab-pane<#if itemIndex == 0> active</#if>" id="problemStatistic_${problemStatistic.anchorId}_${reportHelper.escapeHtmlId(moveClass.canonicalName)}">
-                                                            <div class="benchmark-chart">
-                                                                <img src="${problemStatistic.getGraphFilePath(moveClass)}"/>
-                                                            </div>
-                                                        </div>
-                                                        <#assign itemIndex = itemIndex + 1>
-                                                    </#list>
-                                                </div>
-                                            </div>
                                         <#else>
                                             <div class="benchmark-chart">
                                                 <img src="${problemStatistic.graphFilePath}"/>

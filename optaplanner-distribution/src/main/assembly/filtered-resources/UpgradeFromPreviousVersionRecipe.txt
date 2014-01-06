@@ -3666,12 +3666,12 @@ From 6.0.0.CR4 to 6.0.0.CR5
 [MINOR] If the <acceptor> element has no configuration, it now fail-fast.
 It used to default to entityTabuSize 7. To continue that behaviour, configure it explicitly.
 For good advice on what to configure, see the docs section "Which optimization algorithms should I use?".
-Before in *SolverConfig.java and *BenchmarkConfig.java:
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
   <localSearch>
     <acceptor/>
     ...
   </localSearch>
-After in *SolverConfig.java and *BenchmarkConfig.java:
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
   <localSearch>
     <acceptor>
       <entityTabuSize>7</entityTabuSize>
@@ -3748,3 +3748,10 @@ After in *.java:
 It's highly unlikely that your code uses isContinuous() because uncountable value ranges weren't supported yet.
 
 [IMPL_DETAIL] SolutionDescriptor.isInitialized(Solution) now requires a ScoreDirector parameter too
+
+[MINOR] The deprecated statisticType IMPROVING_STEP_PERCENTAGE has been removed.
+Before in *BenchmarkConfig.xml:
+    <problemBenchmarks>
+      ...
+      <problemStatisticType>IMPROVING_STEP_PERCENTAGE</problemStatisticType>
+    </problemBenchmarks>
