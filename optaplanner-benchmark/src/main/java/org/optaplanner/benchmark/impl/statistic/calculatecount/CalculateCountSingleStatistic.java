@@ -16,6 +16,7 @@
 
 package org.optaplanner.benchmark.impl.statistic.calculatecount;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +54,18 @@ public class CalculateCountSingleStatistic extends AbstractSingleStatistic {
 
     public List<CalculateCountSingleStatisticPoint> getPointList() {
         return pointList;
+    }
+
+    public void setPointList(List<CalculateCountSingleStatisticPoint> pointList) {
+        this.pointList = pointList;
+    }
+
+    public void writeCsvStatistic(File outputFile) {
+        SingleStatisticCsv csv = new SingleStatisticCsv();
+        for (CalculateCountSingleStatisticPoint point : pointList) {
+            csv.addPoint(point.getTimeMillisSpend(), point.getCalculateCountPerSecond());
+        }
+        csv.writeCsvSingleStatisticFile(outputFile);
     }
 
     // ************************************************************************

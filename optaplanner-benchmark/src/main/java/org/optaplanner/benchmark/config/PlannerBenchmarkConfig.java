@@ -17,19 +17,29 @@
 package org.optaplanner.benchmark.config;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.apache.commons.io.FileUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
@@ -56,6 +66,9 @@ public class PlannerBenchmarkConfig {
 
     private String name = null;
     private File benchmarkDirectory = null;
+
+    private boolean forceNoResume;
+    private String resumeConfig = null;
 
     private String parallelBenchmarkCount = null;
     private Long warmUpTimeMillisSpend = null;
@@ -90,6 +103,22 @@ public class PlannerBenchmarkConfig {
 
     public void setBenchmarkDirectory(File benchmarkDirectory) {
         this.benchmarkDirectory = benchmarkDirectory;
+    }
+
+    public boolean isForceNoResume() {
+        return forceNoResume;
+    }
+
+    public void setForceNoResume(boolean forceNoResume) {
+        this.forceNoResume = forceNoResume;
+    }
+
+    public String getResumeConfig() {
+        return resumeConfig;
+    }
+
+    public void setResumeConfig(String resumeConfig) {
+        this.resumeConfig = resumeConfig;
     }
 
     /**
@@ -207,6 +236,7 @@ public class PlannerBenchmarkConfig {
         DefaultPlannerBenchmark plannerBenchmark = new DefaultPlannerBenchmark();
         plannerBenchmark.setName(name);
         plannerBenchmark.setBenchmarkDirectory(benchmarkDirectory);
+        plannerBenchmark.setResumeConfig(resumeConfig);
         plannerBenchmark.setParallelBenchmarkCount(resolveParallelBenchmarkCount());
         plannerBenchmark.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
         plannerBenchmark.getBenchmarkReport().setLocale(
@@ -219,7 +249,7 @@ public class PlannerBenchmarkConfig {
         List<ProblemBenchmark> unifiedProblemBenchmarkList = new ArrayList<ProblemBenchmark>();
         plannerBenchmark.setUnifiedProblemBenchmarkList(unifiedProblemBenchmarkList);
         for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
-            SolverBenchmark solverBenchmark = solverBenchmarkConfig.buildSolverBenchmark(plannerBenchmark);
+            SolverBenchmark solverBenchmark = solverBenchmarkConfig.buildSolverBenchmark(plannerBenchmark, resolveResumeDirectory());
             solverBenchmarkList.add(solverBenchmark);
         }
         plannerBenchmark.setSolverBenchmarkList(solverBenchmarkList);
@@ -274,6 +304,56 @@ public class PlannerBenchmarkConfig {
                 solverBenchmarkConfig.inherit(inheritedSolverBenchmarkConfig);
             }
         }
+    }
+
+    protected File resolveResumeDirectory() {
+        File resumeBenchmarkDir = null;
+        File[] benchmarkDirs = benchmarkDirectory.listFiles();
+        if (forceNoResume || benchmarkDirs == null || benchmarkDirs.length < 1) {
+            return null;
+        } else {
+            final Pattern pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}_\\d{6}");
+            final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
+            Arrays.sort(benchmarkDirs, new Comparator<File>() {
+
+                public int compare(File file1, File file2) {
+                    return parseResumeDirName(file1, pattern, dateFormat).compareTo(
+                            parseResumeDirName(file2, pattern, dateFormat));
+                }
+            });
+            if (!new File(benchmarkDirs[benchmarkDirs.length - 1], "index.html").exists()) {
+                resumeBenchmarkDir = benchmarkDirs[benchmarkDirs.length - 1];
+                File latestResumeConfig = new File(resumeBenchmarkDir, "resumeBenchmarkConfig.xml");
+                if (!latestResumeConfig.exists()) {
+                    throw new IllegalArgumentException("Resume benchmark config file is not present in"
+                            + " resume directory (" + resumeBenchmarkDir.getName() + ").");
+                }
+                try {
+                    if (!resumeConfig.equals(FileUtils.readFileToString(latestResumeConfig))) {
+                        throw new IllegalArgumentException("Resume benchmark config file is not compatible with"
+                                + " current configuration.");
+                    }
+                } catch (IOException ex) {
+                    throw new IllegalStateException("Error while reading resume configuration file", ex);
+                }
+            }
+        }
+        return resumeBenchmarkDir;
+    }
+
+    private Date parseResumeDirName(File resumeDir, Pattern pattern, DateFormat dateFormat) {
+        Matcher matcher = pattern.matcher(resumeDir.getName());
+        if (matcher.find()) {
+            try {
+                return dateFormat.parse(matcher.group());
+            } catch (ParseException ex) {
+                throw new IllegalStateException("Error while parsing resume directory name ("
+                        + resumeDir.getName() + ").");
+            }
+        }
+        throw new IllegalArgumentException("Resume directory name (" + resumeDir + ")"
+                + " does not follow naming convention - identifying timestamp 'yyyy-MM-dd_HHmmss'"
+                + " is missing.");
     }
 
     protected void supplySolverBenchmarkRanking(DefaultPlannerBenchmark plannerBenchmark) {

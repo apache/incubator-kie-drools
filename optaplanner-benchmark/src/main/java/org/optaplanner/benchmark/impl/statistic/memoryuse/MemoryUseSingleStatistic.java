@@ -16,6 +16,7 @@
 
 package org.optaplanner.benchmark.impl.statistic.memoryuse;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +50,22 @@ public class MemoryUseSingleStatistic extends AbstractSingleStatistic {
 
     public List<MemoryUseSingleStatisticPoint> getPointList() {
         return pointList;
+    }
+
+    public void setPointList(List<MemoryUseSingleStatisticPoint> pointList) {
+        this.pointList = pointList;
+    }
+
+    public void writeCsvStatistic(File outputFile) {
+        SingleStatisticCsv csv = new SingleStatisticCsv();
+        for (MemoryUseSingleStatisticPoint point : pointList) {
+            long timeMillisSpend = point.getTimeMillisSpend();
+            MemoryUseMeasurement memoryUseMeasurement = point.getMemoryUseMeasurement();
+            csv.addPoint(timeMillisSpend,
+                    Long.toString(memoryUseMeasurement.getUsedMemory())
+                            + "/" + Long.toString(memoryUseMeasurement.getMaxMemory()));
+        }
+        csv.writeCsvSingleStatisticFile(outputFile);
     }
 
     // ************************************************************************

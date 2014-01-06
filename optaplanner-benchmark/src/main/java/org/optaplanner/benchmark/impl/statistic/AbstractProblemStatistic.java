@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
@@ -35,6 +36,8 @@ import org.jfree.chart.JFreeChart;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public abstract class AbstractProblemStatistic implements ProblemStatistic {
 
@@ -190,6 +193,10 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
             IOUtils.closeQuietly(out);
         }
         return chartFile;
+    }
+
+    protected static Score getScoreInstance(ScoreDefinition scoreDefinition, String scoreString) {
+        return scoreDefinition.parseScore(scoreString);
     }
 
 }

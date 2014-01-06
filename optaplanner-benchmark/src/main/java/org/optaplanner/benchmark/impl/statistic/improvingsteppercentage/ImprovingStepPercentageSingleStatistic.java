@@ -16,6 +16,7 @@
 
 package org.optaplanner.benchmark.impl.statistic.improvingsteppercentage;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +54,10 @@ public class ImprovingStepPercentageSingleStatistic extends AbstractSingleStatis
 
     public Map<Class<? extends Move>, List<ImprovingStepPercentageSingleStatisticPoint>> getPointLists() {
         return pointLists;
+    }
+
+    public void writeCsvStatistic(File outputFile) {
+        // TODO FIXME Planner doesn't support multiple CSV statistics per benchmark
     }
 
     // ************************************************************************

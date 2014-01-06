@@ -16,6 +16,7 @@
 
 package org.optaplanner.benchmark.impl.statistic.bestsolutionmutation;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,18 @@ public class BestSolutionMutationSingleStatistic extends AbstractSingleStatistic
 
     public List<BestSolutionMutationSingleStatisticPoint> getPointList() {
         return pointList;
+    }
+
+    public void setPointList(List<BestSolutionMutationSingleStatisticPoint> pointList) {
+        this.pointList = pointList;
+    }
+
+    public void writeCsvStatistic(File outputFile) {
+        SingleStatisticCsv csv = new SingleStatisticCsv();
+        for (BestSolutionMutationSingleStatisticPoint point : pointList) {
+            csv.addPoint(point.getTimeMillisSpend(), point.getMutationCount());
+        }
+        csv.writeCsvSingleStatisticFile(outputFile);
     }
 
     // ************************************************************************
