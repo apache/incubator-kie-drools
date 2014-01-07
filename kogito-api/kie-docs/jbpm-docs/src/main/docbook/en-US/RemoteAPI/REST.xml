@@ -1051,8 +1051,8 @@
        <title>Asynchrous deployment calls</title>
  
        <para>There are 2 operations that can be used to modify the status of a deployment: <itemizedlist>
-         <listitem><para><code>/deployments/<emphasis>{deploymentId}</emphasis>/deploy</code></para></listitem>
-         <listitem><para><code>/deployments/<emphasis>{deploymentId}</emphasis>/undeploydeploy</code></para></listitem>
+         <listitem><para><code>/deployment/<emphasis>{deploymentId}</emphasis>/deploy</code></para></listitem>
+         <listitem><para><code>/deployment/<emphasis>{deploymentId}</emphasis>/undeploydeploy</code></para></listitem>
        </itemizedlist>
          These <code>POST</code> deployment calls are both <emphasis>asynchronous</emphasis>, which 
          means that the information returned by the <code>POST</code> request does not reflect the 
