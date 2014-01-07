@@ -23,6 +23,8 @@ import org.drools.runtime.rule.ViewChangedEventListener;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.time.SessionClock;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.Row;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
@@ -165,23 +167,42 @@ public class KnowledgeRuntimeAdapter implements org.drools.runtime.KnowledgeRunt
     }
 
     public Agenda getAgenda() {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.getAgenda -> TODO");
+        return new AgendaAdapter(delegate.getAgenda());
     }
 
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.getWorkingMemoryEntryPoint -> TODO");
+        return new WorkingMemoryEntryPointAdapter(delegate.getEntryPoint(name));
     }
 
     public Collection<? extends WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.getWorkingMemoryEntryPoints -> TODO");
+        Collection<WorkingMemoryEntryPoint> result = new ArrayList<WorkingMemoryEntryPoint>();
+        for (EntryPoint ep : delegate.getEntryPoints()) {
+            result.add(new WorkingMemoryEntryPointAdapter(ep));
+        }
+        return result;
     }
 
     public QueryResults getQueryResults(String query, Object... arguments) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.getQueryResults -> TODO");
+        return new QueryResultsAdapter(delegate.getQueryResults(query, arguments));
     }
 
-    public LiveQuery openLiveQuery(String query, Object[] arguments, ViewChangedEventListener listener) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.openLiveQuery -> TODO");
+    public LiveQuery openLiveQuery(String query, Object[] arguments, final ViewChangedEventListener listener) {
+        return new LiveQueryAdapter(delegate.openLiveQuery(query, arguments, new org.kie.api.runtime.rule.ViewChangedEventListener() {
+            @Override
+            public void rowInserted(Row row) {
+                listener.rowAdded(new RowAdapter(row));
+            }
+
+            @Override
+            public void rowDeleted(Row row) {
+                listener.rowRemoved(new RowAdapter(row));
+            }
+
+            @Override
+            public void rowUpdated(Row row) {
+                listener.rowUpdated(new RowAdapter(row));
+            }
+        }));
     }
 
     public String getEntryPointId() {
