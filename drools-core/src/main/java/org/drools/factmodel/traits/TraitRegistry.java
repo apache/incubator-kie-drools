@@ -108,7 +108,7 @@ public class TraitRegistry implements Externalizable {
             hierarchy = other.hierarchy;
         } else {
             if ( other.traits != null ) {
-                for ( String traitName : other.traits.keySet() ) {
+                for ( String traitName : other.getHierarchy().getSortedMembers() ) {
                     ClassDefinition trait = other.traits.get( traitName );
                     List<String> parentTraits = new ArrayList<String>( );
                     for ( String candidateIntf : trait.getInterfaces() ) {
@@ -249,7 +249,7 @@ public class TraitRegistry implements Externalizable {
     }
 
 
-    public HierarchyEncoder getHierarchy() {
+    public HierarchyEncoder<String> getHierarchy() {
         if ( hierarchy == null ) {
             hierarchy = new HierarchyEncoderImpl<String>();
         }

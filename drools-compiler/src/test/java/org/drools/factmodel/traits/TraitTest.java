@@ -5099,4 +5099,48 @@ public class TraitTest extends CommonTestMethodBase {
         assertTrue( list.contains( 2 ) );
 
     }
+
+
+    @Test
+    public void testHierarchyEncodeOnPackageMerge() {
+
+        String drl0 = "package org.drools.test; " +
+                      "declare trait X end ";
+
+        String drl1 = "package org.drools.test; " +
+                      "import org.drools.core.factmodel.traits.*; " +
+                      "global java.util.List list; " +
+
+                      "declare trait A end " +
+                      "declare trait B extends A end " +
+                      "declare trait C extends B end " +
+
+                      "";
+
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        TraitFactory.setMode( mode, knowledgeBase );
+
+        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kb.add( new ByteArrayResource( drl0.getBytes() ), ResourceType.DRL );
+        assertFalse( kb.hasErrors() );
+
+        knowledgeBase.addKnowledgePackages( kb.getKnowledgePackages() );
+
+        KnowledgeBuilder kb2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kb2.add( new ByteArrayResource( drl1.getBytes() ), ResourceType.DRL );
+        System.out.print( kb2.getErrors() );
+        assertFalse( kb2.hasErrors() );
+
+        knowledgeBase.addKnowledgePackages( kb2.getKnowledgePackages() );
+
+        HierarchyEncoder<String> hier = ( (ReteooRuleBase) ( (KnowledgeBaseImpl) knowledgeBase ).getRuleBase() ).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+        BitSet b = (BitSet) hier.getCode( "org.drools.test.B" ).clone();
+        BitSet c = (BitSet) hier.getCode( "org.drools.test.C" ).clone();
+
+        c.and( b );
+        assertEquals( b, c );
+
+    }
+
+
 }
