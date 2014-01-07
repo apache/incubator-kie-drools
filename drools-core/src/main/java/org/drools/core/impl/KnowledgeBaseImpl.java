@@ -20,6 +20,7 @@ import org.drools.core.RuleBase;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.StatefulSession;
 import org.drools.core.common.AbstractWorkingMemory;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -186,7 +187,10 @@ public class KnowledgeBaseImpl
         if (sss != null) {
             for (StatefulSession ss : sss) {
                 if (ss instanceof AbstractWorkingMemory) {
-                    c.add(new StatefulKnowledgeSessionImpl((AbstractWorkingMemory)ss, this));
+                    InternalKnowledgeRuntime kruntime = ((AbstractWorkingMemory) ss).getKnowledgeRuntime();
+                    if( kruntime instanceof StatefulKnowledgeSession ) {
+                        c.add((StatefulKnowledgeSessionImpl) kruntime);
+                    }
                 }
             }
         }
