@@ -401,6 +401,7 @@ public class SolverAndPersistenceFrame extends JFrame {
                 public boolean accept(File file) {
                     return file.isDirectory() || solutionBusiness.acceptImportFile(file);
                 }
+
                 public String getDescription() {
                     return "Import files (*" + solutionBusiness.getImportFileSuffix() + ")";
                 }
@@ -538,14 +539,13 @@ public class SolverAndPersistenceFrame extends JFrame {
         scoreField.setForeground(determineScoreFieldForeground(solutionBusiness.getScore()));
         scoreField.setText("Score: " + solutionBusiness.getScore());
     }
-    
+
     private Color determineScoreFieldForeground(Score<?> score) {
-    	if (!(score instanceof FeasibilityScore)) {
-        	return Color.BLACK;
-        } else if (((FeasibilityScore<?>) score).isFeasible()) {
-        	return TangoColorFactory.CHAMELEON_3;
+        if (!(score instanceof FeasibilityScore)) {
+            return Color.BLACK;
         } else {
-        	return TangoColorFactory.SCARLET_3;
+            FeasibilityScore<?> feasibilityScore = (FeasibilityScore<?>) score;
+            return feasibilityScore.isFeasible() ? TangoColorFactory.CHAMELEON_3 : TangoColorFactory.SCARLET_3;
         }
     }
 
