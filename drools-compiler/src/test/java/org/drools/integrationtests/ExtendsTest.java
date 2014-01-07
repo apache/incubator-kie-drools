@@ -1077,6 +1077,24 @@ public class ExtendsTest extends CommonTestMethodBase {
         assertTrue( kBuilder.hasErrors() );
         assertEquals( 1, kBuilder.getErrors().size() );
     }
+
+
+    @Test
+    public void testDeclareExtendsWithFullyQualifiedName() {
+
+        String drl = "package org.drools.extends.test; \n" +
+        "" +
+        "declare org.drools.extends.test.Foo end \n" +
+        "declare org.drools.extends.test.Bar extends org.drools.extends.test.Foo end \n" +
+        "";
+
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
+        kBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        if ( kBuilder.hasErrors() ) {
+            fail( kBuilder.getErrors().toString() );
+        }
+
+    }
 }
 
 

@@ -1774,7 +1774,13 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         if ( (sup != null) && (!sup.contains( "." )) && (packageDescr.getNamespace() != null && !packageDescr.getNamespace().isEmpty()) ) {
             for ( AbstractClassTypeDeclarationDescr td : packageDescr.getClassAndEnumDeclarationDescrs() ) {
-                if ( sup.equals( td.getTypeName() ) ) sup = packageDescr.getNamespace() + "." + sup;
+                if ( sup.equals( td.getTypeName() ) ) {
+                    if ( td.getType().getFullName().contains( "." ) ) {
+                        sup = td.getType().getFullName();
+                    } else {
+                        sup = packageDescr.getNamespace() + "." + sup;
+                    }
+                }
             }
 
         }
@@ -3804,7 +3810,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 //we can't use newFactField.getType() since it throws a NPE at this point.
                 String newFactType = ((FieldDefinition)newFactField).getTypeName();
 
-                if (!newFactType.equals(oldFactField.getType().getName())){
+                if (!newFactType.equals( ((FieldDefinition) oldFactField).getTypeName()) ) {
                     throw new IncompatibleClassChangeError("Type Declaration "+newDeclaration.getTypeName()+"."+newFactField.getName()+" has a different"
                         + " type that its previous definition: "+newFactType
                         +" != "+oldFactField.getType().getName());

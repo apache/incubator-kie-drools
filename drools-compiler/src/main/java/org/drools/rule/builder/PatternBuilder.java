@@ -1369,6 +1369,11 @@ public class PatternBuilder
                     declaration = createDeclarationObject( context, "this", pattern );
                 } else {
                     declaration = new Declaration("this", pattern);
+                    try {
+                        if ( context.getPkg().getTypeResolver().resolveType( expr ) != null ) {
+                            return null;
+                        }
+                    } catch ( ClassNotFoundException e ) {}
                     context.getPkg().getClassFieldAccessorStore().getReader( ((ClassObjectType) pattern.getObjectType()).getClassName(), expr, declaration );
                 }
             }
