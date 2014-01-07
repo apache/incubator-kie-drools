@@ -2339,6 +2339,36 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
+    @Ignore(" https://bugzilla.redhat.com/show_bug.cgi?id=986000 - DRL-to-RuleModel marshalling improvements  ")
+    public void testFieldVarsWithImports() throws Exception {
+        String drl = "" +
+                "import org.test.Customer\n"+
+                "rule \"Borked\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    Customer( var:contact )\n" +
+                "  then\n" +
+                "end";
+
+        addModelField( "org.test.Customer",
+                "contact",
+                "org.test.Contact",
+                "org.test.Contact" );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                dmo );
+
+        FactPattern pattern = (FactPattern) m.lhs[ 0 ];
+        SingleFieldConstraint constraint = (SingleFieldConstraint) pattern.getFieldConstraints()[ 0 ];
+
+        assertEquals( "var", constraint.getFieldBinding() );
+        assertEquals( "Customer", constraint.getFactType() );
+        assertEquals( "contact", constraint.getFieldName() );
+        assertEquals( "org.test.Contact", constraint.getFieldType() );
+
+    }
+
+    @Test
     public void testSingleFieldConstraintEBLeftSide() throws Exception {
         String drl = "" +
                 "rule \" broken \""
