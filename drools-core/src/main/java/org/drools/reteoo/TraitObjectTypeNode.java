@@ -153,7 +153,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                     }
 
                 } else {
-//                    System.out.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : MODIFY BLOCK !! " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
+                    //System.out.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : MODIFY BLOCK !! " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
                 }
             } else {
                 this.sink.propagateModifyObject( factHandle,

@@ -3354,7 +3354,7 @@ public class RuleParserTest extends TestCase {
         assertNull( descr.getAnnotation( "FOO" ) );
 
         descr = declarations.get( 1 );
-        assertEquals( "some.pkg.Type",
+        assertEquals( "Type",
                       descr.getTypeName() );
         assertEquals( 5,
                       descr.getAnnotationNames().size() );

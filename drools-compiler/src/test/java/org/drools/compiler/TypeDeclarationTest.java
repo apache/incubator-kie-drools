@@ -52,6 +52,7 @@ public class TypeDeclarationTest {
         }
     }
 
+    @Test
     public void testAnnotationReDefinition(){
         String str1 = "";
         str1 += "package org.drools \n" +
@@ -62,8 +63,8 @@ public class TypeDeclarationTest {
 
         String str2 = "";
         str2 += "package org.drools \n" +
-        		"declare org.drools.ClassA \n" +
-        		"    @Role (event) \n" +
+        		"declare org.drools.EventA \n" +
+        		"    @role (event) \n" +
         		"    @duration (duration) \n" +
         		"end \n";
 
@@ -99,13 +100,14 @@ public class TypeDeclarationTest {
         Assert.assertNotNull(field);
 
         //New Annotations must be there too
-        TypeDeclaration typeDeclaration = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getTypeDeclaration("org.drools.EventA");
+        TypeDeclaration typeDeclaration = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getTypeDeclaration("EventA");
 
         assertEquals(TypeDeclaration.Role.EVENT, typeDeclaration.getRole());
         assertEquals("duration", typeDeclaration.getDurationAttribute());
 
     }
 
+    @Test
     public void testNoAnnotationUpdateIfError(){
         String str1 = "";
         str1 += "package org.drools \n" +
@@ -116,8 +118,8 @@ public class TypeDeclarationTest {
 
         String str2 = "";
         str2 += "package org.drools \n" +
-        		"declare org.drools.ClassA \n" +
-        		"    @Role (event) \n" +
+        		"declare org.drools.EventA \n" +
+        		"    @role (event) \n" +
         		"    @duration (duration) \n" +
         		"    anotherField : String \n" +
         		"end \n";
@@ -138,26 +140,8 @@ public class TypeDeclarationTest {
         KnowledgeBuilderResults warnings = kbuilder.getResults(ResultSeverity.WARNING);
         Assert.assertEquals(0, warnings.size());
 
-        //just 1 package was created
-        Assert.assertEquals(1, kbuilder.getKnowledgePackages().size());
-
-        //Get the Fact Type for org.drools.EventA
-        FactType factType = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getFactType("org.drools.EventA");
-        Assert.assertNotNull(factType);
-
-        //'name' field must still be there
-        FactField field = factType.getField("name");
-        Assert.assertNotNull(field);
-
-        //'duration' field must still be there
-        field = factType.getField("duration");
-        Assert.assertNotNull(field);
-
-        //@Role annotations shouldn't have any effect
-        TypeDeclaration typeDeclaration = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getTypeDeclaration("org.drools.EventA");
-
-        assertEquals(TypeDeclaration.Role.FACT, typeDeclaration.getRole());
-        assertNull(typeDeclaration.getDurationAttribute());
+        //just 1 package was created, but the API does not return packages in case of errors
+        Assert.assertEquals(0, kbuilder.getKnowledgePackages().size());
 
     }
 
@@ -544,6 +528,119 @@ public class TypeDeclarationTest {
         FactHandle handle = knowledgeSession.insert( new EventBar.Foo() );
 
         assertTrue( handle instanceof EventFactHandle );
+
+    }
+
+
+    static class ClassA {
+        private String name;
+        private Integer age;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName( String name ) {
+            this.name = name;
+        }
+
+        public Integer getAge() {
+            return age;
+        }
+
+        public void setAge( Integer age ) {
+            this.age = age;
+        }
+    }
+
+    @Test
+    public void testTypeReDeclarationPojo() {
+        String str1 = "" +
+                "package org.drools \n" +
+                "import " + TypeDeclarationTest.class.getName() + ".ClassA; \n" +
+                "" +
+                "declare " + TypeDeclarationTest.class.getName() + ".ClassA \n" +
+                "    name : String \n" +
+                "    age : Integer \n" +
+                "end \n";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( str1.getBytes() ),
+                      ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+    }
+
+    @Test
+    public void testTypeReDeclarationPojoMoreFields() {
+        String str1 = "" +
+                "package org.drools \n" +
+                "import " + TypeDeclarationTest.class.getName() + ".ClassA; \n" +
+                "" +
+                "declare " + TypeDeclarationTest.class.getName() + ".ClassA \n" +
+                "    name : String \n" +
+                "    age : Integer \n" +
+                "    address : Objet \n" +
+                "end \n";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( str1.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( ! kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+    }
+
+    @Test
+    public void testTypeReDeclarationPojoLessFields() {
+        String str1 = "" +
+                "package org.drools \n" +
+                "import " + TypeDeclarationTest.class.getName() + ".ClassA; \n" +
+                "" +
+                "declare " + TypeDeclarationTest.class.getName() + ".ClassA \n" +
+                "    name : String \n" +
+                "end \n";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( str1.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( ! kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+    }
+
+    @Test
+    public void testTypeReDeclaration() {
+        //same package, different resources
+        String str1 = "";
+        str1 += "package org.drools \n" +
+                "declare org.drools.ClassA \n" +
+                "    name : String \n" +
+                "    age : Integer \n" +
+                "end \n";
+
+        String str2 = "";
+        str2 += "package org.drools \n" +
+                "declare org.drools.ClassA \n" +
+                "    name : String \n" +
+                "    age : Integer \n" +
+                "end \n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( str1.getBytes() ),
+                      ResourceType.DRL );
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( str2.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
 
     }
 
