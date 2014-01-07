@@ -34,7 +34,9 @@ import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.common.AbstractRuleBase;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalRuleBase;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
 import org.drools.definition.rule.Query;
@@ -186,7 +188,10 @@ public class KnowledgeBaseImpl
         if (sss != null) {
             for (StatefulSession ss : sss) {
                 if (ss instanceof ReteooStatefulSession) {
-                    c.add(new StatefulKnowledgeSessionImpl((ReteooStatefulSession)ss, this));
+                    InternalKnowledgeRuntime kruntime = ((InternalWorkingMemory) ss).getKnowledgeRuntime();
+                    if( kruntime instanceof StatefulKnowledgeSession ) {
+                        c.add((StatefulKnowledgeSessionImpl) kruntime);
+                    }
                 }
             }
         }
