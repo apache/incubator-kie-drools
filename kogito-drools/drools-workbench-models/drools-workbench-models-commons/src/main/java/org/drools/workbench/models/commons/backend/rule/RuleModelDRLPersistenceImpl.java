@@ -1867,9 +1867,9 @@ public class RuleModelDRLPersistenceImpl
         int lineCounter = -1;
         for ( BaseDescr descr : lhs.getDescrs() ) {
             lineCounter = parseNonDrlInLhs( m, expandedDRLInfo, lineCounter );
-            IPattern pattern = parseBaseDescr( descr, boundParams, dmo );
+            IPattern pattern = parseBaseDescr( m, descr, boundParams, dmo );
             if ( pattern != null ) {
-                m.addLhsItem( parseBaseDescr( descr, boundParams, dmo ) );
+                m.addLhsItem( pattern );
             }
         }
         parseNonDrlInLhs( m, expandedDRLInfo, lineCounter );
@@ -1911,34 +1911,37 @@ public class RuleModelDRLPersistenceImpl
         return lineCounter;
     }
 
-    private IPattern parseBaseDescr( BaseDescr descr,
+    private IPattern parseBaseDescr( RuleModel m,
+                                     BaseDescr descr,
                                      Map<String, String> boundParams,
                                      PackageDataModelOracle dmo ) {
         if ( descr instanceof PatternDescr ) {
-            return parsePatternDescr( (PatternDescr) descr, boundParams, dmo );
+            return parsePatternDescr( m, (PatternDescr) descr, boundParams, dmo );
         } else if ( descr instanceof AndDescr ) {
             AndDescr andDescr = (AndDescr) descr;
-            return parseBaseDescr( andDescr.getDescrs().get( 0 ), boundParams, dmo );
+            return parseBaseDescr( m, andDescr.getDescrs().get( 0 ), boundParams, dmo );
         } else if ( descr instanceof EvalDescr ) {
             FreeFormLine freeFormLine = new FreeFormLine();
             freeFormLine.setText( "eval( " + ( (EvalDescr) descr ).getContent() + " )" );
             return freeFormLine;
         } else if ( descr instanceof ConditionalElementDescr ) {
-            return parseExistentialElementDescr( (ConditionalElementDescr) descr, boundParams, dmo );
+            return parseExistentialElementDescr( m, (ConditionalElementDescr) descr, boundParams, dmo );
         }
         return null;
     }
 
-    private IFactPattern parsePatternDescr( PatternDescr pattern,
+    private IFactPattern parsePatternDescr( RuleModel m,
+                                            PatternDescr pattern,
                                             Map<String, String> boundParams,
                                             PackageDataModelOracle dmo ) {
         if ( pattern.getSource() != null ) {
-            return parsePatternSource( pattern, pattern.getSource(), boundParams, dmo );
+            return parsePatternSource( m, pattern, pattern.getSource(), boundParams, dmo );
         }
-        return getFactPattern( pattern, boundParams, dmo );
+        return getFactPattern( m, pattern, boundParams, dmo );
     }
 
-    private FactPattern getFactPattern( PatternDescr pattern,
+    private FactPattern getFactPattern( RuleModel m,
+                                        PatternDescr pattern,
                                         Map<String, String> boundParams,
                                         PackageDataModelOracle dmo ) {
         String type = pattern.getObjectType();
@@ -1950,7 +1953,8 @@ public class RuleModelDRLPersistenceImpl
             boundParams.put( identifier, type );
         }
 
-        parseConstraint( factPattern,
+        parseConstraint( m,
+                         factPattern,
                          pattern.getConstraint(),
                          boundParams,
                          dmo );
@@ -1974,14 +1978,15 @@ public class RuleModelDRLPersistenceImpl
         return factPattern;
     }
 
-    private IFactPattern parsePatternSource( PatternDescr pattern,
+    private IFactPattern parsePatternSource( RuleModel m,
+                                             PatternDescr pattern,
                                              PatternSourceDescr patternSource,
                                              Map<String, String> boundParams,
                                              PackageDataModelOracle dmo ) {
         if ( patternSource instanceof AccumulateDescr ) {
             AccumulateDescr accumulate = (AccumulateDescr) patternSource;
             FromAccumulateCompositeFactPattern fac = new FromAccumulateCompositeFactPattern();
-            fac.setSourcePattern( parseBaseDescr( accumulate.getInput(), boundParams, dmo ) );
+            fac.setSourcePattern( parseBaseDescr( m, accumulate.getInput(), boundParams, dmo ) );
             fac.setFactPattern( new FactPattern( pattern.getObjectType() ) );
             for ( AccumulateDescr.AccumulateFunctionCallDescr func : accumulate.getFunctions() ) {
                 String funcName = func.getFunction();
@@ -2002,20 +2007,21 @@ public class RuleModelDRLPersistenceImpl
         } else if ( patternSource instanceof CollectDescr ) {
             CollectDescr collect = (CollectDescr) patternSource;
             FromCollectCompositeFactPattern fac = new FromCollectCompositeFactPattern();
-            fac.setRightPattern( parseBaseDescr( collect.getInputPattern(), boundParams, dmo ) );
+            fac.setRightPattern( parseBaseDescr( m, collect.getInputPattern(), boundParams, dmo ) );
             fac.setFactPattern( new FactPattern( pattern.getObjectType() ) );
             return fac;
         } else if ( patternSource instanceof EntryPointDescr ) {
             EntryPointDescr entryPoint = (EntryPointDescr) patternSource;
             FromEntryPointFactPattern fep = new FromEntryPointFactPattern();
             fep.setEntryPointName( entryPoint.getText() );
-            fep.setFactPattern( getFactPattern( pattern, boundParams, dmo ) );
+            fep.setFactPattern( getFactPattern( m, pattern, boundParams, dmo ) );
             return fep;
         }
         throw new RuntimeException( "Unknown pattern source " + patternSource );
     }
 
-    private CompositeFactPattern parseExistentialElementDescr( ConditionalElementDescr conditionalDescr,
+    private CompositeFactPattern parseExistentialElementDescr( RuleModel m,
+                                                               ConditionalElementDescr conditionalDescr,
                                                                Map<String, String> boundParams,
                                                                PackageDataModelOracle dmo ) {
         CompositeFactPattern comp = conditionalDescr instanceof NotDescr ?
@@ -2023,25 +2029,27 @@ public class RuleModelDRLPersistenceImpl
                 conditionalDescr instanceof OrDescr ?
                         new CompositeFactPattern( CompositeFactPattern.COMPOSITE_TYPE_OR ) :
                         new CompositeFactPattern( CompositeFactPattern.COMPOSITE_TYPE_EXISTS );
-        addPatternToComposite( conditionalDescr, comp, boundParams, dmo );
+        addPatternToComposite( m, conditionalDescr, comp, boundParams, dmo );
         IFactPattern[] patterns = comp.getPatterns();
         return patterns != null && patterns.length > 0 ? comp : null;
     }
 
-    private void addPatternToComposite( ConditionalElementDescr conditionalDescr,
+    private void addPatternToComposite( RuleModel m,
+                                        ConditionalElementDescr conditionalDescr,
                                         CompositeFactPattern comp,
                                         Map<String, String> boundParams,
                                         PackageDataModelOracle dmo ) {
         for ( Object descr : conditionalDescr.getDescrs() ) {
             if ( descr instanceof PatternDescr ) {
-                comp.addFactPattern( parsePatternDescr( (PatternDescr) descr, boundParams, dmo ) );
+                comp.addFactPattern( parsePatternDescr( m, (PatternDescr) descr, boundParams, dmo ) );
             } else if ( descr instanceof ConditionalElementDescr ) {
-                addPatternToComposite( (ConditionalElementDescr) descr, comp, boundParams, dmo );
+                addPatternToComposite( m, (ConditionalElementDescr) descr, comp, boundParams, dmo );
             }
         }
     }
 
-    private void parseConstraint( FactPattern factPattern,
+    private void parseConstraint( RuleModel m,
+                                  FactPattern factPattern,
                                   ConditionalElementDescr constraint,
                                   Map<String, String> boundParams,
                                   PackageDataModelOracle dmo ) {
@@ -2049,7 +2057,7 @@ public class RuleModelDRLPersistenceImpl
             if ( descr instanceof ExprConstraintDescr ) {
                 ExprConstraintDescr exprConstraint = (ExprConstraintDescr) descr;
                 Expr expr = parseExpr( exprConstraint.getExpression(), boundParams, dmo );
-                factPattern.addConstraint( expr.asFieldConstraint( factPattern ) );
+                factPattern.addConstraint( expr.asFieldConstraint( m, factPattern ) );
             }
         }
     }
@@ -2631,7 +2639,7 @@ public class RuleModelDRLPersistenceImpl
 
     private interface Expr {
 
-        FieldConstraint asFieldConstraint( FactPattern factPattern );
+        FieldConstraint asFieldConstraint( RuleModel m, FactPattern factPattern );
     }
 
     private static class SimpleExpr implements Expr {
@@ -2648,7 +2656,7 @@ public class RuleModelDRLPersistenceImpl
             this.dmo = dmo;
         }
 
-        public FieldConstraint asFieldConstraint( FactPattern factPattern ) {
+        public FieldConstraint asFieldConstraint( RuleModel m, FactPattern factPattern ) {
             String fieldName = expr;
 
             String value = null;
@@ -2668,23 +2676,27 @@ public class RuleModelDRLPersistenceImpl
                 }
             }
 
-            return createFieldConstraint( factPattern,
+            return createFieldConstraint( m,
+                                          factPattern,
                                           fieldName,
                                           value,
                                           operator,
                                           fieldName.contains( "." ) );
         }
 
-        private SingleFieldConstraint createNullCheckFieldConstraint( FactPattern factPattern,
+        private SingleFieldConstraint createNullCheckFieldConstraint( RuleModel m,
+                                                                      FactPattern factPattern,
                                                                       String fieldName ) {
-            return createFieldConstraint( factPattern,
+            return createFieldConstraint( m,
+                                          factPattern,
                                           fieldName,
                                           null,
                                           null,
                                           true );
         }
 
-        private SingleFieldConstraint createFieldConstraint( FactPattern factPattern,
+        private SingleFieldConstraint createFieldConstraint( RuleModel m,
+                                                             FactPattern factPattern,
                                                              String fieldName,
                                                              String value,
                                                              String operator,
@@ -2697,11 +2709,13 @@ public class RuleModelDRLPersistenceImpl
             }
 
             SingleFieldConstraint fieldConstraint = isExpression ?
-                    createExpressionBuilderConstraint( factPattern,
+                    createExpressionBuilderConstraint( m,
+                                                       factPattern,
                                                        fieldName,
                                                        operator,
                                                        value ) :
-                    createSingleFieldConstraint( factPattern,
+                    createSingleFieldConstraint( m,
+                                                 factPattern,
                                                  fieldName,
                                                  operator,
                                                  value );
@@ -2721,7 +2735,7 @@ public class RuleModelDRLPersistenceImpl
             }
             fieldConstraint.setFactType( factPattern.getFactType() );
 
-            ModelField field = findField( dmo.getProjectModelFields().get( factPattern.getFactType() ),
+            ModelField field = findField( findFields(m, factPattern.getFactType()),
                                           fieldConstraint.getFieldName() );
 
             if ( field != null ) {
@@ -2730,7 +2744,8 @@ public class RuleModelDRLPersistenceImpl
             return fieldConstraint;
         }
 
-        private SingleFieldConstraint createExpressionBuilderConstraint( FactPattern factPattern,
+        private SingleFieldConstraint createExpressionBuilderConstraint( RuleModel m,
+                                                                         FactPattern factPattern,
                                                                          String fieldName,
                                                                          String operator,
                                                                          String value ) {
@@ -2738,7 +2753,8 @@ public class RuleModelDRLPersistenceImpl
             //int dotPos = fieldName.lastIndexOf('.');
             //SingleFieldConstraint con = createSingleFieldConstraint(dotPos > 0 ? fieldName.substring(dotPos+1) : fieldName, operator, value);
 
-            SingleFieldConstraint con = createSingleFieldConstraintEBLeftSide( factPattern,
+            SingleFieldConstraint con = createSingleFieldConstraintEBLeftSide( m,
+                                                                               factPattern,
                                                                                fieldName,
                                                                                operator,
                                                                                value );
@@ -2757,24 +2773,26 @@ public class RuleModelDRLPersistenceImpl
             }
 
             if ( con.getParent() == null && !( con instanceof SingleFieldConstraintEBLeftSide ) ) {
-                con.setParent( createParentFor( factPattern, fieldName ) );
+                con.setParent( createParentFor( m, factPattern, fieldName ) );
             }
 
             return con;
         }
 
-        private SingleFieldConstraint createSingleFieldConstraint( FactPattern factPattern,
+        private SingleFieldConstraint createSingleFieldConstraint( RuleModel m,
+                                                                   FactPattern factPattern,
                                                                    String fieldName,
                                                                    String operator,
                                                                    String value ) {
             SingleFieldConstraint con = new SingleFieldConstraint();
             fieldName = setFieldBindingOnContraint( fieldName, con );
             con.setFieldName( fieldName );
-            setOperatorAndValueOnConstraint( operator, value, factPattern, con );
+            setOperatorAndValueOnConstraint( m, operator, value, factPattern, con );
             return con;
         }
 
-        private SingleFieldConstraintEBLeftSide createSingleFieldConstraintEBLeftSide( FactPattern factPattern,
+        private SingleFieldConstraintEBLeftSide createSingleFieldConstraintEBLeftSide( RuleModel m,
+                                                                                       FactPattern factPattern,
                                                                                        String fieldName,
                                                                                        String operator,
                                                                                        String value ) {
@@ -2784,9 +2802,10 @@ public class RuleModelDRLPersistenceImpl
             String classType = getFQFactType( factPattern.getFactType() );
             con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( factPattern ) );
 
-            parseExpression( classType, fieldName, con.getExpressionLeftSide() );
+            parseExpression( m, classType, fieldName, con.getExpressionLeftSide() );
 
-            setOperatorAndValueOnConstraint( operator,
+            setOperatorAndValueOnConstraint( m,
+                                             operator,
                                              value,
                                              factPattern,
                                              con );
@@ -2794,10 +2813,10 @@ public class RuleModelDRLPersistenceImpl
             return con;
         }
 
-        private ExpressionFormLine parseExpression( String factType,
+        private ExpressionFormLine parseExpression( RuleModel m,
+                                                    String factType,
                                                     String fieldName,
                                                     ExpressionFormLine expression ) {
-            Map<String, ModelField[]> modelFields = dmo.getProjectModelFields();
             String[] splits = fieldName.split( "\\." );
 
             boolean isBoundParam = false;
@@ -2806,7 +2825,7 @@ public class RuleModelDRLPersistenceImpl
                 isBoundParam = true;
             }
 
-            ModelField[] typeFields = modelFields.get( factType );
+            ModelField[] typeFields = findFields(m, factType);
 
             for ( int i = 0; i < splits.length - 1; i++ ) {
                 String expressionPart = normalizeExpressionPart( splits[ i ] );
@@ -2816,7 +2835,7 @@ public class RuleModelDRLPersistenceImpl
                                                                                    dmo ),
                                                                 DataType.TYPE_THIS ) );
                 } else if ( isBoundParam ) {
-                    ModelField currentFact = findFact( modelFields,
+                    ModelField currentFact = findFact( dmo.getProjectModelFields(),
                                                        factType );
                     expression.appendPart( new ExpressionVariable( expressionPart,
                                                                    getSimpleFactType( currentFact.getClassName(),
@@ -2832,7 +2851,7 @@ public class RuleModelDRLPersistenceImpl
                                                                                    dmo ),
                                                                 getSimpleFactType( currentField.getType(),
                                                                                    dmo ) ) );
-                    typeFields = modelFields.get( currentField.getClassName() );
+                    typeFields = findFields( m, currentField.getClassName() );
                 }
             }
             String expressionPart = normalizeExpressionPart( splits[ splits.length - 1 ] );
@@ -2877,6 +2896,23 @@ public class RuleModelDRLPersistenceImpl
             return null;
         }
 
+        private ModelField[] findFields( RuleModel m,
+                                         String type ) {
+            ModelField[] fields = dmo.getProjectModelFields().get( type );
+            if (fields != null) {
+                return fields;
+            }
+            for (String i : m.getImports().getImportStrings()) {
+                if (i.endsWith("." + type)) {
+                    fields = dmo.getProjectModelFields().get( i );
+                    if (fields != null) {
+                        return fields;
+                    }
+                }
+            }
+            return null;
+        }
+
         private ModelField findField( ModelField[] typeFields,
                                       String fieldName ) {
             if ( typeFields != null && fieldName != null ) {
@@ -2889,11 +2925,12 @@ public class RuleModelDRLPersistenceImpl
             return null;
         }
 
-        private SingleFieldConstraint createParentFor( FactPattern factPattern,
+        private SingleFieldConstraint createParentFor( RuleModel m,
+                                                       FactPattern factPattern,
                                                        String fieldName ) {
             int dotPos = fieldName.lastIndexOf( '.' );
             if ( dotPos > 0 ) {
-                SingleFieldConstraint constraint = createNullCheckFieldConstraint( factPattern, fieldName.substring( 0, dotPos ) );
+                SingleFieldConstraint constraint = createNullCheckFieldConstraint( m, factPattern, fieldName.substring( 0, dotPos ) );
                 factPattern.addConstraint( constraint );
                 return constraint;
             }
@@ -2911,7 +2948,8 @@ public class RuleModelDRLPersistenceImpl
             return fieldName;
         }
 
-        private String setOperatorAndValueOnConstraint( String operator,
+        private String setOperatorAndValueOnConstraint( RuleModel m,
+                                                        String operator,
                                                         String value,
                                                         FactPattern factPattern,
                                                         SingleFieldConstraint con ) {
@@ -2922,7 +2960,7 @@ public class RuleModelDRLPersistenceImpl
             if ( value != null ) {
                 isAnd = value.contains( "&&" );
                 splittedValue = isAnd ? value.split( "\\&\\&" ) : value.split( "\\|\\|" );
-                type = setValueOnConstraint( operator, factPattern, con, splittedValue[ 0 ].trim() );
+                type = setValueOnConstraint( m, operator, factPattern, con, splittedValue[ 0 ].trim() );
             }
 
             if ( splittedValue.length > 1 ) {
@@ -2934,14 +2972,15 @@ public class RuleModelDRLPersistenceImpl
 
                     connectiveConstraints[ i ] = new ConnectiveConstraint();
                     connectiveConstraints[ i ].setOperator( ( isAnd ? "&& " : "|| " ) + connectiveOperator );
-                    setValueOnConstraint( operator, factPattern, connectiveConstraints[ i ], connectiveValue );
+                    setValueOnConstraint( m, operator, factPattern, connectiveConstraints[ i ], connectiveValue );
                 }
                 con.setConnectives( connectiveConstraints );
             }
             return type;
         }
 
-        private String setValueOnConstraint( String operator,
+        private String setValueOnConstraint( RuleModel m,
+                                             String operator,
                                              FactPattern factPattern,
                                              BaseSingleFieldConstraint con,
                                              String value ) {
@@ -2970,7 +3009,7 @@ public class RuleModelDRLPersistenceImpl
                         type = DataType.TYPE_COMPARABLE;
                         con.setConstraintValueType( SingleFieldConstraint.TYPE_ENUM );
                     } else if ( value.indexOf( '.' ) > 0 && boundParams.containsKey( value.substring( 0, value.indexOf( '.' ) ).trim() ) ) {
-                        con.setExpressionValue( parseExpression( null, value, new ExpressionFormLine() ) );
+                        con.setExpressionValue( parseExpression( m, null, value, new ExpressionFormLine() ) );
                         value = "";
                     } else {
                         con.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
@@ -3039,11 +3078,11 @@ public class RuleModelDRLPersistenceImpl
             this.connector = connector;
         }
 
-        public FieldConstraint asFieldConstraint( FactPattern factPattern ) {
+        public FieldConstraint asFieldConstraint( RuleModel m, FactPattern factPattern ) {
             CompositeFieldConstraint comp = new CompositeFieldConstraint();
             comp.setCompositeJunctionType( connector.equals( "&&" ) ? CompositeFieldConstraint.COMPOSITE_TYPE_AND : CompositeFieldConstraint.COMPOSITE_TYPE_OR );
             for ( Expr expr : subExprs ) {
-                comp.addConstraint( expr.asFieldConstraint( factPattern ) );
+                comp.addConstraint( expr.asFieldConstraint( m, factPattern ) );
             }
             return comp;
         }
@@ -3057,7 +3096,7 @@ public class RuleModelDRLPersistenceImpl
             this.expr = expr;
         }
 
-        public FieldConstraint asFieldConstraint( FactPattern factPattern ) {
+        public FieldConstraint asFieldConstraint( RuleModel m, FactPattern factPattern ) {
             SingleFieldConstraint con = new SingleFieldConstraint();
             con.setConstraintValueType( SingleFieldConstraint.TYPE_PREDICATE );
             con.setValue( expr );

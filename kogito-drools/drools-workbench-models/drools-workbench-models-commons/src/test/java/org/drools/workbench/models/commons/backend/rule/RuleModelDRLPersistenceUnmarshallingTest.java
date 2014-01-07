@@ -2339,7 +2339,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore(" https://bugzilla.redhat.com/show_bug.cgi?id=986000 - DRL-to-RuleModel marshalling improvements  ")
     public void testFieldVarsWithImports() throws Exception {
         String drl = "" +
                 "import org.test.Customer\n"+
