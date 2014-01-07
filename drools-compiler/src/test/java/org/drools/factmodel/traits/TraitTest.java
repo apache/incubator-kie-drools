@@ -4976,4 +4976,127 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( Arrays.asList( 1 ), list );
     }
 
+
+
+    @Test
+    public void testClassLiteralsWithOr() {
+
+        String drl = "package org.drools.test; " +
+                     "import org.drools.factmodel.traits.*; " +
+                     "global java.util.List list; " +
+
+                     "declare Foo " +
+                     "@Traitable " +
+                     "end " +
+
+                     "declare trait A end " +
+                     "declare trait B end " +
+
+                     "rule Init " +
+                     "when " +
+                     "then " +
+                     "  Foo f = new Foo(); " +
+                     "  insert( f ); " +
+                     "end " +
+
+                     "rule One " +
+                     "salience 100 " +
+                     "when " +
+                     "  $f : Foo( this not isA A ) " +
+                     "then " +
+                     "  don( $f, A.class ); " +
+                     "end " +
+
+                     "rule Two " +
+                     "salience 100 " +
+                     "when " +
+                     "  $f : Foo( this not isA B ) " +
+                     "then " +
+                     "  don( $f, B.class ); " +
+                     "end " +
+
+                     "rule Check " +
+                     "when " +
+                     "    $f : Foo( this isA B || this isA A ) " +
+                     "then " +
+                     "  list.add( 1 ); " +
+                     "end " +
+
+                     "";
+
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        TraitFactory.setMode( mode, kbase );
+        ArrayList list = new ArrayList();
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( 1 ), list );
+
+    }
+
+
+
+    @Test
+    public void testIsASwappedArg() {
+
+        String drl = "package org.drools.test; " +
+                     "import org.drools.factmodel.traits.*; " +
+                     "global java.util.List list; " +
+
+                     "declare Foo " +
+                     "@Traitable " +
+                     "  object : Object " +
+                     "end " +
+
+                     "declare Bar " +
+                     "@Traitable " +
+                     "end " +
+
+                     "declare trait IPerson end " +
+                     "declare trait IStudent end " +
+
+                     "rule Init " +
+                     "when " +
+                     "then " +
+                     "  Foo f = new Foo( new StudentImpl() ); " +
+                     "  don( f, IPerson.class ); " +
+                     "end " +
+
+                     "rule Match1 " +
+                     "when " +
+                     "  $f : Foo( $x : object ) " +
+                     "  $p : StudentImpl( this isA $f ) from $x " +
+                     "then " +
+                     "  list.add( 1 ); " +
+                     "end " +
+
+                     "rule Match2 " +
+                     "when " +
+                     "  $f : Foo( $x : object ) " +
+                     "  $p : StudentImpl( $f isA this ) from $x " +
+                     "then " +
+                     "  list.add( 2 ); " +
+                     "end " +
+
+                     "";
+
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        TraitFactory.setMode( mode, kbase );
+        ArrayList list = new ArrayList();
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( 1 ) );
+        assertTrue( list.contains( 2 ) );
+
+    }
 }

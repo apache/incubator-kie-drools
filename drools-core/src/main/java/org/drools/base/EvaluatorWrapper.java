@@ -99,7 +99,9 @@ public class EvaluatorWrapper
         return evaluator.evaluate( workingMemory,
                                    leftBinding != null ? leftExtractor : new ConstantValueReader(left),
                                    leftHandle,
-                                   rightExtractor,
+                                   rightBinding != null
+                                                ? ( rightHandle != null ? rightExtractor : new ConstantValueReader( rightExtractor.getValue( workingMemory, right ) ) )
+                                                : new ConstantValueReader(right),
                                    rightHandle );
     }
 
