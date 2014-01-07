@@ -2910,7 +2910,8 @@ public class RuleModelDRLPersistenceImpl
                     }
                 }
             }
-            return null;
+
+            return dmo.getProjectModelFields().get(m.getPackageName() + "." + type);
         }
 
         private ModelField findField( ModelField[] typeFields,
