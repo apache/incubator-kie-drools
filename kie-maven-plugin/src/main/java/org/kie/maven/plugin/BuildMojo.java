@@ -1,5 +1,6 @@
 package org.kie.maven.plugin;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -56,9 +57,14 @@ public class BuildMojo extends AbstractMojo {
 
         try {
             Set<URL> urls = new HashSet<URL>();
-            List<String> elements = project.getCompileClasspathElements();
-            for (String element : elements) {
+            for (String element : project.getCompileClasspathElements()) {
                 urls.add(new File(element).toURI().toURL());
+            }
+            for (Artifact artifact : project.getDependencyArtifacts()) {
+                File file = artifact.getFile();
+                if (file != null) {
+                    urls.add(file.toURI().toURL());
+                }
             }
             urls.add(outputDirectory.toURI().toURL());
 
