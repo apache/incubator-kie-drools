@@ -394,7 +394,7 @@ public class PackageBuilderConfiguration
     /** Use this to override the classLoader that will be used for the rules. */
     private void setClassLoader(ClassLoader classLoader) {
         this.classLoader = ProjectClassLoader.getClassLoader( classLoader,
-                                                              null,
+                                                              getClass(),
                                                               isClassLoaderCacheEnabled() );
     }
 
