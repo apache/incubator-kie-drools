@@ -36,6 +36,7 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
+import org.mvel2.optimizers.OptimizerFactory;
 import org.mvel2.util.PropertyTools;
 
 import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
@@ -72,12 +73,14 @@ public class MVELExprAnalyzer {
                                                 final Map<String, Class< ? >> localTypes,
                                                 String contextIndeifier,
                                                 Class kcontextClass) {
+
         MVELAnalysisResult result;
         if ( expr.trim().length() > 0 ) {
             MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
             MVEL.COMPILER_OPT_ALLOW_OVERRIDE_ALL_PROPHANDLING = true;
             MVEL.COMPILER_OPT_ALLOW_RESOLVE_INNERCLASSES_WITH_DOTNOTATION = true;
-            MVEL.COMPILER_OPT_SUPPORT_JAVA_STYLE_CLASS_LITERALS = true;   
+            MVEL.COMPILER_OPT_SUPPORT_JAVA_STYLE_CLASS_LITERALS = true;
+            OptimizerFactory.setDefaultOptimizer( OptimizerFactory.SAFE_REFLECTIVE );
             
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
             
