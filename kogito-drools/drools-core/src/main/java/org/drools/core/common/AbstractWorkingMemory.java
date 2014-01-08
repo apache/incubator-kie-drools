@@ -520,7 +520,7 @@ public class AbstractWorkingMemory
         }
     }
 
-    private BaseNode[] evalQuery(String queryName, DroolsQuery queryObject, InternalFactHandle handle, PropagationContext pCtx) {
+    protected BaseNode[] evalQuery(String queryName, DroolsQuery queryObject, InternalFactHandle handle, PropagationContext pCtx) {
         BaseNode[] tnodes = ( BaseNode[] ) ruleBase.getReteooBuilder().getTerminalNodes(queryName);
         if ( tnodes == null ) {
             throw new RuntimeException( "Query '" + queryName + "' does not exist");
