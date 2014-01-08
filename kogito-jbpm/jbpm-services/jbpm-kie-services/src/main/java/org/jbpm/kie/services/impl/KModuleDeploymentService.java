@@ -58,12 +58,13 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             throw new IllegalArgumentException("Invalid deployment unit provided - " + unit.getClass().getName());
         }
         KModuleDeploymentUnit kmoduleUnit = (KModuleDeploymentUnit) unit;
-        DeployedUnitImpl deployedUnit = new DeployedUnitImpl(unit);
         KieServices ks = KieServices.Factory.get();
-        MavenRepository repository = getMavenRepository();
-        repository.resolveArtifact(kmoduleUnit.getIdentifier());
-
+        DeployedUnitImpl deployedUnit = new DeployedUnitImpl(unit);
         ReleaseId releaseId = ks.newReleaseId(kmoduleUnit.getGroupId(), kmoduleUnit.getArtifactId(), kmoduleUnit.getVersion());
+
+        MavenRepository repository = getMavenRepository();
+        repository.resolveArtifact(releaseId.toExternalForm());
+
         KieContainer kieContainer = ks.newKieContainer(releaseId);
 
         String kbaseName = kmoduleUnit.getKbaseName();
