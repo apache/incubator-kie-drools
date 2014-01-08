@@ -25,6 +25,7 @@ import org.drools.core.base.ValueType;
 import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.MVELDialectRuntimeData;
+import org.drools.core.util.MVELSafeHelper;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExecutableStatement;
@@ -123,7 +124,7 @@ public class MVELObjectClassFieldReader extends BaseObjectClassFieldReader imple
      */
     public Object getValue(InternalWorkingMemory workingMemory,
                            Object object) {
-        return MVEL.executeExpression( mvelExpression,
+        return MVELSafeHelper.getEvaluator().executeExpression( mvelExpression,
                                        object  );
     }
 

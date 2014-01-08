@@ -50,6 +50,8 @@ public class MVELSafeHelper {
 
         public <T> T eval(String expression, Object ctx, Map<String, Object> vars, Class<T> toType);
 
+        public String evalToString(String singleValue);
+
         public Object executeExpression(Object compiledExpression);
 
         public Object executeExpression(final Object compiledExpression, final Object ctx, final Map vars);
@@ -79,6 +81,7 @@ public class MVELSafeHelper {
         public void executeExpression(Iterable<CompiledExpression> compiledExpression, Object ctx, Map vars);
 
         public void executeExpression(Iterable<CompiledExpression> compiledExpression, Object ctx, VariableResolverFactory vars);
+
     }
 
     public static class SafeMVELEvaluator implements MVELEvaluator {
@@ -211,6 +214,16 @@ public class MVELSafeHelper {
                 @Override
                 public T run() {
                     return MVEL.eval(expression, ctx, vars, toType);
+                }
+            }, KiePolicyHelper.getAccessContext());
+        }
+
+        @Override
+        public String evalToString(final String expression) {
+            return AccessController.doPrivileged(new PrivilegedAction<String>() {
+                @Override
+                public String run() {
+                    return MVEL.evalToString(expression);
                 }
             }, KiePolicyHelper.getAccessContext());
         }
@@ -446,6 +459,11 @@ public class MVELSafeHelper {
         @Override
         public <T> T eval(final String expression, final Object ctx, final Map<String, Object> vars, final Class<T> toType) {
             return MVEL.eval(expression, ctx, vars, toType);
+        }
+
+        @Override
+        public String evalToString(final String expression) {
+             return MVEL.evalToString(expression);
         }
 
         @Override

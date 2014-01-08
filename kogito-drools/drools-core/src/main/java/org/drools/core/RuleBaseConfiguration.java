@@ -38,6 +38,7 @@ import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.core.spi.ConflictResolver;
 import org.drools.core.util.ConfFileUtils;
+import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.DeclarativeAgendaOption;
@@ -65,7 +66,6 @@ import org.kie.internal.conf.SequentialOption;
 import org.kie.internal.conf.ShareAlphaNodesOption;
 import org.kie.internal.conf.ShareBetaNodesOption;
 import org.kie.internal.utils.ChainedProperties;
-import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -800,7 +800,7 @@ public class RuleBaseConfiguration
                                                                                   RuleBaseConfiguration.class ) );
         try {
             this.workDefinitions.addAll(
-                (List<Map<String, Object>>) MVEL.eval( content, new HashMap() ) );
+                (List<Map<String, Object>>) MVELSafeHelper.getEvaluator().eval( content, new HashMap() ) );
         } catch ( Throwable t ) {
             logger.error("Error occurred while loading work definitions " + location
                     + "\nContinuing without reading these work definitions", t);

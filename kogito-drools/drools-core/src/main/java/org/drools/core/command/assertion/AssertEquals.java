@@ -20,10 +20,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
 import org.kie.api.command.Command;
 import org.kie.internal.command.Context;
-import org.mvel2.MVEL;
 
 public class AssertEquals
     implements
@@ -60,7 +60,7 @@ public class AssertEquals
         Object actualObject = ((GenericCommand) command).execute( context );
 
         if ( this.mvelString != null ) {
-            actualObject = MVEL.eval( this.mvelString,
+            actualObject = MVELSafeHelper.getEvaluator().eval( this.mvelString,
                                       actualObject );
         }
 
@@ -74,7 +74,7 @@ public class AssertEquals
         vars.put( "actual",
                   actualObject );
 
-        if ( ((Boolean) MVEL.eval( "expected != actual",
+        if ( ((Boolean) MVELSafeHelper.getEvaluator().eval( "expected != actual",
                                    vars )) ) {
             throw new AssertionError( format( this.message,
                                               expectedObject,

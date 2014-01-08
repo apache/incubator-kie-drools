@@ -23,6 +23,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Package;
 import org.drools.core.spi.Activation;
+import org.drools.core.util.MVELSafeHelper;
 import org.kie.api.definition.rule.Rule;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
@@ -83,7 +84,7 @@ public class MVELObjectExpression
             factory.setNextFactory( data.getFunctionFactory() );
         }
 
-        return MVEL.executeExpression(this.expr,
+        return MVELSafeHelper.getEvaluator().executeExpression(this.expr,
                                       factory);
     }
     

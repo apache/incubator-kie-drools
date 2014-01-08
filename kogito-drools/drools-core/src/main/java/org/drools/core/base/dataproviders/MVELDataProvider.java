@@ -29,14 +29,14 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.util.ArrayIterator;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
-import org.mvel2.MVEL;
+import org.drools.core.util.ArrayIterator;
+import org.drools.core.util.MVELSafeHelper;
 import org.mvel2.integration.VariableResolverFactory;
 
 public class MVELDataProvider
@@ -107,7 +107,7 @@ public class MVELDataProvider
         VariableResolverFactory factory = unit.getFactory( null, null, null, null, (LeftTuple) tuple, null, (InternalWorkingMemory) wm, wm.getGlobalResolver()  );
 
         //this.expression.
-        final Object result = MVEL.executeExpression( this.expr,
+        final Object result = MVELSafeHelper.getEvaluator().executeExpression( this.expr,
                                                       factory );
 
         if ( result == null ) {
