@@ -3,9 +3,6 @@ package org.drools.compiler.rule.builder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.extractors.ArrayElementReader;
-import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.DrlExprParser;
 import org.drools.compiler.compiler.DroolsParserException;
@@ -16,6 +13,9 @@ import org.drools.compiler.lang.descr.BindingDescr;
 import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.extractors.ArrayElementReader;
+import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Pattern;
@@ -24,6 +24,7 @@ import org.drools.core.rule.QueryElement;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
+import org.drools.core.util.MVELSafeHelper;
 import org.kie.api.runtime.rule.Variable;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
@@ -248,7 +249,7 @@ public class QueryElementBuilder
                     conf.setClassLoader( context.getPackageBuilder().getRootClassLoader() );
 
                     arguments.set( pos,
-                    MVEL.executeExpression( MVEL.compileExpression( expr, new ParserContext( conf ) ) ) );
+                    MVELSafeHelper.getEvaluator().executeExpression( MVEL.compileExpression( expr, new ParserContext( conf ) ) ) );
                 } catch ( Exception e ) {
                     context.addError( new DescrBuildError( context.getParentDescr(),
                                                                   descr,
@@ -344,7 +345,7 @@ public class QueryElementBuilder
                 ParserConfiguration conf = data.getParserConfiguration();
                 conf.setClassLoader( context.getPackageBuilder().getRootClassLoader() );
 
-                arguments.set( position, MVEL.executeExpression( MVEL.compileExpression( rewrittenExpr, new ParserContext( conf ) ) ) );
+                arguments.set( position, MVELSafeHelper.getEvaluator().executeExpression( MVEL.compileExpression( rewrittenExpr, new ParserContext( conf ) ) ) );
             } catch ( Exception e ) {
                 context.addError( new DescrBuildError( context.getParentDescr(), base, null, "Unable to compile expression:\n" + rewrittenExpr ) );
             }

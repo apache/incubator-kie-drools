@@ -16,20 +16,22 @@
 
 package org.drools.core;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
 import org.drools.core.command.CommandService;
 import org.drools.core.common.ProjectClassLoader;
-import org.drools.core.util.ConfFileUtils;
-import org.drools.core.util.StringUtils;
 import org.drools.core.process.instance.WorkItemManagerFactory;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.TimerJobFactoryManager;
-import org.kie.api.runtime.conf.TimedRuleExectionOption;
-import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.runtime.conf.ForceEagerActivationFilter;
-import org.kie.internal.runtime.conf.ForceEagerActivationOption;
-import org.kie.internal.utils.ChainedProperties;
-import org.kie.internal.utils.ClassLoaderUtil;
+import org.drools.core.util.ConfFileUtils;
+import org.drools.core.util.MVELSafeHelper;
+import org.drools.core.util.StringUtils;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.BeliefSystemTypeOption;
@@ -39,18 +41,15 @@ import org.kie.api.runtime.conf.KieSessionOption;
 import org.kie.api.runtime.conf.MultiValueKieSessionOption;
 import org.kie.api.runtime.conf.QueryListenerOption;
 import org.kie.api.runtime.conf.SingleValueKieSessionOption;
+import org.kie.api.runtime.conf.TimedRuleExectionOption;
+import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.api.runtime.conf.WorkItemHandlerOption;
 import org.kie.api.runtime.process.WorkItemHandler;
-import org.mvel2.MVEL;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.runtime.conf.ForceEagerActivationFilter;
+import org.kie.internal.runtime.conf.ForceEagerActivationOption;
+import org.kie.internal.utils.ChainedProperties;
 
 /**
  * SessionConfiguration
@@ -377,7 +376,7 @@ public class SessionConfiguration
         String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( location,
                                                                                   null,
                                                                                   RuleBaseConfiguration.class ) );
-        Map<String, WorkItemHandler> workItemHandlers = (Map<String, WorkItemHandler>) MVEL.eval( content,
+        Map<String, WorkItemHandler> workItemHandlers = (Map<String, WorkItemHandler>) MVELSafeHelper.getEvaluator().eval( content,
                                                                                                   params );
         this.workItemHandlers.putAll( workItemHandlers );
     }
@@ -487,7 +486,7 @@ public class SessionConfiguration
             }
         } else {
             try {
-                return (TimerService) MVEL.eval(className);
+                return (TimerService) MVELSafeHelper.getEvaluator().eval(className);
             } catch (Exception e) {
                 throw new IllegalArgumentException( "Timer service '" + className
                                                 + "' not found" );

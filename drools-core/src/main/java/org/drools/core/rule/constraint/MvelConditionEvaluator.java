@@ -1,23 +1,32 @@
 package org.drools.core.rule.constraint;
 
+import static org.drools.core.rule.constraint.EvaluatorHelper.valuesAsMap;
+
+import java.util.Map;
+
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.rule.*;
+import org.drools.core.rule.Declaration;
+import org.drools.core.util.MVELSafeHelper;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
-import org.mvel2.ast.*;
+import org.mvel2.ast.ASTNode;
+import org.mvel2.ast.And;
+import org.mvel2.ast.BinaryOperation;
+import org.mvel2.ast.BooleanNode;
+import org.mvel2.ast.Contains;
+import org.mvel2.ast.LineLabel;
+import org.mvel2.ast.Negation;
+import org.mvel2.ast.Or;
+import org.mvel2.ast.Substatement;
 import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExecutableAccessor;
 import org.mvel2.compiler.ExecutableLiteral;
 import org.mvel2.compiler.ExecutableStatement;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.util.ASTLinkedList;
-
-import java.util.Map;
-
-import static org.drools.core.rule.constraint.EvaluatorHelper.valuesAsMap;
 
 public class MvelConditionEvaluator implements ConditionEvaluator, MapConditionEvaluator {
 
@@ -64,11 +73,11 @@ public class MvelConditionEvaluator implements ConditionEvaluator, MapConditionE
                                        workingMemory.getGlobalResolver(),
                                        factory );
 
-        return (Boolean) MVEL.executeExpression( statement, object, factory );
+        return (Boolean) MVELSafeHelper.getEvaluator().executeExpression( statement, object, factory );
     }
 
     private boolean evaluate(ExecutableStatement statement, Object object, Map<String, Object> vars) {
-        return vars == null ? (Boolean)MVEL.executeExpression(statement, object) : (Boolean)MVEL.executeExpression(statement, object, vars);
+        return vars == null ? (Boolean)MVELSafeHelper.getEvaluator().executeExpression(statement, object) : (Boolean)MVELSafeHelper.getEvaluator().executeExpression(statement, object, vars);
     }
 
     ConditionAnalyzer.Condition getAnalyzedCondition() {

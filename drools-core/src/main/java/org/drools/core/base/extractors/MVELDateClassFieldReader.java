@@ -24,7 +24,7 @@ import java.io.ObjectOutput;
 import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.mvel2.MVEL;
+import org.drools.core.util.MVELSafeHelper;
 import org.mvel2.compiler.ExecutableStatement;
 
 /**
@@ -99,7 +99,7 @@ public class MVELDateClassFieldReader extends BaseDateClassFieldReader implement
      */
     public Object getValue(InternalWorkingMemory workingMemory,
                            Object object) {
-        return MVEL.executeExpression( mvelExpression,
+        return MVELSafeHelper.getEvaluator().executeExpression( mvelExpression,
                                        object  );
     }
 

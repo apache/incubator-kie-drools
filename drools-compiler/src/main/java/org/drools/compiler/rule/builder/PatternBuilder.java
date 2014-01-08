@@ -87,6 +87,7 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.util.ClassUtils;
+import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.index.IndexUtil;
 import org.kie.internal.builder.KnowledgeBuilderResult;
@@ -1537,8 +1538,8 @@ public class PatternBuilder
             ParserConfiguration pconf = data.getParserConfiguration();
             ParserContext pctx = new ParserContext( pconf );
 
-            Object o = MVEL.executeExpression( MVEL.compileExpression( value,
-                                                                       pctx ) );
+            Object o = MVELSafeHelper.getEvaluator().executeExpression( MVEL.compileExpression( value,
+                    pctx ) );
             if ( o != null && vtype == null ) {
                 // was a compilation problem else where, so guess valuetype so we can continue
                 vtype = ValueType.determineValueType( o.getClass() );

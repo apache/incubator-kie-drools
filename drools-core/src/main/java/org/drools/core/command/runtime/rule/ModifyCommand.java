@@ -31,12 +31,12 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.DisconnectedFactHandle;
-import org.kie.internal.command.Context;
+import org.drools.core.util.MVELSafeHelper;
 import org.kie.api.command.Setter;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.EntryPoint;
-import org.mvel2.MVEL;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.command.Context;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class ModifyCommand
@@ -71,7 +71,7 @@ public class ModifyCommand
         EntryPoint wmep = ksession.getEntryPoint( handle.getEntryPointId() );
         
         Object object = wmep.getObject( this.handle );
-        MVEL.eval( getMvelExpr(),
+        MVELSafeHelper.getEvaluator().eval( getMvelExpr(),
                    object );
 
         wmep.update( handle,

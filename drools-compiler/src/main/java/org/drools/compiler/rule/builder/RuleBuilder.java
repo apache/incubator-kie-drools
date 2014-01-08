@@ -22,23 +22,21 @@ import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.drools.core.RuntimeDroolsException;
-import org.drools.core.base.EnabledBoolean;
-import org.drools.core.base.SalienceInteger;
-import org.drools.core.base.mvel.MVELObjectExpression;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.RuleBuildError;
-import org.drools.core.util.DateUtils;
-import org.drools.core.util.StringUtils;
 import org.drools.compiler.lang.DroolsSoftKeywords;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.rule.builder.dialect.mvel.MVELObjectExpressionBuilder;
+import org.drools.core.RuntimeDroolsException;
+import org.drools.core.base.EnabledBoolean;
+import org.drools.core.base.SalienceInteger;
+import org.drools.core.base.mvel.MVELObjectExpression;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.Rule;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELObjectExpressionBuilder;
 import org.drools.core.spi.Salience;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.time.impl.CronExpression;
@@ -46,7 +44,9 @@ import org.drools.core.time.impl.CronTimer;
 import org.drools.core.time.impl.ExpressionIntervalTimer;
 import org.drools.core.time.impl.IntervalTimer;
 import org.drools.core.time.impl.Timer;
-import org.mvel2.MVEL;
+import org.drools.core.util.DateUtils;
+import org.drools.core.util.MVELSafeHelper;
+import org.drools.core.util.StringUtils;
 
 /**
  * This builds the rule structure from an AST.
@@ -138,7 +138,7 @@ public class RuleBuilder {
         Object result = value;
         // try to resolve as an expression:
         try {
-            Object resolvedValue = MVEL.eval( value );
+            Object resolvedValue = MVELSafeHelper.getEvaluator().eval( value );
             result = resolvedValue;
         } catch ( Exception e ) {
             // do nothing
@@ -211,7 +211,7 @@ public class RuleBuilder {
         
         AnnotationDescr ann = ruleDescr.getAnnotation( "activationListener" );
         if ( ann != null && !StringUtils.isEmpty( ann.getSingleValue() ) ) {
-            rule.setActivationListener( MVEL.evalToString( ann.getSingleValue() ) );
+            rule.setActivationListener( MVELSafeHelper.getEvaluator().evalToString( ann.getSingleValue() ) );
         }
 
         ann = ruleDescr.getAnnotation( "Eager" );
@@ -282,7 +282,7 @@ public class RuleBuilder {
     private void buildCalendars(Rule rule, String calendarsString, RuleBuildContext context) {
         Object val = null;
         try {
-            val = MVEL.eval( calendarsString );
+            val = MVELSafeHelper.getEvaluator().eval( calendarsString );
             String[] calNames = null;
             if ( val instanceof List ) {
                 calNames = ( String[] ) ((List)val).toArray( new String[ ((List)val).size() ] );
