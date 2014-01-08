@@ -21,12 +21,16 @@ import static org.junit.Assert.assertTrue;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
+import javax.inject.Inject;
 
 import org.jbpm.services.task.HumanTaskServicesBaseTest;
-import org.jbpm.services.task.audit.DeleteAuditEventsCommand;
-import org.jbpm.services.task.audit.GetAuditEventsCommand;
+import org.jbpm.services.task.audit.commands.DeleteAuditEventsCommand;
+import org.jbpm.services.task.audit.commands.GetAuditEventsCommand;
+import org.jbpm.services.task.audit.impl.model.BAMTaskSummaryImpl;
+import org.jbpm.services.task.audit.impl.model.api.GroupAuditTask;
+import org.jbpm.services.task.audit.impl.model.api.HistoryAuditTask;
+import org.jbpm.services.task.audit.service.TaskAuditService;
 import org.jbpm.services.task.impl.factories.TaskFactory;
-import org.jbpm.services.task.impl.model.BAMTaskSummaryImpl;
 import org.jbpm.services.task.impl.model.command.DeleteBAMTaskSummariesCommand;
 import org.jbpm.services.task.impl.model.command.GetBAMTaskSummariesCommand;
 import org.junit.Test;
@@ -36,6 +40,9 @@ import org.kie.internal.task.api.model.TaskEvent;
 
 public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
+    @Inject
+    protected TaskAuditService taskAuditService;
+    
     @Test
     public void testComplete() {
         // One potential owner, should go straight to state Reserved
@@ -46,12 +53,30 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
+        
+         
+        List<GroupAuditTask> allGroupAuditTasks = taskAuditService.getAllGroupAuditTasks("Knights Templer",0,0);
+        
+        
+        assertEquals(1, allGroupAuditTasks.size());
 
-        taskService.claim(taskId, "Darth Vader");    
+        taskService.claim(taskId, "Darth Vader");  
+        
+        allGroupAuditTasks = taskAuditService.getAllGroupAuditTasks("Knights Templer",0,0);
+        
+        assertEquals(0, allGroupAuditTasks.size());
         
         taskService.release(taskId, "Darth Vader");
         
+        allGroupAuditTasks = taskAuditService.getAllGroupAuditTasks("Knights Templer",0,0);
+        
+        assertEquals(1, allGroupAuditTasks.size());
+        
         taskService.claim(taskId, "Darth Vader");    
+        
+        allGroupAuditTasks = taskAuditService.getAllGroupAuditTasks("Knights Templer",0,0);
+        
+        assertEquals(0, allGroupAuditTasks.size());
         
         // Go straight from Ready to Inprogress
         taskService.start(taskId, "Darth Vader");
@@ -67,7 +92,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         assertEquals(Status.Completed, task2.getTaskData().getStatus());
         assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
 
-        List<TaskEvent> allTaskEvents = taskService.execute(new GetAuditEventsCommand(taskId));
+        List<TaskEvent> allTaskEvents = taskService.execute(new GetAuditEventsCommand(taskId,0,0));
         assertEquals(6, allTaskEvents.size());
      
         // test DeleteAuditEventsCommand        
@@ -105,7 +130,12 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         taskService.execute(new DeleteBAMTaskSummariesCommand());
         bamTaskList = taskService.execute(new GetBAMTaskSummariesCommand());
         assertEquals( "BAM Task Summary list size after delete (task id: " + taskId + ") : ", 0, bamTaskList.size());
+        
+        List<HistoryAuditTask> allHistoryAuditTasks = taskAuditService.getAllHistoryAuditTasks(0,0);
+        assertEquals(2, allHistoryAuditTasks.size());
     }
+    
+    
 
    
 }

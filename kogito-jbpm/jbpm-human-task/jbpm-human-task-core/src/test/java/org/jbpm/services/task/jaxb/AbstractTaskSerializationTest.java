@@ -1,7 +1,5 @@
 package org.jbpm.services.task.jaxb;
 
-import static org.junit.Assert.*;
-
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Constructor;
@@ -14,6 +12,7 @@ import java.util.Queue;
 import org.jbpm.services.task.MvelFilePath;
 import org.jbpm.services.task.commands.CancelDeadlineCommand;
 import org.jbpm.services.task.commands.CompositeCommand;
+import org.jbpm.services.task.commands.PaginatedTaskCommand;
 import org.jbpm.services.task.commands.ProcessSubTaskCommand;
 import org.jbpm.services.task.commands.SkipTaskCommand;
 import org.jbpm.services.task.commands.StartTaskCommand;
@@ -24,6 +23,7 @@ import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
 import org.jbpm.services.task.impl.model.xml.JaxbTaskSummary;
 import org.jbpm.services.task.query.TaskSummaryImpl;
+import static org.junit.Assert.*;
 import org.junit.Assume;
 import org.junit.Test;
 import org.kie.api.task.model.Status;
@@ -126,7 +126,7 @@ public abstract class AbstractTaskSerializationTest {
         Assume.assumeTrue(!getType().equals(TestType.YAML));
 
         for (Class<?> jaxbClass : reflections.getSubTypesOf(TaskCommand.class)) {
-            if (jaxbClass.equals(UserGroupCallbackTaskCommand.class)) {
+            if (jaxbClass.equals(UserGroupCallbackTaskCommand.class) || jaxbClass.equals(PaginatedTaskCommand.class)) {
                 continue;
             }
             addClassesToSerializationContext(jaxbClass);

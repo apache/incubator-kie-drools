@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.services.task.audit.test;
+package org.jbpm.task.performance;
 
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.jbpm.services.task.HumanTaskServiceFactory;
@@ -25,7 +24,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.kie.internal.task.api.InternalTaskService;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 import org.jbpm.services.task.audit.TaskAuditServiceFactory;
 
 /**
@@ -33,16 +31,14 @@ import org.jbpm.services.task.audit.TaskAuditServiceFactory;
  *
  */
 
-public class LocalLifeCycleTest extends LifeCycleBaseTest {
+public class HTPerformanceTest extends HTPerformanceBaseTest {
 
-	private PoolingDataSource pds;
-	private EntityManagerFactory emf;
 	
 	@Before
 	public void setup() {
 		pds = setupPoolingDataSource();
 		emf = Persistence.createEntityManagerFactory( "org.jbpm.services.task" );
-
+                
 		this.taskService = (InternalTaskService) HumanTaskServiceFactory.newTaskServiceConfigurator()
 												.entityManagerFactory(emf)
 												.listener(new JPATaskLifeCycleEventListener())

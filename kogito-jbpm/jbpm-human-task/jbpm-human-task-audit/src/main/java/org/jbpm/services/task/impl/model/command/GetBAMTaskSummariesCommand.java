@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.jbpm.services.task.commands.TaskCommand;
-import org.jbpm.services.task.impl.model.BAMTaskSummaryImpl;
+import org.jbpm.services.task.audit.impl.model.BAMTaskSummaryImpl;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.kie.internal.command.Context;
 import org.kie.internal.task.api.TaskContext;

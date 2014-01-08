@@ -12,6 +12,7 @@
     
     <mapping-file>META-INF/JBPMorm.xml</mapping-file>
     <mapping-file>META-INF/Taskorm.xml</mapping-file>
+    <mapping-file>META-INF/TaskAuditorm.xml</mapping-file>
     
     <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
     <class>org.drools.persistence.info.SessionInfo</class>
@@ -46,7 +47,16 @@
     <class>org.jbpm.services.task.impl.model.UserImpl</class>
     
     <!--BAM for task service -->
-    <class>org.jbpm.services.task.impl.model.BAMTaskSummaryImpl</class>
+    <class>org.jbpm.services.task.audit.impl.model.BAMTaskSummaryImpl</class>
+    
+     <!-- Event Classes -->
+    <class>org.jbpm.services.task.audit.impl.model.TaskEventImpl</class>
+    
+    <!-- Task Audit Classes --> 
+    <class>org.jbpm.services.task.audit.impl.model.AbstractAuditTaskImpl</class>
+    <class>org.jbpm.services.task.audit.impl.model.UserAuditTaskImpl</class>
+    <class>org.jbpm.services.task.audit.impl.model.GroupAuditTaskImpl</class>
+    <class>org.jbpm.services.task.audit.impl.model.HistoryAuditTaskImpl</class>
     
     <properties>
       <property name="hibernate.max_fetch_depth" value="3"/>

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.jbpm.services.task.audit;
+package org.jbpm.services.task.audit.impl.model;
 
 import java.io.IOException;
 import java.io.ObjectInput;
