@@ -37,12 +37,18 @@ import org.kie.api.definition.rule.Rule;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
+import org.mvel2.optimizers.OptimizerFactory;
 import org.mvel2.util.PropertyTools;
 
 /**
  * Expression analyzer.
  */
 public class MVELExprAnalyzer {
+
+    static {
+        // always use mvel reflective optimizer
+        OptimizerFactory.setDefaultOptimizer(OptimizerFactory.SAFE_REFLECTIVE);
+    }
 
     public MVELExprAnalyzer() {
         // intentionally left blank.
