@@ -888,7 +888,7 @@ public class RuleBaseConfiguration
 
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = ProjectClassLoader.getClassLoader( classLoader,
-                                                              null,
+                                                              getClass(),
                                                               isClassLoaderCacheEnabled());
     }
 
