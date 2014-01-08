@@ -68,15 +68,11 @@ public class ProjectClassLoader extends ClassLoader {
     public static ClassLoader getClassLoader(final ClassLoader classLoader,
                                              final Class< ? > cls,
                                              final boolean enableCache) {
-        if (classLoader == null) {
-            return cls == null ? createProjectClassLoader() : createProjectClassLoader(cls.getClassLoader());
-        } else {
-            ProjectClassLoader projectClassLoader = createProjectClassLoader(classLoader);
-            if (cls != null) {
-                projectClassLoader.setDroolsClassLoader(cls.getClassLoader());
-            }
-            return projectClassLoader;
+        ProjectClassLoader projectClassLoader = createProjectClassLoader(classLoader);
+        if (cls != null) {
+            projectClassLoader.setDroolsClassLoader(cls.getClassLoader());
         }
+        return projectClassLoader;
     }
 
     public static ProjectClassLoader createProjectClassLoader() {
