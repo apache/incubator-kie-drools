@@ -63,6 +63,7 @@ import org.drools.rule.builder.WindowReferenceBuilder;
 import org.drools.rule.builder.dialect.java.JavaFunctionBuilder;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel2.MVEL;
+import org.mvel2.optimizers.OptimizerFactory;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -161,6 +162,7 @@ public class MVELDialect
                        PackageRegistry pkgRegistry,
                        Package pkg,
                        String id) {
+        OptimizerFactory.setDefaultOptimizer( OptimizerFactory.SAFE_REFLECTIVE );
         this.id = id;
         this.pkg = pkg;
         this.pkgBuilder = builder;

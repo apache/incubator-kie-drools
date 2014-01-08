@@ -9,6 +9,7 @@ import org.drools.rule.builder.*;
 import org.drools.spi.*;
 import org.mvel2.*;
 import org.mvel2.integration.impl.*;
+import org.mvel2.optimizers.OptimizerFactory;
 import org.mvel2.templates.*;
 
 import java.util.*;
@@ -34,9 +35,9 @@ public final class JavaRuleBuilderHelper {
 
     public static synchronized TemplateRegistry getRuleTemplateRegistry(ClassLoader cl) {
         if ( !RULE_REGISTRY.contains( "rules" ) ) {
+            OptimizerFactory.setDefaultOptimizer( OptimizerFactory.SAFE_REFLECTIVE );
             ParserConfiguration pconf = new ParserConfiguration();
-            pconf.setClassLoader( cl );
-            
+
             ParserContext pctx = new ParserContext(pconf);
             RULE_REGISTRY.addNamedTemplate( "rules",
                                             TemplateCompiler.compileTemplate( JavaRuleBuilderHelper.class.getResourceAsStream( JAVA_RULE_MVEL ),
@@ -51,9 +52,9 @@ public final class JavaRuleBuilderHelper {
 
     public static synchronized TemplateRegistry getInvokerTemplateRegistry(ClassLoader cl) {
         if ( !INVOKER_REGISTRY.contains( "invokers" ) ) {
+            OptimizerFactory.setDefaultOptimizer( OptimizerFactory.SAFE_REFLECTIVE );
             ParserConfiguration pconf = new ParserConfiguration();
-            pconf.setClassLoader( cl );
-            
+
             ParserContext pctx = new ParserContext(pconf);            
             INVOKER_REGISTRY.addNamedTemplate( "invokers",
                                                TemplateCompiler.compileTemplate( JavaRuleBuilderHelper.class.getResourceAsStream( JAVA_INVOKERS_MVEL ),
@@ -68,6 +69,7 @@ public final class JavaRuleBuilderHelper {
     public static JavaAnalysisResult createJavaAnalysisResult(final RuleBuildContext context,
                                                                String consequenceName,
                                                                Map<String, Declaration> decls) {
+        OptimizerFactory.setDefaultOptimizer( OptimizerFactory.SAFE_REFLECTIVE );
         final RuleDescr ruleDescr = context.getRuleDescr();
 
         BoundIdentifiers bindings = new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ),
@@ -93,6 +95,7 @@ public final class JavaRuleBuilderHelper {
                                                                Map<String, Declaration> decls,
                                                                final BoundIdentifiers usedIdentifiers) {
 
+        OptimizerFactory.setDefaultOptimizer( OptimizerFactory.SAFE_REFLECTIVE );
         final Declaration[] declarations =  new Declaration[usedIdentifiers.getDeclrClasses().size()];
         String[] declrStr = new String[declarations.length];
         int j = 0;
@@ -146,6 +149,7 @@ public final class JavaRuleBuilderHelper {
                                                      final Declaration[] declarations,
                                                      final Declaration[] localDeclarations,
                                                      final Map<String, Class<?>> globals) {
+        OptimizerFactory.setDefaultOptimizer( OptimizerFactory.SAFE_REFLECTIVE );
         final Map<String, Object> map = new HashMap<String, Object>();
 
         map.put( "className", 
@@ -204,12 +208,13 @@ public final class JavaRuleBuilderHelper {
                                          final Map vars,
                                          final Object invokerLookup,
                                          final BaseDescr descrLookup) {
-
+        OptimizerFactory.setDefaultOptimizer( OptimizerFactory.SAFE_REFLECTIVE );
         generateMethodTemplate(ruleTemplate, context, vars);
         generateInvokerTemplate(invokerTemplate, context, className, vars, invokerLookup, descrLookup);
     }
 
     public static void generateMethodTemplate(final String ruleTemplate, final RuleBuildContext context, final Map vars) {
+        OptimizerFactory.setDefaultOptimizer( OptimizerFactory.SAFE_REFLECTIVE );
         TemplateRegistry registry = getRuleTemplateRegistry(context.getPackageBuilder().getRootClassLoader());
 
         context.addMethod((String) TemplateRuntime.execute( registry.getNamedTemplate(ruleTemplate),
@@ -224,6 +229,7 @@ public final class JavaRuleBuilderHelper {
                                                final Map vars,
                                                final Object invokerLookup,
                                                final BaseDescr descrLookup) {
+        OptimizerFactory.setDefaultOptimizer( OptimizerFactory.SAFE_REFLECTIVE );
         TemplateRegistry registry = getInvokerTemplateRegistry(context.getPackageBuilder().getRootClassLoader());
         final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker";
 
@@ -240,6 +246,7 @@ public final class JavaRuleBuilderHelper {
     }
 
     public static void registerInvokerBytecode(RuleBuildContext context, Map<String, Object> vars, byte[] bytecode, Object invokerLookup) {
+        OptimizerFactory.setDefaultOptimizer( OptimizerFactory.SAFE_REFLECTIVE );
         String packageName = (String)vars.get("package");
         String invokerClassName = (String)vars.get("invokerClassName");
         String className = packageName + "." + invokerClassName;
