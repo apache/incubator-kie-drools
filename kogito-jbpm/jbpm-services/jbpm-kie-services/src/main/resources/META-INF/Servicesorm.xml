@@ -237,7 +237,7 @@
       where
         log.processInstanceId=:processId AND log.externalId=:externalId AND log.type =:type 
       ORDER BY 
-        log.date DESC
+        log.date DESC, log.id DESC
 
     </query>
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -262,7 +262,7 @@
       where
         log.processInstanceId=:processId AND log.externalId=:externalId 
       ORDER BY 
-        log.date DESC
+        log.date DESC, log.id DESC
     </query>
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>
