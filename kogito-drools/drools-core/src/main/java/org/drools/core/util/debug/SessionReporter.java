@@ -34,7 +34,7 @@ public class SessionReporter {
     protected static final TemplateRegistry REPORT_REGISTRY = new SimpleTemplateRegistry();
 
     static {
-        OptimizerFactory.setDefaultOptimizer( "reflective" );
+        OptimizerFactory.setDefaultOptimizer( OptimizerFactory.SAFE_REFLECTIVE );
 
         REPORT_REGISTRY.addNamedTemplate( "simple",
                                           TemplateCompiler.compileTemplate( SessionReporter.class.getResourceAsStream( "reports.mvel" ),

@@ -64,6 +64,7 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.Resource;
 import org.mvel2.MVEL;
+import org.mvel2.optimizers.OptimizerFactory;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -145,6 +146,11 @@ public class MVELDialect
     private int                            languageLevel;
 
     private MVELDialectRuntimeData         data;
+
+    static {
+        // always use mvel reflective optimizer
+        OptimizerFactory.setDefaultOptimizer(OptimizerFactory.SAFE_REFLECTIVE);
+    }
 
     public MVELDialect(PackageBuilder builder,
                        PackageRegistry pkgRegistry,
