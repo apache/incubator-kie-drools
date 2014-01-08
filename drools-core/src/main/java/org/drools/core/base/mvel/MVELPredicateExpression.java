@@ -30,7 +30,7 @@ import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Package;
 import org.drools.core.spi.PredicateExpression;
 import org.drools.core.spi.Tuple;
-import org.mvel2.MVEL;
+import org.drools.core.util.MVELSafeHelper;
 import org.mvel2.integration.VariableResolverFactory;
 
 public class MVELPredicateExpression
@@ -97,12 +97,12 @@ public class MVELPredicateExpression
             factory.setNextFactory( data.getFunctionFactory() );
         }               
 
-        final Boolean result = (Boolean) MVEL.executeExpression( this.expr,
+        final Boolean result = (Boolean) MVELSafeHelper.getEvaluator().executeExpression( this.expr,
                                                                  object,
                                                                  factory );
         return result.booleanValue();
     }
-
+    
     public String toString() {
         return this.unit.getExpression();
     }

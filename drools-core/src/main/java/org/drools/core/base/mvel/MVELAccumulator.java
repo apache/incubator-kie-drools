@@ -34,7 +34,7 @@ import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Package;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
-import org.mvel2.MVEL;
+import org.drools.core.util.MVELSafeHelper;
 import org.mvel2.integration.VariableResolverFactory;
 
 /**
@@ -128,7 +128,7 @@ public class MVELAccumulator
             factory.setNextFactory( data.getFunctionFactory() );
         }
 
-        MVEL.executeExpression( this.init,
+        MVELSafeHelper.getEvaluator().executeExpression( this.init,
                                 null,
                                 factory );
         
@@ -170,7 +170,7 @@ public class MVELAccumulator
             // SNAPSHOT variable values
             ((MVELAccumulatorContext) context).getShadow().put( handle.getId(), shadow);
         }
-        MVEL.executeExpression( this.action,
+        MVELSafeHelper.getEvaluator().executeExpression( this.action,
                                 null,
                                 factory );
         
@@ -213,7 +213,7 @@ public class MVELAccumulator
         
 
 
-        MVEL.executeExpression( this.reverse,
+        MVELSafeHelper.getEvaluator().executeExpression( this.reverse,
                                 null,
                                 factory );
         
@@ -240,7 +240,7 @@ public class MVELAccumulator
         VariableResolverFactory factory = factoryContext.getResultFactory();
         resultUnit.updateFactory( null, null, null, (LeftTuple) leftTuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory  );        
 
-        final Object result = MVEL.executeExpression( this.result,
+        final Object result = MVELSafeHelper.getEvaluator().executeExpression( this.result,
                                                       null,
                                                       factory );
         return result;

@@ -1,9 +1,5 @@
 package org.drools.core.factmodel.traits;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.util.ClassUtils;
-import org.mvel2.MVEL;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -14,6 +10,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.drools.core.WorkingMemory;
+import org.drools.core.util.ClassUtils;
+import org.drools.core.util.MVELSafeHelper;
 
 public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
 
@@ -40,7 +40,7 @@ public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
 
     public void registerField( Class domainKlass, String name, Class rangeKlass, Object value, String initial ) {
         short pos = (short) ClassUtils.getSettableProperties( domainKlass ).indexOf( name );
-        TraitField fld = new TraitField( getKlass( rangeKlass ), value, initial != null ? MVEL.eval( initial, rangeKlass ) : null, pos );
+        TraitField fld = new TraitField( getKlass( rangeKlass ), value, initial != null ? MVELSafeHelper.getEvaluator().eval( initial, rangeKlass ) : null, pos );
         fieldTMS.put( name, fld );
     }
 
@@ -59,7 +59,7 @@ public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
     public Object donField( String name, TraitType trait, String defaultValue, Class klass, boolean logical ) {
         TraitField fld = fieldTMS.get( name );
         modificationMask |= 1 << fld.getPosition();
-        return fld.don( trait, defaultValue != null ? MVEL.eval( defaultValue, klass ) : null, getKlass( klass ), logical, workingMemory );
+        return fld.don( trait, defaultValue != null ? MVELSafeHelper.getEvaluator().eval( defaultValue, klass ) : null, getKlass( klass ), logical, workingMemory );
     }
 
     public Object shedField( String name, TraitType trait, Class rangeKlass, Class asKlass ) {

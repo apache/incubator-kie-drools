@@ -9,6 +9,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.drools.core.util.MVELSafeHelper;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.ListenerModel;
 import org.kie.api.builder.model.QualifierModel;
@@ -18,7 +19,6 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItemHandler;
-import org.mvel2.MVEL;
 
 public class CDIHelper {
 
@@ -148,7 +148,7 @@ public class CDIHelper {
             if (qualifier != null) {
                 throw new IllegalArgumentException("Cannot use a qualifier without a CDI container");
             }
-            return (T)MVEL.eval( type, parameters );
+            return (T)MVELSafeHelper.getEvaluator().eval( type, parameters );
         }
     }
 }
