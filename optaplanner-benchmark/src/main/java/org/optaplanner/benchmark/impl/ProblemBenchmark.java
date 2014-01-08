@@ -54,6 +54,9 @@ public class ProblemBenchmark {
     private List<SingleBenchmark> singleBenchmarkList = null;
 
     private Long problemScale = null;
+
+    // Report aggregation
+
     private Long averageUsedMemoryAfterInputSolution = null;
     private Integer failureCount = null;
     private SingleBenchmark winningSingleBenchmark = null;

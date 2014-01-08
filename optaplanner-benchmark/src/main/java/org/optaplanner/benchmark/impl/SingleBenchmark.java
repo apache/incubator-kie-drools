@@ -51,17 +51,21 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
 
     private Integer planningEntityCount = null;
     private Long usedMemoryAfterInputSolution = null;
-    private Score score = null;
-    // compared to winning singleBenchmark in the same ProblemBenchmark (which might not be the overall favorite)
-    private Score winningScoreDifference = null;
-    private ScoreDifferencePercentage worstScoreDifferencePercentage = null;
-    private long timeMillisSpend = -1L;
-    private long calculateCount = -1L;
-    // Ranking starts from 0
-    private Integer ranking = null;
 
     private Boolean succeeded = null;
     private Throwable failureThrowable = null;
+    private Score score = null;
+    private long timeMillisSpend = -1L;
+    private long calculateCount = -1L;
+
+    // Report aggregation
+
+    // Compared to winning singleBenchmark in the same ProblemBenchmark (which might not be the overall favorite)
+    private Score winningScoreDifference = null;
+    private ScoreDifferencePercentage worstScoreDifferencePercentage = null;
+
+    // Ranking starts from 0
+    private Integer ranking = null;
 
     public SingleBenchmark(SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark) {
         this.solverBenchmark = solverBenchmark;
@@ -95,12 +99,36 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         return usedMemoryAfterInputSolution;
     }
 
+    public Boolean getSucceeded() {
+        return succeeded;
+    }
+
+    public void setSucceeded(Boolean succeeded) {
+        this.succeeded = succeeded;
+    }
+
+    public Throwable getFailureThrowable() {
+        return failureThrowable;
+    }
+
+    public void setFailureThrowable(Throwable failureThrowable) {
+        this.failureThrowable = failureThrowable;
+    }
+
     public Score getScore() {
         return score;
     }
 
     public void setScore(Score score) {
         this.score = score;
+    }
+
+    public long getTimeMillisSpend() {
+        return timeMillisSpend;
+    }
+
+    public long getCalculateCount() {
+        return calculateCount;
     }
 
     public Score getWinningScoreDifference() {
@@ -119,36 +147,12 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         this.worstScoreDifferencePercentage = worstScoreDifferencePercentage;
     }
 
-    public long getTimeMillisSpend() {
-        return timeMillisSpend;
-    }
-
-    public long getCalculateCount() {
-        return calculateCount;
-    }
-
     public Integer getRanking() {
         return ranking;
     }
 
     public void setRanking(Integer ranking) {
         this.ranking = ranking;
-    }
-
-    public Boolean getSucceeded() {
-        return succeeded;
-    }
-
-    public void setSucceeded(Boolean succeeded) {
-        this.succeeded = succeeded;
-    }
-
-    public Throwable getFailureThrowable() {
-        return failureThrowable;
-    }
-
-    public void setFailureThrowable(Throwable failureThrowable) {
-        this.failureThrowable = failureThrowable;
     }
 
     // ************************************************************************

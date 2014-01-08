@@ -46,15 +46,15 @@ public class SolverBenchmark {
     private List<ProblemBenchmark> problemBenchmarkList = null;
     private List<SingleBenchmark> singleBenchmarkList = null;
 
+    // Report aggregation
+
     private int failureCount = -1;
     private Score totalScore = null;
     private Score averageScore = null;
-
     // Not a Score because
     // - the squaring would cause overflow for relatively small int and long scores.
     // - standard deviation should not be rounded to integer numbers
     private double[] standardDeviationDoubles = null;
-
     private Score totalWinningScoreDifference = null;
     private ScoreDifferencePercentage averageWorstScoreDifferencePercentage = null;
     // The average of the average is not just the overall average if the SingleBenchmark's timeMillisSpend differ

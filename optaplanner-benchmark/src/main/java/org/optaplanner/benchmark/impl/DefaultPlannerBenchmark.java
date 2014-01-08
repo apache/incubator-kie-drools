@@ -38,7 +38,6 @@ import org.drools.core.util.StringUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkException;
 import org.optaplanner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
-import org.optaplanner.benchmark.impl.history.BenchmarkHistoryReport;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
@@ -65,19 +64,18 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private List<ProblemBenchmark> unifiedProblemBenchmarkList = null;
     private final BenchmarkReport benchmarkReport = new BenchmarkReport(this);
 
-    private boolean benchmarkHistoryReportEnabled;
-    private final BenchmarkHistoryReport benchmarkHistoryReport = new BenchmarkHistoryReport(this);
-
     private long startingSystemTimeMillis;
     private Date startingTimestamp;
     private ExecutorService executorService;
+    private long benchmarkTimeMillisSpend;
+
+    // Report aggregation
+
     private Integer failureCount;
     private SingleBenchmark firstFailureSingleBenchmark;
-
     private Long averageProblemScale = null;
     private Score averageScore = null;
     private SolverBenchmark favoriteSolverBenchmark;
-    private long benchmarkTimeMillisSpend;
 
     public String getName() {
         return name;
@@ -151,20 +149,12 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         return benchmarkReport;
     }
 
-    public boolean isBenchmarkHistoryReportEnabled() {
-        return benchmarkHistoryReportEnabled;
-    }
-
-    public void setBenchmarkHistoryReportEnabled(boolean benchmarkHistoryReportEnabled) {
-        this.benchmarkHistoryReportEnabled = benchmarkHistoryReportEnabled;
-    }
-
-    public BenchmarkHistoryReport getBenchmarkHistoryReport() {
-        return benchmarkHistoryReport;
-    }
-
     public Date getStartingTimestamp() {
         return startingTimestamp;
+    }
+
+    public long getBenchmarkTimeMillisSpend() {
+        return benchmarkTimeMillisSpend;
     }
 
     public Integer getFailureCount() {
@@ -177,10 +167,6 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     public Score getAverageScore() {
         return averageScore;
-    }
-
-    public long getBenchmarkTimeMillisSpend() {
-        return benchmarkTimeMillisSpend;
     }
 
     // ************************************************************************
@@ -319,9 +305,6 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         determineSolverBenchmarkRanking();
         benchmarkTimeMillisSpend = calculateTimeMillisSpend();
         benchmarkReport.writeReport();
-        if (benchmarkHistoryReportEnabled) {
-            benchmarkHistoryReport.writeHistory();
-        }
         if (failureCount == 0) {
             logger.info("Benchmarking ended: time spend ({}), favoriteSolverBenchmark ({}), statistic html overview ({}).",
                     benchmarkTimeMillisSpend, favoriteSolverBenchmark.getName(),
