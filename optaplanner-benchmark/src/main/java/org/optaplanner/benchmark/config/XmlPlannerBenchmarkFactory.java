@@ -16,7 +16,6 @@
 
 package org.optaplanner.benchmark.config;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -73,13 +72,7 @@ public class XmlPlannerBenchmarkFactory implements PlannerBenchmarkFactory {
     }
 
     public XmlPlannerBenchmarkFactory configure(Reader reader) {
-        try {
-            String configString = IOUtils.toString(reader);
-            plannerBenchmarkConfig = (PlannerBenchmarkConfig) xStream.fromXML(configString);
-            plannerBenchmarkConfig.setResumeConfig(configString);
-        } catch (IOException e) {
-            throw new IllegalStateException("Error while reading benchmark configuration", e);
-        }
+        plannerBenchmarkConfig = (PlannerBenchmarkConfig) xStream.fromXML(reader);
         return this;
     }
 

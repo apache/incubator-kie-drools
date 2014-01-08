@@ -56,7 +56,7 @@ import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.optaplanner.benchmark.impl.SolverBenchmark;
-import org.optaplanner.benchmark.impl.statistic.MillisecondsSpendNumberFormat;
+import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.score.ScoreUtils;
@@ -177,6 +177,20 @@ public class BenchmarkReport {
      */
     public String getPlannerVersion() {
         return SolverFactory.class.getPackage().getImplementationVersion();
+    }
+
+    public String getRelativePathToBenchmarkReportDirectory(File file) {
+        String benchmarkReportDirectoryPath = plannerBenchmark.getBenchmarkReportDirectory().getAbsolutePath();
+        String filePath = file.getAbsolutePath();
+        if (!filePath.startsWith(benchmarkReportDirectoryPath)) {
+            throw new IllegalArgumentException("The filePath (" + filePath
+                    + ") does not start with the benchmarkReportDirectoryPath (" + benchmarkReportDirectoryPath + ").");
+        }
+        String relativePath = filePath.substring(benchmarkReportDirectoryPath.length());
+        if (relativePath.startsWith("/")) {
+            relativePath = relativePath.substring(1);
+        }
+        return relativePath;
     }
 
     public void writeReport() {

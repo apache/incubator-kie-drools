@@ -20,14 +20,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-public class CalculateCountSingleStatistic extends AbstractSingleStatistic {
+public class CalculateCountSingleStatistic extends AbstractSingleStatistic<CalculateCountSingleStatisticPoint> {
 
     private long timeMillisThresholdInterval;
     private long nextTimeMillisThreshold;
@@ -39,11 +42,12 @@ public class CalculateCountSingleStatistic extends AbstractSingleStatistic {
 
     private List<CalculateCountSingleStatisticPoint> pointList = new ArrayList<CalculateCountSingleStatisticPoint>();
 
-    public CalculateCountSingleStatistic() {
-        this(1000L);
+    public CalculateCountSingleStatistic(SingleBenchmark singleBenchmark) {
+        this(singleBenchmark, 1000L);
     }
 
-    public CalculateCountSingleStatistic(long timeMillisThresholdInterval) {
+    public CalculateCountSingleStatistic(SingleBenchmark singleBenchmark, long timeMillisThresholdInterval) {
+        super(singleBenchmark, ProblemStatisticType.CALCULATE_COUNT_PER_SECOND);
         if (timeMillisThresholdInterval <= 0L) {
             throw new IllegalArgumentException("The timeMillisThresholdInterval (" + timeMillisThresholdInterval
                     + ") must be bigger than 0.");
@@ -56,18 +60,6 @@ public class CalculateCountSingleStatistic extends AbstractSingleStatistic {
         return pointList;
     }
 
-    public void setPointList(List<CalculateCountSingleStatisticPoint> pointList) {
-        this.pointList = pointList;
-    }
-
-    public void writeCsvStatistic(File outputFile) {
-        SingleStatisticCsv csv = new SingleStatisticCsv();
-        for (CalculateCountSingleStatisticPoint point : pointList) {
-            csv.addPoint(point.getTimeMillisSpend(), point.getCalculateCountPerSecond());
-        }
-        csv.writeCsvSingleStatisticFile(outputFile);
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************
@@ -78,6 +70,7 @@ public class CalculateCountSingleStatistic extends AbstractSingleStatistic {
 
     public void close(Solver solver) {
         ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
+        writeCsvStatisticFile();
     }
 
     private class CalculateCountSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {
@@ -106,6 +99,22 @@ public class CalculateCountSingleStatistic extends AbstractSingleStatistic {
             }
         }
 
+    }
+
+    // ************************************************************************
+    // CSV methods
+    // ************************************************************************
+
+    @Override
+    protected List<String> getCsvHeader() {
+        return CalculateCountSingleStatisticPoint.buildCsvLine("timeMillisSpend", "calculateCountPerSecond");
+    }
+
+    @Override
+    protected CalculateCountSingleStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+            List<String> csvLine) {
+        return new CalculateCountSingleStatisticPoint(Long.valueOf(csvLine.get(0)),
+                Long.valueOf(csvLine.get(1)));
     }
 
 }

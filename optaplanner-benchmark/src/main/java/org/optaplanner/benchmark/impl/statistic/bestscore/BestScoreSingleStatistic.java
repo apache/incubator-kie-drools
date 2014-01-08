@@ -16,40 +16,42 @@
 
 package org.optaplanner.benchmark.impl.statistic.bestscore;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
+import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
 import org.optaplanner.core.impl.event.SolverEventListener;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
-public class BestScoreSingleStatistic extends AbstractSingleStatistic {
+public class BestScoreSingleStatistic extends AbstractSingleStatistic<BestScoreSingleStatisticPoint> {
 
     private final BestScoreSingleStatisticListener listener = new BestScoreSingleStatisticListener();
 
-    private List<BestScoreSingleStatisticPoint> pointList = new ArrayList<BestScoreSingleStatisticPoint>();
+    private List<BestScoreSingleStatisticPoint> pointList;
 
+    public BestScoreSingleStatistic(SingleBenchmark singleBenchmark) {
+        super(singleBenchmark, ProblemStatisticType.BEST_SCORE);
+        pointList = new ArrayList<BestScoreSingleStatisticPoint>();
+    }
+
+    @Override
     public List<BestScoreSingleStatisticPoint> getPointList() {
         return pointList;
-    }
-
-    public void setPointList(List<BestScoreSingleStatisticPoint> pointList) {
-        this.pointList = pointList;
-    }
-
-    public void writeCsvStatistic(File outputFile) {
-        SingleStatisticCsv csv = new SingleStatisticCsv();
-        for (BestScoreSingleStatisticPoint point : pointList) {
-            long timeMillisSpend = point.getTimeMillisSpend();
-            Score score = point.getScore();
-            if (score != null) {
-                csv.addPoint(timeMillisSpend, score.toString());
-            }
-        }
-        csv.writeCsvSingleStatisticFile(outputFile);
     }
 
     // ************************************************************************
@@ -62,6 +64,7 @@ public class BestScoreSingleStatistic extends AbstractSingleStatistic {
 
     public void close(Solver solver) {
         solver.removeEventListener(listener);
+        writeCsvStatisticFile();
     }
 
     private class BestScoreSingleStatisticListener implements SolverEventListener {
@@ -71,6 +74,22 @@ public class BestScoreSingleStatistic extends AbstractSingleStatistic {
                     event.getTimeMillisSpend(), event.getNewBestSolution().getScore()));
         }
 
+    }
+
+    // ************************************************************************
+    // CSV methods
+    // ************************************************************************
+
+    @Override
+    protected List<String> getCsvHeader() {
+        return BestScoreSingleStatisticPoint.buildCsvLine("timeMillisSpend", "score");
+    }
+
+    @Override
+    protected BestScoreSingleStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+            List<String> csvLine) {
+        return new BestScoreSingleStatisticPoint(Long.valueOf(csvLine.get(0)),
+                scoreDefinition.parseScore(csvLine.get(1)));
     }
 
 }

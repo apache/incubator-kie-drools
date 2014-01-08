@@ -26,11 +26,9 @@ import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
-import org.optaplanner.benchmark.impl.SingleBenchmarkState;
 import org.optaplanner.benchmark.impl.SolverBenchmark;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.solution.ProblemIO;
 import org.optaplanner.persistence.xstream.XStreamProblemIO;
@@ -94,7 +92,7 @@ public class ProblemBenchmarksConfig {
     // ************************************************************************
 
     public List<ProblemBenchmark> buildProblemBenchmarkList(DefaultPlannerBenchmark plannerBenchmark,
-            SolverBenchmark solverBenchmark, File latestResumeBenchmarkDir) {
+            SolverBenchmark solverBenchmark) {
         validate(solverBenchmark);
         ProblemIO problemIO = buildProblemIO();
         List<ProblemBenchmark> problemBenchmarkList = new ArrayList<ProblemBenchmark>(inputSolutionFileList.size());
@@ -114,7 +112,7 @@ public class ProblemBenchmarksConfig {
             } else {
                 problemBenchmark = unifiedProblemBenchmarkList.get(index);
             }
-            addSingleBenchmark(solverBenchmark, problemBenchmark, latestResumeBenchmarkDir);
+            addSingleBenchmark(solverBenchmark, problemBenchmark);
             problemBenchmarkList.add(problemBenchmark);
         }
         return problemBenchmarkList;
@@ -168,34 +166,34 @@ public class ProblemBenchmarksConfig {
         return problemBenchmark;
     }
 
-    private void addSingleBenchmark(SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark,
-            File latestResumeBenchmarkDir) {
+    private void addSingleBenchmark(
+            SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark) {
         SingleBenchmark singleBenchmark = new SingleBenchmark(solverBenchmark, problemBenchmark);
         solverBenchmark.getSingleBenchmarkList().add(singleBenchmark);
         problemBenchmark.getSingleBenchmarkList().add(singleBenchmark);
-        if (latestResumeBenchmarkDir != null) {
-            File resumeBenchmarkDirContent = new File(latestResumeBenchmarkDir, "resume");
-            File singleBenchmarkStateFile = new File(resumeBenchmarkDirContent, singleBenchmark.getName() + ".xml");
-            if (singleBenchmarkStateFile.exists()) {
-                SingleBenchmarkState singleBenchmarkState = problemBenchmark.getPlannerBenchmark().getxStreamResumeIO().read(singleBenchmarkStateFile);
-                singleBenchmark.setSingleBenchmarkState(singleBenchmarkState);
-                if (Boolean.TRUE.equals(singleBenchmarkState.getSucceeded())) {
-                    for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
-                        File statisticFile = new File(resumeBenchmarkDirContent,
-                                singleBenchmark.getSingleBenchmarkStatisticFilename(problemStatistic.getProblemStatisticType()));
-                        if (!statisticFile.exists()) {
-                            throw new IllegalArgumentException("Statistic file (" + statisticFile.getName() + ") for singleBenchmark "
-                                    + "(" + singleBenchmark.getName() + ") has not been found in resume directory.");
-                        }
-                        SingleStatistic singleStatistic = problemStatistic.readSingleStatistic(
-                                statisticFile, singleBenchmark.getSolverBenchmark().getSolverConfig().getScoreDirectorFactoryConfig().buildScoreDefinition());
-                        singleBenchmark.getSingleStatisticMap().put(problemStatistic.getProblemStatisticType(), singleStatistic);
-                    }
-                }
-                singleBenchmark.setRecovered(true);
-                
-            }
-        }
+//        if (latestResumeBenchmarkDir != null) {
+//            File resumeBenchmarkDirContent = new File(latestResumeBenchmarkDir, "resume");
+//            File singleBenchmarkStateFile = new File(resumeBenchmarkDirContent, singleBenchmark.getName() + ".xml");
+//            if (singleBenchmarkStateFile.exists()) {
+//                SingleBenchmarkState singleBenchmarkState = problemBenchmark.getPlannerBenchmark().getxStreamResumeIO().read(singleBenchmarkStateFile);
+//                singleBenchmark.setSingleBenchmarkState(singleBenchmarkState);
+//                if (Boolean.TRUE.equals(singleBenchmarkState.getSucceeded())) {
+//                    for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
+//                        File statisticFile = new File(resumeBenchmarkDirContent,
+//                                singleBenchmark.getSingleBenchmarkStatisticFilename(problemStatistic.getProblemStatisticType()));
+//                        if (!statisticFile.exists()) {
+//                            throw new IllegalArgumentException("Statistic file (" + statisticFile.getName() + ") for singleBenchmark "
+//                                    + "(" + singleBenchmark.getName() + ") has not been found in resume directory.");
+//                        }
+//                        SingleStatistic singleStatistic = problemStatistic.readSingleStatistic(
+//                                statisticFile, singleBenchmark.getSolverBenchmark().getSolverConfig().getScoreDirectorFactoryConfig().buildScoreDefinition());
+//                        singleBenchmark.getSingleStatisticMap().put(problemStatistic.getProblemStatisticType(), singleStatistic);
+//                    }
+//                }
+//                singleBenchmark.setRecovered(true);
+//
+//            }
+//        }
     }
 
     public void inherit(ProblemBenchmarksConfig inheritedConfig) {

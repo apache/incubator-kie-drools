@@ -20,34 +20,31 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.impl.statistic.StatisticType;
+import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreSingleStatisticPoint;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.solution.mutation.MutationCounter;
 import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
 import org.optaplanner.core.impl.event.SolverEventListener;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solution.Solution;
 
-public class BestSolutionMutationSingleStatistic extends AbstractSingleStatistic {
+public class BestSolutionMutationSingleStatistic extends AbstractSingleStatistic<BestSolutionMutationSingleStatisticPoint> {
 
     private BestSolutionMutationSingleStatisticListener listener = new BestSolutionMutationSingleStatisticListener();
 
     private List<BestSolutionMutationSingleStatisticPoint> pointList = new ArrayList<BestSolutionMutationSingleStatisticPoint>();
 
+    public BestSolutionMutationSingleStatistic(SingleBenchmark singleBenchmark) {
+        super(singleBenchmark, ProblemStatisticType.BEST_SOLUTION_MUTATION);
+    }
+
     public List<BestSolutionMutationSingleStatisticPoint> getPointList() {
         return pointList;
-    }
-
-    public void setPointList(List<BestSolutionMutationSingleStatisticPoint> pointList) {
-        this.pointList = pointList;
-    }
-
-    public void writeCsvStatistic(File outputFile) {
-        SingleStatisticCsv csv = new SingleStatisticCsv();
-        for (BestSolutionMutationSingleStatisticPoint point : pointList) {
-            csv.addPoint(point.getTimeMillisSpend(), point.getMutationCount());
-        }
-        csv.writeCsvSingleStatisticFile(outputFile);
     }
 
     // ************************************************************************
@@ -62,6 +59,7 @@ public class BestSolutionMutationSingleStatistic extends AbstractSingleStatistic
 
     public void close(Solver solver) {
         solver.removeEventListener(listener);
+        writeCsvStatisticFile();
     }
 
     private class BestSolutionMutationSingleStatisticListener implements SolverEventListener {
@@ -91,6 +89,22 @@ public class BestSolutionMutationSingleStatistic extends AbstractSingleStatistic
             oldBestSolution = newBestSolution;
         }
 
+    }
+
+    // ************************************************************************
+    // CSV methods
+    // ************************************************************************
+
+    @Override
+    protected List<String> getCsvHeader() {
+        return BestSolutionMutationSingleStatisticPoint.buildCsvLine("timeMillisSpend", "mutationCount");
+    }
+
+    @Override
+    protected BestSolutionMutationSingleStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+            List<String> csvLine) {
+        return new BestSolutionMutationSingleStatisticPoint(Long.valueOf(csvLine.get(0)),
+                Integer.valueOf(csvLine.get(1)));
     }
 
 }

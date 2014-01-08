@@ -20,13 +20,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
-public class MemoryUseSingleStatistic extends AbstractSingleStatistic {
+public class MemoryUseSingleStatistic extends AbstractSingleStatistic<MemoryUseSingleStatisticPoint> {
 
     private MemoryUseSingleStatisticListener listener = new MemoryUseSingleStatisticListener();
 
@@ -35,11 +39,12 @@ public class MemoryUseSingleStatistic extends AbstractSingleStatistic {
 
     private List<MemoryUseSingleStatisticPoint> pointList = new ArrayList<MemoryUseSingleStatisticPoint>();
 
-    public MemoryUseSingleStatistic() {
-        this(1000L);
+    public MemoryUseSingleStatistic(SingleBenchmark singleBenchmark) {
+        this(singleBenchmark, 1000L);
     }
 
-    public MemoryUseSingleStatistic(long timeMillisThresholdInterval) {
+    public MemoryUseSingleStatistic(SingleBenchmark singleBenchmark, long timeMillisThresholdInterval) {
+        super(singleBenchmark, ProblemStatisticType.MEMORY_USE);
         if (timeMillisThresholdInterval <= 0L) {
             throw new IllegalArgumentException("The timeMillisThresholdInterval (" + timeMillisThresholdInterval
                     + ") must be bigger than 0.");
@@ -52,22 +57,6 @@ public class MemoryUseSingleStatistic extends AbstractSingleStatistic {
         return pointList;
     }
 
-    public void setPointList(List<MemoryUseSingleStatisticPoint> pointList) {
-        this.pointList = pointList;
-    }
-
-    public void writeCsvStatistic(File outputFile) {
-        SingleStatisticCsv csv = new SingleStatisticCsv();
-        for (MemoryUseSingleStatisticPoint point : pointList) {
-            long timeMillisSpend = point.getTimeMillisSpend();
-            MemoryUseMeasurement memoryUseMeasurement = point.getMemoryUseMeasurement();
-            csv.addPoint(timeMillisSpend,
-                    Long.toString(memoryUseMeasurement.getUsedMemory())
-                            + "/" + Long.toString(memoryUseMeasurement.getMaxMemory()));
-        }
-        csv.writeCsvSingleStatisticFile(outputFile);
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************
@@ -78,6 +67,7 @@ public class MemoryUseSingleStatistic extends AbstractSingleStatistic {
 
     public void close(Solver solver) {
         ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
+        writeCsvStatisticFile();
     }
     
     private class MemoryUseSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {
@@ -95,6 +85,22 @@ public class MemoryUseSingleStatistic extends AbstractSingleStatistic {
             }
         }
 
+    }
+
+    // ************************************************************************
+    // CSV methods
+    // ************************************************************************
+
+    @Override
+    protected List<String> getCsvHeader() {
+        return MemoryUseSingleStatisticPoint.buildCsvLine("timeMillisSpend", "usedMemory", "maxMemory");
+    }
+
+    @Override
+    protected MemoryUseSingleStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+            List<String> csvLine) {
+        return new MemoryUseSingleStatisticPoint(Long.valueOf(csvLine.get(0)),
+                new MemoryUseMeasurement(Long.valueOf(csvLine.get(1)), Long.valueOf(csvLine.get(2))));
     }
 
 }

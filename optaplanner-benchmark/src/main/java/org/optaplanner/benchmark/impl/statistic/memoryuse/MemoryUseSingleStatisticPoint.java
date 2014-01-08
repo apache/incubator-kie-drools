@@ -16,7 +16,11 @@
 
 package org.optaplanner.benchmark.impl.statistic.memoryuse;
 
-public class MemoryUseSingleStatisticPoint {
+import java.util.List;
+
+import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatisticPoint;
+
+public class MemoryUseSingleStatisticPoint extends AbstractSingleStatisticPoint {
 
     private final long timeMillisSpend;
     private final MemoryUseMeasurement memoryUseMeasurement;
@@ -32,6 +36,11 @@ public class MemoryUseSingleStatisticPoint {
 
     public MemoryUseMeasurement getMemoryUseMeasurement() {
         return memoryUseMeasurement;
+    }
+
+    @Override
+    public List<String> toCsvLine() {
+        return buildCsvLine(timeMillisSpend, memoryUseMeasurement.getUsedMemory(), memoryUseMeasurement.getMaxMemory());
     }
 
 }

@@ -32,7 +32,6 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-import org.optaplanner.persistence.xstream.XStreamResumeIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,17 +45,23 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
     private final SolverBenchmark solverBenchmark;
     private final ProblemBenchmark problemBenchmark;
 
+    private File reportDirectory = null;
+
     private Map<StatisticType, SingleStatistic> singleStatisticMap = new HashMap<StatisticType, SingleStatistic>();
 
+    private Integer planningEntityCount = null;
+    private Long usedMemoryAfterInputSolution = null;
+    private Score score = null;
     // compared to winning singleBenchmark in the same ProblemBenchmark (which might not be the overall favorite)
     private Score winningScoreDifference = null;
     private ScoreDifferencePercentage worstScoreDifferencePercentage = null;
+    private long timeMillisSpend = -1L;
+    private long calculateCount = -1L;
     // Ranking starts from 0
     private Integer ranking = null;
 
-    private SingleBenchmarkState singleBenchmarkState;
-    private final XStreamResumeIO xStreamResumeIO = new XStreamResumeIO();
-    private boolean recovered = false;
+    private Boolean succeeded = null;
+    private Throwable failureThrowable = null;
 
     public SingleBenchmark(SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark) {
         this.solverBenchmark = solverBenchmark;
@@ -71,27 +76,31 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         return problemBenchmark;
     }
 
+    public File getReportDirectory() {
+        return reportDirectory;
+    }
+
     public Map<StatisticType, SingleStatistic> getSingleStatisticMap() {
         return singleStatisticMap;
     }
 
     public Integer getPlanningEntityCount() {
-        return singleBenchmarkState.getPlanningEntityCount();
+        return planningEntityCount;
     }
 
     /**
      * @return null if {@link DefaultPlannerBenchmark#hasMultipleParallelBenchmarks()} return true
      */
     public Long getUsedMemoryAfterInputSolution() {
-        return singleBenchmarkState.getUsedMemoryAfterInputSolution();
+        return usedMemoryAfterInputSolution;
     }
 
     public Score getScore() {
-        return singleBenchmarkState.getScore();
+        return score;
     }
 
     public void setScore(Score score) {
-        this.singleBenchmarkState.setScore(score);
+        this.score = score;
     }
 
     public Score getWinningScoreDifference() {
@@ -111,11 +120,11 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
     }
 
     public long getTimeMillisSpend() {
-        return singleBenchmarkState.getTimeMillisSpend();
+        return timeMillisSpend;
     }
 
     public long getCalculateCount() {
-        return singleBenchmarkState.getCalculateCount();
+        return calculateCount;
     }
 
     public Integer getRanking() {
@@ -127,35 +136,19 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
     }
 
     public Boolean getSucceeded() {
-        return singleBenchmarkState.getSucceeded();
+        return succeeded;
     }
 
     public void setSucceeded(Boolean succeeded) {
-        this.singleBenchmarkState.setSucceeded(succeeded);
+        this.succeeded = succeeded;
     }
 
     public Throwable getFailureThrowable() {
-        return singleBenchmarkState.getFailureThrowable();
+        return failureThrowable;
     }
 
     public void setFailureThrowable(Throwable failureThrowable) {
-        this.singleBenchmarkState.setFailureThrowable(failureThrowable);
-    }
-
-    public SingleBenchmarkState getSingleBenchmarkState() {
-        return singleBenchmarkState;
-    }
-
-    public void setSingleBenchmarkState(SingleBenchmarkState singleBenchmarkState) {
-        this.singleBenchmarkState = singleBenchmarkState;
-    }
-
-    public boolean getRecovered() {
-        return recovered;
-    }
-
-    public void setRecovered(boolean recovered) {
-        this.recovered = recovered;
+        this.failureThrowable = failureThrowable;
     }
 
     // ************************************************************************
@@ -166,19 +159,17 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         return problemBenchmark.getName() + "_" + solverBenchmark.getName();
     }
 
-    public String getSingleBenchmarkStatisticFilename(StatisticType type) {
-        return getName() + "_" + type + ".csv";
+    public void benchmarkingStarted() {
+        reportDirectory = new File(problemBenchmark.getReportDirectory(), solverBenchmark.getName());
+        reportDirectory.mkdirs();
     }
 
     public SingleBenchmark call() {
-        if (singleBenchmarkState == null) {
-            singleBenchmarkState = new SingleBenchmarkState(getName());
-        }
         Runtime runtime = Runtime.getRuntime();
         Solution inputSolution = problemBenchmark.readPlanningProblem();
         if (!problemBenchmark.getPlannerBenchmark().hasMultipleParallelBenchmarks()) {
             runtime.gc();
-            singleBenchmarkState.setUsedMemoryAfterInputSolution(runtime.totalMemory() - runtime.freeMemory());
+            usedMemoryAfterInputSolution = runtime.totalMemory() - runtime.freeMemory();
         }
         logger.trace("Benchmark inputSolution has been read for singleBenchmark ({}_{}).",
                 problemBenchmark.getName(), solverBenchmark.getName() );
@@ -186,7 +177,7 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         // Intentionally create a fresh solver for every SingleBenchmark to reset Random, tabu lists, ...
         Solver solver = solverBenchmark.getSolverConfig().buildSolver();
         for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
-            SingleStatistic singleStatistic = problemStatistic.createSingleStatistic();
+            SingleStatistic singleStatistic = problemStatistic.createSingleStatistic(this);
             singleStatistic.open(solver);
             singleStatisticMap.put(problemStatistic.getProblemStatisticType(), singleStatistic);
         }
@@ -195,54 +186,48 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         solver.solve();
         Solution outputSolution = solver.getBestSolution();
 
-        singleBenchmarkState.setTimeMillisSpend(solver.getTimeMillisSpend());
+        timeMillisSpend = solver.getTimeMillisSpend();
         DefaultSolverScope solverScope = ((DefaultSolver) solver).getSolverScope();
-        singleBenchmarkState.setCalculateCount(solverScope.getCalculateCount());
-        singleBenchmarkState.setScore(outputSolution.getScore());
+        calculateCount = solverScope.getCalculateCount();
+        score = outputSolution.getScore();
         SolutionDescriptor solutionDescriptor = ((DefaultSolver) solver).getSolutionDescriptor();
-        singleBenchmarkState.setPlanningEntityCount(solutionDescriptor.getEntityCount(outputSolution));
-        singleBenchmarkState.setProblemScale(solutionDescriptor.getProblemScale(outputSolution));
+        planningEntityCount = solutionDescriptor.getEntityCount(outputSolution);
+        problemBenchmark.registerProblemScale(solutionDescriptor.getProblemScale(outputSolution));
 
         for (SingleStatistic singleStatistic : singleStatisticMap.values()) {
             singleStatistic.close(solver);
         }
-
-        for (StatisticType type : singleStatisticMap.keySet()) {
-            File statisticFile = new File(problemBenchmark.getPlannerBenchmark().getBenchmarkOutputDirectory().getPath(),
-                    getSingleBenchmarkStatisticFilename(type));
-            singleStatisticMap.get(type).writeCsvStatistic(statisticFile);
-        }
-        setSucceeded(true);
-        xStreamResumeIO.write(getSingleBenchmarkState(),
-                new File(problemBenchmark.getPlannerBenchmark().getBenchmarkOutputDirectory().getPath(), getName() + ".xml"));
-
         problemBenchmark.writeOutputSolution(this, outputSolution);
         return this;
     }
 
+    public void benchmarkingEnded() {
+
+    }
+
     public boolean isSuccess() {
-        return singleBenchmarkState.getSucceeded() != null && singleBenchmarkState.getSucceeded().booleanValue();
+        return succeeded != null && succeeded.booleanValue();
     }
 
     public boolean isFailure() {
-        return singleBenchmarkState.getSucceeded() != null && !singleBenchmarkState.getSucceeded().booleanValue();
+        return succeeded != null && !succeeded.booleanValue();
     }
 
     public boolean isScoreFeasible() {
-        if (getScore() instanceof FeasibilityScore) {
-            return ((FeasibilityScore) getScore()).isFeasible();
+        if (score instanceof FeasibilityScore) {
+            return ((FeasibilityScore) score).isFeasible();
         } else {
             return true;
         }
     }
 
     public Long getAverageCalculateCountPerSecond() {
-        long timeMillisSpend = getTimeMillisSpend();
+        long timeMillisSpend = this.timeMillisSpend;
         if (timeMillisSpend == 0L) {
             // Avoid divide by zero exception on a fast CPU
             timeMillisSpend = 1L;
         }
-        return getCalculateCount() * 1000L / timeMillisSpend;
+        return calculateCount * 1000L / timeMillisSpend;
     }
 
     public boolean isWinner() {

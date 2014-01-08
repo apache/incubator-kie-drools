@@ -17,11 +17,7 @@
 package org.optaplanner.benchmark.impl.statistic.bestscore;
 
 import java.awt.BasicStroke;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,92 +32,38 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYStepRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.MillisecondsSpendNumberFormat;
+import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.ScoreUtils;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public class BestScoreProblemStatistic extends AbstractProblemStatistic {
 
-    protected List<File> graphStatisticFileList = null;
+    protected List<File> graphFileList = null;
 
     public BestScoreProblemStatistic(ProblemBenchmark problemBenchmark) {
         super(problemBenchmark, ProblemStatisticType.BEST_SCORE);
     }
 
-    public SingleStatistic createSingleStatistic() {
-        return new BestScoreSingleStatistic();
+    @Override
+    public SingleStatistic createSingleStatistic(SingleBenchmark singleBenchmark) {
+        return new BestScoreSingleStatistic(singleBenchmark);
     }
 
     /**
-     * @return never null, each path is relative to the {@link DefaultPlannerBenchmark#benchmarkReportDirectory}
-     * (not {@link ProblemBenchmark#problemReportDirectory})
+     * @return never null
      */
-    public List<String> getGraphFilePathList() {
-        List<String> graphFilePathList = new ArrayList<String>(graphStatisticFileList.size());
-        for (File graphStatisticFile : graphStatisticFileList) {
-            graphFilePathList.add(toFilePath(graphStatisticFile));
-        }
-        return graphFilePathList;
-    }
-
-    public SingleStatistic readSingleStatistic(File file, ScoreDefinition scoreDefinition) {
-        List<BestScoreSingleStatisticPoint> pointList = new ArrayList<BestScoreSingleStatisticPoint>();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String pattern = "\\d+,\"\\S+\"";
-            for (String line = br.readLine(); line != null; line = br.readLine()) {
-                if (!line.matches(pattern)) {
-                    throw new IllegalArgumentException("Error while reading statistic file - invalid format "
-                            + "for line " + line + ".");
-                }
-                String[] values = line.split(",");
-                long timeSpent = Long.valueOf(values[0]);
-                Score score = getScoreInstance(scoreDefinition, values[1].substring(1, values[1].length() - 1));
-                pointList.add(new BestScoreSingleStatisticPoint(timeSpent, score));
-            }
-        } catch (FileNotFoundException ex) {
-            throw new IllegalArgumentException("Could not open statistic file (" + file + ").", ex);
-        } catch (IOException ex) {
-            throw new IllegalArgumentException("Error while reading statistic file (" + file + ").", ex);
-        }
-        BestScoreSingleStatistic statistic = new BestScoreSingleStatistic();
-        statistic.setPointList(pointList);
-        return statistic;
+    public List<File> getGraphFileList() {
+        return graphFileList;
     }
 
     // ************************************************************************
     // Write methods
     // ************************************************************************
-
-    protected void writeCsvStatistic() {
-        ProblemStatisticCsv csv = new ProblemStatisticCsv();
-        for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
-            if (singleBenchmark.isSuccess()) {
-                BestScoreSingleStatistic singleStatistic = (BestScoreSingleStatistic)
-                        singleBenchmark.getSingleStatistic(problemStatisticType);
-                for (BestScoreSingleStatisticPoint point : singleStatistic.getPointList()) {
-                    long timeMillisSpend = point.getTimeMillisSpend();
-                    Score score = point.getScore();
-                    if (score != null) {
-                        csv.addPoint(singleBenchmark, timeMillisSpend, score.toString());
-                    }
-                }
-            } else {
-                csv.addPoint(singleBenchmark, 0L, "Failed");
-            }
-        }
-        csvStatisticFile = new File(problemBenchmark.getProblemReportDirectory(),
-                problemBenchmark.getName() + "BestScoreStatistic.csv");
-        csv.writeCsvStatisticFile();
-    }
 
     protected void writeGraphStatistic() {
         List<XYPlot> plotList = new ArrayList<XYPlot>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
@@ -173,12 +115,12 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
             }
             seriesIndex++;
         }
-        graphStatisticFileList = new ArrayList<File>(plotList.size());
+        graphFileList = new ArrayList<File>(plotList.size());
         for (int scoreLevelIndex = 0; scoreLevelIndex < plotList.size(); scoreLevelIndex++) {
             JFreeChart chart = new JFreeChart(
                     problemBenchmark.getName() + " best score level " + scoreLevelIndex + " statistic",
                     JFreeChart.DEFAULT_TITLE_FONT, plotList.get(scoreLevelIndex), true);
-            graphStatisticFileList.add(writeChartToImageFile(chart,
+            graphFileList.add(writeChartToImageFile(chart,
                     problemBenchmark.getName() + "BestScoreStatisticLevel" + scoreLevelIndex));
         }
     }

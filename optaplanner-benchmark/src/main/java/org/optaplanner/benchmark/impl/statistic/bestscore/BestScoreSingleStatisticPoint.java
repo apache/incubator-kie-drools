@@ -16,9 +16,13 @@
 
 package org.optaplanner.benchmark.impl.statistic.bestscore;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatisticPoint;
 import org.optaplanner.core.api.score.Score;
 
-public class BestScoreSingleStatisticPoint {
+public class BestScoreSingleStatisticPoint extends AbstractSingleStatisticPoint {
 
     private final long timeMillisSpend;
     private final Score score;
@@ -34,6 +38,11 @@ public class BestScoreSingleStatisticPoint {
 
     public Score getScore() {
         return score;
+    }
+
+    @Override
+    public List<String> toCsvLine() {
+        return buildCsvLine(timeMillisSpend, score.toString());
     }
 
 }

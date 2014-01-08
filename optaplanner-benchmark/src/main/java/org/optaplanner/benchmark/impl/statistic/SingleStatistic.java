@@ -18,6 +18,8 @@ package org.optaplanner.benchmark.impl.statistic;
 
 import java.io.File;
 
+import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
+import org.optaplanner.benchmark.impl.ProblemBenchmark;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.optaplanner.core.api.solver.Solver;
 
@@ -36,11 +38,11 @@ public interface SingleStatistic {
      */
     void close(Solver solver);
 
+    void writeCsvStatisticFile();
+
     /**
-     * Writes csv file of given SingleStatistic
-     * 
-     * @param outputFile file to write into
+     * @return never null
      */
-    void writeCsvStatistic(File outputFile);
+    File getCsvFile();
 
 }

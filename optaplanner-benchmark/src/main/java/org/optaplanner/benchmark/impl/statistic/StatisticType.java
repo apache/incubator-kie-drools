@@ -18,4 +18,9 @@ package org.optaplanner.benchmark.impl.statistic;
 
 public interface StatisticType {
 
+    /**
+     * @return never null
+     */
+    public String name();
+
 }

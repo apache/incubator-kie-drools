@@ -16,7 +16,11 @@
 
 package org.optaplanner.benchmark.impl.statistic.bestsolutionmutation;
 
-public class BestSolutionMutationSingleStatisticPoint {
+import java.util.List;
+
+import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatisticPoint;
+
+public class BestSolutionMutationSingleStatisticPoint extends AbstractSingleStatisticPoint {
 
     private final long timeMillisSpend;
     private final int mutationCount;
@@ -32,6 +36,11 @@ public class BestSolutionMutationSingleStatisticPoint {
 
     public int getMutationCount() {
         return mutationCount;
+    }
+
+    @Override
+    public List<String> toCsvLine() {
+        return buildCsvLine(timeMillisSpend, mutationCount);
     }
 
 }

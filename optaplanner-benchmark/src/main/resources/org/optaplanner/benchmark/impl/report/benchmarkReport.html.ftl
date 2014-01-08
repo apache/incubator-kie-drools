@@ -437,7 +437,7 @@
                                             <div class="tabbable tabs-right">
                                                 <ul class="nav nav-tabs">
                                                     <#assign scoreLevelIndex = 0>
-                                                    <#list problemStatistic.graphFilePathList as graphFilePath>
+                                                    <#list problemStatistic.graphFileList as graphFile>
                                                         <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
                                                             <a href="#problemStatistic_${problemStatistic.anchorId}_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
                                                         </li>
@@ -446,10 +446,10 @@
                                                 </ul>
                                                 <div class="tab-content">
                                                     <#assign scoreLevelIndex = 0>
-                                                    <#list problemStatistic.graphFilePathList as graphFilePath>
+                                                    <#list problemStatistic.graphFileList as graphFile>
                                                         <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="problemStatistic_${problemStatistic.anchorId}_${scoreLevelIndex}">
                                                             <div class="benchmark-chart">
-                                                                <img src="${graphFilePath}"/>
+                                                                <img src="${benchmarkReport.getRelativePathToBenchmarkReportDirectory(graphFile)}"/>
                                                             </div>
                                                         </div>
                                                         <#assign scoreLevelIndex = scoreLevelIndex + 1>
@@ -458,14 +458,15 @@
                                             </div>
                                         <#else>
                                             <div class="benchmark-chart">
-                                                <img src="${problemStatistic.graphFilePath}"/>
+                                                <img src="${benchmarkReport.getRelativePathToBenchmarkReportDirectory(problemStatistic.graphFile)}"/>
                                             </div>
                                         </#if>
-                                        <#if problemStatistic.problemStatisticType.name() != "IMPROVING_STEP_PERCENTAGE">
-                                            <div class="btn-group download-btn-group">
-                                                <button class="btn" onclick="window.location.href='${problemStatistic.csvFilePath}'"><i class="icon-download"></i> CSV file</button>
-                                            </div>
-                                        </#if>
+                                        <span>CSV files per solver:</span>
+                                        <div class="btn-group download-btn-group">
+                                        <#list problemStatistic.singleStatisticList as singleStatistic>
+                                            <button class="btn" onclick="window.location.href='${benchmarkReport.getRelativePathToBenchmarkReportDirectory(singleStatistic.csvFile)}'"><i class="icon-download"></i></button>
+                                        </#list>
+                                        </div>
                                     </div>
                                     <#assign firstRow = false>
                                 </#list>

@@ -39,78 +39,34 @@ import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.MillisecondsSpendNumberFormat;
+import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public class BestSolutionMutationProblemStatistic extends AbstractProblemStatistic {
 
-    protected File graphStatisticFile = null;
+    protected File graphFile = null;
 
     public BestSolutionMutationProblemStatistic(ProblemBenchmark problemBenchmark) {
         super(problemBenchmark, ProblemStatisticType.BEST_SOLUTION_MUTATION);
     }
 
-    public SingleStatistic createSingleStatistic() {
-        return new BestSolutionMutationSingleStatistic();
+    @Override
+    public SingleStatistic createSingleStatistic(SingleBenchmark singleBenchmark) {
+        return new BestSolutionMutationSingleStatistic(singleBenchmark);
     }
 
     /**
-     * @return never null, relative to the {@link DefaultPlannerBenchmark#benchmarkReportDirectory}
-     * (not {@link ProblemBenchmark#problemReportDirectory})
+     * @return never null
      */
-    public String getGraphFilePath() {
-        return toFilePath(graphStatisticFile);
-    }
-
-    public SingleStatistic readSingleStatistic(File file, ScoreDefinition scoreDefinition) {
-        List<BestSolutionMutationSingleStatisticPoint> pointList = new ArrayList<BestSolutionMutationSingleStatisticPoint>();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String pattern = "\\d+,\\d+";
-            for (String line = br.readLine(); line != null; line = br.readLine()) {
-                if (!line.matches(pattern)) {
-                    throw new IllegalArgumentException("Error while reading statistic file - invalid format "
-                            + "for line " + line + ".");
-                }
-                String[] values = line.split(",");
-                long timeSpent = Long.valueOf(values[0]);
-                int mutationCount = Integer.valueOf(values[1]);
-                pointList.add(new BestSolutionMutationSingleStatisticPoint(timeSpent, mutationCount));
-            }
-        } catch (FileNotFoundException ex) {
-            throw new IllegalArgumentException("Could not open statistic file (" + file + ").", ex);
-        } catch (IOException ex) {
-            throw new IllegalArgumentException("Error while reading statistic file (" + file + ").", ex);
-        }
-        BestSolutionMutationSingleStatistic statistic = new BestSolutionMutationSingleStatistic();
-        statistic.setPointList(pointList);
-        return statistic;
+    public File getGraphFile() {
+        return graphFile;
     }
 
     // ************************************************************************
     // Write methods
     // ************************************************************************
-
-    protected void writeCsvStatistic() {
-        ProblemStatisticCsv csv = new ProblemStatisticCsv();
-        for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
-            if (singleBenchmark.isSuccess()) {
-                BestSolutionMutationSingleStatistic singleStatistic = (BestSolutionMutationSingleStatistic)
-                        singleBenchmark.getSingleStatistic(problemStatisticType);
-                for (BestSolutionMutationSingleStatisticPoint point : singleStatistic.getPointList()) {
-                    long timeMillisSpend = point.getTimeMillisSpend();
-                    csv.addPoint(singleBenchmark, timeMillisSpend, point.getMutationCount());
-                }
-            } else {
-                csv.addPoint(singleBenchmark, 0L, "Failed");
-            }
-        }
-        csvStatisticFile = new File(problemBenchmark.getProblemReportDirectory(),
-                problemBenchmark.getName() + "BestSolutionMutationStatistic.csv");
-        csv.writeCsvStatisticFile();
-    }
 
     protected void writeGraphStatistic() {
         Locale locale = problemBenchmark.getPlannerBenchmark().getBenchmarkReport().getLocale();
@@ -145,7 +101,7 @@ public class BestSolutionMutationProblemStatistic extends AbstractProblemStatist
         }
         JFreeChart chart = new JFreeChart(problemBenchmark.getName() + " best solution mutation statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        graphStatisticFile = writeChartToImageFile(chart, problemBenchmark.getName() + "BestSolutionMutationStatistic");
+        graphFile = writeChartToImageFile(chart, problemBenchmark.getName() + "BestSolutionMutationStatistic");
     }
 
 }

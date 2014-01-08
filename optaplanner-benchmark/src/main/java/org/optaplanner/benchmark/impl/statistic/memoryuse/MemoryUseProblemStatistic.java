@@ -39,82 +39,34 @@ import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.MillisecondsSpendNumberFormat;
+import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
 
-    protected File graphStatisticFile = null;
+    protected File graphFile = null;
 
     public MemoryUseProblemStatistic(ProblemBenchmark problemBenchmark) {
         super(problemBenchmark, ProblemStatisticType.MEMORY_USE);
     }
 
-    public SingleStatistic createSingleStatistic() {
-        return new MemoryUseSingleStatistic();
+    @Override
+    public SingleStatistic createSingleStatistic(SingleBenchmark singleBenchmark) {
+        return new MemoryUseSingleStatistic(singleBenchmark);
     }
 
     /**
-     * @return never null, relative to the {@link DefaultPlannerBenchmark#benchmarkReportDirectory}
-     * (not {@link ProblemBenchmark#problemReportDirectory})
+     * @return never null
      */
-    public String getGraphFilePath() {
-        return toFilePath(graphStatisticFile);
-    }
-
-    public SingleStatistic readSingleStatistic(File file, ScoreDefinition scoreDefinition) {
-        List<MemoryUseSingleStatisticPoint> pointList = new ArrayList<MemoryUseSingleStatisticPoint>();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String pattern = "\\d+,\"\\d+/\\d+\"";
-            for (String line = br.readLine(); line != null; line = br.readLine()) {
-                if (!line.matches(pattern)) {
-                    throw new IllegalArgumentException("Error while reading statistic file - invalid format "
-                            + "for line " + line + ".");
-                }
-                String[] values = line.split(",");
-                long timeSpent = Long.valueOf(values[0]);
-                String[] memory = values[1].split("/");
-                pointList.add(new MemoryUseSingleStatisticPoint(timeSpent, new MemoryUseMeasurement(
-                        Long.valueOf(memory[0].substring(1)), Long.valueOf(memory[1].substring(0, memory[1].length() - 1)))));
-            }
-        } catch (FileNotFoundException ex) {
-            throw new IllegalArgumentException("Could not open statistic file (" + file + ").", ex);
-        } catch (IOException ex) {
-            throw new IllegalArgumentException("Error while reading statistic file (" + file + ").", ex);
-        }
-        MemoryUseSingleStatistic statistic = new MemoryUseSingleStatistic();
-        statistic.setPointList(pointList);
-        return statistic;
+    public File getGraphFile() {
+        return graphFile;
     }
 
     // ************************************************************************
     // Write methods
     // ************************************************************************
-
-    protected void writeCsvStatistic() {
-        ProblemStatisticCsv csv = new ProblemStatisticCsv();
-        for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
-            if (singleBenchmark.isSuccess()) {
-                MemoryUseSingleStatistic singleStatistic = (MemoryUseSingleStatistic)
-                        singleBenchmark.getSingleStatistic(problemStatisticType);
-                for (MemoryUseSingleStatisticPoint point : singleStatistic.getPointList()) {
-                    long timeMillisSpend = point.getTimeMillisSpend();
-                    MemoryUseMeasurement memoryUseMeasurement = point.getMemoryUseMeasurement();
-                    csv.addPoint(singleBenchmark, timeMillisSpend,
-                            Long.toString(memoryUseMeasurement.getUsedMemory())
-                            + "/" + Long.toString(memoryUseMeasurement.getMaxMemory()));
-                }
-            } else {
-                csv.addPoint(singleBenchmark, 0L, "Failed");
-            }
-        }
-        csvStatisticFile = new File(problemBenchmark.getProblemReportDirectory(),
-                problemBenchmark.getName() + "MemoryUseStatistic.csv");
-        csv.writeCsvStatisticFile();
-    }
 
     protected void writeGraphStatistic() {
         Locale locale = problemBenchmark.getPlannerBenchmark().getBenchmarkReport().getLocale();
@@ -157,7 +109,7 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
         }
         JFreeChart chart = new JFreeChart(problemBenchmark.getName() + " memory use statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        graphStatisticFile = writeChartToImageFile(chart, problemBenchmark.getName() + "MemoryUseStatistic");
+        graphFile = writeChartToImageFile(chart, problemBenchmark.getName() + "MemoryUseStatistic");
     }
 
     @Override

@@ -19,7 +19,6 @@ package org.optaplanner.benchmark.impl.ranking;
 import java.util.List;
 
 import org.optaplanner.benchmark.impl.SingleBenchmark;
-import org.optaplanner.benchmark.impl.SingleBenchmarkState;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
@@ -27,7 +26,6 @@ public abstract class AbstractRankingComparatorTest {
 
     protected void addSingleBenchmark(List<SingleBenchmark> singleBenchmarkList, int score, int bestScore, int worstScore) {
         SingleBenchmark singleBenchmark = new SingleBenchmark(null, null);
-        singleBenchmark.setSingleBenchmarkState(new SingleBenchmarkState());
         SimpleScore scoreObject = SimpleScore.valueOf(score);
         SimpleScore bestScoreObject = SimpleScore.valueOf(bestScore);
         SimpleScore worstScoreObject = SimpleScore.valueOf(worstScore);

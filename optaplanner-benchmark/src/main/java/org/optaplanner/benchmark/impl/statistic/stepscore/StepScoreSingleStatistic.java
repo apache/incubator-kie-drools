@@ -20,37 +20,29 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
-public class StepScoreSingleStatistic extends AbstractSingleStatistic {
+public class StepScoreSingleStatistic extends AbstractSingleStatistic<StepScoreSingleStatisticPoint> {
 
     private final StepScoreSingleStatisticListener listener = new StepScoreSingleStatisticListener();
 
     private List<StepScoreSingleStatisticPoint> pointList = new ArrayList<StepScoreSingleStatisticPoint>();
 
+    public StepScoreSingleStatistic(SingleBenchmark singleBenchmark) {
+        super(singleBenchmark, ProblemStatisticType.STEP_SCORE);
+    }
+
     public List<StepScoreSingleStatisticPoint> getPointList() {
         return pointList;
-    }
-
-    public void setPointList(List<StepScoreSingleStatisticPoint> pointList) {
-        this.pointList = pointList;
-    }
-
-    public void writeCsvStatistic(File outputFile) {
-        SingleStatisticCsv csv = new SingleStatisticCsv();
-        for (StepScoreSingleStatisticPoint point : pointList) {
-            long timeMillisSpend = point.getTimeMillisSpend();
-            Score score = point.getScore();
-            if (score != null) {
-                csv.addPoint(timeMillisSpend, score.toString());
-            }
-        }
-        csv.writeCsvSingleStatisticFile(outputFile);
     }
 
     // ************************************************************************
@@ -63,6 +55,7 @@ public class StepScoreSingleStatistic extends AbstractSingleStatistic {
 
     public void close(Solver solver) {
         ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
+        writeCsvStatisticFile();
     }
 
     private class StepScoreSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {
@@ -75,6 +68,22 @@ public class StepScoreSingleStatistic extends AbstractSingleStatistic {
             }
         }
 
+    }
+
+    // ************************************************************************
+    // CSV methods
+    // ************************************************************************
+
+    @Override
+    protected List<String> getCsvHeader() {
+        return StepScoreSingleStatisticPoint.buildCsvLine("timeMillisSpend", "score");
+    }
+
+    @Override
+    protected StepScoreSingleStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+            List<String> csvLine) {
+        return new StepScoreSingleStatisticPoint(Long.valueOf(csvLine.get(0)),
+                scoreDefinition.parseScore(csvLine.get(1)));
     }
 
 }

@@ -47,7 +47,7 @@ public class ProblemBenchmark {
     private ProblemIO problemIO = null;
     private boolean writeOutputSolutionEnabled = false;
     private File inputSolutionFile = null;
-    private File problemReportDirectory = null;
+    private File reportDirectory = null;
 
     private List<ProblemStatistic> problemStatisticList = null;
 
@@ -95,12 +95,12 @@ public class ProblemBenchmark {
         return inputSolutionFile;
     }
 
-    public File getProblemReportDirectory() {
-        return problemReportDirectory;
-    }
-
     public void setInputSolutionFile(File inputSolutionFile) {
         this.inputSolutionFile = inputSolutionFile;
+    }
+
+    public File getReportDirectory() {
+        return reportDirectory;
     }
 
     public List<ProblemStatistic> getProblemStatisticList() {
@@ -144,9 +144,12 @@ public class ProblemBenchmark {
     // ************************************************************************
 
     public void benchmarkingStarted() {
-        problemReportDirectory = new File(plannerBenchmark.getBenchmarkReportDirectory(), name);
-        problemReportDirectory.mkdirs();
+        reportDirectory = new File(plannerBenchmark.getBenchmarkReportDirectory(), name);
+        reportDirectory.mkdirs();
         problemScale = null;
+        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
+            singleBenchmark.benchmarkingStarted();
+        }
     }
 
     public long warmUp(long startingTimeMillis, long warmUpTimeMillisSpend, long timeLeft) {
@@ -181,11 +184,14 @@ public class ProblemBenchmark {
             return;
         }
         String filename = singleBenchmark.getName() + "." + problemIO.getFileExtension();
-        File outputSolutionFile = new File(problemReportDirectory, filename);
+        File outputSolutionFile = new File(reportDirectory, filename);
         problemIO.write(outputSolution, outputSolutionFile);
     }
 
     public void benchmarkingEnded() {
+        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
+            singleBenchmark.benchmarkingEnded();
+        }
         determineTotalsAndAveragesAndRanking();
         determineWinningScoreDifference();
     }

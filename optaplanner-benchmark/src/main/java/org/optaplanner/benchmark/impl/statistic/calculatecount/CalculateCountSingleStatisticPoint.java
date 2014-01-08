@@ -16,7 +16,11 @@
 
 package org.optaplanner.benchmark.impl.statistic.calculatecount;
 
-public class CalculateCountSingleStatisticPoint {
+import java.util.List;
+
+import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatisticPoint;
+
+public class CalculateCountSingleStatisticPoint extends AbstractSingleStatisticPoint {
 
     private final long timeMillisSpend;
     private final long calculateCountPerSecond;
@@ -32,6 +36,11 @@ public class CalculateCountSingleStatisticPoint {
 
     public long getCalculateCountPerSecond() {
         return calculateCountPerSecond;
+    }
+
+    @Override
+    public List<String> toCsvLine() {
+        return buildCsvLine(timeMillisSpend, calculateCountPerSecond);
     }
 
 }

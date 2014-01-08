@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.benchmark.impl.SingleBenchmark;
 
 /**
  * 1 statistic of {@link ProblemBenchmark}
@@ -40,26 +40,12 @@ public interface ProblemStatistic {
 
     /**
      * This method is thread-safe.
+     * @param singleBenchmark never null
      * @return never null
      */
-    SingleStatistic createSingleStatistic();
-
-    /**
-     * Reads single statistic file with respect to given ScoreDirectorFactoryConfig
-     * 
-     * @param file representing SingleStatistic
-     * @param scoreDefinition specifies score definition
-     * @return corresponding SingleStatistic instance
-     */
-    SingleStatistic readSingleStatistic(File file, ScoreDefinition scoreDefinition);
+    SingleStatistic createSingleStatistic(SingleBenchmark singleBenchmark);
 
     void writeStatistic();
-
-    /**
-     * @return never null, relative to the {@link DefaultPlannerBenchmark#benchmarkReportDirectory}
-     * (not {@link ProblemBenchmark#problemReportDirectory})
-     */
-    String getCsvFilePath();
 
     /**
      * @return never null

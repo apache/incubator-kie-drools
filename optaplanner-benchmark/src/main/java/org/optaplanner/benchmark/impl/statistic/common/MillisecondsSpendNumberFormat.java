@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic;
+package org.optaplanner.benchmark.impl.statistic.common;
 
 import java.text.FieldPosition;
 import java.text.NumberFormat;
