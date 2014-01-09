@@ -416,4 +416,146 @@ end</programlisting>
       </table>
     </section>
   </section>
+
+  <section>
+    <title>Declarative Agenda</title>
+
+    <warning>
+      <para>Declarative Agenda is experimental, and all aspects are highly likely to change in the future.
+      @Eager and @Direct are temporary annotations to control the behaviour of rules, which will also
+      change as Declarative Agenda evolves. Annotations instead of attributes where chosen, to reflect
+      their experimental nature.</para>
+    </warning>
+
+    <para>The declarative agenda allows to use rules to control which other rules can fire and when.
+    While this will add a lot more overhead than the simple use of salience, the advantage is it is declarative and
+    thus more readable and maintainable and should allow more use cases to be achieved in a simpler fashion.</para>
+
+    <para>This feature is off by default and must be explicitly enabled, that is because it is considered highly
+    experimental for the moment and will be subject to change, but can be activated on a given KieBase by adding the
+    declarativeAgenda='enabled' attribute in the corresponding kbase tag of the kmodule.xml file as in the following example.
+    </para>
+
+    <example>
+      <title>Enabling the Declarative Agenda</title>
+
+      <programlisting language="xml">&lt;kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://jboss.org/kie/6.0.0/kmodule"&gt;
+  &lt;kbase name="DeclarativeKBase" declarativeAgenda="enabled"&gt;
+    &lt;ksession name="KSession"&gt;
+  &lt;/kbase&gt;
+&lt;/kmodule&gt;</programlisting>
+    </example>
+
+    <para>The basic idea is:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>All rule's Matches are inserted into WorkingMemory as facts. So you can now do pattern matching against a
+        Match. The rule's metadata and declarations are available as fields on the Match object.</para>
+      </listitem>
+
+      <listitem>
+        <para>You can use the kcontext.blockMatch( Match match ) for the current rule to block the selected
+        match. Only when that rule becomes false will the match be eligible for firing. If it is already
+        eligible for firing and is later blocked, it will be removed from the agenda until it is unblocked.</para>
+      </listitem>
+
+      <listitem>
+        <para>A match may have multiple blockers and a count is kept. All blockers must became false for the
+        counter to reach zero to enable the Match to be eligible for firing.</para>
+      </listitem>
+
+      <listitem>
+        <para>kcontext.unblockAllMatches( Match match ) is an over-ride rule that will remove all blockers
+        regardless</para>
+      </listitem>
+
+      <listitem>
+        <para>An activation may also be cancelled, so it never fires with cancelMatch</para>
+      </listitem>
+
+      <listitem>
+        <para>An unblocked Match is added to the Agenda and obeys normal salience, agenda groups, ruleflow groups
+        etc.</para>
+      </listitem>
+
+      <listitem>
+        <para>The @Direct annotations allows a rule to fire as soon as it's matched, this is to be used for
+        rules that block/unblock matches, it is not desirable for these rules to have side effects that impact
+        else where.</para>
+      </listitem>
+    </itemizedlist>
+
+    <example>
+      <title>New RuleContext methods</title>
+
+      <programlisting>void blockMatch(Match match);
+void unblockAllMatches(Match match);
+void cancelMatch(Match match);</programlisting>
+    </example>
+
+    <para>Here is a basic example that will block all matches from rules that have metadata @department('sales').
+    They will stay blocked until the blockerAllSalesRules rule becomes false, i.e. "go2" is retracted.</para>
+
+    <example>
+      <title>Block rules based on rule metadata</title>
+
+      <programlisting>rule rule1 @Eager @department('sales') when
+    $s : String( this == 'go1' )
+then
+    list.add( kcontext.rule.name + ':' + $s );
+end
+rule rule2 @Eager @department('sales') when
+    $s : String( this == 'go1' )
+then
+    list.add( kcontext.rule.name + ':' + $s );
+end
+rule blockerAllSalesRules @Direct @Eager when
+    $s : String( this == 'go2' )
+    $i : Match( department == 'sales' )
+then
+    list.add( $i.rule.name + ':' + $s  );
+    kcontext.blockMatch( $i );
+end</programlisting>
+    </example>
+
+    <warning>
+      <para>Further than annotate the blocking rule with @Direct, it is also necessary to annotate all the rules that
+      could be potentially blocked by it with @Eager. This is because, since the Match has to be evaluated by
+      the pattern matching of the blocking rule, the potentially blocked ones cannot be evaluated lazily, otherwise
+      won't be any Match to be evaluated.</para>
+    </warning>
+
+    <para>This example shows how you can use active property to count the number of active or inactive (already fired)
+    matches.</para>
+
+    <example>
+      <title>Count the number of active/inactive Matches</title>
+
+      <programlisting>rule rule1 @Eager @department('sales') when
+    $s : String( this == 'go1' )
+then
+    list.add( kcontext.rule.name + ':' + $s );
+end
+rule rule2 @Eager @department('sales') when
+    $s : String( this == 'go1' )
+then
+    list.add( kcontext.rule.name + ':' + $s );
+end
+rule rule3 @Eager @department('sales') when
+    $s : String( this == 'go1' )
+then
+    list.add( kcontext.rule.name + ':' + $s );
+end
+rule countActivateInActive @Direct @Eager when
+    $s : String( this == 'go2' )
+    $active : Number( this == 1 ) from accumulate( $a : Match( department == 'sales', active == true ), count( $a ) )
+    $inActive : Number( this == 2 ) from  accumulate( $a : Match( department == 'sales', active == false ), count( $a ) )
+then
+    kcontext.halt( );
+end </programlisting>
+    </example>
+  </section>
+
 </section>
