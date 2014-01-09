@@ -384,7 +384,7 @@ public class UrlResource extends BaseResource
 
     public boolean exists() {
         try {
-            return this.url.openStream() != null;
+            return this.grabStream() != null;
         } catch ( IOException e ) {
             return false;
         }
