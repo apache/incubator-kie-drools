@@ -67,6 +67,23 @@ public class AttributeCol52 extends DTColumnConfig52 {
         return result;
     }
 
+    /**
+     * Clones this metadata column instance.
+     *
+     * @return The cloned instance.
+     */
+    public AttributeCol52 cloneColumn() {
+        AttributeCol52 cloned = new AttributeCol52();
+        cloned.setAttribute(getAttribute());
+        cloned.setReverseOrder(isReverseOrder());
+        cloned.setUseRowNumber(isUseRowNumber());
+        cloned.setWidth(getWidth());
+        cloned.setHideColumn(isHideColumn());
+        cloned.setHeader(getHeader());
+        cloned.setDefaultValue(getDefaultValue() != null ? getDefaultValue().cloneDefaultValueCell() : null );
+        return cloned;
+    }
+
     public String getAttribute() {
         return attribute;
     }
