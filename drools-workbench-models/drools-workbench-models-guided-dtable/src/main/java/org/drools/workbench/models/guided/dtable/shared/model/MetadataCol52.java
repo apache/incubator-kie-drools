@@ -54,4 +54,19 @@ public class MetadataCol52 extends DTColumnConfig52 {
         return result;
     }
 
+    /**
+     * Clones this metadata column instance.
+     *
+     * @return The cloned instance.
+     */
+    public MetadataCol52 cloneColumn() {
+        MetadataCol52 cloned = new MetadataCol52();
+        cloned.setMetadata(getMetadata());
+        cloned.setWidth(getWidth());
+        cloned.setHideColumn(isHideColumn());
+        cloned.setHeader(getHeader());
+        cloned.setDefaultValue(getDefaultValue() != null ? getDefaultValue().cloneDefaultValueCell() : null );
+        return cloned;
+    }
+
 }

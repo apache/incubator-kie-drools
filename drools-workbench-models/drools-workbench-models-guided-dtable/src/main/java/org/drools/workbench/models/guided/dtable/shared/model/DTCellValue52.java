@@ -455,4 +455,18 @@ public class DTCellValue52 {
         return "";
     }
 
+    /**
+     * Clones this default value instance.
+     * @return The cloned instance.
+     */
+    public DTCellValue52 cloneDefaultValueCell() {
+        DTCellValue52 cloned = new DTCellValue52();
+        cloned.valueBoolean = valueBoolean;
+        cloned.valueDate = valueDate;
+        cloned.valueNumeric = valueNumeric;
+        cloned.valueString = valueString;
+        cloned.dataType = dataType;
+        return cloned;
+    }
+
 }
