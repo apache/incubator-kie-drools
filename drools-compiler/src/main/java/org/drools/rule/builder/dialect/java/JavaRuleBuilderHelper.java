@@ -21,13 +21,8 @@ public final class JavaRuleBuilderHelper {
 
     public static synchronized TemplateRegistry getRuleTemplateRegistry(ClassLoader cl) {
         if ( !RULE_REGISTRY.contains( "rules" ) ) {
-            ParserConfiguration pconf = new ParserConfiguration();
-            pconf.setClassLoader( cl );
-            
-            ParserContext pctx = new ParserContext(pconf);
             RULE_REGISTRY.addNamedTemplate( "rules",
-                                            TemplateCompiler.compileTemplate( JavaRuleBuilderHelper.class.getResourceAsStream( "javaRule.mvel" ),
-                                                                              pctx ) );
+                                            TemplateCompiler.compileTemplate( JavaRuleBuilderHelper.class.getResourceAsStream( "javaRule.mvel" ) ) );
             TemplateRuntime.execute( RULE_REGISTRY.getNamedTemplate( "rules" ),
                                      null,
                                      RULE_REGISTRY );            
@@ -38,13 +33,8 @@ public final class JavaRuleBuilderHelper {
 
     public static synchronized TemplateRegistry getInvokerTemplateRegistry(ClassLoader cl) {
         if ( !INVOKER_REGISTRY.contains( "invokers" ) ) {
-            ParserConfiguration pconf = new ParserConfiguration();
-            pconf.setClassLoader( cl );
-            
-            ParserContext pctx = new ParserContext(pconf);            
             INVOKER_REGISTRY.addNamedTemplate( "invokers",
-                                               TemplateCompiler.compileTemplate( JavaRuleBuilderHelper.class.getResourceAsStream( "javaInvokers.mvel" ),
-                                                                                 pctx ) );
+                                               TemplateCompiler.compileTemplate( JavaRuleBuilderHelper.class.getResourceAsStream( "javaInvokers.mvel" ) ) );
             TemplateRuntime.execute( INVOKER_REGISTRY.getNamedTemplate( "invokers" ),
                                      null,
                                      INVOKER_REGISTRY );            

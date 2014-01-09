@@ -36,9 +36,11 @@ public class DrlDumper  {
     
     private MVELDumper mvel = new MVELDumper();
 
-    public DrlDumper() {
-        OptimizerFactory.setDefaultOptimizer( "reflective" );
+    static {
+        OptimizerFactory.setDefaultOptimizer( OptimizerFactory.SAFE_REFLECTIVE );
+    }
 
+    public DrlDumper() {
         REPORT_REGISTRY.addNamedTemplate( "drl",
                                           TemplateCompiler.compileTemplate( DrlDumper.class.getResourceAsStream( "drl.mvel" ),
                                                                             (Map<String, Class< ? extends Node>>) null ) );

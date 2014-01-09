@@ -107,6 +107,8 @@ public class MVELCompilationUnit
                                              new MVELDateCoercion() );
         DataConversion.addConversionHandler( Calendar.class,
                                              new MVELCalendarCoercion() );
+
+        OptimizerFactory.setDefaultOptimizer( OptimizerFactory.SAFE_REFLECTIVE );
     }
 
     private static final Map<String, Class< ? >> primitivesMap    = new HashMap<String, Class< ? >>();
@@ -422,9 +424,6 @@ public class MVELCompilationUnit
         MVEL.COMPILER_OPT_ALLOW_RESOLVE_INNERCLASSES_WITH_DOTNOTATION = true;
         MVEL.COMPILER_OPT_SUPPORT_JAVA_STYLE_CLASS_LITERALS = true;   
         
-        // Just temporary as PropertyHandler is not working with ASM
-        OptimizerFactory.setDefaultOptimizer( OptimizerFactory.SAFE_REFLECTIVE );
-
         if ( MVELDebugHandler.isDebugMode() ) {
             parserContext.setDebugSymbols( true );
         }

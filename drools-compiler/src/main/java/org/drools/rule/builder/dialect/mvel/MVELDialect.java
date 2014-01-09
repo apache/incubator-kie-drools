@@ -83,6 +83,7 @@ import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.AbstractParser;
 import org.mvel2.compiler.ExpressionCompiler;
+import org.mvel2.optimizers.OptimizerFactory;
 
 import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
 import static org.drools.rule.builder.dialect.DialectUtil.getUniqueLegalName;
@@ -119,6 +120,7 @@ public class MVELDialect
     private static Map<Class< ? >, EngineElementBuilder>   builders;
 
     static {
+        OptimizerFactory.setDefaultOptimizer(OptimizerFactory.SAFE_REFLECTIVE);
         initBuilder();
     }
 

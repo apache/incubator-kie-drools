@@ -38,6 +38,7 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
+import org.mvel2.optimizers.OptimizerFactory;
 import org.mvel2.util.PropertyTools;
 
 import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
@@ -46,6 +47,10 @@ import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
  * Expression analyzer.
  */
 public class MVELExprAnalyzer {
+
+    static {
+        OptimizerFactory.setDefaultOptimizer(OptimizerFactory.SAFE_REFLECTIVE);
+    }
 
     public MVELExprAnalyzer() {
         // intentionally left blank.
