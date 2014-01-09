@@ -38,4 +38,15 @@ public class MetadataColumnDetails extends ColumnDetails {
         return metadata;
     }
 
+    /**
+     * Returns the header for the metadata column.
+     *
+     * @return The metadata column's header. If the header is not present, returns the metadata string.
+     */
+    public String getColumnHeader() {
+        String result = super.getColumnHeader();
+        if (result == null || result.trim().length() == 0) result = metadata;
+        return result;
+    }
+
 }
