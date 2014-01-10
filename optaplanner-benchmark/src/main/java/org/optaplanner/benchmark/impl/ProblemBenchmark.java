@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.ranking.SingleBenchmarkRankingComparator;
+import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.termination.TerminationConfig;
@@ -47,7 +48,7 @@ public class ProblemBenchmark {
     private ProblemIO problemIO = null;
     private boolean writeOutputSolutionEnabled = false;
     private File inputSolutionFile = null;
-    private File reportDirectory = null;
+    private File problemReportDirectory = null;
 
     private List<ProblemStatistic> problemStatisticList = null;
 
@@ -55,7 +56,9 @@ public class ProblemBenchmark {
 
     private Long problemScale = null;
 
-    // Report aggregation
+    // ************************************************************************
+    // Report accumulates
+    // ************************************************************************
 
     private Long averageUsedMemoryAfterInputSolution = null;
     private Integer failureCount = null;
@@ -102,8 +105,8 @@ public class ProblemBenchmark {
         this.inputSolutionFile = inputSolutionFile;
     }
 
-    public File getReportDirectory() {
-        return reportDirectory;
+    public File getProblemReportDirectory() {
+        return problemReportDirectory;
     }
 
     public List<ProblemStatistic> getProblemStatisticList() {
@@ -143,15 +146,30 @@ public class ProblemBenchmark {
     }
 
     // ************************************************************************
-    // Benchmark methods
+    // Smart getters
     // ************************************************************************
 
-    public void benchmarkingStarted() {
-        reportDirectory = new File(plannerBenchmark.getBenchmarkReportDirectory(), name);
-        reportDirectory.mkdirs();
-        problemScale = null;
+    public boolean hasAnyFailure() {
+        return failureCount > 0;
+    }
+
+    public boolean hasAnySuccess() {
+        return singleBenchmarkList.size() - failureCount > 0;
+    }
+
+    public boolean hasAnyProblemStatistic() {
+        return problemStatisticList.size() > 0;
+    }
+
+    // ************************************************************************
+    // Work methods
+    // ************************************************************************
+
+    public void initSubdirs(File benchmarkReportDirectory) {
+        problemReportDirectory = new File(benchmarkReportDirectory, name);
+        problemReportDirectory.mkdirs();
         for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
-            singleBenchmark.benchmarkingStarted();
+            singleBenchmark.initSubdirs(problemReportDirectory);
         }
     }
 
@@ -187,16 +205,23 @@ public class ProblemBenchmark {
             return;
         }
         String filename = singleBenchmark.getName() + "." + problemIO.getFileExtension();
-        File outputSolutionFile = new File(reportDirectory, filename);
+        File outputSolutionFile = new File(problemReportDirectory, filename);
         problemIO.write(outputSolution, outputSolutionFile);
     }
 
-    public void benchmarkingEnded() {
+    // ************************************************************************
+    // Accumulate methods
+    // ************************************************************************
+
+    public void accumulateResults(BenchmarkReport benchmarkReport) {
         for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
-            singleBenchmark.benchmarkingEnded();
+            singleBenchmark.accumulateResults(benchmarkReport);
         }
         determineTotalsAndAveragesAndRanking();
         determineWinningScoreDifference();
+        for (ProblemStatistic problemStatistic : problemStatisticList) {
+            problemStatistic.accumulateResults(benchmarkReport);
+        }
     }
 
     private void determineTotalsAndAveragesAndRanking() {
@@ -258,16 +283,21 @@ public class ProblemBenchmark {
         }
     }
 
-    public boolean hasAnyFailure() {
-        return failureCount > 0;
-    }
-
-    public boolean hasAnySuccess() {
-        return singleBenchmarkList.size() - failureCount > 0;
-    }
-
-    public boolean hasAnyProblemStatistic() {
-        return problemStatisticList.size() > 0;
+    /**
+     * HACK to avoid loading the planningProblem just to extract it's problemScale.
+     * Called multiple times, for every {@link SingleBenchmark} of this {@link ProblemBenchmark}.
+     *
+     * @param registeringProblemScale >= 0
+     */
+    public void registerProblemScale(long registeringProblemScale) {
+        if (problemScale == null) {
+            problemScale = registeringProblemScale;
+        } else if (problemScale.longValue() != registeringProblemScale) {
+            logger.warn("The problemBenchmark ({}) has different problemScale values ([{},{}]).",
+                    getName(), problemScale, registeringProblemScale);
+            // The problemScale is not unknown (null), but known to be ambiguous
+            problemScale = -1L;
+        }
     }
 
     @Override
@@ -285,23 +315,6 @@ public class ProblemBenchmark {
     @Override
     public int hashCode() {
         return inputSolutionFile.hashCode();
-    }
-
-    /**
-     * HACK to avoid loading the planningProblem just to extract it's problemScale.
-     * Called multiple times, for every {@link SingleBenchmark} of this {@link ProblemBenchmark}.
-     *
-     * @param registeringProblemScale >= 0
-     */
-    public void registerProblemScale(long registeringProblemScale) {
-        if (problemScale == null) {
-            problemScale = registeringProblemScale;
-        } else if (problemScale.longValue() != registeringProblemScale) {
-            logger.warn("The problemBenchmark ({}) has different problemScale values ([{},{}]).",
-                    getName(), problemScale, registeringProblemScale);
-            // The problemScale is not unknown (null), but known to be ambiguous
-            problemScale = -1L;
-        }
     }
 
     @Override

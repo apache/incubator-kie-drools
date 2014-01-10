@@ -33,12 +33,14 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
+import org.optaplanner.benchmark.impl.PlannerBenchmarkRunner;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
 import org.optaplanner.benchmark.impl.SolverBenchmark;
 import org.optaplanner.benchmark.impl.ranking.SolverBenchmarkRankingType;
 import org.optaplanner.benchmark.impl.ranking.TotalRankSolverBenchmarkRankingWeightFactory;
 import org.optaplanner.benchmark.impl.ranking.TotalScoreSolverBenchmarkRankingComparator;
 import org.optaplanner.benchmark.impl.ranking.WorstScoreSolverBenchmarkRankingComparator;
+import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -194,24 +196,27 @@ public class PlannerBenchmarkConfig {
         generateSolverBenchmarkConfigNames();
         inherit();
 
-        DefaultPlannerBenchmark plannerBenchmark = new DefaultPlannerBenchmark();
-        plannerBenchmark.setName(name);
-        plannerBenchmark.setBenchmarkDirectory(benchmarkDirectory);
-        plannerBenchmark.setParallelBenchmarkCount(resolveParallelBenchmarkCount());
-        plannerBenchmark.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
-        plannerBenchmark.getBenchmarkReport().setLocale(
+        DefaultPlannerBenchmark plannerBenchmarkResult = new DefaultPlannerBenchmark();
+        plannerBenchmarkResult.setName(name);
+        PlannerBenchmarkRunner plannerBenchmarkRunner = new PlannerBenchmarkRunner(plannerBenchmarkResult);
+        plannerBenchmarkRunner.setBenchmarkDirectory(benchmarkDirectory);
+        plannerBenchmarkResult.setParallelBenchmarkCount(resolveParallelBenchmarkCount());
+        plannerBenchmarkResult.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
+        BenchmarkReport benchmarkReport = new BenchmarkReport(plannerBenchmarkResult);
+        plannerBenchmarkRunner.setBenchmarkReport(benchmarkReport);
+        benchmarkReport.setLocale(
                 benchmarkReportLocale == null ? Locale.getDefault() : benchmarkReportLocale);
-        supplySolverBenchmarkRanking(plannerBenchmark);
+        supplySolverBenchmarkRanking(benchmarkReport);
 
         List<SolverBenchmark> solverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkConfigList.size());
         List<ProblemBenchmark> unifiedProblemBenchmarkList = new ArrayList<ProblemBenchmark>();
-        plannerBenchmark.setUnifiedProblemBenchmarkList(unifiedProblemBenchmarkList);
+        plannerBenchmarkResult.setUnifiedProblemBenchmarkList(unifiedProblemBenchmarkList);
         for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
-            SolverBenchmark solverBenchmark = solverBenchmarkConfig.buildSolverBenchmark(plannerBenchmark);
+            SolverBenchmark solverBenchmark = solverBenchmarkConfig.buildSolverBenchmark(plannerBenchmarkResult);
             solverBenchmarkList.add(solverBenchmark);
         }
-        plannerBenchmark.setSolverBenchmarkList(solverBenchmarkList);
-        return plannerBenchmark;
+        plannerBenchmarkResult.setSolverBenchmarkList(solverBenchmarkList);
+        return plannerBenchmarkRunner;
     }
 
     protected void validate() {
@@ -261,7 +266,7 @@ public class PlannerBenchmarkConfig {
         }
     }
 
-    protected void supplySolverBenchmarkRanking(DefaultPlannerBenchmark plannerBenchmark) {
+    protected void supplySolverBenchmarkRanking(BenchmarkReport benchmarkReport) {
         if (solverBenchmarkRankingType != null && solverBenchmarkRankingComparatorClass != null) {
             throw new IllegalStateException("The PlannerBenchmark cannot have"
                     + " a solverBenchmarkRankingType (" + solverBenchmarkRankingType
@@ -314,11 +319,11 @@ public class PlannerBenchmarkConfig {
             }
         }
         if (solverBenchmarkRankingComparator != null) {
-            plannerBenchmark.setSolverBenchmarkRankingComparator(solverBenchmarkRankingComparator);
+            benchmarkReport.setSolverBenchmarkRankingComparator(solverBenchmarkRankingComparator);
         } else if (solverBenchmarkRankingWeightFactory != null) {
-            plannerBenchmark.setSolverBenchmarkRankingWeightFactory(solverBenchmarkRankingWeightFactory);
+            benchmarkReport.setSolverBenchmarkRankingWeightFactory(solverBenchmarkRankingWeightFactory);
         } else {
-            plannerBenchmark.setSolverBenchmarkRankingComparator(new TotalScoreSolverBenchmarkRankingComparator());
+            benchmarkReport.setSolverBenchmarkRankingComparator(new TotalScoreSolverBenchmarkRankingComparator());
         }
     }
 

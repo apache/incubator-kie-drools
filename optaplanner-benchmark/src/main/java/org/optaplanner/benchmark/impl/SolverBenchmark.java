@@ -22,6 +22,7 @@ import java.util.List;
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
+import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -46,7 +47,9 @@ public class SolverBenchmark {
     private List<ProblemBenchmark> problemBenchmarkList = null;
     private List<SingleBenchmark> singleBenchmarkList = null;
 
-    // Report aggregation
+    // ************************************************************************
+    // Report accumulates
+    // ************************************************************************
 
     private int failureCount = -1;
     private Score totalScore = null;
@@ -107,6 +110,10 @@ public class SolverBenchmark {
         return totalScore;
     }
 
+    public Score getAverageScore() {
+        return averageScore;
+    }
+
     public Score getTotalWinningScoreDifference() {
         return totalWinningScoreDifference;
     }
@@ -128,7 +135,7 @@ public class SolverBenchmark {
     }
 
     // ************************************************************************
-    // Benchmark methods
+    // Smart getters
     // ************************************************************************
 
     public String getNameWithFavoriteSuffix() {
@@ -138,12 +145,93 @@ public class SolverBenchmark {
         return name;
     }
 
-    public void benchmarkingStarted() {
-        // Note: do not call SingleBenchmark.benchmarkingStarted()
-        // because DefaultPlannerBenchmark does that already on the unified list
+    public int getSuccessCount() {
+        return singleBenchmarkList.size() - failureCount;
     }
 
-    public void benchmarkingEnded() {
+    public boolean hasAnySuccess() {
+        return getSuccessCount() > 0;
+    }
+
+    public boolean hasAnyFailure() {
+        return failureCount > 0;
+    }
+
+    public boolean isFavorite() {
+        return ranking != null && ranking.intValue() == 0;
+    }
+
+    // TODO Do the locale formatting in benchmarkReport.html.ftl - https://issues.jboss.org/browse/PLANNER-169
+    public String getStandardDeviationString() {
+        if (standardDeviationDoubles == null) {
+            return null;
+        }
+        StringBuilder standardDeviationString = new StringBuilder(standardDeviationDoubles.length * 9);
+        boolean first = true;
+        for (double standardDeviationDouble : standardDeviationDoubles) {
+            if (first) {
+                first = false;
+            } else {
+                standardDeviationString.append("/");
+            }
+            String abbreviated = Double.toString(standardDeviationDouble);
+            // Abbreviate to 2 decimals
+            // We don't use DecimalFormat to abbreviate because it's written locale insensitive (like java literals)
+            int dotIndex = abbreviated.lastIndexOf('.');
+            if (dotIndex >= 0 && dotIndex + 3 < abbreviated.length()) {
+                abbreviated = abbreviated.substring(0, dotIndex + 3);
+            }
+            standardDeviationString.append(abbreviated);
+        }
+        return standardDeviationString.toString();
+    }
+
+    public Score getAverageWinningScoreDifference() {
+        if (totalWinningScoreDifference == null) {
+            return null;
+        }
+        return totalWinningScoreDifference.divide(getSuccessCount());
+    }
+
+    public List<Score> getScoreList() {
+        List<Score> scoreList = new ArrayList<Score>(singleBenchmarkList.size());
+        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
+            scoreList.add(singleBenchmark.getScore());
+        }
+        return scoreList;
+    }
+
+    /**
+     * @param problemBenchmark never null
+     * @return sometimes null
+     */
+    public SingleBenchmark findSingleBenchmark(ProblemBenchmark problemBenchmark) {
+        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
+            if (problemBenchmark.equals(singleBenchmark.getProblemBenchmark())) {
+                return singleBenchmark;
+            }
+        }
+        return null;
+    }
+
+    public String getSolverConfigAsHtmlEscapedXml() {
+        // TODO reuse a single XStream instance for the entire report
+        XStream xStream = XmlSolverFactory.buildXstream();
+        xStream.setMode(XStream.NO_REFERENCES);
+        String xml = xStream.toXML(solverConfig);
+        return StringEscapeUtils.escapeHtml(xml);
+    }
+
+    // ************************************************************************
+    // Accumulate methods
+    // ************************************************************************
+
+    /**
+     * Does not call {@link SingleBenchmark#accumulateResults(BenchmarkReport)},
+     * because {@link DefaultPlannerBenchmark#accumulateResults(BenchmarkReport)} does that already on
+     * {@link DefaultPlannerBenchmark#getUnifiedProblemBenchmarkList()}.
+     */
+    public void accumulateResults(BenchmarkReport benchmarkReport) {
         determineTotalsAndAverages();
         determineStandardDeviation();
     }
@@ -207,87 +295,6 @@ public class SolverBenchmark {
         for (int i = 0; i < differenceSquaredTotalDoubles.length; i++) {
             standardDeviationDoubles[i] = Math.pow(differenceSquaredTotalDoubles[i] / successCount, 0.5);
         }
-    }
-
-    public int getSuccessCount() {
-        return singleBenchmarkList.size() - failureCount;
-    }
-
-    public boolean hasAnySuccess() {
-        return getSuccessCount() > 0;
-    }
-
-    public boolean hasAnyFailure() {
-        return failureCount > 0;
-    }
-
-    public boolean isFavorite() {
-        return ranking != null && ranking.intValue() == 0;
-    }
-
-    public Score getAverageScore() {
-        return averageScore;
-    }
-
-    // TODO Do the locale formatting in benchmarkReport.html.ftl - https://issues.jboss.org/browse/PLANNER-169
-    public String getStandardDeviationString() {
-        if (standardDeviationDoubles == null) {
-            return null;
-        }
-        StringBuilder standardDeviationString = new StringBuilder(standardDeviationDoubles.length * 9);
-        boolean first = true;
-        for (double standardDeviationDouble : standardDeviationDoubles) {
-            if (first) {
-                first = false;
-            } else {
-                standardDeviationString.append("/");
-            }
-            String abbreviated = Double.toString(standardDeviationDouble);
-            // Abbreviate to 2 decimals
-            // We don't use DecimalFormat to abbreviate because it's written locale insensitive (like java literals)
-            int dotIndex = abbreviated.lastIndexOf('.');
-            if (dotIndex >= 0 && dotIndex + 3 < abbreviated.length()) {
-                abbreviated = abbreviated.substring(0, dotIndex + 3);
-            }
-            standardDeviationString.append(abbreviated);
-        }
-        return standardDeviationString.toString();
-    }
-
-    public Score getAverageWinningScoreDifference() {
-        if (totalWinningScoreDifference == null) {
-            return null;
-        }
-        return totalWinningScoreDifference.divide(getSuccessCount());
-    }
-
-    public List<Score> getScoreList() {
-        List<Score> scoreList = new ArrayList<Score>(singleBenchmarkList.size());
-        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
-            scoreList.add(singleBenchmark.getScore());
-        }
-        return scoreList;
-    }
-
-    /**
-     * @param problemBenchmark never null
-     * @return sometimes null
-     */
-    public SingleBenchmark findSingleBenchmark(ProblemBenchmark problemBenchmark) {
-        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
-            if (problemBenchmark.equals(singleBenchmark.getProblemBenchmark())) {
-                return singleBenchmark;
-            }
-        }
-        return null;
-    }
-
-    public String getSolverConfigAsHtmlEscapedXml() {
-        // TODO reuse a single XStream instance for the entire report
-        XStream xStream = XmlSolverFactory.buildXstream();
-        xStream.setMode(XStream.NO_REFERENCES);
-        String xml = xStream.toXML(solverConfig);
-        return StringEscapeUtils.escapeHtml(xml);
     }
 
     @Override

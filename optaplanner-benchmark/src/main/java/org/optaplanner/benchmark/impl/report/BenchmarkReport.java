@@ -26,6 +26,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -52,6 +53,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.TextAnchor;
+import org.optaplanner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
@@ -65,8 +67,12 @@ public class BenchmarkReport {
 
     public static final int CHARTED_SCORE_LEVEL_SIZE = 5;
 
-    protected final DefaultPlannerBenchmark plannerBenchmark;
-    protected Locale locale;
+    protected final DefaultPlannerBenchmark plannerBenchmarkResult;
+
+    protected File benchmarkReportDirectory = null;
+    protected Locale locale = null;
+    protected Comparator<SolverBenchmark> solverBenchmarkRankingComparator = null;
+    protected SolverBenchmarkRankingWeightFactory solverBenchmarkRankingWeightFactory = null;
 
     protected File htmlOverviewFile = null;
     protected File summaryDirectory = null;
@@ -82,12 +88,20 @@ public class BenchmarkReport {
 
     protected List<String> warningList = null;
 
-    public BenchmarkReport(DefaultPlannerBenchmark plannerBenchmark) {
-        this.plannerBenchmark = plannerBenchmark;
+    public BenchmarkReport(DefaultPlannerBenchmark plannerBenchmarkResult) {
+        this.plannerBenchmarkResult = plannerBenchmarkResult;
     }
 
-    public DefaultPlannerBenchmark getPlannerBenchmark() {
-        return plannerBenchmark;
+    public DefaultPlannerBenchmark getPlannerBenchmarkResult() {
+        return plannerBenchmarkResult;
+    }
+
+    public File getBenchmarkReportDirectory() {
+        return benchmarkReportDirectory;
+    }
+
+    public void setBenchmarkReportDirectory(File benchmarkReportDirectory) {
+        this.benchmarkReportDirectory = benchmarkReportDirectory;
     }
 
     public Locale getLocale() {
@@ -96,6 +110,22 @@ public class BenchmarkReport {
 
     public void setLocale(Locale locale) {
         this.locale = locale;
+    }
+
+    public Comparator<SolverBenchmark> getSolverBenchmarkRankingComparator() {
+        return solverBenchmarkRankingComparator;
+    }
+
+    public void setSolverBenchmarkRankingComparator(Comparator<SolverBenchmark> solverBenchmarkRankingComparator) {
+        this.solverBenchmarkRankingComparator = solverBenchmarkRankingComparator;
+    }
+
+    public SolverBenchmarkRankingWeightFactory getSolverBenchmarkRankingWeightFactory() {
+        return solverBenchmarkRankingWeightFactory;
+    }
+
+    public void setSolverBenchmarkRankingWeightFactory(SolverBenchmarkRankingWeightFactory solverBenchmarkRankingWeightFactory) {
+        this.solverBenchmarkRankingWeightFactory = solverBenchmarkRankingWeightFactory;
     }
 
     public File getHtmlOverviewFile() {
@@ -147,7 +177,7 @@ public class BenchmarkReport {
     }
 
     // ************************************************************************
-    // Write methods
+    // Smart getters
     // ************************************************************************
 
     public int getAvailableProcessors() {
@@ -180,7 +210,7 @@ public class BenchmarkReport {
     }
 
     public String getRelativePathToBenchmarkReportDirectory(File file) {
-        String benchmarkReportDirectoryPath = plannerBenchmark.getBenchmarkReportDirectory().getAbsolutePath();
+        String benchmarkReportDirectoryPath = benchmarkReportDirectory.getAbsolutePath();
         String filePath = file.getAbsolutePath();
         if (!filePath.startsWith(benchmarkReportDirectoryPath)) {
             throw new IllegalArgumentException("The filePath (" + filePath
@@ -193,9 +223,20 @@ public class BenchmarkReport {
         return relativePath;
     }
 
+    // ************************************************************************
+    // Write methods
+    // ************************************************************************
+
+    public void initSubdirs() {
+        for (ProblemBenchmark problemBenchmark : plannerBenchmarkResult.getUnifiedProblemBenchmarkList()) {
+            problemBenchmark.initSubdirs(benchmarkReportDirectory);
+        }
+    }
+
     public void writeReport() {
-        summaryDirectory = new File(plannerBenchmark.getBenchmarkReportDirectory(), "summary");
+        summaryDirectory = new File(benchmarkReportDirectory, "summary");
         summaryDirectory.mkdir();
+        plannerBenchmarkResult.accumulateResults(this);
         fillWarningList();
         writeBestScoreSummaryCharts();
         writeBestScoreScalabilitySummaryChart();
@@ -205,10 +246,10 @@ public class BenchmarkReport {
         writeTimeSpendSummaryChart();
         writeTimeSpendScalabilitySummaryChart();
         writeBestScorePerTimeSpendSummaryChart();
-        for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
+        for (ProblemBenchmark problemBenchmark : plannerBenchmarkResult.getUnifiedProblemBenchmarkList()) {
             if (problemBenchmark.hasAnySuccess()) {
                 for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
-                    problemStatistic.writeStatistic();
+                    problemStatistic.writeGraphFiles(this);
                 }
             }
         }
@@ -224,8 +265,8 @@ public class BenchmarkReport {
                     + " Consider starting the java process with the argument \"-server\" to get better results.");
         }
         int availableProcessors = getAvailableProcessors();
-        if (plannerBenchmark.getParallelBenchmarkCount() > availableProcessors) {
-            warningList.add("The parallelBenchmarkCount (" + plannerBenchmark.getParallelBenchmarkCount()
+        if (plannerBenchmarkResult.getParallelBenchmarkCount() > availableProcessors) {
+            warningList.add("The parallelBenchmarkCount (" + plannerBenchmarkResult.getParallelBenchmarkCount()
                     + ") is higher than the number of availableProcessors (" + availableProcessors + ").");
         }
     }
@@ -233,7 +274,7 @@ public class BenchmarkReport {
     private void writeBestScoreSummaryCharts() {
         // Each scoreLevel has it's own dataset and chartFile
         List<DefaultCategoryDataset> datasetList = new ArrayList<DefaultCategoryDataset>(CHARTED_SCORE_LEVEL_SIZE);
-        for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
+        for (SolverBenchmark solverBenchmark : plannerBenchmarkResult.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
                 String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
@@ -265,7 +306,7 @@ public class BenchmarkReport {
         List<List<XYSeries>> seriesListList = new ArrayList<List<XYSeries>>(
                 CHARTED_SCORE_LEVEL_SIZE);
         int solverBenchmarkIndex = 0;
-        for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
+        for (SolverBenchmark solverBenchmark : plannerBenchmarkResult.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
                 if (singleBenchmark.isSuccess()) {
@@ -274,7 +315,7 @@ public class BenchmarkReport {
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= seriesListList.size()) {
                             seriesListList.add(new ArrayList<XYSeries>(
-                                    plannerBenchmark.getSolverBenchmarkList().size()));
+                                    plannerBenchmarkResult.getSolverBenchmarkList().size()));
                         }
                         List<XYSeries> seriesList = seriesListList.get(i);
                         while (solverBenchmarkIndex >= seriesList.size()) {
@@ -304,7 +345,7 @@ public class BenchmarkReport {
     private void writeWinningScoreDifferenceSummaryChart() {
         // Each scoreLevel has it's own dataset and chartFile
         List<DefaultCategoryDataset> datasetList = new ArrayList<DefaultCategoryDataset>(CHARTED_SCORE_LEVEL_SIZE);
-        for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
+        for (SolverBenchmark solverBenchmark : plannerBenchmarkResult.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
                 String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
@@ -336,7 +377,7 @@ public class BenchmarkReport {
     private void writeWorstScoreDifferencePercentageSummaryChart() {
         // Each scoreLevel has it's own dataset and chartFile
         List<DefaultCategoryDataset> datasetList = new ArrayList<DefaultCategoryDataset>(CHARTED_SCORE_LEVEL_SIZE);
-        for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
+        for (SolverBenchmark solverBenchmark : plannerBenchmarkResult.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
                 String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
@@ -367,8 +408,8 @@ public class BenchmarkReport {
     }
 
     private void writeAverageCalculateCountPerSecondSummaryChart() {
-        List<XYSeries> seriesList = new ArrayList<XYSeries>(plannerBenchmark.getSolverBenchmarkList().size());
-        for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
+        List<XYSeries> seriesList = new ArrayList<XYSeries>(plannerBenchmarkResult.getSolverBenchmarkList().size());
+        for (SolverBenchmark solverBenchmark : plannerBenchmarkResult.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
             XYSeries series = new XYSeries(solverLabel);
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
@@ -390,7 +431,7 @@ public class BenchmarkReport {
 
     private void writeTimeSpendSummaryChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
+        for (SolverBenchmark solverBenchmark : plannerBenchmarkResult.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
                 String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
@@ -407,8 +448,8 @@ public class BenchmarkReport {
     }
 
     private void writeTimeSpendScalabilitySummaryChart() {
-        List<XYSeries> seriesList = new ArrayList<XYSeries>(plannerBenchmark.getSolverBenchmarkList().size());
-        for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
+        List<XYSeries> seriesList = new ArrayList<XYSeries>(plannerBenchmarkResult.getSolverBenchmarkList().size());
+        for (SolverBenchmark solverBenchmark : plannerBenchmarkResult.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
             XYSeries series = new XYSeries(solverLabel);
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
@@ -433,7 +474,7 @@ public class BenchmarkReport {
         List<List<XYSeries>> seriesListList = new ArrayList<List<XYSeries>>(
                 CHARTED_SCORE_LEVEL_SIZE);
         int solverBenchmarkIndex = 0;
-        for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
+        for (SolverBenchmark solverBenchmark : plannerBenchmarkResult.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
                 if (singleBenchmark.isSuccess()) {
@@ -442,7 +483,7 @@ public class BenchmarkReport {
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= seriesListList.size()) {
                             seriesListList.add(new ArrayList<XYSeries>(
-                                    plannerBenchmark.getSolverBenchmarkList().size()));
+                                    plannerBenchmarkResult.getSolverBenchmarkList().size()));
                         }
                         List<XYSeries> seriesList = seriesListList.get(i);
                         while (solverBenchmarkIndex >= seriesList.size()) {
@@ -546,7 +587,7 @@ public class BenchmarkReport {
 
     private void determineDefaultShownScoreLevelIndex() {
         defaultShownScoreLevelIndex = Integer.MAX_VALUE;
-        for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
+        for (ProblemBenchmark problemBenchmark : plannerBenchmarkResult.getUnifiedProblemBenchmarkList()) {
             if (problemBenchmark.hasAnySuccess()) {
                 double[] winningScoreLevels = ScoreUtils.extractLevelDoubles(
                         problemBenchmark.getWinningSingleBenchmark().getScore());
@@ -579,9 +620,9 @@ public class BenchmarkReport {
     }
 
     private void writeHtmlOverviewFile() {
-        WebsiteResourceUtils.copyResourcesTo(plannerBenchmark.getBenchmarkReportDirectory());
+        WebsiteResourceUtils.copyResourcesTo(benchmarkReportDirectory);
 
-        htmlOverviewFile = new File(plannerBenchmark.getBenchmarkReportDirectory(), "index.html");
+        htmlOverviewFile = new File(benchmarkReportDirectory, "index.html");
         Configuration freemarkerCfg = new Configuration();
         freemarkerCfg.setDefaultEncoding("UTF-8");
         freemarkerCfg.setLocale(locale);
@@ -607,5 +648,4 @@ public class BenchmarkReport {
             IOUtils.closeQuietly(writer);
         }
     }
-
 }

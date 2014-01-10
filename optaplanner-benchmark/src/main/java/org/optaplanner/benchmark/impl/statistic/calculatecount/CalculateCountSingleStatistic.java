@@ -70,7 +70,6 @@ public class CalculateCountSingleStatistic extends AbstractSingleStatistic<Calcu
 
     public void close(Solver solver) {
         ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
-        writeCsvStatisticFile();
     }
 
     private class CalculateCountSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {

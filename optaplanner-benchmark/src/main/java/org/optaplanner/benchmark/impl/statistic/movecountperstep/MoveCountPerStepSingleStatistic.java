@@ -55,7 +55,6 @@ public class MoveCountPerStepSingleStatistic extends AbstractSingleStatistic<Mov
 
     public void close(Solver solver) {
         ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
-        writeCsvStatisticFile();
     }
     
     private class MoveCountPerStepSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {

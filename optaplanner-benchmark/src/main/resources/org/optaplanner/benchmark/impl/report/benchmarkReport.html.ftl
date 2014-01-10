@@ -5,7 +5,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>${benchmarkReport.plannerBenchmark.name} Planner benchmark report</title>
+    <title>${benchmarkReport.plannerBenchmarkResult.name} Planner benchmark report</title>
     <link href="twitterbootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="twitterbootstrap/css/bootstrap-responsive.css" rel="stylesheet"/>
     <link href="twitterbootstrap/css/prettify.css" rel="stylesheet"/>
@@ -81,7 +81,7 @@
                     <li><a href="#problemBenchmark">Problem benchmarks</a></li>
                     <li>
                         <ul class="nav nav-list">
-                        <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                        <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkList as problemBenchmark>
                             <li><a href="#problemBenchmark_${problemBenchmark.name}">${problemBenchmark.name}</a></li>
                         </#list>
                         </ul>
@@ -90,7 +90,7 @@
                     <li><a href="#solverBenchmark">Solver benchmarks</a></li>
                     <li>
                         <ul class="nav nav-list">
-                        <#list benchmarkReport.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                        <#list benchmarkReport.plannerBenchmarkResult.solverBenchmarkList as solverBenchmark>
                             <li><a href="#solverBenchmark_${solverBenchmark.name}">${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></a></li>
                         </#list>
                         </ul>
@@ -108,9 +108,9 @@
                 <div class="page-header">
                     <h1>Summary</h1>
                 </div>
-            <#if benchmarkReport.plannerBenchmark.hasAnyFailure()>
+            <#if benchmarkReport.plannerBenchmarkResult.hasAnyFailure()>
                 <div class="alert alert-error">
-                    <p>${benchmarkReport.plannerBenchmark.failureCount} benchmarks have failed!</p>
+                    <p>${benchmarkReport.plannerBenchmarkResult.failureCount} benchmarks have failed!</p>
                 </div>
             </#if>
             <#list benchmarkReport.warningList as warning>
@@ -144,17 +144,17 @@
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
-                                    <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                    <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkList as problemBenchmark>
                                         <th>${problemBenchmark.name}</th>
                                     </#list>
                                         <th>Average</th>
                                         <th>Standard Deviation</th>
                                         <th>Ranking</th>
                                     </tr>
-                                <#list benchmarkReport.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                                <#list benchmarkReport.plannerBenchmarkResult.solverBenchmarkList as solverBenchmark>
                                     <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></th>
-                                        <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                        <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkList as problemBenchmark>
                                             <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
                                                 <td></td>
                                             <#else>
@@ -185,15 +185,15 @@
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
-                                    <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                    <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkList as problemBenchmark>
                                         <th>${problemBenchmark.name}</th>
                                     </#list>
                                         <th>Average</th>
                                     </tr>
-                                <#list benchmarkReport.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                                <#list benchmarkReport.plannerBenchmarkResult.solverBenchmarkList as solverBenchmark>
                                     <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></th>
-                                        <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                        <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkList as problemBenchmark>
                                             <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
                                                 <td></td>
                                             <#else>
@@ -217,15 +217,15 @@
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
-                                    <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                    <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkList as problemBenchmark>
                                         <th>${problemBenchmark.name}</th>
                                     </#list>
                                         <th>Average</th>
                                     </tr>
-                                <#list benchmarkReport.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                                <#list benchmarkReport.plannerBenchmarkResult.solverBenchmarkList as solverBenchmark>
                                     <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></th>
-                                        <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                        <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkList as problemBenchmark>
                                             <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
                                                 <td></td>
                                             <#else>
@@ -296,22 +296,22 @@
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
-                                    <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                    <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkList as problemBenchmark>
                                         <th>${problemBenchmark.name}</th>
                                     </#list>
                                         <th>Average</th>
                                     </tr>
                                     <tr>
                                         <th class="problemScale">Problem scale</th>
-                                    <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                    <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkList as problemBenchmark>
                                         <td class="problemScale">${problemBenchmark.problemScale!""}</td>
                                     </#list>
-                                        <td class="problemScale">${benchmarkReport.plannerBenchmark.averageProblemScale!""}</td>
+                                        <td class="problemScale">${benchmarkReport.plannerBenchmarkResult.averageProblemScale!""}</td>
                                     </tr>
-                                <#list benchmarkReport.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                                <#list benchmarkReport.plannerBenchmarkResult.solverBenchmarkList as solverBenchmark>
                                     <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></th>
-                                        <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                        <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkList as problemBenchmark>
                                             <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
                                                 <td></td>
                                             <#else>
@@ -337,20 +337,20 @@
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
-                                    <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                    <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkList as problemBenchmark>
                                         <th>${problemBenchmark.name}</th>
                                     </#list>
                                     </tr>
                                     <tr>
                                         <th class="problemScale">Problem scale</th>
-                                    <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                    <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkList as problemBenchmark>
                                         <td class="problemScale">${problemBenchmark.problemScale!""}</td>
                                     </#list>
                                     </tr>
-                                <#list benchmarkReport.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                                <#list benchmarkReport.plannerBenchmarkResult.solverBenchmarkList as solverBenchmark>
                                     <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></th>
-                                        <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                        <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkList as problemBenchmark>
                                             <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
                                                 <td></td>
                                             <#else>
@@ -402,7 +402,7 @@
                 <div class="page-header">
                     <h1>Problem benchmarks</h1>
                 </div>
-            <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+            <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkList as problemBenchmark>
                 <section id="problemBenchmark_${problemBenchmark.name}">
                     <h2>${problemBenchmark.name}</h2>
                     <#if problemBenchmark.hasAnyFailure()>
@@ -481,7 +481,7 @@
                 <div class="page-header">
                     <h1>Solver benchmarks</h1>
                 </div>
-            <#list benchmarkReport.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+            <#list benchmarkReport.plannerBenchmarkResult.solverBenchmarkList as solverBenchmark>
                 <section id="solverBenchmark_${solverBenchmark.name}">
                     <h2>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></h2>
                     <#if solverBenchmark.hasAnyFailure()>
@@ -506,27 +506,27 @@
                 <table class="benchmark-table table table-striped">
                     <tr>
                         <th>name</th>
-                        <td>${benchmarkReport.plannerBenchmark.name}</td>
+                        <td>${benchmarkReport.plannerBenchmarkResult.name}</td>
                     </tr>
                     <tr>
                         <th>startingTimestamp</th>
-                        <td>${benchmarkReport.plannerBenchmark.startingTimestamp?datetime}</td>
+                        <td>${benchmarkReport.plannerBenchmarkResult.startingTimestamp?datetime}</td>
                     </tr>
                     <tr>
                         <th>warmUpTimeMillisSpend</th>
-                        <td>${benchmarkReport.plannerBenchmark.warmUpTimeMillisSpend} ms</td>
+                        <td>${benchmarkReport.plannerBenchmarkResult.warmUpTimeMillisSpend} ms</td>
                     </tr>
                     <tr>
                         <th>parallelBenchmarkCount / availableProcessors</th>
-                        <td>${benchmarkReport.plannerBenchmark.parallelBenchmarkCount} / ${benchmarkReport.availableProcessors}</td>
+                        <td>${benchmarkReport.plannerBenchmarkResult.parallelBenchmarkCount} / ${benchmarkReport.availableProcessors}</td>
                     </tr>
                     <tr>
                         <th>benchmarkTimeMillisSpend</th>
-                        <td>${benchmarkReport.plannerBenchmark.benchmarkTimeMillisSpend} ms</td>
+                        <td>${benchmarkReport.plannerBenchmarkResult.benchmarkTimeMillisSpend} ms</td>
                     </tr>
                     <tr>
                         <th>failureCount</th>
-                        <td>${benchmarkReport.plannerBenchmark.failureCount}</td>
+                        <td>${benchmarkReport.plannerBenchmarkResult.failureCount}</td>
                     </tr>
                     <tr>
                         <th>VM max memory (as in -Xmx but lower)</th>

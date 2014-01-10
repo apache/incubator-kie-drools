@@ -22,13 +22,16 @@ import java.util.List;
 import org.junit.Test;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.optaplanner.benchmark.impl.SolverBenchmark;
+import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 public class WorstScoreSolverBenchmarkRankingComparatorTest extends AbstractRankingComparatorTest {
 
     @Test
     public void normal() {
+        BenchmarkReport benchmarkReport = mock(BenchmarkReport.class);
         WorstScoreSolverBenchmarkRankingComparator comparator = new WorstScoreSolverBenchmarkRankingComparator();
         SolverBenchmark a = new SolverBenchmark(null);
         List<SingleBenchmark> aSingleBenchmarkList = new ArrayList<SingleBenchmark>();
@@ -36,20 +39,21 @@ public class WorstScoreSolverBenchmarkRankingComparatorTest extends AbstractRank
         addSingleBenchmark(aSingleBenchmarkList, -2001, -30, -2001);
         addSingleBenchmark(aSingleBenchmarkList, -30, -30, -2001);
         a.setSingleBenchmarkList(aSingleBenchmarkList);
-        a.benchmarkingEnded();
+        a.accumulateResults(benchmarkReport);
         SolverBenchmark b = new SolverBenchmark(null);
         List<SingleBenchmark> bSingleBenchmarkList = new ArrayList<SingleBenchmark>();
         addSingleBenchmark(bSingleBenchmarkList, -900, -30, -2000);
         addSingleBenchmark(bSingleBenchmarkList, -2000, -30, -2000);
         addSingleBenchmark(bSingleBenchmarkList, -30, -30, -2000);
         b.setSingleBenchmarkList(bSingleBenchmarkList);
-        b.benchmarkingEnded();
+        b.accumulateResults(benchmarkReport);
         assertEquals(-1, comparator.compare(a, b));
         assertEquals(1, comparator.compare(b, a));
     }
 
     @Test
     public void worstIsEqual() {
+        BenchmarkReport benchmarkReport = mock(BenchmarkReport.class);
         WorstScoreSolverBenchmarkRankingComparator comparator = new WorstScoreSolverBenchmarkRankingComparator();
         SolverBenchmark a = new SolverBenchmark(null);
         List<SingleBenchmark> aSingleBenchmarkList = new ArrayList<SingleBenchmark>();
@@ -57,14 +61,14 @@ public class WorstScoreSolverBenchmarkRankingComparatorTest extends AbstractRank
         addSingleBenchmark(aSingleBenchmarkList, -2000, -30, -2000);
         addSingleBenchmark(aSingleBenchmarkList, -30, -30, -2000);
         a.setSingleBenchmarkList(aSingleBenchmarkList);
-        a.benchmarkingEnded();
+        a.accumulateResults(benchmarkReport);
         SolverBenchmark b = new SolverBenchmark(null);
         List<SingleBenchmark> bSingleBenchmarkList = new ArrayList<SingleBenchmark>();
         addSingleBenchmark(bSingleBenchmarkList, -100, -40, -2000);
         addSingleBenchmark(bSingleBenchmarkList, -2000, -40, -2000);
         addSingleBenchmark(bSingleBenchmarkList, -40, -40, -2000);
         b.setSingleBenchmarkList(bSingleBenchmarkList);
-        b.benchmarkingEnded();
+        b.accumulateResults(benchmarkReport);
         assertEquals(-1, comparator.compare(a, b));
         assertEquals(1, comparator.compare(b, a));
     }

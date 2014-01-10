@@ -41,6 +41,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
@@ -71,8 +72,9 @@ public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
     // Write methods
     // ************************************************************************
 
-    protected void writeGraphStatistic() {
-        Locale locale = problemBenchmark.getPlannerBenchmark().getBenchmarkReport().getLocale();
+    @Override
+    public void writeGraphFiles(BenchmarkReport benchmarkReport) {
+        Locale locale = benchmarkReport.getLocale();
         NumberAxis xAxis = new NumberAxis("Time spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
         NumberAxis yAxis = new NumberAxis("Accepted/selected moves per step");

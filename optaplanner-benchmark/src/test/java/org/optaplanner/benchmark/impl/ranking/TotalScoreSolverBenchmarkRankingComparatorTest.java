@@ -22,13 +22,16 @@ import java.util.List;
 import org.junit.Test;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.optaplanner.benchmark.impl.SolverBenchmark;
+import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 public class TotalScoreSolverBenchmarkRankingComparatorTest extends AbstractRankingComparatorTest {
 
     @Test
     public void normal() {
+        BenchmarkReport benchmarkReport = mock(BenchmarkReport.class);
         TotalScoreSolverBenchmarkRankingComparator comparator = new TotalScoreSolverBenchmarkRankingComparator();
         SolverBenchmark a = new SolverBenchmark(null);
         List<SingleBenchmark> aSingleBenchmarkList = new ArrayList<SingleBenchmark>();
@@ -36,20 +39,21 @@ public class TotalScoreSolverBenchmarkRankingComparatorTest extends AbstractRank
         addSingleBenchmark(aSingleBenchmarkList, -400, -30, -1000);
         addSingleBenchmark(aSingleBenchmarkList, -30, -30, -1000);
         a.setSingleBenchmarkList(aSingleBenchmarkList);
-        a.benchmarkingEnded();
+        a.accumulateResults(benchmarkReport);
         SolverBenchmark b = new SolverBenchmark(null);
         List<SingleBenchmark> bSingleBenchmarkList = new ArrayList<SingleBenchmark>();
         addSingleBenchmark(bSingleBenchmarkList, -1000, -50, -1000);
         addSingleBenchmark(bSingleBenchmarkList, -200, -50, -1000);
         addSingleBenchmark(bSingleBenchmarkList, -50, -50, -1000);
         b.setSingleBenchmarkList(bSingleBenchmarkList);
-        b.benchmarkingEnded();
+        b.accumulateResults(benchmarkReport);
         assertEquals(-1, comparator.compare(a, b));
         assertEquals(1, comparator.compare(b, a));
     }
 
     @Test
     public void totalIsEqual() {
+        BenchmarkReport benchmarkReport = mock(BenchmarkReport.class);
         TotalScoreSolverBenchmarkRankingComparator comparator = new TotalScoreSolverBenchmarkRankingComparator();
         SolverBenchmark a = new SolverBenchmark(null);
         List<SingleBenchmark> aSingleBenchmarkList = new ArrayList<SingleBenchmark>();
@@ -57,14 +61,14 @@ public class TotalScoreSolverBenchmarkRankingComparatorTest extends AbstractRank
         addSingleBenchmark(aSingleBenchmarkList, -200, -30, -1005);
         addSingleBenchmark(aSingleBenchmarkList, -30, -30, -1005);
         a.setSingleBenchmarkList(aSingleBenchmarkList);
-        a.benchmarkingEnded();
+        a.accumulateResults(benchmarkReport);
         SolverBenchmark b = new SolverBenchmark(null);
         List<SingleBenchmark> bSingleBenchmarkList = new ArrayList<SingleBenchmark>();
         addSingleBenchmark(bSingleBenchmarkList, -1000, -35, -1000);
         addSingleBenchmark(bSingleBenchmarkList, -200, -35, -1000);
         addSingleBenchmark(bSingleBenchmarkList, -35, -35, -1000);
         b.setSingleBenchmarkList(bSingleBenchmarkList);
-        b.benchmarkingEnded();
+        b.accumulateResults(benchmarkReport);
         assertEquals(-1, comparator.compare(a, b));
         assertEquals(1, comparator.compare(b, a));
     }

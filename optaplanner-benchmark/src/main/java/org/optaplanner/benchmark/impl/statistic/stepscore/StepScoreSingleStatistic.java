@@ -55,7 +55,6 @@ public class StepScoreSingleStatistic extends AbstractSingleStatistic<StepScoreS
 
     public void close(Solver solver) {
         ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
-        writeCsvStatisticFile();
     }
 
     private class StepScoreSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {

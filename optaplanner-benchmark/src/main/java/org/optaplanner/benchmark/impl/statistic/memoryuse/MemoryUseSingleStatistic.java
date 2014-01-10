@@ -67,7 +67,6 @@ public class MemoryUseSingleStatistic extends AbstractSingleStatistic<MemoryUseS
 
     public void close(Solver solver) {
         ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
-        writeCsvStatisticFile();
     }
     
     private class MemoryUseSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {

@@ -30,6 +30,7 @@ import org.apache.commons.io.IOUtils;
 import org.jfree.chart.JFreeChart;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 
 public abstract class AbstractProblemStatistic implements ProblemStatistic {
@@ -73,20 +74,18 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
     // Write methods
     // ************************************************************************
 
-    public void writeStatistic() {
+    @Override
+    public void accumulateResults(BenchmarkReport benchmarkReport) {
         warningList = new ArrayList<String>();
         fillWarningList();
-        writeGraphStatistic();
     }
 
     protected void fillWarningList() {
     }
 
-    protected abstract void writeGraphStatistic();
-
     protected File writeChartToImageFile(JFreeChart chart, String fileNameBase) {
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File chartFile = new File(problemBenchmark.getReportDirectory(), fileNameBase + ".png");
+        File chartFile = new File(problemBenchmark.getProblemReportDirectory(), fileNameBase + ".png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(chartFile);

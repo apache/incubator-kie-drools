@@ -22,6 +22,7 @@ import java.util.List;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 
 /**
  * 1 statistic of {@link ProblemBenchmark}
@@ -45,7 +46,12 @@ public interface ProblemStatistic {
      */
     SingleStatistic createSingleStatistic(SingleBenchmark singleBenchmark);
 
-    void writeStatistic();
+    void accumulateResults(BenchmarkReport benchmarkReport);
+
+    /**
+     * @param benchmarkReport never null
+     */
+    void writeGraphFiles(BenchmarkReport benchmarkReport);
 
     /**
      * @return never null

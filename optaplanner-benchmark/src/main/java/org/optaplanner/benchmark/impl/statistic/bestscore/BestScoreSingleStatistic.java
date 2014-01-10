@@ -64,7 +64,6 @@ public class BestScoreSingleStatistic extends AbstractSingleStatistic<BestScoreS
 
     public void close(Solver solver) {
         solver.removeEventListener(listener);
-        writeCsvStatisticFile();
     }
 
     private class BestScoreSingleStatisticListener implements SolverEventListener {

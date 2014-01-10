@@ -59,7 +59,6 @@ public class BestSolutionMutationSingleStatistic extends AbstractSingleStatistic
 
     public void close(Solver solver) {
         solver.removeEventListener(listener);
-        writeCsvStatisticFile();
     }
 
     private class BestSolutionMutationSingleStatisticListener implements SolverEventListener {

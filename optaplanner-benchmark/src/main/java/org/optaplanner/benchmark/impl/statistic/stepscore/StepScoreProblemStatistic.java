@@ -72,7 +72,8 @@ public class StepScoreProblemStatistic extends AbstractProblemStatistic {
     // Write methods
     // ************************************************************************
 
-    protected void writeGraphStatistic() {
+    @Override
+    public void writeGraphFiles(BenchmarkReport benchmarkReport) {
         List<XYPlot> plotList = new ArrayList<XYPlot>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
         int seriesIndex = 0;
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
@@ -104,7 +105,7 @@ public class StepScoreProblemStatistic extends AbstractProblemStatistic {
             }
             for (int i = 0; i < seriesList.size(); i++) {
                 if (i >= plotList.size()) {
-                    plotList.add(createPlot(i));
+                    plotList.add(createPlot(benchmarkReport, i));
                 }
                 plotList.get(i).setDataset(seriesIndex, new XYSeriesCollection(seriesList.get(i)));
                 plotList.get(i).setRenderer(seriesIndex, renderer);
@@ -121,8 +122,8 @@ public class StepScoreProblemStatistic extends AbstractProblemStatistic {
         }
     }
 
-    private XYPlot createPlot(int scoreLevelIndex) {
-        Locale locale = problemBenchmark.getPlannerBenchmark().getBenchmarkReport().getLocale();
+    private XYPlot createPlot(BenchmarkReport benchmarkReport, int scoreLevelIndex) {
+        Locale locale = benchmarkReport.getLocale();
         NumberAxis xAxis = new NumberAxis("Time spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
         NumberAxis yAxis = new NumberAxis("Step score level " + scoreLevelIndex);
