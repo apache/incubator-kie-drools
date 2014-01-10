@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.benchmark.impl.PlannerBenchmarkResult;
-import org.optaplanner.benchmark.impl.ProblemBenchmarkResult;
-import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.SolverBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.config.solver.SolverConfig;
 
 @XStreamAlias("solverBenchmark")

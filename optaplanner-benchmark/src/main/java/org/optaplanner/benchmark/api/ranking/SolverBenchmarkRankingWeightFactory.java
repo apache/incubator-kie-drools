@@ -18,7 +18,7 @@ package org.optaplanner.benchmark.api.ranking;
 
 import java.util.List;
 
-import org.optaplanner.benchmark.impl.SolverBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 
 /**
  * Defines an interface for classes that will be used to rank solver benchmarks 

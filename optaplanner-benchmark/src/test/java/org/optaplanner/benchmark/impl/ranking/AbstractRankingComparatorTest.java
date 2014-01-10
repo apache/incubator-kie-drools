@@ -18,7 +18,7 @@ package org.optaplanner.benchmark.impl.ranking;
 
 import java.util.List;
 
-import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 

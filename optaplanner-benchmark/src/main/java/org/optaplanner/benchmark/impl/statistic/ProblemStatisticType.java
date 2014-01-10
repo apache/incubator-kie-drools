@@ -16,7 +16,7 @@
 
 package org.optaplanner.benchmark.impl.statistic;
 
-import org.optaplanner.benchmark.impl.ProblemBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.calculatecount.CalculateCountProblemStatistic;

@@ -28,8 +28,8 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
 import org.jfree.chart.JFreeChart;
-import org.optaplanner.benchmark.impl.ProblemBenchmarkResult;
-import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 

@@ -18,7 +18,7 @@ package org.optaplanner.benchmark.impl.statistic;
 
 import java.io.File;
 
-import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.core.api.solver.Solver;
 
 /**

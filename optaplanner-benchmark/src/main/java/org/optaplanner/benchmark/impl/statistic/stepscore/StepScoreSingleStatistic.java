@@ -19,7 +19,7 @@ package org.optaplanner.benchmark.impl.statistic.stepscore;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.core.api.solver.Solver;

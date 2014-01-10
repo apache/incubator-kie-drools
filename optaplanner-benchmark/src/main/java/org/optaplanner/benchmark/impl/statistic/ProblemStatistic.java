@@ -18,8 +18,8 @@ package org.optaplanner.benchmark.impl.statistic;
 
 import java.util.List;
 
-import org.optaplanner.benchmark.impl.ProblemBenchmarkResult;
-import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 
 /**

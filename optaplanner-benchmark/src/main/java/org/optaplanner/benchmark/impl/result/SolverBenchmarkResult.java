@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl;
+package org.optaplanner.benchmark.impl.result;
 
 import java.util.ArrayList;
 import java.util.List;

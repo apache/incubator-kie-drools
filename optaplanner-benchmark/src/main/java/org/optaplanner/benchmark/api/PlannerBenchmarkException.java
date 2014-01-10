@@ -16,7 +16,7 @@
 
 package org.optaplanner.benchmark.api;
 
-import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 
 /**
  * If at least one of the {@link SingleBenchmarkResult}s of a {@link PlannerBenchmark} fail,

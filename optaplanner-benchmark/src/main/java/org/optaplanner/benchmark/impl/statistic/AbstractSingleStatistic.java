@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public abstract class AbstractSingleStatistic<P extends AbstractSingleStatisticPoint> implements SingleStatistic {
