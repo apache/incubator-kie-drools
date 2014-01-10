@@ -31,7 +31,7 @@ import org.optaplanner.core.api.solver.Solver;
 /**
  * Represents 1 benchmark for 1 {@link Solver} configuration for 1 problem instance (data set).
  */
-public class SingleBenchmark {
+public class SingleBenchmarkResult {
 
     private final SolverBenchmark solverBenchmark;
     private final ProblemBenchmark problemBenchmark;
@@ -52,14 +52,14 @@ public class SingleBenchmark {
     // Report accumulates
     // ************************************************************************
 
-    // Compared to winning singleBenchmark in the same ProblemBenchmark (which might not be the overall favorite)
+    // Compared to winningSingleBenchmarkResult in the same ProblemBenchmark (which might not be the overall favorite)
     private Score winningScoreDifference = null;
     private ScoreDifferencePercentage worstScoreDifferencePercentage = null;
 
     // Ranking starts from 0
     private Integer ranking = null;
 
-    public SingleBenchmark(SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark) {
+    public SingleBenchmarkResult(SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark) {
         this.solverBenchmark = solverBenchmark;
         this.problemBenchmark = problemBenchmark;
     }

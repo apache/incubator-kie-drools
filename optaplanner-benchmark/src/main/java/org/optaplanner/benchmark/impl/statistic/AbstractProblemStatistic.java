@@ -29,7 +29,7 @@ import javax.imageio.ImageIO;
 import org.apache.commons.io.IOUtils;
 import org.jfree.chart.JFreeChart;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
-import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 
@@ -62,10 +62,10 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
     }
 
     public List<SingleStatistic> getSingleStatisticList() {
-        List<SingleBenchmark> singleBenchmarkList = problemBenchmark.getSingleBenchmarkList();
-        List<SingleStatistic> singleStatisticList = new ArrayList<SingleStatistic>(singleBenchmarkList.size());
-        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
-            singleStatisticList.add(singleBenchmark.getSingleStatisticMap().get(problemStatisticType));
+        List<SingleBenchmarkResult> singleBenchmarkResultList = problemBenchmark.getSingleBenchmarkResultList();
+        List<SingleStatistic> singleStatisticList = new ArrayList<SingleStatistic>(singleBenchmarkResultList.size());
+        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
+            singleStatisticList.add(singleBenchmarkResult.getSingleStatisticMap().get(problemStatisticType));
         }
         return singleStatisticList;
     }

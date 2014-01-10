@@ -18,13 +18,11 @@ package org.optaplanner.benchmark.impl.statistic;
 
 import java.io.File;
 
-import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
-import org.optaplanner.benchmark.impl.ProblemBenchmark;
-import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.core.api.solver.Solver;
 
 /**
- * 1 statistic of {@link SingleBenchmark}
+ * 1 statistic of {@link SingleBenchmarkResult}
  */
 public interface SingleStatistic {
 

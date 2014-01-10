@@ -16,15 +16,12 @@
 
 package org.optaplanner.benchmark.impl.statistic.bestsolutionmutation;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.impl.statistic.StatisticType;
-import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreSingleStatisticPoint;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.solution.mutation.MutationCounter;
@@ -39,8 +36,8 @@ public class BestSolutionMutationSingleStatistic extends AbstractSingleStatistic
 
     private List<BestSolutionMutationSingleStatisticPoint> pointList = new ArrayList<BestSolutionMutationSingleStatisticPoint>();
 
-    public BestSolutionMutationSingleStatistic(SingleBenchmark singleBenchmark) {
-        super(singleBenchmark, ProblemStatisticType.BEST_SOLUTION_MUTATION);
+    public BestSolutionMutationSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
+        super(singleBenchmarkResult, ProblemStatisticType.BEST_SOLUTION_MUTATION);
     }
 
     public List<BestSolutionMutationSingleStatisticPoint> getPointList() {

@@ -52,7 +52,7 @@ public class ProblemBenchmark {
 
     private List<ProblemStatistic> problemStatisticList = null;
 
-    private List<SingleBenchmark> singleBenchmarkList = null;
+    private List<SingleBenchmarkResult> singleBenchmarkResultList = null;
 
     private Long problemScale = null;
 
@@ -62,8 +62,8 @@ public class ProblemBenchmark {
 
     private Long averageUsedMemoryAfterInputSolution = null;
     private Integer failureCount = null;
-    private SingleBenchmark winningSingleBenchmark = null;
-    private SingleBenchmark worstSingleBenchmark = null;
+    private SingleBenchmarkResult winningSingleBenchmarkResult = null;
+    private SingleBenchmarkResult worstSingleBenchmarkResult = null;
 
     public ProblemBenchmark(DefaultPlannerBenchmark plannerBenchmark) {
         this.plannerBenchmark = plannerBenchmark;
@@ -117,12 +117,12 @@ public class ProblemBenchmark {
         this.problemStatisticList = problemStatisticList;
     }
 
-    public List<SingleBenchmark> getSingleBenchmarkList() {
-        return singleBenchmarkList;
+    public List<SingleBenchmarkResult> getSingleBenchmarkResultList() {
+        return singleBenchmarkResultList;
     }
 
-    public void setSingleBenchmarkList(List<SingleBenchmark> singleBenchmarkList) {
-        this.singleBenchmarkList = singleBenchmarkList;
+    public void setSingleBenchmarkResultList(List<SingleBenchmarkResult> singleBenchmarkResultList) {
+        this.singleBenchmarkResultList = singleBenchmarkResultList;
     }
 
     public Long getProblemScale() {
@@ -137,12 +137,12 @@ public class ProblemBenchmark {
         return failureCount;
     }
 
-    public SingleBenchmark getWinningSingleBenchmark() {
-        return winningSingleBenchmark;
+    public SingleBenchmarkResult getWinningSingleBenchmarkResult() {
+        return winningSingleBenchmarkResult;
     }
 
-    public SingleBenchmark getWorstSingleBenchmark() {
-        return worstSingleBenchmark;
+    public SingleBenchmarkResult getWorstSingleBenchmarkResult() {
+        return worstSingleBenchmarkResult;
     }
 
     // ************************************************************************
@@ -154,7 +154,7 @@ public class ProblemBenchmark {
     }
 
     public boolean hasAnySuccess() {
-        return singleBenchmarkList.size() - failureCount > 0;
+        return singleBenchmarkResultList.size() - failureCount > 0;
     }
 
     public boolean hasAnyProblemStatistic() {
@@ -168,14 +168,14 @@ public class ProblemBenchmark {
     public void initSubdirs(File benchmarkReportDirectory) {
         problemReportDirectory = new File(benchmarkReportDirectory, name);
         problemReportDirectory.mkdirs();
-        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
-            singleBenchmark.initSubdirs(problemReportDirectory);
+        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
+            singleBenchmarkResult.initSubdirs(problemReportDirectory);
         }
     }
 
     public long warmUp(long startingTimeMillis, long warmUpTimeMillisSpend, long timeLeft) {
-        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
-            SolverBenchmark solverBenchmark = singleBenchmark.getSolverBenchmark();
+        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
+            SolverBenchmark solverBenchmark = singleBenchmarkResult.getSolverBenchmark();
             TerminationConfig originalTerminationConfig = solverBenchmark.getSolverConfig().getTerminationConfig();
             TerminationConfig tmpTerminationConfig = originalTerminationConfig == null
                     ? new TerminationConfig() : originalTerminationConfig.clone();
@@ -200,11 +200,11 @@ public class ProblemBenchmark {
         return problemIO.read(inputSolutionFile);
     }
 
-    public void writeOutputSolution(SingleBenchmark singleBenchmark, Solution outputSolution) {
+    public void writeOutputSolution(SingleBenchmarkResult singleBenchmarkResult, Solution outputSolution) {
         if (!writeOutputSolutionEnabled) {
             return;
         }
-        String filename = singleBenchmark.getName() + "." + problemIO.getFileExtension();
+        String filename = singleBenchmarkResult.getName() + "." + problemIO.getFileExtension();
         File outputSolutionFile = new File(problemReportDirectory, filename);
         problemIO.write(outputSolution, outputSolutionFile);
     }
@@ -214,8 +214,8 @@ public class ProblemBenchmark {
     // ************************************************************************
 
     public void accumulateResults(BenchmarkReport benchmarkReport) {
-        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
-            singleBenchmark.accumulateResults(benchmarkReport);
+        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
+            singleBenchmarkResult.accumulateResults(benchmarkReport);
         }
         determineTotalsAndAveragesAndRanking();
         determineWinningScoreDifference();
@@ -228,16 +228,16 @@ public class ProblemBenchmark {
         failureCount = 0;
         long totalUsedMemoryAfterInputSolution = 0L;
         int usedMemoryAfterInputSolutionCount = 0;
-        List<SingleBenchmark> successSingleBenchmarkList = new ArrayList<SingleBenchmark>(singleBenchmarkList);
-        // Do not rank a SingleBenchmark that has a failure
-        for (Iterator<SingleBenchmark> it = successSingleBenchmarkList.iterator(); it.hasNext(); ) {
-            SingleBenchmark singleBenchmark = it.next();
-            if (singleBenchmark.isFailure()) {
+        List<SingleBenchmarkResult> successResultList = new ArrayList<SingleBenchmarkResult>(singleBenchmarkResultList);
+        // Do not rank a SingleBenchmarkResult that has a failure
+        for (Iterator<SingleBenchmarkResult> it = successResultList.iterator(); it.hasNext(); ) {
+            SingleBenchmarkResult singleBenchmarkResult = it.next();
+            if (singleBenchmarkResult.isFailure()) {
                 failureCount++;
                 it.remove();
             } else {
-                if (singleBenchmark.getUsedMemoryAfterInputSolution() != null) {
-                    totalUsedMemoryAfterInputSolution += singleBenchmark.getUsedMemoryAfterInputSolution();
+                if (singleBenchmarkResult.getUsedMemoryAfterInputSolution() != null) {
+                    totalUsedMemoryAfterInputSolution += singleBenchmarkResult.getUsedMemoryAfterInputSolution();
                     usedMemoryAfterInputSolutionCount++;
                 }
             }
@@ -246,46 +246,46 @@ public class ProblemBenchmark {
             averageUsedMemoryAfterInputSolution = totalUsedMemoryAfterInputSolution
                     / (long) usedMemoryAfterInputSolutionCount;
         }
-        determineRanking(successSingleBenchmarkList);
+        determineRanking(successResultList);
     }
 
-    private void determineRanking(List<SingleBenchmark> rankedSingleBenchmarkList) {
+    private void determineRanking(List<SingleBenchmarkResult> rankedSingleBenchmarkResultList) {
         Comparator singleBenchmarkRankingComparator = new SingleBenchmarkRankingComparator();
-        Collections.sort(rankedSingleBenchmarkList, Collections.reverseOrder(singleBenchmarkRankingComparator));
+        Collections.sort(rankedSingleBenchmarkResultList, Collections.reverseOrder(singleBenchmarkRankingComparator));
         int ranking = 0;
-        SingleBenchmark previousSingleBenchmark = null;
+        SingleBenchmarkResult previousSingleBenchmarkResult = null;
         int previousSameRankingCount = 0;
-        for (SingleBenchmark singleBenchmark : rankedSingleBenchmarkList) {
-            if (previousSingleBenchmark != null
-                    && singleBenchmarkRankingComparator.compare(previousSingleBenchmark, singleBenchmark) != 0) {
+        for (SingleBenchmarkResult singleBenchmarkResult : rankedSingleBenchmarkResultList) {
+            if (previousSingleBenchmarkResult != null
+                    && singleBenchmarkRankingComparator.compare(previousSingleBenchmarkResult, singleBenchmarkResult) != 0) {
                 ranking += previousSameRankingCount;
                 previousSameRankingCount = 0;
             }
-            singleBenchmark.setRanking(ranking);
-            previousSingleBenchmark = singleBenchmark;
+            singleBenchmarkResult.setRanking(ranking);
+            previousSingleBenchmarkResult = singleBenchmarkResult;
             previousSameRankingCount++;
         }
-        winningSingleBenchmark = rankedSingleBenchmarkList.isEmpty() ? null : rankedSingleBenchmarkList.get(0);
-        worstSingleBenchmark = rankedSingleBenchmarkList.isEmpty() ? null
-                : rankedSingleBenchmarkList.get(rankedSingleBenchmarkList.size() - 1);
+        winningSingleBenchmarkResult = rankedSingleBenchmarkResultList.isEmpty() ? null : rankedSingleBenchmarkResultList.get(0);
+        worstSingleBenchmarkResult = rankedSingleBenchmarkResultList.isEmpty() ? null
+                : rankedSingleBenchmarkResultList.get(rankedSingleBenchmarkResultList.size() - 1);
     }
 
     private void determineWinningScoreDifference() {
-        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
-            if (singleBenchmark.isFailure()) {
+        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
+            if (singleBenchmarkResult.isFailure()) {
                 continue;
             }
-            singleBenchmark.setWinningScoreDifference(
-                    singleBenchmark.getScore().subtract(winningSingleBenchmark.getScore()));
-            singleBenchmark.setWorstScoreDifferencePercentage(
+            singleBenchmarkResult.setWinningScoreDifference(
+                    singleBenchmarkResult.getScore().subtract(winningSingleBenchmarkResult.getScore()));
+            singleBenchmarkResult.setWorstScoreDifferencePercentage(
                     ScoreDifferencePercentage.calculateScoreDifferencePercentage(
-                            worstSingleBenchmark.getScore(), singleBenchmark.getScore()));
+                            worstSingleBenchmarkResult.getScore(), singleBenchmarkResult.getScore()));
         }
     }
 
     /**
      * HACK to avoid loading the planningProblem just to extract it's problemScale.
-     * Called multiple times, for every {@link SingleBenchmark} of this {@link ProblemBenchmark}.
+     * Called multiple times, for every {@link SingleBenchmarkResult} of this {@link ProblemBenchmark}.
      *
      * @param registeringProblemScale >= 0
      */

@@ -45,7 +45,7 @@ public class SolverBenchmark {
     private SolverConfig solverConfig = null;
 
     private List<ProblemBenchmark> problemBenchmarkList = null;
-    private List<SingleBenchmark> singleBenchmarkList = null;
+    private List<SingleBenchmarkResult> singleBenchmarkResultList = null;
 
     // ************************************************************************
     // Report accumulates
@@ -60,7 +60,7 @@ public class SolverBenchmark {
     private double[] standardDeviationDoubles = null;
     private Score totalWinningScoreDifference = null;
     private ScoreDifferencePercentage averageWorstScoreDifferencePercentage = null;
-    // The average of the average is not just the overall average if the SingleBenchmark's timeMillisSpend differ
+    // The average of the average is not just the overall average if the SingleBenchmarkResult's timeMillisSpend differ
     private Long averageAverageCalculateCountPerSecond = null;
 
     // Ranking starts from 0
@@ -94,12 +94,12 @@ public class SolverBenchmark {
         this.problemBenchmarkList = problemBenchmarkList;
     }
 
-    public List<SingleBenchmark> getSingleBenchmarkList() {
-        return singleBenchmarkList;
+    public List<SingleBenchmarkResult> getSingleBenchmarkResultList() {
+        return singleBenchmarkResultList;
     }
 
-    public void setSingleBenchmarkList(List<SingleBenchmark> singleBenchmarkList) {
-        this.singleBenchmarkList = singleBenchmarkList;
+    public void setSingleBenchmarkResultList(List<SingleBenchmarkResult> singleBenchmarkResultList) {
+        this.singleBenchmarkResultList = singleBenchmarkResultList;
     }
 
     public int getFailureCount() {
@@ -146,7 +146,7 @@ public class SolverBenchmark {
     }
 
     public int getSuccessCount() {
-        return singleBenchmarkList.size() - failureCount;
+        return singleBenchmarkResultList.size() - failureCount;
     }
 
     public boolean hasAnySuccess() {
@@ -194,9 +194,9 @@ public class SolverBenchmark {
     }
 
     public List<Score> getScoreList() {
-        List<Score> scoreList = new ArrayList<Score>(singleBenchmarkList.size());
-        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
-            scoreList.add(singleBenchmark.getScore());
+        List<Score> scoreList = new ArrayList<Score>(singleBenchmarkResultList.size());
+        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
+            scoreList.add(singleBenchmarkResult.getScore());
         }
         return scoreList;
     }
@@ -205,10 +205,10 @@ public class SolverBenchmark {
      * @param problemBenchmark never null
      * @return sometimes null
      */
-    public SingleBenchmark findSingleBenchmark(ProblemBenchmark problemBenchmark) {
-        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
-            if (problemBenchmark.equals(singleBenchmark.getProblemBenchmark())) {
-                return singleBenchmark;
+    public SingleBenchmarkResult findSingleBenchmark(ProblemBenchmark problemBenchmark) {
+        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
+            if (problemBenchmark.equals(singleBenchmarkResult.getProblemBenchmark())) {
+                return singleBenchmarkResult;
             }
         }
         return null;
@@ -227,7 +227,7 @@ public class SolverBenchmark {
     // ************************************************************************
 
     /**
-     * Does not call {@link SingleBenchmark#accumulateResults(BenchmarkReport)},
+     * Does not call {@link SingleBenchmarkResult#accumulateResults(BenchmarkReport)},
      * because {@link DefaultPlannerBenchmark#accumulateResults(BenchmarkReport)} does that already on
      * {@link DefaultPlannerBenchmark#getUnifiedProblemBenchmarkList()}.
      */
@@ -243,23 +243,23 @@ public class SolverBenchmark {
         totalWinningScoreDifference = null;
         ScoreDifferencePercentage totalWorstScoreDifferencePercentage = null;
         long totalAverageCalculateCountPerSecond = 0L;
-        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
-            if (singleBenchmark.isFailure()) {
+        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
+            if (singleBenchmarkResult.isFailure()) {
                 failureCount++;
             } else {
                 if (firstNonFailure) {
-                    totalScore = singleBenchmark.getScore();
-                    totalWinningScoreDifference = singleBenchmark.getWinningScoreDifference();
-                    totalWorstScoreDifferencePercentage = singleBenchmark.getWorstScoreDifferencePercentage();
-                    totalAverageCalculateCountPerSecond = singleBenchmark.getAverageCalculateCountPerSecond();
+                    totalScore = singleBenchmarkResult.getScore();
+                    totalWinningScoreDifference = singleBenchmarkResult.getWinningScoreDifference();
+                    totalWorstScoreDifferencePercentage = singleBenchmarkResult.getWorstScoreDifferencePercentage();
+                    totalAverageCalculateCountPerSecond = singleBenchmarkResult.getAverageCalculateCountPerSecond();
                     firstNonFailure = false;
                 } else {
-                    totalScore = totalScore.add(singleBenchmark.getScore());
+                    totalScore = totalScore.add(singleBenchmarkResult.getScore());
                     totalWinningScoreDifference = totalWinningScoreDifference.add(
-                            singleBenchmark.getWinningScoreDifference());
+                            singleBenchmarkResult.getWinningScoreDifference());
                     totalWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.add(
-                            singleBenchmark.getWorstScoreDifferencePercentage());
-                    totalAverageCalculateCountPerSecond += singleBenchmark.getAverageCalculateCountPerSecond();
+                            singleBenchmarkResult.getWorstScoreDifferencePercentage());
+                    totalAverageCalculateCountPerSecond += singleBenchmarkResult.getAverageCalculateCountPerSecond();
                 }
             }
         }
@@ -278,9 +278,9 @@ public class SolverBenchmark {
         }
         // averageScore can no longer be null
         double[] differenceSquaredTotalDoubles = null;
-        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
-            if (!singleBenchmark.isFailure()) {
-                Score difference = singleBenchmark.getScore().subtract(averageScore);
+        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
+            if (!singleBenchmarkResult.isFailure()) {
+                Score difference = singleBenchmarkResult.getScore().subtract(averageScore);
                 // Calculations done on doubles to avoid common overflow when executing with an int score > 500 000
                 double[] differenceDoubles = ScoreUtils.extractLevelDoubles(difference);
                 if (differenceSquaredTotalDoubles == null) {

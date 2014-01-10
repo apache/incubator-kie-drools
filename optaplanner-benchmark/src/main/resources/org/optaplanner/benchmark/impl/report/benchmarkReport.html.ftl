@@ -24,16 +24,16 @@
     <span class="badge">${solverBenchmark.ranking}</span>
     </#if>
 </#macro>
-<#macro addSingleRankingBadge singleBenchmark>
-    <#if !singleBenchmark.ranking??>
+<#macro addSingleRankingBadge singleBenchmarkResult>
+    <#if !singleBenchmarkResult.ranking??>
     <span class="badge badge-important">F</span>
     <#else>
-        <#if singleBenchmark.winner>
-        <span class="badge badge-success">${singleBenchmark.ranking}</span>
+        <#if singleBenchmarkResult.winner>
+        <span class="badge badge-success">${singleBenchmarkResult.ranking}</span>
         <#else>
-        <span class="badge">${singleBenchmark.ranking}</span>
+        <span class="badge">${singleBenchmarkResult.ranking}</span>
         </#if>
-        <#if !singleBenchmark.scoreFeasible>
+        <#if !singleBenchmarkResult.scoreFeasible>
         <span class="badge badge-warning">!</span>
         </#if>
     </#if>
@@ -158,11 +158,11 @@
                                             <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
                                                 <td></td>
                                             <#else>
-                                                <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
-                                                <#if !singleBenchmark.success>
+                                                <#assign singleBenchmarkResult = solverBenchmark.findSingleBenchmark(problemBenchmark)>
+                                                <#if !singleBenchmarkResult.success>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
-                                                    <td>${singleBenchmark.score}&nbsp;<@addSingleRankingBadge singleBenchmark=singleBenchmark/></td>
+                                                    <td>${singleBenchmarkResult.score}&nbsp;<@addSingleRankingBadge singleBenchmarkResult=singleBenchmarkResult/></td>
                                                 </#if>
                                             </#if>
                                         </#list>
@@ -197,11 +197,11 @@
                                             <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
                                                 <td></td>
                                             <#else>
-                                                <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
-                                                <#if !singleBenchmark.success>
+                                                <#assign singleBenchmarkResult = solverBenchmark.findSingleBenchmark(problemBenchmark)>
+                                                <#if !singleBenchmarkResult.success>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
-                                                    <td>${singleBenchmark.winningScoreDifference}&nbsp;<@addSingleRankingBadge singleBenchmark=singleBenchmark/></td>
+                                                    <td>${singleBenchmarkResult.winningScoreDifference}&nbsp;<@addSingleRankingBadge singleBenchmarkResult=singleBenchmarkResult/></td>
                                                 </#if>
                                             </#if>
                                         </#list>
@@ -229,11 +229,11 @@
                                             <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
                                                 <td></td>
                                             <#else>
-                                                <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
-                                                <#if !singleBenchmark.success>
+                                                <#assign singleBenchmarkResult = solverBenchmark.findSingleBenchmark(problemBenchmark)>
+                                                <#if !singleBenchmarkResult.success>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
-                                                    <td>${singleBenchmark.worstScoreDifferencePercentage.toString(.locale)}&nbsp;<@addSingleRankingBadge singleBenchmark=singleBenchmark/></td>
+                                                    <td>${singleBenchmarkResult.worstScoreDifferencePercentage.toString(.locale)}&nbsp;<@addSingleRankingBadge singleBenchmarkResult=singleBenchmarkResult/></td>
                                                 </#if>
                                             </#if>
                                         </#list>
@@ -315,11 +315,11 @@
                                             <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
                                                 <td></td>
                                             <#else>
-                                                <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
-                                                <#if !singleBenchmark.success>
+                                                <#assign singleBenchmarkResult = solverBenchmark.findSingleBenchmark(problemBenchmark)>
+                                                <#if !singleBenchmarkResult.success>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
-                                                    <td>${singleBenchmark.averageCalculateCountPerSecond}/s</td>
+                                                    <td>${singleBenchmarkResult.averageCalculateCountPerSecond}/s</td>
                                                 </#if>
                                             </#if>
                                         </#list>
@@ -354,11 +354,11 @@
                                             <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
                                                 <td></td>
                                             <#else>
-                                                <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
-                                                <#if !singleBenchmark.success>
+                                                <#assign singleBenchmarkResult = solverBenchmark.findSingleBenchmark(problemBenchmark)>
+                                                <#if !singleBenchmarkResult.success>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
-                                                    <td>${singleBenchmark.timeMillisSpend}</td>
+                                                    <td>${singleBenchmarkResult.timeMillisSpend}</td>
                                                 </#if>
                                             </#if>
                                         </#list>

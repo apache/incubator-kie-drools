@@ -16,23 +16,12 @@
 
 package org.optaplanner.benchmark.impl.statistic.bestscore;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.StatisticType;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
 import org.optaplanner.core.impl.event.SolverEventListener;
@@ -44,8 +33,8 @@ public class BestScoreSingleStatistic extends AbstractSingleStatistic<BestScoreS
 
     private List<BestScoreSingleStatisticPoint> pointList;
 
-    public BestScoreSingleStatistic(SingleBenchmark singleBenchmark) {
-        super(singleBenchmark, ProblemStatisticType.BEST_SCORE);
+    public BestScoreSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
+        super(singleBenchmarkResult, ProblemStatisticType.BEST_SCORE);
         pointList = new ArrayList<BestScoreSingleStatisticPoint>();
     }
 

@@ -139,8 +139,8 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         Map<SingleBenchmarkRunner, Future<SingleBenchmarkRunner>> futureMap
                 = new HashMap<SingleBenchmarkRunner, Future<SingleBenchmarkRunner>>();
         for (ProblemBenchmark problemBenchmark : plannerBenchmarkResult.getUnifiedProblemBenchmarkList()) {
-            for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
-                SingleBenchmarkRunner singleBenchmarkRunner = new SingleBenchmarkRunner(singleBenchmark);
+            for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmark.getSingleBenchmarkResultList()) {
+                SingleBenchmarkRunner singleBenchmarkRunner = new SingleBenchmarkRunner(singleBenchmarkResult);
                 Future<SingleBenchmarkRunner> future = executorService.submit(singleBenchmarkRunner);
                 futureMap.put(singleBenchmarkRunner, future);
             }
@@ -154,7 +154,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                 // Explicitly returning it in the Callable guarantees memory visibility
                 singleBenchmarkRunner = future.get();
                 // TODO WORKAROUND Remove when PLANNER-46 is fixed.
-                if (singleBenchmarkRunner.getSingleBenchmark().getScore() == null) {
+                if (singleBenchmarkRunner.getSingleBenchmarkResult().getScore() == null) {
                     throw new IllegalStateException("Score is null. TODO fix PLANNER-46.");
                 }
             } catch (InterruptedException e) {
@@ -170,9 +170,9 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                 failureThrowable = e;
             }
             if (failureThrowable == null) {
-                singleBenchmarkRunner.getSingleBenchmark().setSucceeded(true);
+                singleBenchmarkRunner.getSingleBenchmarkResult().setSucceeded(true);
             } else {
-                singleBenchmarkRunner.getSingleBenchmark().setSucceeded(false);
+                singleBenchmarkRunner.getSingleBenchmarkResult().setSucceeded(false);
                 singleBenchmarkRunner.setFailureThrowable(failureThrowable);
                 if (firstFailureSingleBenchmarkRunner == null) {
                     firstFailureSingleBenchmarkRunner = singleBenchmarkRunner;

@@ -18,22 +18,22 @@ package org.optaplanner.benchmark.impl.ranking;
 
 import java.util.List;
 
-import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
 public abstract class AbstractRankingComparatorTest {
 
-    protected void addSingleBenchmark(List<SingleBenchmark> singleBenchmarkList, int score, int bestScore, int worstScore) {
-        SingleBenchmark singleBenchmark = new SingleBenchmark(null, null);
+    protected void addSingleBenchmark(List<SingleBenchmarkResult> singleBenchmarkResultList, int score, int bestScore, int worstScore) {
+        SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(null, null);
         SimpleScore scoreObject = SimpleScore.valueOf(score);
         SimpleScore bestScoreObject = SimpleScore.valueOf(bestScore);
         SimpleScore worstScoreObject = SimpleScore.valueOf(worstScore);
-        singleBenchmark.setScore(scoreObject);
-        singleBenchmark.setWinningScoreDifference(scoreObject.subtract(bestScoreObject));
-        singleBenchmark.setWorstScoreDifferencePercentage(
+        singleBenchmarkResult.setScore(scoreObject);
+        singleBenchmarkResult.setWinningScoreDifference(scoreObject.subtract(bestScoreObject));
+        singleBenchmarkResult.setWorstScoreDifferencePercentage(
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(worstScoreObject, scoreObject));
-        singleBenchmarkList.add(singleBenchmark);
+        singleBenchmarkResultList.add(singleBenchmarkResult);
     }
 
 }

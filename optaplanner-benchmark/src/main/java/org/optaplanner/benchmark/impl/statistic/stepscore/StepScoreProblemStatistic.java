@@ -17,11 +17,7 @@
 package org.optaplanner.benchmark.impl.statistic.stepscore;
 
 import java.awt.BasicStroke;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,17 +32,14 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYStepRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
-import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.ScoreUtils;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public class StepScoreProblemStatistic extends AbstractProblemStatistic {
 
@@ -57,8 +50,8 @@ public class StepScoreProblemStatistic extends AbstractProblemStatistic {
     }
 
     @Override
-    public SingleStatistic createSingleStatistic(SingleBenchmark singleBenchmark) {
-        return new StepScoreSingleStatistic(singleBenchmark);
+    public SingleStatistic createSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
+        return new StepScoreSingleStatistic(singleBenchmarkResult);
     }
 
     /**
@@ -76,20 +69,20 @@ public class StepScoreProblemStatistic extends AbstractProblemStatistic {
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
         List<XYPlot> plotList = new ArrayList<XYPlot>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
         int seriesIndex = 0;
-        for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
+        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmark.getSingleBenchmarkResultList()) {
             List<XYSeries> seriesList = new ArrayList<XYSeries>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
             // No direct ascending lines between 2 points, but a stepping line instead
             XYItemRenderer renderer = new XYStepRenderer();
-            if (singleBenchmark.isSuccess()) {
+            if (singleBenchmarkResult.isSuccess()) {
                 StepScoreSingleStatistic singleStatistic = (StepScoreSingleStatistic)
-                        singleBenchmark.getSingleStatistic(problemStatisticType);
+                        singleBenchmarkResult.getSingleStatistic(problemStatisticType);
                 for (StepScoreSingleStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     double[] levelValues = ScoreUtils.extractLevelDoubles(point.getScore());
                     for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= seriesList.size()) {
                             seriesList.add(new XYSeries(
-                                    singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix()));
+                                    singleBenchmarkResult.getSolverBenchmark().getNameWithFavoriteSuffix()));
                         }
                         seriesList.get(i).add(timeMillisSpend, levelValues[i]);
                     }
@@ -99,7 +92,7 @@ public class StepScoreProblemStatistic extends AbstractProblemStatistic {
                     renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES);
                 }
             }
-            if (singleBenchmark.getSolverBenchmark().isFavorite()) {
+            if (singleBenchmarkResult.getSolverBenchmark().isFavorite()) {
                 // Make the favorite more obvious
                 renderer.setSeriesStroke(0, new BasicStroke(2.0f));
             }

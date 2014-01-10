@@ -28,18 +28,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public abstract class AbstractSingleStatistic<P extends AbstractSingleStatisticPoint> implements SingleStatistic {
 
-    protected final SingleBenchmark singleBenchmark;
+    protected final SingleBenchmarkResult singleBenchmarkResult;
     protected final StatisticType statisticType;
 
     protected File csvFile = null;
 
-    protected AbstractSingleStatistic(SingleBenchmark singleBenchmark, StatisticType statisticType) {
-        this.singleBenchmark = singleBenchmark;
+    protected AbstractSingleStatistic(SingleBenchmarkResult singleBenchmarkResult, StatisticType statisticType) {
+        this.singleBenchmarkResult = singleBenchmarkResult;
         this.statisticType = statisticType;
     }
 
@@ -56,7 +56,7 @@ public abstract class AbstractSingleStatistic<P extends AbstractSingleStatisticP
     protected abstract List<String> getCsvHeader();
 
     public void writeCsvStatisticFile() {
-        csvFile = new File(singleBenchmark.getReportDirectory(), statisticType.name() + ".csv");
+        csvFile = new File(singleBenchmarkResult.getReportDirectory(), statisticType.name() + ".csv");
         Writer writer = null;
         try {
             writer = new OutputStreamWriter(new FileOutputStream(csvFile), "UTF-8");
@@ -65,7 +65,7 @@ public abstract class AbstractSingleStatistic<P extends AbstractSingleStatisticP
             for (AbstractSingleStatisticPoint point : getPointList()) {
                 writeCsvLine(writer, point.toCsvLine());
             }
-            if (singleBenchmark.isFailure()) {
+            if (singleBenchmarkResult.isFailure()) {
                 writer.append("Failed\n");
             }
         } catch (IOException e) {
@@ -89,7 +89,7 @@ public abstract class AbstractSingleStatistic<P extends AbstractSingleStatisticP
     }
 
     public void readCsvStatisticFile() {
-        ScoreDefinition scoreDefinition = singleBenchmark.getSolverBenchmark().getSolverConfig()
+        ScoreDefinition scoreDefinition = singleBenchmarkResult.getSolverBenchmark().getSolverConfig()
                 .getScoreDirectorFactoryConfig().buildScoreDefinition();
         List<P> pointList = getPointList();
         if (!pointList.isEmpty()) {

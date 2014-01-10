@@ -20,11 +20,11 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 
-public class SingleBenchmarkRankingComparator implements Comparator<SingleBenchmark>, Serializable {
+public class SingleBenchmarkRankingComparator implements Comparator<SingleBenchmarkResult>, Serializable {
 
-    public int compare(SingleBenchmark a, SingleBenchmark b) {
+    public int compare(SingleBenchmarkResult a, SingleBenchmarkResult b) {
         return new CompareToBuilder()
                 .append(a.isFailure(), b.isFailure())
                 .append(a.getScore(), b.getScore())

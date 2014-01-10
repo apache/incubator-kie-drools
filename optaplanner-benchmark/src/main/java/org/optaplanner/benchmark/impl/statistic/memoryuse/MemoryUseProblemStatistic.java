@@ -17,14 +17,8 @@
 package org.optaplanner.benchmark.impl.statistic.memoryuse;
 
 import java.awt.BasicStroke;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import org.jfree.chart.JFreeChart;
@@ -35,15 +29,13 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
-import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
 
@@ -54,8 +46,8 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
     }
 
     @Override
-    public SingleStatistic createSingleStatistic(SingleBenchmark singleBenchmark) {
-        return new MemoryUseSingleStatistic(singleBenchmark);
+    public SingleStatistic createSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
+        return new MemoryUseSingleStatistic(singleBenchmarkResult);
     }
 
     /**
@@ -79,16 +71,16 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         plot.setOrientation(PlotOrientation.VERTICAL);
         int seriesIndex = 0;
-        for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
+        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmark.getSingleBenchmarkResultList()) {
             XYSeries usedSeries = new XYSeries(
-                    singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix() + " used");
+                    singleBenchmarkResult.getSolverBenchmark().getNameWithFavoriteSuffix() + " used");
             // TODO enable max memory, but in the same color as used memory, but with a dotted line instead
 //            XYSeries maxSeries = new XYSeries(
-//                    singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix() + " max");
+//                    singleBenchmarkResult.getSolverBenchmark().getNameWithFavoriteSuffix() + " max");
             XYItemRenderer renderer = new XYLineAndShapeRenderer();
-            if (singleBenchmark.isSuccess()) {
+            if (singleBenchmarkResult.isSuccess()) {
                 MemoryUseSingleStatistic singleStatistic = (MemoryUseSingleStatistic)
-                        singleBenchmark.getSingleStatistic(problemStatisticType);
+                        singleBenchmarkResult.getSingleStatistic(problemStatisticType);
                 for (MemoryUseSingleStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     MemoryUseMeasurement memoryUseMeasurement = point.getMemoryUseMeasurement();
@@ -101,7 +93,7 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
 //            seriesCollection.addSeries(maxSeries);
             plot.setDataset(seriesIndex, seriesCollection);
 
-            if (singleBenchmark.getSolverBenchmark().isFavorite()) {
+            if (singleBenchmarkResult.getSolverBenchmark().isFavorite()) {
                 // Make the favorite more obvious
                 renderer.setSeriesStroke(0, new BasicStroke(2.0f));
 //                renderer.setSeriesStroke(1, new BasicStroke(2.0f));

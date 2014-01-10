@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.SolverBenchmark;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 
@@ -35,19 +35,19 @@ public class TotalRankSolverBenchmarkRankingWeightFactoryTest extends AbstractRa
         TotalRankSolverBenchmarkRankingWeightFactory factory = new TotalRankSolverBenchmarkRankingWeightFactory();
         List<SolverBenchmark> solverBenchmarkList = new ArrayList<SolverBenchmark>();
         SolverBenchmark a = new SolverBenchmark(null);
-        List<SingleBenchmark> aSingleBenchmarkList = new ArrayList<SingleBenchmark>();
-        addSingleBenchmark(aSingleBenchmarkList, -1000, -40, -1000);
-        addSingleBenchmark(aSingleBenchmarkList, -300, -40, -1000);
-        addSingleBenchmark(aSingleBenchmarkList, -40, -40, -1000);
-        a.setSingleBenchmarkList(aSingleBenchmarkList);
+        List<SingleBenchmarkResult> aSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
+        addSingleBenchmark(aSingleBenchmarkResultList, -1000, -40, -1000);
+        addSingleBenchmark(aSingleBenchmarkResultList, -300, -40, -1000);
+        addSingleBenchmark(aSingleBenchmarkResultList, -40, -40, -1000);
+        a.setSingleBenchmarkResultList(aSingleBenchmarkResultList);
         a.accumulateResults(benchmarkReport);
         solverBenchmarkList.add(a);
         SolverBenchmark b = new SolverBenchmark(null);
-        List<SingleBenchmark> bSingleBenchmarkList = new ArrayList<SingleBenchmark>();
-        addSingleBenchmark(bSingleBenchmarkList, -2000, -30, -2000); // Loses vs a
-        addSingleBenchmark(bSingleBenchmarkList, -200, -30, -2000); // Wins vs a
-        addSingleBenchmark(bSingleBenchmarkList, -30, -30, -2000); // Wins vs a
-        b.setSingleBenchmarkList(bSingleBenchmarkList);
+        List<SingleBenchmarkResult> bSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
+        addSingleBenchmark(bSingleBenchmarkResultList, -2000, -30, -2000); // Loses vs a
+        addSingleBenchmark(bSingleBenchmarkResultList, -200, -30, -2000); // Wins vs a
+        addSingleBenchmark(bSingleBenchmarkResultList, -30, -30, -2000); // Wins vs a
+        b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
         b.accumulateResults(benchmarkReport);
         solverBenchmarkList.add(b);
 
@@ -64,27 +64,27 @@ public class TotalRankSolverBenchmarkRankingWeightFactoryTest extends AbstractRa
         TotalRankSolverBenchmarkRankingWeightFactory factory = new TotalRankSolverBenchmarkRankingWeightFactory();
         List<SolverBenchmark> solverBenchmarkList = new ArrayList<SolverBenchmark>();
         SolverBenchmark a = new SolverBenchmark(null);
-        List<SingleBenchmark> aSingleBenchmarkList = new ArrayList<SingleBenchmark>();
-        addSingleBenchmark(aSingleBenchmarkList, -5000, -90, -5000);
-        addSingleBenchmark(aSingleBenchmarkList, -900, -90, -5000);
-        addSingleBenchmark(aSingleBenchmarkList, -90, -90, -5000);
-        a.setSingleBenchmarkList(aSingleBenchmarkList); // 0 wins - 1 equals - 5 losses
+        List<SingleBenchmarkResult> aSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
+        addSingleBenchmark(aSingleBenchmarkResultList, -5000, -90, -5000);
+        addSingleBenchmark(aSingleBenchmarkResultList, -900, -90, -5000);
+        addSingleBenchmark(aSingleBenchmarkResultList, -90, -90, -5000);
+        a.setSingleBenchmarkResultList(aSingleBenchmarkResultList); // 0 wins - 1 equals - 5 losses
         a.accumulateResults(benchmarkReport);
         solverBenchmarkList.add(a);
         SolverBenchmark b = new SolverBenchmark(null);
-        List<SingleBenchmark> bSingleBenchmarkList = new ArrayList<SingleBenchmark>();
-        addSingleBenchmark(bSingleBenchmarkList, -1000, -20, -1000); // Wins vs a - wins vs c
-        addSingleBenchmark(bSingleBenchmarkList, -200, -20, -1000); // Wins vs a - loses vs c
-        addSingleBenchmark(bSingleBenchmarkList, -20, -20, -1000); // Wins vs a - loses vs c
-        b.setSingleBenchmarkList(bSingleBenchmarkList); // 4 wins - 0 equals - 2 losses
+        List<SingleBenchmarkResult> bSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
+        addSingleBenchmark(bSingleBenchmarkResultList, -1000, -20, -1000); // Wins vs a - wins vs c
+        addSingleBenchmark(bSingleBenchmarkResultList, -200, -20, -1000); // Wins vs a - loses vs c
+        addSingleBenchmark(bSingleBenchmarkResultList, -20, -20, -1000); // Wins vs a - loses vs c
+        b.setSingleBenchmarkResultList(bSingleBenchmarkResultList); // 4 wins - 0 equals - 2 losses
         b.accumulateResults(benchmarkReport);
         solverBenchmarkList.add(b);
         SolverBenchmark c = new SolverBenchmark(null);
-        List<SingleBenchmark> cSingleBenchmarkList = new ArrayList<SingleBenchmark>();
-        addSingleBenchmark(cSingleBenchmarkList, -5000, -10, -5000); // Loses vs b, Equals vs a
-        addSingleBenchmark(cSingleBenchmarkList, -100, -10, -5000); // Wins vs a - wins vs b
-        addSingleBenchmark(cSingleBenchmarkList, -10, -10, -5000); // Wins vs a - wins vs b
-        c.setSingleBenchmarkList(cSingleBenchmarkList); // 4 wins - 1 equals - 1 losses
+        List<SingleBenchmarkResult> cSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
+        addSingleBenchmark(cSingleBenchmarkResultList, -5000, -10, -5000); // Loses vs b, Equals vs a
+        addSingleBenchmark(cSingleBenchmarkResultList, -100, -10, -5000); // Wins vs a - wins vs b
+        addSingleBenchmark(cSingleBenchmarkResultList, -10, -10, -5000); // Wins vs a - wins vs b
+        c.setSingleBenchmarkResultList(cSingleBenchmarkResultList); // 4 wins - 1 equals - 1 losses
         c.accumulateResults(benchmarkReport);
         solverBenchmarkList.add(c);
 

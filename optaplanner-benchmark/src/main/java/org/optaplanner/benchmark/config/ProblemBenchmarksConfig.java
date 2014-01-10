@@ -25,7 +25,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
-import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.SolverBenchmark;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
@@ -163,19 +163,19 @@ public class ProblemBenchmarksConfig {
             }
         }
         problemBenchmark.setProblemStatisticList(problemStatisticList);
-        problemBenchmark.setSingleBenchmarkList(new ArrayList<SingleBenchmark>());
+        problemBenchmark.setSingleBenchmarkResultList(new ArrayList<SingleBenchmarkResult>());
         return problemBenchmark;
     }
 
     private void addSingleBenchmark(
             SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark) {
-        SingleBenchmark singleBenchmark = new SingleBenchmark(solverBenchmark, problemBenchmark);
+        SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(solverBenchmark, problemBenchmark);
         for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
-            SingleStatistic singleStatistic = problemStatistic.createSingleStatistic(singleBenchmark);
-            singleBenchmark.getSingleStatisticMap().put(problemStatistic.getProblemStatisticType(), singleStatistic);
+            SingleStatistic singleStatistic = problemStatistic.createSingleStatistic(singleBenchmarkResult);
+            singleBenchmarkResult.getSingleStatisticMap().put(problemStatistic.getProblemStatisticType(), singleStatistic);
         }
-        solverBenchmark.getSingleBenchmarkList().add(singleBenchmark);
-        problemBenchmark.getSingleBenchmarkList().add(singleBenchmark);
+        solverBenchmark.getSingleBenchmarkResultList().add(singleBenchmarkResult);
+        problemBenchmark.getSingleBenchmarkResultList().add(singleBenchmarkResult);
     }
 
     public void inherit(ProblemBenchmarksConfig inheritedConfig) {

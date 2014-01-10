@@ -16,15 +16,12 @@
 
 package org.optaplanner.benchmark.impl.statistic.stepscore;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.impl.statistic.StatisticType;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
@@ -37,8 +34,8 @@ public class StepScoreSingleStatistic extends AbstractSingleStatistic<StepScoreS
 
     private List<StepScoreSingleStatisticPoint> pointList = new ArrayList<StepScoreSingleStatisticPoint>();
 
-    public StepScoreSingleStatistic(SingleBenchmark singleBenchmark) {
-        super(singleBenchmark, ProblemStatisticType.STEP_SCORE);
+    public StepScoreSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
+        super(singleBenchmarkResult, ProblemStatisticType.STEP_SCORE);
     }
 
     public List<StepScoreSingleStatisticPoint> getPointList() {

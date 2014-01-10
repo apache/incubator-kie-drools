@@ -18,7 +18,6 @@ package org.optaplanner.benchmark.impl;
 
 import java.util.concurrent.Callable;
 
-import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -32,16 +31,16 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final SingleBenchmark singleBenchmark;
+    private final SingleBenchmarkResult singleBenchmarkResult;
 
     private Throwable failureThrowable = null;
 
-    public SingleBenchmarkRunner(SingleBenchmark singleBenchmark) {
-        this.singleBenchmark = singleBenchmark;
+    public SingleBenchmarkRunner(SingleBenchmarkResult singleBenchmarkResult) {
+        this.singleBenchmarkResult = singleBenchmarkResult;
     }
 
-    public SingleBenchmark getSingleBenchmark() {
-        return singleBenchmark;
+    public SingleBenchmarkResult getSingleBenchmarkResult() {
+        return singleBenchmarkResult;
     }
 
     public Throwable getFailureThrowable() {
@@ -58,20 +57,19 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
 
     public SingleBenchmarkRunner call() {
         Runtime runtime = Runtime.getRuntime();
-        ProblemBenchmark problemBenchmark = singleBenchmark.getProblemBenchmark();
-        SolverBenchmark solverBenchmark = singleBenchmark.getSolverBenchmark();
+        ProblemBenchmark problemBenchmark = singleBenchmarkResult.getProblemBenchmark();
         Solution inputSolution = problemBenchmark.readPlanningProblem();
         if (!problemBenchmark.getPlannerBenchmark().hasMultipleParallelBenchmarks()) {
             runtime.gc();
-            singleBenchmark.setUsedMemoryAfterInputSolution(runtime.totalMemory() - runtime.freeMemory());
+            singleBenchmarkResult.setUsedMemoryAfterInputSolution(runtime.totalMemory() - runtime.freeMemory());
         }
-        logger.trace("Benchmark inputSolution has been read for singleBenchmark ({}_{}).",
-                problemBenchmark.getName(), solverBenchmark.getName() );
+        logger.trace("Benchmark inputSolution has been read for singleBenchmarkResult ({}).",
+                singleBenchmarkResult.getName());
 
-        // Intentionally create a fresh solver for every SingleBenchmark to reset Random, tabu lists, ...
-        Solver solver = solverBenchmark.getSolverConfig().buildSolver();
+        // Intentionally create a fresh solver for every SingleBenchmarkResult to reset Random, tabu lists, ...
+        Solver solver = singleBenchmarkResult.getSolverBenchmark().getSolverConfig().buildSolver();
 
-        for (SingleStatistic singleStatistic : singleBenchmark.getSingleStatisticMap().values()) {
+        for (SingleStatistic singleStatistic : singleBenchmarkResult.getSingleStatisticMap().values()) {
             singleStatistic.open(solver);
         }
 
@@ -81,28 +79,28 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
         Solution outputSolution = solver.getBestSolution();
 
         SolutionDescriptor solutionDescriptor = ((DefaultSolver) solver).getSolutionDescriptor();
-        singleBenchmark.setPlanningEntityCount(solutionDescriptor.getEntityCount(outputSolution));
+        singleBenchmarkResult.setPlanningEntityCount(solutionDescriptor.getEntityCount(outputSolution));
         problemBenchmark.registerProblemScale(solutionDescriptor.getProblemScale(outputSolution));
-        singleBenchmark.setScore(outputSolution.getScore());
-        singleBenchmark.setTimeMillisSpend(timeMillisSpend);
+        singleBenchmarkResult.setScore(outputSolution.getScore());
+        singleBenchmarkResult.setTimeMillisSpend(timeMillisSpend);
         DefaultSolverScope solverScope = ((DefaultSolver) solver).getSolverScope();
-        singleBenchmark.setCalculateCount(solverScope.getCalculateCount());
+        singleBenchmarkResult.setCalculateCount(solverScope.getCalculateCount());
 
-        for (SingleStatistic singleStatistic : singleBenchmark.getSingleStatisticMap().values()) {
+        for (SingleStatistic singleStatistic : singleBenchmarkResult.getSingleStatisticMap().values()) {
             singleStatistic.close(solver);
             singleStatistic.writeCsvStatisticFile();
         }
-        problemBenchmark.writeOutputSolution(singleBenchmark, outputSolution);
+        problemBenchmark.writeOutputSolution(singleBenchmarkResult, outputSolution);
         return this;
     }
 
     public String getName() {
-        return singleBenchmark.getName();
+        return singleBenchmarkResult.getName();
     }
 
     @Override
     public String toString() {
-        return singleBenchmark.toString();
+        return singleBenchmarkResult.toString();
     }
 
 }

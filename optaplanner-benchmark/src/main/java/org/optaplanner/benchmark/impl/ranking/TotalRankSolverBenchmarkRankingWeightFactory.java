@@ -23,14 +23,14 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
-import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.SolverBenchmark;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.solution.Solution;
 
 /**
  * This {@link SolverBenchmarkRankingWeightFactory} orders a {@link SolverBenchmark} by how how many time each of it's
- * {@link SingleBenchmark} beat the {@link SingleBenchmark} of the other {@link SolverBenchmark}s.
+ * {@link SingleBenchmarkResult} beat the {@link SingleBenchmarkResult} of the other {@link SolverBenchmark}s.
  * It maximizes the overall ranking.
  * <p/>
  * When the inputSolutions differ greatly in size or difficulty, this often produces a difference in

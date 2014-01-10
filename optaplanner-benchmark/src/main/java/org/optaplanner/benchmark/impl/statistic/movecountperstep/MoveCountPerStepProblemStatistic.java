@@ -18,14 +18,8 @@ package org.optaplanner.benchmark.impl.statistic.movecountperstep;
 
 import java.awt.BasicStroke;
 import java.awt.Paint;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import org.jfree.chart.JFreeChart;
@@ -38,15 +32,13 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
-import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
 
@@ -57,8 +49,8 @@ public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
     }
 
     @Override
-    public SingleStatistic createSingleStatistic(SingleBenchmark singleBenchmark) {
-        return new MoveCountPerStepSingleStatistic(singleBenchmark);
+    public SingleStatistic createSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
+        return new MoveCountPerStepSingleStatistic(singleBenchmarkResult);
     }
 
     /**
@@ -84,15 +76,15 @@ public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
         plot.setOrientation(PlotOrientation.VERTICAL);
         
         int seriesIndex = 0;
-        for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
+        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmark.getSingleBenchmarkResultList()) {
             XYSeries acceptedSeries = new XYSeries(
-                    singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix() + " accepted");
+                    singleBenchmarkResult.getSolverBenchmark().getNameWithFavoriteSuffix() + " accepted");
             XYSeries selectedSeries = new XYSeries(
-                    singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix() + " selected");            
+                    singleBenchmarkResult.getSolverBenchmark().getNameWithFavoriteSuffix() + " selected");
             XYItemRenderer renderer = new XYLineAndShapeRenderer(true, false);
-            if (singleBenchmark.isSuccess()) {
+            if (singleBenchmarkResult.isSuccess()) {
                 MoveCountPerStepSingleStatistic singleStatistic = (MoveCountPerStepSingleStatistic)
-                        singleBenchmark.getSingleStatistic(problemStatisticType);
+                        singleBenchmarkResult.getSingleStatistic(problemStatisticType);
                 for (MoveCountPerStepSingleStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     long acceptedMoveCount = point.getMoveCountPerStepMeasurement().getAcceptedMoveCount();
@@ -106,7 +98,7 @@ public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
             seriesCollection.addSeries(selectedSeries);
             plot.setDataset(seriesIndex, seriesCollection);
 
-            if (singleBenchmark.getSolverBenchmark().isFavorite()) {
+            if (singleBenchmarkResult.getSolverBenchmark().isFavorite()) {
                 // Make the favorite more obvious
                 renderer.setSeriesStroke(0, new BasicStroke(2.0f));
                 // Dashed line for selected move count

@@ -16,12 +16,10 @@
 
 package org.optaplanner.benchmark.impl.statistic;
 
-import java.io.File;
 import java.util.List;
 
-import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
-import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 
 /**
@@ -41,10 +39,10 @@ public interface ProblemStatistic {
 
     /**
      * This method is thread-safe.
-     * @param singleBenchmark never null
+     * @param singleBenchmarkResult never null
      * @return never null
      */
-    SingleStatistic createSingleStatistic(SingleBenchmark singleBenchmark);
+    SingleStatistic createSingleStatistic(SingleBenchmarkResult singleBenchmarkResult);
 
     void accumulateResults(BenchmarkReport benchmarkReport);
 

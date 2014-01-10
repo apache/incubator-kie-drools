@@ -33,7 +33,7 @@ import org.jfree.chart.renderer.xy.XYStepRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
-import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpendNumberFormat;
@@ -50,8 +50,8 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
     }
 
     @Override
-    public SingleStatistic createSingleStatistic(SingleBenchmark singleBenchmark) {
-        return new BestScoreSingleStatistic(singleBenchmark);
+    public SingleStatistic createSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
+        return new BestScoreSingleStatistic(singleBenchmarkResult);
     }
 
     /**
@@ -69,32 +69,32 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
         List<XYPlot> plotList = new ArrayList<XYPlot>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
         int seriesIndex = 0;
-        for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
+        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmark.getSingleBenchmarkResultList()) {
             List<XYSeries> seriesList = new ArrayList<XYSeries>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
             // No direct ascending lines between 2 points, but a stepping line instead
             XYItemRenderer renderer = new XYStepRenderer();
-            if (singleBenchmark.isSuccess()) {
+            if (singleBenchmarkResult.isSuccess()) {
                 BestScoreSingleStatistic singleStatistic = (BestScoreSingleStatistic)
-                        singleBenchmark.getSingleStatistic(problemStatisticType);
+                        singleBenchmarkResult.getSingleStatistic(problemStatisticType);
                 for (BestScoreSingleStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     double[] levelValues = ScoreUtils.extractLevelDoubles(point.getScore());
                     for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= seriesList.size()) {
                             seriesList.add(new XYSeries(
-                                    singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix()));
+                                    singleBenchmarkResult.getSolverBenchmark().getNameWithFavoriteSuffix()));
                         }
                         seriesList.get(i).add(timeMillisSpend, levelValues[i]);
                     }
                 }
                 // TODO if startingSolution is initialized and no improvement is made, a horizontal line should be shown
                 // Draw a horizontal line from the last new best step to how long the solver actually ran
-                long timeMillisSpend = singleBenchmark.getTimeMillisSpend();
-                double[] bestScoreLevels = ScoreUtils.extractLevelDoubles(singleBenchmark.getScore());
+                long timeMillisSpend = singleBenchmarkResult.getTimeMillisSpend();
+                double[] bestScoreLevels = ScoreUtils.extractLevelDoubles(singleBenchmarkResult.getScore());
                 for (int i = 0; i < bestScoreLevels.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                     if (i >= seriesList.size()) {
                         seriesList.add(new XYSeries(
-                                singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix()));
+                                singleBenchmarkResult.getSolverBenchmark().getNameWithFavoriteSuffix()));
                     }
                     seriesList.get(i).add(timeMillisSpend, bestScoreLevels[i]);
                 }
@@ -103,7 +103,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
                     renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES);
                 }
             }
-            if (singleBenchmark.getSolverBenchmark().isFavorite()) {
+            if (singleBenchmarkResult.getSolverBenchmark().isFavorite()) {
                 // Make the favorite more obvious
                 renderer.setSeriesStroke(0, new BasicStroke(2.0f));
             }

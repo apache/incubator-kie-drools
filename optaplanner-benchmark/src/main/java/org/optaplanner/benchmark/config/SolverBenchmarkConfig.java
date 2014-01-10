@@ -22,7 +22,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
-import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.SolverBenchmark;
 import org.optaplanner.core.config.solver.SolverConfig;
 
@@ -70,7 +70,7 @@ public class SolverBenchmarkConfig {
         SolverBenchmark solverBenchmark = new SolverBenchmark(plannerBenchmark);
         solverBenchmark.setName(name);
         solverBenchmark.setSolverConfig(solverConfig);
-        solverBenchmark.setSingleBenchmarkList(new ArrayList<SingleBenchmark>());
+        solverBenchmark.setSingleBenchmarkResultList(new ArrayList<SingleBenchmarkResult>());
         ProblemBenchmarksConfig problemBenchmarksConfig_
                 = problemBenchmarksConfig == null ? new ProblemBenchmarksConfig()
                 : problemBenchmarksConfig;
