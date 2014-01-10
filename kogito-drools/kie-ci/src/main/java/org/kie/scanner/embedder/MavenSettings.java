@@ -70,7 +70,7 @@ public class MavenSettings {
         try {
             settings = settingsBuilder.build( request ).getEffectiveSettings();
         } catch ( SettingsBuildingException e ) {
-            new RuntimeException(e);
+            throw new RuntimeException(e);
         }
 
         if (settings.getLocalRepository() == null) {
