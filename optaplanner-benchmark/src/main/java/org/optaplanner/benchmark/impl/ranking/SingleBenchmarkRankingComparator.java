@@ -30,4 +30,5 @@ public class SingleBenchmarkRankingComparator implements Comparator<SingleBenchm
                 .append(a.getScore(), b.getScore())
                 .toComparison();
     }
+
 }

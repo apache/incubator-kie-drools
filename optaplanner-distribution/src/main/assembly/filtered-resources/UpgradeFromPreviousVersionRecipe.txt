@@ -3755,3 +3755,12 @@ Before in *BenchmarkConfig.xml:
       ...
       <problemStatisticType>IMPROVING_STEP_PERCENTAGE</problemStatisticType>
     </problemBenchmarks>
+
+[MINOR] If you have custom Benchmarker ranking:
+SolverBenchmark has been renamed to SolverBenchmarkResult.
+ProblemBenchmark has been renamed to ProblemBenchmarkResult.
+SingleBenchmark has been renamed to SingleBenchmarkResult.
+Before in *.java:
+    public int compare(SolverBenchmark a, SolverBenchmark b) {...}
+After in *.java:
+    public int compare(SolverBenchmarkResult a, SolverBenchmarkResult b) {...}
