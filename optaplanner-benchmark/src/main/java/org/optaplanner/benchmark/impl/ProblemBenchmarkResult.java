@@ -41,7 +41,7 @@ public class ProblemBenchmarkResult {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final DefaultPlannerBenchmark plannerBenchmark;
+    private final PlannerBenchmarkResult plannerBenchmark;
 
     private String name = null;
 
@@ -65,11 +65,11 @@ public class ProblemBenchmarkResult {
     private SingleBenchmarkResult winningSingleBenchmarkResult = null;
     private SingleBenchmarkResult worstSingleBenchmarkResult = null;
 
-    public ProblemBenchmarkResult(DefaultPlannerBenchmark plannerBenchmark) {
+    public ProblemBenchmarkResult(PlannerBenchmarkResult plannerBenchmark) {
         this.plannerBenchmark = plannerBenchmark;
     }
 
-    public DefaultPlannerBenchmark getPlannerBenchmark() {
+    public PlannerBenchmarkResult getPlannerBenchmark() {
         return plannerBenchmark;
     }
 

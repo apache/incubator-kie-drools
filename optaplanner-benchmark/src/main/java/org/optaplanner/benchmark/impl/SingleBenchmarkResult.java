@@ -89,7 +89,7 @@ public class SingleBenchmarkResult {
     }
 
     /**
-     * @return null if {@link DefaultPlannerBenchmark#hasMultipleParallelBenchmarks()} return true
+     * @return null if {@link PlannerBenchmarkResult#hasMultipleParallelBenchmarks()} return true
      */
     public Long getUsedMemoryAfterInputSolution() {
         return usedMemoryAfterInputSolution;

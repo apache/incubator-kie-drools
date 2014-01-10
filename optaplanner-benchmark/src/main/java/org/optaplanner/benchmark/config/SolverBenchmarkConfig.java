@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
+import org.optaplanner.benchmark.impl.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.SolverBenchmarkResult;
@@ -65,7 +65,7 @@ public class SolverBenchmarkConfig {
     // Builder methods
     // ************************************************************************
 
-    public SolverBenchmarkResult buildSolverBenchmark(DefaultPlannerBenchmark plannerBenchmark) {
+    public SolverBenchmarkResult buildSolverBenchmark(PlannerBenchmarkResult plannerBenchmark) {
         validate();
         SolverBenchmarkResult solverBenchmarkResult = new SolverBenchmarkResult(plannerBenchmark);
         solverBenchmarkResult.setName(name);

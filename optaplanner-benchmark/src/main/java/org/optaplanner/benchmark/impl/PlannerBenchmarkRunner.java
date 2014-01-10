@@ -39,7 +39,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final DefaultPlannerBenchmark plannerBenchmarkResult;
+    private final PlannerBenchmarkResult plannerBenchmarkResult;
 
     private File benchmarkDirectory = null;
     private BenchmarkReport benchmarkReport = null;
@@ -49,7 +49,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
     private long startingSystemTimeMillis = -1L;
     private SingleBenchmarkRunner firstFailureSingleBenchmarkRunner = null;
 
-    public PlannerBenchmarkRunner(DefaultPlannerBenchmark plannerBenchmarkResult) {
+    public PlannerBenchmarkRunner(PlannerBenchmarkResult plannerBenchmarkResult) {
         this.plannerBenchmarkResult = plannerBenchmarkResult;
     }
 

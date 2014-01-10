@@ -54,7 +54,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.TextAnchor;
 import org.optaplanner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
-import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
+import org.optaplanner.benchmark.impl.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.SolverBenchmarkResult;
@@ -67,7 +67,7 @@ public class BenchmarkReport {
 
     public static final int CHARTED_SCORE_LEVEL_SIZE = 5;
 
-    protected final DefaultPlannerBenchmark plannerBenchmarkResult;
+    protected final PlannerBenchmarkResult plannerBenchmarkResult;
 
     protected File benchmarkReportDirectory = null;
     protected Locale locale = null;
@@ -88,11 +88,11 @@ public class BenchmarkReport {
 
     protected List<String> warningList = null;
 
-    public BenchmarkReport(DefaultPlannerBenchmark plannerBenchmarkResult) {
+    public BenchmarkReport(PlannerBenchmarkResult plannerBenchmarkResult) {
         this.plannerBenchmarkResult = plannerBenchmarkResult;
     }
 
-    public DefaultPlannerBenchmark getPlannerBenchmarkResult() {
+    public PlannerBenchmarkResult getPlannerBenchmarkResult() {
         return plannerBenchmarkResult;
     }
 

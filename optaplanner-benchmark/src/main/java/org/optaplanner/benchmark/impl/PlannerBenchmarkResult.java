@@ -34,7 +34,7 @@ import org.optaplanner.core.api.solver.Solver;
 /**
  * Represents the benchmarks on multiple {@link Solver} configurations on multiple problem instances (data sets).
  */
-public class DefaultPlannerBenchmark {
+public class PlannerBenchmarkResult {
 
     private String name = null;
 

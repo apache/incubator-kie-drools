@@ -32,7 +32,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
-import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
+import org.optaplanner.benchmark.impl.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.PlannerBenchmarkRunner;
 import org.optaplanner.benchmark.impl.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.SolverBenchmarkResult;
@@ -196,7 +196,7 @@ public class PlannerBenchmarkConfig {
         generateSolverBenchmarkConfigNames();
         inherit();
 
-        DefaultPlannerBenchmark plannerBenchmarkResult = new DefaultPlannerBenchmark();
+        PlannerBenchmarkResult plannerBenchmarkResult = new PlannerBenchmarkResult();
         plannerBenchmarkResult.setName(name);
         PlannerBenchmarkRunner plannerBenchmarkRunner = new PlannerBenchmarkRunner(plannerBenchmarkResult);
         plannerBenchmarkRunner.setBenchmarkDirectory(benchmarkDirectory);

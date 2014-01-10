@@ -38,7 +38,7 @@ public class SolverBenchmarkResult {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final DefaultPlannerBenchmark plannerBenchmark;
+    private final PlannerBenchmarkResult plannerBenchmark;
 
     private String name = null;
 
@@ -66,7 +66,7 @@ public class SolverBenchmarkResult {
     // Ranking starts from 0
     private Integer ranking = null;
 
-    public SolverBenchmarkResult(DefaultPlannerBenchmark plannerBenchmark) {
+    public SolverBenchmarkResult(PlannerBenchmarkResult plannerBenchmark) {
         this.plannerBenchmark = plannerBenchmark;
     }
 
@@ -228,8 +228,8 @@ public class SolverBenchmarkResult {
 
     /**
      * Does not call {@link SingleBenchmarkResult#accumulateResults(BenchmarkReport)},
-     * because {@link DefaultPlannerBenchmark#accumulateResults(BenchmarkReport)} does that already on
-     * {@link DefaultPlannerBenchmark#getUnifiedProblemBenchmarkResultList()}.
+     * because {@link PlannerBenchmarkResult#accumulateResults(BenchmarkReport)} does that already on
+     * {@link PlannerBenchmarkResult#getUnifiedProblemBenchmarkResultList()}.
      */
     public void accumulateResults(BenchmarkReport benchmarkReport) {
         determineTotalsAndAverages();

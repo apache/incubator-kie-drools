@@ -23,7 +23,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.io.FilenameUtils;
-import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
+import org.optaplanner.benchmark.impl.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.SolverBenchmarkResult;
@@ -92,7 +92,7 @@ public class ProblemBenchmarksConfig {
     // Builder methods
     // ************************************************************************
 
-    public List<ProblemBenchmarkResult> buildProblemBenchmarkList(DefaultPlannerBenchmark plannerBenchmark,
+    public List<ProblemBenchmarkResult> buildProblemBenchmarkList(PlannerBenchmarkResult plannerBenchmark,
             SolverBenchmarkResult solverBenchmarkResult) {
         validate(solverBenchmarkResult);
         ProblemIO problemIO = buildProblemIO();
@@ -145,7 +145,7 @@ public class ProblemBenchmarksConfig {
         }
     }
 
-    private ProblemBenchmarkResult buildProblemBenchmark(DefaultPlannerBenchmark plannerBenchmark,
+    private ProblemBenchmarkResult buildProblemBenchmark(PlannerBenchmarkResult plannerBenchmark,
             ProblemIO problemIO, File inputSolutionFile) {
         ProblemBenchmarkResult problemBenchmarkResult = new ProblemBenchmarkResult(plannerBenchmark);
         String name = FilenameUtils.getBaseName(inputSolutionFile.getName());
@@ -154,7 +154,6 @@ public class ProblemBenchmarksConfig {
         problemBenchmarkResult.setWriteOutputSolutionEnabled(
                 writeOutputSolutionEnabled == null ? false : writeOutputSolutionEnabled);
         problemBenchmarkResult.setInputSolutionFile(inputSolutionFile);
-        // outputSolutionFilesDirectory is set by DefaultPlannerBenchmark
         List<ProblemStatistic> problemStatisticList = new ArrayList<ProblemStatistic>(
                 problemStatisticTypeList == null ? 0 : problemStatisticTypeList.size());
         if (problemStatisticTypeList != null) {
