@@ -2449,6 +2449,61 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
+    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1051059")
+    public void testExpressionEditorLeftToOperator() throws Exception {
+        String drl = ""
+                + "rule \"r1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + " a: Applicant()\n"
+                + " Applicant( age == a.age )\n"
+                + "then\n"
+                + "end";
+
+        addModelField( "Applicant",
+                "this",
+                "Applicant",
+                DataType.TYPE_THIS );
+        addModelField( "Applicant",
+                "age",
+                "java.lang.Integer",
+                "Integer" );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                dmo );
+
+        FactPattern pattern1 = (FactPattern) m.lhs[ 0 ];
+        assertEquals("a",
+                pattern1.getBoundName());
+
+        FactPattern pattern2 = (FactPattern) m.lhs[ 1 ];
+
+        assertEquals(1,pattern2.getConstraintList().getNumberOfConstraints());
+
+        assertTrue(pattern2.getConstraintList().getConstraint(0) instanceof SingleFieldConstraint);
+        SingleFieldConstraint constraint = (SingleFieldConstraint) pattern2.getConstraintList().getConstraint(0);
+        assertEquals("age", constraint.getFieldName());
+        assertEquals("==", constraint.getOperator());
+        assertEquals(BaseSingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE, constraint.getConstraintValueType());
+        assertEquals(null, constraint.getValue());
+        assertEquals(2, constraint.getExpressionValue().getParts().size());
+
+        assertTrue(constraint.getExpressionValue().getParts().get(0) instanceof ExpressionVariable);
+        ExpressionVariable expressionVariable = (ExpressionVariable) constraint.getExpressionValue().getParts().get(0);
+        assertEquals("a", expressionVariable.getName());
+        assertEquals("Applicant", expressionVariable.getClassType());
+        assertEquals("this", expressionVariable.getGenericType());
+        assertEquals(constraint.getExpressionValue().getParts().get(1), expressionVariable.getNext());
+
+        assertTrue(constraint.getExpressionValue().getParts().get(1) instanceof ExpressionField);
+        ExpressionField expressionField = (ExpressionField) constraint.getExpressionValue().getParts().get(1);
+        assertEquals("age", expressionField.getName());
+        assertEquals("java.lang.Integer", expressionField.getClassType());
+        assertEquals("Integer", expressionField.getGenericType());
+
+    }
+
+    @Test
     public void testEnumeration() throws Exception {
         //https://bugzilla.redhat.com/show_bug.cgi?id=1047879
         String drl = "import org.drools.workbench.models.commons.backend.rule.TestEnum;\n"
