@@ -3011,6 +3011,7 @@ public class RuleModelDRLPersistenceImpl
                         con.setConstraintValueType( SingleFieldConstraint.TYPE_ENUM );
                     } else if ( value.indexOf( '.' ) > 0 && boundParams.containsKey( value.substring( 0, value.indexOf( '.' ) ).trim() ) ) {
                         con.setExpressionValue( parseExpression( m, null, value, new ExpressionFormLine() ) );
+                        con.setConstraintValueType(BaseSingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE);
                         value = "";
                     } else {
                         con.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
