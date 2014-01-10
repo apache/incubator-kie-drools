@@ -61,7 +61,7 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
         Runtime runtime = Runtime.getRuntime();
         ProblemBenchmarkResult problemBenchmarkResult = singleBenchmarkResult.getProblemBenchmarkResult();
         Solution inputSolution = problemBenchmarkResult.readPlanningProblem();
-        if (!problemBenchmarkResult.getPlannerBenchmark().hasMultipleParallelBenchmarks()) {
+        if (!problemBenchmarkResult.getPlannerBenchmarkResult().hasMultipleParallelBenchmarks()) {
             runtime.gc();
             singleBenchmarkResult.setUsedMemoryAfterInputSolution(runtime.totalMemory() - runtime.freeMemory());
         }

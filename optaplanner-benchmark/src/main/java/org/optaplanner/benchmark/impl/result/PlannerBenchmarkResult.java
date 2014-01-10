@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.collections.comparators.ReverseComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.core.api.score.Score;
@@ -34,6 +36,7 @@ import org.optaplanner.core.api.solver.Solver;
 /**
  * Represents the benchmarks on multiple {@link Solver} configurations on multiple problem instances (data sets).
  */
+@XStreamAlias("plannerBenchmarkResult")
 public class PlannerBenchmarkResult {
 
     private String name = null;
@@ -41,7 +44,9 @@ public class PlannerBenchmarkResult {
     private int parallelBenchmarkCount = -1;
     private long warmUpTimeMillisSpend = 0L;
 
+    @XStreamImplicit(itemFieldName = "solverBenchmarkResult")
     private List<SolverBenchmarkResult> solverBenchmarkResultList = null;
+    @XStreamImplicit(itemFieldName = "unifiedProblemBenchmarkResult")
     private List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = null;
 
     private Date startingTimestamp;

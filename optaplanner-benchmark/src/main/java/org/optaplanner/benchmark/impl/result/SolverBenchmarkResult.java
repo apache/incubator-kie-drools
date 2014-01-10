@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -34,17 +36,20 @@ import org.slf4j.LoggerFactory;
 /**
  * Represents 1 {@link Solver} configuration benchmarked on multiple problem instances (data sets).
  */
+@XStreamAlias("solverBenchmarkResult")
 public class SolverBenchmarkResult {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final PlannerBenchmarkResult plannerBenchmark;
+    private final PlannerBenchmarkResult plannerBenchmarkResult;
 
     private String name = null;
 
     private SolverConfig solverConfig = null;
 
+    @XStreamImplicit(itemFieldName = "problemBenchmarkResult")
     private List<ProblemBenchmarkResult> problemBenchmarkResultList = null;
+    @XStreamImplicit(itemFieldName = "singleBenchmarkResult")
     private List<SingleBenchmarkResult> singleBenchmarkResultList = null;
 
     // ************************************************************************
@@ -66,8 +71,8 @@ public class SolverBenchmarkResult {
     // Ranking starts from 0
     private Integer ranking = null;
 
-    public SolverBenchmarkResult(PlannerBenchmarkResult plannerBenchmark) {
-        this.plannerBenchmark = plannerBenchmark;
+    public SolverBenchmarkResult(PlannerBenchmarkResult plannerBenchmarkResult) {
+        this.plannerBenchmarkResult = plannerBenchmarkResult;
     }
 
     public String getName() {

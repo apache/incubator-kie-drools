@@ -23,6 +23,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.ranking.SingleBenchmarkRankingComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -37,11 +39,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Represents 1 problem instance (data set) benchmarked on multiple {@link Solver} configurations.
  */
+@XStreamAlias("problemBenchmarkResult")
 public class ProblemBenchmarkResult {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final PlannerBenchmarkResult plannerBenchmark;
+    private final PlannerBenchmarkResult plannerBenchmarkResult;
 
     private String name = null;
 
@@ -50,8 +53,10 @@ public class ProblemBenchmarkResult {
     private File inputSolutionFile = null;
     private File problemReportDirectory = null;
 
+    @XStreamImplicit(itemFieldName = "problemStatistic")
     private List<ProblemStatistic> problemStatisticList = null;
 
+    @XStreamImplicit(itemFieldName = "singleBenchmarkResult")
     private List<SingleBenchmarkResult> singleBenchmarkResultList = null;
 
     private Long problemScale = null;
@@ -65,12 +70,12 @@ public class ProblemBenchmarkResult {
     private SingleBenchmarkResult winningSingleBenchmarkResult = null;
     private SingleBenchmarkResult worstSingleBenchmarkResult = null;
 
-    public ProblemBenchmarkResult(PlannerBenchmarkResult plannerBenchmark) {
-        this.plannerBenchmark = plannerBenchmark;
+    public ProblemBenchmarkResult(PlannerBenchmarkResult plannerBenchmarkResult) {
+        this.plannerBenchmarkResult = plannerBenchmarkResult;
     }
 
-    public PlannerBenchmarkResult getPlannerBenchmark() {
-        return plannerBenchmark;
+    public PlannerBenchmarkResult getPlannerBenchmarkResult() {
+        return plannerBenchmarkResult;
     }
 
     public String getName() {

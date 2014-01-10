@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
@@ -31,6 +32,7 @@ import org.optaplanner.core.api.solver.Solver;
 /**
  * Represents 1 benchmark for 1 {@link Solver} configuration for 1 problem instance (data set).
  */
+@XStreamAlias("singleBenchmarkResult")
 public class SingleBenchmarkResult {
 
     private final SolverBenchmarkResult solverBenchmarkResult;
