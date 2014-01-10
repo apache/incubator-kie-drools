@@ -29,7 +29,7 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.optaplanner.benchmark.impl.ProblemBenchmark;
+import org.optaplanner.benchmark.impl.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
@@ -41,8 +41,8 @@ public class BestSolutionMutationProblemStatistic extends AbstractProblemStatist
 
     protected File graphFile = null;
 
-    public BestSolutionMutationProblemStatistic(ProblemBenchmark problemBenchmark) {
-        super(problemBenchmark, ProblemStatisticType.BEST_SOLUTION_MUTATION);
+    public BestSolutionMutationProblemStatistic(ProblemBenchmarkResult problemBenchmarkResult) {
+        super(problemBenchmarkResult, ProblemStatisticType.BEST_SOLUTION_MUTATION);
     }
 
     @Override
@@ -72,8 +72,8 @@ public class BestSolutionMutationProblemStatistic extends AbstractProblemStatist
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         plot.setOrientation(PlotOrientation.VERTICAL);
         int seriesIndex = 0;
-        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmark.getSingleBenchmarkResultList()) {
-            XYSeries series = new XYSeries(singleBenchmarkResult.getSolverBenchmark().getNameWithFavoriteSuffix());
+        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
+            XYSeries series = new XYSeries(singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix());
             XYItemRenderer renderer = new XYLineAndShapeRenderer();
             if (singleBenchmarkResult.isSuccess()) {
                 BestSolutionMutationSingleStatistic singleStatistic = (BestSolutionMutationSingleStatistic)
@@ -86,16 +86,16 @@ public class BestSolutionMutationProblemStatistic extends AbstractProblemStatist
             }
             plot.setDataset(seriesIndex, new XYSeriesCollection(series));
 
-            if (singleBenchmarkResult.getSolverBenchmark().isFavorite()) {
+            if (singleBenchmarkResult.getSolverBenchmarkResult().isFavorite()) {
                 // Make the favorite more obvious
                 renderer.setSeriesStroke(0, new BasicStroke(2.0f));
             }
             plot.setRenderer(seriesIndex, renderer);
             seriesIndex++;
         }
-        JFreeChart chart = new JFreeChart(problemBenchmark.getName() + " best solution mutation statistic",
+        JFreeChart chart = new JFreeChart(problemBenchmarkResult.getName() + " best solution mutation statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        graphFile = writeChartToImageFile(chart, problemBenchmark.getName() + "BestSolutionMutationStatistic");
+        graphFile = writeChartToImageFile(chart, problemBenchmarkResult.getName() + "BestSolutionMutationStatistic");
     }
 
 }

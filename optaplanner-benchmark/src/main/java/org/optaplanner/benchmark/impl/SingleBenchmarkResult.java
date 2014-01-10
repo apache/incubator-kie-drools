@@ -33,8 +33,8 @@ import org.optaplanner.core.api.solver.Solver;
  */
 public class SingleBenchmarkResult {
 
-    private final SolverBenchmark solverBenchmark;
-    private final ProblemBenchmark problemBenchmark;
+    private final SolverBenchmarkResult solverBenchmarkResult;
+    private final ProblemBenchmarkResult problemBenchmarkResult;
 
     private Map<StatisticType, SingleStatistic> singleStatisticMap = new HashMap<StatisticType, SingleStatistic>();
 
@@ -52,24 +52,24 @@ public class SingleBenchmarkResult {
     // Report accumulates
     // ************************************************************************
 
-    // Compared to winningSingleBenchmarkResult in the same ProblemBenchmark (which might not be the overall favorite)
+    // Compared to winningSingleBenchmarkResult in the same ProblemBenchmarkResult (which might not be the overall favorite)
     private Score winningScoreDifference = null;
     private ScoreDifferencePercentage worstScoreDifferencePercentage = null;
 
     // Ranking starts from 0
     private Integer ranking = null;
 
-    public SingleBenchmarkResult(SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark) {
-        this.solverBenchmark = solverBenchmark;
-        this.problemBenchmark = problemBenchmark;
+    public SingleBenchmarkResult(SolverBenchmarkResult solverBenchmarkResult, ProblemBenchmarkResult problemBenchmarkResult) {
+        this.solverBenchmarkResult = solverBenchmarkResult;
+        this.problemBenchmarkResult = problemBenchmarkResult;
     }
 
-    public SolverBenchmark getSolverBenchmark() {
-        return solverBenchmark;
+    public SolverBenchmarkResult getSolverBenchmarkResult() {
+        return solverBenchmarkResult;
     }
 
-    public ProblemBenchmark getProblemBenchmark() {
-        return problemBenchmark;
+    public ProblemBenchmarkResult getProblemBenchmarkResult() {
+        return problemBenchmarkResult;
     }
 
     public Map<StatisticType, SingleStatistic> getSingleStatisticMap() {
@@ -160,7 +160,7 @@ public class SingleBenchmarkResult {
     // ************************************************************************
 
     public String getName() {
-        return problemBenchmark.getName() + "_" + solverBenchmark.getName();
+        return problemBenchmarkResult.getName() + "_" + solverBenchmarkResult.getName();
     }
 
     public boolean isSuccess() {
@@ -201,7 +201,7 @@ public class SingleBenchmarkResult {
     // ************************************************************************
 
     public void initSubdirs(File problemReportDirectory) {
-        reportDirectory = new File(problemReportDirectory, solverBenchmark.getName());
+        reportDirectory = new File(problemReportDirectory, solverBenchmarkResult.getName());
         reportDirectory.mkdirs();
     }
 

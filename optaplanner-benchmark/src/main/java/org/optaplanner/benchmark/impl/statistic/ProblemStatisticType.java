@@ -16,7 +16,7 @@
 
 package org.optaplanner.benchmark.impl.statistic;
 
-import org.optaplanner.benchmark.impl.ProblemBenchmark;
+import org.optaplanner.benchmark.impl.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.calculatecount.CalculateCountProblemStatistic;
@@ -32,20 +32,20 @@ public enum ProblemStatisticType implements StatisticType {
     MOVE_COUNT_PER_STEP,
     MEMORY_USE;
 
-    public ProblemStatistic create(ProblemBenchmark problemBenchmark) {
+    public ProblemStatistic create(ProblemBenchmarkResult problemBenchmarkResult) {
         switch (this) {
             case BEST_SCORE:
-                return new BestScoreProblemStatistic(problemBenchmark);
+                return new BestScoreProblemStatistic(problemBenchmarkResult);
             case STEP_SCORE:
-                return new StepScoreProblemStatistic(problemBenchmark);
+                return new StepScoreProblemStatistic(problemBenchmarkResult);
             case CALCULATE_COUNT_PER_SECOND:
-                return new CalculateCountProblemStatistic(problemBenchmark);
+                return new CalculateCountProblemStatistic(problemBenchmarkResult);
             case BEST_SOLUTION_MUTATION:
-                return new BestSolutionMutationProblemStatistic(problemBenchmark);
+                return new BestSolutionMutationProblemStatistic(problemBenchmarkResult);
             case MOVE_COUNT_PER_STEP:
-                return new MoveCountPerStepProblemStatistic(problemBenchmark);
+                return new MoveCountPerStepProblemStatistic(problemBenchmarkResult);
             case MEMORY_USE:
-                return new MemoryUseProblemStatistic(problemBenchmark);
+                return new MemoryUseProblemStatistic(problemBenchmarkResult);
             default:
                 throw new IllegalStateException("The problemStatisticType (" + this + ") is not implemented.");
         }

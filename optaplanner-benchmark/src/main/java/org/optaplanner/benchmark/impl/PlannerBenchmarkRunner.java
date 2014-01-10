@@ -82,15 +82,15 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         }
         startingSystemTimeMillis = System.currentTimeMillis();
         plannerBenchmarkResult.setStartingTimestamp(new Date());
-        List<SolverBenchmark> solverBenchmarkList = plannerBenchmarkResult.getSolverBenchmarkList();
-        if (solverBenchmarkList == null || solverBenchmarkList.isEmpty()) {
+        List<SolverBenchmarkResult> solverBenchmarkResultList = plannerBenchmarkResult.getSolverBenchmarkResultList();
+        if (solverBenchmarkResultList == null || solverBenchmarkResultList.isEmpty()) {
             throw new IllegalArgumentException(
-                    "The solverBenchmarkList (" + solverBenchmarkList + ") cannot be empty.");
+                    "The solverBenchmarkResultList (" + solverBenchmarkResultList + ") cannot be empty.");
         }
         initBenchmarkDirectoryAndSubdirs();
         executorService = Executors.newFixedThreadPool(plannerBenchmarkResult.getParallelBenchmarkCount());
-        logger.info("Benchmarking started: solverBenchmarkList size ({}), parallelBenchmarkCount ({}).",
-                solverBenchmarkList.size(), plannerBenchmarkResult.getParallelBenchmarkCount());
+        logger.info("Benchmarking started: solverBenchmarkResultList size ({}), parallelBenchmarkCount ({}).",
+                solverBenchmarkResultList.size(), plannerBenchmarkResult.getParallelBenchmarkCount());
     }
 
     private void initBenchmarkDirectoryAndSubdirs() {
@@ -120,14 +120,14 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
             logger.info("================================================================================");
             long startingTimeMillis = System.currentTimeMillis();
             long timeLeft = plannerBenchmarkResult.getWarmUpTimeMillisSpend();
-            List<ProblemBenchmark> unifiedProblemBenchmarkList = plannerBenchmarkResult.getUnifiedProblemBenchmarkList();
-            Iterator<ProblemBenchmark> it = unifiedProblemBenchmarkList.iterator();
+            List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList();
+            Iterator<ProblemBenchmarkResult> it = unifiedProblemBenchmarkResultList.iterator();
             while (timeLeft > 0L) {
                 if (!it.hasNext()) {
-                    it = unifiedProblemBenchmarkList.iterator();
+                    it = unifiedProblemBenchmarkResultList.iterator();
                 }
-                ProblemBenchmark problemBenchmark = it.next();
-                timeLeft = problemBenchmark.warmUp(startingTimeMillis, plannerBenchmarkResult.getWarmUpTimeMillisSpend(), timeLeft);
+                ProblemBenchmarkResult problemBenchmarkResult = it.next();
+                timeLeft = problemBenchmarkResult.warmUp(startingTimeMillis, plannerBenchmarkResult.getWarmUpTimeMillisSpend(), timeLeft);
             }
             logger.info("================================================================================");
             logger.info("Warming up ended");
@@ -138,8 +138,8 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
     protected void runSingleBenchmarks() {
         Map<SingleBenchmarkRunner, Future<SingleBenchmarkRunner>> futureMap
                 = new HashMap<SingleBenchmarkRunner, Future<SingleBenchmarkRunner>>();
-        for (ProblemBenchmark problemBenchmark : plannerBenchmarkResult.getUnifiedProblemBenchmarkList()) {
-            for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmark.getSingleBenchmarkResultList()) {
+        for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
+            for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
                 SingleBenchmarkRunner singleBenchmarkRunner = new SingleBenchmarkRunner(singleBenchmarkResult);
                 Future<SingleBenchmarkRunner> future = executorService.submit(singleBenchmarkRunner);
                 futureMap.put(singleBenchmarkRunner, future);
@@ -192,7 +192,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         if (plannerBenchmarkResult.getFailureCount() == 0) {
             logger.info("Benchmarking ended: time spend ({}), favoriteSolverBenchmark ({}), statistic html overview ({}).",
                     plannerBenchmarkResult.getBenchmarkTimeMillisSpend(),
-                    plannerBenchmarkResult.getFavoriteSolverBenchmark().getName(),
+                    plannerBenchmarkResult.getFavoriteSolverBenchmarkResult().getName(),
                     benchmarkReport.getHtmlOverviewFile().getAbsolutePath());
         } else {
             logger.info("Benchmarking failed: time spend ({}), failureCount ({}), statistic html overview ({}).",

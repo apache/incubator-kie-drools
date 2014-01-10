@@ -41,8 +41,8 @@ public class DefaultPlannerBenchmark {
     private int parallelBenchmarkCount = -1;
     private long warmUpTimeMillisSpend = 0L;
 
-    private List<SolverBenchmark> solverBenchmarkList = null;
-    private List<ProblemBenchmark> unifiedProblemBenchmarkList = null;
+    private List<SolverBenchmarkResult> solverBenchmarkResultList = null;
+    private List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = null;
 
     private Date startingTimestamp;
     private Long benchmarkTimeMillisSpend;
@@ -54,7 +54,7 @@ public class DefaultPlannerBenchmark {
     private Integer failureCount = null;
     private Long averageProblemScale = null;
     private Score averageScore = null;
-    private SolverBenchmark favoriteSolverBenchmark = null;
+    private SolverBenchmarkResult favoriteSolverBenchmarkResult = null;
 
     public String getName() {
         return name;
@@ -80,20 +80,20 @@ public class DefaultPlannerBenchmark {
         this.warmUpTimeMillisSpend = warmUpTimeMillisSpend;
     }
 
-    public List<SolverBenchmark> getSolverBenchmarkList() {
-        return solverBenchmarkList;
+    public List<SolverBenchmarkResult> getSolverBenchmarkResultList() {
+        return solverBenchmarkResultList;
     }
 
-    public void setSolverBenchmarkList(List<SolverBenchmark> solverBenchmarkList) {
-        this.solverBenchmarkList = solverBenchmarkList;
+    public void setSolverBenchmarkResultList(List<SolverBenchmarkResult> solverBenchmarkResultList) {
+        this.solverBenchmarkResultList = solverBenchmarkResultList;
     }
 
-    public List<ProblemBenchmark> getUnifiedProblemBenchmarkList() {
-        return unifiedProblemBenchmarkList;
+    public List<ProblemBenchmarkResult> getUnifiedProblemBenchmarkResultList() {
+        return unifiedProblemBenchmarkResultList;
     }
 
-    public void setUnifiedProblemBenchmarkList(List<ProblemBenchmark> unifiedProblemBenchmarkList) {
-        this.unifiedProblemBenchmarkList = unifiedProblemBenchmarkList;
+    public void setUnifiedProblemBenchmarkResultList(List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList) {
+        this.unifiedProblemBenchmarkResultList = unifiedProblemBenchmarkResultList;
     }
 
     public Date getStartingTimestamp() {
@@ -124,8 +124,8 @@ public class DefaultPlannerBenchmark {
         return averageScore;
     }
 
-    public SolverBenchmark getFavoriteSolverBenchmark() {
-        return favoriteSolverBenchmark;
+    public SolverBenchmarkResult getFavoriteSolverBenchmarkResult() {
+        return favoriteSolverBenchmarkResult;
     }
 
     // ************************************************************************
@@ -145,11 +145,11 @@ public class DefaultPlannerBenchmark {
     // ************************************************************************
 
     public void accumulateResults(BenchmarkReport benchmarkReport) {
-        for (ProblemBenchmark problemBenchmark : unifiedProblemBenchmarkList) {
-            problemBenchmark.accumulateResults(benchmarkReport);
+        for (ProblemBenchmarkResult problemBenchmarkResult : unifiedProblemBenchmarkResultList) {
+            problemBenchmarkResult.accumulateResults(benchmarkReport);
         }
-        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            solverBenchmark.accumulateResults(benchmarkReport);
+        for (SolverBenchmarkResult solverBenchmarkResult : solverBenchmarkResultList) {
+            solverBenchmarkResult.accumulateResults(benchmarkReport);
         }
         determineTotalsAndAverages();
         determineSolverBenchmarkRanking(benchmarkReport);
@@ -159,19 +159,19 @@ public class DefaultPlannerBenchmark {
         failureCount = 0;
         long totalProblemScale = 0L;
         int problemScaleCount = 0;
-        for (ProblemBenchmark problemBenchmark : unifiedProblemBenchmarkList) {
-            Long problemScale = problemBenchmark.getProblemScale();
+        for (ProblemBenchmarkResult problemBenchmarkResult : unifiedProblemBenchmarkResultList) {
+            Long problemScale = problemBenchmarkResult.getProblemScale();
             if (problemScale != null && problemScale >= 0L) {
                 totalProblemScale += problemScale;
                 problemScaleCount++;
             }
-            failureCount +=  problemBenchmark.getFailureCount();
+            failureCount +=  problemBenchmarkResult.getFailureCount();
         }
         averageProblemScale = problemScaleCount == 0 ? null : totalProblemScale / (long) problemScaleCount;
         Score totalScore = null;
         int solverBenchmarkCount = 0;
-        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            Score score = solverBenchmark.getAverageScore();
+        for (SolverBenchmarkResult solverBenchmarkResult : solverBenchmarkResultList) {
+            Score score = solverBenchmarkResult.getAverageScore();
             if (score != null) {
                 totalScore = (totalScore == null) ? score : totalScore.add(score);
                 solverBenchmarkCount++;
@@ -183,61 +183,61 @@ public class DefaultPlannerBenchmark {
     }
 
     private void determineSolverBenchmarkRanking(BenchmarkReport benchmarkReport) {
-        List<SolverBenchmark> rankableSolverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkList);
-        // Do not rank a SolverBenchmark that has a failure
-        for (Iterator<SolverBenchmark> it = rankableSolverBenchmarkList.iterator(); it.hasNext(); ) {
-            SolverBenchmark solverBenchmark = it.next();
-            if (solverBenchmark.hasAnyFailure()) {
+        List<SolverBenchmarkResult> rankableSolverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>(solverBenchmarkResultList);
+        // Do not rank a SolverBenchmarkResult that has a failure
+        for (Iterator<SolverBenchmarkResult> it = rankableSolverBenchmarkResultList.iterator(); it.hasNext(); ) {
+            SolverBenchmarkResult solverBenchmarkResult = it.next();
+            if (solverBenchmarkResult.hasAnyFailure()) {
                 it.remove();
             }
         }
-        List<List<SolverBenchmark>> sameRankingListList = createSameRankingListList(
-                benchmarkReport, rankableSolverBenchmarkList);
+        List<List<SolverBenchmarkResult>> sameRankingListList = createSameRankingListList(
+                benchmarkReport, rankableSolverBenchmarkResultList);
         int ranking = 0;
-        for (List<SolverBenchmark> sameRankingList : sameRankingListList) {
-            for (SolverBenchmark solverBenchmark : sameRankingList) {
-                solverBenchmark.setRanking(ranking);
+        for (List<SolverBenchmarkResult> sameRankingList : sameRankingListList) {
+            for (SolverBenchmarkResult solverBenchmarkResult : sameRankingList) {
+                solverBenchmarkResult.setRanking(ranking);
             }
             ranking += sameRankingList.size();
         }
-        favoriteSolverBenchmark = sameRankingListList.isEmpty() ? null
+        favoriteSolverBenchmarkResult = sameRankingListList.isEmpty() ? null
                 : sameRankingListList.get(0).get(0);
     }
 
-    private List<List<SolverBenchmark>> createSameRankingListList(
-            BenchmarkReport benchmarkReport, List<SolverBenchmark> rankableSolverBenchmarkList) {
-        List<List<SolverBenchmark>> sameRankingListList = new ArrayList<List<SolverBenchmark>>(
-                rankableSolverBenchmarkList.size());
+    private List<List<SolverBenchmarkResult>> createSameRankingListList(
+            BenchmarkReport benchmarkReport, List<SolverBenchmarkResult> rankableSolverBenchmarkResultList) {
+        List<List<SolverBenchmarkResult>> sameRankingListList = new ArrayList<List<SolverBenchmarkResult>>(
+                rankableSolverBenchmarkResultList.size());
         if (benchmarkReport.getSolverBenchmarkRankingComparator() != null) {
-            Comparator<SolverBenchmark> comparator = Collections.reverseOrder(
+            Comparator<SolverBenchmarkResult> comparator = Collections.reverseOrder(
                     benchmarkReport.getSolverBenchmarkRankingComparator());
-            Collections.sort(rankableSolverBenchmarkList, comparator);
-            List<SolverBenchmark> sameRankingList = null;
-            SolverBenchmark previousSolverBenchmark = null;
-            for (SolverBenchmark solverBenchmark : rankableSolverBenchmarkList) {
-                if (previousSolverBenchmark == null
-                        || comparator.compare(previousSolverBenchmark, solverBenchmark) != 0) {
+            Collections.sort(rankableSolverBenchmarkResultList, comparator);
+            List<SolverBenchmarkResult> sameRankingList = null;
+            SolverBenchmarkResult previousSolverBenchmarkResult = null;
+            for (SolverBenchmarkResult solverBenchmarkResult : rankableSolverBenchmarkResultList) {
+                if (previousSolverBenchmarkResult == null
+                        || comparator.compare(previousSolverBenchmarkResult, solverBenchmarkResult) != 0) {
                     // New rank
-                    sameRankingList = new ArrayList<SolverBenchmark>();
+                    sameRankingList = new ArrayList<SolverBenchmarkResult>();
                     sameRankingListList.add(sameRankingList);
                 }
-                sameRankingList.add(solverBenchmark);
-                previousSolverBenchmark = solverBenchmark;
+                sameRankingList.add(solverBenchmarkResult);
+                previousSolverBenchmarkResult = solverBenchmarkResult;
             }
         } else if (benchmarkReport.getSolverBenchmarkRankingWeightFactory() != null) {
-            SortedMap<Comparable, List<SolverBenchmark>> rankedMap
-                    = new TreeMap<Comparable, List<SolverBenchmark>>(new ReverseComparator());
-            for (SolverBenchmark solverBenchmark : rankableSolverBenchmarkList) {
+            SortedMap<Comparable, List<SolverBenchmarkResult>> rankedMap
+                    = new TreeMap<Comparable, List<SolverBenchmarkResult>>(new ReverseComparator());
+            for (SolverBenchmarkResult solverBenchmarkResult : rankableSolverBenchmarkResultList) {
                 Comparable rankingWeight = benchmarkReport.getSolverBenchmarkRankingWeightFactory()
-                        .createRankingWeight(rankableSolverBenchmarkList, solverBenchmark);
-                List<SolverBenchmark> sameRankingList = rankedMap.get(rankingWeight);
+                        .createRankingWeight(rankableSolverBenchmarkResultList, solverBenchmarkResult);
+                List<SolverBenchmarkResult> sameRankingList = rankedMap.get(rankingWeight);
                 if (sameRankingList == null) {
-                    sameRankingList = new ArrayList<SolverBenchmark>();
+                    sameRankingList = new ArrayList<SolverBenchmarkResult>();
                     rankedMap.put(rankingWeight, sameRankingList);
                 }
-                sameRankingList.add(solverBenchmark);
+                sameRankingList.add(solverBenchmarkResult);
             }
-            for (Map.Entry<Comparable, List<SolverBenchmark>> entry : rankedMap.entrySet()) {
+            for (Map.Entry<Comparable, List<SolverBenchmarkResult>> entry : rankedMap.entrySet()) {
                 sameRankingListList.add(entry.getValue());
             }
         } else {

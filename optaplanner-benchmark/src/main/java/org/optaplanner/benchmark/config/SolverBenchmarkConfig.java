@@ -21,9 +21,9 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
-import org.optaplanner.benchmark.impl.ProblemBenchmark;
+import org.optaplanner.benchmark.impl.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.SolverBenchmark;
+import org.optaplanner.benchmark.impl.SolverBenchmarkResult;
 import org.optaplanner.core.config.solver.SolverConfig;
 
 @XStreamAlias("solverBenchmark")
@@ -65,19 +65,19 @@ public class SolverBenchmarkConfig {
     // Builder methods
     // ************************************************************************
 
-    public SolverBenchmark buildSolverBenchmark(DefaultPlannerBenchmark plannerBenchmark) {
+    public SolverBenchmarkResult buildSolverBenchmark(DefaultPlannerBenchmark plannerBenchmark) {
         validate();
-        SolverBenchmark solverBenchmark = new SolverBenchmark(plannerBenchmark);
-        solverBenchmark.setName(name);
-        solverBenchmark.setSolverConfig(solverConfig);
-        solverBenchmark.setSingleBenchmarkResultList(new ArrayList<SingleBenchmarkResult>());
+        SolverBenchmarkResult solverBenchmarkResult = new SolverBenchmarkResult(plannerBenchmark);
+        solverBenchmarkResult.setName(name);
+        solverBenchmarkResult.setSolverConfig(solverConfig);
+        solverBenchmarkResult.setSingleBenchmarkResultList(new ArrayList<SingleBenchmarkResult>());
         ProblemBenchmarksConfig problemBenchmarksConfig_
                 = problemBenchmarksConfig == null ? new ProblemBenchmarksConfig()
                 : problemBenchmarksConfig;
-        List<ProblemBenchmark> problemBenchmarkList
-                = problemBenchmarksConfig_.buildProblemBenchmarkList(plannerBenchmark, solverBenchmark);
-        solverBenchmark.setProblemBenchmarkList(problemBenchmarkList);
-        return solverBenchmark;
+        List<ProblemBenchmarkResult> problemBenchmarkResultList
+                = problemBenchmarksConfig_.buildProblemBenchmarkList(plannerBenchmark, solverBenchmarkResult);
+        solverBenchmarkResult.setProblemBenchmarkResultList(problemBenchmarkResultList);
+        return solverBenchmarkResult;
     }
 
     private void validate() {

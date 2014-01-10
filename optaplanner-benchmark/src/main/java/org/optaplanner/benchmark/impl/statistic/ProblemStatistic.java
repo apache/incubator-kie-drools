@@ -18,12 +18,12 @@ package org.optaplanner.benchmark.impl.statistic;
 
 import java.util.List;
 
-import org.optaplanner.benchmark.impl.ProblemBenchmark;
+import org.optaplanner.benchmark.impl.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 
 /**
- * 1 statistic of {@link ProblemBenchmark}
+ * 1 statistic of {@link ProblemBenchmarkResult}
  */
 public interface ProblemStatistic {
 

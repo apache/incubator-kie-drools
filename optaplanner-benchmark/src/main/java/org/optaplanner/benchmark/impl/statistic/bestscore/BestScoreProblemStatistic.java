@@ -32,7 +32,7 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYStepRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.optaplanner.benchmark.impl.ProblemBenchmark;
+import org.optaplanner.benchmark.impl.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
@@ -45,8 +45,8 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
 
     protected List<File> graphFileList = null;
 
-    public BestScoreProblemStatistic(ProblemBenchmark problemBenchmark) {
-        super(problemBenchmark, ProblemStatisticType.BEST_SCORE);
+    public BestScoreProblemStatistic(ProblemBenchmarkResult problemBenchmarkResult) {
+        super(problemBenchmarkResult, ProblemStatisticType.BEST_SCORE);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
         List<XYPlot> plotList = new ArrayList<XYPlot>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
         int seriesIndex = 0;
-        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmark.getSingleBenchmarkResultList()) {
+        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
             List<XYSeries> seriesList = new ArrayList<XYSeries>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
             // No direct ascending lines between 2 points, but a stepping line instead
             XYItemRenderer renderer = new XYStepRenderer();
@@ -82,7 +82,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
                     for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= seriesList.size()) {
                             seriesList.add(new XYSeries(
-                                    singleBenchmarkResult.getSolverBenchmark().getNameWithFavoriteSuffix()));
+                                    singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix()));
                         }
                         seriesList.get(i).add(timeMillisSpend, levelValues[i]);
                     }
@@ -94,7 +94,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
                 for (int i = 0; i < bestScoreLevels.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                     if (i >= seriesList.size()) {
                         seriesList.add(new XYSeries(
-                                singleBenchmarkResult.getSolverBenchmark().getNameWithFavoriteSuffix()));
+                                singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix()));
                     }
                     seriesList.get(i).add(timeMillisSpend, bestScoreLevels[i]);
                 }
@@ -103,7 +103,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
                     renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES);
                 }
             }
-            if (singleBenchmarkResult.getSolverBenchmark().isFavorite()) {
+            if (singleBenchmarkResult.getSolverBenchmarkResult().isFavorite()) {
                 // Make the favorite more obvious
                 renderer.setSeriesStroke(0, new BasicStroke(2.0f));
             }
@@ -119,10 +119,10 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
         graphFileList = new ArrayList<File>(plotList.size());
         for (int scoreLevelIndex = 0; scoreLevelIndex < plotList.size(); scoreLevelIndex++) {
             JFreeChart chart = new JFreeChart(
-                    problemBenchmark.getName() + " best score level " + scoreLevelIndex + " statistic",
+                    problemBenchmarkResult.getName() + " best score level " + scoreLevelIndex + " statistic",
                     JFreeChart.DEFAULT_TITLE_FONT, plotList.get(scoreLevelIndex), true);
             graphFileList.add(writeChartToImageFile(chart,
-                    problemBenchmark.getName() + "BestScoreStatisticLevel" + scoreLevelIndex));
+                    problemBenchmarkResult.getName() + "BestScoreStatisticLevel" + scoreLevelIndex));
         }
     }
 

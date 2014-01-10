@@ -22,16 +22,16 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.optaplanner.benchmark.impl.SolverBenchmark;
+import org.optaplanner.benchmark.impl.SolverBenchmarkResult;
 import org.optaplanner.core.api.score.Score;
 
 /**
- * This ranking {@link Comparator} orders a {@link SolverBenchmark} by its worst {@link Score}.
+ * This ranking {@link Comparator} orders a {@link SolverBenchmarkResult} by its worst {@link Score}.
  * It minimizes the worst case scenario.
  */
-public class WorstScoreSolverBenchmarkRankingComparator implements Comparator<SolverBenchmark>, Serializable {
+public class WorstScoreSolverBenchmarkRankingComparator implements Comparator<SolverBenchmarkResult>, Serializable {
 
-    public int compare(SolverBenchmark a, SolverBenchmark b) {
+    public int compare(SolverBenchmarkResult a, SolverBenchmarkResult b) {
         List<Score> aScoreList = a.getScoreList();
         Collections.sort(aScoreList); // Worst scores become first in the list
         List<Score> bScoreList = b.getScoreList();

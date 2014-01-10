@@ -24,9 +24,9 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
-import org.optaplanner.benchmark.impl.ProblemBenchmark;
+import org.optaplanner.benchmark.impl.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.SolverBenchmark;
+import org.optaplanner.benchmark.impl.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
@@ -92,37 +92,37 @@ public class ProblemBenchmarksConfig {
     // Builder methods
     // ************************************************************************
 
-    public List<ProblemBenchmark> buildProblemBenchmarkList(DefaultPlannerBenchmark plannerBenchmark,
-            SolverBenchmark solverBenchmark) {
-        validate(solverBenchmark);
+    public List<ProblemBenchmarkResult> buildProblemBenchmarkList(DefaultPlannerBenchmark plannerBenchmark,
+            SolverBenchmarkResult solverBenchmarkResult) {
+        validate(solverBenchmarkResult);
         ProblemIO problemIO = buildProblemIO();
-        List<ProblemBenchmark> problemBenchmarkList = new ArrayList<ProblemBenchmark>(inputSolutionFileList.size());
-        List<ProblemBenchmark> unifiedProblemBenchmarkList = plannerBenchmark.getUnifiedProblemBenchmarkList();
+        List<ProblemBenchmarkResult> problemBenchmarkResultList = new ArrayList<ProblemBenchmarkResult>(inputSolutionFileList.size());
+        List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = plannerBenchmark.getUnifiedProblemBenchmarkResultList();
         for (File inputSolutionFile : inputSolutionFileList) {
             if (!inputSolutionFile.exists()) {
                 throw new IllegalArgumentException("The inputSolutionFile (" + inputSolutionFile + ") does not exist.");
             }
             // 2 SolverBenchmarks containing equal ProblemBenchmarks should contain the same instance
-            ProblemBenchmark newProblemBenchmark = buildProblemBenchmark(plannerBenchmark,
+            ProblemBenchmarkResult newProblemBenchmarkResult = buildProblemBenchmark(plannerBenchmark,
                     problemIO, inputSolutionFile);
-            ProblemBenchmark problemBenchmark;
-            int index = unifiedProblemBenchmarkList.indexOf(newProblemBenchmark);
+            ProblemBenchmarkResult problemBenchmarkResult;
+            int index = unifiedProblemBenchmarkResultList.indexOf(newProblemBenchmarkResult);
             if (index < 0) {
-                problemBenchmark = newProblemBenchmark;
-                unifiedProblemBenchmarkList.add(problemBenchmark);
+                problemBenchmarkResult = newProblemBenchmarkResult;
+                unifiedProblemBenchmarkResultList.add(problemBenchmarkResult);
             } else {
-                problemBenchmark = unifiedProblemBenchmarkList.get(index);
+                problemBenchmarkResult = unifiedProblemBenchmarkResultList.get(index);
             }
-            addSingleBenchmark(solverBenchmark, problemBenchmark);
-            problemBenchmarkList.add(problemBenchmark);
+            addSingleBenchmark(solverBenchmarkResult, problemBenchmarkResult);
+            problemBenchmarkResultList.add(problemBenchmarkResult);
         }
-        return problemBenchmarkList;
+        return problemBenchmarkResultList;
     }
 
-    private void validate(SolverBenchmark solverBenchmark) {
+    private void validate(SolverBenchmarkResult solverBenchmarkResult) {
         if (inputSolutionFileList == null || inputSolutionFileList.isEmpty()) {
             throw new IllegalArgumentException(
-                    "Configure at least 1 <inputSolutionFile> for the solverBenchmark (" + solverBenchmark.getName()
+                    "Configure at least 1 <inputSolutionFile> for the solverBenchmarkResult (" + solverBenchmarkResult.getName()
                             + ") directly or indirectly by inheriting it.");
         }
     }
@@ -145,37 +145,37 @@ public class ProblemBenchmarksConfig {
         }
     }
 
-    private ProblemBenchmark buildProblemBenchmark(DefaultPlannerBenchmark plannerBenchmark,
+    private ProblemBenchmarkResult buildProblemBenchmark(DefaultPlannerBenchmark plannerBenchmark,
             ProblemIO problemIO, File inputSolutionFile) {
-        ProblemBenchmark problemBenchmark = new ProblemBenchmark(plannerBenchmark);
+        ProblemBenchmarkResult problemBenchmarkResult = new ProblemBenchmarkResult(plannerBenchmark);
         String name = FilenameUtils.getBaseName(inputSolutionFile.getName());
-        problemBenchmark.setName(name);
-        problemBenchmark.setProblemIO(problemIO);
-        problemBenchmark.setWriteOutputSolutionEnabled(
+        problemBenchmarkResult.setName(name);
+        problemBenchmarkResult.setProblemIO(problemIO);
+        problemBenchmarkResult.setWriteOutputSolutionEnabled(
                 writeOutputSolutionEnabled == null ? false : writeOutputSolutionEnabled);
-        problemBenchmark.setInputSolutionFile(inputSolutionFile);
+        problemBenchmarkResult.setInputSolutionFile(inputSolutionFile);
         // outputSolutionFilesDirectory is set by DefaultPlannerBenchmark
         List<ProblemStatistic> problemStatisticList = new ArrayList<ProblemStatistic>(
                 problemStatisticTypeList == null ? 0 : problemStatisticTypeList.size());
         if (problemStatisticTypeList != null) {
             for (ProblemStatisticType problemStatisticType : problemStatisticTypeList) {
-                problemStatisticList.add(problemStatisticType.create(problemBenchmark));
+                problemStatisticList.add(problemStatisticType.create(problemBenchmarkResult));
             }
         }
-        problemBenchmark.setProblemStatisticList(problemStatisticList);
-        problemBenchmark.setSingleBenchmarkResultList(new ArrayList<SingleBenchmarkResult>());
-        return problemBenchmark;
+        problemBenchmarkResult.setProblemStatisticList(problemStatisticList);
+        problemBenchmarkResult.setSingleBenchmarkResultList(new ArrayList<SingleBenchmarkResult>());
+        return problemBenchmarkResult;
     }
 
     private void addSingleBenchmark(
-            SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark) {
-        SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(solverBenchmark, problemBenchmark);
-        for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
+            SolverBenchmarkResult solverBenchmarkResult, ProblemBenchmarkResult problemBenchmarkResult) {
+        SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
+        for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
             SingleStatistic singleStatistic = problemStatistic.createSingleStatistic(singleBenchmarkResult);
             singleBenchmarkResult.getSingleStatisticMap().put(problemStatistic.getProblemStatisticType(), singleStatistic);
         }
-        solverBenchmark.getSingleBenchmarkResultList().add(singleBenchmarkResult);
-        problemBenchmark.getSingleBenchmarkResultList().add(singleBenchmarkResult);
+        solverBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
+        problemBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
     }
 
     public void inherit(ProblemBenchmarksConfig inheritedConfig) {

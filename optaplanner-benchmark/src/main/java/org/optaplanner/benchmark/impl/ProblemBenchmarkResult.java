@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Represents 1 problem instance (data set) benchmarked on multiple {@link Solver} configurations.
  */
-public class ProblemBenchmark {
+public class ProblemBenchmarkResult {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -65,7 +65,7 @@ public class ProblemBenchmark {
     private SingleBenchmarkResult winningSingleBenchmarkResult = null;
     private SingleBenchmarkResult worstSingleBenchmarkResult = null;
 
-    public ProblemBenchmark(DefaultPlannerBenchmark plannerBenchmark) {
+    public ProblemBenchmarkResult(DefaultPlannerBenchmark plannerBenchmark) {
         this.plannerBenchmark = plannerBenchmark;
     }
 
@@ -175,18 +175,18 @@ public class ProblemBenchmark {
 
     public long warmUp(long startingTimeMillis, long warmUpTimeMillisSpend, long timeLeft) {
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            SolverBenchmark solverBenchmark = singleBenchmarkResult.getSolverBenchmark();
-            TerminationConfig originalTerminationConfig = solverBenchmark.getSolverConfig().getTerminationConfig();
+            SolverBenchmarkResult solverBenchmarkResult = singleBenchmarkResult.getSolverBenchmarkResult();
+            TerminationConfig originalTerminationConfig = solverBenchmarkResult.getSolverConfig().getTerminationConfig();
             TerminationConfig tmpTerminationConfig = originalTerminationConfig == null
                     ? new TerminationConfig() : originalTerminationConfig.clone();
             tmpTerminationConfig.shortenMaximumTimeMillisSpendTotal(timeLeft);
-            solverBenchmark.getSolverConfig().setTerminationConfig(tmpTerminationConfig);
+            solverBenchmarkResult.getSolverConfig().setTerminationConfig(tmpTerminationConfig);
 
-            Solver solver = solverBenchmark.getSolverConfig().buildSolver();
+            Solver solver = solverBenchmarkResult.getSolverConfig().buildSolver();
             solver.setPlanningProblem(readPlanningProblem());
             solver.solve();
 
-            solverBenchmark.getSolverConfig().setTerminationConfig(originalTerminationConfig);
+            solverBenchmarkResult.getSolverConfig().setTerminationConfig(originalTerminationConfig);
             long timeSpend = System.currentTimeMillis() - startingTimeMillis;
             timeLeft = warmUpTimeMillisSpend - timeSpend;
             if (timeLeft <= 0L) {
@@ -285,7 +285,7 @@ public class ProblemBenchmark {
 
     /**
      * HACK to avoid loading the planningProblem just to extract it's problemScale.
-     * Called multiple times, for every {@link SingleBenchmarkResult} of this {@link ProblemBenchmark}.
+     * Called multiple times, for every {@link SingleBenchmarkResult} of this {@link ProblemBenchmarkResult}.
      *
      * @param registeringProblemScale >= 0
      */
@@ -293,7 +293,7 @@ public class ProblemBenchmark {
         if (problemScale == null) {
             problemScale = registeringProblemScale;
         } else if (problemScale.longValue() != registeringProblemScale) {
-            logger.warn("The problemBenchmark ({}) has different problemScale values ([{},{}]).",
+            logger.warn("The problemBenchmarkResult ({}) has different problemScale values ([{},{}]).",
                     getName(), problemScale, registeringProblemScale);
             // The problemScale is not unknown (null), but known to be ambiguous
             problemScale = -1L;
@@ -304,8 +304,8 @@ public class ProblemBenchmark {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof ProblemBenchmark) {
-            ProblemBenchmark other = (ProblemBenchmark) o;
+        } else if (o instanceof ProblemBenchmarkResult) {
+            ProblemBenchmarkResult other = (ProblemBenchmarkResult) o;
             return inputSolutionFile.equals(other.getInputSolutionFile());
         } else {
             return false;

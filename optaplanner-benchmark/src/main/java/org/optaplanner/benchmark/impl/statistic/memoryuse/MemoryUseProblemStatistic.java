@@ -29,7 +29,7 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.optaplanner.benchmark.impl.ProblemBenchmark;
+import org.optaplanner.benchmark.impl.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
@@ -41,8 +41,8 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
 
     protected File graphFile = null;
 
-    public MemoryUseProblemStatistic(ProblemBenchmark problemBenchmark) {
-        super(problemBenchmark, ProblemStatisticType.MEMORY_USE);
+    public MemoryUseProblemStatistic(ProblemBenchmarkResult problemBenchmarkResult) {
+        super(problemBenchmarkResult, ProblemStatisticType.MEMORY_USE);
     }
 
     @Override
@@ -71,12 +71,12 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         plot.setOrientation(PlotOrientation.VERTICAL);
         int seriesIndex = 0;
-        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmark.getSingleBenchmarkResultList()) {
+        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
             XYSeries usedSeries = new XYSeries(
-                    singleBenchmarkResult.getSolverBenchmark().getNameWithFavoriteSuffix() + " used");
+                    singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix() + " used");
             // TODO enable max memory, but in the same color as used memory, but with a dotted line instead
 //            XYSeries maxSeries = new XYSeries(
-//                    singleBenchmarkResult.getSolverBenchmark().getNameWithFavoriteSuffix() + " max");
+//                    singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix() + " max");
             XYItemRenderer renderer = new XYLineAndShapeRenderer();
             if (singleBenchmarkResult.isSuccess()) {
                 MemoryUseSingleStatistic singleStatistic = (MemoryUseSingleStatistic)
@@ -93,7 +93,7 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
 //            seriesCollection.addSeries(maxSeries);
             plot.setDataset(seriesIndex, seriesCollection);
 
-            if (singleBenchmarkResult.getSolverBenchmark().isFavorite()) {
+            if (singleBenchmarkResult.getSolverBenchmarkResult().isFavorite()) {
                 // Make the favorite more obvious
                 renderer.setSeriesStroke(0, new BasicStroke(2.0f));
 //                renderer.setSeriesStroke(1, new BasicStroke(2.0f));
@@ -101,17 +101,17 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
             plot.setRenderer(seriesIndex, renderer);
             seriesIndex++;
         }
-        JFreeChart chart = new JFreeChart(problemBenchmark.getName() + " memory use statistic",
+        JFreeChart chart = new JFreeChart(problemBenchmarkResult.getName() + " memory use statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        graphFile = writeChartToImageFile(chart, problemBenchmark.getName() + "MemoryUseStatistic");
+        graphFile = writeChartToImageFile(chart, problemBenchmarkResult.getName() + "MemoryUseStatistic");
     }
 
     @Override
     protected void fillWarningList() {
-        if (problemBenchmark.getPlannerBenchmark().hasMultipleParallelBenchmarks()) {
+        if (problemBenchmarkResult.getPlannerBenchmark().hasMultipleParallelBenchmarks()) {
             warningList.add("This memory use statistic shows the sum of the memory of all benchmarks "
                     + "that ran in parallel, due to parallelBenchmarkCount ("
-                    + problemBenchmark.getPlannerBenchmark().getParallelBenchmarkCount() + ").");
+                    + problemBenchmarkResult.getPlannerBenchmark().getParallelBenchmarkCount() + ").");
         }
     }
 

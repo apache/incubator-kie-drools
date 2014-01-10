@@ -28,25 +28,25 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
 import org.jfree.chart.JFreeChart;
-import org.optaplanner.benchmark.impl.ProblemBenchmark;
+import org.optaplanner.benchmark.impl.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 
 public abstract class AbstractProblemStatistic implements ProblemStatistic {
 
-    protected final ProblemBenchmark problemBenchmark;
+    protected final ProblemBenchmarkResult problemBenchmarkResult;
     protected final ProblemStatisticType problemStatisticType;
 
     protected List<String> warningList = null;
 
-    protected AbstractProblemStatistic(ProblemBenchmark problemBenchmark, ProblemStatisticType problemStatisticType) {
-        this.problemBenchmark = problemBenchmark;
+    protected AbstractProblemStatistic(ProblemBenchmarkResult problemBenchmarkResult, ProblemStatisticType problemStatisticType) {
+        this.problemBenchmarkResult = problemBenchmarkResult;
         this.problemStatisticType = problemStatisticType;
     }
 
-    public ProblemBenchmark getProblemBenchmark() {
-        return problemBenchmark;
+    public ProblemBenchmarkResult getProblemBenchmarkResult() {
+        return problemBenchmarkResult;
     }
 
     public ProblemStatisticType getProblemStatisticType() {
@@ -54,7 +54,7 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
     }
 
     public String getAnchorId() {
-        return ReportHelper.escapeHtmlId(problemBenchmark.getName() + "_" + problemStatisticType.name());
+        return ReportHelper.escapeHtmlId(problemBenchmarkResult.getName() + "_" + problemStatisticType.name());
     }
 
     public List<String> getWarningList() {
@@ -62,7 +62,7 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
     }
 
     public List<SingleStatistic> getSingleStatisticList() {
-        List<SingleBenchmarkResult> singleBenchmarkResultList = problemBenchmark.getSingleBenchmarkResultList();
+        List<SingleBenchmarkResult> singleBenchmarkResultList = problemBenchmarkResult.getSingleBenchmarkResultList();
         List<SingleStatistic> singleStatisticList = new ArrayList<SingleStatistic>(singleBenchmarkResultList.size());
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             singleStatisticList.add(singleBenchmarkResult.getSingleStatisticMap().get(problemStatisticType));
@@ -85,7 +85,7 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
 
     protected File writeChartToImageFile(JFreeChart chart, String fileNameBase) {
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File chartFile = new File(problemBenchmark.getProblemReportDirectory(), fileNameBase + ".png");
+        File chartFile = new File(problemBenchmarkResult.getProblemReportDirectory(), fileNameBase + ".png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(chartFile);

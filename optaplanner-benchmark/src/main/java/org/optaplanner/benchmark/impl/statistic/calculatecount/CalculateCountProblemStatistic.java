@@ -29,7 +29,7 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.optaplanner.benchmark.impl.ProblemBenchmark;
+import org.optaplanner.benchmark.impl.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
@@ -41,8 +41,8 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
 
     protected File graphFile = null;
 
-    public CalculateCountProblemStatistic(ProblemBenchmark problemBenchmark) {
-        super(problemBenchmark, ProblemStatisticType.CALCULATE_COUNT_PER_SECOND);
+    public CalculateCountProblemStatistic(ProblemBenchmarkResult problemBenchmarkResult) {
+        super(problemBenchmarkResult, ProblemStatisticType.CALCULATE_COUNT_PER_SECOND);
     }
 
     @Override
@@ -72,8 +72,8 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         plot.setOrientation(PlotOrientation.VERTICAL);
         int seriesIndex = 0;
-        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmark.getSingleBenchmarkResultList()) {
-            XYSeries series = new XYSeries(singleBenchmarkResult.getSolverBenchmark().getNameWithFavoriteSuffix());
+        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
+            XYSeries series = new XYSeries(singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix());
             XYItemRenderer renderer = new XYLineAndShapeRenderer();
             if (singleBenchmarkResult.isSuccess()) {
                 CalculateCountSingleStatistic singleStatistic = (CalculateCountSingleStatistic)
@@ -86,16 +86,16 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
             }
             plot.setDataset(seriesIndex, new XYSeriesCollection(series));
 
-            if (singleBenchmarkResult.getSolverBenchmark().isFavorite()) {
+            if (singleBenchmarkResult.getSolverBenchmarkResult().isFavorite()) {
                 // Make the favorite more obvious
                 renderer.setSeriesStroke(0, new BasicStroke(2.0f));
             }
             plot.setRenderer(seriesIndex, renderer);
             seriesIndex++;
         }
-        JFreeChart chart = new JFreeChart(problemBenchmark.getName() + " calculate count statistic",
+        JFreeChart chart = new JFreeChart(problemBenchmarkResult.getName() + " calculate count statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        graphFile = writeChartToImageFile(chart, problemBenchmark.getName() + "CalculateCountStatistic");
+        graphFile = writeChartToImageFile(chart, problemBenchmarkResult.getName() + "CalculateCountStatistic");
     }
 
 }

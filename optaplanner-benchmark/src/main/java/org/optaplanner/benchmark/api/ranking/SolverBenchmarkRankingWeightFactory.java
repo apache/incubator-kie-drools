@@ -18,7 +18,7 @@ package org.optaplanner.benchmark.api.ranking;
 
 import java.util.List;
 
-import org.optaplanner.benchmark.impl.SolverBenchmark;
+import org.optaplanner.benchmark.impl.SolverBenchmarkResult;
 
 /**
  * Defines an interface for classes that will be used to rank solver benchmarks 
@@ -27,11 +27,11 @@ import org.optaplanner.benchmark.impl.SolverBenchmark;
 public interface SolverBenchmarkRankingWeightFactory {
 
     /**
-     * The ranking function. Takes the provided solverBenchmarkList and ranks them.
-     * @param solverBenchmarkList never null
-     * @param solverBenchmark never null
+     * The ranking function. Takes the provided solverBenchmarkResultList and ranks them.
+     * @param solverBenchmarkResultList never null
+     * @param solverBenchmarkResult never null
      * @return never null
      */
-    Comparable createRankingWeight(List<SolverBenchmark> solverBenchmarkList, SolverBenchmark solverBenchmark);
+    Comparable createRankingWeight(List<SolverBenchmarkResult> solverBenchmarkResultList, SolverBenchmarkResult solverBenchmarkResult);
 
 }

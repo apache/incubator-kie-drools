@@ -20,12 +20,12 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.optaplanner.benchmark.impl.SolverBenchmark;
+import org.optaplanner.benchmark.impl.SolverBenchmarkResult;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.solution.Solution;
 
 /**
- * This ranking {@link Comparator} orders a {@link SolverBenchmark} by its total {@link Score}.
+ * This ranking {@link Comparator} orders a {@link SolverBenchmarkResult} by its total {@link Score}.
  * It maximize the overall score, so it minimizes the overall cost if all {@link Solution}s would be executed.
  * <p/>
  * When the inputSolutions differ greatly in size or difficulty, this often results in a big difference in
@@ -33,12 +33,12 @@ import org.optaplanner.core.impl.solution.Solution;
  * In such cases, dataset B would marginalize dataset A.
  * To avoid that, use {@link TotalRankSolverBenchmarkRankingWeightFactory}.
  */
-public class TotalScoreSolverBenchmarkRankingComparator implements Comparator<SolverBenchmark>, Serializable {
+public class TotalScoreSolverBenchmarkRankingComparator implements Comparator<SolverBenchmarkResult>, Serializable {
 
     private WorstScoreSolverBenchmarkRankingComparator worstScoreSolverBenchmarkRankingComparator
             = new WorstScoreSolverBenchmarkRankingComparator();
 
-    public int compare(SolverBenchmark a, SolverBenchmark b) {
+    public int compare(SolverBenchmarkResult a, SolverBenchmarkResult b) {
         return new CompareToBuilder()
                 .append(a.getTotalScore(), b.getTotalScore())
                 .append(a, b, worstScoreSolverBenchmarkRankingComparator)

@@ -57,9 +57,9 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
 
     public SingleBenchmarkRunner call() {
         Runtime runtime = Runtime.getRuntime();
-        ProblemBenchmark problemBenchmark = singleBenchmarkResult.getProblemBenchmark();
-        Solution inputSolution = problemBenchmark.readPlanningProblem();
-        if (!problemBenchmark.getPlannerBenchmark().hasMultipleParallelBenchmarks()) {
+        ProblemBenchmarkResult problemBenchmarkResult = singleBenchmarkResult.getProblemBenchmarkResult();
+        Solution inputSolution = problemBenchmarkResult.readPlanningProblem();
+        if (!problemBenchmarkResult.getPlannerBenchmark().hasMultipleParallelBenchmarks()) {
             runtime.gc();
             singleBenchmarkResult.setUsedMemoryAfterInputSolution(runtime.totalMemory() - runtime.freeMemory());
         }
@@ -67,7 +67,7 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
                 singleBenchmarkResult.getName());
 
         // Intentionally create a fresh solver for every SingleBenchmarkResult to reset Random, tabu lists, ...
-        Solver solver = singleBenchmarkResult.getSolverBenchmark().getSolverConfig().buildSolver();
+        Solver solver = singleBenchmarkResult.getSolverBenchmarkResult().getSolverConfig().buildSolver();
 
         for (SingleStatistic singleStatistic : singleBenchmarkResult.getSingleStatisticMap().values()) {
             singleStatistic.open(solver);
@@ -80,7 +80,7 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
 
         SolutionDescriptor solutionDescriptor = ((DefaultSolver) solver).getSolutionDescriptor();
         singleBenchmarkResult.setPlanningEntityCount(solutionDescriptor.getEntityCount(outputSolution));
-        problemBenchmark.registerProblemScale(solutionDescriptor.getProblemScale(outputSolution));
+        problemBenchmarkResult.registerProblemScale(solutionDescriptor.getProblemScale(outputSolution));
         singleBenchmarkResult.setScore(outputSolution.getScore());
         singleBenchmarkResult.setTimeMillisSpend(timeMillisSpend);
         DefaultSolverScope solverScope = ((DefaultSolver) solver).getSolverScope();
@@ -90,7 +90,7 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
             singleStatistic.close(solver);
             singleStatistic.writeCsvStatisticFile();
         }
-        problemBenchmark.writeOutputSolution(singleBenchmarkResult, outputSolution);
+        problemBenchmarkResult.writeOutputSolution(singleBenchmarkResult, outputSolution);
         return this;
     }
 

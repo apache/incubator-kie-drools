@@ -89,7 +89,7 @@ public abstract class AbstractSingleStatistic<P extends AbstractSingleStatisticP
     }
 
     public void readCsvStatisticFile() {
-        ScoreDefinition scoreDefinition = singleBenchmarkResult.getSolverBenchmark().getSolverConfig()
+        ScoreDefinition scoreDefinition = singleBenchmarkResult.getSolverBenchmarkResult().getSolverConfig()
                 .getScoreDirectorFactoryConfig().buildScoreDefinition();
         List<P> pointList = getPointList();
         if (!pointList.isEmpty()) {

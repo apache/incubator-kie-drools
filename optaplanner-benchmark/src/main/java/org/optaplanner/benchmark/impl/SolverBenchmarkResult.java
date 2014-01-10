@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Represents 1 {@link Solver} configuration benchmarked on multiple problem instances (data sets).
  */
-public class SolverBenchmark {
+public class SolverBenchmarkResult {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -44,7 +44,7 @@ public class SolverBenchmark {
 
     private SolverConfig solverConfig = null;
 
-    private List<ProblemBenchmark> problemBenchmarkList = null;
+    private List<ProblemBenchmarkResult> problemBenchmarkResultList = null;
     private List<SingleBenchmarkResult> singleBenchmarkResultList = null;
 
     // ************************************************************************
@@ -66,7 +66,7 @@ public class SolverBenchmark {
     // Ranking starts from 0
     private Integer ranking = null;
 
-    public SolverBenchmark(DefaultPlannerBenchmark plannerBenchmark) {
+    public SolverBenchmarkResult(DefaultPlannerBenchmark plannerBenchmark) {
         this.plannerBenchmark = plannerBenchmark;
     }
 
@@ -86,12 +86,12 @@ public class SolverBenchmark {
         this.solverConfig = solverConfig;
     }
 
-    public List<ProblemBenchmark> getProblemBenchmarkList() {
-        return problemBenchmarkList;
+    public List<ProblemBenchmarkResult> getProblemBenchmarkResultList() {
+        return problemBenchmarkResultList;
     }
 
-    public void setProblemBenchmarkList(List<ProblemBenchmark> problemBenchmarkList) {
-        this.problemBenchmarkList = problemBenchmarkList;
+    public void setProblemBenchmarkResultList(List<ProblemBenchmarkResult> problemBenchmarkResultList) {
+        this.problemBenchmarkResultList = problemBenchmarkResultList;
     }
 
     public List<SingleBenchmarkResult> getSingleBenchmarkResultList() {
@@ -202,12 +202,12 @@ public class SolverBenchmark {
     }
 
     /**
-     * @param problemBenchmark never null
+     * @param problemBenchmarkResult never null
      * @return sometimes null
      */
-    public SingleBenchmarkResult findSingleBenchmark(ProblemBenchmark problemBenchmark) {
+    public SingleBenchmarkResult findSingleBenchmark(ProblemBenchmarkResult problemBenchmarkResult) {
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            if (problemBenchmark.equals(singleBenchmarkResult.getProblemBenchmark())) {
+            if (problemBenchmarkResult.equals(singleBenchmarkResult.getProblemBenchmarkResult())) {
                 return singleBenchmarkResult;
             }
         }
@@ -229,7 +229,7 @@ public class SolverBenchmark {
     /**
      * Does not call {@link SingleBenchmarkResult#accumulateResults(BenchmarkReport)},
      * because {@link DefaultPlannerBenchmark#accumulateResults(BenchmarkReport)} does that already on
-     * {@link DefaultPlannerBenchmark#getUnifiedProblemBenchmarkList()}.
+     * {@link DefaultPlannerBenchmark#getUnifiedProblemBenchmarkResultList()}.
      */
     public void accumulateResults(BenchmarkReport benchmarkReport) {
         determineTotalsAndAverages();

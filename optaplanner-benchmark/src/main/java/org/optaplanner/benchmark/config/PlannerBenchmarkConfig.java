@@ -34,8 +34,8 @@ import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.PlannerBenchmarkRunner;
-import org.optaplanner.benchmark.impl.ProblemBenchmark;
-import org.optaplanner.benchmark.impl.SolverBenchmark;
+import org.optaplanner.benchmark.impl.ProblemBenchmarkResult;
+import org.optaplanner.benchmark.impl.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.ranking.SolverBenchmarkRankingType;
 import org.optaplanner.benchmark.impl.ranking.TotalRankSolverBenchmarkRankingWeightFactory;
 import org.optaplanner.benchmark.impl.ranking.TotalScoreSolverBenchmarkRankingComparator;
@@ -67,7 +67,7 @@ public class PlannerBenchmarkConfig {
 
     private Locale benchmarkReportLocale = null;
     private SolverBenchmarkRankingType solverBenchmarkRankingType = null;
-    private Class<Comparator<SolverBenchmark>> solverBenchmarkRankingComparatorClass = null;
+    private Class<Comparator<SolverBenchmarkResult>> solverBenchmarkRankingComparatorClass = null;
     private Class<SolverBenchmarkRankingWeightFactory> solverBenchmarkRankingWeightFactoryClass = null;
 
     @XStreamAlias("inheritedSolverBenchmark")
@@ -155,11 +155,11 @@ public class PlannerBenchmarkConfig {
         this.solverBenchmarkRankingType = solverBenchmarkRankingType;
     }
 
-    public Class<Comparator<SolverBenchmark>> getSolverBenchmarkRankingComparatorClass() {
+    public Class<Comparator<SolverBenchmarkResult>> getSolverBenchmarkRankingComparatorClass() {
         return solverBenchmarkRankingComparatorClass;
     }
 
-    public void setSolverBenchmarkRankingComparatorClass(Class<Comparator<SolverBenchmark>> solverBenchmarkRankingComparatorClass) {
+    public void setSolverBenchmarkRankingComparatorClass(Class<Comparator<SolverBenchmarkResult>> solverBenchmarkRankingComparatorClass) {
         this.solverBenchmarkRankingComparatorClass = solverBenchmarkRankingComparatorClass;
     }
 
@@ -208,14 +208,14 @@ public class PlannerBenchmarkConfig {
                 benchmarkReportLocale == null ? Locale.getDefault() : benchmarkReportLocale);
         supplySolverBenchmarkRanking(benchmarkReport);
 
-        List<SolverBenchmark> solverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkConfigList.size());
-        List<ProblemBenchmark> unifiedProblemBenchmarkList = new ArrayList<ProblemBenchmark>();
-        plannerBenchmarkResult.setUnifiedProblemBenchmarkList(unifiedProblemBenchmarkList);
+        List<SolverBenchmarkResult> solverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>(solverBenchmarkConfigList.size());
+        List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = new ArrayList<ProblemBenchmarkResult>();
+        plannerBenchmarkResult.setUnifiedProblemBenchmarkResultList(unifiedProblemBenchmarkResultList);
         for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
-            SolverBenchmark solverBenchmark = solverBenchmarkConfig.buildSolverBenchmark(plannerBenchmarkResult);
-            solverBenchmarkList.add(solverBenchmark);
+            SolverBenchmarkResult solverBenchmarkResult = solverBenchmarkConfig.buildSolverBenchmark(plannerBenchmarkResult);
+            solverBenchmarkResultList.add(solverBenchmarkResult);
         }
-        plannerBenchmarkResult.setSolverBenchmarkList(solverBenchmarkList);
+        plannerBenchmarkResult.setSolverBenchmarkResultList(solverBenchmarkResultList);
         return plannerBenchmarkRunner;
     }
 
@@ -283,7 +283,7 @@ public class PlannerBenchmarkConfig {
                     + ") and a solverBenchmarkRankingWeightFactoryClass ("
                     + solverBenchmarkRankingWeightFactoryClass.getName() + ") at the same time.");
         }
-        Comparator<SolverBenchmark> solverBenchmarkRankingComparator = null;
+        Comparator<SolverBenchmarkResult> solverBenchmarkRankingComparator = null;
         SolverBenchmarkRankingWeightFactory solverBenchmarkRankingWeightFactory = null;
         if (solverBenchmarkRankingType != null) {
             switch (solverBenchmarkRankingType) {

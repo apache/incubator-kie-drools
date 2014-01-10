@@ -21,38 +21,38 @@ import java.util.List;
 
 import org.junit.Test;
 import org.optaplanner.benchmark.impl.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.SolverBenchmark;
+import org.optaplanner.benchmark.impl.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
-public class TotalRankSolverBenchmarkRankingWeightFactoryTest extends AbstractRankingComparatorTest {
+public class TotalRankSolverBenchmarkResultRankingWeightFactoryTest extends AbstractRankingComparatorTest {
 
     @Test
     public void normal() {
         BenchmarkReport benchmarkReport = mock(BenchmarkReport.class);
         TotalRankSolverBenchmarkRankingWeightFactory factory = new TotalRankSolverBenchmarkRankingWeightFactory();
-        List<SolverBenchmark> solverBenchmarkList = new ArrayList<SolverBenchmark>();
-        SolverBenchmark a = new SolverBenchmark(null);
+        List<SolverBenchmarkResult> solverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>();
+        SolverBenchmarkResult a = new SolverBenchmarkResult(null);
         List<SingleBenchmarkResult> aSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
         addSingleBenchmark(aSingleBenchmarkResultList, -1000, -40, -1000);
         addSingleBenchmark(aSingleBenchmarkResultList, -300, -40, -1000);
         addSingleBenchmark(aSingleBenchmarkResultList, -40, -40, -1000);
         a.setSingleBenchmarkResultList(aSingleBenchmarkResultList);
         a.accumulateResults(benchmarkReport);
-        solverBenchmarkList.add(a);
-        SolverBenchmark b = new SolverBenchmark(null);
+        solverBenchmarkResultList.add(a);
+        SolverBenchmarkResult b = new SolverBenchmarkResult(null);
         List<SingleBenchmarkResult> bSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
         addSingleBenchmark(bSingleBenchmarkResultList, -2000, -30, -2000); // Loses vs a
         addSingleBenchmark(bSingleBenchmarkResultList, -200, -30, -2000); // Wins vs a
         addSingleBenchmark(bSingleBenchmarkResultList, -30, -30, -2000); // Wins vs a
         b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
         b.accumulateResults(benchmarkReport);
-        solverBenchmarkList.add(b);
+        solverBenchmarkResultList.add(b);
 
-        Comparable aWeight = factory.createRankingWeight(solverBenchmarkList, a);
-        Comparable bWeight = factory.createRankingWeight(solverBenchmarkList, b);
+        Comparable aWeight = factory.createRankingWeight(solverBenchmarkResultList, a);
+        Comparable bWeight = factory.createRankingWeight(solverBenchmarkResultList, b);
 
         assertEquals(-1, aWeight.compareTo(bWeight));
         assertEquals(1, bWeight.compareTo(aWeight));
@@ -62,35 +62,35 @@ public class TotalRankSolverBenchmarkRankingWeightFactoryTest extends AbstractRa
     public void equalCount() {
         BenchmarkReport benchmarkReport = mock(BenchmarkReport.class);
         TotalRankSolverBenchmarkRankingWeightFactory factory = new TotalRankSolverBenchmarkRankingWeightFactory();
-        List<SolverBenchmark> solverBenchmarkList = new ArrayList<SolverBenchmark>();
-        SolverBenchmark a = new SolverBenchmark(null);
+        List<SolverBenchmarkResult> solverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>();
+        SolverBenchmarkResult a = new SolverBenchmarkResult(null);
         List<SingleBenchmarkResult> aSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
         addSingleBenchmark(aSingleBenchmarkResultList, -5000, -90, -5000);
         addSingleBenchmark(aSingleBenchmarkResultList, -900, -90, -5000);
         addSingleBenchmark(aSingleBenchmarkResultList, -90, -90, -5000);
         a.setSingleBenchmarkResultList(aSingleBenchmarkResultList); // 0 wins - 1 equals - 5 losses
         a.accumulateResults(benchmarkReport);
-        solverBenchmarkList.add(a);
-        SolverBenchmark b = new SolverBenchmark(null);
+        solverBenchmarkResultList.add(a);
+        SolverBenchmarkResult b = new SolverBenchmarkResult(null);
         List<SingleBenchmarkResult> bSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
         addSingleBenchmark(bSingleBenchmarkResultList, -1000, -20, -1000); // Wins vs a - wins vs c
         addSingleBenchmark(bSingleBenchmarkResultList, -200, -20, -1000); // Wins vs a - loses vs c
         addSingleBenchmark(bSingleBenchmarkResultList, -20, -20, -1000); // Wins vs a - loses vs c
         b.setSingleBenchmarkResultList(bSingleBenchmarkResultList); // 4 wins - 0 equals - 2 losses
         b.accumulateResults(benchmarkReport);
-        solverBenchmarkList.add(b);
-        SolverBenchmark c = new SolverBenchmark(null);
+        solverBenchmarkResultList.add(b);
+        SolverBenchmarkResult c = new SolverBenchmarkResult(null);
         List<SingleBenchmarkResult> cSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
         addSingleBenchmark(cSingleBenchmarkResultList, -5000, -10, -5000); // Loses vs b, Equals vs a
         addSingleBenchmark(cSingleBenchmarkResultList, -100, -10, -5000); // Wins vs a - wins vs b
         addSingleBenchmark(cSingleBenchmarkResultList, -10, -10, -5000); // Wins vs a - wins vs b
         c.setSingleBenchmarkResultList(cSingleBenchmarkResultList); // 4 wins - 1 equals - 1 losses
         c.accumulateResults(benchmarkReport);
-        solverBenchmarkList.add(c);
+        solverBenchmarkResultList.add(c);
 
-        Comparable aWeight = factory.createRankingWeight(solverBenchmarkList, a);
-        Comparable bWeight = factory.createRankingWeight(solverBenchmarkList, b);
-        Comparable cWeight = factory.createRankingWeight(solverBenchmarkList, c);
+        Comparable aWeight = factory.createRankingWeight(solverBenchmarkResultList, a);
+        Comparable bWeight = factory.createRankingWeight(solverBenchmarkResultList, b);
+        Comparable cWeight = factory.createRankingWeight(solverBenchmarkResultList, c);
 
         assertEquals(-1, aWeight.compareTo(bWeight));
         assertEquals(1, bWeight.compareTo(aWeight));
