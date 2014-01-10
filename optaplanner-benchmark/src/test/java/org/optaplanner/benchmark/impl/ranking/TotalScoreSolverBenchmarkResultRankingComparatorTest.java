@@ -32,7 +32,7 @@ public class TotalScoreSolverBenchmarkResultRankingComparatorTest extends Abstra
     @Test
     public void normal() {
         BenchmarkReport benchmarkReport = mock(BenchmarkReport.class);
-        TotalScoreSolverBenchmarkRankingComparator comparator = new TotalScoreSolverBenchmarkRankingComparator();
+        TotalScoreSolverRankingComparator comparator = new TotalScoreSolverRankingComparator();
         SolverBenchmarkResult a = new SolverBenchmarkResult(null);
         List<SingleBenchmarkResult> aSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
         addSingleBenchmark(aSingleBenchmarkResultList, -1000, -30, -1000);
@@ -54,7 +54,7 @@ public class TotalScoreSolverBenchmarkResultRankingComparatorTest extends Abstra
     @Test
     public void totalIsEqual() {
         BenchmarkReport benchmarkReport = mock(BenchmarkReport.class);
-        TotalScoreSolverBenchmarkRankingComparator comparator = new TotalScoreSolverBenchmarkRankingComparator();
+        TotalScoreSolverRankingComparator comparator = new TotalScoreSolverRankingComparator();
         SolverBenchmarkResult a = new SolverBenchmarkResult(null);
         List<SingleBenchmarkResult> aSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
         addSingleBenchmark(aSingleBenchmarkResultList, -1005, -30, -1005);

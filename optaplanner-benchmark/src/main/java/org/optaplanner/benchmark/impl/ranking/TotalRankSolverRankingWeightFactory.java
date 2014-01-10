@@ -22,23 +22,23 @@ import java.util.List;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.optaplanner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
+import org.optaplanner.benchmark.api.ranking.SolverRankingWeightFactory;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.solution.Solution;
 
 /**
- * This {@link SolverBenchmarkRankingWeightFactory} orders a {@link SolverBenchmarkResult} by how how many time each of it's
+ * This {@link SolverRankingWeightFactory} orders a {@link SolverBenchmarkResult} by how how many time each of it's
  * {@link SingleBenchmarkResult} beat the {@link SingleBenchmarkResult} of the other {@link SolverBenchmarkResult}s.
  * It maximizes the overall ranking.
  * <p/>
  * When the inputSolutions differ greatly in size or difficulty, this often produces a difference in
  * {@link Score} magnitude between each {@link Solution}. For example: score 10 for dataset A versus 1000 for dataset B.
- * In such cases, this ranking is more fair than {@link TotalScoreSolverBenchmarkRankingComparator},
+ * In such cases, this ranking is more fair than {@link TotalScoreSolverRankingComparator},
  * because in this ranking, dataset B wouldn't marginalize dataset A.
  */
-public class TotalRankSolverBenchmarkRankingWeightFactory implements SolverBenchmarkRankingWeightFactory {
+public class TotalRankSolverRankingWeightFactory implements SolverRankingWeightFactory {
 
     public Comparable createRankingWeight(List<SolverBenchmarkResult> solverBenchmarkResultList, SolverBenchmarkResult solverBenchmarkResult) {
         int betterCount = 0;
@@ -60,31 +60,31 @@ public class TotalRankSolverBenchmarkRankingWeightFactory implements SolverBench
                 }
             }
         }
-        return new TotalRankSolverBenchmarkRankingWeight(solverBenchmarkResult, betterCount, equalCount);
+        return new TotalRankSolverRankingWeight(solverBenchmarkResult, betterCount, equalCount);
     }
 
-    public static class TotalRankSolverBenchmarkRankingWeight
-            implements Comparable<TotalRankSolverBenchmarkRankingWeight> {
+    public static class TotalRankSolverRankingWeight
+            implements Comparable<TotalRankSolverRankingWeight> {
 
-        private final Comparator<SolverBenchmarkResult> totalScoreSolverBenchmarkRankingComparator
-                = new TotalScoreSolverBenchmarkRankingComparator();
+        private final Comparator<SolverBenchmarkResult> totalScoreSolverRankingComparator
+                = new TotalScoreSolverRankingComparator();
 
         private SolverBenchmarkResult solverBenchmarkResult;
         private int betterCount;
         private int equalCount;
 
-        public TotalRankSolverBenchmarkRankingWeight(SolverBenchmarkResult solverBenchmarkResult,
+        public TotalRankSolverRankingWeight(SolverBenchmarkResult solverBenchmarkResult,
                 int betterCount, int equalCount) {
             this.solverBenchmarkResult = solverBenchmarkResult;
             this.betterCount = betterCount;
             this.equalCount = equalCount;
         }
 
-        public int compareTo(TotalRankSolverBenchmarkRankingWeight other) {
+        public int compareTo(TotalRankSolverRankingWeight other) {
             return new CompareToBuilder()
                     .append(betterCount, other.betterCount)
                     .append(equalCount, other.equalCount)
-                    .append(solverBenchmarkResult, other.solverBenchmarkResult, totalScoreSolverBenchmarkRankingComparator)
+                    .append(solverBenchmarkResult, other.solverBenchmarkResult, totalScoreSolverRankingComparator)
                     .toComparison();
         }
 
@@ -92,12 +92,12 @@ public class TotalRankSolverBenchmarkRankingWeightFactory implements SolverBench
         public boolean equals(Object o) {
             if (this == o) {
                 return true;
-            } else if (o instanceof TotalRankSolverBenchmarkRankingWeight) {
-                TotalRankSolverBenchmarkRankingWeight other = (TotalRankSolverBenchmarkRankingWeight) o;
+            } else if (o instanceof TotalRankSolverRankingWeight) {
+                TotalRankSolverRankingWeight other = (TotalRankSolverRankingWeight) o;
                 return new EqualsBuilder()
                         .append(betterCount, other.betterCount)
                         .append(equalCount, other.equalCount)
-                        .appendSuper(totalScoreSolverBenchmarkRankingComparator
+                        .appendSuper(totalScoreSolverRankingComparator
                                 .compare(solverBenchmarkResult, other.solverBenchmarkResult) == 0)
                         .isEquals();
             } else {

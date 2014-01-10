@@ -14,24 +14,27 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.ranking;
+package org.optaplanner.benchmark.api.ranking;
 
+import org.optaplanner.benchmark.impl.ranking.TotalRankSolverRankingWeightFactory;
+import org.optaplanner.benchmark.impl.ranking.TotalScoreSolverRankingComparator;
+import org.optaplanner.benchmark.impl.ranking.WorstScoreSolverRankingComparator;
 import org.optaplanner.core.impl.solution.Solution;
 
-public enum SolverBenchmarkRankingType {
+public enum SolverRankingType {
     /**
      * Maximize the overall score, so minimize the overall cost if all {@link Solution}s would be executed.
-     * @see TotalScoreSolverBenchmarkRankingComparator
+     * @see TotalScoreSolverRankingComparator
      */
     TOTAL_SCORE,
     /**
      * Minimize the worst case scenario.
-     * @see WorstScoreSolverBenchmarkRankingComparator
+     * @see WorstScoreSolverRankingComparator
      */
     WORST_SCORE,
     /**
      * Maximize the overall ranking.
-     * @see TotalRankSolverBenchmarkRankingWeightFactory
+     * @see TotalRankSolverRankingWeightFactory
      */
     TOTAL_RANKING
 }

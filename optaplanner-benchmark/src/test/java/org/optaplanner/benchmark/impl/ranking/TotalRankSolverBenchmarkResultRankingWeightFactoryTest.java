@@ -32,7 +32,7 @@ public class TotalRankSolverBenchmarkResultRankingWeightFactoryTest extends Abst
     @Test
     public void normal() {
         BenchmarkReport benchmarkReport = mock(BenchmarkReport.class);
-        TotalRankSolverBenchmarkRankingWeightFactory factory = new TotalRankSolverBenchmarkRankingWeightFactory();
+        TotalRankSolverRankingWeightFactory factory = new TotalRankSolverRankingWeightFactory();
         List<SolverBenchmarkResult> solverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>();
         SolverBenchmarkResult a = new SolverBenchmarkResult(null);
         List<SingleBenchmarkResult> aSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
@@ -61,7 +61,7 @@ public class TotalRankSolverBenchmarkResultRankingWeightFactoryTest extends Abst
     @Test
     public void equalCount() {
         BenchmarkReport benchmarkReport = mock(BenchmarkReport.class);
-        TotalRankSolverBenchmarkRankingWeightFactory factory = new TotalRankSolverBenchmarkRankingWeightFactory();
+        TotalRankSolverRankingWeightFactory factory = new TotalRankSolverRankingWeightFactory();
         List<SolverBenchmarkResult> solverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>();
         SolverBenchmarkResult a = new SolverBenchmarkResult(null);
         List<SingleBenchmarkResult> aSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();

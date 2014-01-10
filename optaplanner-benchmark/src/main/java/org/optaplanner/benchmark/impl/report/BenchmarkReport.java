@@ -53,7 +53,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.TextAnchor;
-import org.optaplanner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
+import org.optaplanner.benchmark.api.ranking.SolverRankingWeightFactory;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
@@ -71,8 +71,8 @@ public class BenchmarkReport {
 
     protected File benchmarkReportDirectory = null;
     protected Locale locale = null;
-    protected Comparator<SolverBenchmarkResult> solverBenchmarkRankingComparator = null;
-    protected SolverBenchmarkRankingWeightFactory solverBenchmarkRankingWeightFactory = null;
+    protected Comparator<SolverBenchmarkResult> solverRankingComparator = null;
+    protected SolverRankingWeightFactory solverRankingWeightFactory = null;
 
     protected File htmlOverviewFile = null;
     protected File summaryDirectory = null;
@@ -112,20 +112,20 @@ public class BenchmarkReport {
         this.locale = locale;
     }
 
-    public Comparator<SolverBenchmarkResult> getSolverBenchmarkRankingComparator() {
-        return solverBenchmarkRankingComparator;
+    public Comparator<SolverBenchmarkResult> getSolverRankingComparator() {
+        return solverRankingComparator;
     }
 
-    public void setSolverBenchmarkRankingComparator(Comparator<SolverBenchmarkResult> solverBenchmarkRankingComparator) {
-        this.solverBenchmarkRankingComparator = solverBenchmarkRankingComparator;
+    public void setSolverRankingComparator(Comparator<SolverBenchmarkResult> solverRankingComparator) {
+        this.solverRankingComparator = solverRankingComparator;
     }
 
-    public SolverBenchmarkRankingWeightFactory getSolverBenchmarkRankingWeightFactory() {
-        return solverBenchmarkRankingWeightFactory;
+    public SolverRankingWeightFactory getSolverRankingWeightFactory() {
+        return solverRankingWeightFactory;
     }
 
-    public void setSolverBenchmarkRankingWeightFactory(SolverBenchmarkRankingWeightFactory solverBenchmarkRankingWeightFactory) {
-        this.solverBenchmarkRankingWeightFactory = solverBenchmarkRankingWeightFactory;
+    public void setSolverRankingWeightFactory(SolverRankingWeightFactory solverRankingWeightFactory) {
+        this.solverRankingWeightFactory = solverRankingWeightFactory;
     }
 
     public File getHtmlOverviewFile() {

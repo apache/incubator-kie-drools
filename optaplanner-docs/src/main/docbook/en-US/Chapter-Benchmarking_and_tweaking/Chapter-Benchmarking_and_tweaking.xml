@@ -336,11 +336,11 @@
 
       <programlisting language="xml">&lt;plannerBenchmark&gt;
   ...
-  &lt;solverBenchmarkRankingType&gt;TOTAL_SCORE&lt;/solverBenchmarkRankingType&gt;
+  &lt;solverRankingType&gt;TOTAL_SCORE&lt;/solverRankingType&gt;
   ...
 &lt;/plannerBenchmark&gt;</programlisting>
 
-      <para>The following <literal>solverBenchmarkRankingType</literal>s are supported:</para>
+      <para>The following <literal>solverRankingType</literal>s are supported:</para>
 
       <itemizedlist>
         <listitem>
@@ -360,11 +360,11 @@
 
       <para>You can also use a custom ranking, by implementing a <literal>Comparator</literal>:</para>
 
-      <programlisting language="xml">  &lt;solverBenchmarkRankingComparatorClass&gt;...TotalScoreSolverBenchmarkRankingComparator&lt;/solverBenchmarkRankingComparatorClass&gt;</programlisting>
+      <programlisting language="xml">  &lt;solverRankingComparatorClass&gt;...TotalScoreSolverRankingComparator&lt;/solverRankingComparatorClass&gt;</programlisting>
 
       <para>Or a weight factory:</para>
 
-      <programlisting language="xml">  &lt;solverBenchmarkRankingWeightFactoryClass&gt;...TotalRankSolverBenchmarkRankingWeightFactory&lt;/solverBenchmarkRankingWeightFactoryClass&gt;</programlisting>
+      <programlisting language="xml">  &lt;solverRankingWeightFactoryClass&gt;...TotalRankSolverRankingWeightFactory&lt;/solverRankingWeightFactoryClass&gt;</programlisting>
     </section>
   </section>
 

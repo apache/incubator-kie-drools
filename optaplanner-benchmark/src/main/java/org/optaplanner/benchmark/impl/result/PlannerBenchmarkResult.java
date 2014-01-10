@@ -152,7 +152,7 @@ public class PlannerBenchmarkResult {
             solverBenchmarkResult.accumulateResults(benchmarkReport);
         }
         determineTotalsAndAverages();
-        determineSolverBenchmarkRanking(benchmarkReport);
+        determineSolverRanking(benchmarkReport);
     }
 
     private void determineTotalsAndAverages() {
@@ -182,7 +182,7 @@ public class PlannerBenchmarkResult {
         }
     }
 
-    private void determineSolverBenchmarkRanking(BenchmarkReport benchmarkReport) {
+    private void determineSolverRanking(BenchmarkReport benchmarkReport) {
         List<SolverBenchmarkResult> rankableSolverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>(solverBenchmarkResultList);
         // Do not rank a SolverBenchmarkResult that has a failure
         for (Iterator<SolverBenchmarkResult> it = rankableSolverBenchmarkResultList.iterator(); it.hasNext(); ) {
@@ -208,9 +208,9 @@ public class PlannerBenchmarkResult {
             BenchmarkReport benchmarkReport, List<SolverBenchmarkResult> rankableSolverBenchmarkResultList) {
         List<List<SolverBenchmarkResult>> sameRankingListList = new ArrayList<List<SolverBenchmarkResult>>(
                 rankableSolverBenchmarkResultList.size());
-        if (benchmarkReport.getSolverBenchmarkRankingComparator() != null) {
+        if (benchmarkReport.getSolverRankingComparator() != null) {
             Comparator<SolverBenchmarkResult> comparator = Collections.reverseOrder(
-                    benchmarkReport.getSolverBenchmarkRankingComparator());
+                    benchmarkReport.getSolverRankingComparator());
             Collections.sort(rankableSolverBenchmarkResultList, comparator);
             List<SolverBenchmarkResult> sameRankingList = null;
             SolverBenchmarkResult previousSolverBenchmarkResult = null;
@@ -224,11 +224,11 @@ public class PlannerBenchmarkResult {
                 sameRankingList.add(solverBenchmarkResult);
                 previousSolverBenchmarkResult = solverBenchmarkResult;
             }
-        } else if (benchmarkReport.getSolverBenchmarkRankingWeightFactory() != null) {
+        } else if (benchmarkReport.getSolverRankingWeightFactory() != null) {
             SortedMap<Comparable, List<SolverBenchmarkResult>> rankedMap
                     = new TreeMap<Comparable, List<SolverBenchmarkResult>>(new ReverseComparator());
             for (SolverBenchmarkResult solverBenchmarkResult : rankableSolverBenchmarkResultList) {
-                Comparable rankingWeight = benchmarkReport.getSolverBenchmarkRankingWeightFactory()
+                Comparable rankingWeight = benchmarkReport.getSolverRankingWeightFactory()
                         .createRankingWeight(rankableSolverBenchmarkResultList, solverBenchmarkResult);
                 List<SolverBenchmarkResult> sameRankingList = rankedMap.get(rankingWeight);
                 if (sameRankingList == null) {
@@ -242,7 +242,7 @@ public class PlannerBenchmarkResult {
             }
         } else {
             throw new IllegalStateException("Ranking is impossible" +
-                    " because solverBenchmarkRankingComparator and solverBenchmarkRankingWeightFactory are null.");
+                    " because solverRankingComparator and solverRankingWeightFactory are null.");
         }
         return sameRankingListList;
     }

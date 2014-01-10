@@ -24,7 +24,7 @@ import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
  * Defines an interface for classes that will be used to rank solver benchmarks 
  * in order of their respective performance.
  */
-public interface SolverBenchmarkRankingWeightFactory {
+public interface SolverRankingWeightFactory {
 
     /**
      * The ranking function. Takes the provided solverBenchmarkResultList and ranks them.

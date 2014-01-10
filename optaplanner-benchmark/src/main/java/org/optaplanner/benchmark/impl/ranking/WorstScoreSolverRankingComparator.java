@@ -29,7 +29,7 @@ import org.optaplanner.core.api.score.Score;
  * This ranking {@link Comparator} orders a {@link SolverBenchmarkResult} by its worst {@link Score}.
  * It minimizes the worst case scenario.
  */
-public class WorstScoreSolverBenchmarkRankingComparator implements Comparator<SolverBenchmarkResult>, Serializable {
+public class WorstScoreSolverRankingComparator implements Comparator<SolverBenchmarkResult>, Serializable {
 
     public int compare(SolverBenchmarkResult a, SolverBenchmarkResult b) {
         List<Score> aScoreList = a.getScoreList();

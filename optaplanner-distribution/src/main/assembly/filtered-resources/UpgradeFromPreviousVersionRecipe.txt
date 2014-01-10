@@ -3760,7 +3760,31 @@ Before in *BenchmarkConfig.xml:
 SolverBenchmark has been renamed to SolverBenchmarkResult.
 ProblemBenchmark has been renamed to ProblemBenchmarkResult.
 SingleBenchmark has been renamed to SingleBenchmarkResult.
+They also moved into the package result.
 Before in *.java:
     public int compare(SolverBenchmark a, SolverBenchmark b) {...}
 After in *.java:
     public int compare(SolverBenchmarkResult a, SolverBenchmarkResult b) {...}
+Before in *.java:
+    public Comparable createRankingWeight(List<SolverBenchmark> solverBenchmarkList, SolverBenchmark solverBenchmark) {...}
+After in *.java:
+    public Comparable createRankingWeight(List<SolverBenchmarkResult> solverBenchmarkResultList, SolverBenchmarkResult solverBenchmarkResult) {...}
+
+[MINOR] If you explicitly specify Benchmarker rankings:
+All solverBenchmarkRanking* properties have been renamed to solverRanking*.
+Before in *BenchmarkConfig.xml:
+   <solverBenchmarkRankingType>TOTAL_SCORE</solverBenchmarkRankingType>
+After in *BenchmarkConfig.xml:
+   <solverRankingType>TOTAL_SCORE</solverRankingType>
+Before in *BenchmarkConfig.xml:
+   <solverBenchmarkRankingComparatorClass>...</solverBenchmarkRankingComparatorClass>
+After in *BenchmarkConfig.xml:
+   <solverRankingComparatorClass>...</solverRankingComparatorClass>
+Before in *BenchmarkConfig.xml:
+   <solverBenchmarkRankingWeightFactoryClass>...</solverBenchmarkRankingWeightFactoryClass>
+After in *BenchmarkConfig.xml:
+   <solverRankingWeightFactoryClass>...</solverRankingWeightFactoryClass>
+Before in *.java:
+   ... implements SolverRankingWeightFactory
+After in *.java:
+   ... implements SolverBenchmarkRankingWeightFactory

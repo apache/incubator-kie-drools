@@ -32,7 +32,7 @@ public class WorstScoreSolverBenchmarkResultRankingComparatorTest extends Abstra
     @Test
     public void normal() {
         BenchmarkReport benchmarkReport = mock(BenchmarkReport.class);
-        WorstScoreSolverBenchmarkRankingComparator comparator = new WorstScoreSolverBenchmarkRankingComparator();
+        WorstScoreSolverRankingComparator comparator = new WorstScoreSolverRankingComparator();
         SolverBenchmarkResult a = new SolverBenchmarkResult(null);
         List<SingleBenchmarkResult> aSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
         addSingleBenchmark(aSingleBenchmarkResultList, -100, -30, -2001);
@@ -54,7 +54,7 @@ public class WorstScoreSolverBenchmarkResultRankingComparatorTest extends Abstra
     @Test
     public void worstIsEqual() {
         BenchmarkReport benchmarkReport = mock(BenchmarkReport.class);
-        WorstScoreSolverBenchmarkRankingComparator comparator = new WorstScoreSolverBenchmarkRankingComparator();
+        WorstScoreSolverRankingComparator comparator = new WorstScoreSolverRankingComparator();
         SolverBenchmarkResult a = new SolverBenchmarkResult(null);
         List<SingleBenchmarkResult> aSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
         addSingleBenchmark(aSingleBenchmarkResultList, -101, -30, -2000);

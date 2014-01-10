@@ -31,17 +31,17 @@ import org.optaplanner.core.impl.solution.Solution;
  * When the inputSolutions differ greatly in size or difficulty, this often results in a big difference in
  * {@link Score} magnitude between each {@link Solution}. For example: score 10 for dataset A versus 1000 for dataset B.
  * In such cases, dataset B would marginalize dataset A.
- * To avoid that, use {@link TotalRankSolverBenchmarkRankingWeightFactory}.
+ * To avoid that, use {@link TotalRankSolverRankingWeightFactory}.
  */
-public class TotalScoreSolverBenchmarkRankingComparator implements Comparator<SolverBenchmarkResult>, Serializable {
+public class TotalScoreSolverRankingComparator implements Comparator<SolverBenchmarkResult>, Serializable {
 
-    private WorstScoreSolverBenchmarkRankingComparator worstScoreSolverBenchmarkRankingComparator
-            = new WorstScoreSolverBenchmarkRankingComparator();
+    private WorstScoreSolverRankingComparator worstScoreSolverRankingComparator
+            = new WorstScoreSolverRankingComparator();
 
     public int compare(SolverBenchmarkResult a, SolverBenchmarkResult b) {
         return new CompareToBuilder()
                 .append(a.getTotalScore(), b.getTotalScore())
-                .append(a, b, worstScoreSolverBenchmarkRankingComparator)
+                .append(a, b, worstScoreSolverRankingComparator)
                 .toComparison();
     }
 
