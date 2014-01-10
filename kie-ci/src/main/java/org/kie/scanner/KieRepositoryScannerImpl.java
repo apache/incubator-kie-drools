@@ -59,7 +59,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         }
 
         artifactResolver = getResolverFor(kieContainer.getReleaseId(), true);
-        init();
+        indexAtifacts( findKJarAtifacts() );
     }
 
     private ArtifactResolver getArtifactResolver() {
@@ -67,16 +67,6 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
             artifactResolver = new ArtifactResolver();
         }
         return artifactResolver;
-    }
-
-    private void init() {
-        Collection<Artifact> artifacts = findKJarAtifacts();
-        log.info("Artifacts containing a kjar: " + artifacts);
-        if (artifacts.isEmpty()) {
-            log.info("There's no artifacts containing a kjar: shutdown the scanner");
-            return;
-        }
-        indexAtifacts(artifacts);
     }
 
     public KieModule loadArtifact(ReleaseId releaseId) {
@@ -240,8 +230,9 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     private Collection<Artifact> findKJarAtifacts() {
         Collection<DependencyDescriptor> deps = getArtifactResolver().getAllDependecies();
         deps = filterNonFixedDependecies(deps);
-        Collection<Artifact> artifacts = resolveArtifacts(deps);
-        return filterKJarArtifacts(artifacts);
+        Collection<Artifact> artifacts = filterKJarArtifacts( resolveArtifacts(deps) );
+        log.info("Artifacts containing a kjar: " + artifacts);
+        return artifacts;
     }
 
     private Collection<DependencyDescriptor> filterNonFixedDependecies(Collection<DependencyDescriptor> dependencies) {
