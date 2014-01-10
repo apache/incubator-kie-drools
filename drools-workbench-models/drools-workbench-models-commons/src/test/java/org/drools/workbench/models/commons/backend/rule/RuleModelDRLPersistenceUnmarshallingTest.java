@@ -2449,7 +2449,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1051059")
     public void testExpressionEditorLeftToOperator() throws Exception {
         String drl = ""
                 + "rule \"r1\"\n"
@@ -2485,7 +2484,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals("age", constraint.getFieldName());
         assertEquals("==", constraint.getOperator());
         assertEquals(BaseSingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE, constraint.getConstraintValueType());
-        assertEquals(null, constraint.getValue());
+        assertEquals("", constraint.getValue());
         assertEquals(2, constraint.getExpressionValue().getParts().size());
 
         assertTrue(constraint.getExpressionValue().getParts().get(0) instanceof ExpressionVariable);
@@ -2500,7 +2499,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals("age", expressionField.getName());
         assertEquals("java.lang.Integer", expressionField.getClassType());
         assertEquals("Integer", expressionField.getGenericType());
-
     }
 
     @Test
