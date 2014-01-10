@@ -5,6 +5,7 @@ import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.apache.maven.repository.internal.MavenServiceLocator;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.wagon.Wagon;
+import org.apache.maven.wagon.providers.http.HttpWagon;
 import org.kie.scanner.embedder.MavenSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,6 @@ import org.sonatype.aether.repository.LocalRepository;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.spi.connector.RepositoryConnectorFactory;
 import org.sonatype.aether.util.DefaultRepositorySystemSession;
-import org.sonatype.maven.wagon.AhcWagon;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -132,8 +132,8 @@ public class Aether {
     private static class ManualWagonProvider implements WagonProvider {
 
         public Wagon lookup( String roleHint ) throws Exception {
-            if ( "http".equals( roleHint ) ) {
-                return new AhcWagon();
+            if ( "http".equals( roleHint ) || "https".equals( roleHint ) ) {
+                return new HttpWagon();
             }
             if ( "sramp".equals( roleHint ) ) {
                 try {

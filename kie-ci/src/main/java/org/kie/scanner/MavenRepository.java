@@ -3,6 +3,7 @@ package org.kie.scanner;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Profile;
 import org.apache.maven.settings.Repository;
+import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.kie.api.builder.ReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -16,6 +17,7 @@ import org.sonatype.aether.deployment.DeploymentException;
 import org.sonatype.aether.graph.Dependency;
 import org.sonatype.aether.graph.DependencyNode;
 import org.sonatype.aether.graph.DependencyVisitor;
+import org.sonatype.aether.repository.Authentication;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.ArtifactRequest;
 import org.sonatype.aether.resolution.ArtifactResolutionException;
@@ -52,12 +54,26 @@ public class MavenRepository {
     private static void initSettings() {
         Settings settings = MavenSettings.getSettings();
         for (Profile profile : settings.getProfiles()) {
-            if (profile.getActivation() != null && profile.getActivation().isActiveByDefault()) {
+            if (isProfileActive(settings, profile)) {
                 for (Repository repository : profile.getRepositories()) {
-                    addExtraRepository( new RemoteRepository( repository.getId(), "default", repository.getUrl() ) );
+                    addExtraRepository( toRemoteRepository(settings, repository) );
                 }
             }
         }
+    }
+
+    private static boolean isProfileActive(Settings settings, Profile profile) {
+        return settings.getActiveProfiles().contains(profile.getId()) ||
+               (profile.getActivation() != null && profile.getActivation().isActiveByDefault());
+    }
+
+    private static RemoteRepository toRemoteRepository(Settings settings, Repository repository) {
+        RemoteRepository remote = new RemoteRepository( repository.getId(), repository.getLayout(), repository.getUrl() );
+        Server server = settings.getServer( repository.getId() );
+        if (server != null) {
+            remote.setAuthentication( new Authentication(server.getUsername(), server.getPassword()) );
+        }
+        return remote;
     }
 
     public static void addExtraRepository(RemoteRepository r) {
