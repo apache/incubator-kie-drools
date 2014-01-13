@@ -19,6 +19,7 @@ package org.optaplanner.benchmark.impl.statistic.stepscore;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
@@ -30,12 +31,14 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
 
 public class StepScoreSingleStatistic extends AbstractSingleStatistic<StepScoreSingleStatisticPoint> {
 
-    private final StepScoreSingleStatisticListener listener = new StepScoreSingleStatisticListener();
+    private final StepScoreSingleStatisticListener listener;
 
-    private List<StepScoreSingleStatisticPoint> pointList = new ArrayList<StepScoreSingleStatisticPoint>();
+    private List<StepScoreSingleStatisticPoint> pointList;
 
     public StepScoreSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         super(singleBenchmarkResult, ProblemStatisticType.STEP_SCORE);
+        listener = new StepScoreSingleStatisticListener();
+        pointList = new ArrayList<StepScoreSingleStatisticPoint>();
     }
 
     public List<StepScoreSingleStatisticPoint> getPointList() {

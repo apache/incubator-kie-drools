@@ -25,6 +25,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.ranking.SingleBenchmarkRankingComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -48,15 +49,16 @@ public class ProblemBenchmarkResult {
 
     private String name = null;
 
+    @XStreamOmitField // TODO move problemIO out of ProblemBenchmarkResult
     private ProblemIO problemIO = null;
     private boolean writeOutputSolutionEnabled = false;
     private File inputSolutionFile = null;
     private File problemReportDirectory = null;
 
-    @XStreamImplicit(itemFieldName = "problemStatistic")
+    @XStreamImplicit()
     private List<ProblemStatistic> problemStatisticList = null;
 
-    @XStreamImplicit(itemFieldName = "singleBenchmarkResult")
+    @XStreamImplicit()
     private List<SingleBenchmarkResult> singleBenchmarkResultList = null;
 
     private Long problemScale = null;

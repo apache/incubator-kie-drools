@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
@@ -38,7 +39,8 @@ public class SingleBenchmarkResult {
     private final SolverBenchmarkResult solverBenchmarkResult;
     private final ProblemBenchmarkResult problemBenchmarkResult;
 
-    private Map<StatisticType, SingleStatistic> singleStatisticMap = new HashMap<StatisticType, SingleStatistic>();
+    @XStreamOmitField // Lazily restored when read through ProblemStatistic and CSV files
+    private Map<StatisticType, SingleStatistic> singleStatisticMap;
 
     private File reportDirectory = null;
 
@@ -64,6 +66,8 @@ public class SingleBenchmarkResult {
     public SingleBenchmarkResult(SolverBenchmarkResult solverBenchmarkResult, ProblemBenchmarkResult problemBenchmarkResult) {
         this.solverBenchmarkResult = solverBenchmarkResult;
         this.problemBenchmarkResult = problemBenchmarkResult;
+        singleStatisticMap = new HashMap<StatisticType, SingleStatistic>(
+                problemBenchmarkResult.getProblemStatisticList().size());
     }
 
     public SolverBenchmarkResult getSolverBenchmarkResult() {

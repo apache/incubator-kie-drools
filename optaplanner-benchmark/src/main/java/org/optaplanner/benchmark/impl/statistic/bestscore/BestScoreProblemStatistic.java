@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
@@ -41,6 +42,7 @@ import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.impl.score.ScoreUtils;
 
+@XStreamAlias("bestScoreProblemStatistic")
 public class BestScoreProblemStatistic extends AbstractProblemStatistic {
 
     protected List<File> graphFileList = null;

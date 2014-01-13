@@ -19,6 +19,7 @@ package org.optaplanner.benchmark.impl.statistic.bestscore;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
@@ -29,12 +30,13 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public class BestScoreSingleStatistic extends AbstractSingleStatistic<BestScoreSingleStatisticPoint> {
 
-    private final BestScoreSingleStatisticListener listener = new BestScoreSingleStatisticListener();
+    private final BestScoreSingleStatisticListener listener;
 
     private List<BestScoreSingleStatisticPoint> pointList;
 
     public BestScoreSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         super(singleBenchmarkResult, ProblemStatisticType.BEST_SCORE);
+        listener = new BestScoreSingleStatisticListener();
         pointList = new ArrayList<BestScoreSingleStatisticPoint>();
     }
 

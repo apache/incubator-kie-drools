@@ -21,6 +21,7 @@ import java.io.File;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
@@ -37,6 +38,7 @@ import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpendNumberFo
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 
+@XStreamAlias("calculateCountProblemStatistic")
 public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
 
     protected File graphFile = null;

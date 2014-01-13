@@ -19,6 +19,7 @@ package org.optaplanner.benchmark.impl.statistic.bestsolutionmutation;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
@@ -32,12 +33,14 @@ import org.optaplanner.core.impl.solution.Solution;
 
 public class BestSolutionMutationSingleStatistic extends AbstractSingleStatistic<BestSolutionMutationSingleStatisticPoint> {
 
-    private BestSolutionMutationSingleStatisticListener listener = new BestSolutionMutationSingleStatisticListener();
+    private BestSolutionMutationSingleStatisticListener listener;
 
-    private List<BestSolutionMutationSingleStatisticPoint> pointList = new ArrayList<BestSolutionMutationSingleStatisticPoint>();
+    private List<BestSolutionMutationSingleStatisticPoint> pointList;
 
     public BestSolutionMutationSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         super(singleBenchmarkResult, ProblemStatisticType.BEST_SOLUTION_MUTATION);
+        listener = new BestSolutionMutationSingleStatisticListener();
+        pointList = new ArrayList<BestSolutionMutationSingleStatisticPoint>();
     }
 
     public List<BestSolutionMutationSingleStatisticPoint> getPointList() {

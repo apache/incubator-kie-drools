@@ -19,6 +19,7 @@ package org.optaplanner.benchmark.impl.statistic.calculatecount;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
@@ -31,15 +32,11 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class CalculateCountSingleStatistic extends AbstractSingleStatistic<CalculateCountSingleStatisticPoint> {
 
-    private long timeMillisThresholdInterval;
-    private long nextTimeMillisThreshold;
+    private final long timeMillisThresholdInterval;
 
-    private final CalculateCountSingleStatisticListener listener = new CalculateCountSingleStatisticListener();
+    private final CalculateCountSingleStatisticListener listener;
 
-    private long lastTimeMillisSpend = 0L;
-    private long lastCalculateCount = 0L;
-
-    private List<CalculateCountSingleStatisticPoint> pointList = new ArrayList<CalculateCountSingleStatisticPoint>();
+    private List<CalculateCountSingleStatisticPoint> pointList;
 
     public CalculateCountSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         this(singleBenchmarkResult, 1000L);
@@ -52,7 +49,8 @@ public class CalculateCountSingleStatistic extends AbstractSingleStatistic<Calcu
                     + ") must be bigger than 0.");
         }
         this.timeMillisThresholdInterval = timeMillisThresholdInterval;
-        nextTimeMillisThreshold = timeMillisThresholdInterval;
+        listener = new CalculateCountSingleStatisticListener();
+        pointList = new ArrayList<CalculateCountSingleStatisticPoint>();
     }
 
     public List<CalculateCountSingleStatisticPoint> getPointList() {
@@ -72,6 +70,10 @@ public class CalculateCountSingleStatistic extends AbstractSingleStatistic<Calcu
     }
 
     private class CalculateCountSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {
+
+        private long nextTimeMillisThreshold = timeMillisThresholdInterval;
+        private long lastTimeMillisSpend = 0L;
+        private long lastCalculateCount = 0L;
 
         @Override
         public void stepEnded(AbstractStepScope stepScope) {

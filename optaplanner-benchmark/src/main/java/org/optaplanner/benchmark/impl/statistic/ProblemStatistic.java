@@ -18,13 +18,28 @@ package org.optaplanner.benchmark.impl.statistic;
 
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
+import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.calculatecount.CalculateCountProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.memoryuse.MemoryUseProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.movecountperstep.MoveCountPerStepProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.stepscore.StepScoreProblemStatistic;
 
 /**
  * 1 statistic of {@link ProblemBenchmarkResult}
  */
+@XStreamInclude({
+        BestScoreProblemStatistic.class,
+        StepScoreProblemStatistic.class,
+        CalculateCountProblemStatistic.class,
+        BestSolutionMutationProblemStatistic.class,
+        MoveCountPerStepProblemStatistic.class,
+        MemoryUseProblemStatistic.class
+})
 public interface ProblemStatistic {
 
     /**

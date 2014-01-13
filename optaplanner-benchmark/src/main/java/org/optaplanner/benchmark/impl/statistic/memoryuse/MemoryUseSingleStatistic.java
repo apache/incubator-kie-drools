@@ -19,6 +19,7 @@ package org.optaplanner.benchmark.impl.statistic.memoryuse;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
@@ -30,12 +31,11 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
 
 public class MemoryUseSingleStatistic extends AbstractSingleStatistic<MemoryUseSingleStatisticPoint> {
 
-    private MemoryUseSingleStatisticListener listener = new MemoryUseSingleStatisticListener();
-
     private long timeMillisThresholdInterval;
-    private long nextTimeMillisThreshold;
 
-    private List<MemoryUseSingleStatisticPoint> pointList = new ArrayList<MemoryUseSingleStatisticPoint>();
+    private MemoryUseSingleStatisticListener listener;
+
+    private List<MemoryUseSingleStatisticPoint> pointList;
 
     public MemoryUseSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         this(singleBenchmarkResult, 1000L);
@@ -48,7 +48,8 @@ public class MemoryUseSingleStatistic extends AbstractSingleStatistic<MemoryUseS
                     + ") must be bigger than 0.");
         }
         this.timeMillisThresholdInterval = timeMillisThresholdInterval;
-        nextTimeMillisThreshold = timeMillisThresholdInterval;
+        listener = new MemoryUseSingleStatisticListener();
+        pointList = new ArrayList<MemoryUseSingleStatisticPoint>();
     }
 
     public List<MemoryUseSingleStatisticPoint> getPointList() {
@@ -68,6 +69,8 @@ public class MemoryUseSingleStatistic extends AbstractSingleStatistic<MemoryUseS
     }
     
     private class MemoryUseSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {
+
+        private long nextTimeMillisThreshold = timeMillisThresholdInterval;
 
         @Override
         public void stepEnded(AbstractStepScope stepScope) {

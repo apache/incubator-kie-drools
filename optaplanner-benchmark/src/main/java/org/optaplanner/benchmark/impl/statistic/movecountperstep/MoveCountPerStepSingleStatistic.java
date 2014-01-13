@@ -19,6 +19,7 @@ package org.optaplanner.benchmark.impl.statistic.movecountperstep;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
@@ -31,12 +32,14 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
 
 public class MoveCountPerStepSingleStatistic extends AbstractSingleStatistic<MoveCountPerStepSingleStatisticPoint> {
 
-    private MoveCountPerStepSingleStatisticListener listener = new MoveCountPerStepSingleStatisticListener();
+    private MoveCountPerStepSingleStatisticListener listener;
 
-    private List<MoveCountPerStepSingleStatisticPoint> pointList = new ArrayList<MoveCountPerStepSingleStatisticPoint>();
+    private List<MoveCountPerStepSingleStatisticPoint> pointList;
 
     public MoveCountPerStepSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         super(singleBenchmarkResult, ProblemStatisticType.MOVE_COUNT_PER_STEP);
+        listener = new MoveCountPerStepSingleStatisticListener();
+        pointList = new ArrayList<MoveCountPerStepSingleStatisticPoint>();
     }
 
     public List<MoveCountPerStepSingleStatisticPoint> getPointList() {
