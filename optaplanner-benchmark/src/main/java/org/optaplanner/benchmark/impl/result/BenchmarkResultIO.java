@@ -17,6 +17,7 @@
 package org.optaplanner.benchmark.impl.result;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,9 +25,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.core.config.solver.XmlSolverFactory;
 
 public class BenchmarkResultIO {
@@ -55,12 +60,40 @@ public class BenchmarkResultIO {
         }
     }
 
-    public PlannerBenchmarkResult readPlannerBenchmarkResult(File benchmarkReportDirectory) {
-        File plannerBenchmarkResultFile = new File(benchmarkReportDirectory, PLANNER_BENCHMARK_RESULT_FILENAME);
+    public List<PlannerBenchmarkResult> readPlannerBenchmarkResultList(File benchmarkDirectory) {
+        if (!benchmarkDirectory.exists()) {
+            throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory
+                    + ") does not exist.");
+        }
+        if (!benchmarkDirectory.isDirectory()) {
+            throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory
+                    + ") is not a directory.");
+        }
+
+        File[] benchmarkReportDirectories = benchmarkDirectory.listFiles((FileFilter) DirectoryFileFilter.INSTANCE);
+        List<PlannerBenchmarkResult> plannerBenchmarkResultList = new ArrayList<PlannerBenchmarkResult>(
+                benchmarkReportDirectories.length);
+        for (File benchmarkReportDirectory : benchmarkReportDirectories) {
+            File plannerBenchmarkResultFile = new File(benchmarkReportDirectory, PLANNER_BENCHMARK_RESULT_FILENAME);
+            if (plannerBenchmarkResultFile.exists()) {
+                plannerBenchmarkResultList.add(readPlannerBenchmarkResult(plannerBenchmarkResultFile));
+            }
+        }
+        return plannerBenchmarkResultList;
+    }
+
+    protected PlannerBenchmarkResult readPlannerBenchmarkResult(File plannerBenchmarkResultFile) {
+        if (!plannerBenchmarkResultFile.exists()) {
+            throw new IllegalArgumentException("The plannerBenchmarkResultFile (" + plannerBenchmarkResultFile
+                    + ") does not exist.");
+        }
         Reader reader = null;
         try {
             reader = new InputStreamReader(new FileInputStream(plannerBenchmarkResultFile), "UTF-8");
             return (PlannerBenchmarkResult) xStream.fromXML(reader);
+        } catch (XStreamException e) {
+            throw new IllegalArgumentException(
+                    "Problem reading plannerBenchmarkResultFile: " + plannerBenchmarkResultFile, e);
         } catch (IOException e) {
             throw new IllegalArgumentException(
                     "Problem reading plannerBenchmarkResultFile: " + plannerBenchmarkResultFile, e);

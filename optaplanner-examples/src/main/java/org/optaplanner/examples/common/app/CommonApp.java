@@ -20,6 +20,7 @@ import java.awt.Component;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.WindowConstants;
 
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.examples.common.business.SolutionBusiness;
@@ -96,7 +97,7 @@ public abstract class CommonApp extends LoggingMain {
         solutionBusiness = createSolutionBusiness();
         solverAndPersistenceFrame = new SolverAndPersistenceFrame(
                 solutionBusiness, createSolutionPanel(), name + " OptaPlanner example");
-        solverAndPersistenceFrame.setDefaultCloseOperation(exitOnClose ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
+        solverAndPersistenceFrame.setDefaultCloseOperation(exitOnClose ? WindowConstants.EXIT_ON_CLOSE : WindowConstants.DISPOSE_ON_CLOSE);
         solverAndPersistenceFrame.init(centerForComponent);
         solverAndPersistenceFrame.setVisible(true);
     }
