@@ -76,7 +76,9 @@ public class BenchmarkResultIO {
         for (File benchmarkReportDirectory : benchmarkReportDirectories) {
             File plannerBenchmarkResultFile = new File(benchmarkReportDirectory, PLANNER_BENCHMARK_RESULT_FILENAME);
             if (plannerBenchmarkResultFile.exists()) {
-                plannerBenchmarkResultList.add(readPlannerBenchmarkResult(plannerBenchmarkResultFile));
+                PlannerBenchmarkResult plannerBenchmarkResult = readPlannerBenchmarkResult(plannerBenchmarkResultFile);
+                // TODO plannerBenchmarkResult.accumulateResults();
+                plannerBenchmarkResultList.add(plannerBenchmarkResult);
             }
         }
         return plannerBenchmarkResultList;

@@ -169,10 +169,7 @@ public class ProblemBenchmarksConfig {
     private void addSingleBenchmark(
             SolverBenchmarkResult solverBenchmarkResult, ProblemBenchmarkResult problemBenchmarkResult) {
         SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
-        for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
-            SingleStatistic singleStatistic = problemStatistic.createSingleStatistic(singleBenchmarkResult);
-            singleBenchmarkResult.getSingleStatisticMap().put(problemStatistic.getProblemStatisticType(), singleStatistic);
-        }
+        singleBenchmarkResult.initSingleStatisticMap();
         solverBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
         problemBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
     }

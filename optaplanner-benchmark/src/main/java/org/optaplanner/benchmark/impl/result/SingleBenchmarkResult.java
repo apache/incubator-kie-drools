@@ -24,6 +24,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
+import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.core.api.score.FeasibilityScore;
@@ -66,8 +67,15 @@ public class SingleBenchmarkResult {
     public SingleBenchmarkResult(SolverBenchmarkResult solverBenchmarkResult, ProblemBenchmarkResult problemBenchmarkResult) {
         this.solverBenchmarkResult = solverBenchmarkResult;
         this.problemBenchmarkResult = problemBenchmarkResult;
+    }
+
+    public void initSingleStatisticMap() {
         singleStatisticMap = new HashMap<StatisticType, SingleStatistic>(
                 problemBenchmarkResult.getProblemStatisticList().size());
+        for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
+            SingleStatistic singleStatistic = problemStatistic.createSingleStatistic(this);
+            singleStatisticMap.put(problemStatistic.getProblemStatisticType(), singleStatistic);
+        }
     }
 
     public SolverBenchmarkResult getSolverBenchmarkResult() {
