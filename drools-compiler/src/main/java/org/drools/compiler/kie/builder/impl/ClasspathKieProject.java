@@ -229,11 +229,9 @@ public class ClasspathKieProject extends AbstractKieProject {
                 }
             }
             
-            
-            
             // recurse until we reach root or find a pom.xml
             File file = null;
-            for ( File folder = new File( rootPath ); folder != null; folder = new File( folder.getParent() ) ) {
+            for ( File folder = new File( rootPath ); folder.getParent() != null; folder = new File( folder.getParent() ) ) {
                 file = new File( folder, "pom.xml" );
                 if ( file.exists() ) {
                     break;
@@ -268,10 +266,10 @@ public class ClasspathKieProject extends AbstractKieProject {
                     }
                 }
             } else {
-                log.error( "As folder project tried to fall back to pom.xml, but could not find one for " + file );
+                log.warn( "As folder project tried to fall back to pom.xml, but could not find one for " + file );
             }
         }
-        log.error( "Unable to load pom.properties from" + urlPathToAdd );
+        log.warn( "Unable to load pom.properties from" + urlPathToAdd );
         return null;
     }
     
