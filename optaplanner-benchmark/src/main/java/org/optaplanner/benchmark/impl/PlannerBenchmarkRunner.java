@@ -32,6 +32,7 @@ import org.drools.core.util.StringUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkException;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
+import org.optaplanner.benchmark.impl.result.BenchmarkResultIO;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
@@ -49,6 +50,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
     private BenchmarkReport benchmarkReport = null;
 
     private ExecutorService executorService;
+    private BenchmarkResultIO benchmarkResultIO;
 
     private long startingSystemTimeMillis = -1L;
     private SingleBenchmarkRunner firstFailureSingleBenchmarkRunner = null;
@@ -93,6 +95,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         }
         initBenchmarkDirectoryAndSubdirs();
         executorService = Executors.newFixedThreadPool(plannerBenchmarkResult.getParallelBenchmarkCount());
+        benchmarkResultIO = new BenchmarkResultIO();
         logger.info("Benchmarking started: solverBenchmarkResultList size ({}), parallelBenchmarkCount ({}).",
                 solverBenchmarkResultList.size(), plannerBenchmarkResult.getParallelBenchmarkCount());
     }
@@ -192,6 +195,8 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                     + notExecutedBenchmarkList + ").");
         }
         plannerBenchmarkResult.setBenchmarkTimeMillisSpend(calculateTimeMillisSpend());
+        benchmarkResultIO.writePlannerBenchmarkResult(benchmarkReport.getBenchmarkReportDirectory(),
+                plannerBenchmarkResult);
         benchmarkReport.writeReport();
         if (plannerBenchmarkResult.getFailureCount() == 0) {
             logger.info("Benchmarking ended: time spend ({}), favoriteSolverBenchmark ({}), statistic html overview ({}).",

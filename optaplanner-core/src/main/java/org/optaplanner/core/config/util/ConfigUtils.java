@@ -48,7 +48,8 @@ public class ConfigUtils {
         if (inheritedList == null) {
             return originalList;
         } else if (originalList == null) {
-            return inheritedList;
+            // Shallow clone due to XStream implicit elements and modifications after calling inherit
+            return new ArrayList<T>(inheritedList);
         } else {
             // The inheritedList should be before the originalList
             List<T> mergedList = new ArrayList<T>(inheritedList);
