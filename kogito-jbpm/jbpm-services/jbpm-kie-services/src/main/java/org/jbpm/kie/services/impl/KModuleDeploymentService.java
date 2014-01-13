@@ -136,11 +136,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 
         KieBase kbase = kieContainer.getKieBase(kbaseName);        
 
-        AbstractAuditLogger auditLogger = getAuditLogger();
-        ServicesAwareAuditEventBuilder auditEventBuilder = new ServicesAwareAuditEventBuilder();
-        auditEventBuilder.setIdentityProvider(identityProvider);
-        auditEventBuilder.setDeploymentUnitId(unit.getIdentifier());
-        auditLogger.setBuilder(auditEventBuilder);
+        AbstractAuditLogger auditLogger = setupAuditLogger(identityProvider, unit.getIdentifier());
 
         RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .entityManagerFactory(getEmf())

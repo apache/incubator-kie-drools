@@ -10,10 +10,14 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 
+import org.jbpm.kie.services.api.IdentityProvider;
+import org.jbpm.kie.services.api.RequestScopedBackupIdentityProvider;
 import org.jbpm.kie.services.api.RuntimeDataService;
+import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
 import org.jbpm.kie.services.impl.event.Deploy;
 import org.jbpm.kie.services.impl.event.DeploymentEvent;
 import org.jbpm.kie.services.impl.event.Undeploy;
@@ -35,6 +39,8 @@ public abstract class AbstractDeploymentService implements DeploymentService {
     
     private static Logger logger = LoggerFactory.getLogger(AbstractDeploymentService.class);
 
+    @Inject
+    private BeanManager beanManager; 
     @Inject
     private RuntimeManagerFactory managerFactory; 
     @Inject
@@ -184,7 +190,7 @@ public abstract class AbstractDeploymentService implements DeploymentService {
      * @return instance of the audit logger
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    protected AbstractAuditLogger getAuditLogger() {
+    private AbstractAuditLogger getAuditLogger() {
         
         if ("true".equals(System.getProperty("jbpm.audit.jms.enabled"))) {
             try {
@@ -198,5 +204,16 @@ public abstract class AbstractDeploymentService implements DeploymentService {
         } 
         
         return AuditLoggerFactory.newJPAInstance(getEmf());
+    }
+    
+    protected AbstractAuditLogger setupAuditLogger(IdentityProvider identityProvider, String deploymentUnitId) { 
+        AbstractAuditLogger auditLogger = getAuditLogger();
+        ServicesAwareAuditEventBuilder auditEventBuilder = new ServicesAwareAuditEventBuilder();
+        auditEventBuilder.setIdentityProvider(identityProvider);
+        auditEventBuilder.setDeploymentUnitId(deploymentUnitId);
+        auditEventBuilder.setBeanManager(beanManager);
+        auditLogger.setBuilder(auditEventBuilder);
+        
+        return auditLogger;
     }
 }
