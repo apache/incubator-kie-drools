@@ -314,12 +314,14 @@
         </listitem>
       </itemizedlist>
 
-      <para>The HTML report will use your default locale to format numbers. If you need to share the benchmark report
-      with people from another country, you might want to overwrite the <literal>benchmarkReportLocale</literal>:</para>
+      <para>The HTML report will use your default locale to format numbers. If you share the benchmark report with
+      people from another country, consider overwriting the <literal>locale</literal> accordingly:</para>
 
       <programlisting language="xml">&lt;plannerBenchmark&gt;
   ...
-  &lt;benchmarkReportLocale&gt;en_US&lt;/benchmarkReportLocale&gt;
+  &lt;benchmarkReport&gt;
+    &lt;locale&gt;en_US&lt;/locale&gt;
+  &lt;/benchmarkReport&gt;
   ...
 &lt;/plannerBenchmark&gt;</programlisting>
     </section>
@@ -336,7 +338,9 @@
 
       <programlisting language="xml">&lt;plannerBenchmark&gt;
   ...
-  &lt;solverRankingType&gt;TOTAL_SCORE&lt;/solverRankingType&gt;
+  &lt;benchmarkReport&gt;
+    &lt;solverRankingType&gt;TOTAL_SCORE&lt;/solverRankingType&gt;
+  &lt;/benchmarkReport&gt;
   ...
 &lt;/plannerBenchmark&gt;</programlisting>
 
@@ -360,11 +364,15 @@
 
       <para>You can also use a custom ranking, by implementing a <literal>Comparator</literal>:</para>
 
-      <programlisting language="xml">  &lt;solverRankingComparatorClass&gt;...TotalScoreSolverRankingComparator&lt;/solverRankingComparatorClass&gt;</programlisting>
+      <programlisting language="xml">  &lt;benchmarkReport&gt;
+    &lt;solverRankingComparatorClass&gt;...TotalScoreSolverRankingComparator&lt;/solverRankingComparatorClass&gt;
+  &lt;/benchmarkReport&gt;</programlisting>
 
-      <para>Or a weight factory:</para>
+      <para>Or by implementing a weight factory:</para>
 
-      <programlisting language="xml">  &lt;solverRankingWeightFactoryClass&gt;...TotalRankSolverRankingWeightFactory&lt;/solverRankingWeightFactoryClass&gt;</programlisting>
+      <programlisting language="xml">  &lt;benchmarkReport&gt;
+    &lt;solverRankingWeightFactoryClass&gt;...TotalRankSolverRankingWeightFactory&lt;/solverRankingWeightFactoryClass&gt;
+  &lt;/benchmarkReport&gt;</programlisting>
     </section>
   </section>
 

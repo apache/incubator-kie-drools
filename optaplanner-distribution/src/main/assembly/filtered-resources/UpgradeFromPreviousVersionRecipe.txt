@@ -3792,3 +3792,19 @@ After in *.java:
 [IMPL_DETAIL] The internals of optaplanner-benchmark have been deeply refactored to support the new aggregator functionality.
 
 [MINOR] The benchmark output report directory structure is slightly different: the CSV files have been renamed.
+
+[MINOR] If you explicitly specify Benchmarker rankings or report locale:
+The elements <benchmarkReportLocale>, <solverRankingType>, <solverRankingComparatorClass>
+and <solverRankingWeightFactoryClass> have been moved inside the new element <benchmarkReport>.
+Before in *BenchmarkConfig.xml:
+  <benchmarkReportLocale>...</benchmarkReportLocale>
+After in *BenchmarkConfig.xml:
+  <benchmarkReport>
+    <locale>...</locale>
+  </benchmarkReport>
+Before in *BenchmarkConfig.xml:
+  <solverRankingType>...</solverRankingType>
+After in *BenchmarkConfig.xml:
+  <benchmarkReport>
+    <solverRankingType>...</solverRankingType>
+  </benchmarkReport>

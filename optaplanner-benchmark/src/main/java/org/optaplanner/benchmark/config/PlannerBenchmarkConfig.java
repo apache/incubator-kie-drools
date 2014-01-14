@@ -33,6 +33,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.ranking.SolverRankingWeightFactory;
 import org.optaplanner.benchmark.api.ranking.SolverRankingType;
+import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
 import org.optaplanner.benchmark.impl.ranking.TotalScoreSolverRankingComparator;
 import org.optaplanner.benchmark.impl.ranking.WorstScoreSolverRankingComparator;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
@@ -41,6 +42,7 @@ import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.ranking.TotalRankSolverRankingWeightFactory;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
+import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,10 +67,8 @@ public class PlannerBenchmarkConfig {
     private Long warmUpMinutesSpend = null;
     private Long warmUpHoursSpend = null;
 
-    private Locale benchmarkReportLocale = null;
-    private SolverRankingType solverRankingType = null;
-    private Class<Comparator<SolverBenchmarkResult>> solverRankingComparatorClass = null;
-    private Class<SolverRankingWeightFactory> solverRankingWeightFactoryClass = null;
+    @XStreamAlias("benchmarkReport")
+    private BenchmarkReportConfig benchmarkReportConfig = null;
 
     @XStreamAlias("inheritedSolverBenchmark")
     private SolverBenchmarkConfig inheritedSolverBenchmarkConfig = null;
@@ -139,36 +139,12 @@ public class PlannerBenchmarkConfig {
         this.warmUpHoursSpend = warmUpHoursSpend;
     }
 
-    public Locale getBenchmarkReportLocale() {
-        return benchmarkReportLocale;
+    public BenchmarkReportConfig getBenchmarkReportConfig() {
+        return benchmarkReportConfig;
     }
 
-    public void setBenchmarkReportLocale(Locale benchmarkReportLocale) {
-        this.benchmarkReportLocale = benchmarkReportLocale;
-    }
-
-    public SolverRankingType getSolverRankingType() {
-        return solverRankingType;
-    }
-
-    public void setSolverRankingType(SolverRankingType solverRankingType) {
-        this.solverRankingType = solverRankingType;
-    }
-
-    public Class<Comparator<SolverBenchmarkResult>> getSolverRankingComparatorClass() {
-        return solverRankingComparatorClass;
-    }
-
-    public void setSolverRankingComparatorClass(Class<Comparator<SolverBenchmarkResult>> solverRankingComparatorClass) {
-        this.solverRankingComparatorClass = solverRankingComparatorClass;
-    }
-
-    public Class<SolverRankingWeightFactory> getSolverRankingWeightFactoryClass() {
-        return solverRankingWeightFactoryClass;
-    }
-
-    public void setSolverRankingWeightFactoryClass(Class<SolverRankingWeightFactory> solverRankingWeightFactoryClass) {
-        this.solverRankingWeightFactoryClass = solverRankingWeightFactoryClass;
+    public void setBenchmarkReportConfig(BenchmarkReportConfig benchmarkReportConfig) {
+        this.benchmarkReportConfig = benchmarkReportConfig;
     }
 
     public SolverBenchmarkConfig getInheritedSolverBenchmarkConfig() {
@@ -202,11 +178,9 @@ public class PlannerBenchmarkConfig {
         plannerBenchmarkRunner.setBenchmarkDirectory(benchmarkDirectory);
         plannerBenchmarkResult.setParallelBenchmarkCount(resolveParallelBenchmarkCount());
         plannerBenchmarkResult.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
-        BenchmarkReport benchmarkReport = new BenchmarkReport(plannerBenchmarkResult);
-        plannerBenchmarkRunner.setBenchmarkReport(benchmarkReport);
-        benchmarkReport.setLocale(
-                benchmarkReportLocale == null ? Locale.getDefault() : benchmarkReportLocale);
-        supplySolverRanking(benchmarkReport);
+        BenchmarkReportConfig benchmarkReportConfig_ = benchmarkReportConfig == null ? new BenchmarkReportConfig()
+                : benchmarkReportConfig;
+        plannerBenchmarkRunner.setBenchmarkReport(benchmarkReportConfig_.buildBenchmarkReport(plannerBenchmarkResult));
 
         List<SolverBenchmarkResult> solverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>(solverBenchmarkConfigList.size());
         List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = new ArrayList<ProblemBenchmarkResult>();
@@ -263,58 +237,6 @@ public class PlannerBenchmarkConfig {
             for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
                 solverBenchmarkConfig.inherit(inheritedSolverBenchmarkConfig);
             }
-        }
-    }
-
-    protected void supplySolverRanking(BenchmarkReport benchmarkReport) {
-        if (solverRankingType != null && solverRankingComparatorClass != null) {
-            throw new IllegalStateException("The PlannerBenchmark cannot have"
-                    + " a solverRankingType (" + solverRankingType
-                    + ") and a solverRankingComparatorClass (" + solverRankingComparatorClass.getName()
-                    + ") at the same time.");
-        } else if (solverRankingType != null && solverRankingWeightFactoryClass != null) {
-            throw new IllegalStateException("The PlannerBenchmark cannot have"
-                    + " a solverRankingType (" + solverRankingType
-                    + ") and a solverRankingWeightFactoryClass (" + solverRankingWeightFactoryClass.getName()
-                    + ") at the same time.");
-        } else if (solverRankingComparatorClass != null && solverRankingWeightFactoryClass != null) {
-            throw new IllegalStateException("The PlannerBenchmark cannot have"
-                    + " a solverRankingComparatorClass (" + solverRankingComparatorClass.getName()
-                    + ") and a solverRankingWeightFactoryClass (" + solverRankingWeightFactoryClass.getName()
-                    + ") at the same time.");
-        }
-        Comparator<SolverBenchmarkResult> solverRankingComparator = null;
-        SolverRankingWeightFactory solverRankingWeightFactory = null;
-        if (solverRankingType != null) {
-            switch (solverRankingType) {
-                case TOTAL_SCORE:
-                    solverRankingComparator = new TotalScoreSolverRankingComparator();
-                    break;
-                case WORST_SCORE:
-                    solverRankingComparator = new WorstScoreSolverRankingComparator();
-                    break;
-                case TOTAL_RANKING:
-                    solverRankingWeightFactory = new TotalRankSolverRankingWeightFactory();
-                    break;
-                default:
-                    throw new IllegalStateException("The solverRankingType ("
-                            + solverRankingType + ") is not implemented.");
-            }
-        }
-        if (solverRankingComparatorClass != null) {
-            solverRankingComparator = ConfigUtils.newInstance(this,
-                    "solverRankingComparatorClass", solverRankingComparatorClass);
-        }
-        if (solverRankingWeightFactoryClass != null) {
-            solverRankingWeightFactory = ConfigUtils.newInstance(this,
-                    "solverRankingWeightFactoryClass", solverRankingWeightFactoryClass);
-        }
-        if (solverRankingComparator != null) {
-            benchmarkReport.setSolverRankingComparator(solverRankingComparator);
-        } else if (solverRankingWeightFactory != null) {
-            benchmarkReport.setSolverRankingWeightFactory(solverRankingWeightFactory);
-        } else {
-            benchmarkReport.setSolverRankingComparator(new TotalScoreSolverRankingComparator());
         }
     }
 
