@@ -23,8 +23,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -58,7 +60,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         if (releaseId == null) {
             throw new RuntimeException("The KieContainer's ReleaseId cannot be null. Are you using a KieClasspathContainer?");
         }
-        DependencyDescriptor projectDescr = new DependencyDescriptor(releaseId);
+        DependencyDescriptor projectDescr = new DependencyDescriptor(releaseId, kieContainer.getReleaseId().getVersion());
         if (!projectDescr.isFixedVersion()) {
             usedDependencies.add(projectDescr);
         }
@@ -135,7 +137,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         for (DependencyDescriptor dep : dependencies) {
             Artifact depArtifact = resolver.resolveArtifact(dep.toString());
             if (isKJar(depArtifact.getFile())) {
-                ReleaseId depReleaseId = new DependencyDescriptor(depArtifact).getGav();
+                ReleaseId depReleaseId = new DependencyDescriptor(depArtifact).getReleaseId();
                 ZipKieModule zipKieModule = createZipKieModule(depReleaseId, depArtifact.getFile());
                 if (zipKieModule != null) {
                     kieModule.addKieDependency(zipKieModule);
@@ -208,32 +210,33 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     public void scanNow() {
         status = Status.SCANNING;
-        Collection<Artifact> updatedArtifacts = scanForUpdates(usedDependencies);
+        Map<DependencyDescriptor, Artifact> updatedArtifacts = scanForUpdates(usedDependencies);
         if (updatedArtifacts.isEmpty()) {
             status = Status.STOPPED;
             return;
         }
         status = Status.UPDATING;
-        for (Artifact artifact : updatedArtifacts) {
-            DependencyDescriptor depDescr = new DependencyDescriptor(artifact);
-            updateKieModule(artifact, depDescr.getGav());
+        for (Map.Entry<DependencyDescriptor, Artifact> entry : updatedArtifacts.entrySet()) {
+            updateKieModule(entry.getKey(), entry.getValue());
         }
         log.info("The following artifacts have been updated: " + updatedArtifacts);
         status = Status.STOPPED;
     }
 
-    private void updateKieModule(Artifact artifact, ReleaseId releaseId) {
-        ZipKieModule kieModule = createZipKieModule(releaseId, artifact.getFile());
+    private void updateKieModule(DependencyDescriptor oldDependency, Artifact artifact) {
+        ReleaseId newReleaseId = new DependencyDescriptor(artifact).getReleaseId();
+        ZipKieModule kieModule = createZipKieModule(newReleaseId, artifact.getFile());
         if (kieModule != null) {
             ResultsImpl messages = build(kieModule);
             if ( messages.filterMessages(Message.Level.ERROR).isEmpty()) {
-                kieContainer.updateToVersion(releaseId);
+                ((InternalKieContainer)kieContainer).updateDependencyToVersion(oldDependency.getArtifactReleaseId(), newReleaseId);
+                oldDependency.setArtifactVersion(artifact.getVersion());
             }
         }
     }
 
-    private Collection<Artifact> scanForUpdates(Collection<DependencyDescriptor> dependencies) {
-        List<Artifact> newArtifacts = new ArrayList<Artifact>();
+    private Map<DependencyDescriptor, Artifact> scanForUpdates(Collection<DependencyDescriptor> dependencies) {
+        Map<DependencyDescriptor, Artifact> newArtifacts = new HashMap<DependencyDescriptor, Artifact>();
         for (DependencyDescriptor dependency : dependencies) {
             Artifact newArtifact = getArtifactResolver().resolveArtifact(dependency.toResolvableString());
             if (newArtifact == null) {
@@ -241,7 +244,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
             }
             DependencyDescriptor resolvedDep = new DependencyDescriptor(newArtifact);
             if (resolvedDep.isNewerThan(dependency)) {
-                newArtifacts.add(newArtifact);
+                newArtifacts.put(dependency, newArtifact);
             }
         }
         return newArtifacts;

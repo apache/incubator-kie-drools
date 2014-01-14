@@ -95,28 +95,38 @@ public class KieContainerImpl
     }
 
     public Results updateToVersion(ReleaseId newReleaseId) {
-        if( kProject instanceof ClasspathKieProject ) {
+        checkNotClasspathKieProject();
+        return update(kProject.getGAV(), newReleaseId);
+    }
+
+    public Results updateDependencyToVersion(ReleaseId currentReleaseId, ReleaseId newReleaseId) {
+        checkNotClasspathKieProject();
+        return update(currentReleaseId, newReleaseId);
+    }
+
+    private void checkNotClasspathKieProject() {
+        if( kProject instanceof ClasspathKieProject) {
             throw new UnsupportedOperationException( "It is not possible to update a classpath container to a new version." );
         }
+    }
 
-        ResultsImpl results = new ResultsImpl();
-
-        ReleaseId currentReleaseId = kProject.getGAV();
-
+    private Results update(ReleaseId currentReleaseId, ReleaseId newReleaseId) {
         // if the new and the current release are equal (a snapshot) check if there is an older version with the same releaseId
         InternalKieModule currentKM = currentReleaseId.equals( newReleaseId ) && !currentReleaseId.equals(kr.getDefaultReleaseId()) ?
                                       (InternalKieModule) ((KieRepositoryImpl)kr).getOldKieModule( currentReleaseId ) :
                                       (InternalKieModule) kr.getKieModule( currentReleaseId );
         InternalKieModule newKM = (InternalKieModule) kr.getKieModule( newReleaseId );
-        
+
         ChangeSetBuilder csb = new ChangeSetBuilder();
         KieJarChangeSet cs = csb.build( currentKM, newKM );
         List<String> modifiedClasses = getModifiedClasses(cs);
 
         ((KieModuleKieProject) kProject).updateToModule( newKM );
 
+        ResultsImpl results = new ResultsImpl();
+
         List<String> kbasesToRemove = new ArrayList<String>();
-        for ( Map.Entry<String, KieBase> kBaseEntry : kBases.entrySet() ) {
+        for ( Entry<String, KieBase> kBaseEntry : kBases.entrySet() ) {
             String kbaseName = kBaseEntry.getKey();
             KieBaseModel kieBaseModel = kProject.getKieBaseModel( kbaseName );
             // if a kbase no longer exists, just remove it from the cache
@@ -125,7 +135,7 @@ public class KieContainerImpl
                 kbasesToRemove.add( kbaseName );
             } else {
                 // attaching the builder to the kbase
-                KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( (KnowledgeBase) kBaseEntry.getValue() );
+                KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder((KnowledgeBase) kBaseEntry.getValue());
                 PackageBuilder pkgbuilder = kbuilder instanceof PackageBuilder ? ((PackageBuilder) kbuilder) : ((KnowledgeBuilderImpl)kbuilder).getPackageBuilder();
                 CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
@@ -171,16 +181,16 @@ public class KieContainerImpl
         for (String kbaseToRemove : kbasesToRemove) {
             kBases.remove(kbaseToRemove);
         }
-        
-        for( Iterator<Map.Entry<String,KieSession>> it = this.kSessions.entrySet().iterator(); it.hasNext(); ) {
+
+        for( Iterator<Entry<String,KieSession>> it = this.kSessions.entrySet().iterator(); it.hasNext(); ) {
             Entry<String, KieSession> ksession = it.next();
             if( kProject.getKieSessionModel( ksession.getKey() ) == null ) {
                 // remove sessions that no longer exist
                 it.remove();
             }
         }
-        
-        for( Iterator<Map.Entry<String,StatelessKieSession>> it = this.statelessKSessions.entrySet().iterator(); it.hasNext(); ) {
+
+        for( Iterator<Entry<String,StatelessKieSession>> it = this.statelessKSessions.entrySet().iterator(); it.hasNext(); ) {
             Entry<String, StatelessKieSession> ksession = it.next();
             if( kProject.getKieSessionModel( ksession.getKey() ) == null ) {
                 // remove sessions that no longer exist

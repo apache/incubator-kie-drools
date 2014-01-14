@@ -14,6 +14,7 @@ import org.kie.internal.builder.InternalKieBuilder;
 
 import static junit.framework.Assert.*;
 
+@Ignore
 public class KieModuleIncrementalCompilationTest extends AbstractKieCiTest {
 
     @Test
