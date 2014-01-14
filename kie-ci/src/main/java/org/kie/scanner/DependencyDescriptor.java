@@ -12,38 +12,43 @@ public class DependencyDescriptor {
     private final String artifactId;
     private final String version;
     private final String type;
-    private final ArtifactVersion artifactVersion;
+
+    private ArtifactVersion artifactVersion;
 
     public DependencyDescriptor(Dependency dependency) {
-        groupId = dependency.getGroupId();
-        artifactId = dependency.getArtifactId();
-        version = dependency.getVersion();
-        type = dependency.getType();
-        artifactVersion = new DefaultArtifactVersion(version);
+        this(dependency.getGroupId(),
+             dependency.getArtifactId(),
+             dependency.getVersion(),
+             dependency.getType(),
+             dependency.getVersion());
     }
 
     public DependencyDescriptor(Artifact artifact) {
-        groupId = artifact.getGroupId();
-        artifactId = artifact.getArtifactId();
-        version = artifact.isSnapshot() ? artifact.getBaseVersion() : artifact.getVersion();
-        type = artifact.getExtension();
-        artifactVersion = new DefaultArtifactVersion(artifact.getVersion());
+        this(artifact.getGroupId(),
+             artifact.getArtifactId(),
+             artifact.isSnapshot() ? artifact.getBaseVersion() : artifact.getVersion(),
+             artifact.getExtension(),
+             artifact.getVersion());
     }
 
-    public DependencyDescriptor(String groupId, String artifactId, String version, String type) {
+    public DependencyDescriptor(ReleaseId releaseId) {
+        this(releaseId, releaseId.getVersion());
+    }
+
+    public DependencyDescriptor(ReleaseId releaseId, String currentVersion) {
+        this(releaseId.getGroupId(),
+             releaseId.getArtifactId(),
+             releaseId.getVersion(),
+             "jar",
+             currentVersion);
+    }
+
+    public DependencyDescriptor(String groupId, String artifactId, String version, String type, String currentVersion) {
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.version = version;
         this.type = type;
-        artifactVersion = new DefaultArtifactVersion(version);
-    }
-
-    public DependencyDescriptor(ReleaseId releaseId) {
-        groupId = releaseId.getGroupId();
-        artifactId = releaseId.getArtifactId();
-        version = releaseId.getVersion();
-        type = "jar";
-        artifactVersion = new DefaultArtifactVersion(version);
+        setArtifactVersion(currentVersion);
     }
 
     public String getGroupId() {
@@ -58,8 +63,12 @@ public class DependencyDescriptor {
         return version;
     }
 
-    public ReleaseId getGav() {
+    public ReleaseId getReleaseId() {
         return new ReleaseIdImpl(groupId, artifactId, version);
+    }
+
+    public ReleaseId getArtifactReleaseId() {
+        return new ReleaseIdImpl(groupId, artifactId, artifactVersion.toString());
     }
 
     public String getType() {
@@ -110,6 +119,10 @@ public class DependencyDescriptor {
         result = 31 * result + (version != null ? version.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
         return result;
+    }
+
+    public void setArtifactVersion(String version) {
+        artifactVersion = new DefaultArtifactVersion(version);
     }
 
     public boolean isNewerThan(DependencyDescriptor o) {

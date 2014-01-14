@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
+@Ignore
 public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
     private FileManager fileManager;
@@ -49,7 +50,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         this.fileManager.setUp();
     }
 
-    @Test @Ignore
+    @Test
     public void testKScanner() throws Exception {
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
@@ -83,7 +84,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         ks.getRepository().removeKieModule(releaseId);
     }
 
-    @Test @Ignore
+    @Test
     public void testKScannerWithRange() throws Exception {
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", "scanner-test", "1.0.1");
@@ -121,12 +122,12 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         checkKSession(ksession2, "rule2", "rule3");
     }
 
-    @Test @Ignore
+    @Test
     public void testKScannerWithKJarContainingClasses() throws Exception {
         testKScannerWithType(false);
     }
 
-    @Test @Ignore
+    @Test
     public void testKScannerWithKJarContainingTypeDeclaration() throws Exception {
         testKScannerWithType(true);
     }
@@ -157,7 +158,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         ks.getRepository().removeKieModule(releaseId);
     }
 
-    @Test @Ignore
+    @Test
     public void testLoadKieJarFromMavenRepo() throws Exception {
         // This test depends from the former one (UGLY!) and must be run immediately after it
         KieServices ks = KieServices.Factory.get();
@@ -168,7 +169,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         checkKSession(ksession2, 15);
     }
 
-    @Test @Ignore
+    @Test
     public void testScannerOnPomProject() throws Exception {
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", "scanner-test", "1.0");
@@ -245,7 +246,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         } catch (RuntimeException e) { }
     }
 
-    @Test @Ignore
+    @Test
     public void testTypeAndRuleInDifferentKieModules() throws Exception {
         KieServices ks = KieServices.Factory.get();
 
@@ -283,5 +284,34 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         kieBuilder.buildAll();
         assertTrue(kieBuilder.getResults().getMessages().isEmpty());
         return ( InternalKieModule ) kieBuilder.getKieModule();
+    }
+
+    @Test
+    public void testScannerOnPomRuleProject() throws Exception {
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "scanner-test", "1.0");
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "scanner-test", "2.0");
+
+        MavenRepository repository = getMavenRepository();
+        repository.deployPomArtifact("org.kie", "scanner-master-test", "1.0", createMasterKPom());
+
+        resetFileManager();
+
+        InternalKieModule kJar1 = createKieJar(ks, releaseId1, "rule1");
+        repository.deployArtifact(releaseId1, kJar1, createKPom(fileManager, releaseId1));
+
+        KieContainer kieContainer = ks.newKieContainer(ks.newReleaseId("org.kie", "scanner-master-test", "LATEST"));
+        KieSession ksession = kieContainer.newKieSession("KSession1");
+        checkKSession(ksession, "rule1");
+
+        KieScanner scanner = ks.newKieScanner(kieContainer);
+
+        InternalKieModule kJar2 = createKieJar(ks, releaseId2, "rule2");
+        repository.deployArtifact(releaseId2, kJar2, createKPom(fileManager, releaseId2));
+
+        scanner.scanNow();
+
+        KieSession ksession2 = kieContainer.newKieSession("KSession1");
+        checkKSession(ksession2, "rule2");
     }
 }
