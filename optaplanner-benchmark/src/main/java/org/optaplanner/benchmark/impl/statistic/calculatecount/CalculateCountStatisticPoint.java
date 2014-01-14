@@ -40,7 +40,7 @@ public class CalculateCountStatisticPoint extends StatisticPoint {
 
     @Override
     public List<String> toCsvLine() {
-        return buildCsvLine(timeMillisSpend, calculateCountPerSecond);
+        return buildCsvLineWithLongs(timeMillisSpend, calculateCountPerSecond);
     }
 
 }

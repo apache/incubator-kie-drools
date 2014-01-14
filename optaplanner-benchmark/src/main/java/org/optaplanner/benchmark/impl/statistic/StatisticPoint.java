@@ -23,7 +23,7 @@ public abstract class StatisticPoint {
 
     public abstract List<String> toCsvLine();
 
-    public static List<String> buildCsvLine(long timeMillisSpend, long... values) {
+    public static List<String> buildCsvLineWithLongs(long timeMillisSpend, long... values) {
         List<String> line = new ArrayList<String>(values.length + 1);
         line.add(Long.toString(timeMillisSpend));
         for (long value : values) {
@@ -32,7 +32,7 @@ public abstract class StatisticPoint {
         return line;
     }
 
-    public static List<String> buildCsvLine(long timeMillisSpend, double... values) {
+    public static List<String> buildCsvLineWithDoubles(long timeMillisSpend, double... values) {
         List<String> line = new ArrayList<String>(values.length + 1);
         line.add(Long.toString(timeMillisSpend));
         for (double value : values) {
@@ -41,7 +41,7 @@ public abstract class StatisticPoint {
         return line;
     }
 
-    public static List<String> buildCsvLine(long timeMillisSpend, String... values) {
+    public static List<String> buildCsvLineWithStrings(long timeMillisSpend, String... values) {
         List<String> line = new ArrayList<String>(values.length + 1);
         line.add(Long.toString(timeMillisSpend));
         for (String value : values) {

@@ -40,7 +40,7 @@ public class BestSolutionMutationStatisticPoint extends StatisticPoint {
 
     @Override
     public List<String> toCsvLine() {
-        return buildCsvLine(timeMillisSpend, mutationCount);
+        return buildCsvLineWithLongs(timeMillisSpend, mutationCount);
     }
 
 }

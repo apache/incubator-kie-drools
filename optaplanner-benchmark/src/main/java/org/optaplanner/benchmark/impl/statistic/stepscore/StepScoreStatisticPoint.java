@@ -41,7 +41,7 @@ public class StepScoreStatisticPoint extends StatisticPoint {
 
     @Override
     public List<String> toCsvLine() {
-        return buildCsvLine(timeMillisSpend, score.toString());
+        return buildCsvLineWithStrings(timeMillisSpend, score.toString());
     }
 
 }
