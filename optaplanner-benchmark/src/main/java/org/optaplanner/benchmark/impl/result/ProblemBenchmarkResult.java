@@ -45,7 +45,8 @@ public class ProblemBenchmarkResult {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final PlannerBenchmarkResult plannerBenchmarkResult;
+    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
+    private PlannerBenchmarkResult plannerBenchmarkResult;
 
     private String name = null;
 
@@ -78,6 +79,10 @@ public class ProblemBenchmarkResult {
 
     public PlannerBenchmarkResult getPlannerBenchmarkResult() {
         return plannerBenchmarkResult;
+    }
+
+    public void setPlannerBenchmarkResult(PlannerBenchmarkResult plannerBenchmarkResult) {
+        this.plannerBenchmarkResult = plannerBenchmarkResult;
     }
 
     public String getName() {

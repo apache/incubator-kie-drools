@@ -37,8 +37,10 @@ import org.optaplanner.core.api.solver.Solver;
 @XStreamAlias("singleBenchmarkResult")
 public class SingleBenchmarkResult {
 
-    private final SolverBenchmarkResult solverBenchmarkResult;
-    private final ProblemBenchmarkResult problemBenchmarkResult;
+    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
+    private SolverBenchmarkResult solverBenchmarkResult;
+    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
+    private ProblemBenchmarkResult problemBenchmarkResult;
 
     @XStreamOmitField // Lazily restored when read through ProblemStatistic and CSV files
     private Map<StatisticType, SingleStatistic> singleStatisticMap;
@@ -82,8 +84,16 @@ public class SingleBenchmarkResult {
         return solverBenchmarkResult;
     }
 
+    public void setSolverBenchmarkResult(SolverBenchmarkResult solverBenchmarkResult) {
+        this.solverBenchmarkResult = solverBenchmarkResult;
+    }
+
     public ProblemBenchmarkResult getProblemBenchmarkResult() {
         return problemBenchmarkResult;
+    }
+
+    public void setProblemBenchmarkResult(ProblemBenchmarkResult problemBenchmarkResult) {
+        this.problemBenchmarkResult = problemBenchmarkResult;
     }
 
     public Map<StatisticType, SingleStatistic> getSingleStatisticMap() {

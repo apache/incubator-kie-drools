@@ -36,14 +36,14 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
-import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.impl.score.ScoreUtils;
 
 @XStreamAlias("stepScoreProblemStatistic")
-public class StepScoreProblemStatistic extends AbstractProblemStatistic {
+public class StepScoreProblemStatistic extends ProblemStatistic {
 
     protected List<File> graphFileList = null;
 

@@ -22,6 +22,7 @@ import java.util.List;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -39,9 +40,8 @@ import org.slf4j.LoggerFactory;
 @XStreamAlias("solverBenchmarkResult")
 public class SolverBenchmarkResult {
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
-
-    private final PlannerBenchmarkResult plannerBenchmarkResult;
+    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
+    private PlannerBenchmarkResult plannerBenchmarkResult;
 
     private String name = null;
 
@@ -72,6 +72,14 @@ public class SolverBenchmarkResult {
     private Integer ranking = null;
 
     public SolverBenchmarkResult(PlannerBenchmarkResult plannerBenchmarkResult) {
+        this.plannerBenchmarkResult = plannerBenchmarkResult;
+    }
+
+    public PlannerBenchmarkResult getPlannerBenchmarkResult() {
+        return plannerBenchmarkResult;
+    }
+
+    public void setPlannerBenchmarkResult(PlannerBenchmarkResult plannerBenchmarkResult) {
         this.plannerBenchmarkResult = plannerBenchmarkResult;
     }
 

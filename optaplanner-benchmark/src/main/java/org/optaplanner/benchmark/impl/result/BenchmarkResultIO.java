@@ -32,6 +32,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.core.config.solver.XmlSolverFactory;
 
 public class BenchmarkResultIO {
@@ -89,10 +90,11 @@ public class BenchmarkResultIO {
             throw new IllegalArgumentException("The plannerBenchmarkResultFile (" + plannerBenchmarkResultFile
                     + ") does not exist.");
         }
+        PlannerBenchmarkResult plannerBenchmarkResult;
         Reader reader = null;
         try {
             reader = new InputStreamReader(new FileInputStream(plannerBenchmarkResultFile), "UTF-8");
-            return (PlannerBenchmarkResult) xStream.fromXML(reader);
+            plannerBenchmarkResult = (PlannerBenchmarkResult) xStream.fromXML(reader);
         } catch (XStreamException e) {
             throw new IllegalArgumentException(
                     "Problem reading plannerBenchmarkResultFile: " + plannerBenchmarkResultFile, e);
@@ -101,6 +103,26 @@ public class BenchmarkResultIO {
                     "Problem reading plannerBenchmarkResultFile: " + plannerBenchmarkResultFile, e);
         } finally {
             IOUtils.closeQuietly(reader);
+        }
+        restoreOmittedBidirectionalFields(plannerBenchmarkResult);
+        return plannerBenchmarkResult;
+    }
+
+    private void restoreOmittedBidirectionalFields(PlannerBenchmarkResult plannerBenchmarkResult) {
+        for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
+            solverBenchmarkResult.setPlannerBenchmarkResult(plannerBenchmarkResult);
+            for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
+                singleBenchmarkResult.setSolverBenchmarkResult(solverBenchmarkResult);
+            }
+        }
+        for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
+            problemBenchmarkResult.setPlannerBenchmarkResult(plannerBenchmarkResult);
+            for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
+                singleBenchmarkResult.setProblemBenchmarkResult(problemBenchmarkResult);
+            }
+            for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
+                problemStatistic.setProblemBenchmarkResult(problemBenchmarkResult);
+            }
         }
     }
 
