@@ -79,6 +79,8 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         // create a ksesion and check it works as expected
         KieSession ksession2 = kieContainer.newKieSession("KSession1");
         checkKSession(ksession2, "rule2", "rule3");
+
+        ks.getRepository().removeKieModule(releaseId);
     }
 
     @Test @Ignore
@@ -151,6 +153,8 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         KieSession ksession2 = kieContainer.newKieSession("KSession1");
         checkKSession(ksession2, 15);
+
+        ks.getRepository().removeKieModule(releaseId);
     }
 
     @Test @Ignore
