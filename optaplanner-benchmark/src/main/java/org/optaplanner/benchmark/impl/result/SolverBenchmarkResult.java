@@ -47,8 +47,6 @@ public class SolverBenchmarkResult {
 
     private SolverConfig solverConfig = null;
 
-    @XStreamImplicit(itemFieldName = "problemBenchmarkResult")
-    private List<ProblemBenchmarkResult> problemBenchmarkResultList = null;
     @XStreamImplicit(itemFieldName = "singleBenchmarkResult")
     private List<SingleBenchmarkResult> singleBenchmarkResultList = null;
 
@@ -97,14 +95,6 @@ public class SolverBenchmarkResult {
 
     public void setSolverConfig(SolverConfig solverConfig) {
         this.solverConfig = solverConfig;
-    }
-
-    public List<ProblemBenchmarkResult> getProblemBenchmarkResultList() {
-        return problemBenchmarkResultList;
-    }
-
-    public void setProblemBenchmarkResultList(List<ProblemBenchmarkResult> problemBenchmarkResultList) {
-        this.problemBenchmarkResultList = problemBenchmarkResultList;
     }
 
     public List<SingleBenchmarkResult> getSingleBenchmarkResultList() {

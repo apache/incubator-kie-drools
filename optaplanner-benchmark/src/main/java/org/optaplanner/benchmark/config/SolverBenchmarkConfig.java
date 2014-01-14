@@ -74,9 +74,8 @@ public class SolverBenchmarkConfig {
         ProblemBenchmarksConfig problemBenchmarksConfig_
                 = problemBenchmarksConfig == null ? new ProblemBenchmarksConfig()
                 : problemBenchmarksConfig;
-        List<ProblemBenchmarkResult> problemBenchmarkResultList
-                = problemBenchmarksConfig_.buildProblemBenchmarkList(plannerBenchmark, solverBenchmarkResult);
-        solverBenchmarkResult.setProblemBenchmarkResultList(problemBenchmarkResultList);
+        // ProblemBenchmarksConfig adds the ProblemBenchmark directly to the unifiedProblemBenchmarkList
+        problemBenchmarksConfig_.buildProblemBenchmarkList(plannerBenchmark, solverBenchmarkResult);
         return solverBenchmarkResult;
     }
 
