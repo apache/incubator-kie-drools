@@ -4187,6 +4187,10 @@ public class PackageBuilder
         }
     }
 
+    public boolean isClassInUse(String className) {
+        return !(rootClassLoader instanceof ProjectClassLoader) || ((ProjectClassLoader) rootClassLoader).isClassInUse(className);
+    }
+
     public static interface AssetFilter {
         public static enum Action {
             DO_NOTHING, ADD, REMOVE, UPDATE;
