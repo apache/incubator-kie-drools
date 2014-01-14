@@ -9,6 +9,8 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.drools.core.common.InternalRuleBase;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.util.MVELSafeHelper;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.ListenerModel;
@@ -19,6 +21,9 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItemHandler;
+import org.mvel2.MVEL;
+import org.mvel2.ParserConfiguration;
+import org.mvel2.ParserContext;
 
 public class CDIHelper {
 
@@ -35,11 +40,12 @@ public class CDIHelper {
     }
 
     private static void wireListnersAndWIHs(BeanCreator beanCreator, KieSessionModel model, KieSession kSession) {
+        ClassLoader cl = ((InternalRuleBase)((InternalKnowledgeBase)kSession.getKieBase()).getRuleBase()).getRootClassLoader();
 
         for (ListenerModel listenerModel : model.getListenerModels()) {
             Object listener;
             try {
-                listener = beanCreator.createBean(listenerModel.getType(), listenerModel.getQualifierModel());
+                listener = beanCreator.createBean(cl, listenerModel.getType(), listenerModel.getQualifierModel());
             } catch (Exception e) {
                 throw new RuntimeException("Cannot instance listener " + listenerModel.getType(), e);
             }
@@ -58,7 +64,7 @@ public class CDIHelper {
         for (WorkItemHandlerModel wihModel : model.getWorkItemHandlerModels()) {
             WorkItemHandler wih;
             try {
-                wih = beanCreator.createBean(wihModel.getType(), wihModel.getQualifierModel());
+                wih = beanCreator.createBean(cl, wihModel.getType(), wihModel.getQualifierModel());
             } catch (Exception e) {
                 throw new RuntimeException("Cannot instance WorkItemHandler " + wihModel.getType(), e);
             }
@@ -95,7 +101,7 @@ public class CDIHelper {
     }
 
     private interface BeanCreator {
-        <T> T createBean(String type, QualifierModel qualifier) throws Exception;
+        <T> T createBean(ClassLoader cl, String type, QualifierModel qualifier) throws Exception;
     }
 
     private static class CDIBeanCreator implements BeanCreator {
@@ -105,8 +111,8 @@ public class CDIHelper {
             this.beanManager = beanManager;
         }
 
-        public <T> T createBean(String type, QualifierModel qualifier) throws Exception {
-            Class<?> beanType = Class.forName(type);
+        public <T> T createBean(ClassLoader cl, String type, QualifierModel qualifier) throws Exception {
+            Class<?> beanType = Class.forName(type, true, cl);
 
             Set<Bean<?>> beans;
             if (qualifier == null) {
@@ -129,11 +135,11 @@ public class CDIHelper {
 
     private static class ReflectionBeanCreator implements BeanCreator {
 
-        public <T> T createBean(String type, QualifierModel qualifier) throws Exception {
+        public <T> T createBean(ClassLoader cl, String type, QualifierModel qualifier) throws Exception {
             if (qualifier != null) {
                 throw new IllegalArgumentException("Cannot use a qualifier without a CDI container");
             }
-            return (T)Class.forName(type).newInstance();
+            return (T)Class.forName(type, true, cl).newInstance();
         }
     }
 
@@ -144,11 +150,22 @@ public class CDIHelper {
         private MVELBeanCreator(Map<String, Object> parameters) {
             this.parameters = parameters;
         }
-        public <T> T createBean(String type, QualifierModel qualifier) throws Exception {
+        public <T> T createBean(ClassLoader cl, String type, QualifierModel qualifier) throws Exception {
             if (qualifier != null) {
                 throw new IllegalArgumentException("Cannot use a qualifier without a CDI container");
             }
-            return (T)MVELSafeHelper.getEvaluator().eval( type, parameters );
+
+            ParserConfiguration config = new ParserConfiguration();
+            config.setClassLoader(cl);
+            ParserContext ctx = new ParserContext(config);
+            if (parameters != null) {
+                for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                    ctx.addVariable(entry.getKey(), entry.getValue().getClass());
+                }
+            }
+
+            Object compiledExpression = MVEL.compileExpression(type, ctx);
+            return (T)MVELSafeHelper.getEvaluator().executeExpression( compiledExpression, parameters );
         }
     }
 }
