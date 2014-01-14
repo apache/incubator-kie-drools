@@ -19,34 +19,33 @@ package org.optaplanner.benchmark.impl.statistic.stepscore;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
-public class StepScoreSingleStatistic extends AbstractSingleStatistic<StepScoreSingleStatisticPoint> {
+public class StepScoreSingleStatistic extends SingleStatistic<StepScoreStatisticPoint> {
 
     private final StepScoreSingleStatisticListener listener;
 
-    private List<StepScoreSingleStatisticPoint> pointList;
+    private List<StepScoreStatisticPoint> pointList;
 
     public StepScoreSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         super(singleBenchmarkResult, ProblemStatisticType.STEP_SCORE);
         listener = new StepScoreSingleStatisticListener();
-        pointList = new ArrayList<StepScoreSingleStatisticPoint>();
+        pointList = new ArrayList<StepScoreStatisticPoint>();
     }
 
-    public List<StepScoreSingleStatisticPoint> getPointList() {
+    public List<StepScoreStatisticPoint> getPointList() {
         return pointList;
     }
 
     // ************************************************************************
-    // Worker methods
+    // Lifecycle methods
     // ************************************************************************
 
     public void open(Solver solver) {
@@ -63,7 +62,7 @@ public class StepScoreSingleStatistic extends AbstractSingleStatistic<StepScoreS
         public void stepEnded(AbstractStepScope stepScope) {
             if (stepScope.hasNoUninitializedVariables()) {
                 long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
-                pointList.add(new StepScoreSingleStatisticPoint(timeMillisSpend, stepScope.getScore()));
+                pointList.add(new StepScoreStatisticPoint(timeMillisSpend, stepScope.getScore()));
             }
         }
 
@@ -75,13 +74,13 @@ public class StepScoreSingleStatistic extends AbstractSingleStatistic<StepScoreS
 
     @Override
     protected List<String> getCsvHeader() {
-        return StepScoreSingleStatisticPoint.buildCsvLine("timeMillisSpend", "score");
+        return StepScoreStatisticPoint.buildCsvLine("timeMillisSpend", "score");
     }
 
     @Override
-    protected StepScoreSingleStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected StepScoreStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
             List<String> csvLine) {
-        return new StepScoreSingleStatisticPoint(Long.valueOf(csvLine.get(0)),
+        return new StepScoreStatisticPoint(Long.valueOf(csvLine.get(0)),
                 scoreDefinition.parseScore(csvLine.get(1)));
     }
 

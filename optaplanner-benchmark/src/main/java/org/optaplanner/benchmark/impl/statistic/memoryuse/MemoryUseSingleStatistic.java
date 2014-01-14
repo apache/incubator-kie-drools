@@ -19,23 +19,22 @@ package org.optaplanner.benchmark.impl.statistic.memoryuse;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
-public class MemoryUseSingleStatistic extends AbstractSingleStatistic<MemoryUseSingleStatisticPoint> {
+public class MemoryUseSingleStatistic extends SingleStatistic<MemoryUseStatisticPoint> {
 
     private long timeMillisThresholdInterval;
 
     private MemoryUseSingleStatisticListener listener;
 
-    private List<MemoryUseSingleStatisticPoint> pointList;
+    private List<MemoryUseStatisticPoint> pointList;
 
     public MemoryUseSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         this(singleBenchmarkResult, 1000L);
@@ -49,15 +48,15 @@ public class MemoryUseSingleStatistic extends AbstractSingleStatistic<MemoryUseS
         }
         this.timeMillisThresholdInterval = timeMillisThresholdInterval;
         listener = new MemoryUseSingleStatisticListener();
-        pointList = new ArrayList<MemoryUseSingleStatisticPoint>();
+        pointList = new ArrayList<MemoryUseStatisticPoint>();
     }
 
-    public List<MemoryUseSingleStatisticPoint> getPointList() {
+    public List<MemoryUseStatisticPoint> getPointList() {
         return pointList;
     }
 
     // ************************************************************************
-    // Worker methods
+    // Lifecycle methods
     // ************************************************************************
 
     public void open(Solver solver) {
@@ -76,7 +75,7 @@ public class MemoryUseSingleStatistic extends AbstractSingleStatistic<MemoryUseS
         public void stepEnded(AbstractStepScope stepScope) {
             long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
             if (timeMillisSpend >= nextTimeMillisThreshold) {
-                pointList.add(new MemoryUseSingleStatisticPoint(timeMillisSpend, MemoryUseMeasurement.create()));
+                pointList.add(new MemoryUseStatisticPoint(timeMillisSpend, MemoryUseMeasurement.create()));
 
                 nextTimeMillisThreshold += timeMillisThresholdInterval;
                 if (nextTimeMillisThreshold < timeMillisSpend) {
@@ -93,13 +92,13 @@ public class MemoryUseSingleStatistic extends AbstractSingleStatistic<MemoryUseS
 
     @Override
     protected List<String> getCsvHeader() {
-        return MemoryUseSingleStatisticPoint.buildCsvLine("timeMillisSpend", "usedMemory", "maxMemory");
+        return MemoryUseStatisticPoint.buildCsvLine("timeMillisSpend", "usedMemory", "maxMemory");
     }
 
     @Override
-    protected MemoryUseSingleStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected MemoryUseStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
             List<String> csvLine) {
-        return new MemoryUseSingleStatisticPoint(Long.valueOf(csvLine.get(0)),
+        return new MemoryUseStatisticPoint(Long.valueOf(csvLine.get(0)),
                 new MemoryUseMeasurement(Long.valueOf(csvLine.get(1)), Long.valueOf(csvLine.get(2))));
     }
 

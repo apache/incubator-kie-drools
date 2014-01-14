@@ -19,34 +19,33 @@ package org.optaplanner.benchmark.impl.statistic.bestscore;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
 import org.optaplanner.core.impl.event.SolverEventListener;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
-public class BestScoreSingleStatistic extends AbstractSingleStatistic<BestScoreSingleStatisticPoint> {
+public class BestScoreSingleStatistic extends SingleStatistic<BestScoreStatisticPoint> {
 
     private final BestScoreSingleStatisticListener listener;
 
-    private List<BestScoreSingleStatisticPoint> pointList;
+    private List<BestScoreStatisticPoint> pointList;
 
     public BestScoreSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         super(singleBenchmarkResult, ProblemStatisticType.BEST_SCORE);
         listener = new BestScoreSingleStatisticListener();
-        pointList = new ArrayList<BestScoreSingleStatisticPoint>();
+        pointList = new ArrayList<BestScoreStatisticPoint>();
     }
 
     @Override
-    public List<BestScoreSingleStatisticPoint> getPointList() {
+    public List<BestScoreStatisticPoint> getPointList() {
         return pointList;
     }
 
     // ************************************************************************
-    // Worker methods
+    // Lifecycle methods
     // ************************************************************************
 
     public void open(Solver solver) {
@@ -60,7 +59,7 @@ public class BestScoreSingleStatistic extends AbstractSingleStatistic<BestScoreS
     private class BestScoreSingleStatisticListener implements SolverEventListener {
 
         public void bestSolutionChanged(BestSolutionChangedEvent event) {
-            pointList.add(new BestScoreSingleStatisticPoint(
+            pointList.add(new BestScoreStatisticPoint(
                     event.getTimeMillisSpend(), event.getNewBestSolution().getScore()));
         }
 
@@ -72,13 +71,13 @@ public class BestScoreSingleStatistic extends AbstractSingleStatistic<BestScoreS
 
     @Override
     protected List<String> getCsvHeader() {
-        return BestScoreSingleStatisticPoint.buildCsvLine("timeMillisSpend", "score");
+        return BestScoreStatisticPoint.buildCsvLine("timeMillisSpend", "score");
     }
 
     @Override
-    protected BestScoreSingleStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected BestScoreStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
             List<String> csvLine) {
-        return new BestScoreSingleStatisticPoint(Long.valueOf(csvLine.get(0)),
+        return new BestScoreStatisticPoint(Long.valueOf(csvLine.get(0)),
                 scoreDefinition.parseScore(csvLine.get(1)));
     }
 

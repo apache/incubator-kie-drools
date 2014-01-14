@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,33 +14,34 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.bestsolutionmutation;
+package org.optaplanner.benchmark.impl.statistic.bestscore;
 
 import java.util.List;
 
-import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatisticPoint;
+import org.optaplanner.benchmark.impl.statistic.StatisticPoint;
+import org.optaplanner.core.api.score.Score;
 
-public class BestSolutionMutationSingleStatisticPoint extends AbstractSingleStatisticPoint {
+public class BestScoreStatisticPoint extends StatisticPoint {
 
     private final long timeMillisSpend;
-    private final int mutationCount;
+    private final Score score;
 
-    public BestSolutionMutationSingleStatisticPoint(long timeMillisSpend, int mutationCount) {
+    public BestScoreStatisticPoint(long timeMillisSpend, Score score) {
         this.timeMillisSpend = timeMillisSpend;
-        this.mutationCount = mutationCount;
+        this.score = score;
     }
 
     public long getTimeMillisSpend() {
         return timeMillisSpend;
     }
 
-    public int getMutationCount() {
-        return mutationCount;
+    public Score getScore() {
+        return score;
     }
 
     @Override
     public List<String> toCsvLine() {
-        return buildCsvLine(timeMillisSpend, mutationCount);
+        return buildCsvLine(timeMillisSpend, score.toString());
     }
 
 }

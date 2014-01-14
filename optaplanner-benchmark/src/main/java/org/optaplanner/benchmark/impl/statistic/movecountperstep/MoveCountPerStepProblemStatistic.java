@@ -87,7 +87,7 @@ public class MoveCountPerStepProblemStatistic extends ProblemStatistic {
             if (singleBenchmarkResult.isSuccess()) {
                 MoveCountPerStepSingleStatistic singleStatistic = (MoveCountPerStepSingleStatistic)
                         singleBenchmarkResult.getSingleStatistic(problemStatisticType);
-                for (MoveCountPerStepSingleStatisticPoint point : singleStatistic.getPointList()) {
+                for (MoveCountPerStepStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     long acceptedMoveCount = point.getMoveCountPerStepMeasurement().getAcceptedMoveCount();
                     long selectedMoveCount = point.getMoveCountPerStepMeasurement().getSelectedMoveCount();

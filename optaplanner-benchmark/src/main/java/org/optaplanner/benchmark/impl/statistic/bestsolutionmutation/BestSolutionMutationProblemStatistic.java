@@ -80,7 +80,7 @@ public class BestSolutionMutationProblemStatistic extends ProblemStatistic {
             if (singleBenchmarkResult.isSuccess()) {
                 BestSolutionMutationSingleStatistic singleStatistic = (BestSolutionMutationSingleStatistic)
                         singleBenchmarkResult.getSingleStatistic(problemStatisticType);
-                for (BestSolutionMutationSingleStatisticPoint point : singleStatistic.getPointList()) {
+                for (BestSolutionMutationStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     long mutationCount = point.getMutationCount();
                     series.add(timeMillisSpend, mutationCount);

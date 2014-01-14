@@ -14,34 +14,33 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.stepscore;
+package org.optaplanner.benchmark.impl.statistic.bestsolutionmutation;
 
 import java.util.List;
 
-import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatisticPoint;
-import org.optaplanner.core.api.score.Score;
+import org.optaplanner.benchmark.impl.statistic.StatisticPoint;
 
-public class StepScoreSingleStatisticPoint extends AbstractSingleStatisticPoint {
+public class BestSolutionMutationStatisticPoint extends StatisticPoint {
 
     private final long timeMillisSpend;
-    private final Score score;
+    private final int mutationCount;
 
-    public StepScoreSingleStatisticPoint(long timeMillisSpend, Score score) {
+    public BestSolutionMutationStatisticPoint(long timeMillisSpend, int mutationCount) {
         this.timeMillisSpend = timeMillisSpend;
-        this.score = score;
+        this.mutationCount = mutationCount;
     }
 
     public long getTimeMillisSpend() {
         return timeMillisSpend;
     }
 
-    public Score getScore() {
-        return score;
+    public int getMutationCount() {
+        return mutationCount;
     }
 
     @Override
     public List<String> toCsvLine() {
-        return buildCsvLine(timeMillisSpend, score.toString());
+        return buildCsvLine(timeMillisSpend, mutationCount);
     }
 
 }

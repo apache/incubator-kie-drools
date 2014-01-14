@@ -19,10 +19,9 @@ package org.optaplanner.benchmark.impl.statistic.bestsolutionmutation;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.solution.mutation.MutationCounter;
@@ -31,24 +30,24 @@ import org.optaplanner.core.impl.event.SolverEventListener;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solution.Solution;
 
-public class BestSolutionMutationSingleStatistic extends AbstractSingleStatistic<BestSolutionMutationSingleStatisticPoint> {
+public class BestSolutionMutationSingleStatistic extends SingleStatistic<BestSolutionMutationStatisticPoint> {
 
     private BestSolutionMutationSingleStatisticListener listener;
 
-    private List<BestSolutionMutationSingleStatisticPoint> pointList;
+    private List<BestSolutionMutationStatisticPoint> pointList;
 
     public BestSolutionMutationSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         super(singleBenchmarkResult, ProblemStatisticType.BEST_SOLUTION_MUTATION);
         listener = new BestSolutionMutationSingleStatisticListener();
-        pointList = new ArrayList<BestSolutionMutationSingleStatisticPoint>();
+        pointList = new ArrayList<BestSolutionMutationStatisticPoint>();
     }
 
-    public List<BestSolutionMutationSingleStatisticPoint> getPointList() {
+    public List<BestSolutionMutationStatisticPoint> getPointList() {
         return pointList;
     }
 
     // ************************************************************************
-    // Worker methods
+    // Lifecycle methods
     // ************************************************************************
 
     public void open(Solver solver) {
@@ -83,7 +82,7 @@ public class BestSolutionMutationSingleStatistic extends AbstractSingleStatistic
             } else {
                 mutationCount = mutationCounter.countMutations(oldBestSolution, newBestSolution);
             }
-            pointList.add(new BestSolutionMutationSingleStatisticPoint(
+            pointList.add(new BestSolutionMutationStatisticPoint(
                     event.getTimeMillisSpend(), mutationCount));
             oldBestSolution = newBestSolution;
         }
@@ -96,13 +95,13 @@ public class BestSolutionMutationSingleStatistic extends AbstractSingleStatistic
 
     @Override
     protected List<String> getCsvHeader() {
-        return BestSolutionMutationSingleStatisticPoint.buildCsvLine("timeMillisSpend", "mutationCount");
+        return BestSolutionMutationStatisticPoint.buildCsvLine("timeMillisSpend", "mutationCount");
     }
 
     @Override
-    protected BestSolutionMutationSingleStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected BestSolutionMutationStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
             List<String> csvLine) {
-        return new BestSolutionMutationSingleStatisticPoint(Long.valueOf(csvLine.get(0)),
+        return new BestSolutionMutationStatisticPoint(Long.valueOf(csvLine.get(0)),
                 Integer.valueOf(csvLine.get(1)));
     }
 

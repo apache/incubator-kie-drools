@@ -19,10 +19,9 @@ package org.optaplanner.benchmark.impl.statistic.calculatecount;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
@@ -30,13 +29,13 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-public class CalculateCountSingleStatistic extends AbstractSingleStatistic<CalculateCountSingleStatisticPoint> {
+public class CalculateCountSingleStatistic extends SingleStatistic<CalculateCountStatisticPoint> {
 
     private final long timeMillisThresholdInterval;
 
     private final CalculateCountSingleStatisticListener listener;
 
-    private List<CalculateCountSingleStatisticPoint> pointList;
+    private List<CalculateCountStatisticPoint> pointList;
 
     public CalculateCountSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         this(singleBenchmarkResult, 1000L);
@@ -50,15 +49,15 @@ public class CalculateCountSingleStatistic extends AbstractSingleStatistic<Calcu
         }
         this.timeMillisThresholdInterval = timeMillisThresholdInterval;
         listener = new CalculateCountSingleStatisticListener();
-        pointList = new ArrayList<CalculateCountSingleStatisticPoint>();
+        pointList = new ArrayList<CalculateCountStatisticPoint>();
     }
 
-    public List<CalculateCountSingleStatisticPoint> getPointList() {
+    public List<CalculateCountStatisticPoint> getPointList() {
         return pointList;
     }
 
     // ************************************************************************
-    // Worker methods
+    // Lifecycle methods
     // ************************************************************************
 
     public void open(Solver solver) {
@@ -88,7 +87,7 @@ public class CalculateCountSingleStatistic extends AbstractSingleStatistic<Calcu
                     timeMillisSpendInterval = 1L;
                 }
                 long averageCalculateCountPerSecond = calculateCountInterval * 1000L / timeMillisSpendInterval;
-                pointList.add(new CalculateCountSingleStatisticPoint(timeMillisSpend, averageCalculateCountPerSecond));
+                pointList.add(new CalculateCountStatisticPoint(timeMillisSpend, averageCalculateCountPerSecond));
                 lastCalculateCount = calculateCount;
 
                 lastTimeMillisSpend = timeMillisSpend;
@@ -107,13 +106,13 @@ public class CalculateCountSingleStatistic extends AbstractSingleStatistic<Calcu
 
     @Override
     protected List<String> getCsvHeader() {
-        return CalculateCountSingleStatisticPoint.buildCsvLine("timeMillisSpend", "calculateCountPerSecond");
+        return CalculateCountStatisticPoint.buildCsvLine("timeMillisSpend", "calculateCountPerSecond");
     }
 
     @Override
-    protected CalculateCountSingleStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected CalculateCountStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
             List<String> csvLine) {
-        return new CalculateCountSingleStatisticPoint(Long.valueOf(csvLine.get(0)),
+        return new CalculateCountStatisticPoint(Long.valueOf(csvLine.get(0)),
                 Long.valueOf(csvLine.get(1)));
     }
 

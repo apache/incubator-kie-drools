@@ -19,7 +19,7 @@ package org.optaplanner.benchmark.impl.statistic;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractSingleStatisticPoint {
+public abstract class StatisticPoint {
 
     public abstract List<String> toCsvLine();
 

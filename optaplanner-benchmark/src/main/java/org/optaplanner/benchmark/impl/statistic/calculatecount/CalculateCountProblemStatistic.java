@@ -80,7 +80,7 @@ public class CalculateCountProblemStatistic extends ProblemStatistic {
             if (singleBenchmarkResult.isSuccess()) {
                 CalculateCountSingleStatistic singleStatistic = (CalculateCountSingleStatistic)
                         singleBenchmarkResult.getSingleStatistic(problemStatisticType);
-                for (CalculateCountSingleStatisticPoint point : singleStatistic.getPointList()) {
+                for (CalculateCountStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     long calculateCountPerSecond = point.getCalculateCountPerSecond();
                     series.add(timeMillisSpend, calculateCountPerSecond);

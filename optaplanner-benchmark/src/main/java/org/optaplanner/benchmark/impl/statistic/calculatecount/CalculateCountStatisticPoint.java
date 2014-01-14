@@ -14,35 +14,33 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.movecountperstep;
+package org.optaplanner.benchmark.impl.statistic.calculatecount;
 
 import java.util.List;
 
-import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatisticPoint;
+import org.optaplanner.benchmark.impl.statistic.StatisticPoint;
 
-public class MoveCountPerStepSingleStatisticPoint extends AbstractSingleStatisticPoint {
+public class CalculateCountStatisticPoint extends StatisticPoint {
 
     private final long timeMillisSpend;
-    private final MoveCountPerStepMeasurement moveCountPerStepMeasurement;
+    private final long calculateCountPerSecond;
 
-    public MoveCountPerStepSingleStatisticPoint(long timeMillisSpend,
-            MoveCountPerStepMeasurement moveCountPerStepMeasurement) {
+    public CalculateCountStatisticPoint(long timeMillisSpend, long calculateCountPerSecond) {
         this.timeMillisSpend = timeMillisSpend;
-        this.moveCountPerStepMeasurement = moveCountPerStepMeasurement;
-    }
-
-    public MoveCountPerStepMeasurement getMoveCountPerStepMeasurement() {
-        return moveCountPerStepMeasurement;
+        this.calculateCountPerSecond = calculateCountPerSecond;
     }
 
     public long getTimeMillisSpend() {
         return timeMillisSpend;
     }
 
+    public long getCalculateCountPerSecond() {
+        return calculateCountPerSecond;
+    }
+
     @Override
     public List<String> toCsvLine() {
-        return buildCsvLine(timeMillisSpend, moveCountPerStepMeasurement.getAcceptedMoveCount(),
-                moveCountPerStepMeasurement.getSelectedMoveCount());
+        return buildCsvLine(timeMillisSpend, calculateCountPerSecond);
     }
-   
+
 }

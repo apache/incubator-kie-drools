@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.calculatecount;
+package org.optaplanner.benchmark.impl.statistic.memoryuse;
 
 import java.util.List;
 
-import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatisticPoint;
+import org.optaplanner.benchmark.impl.statistic.StatisticPoint;
 
-public class CalculateCountSingleStatisticPoint extends AbstractSingleStatisticPoint {
+public class MemoryUseStatisticPoint extends StatisticPoint {
 
     private final long timeMillisSpend;
-    private final long calculateCountPerSecond;
+    private final MemoryUseMeasurement memoryUseMeasurement;
 
-    public CalculateCountSingleStatisticPoint(long timeMillisSpend, long calculateCountPerSecond) {
+    public MemoryUseStatisticPoint(long timeMillisSpend, MemoryUseMeasurement memoryUseMeasurement) {
         this.timeMillisSpend = timeMillisSpend;
-        this.calculateCountPerSecond = calculateCountPerSecond;
+        this.memoryUseMeasurement = memoryUseMeasurement;
     }
 
     public long getTimeMillisSpend() {
         return timeMillisSpend;
     }
 
-    public long getCalculateCountPerSecond() {
-        return calculateCountPerSecond;
+    public MemoryUseMeasurement getMemoryUseMeasurement() {
+        return memoryUseMeasurement;
     }
 
     @Override
     public List<String> toCsvLine() {
-        return buildCsvLine(timeMillisSpend, calculateCountPerSecond);
+        return buildCsvLine(timeMillisSpend, memoryUseMeasurement.getUsedMemory(), memoryUseMeasurement.getMaxMemory());
     }
 
 }

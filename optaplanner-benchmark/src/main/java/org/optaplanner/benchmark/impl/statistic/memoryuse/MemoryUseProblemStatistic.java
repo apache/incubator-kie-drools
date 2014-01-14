@@ -83,7 +83,7 @@ public class MemoryUseProblemStatistic extends ProblemStatistic {
             if (singleBenchmarkResult.isSuccess()) {
                 MemoryUseSingleStatistic singleStatistic = (MemoryUseSingleStatistic)
                         singleBenchmarkResult.getSingleStatistic(problemStatisticType);
-                for (MemoryUseSingleStatisticPoint point : singleStatistic.getPointList()) {
+                for (MemoryUseStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     MemoryUseMeasurement memoryUseMeasurement = point.getMemoryUseMeasurement();
                     usedSeries.add(timeMillisSpend, memoryUseMeasurement.getUsedMemory());

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,33 +14,34 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.memoryuse;
+package org.optaplanner.benchmark.impl.statistic.stepscore;
 
 import java.util.List;
 
-import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatisticPoint;
+import org.optaplanner.benchmark.impl.statistic.StatisticPoint;
+import org.optaplanner.core.api.score.Score;
 
-public class MemoryUseSingleStatisticPoint extends AbstractSingleStatisticPoint {
+public class StepScoreStatisticPoint extends StatisticPoint {
 
     private final long timeMillisSpend;
-    private final MemoryUseMeasurement memoryUseMeasurement;
+    private final Score score;
 
-    public MemoryUseSingleStatisticPoint(long timeMillisSpend, MemoryUseMeasurement memoryUseMeasurement) {
+    public StepScoreStatisticPoint(long timeMillisSpend, Score score) {
         this.timeMillisSpend = timeMillisSpend;
-        this.memoryUseMeasurement = memoryUseMeasurement;
+        this.score = score;
     }
 
     public long getTimeMillisSpend() {
         return timeMillisSpend;
     }
 
-    public MemoryUseMeasurement getMemoryUseMeasurement() {
-        return memoryUseMeasurement;
+    public Score getScore() {
+        return score;
     }
 
     @Override
     public List<String> toCsvLine() {
-        return buildCsvLine(timeMillisSpend, memoryUseMeasurement.getUsedMemory(), memoryUseMeasurement.getMaxMemory());
+        return buildCsvLine(timeMillisSpend, score.toString());
     }
 
 }

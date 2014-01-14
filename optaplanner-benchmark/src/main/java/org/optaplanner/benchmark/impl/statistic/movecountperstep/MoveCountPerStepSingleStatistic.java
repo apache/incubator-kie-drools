@@ -19,10 +19,9 @@ package org.optaplanner.benchmark.impl.statistic.movecountperstep;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
@@ -30,24 +29,24 @@ import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
-public class MoveCountPerStepSingleStatistic extends AbstractSingleStatistic<MoveCountPerStepSingleStatisticPoint> {
+public class MoveCountPerStepSingleStatistic extends SingleStatistic<MoveCountPerStepStatisticPoint> {
 
     private MoveCountPerStepSingleStatisticListener listener;
 
-    private List<MoveCountPerStepSingleStatisticPoint> pointList;
+    private List<MoveCountPerStepStatisticPoint> pointList;
 
     public MoveCountPerStepSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         super(singleBenchmarkResult, ProblemStatisticType.MOVE_COUNT_PER_STEP);
         listener = new MoveCountPerStepSingleStatisticListener();
-        pointList = new ArrayList<MoveCountPerStepSingleStatisticPoint>();
+        pointList = new ArrayList<MoveCountPerStepStatisticPoint>();
     }
 
-    public List<MoveCountPerStepSingleStatisticPoint> getPointList() {
+    public List<MoveCountPerStepStatisticPoint> getPointList() {
         return pointList;
     }
 
     // ************************************************************************
-    // Worker methods
+    // Lifecycle methods
     // ************************************************************************
 
     public void open(Solver solver) {
@@ -69,7 +68,7 @@ public class MoveCountPerStepSingleStatistic extends AbstractSingleStatistic<Mov
         
         private void localSearchStepEnded(LocalSearchStepScope stepScope) {
             long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
-            pointList.add(new MoveCountPerStepSingleStatisticPoint(timeMillisSpend,
+            pointList.add(new MoveCountPerStepStatisticPoint(timeMillisSpend,
                     new MoveCountPerStepMeasurement(stepScope.getAcceptedMoveCount(), stepScope.getSelectedMoveCount())
             ));
         }
@@ -82,13 +81,13 @@ public class MoveCountPerStepSingleStatistic extends AbstractSingleStatistic<Mov
 
     @Override
     protected List<String> getCsvHeader() {
-        return MoveCountPerStepSingleStatisticPoint.buildCsvLine("timeMillisSpend", "acceptedMoveCount", "selectedMoveCount");
+        return MoveCountPerStepStatisticPoint.buildCsvLine("timeMillisSpend", "acceptedMoveCount", "selectedMoveCount");
     }
 
     @Override
-    protected MoveCountPerStepSingleStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected MoveCountPerStepStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
             List<String> csvLine) {
-        return new MoveCountPerStepSingleStatisticPoint(Long.valueOf(csvLine.get(0)),
+        return new MoveCountPerStepStatisticPoint(Long.valueOf(csvLine.get(0)),
                 new MoveCountPerStepMeasurement(Long.valueOf(csvLine.get(1)), Long.valueOf(csvLine.get(2))));
     }
 
