@@ -73,8 +73,6 @@ public class BenchmarkReport {
     protected Locale locale = null;
     protected Comparator<SolverBenchmarkResult> solverRankingComparator = null;
     protected SolverRankingWeightFactory solverRankingWeightFactory = null;
-
-    protected File htmlOverviewFile = null;
     protected File summaryDirectory = null;
     protected List<File> bestScoreSummaryChartFileList = null;
     protected List<File> bestScoreScalabilitySummaryChartFileList = null;
@@ -84,9 +82,11 @@ public class BenchmarkReport {
     protected File timeSpendSummaryChartFile = null;
     protected File timeSpendScalabilitySummaryChartFile = null;
     protected List<File> bestScorePerTimeSpendSummaryChartFileList = null;
-    protected Integer defaultShownScoreLevelIndex = null;
 
+    protected Integer defaultShownScoreLevelIndex = null;
     protected List<String> warningList = null;
+
+    protected File htmlOverviewFile = null;
 
     public BenchmarkReport(PlannerBenchmarkResult plannerBenchmarkResult) {
         this.plannerBenchmarkResult = plannerBenchmarkResult;
@@ -126,10 +126,6 @@ public class BenchmarkReport {
 
     public void setSolverRankingWeightFactory(SolverRankingWeightFactory solverRankingWeightFactory) {
         this.solverRankingWeightFactory = solverRankingWeightFactory;
-    }
-
-    public File getHtmlOverviewFile() {
-        return htmlOverviewFile;
     }
 
     public File getSummaryDirectory() {
@@ -174,6 +170,10 @@ public class BenchmarkReport {
 
     public List<String> getWarningList() {
         return warningList;
+    }
+
+    public File getHtmlOverviewFile() {
+        return htmlOverviewFile;
     }
 
     // ************************************************************************
@@ -648,4 +648,5 @@ public class BenchmarkReport {
             IOUtils.closeQuietly(writer);
         }
     }
+
 }
