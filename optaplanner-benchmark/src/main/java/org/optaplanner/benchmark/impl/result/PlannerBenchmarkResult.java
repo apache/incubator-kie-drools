@@ -170,7 +170,7 @@ public class PlannerBenchmarkResult {
                 totalProblemScale += problemScale;
                 problemScaleCount++;
             }
-            failureCount +=  problemBenchmarkResult.getFailureCount();
+            failureCount += problemBenchmarkResult.getFailureCount();
         }
         averageProblemScale = problemScaleCount == 0 ? null : totalProblemScale / (long) problemScaleCount;
         Score totalScore = null;

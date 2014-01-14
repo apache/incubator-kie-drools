@@ -56,7 +56,7 @@ public class SolverBenchmarkResult {
     // Report accumulates
     // ************************************************************************
 
-    private int failureCount = -1;
+    private Integer failureCount = null;
     private Score totalScore = null;
     private Score averageScore = null;
     // Not a Score because
@@ -115,7 +115,7 @@ public class SolverBenchmarkResult {
         this.singleBenchmarkResultList = singleBenchmarkResultList;
     }
 
-    public int getFailureCount() {
+    public Integer getFailureCount() {
         return failureCount;
     }
 
