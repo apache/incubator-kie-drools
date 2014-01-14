@@ -37,6 +37,8 @@ public class ProjectClassLoader extends ClassLoader {
 
     private InternalTypesClassLoader typesClassLoader;
 
+    private Set<String> loadedClasses = new HashSet<String>();
+
     private ProjectClassLoader(ClassLoader parent) {
         super(parent);
     }
@@ -113,6 +115,7 @@ public class ProjectClassLoader extends ClassLoader {
 
     @Override
     protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        loadedClasses.add(name);
         try {
             return internalLoadClass(name, resolve);
         } catch (ClassNotFoundException e2) {
@@ -195,6 +198,10 @@ public class ProjectClassLoader extends ClassLoader {
         if (CACHE_NON_EXISTING_CLASSES) {
             nonExistingClasses.remove(name);
         }
+    }
+
+    public boolean isClassInUse(String className) {
+        return loadedClasses.contains(className);
     }
 
     @Override
