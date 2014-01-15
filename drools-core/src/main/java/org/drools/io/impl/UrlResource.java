@@ -25,7 +25,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileInputStream;
@@ -68,6 +67,10 @@ public class UrlResource extends BaseResource
     private String basicAuthentication = "disabled";
     private String username = "";
     private String password = "";
+
+    private static final String DROOLS_RESOURCE_URLTIMEOUT = "drools.resource.urltimeout";
+    private static final int DEFAULT_TIMEOUT = 10000; // 10 seconds
+    private static final int TIMEOUT = initTimeout();
 
     public UrlResource() {
 
@@ -206,9 +209,16 @@ public class UrlResource extends BaseResource
         }
     }
 
+    private URLConnection openURLConnection(URL url) throws IOException {
+        URLConnection con = url.openConnection();
+        con.setConnectTimeout(TIMEOUT);
+        con.setReadTimeout(TIMEOUT);
+        return con;
+    }
+
     private InputStream grabStream() throws IOException {
-        URLConnection con = this.url.openConnection();
-        con.setUseCaches( false );
+        URLConnection con = openURLConnection(this.url);
+        con.setUseCaches(false);
 
         if ( con instanceof HttpURLConnection) {
             if ("enabled".equalsIgnoreCase(basicAuthentication)) {
@@ -289,7 +299,7 @@ public class UrlResource extends BaseResource
             File file = getFile();
             return file.lastModified();
         } else {
-            URLConnection conn = getURL().openConnection();
+            URLConnection conn = openURLConnection( getURL() );
             if ( conn instanceof HttpURLConnection) {
                 ((HttpURLConnection) conn).setRequestMethod( "HEAD" );
                 if ("enabled".equalsIgnoreCase(basicAuthentication)) {
@@ -387,6 +397,14 @@ public class UrlResource extends BaseResource
             return this.grabStream() != null;
         } catch ( IOException e ) {
             return false;
+        }
+    }
+
+    private static int initTimeout() {
+        try {
+            return Integer.parseInt(System.getProperty( DROOLS_RESOURCE_URLTIMEOUT ));
+        } catch (Exception e) {
+            return DEFAULT_TIMEOUT;
         }
     }
 }
