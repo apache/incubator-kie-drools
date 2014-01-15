@@ -23,7 +23,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.jbpm.flow.core;singleton:=true</Bundle-SymbolicName>
+            <Bundle-SymbolicName>org.jbpm.flow.core</Bundle-SymbolicName>
             <Import-Package>
                 javax.swing.*;resolution:=optional,
                 *
