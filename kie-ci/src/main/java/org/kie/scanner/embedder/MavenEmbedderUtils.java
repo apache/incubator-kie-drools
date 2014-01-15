@@ -14,11 +14,15 @@ import org.sonatype.plexus.components.cipher.PlexusCipher;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
 public class MavenEmbedderUtils {
+
+    private static boolean isIBM_JVM = System.getProperty("java.vendor").toLowerCase().contains("ibm");
     
     private MavenEmbedderUtils() { }
     
@@ -54,7 +58,7 @@ public class MavenEmbedderUtils {
             world = new ClassWorld();
         }
         
-        ClassRealm classRealm = new ClassRealm( world, "plexus.core", parentClassLoader == null ? antClassLoader : parentClassLoader );
+        ClassRealm classRealm = createClassRealm( world, "plexus.core", parentClassLoader == null ? antClassLoader : parentClassLoader );
 
         for ( File jarFile : jarFiles ) {
             try {
@@ -96,7 +100,7 @@ public class MavenEmbedderUtils {
                                                    RepositorySystem.class,
                                                    PlexusCipher.class);
 
-        ClassRealm classRealm = new ClassRealm( classWorld, "maven", mavenClassLoader );
+        ClassRealm classRealm = createClassRealm( classWorld, "maven", mavenClassLoader );
         classRealm.setParentRealm( parentRealm );
         conf.setRealm( classRealm );
 
@@ -110,13 +114,13 @@ public class MavenEmbedderUtils {
         Set<ClassLoader> usedCLs = new HashSet<ClassLoader>();
         usedCLs.add(parentCL);
 
-        ClassRealm parentRealm = new ClassRealm( classWorld, "maven-parent", parentCL);
+        ClassRealm parentRealm = createClassRealm( classWorld, "maven-parent", parentCL);
 
         int i = 1;
         ClassRealm lastParent = parentRealm;
         for ( Class c : requiredClasses ) {
             if ( usedCLs.add(c.getClassLoader()) ) {
-                ClassRealm newParent = new ClassRealm( classWorld, "maven-parent" + i++, c.getClassLoader() );
+                ClassRealm newParent = createClassRealm( classWorld, "maven-parent" + i++, c.getClassLoader() );
                 lastParent.setParentRealm( newParent );
                 lastParent = newParent;
             }
@@ -138,6 +142,21 @@ public class MavenEmbedderUtils {
             return plexusContainer;
         } catch ( PlexusContainerException e ) {
             throw new MavenEmbedderException( e.getMessage(), e );
+        }
+    }
+
+    private static ClassRealm createClassRealm(ClassWorld world, String id, ClassLoader baseClassLoader) {
+        return isIBM_JVM ? new IBMClassRealm(world, id, baseClassLoader) : new ClassRealm(world, id, baseClassLoader);
+    }
+
+    public static class IBMClassRealm extends ClassRealm {
+        public IBMClassRealm(ClassWorld world, String id, ClassLoader baseClassLoader) {
+            super(world, id, baseClassLoader);
+        }
+
+        @Override
+        public Enumeration findResources(String name) throws IOException {
+            return getParent().getResources(name);
         }
     }
 }
