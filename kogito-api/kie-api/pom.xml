@@ -25,6 +25,7 @@
             <Bundle-SymbolicName>org.kie.api</Bundle-SymbolicName>
             <Import-Package>
               *;resolution:=optional,
+              org.jbpm.runtime.manager.impl,
               org.drools.compiler.kie.builder.impl,
             </Import-Package>
             <Export-Package>
