@@ -61,13 +61,11 @@ public class ServiceTaskHandler implements WorkItemHandler {
     
     public ServiceTaskHandler() {
         this.dcf = JaxWsDynamicClientFactory.newInstance();
-        this.classLoader = Thread.currentThread().getContextClassLoader();
     }
     
     public ServiceTaskHandler(KieSession ksession) {
         this.dcf = JaxWsDynamicClientFactory.newInstance();
         this.ksession = ksession;
-        this.classLoader = Thread.currentThread().getContextClassLoader();
     }
     
     public ServiceTaskHandler(KieSession ksession, ClassLoader classloader) {
@@ -80,7 +78,6 @@ public class ServiceTaskHandler implements WorkItemHandler {
         this.dcf = JaxWsDynamicClientFactory.newInstance();
         this.ksession = ksession;
         this.asyncTimeout = timeout;
-        this.classLoader = Thread.currentThread().getContextClassLoader();
     }
 
     public void executeWorkItem(WorkItem workItem, final WorkItemManager manager) {
@@ -177,7 +174,7 @@ public class ServiceTaskHandler implements WorkItemHandler {
                 if (WSDL_IMPORT_TYPE.equalsIgnoreCase(importObj.getType())) {
                 
                     try {
-                        client = dcf.createClient(importObj.getLocation(), new QName(importObj.getNamespace(), interfaceRef), classLoader, null);
+                        client = dcf.createClient(importObj.getLocation(), new QName(importObj.getNamespace(), interfaceRef), getInternalClassLoader(), null);
                         clients.put(interfaceRef, client);
                         
                         return client;
@@ -193,19 +190,27 @@ public class ServiceTaskHandler implements WorkItemHandler {
 
     }
 
-    public void executeJavaWorkItem(WorkItem workItem, WorkItemManager manager) {
+    private ClassLoader getInternalClassLoader() {
+		if (this.classLoader != null) {
+			return this.classLoader;
+		}
+		
+		return Thread.currentThread().getContextClassLoader();
+	}
+
+	public void executeJavaWorkItem(WorkItem workItem, WorkItemManager manager) {
         String i = (String) workItem.getParameter("Interface");
         String operation = (String) workItem.getParameter("Operation");
         String parameterType = (String) workItem.getParameter("ParameterType");
         Object parameter = workItem.getParameter("Parameter");
         try {
-            Class<?> c = Class.forName(i, true, classLoader);
+            Class<?> c = Class.forName(i, true, getInternalClassLoader());
             Object instance = c.newInstance();
             Class<?>[] classes = null;
             Object[] params = null;
             if (parameterType != null) {
                 classes = new Class<?>[] {
-                    Class.forName(parameterType, true, classLoader)
+                    Class.forName(parameterType, true, getInternalClassLoader())
                 };
                 params = new Object[] {
                     parameter

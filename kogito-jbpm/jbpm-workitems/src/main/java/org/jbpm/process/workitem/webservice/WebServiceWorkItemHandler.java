@@ -17,7 +17,6 @@
 package org.jbpm.process.workitem.webservice;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +59,6 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
     public WebServiceWorkItemHandler(KieSession ksession) {
         this.dcf = JaxWsDynamicClientFactory.newInstance();
         this.ksession = ksession;
-        this.classLoader = Thread.currentThread().getContextClassLoader();
     }
     
     public WebServiceWorkItemHandler(KieSession ksession, ClassLoader classloader) {
@@ -73,7 +71,6 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
         this.dcf = JaxWsDynamicClientFactory.newInstance();
         this.ksession = ksession;
         this.asyncTimeout = timeout;
-        this.classLoader = Thread.currentThread().getContextClassLoader();
     }
 
     public void executeWorkItem(WorkItem workItem, final WorkItemManager manager) {
@@ -170,7 +167,7 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
         String importNamespace = (String) workItem.getParameter("Namespace");
         if (importLocation != null && importLocation.trim().length() > 0 
         		&& importNamespace != null && importNamespace.trim().length() > 0) {
-        	Client client = dcf.createClient(importLocation, new QName(importNamespace, interfaceRef), classLoader, null);
+        	Client client = dcf.createClient(importLocation, new QName(importNamespace, interfaceRef), getInternalClassLoader(), null);
             clients.put(interfaceRef, client);
             return client;
         }
@@ -185,7 +182,7 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
             for (Bpmn2Import importObj : typedImports) {
                 if (WSDL_IMPORT_TYPE.equalsIgnoreCase(importObj.getType())) {
                     try {
-                        client = dcf.createClient(importObj.getLocation(), new QName(importObj.getNamespace(), interfaceRef), classLoader, null);
+                        client = dcf.createClient(importObj.getLocation(), new QName(importObj.getNamespace(), interfaceRef), getInternalClassLoader(), null);
                         clients.put(interfaceRef, client);
                         return client;
                     } catch (Exception e) {
@@ -201,6 +198,14 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
         // Do nothing, cannot be aborted
     }
+    
+    private ClassLoader getInternalClassLoader() {
+		if (this.classLoader != null) {
+			return this.classLoader;
+		}
+		
+		return Thread.currentThread().getContextClassLoader();
+	}
     
     public ClassLoader getClassLoader() {
 		return classLoader;
