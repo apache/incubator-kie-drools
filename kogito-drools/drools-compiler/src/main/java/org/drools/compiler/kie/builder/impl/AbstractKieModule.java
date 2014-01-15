@@ -27,6 +27,7 @@ import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
 import org.drools.core.util.StringUtils;
+import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
@@ -177,7 +178,9 @@ public abstract class AbstractKieModule
             }
             InternalKieModule includeModule = kieProject.getKieModuleForKBase(include);
             if (includeModule == null) {
-                log.error("Unable to build KieBase, could not find include: " + include);
+                String text = "Unable to build KieBase, could not find include: " + include;
+                log.error(text);
+                messages.addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH, text);
                 return null;
             }
             addFiles(assets,
