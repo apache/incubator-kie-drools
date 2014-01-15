@@ -28,6 +28,7 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
@@ -132,7 +133,35 @@ public class KieBuilderTest extends CommonTestMethodBase {
             assertEquals( "org.kie.test1.Message", list.get(1).getClass().getName() );
         }
     }
-    
+
+    @Test
+    public void testNotExistingInclude() throws Exception {
+        String drl = "package org.drools.compiler.integrationtests\n" +
+                     "declare CancelFact\n" +
+                     " cancel : boolean = true\n" +
+                     "end\n" +
+                     "rule R1 when\n" +
+                     " $m : CancelFact( cancel == true )\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
+
+        KieModuleModel module = ks.newKieModuleModel();
+
+        final String defaultBaseName = "defaultKBase";
+        KieBaseModel defaultBase = module.newKieBaseModel(defaultBaseName).addInclude("notExistingKB");
+        defaultBase.setDefault(true);
+        defaultBase.addPackage("*");
+        defaultBase.newKieSessionModel("defaultKSession").setDefault(true);
+
+        kfs.writeKModuleXML(module.toXML());
+        KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
+        assertEquals( 1, kb.getResults().getMessages().size() );
+    }
+
     @Test
     public void testNoPomXml() throws ClassNotFoundException, InterruptedException, IOException {
         String namespace = "org.kie.test";
