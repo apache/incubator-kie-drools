@@ -13,14 +13,14 @@
     <releaseinfo>Version &project.version;</releaseinfo>
     <authorgroup>
       <author>
-        <orgname><link xlink:href="http://www.jboss.org/jbpm">The JBoss jBPM team</link></orgname>
+        <orgname><link xlink:href="http://dashbuilder.org/team.html">The JBoss Dashbuilder team</link></orgname>
       </author>
     </authorgroup>
 
     <cover>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/jBPMLogo.png" />
+          <imagedata fileref="images/DashBuilder-Logo.png" />
         </imageobject>
       </mediaobject>
     </cover>
@@ -30,7 +30,7 @@
   <preface>
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/jBPMLogo.png" />
+        <imagedata fileref="images/DashBuilder-Logo.png" />
       </imageobject>
     </mediaobject>
   </preface>
