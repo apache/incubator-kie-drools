@@ -16,10 +16,13 @@
 
 package org.drools.core.command.runtime.rule;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
+import org.drools.core.command.EntryPointCreator;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.reteoo.builder.EntryPointBuilder;
 import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -33,7 +36,16 @@ public class GetEntryPointsCommand
 
     public Collection< ? extends EntryPoint> execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-        return ksession.getEntryPoints();
+        Collection< ? extends EntryPoint> eps = ksession.getEntryPoints();
+        EntryPointCreator epCreator = (EntryPointCreator)context.get(EntryPointCreator.class.getName());
+        if (epCreator == null) {
+            return eps;
+        }
+        Collection<EntryPoint> result = new ArrayList<EntryPoint>();
+        for (EntryPoint ep : eps) {
+            result.add(epCreator.getEntryPoint(ep.getEntryPointId()));
+        }
+        return result;
     }
 
     public String toString() {
