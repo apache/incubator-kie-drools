@@ -781,5 +781,4 @@ public class ProtobufOutputMarshaller {
         }
         throw new RuntimeException("Unable to serialize Trigger for type: " + trigger.getClass());
     }
-
 }
