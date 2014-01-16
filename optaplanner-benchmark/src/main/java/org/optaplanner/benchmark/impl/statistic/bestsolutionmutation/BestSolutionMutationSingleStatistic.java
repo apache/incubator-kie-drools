@@ -46,6 +46,11 @@ public class BestSolutionMutationSingleStatistic extends SingleStatistic<BestSol
         return pointList;
     }
 
+    @Override
+    public void setPointList(List<BestSolutionMutationStatisticPoint> pointList) {
+        this.pointList = pointList;
+    }
+
     // ************************************************************************
     // Lifecycle methods
     // ************************************************************************

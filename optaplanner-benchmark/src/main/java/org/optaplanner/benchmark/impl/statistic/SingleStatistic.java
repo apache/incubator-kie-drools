@@ -47,7 +47,12 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
         this.statisticType = statisticType;
     }
 
+    public StatisticType getStatisticType() {
+        return statisticType;
+    }
+
     public abstract List<P> getPointList();
+    public abstract void setPointList(List<P> pointList);
 
     public File getCsvFile() {
         return csvFile;

@@ -17,15 +17,14 @@
 package org.optaplanner.benchmark.impl.aggregator.swingui;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -36,6 +35,8 @@ import javax.swing.WindowConstants;
 
 import org.optaplanner.benchmark.impl.result.BenchmarkResultIO;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,11 +48,13 @@ public class BenchmarkAggregatorFrame extends JFrame {
     private File benchmarkDirectory;
 
     private JPanel resultSelectionPanel;
+    private List<PlannerBenchmarkResult> visiblePlannerBenchmarkResultList;
 
     public BenchmarkAggregatorFrame(File defaultBenchmarkDirectory) {
         super("Benchmark aggregator");
         benchmarkDirectory = defaultBenchmarkDirectory;
         benchmarkResultIO = new BenchmarkResultIO();
+        visiblePlannerBenchmarkResultList = Collections.emptyList();
     }
 
     public void init() {
@@ -94,9 +97,9 @@ public class BenchmarkAggregatorFrame extends JFrame {
     }
 
     private void refreshPlannerBenchmarkResultList() {
-        List<PlannerBenchmarkResult> resultList = benchmarkResultIO.readPlannerBenchmarkResultList(benchmarkDirectory);
+        visiblePlannerBenchmarkResultList = benchmarkResultIO.readPlannerBenchmarkResultList(benchmarkDirectory);
         resultSelectionPanel.removeAll();
-        for (PlannerBenchmarkResult result : resultList) {
+        for (PlannerBenchmarkResult result : visiblePlannerBenchmarkResultList) {
             resultSelectionPanel.add(new JLabel(result.getName()));
         }
     }
@@ -114,7 +117,13 @@ public class BenchmarkAggregatorFrame extends JFrame {
     }
 
     private void generateReport() {
-
+        List<SingleBenchmarkResult> singleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
+        for (PlannerBenchmarkResult plannerBenchmarkResult : visiblePlannerBenchmarkResultList) {
+            for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
+                singleBenchmarkResultList.addAll(solverBenchmarkResult.getSingleBenchmarkResultList());
+            }
+        }
+        PlannerBenchmarkResult mergedResult = PlannerBenchmarkResult.createMergedResult(singleBenchmarkResultList);
     }
 
 }

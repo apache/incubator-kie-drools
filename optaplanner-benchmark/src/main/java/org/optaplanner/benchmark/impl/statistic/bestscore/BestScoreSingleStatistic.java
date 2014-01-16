@@ -44,6 +44,11 @@ public class BestScoreSingleStatistic extends SingleStatistic<BestScoreStatistic
         return pointList;
     }
 
+    @Override
+    public void setPointList(List<BestScoreStatisticPoint> pointList) {
+        this.pointList = pointList;
+    }
+
     // ************************************************************************
     // Lifecycle methods
     // ************************************************************************

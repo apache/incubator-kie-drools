@@ -19,6 +19,9 @@ package org.optaplanner.benchmark.impl.statistic;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementations must be immutable
+ */
 public abstract class StatisticPoint {
 
     public abstract List<String> toCsvLine();

@@ -22,6 +22,7 @@ import java.util.List;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationStatisticPoint;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
@@ -43,6 +44,11 @@ public class MoveCountPerStepSingleStatistic extends SingleStatistic<MoveCountPe
 
     public List<MoveCountPerStepStatisticPoint> getPointList() {
         return pointList;
+    }
+
+    @Override
+    public void setPointList(List<MoveCountPerStepStatisticPoint> pointList) {
+        this.pointList = pointList;
     }
 
     // ************************************************************************

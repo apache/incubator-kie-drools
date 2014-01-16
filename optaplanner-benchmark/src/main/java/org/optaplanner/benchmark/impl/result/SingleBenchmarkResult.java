@@ -18,6 +18,7 @@ package org.optaplanner.benchmark.impl.result;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -231,6 +232,32 @@ public class SingleBenchmarkResult {
 
     public void accumulateResults(BenchmarkReport benchmarkReport) {
 
+    }
+
+    // ************************************************************************
+    // Merger methods
+    // ************************************************************************
+
+
+    protected static SingleBenchmarkResult createMerge(SolverBenchmarkResult solverBenchmarkResult,
+            ProblemBenchmarkResult problemBenchmarkResult, SingleBenchmarkResult oldResult) {
+        SingleBenchmarkResult newResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
+
+        newResult.initSingleStatisticMap();
+        for (SingleStatistic singleStatistic : newResult.singleStatisticMap.values()) {
+            singleStatistic.setPointList(oldResult.getSingleStatistic(singleStatistic.getStatisticType()).getPointList());
+        }
+        // Skip oldResult.reportDirectory
+        newResult.planningEntityCount = oldResult.planningEntityCount;
+        // Skip oldResult.usedMemoryAfterInputSolution
+        newResult.succeeded = oldResult.succeeded;
+        newResult.score = oldResult.score;
+        newResult.timeMillisSpend = oldResult.timeMillisSpend;
+        newResult.calculateCount = oldResult.calculateCount;
+
+        solverBenchmarkResult.getSingleBenchmarkResultList().add(newResult);
+        problemBenchmarkResult.getSingleBenchmarkResultList().add(newResult);
+        return newResult;
     }
 
     @Override

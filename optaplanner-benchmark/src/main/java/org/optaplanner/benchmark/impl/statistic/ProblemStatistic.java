@@ -59,6 +59,10 @@ public abstract class ProblemStatistic {
 
     protected final ProblemStatisticType problemStatisticType;
 
+    // ************************************************************************
+    // Report accumulates
+    // ************************************************************************
+
     protected List<String> warningList = null;
 
     protected ProblemStatistic(ProblemBenchmarkResult problemBenchmarkResult, ProblemStatisticType problemStatisticType) {

@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +34,7 @@ import org.apache.commons.collections.comparators.ReverseComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.config.util.ConfigUtils;
 
 /**
  * Represents the benchmarks on multiple {@link Solver} configurations on multiple problem instances (data sets).
@@ -39,18 +42,20 @@ import org.optaplanner.core.api.solver.Solver;
 @XStreamAlias("plannerBenchmarkResult")
 public class PlannerBenchmarkResult {
 
-    private String name = null;
+    private String name;
 
-    private int parallelBenchmarkCount = -1;
-    private long warmUpTimeMillisSpend = 0L;
+    // In a merged result, many properties can stay null
+
+    private Integer parallelBenchmarkCount = null;
+    private Long warmUpTimeMillisSpend = null;
 
     @XStreamImplicit(itemFieldName = "solverBenchmarkResult")
     private List<SolverBenchmarkResult> solverBenchmarkResultList = null;
     @XStreamImplicit(itemFieldName = "unifiedProblemBenchmarkResult")
     private List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = null;
 
-    private Date startingTimestamp;
-    private Long benchmarkTimeMillisSpend;
+    private Date startingTimestamp = null;
+    private Long benchmarkTimeMillisSpend = null;
 
     // ************************************************************************
     // Report accumulates
@@ -69,19 +74,19 @@ public class PlannerBenchmarkResult {
         this.name = name;
     }
 
-    public int getParallelBenchmarkCount() {
+    public Integer getParallelBenchmarkCount() {
         return parallelBenchmarkCount;
     }
 
-    public void setParallelBenchmarkCount(int parallelBenchmarkCount) {
+    public void setParallelBenchmarkCount(Integer parallelBenchmarkCount) {
         this.parallelBenchmarkCount = parallelBenchmarkCount;
     }
 
-    public long getWarmUpTimeMillisSpend() {
+    public Long getWarmUpTimeMillisSpend() {
         return warmUpTimeMillisSpend;
     }
 
-    public void setWarmUpTimeMillisSpend(long warmUpTimeMillisSpend) {
+    public void setWarmUpTimeMillisSpend(Long warmUpTimeMillisSpend) {
         this.warmUpTimeMillisSpend = warmUpTimeMillisSpend;
     }
 
@@ -138,7 +143,7 @@ public class PlannerBenchmarkResult {
     // ************************************************************************
 
     public boolean hasMultipleParallelBenchmarks() {
-        return parallelBenchmarkCount > 1;
+        return parallelBenchmarkCount == null || parallelBenchmarkCount > 1;
     }
 
     public boolean hasAnyFailure() {
@@ -250,6 +255,58 @@ public class PlannerBenchmarkResult {
                     " because solverRankingComparator and solverRankingWeightFactory are null.");
         }
         return sameRankingListList;
+    }
+
+    // ************************************************************************
+    // Merger methods
+    // ************************************************************************
+
+    public static PlannerBenchmarkResult createMergedResult(List<SingleBenchmarkResult> singleBenchmarkResultList) {
+        PlannerBenchmarkResult mergedResult = createMergeSingleton(singleBenchmarkResultList);
+        Map<SolverBenchmarkResult, SolverBenchmarkResult> solverMergeMap
+                = SolverBenchmarkResult.createMergeMap(mergedResult, singleBenchmarkResultList);
+        Map<ProblemBenchmarkResult, ProblemBenchmarkResult> problemMergeMap
+                = ProblemBenchmarkResult.createMergeMap(mergedResult, singleBenchmarkResultList);
+        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
+            SolverBenchmarkResult solverBenchmarkResult = solverMergeMap.get(
+                    singleBenchmarkResult.getSolverBenchmarkResult());
+            ProblemBenchmarkResult problemBenchmarkResult = problemMergeMap.get(
+                    singleBenchmarkResult.getProblemBenchmarkResult());
+            SingleBenchmarkResult.createMerge(solverBenchmarkResult, problemBenchmarkResult, singleBenchmarkResult);
+        }
+        return mergedResult;
+    }
+
+    protected static PlannerBenchmarkResult createMergeSingleton(List<SingleBenchmarkResult> singleBenchmarkResultList) {
+        PlannerBenchmarkResult newResult = null;
+        Map<PlannerBenchmarkResult, PlannerBenchmarkResult> mergeMap
+                = new IdentityHashMap<PlannerBenchmarkResult, PlannerBenchmarkResult>();
+        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
+            PlannerBenchmarkResult oldResult = singleBenchmarkResult
+                    .getSolverBenchmarkResult().getPlannerBenchmarkResult();
+            if (!mergeMap.containsKey(oldResult)) {
+                if (newResult == null) {
+                    newResult = new PlannerBenchmarkResult();
+                    newResult.parallelBenchmarkCount = oldResult.parallelBenchmarkCount;
+                    newResult.warmUpTimeMillisSpend = oldResult.warmUpTimeMillisSpend;
+                    newResult.solverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>();
+                    newResult.unifiedProblemBenchmarkResultList = new ArrayList<ProblemBenchmarkResult>();
+                    newResult.startingTimestamp = oldResult.startingTimestamp;
+                    newResult.benchmarkTimeMillisSpend = oldResult.benchmarkTimeMillisSpend;
+                } else {
+                    newResult.parallelBenchmarkCount = ConfigUtils.mergeProperty(
+                            newResult.parallelBenchmarkCount, oldResult.parallelBenchmarkCount);
+                    newResult.warmUpTimeMillisSpend = ConfigUtils.mergeProperty(
+                            newResult.warmUpTimeMillisSpend, oldResult.warmUpTimeMillisSpend);
+                    newResult.startingTimestamp = ConfigUtils.mergeProperty(
+                            newResult.startingTimestamp, oldResult.startingTimestamp);
+                    newResult.benchmarkTimeMillisSpend = ConfigUtils.mergeProperty(
+                            newResult.benchmarkTimeMillisSpend, oldResult.benchmarkTimeMillisSpend);
+                }
+                mergeMap.put(oldResult, newResult);
+            }
+        }
+        return newResult;
     }
 
     @Override

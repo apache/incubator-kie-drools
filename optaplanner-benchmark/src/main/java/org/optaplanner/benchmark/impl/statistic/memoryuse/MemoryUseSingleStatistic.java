@@ -22,6 +22,7 @@ import java.util.List;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationStatisticPoint;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
@@ -53,6 +54,11 @@ public class MemoryUseSingleStatistic extends SingleStatistic<MemoryUseStatistic
 
     public List<MemoryUseStatisticPoint> getPointList() {
         return pointList;
+    }
+
+    @Override
+    public void setPointList(List<MemoryUseStatisticPoint> pointList) {
+        this.pointList = pointList;
     }
 
     // ************************************************************************

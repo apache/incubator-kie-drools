@@ -17,7 +17,11 @@
 package org.optaplanner.benchmark.impl.result;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -298,6 +302,47 @@ public class SolverBenchmarkResult {
         for (int i = 0; i < differenceSquaredTotalDoubles.length; i++) {
             standardDeviationDoubles[i] = Math.pow(differenceSquaredTotalDoubles[i] / successCount, 0.5);
         }
+    }
+
+    // ************************************************************************
+    // Merger methods
+    // ************************************************************************
+
+    protected static Map<SolverBenchmarkResult, SolverBenchmarkResult> createMergeMap(
+            PlannerBenchmarkResult newPlannerBenchmarkResult, List<SingleBenchmarkResult> singleBenchmarkResultList) {
+        // IdentityHashMap because different SolverBenchmarkResult instances are never merged
+        Map<SolverBenchmarkResult, SolverBenchmarkResult> mergeMap
+                = new IdentityHashMap<SolverBenchmarkResult, SolverBenchmarkResult>();
+        Map<String, Integer> nameCountMap = new HashMap<String, Integer>();
+        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
+            SolverBenchmarkResult oldResult = singleBenchmarkResult.getSolverBenchmarkResult();
+            if (!mergeMap.containsKey(oldResult)) {
+                SolverBenchmarkResult newResult = new SolverBenchmarkResult(newPlannerBenchmarkResult);
+                Integer nameCount = nameCountMap.get(oldResult.name);
+                if (nameCount == null) {
+                    nameCount = 1;
+                } else {
+                    nameCount++;
+                }
+                nameCountMap.put(oldResult.name, nameCount);
+                newResult.solverConfig = oldResult.solverConfig;
+                newResult.singleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>(
+                        oldResult.singleBenchmarkResultList.size());
+                mergeMap.put(oldResult, newResult);
+                newPlannerBenchmarkResult.getSolverBenchmarkResultList().add(newResult);
+            }
+        }
+        // Make name unique
+        for (Map.Entry<SolverBenchmarkResult, SolverBenchmarkResult> entry : mergeMap.entrySet()) {
+            SolverBenchmarkResult oldResult = entry.getKey();
+            SolverBenchmarkResult newResult = entry.getValue();
+            if (nameCountMap.get(oldResult.name) > 1) {
+                newResult.name = oldResult.name + " (" + oldResult.getPlannerBenchmarkResult().getName() + ")";
+            } else {
+                newResult.name = oldResult.name;
+            }
+        }
+        return mergeMap;
     }
 
     @Override

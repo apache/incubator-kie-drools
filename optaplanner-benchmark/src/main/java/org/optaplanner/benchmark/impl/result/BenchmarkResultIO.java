@@ -70,7 +70,6 @@ public class BenchmarkResultIO {
             throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory
                     + ") is not a directory.");
         }
-
         File[] benchmarkReportDirectories = benchmarkDirectory.listFiles((FileFilter) DirectoryFileFilter.INSTANCE);
         List<PlannerBenchmarkResult> plannerBenchmarkResultList = new ArrayList<PlannerBenchmarkResult>(
                 benchmarkReportDirectories.length);

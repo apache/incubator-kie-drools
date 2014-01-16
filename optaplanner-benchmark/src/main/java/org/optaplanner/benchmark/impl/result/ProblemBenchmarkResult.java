@@ -20,18 +20,24 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import org.apache.commons.lang.ObjectUtils;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.ranking.SingleBenchmarkRankingComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.termination.TerminationConfig;
+import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.solution.ProblemIO;
 import org.optaplanner.core.impl.solution.Solution;
 import org.slf4j.Logger;
@@ -53,6 +59,7 @@ public class ProblemBenchmarkResult {
     @XStreamOmitField // TODO move problemIO out of ProblemBenchmarkResult
     private ProblemIO problemIO = null;
     private boolean writeOutputSolutionEnabled = false;
+
     private File inputSolutionFile = null;
     private File problemReportDirectory = null;
 
@@ -171,6 +178,15 @@ public class ProblemBenchmarkResult {
 
     public boolean hasAnyProblemStatistic() {
         return problemStatisticList.size() > 0;
+    }
+
+    public boolean hasProblemStatisticType(ProblemStatisticType problemStatisticType) {
+        for (ProblemStatistic problemStatistic : problemStatisticList) {
+            if (problemStatistic.getProblemStatisticType() == problemStatisticType) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // ************************************************************************
@@ -327,6 +343,57 @@ public class ProblemBenchmarkResult {
     @Override
     public int hashCode() {
         return inputSolutionFile.hashCode();
+    }
+
+    // ************************************************************************
+    // Merger methods
+    // ************************************************************************
+
+    protected static Map<ProblemBenchmarkResult, ProblemBenchmarkResult> createMergeMap(
+            PlannerBenchmarkResult newPlannerBenchmarkResult, List<SingleBenchmarkResult> singleBenchmarkResultList) {
+        // IdentityHashMap but despite that different ProblemBenchmarkResult instances are merged
+        Map<ProblemBenchmarkResult, ProblemBenchmarkResult> mergeMap
+                = new IdentityHashMap<ProblemBenchmarkResult, ProblemBenchmarkResult>();
+        Map<File, ProblemBenchmarkResult> fileToNewResultMap = new HashMap<File, ProblemBenchmarkResult>();
+        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
+            ProblemBenchmarkResult oldResult = singleBenchmarkResult.getProblemBenchmarkResult();
+            if (!mergeMap.containsKey(oldResult)) {
+                ProblemBenchmarkResult newResult;
+                if (!fileToNewResultMap.containsKey(oldResult.inputSolutionFile)) {
+                    newResult = new ProblemBenchmarkResult(newPlannerBenchmarkResult);
+                    newResult.name = oldResult.name;
+                    newResult.inputSolutionFile = oldResult.inputSolutionFile;
+                    // Skip oldResult.problemReportDirectory
+                    newResult.problemStatisticList = new ArrayList<ProblemStatistic>(oldResult.problemStatisticList.size());
+                    for (ProblemStatistic oldProblemStatistic : oldResult.problemStatisticList) {
+                        newResult.problemStatisticList.add(
+                                oldProblemStatistic.getProblemStatisticType().create(newResult));
+                    }
+                    newResult.singleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>(
+                            oldResult.singleBenchmarkResultList.size());
+                    newResult.problemScale = oldResult.problemScale;
+                    fileToNewResultMap.put(oldResult.inputSolutionFile, newResult);
+                    newPlannerBenchmarkResult.getUnifiedProblemBenchmarkResultList().add(newResult);
+                } else {
+                    newResult = fileToNewResultMap.get(oldResult.inputSolutionFile);
+                    if (!ObjectUtils.equals(oldResult.name, newResult.name)) {
+                        throw new IllegalStateException(
+                                "The oldResult (" + oldResult + ") and newResult (" + newResult
+                                + ") should have the same name, because they have the same inputSolutionFile ("
+                                + oldResult.inputSolutionFile + ").");
+                    }
+                    for (Iterator<ProblemStatistic> it = newResult.problemStatisticList.iterator(); it.hasNext(); ) {
+                        ProblemStatistic newStatistic = it.next();
+                        if (!oldResult.hasProblemStatisticType(newStatistic.getProblemStatisticType())) {
+                            it.remove();
+                        }
+                    }
+                    newResult.problemScale = ConfigUtils.mergeProperty(oldResult.problemScale, newResult.problemScale);
+                }
+                mergeMap.put(oldResult, newResult);
+            }
+        }
+        return mergeMap;
     }
 
     @Override
