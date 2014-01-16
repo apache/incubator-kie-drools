@@ -16,9 +16,11 @@
 
 package org.drools.command.runtime.rule;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.drools.command.Context;
+import org.drools.command.WorkingMemoryEntryPointBuilder;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -33,7 +35,16 @@ public class GetWorkingMemoryEntryPointsCommand
 
     public Collection< ? extends WorkingMemoryEntryPoint> execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        return ksession.getWorkingMemoryEntryPoints();
+        Collection< ? extends WorkingMemoryEntryPoint> eps = ksession.getWorkingMemoryEntryPoints();
+        WorkingMemoryEntryPointBuilder epBuilder = (WorkingMemoryEntryPointBuilder)context.get(WorkingMemoryEntryPointBuilder.class.getName());
+        if (epBuilder == null) {
+            return eps;
+        }
+        Collection<WorkingMemoryEntryPoint> result = new ArrayList<WorkingMemoryEntryPoint>();
+        for (WorkingMemoryEntryPoint ep : eps) {
+            result.add(epBuilder.getWorkingMemoryEntryPoint(ep.getEntryPointId()));
+        }
+        return result;
     }
 
     public String toString() {

@@ -29,6 +29,7 @@ import org.drools.command.Command;
 import org.drools.command.CommandService;
 import org.drools.command.Context;
 import org.drools.command.Interceptor;
+import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.DefaultCommandService;
 import org.drools.command.impl.FixedKnowledgeCommandContext;
 import org.drools.command.impl.GenericCommand;
@@ -120,7 +121,7 @@ public class SingleSessionCommandService
         this.ksession = kbase.newStatefulKnowledgeSession( conf,
                                                            this.env );
 
-        this.kContext = new FixedKnowledgeCommandContext( null,
+        this.kContext = new FixedKnowledgeCommandContext( new ContextImpl( "ksession", null),
                                                           null,
                                                           null,
                                                           this.ksession,
@@ -260,7 +261,7 @@ public class SingleSessionCommandService
 
         if ( this.kContext == null ) {
             // this should only happen when this class is first constructed
-            this.kContext = new FixedKnowledgeCommandContext( null,
+            this.kContext = new FixedKnowledgeCommandContext( new ContextImpl( "ksession", null),
                                                               null,
                                                               null,
                                                               this.ksession,
