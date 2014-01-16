@@ -22,7 +22,9 @@ import java.util.Properties;
 import org.drools.KnowledgeBase;
 import org.drools.SessionConfiguration;
 import org.drools.command.CommandService;
+import org.drools.command.WorkingMemoryEntryPointBuilder;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.command.impl.CommandBasedWorkingMemoryEntryPoint;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.drools.process.instance.WorkItemManagerFactory;
@@ -30,6 +32,7 @@ import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 public class KnowledgeStoreServiceImpl
     implements
@@ -48,7 +51,7 @@ public class KnowledgeStoreServiceImpl
         setCommandServiceClass( SingleSessionCommandService.class );
         setProcessInstanceManagerFactoryClass( "org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory" );
         setWorkItemManagerFactoryClass( JPAWorkItemManagerFactory.class );
-        setProcessSignalManagerFactoryClass( "org.jbpm.persistence.processinstance.JPASignalManagerFactory" );
+        setProcessSignalManagerFactoryClass("org.jbpm.persistence.processinstance.JPASignalManagerFactory");
     }
 
     public StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeBase kbase,
@@ -62,9 +65,12 @@ public class KnowledgeStoreServiceImpl
             throw new IllegalArgumentException( "Environment cannot be null" );
         }
 
-        return new CommandBasedStatefulKnowledgeSession( (CommandService) buildCommandService( kbase,
-                                                                             mergeConfig( configuration ),
-                                                                             environment ) );
+        CommandService commandService = (CommandService) buildCommandService( kbase,
+                                                                              mergeConfig( configuration ),
+                                                                              environment );
+        commandService.getContext().set(WorkingMemoryEntryPointBuilder.class.getName(),
+                                        new CommandBasedWorkingMemoryEntryPointBuilder(commandService));
+        return new CommandBasedStatefulKnowledgeSession( commandService );
     }
 
     public StatefulKnowledgeSession loadStatefulKnowledgeSession(int id,
@@ -79,10 +85,25 @@ public class KnowledgeStoreServiceImpl
             throw new IllegalArgumentException( "Environment cannot be null" );
         }
 
-        return new CommandBasedStatefulKnowledgeSession( (CommandService) buildCommandService( id,
-                                                                                              kbase,
-                                                                                              mergeConfig( configuration ),
-                                                                                              environment ) );
+        CommandService commandService = (CommandService) buildCommandService( id,
+                                                                              kbase,
+                                                                              mergeConfig( configuration ),
+                                                                              environment );
+        commandService.getContext().set(WorkingMemoryEntryPointBuilder.class.getName(),
+                                        new CommandBasedWorkingMemoryEntryPointBuilder(commandService));
+        return new CommandBasedStatefulKnowledgeSession( commandService );
+    }
+
+    public static class CommandBasedWorkingMemoryEntryPointBuilder implements WorkingMemoryEntryPointBuilder {
+        private final CommandService commandService;
+
+        public CommandBasedWorkingMemoryEntryPointBuilder(CommandService commandService) {
+            this.commandService = commandService;
+        }
+
+        public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String entryPoint) {
+            return new CommandBasedWorkingMemoryEntryPoint( commandService, entryPoint );
+        }
     }
 
     private CommandExecutor buildCommandService(Integer sessionId,
