@@ -3,7 +3,8 @@
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
          xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook"
+         xml:id="remote.java.api">
 
   <title>Remote Java API</title>
   
@@ -16,49 +17,411 @@
       Console) via known interfaces such as the <code>KieSession</code> or <code>TaskService</code> interface, 
       without having to deal with the underlying transport and serialization details.</para>
     
-    <section>
+  <important>
+    <title>The Remote Java API provides clients, not "instances"</title>
+    <para>While the <code>KieSession</code>, <code>TaskSerivce</code> and
+        <code>AuditLogService</code> instances provided by the Remote Java API may "look" and "feel"
+      like local instances of the same interfaces, please make sure to remember that these instances
+      are only wrappers around a REST or jMS client that interacts with a remote REST or JMS
+      API.</para>
+    <blockquote> <!-- necessary in order to insert a space here --> </blockquote>
+    <para>This means that if a requested operation fails on the <emphasis>server</emphasis>, the
+      Remote Java API client instance on the <emphasis>client</emphasis> side will throw a
+        <code>RuntimeException</code> indicating that the REST call failed. This is different from
+      the behaviour of a "real" (or local) instance of a <code>KieSession</code>,
+        <code>TaskSerivce</code> and <code>AuditLogService</code> instance because the exception the
+      local instances will throw will relate to how the operation failed. Also, while local
+      instances require different handling (such as having to dispose of a <code>KieSession</code>),
+      client instances provided by the Remote Java API hold no state and thus do not require any
+      special handling.</para>
+    <blockquote> <!-- necessary in order to insert a space here --> </blockquote>
+    <para>Lastly, operations on a Remote Java API client instance that would normally throw other
+      exceptions (such as the <code>TaskService.claim(taskId, userId)</code> operation when called
+      by a user who is not a potential owner), will now throw a <code>RuntimeException</code>
+      instead when the requested operation fails on the <emphasis>server</emphasis>.</para>
+  </important>
+   
+  <para>The first step in interacting with the remote runtime is to create either the
+      <code>RemoteRestRuntimeFactory</code> or <code>RemoteJmsRuntimeEngineFactory</code>, both of
+    which are instances of the <code>RemoteRuntimeEngineFactory</code> interface.</para>
+  
+  <para>The configuration for the Remote Java API is done when creating the
+      <code>RemoteRuntimeEngineFactory</code> instance: there are a number of different constructors
+    for both the JMS and REST impelementations that allow the configuration of such things as the
+    base URL of the REST API, JMS queue location or timeout while waiting for responses. </para>
+  
+  <para>Once the factory instances have been created, there are a couple of methods that can then be
+    used to instantiate the client instance that you want to use: <variablelist>
+      <title>Remote Java API Methods</title>
+      <varlistentry>
+        <term><command>RemoteRuntimeEngine
+          RemoteRuntimeEngineFactory.newRuntimeEngine()</command></term>
+        <listitem>
+          <para>This method instantiates a new <command>RemoteRuntimeEngine</command> (client)
+            instance.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><command>RemoteRuntimeEngineFactory.addExtraJaxbClasses(Collection&lt;Class&lt;?&gt;&gt;
+            extraJaxbClasses );</command></term>
+        <listitem>
+          <para>This method adds extra classes to the classpath available to the serialization
+            mechanisms.</para>
+          <para>When passing instances of user-defined classes in a Remote Java API call, it's
+            important to have added the classes via this method first so that the class instances
+            can be serialized correctly.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><command>KieSession RemoteRuntimeEngine.getKieSession()</command></term>
+        <listitem>
+          <para>This method instantiates a new (client) <command>KieSession</command>
+            instance.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><command>TaskService RemoteRuntimeEngine.getTaskService()</command></term>
+        <listitem>
+          <para>This method instantiates a new (client) <command>TaskService</command>
+            instance.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><command>AuditLogService RemoteRuntimeEngine.getAuditLogService()</command></term>
+        <listitem>
+          <para>This method instantiates a new (client) <command>AuditLogService</command>
+            instance.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </para>
+  
+    <section xml:id="remote.java.api.rest">
       <title>The REST Remote Java RuntimeEngine Factory</title>     
+      <note>
+        <title>Oops!</title>
+        <para>The <code>RemoteRestRuntimeFactory</code> should indeed have been called the
+            <code>RemoteRestRuntime<emphasis>Engine</emphasis>Factory</code>! Sometimes it's the
+        easiest mistakes which are the hardest to catch. This will be corrected in future
+        releases.</para>
+      </note>
       
-      <para>In order to interact via REST with the remote runtime, the <code>RemoteRestRuntimeFactory</code>
-        can be used. Through this factory, you can get access to a KieSession and TaskService, which you can
-        then interact with the same way as if they were a local services. The following example illustrates
-        how the remote session can be used.</para>
+      <para>The <code>RemoteRestRuntimeFactory</code> has 4 constructor methods available. Besides
+      an "everything" constructor method which provides all of the options provided below, there are
+      also the following 3 constructors:</para>
       
-      <programlisting language="java">// Setup the factory class with the necessarry information to communicate with the REST services
-RemoteRestRuntimeFactory restSessionFactory 
-  = new RemoteRestRuntimeFactory(deploymentId, baseUrl, user, password);
+      <para>
+        <variablelist>
+          <title>RemoteRestRuntimeFactory constructor method parameters</title>
+          <varlistentry>
+            <term>Simple constructor</term>
+            <listitem>
+              <table frame="all">
+                <title>Simple <command>RemoteRestRuntimeFactory</command> constructor parameters</title>
+                <tgroup cols="3" align="left" rowsep="1" colsep="1">
+                  <thead valign="top">
+                    <row>
+                      <entry>Name</entry>
+                      <entry>Type</entry>
+                      <entry>Description</entry>
+                    </row>
+                  </thead>
+                  <tbody valign="top">
+                    <row>
+                      <entry><code>deploymentId</code></entry>
+                      <entry><code>java.lang.String</code></entry>
+                      <entry>
+                        <para>This is the name (id) of the deployment the <code>RuntimeEngine</code>
+                          should interact with.</para>
+                      </entry>
+                    </row>
+                    <row>
+                      <entry><code>baseUrl</code></entry>
+                      <entry><code>java.net.URL</code></entry>
+                      <entry>
+                        <para>This is the URL of the deployed jbpm-console, kie-wb or BPMS instance.</para>
+                        <para>For example: <code>http://127.0.0.1:8080/jbpm-console/</code></para>
+                      </entry>
+                    </row>
+                    <row>
+                      <entry><code>username</code></entry>
+                      <entry><code>java.lang.String</code></entry>
+                      <entry>
+                        <para>This is the user name needed to access the JMS queues.</para>
+                      </entry>
+                    </row>
+                    <row>
+                      <entry><code>password</code></entry>
+                      <entry><code>java.lang.String</code></entry>
+                      <entry>
+                        <para>This is the password needed to access the JMS queues.</para>
+                      </entry>
+                    </row>
+                  </tbody>
+                </tgroup>
+              </table>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>Constructor with timeout parameter</term>
+            <listitem>
+              <table frame="all">
+                <title><command>RemoteRestRuntimeFactory</command> constructor parameters with (response message) timeout parameter</title>
+                <tgroup cols="3" align="left" rowsep="1" colsep="1">
+                  <thead valign="top">
+                    <row>
+                      <entry>Name</entry>
+                      <entry>Type</entry>
+                      <entry>Description</entry>
+                    </row>
+                  </thead>
+                  <tbody valign="top">
+                    <row>
+                      <entry><code>deploymentId</code></entry>
+                      <entry><code>java.lang.String</code></entry>
+                      <entry>
+                        <para>This is the name (id) of the deployment the <code>RuntimeEngine</code>
+                          should interact with.</para>
+                      </entry>
+                    </row>
+                    <row>
+                      <entry><code>baseUrl</code></entry>
+                      <entry><code>java.net.URL</code></entry>
+                      <entry>
+                        <para>This is the URL of the deployed jbpm-console, kie-wb or BPMS instance.</para>
+                        <para>For example: <code>http://127.0.0.1:8080/jbpm-console/</code></para>
+                      </entry>
+                    </row>
+                    <row>
+                      <entry><code>username</code></entry>
+                      <entry><code>java.lang.String</code></entry>
+                      <entry>
+                        <para>This is the user name needed to access the REST API.</para>
+                      </entry>
+                    </row>
+                    <row>
+                      <entry><code>password</code></entry>
+                      <entry><code>java.lang.String</code></entry>
+                      <entry>
+                        <para>This is the password needed to access the REST API.</para>
+                      </entry>
+                    </row>
+                    <row>
+                      <entry><code>timeoutInSeconds</code></entry>
+                      <entry><code>int</code></entry>
+                      <entry>
+                        <para>This maximum number of seconds to wait when waiting for a response from the server.</para>
+                      </entry>
+                    </row>
+                  </tbody>
+                </tgroup>
+              </table>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>Constructor with form-based authorization parameter</term>
+            <listitem>
+              <table frame="all">
+                <title><command>RemoteRestRuntimeFactory</command> constructor parameters with form-based authorization parameter</title>
+                <tgroup cols="3" align="left" rowsep="1" colsep="1">
+                  <thead valign="top">
+                    <row>
+                      <entry>Name</entry>
+                      <entry>Type</entry>
+                      <entry>Description</entry>
+                    </row>
+                  </thead>
+                  <tbody valign="top">
+                    <row>
+                      <entry><code>deploymentId</code></entry>
+                      <entry><code>java.lang.String</code></entry>
+                      <entry>
+                        <para>This is the name (id) of the deployment the <code>RuntimeEngine</code>
+                          should interact with.</para>
+                      </entry>
+                    </row>
+                    <row>
+                      <entry><code>baseUrl</code></entry>
+                      <entry><code>java.net.URL</code></entry>
+                      <entry>
+                        <para>This is the URL of the deployed jbpm-console, kie-wb or BPMS instance.</para>
+                        <para>For example: <code>http://127.0.0.1:8080/jbpm-console/</code></para>
+                      </entry>
+                    </row>
+                    <row>
+                      <entry><code>username</code></entry>
+                      <entry><code>java.lang.String</code></entry>
+                      <entry>
+                        <para>This is the user name needed to access the REST API.</para>
+                      </entry>
+                    </row>
+                    <row>
+                      <entry><code>password</code></entry>
+                      <entry><code>java.lang.String</code></entry>
+                      <entry>
+                        <para>This is the password needed to access the REST API.</para>
+                      </entry>
+                    </row>
+                    <row>
+                      <entry><code>useFormBasedAuth</code></entry>
+                      <entry><code>boolean</code></entry>
+                      <entry>
+                        <para>Whether or not to use form-based authentication when making a REST call. Form-based authentication will be necessary on tomcat instances.</para>
+                      </entry>
+                    </row>
+                  </tbody>
+                </tgroup>
+              </table>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </para>
+      <section>
+        <title>Example usage</title>
+          <para>The following example illustrates how the Remote Java API can be used with the REST API.</para>
+      
+      <programlisting language="java"><![CDATA[public void startProcessAndHandleTaskViaRestRemoteJavaAPI(URL instanceUrl, String deploymentId, String user, String password) {
+  // the serverRestUrl should contain a URL similar to "http://localhost:8080/jbpm-console/"
+  
+  // Setup the factory class with the necessarry information to communicate with the REST services
+  RemoteRuntimeEngineFactory restSessionFactory 
+    = new RemoteRestRuntimeFactory(deploymentId, instanceUrl, user, password);
 
-// Create KieSession and TaskService instances and use them
-RuntimeEngine engine = restSessionFactory.newRuntimeEngine();
-KieSession ksession = engine.getKieSession();
-ProcessInstance processInstance = ksession.startProcess("com.burns.reactor.maintenance.cycle");
-long procId = processInstance.getId();
-  
-String taskUserId = user;
-TaskService taskService = engine.getTaskService();
-List&lt;TaskSummary&gt; tasks = taskService.getTasksAssignedAsPotentialOwner(user, "en-UK");
-  
-long taskId = -1;
-for( TaskSummary task : tasks ) { 
-    if( task.getProcessInstanceId() == procId ) {
-        taskId = task.getId();
+  // Create KieSession and TaskService instances and use them
+  RemoteRuntimeEngine engine = restSessionFactory.newRuntimeEngine();
+  KieSession ksession = engine.getKieSession();
+  TaskService taskService = engine.getTaskService();
+
+  // Each opertion on a KieSession, TaskService or AuditLogService (client) instance 
+  // sends a request for the operation to the server side and waits for the response
+  // If something goes wrong on the server side, the client will throw an exception. 
+  ProcessInstance processInstance 
+    = ksession.startProcess("com.burns.reactor.maintenance.cycle");
+  long procId = processInstance.getId();
+
+  String taskUserId = user;
+  taskService = engine.getTaskService();
+  List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner(user, "en-UK");
+
+  long taskId = -1;
+  for (TaskSummary task : tasks) {
+    if (task.getProcessInstanceId() == procId) {
+      taskId = task.getId();
     }
-}
-if( taskId == -1 ) { 
-    throw new IllegalStateException("Unable to find task for " + user + " in process instance " + procId );
-}
-  
-taskService.start(taskId, taskUserId);</programlisting>
+  }
 
-    <para>The <code>RemoteRestRuntimeFactory</code> has one constructor which takes the arguments
-        described in table below. <table frame="all">
-          <title>RemoteRestRuntimeFactory constructor arguments</title>
-          <tgroup cols="4" align="left" rowsep="1" colsep="1">
+  if (taskId == -1) {
+    throw new IllegalStateException("Unable to find task for " + user + " in process instance " + procId);
+  }
+
+  taskService.start(taskId, taskUserId);
+}
+]]></programlisting>
+    </section>
+     
+     <!-- finish this.. 
+    <section>
+      <title>Remote REST Java API exceptions</title>
+      
+      <para>Because the Remote REST Java API clients implement the existing <code>KieSession</code>,
+          <code>TaskService</code> and <code>AuditLogService</code> interfaces, the exceptions
+        thrown by the client implementations must be instances of a
+        <code>RuntimeException</code>.</para>
+      
+      <para>The table below lists the exceptions thrown by the different client interfaces.</para>
+      
+      <table frame="all">
+        <title>Exceptions thrown by the Remote REST Java API client implementations</title>
+        <tgroup cols="3" align="left" rowsep="1" colsep="1">
+          <thead valign="top">
+            <row>
+              <entry>Name</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody valign="top">
+            <row>
+              <entry><code>deploymentId</code></entry>
+              <entry><code>java.lang.String</code></entry>
+              <entry>
+                <para>This is the name (id) of the deployment the <code>RuntimeEngine</code>
+                  should interact with.</para>
+              </entry>
+            </row>
+            <row>
+              <entry><code>baseUrl</code></entry>
+              <entry><code>java.net.URL</code></entry>
+              <entry>
+                <para>This is the URL of the deployed jbpm-console, kie-wb or BPMS instance.</para>
+                <para>For example: <code>http://127.0.0.1:8080/jbpm-console/</code></para>
+              </entry>
+            </row>
+            <row>
+              <entry><code>username</code></entry>
+              <entry><code>java.lang.String</code></entry>
+              <entry>
+                <para>This is the user name needed to access the REST API.</para>
+              </entry>
+            </row>
+            <row>
+              <entry><code>password</code></entry>
+              <entry><code>java.lang.String</code></entry>
+              <entry>
+                <para>This is the password needed to access the REST API.</para>
+              </entry>
+            </row>
+            <row>
+              <entry><code>timeoutInSeconds</code></entry>
+              <entry><code>int</code></entry>
+              <entry>
+                <para>This maximum number of seconds to wait when waiting for a response from the server.</para>
+              </entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+      
+    </section>
+    -->
+    </section>
+         
+    <section xml:id="remote.java.api.jms">
+      <title>The JMS Remote Java RuntimeEngine Factory</title>
+      
+      <para>The Remote JMS Java RuntimeEngine works precisely the same as the REST variant, except
+        that it has different constructors.</para>
+      
+      <para>The <code>RemoteJmsRuntimeEngineFactory</code> constructors can be grouped into 3 types.
+      The list below specifies the main arguments to each group type. <orderedlist>
+        <listitem>
+          <para>The URL of the execution server instance is given</para>
+        </listitem>
+        <listitem>
+          <para>The JMS remote access objects (such as the <code>ConnectionFactory</code> and
+              <code>Queue</code>) are given.</para>
+        </listitem>
+        <listitem>
+          <para>A remote <code>InitialContext</code> instance (created using JNDI) from the server
+            is given.</para>
+        </listitem>
+      </orderedlist></para>
+      
+      <formalpara>
+        <title>Configuration using the server <code>URL</code></title>
+        
+        <para>Configuration using only the URL of the server where the jBPM Console or Kie Workbench
+        instance is running, is the most straightforward. However, this is only possible when the
+        jBPM console or KIE Workbench instance is running on Wildfly or JBoss AS, or JBoss EAP. </para>
+        
+        <para> The following table describes the parameters used when using an
+          <code>InitialContext</code> to configure a <code>RemoteJmsRuntimeEngineFactory</code>
+        instance: <table frame="all">
+          <title>RemoteJmsRuntimeFactory constructor arguments</title>
+          <tgroup cols="3" align="left" rowsep="1" colsep="1">
             <thead valign="top">
               <row>
                 <entry>Name</entry>
                 <entry>Type</entry>
-                <entry>Example value</entry>
                 <entry>Description</entry>
               </row>
             </thead>
@@ -66,51 +429,38 @@ taskService.start(taskId, taskUserId);</programlisting>
               <row>
                 <entry><code>deploymentId</code></entry>
                 <entry><code>java.lang.String</code></entry>
-                <entry><code>reactor-maintenance-project</code></entry>
                 <entry>
-                  <para>This is the name (id) of the deployment the <code>RuntimeEngine</code> should interact with.</para>
+                  <para>This is the name (id) of the deployment the <code>RuntimeEngine</code>
+                    should interact with.</para>
                 </entry>
               </row>
               <row>
-                <entry><code>baseURL</code></entry>
+                <entry><code>serverURL</code></entry>
                 <entry><code>java.net.URL</code></entry>
-                <entry><code>http://localhost:8080/jbpm-console/</code></entry>
                 <entry>
-                  <para>This is the base URL of where the workbench application is deployed, containing the remote execution server to connect to.</para>
+                  <para>This is the URL of the (JBoss) server instance..</para>
                 </entry>
               </row>
               <row>
-                <entry><code>user</code></entry>
+                <entry><code>username</code></entry>
                 <entry><code>java.lang.String</code></entry>
-                <entry><code>homer</code></entry>
-                <entry>This is the user needed for authentication for all REST calls.</entry>
+                <entry>
+                  <para>This is the user name needed to access the JMS queues and JNDI
+                    InitialContext instance. </para>
+                </entry>
               </row>
               <row>
                 <entry><code>password</code></entry>
                 <entry><code>java.lang.String</code></entry>
-                <entry><code>d0nutsd0nutsILUVDONUTS!</code></entry>
                 <entry>
-                  <para>This is the password for the user specified in the <code>user</code> parameter.</para>
+                  <para>This is the password needed to access the JMS queues and JNDI InitialContext
+                    instance. </para>
                 </entry>
               </row>
             </tbody>
           </tgroup>
-        </table>
-      </para>
-    </section>
-         
-    <section>
-      <title>The JMS Remote Java RuntimeEngine Factory</title>
-      
-      <para>The Remote JMS Java RuntimeEngine works precisely the same as the REST variant, except
-        that it has different constructors.</para>
-      
-      <para>The <code>RemoteJmsRuntimeEngineFactory</code> has multiple constructors: one set of
-          constructors allows the user to specify the JMS <code>ConnectionFactory</code> instance
-          and each JMS <code>Queue</code> instance, while the other set takes an
-            <code>InitialContext</code> instance that is expected to contain references to the
-            <code>ConnectionFactory</code> and <code>Queue</code> instances.
-      </para>
+        </table></para>
+      </formalpara>
       
       <formalpara>
         <title>Configuration using an <code>InitialContext</code> instance</title>
@@ -119,11 +469,13 @@ taskService.start(taskId, taskUserId);</programlisting>
           <code>InitialContext</code> instance as a parameter, it's necessary to retrieve the
           (remote) <code>InitialContext</code> instance first from the remote server. The following
           code illustrates how to do this. </para>
+        
+      
       </formalpara>
       
       <important>
-        <para>The code below illustrates how this can be done with a <emphasis>JBoss AS 7 or EAP 6</emphasis> server
-          instance.</para>
+        <para>The code below illustrates how this can be done with a <emphasis>JBoss AS 7 or EAP
+          6</emphasis> server instance. Similar code is used in the constructor above.</para>
         <blockquote> <!-- necessary in order to insert a space here --> </blockquote>
         <para>However, regardless of which application server you use, it is necessary to
           include in your classpath the class specified as the <code>INITIAL_CONTEXT_FACTORY</code>
@@ -138,22 +490,21 @@ taskService.start(taskId, taskUserId);</programlisting>
             <code>InitialContext</code> instance (via JNDI) from the application server instance.</para>
       </important>
       
-      <programlisting language="java">public void startProcessAndTaskViaJmsRemoteJavaAPI(String serverHostName, String deploymentId, String user, String password) {
+      <programlisting language="java"><![CDATA[public void startProcessAndTaskViaJmsRemoteJavaAPI(String serverHostName, String deploymentId, String user, String password) {
   // Setup remote JMS runtime engine factory
   InitialContext remoteInitialContext 
     = getRemoteInitialContext(serverHostName, user, password);
-  int maxWaitTimeMillisecs = 5 * 1000;
-  RemoteJmsRuntimeEngineFactory remoteJmsFactory
-    = new RemoteJmsRuntimeEngineFactory(deploymentId, remoteInitialContext, user, password, maxWaitTimeMillisecs);
+  int maxTimeoutSecs = 5;
+  RemoteJmsRuntimeEngineFactory remoteJmsFactory 
+    = new RemoteJmsRuntimeEngineFactory(deploymentId, remoteInitialContext, user, password, maxTimeoutSecs);
 
   // Interface with JMS api
   RuntimeEngine engine = remoteJmsFactory.newRuntimeEngine();
   KieSession ksession = engine.getKieSession();
   ProcessInstance processInstance = ksession.startProcess("com.burns.reactor.maintenance.cycle");
   long procId = processInstance.getId();
-
   TaskService taskService = engine.getTaskService();
-  List&lt;Long&gt; tasks = taskService.getTasksByProcessInstanceId(procId);
+  List<Long> tasks = taskService.getTasksByProcessInstanceId(procId);
   taskService.start(tasks.get(0), user);
 }
 
@@ -176,91 +527,64 @@ private static InitialContext getRemoteInitialContext(String jbossServerHostName
   } catch (NamingException e) {
     throw new RuntimeException("Unable to create " + InitialContext.class.getSimpleName(), e);
   }
-}</programlisting>
+}]]></programlisting>
+      
+      <para> The following table describes the parameters used when using an
+        <code>InitialContext</code> to configure a <code>RemoteJmsRuntimeEngineFactory</code>
+      instance: <table frame="all">
+        <title>RemoteJmsRuntimeFactory constructor arguments</title>
+        <tgroup cols="3" align="left" rowsep="1" colsep="1">
+          <thead valign="top">
+            <row>
+              <entry>Name</entry>
+              <entry>Type</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody valign="top">
+            <row>
+              <entry><code>deploymentId</code></entry>
+              <entry><code>java.lang.String</code></entry>
+              <entry>
+                <para>This is the name (id) of the deployment the <code>RuntimeEngine</code> should
+                  interact with.</para>
+              </entry>
+            </row>
+            <row>
+              <entry><code>initialContext</code></entry>
+              <entry><code>javax.naming.InitialContext</code></entry>
+              <entry>
+                <para>This is a remote <code>InitialContext</code> instance from which the
+                    (<code>javax.jms</code>) <code>ConnectionFactory</code> and <code>Queue</code>
+                  instances can be retrieved.</para>
+              </entry>
+            </row>
+            <row>
+              <entry><code>username</code></entry>
+              <entry><code>java.lang.String</code></entry>
+              <entry>
+                <para>This is the user name needed to access the JMS queues.</para>
+              </entry>
+            </row>
+            <row>
+              <entry><code>password</code></entry>
+              <entry><code>java.lang.String</code></entry>
+              <entry>
+                <para>This is the password needed to access the JMS queues.</para>
+              </entry>
+            </row>
+            <row>
+              <entry><code>qosThresholdMillisecs</code></entry>
+              <entry><code>int</code></entry>
+              <entry>
+                <para>This maximum number of milliseconds to wait when waiting for a response from
+                  the server.</para>
+              </entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table></para>
 
-      <para> The following table describes the parameters used when using an <code>InitialContext</code> to configure a
-          <code>RemoteJmsRuntimeEngineFactory</code> instance:
-      
-        <table frame="all">
-          <title>RemoteRestRuntimeFactory constructor arguments</title>
-          <tgroup cols="3" align="left" rowsep="1" colsep="1">
-            <thead valign="top">
-              <row>
-                <entry>Name</entry>
-                <entry>Type</entry>
-                <entry>Description</entry>
-              </row>
-            </thead>
-            <tbody valign="top">
-              <row>
-                <entry><code>deploymentId</code></entry>
-                <entry><code>java.lang.String</code></entry>
-                <entry>
-                  <para>This is the name (id) of the deployment the <code>RuntimeEngine</code>
-                    should interact with.</para>
-                </entry>
-              </row>
-              <row>
-                <entry><code>connectionFactory</code></entry>
-                <entry><code>javax.jms.ConnectionFactory</code></entry>
-                <entry>
-                  <para>This is a valid <code>ConectionFactory</code> instance that will be used to create a connection to the 
-                    JMS queue used by the JMS API.</para>
-                </entry>
-              </row>
-              <row>
-                <entry><code>username</code></entry>
-                <entry><code>java.lang.String</code></entry>
-                <entry>
-                  <para>This is the user name needed to access the JMS queues.</para>
-                </entry>
-              </row>
-              <row>
-                <entry><code>password</code></entry>
-                <entry><code>java.lang.String</code></entry>
-                <entry>
-                  <para>This is the password needed to access the JMS queues.</para>
-                </entry>
-              </row>
-              <row>
-                <entry><code>qosThresholdMillisecs</code></entry>
-                <entry><code>int</code></entry>
-                <entry>
-                  <para>This maximum number of milliseconds to wait when waiting for a response from the server.</para>
-                </entry>
-              </row>
-            </tbody>
-          </tgroup>
-        </table>
-      </para>
-      
-      <para>The following constructors are also available for users who wish to use the default quality of service threshold value (maximum wait time) for 
-        JMS messages, or otherwise configured the JMS queues to accept all connections:
-        
-        <table frame="all">
-          <title>RemoteJmsRuntimeEngineFactory constructor arguments</title>
-          <tgroup cols="3" align="left" rowsep="1" colsep="1">
-            <thead valign="top">
-              <row>
-                <entry>Name</entry>
-                <entry>Type</entry>
-                <entry>Description</entry>
-              </row>
-            </thead>
-            <tbody valign="top">
-              <row>
-                <entry><code>deploymentId</code></entry>
-                <entry><code>java.lang.String</code></entry>
-                <entry>
-                  <para>This is the name (id) of the deployment the <code>RuntimeEngine</code>
-                    should interact with.</para>
-                </entry>
-              </row>
-            </tbody>
-          </tgroup>
-        </table>
-      </para>
-      
       <formalpara>
         <title>Configuration using <code>ConnectionFactory</code> and <code>Queue</code> instance parameters</title>
         <para>Some users may have direct access to a <code>ConnectionFactory</code> and the
@@ -347,8 +671,7 @@ private static InitialContext getRemoteInitialContext(String jbossServerHostName
       </para>
       </formalpara>
     </section>
-    
-    
+
   <!--section>
     <title>REST helper classe</title>
     
