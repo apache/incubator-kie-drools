@@ -26,6 +26,7 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.Context;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -42,22 +43,28 @@ public class InsertObjectInEntryPointCommand
     private String outIdentifier;
     private boolean returnObject = true;
 
+    @XmlAttribute(name="entry-point")
+    private String entryPoint;
+
     public InsertObjectInEntryPointCommand() {
     }
 
-    public InsertObjectInEntryPointCommand(Object object) {
+    public InsertObjectInEntryPointCommand(Object object, String entryPoint) {
         this.object = object;
+        this.entryPoint = entryPoint;
     }
 
-    public InsertObjectInEntryPointCommand(Object object, String outIdentifier) {
+    public InsertObjectInEntryPointCommand(Object object, String entryPoint, String outIdentifier) {
         super();
         this.object = object;
+        this.entryPoint = entryPoint;
         this.outIdentifier = outIdentifier;
     }
 
     public FactHandle execute(Context context) {
 
-        EntryPoint ep = ((KnowledgeCommandContext) context).getWorkingMemoryEntryPoint();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        EntryPoint ep = ksession.getEntryPoint(entryPoint);
         FactHandle factHandle = ep.insert(object);
 
         DefaultFactHandle disconnectedHandle = ((DefaultFactHandle) factHandle).clone();
@@ -100,6 +107,6 @@ public class InsertObjectInEntryPointCommand
     }
 
     public String toString() {
-        return "session.insert(" + object + ");";
+        return "session.getEntryPoint(" + entryPoint + ").insert(" + object + ");";
     }
 }
