@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -37,6 +38,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.apache.commons.io.IOUtils;
+import org.drools.core.util.StringUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
@@ -227,7 +229,17 @@ public class BenchmarkReport {
     // Write methods
     // ************************************************************************
 
-    public void initSubdirs() {
+    public void initBenchmarkReportDirectoryInBenchmarkDirectory(File benchmarkDirectory) {
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(plannerBenchmarkResult.getStartingTimestamp());
+        if (StringUtils.isEmpty(plannerBenchmarkResult.getName())) {
+            plannerBenchmarkResult.setName(timestamp);
+        }
+        benchmarkReportDirectory = new File(benchmarkDirectory, timestamp);
+        boolean benchmarkReportDirectoryAdded = benchmarkReportDirectory.mkdirs();
+        if (!benchmarkReportDirectoryAdded) {
+            throw new IllegalArgumentException("The benchmarkReportDirectory (" + benchmarkReportDirectory
+                    + ") creation failed. It probably already exists.");
+        }
         for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
             problemBenchmarkResult.initSubdirs(benchmarkReportDirectory);
         }

@@ -18,7 +18,6 @@ package org.optaplanner.benchmark.impl.result;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -46,7 +45,7 @@ public class SingleBenchmarkResult {
     @XStreamOmitField // Lazily restored when read through ProblemStatistic and CSV files
     private Map<StatisticType, SingleStatistic> singleStatisticMap;
 
-    private File reportDirectory = null;
+    private File singleReportDirectory = null;
 
     private Integer planningEntityCount = null;
     private Long usedMemoryAfterInputSolution = null;
@@ -101,8 +100,8 @@ public class SingleBenchmarkResult {
         return singleStatisticMap;
     }
 
-    public File getReportDirectory() {
-        return reportDirectory;
+    public File getSingleReportDirectory() {
+        return singleReportDirectory;
     }
 
     public Integer getPlanningEntityCount() {
@@ -226,8 +225,11 @@ public class SingleBenchmarkResult {
     // ************************************************************************
 
     public void initSubdirs(File problemReportDirectory) {
-        reportDirectory = new File(problemReportDirectory, solverBenchmarkResult.getName());
-        reportDirectory.mkdirs();
+        singleReportDirectory = new File(problemReportDirectory, solverBenchmarkResult.getName());
+        singleReportDirectory.mkdirs();
+        for (SingleStatistic singleStatistic : singleStatisticMap.values()) {
+            singleStatistic.initSubdirs(singleReportDirectory);
+        }
     }
 
     public void accumulateResults(BenchmarkReport benchmarkReport) {

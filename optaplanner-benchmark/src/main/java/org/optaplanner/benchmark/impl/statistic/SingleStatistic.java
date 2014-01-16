@@ -45,7 +45,6 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
     protected SingleStatistic(SingleBenchmarkResult singleBenchmarkResult, StatisticType statisticType) {
         this.singleBenchmarkResult = singleBenchmarkResult;
         this.statisticType = statisticType;
-        csvFile = new File(singleBenchmarkResult.getReportDirectory(), statisticType.name() + ".csv");
     }
 
     public StatisticType getStatisticType() {
@@ -62,6 +61,10 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
     // ************************************************************************
     // Lifecycle methods
     // ************************************************************************
+
+    public void initSubdirs(File singleReportDirectory) {
+        csvFile = new File(singleReportDirectory, statisticType.name() + ".csv");
+    }
 
     public abstract void open(Solver solver);
 

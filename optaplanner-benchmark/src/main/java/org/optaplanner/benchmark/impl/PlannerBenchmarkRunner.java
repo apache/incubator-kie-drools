@@ -75,6 +75,10 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         this.benchmarkReport = benchmarkReport;
     }
 
+    // ************************************************************************
+    // Benchmark methods
+    // ************************************************************************
+
     public void benchmark() {
         benchmarkingStarted();
         warmUp();
@@ -106,18 +110,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         }
         // benchmarkDirectory usually already exists
         benchmarkDirectory.mkdirs();
-        String timestamp = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(plannerBenchmarkResult.getStartingTimestamp());
-        if (StringUtils.isEmpty(plannerBenchmarkResult.getName())) {
-            plannerBenchmarkResult.setName(timestamp);
-        }
-        File benchmarkReportDirectory = new File(benchmarkDirectory, timestamp);
-        boolean benchmarkReportDirectoryAdded = benchmarkReportDirectory.mkdirs();
-        if (!benchmarkReportDirectoryAdded) {
-            throw new IllegalArgumentException("The benchmarkReportDirectory (" + benchmarkReportDirectory
-                    + ") creation failed. It probably already exists.");
-        }
-        benchmarkReport.setBenchmarkReportDirectory(benchmarkReportDirectory);
-        benchmarkReport.initSubdirs();
+        benchmarkReport.initBenchmarkReportDirectoryInBenchmarkDirectory(benchmarkDirectory);
     }
 
     private void warmUp() {

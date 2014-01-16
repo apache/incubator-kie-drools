@@ -16,22 +16,63 @@
 
 package org.optaplanner.benchmark.impl.aggregator;
 
+import java.io.File;
+import java.util.Date;
 import java.util.List;
 
+import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
+import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BenchmarkAggregator {
 
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+
+    private File benchmarkDirectory = null;
+
+    public File getBenchmarkDirectory() {
+        return benchmarkDirectory;
+    }
+
+    public void setBenchmarkDirectory(File benchmarkDirectory) {
+        this.benchmarkDirectory = benchmarkDirectory;
+    }
+
+    // ************************************************************************
+    // Aggregate methods
+    // ************************************************************************
+
     public void aggregate(List<SingleBenchmarkResult> singleBenchmarkResultList) {
+        if (benchmarkDirectory == null) {
+            throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory + ") must not be null.");
+        }
+        if (!benchmarkDirectory.exists()) {
+            throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory + ") must exist.");
+        }
+        Date startingTimestamp = new Date();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             singleBenchmarkResult.initSingleStatisticMap();
             for (SingleStatistic singleStatistic : singleBenchmarkResult.getSingleStatisticMap().values()) {
+                singleStatistic.initSubdirs(singleBenchmarkResult.getSingleReportDirectory());
                 singleStatistic.readCsvStatisticFile();
             }
         }
-        PlannerBenchmarkResult mergedResult = PlannerBenchmarkResult.createMergedResult(singleBenchmarkResultList);
+        PlannerBenchmarkResult plannerBenchmarkResult
+                = PlannerBenchmarkResult.createMergedResult(singleBenchmarkResultList);
+        plannerBenchmarkResult.setStartingTimestamp(startingTimestamp);
+
+        // TODO HACK POC
+        BenchmarkReport benchmarkReport = new BenchmarkReportConfig().buildBenchmarkReport(plannerBenchmarkResult);
+        benchmarkReport.initBenchmarkReportDirectoryInBenchmarkDirectory(benchmarkDirectory);
+        plannerBenchmarkResult.accumulateResults(benchmarkReport);
+        benchmarkReport.writeReport();
+
+        logger.info("Aggregation ended: statistic html overview ({}).",
+                benchmarkReport.getHtmlOverviewFile().getAbsolutePath());
     }
 
 }

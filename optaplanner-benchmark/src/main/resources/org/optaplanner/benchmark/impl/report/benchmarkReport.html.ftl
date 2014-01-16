@@ -522,7 +522,7 @@
                     </tr>
                     <tr>
                         <th>benchmarkTimeMillisSpend</th>
-                        <td>${benchmarkReport.plannerBenchmarkResult.benchmarkTimeMillisSpend} ms</td>
+                        <td>${benchmarkReport.plannerBenchmarkResult.benchmarkTimeMillisSpend!""} ms</td>
                     </tr>
                     <tr>
                         <th>failureCount</th>

@@ -33,7 +33,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
+import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
 import org.optaplanner.benchmark.impl.aggregator.BenchmarkAggregator;
+import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.BenchmarkResultIO;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
@@ -125,6 +127,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
             }
         }
         BenchmarkAggregator benchmarkAggregator = new BenchmarkAggregator();
+        benchmarkAggregator.setBenchmarkDirectory(benchmarkDirectory);
         benchmarkAggregator.aggregate(singleBenchmarkResultList);
     }
 
