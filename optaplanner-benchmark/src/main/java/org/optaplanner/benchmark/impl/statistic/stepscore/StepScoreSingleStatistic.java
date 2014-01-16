@@ -79,7 +79,7 @@ public class StepScoreSingleStatistic extends SingleStatistic<StepScoreStatistic
     // ************************************************************************
 
     @Override
-    protected List<String> getCsvHeader() {
+    protected String getCsvHeader() {
         return StepScoreStatisticPoint.buildCsvLine("timeMillisSpend", "score");
     }
 

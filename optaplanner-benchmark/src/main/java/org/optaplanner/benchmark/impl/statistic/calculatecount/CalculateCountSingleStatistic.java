@@ -111,7 +111,7 @@ public class CalculateCountSingleStatistic extends SingleStatistic<CalculateCoun
     // ************************************************************************
 
     @Override
-    protected List<String> getCsvHeader() {
+    protected String getCsvHeader() {
         return CalculateCountStatisticPoint.buildCsvLine("timeMillisSpend", "calculateCountPerSecond");
     }
 

@@ -97,7 +97,7 @@ public class MemoryUseSingleStatistic extends SingleStatistic<MemoryUseStatistic
     // ************************************************************************
 
     @Override
-    protected List<String> getCsvHeader() {
+    protected String getCsvHeader() {
         return MemoryUseStatisticPoint.buildCsvLine("timeMillisSpend", "usedMemory", "maxMemory");
     }
 

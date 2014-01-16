@@ -40,7 +40,7 @@ public class BestScoreStatisticPoint extends StatisticPoint {
     }
 
     @Override
-    public List<String> toCsvLine() {
+    public String toCsvLine() {
         return buildCsvLineWithStrings(timeMillisSpend, score.toString());
     }
 

@@ -24,41 +24,63 @@ import java.util.List;
  */
 public abstract class StatisticPoint {
 
-    public abstract List<String> toCsvLine();
+    public abstract String toCsvLine();
 
-    public static List<String> buildCsvLineWithLongs(long timeMillisSpend, long... values) {
-        List<String> line = new ArrayList<String>(values.length + 1);
-        line.add(Long.toString(timeMillisSpend));
+    public static String buildCsvLineWithLongs(long timeMillisSpend, long... values) {
+        StringBuilder line = new StringBuilder(values.length * 10);
+        line.append(Long.toString(timeMillisSpend));
         for (long value : values) {
-            line.add(Long.toString(value));
+            line.append(",").append(Long.toString(value));
         }
-        return line;
+        return line.toString();
     }
 
-    public static List<String> buildCsvLineWithDoubles(long timeMillisSpend, double... values) {
-        List<String> line = new ArrayList<String>(values.length + 1);
-        line.add(Long.toString(timeMillisSpend));
+    public static String buildCsvLineWithDoubles(long timeMillisSpend, double... values) {
+        StringBuilder line = new StringBuilder(values.length * 10);
+        line.append(Long.toString(timeMillisSpend));
         for (double value : values) {
-            line.add(Double.toString(value));
+            line.append(",").append(Double.toString(value));
         }
-        return line;
+        return line.toString();
     }
 
-    public static List<String> buildCsvLineWithStrings(long timeMillisSpend, String... values) {
-        List<String> line = new ArrayList<String>(values.length + 1);
-        line.add(Long.toString(timeMillisSpend));
+    public static String buildCsvLineWithStrings(long timeMillisSpend, String... values) {
+        StringBuilder line = new StringBuilder(values.length * 10);
+        line.append(Long.toString(timeMillisSpend));
         for (String value : values) {
-            line.add("\"" + value.replaceAll("\"", "\"\"") + "\"");
+            line.append(",").append("\"").append(value.replaceAll("\"", "\"\"")).append("\"");
         }
-        return line;
+        return line.toString();
     }
 
-    public static List<String> buildCsvLine(String... values) {
-        List<String> line = new ArrayList<String>(values.length);
+    public static String buildCsvLine(String... values) {
+        StringBuilder line = new StringBuilder(values.length * 10);
         for (String value : values) {
-            line.add("\"" + value.replaceAll("\"", "\"\"") + "\"");
+            line.append(",").append("\"").append(value.replaceAll("\"", "\"\"")).append("\"");
         }
-        return line;
+        return line.substring(1).toString();
+    }
+
+    public static List<String> parseCsvLine(String line) {
+        String[] tokens = line.split(",");
+        List<String> csvLine = new ArrayList<String>(tokens.length);
+        for (int i = 0; i < tokens.length; i++) {
+            String token = tokens[i];
+            while (token.trim().startsWith("\"") && !token.trim().endsWith("\"")) {
+                i++;
+                if (i >= tokens.length) {
+                    throw new IllegalArgumentException("The CSV line (" + line + ") is not a valid CSV line.");
+                }
+                token += tokens[i];
+            }
+            token = token.trim();
+            if (token.startsWith("\"") && token.endsWith("\"")) {
+                token = token.substring(1, token.length() - 1);
+                token = token.replaceAll("\"\"", "\"");
+            }
+            csvLine.add(token);
+        }
+        return csvLine;
     }
 
 }

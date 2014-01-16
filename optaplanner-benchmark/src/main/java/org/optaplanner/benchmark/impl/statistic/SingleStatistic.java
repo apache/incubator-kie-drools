@@ -45,6 +45,7 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
     protected SingleStatistic(SingleBenchmarkResult singleBenchmarkResult, StatisticType statisticType) {
         this.singleBenchmarkResult = singleBenchmarkResult;
         this.statisticType = statisticType;
+        csvFile = new File(singleBenchmarkResult.getReportDirectory(), statisticType.name() + ".csv");
     }
 
     public StatisticType getStatisticType() {
@@ -70,39 +71,24 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
     // Write methods
     // ************************************************************************
 
-    protected abstract List<String> getCsvHeader();
+    protected abstract String getCsvHeader();
 
     public void writeCsvStatisticFile() {
-        csvFile = new File(singleBenchmarkResult.getReportDirectory(), statisticType.name() + ".csv");
         Writer writer = null;
         try {
             writer = new OutputStreamWriter(new FileOutputStream(csvFile), "UTF-8");
-            writeCsvLine(writer, getCsvHeader());
-            writer.append("\n");
+            writer.append(getCsvHeader()).append("\n");
             for (StatisticPoint point : getPointList()) {
-                writeCsvLine(writer, point.toCsvLine());
+                writer.append(point.toCsvLine()).append("\n");
             }
             if (singleBenchmarkResult.isFailure()) {
                 writer.append("Failed\n");
             }
         } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing csvFile: " + csvFile, e);
+            throw new IllegalArgumentException("Failed writing csvFile (" + csvFile + ").", e);
         } finally {
             IOUtils.closeQuietly(writer);
         }
-    }
-
-    private void writeCsvLine(Writer writer, List<String> line) throws IOException {
-        boolean firstToken = true;
-        for (String token : line) {
-            if (firstToken) {
-                firstToken = false;
-            } else {
-                writer.append(",");
-            }
-            writer.append(token);
-        }
-        writer.append("\n");
     }
 
     public void readCsvStatisticFile() {
@@ -115,30 +101,20 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new InputStreamReader(new FileInputStream(csvFile), "UTF-8"));
-            for (String line = reader.readLine(); line != null && !line.isEmpty(); line = reader.readLine()) {
-                String[] tokens = line.split(",");
-                List<String> csvLine = new ArrayList<String>(tokens.length);
-                for (int i = 0; i < tokens.length; i++) {
-                    String token = tokens[i];
-                    while (token.trim().startsWith("\"") && !token.trim().endsWith("\"")) {
-                        i++;
-                        if (i >= tokens.length) {
-                            throw new IllegalArgumentException("The CSV line (" + line
-                                    + ") is not valid in csvFile (" + csvFile + ").");
-                        }
-                        token += tokens[i];
-                    }
-                    token = token.trim();
-                    if (token.startsWith("\"") && token.endsWith("\"")) {
-                        token = token.substring(1, token.length() - 1);
-                        token = token.replaceAll("\"\"", "\"");
-                    }
-                    csvLine.add(token);
-                }
+            String line = reader.readLine();
+            if (!getCsvHeader().equals(line)) {
+                throw new IllegalStateException("The read line (" + line
+                        + ") is expected to be the head line (" + getCsvHeader()
+                        + ") for statisticType (" + statisticType + ").");
+            }
+            for (line = reader.readLine(); line != null && !line.isEmpty(); line = reader.readLine()) {
+                List<String> csvLine = StatisticPoint.parseCsvLine(line);
                 pointList.add(createPointFromCsvLine(scoreDefinition, csvLine));
             }
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException("Failed reading csvFile (" + csvFile + ").", e);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Problem reading csvFile: " + csvFile, e);
+            throw new IllegalArgumentException("Failed reading csvFile (" + csvFile + ").", e);
         } finally {
             IOUtils.closeQuietly(reader);
         }

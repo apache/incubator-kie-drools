@@ -99,7 +99,7 @@ public class BestSolutionMutationSingleStatistic extends SingleStatistic<BestSol
     // ************************************************************************
 
     @Override
-    protected List<String> getCsvHeader() {
+    protected String getCsvHeader() {
         return BestSolutionMutationStatisticPoint.buildCsvLine("timeMillisSpend", "mutationCount");
     }
 

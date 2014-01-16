@@ -75,7 +75,7 @@ public class BestScoreSingleStatistic extends SingleStatistic<BestScoreStatistic
     // ************************************************************************
 
     @Override
-    protected List<String> getCsvHeader() {
+    protected String getCsvHeader() {
         return BestScoreStatisticPoint.buildCsvLine("timeMillisSpend", "score");
     }
 

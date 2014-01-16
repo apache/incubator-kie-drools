@@ -86,7 +86,7 @@ public class MoveCountPerStepSingleStatistic extends SingleStatistic<MoveCountPe
     // ************************************************************************
 
     @Override
-    protected List<String> getCsvHeader() {
+    protected String getCsvHeader() {
         return MoveCountPerStepStatisticPoint.buildCsvLine("timeMillisSpend", "acceptedMoveCount", "selectedMoveCount");
     }
 
