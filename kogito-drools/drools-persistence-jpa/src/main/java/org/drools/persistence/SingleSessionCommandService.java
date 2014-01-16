@@ -27,11 +27,13 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.command.CommandService;
 import org.drools.core.command.Interceptor;
 import org.drools.core.command.impl.AbstractInterceptor;
+import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.DefaultCommandService;
 import org.drools.core.command.impl.FixedKnowledgeCommandContext;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.command.runtime.DisposeCommand;
+import org.drools.core.command.runtime.UnpersistableCommand;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -157,7 +159,7 @@ public class SingleSessionCommandService
         
         ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
         
-        this.kContext = new FixedKnowledgeCommandContext( null,
+        this.kContext = new FixedKnowledgeCommandContext( new ContextImpl( "ksession", null),
                                                           null,
                                                           null,
                                                           this.ksession,
@@ -269,7 +271,7 @@ public class SingleSessionCommandService
 
         if ( this.kContext == null ) {
             // this should only happen when this class is first constructed
-            this.kContext = new FixedKnowledgeCommandContext( null,
+            this.kContext = new FixedKnowledgeCommandContext( new ContextImpl( "ksession", null),
                                                               null,
                                                               null,
                                                               this.ksession,
@@ -492,6 +494,10 @@ public class SingleSessionCommandService
 
         @Override
         public <T> T execute(Command<T> command) {
+            if (command instanceof UnpersistableCommand) {
+                throw new UnsupportedOperationException("Command " + command + " cannot be issued on a persisted session");
+            }
+
             if (command instanceof DisposeCommand) {
                 T result = executeNext( (GenericCommand<T>) command );
                 jpm.dispose();

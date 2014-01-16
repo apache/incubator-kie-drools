@@ -195,7 +195,9 @@ public class AgendaGroupQueueImpl
     }
 
     public Activation[] getActivations() {
-        return (Activation[]) this.priorityQueue.toArray(new AgendaItem[this.priorityQueue.size()]);
+        synchronized (this.priorityQueue) {
+            return (Activation[]) this.priorityQueue.toArray(new AgendaItem[this.priorityQueue.size()]);
+        }
     }
 
     @Override

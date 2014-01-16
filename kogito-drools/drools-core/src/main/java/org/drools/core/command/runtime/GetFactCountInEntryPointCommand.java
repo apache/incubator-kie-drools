@@ -14,40 +14,30 @@
  * limitations under the License.
  */
 
-package org.drools.core.command.runtime.rule;
+package org.drools.core.command.runtime;
 
-import org.drools.core.command.EntryPointCreator;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.internal.command.Context;
 
-public class GetEntryPointCommand
+public class GetFactCountInEntryPointCommand
     implements
-    GenericCommand<EntryPoint> {
+    GenericCommand<Long> {
 
-    private String name;
-    
-    public GetEntryPointCommand() {
+    private String entryPoint;
+
+    public GetFactCountInEntryPointCommand(String entryPoint) {
+        this.entryPoint = entryPoint;
     }
 
-    public GetEntryPointCommand(String name) {
-        this.name = name;
-    }
-
-    public EntryPoint execute(Context context) {
+    public Long execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-        EntryPoint ep = ksession.getEntryPoint(name);
-        if (ep == null) {
-            return null;
-        }
-
-        EntryPointCreator epCreator = (EntryPointCreator)context.get(EntryPointCreator.class.getName());
-        return epCreator != null ? epCreator.getEntryPoint(name) : ep;
+        return ksession.getEntryPoint(entryPoint).getFactCount();
     }
 
     public String toString() {
-        return "session.getEntryPoint( " + name + " );";
+        return "ksession.getEntryPoint( " + entryPoint + " ).getFactCount();";
     }
+
 }

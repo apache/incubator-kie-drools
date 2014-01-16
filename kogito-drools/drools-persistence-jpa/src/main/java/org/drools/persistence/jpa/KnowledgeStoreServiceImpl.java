@@ -17,6 +17,8 @@
 
 import org.drools.core.SessionConfiguration;
 import org.drools.core.command.CommandService;
+import org.drools.core.command.EntryPointCreator;
+import org.drools.core.command.impl.CommandBasedEntryPoint;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
@@ -26,6 +28,7 @@ import org.kie.api.persistence.jpa.KieStoreServices;
 import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 
@@ -64,9 +67,12 @@ public class KnowledgeStoreServiceImpl
             throw new IllegalArgumentException( "Environment cannot be null" );
         }
 
-        return new CommandBasedStatefulKnowledgeSession( (CommandService) buildCommandService( kbase,
-                                                                             mergeConfig( configuration ),
-                                                                             environment ) );
+        CommandService commandService = (CommandService) buildCommandService( kbase,
+                                                                              mergeConfig( configuration ),
+                                                                              environment );
+        commandService.getContext().set(EntryPointCreator.class.getName(),
+                                        new CommandBasedEntryPointCreator(commandService));
+        return new CommandBasedStatefulKnowledgeSession( commandService );
     }
 
     public StatefulKnowledgeSession loadKieSession(int id,
@@ -81,10 +87,25 @@ public class KnowledgeStoreServiceImpl
             throw new IllegalArgumentException( "Environment cannot be null" );
         }
 
-        return new CommandBasedStatefulKnowledgeSession( (CommandService) buildCommandService( id,
-                                                                                              kbase,
-                                                                                              mergeConfig( configuration ),
-                                                                                              environment ) );
+        CommandService commandService = (CommandService) buildCommandService( id,
+                                                                              kbase,
+                                                                              mergeConfig( configuration ),
+                                                                              environment );
+        commandService.getContext().set(EntryPointCreator.class.getName(),
+                                        new CommandBasedEntryPointCreator(commandService));
+        return new CommandBasedStatefulKnowledgeSession( commandService );
+    }
+
+    public static class CommandBasedEntryPointCreator implements EntryPointCreator {
+        private final CommandService commandService;
+
+        public CommandBasedEntryPointCreator(CommandService commandService) {
+            this.commandService = commandService;
+        }
+
+        public EntryPoint getEntryPoint(String entryPoint) {
+            return new CommandBasedEntryPoint( commandService, entryPoint );
+        }
     }
 
     private CommandExecutor buildCommandService(Integer sessionId,
