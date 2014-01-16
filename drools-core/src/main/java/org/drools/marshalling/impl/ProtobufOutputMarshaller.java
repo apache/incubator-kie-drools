@@ -652,8 +652,6 @@ public class ProtobufOutputMarshaller {
 	}
 
 	public static InternalFactHandle[] orderFacts(ObjectStore objectStore) {
-		// this method is just needed for testing purposes, to allow round
-		// tripping
 		int size = objectStore.size();
 		InternalFactHandle[] handles = new InternalFactHandle[size];
 		int i = 0;

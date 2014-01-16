@@ -14,37 +14,30 @@
  * limitations under the License.
  */
 
-package org.drools.command.runtime.rule;
+package org.drools.command.runtime;
 
 import org.drools.command.Context;
-import org.drools.command.WorkingMemoryEntryPointBuilder;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
-public class GetWorkingMemoryEntryPointCommand
+public class GetFactCountInEntryPointCommand
     implements
-    GenericCommand<WorkingMemoryEntryPoint> {
+    GenericCommand<Long> {
 
-    private String name;
+    private String entryPoint;
 
-    public GetWorkingMemoryEntryPointCommand(String name) {
-        this.name = name;
+    public GetFactCountInEntryPointCommand(String entryPoint) {
+        this.entryPoint = entryPoint;
     }
 
-    public WorkingMemoryEntryPoint execute(Context context) {
+    public Long execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint(name);
-        if (ep == null) {
-            return null;
-        }
-
-        WorkingMemoryEntryPointBuilder epBuilder = (WorkingMemoryEntryPointBuilder)context.get(WorkingMemoryEntryPointBuilder.class.getName());
-        return epBuilder != null ? epBuilder.getWorkingMemoryEntryPoint(name) : ep;
+        return ksession.getWorkingMemoryEntryPoint(entryPoint).getFactCount();
     }
 
     public String toString() {
-        return "session.getWorkingMemoryEntryPoint( " + name + " );";
+        return "ksession.getWorkingMemoryEntryPoint(" + entryPoint + ").getFactCount();";
     }
+
 }

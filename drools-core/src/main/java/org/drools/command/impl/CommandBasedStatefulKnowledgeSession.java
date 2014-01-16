@@ -24,7 +24,6 @@ import java.util.Set;
 import org.drools.KnowledgeBase;
 import org.drools.command.Command;
 import org.drools.command.CommandService;
-import org.drools.command.ExecuteCommand;
 import org.drools.command.GetSessionClockCommand;
 import org.drools.command.Interceptor;
 import org.drools.command.runtime.AddEventListenerCommand;
@@ -32,6 +31,7 @@ import org.drools.command.runtime.DisposeCommand;
 import org.drools.command.runtime.GetCalendarsCommand;
 import org.drools.command.runtime.GetChannelsCommand;
 import org.drools.command.runtime.GetEnvironmentCommand;
+import org.drools.command.runtime.GetFactCountCommand;
 import org.drools.command.runtime.GetGlobalCommand;
 import org.drools.command.runtime.GetGlobalsCommand;
 import org.drools.command.runtime.GetIdCommand;
@@ -77,7 +77,6 @@ import org.drools.command.runtime.rule.UpdateCommand;
 import org.drools.event.process.ProcessEventListener;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.WorkingMemoryEventListener;
-import org.drools.impl.StatefulKnowledgeSessionImpl.AgendaFilterWrapper;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.rule.EntryPoint;
@@ -495,8 +494,7 @@ public class CommandBasedStatefulKnowledgeSession
     }
 
     public long getFactCount() {
-        // TODO: implement this
-        return 0;
+        return commandService.execute( new GetFactCountCommand());
     }
 
     public LiveQuery openLiveQuery(String query,
