@@ -86,6 +86,45 @@ public class RuleTemplateModelDRLPersistenceTest {
     }
 
     @Test
+    public void testRHSInsert() {
+        TemplateModel m = new TemplateModel();
+        m.name = "t1";
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( DataType.TYPE_STRING );
+        con.setFieldName( "field1" );
+        con.setOperator( "==" );
+        con.setValue( "$f1" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        ActionInsertFact actionInsertFact = new ActionInsertFact();
+        actionInsertFact.setFactType("Applicant");
+        ActionFieldValue actionFieldValue = new ActionFieldValue("age", "123", "Integer");
+        actionFieldValue.setNature(SingleFieldConstraint.TYPE_LITERAL );
+        actionInsertFact.addFieldValue(actionFieldValue);
+
+        m.addRhsItem(actionInsertFact);
+
+        m.addRow( new String[]{ "foo" } );
+
+        String expected = "rule \"t1_0\"" +
+                "dialect \"mvel\"\n" +
+                "when \n"
+                +  "Person( field1 == \"foo\" )\n"
+                + "then \n"
+                + "  Applicant fact0 = new Applicant(); \n"
+                + "  fact0.setAge(123); \n"
+                + "  insert(fact0); \n"
+                + "end";
+
+        checkMarshall( expected,
+                       m );
+    }
+
+    @Test
     public void testSimpleSingleTemplateValueSingleLiteralValue() {
         TemplateModel m = new TemplateModel();
         m.name = "t1";

@@ -38,6 +38,7 @@ import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.ConnectiveConstraint;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
+import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.models.datamodel.rule.FromCollectCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.IFactPattern;
@@ -364,12 +365,19 @@ public class RuleTemplateModelDRLPersistenceImpl
                    indentation );
         }
 
-        protected void generateSetMethodCall( String variableName,
-                                              ActionFieldValue fieldValue ) {
-            buf.append( "@if{" + fieldValue.getValue() + " != empty}" );
-            super.generateSetMethodCall( variableName,
-                                         fieldValue );
-            buf.append( "@end{}" );
+        protected void generateSetMethodCall(String variableName,
+                ActionFieldValue fieldValue) {
+
+            if (fieldValue.getNature() == FieldNatureType.TYPE_TEMPLATE) {
+                buf.append("@if{" + fieldValue.getValue() + " != empty}");
+                super.generateSetMethodCall(variableName,
+                        fieldValue);
+                buf.append("@end{}");
+            } else {
+                super.generateSetMethodCall(variableName,
+                        fieldValue);
+
+            }
         }
 
         @Override
@@ -423,6 +431,8 @@ public class RuleTemplateModelDRLPersistenceImpl
         boolean isDSLEnhanced = model.hasDSLSentences();
         bindingsPatterns = new HashMap<String, IFactPattern>();
         bindingsFields = new HashMap<String, FieldConstraint>();
+
+        fixActionInsertFactBindings( model.rhs );
 
         StringBuilder buf = new StringBuilder();
         StringBuilder header = new StringBuilder();

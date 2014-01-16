@@ -181,7 +181,7 @@ public class RuleModelDRLPersistenceImpl
         return buf.toString();
     }
 
-    private void fixActionInsertFactBindings( final IAction[] rhs ) {
+    protected void fixActionInsertFactBindings(final IAction[] rhs) {
         final Set<String> existingBindings = extractExistingActionBindings( rhs );
         for ( IAction action : rhs ) {
             if ( action instanceof ActionInsertFact ) {
