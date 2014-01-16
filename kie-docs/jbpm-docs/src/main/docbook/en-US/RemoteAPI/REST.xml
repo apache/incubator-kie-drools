@@ -1,45 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
- <section version="5.0"
-         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+<section version="5.0"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+  xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>REST</title>
 
-  <para>REST API calls to the execution server allow you to manage processes and tasks and retrieve various dynamic information from the execution server. 
-        All calls are synchronous, that is, the call will only complete, including the possible return of a result, once the requested operation
-        has succeeded.</para>
-  <para>When using Java code to interface with the REST API, the classes used in POST operations or otherwise returned by various operations can be found 
-        in the <code>(org.kie.remote:)kie-services-client</code> JAR.</para> 
+  <para>
+    REST API calls to the execution server allow you to manage processes and tasks and retrieve various dynamic information from the
+    execution server.
+    The majority of the calls are synchronous, which means that the call will only complete, including the possible return of a result,
+    once the
+    requested operation has succeeded. The exceptions to this are the deployment
+    <code>POST</code>
+    calls, which will return the status of the
+    request while the actual operation requested will asynchronously execute.
+  </para>
+  <para>
+    When using Java code to interface with the REST API, the classes used in POST operations or otherwise returned by various
+    operations can be found
+    in the
+    <code>(org.kie.remote:)kie-services-client</code>
+    JAR.
+  </para>
 
   <section>
     <title>Additional Information</title>
-   
+
     <section>
       <title>Serialization: JAXB or JSON</title>
-      <para>Except for the <link linkend='remote.rest.execute'>Execute calls</link>,  all other REST calls 
-        described below can use either JAXB or JSON.</para>
-      
+      <para>
+        Except for the
+        <link linkend='remote.rest.execute'>Execute calls</link>
+        , all other REST calls
+        described below can use either JAXB or JSON.
+      </para>
+
       <para>All REST calls, unless otherwise specified, will use JAXB serialization.</para>
-      
-      <para>When using JSON, make sure to add the JSON media type (<code>"application/json"</code>) to the <code>ACCEPT</code> header of your REST 
-        call.</para>     
+
+      <para>
+        When using JSON, make sure to add the JSON media type (
+        <code>"application/json"</code>
+        ) to the
+        <code>ACCEPT</code>
+        header of your REST
+        call.
+      </para>
     </section>
-    
+
     <section>
       <title>Serialization: classes from the deployment/KJar</title>
-      
-      <para>When interacting with the Remote API, users may want to pass instances of their own classes as parameters to certain operations. This
-      will only be possible if the KJar for a deployment includes these classes.</para>
-      
-      <para>For all REST calls that start with <code>/runtime/{deploymentId}</code>, no additional information is required in order to pass instances
-        of these classes.</para>
-      
-      <para>However, REST calls that start with <code>/task</code> often do not contain any information about the associated deployment. In that case, 
-        an extra query parameter will have to be added to the REST call so that the server can find the appropriate deployment with the class (definition)
-        and correctly deserialize the information passed with the call.</para>
-        
-      <para>Therefore, for REST calls for which the URL does not contain the deployment id, you'll need to add the following parameter: 
+
+      <para>When interacting with the Remote API, users may want to pass instances of their own classes as parameters to certain
+        operations. This
+        will only be possible if the KJar for a deployment includes these classes.
+      </para>
+
+      <para>
+        For all REST calls that start with
+        <code>/runtime/{deploymentId}</code>
+        , no additional information is required in order to pass instances
+        of these classes.
+      </para>
+
+      <para>
+        However, REST calls that start with
+        <code>/task</code>
+        often do not contain any information about the associated deployment. In that case,
+        an extra query parameter will have to be added to the REST call so that the server can find the appropriate deployment with the
+        class (definition)
+        and correctly deserialize the information passed with the call.
+      </para>
+
+      <para>
+        Therefore, for REST calls for which the URL does not contain the deployment id, you'll need to add the following parameter:
         <table frame="all">
           <title>Deployment id query parameter</title>
           <tgroup cols="2" align="left" rowsep="1" colsep="1">
@@ -51,27 +84,45 @@
             </thead>
             <tbody valign="top">
               <row>
-                <entry><code>deploymentId</code></entry>
-                <entry><para>Value (must match the regex <code>[a-zA-Z0-9-:\.]+</code>) specifies the deployment which contains the user-defined class(es) needed to 
-                correctly deserialze information passed in the call</para></entry>
+                <entry>
+                  <code>deploymentId</code>
+                </entry>
+                <entry>
+                  <para>
+                    Value (must match the regex
+                    <code>[a-zA-Z0-9-:\.]+</code>
+                    ) specifies the deployment which contains the user-defined class(es) needed to
+                    correctly deserialze information passed in the call
+                  </para>
+                </entry>
               </row>
             </tbody>
           </tgroup>
         </table>
       </para>
-      
+
     </section>
-    
+
     <section>
       <title>Pagination</title>
 
-      <para>Some of the REST calls below return lists of information. The results of these operations can be <emphasis>paginated</emphasis>, which 
-        means that the lists can be split up and returned according to the parameters sent by the user. </para>
-      <para>For example, if the REST call parameters indicate that <emphasis>page 2</emphasis> with <emphasis>page size 10</emphasis> should
-        be returned for the results, then results 10 to (and including) 19 will be returned. </para>
-      
+      <para>
+        Some of the REST calls below return lists of information. The results of these operations can be
+        <emphasis>paginated</emphasis>
+        , which
+        means that the lists can be split up and returned according to the parameters sent by the user.
+      </para>
+      <para>
+        For example, if the REST call parameters indicate that
+        <emphasis>page 2</emphasis>
+        with
+        <emphasis>page size 10</emphasis>
+        should
+        be returned for the results, then results 10 to (and including) 19 will be returned.
+      </para>
+
       <para>The first page is always page 1 (as opposed to page "0").</para>
-      
+
       <table frame="all">
         <title>Pagination query parameter syntax</title>
         <tgroup cols="2" align="left" rowsep="1" colsep="1">
@@ -83,31 +134,71 @@
           </thead>
           <tbody valign="top">
             <row>
-              <entry><code>page</code></entry>
-              <entry><para>The page number requested. The default value is 1.</para></entry>
+              <entry>
+                <code>page</code>
+              </entry>
+              <entry>
+                <para>The page number requested. The default value is 1.</para>
+              </entry>
             </row>
             <row>
-              <entry><code>p</code></entry>
-              <entry><para>Synonym for the above <code>page</code> parameter.</para></entry>
+              <entry>
+                <code>p</code>
+              </entry>
+              <entry>
+                <para>
+                  Synonym for the above
+                  <code>page</code>
+                  parameter.
+                </para>
+              </entry>
             </row>
             <row>
-              <entry><code>pageSize</code></entry>
-              <entry><para>The number of elements per page to return. The default value is 10.</para></entry>
+              <entry>
+                <code>pageSize</code>
+              </entry>
+              <entry>
+                <para>The number of elements per page to return. The default value is 10.</para>
+              </entry>
             </row>
             <row>
-              <entry><code>s</code></entry>
-              <entry><para>Synonym for the above <code>pageSize</code> parameter.</para></entry>
+              <entry>
+                <code>s</code>
+              </entry>
+              <entry>
+                <para>
+                  Synonym for the above
+                  <code>pageSize</code>
+                  parameter.
+                </para>
+              </entry>
             </row>
           </tbody>
         </tgroup>
       </table>
-      
-      <para>If both a "long" pagination parameter and its synonym are used, then only the value from the "long" variant is used. For example, if
-        the <code>page</code> is given with a value of 11 and the <code>p</code> parameter is given with a value of 37, then the value of the <code>page</code>
-        parameter, <emphasis>11</emphasis>, will be used and the <code>p</code> parameter will be ignored.</para>
-      
-      <para>For the following operations, pagination is <emphasis>always</emphasis> used. See above for the default values used.</para>
-      
+
+      <para>
+        If both a "long" pagination parameter and its synonym are used, then only the value from the "long" variant is used. For
+        example, if
+        the
+        <code>page</code>
+        is given with a value of 11 and the
+        <code>p</code>
+        parameter is given with a value of 37, then the value of the
+        <code>page</code>
+        parameter,
+        <emphasis>11</emphasis>
+        , will be used and the
+        <code>p</code>
+        parameter will be ignored.
+      </para>
+
+      <para>
+        For the following operations, pagination is
+        <emphasis>always</emphasis>
+        used. See above for the default values used.
+      </para>
+
       <table frame="all">
         <title>REST operations using pagination</title>
         <tgroup cols="2" align="left" rowsep="1" colsep="1">
@@ -119,98 +210,282 @@
           </thead>
           <tbody valign="top">
             <row>
-              <entry><para><code>/runtime/{deploymentId}/history/instance</code></para></entry>
-              <entry><para>Returns a list of <code>ProcessInstanceLog</code> instances</para></entry>
+              <entry>
+                <para>
+                  <code>/runtime/{deploymentId}/history/instance</code>
+                </para>
+              </entry>
+              <entry>
+                <para>
+                  Returns a list of
+                  <code>ProcessInstanceLog</code>
+                  instances
+                </para>
+              </entry>
             </row>
             <row>
-              <entry><para><code>runtime/{deploymentId}/history/instance/{procInstid}</code></para></entry>
-              <entry><para>Returns a list of <code>ProcessInstanceLog</code> instances</para></entry>
+              <entry>
+                <para>
+                  <code>runtime/{deploymentId}/history/instance/{procInstid}</code>
+                </para>
+              </entry>
+              <entry>
+                <para>
+                  Returns a list of
+                  <code>ProcessInstanceLog</code>
+                  instances
+                </para>
+              </entry>
             </row>
             <row>
-              <entry><para><code>/runtime/{deploymentId}/history/instance/{procInstId}/child</code></para></entry>              
-              <entry><para>Returns a list of <code>ProcessInstanceLog</code> instances</para></entry>
+              <entry>
+                <para>
+                  <code>/runtime/{deploymentId}/history/instance/{procInstId}/child</code>
+                </para>
+              </entry>
+              <entry>
+                <para>
+                  Returns a list of
+                  <code>ProcessInstanceLog</code>
+                  instances
+                </para>
+              </entry>
             </row>
             <row>
-              <entry><para><code>/runtime/{deploymentId}/history/instance/{procInstId}/node</code></para></entry>
-              <entry><para>Returns a list of <code>NodeInstanceLog</code> instances</para></entry>
+              <entry>
+                <para>
+                  <code>/runtime/{deploymentId}/history/instance/{procInstId}/node</code>
+                </para>
+              </entry>
+              <entry>
+                <para>
+                  Returns a list of
+                  <code>NodeInstanceLog</code>
+                  instances
+                </para>
+              </entry>
             </row>
             <row>
-              <entry><para><code>/runtime/{deploymentId}/history/instance/{procInstId}/node/{nodeId}</code></para></entry>
-              <entry><para>Returns a list of <code>NodeInstanceLog</code> instances</para></entry>
+              <entry>
+                <para>
+                  <code>/runtime/{deploymentId}/history/instance/{procInstId}/node/{nodeId}</code>
+                </para>
+              </entry>
+              <entry>
+                <para>
+                  Returns a list of
+                  <code>NodeInstanceLog</code>
+                  instances
+                </para>
+              </entry>
             </row>
             <row>
-              <entry><para><code>/runtime/{deploymentId}/history/instance/{procInstId}/variable</code></para></entry>
-              <entry><para>Returns a list of <code>VariableInstanceLog</code> instances</para></entry>
+              <entry>
+                <para>
+                  <code>/runtime/{deploymentId}/history/instance/{procInstId}/variable</code>
+                </para>
+              </entry>
+              <entry>
+                <para>
+                  Returns a list of
+                  <code>VariableInstanceLog</code>
+                  instances
+                </para>
+              </entry>
             </row>
             <row>
-              <entry><para><code>/runtime/{deploymentId}/history/instance/{procInstId}/variable/{varId}</code></para></entry>
-              <entry><para>Returns a list of <code>VariableInstanceLog</code> instances</para></entry>
+              <entry>
+                <para>
+                  <code>/runtime/{deploymentId}/history/instance/{procInstId}/variable/{varId}</code>
+                </para>
+              </entry>
+              <entry>
+                <para>
+                  Returns a list of
+                  <code>VariableInstanceLog</code>
+                  instances
+                </para>
+              </entry>
             </row>
             <row>
-              <entry><para><code>/runtime/{deploymentId}/history/variable/{variableId}</code></para></entry>
-              <entry><para>Returns a list of <code>VariableInstanceLog</code> instances</para></entry>
+              <entry>
+                <para>
+                  <code>/runtime/{deploymentId}/history/variable/{variableId}</code>
+                </para>
+              </entry>
+              <entry>
+                <para>
+                  Returns a list of
+                  <code>VariableInstanceLog</code>
+                  instances
+                </para>
+              </entry>
             </row>
             <row>
-              <entry><para><code>/runtime/{deploymentId}/history/variable/{variableId}/instances</code></para></entry>
-              <entry><para>Returns a list of <code>ProcessInstance</code> instances</para></entry>
+              <entry>
+                <para>
+                  <code>/runtime/{deploymentId}/history/variable/{variableId}/instances</code>
+                </para>
+              </entry>
+              <entry>
+                <para>
+                  Returns a list of
+                  <code>ProcessInstance</code>
+                  instances
+                </para>
+              </entry>
             </row>
             <row>
-              <entry><para><code>/runtime/{deploymentId}/history/variable/{variableId}/value/{value}</code></para></entry>
-              <entry><para>Returns a list of <code>VariableInstanceLog</code> instances</para></entry>
+              <entry>
+                <para>
+                  <code>/runtime/{deploymentId}/history/variable/{variableId}/value/{value}</code>
+                </para>
+              </entry>
+              <entry>
+                <para>
+                  Returns a list of
+                  <code>VariableInstanceLog</code>
+                  instances
+                </para>
+              </entry>
             </row>
             <row>
-              <entry><para><code>/runtime/{deploymentId}/history/variable/{variableId}/value/{value}/instances</code></para></entry>
-              <entry><para>Returns a list of <code>ProcessInstance</code> instances</para></entry>
+              <entry>
+                <para>
+                  <code>/runtime/{deploymentId}/history/variable/{variableId}/value/{value}/instances</code>
+                </para>
+              </entry>
+              <entry>
+                <para>
+                  Returns a list of
+                  <code>ProcessInstance</code>
+                  instances
+                </para>
+              </entry>
             </row>
             <row>
-              <entry><para><code>/runtime/{deploymentId}/history/process/{procDefId}</code></para></entry>
-              <entry><para>Returns a list of <code>ProcessInstanceLog</code> instances</para></entry>
+              <entry>
+                <para>
+                  <code>/runtime/{deploymentId}/history/process/{procDefId}</code>
+                </para>
+              </entry>
+              <entry>
+                <para>
+                  Returns a list of
+                  <code>ProcessInstanceLog</code>
+                  instances
+                </para>
+              </entry>
             </row>
             <row>
-              <entry><para><code>/task/query</code></para></entry>
-              <entry><para>Returns a list of <code>TaskSummaryImpl</code> instances</para></entry>
+              <entry>
+                <para>
+                  <code>/task/query</code>
+                </para>
+              </entry>
+              <entry>
+                <para>
+                  Returns a list of
+                  <code>TaskSummaryImpl</code>
+                  instances
+                </para>
+              </entry>
             </row>
           </tbody>
         </tgroup>
       </table>
-      
+
     </section>
- 
+
     <section>
       <title>Map query parameters</title>
 
-      <para>If you're triggering an operation with a REST API call that would normally (e.g. when interacting the same operation on a local 
-        <code>KieSession</code> or <code>TaskService</code> instance) take an instance of a <code>java.util.Map</code> as one of its parameters, 
-        you can submit key-value pairs to the operation to simulate this behaviour by passing a query parameter whose name starts with 
-        <code>map_</code>.</para>
-        <example>
-          <para>If you pass the query parameter <code>map_kEy=vAlue</code> in a REST call, then the <code>Map</code> that's passed to the 
-            actual underlying <code>KieSession</code> or <code>TaskService</code> operation will contain this (<code>String, String</code>) key value pair: 
-            <code>"kEy" => "vAlue"</code>.You could pass this parameter like so:</para> 
-          <para><code>http://localhost:8080/kie-wb/rest/runtime/myproject/process/wonka.factory.loompa.hire/start?map_kEy=vAlue</code></para>
-          <para>Map query parameters also use the object query parameter syntax described below, so the following query parameter, 
-            <code>map_total=5000</code> will be translated into a key-value pair in a map where the key is the String "total" and the value is a Long with the 
-            value of 5000. For example:</para>
-          <para><code>http://localhost:8080/kie-wb/rest/runtime/myproject/process/wonka.factory.oompa.chocolate/start?map_total=5000</code></para>
-        </example>
-        
-        <para>The following operations take query map parameters:
+      <para>
+        If you're triggering an operation with a REST API call that would normally (e.g. when interacting the same operation on a
+        local
+        <code>KieSession</code>
+        or
+        <code>TaskService</code>
+        instance) take an instance of a
+        <code>java.util.Map</code>
+        as one of its parameters,
+        you can submit key-value pairs to the operation to simulate this behaviour by passing a query parameter whose name starts with
+        <code>map_</code>
+        .
+      </para>
+      <example>
+        <para>
+          If you pass the query parameter
+          <code>map_kEy=vAlue</code>
+          in a REST call, then the
+          <code>Map</code>
+          that's passed to the
+          actual underlying
+          <code>KieSession</code>
+          or
+          <code>TaskService</code>
+          operation will contain this (
+          <code>String, String</code>
+          ) key value pair:
+          <code>"kEy" => "vAlue"</code>
+          .You could pass this parameter like so:
+        </para>
+        <para>
+          <code>http://localhost:8080/kie-wb/rest/runtime/myproject/process/wonka.factory.loompa.hire/start?map_kEy=vAlue</code>
+        </para>
+        <para>
+          Map query parameters also use the object query parameter syntax described below, so the following query parameter,
+          <code>map_total=5000</code>
+          will be translated into a key-value pair in a map where the key is the String "total" and the value is a Long with the
+          value of 5000. For example:
+        </para>
+        <para>
+          <code>http://localhost:8080/kie-wb/rest/runtime/myproject/process/wonka.factory.oompa.chocolate/start?map_total=5000
+          </code>
+        </para>
+      </example>
+
+      <para>
+        The following operations take query map parameters:
         <itemizedlist>
-          <listitem><para><code>/runtime/{deploymentId}/process/{processDefId}/start</code></para></listitem>
-          <listitem><para><code>/runtime/{deploymentId}/workitem/{processItemId}/complete</code></para></listitem>
-          <listitem><para><code>/runtime/{deploymentId}/withvars/process/{processDefId}/start</code></para></listitem>
-          <listitem><para><code>/task/{taskId}/complete</code></para></listitem>
-          <listitem><para><code>/task/{taskId}/fail</code></para></listitem>
+          <listitem>
+            <para>
+              <code>/runtime/{deploymentId}/process/{processDefId}/start</code>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <code>/runtime/{deploymentId}/workitem/{processItemId}/complete</code>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <code>/runtime/{deploymentId}/withvars/process/{processDefId}/start</code>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <code>/task/{taskId}/complete</code>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <code>/task/{taskId}/fail</code>
+            </para>
+          </listitem>
         </itemizedlist>
       </para>
     </section>
 
     <section>
       <title>Number query parameters</title>
-      
-      <para>While REST calls obviously only take strings as query parameters, using the following
-        notation for query parameters will mean that the string is translated into a different type
-        of object when the value of the string is used in the actual operation: <table frame="all">
+
+      <para>
+        While REST calls obviously only take strings as query parameters, using the following
+        notation for query parameters will mean
+        that the string is translated into a different type
+        of object when the value of the string is used in the actual operation:
+        <table frame="all">
           <title>Number query parameter syntax</title>
           <tgroup cols="2" align="left" rowsep="1" colsep="1">
             <thead valign="top">
@@ -221,34 +496,62 @@
             </thead>
             <tbody valign="top">
               <row>
-                <entry><code>\d+</code></entry>
-                <entry><code>Long</code></entry>
+                <entry>
+                  <code>\d+</code>
+                </entry>
+                <entry>
+                  <code>Long</code>
+                </entry>
               </row>
               <row>
-                <entry><code>\d+i</code></entry>
-                <entry><code>Integer</code></entry>
+                <entry>
+                  <code>\d+i</code>
+                </entry>
+                <entry>
+                  <code>Integer</code>
+                </entry>
               </row>
               <row>
-                <entry><code>\d+l</code></entry>
-                <entry><code>Long</code></entry>
+                <entry>
+                  <code>\d+l</code>
+                </entry>
+                <entry>
+                  <code>Long</code>
+                </entry>
               </row>
             </tbody>
           </tgroup>
         </table>
       </para>
     </section>
-    
+
     <section>
       <title>Runtime strategies</title>
 
-      <para>The REST calls allow access to the underlying deployments, regardless of whether these deployments use the <code>Singleton</code>, 
-        <code>Per-Process-Instance</code> or <code>Per-Request</code> strategies.</para>
-      
-      <para>While there's enough information in the URL in order to access deployments that use the <code>Singleton</code>, or <code>Per-Request</code> 
-        strategies, that's not always the case with the <code>Per-Process-Instance</code> runtimes because the REST operation will obviously 
-        need the process instance id in order to identify the deployment.</para>
-      
-      <para>Therefore, for REST calls for which the URL does not contain the process instance id, you'll need to add the following parameter: 
+      <para>
+        The REST calls allow access to the underlying deployments, regardless of whether these deployments use the
+        <code>Singleton</code>
+        ,
+        <code>Per-Process-Instance</code>
+        or
+        <code>Per-Request</code>
+        strategies.
+      </para>
+
+      <para>
+        While there's enough information in the URL in order to access deployments that use the
+        <code>Singleton</code>
+        , or
+        <code>Per-Request</code>
+        strategies, that's not always the case with the
+        <code>Per-Process-Instance</code>
+        runtimes because the REST operation will obviously
+        need the process instance id in order to identify the deployment.
+      </para>
+
+      <para>
+        Therefore, for REST calls for which the URL does not contain the process instance id, you'll need to add the following
+        parameter:
         <table frame="all">
           <title>Per-Process-Instance runtime query parameter</title>
           <tgroup cols="2" align="left" rowsep="1" colsep="1">
@@ -260,169 +563,446 @@
             </thead>
             <tbody valign="top">
               <row>
-                <entry><code>runtimeProcInstId</code></entry>
-                <entry><para>Value (must match the regex <code>[0-9]+</code>) specifies the process instance id that identifies the 
-                  underlying <code>Per-Process-Instance</code> deployment</para>
-                <para>Will have no effect if the underlying deployment uses the <code>Singleton</code> or <code>Per-Request</code>
-                strategy</para></entry>
+                <entry>
+                  <code>runtimeProcInstId</code>
+                </entry>
+                <entry>
+                  <para>
+                    Value (must match the regex
+                    <code>[0-9]+</code>
+                    ) specifies the process instance id that identifies the
+                    underlying
+                    <code>Per-Process-Instance</code>
+                    deployment
+                  </para>
+                  <para>
+                    Will have no effect if the underlying deployment uses the
+                    <code>Singleton</code>
+                    or
+                    <code>Per-Request</code>
+                    strategy
+                  </para>
+                </entry>
               </row>
             </tbody>
           </tgroup>
         </table>
       </para>
-        
+
     </section>
-    
-    
+
+
   </section>
 
-<!-- add later.. :/ 
-  <section>
-    <title>URL overview</title>
-    
-    <table>
-      <title>REST URL overview</title>
-      <tgroup cols="2" align="left" rowsep="1" colsep="1">
-        <thead valign="top">
-          <row>
-            <entry>URL suffix (after <code>http://{server:port}/{applicationId}/rest/</code>)</entry>
-            <entry>Short functional description</entry>
-          </row>
-        </thead>
-        <tbody valign="top">
-          <row>
-            <entry><code>/runtime/{deploymentId}/process/{processDefId}/start</code></entry>
-            <entry>Starts a process</entry>
-          </row>
-        </tbody>
-      </tgroup>
-    </table>
-  </section>
--->
-   
+  <!-- add later.. :/ <section> <title>URL overview</title> <table> <title>REST URL overview</title> <tgroup cols="2" align="left" rowsep="1" 
+    colsep="1"> <thead valign="top"> <row> <entry>URL suffix (after <code>http://{server:port}/{applicationId}/rest/</code>)</entry> <entry>Short 
+    functional description</entry> </row> </thead> <tbody valign="top"> <row> <entry><code>/runtime/{deploymentId}/process/{processDefId}/start</code></entry> 
+    <entry>Starts a process</entry> </row> </tbody> </tgroup> </table> </section> -->
+
   <section>
     <title>Runtime calls</title>
 
     <para>This section lists REST calls that interface with </para>
 
-    <para>The <emphasis>deploymentId</emphasis> component of the REST calls below must conform to the following regex: 
+    <para>
+      The
+      <emphasis>deploymentId</emphasis>
+      component of the REST calls below must conform to the following regex:
       <itemizedlist>
-        <listitem><para><code>[a-zA-Z0-9-:\.]+</code></para></listitem>
+        <listitem>
+          <para>
+            <code>[a-zA-Z0-9-:\.]+</code>
+          </para>
+        </listitem>
       </itemizedlist>
     </para>
-    
+
     <section>
       <title>Process calls</title>
 
       <variablelist>
         <varlistentry>
-          <term>[POST] <command>/runtime/<emphasis>{deploymentId}</emphasis>/process/<emphasis>{processDefId}</emphasis>/start</command></term>
+          <term>
+            [POST]
+            <command>
+              /runtime/
+              <emphasis>{deploymentId}</emphasis>
+              /process/
+              <emphasis>{processDefId}</emphasis>
+              /start
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Starts a process.</para></listitem>
-              <listitem><para>Returns a <code>JaxbProcessInstanceResponse</code> instance, that contains basic information about the process instance.</para></listitem>
-              <listitem><para>The <emphasis>prodessDefId</emphasis> component of the URL must conform to the following regex: 
-                <code>[_a-zA-Z0-9-:\.]+</code></para></listitem>
-              <listitem><para>This operation takes <emphasis>map query parameters</emphasis> (see above), which will be used
-                  as parameters for the process instance.</para></listitem>
+              <listitem>
+                <para>Starts a process.</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbProcessInstanceResponse</code>
+                  instance, that contains basic information about the process instance.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  The
+                  <emphasis>prodessDefId</emphasis>
+                  component of the URL must conform to the following regex:
+                  <code>[_a-zA-Z0-9-:\.]+</code>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  This operation takes
+                  <emphasis>map query parameters</emphasis>
+                  (see above), which will be used
+                  as parameters for the process instance.
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[GET] <command>/runtime/<emphasis>{deploymentId}</emphasis>/process/instance/<emphasis>{procInstId}</emphasis></command></term>
+          <term>
+            [GET]
+            <command>
+              /runtime/
+              <emphasis>{deploymentId}</emphasis>
+              /process/instance/
+              <emphasis>{procInstId}</emphasis>
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-            <listitem><para>Does a (read only) retrieval of the process instance. This operation will fail (code 400) if the process instance has been 
-              completed.</para></listitem>
-            <listitem><para>Returns a <code>JaxbProcessInstanceResponse</code> instance.</para></listitem>
-            <listitem><para>The <emphasis>procInstId</emphasis> component of the URL must conform to the following regex: <code>[0-9]+</code></para></listitem>
+              <listitem>
+                <para>Does a (read only) retrieval of the process instance. This operation will fail (code 400) if the process
+                  instance has been
+                  completed.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbProcessInstanceResponse</code>
+                  instance.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  The
+                  <emphasis>procInstId</emphasis>
+                  component of the URL must conform to the following regex:
+                  <code>[0-9]+</code>
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/runtime/<emphasis>{deploymentId}</emphasis>/process/instance/<emphasis>{procInstId+}</emphasis>/abort</command></term>
+          <term>
+            [POST]
+            <command>
+              /runtime/
+              <emphasis>{deploymentId}</emphasis>
+              /process/instance/
+              <emphasis>{procInstId+}</emphasis>
+              /abort
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Aborts the process instance.</para></listitem>
-              <listitem><para>Returns a <code>JaxbGenericResponse</code> indicating whether or not the operation has succeeded.</para></listitem>
-              <listitem><para>The <emphasis>procInstId</emphasis> component of the URL must conform to the following regex: <code>[0-9]+</code></para></listitem>
+              <listitem>
+                <para>Aborts the process instance.</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbGenericResponse</code>
+                  indicating whether or not the operation has succeeded.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  The
+                  <emphasis>procInstId</emphasis>
+                  component of the URL must conform to the following regex:
+                  <code>[0-9]+</code>
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/runtime/<emphasis>{deploymentId}</emphasis>/process/instance/<emphasis>{procInstId}</emphasis>/signal</command></term>
+          <term>
+            [POST]
+            <command>
+              /runtime/
+              <emphasis>{deploymentId}</emphasis>
+              /process/instance/
+              <emphasis>{procInstId}</emphasis>
+              /signal
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Signals the process instance.</para></listitem>
-              <listitem><para>Returns a <code>JaxbGenericResponse</code> indicating whether or not the operation has succeeded.</para></listitem>
-              <listitem><para>The <emphasis>procInstId</emphasis> component of the URL must conform to the following regex: <code>[0-9]+</code></para></listitem>
-              <listitem><para>This operation takes a <code>signal</code> and a <code>event</code> query parameter.
-              <itemizedlist>
-                <listitem><para>The <code>signal</code> parameter value is used as the name of the signal. This parameter is required.</para></listitem>
-                <listitem><para>The <code>event</code> parameter value is used as the value of the event. This value may use the 
-                  <emphasis>number query parameter</emphasis> syntax described above.</para></listitem>
-              </itemizedlist></para></listitem>
+              <listitem>
+                <para>Signals the process instance.</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbGenericResponse</code>
+                  indicating whether or not the operation has succeeded.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  The
+                  <emphasis>procInstId</emphasis>
+                  component of the URL must conform to the following regex:
+                  <code>[0-9]+</code>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  This operation takes a
+                  <code>signal</code>
+                  and a
+                  <code>event</code>
+                  query parameter.
+                  <itemizedlist>
+                    <listitem>
+                      <para>
+                        The
+                        <code>signal</code>
+                        parameter value is used as the name of the signal. This parameter is required.
+                      </para>
+                    </listitem>
+                    <listitem>
+                      <para>
+                        The
+                        <code>event</code>
+                        parameter value is used as the value of the event. This value may use the
+                        <emphasis>number query parameter</emphasis>
+                        syntax described above.
+                      </para>
+                    </listitem>
+                  </itemizedlist>
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[GET] <command>/runtime/<emphasis>{deploymentId}</emphasis>/process/instance/<emphasis>{procInstId}</emphasis>/variables</command></term>
+          <term>
+            [GET]
+            <command>
+              /runtime/
+              <emphasis>{deploymentId}</emphasis>
+              /process/instance/
+              <emphasis>{procInstId}</emphasis>
+              /variables
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Gets the list of process variables in a process instance.</para></listitem>
-              <listitem><para>Returns a <code>JaxbVariablesResponse</code></para></listitem>
-              <listitem><para>The <emphasis>procInstId</emphasis> component of the URL must conform to the following regex: <code>[0-9]+</code></para></listitem>
+              <listitem>
+                <para>Gets the list of process variables in a process instance.</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbVariablesResponse</code>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  The
+                  <emphasis>procInstId</emphasis>
+                  component of the URL must conform to the following regex:
+                  <code>[0-9]+</code>
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/runtime/<emphasis>{deploymentId}</emphasis>/signal</command></term>
+          <term>
+            [POST]
+            <command>
+              /runtime/
+              <emphasis>{deploymentId}</emphasis>
+              /signal
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Signals the <code>KieSession</code></para></listitem>
-              <listitem><para>Returns a <code>JaxbGenericResponse</code> indicating whether or not the operation has succeeded.</para></listitem>
-              <listitem><para>The <emphasis>procInstId</emphasis> component of the URL must conform to the following regex: <code>[0-9]+</code></para></listitem>
-              <listitem><para>This operation takes a <code>signal</code> and a <code>event</code> query parameter.
-                <itemizedlist>
-                  <listitem><para>The <code>signal</code> parameter value is used as the name of the signal. This parameter is required.</para></listitem>
-                  <listitem><para>The <code>event</code> parameter value is used as the value of the event. This value may use the 
-                    <emphasis>number query parameter</emphasis> syntax described above.</para></listitem>
-                </itemizedlist></para></listitem>
+              <listitem>
+                <para>
+                  Signals the
+                  <code>KieSession</code>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbGenericResponse</code>
+                  indicating whether or not the operation has succeeded.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  The
+                  <emphasis>procInstId</emphasis>
+                  component of the URL must conform to the following regex:
+                  <code>[0-9]+</code>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  This operation takes a
+                  <code>signal</code>
+                  and a
+                  <code>event</code>
+                  query parameter.
+                  <itemizedlist>
+                    <listitem>
+                      <para>
+                        The
+                        <code>signal</code>
+                        parameter value is used as the name of the signal. This parameter is required.
+                      </para>
+                    </listitem>
+                    <listitem>
+                      <para>
+                        The
+                        <code>event</code>
+                        parameter value is used as the value of the event. This value may use the
+                        <emphasis>number query parameter</emphasis>
+                        syntax described above.
+                      </para>
+                    </listitem>
+                  </itemizedlist>
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[GET] <command>/runtime/<emphasis>{deploymentId}</emphasis>/workitem/<emphasis>{workItemId}</emphasis></command></term>
+          <term>
+            [GET]
+            <command>
+              /runtime/
+              <emphasis>{deploymentId}</emphasis>
+              /workitem/
+              <emphasis>{workItemId}</emphasis>
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Gets a <code>WorkItem</code> instance</para></listitem>
-              <listitem><para>Returns a <code>JaxbWorkItem</code> instance</para></listitem>
-              <listitem><para>The <emphasis>workItemId</emphasis> component of the URL must conform to the following regex: 
-                <code>[0-9]+</code></para></listitem>
+              <listitem>
+                <para>
+                  Gets a
+                  <code>WorkItem</code>
+                  instance
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbWorkItem</code>
+                  instance
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  The
+                  <emphasis>workItemId</emphasis>
+                  component of the URL must conform to the following regex:
+                  <code>[0-9]+</code>
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/runtime/<emphasis>{deploymentId}</emphasis>/workitem/<emphasis>{workItemId}</emphasis>/complete</command></term>
+          <term>
+            [POST]
+            <command>
+              /runtime/
+              <emphasis>{deploymentId}</emphasis>
+              /workitem/
+              <emphasis>{workItemId}</emphasis>
+              /complete
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Completes a <code>WorkItem</code></para></listitem>
-              <listitem><para>Returns a <code>JaxbGenericResponse</code> indicating whether or not the operation has succeeded</para></listitem>
-              <listitem><para>The <emphasis>workItemId</emphasis> component of the URL must conform to the following regex: 
-                <code>[0-9]+</code></para></listitem>
-              <listitem><para>This operation takes <emphasis>map query parameters</emphasis>, which are used
-                as input to signify the results for completion of the work item.</para></listitem>
+              <listitem>
+                <para>
+                  Completes a
+                  <code>WorkItem</code>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbGenericResponse</code>
+                  indicating whether or not the operation has succeeded
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  The
+                  <emphasis>workItemId</emphasis>
+                  component of the URL must conform to the following regex:
+                  <code>[0-9]+</code>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  This operation takes
+                  <emphasis>map query parameters</emphasis>
+                  , which are used
+                  as input to signify the results for completion of the work item.
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/runtime/<emphasis>{deploymentId}</emphasis>/workitem/{workItemId: [0-9-]+}/abort</command></term>
+          <term>
+            [POST]
+            <command>
+              /runtime/
+              <emphasis>{deploymentId}</emphasis>
+              /workitem/{workItemId: [0-9-]+}/abort
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Aborts a <code>WorkItem</code></para></listitem>
-              <listitem><para>Returns a <code>JaxbGenericResponse</code> indicating whether or not the operation has succeeded</para></listitem>
-              <listitem><para>The <emphasis>workItemId</emphasis> component of the URL must conform to the following regex: 
-                <code>[0-9]+</code></para></listitem>
+              <listitem>
+                <para>
+                  Aborts a
+                  <code>WorkItem</code>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbGenericResponse</code>
+                  indicating whether or not the operation has succeeded
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  The
+                  <emphasis>workItemId</emphasis>
+                  component of the URL must conform to the following regex:
+                  <code>[0-9]+</code>
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
@@ -435,662 +1015,1735 @@
 
       <variablelist>
         <varlistentry>
-          <term>[POST] <command>/runtime/<emphasis>{deploymentId}</emphasis>/withvars/process/<emphasis>{processDefId}</emphasis>/start</command></term>
+          <term>
+            [POST]
+            <command>
+              /runtime/
+              <emphasis>{deploymentId}</emphasis>
+              /withvars/process/
+              <emphasis>{processDefId}</emphasis>
+              /start
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Starts a process and retrieves the list of variables associated with the process instance</para></listitem>
-              <listitem><para>Returns a <code>JaxbProcessInstanceWithVariablesResponse</code> that contains:</para>
+              <listitem>
+                <para>Starts a process and retrieves the list of variables associated with the process instance</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbProcessInstanceWithVariablesResponse</code>
+                  that contains:
+                </para>
                 <itemizedlist>
-                  <listitem><para>Information about the process instance (with the same fields and behaviour as the <code>JaxbProcessInstanceResponse</code></para></listitem>
-                  <listitem><para>A key-value list of the variables available in the process instance.</para></listitem>
+                  <listitem>
+                    <para>
+                      Information about the process instance (with the same fields and behaviour as the
+                      <code>JaxbProcessInstanceResponse</code>
+                    </para>
+                  </listitem>
+                  <listitem>
+                    <para>A key-value list of the variables available in the process instance.</para>
+                  </listitem>
                 </itemizedlist>
               </listitem>
-              <listitem><para>The <emphasis>processDefId</emphasis> component of the URL must conform to the following regex: 
-                <code>[_a-zA-Z0-9-:\.]+</code></para></listitem>
+              <listitem>
+                <para>
+                  The
+                  <emphasis>processDefId</emphasis>
+                  component of the URL must conform to the following regex:
+                  <code>[_a-zA-Z0-9-:\.]+</code>
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/runtime/<emphasis>{deploymentId}</emphasis>/withvars/process/instance/<emphasis>{procInstId}</emphasis></command></term>
+          <term>
+            [POST]
+            <command>
+              /runtime/
+              <emphasis>{deploymentId}</emphasis>
+              /withvars/process/instance/
+              <emphasis>{procInstId}</emphasis>
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Starts a process and retrieves the list of variables associated with the process instance</para></listitem>
-              <listitem><para>Returns a <code>JaxbProcessInstanceWithVariablesResponse</code> (see the above REST
-                  call)</para></listitem>
-              <listitem><para>The <emphasis>processInstId</emphasis> component of the URL must conform to the following regex: 
-                <code>[0-9]+</code></para></listitem>
+              <listitem>
+                <para>Starts a process and retrieves the list of variables associated with the process instance</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbProcessInstanceWithVariablesResponse</code>
+                  (see the above REST
+                  call)
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  The
+                  <emphasis>processInstId</emphasis>
+                  component of the URL must conform to the following regex:
+                  <code>[0-9]+</code>
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/runtime/<emphasis>{deploymentId}</emphasis>/withvars/process/instance/<emphasis>{procInstId}</emphasis>/signal</command></term>
+          <term>
+            [POST]
+            <command>
+              /runtime/
+              <emphasis>{deploymentId}</emphasis>
+              /withvars/process/instance/
+              <emphasis>{procInstId}</emphasis>
+              /signal
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Signals a process instance and retrieves the list of variables associated it</para></listitem>
-              <listitem><para>Returns a <code>JaxbProcessInstanceWithVariablesResponse</code> (see above)</para></listitem>
-              <listitem><para>The <emphasis>processInstId</emphasis> component of the URL must conform to the following regex: 
-                <code>[0-9]+</code></para></listitem>
+              <listitem>
+                <para>Signals a process instance and retrieves the list of variables associated it</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbProcessInstanceWithVariablesResponse</code>
+                  (see above)
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  The
+                  <emphasis>processInstId</emphasis>
+                  component of the URL must conform to the following regex:
+                  <code>[0-9]+</code>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  This operation takes a
+                  <code>signal</code>
+                  and a
+                  <code>event</code>
+                  query parameter.
+                  <itemizedlist>
+                    <listitem>
+                      <para>
+                        The
+                        <code>signal</code>
+                        parameter value is used as the name of the signal. This parameter is required.
+                      </para>
+                    </listitem>
+                    <listitem>
+                      <para>
+                        The
+                        <code>event</code>
+                        parameter value is used as the value of the event. This value may use the
+                        <emphasis>number query parameter</emphasis>
+                        syntax described above.
+                      </para>
+                    </listitem>
+                  </itemizedlist>
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
       </variablelist>
 
     </section>
-         
+
   </section>
-       
+
   <section>
     <title>History calls</title>
-       <important>       
-    <para>The information that is available via the History REST calls is <emphasis>not</emphasis> limited to the deployment specfied by the
-      <emphasis>deploymentId</emphasis> part of the URL used. This is because the <code>AuditLogService</code> used by the REST calls is
-      only dependent on the persistence framework used by the deployment, but not on anything else.</para>
-       </important>
-    
-      <variablelist>
-        <varlistentry>
-          <term>[POST] <command>/runtime/<emphasis>{deploymentId}</emphasis>/history/clean</command></term>
-          <listitem>
-            <itemizedlist>
-              <listitem><para>Cleans (deletes) all history logs</para></listitem>
-            </itemizedlist>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term>[GET] <command>/runtime/<emphasis>{deploymentId}</emphasis>/history/instances</command></term>
-          <listitem>
-            <itemizedlist>
-              <listitem><para>Gets a list of <code>ProcessInstanceLog</code> instances</para></listitem>
-              <listitem><para>Returns a <code>JaxbHistoryLogList</code> instance that contains a list of <code>JaxbProcessInstanceLog</code> 
-                instances</para></listitem>
-              <listitem><para>This operation responds to pagination parameters</para></listitem>
-            </itemizedlist>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term>[GET] <command>/runtime/<emphasis>{deploymentId}</emphasis>/history/instance/<emphasis>{procInstId}</emphasis></command></term>
-          <listitem>
-            <itemizedlist>
-              <listitem><para>Gets the <code>ProcessInstanceLog</code> instance associated with the specified process instance</para></listitem>
-              <listitem><para>Returns a <code>JaxbHistoryLogList</code> instance that contains a <code>JaxbProcessInstanceLog</code> 
-                instance</para></listitem>
-              <listitem><para>The <emphasis>processInstId</emphasis> component of the URL must conform to the following regex: 
-                <code>[0-9]+</code></para></listitem>
-              <listitem><para>This operation responds to pagination parameters</para></listitem>
-            </itemizedlist>
-          </listitem>
-        </varlistentry>
+    <important>
+      <para>
+        The information that is available via the History REST calls is
+        <emphasis>not</emphasis>
+        limited to the deployment specfied by the
+        <emphasis>deploymentId</emphasis>
+        part of the URL used. This is because the
+        <code>AuditLogService</code>
+        used by the REST calls is
+        only dependent on the persistence framework used by the deployment, but not on anything else.
+      </para>
+    </important>
 
-        <varlistentry>
-          <term>[GET] <command>/runtime/<emphasis>{deploymentId}</emphasis>/history/instance/<emphasis>{procInstId}</emphasis>/child</command></term>
-          <listitem>
-            <itemizedlist>
-              <listitem><para>Gets a list of <code>ProcessInstanceLog</code> instances associated with any
-                child/sub-processes associated with the specified process instance</para></listitem>
-              <listitem><para>Returns a <code>JaxbHistoryLogList</code> instance that contains a list of <code>JaxbProcessInstanceLog</code> 
-                instances</para></listitem>
-              <listitem><para>The <emphasis>processInstId</emphasis> component of the URL must conform to the following regex: 
-                <code>[0-9]+</code></para></listitem>
-              <listitem><para>This operation responds to pagination parameters</para></listitem>
-            </itemizedlist>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term>[GET] <command>/runtime/<emphasis>{deploymentId}</emphasis>/history/instance/<emphasis>{procInstId}</emphasis>/node</command></term>
-          <listitem>
-            <itemizedlist>
-              <listitem><para>Gets a list of <code>NodeInstanceLog</code> instances associated with the specified process
-                instance</para></listitem>
-              <listitem><para>Returns a <code>JaxbHistoryLogList</code> instance that contains a list of
-                  <code>JaxbNodeInstanceLog</code> instances</para></listitem>
-              <listitem><para>The <emphasis>processInstId</emphasis> component of the URL must conform to the following regex: 
-                <code>[0-9]+</code></para></listitem>
-              <listitem><para>This operation responds to pagination parameters</para></listitem>
-            </itemizedlist>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term>[GET] <command>/runtime/<emphasis>{deploymentId}</emphasis>/history/instance/<emphasis>{procInstId}</emphasis>/variable</command></term>
-          <listitem>
-            <itemizedlist>
-              <listitem><para>Gets a list of <code>VariableInstanceLog</code> instances associated with the specified process
-                instance</para></listitem>
-              <listitem><para>Returns a <code>JaxbHistoryLogList</code> instance that contains a list of
-                <code>JaxbVariableInstanceLog</code> instances</para></listitem>
-              <listitem><para>The <emphasis>processInstId</emphasis> component of the URL must conform to the following regex: 
-                <code>[0-9]+</code></para></listitem>
-              <listitem><para>This operation responds to pagination parameters</para></listitem>
-            </itemizedlist>
-          </listitem>
-        </varlistentry>
+    <variablelist>
+      <varlistentry>
+        <term>
+          [POST]
+          <command>
+            /runtime/
+            <emphasis>{deploymentId}</emphasis>
+            /history/clear
+          </command>
+        </term>
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>Cleans (deletes) all history logs</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          [GET]
+          <command>
+            /runtime/
+            <emphasis>{deploymentId}</emphasis>
+            /history/instances
+          </command>
+        </term>
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>
+                Gets a list of
+                <code>ProcessInstanceLog</code>
+                instances
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                Returns a
+                <code>JaxbHistoryLogList</code>
+                instance that contains a list of
+                <code>JaxbProcessInstanceLog</code>
+                instances
+              </para>
+            </listitem>
+            <listitem>
+              <para>This operation responds to pagination parameters</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          [GET]
+          <command>
+            /runtime/
+            <emphasis>{deploymentId}</emphasis>
+            /history/instance/
+            <emphasis>{procInstId}</emphasis>
+          </command>
+        </term>
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>
+                Gets the
+                <code>ProcessInstanceLog</code>
+                instance associated with the specified process instance
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                Returns a
+                <code>JaxbHistoryLogList</code>
+                instance that contains a
+                <code>JaxbProcessInstanceLog</code>
+                instance
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                The
+                <emphasis>processInstId</emphasis>
+                component of the URL must conform to the following regex:
+                <code>[0-9]+</code>
+              </para>
+            </listitem>
+            <listitem>
+              <para>This operation responds to pagination parameters</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
 
-        <varlistentry>
-          <term>[GET] <command>/runtime/<emphasis>{deploymentId}</emphasis>/history/instance/<emphasis>{procInstId}</emphasis>/node/<emphasis>{nodeId}</emphasis></command></term>
-          <listitem>
-            <itemizedlist>
-              <listitem><para>Gets a list of <code>NodeInstanceLog</code> instances associated with the specified
-                process instance that have the given (node) id</para></listitem>
-              <listitem><para>Returns a <code>JaxbHistoryLogList</code> instance that contains a list of
-                <code>JaxbNodeInstanceLog</code> instances</para></listitem>
-              <listitem><para>The <emphasis>processInstId</emphasis> component of the URL must conform to the following regex: 
-                <code>[0-9]+</code></para></listitem>
-              <listitem><para>The <emphasis>nodeId</emphasis> component of the URL must conform to the following regex: 
-                <code>[a-zA-Z0-9-:\.]+</code></para></listitem>
-              <listitem><para>This operation responds to pagination parameters</para></listitem>
-            </itemizedlist>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term>[GET] <command>/runtime/<emphasis>{deploymentId}</emphasis>/history/instance/<emphasis>{procInstId}</emphasis>/variable/<emphasis>{varId}</emphasis></command></term>
-          <listitem>
-            <itemizedlist>
-              <listitem><para>Gets a list of <code>VariableInstanceLog</code> instances associated with the specified
-                process instance that have the given (variable) id</para></listitem>
-              <listitem><para>Returns a <code>JaxbHistoryLogList</code> instance that contains a list of
-                <code>JaxbVariableInstanceLog</code> instances</para></listitem>
-              <listitem><para>The <emphasis>processInstId</emphasis> component of the URL must conform to the following regex: 
-                <code>[0-9]+</code></para></listitem>
-              <listitem><para>The <emphasis>varId</emphasis> component of the URL must conform to the following regex: 
-                <code>[a-zA-Z0-9-:\.]+</code></para></listitem>
-              <listitem><para>This operation responds to pagination parameters</para></listitem>
-            </itemizedlist>
-          </listitem>
-        </varlistentry>
+      <varlistentry>
+        <term>
+          [GET]
+          <command>
+            /runtime/
+            <emphasis>{deploymentId}</emphasis>
+            /history/instance/
+            <emphasis>{procInstId}</emphasis>
+            /child
+          </command>
+        </term>
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>
+                Gets a list of
+                <code>ProcessInstanceLog</code>
+                instances associated with any
+                child/sub-processes associated with the specified process instance
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                Returns a
+                <code>JaxbHistoryLogList</code>
+                instance that contains a list of
+                <code>JaxbProcessInstanceLog</code>
+                instances
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                The
+                <emphasis>processInstId</emphasis>
+                component of the URL must conform to the following regex:
+                <code>[0-9]+</code>
+              </para>
+            </listitem>
+            <listitem>
+              <para>This operation responds to pagination parameters</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          [GET]
+          <command>
+            /runtime/
+            <emphasis>{deploymentId}</emphasis>
+            /history/instance/
+            <emphasis>{procInstId}</emphasis>
+            /node
+          </command>
+        </term>
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>
+                Gets a list of
+                <code>NodeInstanceLog</code>
+                instances associated with the specified process
+                instance
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                Returns a
+                <code>JaxbHistoryLogList</code>
+                instance that contains a list of
+                <code>JaxbNodeInstanceLog</code>
+                instances
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                The
+                <emphasis>processInstId</emphasis>
+                component of the URL must conform to the following regex:
+                <code>[0-9]+</code>
+              </para>
+            </listitem>
+            <listitem>
+              <para>This operation responds to pagination parameters</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          [GET]
+          <command>
+            /runtime/
+            <emphasis>{deploymentId}</emphasis>
+            /history/instance/
+            <emphasis>{procInstId}</emphasis>
+            /variable
+          </command>
+        </term>
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>
+                Gets a list of
+                <code>VariableInstanceLog</code>
+                instances associated with the specified process
+                instance
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                Returns a
+                <code>JaxbHistoryLogList</code>
+                instance that contains a list of
+                <code>JaxbVariableInstanceLog</code>
+                instances
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                The
+                <emphasis>processInstId</emphasis>
+                component of the URL must conform to the following regex:
+                <code>[0-9]+</code>
+              </para>
+            </listitem>
+            <listitem>
+              <para>This operation responds to pagination parameters</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
 
-        <varlistentry>
-          <term>[GET] <command>/runtime/<emphasis>{deploymentId}</emphasis>/history/process/<emphasis>{processDefId}</emphasis></command></term>
-          <listitem>
-            <itemizedlist>
-              <listitem><para>Gets a list of <code>ProcessInstanceLog</code> instances associated with the specified
-                process definition</para></listitem>
-              <listitem><para>Returns a <code>JaxbHistoryLogList</code> instance that contains a list of
-                <code>JaxbProcessInstanceLog</code> instances</para></listitem>
-              <listitem><para>The <emphasis>processDefId</emphasis> component of the URL must conform to the following regex: 
-                <code>[_a-zA-Z0-9-:\.]+</code></para></listitem>
-              <listitem><para>This operation responds to pagination parameters</para></listitem>
-            </itemizedlist>
-          </listitem>
-        </varlistentry>
+      <varlistentry>
+        <term>
+          [GET]
+          <command>
+            /runtime/
+            <emphasis>{deploymentId}</emphasis>
+            /history/instance/
+            <emphasis>{procInstId}</emphasis>
+            /node/
+            <emphasis>{nodeId}</emphasis>
+          </command>
+        </term>
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>
+                Gets a list of
+                <code>NodeInstanceLog</code>
+                instances associated with the specified
+                process instance that have the given (node) id
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                Returns a
+                <code>JaxbHistoryLogList</code>
+                instance that contains a list of
+                <code>JaxbNodeInstanceLog</code>
+                instances
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                The
+                <emphasis>processInstId</emphasis>
+                component of the URL must conform to the following regex:
+                <code>[0-9]+</code>
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                The
+                <emphasis>nodeId</emphasis>
+                component of the URL must conform to the following regex:
+                <code>[a-zA-Z0-9-:\.]+</code>
+              </para>
+            </listitem>
+            <listitem>
+              <para>This operation responds to pagination parameters</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          [GET]
+          <command>
+            /runtime/
+            <emphasis>{deploymentId}</emphasis>
+            /history/instance/
+            <emphasis>{procInstId}</emphasis>
+            /variable/
+            <emphasis>{varId}</emphasis>
+          </command>
+        </term>
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>
+                Gets a list of
+                <code>VariableInstanceLog</code>
+                instances associated with the specified
+                process instance that have the given (variable) id
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                Returns a
+                <code>JaxbHistoryLogList</code>
+                instance that contains a list of
+                <code>JaxbVariableInstanceLog</code>
+                instances
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                The
+                <emphasis>processInstId</emphasis>
+                component of the URL must conform to the following regex:
+                <code>[0-9]+</code>
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                The
+                <emphasis>varId</emphasis>
+                component of the URL must conform to the following regex:
+                <code>[a-zA-Z0-9-:\.]+</code>
+              </para>
+            </listitem>
+            <listitem>
+              <para>This operation responds to pagination parameters</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          [GET]
+          <command>
+            /runtime/
+            <emphasis>{deploymentId}</emphasis>
+            /history/process/
+            <emphasis>{processDefId}</emphasis>
+          </command>
+        </term>
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>
+                Gets a list of
+                <code>ProcessInstanceLog</code>
+                instances associated with the specified
+                process definition
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                Returns a
+                <code>JaxbHistoryLogList</code>
+                instance that contains a list of
+                <code>JaxbProcessInstanceLog</code>
+                instances
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                The
+                <emphasis>processDefId</emphasis>
+                component of the URL must conform to the following regex:
+                <code>[_a-zA-Z0-9-:\.]+</code>
+              </para>
+            </listitem>
+            <listitem>
+              <para>This operation responds to pagination parameters</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
 
 
-      </variablelist>
+    </variablelist>
 
     <section>
-     <title>History calls that search by variable</title>
-      
+      <title>History calls that search by variable</title>
+
       <variablelist>
         <varlistentry>
-          <term>[GET] <command>/runtime/<emphasis>{deploymentId}</emphasis>/history/variable/<emphasis>{varId}</emphasis></command></term>
+          <term>
+            [GET]
+            <command>
+              /runtime/
+              <emphasis>{deploymentId}</emphasis>
+              /history/variable/
+              <emphasis>{varId}</emphasis>
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Gets a list of <code>VariableInstanceLog</code> instances associated with the specified variable id</para></listitem>
-              <listitem><para>Returns a <code>JaxbHistoryLogList</code> instance that contains a list of
-                <code>JaxbVariableInstanceLog</code> instances</para></listitem>
-              <listitem><para>The <emphasis>varId</emphasis> component of the URL must conform to the following regex: 
-                <code>[a-zA-Z0-9-:\.]+</code></para></listitem>
-              <listitem><para>This operation responds to pagination parameters</para></listitem>
+              <listitem>
+                <para>
+                  Gets a list of
+                  <code>VariableInstanceLog</code>
+                  instances associated with the specified variable id
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbHistoryLogList</code>
+                  instance that contains a list of
+                  <code>JaxbVariableInstanceLog</code>
+                  instances
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  The
+                  <emphasis>varId</emphasis>
+                  component of the URL must conform to the following regex:
+                  <code>[a-zA-Z0-9-:\.]+</code>
+                </para>
+              </listitem>
+              <listitem>
+                <para>This operation responds to pagination parameters</para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[GET] <command>/runtime/<emphasis>{deploymentId}</emphasis>/history/variable/<emphasis>{varId}</emphasis>/value/<emphasis>{value}</emphasis></command></term>
+          <term>
+            [GET]
+            <command>
+              /runtime/
+              <emphasis>{deploymentId}</emphasis>
+              /history/variable/
+              <emphasis>{varId}</emphasis>
+              /value/
+              <emphasis>{value}</emphasis>
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Gets a list of <code>VariableInstanceLog</code> instances associated with the specified variable id
-              that contain the value specified</para></listitem>
-              <listitem><para>Returns a <code>JaxbHistoryLogList</code> instance that contains a list of
-                <code>JaxbVariableInstanceLog</code> instances</para></listitem>
-              <listitem><para>Both the <emphasis>varId</emphasis> and <emphasis>value</emphasis> components of the URL must conform to the following regex: 
-                <code>[a-zA-Z0-9-:\.]+</code></para></listitem>
-              <listitem><para>This operation responds to pagination parameters</para></listitem>
+              <listitem>
+                <para>
+                  Gets a list of
+                  <code>VariableInstanceLog</code>
+                  instances associated with the specified variable id
+                  that contain the value specified
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbHistoryLogList</code>
+                  instance that contains a list of
+                  <code>JaxbVariableInstanceLog</code>
+                  instances
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Both the
+                  <emphasis>varId</emphasis>
+                  and
+                  <emphasis>value</emphasis>
+                  components of the URL must conform to the following regex:
+                  <code>[a-zA-Z0-9-:\.]+</code>
+                </para>
+              </listitem>
+              <listitem>
+                <para>This operation responds to pagination parameters</para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[GET]
-              <command>/runtime/<emphasis>{deploymentId}</emphasis>/history/variable/{varId}/instances</command></term>
+          <term>
+            [GET]
+            <command>
+              /runtime/
+              <emphasis>{deploymentId}</emphasis>
+              /history/variable/{varId}/instances
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Gets a list of <code>ProcessInstance</code> instances that contain the variable specified by
-                  the given variable id.</para></listitem>
-              <listitem><para>Returns a <code>JaxbProcessInstanceListResponse</code> instance that contains a list of
-                    <code>JaxbProcessInstanceResponse</code> instances</para></listitem>
-              <listitem><para>The <emphasis>varId</emphasis> component of the URL must conform to the following regex: 
-                <code>[a-zA-Z0-9-:\.]+</code></para></listitem>
-              <listitem><para>This operation responds to pagination parameters</para></listitem>
+              <listitem>
+                <para>
+                  Gets a list of
+                  <code>ProcessInstance</code>
+                  instances that contain the variable specified by
+                  the given variable id.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbProcessInstanceListResponse</code>
+                  instance that contains a list of
+                  <code>JaxbProcessInstanceResponse</code>
+                  instances
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  The
+                  <emphasis>varId</emphasis>
+                  component of the URL must conform to the following regex:
+                  <code>[a-zA-Z0-9-:\.]+</code>
+                </para>
+              </listitem>
+              <listitem>
+                <para>This operation responds to pagination parameters</para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[GET]
-              <command>/runtime/<emphasis>{deploymentId}</emphasis>/history/variable/{varId}/value/{value}/instances</command></term>
+          <term>
+            [GET]
+            <command>
+              /runtime/
+              <emphasis>{deploymentId}</emphasis>
+              /history/variable/{varId}/value/{value}/instances
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Gets a list of <code>ProcessInstance</code> instances that contain the variable specified by
-                  the given variable id which contains the (variable) value specified</para></listitem>
-              <listitem><para>Returns a <code>JaxbProcessInstanceListResponse</code> instance that contains a list of
-                    <code>JaxbProcessInstanceResponse</code> instances</para></listitem>
-              <listitem><para>Both the <emphasis>varId</emphasis> and <emphasis>value</emphasis> components of the URL must conform to the following regex: 
-                <code>[a-zA-Z0-9-:\.]+</code></para></listitem>
-              <listitem><para>This operation responds to pagination parameters</para></listitem>
+              <listitem>
+                <para>
+                  Gets a list of
+                  <code>ProcessInstance</code>
+                  instances that contain the variable specified by
+                  the given variable id which contains the (variable) value
+                  specified
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbProcessInstanceListResponse</code>
+                  instance that contains a list of
+                  <code>JaxbProcessInstanceResponse</code>
+                  instances
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Both the
+                  <emphasis>varId</emphasis>
+                  and
+                  <emphasis>value</emphasis>
+                  components of the URL must conform to the following regex:
+                  <code>[a-zA-Z0-9-:\.]+</code>
+                </para>
+              </listitem>
+              <listitem>
+                <para>This operation responds to pagination parameters</para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
       </variablelist>
-      
+
     </section>
-    
+
   </section>
-  
+
   <section>
-     <title>Task calls</title>
-         
-    <para>The following section describes the three different types of task calls: 
+    <title>Task calls</title>
+
+    <para>
+      The following section describes the three different types of task calls:
       <itemizedlist>
-        <listitem><para>Task REST operations that mirror the <code>TaskService</code> interface, allowing the user to interact with the remote 
-          <code>TaskService</code> instance</para></listitem>
-        <listitem><para>The Task query REST operation, that allows users to query for <code>Task</code> instances</para></listitem>
-        <listitem><para>Other assorted Task REST operations</para></listitem>
+        <listitem>
+          <para>
+            Task REST operations that mirror the
+            <code>TaskService</code>
+            interface, allowing the user to interact with the remote
+            <code>TaskService</code>
+            instance
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            The Task query REST operation, that allows users to query for
+            <code>Task</code>
+            instances
+          </para>
+        </listitem>
+        <listitem>
+          <para>Other assorted Task REST operations</para>
+        </listitem>
       </itemizedlist>
     </para>
-    
+
     <section>
       <title>Task operation calls</title>
 
       <para>All of the task operation calls described in this section use the user (id) used in the REST basic authorization as
-        input for the user parameter in the specific call.</para>
-      
-      <para>Some of the operations take an optional <code>lanaguage</code> query parameter. If this parameter is not given as a element
-        of the URL itself, the default value of "<code>en-UK</code>" is used.</para>
-      
-      <para>The <emphasis>taskId</emphasis> component of the REST calls below must conform to the following regex: 
+        input for the user parameter in the specific call.
+      </para>
+
+      <para>
+        Some of the operations take an optional
+        <code>lanaguage</code>
+        query parameter. If this parameter is not given as a element
+        of the URL itself, the default value of "
+        <code>en-UK</code>
+        " is used.
+      </para>
+
+      <para>
+        The
+        <emphasis>taskId</emphasis>
+        component of the REST calls below must conform to the following regex:
         <itemizedlist>
-          <listitem><para><code>[0-9]+</code></para></listitem>
+          <listitem>
+            <para>
+              <code>[0-9]+</code>
+            </para>
+          </listitem>
         </itemizedlist>
       </para>
 
       <variablelist>
         <varlistentry>
-          <term>[POST] <command>/task/<emphasis>{taskId}</emphasis>/activate</command></term>
+          <term>
+            [POST]
+            <command>
+              /task/
+              <emphasis>{taskId}</emphasis>
+              /activate
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Activates a task</para></listitem>
-              <listitem><para>Returns a <code>JaxbGenericResponse</code> with the status of the operation</para></listitem>
+              <listitem>
+                <para>Activates a task</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbGenericResponse</code>
+                  with the status of the operation
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/task/<emphasis>{taskId}</emphasis>/claim</command></term>
+          <term>
+            [POST]
+            <command>
+              /task/
+              <emphasis>{taskId}</emphasis>
+              /claim
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Claims a task</para></listitem>
-              <listitem><para>Returns a <code>JaxbGenericResponse</code> with the status of the operation</para></listitem>
+              <listitem>
+                <para>Claims a task</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbGenericResponse</code>
+                  with the status of the operation
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/task/<emphasis>{taskId}</emphasis>/claimnextavailable</command></term>
+          <term>
+            [POST]
+            <command>
+              /task/
+              <emphasis>{taskId}</emphasis>
+              /claimnextavailable
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Claims the next available task</para></listitem>
-              <listitem><para>Returns a <code>JaxbGenericResponse</code> with the status of the operation</para></listitem>
-              <listitem><para>Takes an optional <code>language</code> query parameter.</para></listitem>
+              <listitem>
+                <para>Claims the next available task</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbGenericResponse</code>
+                  with the status of the operation
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Takes an optional
+                  <code>language</code>
+                  query parameter.
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/task/<emphasis>{taskId}</emphasis>/complete</command></term>
+          <term>
+            [POST]
+            <command>
+              /task/
+              <emphasis>{taskId}</emphasis>
+              /complete
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Completes a task</para></listitem>
-              <listitem><para>Returns a <code>JaxbGenericResponse</code> with the status of the operation</para></listitem>
-              <listitem><para>Takes map query parameters, which are the "results" input for the complete operation</para></listitem>
+              <listitem>
+                <para>Completes a task</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbGenericResponse</code>
+                  with the status of the operation
+                </para>
+              </listitem>
+              <listitem>
+                <para>Takes map query parameters, which are the "results" input for the complete operation</para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/task/<emphasis>{taskId}</emphasis>/delegate</command></term>
+          <term>
+            [POST]
+            <command>
+              /task/
+              <emphasis>{taskId}</emphasis>
+              /delegate
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Delegates a task</para></listitem>
-              <listitem><para>Returns a <code>JaxbGenericResponse</code> with the status of the operation</para></listitem>
-              <listitem><para>Requires a <code>targetId</code>query parameter, which identifies the user or group 
-                to which the task is delegated</para></listitem>
+              <listitem>
+                <para>Delegates a task</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbGenericResponse</code>
+                  with the status of the operation
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Requires a
+                  <code>targetId</code>
+                  query parameter, which identifies the user or group
+                  to which the task is delegated
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/task/<emphasis>{taskId}</emphasis>/exit</command></term>
+          <term>
+            [POST]
+            <command>
+              /task/
+              <emphasis>{taskId}</emphasis>
+              /exit
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Exits a task</para></listitem>
-              <listitem><para>Returns a <code>JaxbGenericResponse</code> with the status of the operation</para></listitem>
+              <listitem>
+                <para>Exits a task</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbGenericResponse</code>
+                  with the status of the operation
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/task/<emphasis>{taskId}</emphasis>/fail</command></term>
+          <term>
+            [POST]
+            <command>
+              /task/
+              <emphasis>{taskId}</emphasis>
+              /fail
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Fails a task</para></listitem>
-              <listitem><para>Returns a <code>JaxbGenericResponse</code> with the status of the operation</para></listitem>
+              <listitem>
+                <para>Fails a task</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbGenericResponse</code>
+                  with the status of the operation
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/task/<emphasis>{taskId}</emphasis>/forward</command></term>
+          <term>
+            [POST]
+            <command>
+              /task/
+              <emphasis>{taskId}</emphasis>
+              /forward
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Delegates a task</para></listitem>
-              <listitem><para>Returns a <code>JaxbGenericResponse</code> with the status of the operation</para></listitem>
-              <listitem><para>Requires a <code>targetId</code>query parameter, which identifies the user or group 
-                to which the task is forwarded</para></listitem>
+              <listitem>
+                <para>Delegates a task</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbGenericResponse</code>
+                  with the status of the operation
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Requires a
+                  <code>targetId</code>
+                  query parameter, which identifies the user or group
+                  to which the task is forwarded
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/task/<emphasis>{taskId}</emphasis>/nominate</command></term>
+          <term>
+            [POST]
+            <command>
+              /task/
+              <emphasis>{taskId}</emphasis>
+              /nominate
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Nominates a task</para></listitem>
-              <listitem><para>Returns a <code>JaxbGenericResponse</code> with the status of the operation</para></listitem>
-              <listitem><para>Requires at least one of either the <code>user</code> or <code>group</code> query parameter, 
-                which identify the user(s) or group(s) that are nominated for the task</para></listitem>
+              <listitem>
+                <para>Nominates a task</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbGenericResponse</code>
+                  with the status of the operation
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Requires at least one of either the
+                  <code>user</code>
+                  or
+                  <code>group</code>
+                  query parameter,
+                  which identify the user(s) or group(s) that are nominated for the task
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/task/<emphasis>{taskId}</emphasis>/release</command></term>
+          <term>
+            [POST]
+            <command>
+              /task/
+              <emphasis>{taskId}</emphasis>
+              /release
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Releases a task</para></listitem>
-              <listitem><para>Returns a <code>JaxbGenericResponse</code> with the status of the operation</para></listitem>
+              <listitem>
+                <para>Releases a task</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbGenericResponse</code>
+                  with the status of the operation
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/task/<emphasis>{taskId}</emphasis>/resume</command></term>
+          <term>
+            [POST]
+            <command>
+              /task/
+              <emphasis>{taskId}</emphasis>
+              /resume
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Resumes a task</para></listitem>
-              <listitem><para>Returns a <code>JaxbGenericResponse</code> with the status of the operation</para></listitem>
+              <listitem>
+                <para>Resumes a task</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbGenericResponse</code>
+                  with the status of the operation
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/task/<emphasis>{taskId}</emphasis>/skip</command></term>
+          <term>
+            [POST]
+            <command>
+              /task/
+              <emphasis>{taskId}</emphasis>
+              /skip
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Skips a task</para></listitem>
-              <listitem><para>Returns a <code>JaxbGenericResponse</code> with the status of the operation</para></listitem>
+              <listitem>
+                <para>Skips a task</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbGenericResponse</code>
+                  with the status of the operation
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/task/<emphasis>{taskId}</emphasis>/start</command></term>
+          <term>
+            [POST]
+            <command>
+              /task/
+              <emphasis>{taskId}</emphasis>
+              /start
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Starts a task</para></listitem>
-              <listitem><para>Returns a <code>JaxbGenericResponse</code> with the status of the operation</para></listitem>
+              <listitem>
+                <para>Starts a task</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbGenericResponse</code>
+                  with the status of the operation
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/task/<emphasis>{taskId}</emphasis>/stop</command></term>
+          <term>
+            [POST]
+            <command>
+              /task/
+              <emphasis>{taskId}</emphasis>
+              /stop
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Stops a task</para></listitem>
-              <listitem><para>Returns a <code>JaxbGenericResponse</code> with the status of the operation</para></listitem>
+              <listitem>
+                <para>Stops a task</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbGenericResponse</code>
+                  with the status of the operation
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[POST] <command>/task/<emphasis>{taskId}</emphasis>/suspend</command></term>
+          <term>
+            [POST]
+            <command>
+              /task/
+              <emphasis>{taskId}</emphasis>
+              /suspend
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Suspends a task</para></listitem>
-              <listitem><para>Returns a <code>JaxbGenericResponse</code> with the status of the operation</para></listitem>
+              <listitem>
+                <para>Suspends a task</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbGenericResponse</code>
+                  with the status of the operation
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
 
       </variablelist>
-    </section>           
+    </section>
 
     <section>
       <title>Task query call</title>
 
       <variablelist>
         <varlistentry>
-          <term>[GET] <command>/task/query</command></term>
+          <term>
+            [GET]
+            <command>/task/query</command>
+          </term>
           <listitem>
-            <para>The <code>/task/query</code> operation.. </para>
+            <para>
+              The
+              <code>/task/query</code>
+              operation..
+            </para>
             <itemizedlist>
-              <listitem><para>Queries the available (non-archived) tasks</para></listitem>
-              <listitem><para>Returns a <code>JaxbTaskSummaryListResponse</code> with a list of <code>TaskSummaryImpl</code> instances.</para></listitem>
-              <listitem><para>Takes the following (case-<emphasis>in</emphasis>sensitive) query parameters listed below:</para><itemizedlist>
-                <listitem><para><code>businessAdministrator</code></para>
-                  <itemizedlist>
-                    <listitem><para>Specifies that the returned tasks should have the business administrator identified by this parameter</para></listitem>
-                    <listitem><para>This parameter may be repeated</para></listitem>
-                  </itemizedlist>
-                </listitem>
-                <listitem><para><code>potentialOwner</code></para>
-                  <itemizedlist>
-                    <listitem><para>Specifies that the returned tasks should have the potential owner identified by this parameter</para></listitem>
-                    <listitem><para>This parameter may be repeated</para></listitem>
-                  </itemizedlist>
-                </listitem>
-                <listitem><para><code>processInstanceId</code></para>
-                  <itemizedlist>
-                    <listitem><para>Specifies that the returned tasks should be associated with the process instance identified by this parameter</para></listitem>
-                    <listitem><para>This parameter may be repeated</para></listitem>
-                  </itemizedlist>
-                </listitem>
-                <listitem><para><code>status</code></para>
-                  <itemizedlist>
-                    <listitem><para>Specifies that the returned tasks should have the status identified by this parameter</para></listitem>
-                    <listitem><para>This parameter may be repeated</para></listitem>
-                  </itemizedlist>
-                </listitem>
-                <listitem><para><code>taskId</code></para>
-                  <itemizedlist>
-                    <listitem><para>Specifies that the returned tasks should have the (task) id identified by this parameter</para></listitem>
-                    <listitem><para>This parameter may be repeated</para></listitem>
-                  </itemizedlist>
-                </listitem>
-                <listitem><para><code>taskOwner</code></para>
-                  <itemizedlist>
-                    <listitem><para>Specifies that the returned tasks should have the task owner (initiator) identified by this parameter</para></listitem>
-                    <listitem><para>This parameter may be repeated</para></listitem>
-                  </itemizedlist>
-                </listitem>
-                <listitem><para><code>workItemId</code></para>
-                  <itemizedlist>
-                    <listitem><para>Specifies that the returned tasks should be associated with the work item identified by this parameter</para></listitem>
-                    <listitem><para>This parameter may be repeated</para></listitem>
-                  </itemizedlist>
-                </listitem>
-                <listitem><para><code>union</code></para>
-                  <itemizedlist>
-                    <listitem><para>This specifies whether the query should query the union or intersection of the parameters. See below for more info.</para></listitem>
-                    <listitem><para>This parameter must only be passed <emphasis>once</emphasis></para></listitem>
-                  </itemizedlist>
-                </listitem>
-              </itemizedlist></listitem>
+              <listitem>
+                <para>Queries the available (non-archived) tasks</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbTaskSummaryListResponse</code>
+                  with a list of
+                  <code>TaskSummaryImpl</code>
+                  instances.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Takes the following (case-
+                  <emphasis>in</emphasis>
+                  sensitive) query parameters listed below:
+                </para>
+                <itemizedlist>
+                  <listitem>
+                    <para>
+                      <code>businessAdministrator</code>
+                    </para>
+                    <itemizedlist>
+                      <listitem>
+                        <para>Specifies that the returned tasks should have the business administrator identified by this parameter
+                        </para>
+                      </listitem>
+                      <listitem>
+                        <para>This parameter may be repeated</para>
+                      </listitem>
+                    </itemizedlist>
+                  </listitem>
+                  <listitem>
+                    <para>
+                      <code>potentialOwner</code>
+                    </para>
+                    <itemizedlist>
+                      <listitem>
+                        <para>Specifies that the returned tasks should have the potential owner identified by this parameter</para>
+                      </listitem>
+                      <listitem>
+                        <para>This parameter may be repeated</para>
+                      </listitem>
+                    </itemizedlist>
+                  </listitem>
+                  <listitem>
+                    <para>
+                      <code>processInstanceId</code>
+                    </para>
+                    <itemizedlist>
+                      <listitem>
+                        <para>Specifies that the returned tasks should be associated with the process instance identified by this
+                          parameter</para>
+                      </listitem>
+                      <listitem>
+                        <para>This parameter may be repeated</para>
+                      </listitem>
+                    </itemizedlist>
+                  </listitem>
+                  <listitem>
+                    <para>
+                      <code>status</code>
+                    </para>
+                    <itemizedlist>
+                      <listitem>
+                        <para>Specifies that the returned tasks should have the status identified by this parameter</para>
+                      </listitem>
+                      <listitem>
+                        <para>This parameter may be repeated</para>
+                      </listitem>
+                    </itemizedlist>
+                  </listitem>
+                  <listitem>
+                    <para>
+                      <code>taskId</code>
+                    </para>
+                    <itemizedlist>
+                      <listitem>
+                        <para>Specifies that the returned tasks should have the (task) id identified by this parameter</para>
+                      </listitem>
+                      <listitem>
+                        <para>This parameter may be repeated</para>
+                      </listitem>
+                    </itemizedlist>
+                  </listitem>
+                  <listitem>
+                    <para>
+                      <code>taskOwner</code>
+                    </para>
+                    <itemizedlist>
+                      <listitem>
+                        <para>Specifies that the returned tasks should have the task owner (initiator) identified by this parameter
+                        </para>
+                      </listitem>
+                      <listitem>
+                        <para>This parameter may be repeated</para>
+                      </listitem>
+                    </itemizedlist>
+                  </listitem>
+                  <listitem>
+                    <para>
+                      <code>workItemId</code>
+                    </para>
+                    <itemizedlist>
+                      <listitem>
+                        <para>Specifies that the returned tasks should be associated with the work item identified by this parameter
+                        </para>
+                      </listitem>
+                      <listitem>
+                        <para>This parameter may be repeated</para>
+                      </listitem>
+                    </itemizedlist>
+                  </listitem>
+                  <listitem>
+                    <para>
+                      <code>language</code>
+                    </para>
+                    <itemizedlist>
+                      <listitem>
+                        <para>Specifies the language that the returned tasks should be associated with</para>
+                      </listitem>
+                      <listitem>
+                        <para>This parameter may be repeated</para>
+                      </listitem>
+                    </itemizedlist>
+                  </listitem>
+                  <listitem>
+                    <para>
+                      <code>union</code>
+                    </para>
+                    <itemizedlist>
+                      <listitem>
+                        <para>This specifies whether the query should query the union or intersection of the parameters. See below
+                          for more info.</para>
+                      </listitem>
+                      <listitem>
+                        <para>
+                          This parameter must only be passed
+                          <emphasis>once</emphasis>
+                        </para>
+                      </listitem>
+                    </itemizedlist>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
             </itemizedlist>
-            <para>Except for the union parameter, if any of the other parameters are passed multiple
-              times, this operation will query tasks based on the union of all values specific
-              parameter. This is always true, regardless of the value of the <code>union</code>
-              parameter. </para>
-            <para>For example, if multiple <code>taskOwner</code> parameters are passed, this
+            <para>
+              Except for the union parameter, if any of the other parameters are passed multiple
+              times, this operation will query
+              tasks based on the union of all values specific
+              parameter. This is always true, regardless of the value of the
+              <code>union</code>
+              parameter.
+            </para>
+            <para>
+              For example, if multiple
+              <code>taskOwner</code>
+              parameters are passed, this
               operation will return all tasks that have a task owner matching at least one of the
-              passed values. </para>
-            <para>However, behaviour with regards to <emphasis>multiple</emphasis> (types of)
-              parameters is governed by the <code>union</code> parameter: if the
-              <code>union</code>parameter is passed as <code>false</code>, then the operation will
-              query based on the intersection of the two sets of values. </para>
-            <para>For example, if both a <code>taskOwner</code> and <code>taskId</code> parameter
-              are passed as well as a <code>union</code> parameter with a value of
-                <code>false</code>, then the operation will query for tasks that have
-                <emphasis>both</emphasis> the specified task owner and task id. </para>
-            <para>However, if the <code>union</code> parameter in the above example is
-                <code>true</code>, then the operation will query for tasks that have
-                <emphasis>either</emphasis> the specified task owner <emphasis>or</emphasis> the
-              specified task id.</para>
+              passed
+              values.
+            </para>
+            <para>
+              However, behaviour with regards to
+              <emphasis>multiple</emphasis>
+              (types of)
+              parameters is governed by the
+              <code>union</code>
+              parameter: if the
+              <code>union</code>
+              parameter is passed as
+              <code>false</code>
+              , then the operation will
+              query based on the intersection of the two sets of values.
+            </para>
+            <para>
+              For example, if both a
+              <code>taskOwner</code>
+              and
+              <code>taskId</code>
+              parameter
+              are passed as well as a
+              <code>union</code>
+              parameter with a value of
+              <code>false</code>
+              , then the operation will query for tasks that have
+              <emphasis>both</emphasis>
+              the specified task owner and task id.
+            </para>
+            <para>
+              However, if the
+              <code>union</code>
+              parameter in the above example is
+              <code>true</code>
+              , then the operation will query for tasks that have
+              <emphasis>either</emphasis>
+              the specified task owner
+              <emphasis>or</emphasis>
+              the
+              specified task id.
+            </para>
           </listitem>
         </varlistentry>
-        
+
       </variablelist>
-    </section>           
+    </section>
 
     <section>
       <title>Other Task calls</title>
 
       <variablelist>
         <varlistentry>
-          <term>[GET] <command>/task/<emphasis>{taskId}</emphasis>/content</command></term>
+          <term>
+            [GET]
+            <command>
+              /task/
+              <emphasis>{taskId}</emphasis>
+              /content
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Gets the task content from a task identified by the given task id</para></listitem>
-              <listitem><para>Returns a <code>JaxbContent</code> with the content of the task</para></listitem>
-              <listitem><para>The <emphasis>taskId</emphasis> component of the URL must conform to the following regex:
-                <code>[0-9]+</code></para></listitem>
+              <listitem>
+                <para>Gets the task content from a task identified by the given task id</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbContent</code>
+                  with the content of the task
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  The
+                  <emphasis>taskId</emphasis>
+                  component of the URL must conform to the following regex:
+                  <code>[0-9]+</code>
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>[GET] <command>/task/content/<emphasis>{contentId}</emphasis></command></term>
+          <term>
+            [GET]
+            <command>
+              /task/content/
+              <emphasis>{contentId}</emphasis>
+            </command>
+          </term>
           <listitem>
             <itemizedlist>
-              <listitem><para>Gets the task content from a task identified by the given content id</para></listitem>
-              <listitem><para>Returns a <code>JaxbContent</code> with the content of the task</para></listitem>
-              <listitem><para>The <emphasis>contentId</emphasis> component of the URL must conform to the following regex:
-                <code>[0-9]+</code></para></listitem>
+              <listitem>
+                <para>Gets the task content from a task identified by the given content id</para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbContent</code>
+                  with the content of the task
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  The
+                  <emphasis>contentId</emphasis>
+                  component of the URL must conform to the following regex:
+                  <code>[0-9]+</code>
+                </para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
       </variablelist>
 
-    </section>           
-         
+    </section>
+
   </section>
 
-   <section xml:id='remote.rest.deployment'>
-     <title xml:id='remote.rest.deployment.title'>Deployment calls</title>
-     
-     <para>The calls described in this section allow users to manage deployments. Deployments are in fact
-        <code>KieModule</code> JARs which can be deployed or undeployed, either via the UI or via
-      the REST calls described below. Configuration options, such as the runtime strategy, should be
-      specified when deploying the deployment: the configuration of a deployment can not be changed
-      after it has already been deployed. </para>
-     
-     <para>The <emphasis>deploymentId</emphasis> component of the REST calls below must conform to
-      the following regex: <itemizedlist>
+  <section xml:id='remote.rest.deployment'>
+    <title xml:id='remote.rest.deployment.title'>Deployment calls</title>
+
+    <para>
+      The calls described in this section allow users to manage deployments. Deployments are in fact
+      <code>KieModule</code>
+      JARs which can be deployed or undeployed, either via the UI or via
+      the REST calls described below. Configuration options, such
+      as the runtime strategy, should be
+      specified when deploying the deployment: the configuration of a deployment can not be
+      changed
+      after it has already been deployed.
+    </para>
+
+    <para>
+      The
+      <emphasis>deploymentId</emphasis>
+      component of the REST calls below must conform to
+      the following regex:
+      <itemizedlist>
         <listitem>
-          <para><code>[\w\.-]+(:[\w\.-]+){2,2}(:[\w\.-]*){0,2}</code></para>
+          <para>
+            <code>[\w\.-]+(:[\w\.-]+){2,2}(:[\w\.-]*){0,2}</code>
+          </para>
         </listitem>
-      </itemizedlist> The above regular expression is explained below: <itemizedlist>
+      </itemizedlist>
+      The above regular expression is explained below:
+      <itemizedlist>
         <listitem>
-          <para>The <code>[\w\.-]</code> element, which occurs 3 times in the above regex, refers to
-            a character set that can contain the following character sets:</para>
+          <para>
+            The
+            <code>[\w\.-]</code>
+            element, which occurs 3 times in the above regex, refers to
+            a character set that can contain the following character
+            sets:
+          </para>
           <itemizedlist>
             <listitem>
-              <para><code>[A-Z]</code></para>
+              <para>
+                <code>[A-Z]</code>
+              </para>
             </listitem>
             <listitem>
-              <para><code>[a-z]</code></para>
+              <para>
+                <code>[a-z]</code>
+              </para>
             </listitem>
             <listitem>
-              <para><code>[0-9]</code></para>
+              <para>
+                <code>[0-9]</code>
+              </para>
             </listitem>
             <listitem>
-              <para><code>_</code></para>
+              <para>
+                <code>_</code>
+              </para>
             </listitem>
             <listitem>
-              <para><code>.</code></para>
+              <para>
+                <code>.</code>
+              </para>
             </listitem>
             <listitem>
-              <para><code>-</code></para>
+              <para>
+                <code>-</code>
+              </para>
             </listitem>
           </itemizedlist>
         </listitem>
         <listitem>
-          <para>The <code>deploymentId</code> string must contain at least 3 groups of characters
-            that satisfy <code>[\w\.-]+</code> separated by a <code>:</code> character. For example: <itemizedlist>
+          <para>
+            The
+            <code>deploymentId</code>
+            string must contain at least 3 groups of characters
+            that satisfy
+            <code>[\w\.-]+</code>
+            separated by a
+            <code>:</code>
+            character. For example:
+            <itemizedlist>
               <listitem>
-                <para><code>com.wonka:choco-maker:67.190</code></para>
+                <para>
+                  <code>com.wonka:choco-maker:67.190</code>
+                </para>
               </listitem>
-            </itemizedlist></para>
+            </itemizedlist>
+          </para>
         </listitem>
         <listitem>
-          <para>Lastly, the <code>deploymentId</code> may then also contain up to two more groups of
-            characters that satisfy <code>[\w\.-]*</code> separated by a <code>:</code> character (note that
-              <code>*</code> means <emphasis>0</emphasis> or more characters where <code>+</code>
-            means <emphasis>1</emphasis> or more). For example:<itemizedlist>
+          <para>
+            Lastly, the
+            <code>deploymentId</code>
+            may then also contain up to two more groups of
+            characters that satisfy
+            <code>[\w\.-]*</code>
+            separated by a
+            <code>:</code>
+            character (note that
+            <code>*</code>
+            means
+            <emphasis>0</emphasis>
+            or more characters where
+            <code>+</code>
+            means
+            <emphasis>1</emphasis>
+            or more). For example:
+            <itemizedlist>
               <listitem>
-                <para><code>com.wonka:choco-maker:67.190:oompaBase</code></para>
+                <para>
+                  <code>com.wonka:choco-maker:67.190:oompaBase</code>
+                </para>
               </listitem>
               <listitem>
-                <para><code>com.wonka:choco-maker:67.190:oompaLoompaBase:gloopSession</code></para>
+                <para>
+                  <code>com.wonka:choco-maker:67.190:oompaLoompaBase:gloopSession</code>
+                </para>
               </listitem>
-            </itemizedlist></para>
+            </itemizedlist>
+          </para>
         </listitem>
       </itemizedlist>
-       The general idea behind the deploymentId is that it describes it contains the following elements, separated from eachother by a <code>:</code> character: 
-       <orderedlist>
-       <listitem><para>The group id</para></listitem>
-         <listitem><para>The artifact id</para></listitem>
-         <listitem><para>The version</para></listitem>
-         <listitem><para>The (optional) kbase id</para></listitem>
-         <listitem><para>The (optional) ksession id</para></listitem>
-       </orderedlist>
-     </para>
-     
-     <section>
-       <title>Asynchrous deployment calls</title>
- 
-       <para>There are 2 operations that can be used to modify the status of a deployment: <itemizedlist>
-         <listitem><para><code>/deployment/<emphasis>{deploymentId}</emphasis>/deploy</code></para></listitem>
-         <listitem><para><code>/deployment/<emphasis>{deploymentId}</emphasis>/undeploydeploy</code></para></listitem>
-       </itemizedlist>
-         These <code>POST</code> deployment calls are both <emphasis>asynchronous</emphasis>, which 
-         means that the information returned by the <code>POST</code> request does not reflect the 
-         eventual final status of the operation itself.</para>
-       
-       <important>
-         <para>As noted above, both the <code>/deploy</code> and <code>/undeploy</code> operations  are
-           <emphasis>asynchronous</emphasis> REST operations. Successfull requests to these URLs will return the 
-           status <code>202</code> upon the request completion. RFC 2616 defines the <code>202</code> status 
-           as meaning that
-           <quote>the request has been accepted for processing, but the processing has not been completed.</quote></para>
-         <para>This means the following:<orderedlist>
-           <listitem><para>While the request may have been accepted "successfully", the operation itself (deploying
-             or undeploying the deployment unit) may actually fail.</para></listitem>
-           <listitem><para>Furthermore, information about deployments, such as that retrieved by calling the 
-             <code>GET</code> operations described below, are <emphasis>snapshots</emphasis> and the information 
-             (including the status of the deployment unit) may have changed by the time the user client receives 
-             the answer to the <code>GET</code> request.</para></listitem>
-         </orderedlist></para>
-       </important>
-       
+      The general idea behind the deploymentId is that it describes it contains the following elements, separated from eachother by
+      a
+      <code>:</code>
+      character:
+      <orderedlist>
+        <listitem>
+          <para>The group id</para>
+        </listitem>
+        <listitem>
+          <para>The artifact id</para>
+        </listitem>
+        <listitem>
+          <para>The version</para>
+        </listitem>
+        <listitem>
+          <para>The (optional) kbase id</para>
+        </listitem>
+        <listitem>
+          <para>The (optional) ksession id</para>
+        </listitem>
+      </orderedlist>
+    </para>
+
+    <section>
+      <title>Asynchrous deployment calls</title>
+
+      <para>
+        There are 2 operations that can be used to modify the status of a deployment:
+        <itemizedlist>
+          <listitem>
+            <para>
+              <code>
+                /deployment/
+                <emphasis>{deploymentId}</emphasis>
+                /deploy
+              </code>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <code>
+                /deployment/
+                <emphasis>{deploymentId}</emphasis>
+                /undeploydeploy
+              </code>
+            </para>
+          </listitem>
+        </itemizedlist>
+        These
+        <code>POST</code>
+        deployment calls are both
+        <emphasis>asynchronous</emphasis>
+        , which
+        means that the information returned by the
+        <code>POST</code>
+        request does not reflect the
+        eventual final status of the operation itself.
+      </para>
+
+      <important>
+        <para>
+          As noted above, both the
+          <code>/deploy</code>
+          and
+          <code>/undeploy</code>
+          operations are
+          <emphasis>asynchronous</emphasis>
+          REST operations. Successfull requests to these URLs will return the
+          status
+          <code>202</code>
+          upon the request completion. RFC 2616 defines the
+          <code>202</code>
+          status
+          as meaning that
+          <quote>the request has been accepted for processing, but the processing has not been completed.</quote>
+        </para>
+        <para>
+          This means the following:
+          <orderedlist>
+            <listitem>
+              <para>While the request may have been accepted "successfully", the operation itself (deploying
+                or undeploying the deployment unit) may actually fail.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                Furthermore, information about deployments, such as that retrieved by calling the
+                <code>GET</code>
+                operations described below, are
+                <emphasis>snapshots</emphasis>
+                and the information
+                (including the status of the deployment unit) may have changed by the time the user client receives
+                the answer to the
+                <code>GET</code>
+                request.
+              </para>
+            </listitem>
+          </orderedlist>
+        </para>
+      </important>
+
     </section>
-     
+
     <section>
       <title>Additional deployment call details</title>
-      <para>In addition to the asynchronous nature of the <code>POST</code> deploy and undeploy
-        calls described above, the following information is also important to know: <itemizedlist>
+      <para>
+        In addition to the asynchronous nature of the
+        <code>POST</code>
+        deploy and undeploy
+        calls described above, the following information is also important to know:
+        <itemizedlist>
           <listitem>
             <para>The deploy and undeploy operations can fail if one of the following is
-              true:</para>
+              true:
+            </para>
             <orderedlist>
               <listitem>
                 <para>An identical job has already been submitted to the queue and has not yet
-                  completed.</para>
+                  completed.
+                </para>
               </listitem>
               <listitem>
                 <para>The amount of (deploy/undeploy) jobs submitted but not yet processed exceeds
-                  the job cache size.</para>
+                  the deploy/undeploy job queue
+                  size.
+                </para>
               </listitem>
             </orderedlist>
           </listitem>
@@ -1099,17 +2752,27 @@
       <section>
         <title>The deploy/undeploy job queue</title>
         <para>Requests for the deployment or undeployment of deployment units are added as they are received
-          to a single queue and processed in a serial fashion. </para>
+          to a single queue and
+          processed in a serial fashion.
+        </para>
         <para>The reason for this is that the increased complexity necessary to manage and
-          safeguard concurrent deploy and undeploy operation requests possibly involving the same
-          deployment unit is far more costly than the benefit of having these requests complete
+          safeguard concurrent deploy and undeploy
+          operation requests possibly involving the same
+          deployment unit is far more costly than the benefit of having these requests
+          complete
           safely in a concurrent environment, especially given that deploy and undeploy requests
-          will be far less utilized than parts of the remote API involving actions on the deployment
-          units themselves.</para>
+          will be far less utilized
+          than parts of the remote API involving actions on the deployment
+          units themselves.
+        </para>
         <para>The size of this queue can be determined at startup by the parameter described below.
-          Otherwise, the deployment job queue size defaults to 100.</para>
-        <para>The following system properties can be specified in order to change the size of the
-          deploy/undeploy job cache: <table frame="all">
+          Otherwise, the deployment job
+          queue size defaults to 100.
+        </para>
+        <para>
+          The following system properties can be specified in order to change the size of the
+          deploy/undeploy job queue:
+          <table frame="all">
             <title>System properties that influence REST deployment call behavior</title>
             <tgroup cols="2" align="left" rowsep="1" colsep="1">
               <thead valign="top">
@@ -1120,10 +2783,13 @@
               </thead>
               <tbody valign="top">
                 <row>
-                  <entry><code>org.kie.remote.rest.deployment.job.queue.size</code></entry>
                   <entry>
-                    <para>Specifies the size of the deploy/undeploy job cache. Must be
-                      numerical.</para>
+                    <code>org.kie.remote.rest.deployment.job.queue.size</code>
+                  </entry>
+                  <entry>
+                    <para>Specifies the size of the deploy/undeploy job queue. Must be
+                      numerical.
+                    </para>
                   </entry>
                 </row>
               </tbody>
@@ -1132,113 +2798,364 @@
         </para>
       </section>
     </section>
-     
-     <section>
-       <title>Deployment call details</title>
-       
-       <variablelist>
-         <varlistentry>
-           <term>[GET] <command>/deployment/</command></term>
-           <listitem>
-             <itemizedlist>
-               <listitem><para>Returns a list of all the available deployed instances in a <code>JaxbDeploymentUnitList</code> instance</para></listitem>
-             </itemizedlist>
-           </listitem>
-         </varlistentry>
-         <varlistentry>
-           <term>[GET] <command>/deployment/<emphasis>{deploymentId}</emphasis></command></term>
-           <listitem>
-             <itemizedlist>
-               <listitem><para>Returns a <code>JaxbDeploymentUnit</code> instance containing th e information (including the
-                  configuration) of the deployment unit.</para>
-               <itemizedlist>
-                 <listitem><para>This operation will fail when the URL uses a <emphasis>deployementId</emphasis> that refers to a 
-                 deployment unit that does not exist or for which the deployment has not yet been completed.</para></listitem>
-                 <listitem><para>This operation may succeed for deployment units for which an undeploy operation request has not
-                 yet completed.</para></listitem>
-               </itemizedlist></listitem>
-             </itemizedlist>
-           </listitem>
-         </varlistentry>
-         <varlistentry>
-           <term>[POST] <command>/deployment/<emphasis>{deploymentId}</emphasis>/deploy</command></term>
-           <listitem>
-             <itemizedlist>
-               <listitem><para>Deploys the deployment unit referenced by the <emphasis>deploymentId</emphasis></para></listitem>
-               <listitem><para>Returns a <code>JaxbDeploymentJobResult</code> instance with the status of the <emphasis>request</emphasis></para></listitem>
-               <listitem><para>Takes a <code>strategy</code> query parameter: <itemizedlist>
+
+    <section>
+      <title>Deployment call details</title>
+
+      <variablelist>
+        <varlistentry>
+          <term>
+            [GET]
+            <command>/deployment/</command>
+          </term>
+          <listitem>
+            <itemizedlist>
+              <listitem>
+                <para>
+                  Returns a list of all the available deployed instances in a
+                  <code>JaxbDeploymentUnitList</code>
+                  instance
+                </para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>
+            [GET]
+            <command>
+              /deployment/
+              <emphasis>{deploymentId}</emphasis>
+            </command>
+          </term>
+          <listitem>
+            <itemizedlist>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbDeploymentUnit</code>
+                  instance containing th e information (including the
+                  configuration) of the deployment unit.
+                </para>
+                <itemizedlist>
+                  <listitem>
+                    <para>
+                      This operation will fail when the URL uses a
+                      <emphasis>deployementId</emphasis>
+                      that refers to a
+                      deployment unit that does not exist or for which the deployment has not yet been completed.
+                    </para>
+                  </listitem>
+                  <listitem>
+                    <para>This operation may succeed for deployment units for which an undeploy operation request has not
+                      yet completed.
+                    </para>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>
+            [POST]
+            <command>
+              /deployment/
+              <emphasis>{deploymentId}</emphasis>
+              /deploy
+            </command>
+          </term>
+          <listitem>
+            <itemizedlist>
+              <listitem>
+                <para>
+                  Deploys the deployment unit referenced by the
+                  <emphasis>deploymentId</emphasis>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbDeploymentJobResult</code>
+                  instance with the status of the
+                  <emphasis>request</emphasis>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Takes a
+                  <code>strategy</code>
+                  query parameter:
+                  <itemizedlist>
                     <listitem>
                       <para>This parameter describes the runtime strategy used for the deployment.</para>
                     </listitem>
                     <listitem>
-                      <para>This parameter takes the following (case-<emphasis>in</emphasis>sensitive) values:<itemizedlist>
-                          <listitem><para><code>SINGLETON</code></para></listitem>
-                          <listitem><para><code>PER_REQUEST</code></para></listitem>
-                          <listitem><para><code>PER_PROCESS_INSTANCE</code></para></listitem>
-                        </itemizedlist></para>
+                      <para>
+                        This parameter takes the following (case-
+                        <emphasis>in</emphasis>
+                        sensitive) values:
+                        <itemizedlist>
+                          <listitem>
+                            <para>
+                              <code>SINGLETON</code>
+                            </para>
+                          </listitem>
+                          <listitem>
+                            <para>
+                              <code>PER_REQUEST</code>
+                            </para>
+                          </listitem>
+                          <listitem>
+                            <para>
+                              <code>PER_PROCESS_INSTANCE</code>
+                            </para>
+                          </listitem>
+                        </itemizedlist>
+                      </para>
                     </listitem>
-                    <listitem><para>The default runtime strategy used for a deployment is <code>SINGLETON</code>.</para></listitem>
-               </itemizedlist></para></listitem>
-               <listitem><para>The deploy operation is an <emphasis>asynchronous</emphasis> operation. The status of the deployment can be retrieved
-               using the <code>GET</code> calls described above.</para></listitem>
-               <listitem><para>The request can fail for the reasons described </para></listitem>
-             </itemizedlist>
-           </listitem>
-         </varlistentry>
-         <varlistentry>
-           <term>[POST] <command>/deployment/<emphasis>{deploymentId}</emphasis>/undeploy</command></term>
-           <listitem>
-             <itemizedlist>
-               <listitem><para>Undeploys the deployment unit referenced by the <emphasis>deploymentId</emphasis></para></listitem>
-               <listitem><para>Returns a <code>JaxbDeploymentJobResult</code> instance with the status of the <emphasis>request</emphasis></para></listitem>
-               <listitem><para>The undeploy operation is an <emphasis>asynchronous</emphasis> operation. The status of the deployment can be retrieved
-                 using the <code>GET</code> calls described above.</para></listitem>
-             </itemizedlist>
-           </listitem>
-         </varlistentry>
-       </variablelist>
-       
-     </section>
-     
-   </section>
-
-  <section xml:id='remote.rest.execute'>
-    <title xml:id='remote.rest.execute.title'>Execute calls</title>
-
-    <para>While there is a <code>/runtime/{id}/execute</code> and a <code>task/execute</code> method, both will take all types 
-    of commands. This is possible because execute takes a JaxbCommandsRequest object, which contains 
-    a list of <code>(org.kie.api.command.)Command</code> objects. The <code>JaxbCommandsRequest</code> has fields to store 
-      the proper <code>deploymentId</code> and <code>processInstanceId</code> information.</para> 
-
-    <para>Of course, if you send a command that needs this information (<code>deploymentId</code>, for example) 
-    and don't fill it in, this will fail.</para>
-
-    <section>
-      <title>Execution call details</title>
-
-    <variablelist>
-      <varlistentry>
-        <term>[POST] <command>/task/execute</command></term>
-        <listitem>
-          <itemizedlist>
-            <listitem><para>Executes a <code>Command</code>, assumed to be related to tasks.</para></listitem>
-            <listitem><para>Returns a <code>JaxbCommandResponse</code> implementation with the result of the operation</para></listitem>
-          </itemizedlist>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term>[POST] <command>/runtime/<emphasis>{deploymentId}</emphasis>/execute</command></term>
-        <listitem>
-          <itemizedlist>
-            <listitem><para>Executes a <code>Command</code>, assumed to be related to business processes or the knowledge session.</para></listitem>
-            <listitem><para>Returns a <code>JaxbCommandResponse</code> implementation with the result of the operation</para></listitem>
-          </itemizedlist>
-        </listitem>
-      </varlistentry>
-    </variablelist>
+                    <listitem>
+                      <para>
+                        The default runtime strategy used for a deployment is
+                        <code>SINGLETON</code>
+                        .
+                      </para>
+                    </listitem>
+                  </itemizedlist>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  The deploy operation is an
+                  <emphasis>asynchronous</emphasis>
+                  operation. The status of the deployment can be retrieved
+                  using the
+                  <code>GET</code>
+                  calls described above.
+                </para>
+              </listitem>
+              <listitem>
+                <para>The request can fail for the reasons described </para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>
+            [POST]
+            <command>
+              /deployment/
+              <emphasis>{deploymentId}</emphasis>
+              /undeploy
+            </command>
+          </term>
+          <listitem>
+            <itemizedlist>
+              <listitem>
+                <para>
+                  Undeploys the deployment unit referenced by the
+                  <emphasis>deploymentId</emphasis>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbDeploymentJobResult</code>
+                  instance with the status of the
+                  <emphasis>request</emphasis>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  The undeploy operation is an
+                  <emphasis>asynchronous</emphasis>
+                  operation. The status of the deployment can be retrieved
+                  using the
+                  <code>GET</code>
+                  calls described above.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+      </variablelist>
 
     </section>
 
   </section>
-         
+
+  <section xml:id="remote.rest.execute">
+    <title xml:id="remote.rest.execute.title">Execute calls</title>
+
+    <para>
+      While there is a
+      <code>/runtime/{id}/execute</code>
+      and a
+      <code>task/execute</code>
+      method, both will take all types
+      of commands. This is possible because execute takes a JaxbCommandsRequest object, which contains
+      a list of
+      <code>(org.kie.api.command.)Command</code>
+      objects. The
+      <code>JaxbCommandsRequest</code>
+      has fields to store
+      the proper
+      <code>deploymentId</code>
+      and
+      <code>processInstanceId</code>
+      information.
+    </para>
+
+    <para>
+      Of course, if you send a command that needs this information (
+      <code>deploymentId</code>
+      , for example)
+      and don't fill it in, this will fail.
+    </para>
+
+    <section>
+      <title>Execution call details</title>
+
+      <variablelist>
+        <varlistentry>
+          <term>
+            [POST]
+            <command>/task/execute</command>
+          </term>
+          <listitem>
+            <itemizedlist>
+              <listitem>
+                <para>
+                  Executes a
+                  <code>Command</code>
+                  , assumed to be related to tasks.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbCommandResponse</code>
+                  implementation with the result of the operation
+                </para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>
+            [POST]
+            <command>
+              /runtime/
+              <emphasis>{deploymentId}</emphasis>
+              /execute
+            </command>
+          </term>
+          <listitem>
+            <itemizedlist>
+              <listitem>
+                <para>
+                  Executes a
+                  <code>Command</code>
+                  , assumed to be related to business processes or the knowledge session.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Returns a
+                  <code>JaxbCommandResponse</code>
+                  implementation with the result of the operation
+                </para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+
+    </section>
+    <section>
+      <title>Commands accepted</title>
+
+      <formalpara>
+        <title>Runtime commands</title>
+
+        <simplelist type='vert' columns='3'>
+          <member>AbortWorkItemCommand</member>
+          <member>CompleteWorkItemCommand</member>
+          <member>GetWorkItemCommand</member>
+
+          <member>AbortProcessInstanceCommand</member>
+          <member>GetProcessIdsCommand</member>
+          <member>GetProcessInstanceByCorrelationKeyCommand</member>
+          <member>GetProcessInstanceCommand</member>
+          <member>GetProcessInstancesCommand</member>
+          <member>SetProcessInstanceVariablesCommand</member>
+          <member>SignalEventCommand</member>
+          <member>StartCorrelatedProcessCommand</member>
+          <member>StartProcessCommand</member>
+
+          <member>GetVariableCommand</member>
+          <member>GetFactCountCommand</member>
+          <member>GetGlobalCommand</member>
+          <member>GetIdCommand</member>
+          <member>SetGlobalCommand</member>
+
+          <member>DeleteCommand</member>
+          <member>FireAllRulesCommand</member>
+          <member>InsertObjectCommand</member>
+          <member>UpdateCommand</member>
+        </simplelist>
+      </formalpara>
+
+      <formalpara>
+        <title>Task commands</title>
+        <simplelist type='vert' columns='3'>
+          <member>ActivateTaskCommand</member>
+          <member>AddTaskCommand</member>
+          <member>CancelDeadlineCommand</member>
+          <member>ClaimNextAvailableTaskCommand</member>
+          <member>ClaimTaskCommand</member>
+          <member>CompleteTaskCommand</member>
+          <member>CompositeCommand</member>
+          <member>DelegateTaskCommand</member>
+          <member>ExecuteTaskRulesCommand</member>
+          <member>ExitTaskCommand</member>
+          <member>FailTaskCommand</member>
+          <member>ForwardTaskCommand</member>
+          <member>GetAttachmentCommand</member>
+          <member>GetContentCommand</member>
+          <member>GetTaskAssignedAsBusinessAdminCommand</member>
+          <member>GetTaskAssignedAsPotentialOwnerCommand</member>
+          <member>GetTaskByWorkItemIdCommand</member>
+          <member>GetTaskCommand</member>
+          <member>GetTasksByProcessInstanceIdCommand</member>
+          <member>GetTasksByStatusByProcessInstanceIdCommand</member>
+          <member>GetTasksOwnedCommand</member>
+          <member>NominateTaskCommand</member>
+          <member>ProcessSubTaskCommand</member>
+          <member>ReleaseTaskCommand</member>
+          <member>ResumeTaskCommand</member>
+          <member>SkipTaskCommand</member>
+          <member>StartTaskCommand</member>
+          <member>StopTaskCommand</member>
+          <member>SuspendTaskCommand</member>
+        </simplelist>
+      </formalpara>
+      <formalpara>
+        <title>Task commands</title>
+        <simplelist type='vert' columns='3'>
+          <member>ClearHistoryLogsCommand</member>
+          <member>FindActiveProcessInstancesCommand</member>
+          <member>FindNodeInstancesCommand</member>
+          <member>FindProcessInstanceCommand</member>
+          <member>FindProcessInstancesCommand</member>
+          <member>FindSubProcessInstancesCommand</member>
+          <member>FindSubProcessInstancesCommand</member>
+          <member>FindVariableInstancesByNameCommand</member>
+          <member>FindVariableInstancesCommand</member>
+        </simplelist>
+      </formalpara>
+    </section>
+
+  </section>
+
 </section>

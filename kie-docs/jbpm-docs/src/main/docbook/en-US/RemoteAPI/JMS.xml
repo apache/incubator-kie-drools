@@ -6,6 +6,8 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>JMS</title>
     
+  <para>This section describes the setup and use of the JMS API.</para>
+   
   <section>
     <title>JMS Queue setup</title>
          
@@ -29,8 +31,70 @@
            <code>JaxbCommandsRequest</code> object. At the moment, only XML serialization (as opposed to, JSON or protobuf, for example) is supported. 
     </para>     
   </section>
+  
+  <section>
+    <title>Using the remote Java API versus creating your own JMS requests</title>
+    
+    <para>While it's possible to interact with a BPMS or KIE workbench server instance by sending and processing JMS messages that you create yourself, 
+      it will always be easier to use the remote Java API that's supplied by the <code>kie-services-client</code> jar.</para>
+     
+    <para>For more information about how to use the remote Java API to interact with the JMS API of a server instance, see the
+      following section.. <link></link>
+    </para>
+  </section>
+  <section>
+    <title>User identification for JMS messages using task requests</title>
+    
+    <para></para>
+  </section>
 
   <section>
+    <title>Serialization issues</title>
+    
+    <section>
+      <title>Message format and structure</title>
+      
+      <para>The JMS API accepts </para>
+    </section>
+    
+    <section>
+      <title>Sending and receiving user class instances</title>
+      
+      <para>Sometimes, users may wish to pass instances of their own classes as parameters to commands sent in a JMS message. In order to do this, there are 
+      a number of requirements.</para>
+      
+      <para>The following requirements are taken care of by the Remote Java API. However, if your application is communicating with the JMS API by creating
+      JMS messages itself, then it must satisfy the following requirements when sending a message that includes a user-defined class instance:
+      <orderedlist>
+        <listitem><para>The user-defined class satisfy the following in order to be property serialized and
+              deserialized by the JMS API: <itemizedlist>
+                <listitem>
+                  <para>The class must either implement the <code>Serializable</code> interface or
+                    otherwise be correctly annotated with JAXB annotations.</para>
+                </listitem>
+                <listitem>
+                  <para>The class definition must implement a no-arg constructor.</para>
+                </listitem>
+                <listitem>
+                  <para>Any fields in the class must either be object primitives (such as a
+                      <code>Long</code> or <code>String</code>) or otherwise satisfy the above 2
+                    requirements.</para>
+                </listitem>
+              </itemizedlist></para>
+        </listitem>
+        <listitem><para>The class definition must be included in the deployment jar of the deployment that the JMS
+              message content is meant for.</para></listitem>
+        <listitem><para>Lastly, the sender must set a <quote>deploymentId</quote> string property on the JMS bytes
+              message to the name of the deploymentId. This property is necessary in order to be
+              able to load the proper classes from the deployment itself before deserializing the
+              message on the server side.</para></listitem>
+      </orderedlist></para>
+        
+    </section>
+    
+  </section>
+
+   <section>
     <title>Example JMS usage</title>
     
     <para>The following is a rather long example that shows how to use the JMS API. The numbers ("callouts") along the side of the example
@@ -68,7 +132,9 @@
           <area id="jbpm.jms.response.jaxb.2" coords='137' />
         </areaset>
       </areaspec>
-      <programlisting language="java"><![CDATA[import java.util.List;
+      <programlisting language="java"><![CDATA[import static org.kie.services.client.serialization.SerializationConstants.*;
+
+import java.util.List;
 import java.util.UUID;
 
 import javax.jms.*;
@@ -145,6 +211,7 @@ import org.kie.services.client.serialization.jaxb.impl.JaxbExceptionResponse;
           msg = session.createBytesMessage();
           msg.setJMSCorrelationID(corrId);
           msg.setIntProperty("serialization", JaxbSerializationProvider.JMS_SERIALIZATION_TYPE);
+          msg.setStringProperty(DEPLOYMENT_ID_PROPERTY_NAME, config.getDeploymentId());
           String xmlStr = JaxbSerializationProvider.convertJaxbObjectToString(req);
           msg.writeUTF(xmlStr);
       } catch (JMSException jmse) {
