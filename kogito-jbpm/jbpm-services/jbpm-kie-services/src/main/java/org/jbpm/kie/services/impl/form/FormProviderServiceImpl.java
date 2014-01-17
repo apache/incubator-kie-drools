@@ -107,7 +107,7 @@ public class FormProviderServiceImpl implements FormProviderService {
     public String getFormDisplayTask(long taskId) {
         Task task = taskService.getTaskById(taskId);
         String name = task.getNames().get(0).getText();
-        ProcessAssetDesc processDesc = dataService.getProcessById(task.getTaskData().getProcessId());
+        ProcessAssetDesc processDesc = dataService.getProcessesByDeploymentIdProcessId(task.getTaskData().getDeploymentId(), task.getTaskData().getProcessId());
         Map<String, Object> renderContext = new HashMap<String, Object>();
 
         ContentMarshallerContext marshallerContext = getMarshallerContext(task);
