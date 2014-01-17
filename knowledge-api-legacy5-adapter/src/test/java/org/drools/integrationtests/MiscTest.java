@@ -1,5 +1,6 @@
 package org.drools.integrationtests;
 
+import junit.framework.TestCase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
@@ -14,6 +15,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.fail;
 
 public class MiscTest {
@@ -75,5 +77,24 @@ public class MiscTest {
         list.add(2);
 
         ksession.fireAllRules();
+    }
+
+    @Test
+    public void testErrorReporting() {
+        String str =
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $i : Intege( ) from list\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
+                      ResourceType.DRL );
+
+        assertTrue(kbuilder.hasErrors());
+        assertTrue(kbuilder.getErrors().toString().contains("Intege"));
     }
 }

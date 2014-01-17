@@ -43,6 +43,7 @@ public class KnowledgeRuntimeAdapter implements org.drools.runtime.KnowledgeRunt
 
     private final Map<WorkingMemoryEventListener, RuleRuntimeEventListener> wimListeners = new HashMap<WorkingMemoryEventListener, RuleRuntimeEventListener>();
     private final Map<ProcessEventListener, org.kie.api.event.process.ProcessEventListener> processListeners = new HashMap<ProcessEventListener, org.kie.api.event.process.ProcessEventListener>();
+    private final Map<AgendaEventListener, org.kie.api.event.rule.AgendaEventListener> agendaListeners = new HashMap<AgendaEventListener, org.kie.api.event.rule.AgendaEventListener>();
 
     public KnowledgeRuntimeAdapter(KnowledgeRuntime delegate) {
         this.delegate = delegate;
@@ -272,14 +273,16 @@ public class KnowledgeRuntimeAdapter implements org.drools.runtime.KnowledgeRunt
     }
 
     public void addEventListener(AgendaEventListener listener) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.addEventListener -> TODO");
+        org.kie.api.event.rule.AgendaEventListener adapted = new AgendaEventListenerAdapter(listener);
+        agendaListeners.put(listener, adapted);
+        delegate.addEventListener(adapted);
     }
 
     public void removeEventListener(AgendaEventListener listener) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.removeEventListener -> TODO");
+        delegate.removeEventListener(agendaListeners.remove(listener));
     }
 
     public Collection<AgendaEventListener> getAgendaEventListeners() {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.getAgendaEventListeners -> TODO");
+        return agendaListeners.keySet();
     }
 }
