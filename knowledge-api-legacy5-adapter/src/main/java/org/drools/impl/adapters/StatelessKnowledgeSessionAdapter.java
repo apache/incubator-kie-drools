@@ -5,13 +5,20 @@ import org.drools.event.process.ProcessEventListener;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.runtime.Globals;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StatelessKnowledgeSessionAdapter implements org.drools.runtime.StatelessKnowledgeSession {
 
     private final StatelessKnowledgeSession delegate;
+
+    private final Map<WorkingMemoryEventListener, RuleRuntimeEventListener> wimListeners = new HashMap<WorkingMemoryEventListener, RuleRuntimeEventListener>();
+    private final Map<ProcessEventListener, org.kie.api.event.process.ProcessEventListener> processListeners = new HashMap<ProcessEventListener, org.kie.api.event.process.ProcessEventListener>();
+    private final Map<AgendaEventListener, org.kie.api.event.rule.AgendaEventListener> agendaListeners = new HashMap<AgendaEventListener, org.kie.api.event.rule.AgendaEventListener>();
 
     public StatelessKnowledgeSessionAdapter(StatelessKnowledgeSession delegate) {
         this.delegate = delegate;
@@ -30,15 +37,17 @@ public class StatelessKnowledgeSessionAdapter implements org.drools.runtime.Stat
     }
 
     public void addEventListener(ProcessEventListener listener) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatelessKnowledgeSessionAdapter.addEventListener -> TODO");
+        org.kie.api.event.process.ProcessEventListener adapted = new ProcessEventListenerAdapter(listener);
+        processListeners.put(listener, adapted);
+        delegate.addEventListener(adapted);
     }
 
     public void removeEventListener(ProcessEventListener listener) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatelessKnowledgeSessionAdapter.removeEventListener -> TODO");
+        delegate.removeEventListener(processListeners.remove(listener));
     }
 
     public Collection<ProcessEventListener> getProcessEventListeners() {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatelessKnowledgeSessionAdapter.getProcessEventListeners -> TODO");
+        return processListeners.keySet();
     }
 
     public void execute(Object object) {
@@ -50,26 +59,30 @@ public class StatelessKnowledgeSessionAdapter implements org.drools.runtime.Stat
     }
 
     public void addEventListener(WorkingMemoryEventListener listener) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatelessKnowledgeSessionAdapter.addEventListener -> TODO");
+        RuleRuntimeEventListener adapted = new WorkingMemoryEventListenerAdapter(listener);
+        wimListeners.put(listener, adapted);
+        delegate.addEventListener(adapted);
     }
 
     public void removeEventListener(WorkingMemoryEventListener listener) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatelessKnowledgeSessionAdapter.removeEventListener -> TODO");
+        delegate.removeEventListener(wimListeners.remove(listener));
     }
 
     public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatelessKnowledgeSessionAdapter.getWorkingMemoryEventListeners -> TODO");
+        return wimListeners.keySet();
     }
 
     public void addEventListener(AgendaEventListener listener) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatelessKnowledgeSessionAdapter.addEventListener -> TODO");
+        org.kie.api.event.rule.AgendaEventListener adapted = new AgendaEventListenerAdapter(listener);
+        agendaListeners.put(listener, adapted);
+        delegate.addEventListener(adapted);
     }
 
     public void removeEventListener(AgendaEventListener listener) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatelessKnowledgeSessionAdapter.removeEventListener -> TODO");
+        delegate.removeEventListener(agendaListeners.remove(listener));
     }
 
     public Collection<AgendaEventListener> getAgendaEventListeners() {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatelessKnowledgeSessionAdapter.getAgendaEventListeners -> TODO");
+        return agendaListeners.keySet();
     }
 }
