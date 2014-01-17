@@ -57,6 +57,7 @@ public class InsertObjectInEntryPointCommand
     public InsertObjectInEntryPointCommand(Object object, String entryPoint, String outIdentifier) {
         super();
         this.object = object;
+        this.entryPoint = entryPoint;
         this.outIdentifier = outIdentifier;
     }
 

@@ -35,6 +35,7 @@ import org.drools.command.impl.FixedKnowledgeCommandContext;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.command.runtime.DisposeCommand;
+import org.drools.command.runtime.UnpersistableCommand;
 import org.drools.common.EndOperationListener;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.impl.KnowledgeBaseImpl;
@@ -341,13 +342,17 @@ public class SingleSessionCommandService
     }
 
     public synchronized <T> T execute(Command<T> command) {
+        if (command instanceof UnpersistableCommand) {
+            throw new UnsupportedOperationException("Command " + command + " cannot be issued on a persisted session");
+        }
+
         if (command instanceof DisposeCommand) {
             T result = commandService.execute( (GenericCommand<T>) command );
             this.jpm.dispose();
             return result;
         }
 
-        // Open the entity manager before the transaction begins. 
+        // Open the entity manager before the transaction begins.
         PersistenceContext persistenceContext = this.jpm.getApplicationScopedPersistenceContext();
 
         boolean transactionOwner = false;
