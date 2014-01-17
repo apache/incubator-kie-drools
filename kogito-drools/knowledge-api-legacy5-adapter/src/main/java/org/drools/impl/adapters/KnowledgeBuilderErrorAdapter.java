@@ -29,4 +29,8 @@ public class KnowledgeBuilderErrorAdapter implements org.drools.builder.Knowledg
     public Resource getResource() {
         return new ResourceAdapter(delegate.getResource());
     }
+
+    public String toString() {
+        return delegate.toString();
+    }
 }
