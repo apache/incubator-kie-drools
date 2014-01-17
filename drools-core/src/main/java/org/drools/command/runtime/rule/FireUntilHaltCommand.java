@@ -19,6 +19,7 @@ package org.drools.command.runtime.rule;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.command.runtime.UnpersistableCommand;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -26,7 +27,7 @@ import org.drools.runtime.rule.AgendaFilter;
 
 public class FireUntilHaltCommand
     implements
-    GenericCommand<Object> {
+    GenericCommand<Object>, UnpersistableCommand {
     private static final long serialVersionUID = 510l;
 
     private AgendaFilter agendaFilter = null;
