@@ -43,6 +43,8 @@ import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
@@ -56,6 +58,7 @@ import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
@@ -4876,6 +4879,83 @@ public class Misc2Test extends CommonTestMethodBase {
         ps[3].setName("d");
         ks.update(fhs[3], ps[3]);
         ks.fireAllRules();
+    }
+
+    public static class AA {
+        int id;
+        public AA( int i ) { this.id = i; }
+        public boolean match( Long value ) { return true; }
+        public boolean equals( Object o ) {
+            if ( this == o ) return true;
+            if ( o == null || getClass() != o.getClass() ) return false;
+            AA aa = (AA) o;
+            if ( id != aa.id ) return false;
+            return true;
+        }
+        public int hashCode() { return id; }
+    }
+    public static class BB {
+        public Integer getValue() { return 42; }
+    }
+
+    @Test
+    @Ignore
+    public void testJitting() {
+        // DROOLS-185
+        String str =
+                " import org.drools.compiler.integrationtests.Misc2Test.AA; " +
+                " import org.drools.compiler.integrationtests.Misc2Test.BB; " +
+                " global java.util.List list; \n" +
+                " " +
+                " rule R \n " +
+                " when \n" +
+                "    BB( $v : value ) \n" +
+                "    $a : AA( match( $v ) ) \n" +
+                " then \n" +
+                "   list.add( $a ); \n" +
+                " end \n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        ksession.insert( new BB() );
+        for ( int j = 0; j < 100; j++ ) {
+            ksession.insert( new AA( j ) );
+            ksession.fireAllRules();
+        }
+
+        assertEquals( 100, list.size() );
+    }
+
+    @Test
+    public void testPackagingJarWithTypeDeclarations() throws Exception {
+        // BZ-1054823
+        String drl1 =
+                "package org.drools.compiler\n" +
+                "import org.drools.compiler.Message\n" +
+                "declare Message\n" +
+                "   @role (event)\n" +
+                "end\n" +
+                "rule R1 when\n" +
+                "   $m : Message()\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
+        byte[] jar = createKJar(ks, releaseId, null, drl1);
+        KieModule km = deployJar(ks, jar);
+
+        // Create a session and fire rules
+        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+        KieSession ksession = kc.newKieSession();
+        ksession.insert(new Message("Hello World"));
+        ksession.fireAllRules();
     }
 }
 
