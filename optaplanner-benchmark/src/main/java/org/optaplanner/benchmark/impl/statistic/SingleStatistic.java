@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -101,13 +102,21 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
         if (!pointList.isEmpty()) {
             throw new IllegalStateException("The pointList with size (" + pointList.size() + ") should be empty.");
         }
+        if (!csvFile.exists()) {
+            if (singleBenchmarkResult.isFailure()) {
+                pointList = Collections.emptyList();
+                return;
+            } else {
+                throw new IllegalStateException("The csvFile (" + csvFile + ") does not exist.");
+            }
+        }
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new InputStreamReader(new FileInputStream(csvFile), "UTF-8"));
             String line = reader.readLine();
             if (!getCsvHeader().equals(line)) {
                 throw new IllegalStateException("The read line (" + line
-                        + ") is expected to be the head line (" + getCsvHeader()
+                        + ") is expected to be the header line (" + getCsvHeader()
                         + ") for statisticType (" + statisticType + ").");
             }
             for (line = reader.readLine(); line != null && !line.isEmpty(); line = reader.readLine()) {
