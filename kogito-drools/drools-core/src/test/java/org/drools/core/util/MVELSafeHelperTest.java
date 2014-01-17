@@ -1,5 +1,7 @@
 package org.drools.core.util;
 
+import java.util.HashMap;
+
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -17,7 +19,7 @@ public class MVELSafeHelperTest {
         String kiePolicy = MVELSafeHelperTest.class.getResource("kie.policy").getFile();
         System.setProperty("java.security.policy", enginePolicy);
         System.setProperty("kie.security.policy", kiePolicy);
-
+        
         tsm = new TestSecurityManager();
         System.setSecurityManager(tsm);
     }
@@ -41,6 +43,27 @@ public class MVELSafeHelperTest {
         }
     }
     
+    @Test
+    public void testReflectionAttack() throws Exception {
+        String setup = "java.lang.reflect.Field field = org.drools.core.util.MVELSafeHelper.getDeclaredField(\"evaluator\");\n"
+                + "System.out.println(field);\n"  
+                + "field.setAccessible(true);\n"  
+                + "field.set(null, \"new org.drools.core.util.MVELSafeHelper.RawMVELEvaluator()\");";
+        try {
+            Assert.assertEquals( MVELSafeHelper.SafeMVELEvaluator.class.getName(), MVELSafeHelper.getEvaluator().getClass().getName() );
+            MVELSafeHelper.getEvaluator().eval(setup, new HashMap<String,Object>());
+            Assert.fail("Should have raised an AccessControlException");
+        } catch (PropertyAccessException e) {
+            // test succeeded. the policy in place prevented the rule from executing field.setAccessible().
+            //e.printStackTrace();
+        }
+    }
+    
+    public void testReflectionOnFinal() throws Exception {
+        
+        
+    }
+    
     public static class MaliciousExitHelper {
         public static int exit() {
             System.exit(0);
@@ -60,5 +83,9 @@ public class MVELSafeHelperTest {
         public ShouldHavePrevented(String message) {
             super(message);
         }
+    }
+    
+    public static class StaticFinalHolder {
+        private static final boolean FLAG = true;
     }
 }
