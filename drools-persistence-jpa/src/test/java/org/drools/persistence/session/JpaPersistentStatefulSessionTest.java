@@ -20,28 +20,19 @@ import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
 import static org.junit.Assert.*;
 
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import java.util.Properties;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
 import org.drools.Address;
-import org.drools.ClockType;
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.SessionConfiguration;
@@ -52,7 +43,6 @@ import org.drools.command.CommandFactory;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.command.impl.FireAllRulesInterceptor;
 import org.drools.command.impl.LoggingInterceptor;
-import org.drools.conf.EventProcessingOption;
 import org.drools.io.ResourceFactory;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.JPAKnowledgeService;
@@ -62,7 +52,6 @@ import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -450,180 +439,5 @@ public class JpaPersistentStatefulSessionTest {
 
         // Should not fail here
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId, kbase, null, env);
-    }
-
-    @Test
-    public void testParallelInsertsOnPersistedSession() {
-        String str =
-                "import org.drools.persistence.session.JpaPersistentStatefulSessionTest.ParkingEvent;\n" +
-                "\n" +
-                "declare ParkingEvent\n" +
-                "    @role( event )\n" +
-                "    @expires(1s)\n" +
-                "end\n" +
-                "\n" +
-                "rule \"Hello Event\"\n" +
-                "    when\n" +
-                "        $p : ParkingEvent( ) from entry-point \"parking\"\n" +
-                "    then\n" +
-                //"        System.out.println( $p.toString() );\n" +
-                "end\n";
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setOption(EventProcessingOption.STREAM);
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(conf);
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksconf.setOption(ClockTypeOption.get(ClockType.REALTIME_CLOCK.getId()));
-        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, ksconf, env );
-
-        assertNull(ksession.getWorkingMemoryEntryPoint("notExisting"));
-
-        WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint("parking");
-
-        Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
-            public Thread newThread(Runnable r) {
-                Thread t = new Thread(r);
-                t.setDaemon(true);
-                return t;
-            }
-        });
-
-        final int THREAD_NR = 30;
-        CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
-        for (int i = 0; i < THREAD_NR; i++) {
-            TestEventRunner runner = new TestEventRunner();
-            runner.setEp(ep);
-            runner.setKsession(ksession);
-            ecs.submit(runner);
-        }
-
-        ksession.fireUntilHalt();
-
-        boolean success = true;
-        for (int i = 0; i < THREAD_NR; i++) {
-            try {
-                success = ecs.take().get() && success;
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        assertTrue(success);
-
-        // let to execute expirations
-        try {
-            Thread.sleep(10000L);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        assertEquals(0, ep.getFactCount());
-
-        ksession.halt();
-        ksession.dispose();
-    }
-
-    public static class TestEventRunner implements Callable<Boolean> {
-
-        private WorkingMemoryEntryPoint ep;
-
-        private StatefulKnowledgeSession ksession;
-
-        public StatefulKnowledgeSession getKsession() {
-            return ksession;
-        }
-
-        public void setKsession(StatefulKnowledgeSession ksession) {
-            this.ksession = ksession;
-        }
-
-        public WorkingMemoryEntryPoint getEp() {
-            return ep;
-        }
-
-        public void setEp(WorkingMemoryEntryPoint ep) {
-            this.ep = ep;
-        }
-
-        public Boolean call() {
-            try {
-                Thread.sleep(500); // make sure ksession started
-                for (int i = 0; i < 5; i++) {
-                    ep.insert(new ParkingEvent("CarA", "ParkingA", ParkingEvent.ENTER));
-                    Thread.sleep(200);
-                    ep.insert(new ParkingEvent("CarB", "ParkingA", ParkingEvent.ENTER));
-                    Thread.sleep(200);
-                    ep.insert(new ParkingEvent("CarA", "ParkingA", ParkingEvent.EXIT));
-                    Thread.sleep(200);
-                    ep.insert(new ParkingEvent("CarA", "ParkingB", ParkingEvent.ENTER));
-                    Thread.sleep(200);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-            return true;
-        }
-    }
-
-    public static class ParkingEvent implements Serializable {
-
-        public static final int ENTER = 0;
-        public static final int EXIT = 1;
-
-        private String car;
-
-        private String zone;
-
-        private int type;
-
-        public ParkingEvent() {
-
-        }
-
-        public ParkingEvent(String car, String zone, int type) {
-            this.car = car;
-            this.zone = zone;
-            this.type = type;
-        }
-
-        public String getCar() {
-            return car;
-        }
-
-        public void setCar(String car) {
-            this.car = car;
-        }
-
-        public String getZone() {
-            return zone;
-        }
-
-        public void setZone(String zone) {
-            this.zone = zone;
-        }
-
-        public int getType() {
-            return type;
-        }
-
-        public void setType(int type) {
-            this.type = type;
-        }
-
-        @Override
-        public String toString() {
-            return "ParkingEvent : car = " + car + ", zone = " + zone + ", type = " + type;
-        }
     }
 }

@@ -8,7 +8,7 @@
 <org.drools.audit.event.ObjectLogEvent>
   <type>1</type>
   <factId>1</factId>
-  <objectToString>org.drools.integrationtests.FusionIncrementalKbaseTest$Event@1c8a2c9</objectToString>
+  <objectToString>org.drools.integrationtests.FusionIncrementalKbaseTest$Event@1e483bb</objectToString>
 </org.drools.audit.event.ObjectLogEvent>
 <org.drools.audit.event.ActivationLogEvent>
   <type>4</type>
@@ -19,7 +19,7 @@
 <org.drools.audit.event.ObjectLogEvent>
   <type>1</type>
   <factId>2</factId>
-  <objectToString>org.drools.integrationtests.FusionIncrementalKbaseTest$Event@520972</objectToString>
+  <objectToString>org.drools.integrationtests.FusionIncrementalKbaseTest$Event@84102f</objectToString>
 </org.drools.audit.event.ObjectLogEvent>
 <org.drools.audit.event.ActivationLogEvent>
   <type>4</type>
@@ -30,7 +30,7 @@
 <org.drools.audit.event.ObjectLogEvent>
   <type>1</type>
   <factId>3</factId>
-  <objectToString>org.drools.integrationtests.FusionIncrementalKbaseTest$Event@1ea4283</objectToString>
+  <objectToString>org.drools.integrationtests.FusionIncrementalKbaseTest$Event@42851b</objectToString>
 </org.drools.audit.event.ObjectLogEvent>
 <org.drools.audit.event.ActivationLogEvent>
   <type>6</type>
@@ -88,17 +88,17 @@
 <org.drools.audit.event.ObjectLogEvent>
   <type>3</type>
   <factId>1</factId>
-  <objectToString>org.drools.integrationtests.FusionIncrementalKbaseTest$Event@1c8a2c9</objectToString>
+  <objectToString>org.drools.integrationtests.FusionIncrementalKbaseTest$Event@1e483bb</objectToString>
 </org.drools.audit.event.ObjectLogEvent>
 <org.drools.audit.event.ObjectLogEvent>
   <type>3</type>
   <factId>2</factId>
-  <objectToString>org.drools.integrationtests.FusionIncrementalKbaseTest$Event@520972</objectToString>
+  <objectToString>org.drools.integrationtests.FusionIncrementalKbaseTest$Event@84102f</objectToString>
 </org.drools.audit.event.ObjectLogEvent>
 <org.drools.audit.event.ObjectLogEvent>
   <type>3</type>
   <factId>3</factId>
-  <objectToString>org.drools.integrationtests.FusionIncrementalKbaseTest$Event@1ea4283</objectToString>
+  <objectToString>org.drools.integrationtests.FusionIncrementalKbaseTest$Event@42851b</objectToString>
 </org.drools.audit.event.ObjectLogEvent>
 <org.drools.audit.event.RuleBaseLogEvent>
   <type>23</type>
@@ -128,7 +128,7 @@
 <org.drools.audit.event.ObjectLogEvent>
   <type>1</type>
   <factId>4</factId>
-  <objectToString>org.drools.integrationtests.FusionIncrementalKbaseTest$Event@1f0fb38</objectToString>
+  <objectToString>org.drools.integrationtests.FusionIncrementalKbaseTest$Event@336724</objectToString>
 </org.drools.audit.event.ObjectLogEvent>
 <org.drools.audit.event.ActivationLogEvent>
   <type>6</type>
