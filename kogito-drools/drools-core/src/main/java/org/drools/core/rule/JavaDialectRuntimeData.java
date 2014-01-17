@@ -386,7 +386,9 @@ public class JavaDialectRuntimeData
         }
         if (bytecode == null && rootClassLoader instanceof ProjectClassLoader) {
             bytecode = ((ProjectClassLoader)rootClassLoader).getBytecode(resourceName);
-            store.put(resourceName, bytecode);
+            if (bytecode != null) {
+                store.put(resourceName, bytecode);
+            }
         }
         return bytecode;
     }

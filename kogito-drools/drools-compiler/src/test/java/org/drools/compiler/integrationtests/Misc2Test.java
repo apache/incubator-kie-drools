@@ -43,6 +43,8 @@ import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
@@ -56,6 +58,7 @@ import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
@@ -4927,5 +4930,32 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( 100, list.size() );
     }
 
+    @Test
+    public void testPackagingJarWithTypeDeclarations() throws Exception {
+        // BZ-1054823
+        String drl1 =
+                "package org.drools.compiler\n" +
+                "import org.drools.compiler.Message\n" +
+                "declare Message\n" +
+                "   @role (event)\n" +
+                "end\n" +
+                "rule R1 when\n" +
+                "   $m : Message()\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
+        byte[] jar = createKJar(ks, releaseId, null, drl1);
+        KieModule km = deployJar(ks, jar);
+
+        // Create a session and fire rules
+        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+        KieSession ksession = kc.newKieSession();
+        ksession.insert(new Message("Hello World"));
+        ksession.fireAllRules();
+    }
 }
 
