@@ -42,7 +42,6 @@ import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
-import org.jbpm.marshalling.impl.ProcessInstanceResolverStrategy;
 import org.jbpm.bpmn2.test.RequirePersistence;
 import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
@@ -71,9 +70,7 @@ import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -1192,6 +1189,24 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         int fired = ksession.fireAllRules();
         assertEquals(1, fired);
         assertProcessInstanceFinished(processInstance, ksession);
+    }
+    
+    @Test
+    public void testBusinessRuleTaskWithContionalEvent() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ConditionalEventRuleTask.bpmn2",
+                "BPMN2-ConditionalEventRuleTask.drl");
+        ksession = createKnowledgeSession(kbase);
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+        ProcessInstance processInstance = ksession.startProcess("TestFlow");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        Person person = new Person();
+        person.setName("john");
+        ksession.insert(person);
+        ksession.fireAllRules();
+        
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertTrue(list.size() == 1);
     }
 
     @Test

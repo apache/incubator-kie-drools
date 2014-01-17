@@ -1,0 +1,13 @@
+import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.jbpm.bpmn2.objects.Person;
+
+global java.util.List list;
+
+rule "SetCreated" ruleflow-group "SetCreated"
+when
+	WorkflowProcessInstance()
+	$p : Person(name == "john")
+then	
+	System.err.println("Person created!");	
+	list.add("Executed");	
+end
