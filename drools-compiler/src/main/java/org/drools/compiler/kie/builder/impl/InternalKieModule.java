@@ -2,6 +2,7 @@ package org.drools.compiler.kie.builder.impl;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,9 @@ public interface InternalKieModule extends KieModule {
     void addKieDependency(InternalKieModule dependency);
 
     Collection<ReleaseId> getJarDependencies();
+
+    Collection<ReleaseId> getUnresolvedDependencies();
+    void setUnresolvedDependencies(Collection<ReleaseId> unresolvedDependencies);
 
     boolean isAvailable( final String pResourceName );
     

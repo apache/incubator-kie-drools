@@ -10,6 +10,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieScanner;
+import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.api.runtime.KieContainer;
@@ -176,7 +177,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "scanner-test", "2.0");
 
         MavenRepository repository = getMavenRepository();
-        repository.deployPomArtifact("org.kie", "scanner-master-test", "1.0", createMasterKPom());
+        repository.deployPomArtifact("org.kie", "scanner-master-test", "1.0", createMasterKPom("scanner-test"));
 
         resetFileManager();
 
@@ -198,7 +199,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         checkKSession(ksession2, 15);
     }
 
-    private File createMasterKPom() throws IOException {
+    private File createMasterKPom(String depArtifactId) throws IOException {
         String pom =
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
@@ -213,7 +214,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
                 "    <dependencies>\n" +
                 "      <dependency>\n" +
                 "        <groupId>org.kie</groupId>\n" +
-                "        <artifactId>scanner-test</artifactId>\n" +
+                "        <artifactId>" + depArtifactId + "</artifactId>\n" +
                 "        <version>LATEST</version>\n" +
                 "      </dependency>\n" +
                 "    </dependencies>\n" +
@@ -293,7 +294,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "scanner-test", "2.0");
 
         MavenRepository repository = getMavenRepository();
-        repository.deployPomArtifact("org.kie", "scanner-master-test", "1.0", createMasterKPom());
+        repository.deployPomArtifact("org.kie", "scanner-master-test", "1.0", createMasterKPom("scanner-test"));
 
         resetFileManager();
 
@@ -313,5 +314,23 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         KieSession ksession2 = kieContainer.newKieSession("KSession1");
         checkKSession(ksession2, "rule2");
+    }
+
+    @Test
+    public void testMissingDependency() throws Exception {
+        KieServices ks = KieServices.Factory.get();
+        MavenRepository repository = getMavenRepository();
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-test", "1.0");
+        ReleaseId missingDep = ks.newReleaseId("org.kie", "missing-dep", "1.0");
+
+        KieFileSystem kfs = createKieFileSystemWithKProject(ks, false);
+        kfs.writePomXML(getPom(releaseId, missingDep));
+
+        kfs.write("src/main/resources/KBase1/rule1.drl", createDRLWithTypeDeclaration(1, 1));
+
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+        List<Message> messages = kieBuilder.buildAll().getResults().getMessages();
+        assertEquals(1, messages.size());
+        assertTrue(messages.get(0).toString().contains("missing-dep"));
     }
 }
