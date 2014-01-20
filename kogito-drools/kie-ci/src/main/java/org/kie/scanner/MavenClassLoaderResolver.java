@@ -7,6 +7,7 @@ import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -43,29 +44,31 @@ public class MavenClassLoaderResolver implements ClassLoaderResolver {
         if (parent == null) {
             parent = MavenClassLoaderResolver.class.getClassLoader();
         }
-        
-        Collection<ReleaseId> jarDependencies = ((InternalKieModule)kmodule).getJarDependencies();
+
+        InternalKieModule internalKModule = (InternalKieModule)kmodule;
+        Collection<ReleaseId> jarDependencies = internalKModule.getJarDependencies();
+
         ArtifactResolver resolver = ArtifactResolver.getResolverFor(kmodule.getReleaseId(),true);
-        
-        URL[] urls = new URL[jarDependencies.size()];
-        int i = 0;
+        List<URL> urls = new ArrayList<URL>();
+        List<ReleaseId> unresolvedDeps = new ArrayList<ReleaseId>();
+
         for (ReleaseId rid : jarDependencies) {
             try {
                 Artifact artifact = resolver.resolveArtifact(rid.toString());
                 if( artifact != null ) {
                     File jar = artifact.getFile(); 
-                    urls[i++] = jar.toURI().toURL();
+                    urls.add( jar.toURI().toURL() );
                 } else {
-                    logger.warn( "Dependency artifact not found for: "+rid );
+                    logger.error( "Dependency artifact not found for: " + rid );
+                    unresolvedDeps.add(rid);
                 }
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        ClassLoader classLoader = new URLClassLoader(urls, parent);
-
-        return classLoader;
+        internalKModule.setUnresolvedDependencies(unresolvedDeps);
+        return new URLClassLoader(urls.toArray(new URL[urls.size()]), parent);
     }
 
 }
