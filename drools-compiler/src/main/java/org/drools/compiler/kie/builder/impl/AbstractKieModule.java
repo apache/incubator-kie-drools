@@ -74,6 +74,8 @@ public abstract class AbstractKieModule
 
     protected PomModel pomModel;
 
+    private Collection<ReleaseId> unresolvedDependencies;
+
     public AbstractKieModule(ReleaseId releaseId, KieModuleModel kModuleModel) {
         this.releaseId = releaseId;
         this.kModuleModel = kModuleModel;
@@ -103,6 +105,14 @@ public abstract class AbstractKieModule
             deps = pomModel.getDependencies();
         }
         return deps == null ? Collections.<ReleaseId> emptyList() : deps;
+    }
+
+    public Collection<ReleaseId> getUnresolvedDependencies() {
+        return unresolvedDependencies == null ? Collections.<ReleaseId> emptyList() : unresolvedDependencies;
+    }
+
+    public void setUnresolvedDependencies(Collection<ReleaseId> unresolvedDependencies) {
+        this.unresolvedDependencies = unresolvedDependencies;
     }
 
     public ReleaseId getReleaseId() {

@@ -188,6 +188,10 @@ public class KieBuilderImpl
             }
 
             KieModuleKieProject kProject = new KieModuleKieProject( kModule );
+            for (ReleaseId unresolvedDep : kModule.getUnresolvedDependencies()) {
+                results.addMessage(Level.ERROR, "pom.xml", "Unresolved dependency " + unresolvedDep);
+            }
+
             compileJavaClasses(kProject.getClassLoader());
 
             if ( buildKieProject( kModule, results, kProject ) ) {
