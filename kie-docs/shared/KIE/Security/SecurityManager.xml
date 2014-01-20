@@ -101,10 +101,10 @@
         ignored.</para>
     </note>
     <note>
-      <para>A Security Manager has a high performance impact in the JVM. Applications with strict security requirements
-        are strongly discouraged of using a Security Manager. An alternative is the use of other security procedures
-        like the auditing of rules/processes before testing and deployment to prevent malicious code from being deployed
-        to the environment.</para>
+      <para>A Security Manager has a high performance impact in the JVM. Applications with strict performance
+        requirements are strongly discouraged of using a Security Manager. An alternative is the use of other security
+        procedures like the auditing of rules/processes before testing and deployment to prevent malicious code from
+        being deployed to the environment.</para>
     </note>
   </section>
   
