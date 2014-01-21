@@ -44,7 +44,6 @@
       <!--</moveListFactory>-->
     </unionMoveSelector>
     <acceptor>
-      <solutionTabuSize>1000</solutionTabuSize>
       <entityTabuSize>7</entityTabuSize>
     </acceptor>
     <forager>
