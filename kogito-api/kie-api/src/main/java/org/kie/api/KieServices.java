@@ -85,9 +85,23 @@ public interface KieServices {
     KieContainer getKieClasspathContainer();
 
     /**
+     * Returns KieContainer for the classpath using the given classLoader,
+     * this a global singleton
+     *
+     * #throw IllegalStateException if this method get called twice with 2 different ClassLoaders
+     */
+    KieContainer getKieClasspathContainer(ClassLoader classLoader);
+
+    /**
      * Creates a new KieContainer for the classpath, regardless if there's already an existing one
      */
     KieContainer newKieClasspathContainer();
+
+    /**
+     * Creates a new KieContainer for the classpath using the given classLoader,
+     * regardless if there's already an existing one
+     */
+    KieContainer newKieClasspathContainer(ClassLoader classLoader);
 
     /**
      * Creates a new KieContainer wrapping the KieModule with the given ReleaseId
@@ -132,7 +146,16 @@ public interface KieServices {
 
     /**
      * Create a KieBaseConfiguration on which properties can be set. Use
+     * the given properties file.
+     */
+    KieBaseConfiguration newKieBaseConfiguration(Properties properties);
+
+    /**
+     * Create a KieBaseConfiguration on which properties can be set. Use
      * the given properties file and ClassLoader - either of which can be null.
+     *
+     * @deprecated The classLoader has to be defined when creating the KieContainer,
+     * so the one passed here will be just ignored
      */
     KieBaseConfiguration newKieBaseConfiguration(Properties properties, ClassLoader classLoader);
 
