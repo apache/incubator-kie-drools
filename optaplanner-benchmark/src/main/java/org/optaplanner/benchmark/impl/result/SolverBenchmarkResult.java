@@ -69,6 +69,7 @@ public class SolverBenchmarkResult {
     private ScoreDifferencePercentage averageWorstScoreDifferencePercentage = null;
     // The average of the average is not just the overall average if the SingleBenchmarkResult's timeMillisSpend differ
     private Long averageAverageCalculateCountPerSecond = null;
+    private Long averageTimeMillisSpend = null;
 
     // Ranking starts from 0
     private Integer ranking = null;
@@ -131,6 +132,10 @@ public class SolverBenchmarkResult {
 
     public Long getAverageAverageCalculateCountPerSecond() {
         return averageAverageCalculateCountPerSecond;
+    }
+
+    public Long getAverageTimeMillisSpend() {
+        return averageTimeMillisSpend;
     }
 
     public Integer getRanking() {
@@ -250,6 +255,7 @@ public class SolverBenchmarkResult {
         totalWinningScoreDifference = null;
         ScoreDifferencePercentage totalWorstScoreDifferencePercentage = null;
         long totalAverageCalculateCountPerSecond = 0L;
+        long totalTimeMillisSpend = 0L;
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             if (singleBenchmarkResult.isFailure()) {
                 failureCount++;
@@ -259,6 +265,7 @@ public class SolverBenchmarkResult {
                     totalWinningScoreDifference = singleBenchmarkResult.getWinningScoreDifference();
                     totalWorstScoreDifferencePercentage = singleBenchmarkResult.getWorstScoreDifferencePercentage();
                     totalAverageCalculateCountPerSecond = singleBenchmarkResult.getAverageCalculateCountPerSecond();
+                    totalTimeMillisSpend = singleBenchmarkResult.getTimeMillisSpend();
                     firstNonFailure = false;
                 } else {
                     totalScore = totalScore.add(singleBenchmarkResult.getScore());
@@ -267,6 +274,7 @@ public class SolverBenchmarkResult {
                     totalWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.add(
                             singleBenchmarkResult.getWorstScoreDifferencePercentage());
                     totalAverageCalculateCountPerSecond += singleBenchmarkResult.getAverageCalculateCountPerSecond();
+                    totalTimeMillisSpend += singleBenchmarkResult.getTimeMillisSpend();
                 }
             }
         }
@@ -275,6 +283,7 @@ public class SolverBenchmarkResult {
             averageScore = totalScore.divide(successCount);
             averageWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.divide((double) successCount);
             averageAverageCalculateCountPerSecond = totalAverageCalculateCountPerSecond / (long) successCount;
+            averageTimeMillisSpend = totalTimeMillisSpend / (long) successCount;
         }
     }
 

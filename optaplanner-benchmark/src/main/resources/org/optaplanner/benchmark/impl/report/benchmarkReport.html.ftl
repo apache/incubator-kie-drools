@@ -143,10 +143,13 @@
                                 <@addScoreLevelChartList chartFileList=benchmarkReport.bestScoreSummaryChartFileList idPrefix="summary_bestScore" />
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
-                                        <th>Solver</th>
-                                        <th>Total</th>
-                                        <th>Average</th>
-                                        <th>Standard Deviation</th>
+                                        <th rowspan="2">Solver</th>
+                                        <th rowspan="2">Total</th>
+                                        <th rowspan="2">Average</th>
+                                        <th rowspan="2">Standard Deviation</th>
+                                        <th colspan="${benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList?size}">Problem</th>
+                                    </tr>
+                                    <tr>
                                     <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
                                         <th>${problemBenchmarkResult.name}</th>
                                     </#list>
@@ -184,9 +187,12 @@
                                 <@addScoreLevelChartList chartFileList=benchmarkReport.winningScoreDifferenceSummaryChartFileList idPrefix="summary_winningScoreDifference" />
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
-                                        <th>Solver</th>
-                                        <th>Total</th>
-                                        <th>Average</th>
+                                        <th rowspan="2">Solver</th>
+                                        <th rowspan="2">Total</th>
+                                        <th rowspan="2">Average</th>
+                                        <th colspan="${benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList?size}">Problem</th>
+                                    </tr>
+                                    <tr>
                                     <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
                                         <th>${problemBenchmarkResult.name}</th>
                                     </#list>
@@ -218,8 +224,11 @@
                                 <@addScoreLevelChartList chartFileList=benchmarkReport.worstScoreDifferencePercentageSummaryChartFileList idPrefix="summary_worstScoreDifferencePercentage" />
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
-                                        <th>Solver</th>
-                                        <th>Average</th>
+                                        <th rowspan="2">Solver</th>
+                                        <th rowspan="2">Average</th>
+                                        <th colspan="${benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList?size}">Problem</th>
+                                    </tr>
+                                    <tr>
                                     <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
                                         <th>${problemBenchmarkResult.name}</th>
                                     </#list>
@@ -297,8 +306,11 @@
                                 </div>
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
-                                        <th>Solver</th>
-                                        <th>Average</th>
+                                        <th rowspan="2">Solver</th>
+                                        <th rowspan="2">Average</th>
+                                        <th colspan="${benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList?size}">Problem</th>
+                                    </tr>
+                                    <tr>
                                     <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
                                         <th>${problemBenchmarkResult.name}</th>
                                     </#list>
@@ -338,13 +350,18 @@
                                 </div>
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
-                                        <th>Solver</th>
+                                        <th rowspan="2">Solver</th>
+                                        <th rowspan="2">Average</th>
+                                        <th colspan="${benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList?size}">Problem</th>
+                                    </tr>
+                                    <tr>
                                     <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
                                         <th>${problemBenchmarkResult.name}</th>
                                     </#list>
                                     </tr>
                                     <tr>
                                         <th class="problemScale">Problem scale</th>
+                                        <td class="problemScale">${benchmarkReport.plannerBenchmarkResult.averageProblemScale!""}</td>
                                     <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
                                         <td class="problemScale">${problemBenchmarkResult.problemScale!""}</td>
                                     </#list>
@@ -352,6 +369,7 @@
                                 <#list benchmarkReport.plannerBenchmarkResult.solverBenchmarkResultList as solverBenchmarkResult>
                                     <tr<#if solverBenchmarkResult.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmarkResult.name}&nbsp;<@addSolverRankingBadge solverBenchmarkResult=solverBenchmarkResult/></th>
+                                        <td>${solverBenchmarkResult.averageTimeMillisSpend!""}</td>
                                         <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
                                             <#if !solverBenchmarkResult.findSingleBenchmark(problemBenchmarkResult)??>
                                                 <td></td>
