@@ -48,6 +48,10 @@ public class MavenClassLoaderResolver implements ClassLoaderResolver {
         InternalKieModule internalKModule = (InternalKieModule)kmodule;
         Collection<ReleaseId> jarDependencies = internalKModule.getJarDependencies();
 
+        if (jarDependencies.isEmpty()) {
+            return parent;
+        }
+
         ArtifactResolver resolver = ArtifactResolver.getResolverFor(kmodule.getReleaseId(),true);
         List<URL> urls = new ArrayList<URL>();
         List<ReleaseId> unresolvedDeps = new ArrayList<ReleaseId>();
