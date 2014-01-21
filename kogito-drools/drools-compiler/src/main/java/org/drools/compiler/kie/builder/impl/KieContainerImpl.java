@@ -22,6 +22,7 @@ import org.drools.compiler.kie.util.ChangeSetBuilder;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -385,7 +386,12 @@ public class KieContainerImpl
             }
         }
 
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( conf != null ? conf : getKnowledgeBaseConfiguration(kBaseModel, cl) );
+        if (conf == null) {
+            conf = getKnowledgeBaseConfiguration(kBaseModel, cl);
+        } else if (conf instanceof RuleBaseConfiguration) {
+            ((RuleBaseConfiguration)conf).setClassLoader(cl);
+        }
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( conf );
 
         kBase.addKnowledgePackages( pkgs );
         return kBase;
