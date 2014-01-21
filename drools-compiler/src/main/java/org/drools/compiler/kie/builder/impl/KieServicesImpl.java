@@ -36,12 +36,15 @@ import java.lang.ref.WeakReference;
 import java.util.Properties;
 
 import static org.drools.compiler.compiler.io.memory.MemoryFileSystem.readFromJar;
+import static org.drools.core.common.ProjectClassLoader.findParentClassLoader;
 
 public class KieServicesImpl implements InternalKieServices {
     private ResourceFactoryService resourceFactory;
     
     private volatile KieContainer classpathKContainer;
-    
+
+    private volatile ClassLoader classpathClassLoader;
+
     private final Object lock = new Object();
 
     private WeakReference<KieServicesEventListerner> listener;
@@ -61,26 +64,40 @@ public class KieServicesImpl implements InternalKieServices {
      * Returns KieContainer for the classpath
      */
     public KieContainer getKieClasspathContainer() {
+        return getKieClasspathContainer( findParentClassLoader() );
+    }
+
+    public KieContainer getKieClasspathContainer(ClassLoader classLoader) {
         if ( classpathKContainer == null ) {
             // these are heavy to create, don't want to end up with two
             synchronized ( lock ) {
                 if ( classpathKContainer == null ) {
-                    classpathKContainer = newKieClasspathContainer();
+                    classpathClassLoader = classLoader;
+                    classpathKContainer = newKieClasspathContainer(classLoader);
+                } else if (classLoader != classpathClassLoader) {
+                    throw new IllegalStateException("There's already another KieContainer created from a different ClassLoader");
                 }
-            }        
+            }
+        } else if (classLoader != classpathClassLoader) {
+            throw new IllegalStateException("There's already another KieContainer created from a different ClassLoader");
         }
 
         return classpathKContainer;
     }
 
     public KieContainer newKieClasspathContainer() {
-        return new KieContainerImpl(new ClasspathKieProject(listener), null);
+        return newKieClasspathContainer( findParentClassLoader() );
+    }
+
+    public KieContainer newKieClasspathContainer(ClassLoader classLoader) {
+        return new KieContainerImpl(new ClasspathKieProject(classLoader, listener), null);
     }
 
     public void nullKieClasspathContainer() {
         // used for testing only
         synchronized ( lock ) {
             classpathKContainer = null;
+            classpathClassLoader = null;
         }  
     }
     
@@ -153,9 +170,13 @@ public class KieServicesImpl implements InternalKieServices {
         return new RuleBaseConfiguration();
     }
 
+    public KieBaseConfiguration newKieBaseConfiguration(Properties properties) {
+        return new RuleBaseConfiguration(properties, null);
+    }
+
     public KieBaseConfiguration newKieBaseConfiguration(Properties properties, ClassLoader classLoader) {
         return new RuleBaseConfiguration(properties, classLoader);
-   }
+    }
 
     public KieSessionConfiguration newKieSessionConfiguration() {
         return new SessionConfiguration();
