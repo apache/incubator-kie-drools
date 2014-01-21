@@ -90,6 +90,10 @@ public class ProjectClassLoader extends ClassLoader {
     }
 
     public static ProjectClassLoader createProjectClassLoader() {
+        return internalCreate(findParentClassLoader());
+    }
+
+    public static ClassLoader findParentClassLoader() {
         ClassLoader parent = Thread.currentThread().getContextClassLoader();
         if (parent == null) {
             parent = ClassLoader.getSystemClassLoader();
@@ -97,8 +101,9 @@ public class ProjectClassLoader extends ClassLoader {
         if (parent == null) {
             parent = ProjectClassLoader.class.getClassLoader();
         }
-        return internalCreate(parent);
+        return parent;
     }
+
 
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent) {
         if (parent == null) {

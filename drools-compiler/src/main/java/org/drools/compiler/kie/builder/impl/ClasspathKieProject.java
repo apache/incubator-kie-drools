@@ -50,17 +50,20 @@ public class ClasspathKieProject extends AbstractKieProject {
 
     private final KieRepository kieRepository;
     
+    private final ClassLoader parentCL;
+
     private ClassLoader classLoader;
 
     private final WeakReference<KieServicesEventListerner> listener;
 
-    ClasspathKieProject(WeakReference<KieServicesEventListerner> listener) {
+    ClasspathKieProject(ClassLoader parentCL, WeakReference<KieServicesEventListerner> listener) {
         this.kieRepository = KieServices.Factory.get().getRepository();
         this.listener = listener;
+        this.parentCL = parentCL;
     }
 
     public void init() {
-        this.classLoader = createProjectClassLoader();
+        this.classLoader = createProjectClassLoader(parentCL);
         discoverKieModules();
         indexParts(kieModules.values(), kJarFromKBaseName);
     }
