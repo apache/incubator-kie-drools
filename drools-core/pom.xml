@@ -177,7 +177,9 @@
               org.drools.core.*
             </Export-Package>
             <Import-Package>
-              *
+               org.jbpm.process.instance.impl;resolution:=optional,
+               org.jbpm.process.instance.event;resolution:=optional,
+               *
             </Import-Package>
             <Bundle-Activator>org.drools.core.osgi.Activator</Bundle-Activator>
             <_removeheaders>Private-Package</_removeheaders>
