@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.ReleaseId;
@@ -88,6 +89,32 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
         } catch (ShouldHavePrevented e) {
             Assert.fail("The security policy for the rule should have prevented this from executing...");
         } catch (ConsequenceException e) {
+            // test succeeded. the policy in place prevented the rule from executing the System.exit().
+        }
+    }
+    
+    @Test
+    public void testSerializationUntrustedMvelConsequence() throws Exception {
+        String drl = "package org.foo.bar\n" +
+                "rule R1 dialect \"mvel\" when\n" +
+                "then\n" +
+                "    System.exit(0);" +
+                "end\n";
+
+        try {
+            KieServices ks = KieServices.Factory.get();
+            KieFileSystem kfs = ks.newKieFileSystem().write(ResourceFactory.newByteArrayResource(drl.getBytes())
+                    .setSourcePath("org/foo/bar/r1.drl"));
+            ks.newKieBuilder(kfs).buildAll();
+
+            ReleaseId releaseId = ks.getRepository().getDefaultReleaseId();
+            KieContainer kc = ks.newKieContainer(releaseId);
+
+            KieBase kbase = kc.getKieBase();
+            kbase = SerializationHelper.serializeObject( kbase );
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.toString());
             // test succeeded. the policy in place prevented the rule from executing the System.exit().
         }
     }
