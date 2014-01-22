@@ -2763,9 +2763,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1056582")
     public void testFromBoundVariable() {
-        //https://bugzilla.redhat.com/show_bug.cgi?id=1056582
         String drl = "import java.lang.Number;\n"
                 + "import org.drools.workbench.models.commons.backend.rule.Counter;\n"
                 + "rule \"rule1\"\n"
@@ -2823,7 +2821,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         ExpressionVariable eflv1 = (ExpressionVariable) efl1.getParts().get( 0 );
         assertEquals( "cc",
                       eflv1.getName() );
-        assertEquals( "Number",
+        assertEquals( "Counter",
                       eflv1.getClassType() );
         assertEquals( DataType.TYPE_NUMERIC,
                       eflv1.getGenericType() );
@@ -2831,7 +2829,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         ExpressionField eflf1 = (ExpressionField) efl1.getParts().get( 1 );
         assertEquals( "number",
                       eflf1.getName() );
-        assertEquals( "Number",
+        assertEquals( "java.lang.Number",
                       eflf1.getClassType() );
         assertEquals( DataType.TYPE_NUMERIC,
                       eflf1.getGenericType() );
