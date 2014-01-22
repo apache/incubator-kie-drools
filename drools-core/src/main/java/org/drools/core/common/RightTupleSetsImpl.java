@@ -57,7 +57,7 @@ public class RightTupleSetsImpl implements RightTupleSets {
     }
 
     public int deleteSize() {
-        return this.insertSize;
+        return this.deleteSize;
     }
 
     public int updateSize() {
@@ -81,7 +81,7 @@ public class RightTupleSetsImpl implements RightTupleSets {
             // handle clash with already staged entries
             case LeftTuple.INSERT:
                 removeInsert( rightTuple );
-                break;
+                return deleteSize == 0;
             case LeftTuple.UPDATE:
                 removeUpdate( rightTuple );
                 break;
@@ -133,6 +133,7 @@ public class RightTupleSetsImpl implements RightTupleSets {
             previous.setStagedNext( next );
         }
         rightTuple.clearStaged();
+        insertSize--;
     }
 
     public void removeDelete(RightTuple rightTuple) {
@@ -153,6 +154,7 @@ public class RightTupleSetsImpl implements RightTupleSets {
 
         }
         rightTuple.clearStaged();
+        deleteSize--;
     }
 
     public void removeUpdate(RightTuple rightTuple) {
@@ -172,6 +174,7 @@ public class RightTupleSetsImpl implements RightTupleSets {
             previous.setStagedNext( next );
         }
         rightTuple.clearStaged();
+        updateSize--;
     }
 
     public void addAllInserts(RightTupleSets tupleSets) {
