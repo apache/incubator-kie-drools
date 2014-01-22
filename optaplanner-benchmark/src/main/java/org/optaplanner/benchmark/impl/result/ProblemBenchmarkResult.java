@@ -33,6 +33,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.ranking.SingleBenchmarkRankingComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
+import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.core.api.solver.Solver;
@@ -167,6 +168,10 @@ public class ProblemBenchmarkResult {
     // ************************************************************************
     // Smart getters
     // ************************************************************************
+
+    public String getAnchorId() {
+        return ReportHelper.escapeHtmlId(name);
+    }
 
     public boolean hasAnyFailure() {
         return failureCount > 0;

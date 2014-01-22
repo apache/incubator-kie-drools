@@ -82,7 +82,7 @@
                     <li>
                         <ul class="nav nav-list">
                         <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
-                            <li><a href="#problemBenchmark_${problemBenchmarkResult.name}">${problemBenchmarkResult.name}</a></li>
+                            <li><a href="#problemBenchmark_${problemBenchmarkResult.anchorId}">${problemBenchmarkResult.name}</a></li>
                         </#list>
                         </ul>
                     </li>
@@ -91,7 +91,7 @@
                     <li>
                         <ul class="nav nav-list">
                         <#list benchmarkReport.plannerBenchmarkResult.solverBenchmarkResultList as solverBenchmarkResult>
-                            <li><a href="#solverBenchmark_${solverBenchmarkResult.name}">${solverBenchmarkResult.name}&nbsp;<@addSolverRankingBadge solverBenchmarkResult=solverBenchmarkResult/></a></li>
+                            <li><a href="#solverBenchmark_${solverBenchmarkResult.anchorId}">${solverBenchmarkResult.name}&nbsp;<@addSolverRankingBadge solverBenchmarkResult=solverBenchmarkResult/></a></li>
                         </#list>
                         </ul>
                     </li>
@@ -423,7 +423,7 @@
                     <h1>Problem benchmarks</h1>
                 </div>
             <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
-                <section id="problemBenchmark_${problemBenchmarkResult.name}">
+                <section id="problemBenchmark_${problemBenchmarkResult.anchorId}">
                     <h2>${problemBenchmarkResult.name}</h2>
                     <#if problemBenchmarkResult.hasAnyFailure()>
                         <div class="alert alert-error">
@@ -502,17 +502,17 @@
                     <h1>Solver benchmarks</h1>
                 </div>
             <#list benchmarkReport.plannerBenchmarkResult.solverBenchmarkResultList as solverBenchmarkResult>
-                <section id="solverBenchmark_${solverBenchmarkResult.name}">
+                <section id="solverBenchmark_${solverBenchmarkResult.anchorId}">
                     <h2>${solverBenchmarkResult.name}&nbsp;<@addSolverRankingBadge solverBenchmarkResult=solverBenchmarkResult/></h2>
                     <#if solverBenchmarkResult.hasAnyFailure()>
                         <div class="alert alert-error">
                             <p>${solverBenchmarkResult.failureCount} benchmarks have failed!</p>
                         </div>
                     </#if>
-                    <button class="btn showSolverConfiguration" data-toggle="collapse" data-target="#solverBenchmark_${solverBenchmarkResult.name}_config">
+                    <button class="btn showSolverConfiguration" data-toggle="collapse" data-target="#solverBenchmark_${solverBenchmarkResult.anchorId}_config">
                         Show/hide Solver configuration
                     </button>
-                    <div id="solverBenchmark_${solverBenchmarkResult.name}_config" class="collapse in">
+                    <div id="solverBenchmark_${solverBenchmarkResult.anchorId}_config" class="collapse in">
                         <pre class="prettyprint lang-xml">${solverBenchmarkResult.solverConfigAsHtmlEscapedXml}</pre>
                     </div>
                 </section>

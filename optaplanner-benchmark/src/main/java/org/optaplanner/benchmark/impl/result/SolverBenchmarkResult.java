@@ -30,6 +30,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
+import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -149,6 +150,10 @@ public class SolverBenchmarkResult {
     // ************************************************************************
     // Smart getters
     // ************************************************************************
+
+    public String getAnchorId() {
+        return ReportHelper.escapeHtmlId(name);
+    }
 
     public String getNameWithFavoriteSuffix() {
         if (isFavorite()) {
