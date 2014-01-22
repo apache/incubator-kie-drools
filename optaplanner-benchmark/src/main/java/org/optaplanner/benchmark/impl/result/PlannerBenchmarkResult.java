@@ -43,8 +43,9 @@ import org.optaplanner.core.config.util.ConfigUtils;
 public class PlannerBenchmarkResult {
 
     private String name;
+    private Boolean aggregation;
 
-    // In a merged result, many properties can stay null
+    // If it is an aggregation, many properties can stay null
 
     private Integer parallelBenchmarkCount = null;
     private Long warmUpTimeMillisSpend = null;
@@ -72,6 +73,14 @@ public class PlannerBenchmarkResult {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Boolean getAggregation() {
+        return aggregation;
+    }
+
+    public void setAggregation(Boolean aggregation) {
+        this.aggregation = aggregation;
     }
 
     public Integer getParallelBenchmarkCount() {
@@ -287,6 +296,7 @@ public class PlannerBenchmarkResult {
             if (!mergeMap.containsKey(oldResult)) {
                 if (newResult == null) {
                     newResult = new PlannerBenchmarkResult();
+                    newResult.setAggregation(true);
                     newResult.parallelBenchmarkCount = oldResult.parallelBenchmarkCount;
                     newResult.warmUpTimeMillisSpend = oldResult.warmUpTimeMillisSpend;
                     newResult.solverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>();

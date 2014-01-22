@@ -525,8 +525,12 @@
                 </div>
                 <table class="benchmark-table table table-striped">
                     <tr>
-                        <th>name</th>
+                        <th>Name</th>
                         <td>${benchmarkReport.plannerBenchmarkResult.name}</td>
+                    </tr>
+                    <tr>
+                        <th>Aggregation</th>
+                        <td>${benchmarkReport.plannerBenchmarkResult.aggregation?string}</td>
                     </tr>
                     <tr>
                         <th>startingTimestamp</th>
@@ -565,7 +569,7 @@
                         <td>${benchmarkReport.javaVM}</td>
                     </tr>
                     <tr>
-                        <th>Planner version</th>
+                        <th>OptaPlanner version</th>
                         <td>${benchmarkReport.plannerVersion!"Unjarred development snapshot"}</td>
                     </tr>
                     <tr>
