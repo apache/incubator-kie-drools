@@ -16,6 +16,7 @@
 
 package org.drools.core.spi;
 
+import java.io.Serializable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
@@ -40,7 +41,8 @@ public interface ReturnValueExpression
     public void replaceDeclaration(Declaration declaration,
                                    Declaration resolved);
 
-    public static class SafeReturnValueExpression implements ReturnValueExpression {
+    public static class SafeReturnValueExpression implements ReturnValueExpression, Serializable {
+        private static final long serialVersionUID = -5616989474935380093L;
         private ReturnValueExpression delegate;
         public SafeReturnValueExpression(ReturnValueExpression delegate) {
             this.delegate = delegate;

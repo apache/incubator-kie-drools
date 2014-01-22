@@ -20,9 +20,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.security.PrivilegedExceptionAction;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -30,7 +30,6 @@ import java.util.Map;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.spi.DataProvider;
-import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
@@ -108,7 +107,8 @@ public class From extends ConditionalElement
         return this.resultPattern;
     }
     
-    private static class SafeDataProvider implements DataProvider {
+    private static class SafeDataProvider implements DataProvider, Serializable {
+        private static final long serialVersionUID = -1539933583656828737L;
         private DataProvider delegate;
         public SafeDataProvider(DataProvider delegate) {
             this.delegate = delegate;

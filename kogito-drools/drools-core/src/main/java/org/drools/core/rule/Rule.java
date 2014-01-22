@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
@@ -844,7 +845,8 @@ public class Rule
         return consequenceMetaData;
     }
     
-    private static class SafeConsequence implements Consequence {
+    private static class SafeConsequence implements Consequence, Serializable {
+        private static final long serialVersionUID = -8109957972163261899L;
         private final Consequence delegate;
         public SafeConsequence( Consequence delegate ) {
             this.delegate = delegate;
@@ -867,7 +869,7 @@ public class Rule
         }
     }
     
-    private static class SafeSalience implements Salience {
+    private static class SafeSalience implements Salience, Serializable {
         private static final long serialVersionUID = 1L;
         private final Salience delegate;
         public SafeSalience( Salience delegate ) {
@@ -899,7 +901,7 @@ public class Rule
         }
     }
     
-    private static class SafeEnabled implements Enabled {
+    private static class SafeEnabled implements Enabled, Serializable {
         private static final long serialVersionUID = -8361753962814039574L;
         private final Enabled delegate;
         public SafeEnabled( Enabled delegate ) {

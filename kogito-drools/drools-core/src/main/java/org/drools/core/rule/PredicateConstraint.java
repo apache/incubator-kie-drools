@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
@@ -447,7 +448,8 @@ public class PredicateConstraint extends MutableTypeConstraint
         return null;
     }
 
-    public static class SafePredicateExpression implements PredicateExpression {
+    public static class SafePredicateExpression implements PredicateExpression, Serializable {
+        private static final long serialVersionUID = -4570820770000524010L;
         private PredicateExpression delegate;
 
         public SafePredicateExpression(PredicateExpression delegate) {

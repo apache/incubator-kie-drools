@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
@@ -211,7 +212,8 @@ public class EvalCondition extends ConditionalElement
         return this.expression.toString();
     }
 
-    private static class SafeEvalExpression implements EvalExpression {
+    private static class SafeEvalExpression implements EvalExpression, Serializable {
+        private static final long serialVersionUID = -5682290553015978731L;
         private EvalExpression delegate;
         public SafeEvalExpression(EvalExpression delegate) {
             this.delegate = delegate;
