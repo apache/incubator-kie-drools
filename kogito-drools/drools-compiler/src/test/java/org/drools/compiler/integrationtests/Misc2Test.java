@@ -30,8 +30,17 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.Memory;
+import org.drools.core.common.RightTupleSets;
 import org.drools.core.conflict.SalienceConflictResolver;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.JoinNode;
+import org.drools.core.reteoo.Rete;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.util.FileManager;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.LeftTuple;
@@ -4957,5 +4966,53 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.insert(new Message("Hello World"));
         ksession.fireAllRules();
     }
-}
 
+    @Test
+    public void testStagedTupleLeak() throws Exception {
+        // BZ-1056599
+        String str =
+                "rule R1 when\n" +
+                "    $i : Integer()\n" +
+                "then\n" +
+                "    insertLogical( $i.toString() );\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "    $i : Integer()\n" +
+                "then\n" +
+                "    delete( $i );\n" +
+                "end\n" +
+                "\n" +
+                "rule R3 when\n" +
+                "    $l : Long()\n" +
+                "    $s : String( this == $l.toString() )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        for (int i = 0; i < 10; i++) {
+            ksession.insert(i);
+            ksession.fireAllRules();
+        }
+
+        Rete rete = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete();
+        JoinNode joinNode = null;
+        for (ObjectTypeNode otn : rete.getObjectTypeNodes()) {
+            if ( String.class == otn.getObjectType().getValueType().getClassType() ) {
+                joinNode = (JoinNode)otn.getSinkPropagator().getSinks()[0];
+                break;
+            }
+        }
+
+        assertNotNull(joinNode);
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)ksession).session;
+        BetaMemory memory = (BetaMemory)wm.getNodeMemory(joinNode);
+        RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
+        assertEquals(0, stagedRightTuples.deleteSize());
+        assertNull(stagedRightTuples.getDeleteFirst());
+        assertEquals(0, stagedRightTuples.insertSize());
+        assertNull(stagedRightTuples.getInsertFirst());
+    }
+}
