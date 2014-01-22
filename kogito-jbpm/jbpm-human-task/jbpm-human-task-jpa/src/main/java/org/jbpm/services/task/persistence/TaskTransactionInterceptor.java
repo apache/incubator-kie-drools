@@ -62,7 +62,8 @@ public class TaskTransactionInterceptor extends AbstractInterceptor {
         	// if transaction is owned by other component like process engine
         	if (transactionOwner) {
         		rollbackTransaction( e, transactionOwner );
-                throw e;
+        		e.setRecoverable(false);
+        		throw e;
         	} else {
         		throw e;
         	}

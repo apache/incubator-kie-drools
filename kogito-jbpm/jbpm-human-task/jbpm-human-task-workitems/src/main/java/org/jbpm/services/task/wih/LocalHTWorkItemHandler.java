@@ -28,6 +28,7 @@ import org.kie.api.task.model.Task;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.model.ContentData;
+import org.kie.internal.task.exception.TaskException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,6 +76,14 @@ public class LocalHTWorkItemHandler extends AbstractHTWorkItemHandler {
                 logMsg.append(new Date()).append(": Error when creating task on task server for work item id ").append(workItem.getId());
                 logMsg.append(". Error reported by task server: ").append(e.getMessage());
                 logger.error(logMsg.toString(), e);
+                // rethrow to cancel processing if the exception is not recoverable                
+                if (!(e instanceof TaskException) && !((TaskException) e).isRecoverable()) {
+                	if (e instanceof RuntimeException) {
+                        throw (RuntimeException) e;
+                    } else {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
         } 
     }
