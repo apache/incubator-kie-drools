@@ -36,6 +36,7 @@ import org.drools.workbench.models.datamodel.rule.CEPWindow;
 import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.ExpressionField;
+import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
 import org.drools.workbench.models.datamodel.rule.ExpressionPart;
 import org.drools.workbench.models.datamodel.rule.ExpressionUnboundFact;
 import org.drools.workbench.models.datamodel.rule.ExpressionVariable;
@@ -44,6 +45,7 @@ import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.FieldNature;
 import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.models.datamodel.rule.FreeFormLine;
+import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
@@ -2341,7 +2343,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     @Test
     public void testFieldVarsWithImports() throws Exception {
         String drl = "" +
-                "import org.test.Customer\n"+
+                "import org.test.Customer\n" +
                 "rule \"Borked\"\n" +
                 "  dialect \"mvel\"\n" +
                 "  when\n" +
@@ -2350,12 +2352,12 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "end";
 
         addModelField( "org.test.Customer",
-                "contact",
-                "org.test.Contact",
-                "org.test.Contact" );
+                       "contact",
+                       "org.test.Contact",
+                       "org.test.Contact" );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
-                dmo );
+                                                                           dmo );
 
         FactPattern pattern = (FactPattern) m.lhs[ 0 ];
         SingleFieldConstraint constraint = (SingleFieldConstraint) pattern.getFieldConstraints()[ 0 ];
@@ -2379,12 +2381,12 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "end";
 
         addModelField( "org.test.Customer",
-                "contact",
-                "org.test.Contact",
-                "org.test.Contact" );
+                       "contact",
+                       "org.test.Contact",
+                       "org.test.Contact" );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
-                dmo );
+                                                                           dmo );
 
         FactPattern pattern = (FactPattern) m.lhs[ 0 ];
         SingleFieldConstraint constraint = (SingleFieldConstraint) pattern.getFieldConstraints()[ 0 ];
@@ -2460,45 +2462,45 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "end";
 
         addModelField( "Applicant",
-                "this",
-                "Applicant",
-                DataType.TYPE_THIS );
+                       "this",
+                       "Applicant",
+                       DataType.TYPE_THIS );
         addModelField( "Applicant",
-                "age",
-                "java.lang.Integer",
-                "Integer" );
+                       "age",
+                       "java.lang.Integer",
+                       "Integer" );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
-                dmo );
+                                                                           dmo );
 
         FactPattern pattern1 = (FactPattern) m.lhs[ 0 ];
-        assertEquals("a",
-                pattern1.getBoundName());
+        assertEquals( "a",
+                      pattern1.getBoundName() );
 
         FactPattern pattern2 = (FactPattern) m.lhs[ 1 ];
 
-        assertEquals(1,pattern2.getConstraintList().getNumberOfConstraints());
+        assertEquals( 1, pattern2.getConstraintList().getNumberOfConstraints() );
 
-        assertTrue(pattern2.getConstraintList().getConstraint(0) instanceof SingleFieldConstraint);
-        SingleFieldConstraint constraint = (SingleFieldConstraint) pattern2.getConstraintList().getConstraint(0);
-        assertEquals("age", constraint.getFieldName());
-        assertEquals("==", constraint.getOperator());
-        assertEquals(BaseSingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE, constraint.getConstraintValueType());
-        assertEquals("", constraint.getValue());
-        assertEquals(2, constraint.getExpressionValue().getParts().size());
+        assertTrue( pattern2.getConstraintList().getConstraint( 0 ) instanceof SingleFieldConstraint );
+        SingleFieldConstraint constraint = (SingleFieldConstraint) pattern2.getConstraintList().getConstraint( 0 );
+        assertEquals( "age", constraint.getFieldName() );
+        assertEquals( "==", constraint.getOperator() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE, constraint.getConstraintValueType() );
+        assertEquals( "", constraint.getValue() );
+        assertEquals( 2, constraint.getExpressionValue().getParts().size() );
 
-        assertTrue(constraint.getExpressionValue().getParts().get(0) instanceof ExpressionVariable);
-        ExpressionVariable expressionVariable = (ExpressionVariable) constraint.getExpressionValue().getParts().get(0);
-        assertEquals("a", expressionVariable.getName());
-        assertEquals("Applicant", expressionVariable.getClassType());
-        assertEquals("this", expressionVariable.getGenericType());
-        assertEquals(constraint.getExpressionValue().getParts().get(1), expressionVariable.getNext());
+        assertTrue( constraint.getExpressionValue().getParts().get( 0 ) instanceof ExpressionVariable );
+        ExpressionVariable expressionVariable = (ExpressionVariable) constraint.getExpressionValue().getParts().get( 0 );
+        assertEquals( "a", expressionVariable.getName() );
+        assertEquals( "Applicant", expressionVariable.getClassType() );
+        assertEquals( "this", expressionVariable.getGenericType() );
+        assertEquals( constraint.getExpressionValue().getParts().get( 1 ), expressionVariable.getNext() );
 
-        assertTrue(constraint.getExpressionValue().getParts().get(1) instanceof ExpressionField);
-        ExpressionField expressionField = (ExpressionField) constraint.getExpressionValue().getParts().get(1);
-        assertEquals("age", expressionField.getName());
-        assertEquals("java.lang.Integer", expressionField.getClassType());
-        assertEquals("Integer", expressionField.getGenericType());
+        assertTrue( constraint.getExpressionValue().getParts().get( 1 ) instanceof ExpressionField );
+        ExpressionField expressionField = (ExpressionField) constraint.getExpressionValue().getParts().get( 1 );
+        assertEquals( "age", expressionField.getName() );
+        assertEquals( "java.lang.Integer", expressionField.getClassType() );
+        assertEquals( "Integer", expressionField.getGenericType() );
     }
 
     @Test
@@ -2758,6 +2760,81 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         final String drl2 = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertEqualsIgnoreWhitespace( drl,
                                       drl2 );
+    }
+
+    @Test
+    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1056582")
+    public void testFromBoundVariable() {
+        //https://bugzilla.redhat.com/show_bug.cgi?id=1056582
+        String drl = "import java.lang.Number;\n"
+                + "import org.drools.workbench.models.commons.backend.rule.Counter;\n"
+                + "rule \"rule1\"\n"
+                + "when\n"
+                + "cc : Counter()\n"
+                + "Number() from cc.number\n"
+                + "then\n"
+                + "end";
+
+        addModelField( "org.drools.workbench.models.commons.backend.rule.Counter",
+                       "number",
+                       "java.lang.Number",
+                       DataType.TYPE_NUMERIC );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           dmo );
+
+        assertNotNull( m );
+        assertEquals( "rule1",
+                      m.name );
+
+        assertEquals( 2,
+                      m.lhs.length );
+        IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+
+        FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "Counter",
+                      fp0.getFactType() );
+        assertEquals( "cc",
+                      fp0.getBoundName() );
+        assertEquals( 0,
+                      fp0.getNumberOfConstraints() );
+
+        IPattern p1 = m.lhs[ 1 ];
+        assertTrue( p1 instanceof FromCompositeFactPattern );
+
+        FromCompositeFactPattern fcfp1 = (FromCompositeFactPattern) p1;
+        FactPattern fp1 = fcfp1.getFactPattern();
+        ExpressionFormLine efl1 = fcfp1.getExpression();
+
+        assertNotNull( fp1 );
+        assertNotNull( efl1 );
+
+        assertEquals( "Number",
+                      fp1.getFactType() );
+        assertEquals( 0,
+                      fp1.getNumberOfConstraints() );
+
+        assertEquals( 2,
+                      efl1.getParts().size() );
+        assertTrue( efl1.getParts().get( 0 ) instanceof ExpressionVariable );
+        assertTrue( efl1.getParts().get( 1 ) instanceof ExpressionField );
+
+        ExpressionVariable eflv1 = (ExpressionVariable) efl1.getParts().get( 0 );
+        assertEquals( "cc",
+                      eflv1.getName() );
+        assertEquals( "Number",
+                      eflv1.getClassType() );
+        assertEquals( DataType.TYPE_NUMERIC,
+                      eflv1.getGenericType() );
+
+        ExpressionField eflf1 = (ExpressionField) efl1.getParts().get( 1 );
+        assertEquals( "number",
+                      eflf1.getName() );
+        assertEquals( "Number",
+                      eflf1.getClassType() );
+        assertEquals( DataType.TYPE_NUMERIC,
+                      eflf1.getGenericType() );
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
