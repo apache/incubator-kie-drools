@@ -131,7 +131,8 @@ public interface Accumulator
      * This class is used as a wrapper delegate when a security 
      * policy is in place.
      */
-    public static class SafeAccumulator implements Accumulator {
+    public static class SafeAccumulator implements Accumulator, Serializable {
+        private static final long serialVersionUID = -2845820209337318924L;
         private Accumulator delegate;
 
         public SafeAccumulator(Accumulator delegate) {
