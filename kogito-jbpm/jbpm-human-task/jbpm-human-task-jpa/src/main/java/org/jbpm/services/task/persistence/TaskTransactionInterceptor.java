@@ -42,7 +42,7 @@ public class TaskTransactionInterceptor extends AbstractInterceptor {
     }
 	
 	@Override
-	public <T> T execute(Command<T> command) {
+	public synchronized <T> T execute(Command<T> command) {
 		boolean transactionOwner = false;
 		T result = null;
 		
