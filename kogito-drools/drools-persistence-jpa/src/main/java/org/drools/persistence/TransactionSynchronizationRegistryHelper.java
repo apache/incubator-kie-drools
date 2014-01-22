@@ -18,8 +18,14 @@ public class TransactionSynchronizationRegistryHelper {
         TransactionSynchronizationRegistry tsr = ( TransactionSynchronizationRegistry ) tsro;
         try {
             tsr.putResource(key, resource);
+        } catch (IllegalStateException e) {
+            // IllegalStateException is thrown when no transaction is active
+            // so report only when there is actually resource to be inserted
+            if (resource != null) {
+                logger.warn("Unable to put resource {} value {} due to {}", key, resource, e.getMessage());
+            }
         } catch (Exception e) {
-            logger.warn("Unable to put resource due to {}", e.getMessage());
+            logger.warn("Unable to put resource {} value {} due to {}", key, resource, e.getMessage());
         }
     }
 
