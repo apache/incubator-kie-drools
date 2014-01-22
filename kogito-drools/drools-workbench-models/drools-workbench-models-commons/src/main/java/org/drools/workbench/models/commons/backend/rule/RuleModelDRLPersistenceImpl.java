@@ -39,6 +39,7 @@ import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.EntryPointDescr;
 import org.drools.compiler.lang.descr.EvalDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
+import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.GlobalDescr;
 import org.drools.compiler.lang.descr.NotDescr;
 import org.drools.compiler.lang.descr.OrDescr;
@@ -2016,6 +2017,37 @@ public class RuleModelDRLPersistenceImpl
             fep.setEntryPointName( entryPoint.getText() );
             fep.setFactPattern( getFactPattern( m, pattern, boundParams, dmo ) );
             return fep;
+        } else if ( patternSource instanceof FromDescr ) {
+            FromDescr from = (FromDescr) patternSource;
+            FromCompositeFactPattern fcfp = new FromCompositeFactPattern();
+            FactPattern factPattern = new FactPattern( pattern.getObjectType() );
+            fcfp.setFactPattern( factPattern );
+            ExpressionFormLine expression = new ExpressionFormLine();
+            fcfp.setExpression(expression);
+
+            String dataSource = from.getDataSource().toString();
+            String[] splitSource = dataSource.split("\\.");
+            ModelField[] fields = null;
+            for (int i = 0; i < splitSource.length; i++) {
+                String sourcePart = splitSource[i];
+                if (i == 0) {
+                    String type = boundParams.get(sourcePart);
+                    expression.appendPart( new ExpressionVariable(sourcePart, type, DataType.TYPE_NUMERIC) );
+                    fields = findFields(dmo, m, type);
+                } else {
+                    ModelField modelField = null;
+                    for ( ModelField field : fields ) {
+                        if ( field.getName().equals(sourcePart) ) {
+                            modelField = field;
+                            break;
+                        }
+                    }
+                    expression.appendPart( new ExpressionField(sourcePart, modelField.getClassName(), modelField.getType()) );
+                    fields = findFields(dmo, m, modelField.getClassName());
+                }
+            }
+
+            return fcfp;
         }
         throw new RuntimeException( "Unknown pattern source " + patternSource );
     }
@@ -2898,20 +2930,7 @@ public class RuleModelDRLPersistenceImpl
 
         private ModelField[] findFields( RuleModel m,
                                          String type ) {
-            ModelField[] fields = dmo.getProjectModelFields().get( type );
-            if (fields != null) {
-                return fields;
-            }
-            for (String i : m.getImports().getImportStrings()) {
-                if (i.endsWith("." + type)) {
-                    fields = dmo.getProjectModelFields().get( i );
-                    if (fields != null) {
-                        return fields;
-                    }
-                }
-            }
-
-            return dmo.getProjectModelFields().get(m.getPackageName() + "." + type);
+            return RuleModelDRLPersistenceImpl.findFields(dmo, m, type);
         }
 
         private ModelField findField( ModelField[] typeFields,
@@ -3106,4 +3125,22 @@ public class RuleModelDRLPersistenceImpl
         }
     }
 
+    private static ModelField[] findFields( PackageDataModelOracle dmo,
+                                            RuleModel m,
+                                            String type ) {
+        ModelField[] fields = dmo.getProjectModelFields().get( type );
+        if (fields != null) {
+            return fields;
+        }
+        for (String i : m.getImports().getImportStrings()) {
+            if (i.endsWith("." + type)) {
+                fields = dmo.getProjectModelFields().get( i );
+                if (fields != null) {
+                    return fields;
+                }
+            }
+        }
+
+        return dmo.getProjectModelFields().get(m.getPackageName() + "." + type);
+    }
 }
