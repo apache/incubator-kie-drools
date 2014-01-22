@@ -20,8 +20,17 @@ import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 
 public interface PlannerBenchmarkFactory {
 
+    /**
+     * Allows you to problematically change the {@link PlannerBenchmarkConfig} at runtime before building
+     * the {@link PlannerBenchmark}.
+     * @return never null
+     * @throws IllegalStateException if no benchmarkConfig was configured yet
+     */
     PlannerBenchmarkConfig getPlannerBenchmarkConfig();
 
+    /**
+     * @return never null
+     */
     PlannerBenchmark buildPlannerBenchmark();
 
 }

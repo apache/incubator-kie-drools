@@ -46,9 +46,12 @@ public class XmlSolverFactory implements SolverFactory {
         xStream = buildXstream();
     }
 
-    public XmlSolverFactory(String resource) {
+    /**
+     * @param solverConfigResource never null, a classpath resource, as defined by {@link Class#getResource(String)}
+     */
+    public XmlSolverFactory(String solverConfigResource) {
         this();
-        configure(resource);
+        configure(solverConfigResource);
     }
 
     public void addXstreamAnnotations(Class... xstreamAnnotations) {
@@ -59,10 +62,11 @@ public class XmlSolverFactory implements SolverFactory {
     // Worker methods
     // ************************************************************************
 
-    public XmlSolverFactory configure(String resource) {
-        InputStream in = getClass().getResourceAsStream(resource);
+    public XmlSolverFactory configure(String solverConfigResource) {
+        InputStream in = getClass().getResourceAsStream(solverConfigResource);
         if (in == null) {
-            throw new IllegalArgumentException("The solver configuration (" + resource + ") does not exist.");
+            throw new IllegalArgumentException("Reading the solverConfigResource (" + solverConfigResource
+                    + ") failed.");
         }
         return configure(in);
     }

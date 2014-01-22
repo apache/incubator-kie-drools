@@ -37,9 +37,12 @@ public class XmlPlannerBenchmarkFactory implements PlannerBenchmarkFactory {
         xStream.processAnnotations(PlannerBenchmarkConfig.class);
     }
 
-    public XmlPlannerBenchmarkFactory(String resource) {
+    /**
+     * @param benchmarkConfigResource never null, a classpath resource, as defined by {@link Class#getResource(String)}
+     */
+    public XmlPlannerBenchmarkFactory(String benchmarkConfigResource) {
         this();
-        configure(resource);
+        configure(benchmarkConfigResource);
     }
 
     // ************************************************************************
@@ -50,10 +53,15 @@ public class XmlPlannerBenchmarkFactory implements PlannerBenchmarkFactory {
         xStream.processAnnotations(xstreamAnnotations);
     }
 
-    public XmlPlannerBenchmarkFactory configure(String resource) {
-        InputStream in = getClass().getResourceAsStream(resource);
+    /**
+     * @param benchmarkConfigResource a classpath resource, as defined by {@link Class#getResource(String)}
+     * @return this
+     */
+    public XmlPlannerBenchmarkFactory configure(String benchmarkConfigResource) {
+        InputStream in = getClass().getResourceAsStream(benchmarkConfigResource);
         if (in == null) {
-            throw new IllegalArgumentException("Could not find resource (" + resource + ").");
+            throw new IllegalArgumentException("Reading the benchmarkConfigResource (" + benchmarkConfigResource
+                    + ") failed.");
         }
         return configure(in);
     }

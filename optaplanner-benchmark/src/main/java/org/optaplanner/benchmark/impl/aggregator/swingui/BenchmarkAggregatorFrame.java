@@ -33,6 +33,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
+import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
+import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
 import org.optaplanner.benchmark.impl.aggregator.BenchmarkAggregator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -45,17 +47,33 @@ import org.slf4j.LoggerFactory;
 
 public class BenchmarkAggregatorFrame extends JFrame {
 
+    public static void createAndDisplay(PlannerBenchmarkFactory plannerBenchmarkFactory) {
+        PlannerBenchmarkConfig plannerBenchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig();
+        BenchmarkAggregator benchmarkAggregator = new BenchmarkAggregator();
+        benchmarkAggregator.setBenchmarkDirectory(plannerBenchmarkConfig.getBenchmarkDirectory());
+        BenchmarkReportConfig benchmarkReportConfig = plannerBenchmarkConfig.getBenchmarkReportConfig();
+        if (benchmarkReportConfig == null) {
+            benchmarkReportConfig = new BenchmarkReportConfig();
+        }
+        benchmarkAggregator.setBenchmarkReportConfig(benchmarkReportConfig);
+
+        BenchmarkAggregatorFrame benchmarkAggregatorFrame = new BenchmarkAggregatorFrame(benchmarkAggregator);
+        benchmarkAggregatorFrame.init();
+        benchmarkAggregatorFrame.setVisible(true);
+    }
+
+
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    private BenchmarkResultIO benchmarkResultIO;
-    private File benchmarkDirectory;
+    private final BenchmarkAggregator benchmarkAggregator;
+    private final BenchmarkResultIO benchmarkResultIO;
 
     private JPanel resultSelectionPanel;
     private List<PlannerBenchmarkResult> visiblePlannerBenchmarkResultList;
 
-    public BenchmarkAggregatorFrame(File defaultBenchmarkDirectory) {
+    public BenchmarkAggregatorFrame(BenchmarkAggregator benchmarkAggregator) {
         super("Benchmark aggregator");
-        benchmarkDirectory = defaultBenchmarkDirectory;
+        this.benchmarkAggregator = benchmarkAggregator;
         benchmarkResultIO = new BenchmarkResultIO();
         visiblePlannerBenchmarkResultList = Collections.emptyList();
     }
@@ -82,7 +100,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
 
     private JComponent createBenchmarkDirectoryPanel() {
         JTextField benchmarkDirectoryField = new JTextField(80);
-        benchmarkDirectoryField.setText(benchmarkDirectory.getAbsolutePath());
+        benchmarkDirectoryField.setText(benchmarkAggregator.getBenchmarkDirectory().getAbsolutePath());
         benchmarkDirectoryField.setEditable(false);
         return benchmarkDirectoryField;
     }
@@ -100,7 +118,8 @@ public class BenchmarkAggregatorFrame extends JFrame {
     }
 
     private void refreshPlannerBenchmarkResultList() {
-        visiblePlannerBenchmarkResultList = benchmarkResultIO.readPlannerBenchmarkResultList(benchmarkDirectory);
+        visiblePlannerBenchmarkResultList = benchmarkResultIO.readPlannerBenchmarkResultList(
+                benchmarkAggregator.getBenchmarkDirectory());
         resultSelectionPanel.removeAll();
         for (PlannerBenchmarkResult result : visiblePlannerBenchmarkResultList) {
             resultSelectionPanel.add(new JLabel(result.getName()));
@@ -126,8 +145,6 @@ public class BenchmarkAggregatorFrame extends JFrame {
                 singleBenchmarkResultList.addAll(solverBenchmarkResult.getSingleBenchmarkResultList());
             }
         }
-        BenchmarkAggregator benchmarkAggregator = new BenchmarkAggregator();
-        benchmarkAggregator.setBenchmarkDirectory(benchmarkDirectory);
         benchmarkAggregator.aggregate(singleBenchmarkResultList);
     }
 

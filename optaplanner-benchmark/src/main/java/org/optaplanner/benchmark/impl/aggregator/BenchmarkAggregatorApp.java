@@ -19,7 +19,8 @@ package org.optaplanner.benchmark.impl.aggregator;
 import java.io.File;
 import java.util.Arrays;
 
-
+import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
+import org.optaplanner.benchmark.config.XmlPlannerBenchmarkFactory;
 import org.optaplanner.benchmark.impl.aggregator.swingui.BenchmarkAggregatorFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,32 +29,17 @@ public class BenchmarkAggregatorApp {
 
     public static void main(String[] args) {
         BenchmarkAggregatorApp app = new BenchmarkAggregatorApp();
-        File defaultBenchmarkDirectory;
+        PlannerBenchmarkFactory plannerBenchmarkFactory;
         if (args.length == 0) {
-            defaultBenchmarkDirectory = null;
+            plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory();
         } else {
             if (args.length > 1) {
                 throw new IllegalStateException("The program arguments (" + Arrays.toString(args)
                         + ") are invalid: only 1 program argument is supported.");
             }
-            defaultBenchmarkDirectory = new File(args[0]);
-            if (!defaultBenchmarkDirectory.exists()) {
-                throw new IllegalArgumentException("The defaultBenchmarkDirectory (" + defaultBenchmarkDirectory
-                        + ") does not exist.");
-            }
+            plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory(args[0]);
         }
-        app.init(defaultBenchmarkDirectory);
-    }
-
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
-
-    public BenchmarkAggregatorApp() {
-    }
-
-    public void init(File defaultBenchmarkDirectory) {
-        BenchmarkAggregatorFrame benchmarkAggregatorFrame = new BenchmarkAggregatorFrame(defaultBenchmarkDirectory);
-        benchmarkAggregatorFrame.init();
-        benchmarkAggregatorFrame.setVisible(true);
+        BenchmarkAggregatorFrame.createAndDisplay(plannerBenchmarkFactory);
     }
 
 }

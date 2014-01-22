@@ -39,6 +39,9 @@ public class FreemarkerXmlPlannerBenchmarkFactory implements PlannerBenchmarkFac
         xmlPlannerBenchmarkFactory = new XmlPlannerBenchmarkFactory();
     }
 
+    /**
+     * @param templateResource never null, a classpath resource, as defined by {@link Class#getResource(String)}
+     */
     public FreemarkerXmlPlannerBenchmarkFactory(String templateResource) {
         this();
         configure(templateResource);
@@ -52,10 +55,19 @@ public class FreemarkerXmlPlannerBenchmarkFactory implements PlannerBenchmarkFac
     // Configure methods
     // ************************************************************************
 
+    /**
+     * @param templateResource a classpath resource, as defined by {@link Class#getResource(String)}
+     * @return this
+     */
     public FreemarkerXmlPlannerBenchmarkFactory configure(String templateResource) {
         return this.configure(templateResource, null);
     }
 
+    /**
+     * @param templateResource a classpath resource, as defined by {@link Class#getResource(String)}
+     * @param model for Freemarker
+     * @return this
+     */
     public FreemarkerXmlPlannerBenchmarkFactory configure(String templateResource, Object model) {
         InputStream templateIn = getClass().getResourceAsStream(templateResource);
         if (templateIn == null) {

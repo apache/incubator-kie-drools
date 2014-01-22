@@ -20,6 +20,8 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
+import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
+import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
@@ -33,6 +35,7 @@ public class BenchmarkAggregator {
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private File benchmarkDirectory = null;
+    private BenchmarkReportConfig benchmarkReportConfig = null;
 
     public File getBenchmarkDirectory() {
         return benchmarkDirectory;
@@ -40,6 +43,14 @@ public class BenchmarkAggregator {
 
     public void setBenchmarkDirectory(File benchmarkDirectory) {
         this.benchmarkDirectory = benchmarkDirectory;
+    }
+
+    public BenchmarkReportConfig getBenchmarkReportConfig() {
+        return benchmarkReportConfig;
+    }
+
+    public void setBenchmarkReportConfig(BenchmarkReportConfig benchmarkReportConfig) {
+        this.benchmarkReportConfig = benchmarkReportConfig;
     }
 
     // ************************************************************************
@@ -53,6 +64,10 @@ public class BenchmarkAggregator {
         if (!benchmarkDirectory.exists()) {
             throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory + ") must exist.");
         }
+        if (benchmarkReportConfig == null) {
+            throw new IllegalArgumentException("The benchmarkReportConfig (" + benchmarkReportConfig
+                    + ") must not be null.");
+        }
         Date startingTimestamp = new Date();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             singleBenchmarkResult.initSingleStatisticMap();
@@ -65,8 +80,7 @@ public class BenchmarkAggregator {
                 = PlannerBenchmarkResult.createMergedResult(singleBenchmarkResultList);
         plannerBenchmarkResult.setStartingTimestamp(startingTimestamp);
 
-        // TODO HACK POC
-        BenchmarkReport benchmarkReport = new BenchmarkReportConfig().buildBenchmarkReport(plannerBenchmarkResult);
+        BenchmarkReport benchmarkReport = benchmarkReportConfig.buildBenchmarkReport(plannerBenchmarkResult);
         benchmarkReport.initBenchmarkReportDirectoryInBenchmarkDirectory(benchmarkDirectory);
         plannerBenchmarkResult.accumulateResults(benchmarkReport);
         benchmarkReport.writeReport();

@@ -28,6 +28,7 @@ public interface SolverFactory {
     /**
      * Allows you to problematically change the {@link SolverConfig} at runtime before building the {@link Solver}.
      * @return never null
+     * @throws IllegalStateException if no solverConfig was configured yet
      */
     SolverConfig getSolverConfig();
 
