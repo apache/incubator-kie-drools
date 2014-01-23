@@ -20,21 +20,15 @@ import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
 public class TspBenchmarkApp extends CommonBenchmarkApp {
 
-    public static final String DEFAULT_BENCHMARK_CONFIG
-            = "/org/optaplanner/examples/tsp/benchmark/tspBenchmarkConfig.xml";
-
     public static void main(String[] args) {
-        String benchmarkConfig;
-        if (args.length > 0) {
-            if (args[0].equals("default")) {
-                benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
-            } else {
-                throw new IllegalArgumentException("The program argument (" + args[0] + ") is not supported.");
-            }
-        } else {
-            benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
-        }
-        new TspBenchmarkApp().buildAndBenchmark(benchmarkConfig);
+        new TspBenchmarkApp().buildAndBenchmark(args);
+    }
+
+    public TspBenchmarkApp() {
+        super(
+                new ArgOption("default",
+                        "/org/optaplanner/examples/tsp/benchmark/tspBenchmarkConfig.xml")
+        );
     }
 
 }

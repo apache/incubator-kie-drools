@@ -20,12 +20,15 @@ import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
 public class ProjectJobSchedulingBenchmarkApp extends CommonBenchmarkApp {
 
-    public static final String TEMPLATE_BENCHMARK_CONFIG_TEMPLATE
-            = "/org/optaplanner/examples/projectjobscheduling/benchmark/projectJobSchedulingBenchmarkConfigTemplate.xml.ftl";
-
     public static void main(String[] args) {
-        String benchmarkConfig = TEMPLATE_BENCHMARK_CONFIG_TEMPLATE;
-        new ProjectJobSchedulingBenchmarkApp().buildFromTemplateAndBenchmark(benchmarkConfig);
+        new ProjectJobSchedulingBenchmarkApp().buildAndBenchmark(args);
+    }
+
+    public ProjectJobSchedulingBenchmarkApp() {
+        super(
+                new ArgOption("template",
+                        "/org/optaplanner/examples/projectjobscheduling/benchmark/projectJobSchedulingBenchmarkConfigTemplate.xml.ftl", true)
+        );
     }
 
 }

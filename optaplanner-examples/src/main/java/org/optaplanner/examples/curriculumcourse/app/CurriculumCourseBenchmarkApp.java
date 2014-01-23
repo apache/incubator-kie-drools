@@ -20,31 +20,19 @@ import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
 public class CurriculumCourseBenchmarkApp extends CommonBenchmarkApp {
 
-    public static final String DEFAULT_BENCHMARK_CONFIG
-            = "/org/optaplanner/examples/curriculumcourse/benchmark/curriculumCourseBenchmarkConfig.xml";
-    public static final String STEP_LIMIT_BENCHMARK_CONFIG
-            = "/org/optaplanner/examples/curriculumcourse/benchmark/curriculumCourseStepLimitBenchmarkConfig.xml";
-    public static final String TEMPLATE_BENCHMARK_CONFIG_TEMPLATE
-            = "/org/optaplanner/examples/curriculumcourse/benchmark/curriculumCourseBenchmarkConfigTemplate.xml.ftl";
-
     public static void main(String[] args) {
-        String benchmarkConfig;
-        if (args.length > 0) {
-            if (args[0].equals("default")) {
-                benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
-            } else if (args[0].equals("stepLimit")) {
-                benchmarkConfig = STEP_LIMIT_BENCHMARK_CONFIG;
-            } else if (args[0].equals("template")) {
-                benchmarkConfig = TEMPLATE_BENCHMARK_CONFIG_TEMPLATE;
-                new CurriculumCourseBenchmarkApp().buildFromTemplateAndBenchmark(benchmarkConfig);
-                return;
-            } else {
-                throw new IllegalArgumentException("The program argument (" + args[0] + ") is not supported.");
-            }
-        } else {
-            benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
-        }
-        new CurriculumCourseBenchmarkApp().buildAndBenchmark(benchmarkConfig);
+        new CurriculumCourseBenchmarkApp().buildAndBenchmark(args);
+    }
+
+    public CurriculumCourseBenchmarkApp() {
+        super(
+                new ArgOption("default",
+                        "/org/optaplanner/examples/curriculumcourse/benchmark/curriculumCourseBenchmarkConfig.xml"),
+                new ArgOption("stepLimit",
+                        "/org/optaplanner/examples/curriculumcourse/benchmark/curriculumCourseStepLimitBenchmarkConfig.xml"),
+                new ArgOption("template",
+                        "/org/optaplanner/examples/curriculumcourse/benchmark/curriculumCourseBenchmarkConfigTemplate.xml.ftl", true)
+        );
     }
 
 }

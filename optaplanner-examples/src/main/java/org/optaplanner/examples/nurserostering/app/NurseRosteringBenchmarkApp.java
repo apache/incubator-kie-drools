@@ -20,33 +20,21 @@ import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
 public class NurseRosteringBenchmarkApp extends CommonBenchmarkApp {
 
-    public static final String SPRINT_BENCHMARK_CONFIG
-            = "/org/optaplanner/examples/nurserostering/benchmark/nurseRosteringSprintBenchmarkConfig.xml";
-    public static final String MEDIUM_BENCHMARK_CONFIG
-            = "/org/optaplanner/examples/nurserostering/benchmark/nurseRosteringMediumBenchmarkConfig.xml";
-    public static final String LONG_BENCHMARK_CONFIG
-            = "/org/optaplanner/examples/nurserostering/benchmark/nurseRosteringLongBenchmarkConfig.xml";
-    public static final String STEP_LIMIT_BENCHMARK_CONFIG
-            = "/org/optaplanner/examples/nurserostering/benchmark/nurseRosteringStepLimitBenchmarkConfig.xml";
-
     public static void main(String[] args) {
-        String benchmarkConfig;
-        if (args.length > 0) {
-            if (args[0].equals("sprint")) {
-                benchmarkConfig = SPRINT_BENCHMARK_CONFIG;
-            } else if (args[0].equals("medium")) {
-                benchmarkConfig = MEDIUM_BENCHMARK_CONFIG;
-            } else if (args[0].equals("long")) {
-                benchmarkConfig = LONG_BENCHMARK_CONFIG;
-            } else if (args[0].equals("stepLimit")) {
-                benchmarkConfig = STEP_LIMIT_BENCHMARK_CONFIG;
-            } else {
-                throw new IllegalArgumentException("The program argument (" + args[0] + ") is not supported.");
-            }
-        } else {
-            benchmarkConfig = MEDIUM_BENCHMARK_CONFIG;
-        }
-        new NurseRosteringBenchmarkApp().buildAndBenchmark(benchmarkConfig);
+        new NurseRosteringBenchmarkApp().buildAndBenchmark(args);
+    }
+
+    public NurseRosteringBenchmarkApp() {
+        super(
+                new ArgOption("sprint",
+                        "/org/optaplanner/examples/nurserostering/benchmark/nurseRosteringSprintBenchmarkConfig.xml"),
+                new ArgOption("medium",
+                        "/org/optaplanner/examples/nurserostering/benchmark/nurseRosteringMediumBenchmarkConfig.xml"),
+                new ArgOption("long",
+                        "/org/optaplanner/examples/nurserostering/benchmark/nurseRosteringLongBenchmarkConfig.xml"),
+                new ArgOption("stepLimit",
+                        "/org/optaplanner/examples/nurserostering/benchmark/nurseRosteringStepLimitBenchmarkConfig.xml")
+        );
     }
 
 }

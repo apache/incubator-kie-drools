@@ -20,12 +20,15 @@ import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
 public class GeneralOptaPlannerBenchmarkApp extends CommonBenchmarkApp {
 
-    public static final String DEFAULT_BENCHMARK_CONFIG
-            = "/org/optaplanner/examples/app/benchmark/generalOptaPlannerBenchmarkConfig.xml";
-
     public static void main(String[] args) {
-        String benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
-        new GeneralOptaPlannerBenchmarkApp().buildAndBenchmark(benchmarkConfig);
+        new GeneralOptaPlannerBenchmarkApp().buildAndBenchmark(args);
+    }
+
+    public GeneralOptaPlannerBenchmarkApp() {
+        super(
+                new ArgOption("default",
+                        "/org/optaplanner/examples/app/benchmark/generalOptaPlannerBenchmarkConfig.xml")
+        );
     }
 
 }

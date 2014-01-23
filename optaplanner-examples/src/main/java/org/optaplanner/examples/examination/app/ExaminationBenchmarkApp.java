@@ -20,25 +20,17 @@ import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
 public class ExaminationBenchmarkApp extends CommonBenchmarkApp {
 
-    public static final String DEFAULT_BENCHMARK_CONFIG
-            = "/org/optaplanner/examples/examination/benchmark/examinationBenchmarkConfig.xml";
-    public static final String STEP_LIMIT_BENCHMARK_CONFIG
-            = "/org/optaplanner/examples/examination/benchmark/examinationStepLimitBenchmarkConfig.xml";
-
     public static void main(String[] args) {
-        String benchmarkConfig;
-        if (args.length > 0) {
-            if (args[0].equals("default")) {
-                benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
-            } else if (args[0].equals("stepLimit")) {
-                benchmarkConfig = STEP_LIMIT_BENCHMARK_CONFIG;
-            } else {
-                throw new IllegalArgumentException("The program argument (" + args[0] + ") is not supported.");
-            }
-        } else {
-            benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
-        }
-        new ExaminationBenchmarkApp().buildAndBenchmark(benchmarkConfig);
+        new ExaminationBenchmarkApp().buildAndBenchmark(args);
+    }
+
+    public ExaminationBenchmarkApp() {
+        super(
+                new ArgOption("default",
+                        "/org/optaplanner/examples/examination/benchmark/examinationBenchmarkConfig.xml"),
+                new ArgOption("stepLimit",
+                        "/org/optaplanner/examples/examination/benchmark/examinationStepLimitBenchmarkConfig.xml")
+        );
     }
 
 }

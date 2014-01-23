@@ -20,11 +20,15 @@ import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
 public class PatientAdmissionScheduleBenchmarkApp extends CommonBenchmarkApp {
 
-    public static final String DEFAULT_BENCHMARK_CONFIG
-            = "/org/optaplanner/examples/pas/benchmark/patientAdmissionScheduleBenchmarkConfig.xml";
-
     public static void main(String[] args) {
-        new PatientAdmissionScheduleBenchmarkApp().buildAndBenchmark(DEFAULT_BENCHMARK_CONFIG);
+        new PatientAdmissionScheduleBenchmarkApp().buildAndBenchmark(args);
+    }
+
+    public PatientAdmissionScheduleBenchmarkApp() {
+        super(
+                new ArgOption("default",
+                        "/org/optaplanner/examples/pas/benchmark/patientAdmissionScheduleBenchmarkConfig.xml")
+        );
     }
 
 }

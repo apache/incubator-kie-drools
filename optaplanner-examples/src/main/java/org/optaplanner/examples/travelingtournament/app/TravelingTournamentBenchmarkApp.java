@@ -20,28 +20,17 @@ import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
 public class TravelingTournamentBenchmarkApp extends CommonBenchmarkApp {
 
-    public static final String BENCHMARK_CONFIG_PREFIX
-            = "/org/optaplanner/examples/travelingtournament/benchmark/";
-    public static final String BENCHMARK_CONFIG
-            = BENCHMARK_CONFIG_PREFIX + "travelingTournamentBenchmarkConfig.xml";
-    public static final String STEP_LIMIT_BENCHMARK_CONFIG
-            = BENCHMARK_CONFIG_PREFIX + "travelingTournamentStepLimitBenchmarkConfig.xml";
-
     public static void main(String[] args) {
-        String benchmarkConfig;
-        if (args.length > 0) {
-            // default is a workaround for http://jira.codehaus.org/browse/MEXEC-35
-            if (args[0].equals("default")) {
-                benchmarkConfig = BENCHMARK_CONFIG;
-            } else if (args[0].equals("stepLimit")) {
-                benchmarkConfig = STEP_LIMIT_BENCHMARK_CONFIG;
-            } else {
-                benchmarkConfig = BENCHMARK_CONFIG_PREFIX + args[0] + "BenchmarkConfig.xml";
-            }
-        } else {
-            benchmarkConfig = BENCHMARK_CONFIG;
-        }
-        new TravelingTournamentBenchmarkApp().buildAndBenchmark(benchmarkConfig);
+        new TravelingTournamentBenchmarkApp().buildAndBenchmark(args);
+    }
+
+    public TravelingTournamentBenchmarkApp() {
+        super(
+                new ArgOption("default",
+                        "/org/optaplanner/examples/travelingtournament/benchmark/travelingTournamentBenchmarkConfig.xml"),
+                new ArgOption("stepLimit",
+                        "/org/optaplanner/examples/travelingtournament/benchmark/travelingTournamentStepLimitBenchmarkConfig.xml")
+        );
     }
 
 }

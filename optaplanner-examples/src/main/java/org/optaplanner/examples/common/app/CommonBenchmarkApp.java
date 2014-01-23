@@ -16,24 +16,92 @@
 
 package org.optaplanner.examples.common.app;
 
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.FreemarkerXmlPlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.XmlPlannerBenchmarkFactory;
+import org.optaplanner.benchmark.impl.aggregator.swingui.BenchmarkAggregatorFrame;
 
 public abstract class CommonBenchmarkApp extends LoggingMain {
 
-    public void buildAndBenchmark(String benchmarkConfig) {
-        PlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory(benchmarkConfig);
-        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        plannerBenchmark.benchmark();
+    public static final String AGGREGATOR_ARG = "--aggregator";
+
+    private final Map<String, ArgOption> benchmarkArgumentMap;
+
+    public CommonBenchmarkApp(ArgOption... argOptions) {
+        benchmarkArgumentMap = new LinkedHashMap<String, ArgOption>(argOptions.length);
+        for (ArgOption argOption : argOptions) {
+            benchmarkArgumentMap.put(argOption.getName(), argOption);
+        }
     }
 
-    public void buildFromTemplateAndBenchmark(String benchmarkConfigTemplate) {
-        PlannerBenchmarkFactory plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory(
-                benchmarkConfigTemplate);
-        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        plannerBenchmark.benchmark();
+    public void buildAndBenchmark(String[] args) {
+        boolean aggregator = false;
+        ArgOption argOption = null;
+        for (String arg : args) {
+            if (arg.equalsIgnoreCase(AGGREGATOR_ARG)) {
+                aggregator = true;
+            } else if (benchmarkArgumentMap.containsKey(arg)) {
+                if (argOption != null) {
+                    throw new IllegalArgumentException("The args (" + Arrays.toString(args)
+                            + ") contains arg name (" + argOption.getName() + ") and arg name (" + arg + ").");
+                }
+                argOption = benchmarkArgumentMap.get(arg);
+            } else {
+                throw new IllegalArgumentException("The args (" + Arrays.toString(args)
+                        + ") contains an arg (" + arg + ") which is not part of the recognized args ("
+                        + benchmarkArgumentMap.keySet() + " or " + AGGREGATOR_ARG + ").");
+            }
+        }
+        if (argOption == null) {
+            argOption = benchmarkArgumentMap.values().iterator().next();
+        }
+        PlannerBenchmarkFactory plannerBenchmarkFactory;
+        if (!argOption.isTemplate()) {
+            plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory(argOption.getBenchmarkConfig());
+        } else {
+            plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory(argOption.getBenchmarkConfig());
+        }
+        if (!aggregator) {
+            PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
+            plannerBenchmark.benchmark();
+        } else {
+            BenchmarkAggregatorFrame.createAndDisplay(plannerBenchmarkFactory);
+        }
+    }
+
+    protected static class ArgOption {
+
+        private String name;
+        private String benchmarkConfig;
+        private boolean template;
+
+        public ArgOption(String name, String benchmarkConfig) {
+            this(name, benchmarkConfig, false);
+        }
+
+        public ArgOption(String name, String benchmarkConfig, boolean template) {
+            this.name = name;
+            this.benchmarkConfig = benchmarkConfig;
+            this.template = template;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getBenchmarkConfig() {
+            return benchmarkConfig;
+        }
+
+        public boolean isTemplate() {
+            return template;
+        }
+
     }
 
 }
