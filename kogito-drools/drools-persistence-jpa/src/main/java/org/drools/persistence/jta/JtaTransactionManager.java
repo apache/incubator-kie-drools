@@ -117,8 +117,7 @@ public class JtaTransactionManager
                 return tm;
             } catch ( NamingException ex ) {
                 logger.debug( "No JTA TransactionManager found at fallback JNDI location [{}]",
-                              jndiName,
-                              ex );
+                              jndiName );
             }
         }
 
