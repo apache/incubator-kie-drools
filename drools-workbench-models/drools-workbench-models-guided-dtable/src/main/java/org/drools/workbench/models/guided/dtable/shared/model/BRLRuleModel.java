@@ -106,7 +106,7 @@ public class BRLRuleModel extends RuleModel {
     }
 
     @Override
-    public FieldConstraint getLHSBoundField( final String var ) {
+    public SingleFieldConstraint getLHSBoundField(final String var) {
         for ( CompositeColumn<? extends BaseColumn> col : dtable.getConditions() ) {
             if ( col instanceof Pattern52 ) {
                 final Pattern52 p = (Pattern52) col;
@@ -121,9 +121,11 @@ public class BRLRuleModel extends RuleModel {
                     if ( p instanceof FactPattern ) {
                         final FactPattern fp = (FactPattern) p;
                         for ( FieldConstraint fc : fp.getFieldConstraints() ) {
-                            final List<String> fieldBindings = getFieldBinding( fc );
-                            if ( fieldBindings.contains( var ) ) {
-                                return fc;
+                            if (fc instanceof SingleFieldConstraint) {
+                                final List<String> fieldBindings = getFieldBinding(fc);
+                                if (fieldBindings.contains(var)) {
+                                    return (SingleFieldConstraint) fc;
+                                }
                             }
                         }
                     }
