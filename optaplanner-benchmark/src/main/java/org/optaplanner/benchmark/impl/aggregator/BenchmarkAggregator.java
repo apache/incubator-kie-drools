@@ -68,6 +68,10 @@ public class BenchmarkAggregator {
             throw new IllegalArgumentException("The benchmarkReportConfig (" + benchmarkReportConfig
                     + ") must not be null.");
         }
+        if (singleBenchmarkResultList.isEmpty()) {
+            throw new IllegalArgumentException("The singleBenchmarkResultList (" + singleBenchmarkResultList
+                    + ") must not be empty.");
+        }
         Date startingTimestamp = new Date();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             singleBenchmarkResult.initSingleStatisticMap();
