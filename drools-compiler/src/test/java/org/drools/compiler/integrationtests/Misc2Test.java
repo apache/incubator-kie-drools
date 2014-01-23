@@ -5015,4 +5015,73 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(0, stagedRightTuples.insertSize());
         assertNull(stagedRightTuples.getInsertFirst());
     }
+
+    @Test
+    public void testJittingConstraintWithArrayParams() throws Exception {
+        // BZ-1057000
+        String str =
+                "import org.drools.compiler.integrationtests.Misc2Test.Strings\n" +
+                "\n" +
+                "global java.util.List allList;\n" +
+                "global java.util.List anyList;\n" +
+                "\n" +
+                "rule R_all when\n" +
+                "    Strings( containsAll(\"1\", \"2\") )\n" +
+                "then\n" +
+                "    allList.add(\"1\");\n" +
+                "end\n" +
+                "\n" +
+                "rule R_any when\n" +
+                "    Strings( containsAny(new String[] {\"1\", \"2\"}) )\n" +
+                "then\n" +
+                "    anyList.add(\"1\");\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> allList = new ArrayList<String>();
+        ksession.setGlobal("allList", allList);
+        List<String> anyList = new ArrayList<String>();
+        ksession.setGlobal("anyList", anyList);
+
+        ksession.insert(new Strings("1", "2", "3"));
+        ksession.insert(new Strings("2", "3"));
+        ksession.fireAllRules();
+
+        assertEquals(1, allList.size());
+        assertEquals(2, anyList.size());
+    }
+
+    public static class Strings {
+        private final String[] strings;
+
+        public Strings(String... strings) {
+            this.strings = strings;
+        }
+
+        public boolean containsAny(String[] array) {
+            for (String candidate : array) {
+                for (String s : strings) {
+                    if (candidate.equals(s)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public boolean containsAll(String... array) {
+            int counter = 0;
+            for (String candidate : array) {
+                for (String s : strings) {
+                    if (candidate.equals(s)) {
+                        counter++;
+                        break;
+                    }
+                }
+            }
+            return counter == array.length;
+        }
+    }
 }
