@@ -103,26 +103,50 @@ public class RuleModel implements HasImports,
      * @param var The bound field variable (NOT bound fact).
      * @return null or the FieldConstraint found.
      */
-    public FieldConstraint getLHSBoundField( final String var ) {
-        if ( this.lhs == null ) {
+    public SingleFieldConstraint getLHSBoundField(final String var) {
+        if (this.lhs == null) {
             return null;
         }
-        for ( int i = 0; i < this.lhs.length; i++ ) {
-            IPattern pat = this.lhs[ i ];
-            if ( pat instanceof FromCompositeFactPattern ) {
-                pat = ( (FromCompositeFactPattern) pat ).getFactPattern();
+        for (int i = 0; i < this.lhs.length; i++) {
+            IPattern pat = this.lhs[i];
+
+            SingleFieldConstraint fieldConstraint = getLHSBoundField(pat, var);
+            if (fieldConstraint != null) {
+                return fieldConstraint;
             }
-            if ( pat instanceof FactPattern ) {
-                final FactPattern p = (FactPattern) pat;
-                for ( int j = 0; j < p.getFieldConstraints().length; j++ ) {
-                    FieldConstraint fc = p.getFieldConstraints()[ j ];
-                    List<String> fieldBindings = getFieldBinding( fc );
-                    if ( fieldBindings.contains( var ) ) {
+        }
+
+        return null;
+    }
+
+    private SingleFieldConstraint getLHSBoundField(IPattern pat, String var) {
+        if (pat instanceof FromCompositeFactPattern) {
+            pat = ((FromCompositeFactPattern) pat).getFactPattern();
+        }
+
+        if (pat instanceof CompositeFactPattern) {
+            for (IPattern iPattern : ((CompositeFactPattern) pat).getPatterns()) {
+                SingleFieldConstraint fieldConstraint = getLHSBoundField(iPattern, var);
+                if (fieldConstraint != null) {
+                    return fieldConstraint;
+                }
+            }
+        }
+
+        if (pat instanceof FactPattern) {
+            final FactPattern p = (FactPattern) pat;
+            for (int j = 0; j < p.getFieldConstraints().length; j++) {
+                if (p.getFieldConstraints()[j] instanceof SingleFieldConstraint) {
+                    SingleFieldConstraint fc = (SingleFieldConstraint) p.getFieldConstraints()[j];
+
+                    List<String> fieldBindings = getFieldBinding(fc);
+                    if (fieldBindings.contains(var)) {
                         return fc;
                     }
                 }
             }
         }
+
         return null;
     }
 
@@ -131,26 +155,42 @@ public class RuleModel implements HasImports,
      * @param var
      * @return The data-type, or null if the binding could not be found
      */
-    public String getLHSBindingType( final String var ) {
-        if ( this.lhs == null ) {
+    public String getLHSBindingType(final String var) {
+        if (this.lhs == null) {
             return null;
         }
-        for ( int i = 0; i < this.lhs.length; i++ ) {
-            IPattern pat = this.lhs[ i ];
-            if ( pat instanceof FromCompositeFactPattern ) {
-                pat = ( (FromCompositeFactPattern) pat ).getFactPattern();
+        for (int i = 0; i < this.lhs.length; i++) {
+            String type = getLHSBindingType(this.lhs[i], var);
+            if (type != null) {
+                return type;
             }
-            if ( pat instanceof FactPattern ) {
-                final FactPattern p = (FactPattern) pat;
-                if ( p.isBound() && var.equals( p.getBoundName() ) ) {
-                    return p.getFactType();
+        }
+        return null;
+    }
+
+    private String getLHSBindingType(IPattern pat, String var) {
+        if ( pat instanceof FromCompositeFactPattern ) {
+            pat = ( (FromCompositeFactPattern) pat ).getFactPattern();
+        }
+
+        if(pat instanceof CompositeFactPattern){
+            for(IPattern iPattern:((CompositeFactPattern)pat).getPatterns()){
+                String type = getLHSBindingType(iPattern, var);
+                if(type!=null){
+                    return type;
                 }
-                for ( FieldConstraint fc : p.getFieldConstraints() ) {
-                    String type = getFieldBinding( fc,
-                                                   var );
-                    if ( type != null ) {
-                        return type;
-                    }
+            }
+        }
+        if ( pat instanceof FactPattern ) {
+            final FactPattern p = (FactPattern) pat;
+            if ( p.isBound() && var.equals( p.getBoundName() ) ) {
+                return p.getFactType();
+            }
+            for ( FieldConstraint fc : p.getFieldConstraints() ) {
+                String type = getFieldBinding( fc,
+                        var );
+                if ( type != null ) {
+                    return type;
                 }
             }
         }
@@ -456,8 +496,8 @@ public class RuleModel implements HasImports,
             this.lhs = new IPattern[ 0 ];
         }
 
-        this.moveItemDown( this.lhs,
-                           itemIndex );
+        this.moveItemDown(this.lhs,
+                itemIndex);
     }
 
     public void moveLhsItemUp( int itemIndex ) {
@@ -465,8 +505,8 @@ public class RuleModel implements HasImports,
             this.lhs = new IPattern[ 0 ];
         }
 
-        this.moveItemUp( this.lhs,
-                         itemIndex );
+        this.moveItemUp(this.lhs,
+                itemIndex);
     }
 
     public void moveRhsItemDown( int itemIndex ) {
@@ -474,8 +514,8 @@ public class RuleModel implements HasImports,
             this.rhs = new IAction[ 0 ];
         }
 
-        this.moveItemDown( this.rhs,
-                           itemIndex );
+        this.moveItemDown(this.rhs,
+                itemIndex);
     }
 
     public void moveRhsItemUp( int itemIndex ) {
@@ -670,47 +710,68 @@ public class RuleModel implements HasImports,
         final List<String> result = new ArrayList<String>();
         for ( int i = 0; i < this.lhs.length; i++ ) {
             IPattern pat = this.lhs[ i ];
-            if ( pat instanceof FromCompositeFactPattern ) {
-                pat = ( (FromCompositeFactPattern) pat ).getFactPattern();
-            }
-            if ( pat instanceof FactPattern ) {
-                final FactPattern fact = (FactPattern) pat;
-
-                if ( fact.getConstraintList() != null ) {
-                    final FieldConstraint[] cons = fact.getConstraintList().getConstraints();
-                    if ( cons != null ) {
-                        for ( int k = 0; k < cons.length; k++ ) {
-                            FieldConstraint fc = cons[ k ];
-                            if ( fc instanceof SingleFieldConstraint ) {
-                                final SingleFieldConstraint c = (SingleFieldConstraint) fc;
-                                if ( c == con ) {
-                                    return result;
-                                }
-                                if ( c.getConnectives() != null ) {
-                                    for ( int j = 0; j < c.getConnectives().length; j++ ) {
-                                        if ( con == c.getConnectives()[ j ] ) {
-                                            return result;
-                                        }
-                                    }
-                                }
-                                if ( c.isBound() ) {
-                                    result.add( c.getFieldBinding() );
-                                }
-                            }
-                        }
-                    }
-                    if ( fact.isBound() ) {
-                        result.add( fact.getBoundName() );
-                    }
-                } else {
-                    if ( fact.isBound() ) {
-                        result.add( fact.getBoundName() );
-                    }
-                }
-
+            if (findBoundVariableNames(con, result, pat)) {
+                return result;
             }
         }
         return result;
+    }
+
+    private boolean findBoundVariableNames(BaseSingleFieldConstraint con, List<String> result, IPattern pat) {
+        if ( pat instanceof FromCompositeFactPattern) {
+            pat = ( (FromCompositeFactPattern) pat ).getFactPattern();
+        }
+
+        if( pat instanceof CompositeFactPattern){
+            for( IFactPattern p: ((CompositeFactPattern)pat).getPatterns()){
+                findBoundVariableNames(con,result,p);
+            }
+        }
+
+        if ( pat instanceof FactPattern) {
+            final FactPattern fact = (FactPattern) pat;
+
+            if (findBoundVariableNames(con, result, fact)) {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+    private boolean findBoundVariableNames(BaseSingleFieldConstraint con, List<String> result, FactPattern fact) {
+        if ( fact.getConstraintList() != null ) {
+            final FieldConstraint[] cons = fact.getConstraintList().getConstraints();
+            if ( cons != null ) {
+                for ( int k = 0; k < cons.length; k++ ) {
+                    FieldConstraint fc = cons[ k ];
+                    if ( fc instanceof SingleFieldConstraint) {
+                        final SingleFieldConstraint c = (SingleFieldConstraint) fc;
+                        if ( c == con ) {
+                            return true;
+                        }
+                        if ( c.getConnectives() != null ) {
+                            for ( int j = 0; j < c.getConnectives().length; j++ ) {
+                                if ( con == c.getConnectives()[ j ] ) {
+                                    return true;
+                                }
+                            }
+                        }
+                        if ( c.isBound() ) {
+                            result.add( c.getFieldBinding() );
+                        }
+                    }
+                }
+            }
+            if ( fact.isBound() ) {
+                result.add( fact.getBoundName() );
+            }
+        } else {
+            if ( fact.isBound() ) {
+                result.add( fact.getBoundName() );
+            }
+        }
+        return false;
     }
 
     /**

@@ -8,6 +8,7 @@ import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.ExpressionField;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.IPattern;
@@ -147,114 +148,7 @@ public class RuleModelTest {
         assertEquals( at2,
                 m.attributes[0] );
     }
-/*
-    @Test
-    public void testBindingList() {
-        final RuleModel model = new RuleModel();
 
-        model.lhs = new IPattern[3];
-        final FactPattern x = new FactPattern( "Car" );
-        model.lhs[0] = x;
-        x.setBoundName( "x" );
-
-        final FactPattern y = new FactPattern( "Car" );
-        model.lhs[1] = y;
-        y.setBoundName( "y" );
-
-        final SingleFieldConstraint[] cons = new SingleFieldConstraint[2];
-        y.constraintList = new CompositeFieldConstraint();
-        y.constraintList.constraints = cons;
-        cons[0] = new SingleFieldConstraint( "age" );
-        cons[0].setFieldBinding( "qbc" );
-        cons[0].setFieldType( "String" );
-        cons[0].connectives = new ConnectiveConstraint[1];
-        cons[0].connectives[0] = new ConnectiveConstraint( "Car",
-                "age",
-                "String",
-                "&",
-                "x" );
-        cons[0].connectives[0].setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        cons[1] = new SingleFieldConstraint( "make" );
-        cons[1].setFieldType( "Long" );
-        cons[1].connectives = new ConnectiveConstraint[1];
-        cons[1].connectives[0] = new ConnectiveConstraint( "Car",
-                "make",
-                "Long",
-                "=",
-                "2" );
-        cons[1].connectives[0].setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-
-        final FactPattern other = new FactPattern( "House" );
-        model.lhs[2] = other;
-
-        final List fb = model.getAllVariables();
-        assertEquals( 3,
-                fb.size() );
-        assertEquals( "x",
-                fb.get( 0 ) );
-        assertEquals( "y",
-                fb.get( 1 ) );
-        assertEquals( "qbc",
-                fb.get( 2 ) );
-
-    }
-
-    @Test
-    public void testFieldBindings() {
-        final RuleModel model = new RuleModel();
-
-        model.lhs = new IPattern[3];
-        final FactPattern x = new FactPattern( "Car" );
-        model.lhs[0] = x;
-        x.setBoundName( "x" );
-
-        final FactPattern y = new FactPattern( "Car" );
-        model.lhs[1] = y;
-        y.setBoundName( "y" );
-
-        final SingleFieldConstraint con = new SingleFieldConstraint( "age" );
-        con.setFieldBinding( "qbc" );
-        con.setFieldType( "String" );
-        con.connectives = new ConnectiveConstraint[1];
-        con.connectives[0] = new ConnectiveConstraint( "Car",
-                "age",
-                "String",
-                "==",
-                "x" );
-        con.connectives[0].setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        y.addConstraint( con );
-
-        final FactPattern other = new FactPattern( "House" );
-        model.lhs[2] = other;
-
-        final List<String> fb = model.getAllVariables();
-        assertEquals( 3,
-                fb.size() );
-        assertEquals( "x",
-                fb.get( 0 ) );
-        assertEquals( "y",
-                fb.get( 1 ) );
-        assertEquals( "qbc",
-                fb.get( 2 ) );
-
-        final List<String> fb2 = model.getLHSBoundFacts();
-        assertEquals( 2,
-                fb2.size() );
-        assertEquals( "x",
-                fb.get( 0 ) );
-        assertEquals( "y",
-                fb.get( 1 ) );
-
-        FieldConstraint fc = model.getLHSBoundField( "qbc" );
-        assertEquals( con,
-                fc );
-
-        FactPattern parentFactPattern = model.getLHSParentFactPatternForBinding( "qbc" );
-        assertEquals( y,
-                parentFactPattern );
-
-    }
-*/
     @Test
     public void testBoundFactFinder() {
         final RuleModel model = new RuleModel();
@@ -473,81 +367,7 @@ public class RuleModelTest {
         assertEquals( r2,
                 model.rhs[1] );
     }
-/*
-    @Test
-    public void testScopedVariables() {
 
-        // setup the data...
-
-        final RuleModel model = new RuleModel();
-        model.lhs = new IPattern[3];
-        final FactPattern x = new FactPattern( "Car" );
-        model.lhs[0] = x;
-        x.setBoundName( "x" );
-
-        final FactPattern y = new FactPattern( "Car" );
-        model.lhs[1] = y;
-        y.setBoundName( "y" );
-        final SingleFieldConstraint[] cons = new SingleFieldConstraint[2];
-        y.constraintList = new CompositeFieldConstraint();
-        y.constraintList.constraints = cons;
-        cons[0] = new SingleFieldConstraint( "age" );
-        cons[1] = new SingleFieldConstraint( "make" );
-        cons[0].setFieldBinding( "qbc" );
-        cons[0].connectives = new ConnectiveConstraint[1];
-        cons[0].connectives[0] = new ConnectiveConstraint( "Car",
-                "age",
-                null,
-                "&",
-                "x" );
-        cons[0].connectives[0].setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-
-        final FactPattern other = new FactPattern( "House" );
-        model.lhs[2] = other;
-        other.setBoundName( "q" );
-        final SingleFieldConstraint[] cons2 = new SingleFieldConstraint[1];
-        cons2[0] = new SingleFieldConstraint();
-        other.constraintList = new CompositeFieldConstraint();
-        other.constraintList.constraints = cons2;
-
-        // check the results for correct scope
-        List vars = model.getBoundVariablesInScope( cons[0] );
-        assertEquals( 1,
-                vars.size() );
-        assertEquals( "x",
-                vars.get( 0 ) );
-
-        vars = model.getBoundVariablesInScope( cons[0].connectives[0] );
-        assertEquals( 1,
-                vars.size() );
-        assertEquals( "x",
-                vars.get( 0 ) );
-
-        vars = model.getBoundVariablesInScope( cons[1] );
-        assertEquals( 2,
-                vars.size() );
-        assertEquals( "x",
-                vars.get( 0 ) );
-        assertEquals( "qbc",
-                vars.get( 1 ) );
-
-        vars = model.getBoundVariablesInScope( cons[0] );
-        assertEquals( 1,
-                vars.size() );
-        assertEquals( "x",
-                vars.get( 0 ) );
-
-        vars = model.getBoundVariablesInScope( cons2[0] );
-        assertEquals( 3,
-                vars.size() );
-        assertEquals( "x",
-                vars.get( 0 ) );
-        assertEquals( "qbc",
-                vars.get( 1 ) );
-        assertEquals( "y",
-                vars.get( 2 ) );
-    }
-*/
     @Test
     public void testScopedVariablesWithCompositeFact() {
         RuleModel m = new RuleModel();
@@ -572,62 +392,7 @@ public class RuleModelTest {
         assertEquals( "abc",
                 vars.get( 0 ) );
     }
-/*
-    @Test
-    public void testGetFieldConstraint() {
-        final RuleModel model = new RuleModel();
-        model.lhs = new IPattern[3];
-        final FactPattern x = new FactPattern( "Boat" );
-        model.lhs[0] = x;
-        x.setBoundName( "x" );
 
-        final FactPattern y = new FactPattern( "Car" );
-        model.lhs[1] = y;
-        y.setBoundName( "y" );
-        final SingleFieldConstraint[] cons = new SingleFieldConstraint[2];
-        y.constraintList = new CompositeFieldConstraint();
-        y.constraintList.constraints = cons;
-        cons[0] = new SingleFieldConstraint( "age" );
-        cons[0].setFieldBinding( "qbc" );
-        cons[0].setFieldType( "String" );
-        cons[0].connectives = new ConnectiveConstraint[1];
-        cons[0].connectives[0] = new ConnectiveConstraint( "Car",
-                "age",
-                "String",
-                "&",
-                "x" );
-        cons[0].connectives[0].setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        cons[1] = new SingleFieldConstraint( "make" );
-        cons[1].setFieldType( "Long" );
-        cons[1].connectives = new ConnectiveConstraint[1];
-        cons[1].connectives[0] = new ConnectiveConstraint( "Car",
-                "make",
-                "Long",
-                "=",
-                "2" );
-        cons[1].connectives[0].setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-
-        final FactPattern other = new FactPattern( "House" );
-        model.lhs[2] = other;
-        other.setBoundName( "q" );
-        final SingleFieldConstraint[] cons2 = new SingleFieldConstraint[1];
-        cons2[0] = new SingleFieldConstraint();
-        other.constraintList = new CompositeFieldConstraint();
-        other.constraintList.constraints = cons2;
-        String varTypeString = model.getLHSBindingType( "qbc" );
-        assertEquals( "String",
-                varTypeString );
-        String varTypeLong = model.getLHSBindingType( "make" );
-        assertEquals( null,
-                varTypeLong );
-        FactPattern varTypeBoat = model.getLHSBoundFact( "x" );
-        assertEquals( "Boat",
-                varTypeBoat.getFactType() );
-        FactPattern varTypeCar = model.getLHSBoundFact( "y" );
-        assertEquals( "Car",
-                varTypeCar.getFactType() );
-    }
-*/
     @Test
     public void testAddItemLhsAtSpecificPosition() {
         final RuleModel model = new RuleModel();
@@ -949,5 +714,71 @@ public class RuleModelTest {
         assertFalse( model.removeLhsItem( 0 ) );
         assertEquals( 1,
                 model.lhs.length );
+    }
+
+    @Test
+    public void testBoundVariableFromOR() throws Exception {
+        final RuleModel model = new RuleModel();
+
+        model.lhs = new IPattern[1];
+
+        CompositeFactPattern compositeFactPattern = new CompositeFactPattern(CompositeFactPattern.COMPOSITE_TYPE_OR);
+        model.lhs[0] = compositeFactPattern;
+        FactPattern pattern1 = new FactPattern();
+        pattern1.setBoundName("test");
+        compositeFactPattern.addFactPattern(pattern1);
+        FactPattern pattern2 = new FactPattern();
+        SingleFieldConstraint constraint = new SingleFieldConstraint();
+        pattern2.addConstraint(constraint);
+        compositeFactPattern.addFactPattern(pattern2);
+
+        List<String> boundVariablesInScope = model.getBoundVariablesInScope(constraint);
+
+        assertEquals(1,boundVariablesInScope.size());
+    }
+
+    @Test
+    public void testBoundFieldVariableFromOR() throws Exception {
+        final RuleModel model = new RuleModel();
+
+        model.lhs = new IPattern[1];
+
+        CompositeFactPattern compositeFactPattern = new CompositeFactPattern(CompositeFactPattern.COMPOSITE_TYPE_OR);
+        model.lhs[0] = compositeFactPattern;
+        FactPattern pattern1 = new FactPattern();
+        SingleFieldConstraint constraint1 = new SingleFieldConstraint();
+        pattern1.addConstraint(constraint1);
+        constraint1.setFieldBinding("test");
+        compositeFactPattern.addFactPattern(pattern1);
+        FactPattern pattern2 = new FactPattern();
+        SingleFieldConstraint constraint2 = new SingleFieldConstraint();
+        pattern2.addConstraint(constraint2);
+        compositeFactPattern.addFactPattern(pattern2);
+
+        SingleFieldConstraint lhsBoundField = model.getLHSBoundField("test");
+
+        assertEquals(constraint1,lhsBoundField);
+    }
+
+    @Test
+    public void testLHSBindingTypeFromOR() throws Exception {
+        final RuleModel model = new RuleModel();
+
+        model.lhs = new IPattern[1];
+
+        CompositeFactPattern compositeFactPattern = new CompositeFactPattern(CompositeFactPattern.COMPOSITE_TYPE_OR);
+        model.lhs[0] = compositeFactPattern;
+        FactPattern pattern1 = new FactPattern();
+        SingleFieldConstraint constraint1 = new SingleFieldConstraint();
+        pattern1.addConstraint(constraint1);
+        constraint1.setFieldType("String");
+        constraint1.setFieldBinding("test");
+        compositeFactPattern.addFactPattern(pattern1);
+        FactPattern pattern2 = new FactPattern();
+        SingleFieldConstraint constraint2 = new SingleFieldConstraint();
+        pattern2.addConstraint(constraint2);
+        compositeFactPattern.addFactPattern(pattern2);
+
+        assertEquals("String", model.getLHSBindingType("test"));
     }
 }
