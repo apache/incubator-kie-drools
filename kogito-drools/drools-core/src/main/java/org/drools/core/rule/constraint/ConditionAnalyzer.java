@@ -26,6 +26,7 @@ import org.mvel2.compiler.ExecutableAccessor;
 import org.mvel2.compiler.ExecutableLiteral;
 import org.mvel2.compiler.ExecutableStatement;
 import org.mvel2.optimizers.dynamic.DynamicGetAccessor;
+import org.mvel2.optimizers.impl.refl.collection.ArrayCreator;
 import org.mvel2.optimizers.impl.refl.collection.ExprValueAccessor;
 import org.mvel2.optimizers.impl.refl.collection.ListCreator;
 import org.mvel2.optimizers.impl.refl.nodes.ArrayAccessor;
@@ -45,6 +46,7 @@ import org.mvel2.optimizers.impl.refl.nodes.StaticVarAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.ThisValueAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.VariableAccessor;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -294,6 +296,8 @@ public class ConditionAnalyzer {
             return analyzeNode(((CompiledExpression)accessor).getFirstNode());
         } else if (accessor instanceof ListCreator) {
             return analyzeListCreation(((ListCreator) accessor));
+        } else if (accessor instanceof ArrayCreator) {
+            return analyzeArrayCreation(((ArrayCreator) accessor));
         } else {
             throw new RuntimeException("Unknown accessor type: " + accessor);
         }
@@ -334,22 +338,31 @@ public class ConditionAnalyzer {
         return false;
     }
 
+    private Expression analyzeArrayCreation(ArrayCreator arrayCreator) {
+        Accessor[] accessors = getFieldValue(ArrayCreator.class, "template", (ArrayCreator) arrayCreator);
+        Class<?> type = arrayCreator.getKnownEgressType();
+        Class<?> arrayType = Array.newInstance(type, 0).getClass();
+        return getArrayCreationExpression( arrayType, type, accessors );
+    }
+
     private EvaluatedExpression analyzeListCreation(ListCreator listCreator) {
         Method listCreationMethod = null;
         try {
             listCreationMethod = Arrays.class.getMethod("asList", Object[].class);
         } catch (NoSuchMethodException e) { }
-        Invocation invocation = new MethodInvocation(listCreationMethod);
 
-        ArrayCreationExpression arrayExpression = new ArrayCreationExpression(Object[].class);
-        Accessor[] accessors = listCreator.getValues();
+        Invocation invocation = new MethodInvocation(listCreationMethod);
+        invocation.addArgument( getArrayCreationExpression( Object[].class, Object.class, listCreator.getValues() ) );
+        return new EvaluatedExpression(invocation);
+    }
+
+    private ArrayCreationExpression getArrayCreationExpression(Class<?> arrayType, Class<?> type, Accessor[] accessors) {
+        ArrayCreationExpression arrayExpression = new ArrayCreationExpression(arrayType);
         for (Accessor accessor : accessors) {
             ExecutableStatement statement = ((ExprValueAccessor)accessor).getStmt();
-            arrayExpression.addItem(statementToExpression(statement, Object.class));
+            arrayExpression.addItem(statementToExpression(statement, type));
         }
-        invocation.addArgument(arrayExpression);
-
-        return new EvaluatedExpression(invocation);
+        return arrayExpression;
     }
 
     private EvaluatedExpression analyzeExpressionNode(AccessorNode accessorNode, ASTNode containingNode, Class<?> variableType) {
