@@ -33,7 +33,7 @@ public interface ProjectDataModelOracle {
 
     void addProjectTypeSources( final Map<String, TypeSource> typeSources );
 
-    void addProjectSuperTypes( final Map<String, String> superTypes );
+    void addProjectSuperTypes( final Map<String, List<String>> superTypes );
 
     void addProjectTypeAnnotations( final Map<String, Set<Annotation>> annotations );
 
@@ -57,7 +57,7 @@ public interface ProjectDataModelOracle {
 
     Map<String, TypeSource> getProjectTypeSources();
 
-    Map<String, String> getProjectSuperTypes();
+    Map<String, List<String>> getProjectSuperTypes();
 
     Map<String, Set<Annotation>> getProjectTypeAnnotations();
 
