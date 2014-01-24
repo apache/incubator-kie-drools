@@ -1,8 +1,8 @@
 package org.drools.impl.adapters;
 
-import org.kie.api.runtime.Channel;
+import org.drools.runtime.Channel;
 
-public class ChannelAdapter implements org.drools.runtime.Channel {
+public class ChannelAdapter implements org.kie.api.runtime.Channel {
 
     private final Channel delegate;
 
