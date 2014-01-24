@@ -902,7 +902,7 @@ public class ConditionAnalyzer {
         }
 
         private Method getMethodFromSuperclass(Method method, String conditionClass) {
-            if (method == null) {
+            if (method == null || Modifier.isStatic(method.getModifiers())) {
                 return method;
             }
             Class<?> declaringClass = method.getDeclaringClass();

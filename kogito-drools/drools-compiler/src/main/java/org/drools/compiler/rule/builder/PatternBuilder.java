@@ -1550,7 +1550,6 @@ public class PatternBuilder
                                                                                  context.getPackageBuilder().getDateFormats());
         } catch ( final Exception e ) {
             // we will fallback to regular preducates, so don't raise an error
-            e.printStackTrace();
         }
         return field;
     }
