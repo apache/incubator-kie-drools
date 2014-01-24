@@ -17,6 +17,7 @@ package org.drools.workbench.models.commons.backend.oracle;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,7 +39,7 @@ public class ProjectDataModelOracleUtils {
         return types;
     }
 
-    public static String getSuperType( final ProjectDataModelOracle dmo,
+    public static List<String> getSuperType( final ProjectDataModelOracle dmo,
                                        final String factType ) {
         return dmo.getProjectSuperTypes().get( factType );
     }
