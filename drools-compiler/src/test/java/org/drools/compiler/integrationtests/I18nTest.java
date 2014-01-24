@@ -150,4 +150,45 @@ public class I18nTest extends CommonTestMethodBase {
 
         ksession.dispose();
     }
+    
+    @Test
+    public void testMultibytePropertyBoolean() throws Exception {
+        // BZ1057445
+
+        String drl =
+                "package test\n" +
+                "\n" +
+                "import org.drools.compiler.I18nPerson\n" +
+                "\n" +
+                "global java.util.List messages;\n" +
+                "\n" +
+                "rule \"Multibyte property boolean test\"\n" +
+                "    when\n" +
+                "        I18nPerson(フラグ == true)\n" +
+                "    then\n" +
+                "        messages.add(\"ok\");\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        List messages = new ArrayList();
+        ksession.setGlobal( "messages", messages );
+
+        I18nPerson person = new I18nPerson();
+        person.setフラグ(true);
+        ksession.insert(person);
+        ksession.fireAllRules();
+
+        assertTrue(messages.contains("ok"));
+
+        ksession.dispose();
+    }
 }
