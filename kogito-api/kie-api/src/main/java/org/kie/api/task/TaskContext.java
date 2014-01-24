@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.internal.task.api;
+package org.kie.api.task;
 
 
-public interface TaskEvent extends org.kie.api.task.TaskEvent {
+public interface TaskContext {
+
+	UserGroupCallback getUserGroupCallback();
 
 }

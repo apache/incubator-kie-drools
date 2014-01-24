@@ -23,6 +23,7 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.task.TaskLifeCycleEventListener;
 
 /**
  * Factory that is used by <code>RuntimeManager</code> to configure <code>RuntimeEngine</code>
@@ -71,4 +72,17 @@ public interface RegisterableItemsFactory {
 	 * @return list of listeners to be registered - in case of no listeners empty list shall be returned.
 	 */
     List<RuleRuntimeEventListener> getRuleRuntimeEventListeners(RuntimeEngine runtime);
+    
+    /**
+     * Returns globals that shall be registered on <code>KieSession</code>.
+     * @param runtime provides <code>RuntimeEngine</code> in case globals need to make use of it internally
+     * @return map of globals to be registered - in case of no globals empty map shall be returned.
+     */
+    Map<String, Object> getGlobals(RuntimeEngine runtime);
+    
+    /**
+     * Return new instances of <code>TaskLifeCycleEventListener</code> that will be registered on <code>RuntimeEngine</code>. 
+     * @return
+     */
+    List<TaskLifeCycleEventListener> getTaskListeners();
 }
