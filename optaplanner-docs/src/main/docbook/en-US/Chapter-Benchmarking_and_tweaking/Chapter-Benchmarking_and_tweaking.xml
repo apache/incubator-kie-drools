@@ -788,5 +788,52 @@
                 "/org/optaplanner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfigTemplate.xml.ftl");
         PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark();</programlisting>
     </section>
+
+    <section xml:id="benchmarkReportAggregation">
+      <title>Benchmark report aggregation</title>
+
+      <para>The <literal>BenchmarkAggregator</literal> takes 1 or more existing benchmarks and merges them into new
+      benchmark report, without actually running the benchmarks again. This is useful to generate a:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><emphasis role="bold">Code changes impact report</emphasis>: Run the same benchmark configuration before
+          and after the code changes, then aggregate a report.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Dependency upgrade impact report</emphasis>: Run the same benchmark configuration
+          before and after upgrading the dependency, then aggregate a report.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Condense a too verbose report</emphasis>: Select only the interesting solver
+          benchmarks from the existing report. This especially useful on template reports to make the graphs
+          readable.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Partial rerun</emphasis>: Rerun part of an existing report (for example only the
+          failed or invalid solvers), then recreate the original report with the new values.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>To use it, provide a <literal>PlannerBenchmarkFactory</literal> to the
+      <literal>BenchmarkAggregatorFrame</literal> to display the GUI:</para>
+
+      <programlisting language="java">    public static void main(String[] args) {
+        PlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory(
+                "/org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml");
+        BenchmarkAggregatorFrame.createAndDisplay(plannerBenchmarkFactory);
+    }</programlisting>
+
+      <warning>
+        <para>Despite that it uses a benchmark configuration as input, it ignores all elements of that configuration,
+        except for the elements <literal>&lt;benchmarkDirectory&gt;</literal> and
+        <literal>&lt;benchmarkReport&gt;</literal>.</para>
+      </warning>
+
+      <para>In the GUI, select the interesting benchmarks and click the button to generate the report.</para>
+    </section>
   </section>
 </chapter>
