@@ -5084,4 +5084,44 @@ public class Misc2Test extends CommonTestMethodBase {
             return counter == array.length;
         }
     }
+
+    public static class ARef {
+        public static int getSize(String s) {
+            return 0;
+        }
+    }
+
+    public static class BRef extends ARef {
+        public static int getSize(String s) {
+            return s.length();
+        }
+    }
+
+    @Test @Ignore("fixed with mvel 2.1.9.Final")
+    public void testJittingConstraintInvokingStaticMethod() throws Exception {
+        // DROOLS-410
+        String str =
+                "dialect \"mvel\"\n" +
+                "import org.drools.compiler.integrationtests.Misc2Test.ARef\n" +
+                "import org.drools.compiler.integrationtests.Misc2Test.BRef\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $s : String( length == BRef.getSize(this) )\n" +
+                "then\n" +
+                "    list.add($s);\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert("1234");
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+    }
 }
