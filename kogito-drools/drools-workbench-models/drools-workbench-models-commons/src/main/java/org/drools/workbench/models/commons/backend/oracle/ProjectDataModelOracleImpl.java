@@ -35,7 +35,7 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     protected Map<String, TypeSource> projectTypeSources = new HashMap<String, TypeSource>();
 
     //Map {factType, superType} to determine the Super Type of a FactType.
-    protected Map<String, String> projectSuperTypes = new HashMap<String, String>();
+    protected Map<String, List<String>> projectSuperTypes = new HashMap<String, List<String>>();
 
     //Map {factType, Set<Annotation>} containing the FactType's annotations.
     protected Map<String, Set<Annotation>> projectTypeAnnotations = new HashMap<String, Set<Annotation>>();
@@ -81,7 +81,7 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     }
 
     @Override
-    public void addProjectSuperTypes( final Map<String, String> superTypes ) {
+    public void addProjectSuperTypes( final Map<String, List<String>> superTypes ) {
         this.projectSuperTypes.putAll( superTypes );
     }
 
@@ -141,7 +141,7 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     }
 
     @Override
-    public Map<String, String> getProjectSuperTypes() {
+    public Map<String, List<String>> getProjectSuperTypes() {
         return this.projectSuperTypes;
     }
 
