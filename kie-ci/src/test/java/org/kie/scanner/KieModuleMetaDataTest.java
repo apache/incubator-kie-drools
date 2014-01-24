@@ -252,7 +252,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
     }
 
     @Test
-    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1049674")
+//    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1049674")
     public void testKieMavenPluginEmptyProject() {
         // According to https://bugzilla.redhat.com/show_bug.cgi?id=1049674#c2 the below is the minimal POM required to use KieMavenPlugin.
         // However when we attempt to retrieve meta-data about the classes in the KieModule some are not accessible. IDK whether the minimal
@@ -286,6 +286,9 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
                            + "</plugins>"
                            + "</build>"
                            + "</project>" );
+
+        kfs.write("/src/main/resources/META-INF/kmodule.xml",
+                  "<kmodule xmlns=\"http://jboss.org/kie/6.0.0/kmodule\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>");
 
         final KieBuilder kieBuilder = ks.newKieBuilder( kfs );
         final List<Message> messages = kieBuilder.buildAll().getResults().getMessages();
