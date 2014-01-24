@@ -1,7 +1,6 @@
 package org.drools.impl.adapters;
 
 import org.drools.KnowledgeBase;
-import org.drools.command.Command;
 import org.drools.event.process.ProcessEventListener;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.WorkingMemoryEventListener;
@@ -15,7 +14,6 @@ import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItemManager;
 import org.drools.runtime.rule.Agenda;
-import org.drools.runtime.rule.AgendaFilter;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.LiveQuery;
 import org.drools.runtime.rule.QueryResults;
@@ -26,12 +24,10 @@ import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.Row;
 import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.drools.impl.adapters.FactHandleAdapter.adaptFactHandles;
@@ -50,7 +46,12 @@ public class KnowledgeRuntimeAdapter implements org.drools.runtime.KnowledgeRunt
     }
 
     public <T extends SessionClock> T getSessionClock() {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.getSessionClock -> TODO");
+        return (T)new SessionClock() {
+            @Override
+            public long getCurrentTime() {
+                return delegate.getSessionClock().getCurrentTime();
+            }
+        };
     }
 
     public void setGlobal(String identifier, Object value) {
@@ -78,16 +79,15 @@ public class KnowledgeRuntimeAdapter implements org.drools.runtime.KnowledgeRunt
     }
 
     public void registerExitPoint(String name, ExitPoint exitPoint) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.registerExitPoint -> TODO");
+        throw new UnsupportedOperationException("This operation is no longer supported");
     }
 
     public void unregisterExitPoint(String name) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.unregisterExitPoint -> TODO");
+        throw new UnsupportedOperationException("This operation is no longer supported");
     }
 
     public void registerChannel(String name, Channel channel) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.unregisterChannel -> TODO");
-        // delegate.registerChannel(name, new ChannelAdapter(channel));
+        delegate.registerChannel(name, new ChannelAdapter(channel));
     }
 
     @Override
@@ -97,7 +97,16 @@ public class KnowledgeRuntimeAdapter implements org.drools.runtime.KnowledgeRunt
 
     @Override
     public Map<String, Channel> getChannels() {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.getChannels -> TODO");
+        Map<String, Channel> channels = new HashMap<String, Channel>();
+        for (final Map.Entry<String, org.kie.api.runtime.Channel> entry : delegate.getChannels().entrySet()) {
+            channels.put(entry.getKey(), new Channel() {
+                @Override
+                public void send(Object object) {
+                    entry.getValue().send(object);
+                }
+            });
+        }
+        return channels;
     }
 
     @Override
