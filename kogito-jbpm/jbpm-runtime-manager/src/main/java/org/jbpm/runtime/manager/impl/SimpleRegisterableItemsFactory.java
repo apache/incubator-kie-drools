@@ -31,6 +31,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.task.TaskLifeCycleEventListener;
+import org.kie.api.task.TaskService;
 
 
 /**
@@ -56,12 +58,14 @@ public class SimpleRegisterableItemsFactory implements RegisterableItemsFactory 
     private List<Class<? extends ProcessEventListener>> processListeners = new CopyOnWriteArrayList<Class<? extends ProcessEventListener>>();
     private List<Class<? extends AgendaEventListener>> agendListeners = new CopyOnWriteArrayList<Class<? extends AgendaEventListener>>();
     private List<Class<? extends RuleRuntimeEventListener>> workingMemoryListeners = new CopyOnWriteArrayList<Class<? extends RuleRuntimeEventListener>>();
+    private List<Class<? extends TaskLifeCycleEventListener>> taskListeners = new CopyOnWriteArrayList<Class<? extends TaskLifeCycleEventListener>>();
+    private Map<String, Object> globals = new ConcurrentHashMap<String, Object>();
     
     @Override
     public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
         Map<String, WorkItemHandler> handlers = new HashMap<String, WorkItemHandler>();
         for (Entry<String, Class<? extends WorkItemHandler>> entry : workItemHandlersClasses.entrySet()) {
-            WorkItemHandler handler = createInstance(entry.getValue(), runtime.getKieSession());
+            WorkItemHandler handler = createInstance(entry.getValue(), runtime);
             
             if (handler != null) {
                 handlers.put(entry.getKey(), handler);
@@ -74,7 +78,7 @@ public class SimpleRegisterableItemsFactory implements RegisterableItemsFactory 
     public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
         List<ProcessEventListener> listeners = new ArrayList<ProcessEventListener>();
         for (Class<? extends ProcessEventListener> clazz : processListeners) {
-            ProcessEventListener pListener = createInstance(clazz, runtime.getKieSession());
+            ProcessEventListener pListener = createInstance(clazz, runtime);
             if (pListener != null) {
                 listeners.add(pListener);
             }
@@ -86,7 +90,7 @@ public class SimpleRegisterableItemsFactory implements RegisterableItemsFactory 
     public List<AgendaEventListener> getAgendaEventListeners(RuntimeEngine runtime) {
         List<AgendaEventListener> listeners = new ArrayList<AgendaEventListener>();
         for (Class<? extends AgendaEventListener> clazz : agendListeners) {
-            AgendaEventListener aListener = createInstance(clazz, runtime.getKieSession());
+            AgendaEventListener aListener = createInstance(clazz, runtime);
             if (aListener != null) {
                 listeners.add(aListener);
             }
@@ -98,13 +102,30 @@ public class SimpleRegisterableItemsFactory implements RegisterableItemsFactory 
     public List<RuleRuntimeEventListener> getRuleRuntimeEventListeners(RuntimeEngine runtime) {
         List<RuleRuntimeEventListener> listeners = new ArrayList<RuleRuntimeEventListener>();
         for (Class<? extends RuleRuntimeEventListener> clazz : workingMemoryListeners) {
-            RuleRuntimeEventListener wmListener = createInstance(clazz, runtime.getKieSession());
+            RuleRuntimeEventListener wmListener = createInstance(clazz, runtime);
             if (wmListener != null) {
                 listeners.add(wmListener);
             }
         }
         return listeners;
     }
+    
+	@Override
+	public List<TaskLifeCycleEventListener> getTaskListeners() {
+		List<TaskLifeCycleEventListener> listeners = new ArrayList<TaskLifeCycleEventListener>();
+        for (Class<? extends TaskLifeCycleEventListener> clazz : taskListeners) {
+        	TaskLifeCycleEventListener tListener = createInstance(clazz, null);
+            if (tListener != null) {
+                listeners.add(tListener);
+            }
+        }
+        return listeners;
+	}
+    
+	@Override
+	public Map<String, Object> getGlobals(RuntimeEngine runtime) {
+		return globals;
+	}
     
     public void addWorkItemHandler(String name, Class<? extends WorkItemHandler> clazz) {
         this.workItemHandlersClasses.put(name, clazz);
@@ -122,16 +143,41 @@ public class SimpleRegisterableItemsFactory implements RegisterableItemsFactory 
         this.workingMemoryListeners.add(clazz);
     }
     
-    protected <T> T createInstance(Class<T> clazz, KieSession ksession) {
+    public void addGlobal(String name, Object global) {
+        this.globals.put(name, global);
+    }
+    
+    public void addTaskListener(Class<? extends TaskLifeCycleEventListener> clazz) {
+        this.taskListeners.add(clazz);
+    }
+    
+    
+    protected <T> T createInstance(Class<T> clazz, RuntimeEngine engine) {
         T instance = null;
-        try {
-            Constructor<T> constructor = clazz.getConstructor(KieSession.class);
-            
-            instance = constructor.newInstance(ksession);
-        } catch (Exception e) {
-
+        if (engine != null) {
+	        try {
+	            Constructor<T> constructor = clazz.getConstructor(KieSession.class);
+	            
+	            instance = constructor.newInstance(engine.getKieSession());
+	        } catch (Exception e) {
+	
+	        }
+	        try {
+	            Constructor<T> constructor = clazz.getConstructor(TaskService.class);
+	            
+	            instance = constructor.newInstance(engine.getTaskService());
+	        } catch (Exception e) {
+	
+	        }
+	        
+	        try {
+	            Constructor<T> constructor = clazz.getConstructor(RuntimeEngine.class);
+	            
+	            instance = constructor.newInstance(engine);
+	        } catch (Exception e) {
+	
+	        }
         }
-        
         if (instance == null) {
             try {
                 instance = clazz.newInstance();
@@ -143,4 +189,5 @@ public class SimpleRegisterableItemsFactory implements RegisterableItemsFactory 
         
         return instance;
     }
+
 }

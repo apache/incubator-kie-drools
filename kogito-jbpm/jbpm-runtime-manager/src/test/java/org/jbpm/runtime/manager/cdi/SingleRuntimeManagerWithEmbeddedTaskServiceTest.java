@@ -8,9 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
-import javax.persistence.EntityManagerFactory;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -18,38 +16,34 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
-import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RuntimeEngine;
-import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeManager;
-import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.manager.cdi.qualifier.PerProcessInstance;
+import org.kie.internal.runtime.manager.cdi.qualifier.PerRequest;
+import org.kie.internal.runtime.manager.cdi.qualifier.Singleton;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 @RunWith(Arquillian.class)
-public class MultipleRuntimeManagerTest extends AbstractBaseTest {
+public class SingleRuntimeManagerWithEmbeddedTaskServiceTest extends AbstractBaseTest {
     
     @Deployment()
     public static Archive<?> createDeployment() {
         return ShrinkWrap.create(JavaArchive.class, "jbpm-runtime-manager.jar")
 
-                .addPackage("org.jbpm.kie.services.impl.util")
                 .addPackage("org.jbpm.services.task")
                 .addPackage("org.jbpm.services.task.annotations")
                 .addPackage("org.jbpm.services.task.api")
@@ -79,8 +73,9 @@ public class MultipleRuntimeManagerTest extends AbstractBaseTest {
                 .addPackage("org.jbpm.runtime.manager.mapper")
                 .addPackage("org.jbpm.runtime.manager.impl.task")
                 .addPackage("org.jbpm.runtime.manager.impl.tx") 
-                .addClass("org.jbpm.runtime.manager.util.CDITestHelper") // test utilities
-                .addPackage("org.jbpm.services.task.wih")                
+                .addClass("org.jbpm.runtime.manager.util.CDITestHelperNoTaskService") // test utilities
+                .addPackage("org.jbpm.services.task.wih")
+                .addPackage("org.jbpm.kie.services.impl.util")
                 .addAsResource("jndi.properties","jndi.properties")
                 .addAsManifestResource("META-INF/persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
@@ -101,68 +96,65 @@ public class MultipleRuntimeManagerTest extends AbstractBaseTest {
     
     @AfterClass
     public static void teardown() {
+
         pds.close();
+    }
+    @After
+    public void close() {
+        singletonManager.close();
+        perRequestManager.close();
+        perProcessInstanceManager.close();
     }
     /*
      * end of initialization code, tests start here
      */
 
     @Inject
-    private RuntimeManagerFactory managerFactory;
+    @Singleton
+    private RuntimeManager singletonManager;
     
     @Inject
-    private EntityManagerFactory emf;
+    @PerRequest
+    private RuntimeManager perRequestManager;
     
     @Inject
-    private BeanManager beanManager;
+    @PerProcessInstance
+    private RuntimeManager perProcessInstanceManager;
     
     @Test
-    public void testAllManagersManager() {
-        assertNotNull(managerFactory);
+    public void testSingleSingletonManager() {
+        assertNotNull(singletonManager);
         
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
-    			.newDefaultBuilder()
-                .entityManagerFactory(emf)
-                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
-                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
-                .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, null))
-                .get();
-        
-        RuntimeManager manager = managerFactory.newSingletonRuntimeManager(environment);
-        testProcessStartOnManager(manager, EmptyContext.get());
-        manager.close();
-        
-        environment = RuntimeEnvironmentBuilder.Factory.get()
-    			.newDefaultBuilder()
-                .entityManagerFactory(emf)
-                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
-                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
-                .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, null))
-                .get();
-        
-        manager = managerFactory.newPerRequestRuntimeManager(environment);
-        testProcessStartOnManager(manager, EmptyContext.get());
-        manager.close();
-        
-        environment = RuntimeEnvironmentBuilder.Factory.get()
-    			.newDefaultBuilder()
-                .entityManagerFactory(emf)
-                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
-                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
-                .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, null))
-                .get();
-        
-        manager = managerFactory.newPerProcessInstanceRuntimeManager(environment);
-        testProcessStartOnManager(manager, ProcessInstanceIdContext.get());
-        manager.close();
-    }    
-    
-    
-    private void testProcessStartOnManager(RuntimeManager manager, Context<?> context) {
-        assertNotNull(manager);
-        
-        RuntimeEngine runtime = manager.getRuntimeEngine(context);
+        RuntimeEngine runtime = singletonManager.getRuntimeEngine(EmptyContext.get());
         assertNotNull(runtime);
+        testProcessStartOnManager(runtime);
+        
+        singletonManager.disposeRuntimeEngine(runtime);     
+    }
+    
+    @Test
+    public void testSinglePerRequestManager() {
+        assertNotNull(perRequestManager);
+        
+        RuntimeEngine runtime = perRequestManager.getRuntimeEngine(EmptyContext.get());
+        assertNotNull(runtime);
+        testProcessStartOnManager(runtime);   
+        perRequestManager.disposeRuntimeEngine(runtime);
+    }
+    
+    @Test
+    public void testSinglePerProcessInstanceManager() {
+        assertNotNull(perProcessInstanceManager);
+        
+        RuntimeEngine runtime = perProcessInstanceManager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        assertNotNull(runtime);
+        testProcessStartOnManager(runtime);  
+        perProcessInstanceManager.disposeRuntimeEngine(runtime);
+    }
+    
+    
+    private void testProcessStartOnManager(RuntimeEngine runtime) {
+        
         
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);

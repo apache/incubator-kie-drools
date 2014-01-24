@@ -20,10 +20,10 @@ import java.util.List;
 
 import org.jbpm.services.task.impl.model.BAMTaskSummaryImpl;
 import org.jbpm.services.task.utils.ClassUtil;
+import org.kie.api.task.TaskEvent;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
-import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.task.api.TaskEvent;
+import org.kie.internal.task.api.TaskContext;
 import org.kie.internal.task.api.TaskPersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -219,7 +219,7 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
     protected BAMTaskSummaryImpl createOrUpdateTask(TaskEvent event, Status newStatus, BAMTaskWorker worker) {
         BAMTaskSummaryImpl result = null;
         Task ti = event.getTask();
-        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
+        TaskPersistenceContext persistenceContext = ((TaskContext)event.getTaskContext()).getPersistenceContext();
 
         if (ti == null) {
             logger.error("The task instance does not exist.");

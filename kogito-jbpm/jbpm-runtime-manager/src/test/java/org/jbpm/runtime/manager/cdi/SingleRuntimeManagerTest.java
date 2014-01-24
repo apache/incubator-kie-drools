@@ -73,7 +73,7 @@ public class SingleRuntimeManagerTest extends AbstractBaseTest {
                 .addPackage("org.jbpm.runtime.manager.mapper")
                 .addPackage("org.jbpm.runtime.manager.impl.task")
                 .addPackage("org.jbpm.runtime.manager.impl.tx") 
-                .addPackage("org.jbpm.runtime.manager.util") // test utilities
+                .addClass("org.jbpm.runtime.manager.util.CDITestHelper") // test utilities
                 .addPackage("org.jbpm.services.task.wih")
                 .addPackage("org.jbpm.kie.services.impl.util")
                 .addAsResource("jndi.properties","jndi.properties")

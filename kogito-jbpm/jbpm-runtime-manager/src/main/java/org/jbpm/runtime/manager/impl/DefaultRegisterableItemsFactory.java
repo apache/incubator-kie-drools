@@ -26,6 +26,7 @@ import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.process.audit.event.DefaultAuditEventBuilderImpl;
 import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
+import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
 import org.jbpm.services.task.wih.ExternalTaskEventListener;
 import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
 import org.kie.api.event.process.ProcessEventListener;
@@ -33,6 +34,7 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.DisposeListener;
 import org.kie.internal.task.api.EventService;
@@ -100,7 +102,17 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
     }
 
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
+	public List<TaskLifeCycleEventListener> getTaskListeners() {
+    	List<TaskLifeCycleEventListener> defaultListeners = new ArrayList<TaskLifeCycleEventListener>();
+        defaultListeners.add(new JPATaskLifeCycleEventListener());
+        // add any custom listeners
+        defaultListeners.addAll(super.getTaskListeners());
+        return defaultListeners;
+	}
+
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     protected WorkItemHandler getHTWorkItemHandler(RuntimeEngine runtime) {
         
         ExternalTaskEventListener listener = new ExternalTaskEventListener();

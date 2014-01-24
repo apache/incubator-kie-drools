@@ -5,16 +5,24 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.naming.InitialContext;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.transaction.UserTransaction;
 
 import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.ProcessInstanceLog;
+import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
+import org.jbpm.services.task.HumanTaskServiceFactory;
+import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
+import org.jbpm.services.task.events.DefaultTaskEventListener;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
@@ -28,12 +36,16 @@ import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.TaskEvent;
+import org.kie.api.task.TaskLifeCycleEventListener;
+import org.kie.api.task.TaskService;
 import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
+import org.kie.internal.runtime.manager.TaskServiceFactory;
 import org.kie.internal.runtime.manager.context.CorrelationKeyContext;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
@@ -500,5 +512,152 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         	assertEquals("TaskService was not configured", e.getMessage());
         }
         manager.close();
+    }
+    
+    @Test
+    public void testCreationOfSessionWithCustomTaskListener() {
+    	final List<Long> addedTasks = new ArrayList<Long>();
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultInMemoryBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory(){
+
+					@Override
+					public List<TaskLifeCycleEventListener> getTaskListeners() {
+						List<TaskLifeCycleEventListener> listeners = super.getTaskListeners();
+						listeners.add(new DefaultTaskEventListener(){
+
+							@Override
+							public void afterTaskAddedEvent(TaskEvent event) {
+								addedTasks.add(event.getTask().getId());
+							}
+							
+						});
+						return listeners;
+					}
+                	
+                	
+                })
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);
+        assertNotNull(manager);
+       
+        // ksession for process instance #1
+        // since there is no process instance yet we need to get new session
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        KieSession ksession = runtime.getKieSession();
+
+        assertNotNull(ksession);       
+        int ksession1Id = ksession.getId();
+        assertTrue(ksession1Id == 1);
+        
+        // FIXME quick hack to overcome problems with same pi ids when not using persistence
+        ksession.startProcess("ScriptTask");
+        
+        // ksession for process instance #2
+        // since there is no process instance yet we need to get new session
+        RuntimeEngine runtime2 = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        KieSession ksession2 = runtime2.getKieSession();
+
+        assertNotNull(ksession2);       
+        int ksession2Id = ksession2.getId();
+        assertTrue(ksession2Id == 2);
+        
+        ProcessInstance pi1 = ksession.startProcess("UserTask");
+        
+        ProcessInstance pi2 = ksession2.startProcess("UserTask");
+        
+        // both processes started 
+        assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
+        assertEquals(ProcessInstance.STATE_ACTIVE, pi2.getState());
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
+        ksession = runtime.getKieSession();
+        assertEquals(ksession1Id, ksession.getId());
+        
+        runtime2 = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi2.getId()));
+        ksession2 = runtime2.getKieSession();
+        assertEquals(ksession2Id, ksession2.getId());
+        
+        assertEquals(2,  addedTasks.size());
+        manager.close();
+    }
+    
+    @Test
+    public void testCreationOfSessionCustomTaskServiceFactory() {
+    	final AtomicBoolean customTaskServiceUsed = new AtomicBoolean(false);
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultInMemoryBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
+                .addEnvironmentEntry("org.kie.internal.runtime.manager.TaskServiceFactory", new TaskServiceFactory() {
+                	private EntityManagerFactory emf;
+                	public EntityManagerFactory produceEntityManagerFactory() {
+                        if (this.emf == null) {
+                            this.emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa"); 
+                        }
+                        
+                        return this.emf;
+                    }
+					@Override
+					public TaskService newTaskService() {
+						customTaskServiceUsed.set(true);
+						return HumanTaskServiceFactory.newTaskServiceConfigurator()
+								.entityManagerFactory(produceEntityManagerFactory())
+								.listener(new JPATaskLifeCycleEventListener())
+								.getTaskService();
+					}
+
+					@Override
+					public void close() {						
+					}
+                	
+                })
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);
+        assertNotNull(manager);
+       
+        // ksession for process instance #1
+        // since there is no process instance yet we need to get new session
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        KieSession ksession = runtime.getKieSession();
+
+        assertNotNull(ksession);       
+        int ksession1Id = ksession.getId();
+        assertTrue(ksession1Id == 1);
+        
+        // FIXME quick hack to overcome problems with same pi ids when not using persistence
+        ksession.startProcess("ScriptTask");
+        
+        // ksession for process instance #2
+        // since there is no process instance yet we need to get new session
+        RuntimeEngine runtime2 = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        KieSession ksession2 = runtime2.getKieSession();
+
+        assertNotNull(ksession2);       
+        int ksession2Id = ksession2.getId();
+        assertTrue(ksession2Id == 2);
+        
+        ProcessInstance pi1 = ksession.startProcess("UserTask");
+        
+        ProcessInstance pi2 = ksession2.startProcess("UserTask");
+        
+        // both processes started 
+        assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
+        assertEquals(ProcessInstance.STATE_ACTIVE, pi2.getState());
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
+        ksession = runtime.getKieSession();
+        assertEquals(ksession1Id, ksession.getId());
+        
+        runtime2 = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi2.getId()));
+        ksession2 = runtime2.getKieSession();
+        assertEquals(ksession2Id, ksession2.getId());
+        manager.close();
+        // check if our custom task service factory was used
+        assertTrue(customTaskServiceUsed.get());
     }
 }

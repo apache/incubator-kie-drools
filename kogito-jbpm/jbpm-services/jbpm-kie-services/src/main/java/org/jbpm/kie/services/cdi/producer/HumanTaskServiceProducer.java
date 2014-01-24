@@ -1,5 +1,6 @@
 package org.jbpm.kie.services.cdi.producer;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
@@ -16,9 +17,32 @@ import org.kie.internal.task.api.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * CDI producer for <code>TaskService</code> instances. By default it runs in new mode, 
+ * meaning new <code>TaskService</code> instance for every injection point.
+ * This behavior can be altered by setting <code>org.jbpm.cdi.taskservice.mode</code> system 
+ * property to one of the values.
+ * <ul>
+ * 	<li>none - disables producer to not return TaskService instances</li>
+ * 	<li>singleton - produces only one instance of TaskService that will be shared</li>
+ * 	<li>new - produces new instance for every injection point</li>
+ * </ul>
+ * This bean accept following injections:
+ * <ul>
+ * 	<li>UserGroupCallback</li>
+ * 	<li>UserInfo</li>
+ * 	<li>TaskLifeCycleEventListener</li>
+ * </ul>
+ * all of these are optional injections and if not available defaults will be used. Underneath it uses
+ * <code>HumanTaskConfigurator</code> for <code>TaskService</code> instances creations.
+ * 
+ * @see HumanTaskConfigurator
+ */
+@ApplicationScoped
 public class HumanTaskServiceProducer {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HumanTaskServiceProducer.class);
+	final String mode = System.getProperty("org.jbpm.cdi.taskservice.mode", "new");
 	
 	@Inject
 	private Instance<UserGroupCallback> userGroupCallback;
@@ -35,6 +59,9 @@ public class HumanTaskServiceProducer {
 	
 	@Produces
 	public CommandBasedTaskService produceTaskService(EntityManagerFactory emf) {
+		if (mode.equalsIgnoreCase("none")) {
+			return null;
+		}
 		if (taskService == null) {
 			HumanTaskConfigurator configurator = HumanTaskServiceFactory.newTaskServiceConfigurator()
 					.entityManagerFactory(emf)
@@ -49,8 +76,11 @@ public class HumanTaskServiceProducer {
 			} catch (Exception e) {
 				logger.warn("Cannot add listeners to task service due to {}", e.getMessage());
 			}
-			
-			this.taskService = (CommandBasedTaskService) configurator.getTaskService();	
+			if (mode.equalsIgnoreCase("singleton")) {
+				this.taskService = (CommandBasedTaskService) configurator.getTaskService();
+			} else {
+				return (CommandBasedTaskService) configurator.getTaskService();
+			}
 		}
 		
 		return (CommandBasedTaskService)taskService;

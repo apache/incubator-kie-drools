@@ -1,0 +1,14 @@
+package defaultPackge
+
+import java.util.List;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
+
+global List list;
+
+rule "Your First Rule Global" ruleflow-group "MyRuleFlow"
+    when
+        WorkflowProcessInstance()
+    then
+        System.out.println("Hello");
+		list.add("rule fired");
+end

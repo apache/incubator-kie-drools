@@ -81,17 +81,25 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
             runtime.getKieSession().getWorkItemManager().registerWorkItemHandler(entry.getKey(), entry.getValue());
         }
         
+        // register globals
+        Map<String, Object> globals = factory.getGlobals(runtime);
+        for (Entry<String, Object> entry : globals.entrySet()) {
+            runtime.getKieSession().setGlobal(entry.getKey(), entry.getValue());
+        }
+        
         // process listeners
         List<ProcessEventListener> processListeners = factory.getProcessEventListeners(runtime);
         for (ProcessEventListener listener : processListeners) {
             runtime.getKieSession().addEventListener(listener);
         }
         
+        // agenda listeners
         List<AgendaEventListener> agendaListeners = factory.getAgendaEventListeners(runtime);
         for (AgendaEventListener listener : agendaListeners) {
             runtime.getKieSession().addEventListener(listener);
         }
         
+        // working memory listeners
         List<RuleRuntimeEventListener> wmListeners = factory.getRuleRuntimeEventListeners(runtime);
         for (RuleRuntimeEventListener listener : wmListeners) {
             runtime.getKieSession().addEventListener(listener);

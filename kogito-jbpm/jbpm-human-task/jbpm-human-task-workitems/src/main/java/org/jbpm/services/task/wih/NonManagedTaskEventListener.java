@@ -6,11 +6,11 @@ import java.util.Map;
 import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.task.TaskEvent;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
-import org.kie.internal.task.api.TaskEvent;
 
 public class NonManagedTaskEventListener implements TaskLifeCycleEventListener {
 

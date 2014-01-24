@@ -18,9 +18,11 @@ package org.jbpm.runtime.manager.impl.factory;
 import javax.persistence.EntityManagerFactory;
 
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
+import org.jbpm.services.task.HumanTaskConfigurator;
 import org.jbpm.services.task.HumanTaskServiceFactory;
-import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
+import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.api.task.TaskService;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
 
@@ -49,13 +51,18 @@ public class LocalTaskServiceFactory implements TaskServiceFactory {
     	
         EntityManagerFactory emf = ((SimpleRuntimeEnvironment)runtimeEnvironment).getEmf();
         if (emf != null) {
-            
-            TaskService internalTaskService = HumanTaskServiceFactory.newTaskServiceConfigurator()
-    		.environment(runtimeEnvironment.getEnvironment())
-    		.entityManagerFactory(emf)
-            .listener(new JPATaskLifeCycleEventListener())                     
-            .userGroupCallback(runtimeEnvironment.getUserGroupCallback())
-            .getTaskService();
+        	
+        	HumanTaskConfigurator configurator = HumanTaskServiceFactory.newTaskServiceConfigurator()
+            		.environment(runtimeEnvironment.getEnvironment())
+            		.entityManagerFactory(emf)                     
+                    .userGroupCallback(runtimeEnvironment.getUserGroupCallback());
+        	// register task listeners if any
+        	RegisterableItemsFactory itemsFactory = runtimeEnvironment.getRegisterableItemsFactory();
+        	for (TaskLifeCycleEventListener taskListener : itemsFactory.getTaskListeners()) {
+        		configurator.listener(taskListener);
+        	}
+        	
+            TaskService internalTaskService = configurator.getTaskService();
                                   
             return internalTaskService;
         } else {

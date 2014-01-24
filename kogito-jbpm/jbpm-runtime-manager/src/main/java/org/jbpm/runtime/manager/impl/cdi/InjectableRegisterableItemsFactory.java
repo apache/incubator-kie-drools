@@ -36,6 +36,7 @@ import org.drools.core.util.StringUtils;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
 import org.jbpm.runtime.manager.api.EventListenerProducer;
+import org.jbpm.runtime.manager.api.GlobalProducer;
 import org.jbpm.runtime.manager.api.WorkItemHandlerProducer;
 import org.jbpm.runtime.manager.api.qualifiers.Agenda;
 import org.jbpm.runtime.manager.api.qualifiers.Process;
@@ -87,6 +88,9 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
     private static final Logger logger = LoggerFactory.getLogger(InjectableRegisterableItemsFactory.class);
     
     // optional injections
+    @Inject
+    @Any
+    private Instance<GlobalProducer> globalProducer; 
     @Inject
     @Any
     private Instance<WorkItemHandlerProducer> workItemHandlerProducer;  
@@ -208,9 +212,37 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         }
         
         return defaultListeners;
-    }
+    }        
     
-    /**
+    @Override
+	public Map<String, Object> getGlobals(RuntimeEngine runtime) {    	
+    	Map<String, Object> globals = new HashMap<String, Object>();
+        
+        RuntimeManager manager = ((RuntimeEngineImpl)runtime).getManager();
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("ksession", runtime.getKieSession());
+        parameters.put("taskService", runtime.getTaskService());
+        parameters.put("runtimeManager", manager);
+        try {
+            parameters.put("executorService", executorService.get());
+        } catch (Exception e) {
+            logger.debug("Executor service not available due to {}", e.getMessage());
+        }
+        
+        try {
+            for (GlobalProducer producer : globalProducer) {
+                globals.putAll(producer.getGlobals(manager.getIdentifier(), parameters));
+            }
+        } catch (Exception e) {
+            // do nothing as work item handler is considered optional
+            logger.warn("Exception while evalutating globals prodcuers {}", e.getMessage());
+        }
+        
+        return globals;
+	}
+
+
+	/**
      * Allows to create instance of this class dynamically via <code>BeanManager</code>. This is useful in case multiple 
      * independent instances are required on runtime and that need cannot be satisfied with regular CDI practices.
      * @param beanManager - bean manager instance of the container

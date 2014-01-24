@@ -1,7 +1,7 @@
 package org.jbpm.services.task.events;
 
 import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
-import org.kie.internal.task.api.TaskEvent;
+import org.kie.api.task.TaskEvent;
 
 public class DefaultTaskEventListener implements TaskLifeCycleEventListener {
 

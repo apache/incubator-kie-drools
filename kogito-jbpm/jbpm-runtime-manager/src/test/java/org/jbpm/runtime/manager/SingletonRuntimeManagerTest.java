@@ -6,14 +6,18 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
+import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
+import org.jbpm.services.task.events.DefaultTaskEventListener;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
@@ -28,6 +32,8 @@ import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.TaskEvent;
+import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
@@ -504,5 +510,66 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         manager.disposeRuntimeEngine(runtime);
         // close manager which will close session maintained by the manager
         manager.close();
+    }
+    
+    @Test
+    public void testBusinessRuleTaskWithGlobal() {
+    	final List<String> list = new ArrayList<String>();
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-BusinessRuleTask.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-BusinessRuleTaskWithGlobal.drl"), ResourceType.DRL)
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory(){
+
+					@Override
+					public Map<String, Object> getGlobals(RuntimeEngine runtime) {
+						Map<String, Object> globals = super.getGlobals(runtime);
+						globals.put("list", list);
+						return globals;
+					}
+					
+                })
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);       
+        
+        int sessionId = ksession.getId();
+        assertTrue(sessionId == 1);
+        
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
+        ksession = runtime.getKieSession();        
+        assertEquals(sessionId, ksession.getId());
+        
+        // start process
+        ProcessInstance pi = ksession.createProcessInstance("BPMN2-BusinessRuleTask", null);
+        ksession.insert(pi);
+        
+        ksession.startProcessInstance(pi.getId());
+        
+        assertNull(ksession.getProcessInstance(pi.getId()));
+        
+        // dispose session that should not have affect on the session at all
+        manager.disposeRuntimeEngine(runtime);
+        
+        assertEquals(1, list.size());
+        
+        // close manager which will close session maintained by the manager
+        manager.close();
+        AuditLogService logService = new JPAAuditLogService(environment.getEnvironment());
+        
+        List<ProcessInstanceLog> logs = logService.findActiveProcessInstances("BPMN2-BusinessRuleTask");
+        assertNotNull(logs);
+        assertEquals(0, logs.size());
+        
+        logs = logService.findProcessInstances("BPMN2-BusinessRuleTask");
+        assertNotNull(logs);
+        assertEquals(1, logs.size());
+        
+        logService.dispose();
     }
 }

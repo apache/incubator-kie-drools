@@ -7,8 +7,9 @@ package org.jbpm.services.task.audit;
 import java.util.Date;
 
 import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
+import org.kie.api.task.TaskEvent;
 import org.kie.api.task.model.Task;
-import org.kie.internal.task.api.TaskEvent;
+import org.kie.internal.task.api.TaskContext;
 import org.kie.internal.task.api.TaskPersistenceContext;
 
 /**
@@ -24,7 +25,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
     public void afterTaskStartedEvent(TaskEvent event) {
         String userId = "";
         Task ti = event.getTask();
-        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
+        TaskPersistenceContext persistenceContext = ((TaskContext)event.getTaskContext()).getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
@@ -35,7 +36,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
     public void afterTaskActivatedEvent(TaskEvent event) {
         String userId = "";
         Task ti = event.getTask();
-        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
+        TaskPersistenceContext persistenceContext = ((TaskContext)event.getTaskContext()).getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
@@ -46,7 +47,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
     public void afterTaskClaimedEvent(TaskEvent event) {
         String userId = "";
         Task ti = event.getTask();
-        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
+        TaskPersistenceContext persistenceContext = ((TaskContext)event.getTaskContext()).getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
@@ -57,7 +58,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
     public void afterTaskSkippedEvent(TaskEvent event) {
         String userId = "";
         Task ti = event.getTask();
-        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
+        TaskPersistenceContext persistenceContext = ((TaskContext)event.getTaskContext()).getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
@@ -68,7 +69,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
     public void afterTaskStoppedEvent(TaskEvent event ) {
         String userId = "";
         Task ti = event.getTask();
-        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
+        TaskPersistenceContext persistenceContext = ((TaskContext)event.getTaskContext()).getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
@@ -79,7 +80,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
     public void afterTaskCompletedEvent(TaskEvent event) {
         String userId = "";
         Task ti = event.getTask();
-        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
+        TaskPersistenceContext persistenceContext = ((TaskContext)event.getTaskContext()).getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
@@ -90,7 +91,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
     public void afterTaskFailedEvent(TaskEvent event) {
         String userId = "";
         Task ti = event.getTask();
-        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
+        TaskPersistenceContext persistenceContext = ((TaskContext)event.getTaskContext()).getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
@@ -101,7 +102,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
     public void afterTaskAddedEvent(TaskEvent event) {
         String userId = "";
         Task ti = event.getTask();
-        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
+        TaskPersistenceContext persistenceContext = ((TaskContext)event.getTaskContext()).getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
@@ -113,7 +114,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
     public void afterTaskExitedEvent(TaskEvent event) {
         String userId = "";
         Task ti = event.getTask();
-        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
+        TaskPersistenceContext persistenceContext = ((TaskContext)event.getTaskContext()).getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
@@ -124,7 +125,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
     public void afterTaskReleasedEvent(TaskEvent event) {
         String userId = "";
         Task ti = event.getTask();
-        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
+        TaskPersistenceContext persistenceContext = ((TaskContext)event.getTaskContext()).getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
@@ -135,7 +136,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
     public void afterTaskResumedEvent(TaskEvent event) {
         String userId = "";
         Task ti = event.getTask();
-        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
+        TaskPersistenceContext persistenceContext = ((TaskContext)event.getTaskContext()).getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
@@ -146,7 +147,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
     public void afterTaskSuspendedEvent(TaskEvent event) {
         String userId = "";
         Task ti = event.getTask();
-        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
+        TaskPersistenceContext persistenceContext = ((TaskContext)event.getTaskContext()).getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
@@ -157,7 +158,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
     public void afterTaskForwardedEvent(TaskEvent event) {
         String userId = "";
         Task ti = event.getTask();
-        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
+        TaskPersistenceContext persistenceContext = ((TaskContext)event.getTaskContext()).getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
@@ -168,7 +169,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
     public void afterTaskDelegatedEvent(TaskEvent event) {
         String userId = "";
         Task ti = event.getTask();
-        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
+        TaskPersistenceContext persistenceContext = ((TaskContext)event.getTaskContext()).getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }

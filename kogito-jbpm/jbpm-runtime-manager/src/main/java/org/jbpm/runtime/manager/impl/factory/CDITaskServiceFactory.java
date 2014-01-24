@@ -16,6 +16,7 @@
 package org.jbpm.runtime.manager.impl.factory;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.kie.api.task.TaskService;
@@ -30,11 +31,11 @@ import org.kie.internal.runtime.manager.TaskServiceFactory;
 public class CDITaskServiceFactory implements TaskServiceFactory {
 
     @Inject
-    private TaskService taskService;
+    private Instance<TaskService> taskService;    
     
     @Override
     public TaskService newTaskService() {
-        return taskService;
+        return taskService.get();
     }
 
     @Override

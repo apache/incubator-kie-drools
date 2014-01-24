@@ -39,12 +39,12 @@ import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.api.task.TaskEvent;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.task.api.EventService;
-import org.kie.internal.task.api.TaskEvent;
 import org.kie.internal.task.api.model.AccessType;
 import org.kie.internal.task.api.model.InternalTaskData;
 

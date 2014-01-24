@@ -117,9 +117,17 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
     }
 
     protected TaskServiceFactory getTaskServiceFactory(RuntimeEnvironment environment) {
-        TaskServiceFactory taskServiceFactory = null;
+    	
+    	// if there is an implementation of TaskServiceFactory in the environment then use it
+        TaskServiceFactory taskServiceFactory = (TaskServiceFactory) ((SimpleRuntimeEnvironment)environment).getEnvironmentTemplate()
+        											.get("org.kie.internal.runtime.manager.TaskServiceFactory");
+        if (taskServiceFactory != null) {
+        	return taskServiceFactory;
+        }
         try {
             taskServiceFactory = taskServiceFactoryInjected.get();
+            // since this is CDI let's make sure it has all dependencies met
+            taskServiceFactory.newTaskService().toString();
         } catch (Exception e) {
             taskServiceFactory = new LocalTaskServiceFactory(environment);
         }
