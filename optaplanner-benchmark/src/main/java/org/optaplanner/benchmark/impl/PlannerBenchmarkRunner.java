@@ -17,7 +17,6 @@
 package org.optaplanner.benchmark.impl;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,7 +27,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.drools.core.util.StringUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkException;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -110,7 +108,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         }
         // benchmarkDirectory usually already exists
         benchmarkDirectory.mkdirs();
-        benchmarkReport.initBenchmarkReportDirectoryInBenchmarkDirectory(benchmarkDirectory);
+        plannerBenchmarkResult.initBenchmarkReportDirectory(benchmarkDirectory);
     }
 
     private void warmUp() {
@@ -188,7 +186,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                     + notExecutedBenchmarkList + ").");
         }
         plannerBenchmarkResult.setBenchmarkTimeMillisSpend(calculateTimeMillisSpend());
-        benchmarkResultIO.writePlannerBenchmarkResult(benchmarkReport.getBenchmarkReportDirectory(),
+        benchmarkResultIO.writePlannerBenchmarkResult(plannerBenchmarkResult.getBenchmarkReportDirectory(),
                 plannerBenchmarkResult);
         benchmarkReport.writeReport();
         if (plannerBenchmarkResult.getFailureCount() == 0) {

@@ -41,8 +41,6 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
     protected final SingleBenchmarkResult singleBenchmarkResult;
     protected final StatisticType statisticType;
 
-    protected File csvFile = null;
-
     protected SingleStatistic(SingleBenchmarkResult singleBenchmarkResult, StatisticType statisticType) {
         this.singleBenchmarkResult = singleBenchmarkResult;
         this.statisticType = statisticType;
@@ -55,17 +53,17 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
     public abstract List<P> getPointList();
     public abstract void setPointList(List<P> pointList);
 
+    public String getCsvFilePath() {
+        return singleBenchmarkResult.getSingleReportDirectoryPath() + "/" + statisticType.name() + ".csv";
+    }
+
     public File getCsvFile() {
-        return csvFile;
+        return new File(singleBenchmarkResult.getBenchmarkReportDirectory(), getCsvFilePath());
     }
 
     // ************************************************************************
     // Lifecycle methods
     // ************************************************************************
-
-    public void initSubdirs(File singleReportDirectory) {
-        csvFile = new File(singleReportDirectory, statisticType.name() + ".csv");
-    }
 
     public abstract void open(Solver solver);
 
@@ -78,6 +76,7 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
     protected abstract String getCsvHeader();
 
     public void writeCsvStatisticFile() {
+        File csvFile = getCsvFile();
         Writer writer = null;
         try {
             writer = new OutputStreamWriter(new FileOutputStream(csvFile), "UTF-8");
@@ -96,6 +95,7 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
     }
 
     public void readCsvStatisticFile() {
+        File csvFile = getCsvFile();
         ScoreDefinition scoreDefinition = singleBenchmarkResult.getSolverBenchmarkResult().getSolverConfig()
                 .getScoreDirectorFactoryConfig().buildScoreDefinition();
         List<P> pointList = getPointList();

@@ -16,11 +16,12 @@
 
 package org.optaplanner.benchmark.impl.result;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,7 +31,9 @@ import java.util.TreeMap;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.collections.comparators.ReverseComparator;
+import org.drools.core.util.StringUtils;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
@@ -44,6 +47,8 @@ public class PlannerBenchmarkResult {
 
     private String name;
     private Boolean aggregation;
+    @XStreamOmitField // Moving or renaming a report directory after creation is allowed
+    private File benchmarkReportDirectory;
 
     // If it is an aggregation, many properties can stay null
 
@@ -81,6 +86,14 @@ public class PlannerBenchmarkResult {
 
     public void setAggregation(Boolean aggregation) {
         this.aggregation = aggregation;
+    }
+
+    public File getBenchmarkReportDirectory() {
+        return benchmarkReportDirectory;
+    }
+
+    public void setBenchmarkReportDirectory(File benchmarkReportDirectory) {
+        this.benchmarkReportDirectory = benchmarkReportDirectory;
     }
 
     public Integer getParallelBenchmarkCount() {
@@ -162,6 +175,22 @@ public class PlannerBenchmarkResult {
     // ************************************************************************
     // Accumulate methods
     // ************************************************************************
+
+    public void initBenchmarkReportDirectory(File benchmarkDirectory) {
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(startingTimestamp);
+        if (StringUtils.isEmpty(name)) {
+            name = timestamp;
+        }
+        benchmarkReportDirectory = new File(benchmarkDirectory, timestamp);
+        boolean benchmarkReportDirectoryAdded = benchmarkReportDirectory.mkdirs();
+        if (!benchmarkReportDirectoryAdded) {
+            throw new IllegalArgumentException("The benchmarkReportDirectory (" + benchmarkReportDirectory
+                    + ") creation failed. It probably already exists.");
+        }
+        for (ProblemBenchmarkResult problemBenchmarkResult : unifiedProblemBenchmarkResultList) {
+            problemBenchmarkResult.makeDirs(benchmarkReportDirectory);
+        }
+    }
 
     public void accumulateResults(BenchmarkReport benchmarkReport) {
         for (ProblemBenchmarkResult problemBenchmarkResult : unifiedProblemBenchmarkResultList) {

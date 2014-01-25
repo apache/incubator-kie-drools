@@ -45,8 +45,6 @@ public class SingleBenchmarkResult {
     @XStreamOmitField // Lazily restored when read through ProblemStatistic and CSV files
     private Map<StatisticType, SingleStatistic> singleStatisticMap;
 
-    private File singleReportDirectory = null;
-
     private Integer planningEntityCount = null;
     private Long usedMemoryAfterInputSolution = null;
 
@@ -98,10 +96,6 @@ public class SingleBenchmarkResult {
 
     public Map<StatisticType, SingleStatistic> getSingleStatisticMap() {
         return singleStatisticMap;
-    }
-
-    public File getSingleReportDirectory() {
-        return singleReportDirectory;
     }
 
     public Integer getPlanningEntityCount() {
@@ -187,6 +181,10 @@ public class SingleBenchmarkResult {
         return problemBenchmarkResult.getName() + "_" + solverBenchmarkResult.getName();
     }
 
+    public File getBenchmarkReportDirectory() {
+        return problemBenchmarkResult.getBenchmarkReportDirectory();
+    }
+
     public boolean isSuccess() {
         return succeeded != null && succeeded.booleanValue();
     }
@@ -224,12 +222,17 @@ public class SingleBenchmarkResult {
     // Accumulate methods
     // ************************************************************************
 
-    public void initSubdirs(File problemReportDirectory) {
-        singleReportDirectory = new File(problemReportDirectory, solverBenchmarkResult.getName());
+    public String getSingleReportDirectoryPath() {
+        return problemBenchmarkResult.getProblemReportDirectoryPath() + "/" + solverBenchmarkResult.getName();
+    }
+
+    public File getSingleReportDirectory() {
+        return new File(getBenchmarkReportDirectory(), getSingleReportDirectoryPath());
+    }
+
+    public void makeDirs(File problemReportDirectory) {
+        File singleReportDirectory = getSingleReportDirectory();
         singleReportDirectory.mkdirs();
-        for (SingleStatistic singleStatistic : singleStatisticMap.values()) {
-            singleStatistic.initSubdirs(singleReportDirectory);
-        }
     }
 
     public void accumulateResults(BenchmarkReport benchmarkReport) {

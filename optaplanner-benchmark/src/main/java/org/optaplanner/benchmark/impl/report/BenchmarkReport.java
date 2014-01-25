@@ -69,26 +69,25 @@ public class BenchmarkReport {
 
     public static final int CHARTED_SCORE_LEVEL_SIZE = 5;
 
-    protected final PlannerBenchmarkResult plannerBenchmarkResult;
+    private final PlannerBenchmarkResult plannerBenchmarkResult;
 
-    protected File benchmarkReportDirectory = null;
-    protected Locale locale = null;
-    protected Comparator<SolverBenchmarkResult> solverRankingComparator = null;
-    protected SolverRankingWeightFactory solverRankingWeightFactory = null;
-    protected File summaryDirectory = null;
-    protected List<File> bestScoreSummaryChartFileList = null;
-    protected List<File> bestScoreScalabilitySummaryChartFileList = null;
-    protected List<File> winningScoreDifferenceSummaryChartFileList = null;
-    protected List<File> worstScoreDifferencePercentageSummaryChartFileList = null;
-    protected File averageCalculateCountSummaryChartFile = null;
-    protected File timeSpendSummaryChartFile = null;
-    protected File timeSpendScalabilitySummaryChartFile = null;
-    protected List<File> bestScorePerTimeSpendSummaryChartFileList = null;
+    private Locale locale = null;
+    private Comparator<SolverBenchmarkResult> solverRankingComparator = null;
+    private SolverRankingWeightFactory solverRankingWeightFactory = null;
+    private File summaryDirectory = null;
+    private List<File> bestScoreSummaryChartFileList = null;
+    private List<File> bestScoreScalabilitySummaryChartFileList = null;
+    private List<File> winningScoreDifferenceSummaryChartFileList = null;
+    private List<File> worstScoreDifferencePercentageSummaryChartFileList = null;
+    private File averageCalculateCountSummaryChartFile = null;
+    private File timeSpendSummaryChartFile = null;
+    private File timeSpendScalabilitySummaryChartFile = null;
+    private List<File> bestScorePerTimeSpendSummaryChartFileList = null;
 
-    protected Integer defaultShownScoreLevelIndex = null;
-    protected List<String> warningList = null;
+    private Integer defaultShownScoreLevelIndex = null;
+    private List<String> warningList = null;
 
-    protected File htmlOverviewFile = null;
+    private File htmlOverviewFile = null;
 
     public BenchmarkReport(PlannerBenchmarkResult plannerBenchmarkResult) {
         this.plannerBenchmarkResult = plannerBenchmarkResult;
@@ -96,14 +95,6 @@ public class BenchmarkReport {
 
     public PlannerBenchmarkResult getPlannerBenchmarkResult() {
         return plannerBenchmarkResult;
-    }
-
-    public File getBenchmarkReportDirectory() {
-        return benchmarkReportDirectory;
-    }
-
-    public void setBenchmarkReportDirectory(File benchmarkReportDirectory) {
-        this.benchmarkReportDirectory = benchmarkReportDirectory;
     }
 
     public Locale getLocale() {
@@ -212,7 +203,7 @@ public class BenchmarkReport {
     }
 
     public String getRelativePathToBenchmarkReportDirectory(File file) {
-        String benchmarkReportDirectoryPath = benchmarkReportDirectory.getAbsolutePath();
+        String benchmarkReportDirectoryPath = plannerBenchmarkResult.getBenchmarkReportDirectory().getAbsolutePath();
         String filePath = file.getAbsolutePath();
         if (!filePath.startsWith(benchmarkReportDirectoryPath)) {
             throw new IllegalArgumentException("The filePath (" + filePath
@@ -229,24 +220,8 @@ public class BenchmarkReport {
     // Write methods
     // ************************************************************************
 
-    public void initBenchmarkReportDirectoryInBenchmarkDirectory(File benchmarkDirectory) {
-        String timestamp = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(plannerBenchmarkResult.getStartingTimestamp());
-        if (StringUtils.isEmpty(plannerBenchmarkResult.getName())) {
-            plannerBenchmarkResult.setName(timestamp);
-        }
-        benchmarkReportDirectory = new File(benchmarkDirectory, timestamp);
-        boolean benchmarkReportDirectoryAdded = benchmarkReportDirectory.mkdirs();
-        if (!benchmarkReportDirectoryAdded) {
-            throw new IllegalArgumentException("The benchmarkReportDirectory (" + benchmarkReportDirectory
-                    + ") creation failed. It probably already exists.");
-        }
-        for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
-            problemBenchmarkResult.initSubdirs(benchmarkReportDirectory);
-        }
-    }
-
     public void writeReport() {
-        summaryDirectory = new File(benchmarkReportDirectory, "summary");
+        summaryDirectory = new File(plannerBenchmarkResult.getBenchmarkReportDirectory(), "summary");
         summaryDirectory.mkdir();
         plannerBenchmarkResult.accumulateResults(this);
         fillWarningList();
@@ -632,6 +607,7 @@ public class BenchmarkReport {
     }
 
     private void writeHtmlOverviewFile() {
+        File benchmarkReportDirectory = plannerBenchmarkResult.getBenchmarkReportDirectory();
         WebsiteResourceUtils.copyResourcesTo(benchmarkReportDirectory);
 
         htmlOverviewFile = new File(benchmarkReportDirectory, "index.html");

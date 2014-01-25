@@ -103,6 +103,7 @@ public class BenchmarkResultIO {
         } finally {
             IOUtils.closeQuietly(reader);
         }
+        plannerBenchmarkResult.setBenchmarkReportDirectory(plannerBenchmarkResultFile.getParentFile());
         restoreOmittedBidirectionalFields(plannerBenchmarkResult);
         return plannerBenchmarkResult;
     }

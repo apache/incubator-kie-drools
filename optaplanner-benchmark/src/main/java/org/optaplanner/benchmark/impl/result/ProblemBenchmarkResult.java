@@ -62,7 +62,6 @@ public class ProblemBenchmarkResult {
     private boolean writeOutputSolutionEnabled = false;
 
     private File inputSolutionFile = null;
-    private File problemReportDirectory = null;
 
     @XStreamImplicit()
     private List<ProblemStatistic> problemStatisticList = null;
@@ -125,10 +124,6 @@ public class ProblemBenchmarkResult {
         this.inputSolutionFile = inputSolutionFile;
     }
 
-    public File getProblemReportDirectory() {
-        return problemReportDirectory;
-    }
-
     public List<ProblemStatistic> getProblemStatisticList() {
         return problemStatisticList;
     }
@@ -173,6 +168,10 @@ public class ProblemBenchmarkResult {
         return ReportHelper.escapeHtmlId(name);
     }
 
+    public File getBenchmarkReportDirectory() {
+        return plannerBenchmarkResult.getBenchmarkReportDirectory();
+    }
+
     public boolean hasAnyFailure() {
         return failureCount > 0;
     }
@@ -198,11 +197,19 @@ public class ProblemBenchmarkResult {
     // Work methods
     // ************************************************************************
 
-    public void initSubdirs(File benchmarkReportDirectory) {
-        problemReportDirectory = new File(benchmarkReportDirectory, name);
+    public String getProblemReportDirectoryPath() {
+        return name;
+    }
+
+    public File getProblemReportDirectory() {
+        return new File(getBenchmarkReportDirectory(), name);
+    }
+
+    public void makeDirs(File benchmarkReportDirectory) {
+        File problemReportDirectory = getProblemReportDirectory();
         problemReportDirectory.mkdirs();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            singleBenchmarkResult.initSubdirs(problemReportDirectory);
+            singleBenchmarkResult.makeDirs(problemReportDirectory);
         }
     }
 
@@ -238,7 +245,7 @@ public class ProblemBenchmarkResult {
             return;
         }
         String filename = singleBenchmarkResult.getName() + "." + problemIO.getFileExtension();
-        File outputSolutionFile = new File(problemReportDirectory, filename);
+        File outputSolutionFile = new File(getProblemReportDirectory(), filename);
         problemIO.write(outputSolution, outputSolutionFile);
     }
 

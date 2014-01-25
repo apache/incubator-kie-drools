@@ -20,8 +20,6 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
-import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
-import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
@@ -76,16 +74,15 @@ public class BenchmarkAggregator {
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             singleBenchmarkResult.initSingleStatisticMap();
             for (SingleStatistic singleStatistic : singleBenchmarkResult.getSingleStatisticMap().values()) {
-                singleStatistic.initSubdirs(singleBenchmarkResult.getSingleReportDirectory());
                 singleStatistic.readCsvStatisticFile();
             }
         }
         PlannerBenchmarkResult plannerBenchmarkResult
                 = PlannerBenchmarkResult.createMergedResult(singleBenchmarkResultList);
         plannerBenchmarkResult.setStartingTimestamp(startingTimestamp);
+        plannerBenchmarkResult.initBenchmarkReportDirectory(benchmarkDirectory);
 
         BenchmarkReport benchmarkReport = benchmarkReportConfig.buildBenchmarkReport(plannerBenchmarkResult);
-        benchmarkReport.initBenchmarkReportDirectoryInBenchmarkDirectory(benchmarkDirectory);
         plannerBenchmarkResult.accumulateResults(benchmarkReport);
         benchmarkReport.writeReport();
 

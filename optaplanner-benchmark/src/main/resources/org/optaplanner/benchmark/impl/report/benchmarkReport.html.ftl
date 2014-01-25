@@ -484,7 +484,7 @@
                                         <span>CSV files per solver:</span>
                                         <div class="btn-group download-btn-group">
                                         <#list problemStatistic.singleStatisticList as singleStatistic>
-                                            <button class="btn" onclick="window.location.href='${benchmarkReport.getRelativePathToBenchmarkReportDirectory(singleStatistic.csvFile)}'"><i class="icon-download"></i></button>
+                                            <button class="btn" onclick="window.location.href='${singleStatistic.csvFilePath}'"><i class="icon-download"></i></button>
                                         </#list>
                                         </div>
                                     </div>
