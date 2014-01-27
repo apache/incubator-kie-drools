@@ -45,6 +45,7 @@ import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.FieldNature;
 import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.models.datamodel.rule.FreeFormLine;
+import org.drools.workbench.models.datamodel.rule.FromAccumulateCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
@@ -2833,6 +2834,49 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       eflf1.getClassType() );
         assertEquals( DataType.TYPE_NUMERIC,
                       eflf1.getGenericType() );
+    }
+
+    @Test
+    @Ignore("Bug 1052313 - Restrictions on Number that is result of 'accumulate' CE are not shown in GRE when the rule is reopened")
+    public void testFromAccumulate() {
+        String drl = "import java.lang.Number;\n"
+                + "import org.mortgages.Applicant;\n"
+                + "rule \"rule1\"\n"
+                + "when\n"
+                + "  total : Number( intValue > 0 ) from accumulate ( Applicant( age < 30 ), count() )\n"
+                + "then\n"
+                + "end";
+
+        addModelField("java.lang.Number",
+                "intValue",
+                "java.lang.Integer",
+                DataType.TYPE_NUMERIC);
+
+        addModelField("org.mortgages.Applicant",
+                "age",
+                "java.lang.Integer",
+                DataType.TYPE_NUMERIC);
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                dmo);
+
+        assertNotNull(m);
+
+        assertTrue(m.lhs[0] instanceof FromAccumulateCompositeFactPattern);
+
+        FromAccumulateCompositeFactPattern pattern = (FromAccumulateCompositeFactPattern) m.lhs[0];
+        assertNotNull(pattern.getFactPattern());
+        FactPattern factPattern = pattern.getFactPattern();
+        assertNotNull(factPattern.getConstraintList());
+        assertEquals(1, factPattern.getConstraintList().getNumberOfConstraints());
+        FieldConstraint constraint = factPattern.getConstraintList().getConstraint(0);
+        assertTrue(constraint instanceof SingleFieldConstraint);
+        SingleFieldConstraint fieldConstraint = (SingleFieldConstraint) constraint;
+        assertEquals("Number", fieldConstraint.getFactType());
+        assertEquals("intValue", fieldConstraint.getFieldName());
+        assertEquals("Integer", fieldConstraint.getFieldType());
+        assertEquals(">", fieldConstraint.getOperator());
+        assertEquals("0", fieldConstraint.getValue());
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
