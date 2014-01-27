@@ -3205,4 +3205,45 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         assertEquals( Arrays.asList( 178, 178, 178 ), list );
 
     }
+
+
+    @Test
+    public void testQueryWithEvents() {
+        String drl = "global java.util.List list; " +
+                     "" +
+                     "declare Inner\n" +
+                     "  @role(event)\n" +
+                     "end\n" +
+
+                     "rule \"Input\"\n" +
+                     "when\n" +
+                     "then\n" +
+                     "    insert( \"X\" );\n" +
+                     "    insert( new Inner( ) );\n" +
+                     "end\n" +
+                     "\n" +
+                     "query myAgg(  )\n" +
+                     "    Inner(  )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"React\"\n" +
+                     "when\n" +
+                     "    String()\n" +
+                     "    myAgg(  )\n" +
+                     "then\n" +
+                     "    list.add( 42 );\n" +
+                     "end";
+
+        KnowledgeBase knowledgeBase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession knowledgeSession = knowledgeBase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.fireAllRules();
+
+        assertEquals( Arrays.asList( 42 ), list );
+
+    }
+
+
 }
