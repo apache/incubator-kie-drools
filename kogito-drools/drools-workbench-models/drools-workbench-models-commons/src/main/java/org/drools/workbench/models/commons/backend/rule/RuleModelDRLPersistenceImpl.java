@@ -1994,7 +1994,15 @@ public class RuleModelDRLPersistenceImpl
             AccumulateDescr accumulate = (AccumulateDescr) patternSource;
             FromAccumulateCompositeFactPattern fac = new FromAccumulateCompositeFactPattern();
             fac.setSourcePattern( parseBaseDescr( m, accumulate.getInput(), boundParams, dmo ) );
-            fac.setFactPattern( new FactPattern( pattern.getObjectType() ) );
+
+            FactPattern factPattern = new FactPattern( pattern.getObjectType() );
+            parseConstraint( m,
+                             factPattern,
+                             pattern.getConstraint(),
+                             boundParams,
+                             dmo );
+
+            fac.setFactPattern( factPattern );
             for ( AccumulateDescr.AccumulateFunctionCallDescr func : accumulate.getFunctions() ) {
                 String funcName = func.getFunction();
                 boolean first = true;
@@ -2778,7 +2786,7 @@ public class RuleModelDRLPersistenceImpl
             ModelField field = findField( findFields( m, factPattern.getFactType() ),
                                           fieldConstraint.getFieldName() );
 
-            if ( field != null ) {
+            if ( field != null && (fieldConstraint.getFieldType() == null || fieldConstraint.getFieldType().trim().length() == 0) ) {
                 fieldConstraint.setFieldType( field.getType() );
             }
             return fieldConstraint;
