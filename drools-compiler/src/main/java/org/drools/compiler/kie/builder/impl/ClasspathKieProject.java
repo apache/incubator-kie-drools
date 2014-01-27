@@ -176,106 +176,134 @@ public class ClasspathKieProject extends AbstractKieProject {
     }
 
     public static String getPomProperties(String urlPathToAdd) {
+        String pomProperties = null;
         String rootPath = urlPathToAdd;
         if ( rootPath.lastIndexOf( ':' ) > 0 ) {
             rootPath = urlPathToAdd.substring( rootPath.lastIndexOf( ':' ) + 1 );
         }
 
         if ( urlPathToAdd.endsWith( ".jar" ) || urlPathToAdd.endsWith( "/content" ) ) {
-            File actualZipFile = new File( rootPath );
-            if ( !actualZipFile.exists() ) {
-                log.error( "Unable to load pom.properties from" + urlPathToAdd + " as jarPath cannot be found\n" + rootPath );
-            }
-
-            ZipFile zipFile = null;
-
-            try {
-                zipFile = new ZipFile( actualZipFile );
-
-                String file = KieBuilderImpl.findPomProperties( zipFile );
-                if ( file == null ) {
-                    throw new IOException();
+            pomProperties = getPomPropertiesFromZipFile(rootPath);
+        } else {
+            pomProperties = getPomPropertiesFromFileSystem(rootPath);
+            if (pomProperties == null) {
+                int webInf = rootPath.indexOf("/WEB-INF");
+                if (webInf > 0) {
+                    rootPath = rootPath.substring(0, webInf);
+                    pomProperties = getPomPropertiesFromFileSystem(rootPath);
                 }
-                ZipEntry zipEntry = zipFile.getEntry( file );
+            }
+            if (pomProperties == null) {
+                pomProperties = generatePomPropertiesFromPom(rootPath);
+            }
+        }
 
-                String pomProps = StringUtils.readFileAsString( new InputStreamReader( zipFile.getInputStream( zipEntry ) ) ); 
-                log.debug( "Found and used pom.properties " + file);
-                return pomProps;
-            } catch ( Exception e ) {
-                log.error( "Unable to load pom.properties from" + urlPathToAdd + "\n" + e.getMessage() );
-            } finally {
+        if (pomProperties == null) {
+            log.warn( "Unable to load pom.properties from" + urlPathToAdd );
+        }
+        return pomProperties;
+    }
+
+    private static String getPomPropertiesFromZipFile(String rootPath) {
+        File actualZipFile = new File( rootPath );
+        if ( !actualZipFile.exists() ) {
+            log.error( "Unable to load pom.properties from" + rootPath + " as jarPath cannot be found\n" + rootPath );
+        }
+
+        ZipFile zipFile = null;
+
+        try {
+            zipFile = new ZipFile( actualZipFile );
+
+            String file = KieBuilderImpl.findPomProperties( zipFile );
+            if ( file == null ) {
+                log.warn( "Unable to find pom.properties in " + rootPath );
+                return null;
+            }
+            ZipEntry zipEntry = zipFile.getEntry( file );
+
+            String pomProps = StringUtils.readFileAsString( new InputStreamReader( zipFile.getInputStream( zipEntry ) ) );
+            log.debug( "Found and used pom.properties " + file);
+            return pomProps;
+        } catch ( Exception e ) {
+            log.error( "Unable to load pom.properties from " + rootPath + "\n" + e.getMessage() );
+        } finally {
+            try {
+                zipFile.close();
+            } catch ( IOException e ) {
+                log.error( "Error when closing InputStream to " + rootPath + "\n" + e.getMessage() );
+            }
+        }
+        return null;
+    }
+
+    private static String getPomPropertiesFromFileSystem(String rootPath) {
+        FileReader reader = null;
+        try {
+            File file = KieBuilderImpl.findPomProperties( new File( rootPath ) );
+            if ( file == null ) {
+                log.warn( "Unable to find pom.properties in " + rootPath );
+                return null;
+            }
+            reader = new FileReader( file );
+            log.debug( "Found and used pom.properties " + file);
+            return StringUtils.toString( reader );
+        } catch ( Exception e ) {
+            log.warn( "Unable to load pom.properties tried recursing down from " + rootPath + "\n" + e.getMessage() );
+        } finally {
+            if ( reader != null ) {
                 try {
-                    zipFile.close();
+                    reader.close();
                 } catch ( IOException e ) {
-                    log.error( "Error when closing InputStream to " + urlPathToAdd + "\n" + e.getMessage() );
+                    log.error( "Error when closing InputStream to " + rootPath + "\n" + e.getMessage() );
+                }
+            }
+        }
+        return null;
+    }
+
+    private static String generatePomPropertiesFromPom(String rootPath) {
+        // recurse until we reach root or find a pom.xml
+        File file = null;
+        for ( File folder = new File( rootPath ); folder.getParent() != null; folder = new File( folder.getParent() ) ) {
+            file = new File( folder, "pom.xml" );
+            if ( file.exists() ) {
+                break;
+            }
+            file = null;
+        }
+
+        if ( file != null ) {
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream( file ) ;
+                PomModel pomModel = PomModel.Parser.parse( rootPath + "/pom.xml", fis);
+
+                KieBuilderImpl.validatePomModel( pomModel ); // throws an exception if invalid
+
+                ReleaseIdImpl gav = (ReleaseIdImpl) pomModel.getReleaseId();
+
+                String str =  KieBuilderImpl.generatePomProperties( gav );
+                log.info( "Recursed up folders,  found and used pom.xml " + file );
+
+                return str;
+            } catch ( Exception e ) {
+                log.error( "As folder project tried to fall back to pom.xml " + file + "\nbut failed with exception:\n" + e.getMessage() );
+            } finally {
+                if ( fis != null ) {
+                    try {
+                        fis.close();
+                    } catch ( IOException e ) {
+                        log.error( "Error when closing InputStream to " + file + "\n" + e.getMessage() );
+                    }
                 }
             }
         } else {
-            FileReader reader = null;
-            try {
-                File file = KieBuilderImpl.findPomProperties( new File( rootPath ) );
-                if ( file == null ) {
-                    throw new IOException();
-                }
-                reader = new FileReader( file );
-                log.debug( "Found and used pom.properties " + file);
-                return StringUtils.toString( reader );
-            } catch ( Exception e ) {
-                log.warn( "Unable to load pom.properties tried recursing down from" + urlPathToAdd + "\n" + e.getMessage() );
-            } finally {
-                if ( reader != null ) {
-                    try {
-                        reader.close();
-                    } catch ( IOException e ) {
-                        log.error( "Error when closing InputStream to " + urlPathToAdd + "\n" + e.getMessage() );
-                    }
-                }
-            }
-            
-            // recurse until we reach root or find a pom.xml
-            File file = null;
-            for ( File folder = new File( rootPath ); folder.getParent() != null; folder = new File( folder.getParent() ) ) {
-                file = new File( folder, "pom.xml" );
-                if ( file.exists() ) {
-                    break;
-                }
-                file = null;
-            }
-            
-            if ( file != null ) {
-                FileInputStream fis = null;
-                try {
-                    fis = new FileInputStream( file ) ;
-                    PomModel pomModel = PomModel.Parser.parse( rootPath + "/pom.xml", fis);
-                    
-                    KieBuilderImpl.validatePomModel( pomModel ); // throws an exception if invalid
-                    
-                    ReleaseIdImpl gav = (ReleaseIdImpl) pomModel.getReleaseId();
-                    
-                    String str =  KieBuilderImpl.generatePomProperties( gav );
-                    log.info( "Recursed up folders,  found and used pom.xml " + file );
-                    
-                    return str;
-                    
-                } catch ( Exception e ) {
-                    log.error( "As folder project tried to fall back to pom.xml " + file + "\nbut failed with exception:\n" + e.getMessage() );
-                } finally {
-                    if ( fis != null ) {
-                        try {
-                            fis.close();
-                        } catch ( IOException e ) {
-                            log.error( "Error when closing InputStream to " + file + "\n" + e.getMessage() );
-                        }
-                    }
-                }
-            } else {
-                log.warn( "As folder project tried to fall back to pom.xml, but could not find one for " + file );
-            }
+            log.warn( "As folder project tried to fall back to pom.xml, but could not find one for " + file );
         }
-        log.warn( "Unable to load pom.properties from" + urlPathToAdd );
         return null;
     }
-    
+
     public static String fixURLFromKProjectPath(URL url) {
         String urlPath = url.toExternalForm();
 
