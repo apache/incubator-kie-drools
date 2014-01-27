@@ -66,8 +66,8 @@ public class HumanTaskConfigurator {
     private TaskCommandExecutorImpl commandExecutor;
     private Environment environment = EnvironmentFactory.newEnvironment();
 	
-    private UserGroupCallback userGroupCallback = new MvelUserGroupCallbackImpl(true);
-    private UserInfo userInfo = new DefaultUserInfo(true);
+    private UserGroupCallback userGroupCallback;
+    private UserInfo userInfo;
     
     private Set<PriorityInterceptor> insterceptors = new TreeSet<PriorityInterceptor>();
     private Set<TaskLifeCycleEventListener> listeners = new HashSet<TaskLifeCycleEventListener>();
@@ -130,7 +130,13 @@ public class HumanTaskConfigurator {
         if (service == null) {
         	TaskEventSupport taskEventSupport = new TaskEventSupport();
         	this.commandExecutor = new TaskCommandExecutorImpl(this.environment, taskEventSupport);
+        	if (userGroupCallback == null) {
+        		userGroupCallback = new MvelUserGroupCallbackImpl(true);
+        	}
         	environment.set(EnvironmentName.TASK_USER_GROUP_CALLBASK, userGroupCallback);
+        	if (userInfo == null) {
+        		userInfo = new DefaultUserInfo(true);
+        	}
         	environment.set(EnvironmentName.TASK_USER_INFO, userInfo);
         	addDefaultInterceptor();
         	for (PriorityInterceptor pInterceptor : insterceptors) {

@@ -25,7 +25,7 @@ public class CompositeCommand<T> extends TaskCommand<T> {
 	
 	public CompositeCommand(TaskCommand<T> mainCommand, TaskCommand<?>...commands) {
 		this.mainCommand = mainCommand;
-		this.commands = commands;
+		this.commands = commands;		
 	}
 
 	@Override
@@ -55,8 +55,11 @@ public class CompositeCommand<T> extends TaskCommand<T> {
 	}
 
 	@Override
-	public Long getTaskId() {		
-		return mainCommand.getTaskId();
+	public Long getTaskId() {
+		if ( mainCommand != null) {
+			return mainCommand.getTaskId();	
+		}
+		return this.taskId;
 	}
 
 }

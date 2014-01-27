@@ -218,6 +218,7 @@ public abstract class AbstractSerializationTest {
     	assertNotNull(returned);
     	assertNotNull(returned.getMainCommand());
     	assertTrue(returned.getMainCommand() instanceof StartTaskCommand);
+    	assertEquals(Long.valueOf(1), returned.getTaskId());
     	assertNotNull(returned.getCommands());
     	assertEquals(1, returned.getCommands().length);
  
@@ -238,6 +239,7 @@ public abstract class AbstractSerializationTest {
     	assertNotNull(returned);
     	assertNotNull(returned.getMainCommand());
     	assertTrue(returned.getMainCommand() instanceof SkipTaskCommand);
+    	assertEquals(Long.valueOf(1), returned.getTaskId());
     	assertNotNull(returned.getCommands());
     	assertEquals(2, returned.getCommands().length);
  

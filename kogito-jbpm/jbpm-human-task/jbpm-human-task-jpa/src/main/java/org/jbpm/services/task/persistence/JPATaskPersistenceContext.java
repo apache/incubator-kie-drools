@@ -38,9 +38,6 @@ import org.slf4j.LoggerFactory;
 public class JPATaskPersistenceContext implements TaskPersistenceContext {
 
 	private static Logger logger = LoggerFactory.getLogger(JPATaskPersistenceContext.class);
-    
-    private static ReentrantLock lock = new ReentrantLock();
-    private volatile static Set<String> localcache = new CopyOnWriteArraySet<String>();  
 	
 	public final static String FIRST_RESULT = "firstResult";
     public final static String MAX_RESULTS = "maxResults";
@@ -177,48 +174,15 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	@Override
 	public OrganizationalEntity persistOrgEntity(OrganizationalEntity orgEntity) {
 		check();
-		boolean exists = localcache.contains(orgEntity.getId());
-    	if (exists) {
-    		logger.debug("No need to lock {}", Thread.currentThread().getName());
-    		return orgEntity;
-    	}
-    	
-    	logger.debug("About to lock {}", Thread.currentThread().getName());
-    	lock.lock();
-    	logger.debug("Lock accuried {}" + Thread.currentThread().getName());
-		try {
-			exists = localcache.contains(orgEntity.getId());
-	    	logger.debug("Entity {} exists {} thread {}", orgEntity, exists, Thread.currentThread().getName());
-	        if (!StringUtils.isEmpty(orgEntity.getId()) && !exists) {
-	        	this.em.persist( orgEntity );
-	            if( this.pessimisticLocking ) { 
-	                return this.em.find(OrganizationalEntityImpl.class, orgEntity.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
-	            }
-	            
-	            logger.debug("Persisted {} by thread {}", orgEntity, Thread.currentThread().getName());
-	        }
-    	} finally {
-    		if (exists) {
-    			logger.debug("Unlock directly {}", Thread.currentThread().getName());
-    			// unlock directly when exists in local cache
-    			lock.unlock();
-    		} else {
-    			logger.debug("Unlock on transaction completion {}", Thread.currentThread().getName());
-    			
-    			TransactionManager txm = new JtaTransactionManager(null, null, null);
-    			
-    			if (txm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
-    	                && txm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
-    	                && txm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
-	    			// unlock after transaction was completed		    		
-    				txm.registerTransactionSynchronization(new SynchronizationImpl(orgEntity.getId()));
-    			} else {
-    				logger.debug("Unlock directly no tx sync avaliable {}", Thread.currentThread().getName());
-        			// unlock directly when exists in local cache
-        			lock.unlock();
-    			}
-    		}
-    	}
+	    	
+        if (!StringUtils.isEmpty(orgEntity.getId())) {
+        	this.em.persist( orgEntity );
+            if( this.pessimisticLocking ) { 
+                return this.em.find(OrganizationalEntityImpl.class, orgEntity.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+            }
+            
+            logger.debug("Persisted {} by thread {}", orgEntity, Thread.currentThread().getName());
+        } 
 		
         return orgEntity;
 	}
@@ -532,25 +496,5 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 			throw new IllegalStateException("Entity manager is null or is closed, exiting...");
 		}
 	}
-	
-    
-	private static class SynchronizationImpl implements TransactionSynchronization {
 
-		private	String entityId;
-		public SynchronizationImpl(String entityId) {
-		}
-
-		public void afterCompletion(int status) {
-			if (lock.hasQueuedThreads()) {
-				localcache.add(entityId);
-			}
-			lock.unlock();	
-			logger.debug("Unlocked {}", Thread.currentThread().getName());
-		}
-
-		public void beforeCompletion() {
-			// not used
-		}
-
-	}
 }
