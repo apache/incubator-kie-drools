@@ -61,7 +61,7 @@ public class KieProjectDefaultClasspathTest extends AbstractKnowledgeTest {
             };
             ks.registerListener(listener);
 
-            KieContainer kContainer = ks.getKieClasspathContainer();
+            KieContainer kContainer = ks.newKieClasspathContainer();
 
             assertEquals(4, kieModulesCounter.get());
 
