@@ -182,7 +182,7 @@ public class RuleModelDRLPersistenceImpl
         return buf.toString();
     }
 
-    protected void fixActionInsertFactBindings(final IAction[] rhs) {
+    protected void fixActionInsertFactBindings( final IAction[] rhs ) {
         final Set<String> existingBindings = extractExistingActionBindings( rhs );
         for ( IAction action : rhs ) {
             if ( action instanceof ActionInsertFact ) {
@@ -450,6 +450,9 @@ public class RuleModelDRLPersistenceImpl
         }
 
         public void visitFreeFormLine( final FreeFormLine ffl ) {
+            if ( ffl.getText() == null ) {
+                return;
+            }
             String[] lines = ffl.getText().split( "\\n|\\r\\n" );
             for ( String line : lines ) {
                 this.buf.append( indentation );
@@ -1184,6 +1187,9 @@ public class RuleModelDRLPersistenceImpl
         }
 
         public void visitFreeFormLine( final FreeFormLine ffl ) {
+            if ( ffl.getText() == null ) {
+                return;
+            }
             String[] lines = ffl.getText().split( "\\n|\\r\\n" );
             for ( String line : lines ) {
                 this.buf.append( indentation );
@@ -2023,27 +2029,27 @@ public class RuleModelDRLPersistenceImpl
             FactPattern factPattern = new FactPattern( pattern.getObjectType() );
             fcfp.setFactPattern( factPattern );
             ExpressionFormLine expression = new ExpressionFormLine();
-            fcfp.setExpression(expression);
+            fcfp.setExpression( expression );
 
             String dataSource = from.getDataSource().toString();
-            String[] splitSource = dataSource.split("\\.");
+            String[] splitSource = dataSource.split( "\\." );
             ModelField[] fields = null;
-            for (int i = 0; i < splitSource.length; i++) {
-                String sourcePart = splitSource[i];
-                if (i == 0) {
-                    String type = boundParams.get(sourcePart);
-                    expression.appendPart( new ExpressionVariable(sourcePart, type, DataType.TYPE_NUMERIC) );
-                    fields = findFields(dmo, m, type);
+            for ( int i = 0; i < splitSource.length; i++ ) {
+                String sourcePart = splitSource[ i ];
+                if ( i == 0 ) {
+                    String type = boundParams.get( sourcePart );
+                    expression.appendPart( new ExpressionVariable( sourcePart, type, DataType.TYPE_NUMERIC ) );
+                    fields = findFields( dmo, m, type );
                 } else {
                     ModelField modelField = null;
                     for ( ModelField field : fields ) {
-                        if ( field.getName().equals(sourcePart) ) {
+                        if ( field.getName().equals( sourcePart ) ) {
                             modelField = field;
                             break;
                         }
                     }
-                    expression.appendPart( new ExpressionField(sourcePart, modelField.getClassName(), modelField.getType()) );
-                    fields = findFields(dmo, m, modelField.getClassName());
+                    expression.appendPart( new ExpressionField( sourcePart, modelField.getClassName(), modelField.getType() ) );
+                    fields = findFields( dmo, m, modelField.getClassName() );
                 }
             }
 
@@ -2671,7 +2677,8 @@ public class RuleModelDRLPersistenceImpl
 
     private interface Expr {
 
-        FieldConstraint asFieldConstraint( RuleModel m, FactPattern factPattern );
+        FieldConstraint asFieldConstraint( RuleModel m,
+                                           FactPattern factPattern );
     }
 
     private static class SimpleExpr implements Expr {
@@ -2688,7 +2695,8 @@ public class RuleModelDRLPersistenceImpl
             this.dmo = dmo;
         }
 
-        public FieldConstraint asFieldConstraint( RuleModel m, FactPattern factPattern ) {
+        public FieldConstraint asFieldConstraint( RuleModel m,
+                                                  FactPattern factPattern ) {
             String fieldName = expr;
 
             String value = null;
@@ -2767,7 +2775,7 @@ public class RuleModelDRLPersistenceImpl
             }
             fieldConstraint.setFactType( factPattern.getFactType() );
 
-            ModelField field = findField( findFields(m, factPattern.getFactType()),
+            ModelField field = findField( findFields( m, factPattern.getFactType() ),
                                           fieldConstraint.getFieldName() );
 
             if ( field != null ) {
@@ -2857,7 +2865,7 @@ public class RuleModelDRLPersistenceImpl
                 isBoundParam = true;
             }
 
-            ModelField[] typeFields = findFields(m, factType);
+            ModelField[] typeFields = findFields( m, factType );
 
             for ( int i = 0; i < splits.length - 1; i++ ) {
                 String expressionPart = normalizeExpressionPart( splits[ i ] );
@@ -2930,7 +2938,7 @@ public class RuleModelDRLPersistenceImpl
 
         private ModelField[] findFields( RuleModel m,
                                          String type ) {
-            return RuleModelDRLPersistenceImpl.findFields(dmo, m, type);
+            return RuleModelDRLPersistenceImpl.findFields( dmo, m, type );
         }
 
         private ModelField findField( ModelField[] typeFields,
@@ -3030,7 +3038,7 @@ public class RuleModelDRLPersistenceImpl
                         con.setConstraintValueType( SingleFieldConstraint.TYPE_ENUM );
                     } else if ( value.indexOf( '.' ) > 0 && boundParams.containsKey( value.substring( 0, value.indexOf( '.' ) ).trim() ) ) {
                         con.setExpressionValue( parseExpression( m, null, value, new ExpressionFormLine() ) );
-                        con.setConstraintValueType(BaseSingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE);
+                        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE );
                         value = "";
                     } else {
                         con.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
@@ -3099,7 +3107,8 @@ public class RuleModelDRLPersistenceImpl
             this.connector = connector;
         }
 
-        public FieldConstraint asFieldConstraint( RuleModel m, FactPattern factPattern ) {
+        public FieldConstraint asFieldConstraint( RuleModel m,
+                                                  FactPattern factPattern ) {
             CompositeFieldConstraint comp = new CompositeFieldConstraint();
             comp.setCompositeJunctionType( connector.equals( "&&" ) ? CompositeFieldConstraint.COMPOSITE_TYPE_AND : CompositeFieldConstraint.COMPOSITE_TYPE_OR );
             for ( Expr expr : subExprs ) {
@@ -3117,7 +3126,8 @@ public class RuleModelDRLPersistenceImpl
             this.expr = expr;
         }
 
-        public FieldConstraint asFieldConstraint( RuleModel m, FactPattern factPattern ) {
+        public FieldConstraint asFieldConstraint( RuleModel m,
+                                                  FactPattern factPattern ) {
             SingleFieldConstraint con = new SingleFieldConstraint();
             con.setConstraintValueType( SingleFieldConstraint.TYPE_PREDICATE );
             con.setValue( expr );
@@ -3129,18 +3139,18 @@ public class RuleModelDRLPersistenceImpl
                                             RuleModel m,
                                             String type ) {
         ModelField[] fields = dmo.getProjectModelFields().get( type );
-        if (fields != null) {
+        if ( fields != null ) {
             return fields;
         }
-        for (String i : m.getImports().getImportStrings()) {
-            if (i.endsWith("." + type)) {
+        for ( String i : m.getImports().getImportStrings() ) {
+            if ( i.endsWith( "." + type ) ) {
                 fields = dmo.getProjectModelFields().get( i );
-                if (fields != null) {
+                if ( fields != null ) {
                     return fields;
                 }
             }
         }
 
-        return dmo.getProjectModelFields().get(m.getPackageName() + "." + type);
+        return dmo.getProjectModelFields().get( m.getPackageName() + "." + type );
     }
 }
