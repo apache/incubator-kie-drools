@@ -74,6 +74,7 @@ import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Assert;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.phreak.StackEntry;
 import org.drools.core.reteoo.EntryPointNode;
@@ -538,20 +539,13 @@ public class AbstractWorkingMemory
             lsmem = SegmentUtilities.createSegmentMemory(lts, this);
         }
 
-        // TODO this is OTT, it shouldn't need to do this for ALL rules, just those rules that event stream inputs (mdp)
-        RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
-        if( conf.isPhreakEnabled() && conf.getEventProcessingMode().equals(EventProcessingOption.STREAM) ) {
-            lmem.linkNode(this);
-            List<PathMemory> pmems =  lmem.getSegmentMemory().getPathMemories();
-            PathMemory pmm = pmems!=null && !pmems.isEmpty() ? pmems.get(0) : null;
-            if( pmm != null && pmm.getRuleAgendaItem() != null ) {
-                RuleAgendaItem item = pmm.getRuleAgendaItem();
-                item.getRuleExecutor().reEvaluateNetwork( this, new org.drools.core.util.LinkedList<StackEntry>(), false);
-            }
-        }
-        
         LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, this, lmem, false, queryObject.isOpen() );
-        
+
+        RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
+        if( conf.isPhreakEnabled() && lmem.getSegmentMemory().getTupleQueue() != null ) {
+            RuleExecutor.flushTupleQueue( lmem.getSegmentMemory().getTupleQueue() );
+        }
+
         List<PathMemory> pmems =  lmem.getSegmentMemory().getPathMemories();
         for ( int i = 0, length = pmems.size(); i < length; i++ ) {
             PathMemory rm = pmems.get( i );
