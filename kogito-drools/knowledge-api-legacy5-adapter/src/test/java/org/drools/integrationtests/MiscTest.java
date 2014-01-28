@@ -8,8 +8,11 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.time.SessionPseudoClock;
 import org.drools.io.ResourceFactory;
+import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.conf.ClockTypeOption;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -96,5 +99,26 @@ public class MiscTest {
 
         assertTrue(kbuilder.hasErrors());
         assertTrue(kbuilder.getErrors().toString().contains("Intege"));
+    }
+
+    @Test
+    public void testUsingSessionClock() {
+        //BZ-1058687
+        String str =
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $i : Integer( ) from list\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeSessionConfiguration ksconfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconfig.setOption(ClockTypeOption.get("pseudo"));
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(ksconfig, null);
+
+        // compilation fails on Java 6
+        SessionPseudoClock clock = ksession.getSessionClock();
     }
 }
