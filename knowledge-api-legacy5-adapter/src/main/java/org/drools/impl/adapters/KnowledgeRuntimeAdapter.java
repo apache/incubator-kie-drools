@@ -20,6 +20,7 @@ import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.ViewChangedEventListener;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.time.SessionClock;
+import org.drools.time.SessionPseudoClock;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.Row;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.drools.impl.adapters.FactHandleAdapter.adaptFactHandles;
 import static org.drools.impl.adapters.ProcessInstanceAdapter.adaptProcessInstances;
@@ -46,10 +48,24 @@ public class KnowledgeRuntimeAdapter implements org.drools.runtime.KnowledgeRunt
     }
 
     public <T extends SessionClock> T getSessionClock() {
+        final org.kie.api.time.SessionClock delegateClock = delegate.getSessionClock();
+        if (delegateClock instanceof org.drools.core.time.SessionPseudoClock) {
+            return (T) new SessionPseudoClock() {
+                @Override
+                public long advanceTime(long amount, TimeUnit unit) {
+                    return ((org.drools.core.time.SessionPseudoClock)delegateClock).advanceTime(amount, unit);
+                }
+
+                @Override
+                public long getCurrentTime() {
+                    return delegateClock.getCurrentTime();
+                }
+            };
+        }
         return (T)new SessionClock() {
             @Override
             public long getCurrentTime() {
-                return delegate.getSessionClock().getCurrentTime();
+                return delegateClock.getCurrentTime();
             }
         };
     }

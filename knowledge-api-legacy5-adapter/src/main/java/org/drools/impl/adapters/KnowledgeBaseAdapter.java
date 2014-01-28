@@ -88,7 +88,7 @@ public class KnowledgeBaseAdapter implements org.drools.KnowledgeBase {
 
     public StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeSessionConfiguration conf, Environment environment) {
         return new StatefulKnowledgeSessionAdapter(delegate.newStatefulKnowledgeSession(((KnowledgeSessionConfigurationAdapter)conf).getDelegate(),
-                                                                                        ((EnvironmentAdapter)environment).getDelegate()));
+                                                                                        environment == null ? null : ((EnvironmentAdapter)environment).getDelegate()));
     }
 
     public StatefulKnowledgeSession newStatefulKnowledgeSession() {
