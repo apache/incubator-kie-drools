@@ -76,7 +76,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         getKSession().fireAllRules();
 
         Thread.sleep(200);
-        System.err.println(reportWMObjects(getKSession()));
+        //System.err.println(reportWMObjects(getKSession()));
 
 
         Assert.assertEquals( 828.0, Math.floor( queryDoubleField( "OutAmOfClaims", "NeuralInsurance" ) ) );
@@ -131,7 +131,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
 //        getKSession().fireAllRules();
 //
 //        Thread.sleep(200);
-//        System.err.println(reportWMObjects(getKSession()));
+//        //System.err.println(reportWMObjects(getKSession()));
 //
 //        Assert.assertEquals( 0.2802, queryDoubleField( "PTSD", "MockPTSD" ) );
 //
@@ -206,7 +206,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         getKSession().fireAllRules();
 
 
-        System.err.println(reportWMObjects(getKSession()));
+        //System.err.println(reportWMObjects(getKSession()));
 
 
         FactType t7 = getKbase().getFactType( packageName, "Test_MLP_7" );
@@ -262,7 +262,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         getKSession().fireAllRules();
 
 
-        System.err.println(reportWMObjects(getKSession()));
+        //System.err.println(reportWMObjects(getKSession()));
 
         FactType t4 = getKbase().getFactType( packageName, "Test_MLP_0" );
         FactType t5 = getKbase().getFactType( packageName, "Test_MLP_1" );
@@ -305,7 +305,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         getKSession().fireAllRules();
 
 
-        System.err.println(reportWMObjects(getKSession()));
+        //System.err.println(reportWMObjects(getKSession()));
 
         Assert.assertEquals(24.0, queryIntegerField("OutSepLen", "Neuiris"));
 
@@ -368,7 +368,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         getKSession().fireAllRules();
 
 
-        System.err.println(reportWMObjects(getKSession()));
+        //System.err.println(reportWMObjects(getKSession()));
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutN"),
                 true, false,"HEART_MLP",">50_1");
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutP"),
@@ -395,7 +395,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         getKSession().getEntryPoint( "in_Feat2" ).insert(5);
         getKSession().fireAllRules();
 
-        System.err.println(reportWMObjects(getKSession()));
+        //System.err.println(reportWMObjects(getKSession()));
 
         FactType out1 = getKbase().getFactType("org.drools.pmml.pmml_4_1.test","Out1");
         FactType out2 = getKbase().getFactType("org.drools.pmml.pmml_4_1.test","Out2");
@@ -412,7 +412,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         getKSession().fireAllRules();
 
 
-        System.err.println(reportWMObjects(getKSession()));
+        //System.err.println(reportWMObjects(getKSession()));
 
         assertEquals(1,getKSession().getObjects(new ClassObjectFilter(out1.getFactClass())).size());
         assertEquals(1,getKSession().getObjects(new ClassObjectFilter(out2.getFactClass())).size());
