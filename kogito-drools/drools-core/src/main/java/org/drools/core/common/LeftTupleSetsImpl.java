@@ -55,7 +55,7 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
     }
 
     public int deleteSize() {
-        return this.insertSize;
+        return this.deleteSize;
     }
 
     public int updateSize() {
@@ -79,7 +79,7 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
             // handle clash with already staged entries
             case LeftTuple.INSERT:
                 removeInsert( leftTuple );
-                break;
+                return deleteSize == 0;
             case LeftTuple.UPDATE:
                 removeUpdate( leftTuple );
                 break;
