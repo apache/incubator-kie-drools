@@ -2372,7 +2372,7 @@ public class RuleModelDRLPersistenceImpl
         DSLSentence dslSentence = new DSLSentence();
         for ( String dslPattern : dslPatterns ) {
             //A DSL Pattern can contain Regex itself, for example "When the ages is less than {num:1?[0-9]?[0-9]}"
-            String regex = dslPattern.replaceAll( "\\{\\s*[\\:\\[\\]\\?\\*\\+\\-\\.\\^\\$\\|\\(\\)\\w]+\\s*\\}", "(.*)" );
+            String regex = dslPattern.replaceAll( "\\{.*\\}", "(.*)" );
             Matcher m = Pattern.compile( regex ).matcher( dslLine );
             if ( m.matches() ) {
                 dslSentence.setDefinition( dslPattern );
@@ -2786,7 +2786,7 @@ public class RuleModelDRLPersistenceImpl
             ModelField field = findField( findFields( m, factPattern.getFactType() ),
                                           fieldConstraint.getFieldName() );
 
-            if ( field != null && (fieldConstraint.getFieldType() == null || fieldConstraint.getFieldType().trim().length() == 0) ) {
+            if ( field != null && ( fieldConstraint.getFieldType() == null || fieldConstraint.getFieldType().trim().length() == 0 ) ) {
                 fieldConstraint.setFieldType( field.getType() );
             }
             return fieldConstraint;
