@@ -4,7 +4,7 @@ import org.dmg.pmml.pmml_4_1.descr.*;
 import java.util.*;
 
 
-
+dialect "mvel"
 
 
 rule "setupNNs"
@@ -281,13 +281,15 @@ then
 
     //insert( new QueryMarker(utils.compactUpperCase($field),utils.context) );
 
+    LinearNorm orig = null;
+    LinearNorm inv = null
     NormContinuous invertedNC = new NormContinuous();
         invertedNC.setMapMissingTo( $mmt );
         invertedNC.setField( utils.compactUpperCase( $nn ) + "_" + $id );
         invertedNC.setOutliers( $outl );
         for ( int j = 0; j < $ls.size(); j++ ) {
-            LinearNorm orig = (LinearNorm) $ls.get( j );
-            LinearNorm inv = new LinearNorm();
+            orig = (LinearNorm) $ls.get( j );
+            inv = new LinearNorm();
                 inv.setNorm( orig.getOrig() );
                 inv.setOrig( orig.getNorm() );
             invertedNC.getLinearNorms().add( inv );

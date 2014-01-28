@@ -3,7 +3,7 @@ package org.drools.pmml.pmml_4_1.compiler;
 import org.dmg.pmml.pmml_4_1.descr.*;
 import java.util.*;
 
-
+dialect "mvel"
 
 rule "SVMRoot"
 when

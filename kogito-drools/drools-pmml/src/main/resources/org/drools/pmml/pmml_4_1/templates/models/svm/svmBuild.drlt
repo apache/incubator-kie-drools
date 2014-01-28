@@ -34,7 +34,7 @@ then
                       "@{alt}",
                       @{indexes.size()},
                       new int[] { @foreach{ j : indexes } @{j} @end{ ',' } },
-                      new double[] { @foreach{ i : maxIndex + 1 } @if{ indexes.contains( (long) i ) } @{coeffs.get( indexes.indexOf( (long) i ) )} @else{} 0.0 @end{} @end{ ','} },
+                      new double[] { @foreach{ i : maxIndex + 1 } @if{ indexes.contains( i ) } @{coeffs.get( indexes.indexOf( i ) )} @else{} 0.0 @end{} @end{ ','} },
                       @{absoluteValue}));
 end
 

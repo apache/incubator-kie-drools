@@ -28,7 +28,7 @@ global TemplateRegistry registry;
 global java.util.Map fld2var;
 global org.drools.pmml.pmml_4_1.PMML4Helper utils;
 
-
+dialect "mvel"
 
 // the function is repeated here because of rule processDerivedField_MapValues
     function String format(String type, String val) {
@@ -168,7 +168,6 @@ end
 
 
 rule "typeOfDataField"
-dialect "mvel"
 when
     $fld : DataField( $n : name, $t : dataType )
 then
@@ -179,7 +178,6 @@ end
 
 
 rule "processDataField_define"
-dialect "mvel"
 salience 1
 when
     $fld : DataField( $n : name, $t : dataType )
@@ -206,7 +204,6 @@ end
 
 
 rule "Bind_DataField_MiningField"
-dialect "mvel"
 salience -10
 when
     DataField( $fieldName : name, $xt : extensions )
@@ -222,7 +219,6 @@ end
 
 
 rule "processDataField_entry"
-dialect "mvel"
 when
     $fld        : DataField( $vals : values , $isize : intervals )
     $validVals  : List( $vsize : size ) from collect (
@@ -246,7 +242,6 @@ end
 
 rule "processDataField_interValidation_fixLeft"
 salience 999
-dialect "java"
 when
     $fld : DataField( $ivals : intervals )
     $i   : Interval( leftMargin == null ) from $ivals
@@ -257,7 +252,6 @@ end
 
 rule "processDataField_interValidation_fixRight"
 salience 999
-dialect "mvel"
 when
     $fld : DataField( $ivals : intervals )
     $i   : Interval( rightMargin == null ) from $ivals
@@ -266,7 +260,6 @@ then
 end
 
 rule "processDataField_interValidation"
-dialect "mvel"
 when
     $fld : DataField( $vals : values , $isize : intervals.size() > 0,
                       optype == OPTYPE.CONTINUOUS || optype == OPTYPE.ORDINAL )
@@ -281,7 +274,6 @@ end
 
 
 rule "processDataField_valueValidation_valid"
-dialect "mvel"
 when
     $fld    : DataField( $vals : values, $vsize : values.size() > 0 )
     accumulate (
@@ -300,7 +292,6 @@ end
 
 
 rule "processDataField_valueValidation_missing"
-dialect "mvel"
 when
     $fld      : DataField( $vals : values, $vsize : values.size() > 0,
                       ( optype == OPTYPE.CONTINUOUS || optype == OPTYPE.CATEGORICAL ) )
@@ -320,7 +311,6 @@ end
 
 
 rule "processDataField_valueValidation_invalid"
-dialect "mvel"
 when
     $fld      : DataField( $vals : values, $vsize : values.size() > 0,
                            ( optype == OPTYPE.CONTINUOUS || optype == OPTYPE.CATEGORICAL ) )
@@ -357,7 +347,6 @@ end
 
 
 rule "processDerivedField_define"
-dialect "mvel"
 salience 1
 when
     $fld : DerivedField( $n : name, $t :  dataType )
@@ -382,7 +371,6 @@ end
 
 
 rule "typeOfDerivedField"
-dialect "mvel"
 when
     $fld : DerivedField( $n : name, $t : dataType )
 then
@@ -399,7 +387,6 @@ end
 
 
 rule "processDerivedField_linearize_missing"
-dialect "mvel"
 when
     $fld : DerivedField( $nc : normContinuous )
            NormContinuous( this == $nc, $mapMissing : mapMissingTo != null )
@@ -415,7 +402,6 @@ end
 
 
 rule "processDerivedField_linearize_piecewiseInterpolate"
-dialect "mvel"
 when
     $fld : DerivedField( $nc : normContinuous, $name : name )
     TypeOfField( name == $name, $type : dataType )
@@ -441,7 +427,6 @@ end
 
 
 rule "processDerivedField_linearize_outliers_asMissing"
-dialect "mvel"
 when
     $fld : DerivedField( $nc : normContinuous, $name : name  )
     TypeOfField( name == $name, $type : dataType )
@@ -462,7 +447,6 @@ end
 
 //
 rule "processDerivedField_linearize_outliers_asExtreme"
-dialect "mvel"
 when
     $fld : DerivedField( $nc : normContinuous, $name : name  )
     TypeOfField( name == $name, $type : dataType )
@@ -487,7 +471,6 @@ then
 end
 
 rule "processDerivedField_linearize_outliers_asExtrapolate"
-dialect "mvel"
 when
     $fld : DerivedField( $nc : normContinuous, $name : name  )
     TypeOfField( name == $name, $type : dataType )
@@ -525,7 +508,6 @@ end
 
 
 rule "processDerivedField_constant"
-dialect "mvel"
 when
     $fld : DerivedField( $c : constant, $type : dataType )
     Constant( this == $c, $x : value )
@@ -540,7 +522,6 @@ end
 
 
 rule "processDerivedField_fieldRef"
-dialect "mvel"
 when
     $fld : DerivedField( $ref : fieldRef )
     FieldRef( this == $ref, $f : field, $miss : mapMissingTo )
@@ -566,7 +547,6 @@ end
 
 
 rule "processDerivedField_normDiscrete_basicField"
-dialect "mvel"
 when
     $fld : DerivedField( $nd : normDiscrete )
     NormDiscrete( this == $nd, $f : field , $x : value)
@@ -584,7 +564,6 @@ end
 
 
 rule "processDerivedField_normDiscrete_derivedField"
-dialect "mvel"
 when
     $fld : DerivedField( $nd : normDiscrete )
     NormDiscrete( this == $nd, $f : field , $x : value)
@@ -602,7 +581,6 @@ end
 
 
 rule "processDerivedField_normDiscrete_mapMissing"
-dialect "mvel"
 when
     $fld : DerivedField( $nd : normDiscrete )
     NormDiscrete( this == $nd, $f : field , $m : mapMissingTo != null )
@@ -617,7 +595,6 @@ end
 
 
 rule "processDerivedField_normDiscrete_cleanup"
-dialect "mvel"
 salience -5
 when
     $fld : DerivedField( $nd : normDiscrete )
@@ -645,7 +622,6 @@ end
 
 
 rule "processDerivedField_Discretize_mapMissing"
-dialect "mvel"
 when
     $fld : DerivedField( $dx : discretize )
     Discretize( this == $dx, $f : field , $m : mapMissingTo != null , $dataType : dataType)
@@ -660,7 +636,6 @@ end
 
 
 rule "processDerivedField_Discretize_propagateMissing"
-dialect "mvel"
 when
     $fld : DerivedField( $dx : discretize )
     Discretize( this == $dx, $f : field , $m : mapMissingTo == null )
@@ -673,7 +648,6 @@ then
 end
 
 rule "processDerivedField_Discretize_defaultnull"
-dialect "mvel"
 when
     $fld : DerivedField( $dx : discretize )
     Discretize( this == $dx, $f : field , $d : defaultValue == null, $bins : discretizeBins )
@@ -688,7 +662,6 @@ end
 
 
 rule "processDerivedField_Discretize_default"
-dialect "mvel"
 when
     $fld : DerivedField( $dx : discretize )
     Discretize( this == $dx, $f : field , $d : defaultValue != null, $bins : discretizeBins, $dataType : dataType )
@@ -706,7 +679,6 @@ end
 
 
 rule "processDerivedField_Discretize_bin"
-dialect "mvel"
 when
     $fld : DerivedField( $dx : discretize )
            Discretize( this == $dx, $f : field , $d : defaultValue, $bins : discretizeBins, $dataType : dataType )
@@ -726,7 +698,6 @@ end
 
 
 rule "processDerivedField_Discretize_cleanup"
-dialect "mvel"
 salience -10
 when
     $fld : DerivedField( $dx : discretize )
@@ -747,7 +718,6 @@ declare MapSupportBean
 end
 
 rule "processDerivedField_MapValues_support_init"
-dialect "mvel"
 when
     $fld : DerivedField( $map : mapValues )
            MapValues( this == $map )
@@ -760,7 +730,6 @@ then
 end
 
 rule "processDerivedField_MapValues_support"
-dialect "mvel"
 salience 1
 when
     $fld : DerivedField( $map : mapValues )
@@ -775,7 +744,6 @@ end
 
 
 rule "processDerivedField_MapValues_support2"
-dialect "mvel"
 salience 1
 when
     $fld : DerivedField( $map : mapValues, $type : dataType )
@@ -804,7 +772,6 @@ end
 //TODO : can't use utils.format here, maybe a bug?
 rule "processDerivedField_MapValues"
 salience -2
-dialect "mvel"
 when
     $fld : DerivedField( $map : mapValues )
     MapValues( this == $map, $rows : inlineTable.rows, $outColumn : outputColumn )
@@ -835,7 +802,6 @@ end
 
 
 rule "processDerivedField_MapValues_cleanup"
-dialect "mvel"
 salience -10
 when
     $fld : DerivedField( $map : mapValues )
@@ -852,7 +818,6 @@ end
  //******************************************************************************************************************
 
 rule "processDerivedField_Collect"
-dialect "mvel"
 when
     $fld : DerivedField( $ag : aggregate )
            Aggregate( this == $ag, $func : this.function == "multiset",
@@ -869,7 +834,6 @@ end
 
 
 rule "processDerivedField_Aggregation"
-dialect "mvel"
 when
     $fld : DerivedField( $ag : aggregate )
            Aggregate( this == $ag, $func : this.function != "multiset",
@@ -888,7 +852,6 @@ end
 
 
 rule "processDerivedField_Aggregate_cleanup"
-dialect "mvel"
 salience -10
 when
     $fld : DerivedField( $agg : aggregate )
@@ -992,7 +955,6 @@ end
 
 
 rule "processDerivedField_Apply"
-dialect "mvel"
 salience -5
 when
     $fld : DerivedField( $app : apply )
@@ -1036,7 +998,6 @@ end
 
 
 rule "NestedConst"
-dialect "mvel"
 salience -5
 when
     $a : Apply( $expr : constantsAndFieldRevesAndNormContinuouses, $f : this.function )
@@ -1046,7 +1007,6 @@ then
 end
 
 rule "NestedRef"
-dialect "java"
 salience -5
 when
     $a : Apply( $expr : constantsAndFieldRevesAndNormContinuouses, $f : this.function )
@@ -1063,7 +1023,6 @@ end
 
 
 rule "NestedAggregate_onBasicField"
-dialect "java"
 salience -5
 when
     $a     : Apply( $expr : constantsAndFieldRevesAndNormContinuouses, $f : this.function )
@@ -1087,7 +1046,6 @@ end
 
 
 rule "NestedAggregate_onDerivedField"
-dialect "java"
 salience -5
 when
     $a     : Apply( $expr : constantsAndFieldRevesAndNormContinuouses, $f : this.function )
@@ -1111,7 +1069,6 @@ end
 
 
 rule "NestedMapValues"
-dialect "java"
 salience -5
 when
     $a   : Apply( $expr : constantsAndFieldRevesAndNormContinuouses, $f : this.function )
@@ -1134,7 +1091,6 @@ end
 
 
 rule "NestedDiscretize"
-dialect "java"
 salience -5
 when
     $a   : Apply( $expr : constantsAndFieldRevesAndNormContinuouses, $f : this.function )
@@ -1157,7 +1113,6 @@ end
 
 
 rule "NestedNormContinuous"
-dialect "java"
 salience -5
 when
     $a   : Apply( $expr : constantsAndFieldRevesAndNormContinuouses, $f : this.function )
@@ -1181,7 +1136,6 @@ end
 
 
 rule "NestedNormDiscrete"
-dialect "java"
 salience -5
 when
     $a   : Apply( $expr : constantsAndFieldRevesAndNormContinuouses, $f : this.function )
@@ -1340,8 +1294,9 @@ when
     $mat : Matrix( $cells : matCells, arraies.size() == 0,
                    $diag : diagDefault != null && != 0.0 )
 then
+    // TODO: getData() needed due to MVEL bug, remove when fixed
     for ( int j = 0; j < $nr; j++ ) {
-        $data[ j ][ j ] = $diag;
+        $dat.getData()[ j ][ j ] = $diag;
     }
 end
 
@@ -1352,10 +1307,13 @@ when
     $mat : Matrix( $cells : matCells, arraies.size() == 0,
                    $off : offDiagDefault != null && != 0.0 )
 then
-    for ( int j = 0; j < $nr; j++ ) {
-        for ( int k = 0; k < $nc; k++ ) {
+    // TODO: initialization needed due to MVEL bug, remove when fixed
+    int j = 0;
+    int k = 0;
+    for ( j = 0; j < $nr; j++ ) {
+        for ( k = 0; k < $nc; k++ ) {
             if ( j != k ) {
-                $data[ j ][ k ] = $off;
+                $dat.getData()[ j ][ k ] = $off;
             }
         }
     }
@@ -1368,9 +1326,10 @@ when
     $mat : Matrix( $cells : matCells, arraies.size() == 0, $kind : kind )
     $cel : MatCell( $row : row.intValue(), $col : col.intValue(), $val : value ) from $cells
 then
+    // TODO: getData() needed due to MVEL bug, remove when fixed
     $data[ $row - 1 ][ $col - 1 ] = Double.valueOf( $val );
     if ( "symmetric".equals( $kind ) ) {
-        $data[ $col - 1 ][ $row - 1 ] = Double.valueOf( $val );
+        $dat.getData()[ $col - 1 ][ $row - 1 ] = Double.valueOf( $val );
     }
 end
 
@@ -1578,7 +1537,6 @@ end
 
 
 rule "Preprocess_Inputs"
-dialect "mvel"
 when
     MiningSchema( $inputs : miningFields )
     $fld : MiningField( this memberOf $inputs, usageType == FIELDUSAGETYPE.ACTIVE )
@@ -1591,7 +1549,6 @@ then
 end
 
 rule "Create Input Structures"
-dialect "mvel"
 salience -10
 when
     $mns : MiningSchema( $miningFields : miningFields, $ext : extensions )
@@ -1627,7 +1584,6 @@ end
 
 
 rule "Bind_FactField_MiningField"
-dialect "mvel"
 salience -10
 when
     MiningField( $fieldName : name, usageType == FIELDUSAGETYPE.ACTIVE, $xt : extensions )
@@ -1644,7 +1600,6 @@ end
 
 
 rule "Preprocess_Inputs_InvalidsAsInvalid"
-dialect "mvel"
 when
     MiningSchema( $inputs : miningFields )
     $fld : MiningField( this memberOf $inputs, usageType == FIELDUSAGETYPE.ACTIVE, invalidValueTreatment == INVALIDVALUETREATMENTMETHOD.RETURN_INVALID )
@@ -1654,7 +1609,6 @@ end
 
 
 rule "Preprocess_Inputs_InvalidsAsMissing"
-dialect "java"
 when
     MiningSchema(  $inputs : miningFields )
     $fld : MiningField( this memberOf $inputs,  $name : name, usageType == FIELDUSAGETYPE.ACTIVE,
@@ -1675,7 +1629,6 @@ end
 
 
 rule "Preprocess_Inputs_MissingReplacement"
-dialect "java"
 when
     MiningSchema( $inputs : miningFields )
     $fld : MiningField( this memberOf $inputs,  $name : name, usageType == FIELDUSAGETYPE.ACTIVE,
@@ -1693,7 +1646,6 @@ end
 
 
 rule "Preprocess_Inputs_OutliersAsMissing" //numeric only
-dialect "java"
 when
     MiningSchema( $inputs : miningFields )
     $fld : MiningField( this memberOf $inputs,  $name : name, usageType == FIELDUSAGETYPE.ACTIVE,
@@ -1729,7 +1681,6 @@ end
 
 
 rule "Preprocess_Inputs_OutliersAsExtremeUpp" //numeric only
-dialect "java"
 when
     MiningSchema( $inputs : miningFields )
     $fld : MiningField( this memberOf $inputs,  $name : name, usageType == FIELDUSAGETYPE.ACTIVE,
@@ -1854,7 +1805,6 @@ then
 end
 
 rule "Bind_FactField_Outputield"
-dialect "mvel"
 when
     OutputField( $fieldName : name != null && != "", $xt : extensions, targetField != null )
     Extension( name == PMMLExtensionNames.EXTERNAL_CLASS, $type : value ) from $xt
@@ -1870,7 +1820,6 @@ end
 
 
 rule "DeclareOutput"
-dialect "mvel"
 salience 1
 when
     $of  : OutputField( $name : name != null && != "", $tgt : targetField, $feat : feature )
@@ -1903,7 +1852,6 @@ end
 
 
 rule "SimpleValueOutput"
-dialect "mvel"
 when
     $of : OutputField( $tgt : targetField != null, $val : value, $name : name != null && != "",
                        feature == null || feature == RESULTFEATURE.PREDICTED_VALUE )
@@ -1923,7 +1871,6 @@ end
 
 
 rule "SimpleFeatureOutput"
-dialect "mvel"
 when
     $of : OutputField( $tgt : targetField, $val : value, $name : name != null && != "",
                        feature != null, $feat : feature.value(),
@@ -1944,7 +1891,6 @@ then
 end
 
 rule "RelativeFeatureOutput"
-dialect "mvel"
 when
     $of : OutputField( $tgt : targetField, $val : value != null, $name : name != null && != "",
                        feature != null, $feat : feature.value(),
