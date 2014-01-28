@@ -94,26 +94,25 @@ public class AuditLoggerFactory {
     }
     
     /**
-     * Creates new instance of JPA audit logger with given EntityManagerFactory
-     * NOTE: this will build the logger but it is not registered directly on a session son once received needs to be 
-     * registered as event listener
-     * @param emf EntityManagerFactory used to provide JPA entity manager instances on demand.
+     * Creates new instance of JPA audit logger
+     * NOTE: this will build the logger but it is not registered directly on a session: once received, 
+     * it will need to be registered as an event listener
      * @return new instance of JPA audit logger
      */
-    public static AbstractAuditLogger newJPAInstance(EntityManagerFactory emf) {
-        return new JPAWorkingMemoryDbLogger(emf);
+    public static AbstractAuditLogger newJPAInstance() {
+        return new JPAWorkingMemoryDbLogger();
     }
     
     /**
      * Creates new instance of JPA audit logger with given EntityManagerFactory
-     * NOTE: this will build the logger but it is not registered directly on a session son once received needs to be 
-     * registered as event listener
+     * NOTE: this will build the logger but it is not registered directly on a session: once received, 
+     * it will need to be registered as an event listener
      * @param emf EntityManagerFactory used to provide JPA entity manager instances on demand.
      * @param env Environment instance to be used
      * @return new instance of JPA audit logger
      */
-    public static AbstractAuditLogger newJPAInstance(EntityManagerFactory emf, Environment env) {
-        return new JPAWorkingMemoryDbLogger(emf, env);
+    public static AbstractAuditLogger newJPAInstance(Environment env) {
+        return new JPAWorkingMemoryDbLogger(env);
     }
     
     /**
@@ -126,8 +125,8 @@ public class AuditLoggerFactory {
      * <li>jbpm.audit.jms.connection.factory.jndi - JNDI name of the connection factory to look up - type String</li>
      * <li>jbpm.audit.jms.queue.jndi - JNDI name of the queue to look up - type String</li>
      * </ul>
-     * NOTE: this will build the logger but it is not registered directly on a session son once received needs to be 
-     * registered as event listener
+     * NOTE: this will build the logger but it is not registered directly on a session: once received, 
+     * it will need to be registered as an event listener
      * @param properties - optional properties for the type of logger to initialize it
      * @return new instance of JMS audit logger
      */
@@ -169,8 +168,8 @@ public class AuditLoggerFactory {
     
     /**
      * Creates new instance of JMS audit logger based on given connection factory and queue.
-     * NOTE: this will build the logger but it is not registered directly on a session son once received needs to be 
-     * registered as event listener
+     * NOTE: this will build the logger but it is not registered directly on a session: once received, 
+     * it will need to be registered as an event listener
      * @param transacted determines if JMS session is transacted or not
      * @param connFactory connection factory instance
      * @param queue JMS queue instance

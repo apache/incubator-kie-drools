@@ -18,16 +18,15 @@ package org.jbpm.process.audit;
 
 import java.util.List;
 
-import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
-import javax.transaction.Status;
-import javax.transaction.UserTransaction;
 
-import org.drools.persistence.TransactionManager;
+import org.jbpm.process.audit.strategy.PersistenceStrategy;
+import org.jbpm.process.audit.strategy.PersistenceStrategyType;
+import org.jbpm.process.audit.strategy.StandaloneJtaStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.slf4j.Logger;
@@ -55,41 +54,54 @@ public class JPAAuditLogService implements AuditLogService {
 
     private static final Logger logger = LoggerFactory.getLogger(JPAAuditLogService.class);
     
-    private Environment env;
-    private EntityManagerFactory emf;
+    private PersistenceStrategy persistenceStrategy;
     
     private String persistenceUnitName = "org.jbpm.persistence.jpa";
     
-    public JPAAuditLogService(){
-    }
-    
-    public JPAAuditLogService(Environment env){
-        this.env = env;
-    }
-    
-    public JPAAuditLogService(EntityManagerFactory  emf){
-        this.emf = emf;
-    }
-    
-    public void setEnvironment(Environment env) {
-        this.env = env;
-        if( this.emf != null ) { 
-            emf.close();
+    public JPAAuditLogService() {
+        EntityManagerFactory emf = null;
+        try { 
+           emf = Persistence.createEntityManagerFactory(persistenceUnitName); 
+        } catch( Exception e ) { 
+           logger.info("The '" + persistenceUnitName + "' peristence unit is not available, no persistence strategy set for " + this.getClass().getSimpleName());
         }
-        this.emf = null;
+        if( emf != null ) { 
+            persistenceStrategy = new StandaloneJtaStrategy(emf);
+        }
+    }
+    
+    public JPAAuditLogService(Environment env, PersistenceStrategyType type) {
+        persistenceStrategy = PersistenceStrategyType.getPersistenceStrategy(type, env);
+    }
+    
+    public JPAAuditLogService(Environment env) {
+        EntityManagerFactory emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
+        if( emf != null ) { 
+            persistenceStrategy = new StandaloneJtaStrategy(emf);
+        } else { 
+            persistenceStrategy = new StandaloneJtaStrategy(Persistence.createEntityManagerFactory(persistenceUnitName));
+        } 
+    }
+    
+    public JPAAuditLogService(EntityManagerFactory emf){
+        persistenceStrategy = new StandaloneJtaStrategy(emf);
+    }
+    
+    public JPAAuditLogService(EntityManagerFactory emf, PersistenceStrategyType type){
+        persistenceStrategy = PersistenceStrategyType.getPersistenceStrategy(type, emf);
+    }
+    
+    /* (non-Javadoc)
+     * @see org.jbpm.process.audit.AuditLogService#setPersistenceUnitName(java.lang.String)
+     */
+    public void setPersistenceUnitName(String persistenceUnitName) {
+        persistenceStrategy = new StandaloneJtaStrategy(Persistence.createEntityManagerFactory(persistenceUnitName));
+        this.persistenceUnitName = persistenceUnitName;
     }
 
     public String getPersistenceUnitName() {
         return persistenceUnitName;
     }
-
-    /* (non-Javadoc)
-     * @see org.jbpm.process.audit.AuditLogService#setPersistenceUnitName(java.lang.String)
-     */
-    public void setPersistenceUnitName(String persistenceUnitName) {
-        this.persistenceUnitName = persistenceUnitName;
-    }
-
 
     /* (non-Javadoc)
      * @see org.jbpm.process.audit.AuditLogService#findProcessInstances()
@@ -99,7 +111,7 @@ public class JPAAuditLogService implements AuditLogService {
     @SuppressWarnings("unchecked")
     public List<ProcessInstanceLog> findProcessInstances() {
         EntityManager em = getEntityManager();
-        boolean newTx = joinTransaction(em);
+        Object newTx = joinTransaction(em);
         List<ProcessInstanceLog> result = em.createQuery("FROM ProcessInstanceLog").getResultList();
         closeEntityManager(em, newTx);
         return result;
@@ -112,7 +124,7 @@ public class JPAAuditLogService implements AuditLogService {
     @SuppressWarnings("unchecked")
     public List<ProcessInstanceLog> findProcessInstances(String processId) {
         EntityManager em = getEntityManager();
-        boolean newTx = joinTransaction(em);
+        Object newTx = joinTransaction(em);
         List<ProcessInstanceLog> result = em
             .createQuery("FROM ProcessInstanceLog p WHERE p.processId = :processId")
                 .setParameter("processId", processId).getResultList();
@@ -127,7 +139,7 @@ public class JPAAuditLogService implements AuditLogService {
     @SuppressWarnings("unchecked")
     public List<ProcessInstanceLog> findActiveProcessInstances(String processId) {
         EntityManager em = getEntityManager();
-        boolean newTx = joinTransaction(em);
+        Object newTx = joinTransaction(em);
         List<ProcessInstanceLog> result = getEntityManager()
             .createQuery("FROM ProcessInstanceLog p WHERE p.processId = :processId AND p.end is null")
                 .setParameter("processId", processId).getResultList();
@@ -141,7 +153,7 @@ public class JPAAuditLogService implements AuditLogService {
     @Override
     public ProcessInstanceLog findProcessInstance(long processInstanceId) {
         EntityManager em = getEntityManager();
-        boolean newTx = joinTransaction(em);
+        Object newTx = joinTransaction(em);
         try {
         	return (ProcessInstanceLog) getEntityManager()
             .createQuery("FROM ProcessInstanceLog p WHERE p.processInstanceId = :processInstanceId")
@@ -160,7 +172,7 @@ public class JPAAuditLogService implements AuditLogService {
     @SuppressWarnings("unchecked")
     public List<ProcessInstanceLog> findSubProcessInstances(long processInstanceId) {
         EntityManager em = getEntityManager();
-        boolean newTx = joinTransaction(em);
+        Object newTx = joinTransaction(em);
         List<ProcessInstanceLog> result = getEntityManager()
             .createQuery("FROM ProcessInstanceLog p WHERE p.parentProcessInstanceId = :processInstanceId")
                 .setParameter("processInstanceId", processInstanceId).getResultList();
@@ -175,7 +187,7 @@ public class JPAAuditLogService implements AuditLogService {
     @SuppressWarnings("unchecked")
     public List<NodeInstanceLog> findNodeInstances(long processInstanceId) {
         EntityManager em = getEntityManager();
-        boolean newTx = joinTransaction(em);
+        Object newTx = joinTransaction(em);
         List<NodeInstanceLog> result = getEntityManager()
             .createQuery("FROM NodeInstanceLog n WHERE n.processInstanceId = :processInstanceId ORDER BY date,id")
                 .setParameter("processInstanceId", processInstanceId).getResultList();
@@ -190,7 +202,7 @@ public class JPAAuditLogService implements AuditLogService {
     @SuppressWarnings("unchecked")
     public List<NodeInstanceLog> findNodeInstances(long processInstanceId, String nodeId) {
         EntityManager em = getEntityManager();
-        boolean newTx = joinTransaction(em);
+        Object newTx = joinTransaction(em);
         List<NodeInstanceLog> result = getEntityManager()
             .createQuery("FROM NodeInstanceLog n WHERE n.processInstanceId = :processInstanceId AND n.nodeId = :nodeId ORDER BY date,id")
                 .setParameter("processInstanceId", processInstanceId)
@@ -206,7 +218,7 @@ public class JPAAuditLogService implements AuditLogService {
     @SuppressWarnings("unchecked")
     public List<VariableInstanceLog> findVariableInstances(long processInstanceId) {
         EntityManager em = getEntityManager();
-        boolean newTx = joinTransaction(em);
+        Object newTx = joinTransaction(em);
         List<VariableInstanceLog> result = getEntityManager()
             .createQuery("FROM VariableInstanceLog v WHERE v.processInstanceId = :processInstanceId ORDER BY date")
                 .setParameter("processInstanceId", processInstanceId).getResultList();
@@ -221,7 +233,7 @@ public class JPAAuditLogService implements AuditLogService {
     @SuppressWarnings("unchecked")
     public List<VariableInstanceLog> findVariableInstances(long processInstanceId, String variableId) {
         EntityManager em = getEntityManager();
-        boolean newTx = joinTransaction(em);
+        Object newTx = joinTransaction(em);
         List<VariableInstanceLog> result = em
             .createQuery("FROM VariableInstanceLog v WHERE v.processInstanceId = :processInstanceId AND v.variableId = :variableId ORDER BY date")
                 .setParameter("processInstanceId", processInstanceId)
@@ -235,7 +247,7 @@ public class JPAAuditLogService implements AuditLogService {
     @SuppressWarnings("unchecked")
     public List<VariableInstanceLog> findVariableInstancesByName(String variableId, boolean onlyActiveProcesses) {
         EntityManager em = getEntityManager();
-        boolean newTx = joinTransaction(em);
+        Object newTx = joinTransaction(em);
         Query query;
         if( ! onlyActiveProcesses ) { 
              query = em.createQuery("FROM VariableInstanceLog v WHERE v.variableId = :variableId ORDER BY date");
@@ -257,7 +269,7 @@ public class JPAAuditLogService implements AuditLogService {
     @SuppressWarnings("unchecked")
     public List<VariableInstanceLog> findVariableInstancesByNameAndValue(String variableId, String value, boolean onlyActiveProcesses) {
         EntityManager em = getEntityManager();
-        boolean newTx = joinTransaction(em);
+        Object newTx = joinTransaction(em);
         Query query;
         if( ! onlyActiveProcesses ) { 
              query = em.createQuery("FROM VariableInstanceLog v WHERE v.variableId = :variableId AND v.value = :value ORDER BY date");
@@ -286,7 +298,7 @@ public class JPAAuditLogService implements AuditLogService {
     @SuppressWarnings("unchecked")
     public void clear() {
         EntityManager em = getEntityManager();
-        boolean newTx = joinTransaction(em);
+        Object newTx = joinTransaction(em);
         
         List<ProcessInstanceLog> processInstances = em.createQuery("FROM ProcessInstanceLog").getResultList();
         for (ProcessInstanceLog processInstance: processInstances) {
@@ -308,145 +320,23 @@ public class JPAAuditLogService implements AuditLogService {
      */
     @Override
     public void dispose() {
-        if (emf != null) {
-            emf.close();
-        }
+        persistenceStrategy.dispose();
     }
     
     protected void finalize() throws Throwable {
-        if (emf != null) {
-            emf.close();
-        }
+        persistenceStrategy.dispose();
     }
 
-    /**
-     * Helper methods
-     */
-    
-    /**
-     * This method opens a new transaction, if none is currently running, and joins the entity manager/persistence context
-     * to that transaction. 
-     * 
-     * @param em The entity manager we're using. 
-     * @return boolean If we've started a new transaction, then we return true.
-     */
-    private boolean joinTransaction(EntityManager em) {
-    	boolean isJTA = true;
-    	if (env != null) {    	
-	    	Boolean bool = (Boolean) env.get("IS_JTA_TRANSACTION");
-	        if (bool != null) {
-	        	isJTA = bool.booleanValue();
-	        }
-    	}
-
-        boolean newTx = false;
-        TransactionManager transactionManager = null;
-        if (env != null) {
-        	Object txmObj = env.get(EnvironmentName.TRANSACTION_MANAGER);
-        	if (txmObj instanceof TransactionManager) {
-            	transactionManager = (TransactionManager) txmObj;
-        	}
-        }
-        if (transactionManager != null) {
-    		newTx = transactionManager.begin();
-        } else {
-	        UserTransaction ut = null;
-	        try { 
-	            ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
-	            if( ut.getStatus() == Status.STATUS_NO_TRANSACTION ) { 
-	                ut.begin();
-	                newTx = true;
-	            }
-	        } catch(Exception e) { 
-	            logger.error("Unable to find or open a transaction: " + e.getMessage(), e);
-	        }
-        }
-        
-        if (isJTA) {
-	        em.joinTransaction();
-        }
-	       
-        return newTx;
-    }
-
-    /**
-     * This method closes the entity manager and transaction. It also makes sure that any objects associated 
-     * with the entity manager/persistence context are detached. 
-     * </p>
-     * Obviously, if the transaction returned by the {@link #joinTransaction(EntityManager)} method is null, 
-     * nothing is done with the transaction parameter.
-     * @param em The entity manager.
-     * @param ut The (user) transaction.
-     */
-    private void closeEntityManager(EntityManager em, boolean newTx) {
-    	boolean sharedEM = false;
-    	if (env != null) {
-	    	Boolean bool = (Boolean) env.get("IS_SHARED_ENTITY_MANAGER");
-	        if (bool != null) {
-	        	sharedEM = bool.booleanValue();
-	        }
-    	}
-        if (!sharedEM) {
-	        em.flush(); // This saves any changes made
-	        em.clear(); // This makes sure that any returned entities are no longer attached to this entity manager/persistence context
-	        em.close(); // and this closes the entity manager
-	        TransactionManager transactionManager = null;
-	        if (env != null) {
-	        	Object txmObj = env.get(EnvironmentName.TRANSACTION_MANAGER);
-	        	if (txmObj instanceof TransactionManager) {
-	            	transactionManager = (TransactionManager) txmObj;
-	        	}
-	        }
-            if (transactionManager != null) {
-            	transactionManager.commit(newTx);
-            } else {
-            	if (newTx) {
-	    	        try { 
-	    	        	UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
-		                ut.commit();
-	    	        } catch(Exception e) { 
-	    	            logger.error("Unable to commit transaction: " + e.getMessage(), e);
-	    	        }
-            	}
-            }
-        }
-    }
-
-    /**
-     * This method creates a entity manager. If an environment has already been 
-     * provided, we use the entity manager factory present in the environment. 
-     * </p> 
-     * Otherwise, we assume that the persistence unit is called "org.jbpm.persistence.jpa"
-     * and use that to build the entity manager factory. 
-     * @return an entity manager
-     */
     private EntityManager getEntityManager() {
-        EntityManager em = null;
-        if (env == null) {
-        	if (emf == null) {
-                try { 
-                    emf = Persistence.createEntityManagerFactory(persistenceUnitName);
-                } catch( Exception e ) { 
-                     throw new RuntimeException("Unable to instantiate " + emf.getClass().getSimpleName() + " for the '" 
-                             + persistenceUnitName + "' persistence unit. Consider using " 
-                             + this.getClass().getSimpleName() + ".setEnvironment(env)", e);   
-                }
-        	}
-            em = emf.createEntityManager();
-        } else {
-        	boolean sharedEM = false;
-        	Boolean bool = (Boolean) env.get("IS_SHARED_ENTITY_MANAGER");
-            if (bool != null) {
-            	sharedEM = bool.booleanValue();
-            }
-            if (sharedEM) {
-            	em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
-            } else {
-	            EntityManagerFactory emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
-	            em = emf.createEntityManager();
-            }
-        }
-        return em;
+        return persistenceStrategy.getEntityManager();
+    }
+
+    private Object joinTransaction(EntityManager em) {
+        return persistenceStrategy.joinTransaction(em);
+    }
+
+    private void closeEntityManager(EntityManager em, Object transaction) {
+       persistenceStrategy.leaveTransaction(em, transaction);
     }
 
 

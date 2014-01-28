@@ -1,12 +1,9 @@
 package org.jbpm.process.audit;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.process.audit.event.DefaultAuditEventBuilderImpl;
 import org.kie.api.event.process.ProcessEventListener;
-import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 
 public abstract class AbstractAuditLogger implements ProcessEventListener {
@@ -24,24 +21,15 @@ public abstract class AbstractAuditLogger implements ProcessEventListener {
     
     protected AuditEventBuilder builder = new DefaultAuditEventBuilderImpl();
     
-    protected Environment env;
-    
     /*
      * for backward compatibility
      */
     public AbstractAuditLogger(WorkingMemory workingMemory) {
-        env = workingMemory.getEnvironment();
+        // environment is retrieved from the logged event
     }
     
     public AbstractAuditLogger(KieSession session) {
-        if (session instanceof KnowledgeRuntime) {
-            env = ((KnowledgeRuntime) session).getEnvironment();
-        } else if (session instanceof StatelessKnowledgeSessionImpl) {
-            env = ((StatelessKnowledgeSessionImpl) session).getEnvironment();
-        } else {
-            throw new IllegalArgumentException(
-                "Not supported session in logger: " + session.getClass());
-        }
+        // environment is retrieved from the logged event
     }
     /*
      * end of backward compatibility
@@ -58,4 +46,5 @@ public abstract class AbstractAuditLogger implements ProcessEventListener {
     public void setBuilder(AuditEventBuilder builder) {
         this.builder = builder;
     }
+    
 }

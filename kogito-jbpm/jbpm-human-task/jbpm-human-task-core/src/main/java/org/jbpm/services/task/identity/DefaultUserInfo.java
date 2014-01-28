@@ -33,10 +33,12 @@ public class DefaultUserInfo implements UserInfo {
 	        if (in == null) {
 	        	in = Thread.currentThread().getContextClassLoader().getResourceAsStream("/userinfo.properties");
 	        }
-	        registryProps.load(in);
-	        buildRegistry(registryProps);
+	        if( in != null ) { 
+	            registryProps.load(in);
+	            buildRegistry(registryProps);
+	        }
         } catch (Exception e) {
-            logger.warn("Problem loading userinfo properties {}", e.getMessage());
+            logger.warn("Problem loading userinfo properties {}", e.getMessage(), e);
         }
     }
     

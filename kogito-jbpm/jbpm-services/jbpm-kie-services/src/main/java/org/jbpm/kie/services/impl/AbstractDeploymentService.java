@@ -203,7 +203,7 @@ public abstract class AbstractDeploymentService implements DeploymentService {
             }
         } 
         
-        return AuditLoggerFactory.newJPAInstance(getEmf());
+        return AuditLoggerFactory.newJPAInstance();
     }
     
     protected AbstractAuditLogger setupAuditLogger(IdentityProvider identityProvider, String deploymentUnitId) { 

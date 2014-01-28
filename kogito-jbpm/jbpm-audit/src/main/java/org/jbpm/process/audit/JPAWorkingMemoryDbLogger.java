@@ -22,6 +22,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.TransactionRequiredException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.Status;
@@ -32,6 +33,7 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
+import org.kie.api.event.KieRuntimeEvent;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
@@ -72,11 +74,8 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
     }
     
     public JPAWorkingMemoryDbLogger(KieSession session) {
-    	super(session);
-        Boolean bool = (Boolean) env.get("IS_JTA_TRANSACTION");
-        if (bool != null) {
-        	isJTA = bool.booleanValue();
-        }
+    	Environment env = session.getEnvironment();
+        internalSetIsJTA(env);
         session.addEventListener(this);
     }
     /*
@@ -87,45 +86,56 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
         this.emf = emf;
     }
     
+    public JPAWorkingMemoryDbLogger() { 
+        // default constructor when this is used with a persistent KieSession
+    }
+        
     public JPAWorkingMemoryDbLogger(EntityManagerFactory emf, Environment env) {
         this.emf = emf;
-        this.env = env;
+        internalSetIsJTA(env);
+    }
+
+    public JPAWorkingMemoryDbLogger(Environment env) {
+        internalSetIsJTA(env);
+    }
+
+    private void internalSetIsJTA(Environment env) { 
         Boolean bool = (Boolean) env.get("IS_JTA_TRANSACTION");
         if (bool != null) {
         	isJTA = bool.booleanValue();
         }
     }
-
+    
     @Override
     public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
         NodeInstanceLog log = (NodeInstanceLog) builder.buildEvent(event);
-        persist(log);
+        persist(log, event);
     }
 
     @Override
     public void afterNodeLeft(ProcessNodeLeftEvent event) {
         NodeInstanceLog log = (NodeInstanceLog) builder.buildEvent(event, null);
-        persist(log);   
+        persist(log, event);
     }
 
     @Override
     public void afterVariableChanged(ProcessVariableChangedEvent event) {
         VariableInstanceLog log = (VariableInstanceLog) builder.buildEvent(event);
-        persist(log);   
+        persist(log, event);
     }
 
     @Override
     public void beforeProcessStarted(ProcessStartedEvent event) {
         ProcessInstanceLog log = (ProcessInstanceLog) builder.buildEvent(event);
-        persist(log);
+        persist(log, event);
         ((ProcessInstanceImpl) event.getProcessInstance()).getMetaData().put("ProcessInstanceLog", log);
     }
 
     @Override
     public void afterProcessCompleted(ProcessCompletedEvent event) {
         long processInstanceId = event.getProcessInstance().getId();
-        EntityManager em = getEntityManager();
-        UserTransaction ut = joinTransaction(em);
+        EntityManager em = getEntityManager(event);
+        Object tx = joinTransaction(em);
         
         ProcessInstanceLog log = (ProcessInstanceLog) ((ProcessInstanceImpl) event.getProcessInstance()).getMetaData().get("ProcessInstanceLog");
         if (log == null) {
@@ -140,9 +150,7 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
             log = (ProcessInstanceLog) builder.buildEvent(event, log);
             em.merge(log);   
         }
-        if (!sharedEM) {
-            flush(em, ut);
-        }
+        leaveTransaction(em, tx);
     }
     
     @Override
@@ -172,10 +180,36 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
     }
 
     /**
+     * This method persists the entity given to it. 
+     * </p>
+     * This method also makes sure that the entity manager used for persisting the entity, joins the existing JTA transaction. 
+     * @param entity An entity to be persisted.
+     */
+    private void persist(Object entity, KieRuntimeEvent event) { 
+        EntityManager em = getEntityManager(event);
+        Object tx = joinTransaction(em);
+        em.persist(entity);
+        leaveTransaction(em, tx);
+    }
+    
+    /**
      * This method creates a entity manager. 
      */
-    private EntityManager getEntityManager() {
-        if (env != null) {
+    private EntityManager getEntityManager(KieRuntimeEvent event) {
+        Environment env = event.getKieRuntime().getEnvironment();
+    
+        /**
+         * It's important to set the sharedEM flag with _every_ operation
+         * otherwise, there are situations where:
+         * 1. it can be set to "true"
+         * 2. something can happen
+         * 3. the "true" value can no longer apply 
+         * (I've seen this in debugging logs.. )
+         */
+        sharedEM = false;
+        if( emf != null ) { 
+           return emf.createEntityManager();
+        } else if (env != null) {
             EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
         	if (em != null) {
         		sharedEM = true;
@@ -183,29 +217,12 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
         	}
             EntityManagerFactory emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
             if (emf != null) {
-            	return emf.createEntityManager();
+                return emf.createEntityManager();
             }
-        } else {
-            return emf.createEntityManager();
-        }
-        throw new RuntimeException("Could not find EntityManager, both command-scoped EM and EMF in environment are null");
+        } 
+        throw new RuntimeException("Could not find or create a new EntityManager!");
     }
 
-    /**
-     * This method persists the entity given to it. 
-     * </p>
-     * This method also makes sure that the entity manager used for persisting the entity, joins the existing JTA transaction. 
-     * @param entity An entity to be persisted.
-     */
-    private void persist(Object entity) { 
-        EntityManager em = getEntityManager();
-        UserTransaction ut = joinTransaction(em);
-        em.persist(entity);
-        if (!sharedEM) {
-        	flush(em, ut);
-        }
-    }
-    
     /**
      * This method opens a new transaction, if none is currently running, and joins the entity manager/persistence context
      * to that transaction. 
@@ -215,14 +232,13 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
      * @throws SystemException 
      * @throws Exception if something goes wrong. 
      */
-    private UserTransaction joinTransaction(EntityManager em) {
+    private Object joinTransaction(EntityManager em) {
         boolean newTx = false;
         UserTransaction ut = null;
 
         if (isJTA) {
 	        try {
 	        	em.joinTransaction();
-	        
 	        } catch (TransactionRequiredException e) {
 				ut = findUserTransaction();
 				try {
@@ -240,12 +256,17 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
 	            	// rethrow TransactionRequiredException if UserTransaction was not found or started
 	            	throw e;
 	            }
-
 			}
 	       
 	        if( newTx ) { 
 	            return ut;
 	        }
+        } else { 
+            EntityTransaction tx = em.getTransaction();
+            if( ! tx.isActive() ) { 
+               tx.begin();
+               return tx;
+            }
         }
         return null;
     }
@@ -259,21 +280,31 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
      * @param em The entity manager.
      * @param ut The (user) transaction.
      */
-    private static void flush(EntityManager em, UserTransaction ut) {
-        em.flush(); // This saves any changes made
-        em.clear(); // This makes sure that any returned entities are no longer attached to this entity manager/persistence context
-        em.close(); // and this closes the entity manager
-        try { 
-            if( ut != null ) { 
-                // There's a tx running, close it.
-                ut.commit();
+    private void leaveTransaction(EntityManager em, Object transaction) {
+        if( isJTA ) { 
+            try { 
+                if( transaction != null ) { 
+                    // There's a tx running, close it.
+                    ((UserTransaction) transaction).commit();
+                }
+            } catch(Exception e) { 
+                logger.error("Unable to commit transaction: ", e);
             }
-        } catch(Exception e) { 
-            logger.error("Unable to commit transaction: ", e);
+        } else { 
+            if( transaction != null ) { 
+                ((EntityTransaction) transaction).commit();
+            }
+        }
+        
+
+        if (!sharedEM) {
+            try {  
+                em.close(); 
+            } catch( Exception e ) { 
+                logger.error("Unable to close created EntityManager: {}", e.getMessage(), e);
+            }
         }
     }
-    
-
 
     protected static UserTransaction findUserTransaction() {
     	InitialContext context = null;

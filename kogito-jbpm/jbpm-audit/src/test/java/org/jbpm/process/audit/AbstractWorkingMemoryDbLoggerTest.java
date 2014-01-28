@@ -44,6 +44,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.ProcessRuntime;
+import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,14 +59,16 @@ import bitronix.tm.TransactionManagerServices;
  * <li>WorkingMemoryDbLogger</li>
  * </ul>
  */
-public class WorkingMemoryDbLoggerTest extends AbstractBaseTest {
+public abstract class AbstractWorkingMemoryDbLoggerTest extends AbstractBaseTest {
     
-    private static final Logger logger = LoggerFactory.getLogger(WorkingMemoryDbLoggerTest.class);
-    private HashMap<String, Object> context;
-    private AuditLogService logService;
+    protected static final Logger logger = LoggerFactory.getLogger(AbstractWorkingMemoryDbLoggerTest.class);
+    protected HashMap<String, Object> context;
+    
+    protected AuditLogService logService;
 
     @Before
     public void setUp() throws Exception {
+        System.out.println("parent");
         context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
         Environment env = EnvironmentFactory.newEnvironment();
         env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, context.get(EnvironmentName.ENTITY_MANAGER_FACTORY));
@@ -78,22 +83,30 @@ public class WorkingMemoryDbLoggerTest extends AbstractBaseTest {
         cleanUp(context);
         logService.dispose();
     }
+   
+    protected static RuleBase createKnowledgeBase() {
+        // create a builder
+        PackageBuilder builder = new PackageBuilder();
+        // load the process
+        Reader source = new InputStreamReader(AbstractWorkingMemoryDbLoggerTest.class.getResourceAsStream("/ruleflow.rf"));
+        builder.addProcessFromXml(source);
+        source = new InputStreamReader(AbstractWorkingMemoryDbLoggerTest.class.getResourceAsStream("/ruleflow2.rf"));
+        builder.addProcessFromXml(source);
+        source = new InputStreamReader(AbstractWorkingMemoryDbLoggerTest.class.getResourceAsStream("/ruleflow3.rf"));
+        builder.addProcessFromXml(source);
+        // create the knowledge base 
+        Package pkg = builder.getPackage();
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage(pkg);
+        return ruleBase;
+    }
+
+    public abstract ProcessInstance startProcess(String processName);
     
     @Test
 	public void testLogger1() {
-        // load the process
-        RuleBase ruleBase = createKnowledgeBase();
-        // create a new session
-        Properties properties = new Properties();
-		properties.put("drools.processInstanceManagerFactory", "org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory");
-		properties.put("drools.processSignalManagerFactory", "org.jbpm.process.instance.event.DefaultSignalManagerFactory");
-		SessionConfiguration config = new SessionConfiguration(properties);
-        StatefulSession session = ruleBase.newStatefulSession(config, createEnvironment(context));
-        new JPAWorkingMemoryDbLogger(session);
-        session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
-
         // start process instance
-        long processInstanceId = session.startProcess("com.sample.ruleflow").getId();
+        long processInstanceId = startProcess("com.sample.ruleflow").getId();
         
         logger.info("Checking process instances for process 'com.sample.ruleflow'");
         List<ProcessInstanceLog> processInstances =
@@ -114,26 +127,13 @@ public class WorkingMemoryDbLoggerTest extends AbstractBaseTest {
             assertNotNull(nodeInstance.getDate());
         }
         logService.clear();
-        
-
 	}
 
     @Test
 	public void testLogger2() {
-        // load the process
-        RuleBase ruleBase = createKnowledgeBase();
-        // create a new session
-        Properties properties = new Properties();
-		properties.put("drools.processInstanceManagerFactory", "org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory");
-		properties.put("drools.processSignalManagerFactory", "org.jbpm.process.instance.event.DefaultSignalManagerFactory");
-		SessionConfiguration config = new SessionConfiguration(properties);
-        StatefulSession session = ruleBase.newStatefulSession(config, createEnvironment(context));
-        new JPAWorkingMemoryDbLogger(session);
-        session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
-
         // start process instance
-        session.startProcess("com.sample.ruleflow");
-        session.startProcess("com.sample.ruleflow");
+        startProcess("com.sample.ruleflow");
+        startProcess("com.sample.ruleflow");
         
         logger.info("Checking process instances for process 'com.sample.ruleflow'");
         List<ProcessInstanceLog> processInstances =
@@ -154,19 +154,7 @@ public class WorkingMemoryDbLoggerTest extends AbstractBaseTest {
 
     @Test
 	public void testLogger3() {
-        // load the process
-        RuleBase ruleBase = createKnowledgeBase();
-        // create a new session
-        Properties properties = new Properties();
-		properties.put("drools.processInstanceManagerFactory", "org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory");
-		properties.put("drools.processSignalManagerFactory", "org.jbpm.process.instance.event.DefaultSignalManagerFactory");
-		SessionConfiguration config = new SessionConfiguration(properties);
-        StatefulSession session = ruleBase.newStatefulSession(config, createEnvironment(context));
-        new JPAWorkingMemoryDbLogger(session);
-        session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
-
-        // start process instance
-        long processInstanceId = session.startProcess("com.sample.ruleflow2").getId();
+        long processInstanceId = startProcess("com.sample.ruleflow2").getId();
         
         logger.info("Checking process instances for process 'com.sample.ruleflow2'");
         List<ProcessInstanceLog> processInstances =
@@ -190,21 +178,4 @@ public class WorkingMemoryDbLoggerTest extends AbstractBaseTest {
         assertEquals(14, nodeInstances.size());
         logService.clear();
 	}
-	
-    private static RuleBase createKnowledgeBase() {
-        // create a builder
-        PackageBuilder builder = new PackageBuilder();
-        // load the process
-        Reader source = new InputStreamReader(WorkingMemoryDbLoggerTest.class.getResourceAsStream("/ruleflow.rf"));
-        builder.addProcessFromXml(source);
-        source = new InputStreamReader(WorkingMemoryDbLoggerTest.class.getResourceAsStream("/ruleflow2.rf"));
-        builder.addProcessFromXml(source);
-        source = new InputStreamReader(WorkingMemoryDbLoggerTest.class.getResourceAsStream("/ruleflow3.rf"));
-        builder.addProcessFromXml(source);
-        // create the knowledge base 
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage(pkg);
-        return ruleBase;
-    }
 }

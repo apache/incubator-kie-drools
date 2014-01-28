@@ -75,7 +75,7 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
     public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
         List<ProcessEventListener> defaultListeners = new ArrayList<ProcessEventListener>();
         // register JPAWorkingMemoryDBLogger
-        AbstractAuditLogger logger = AuditLoggerFactory.newJPAInstance(null, runtime.getKieSession().getEnvironment());
+        AbstractAuditLogger logger = AuditLoggerFactory.newJPAInstance(runtime.getKieSession().getEnvironment());
         logger.setBuilder(getAuditBuilder());
         defaultListeners.add(logger);
         // add any custom listeners
