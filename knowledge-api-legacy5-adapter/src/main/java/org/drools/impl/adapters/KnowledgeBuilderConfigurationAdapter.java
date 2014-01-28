@@ -7,6 +7,10 @@ import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 
 import java.util.Set;
 
+import static org.drools.impl.adapters.AdapterUtil.adaptMultiValueBuilderOption;
+import static org.drools.impl.adapters.AdapterUtil.adaptOption;
+import static org.drools.impl.adapters.AdapterUtil.adaptSingleValueBuilderOption;
+
 public class KnowledgeBuilderConfigurationAdapter implements org.drools.builder.KnowledgeBuilderConfiguration {
 
     private final KnowledgeBuilderConfiguration delegate;
@@ -16,22 +20,19 @@ public class KnowledgeBuilderConfigurationAdapter implements org.drools.builder.
     }
 
     public <T extends KnowledgeBuilderOption> void setOption(T option) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.KnowledgeBuilderConfigurationAdapter.setOption -> TODO");
+        delegate.setOption(adaptOption(option));
     }
 
     public <T extends SingleValueKnowledgeBuilderOption> T getOption(Class<T> option) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.KnowledgeBuilderConfigurationAdapter.getOption -> TODO");
-
+        return (T)delegate.getOption(adaptSingleValueBuilderOption(option));
     }
 
     public <T extends MultiValueKnowledgeBuilderOption> T getOption(Class<T> option, String key) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.KnowledgeBuilderConfigurationAdapter.getOption -> TODO");
-
+        return (T)delegate.getOption(adaptMultiValueBuilderOption(option), key);
     }
 
     public <T extends MultiValueKnowledgeBuilderOption> Set<String> getOptionKeys(Class<T> option) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.KnowledgeBuilderConfigurationAdapter.getOptionKeys -> TODO");
-
+        return delegate.getOptionKeys(adaptMultiValueBuilderOption(option));
     }
 
     public void setProperty(String name, String value) {
