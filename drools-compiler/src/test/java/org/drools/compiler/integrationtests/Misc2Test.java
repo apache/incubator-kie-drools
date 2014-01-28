@@ -32,13 +32,16 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.Memory;
 import org.drools.core.common.RightTupleSets;
 import org.drools.core.conflict.SalienceConflictResolver;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.JoinNode;
+import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.util.FileManager;
@@ -5083,5 +5086,86 @@ public class Misc2Test extends CommonTestMethodBase {
             }
             return counter == array.length;
         }
+    }
+
+    public static class ARef {
+        public static int getSize(String s) {
+            return 0;
+        }
+    }
+
+    public static class BRef extends ARef {
+        public static int getSize(String s) {
+            return s.length();
+        }
+    }
+
+    @Test @Ignore("fixed with mvel 2.1.9.Final")
+    public void testJittingConstraintInvokingStaticMethod() throws Exception {
+        // DROOLS-410
+        String str =
+                "dialect \"mvel\"\n" +
+                "import org.drools.compiler.integrationtests.Misc2Test.ARef\n" +
+                "import org.drools.compiler.integrationtests.Misc2Test.BRef\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $s : String( length == BRef.getSize(this) )\n" +
+                "then\n" +
+                "    list.add($s);\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert("1234");
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+    }
+
+    @Test
+    public void testStagedLeftTupleLeak() throws Exception {
+        // BZ-1058874
+        String str =
+                "rule R1 when\n" +
+                "    String( this == \"this\" )\n" +
+                "    String( this == \"that\" )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.fireAllRules();
+
+        for (int i = 0; i < 10; i++) {
+            FactHandle fh = ksession.insert("this");
+            ksession.fireAllRules();
+            ksession.delete(fh);
+            ksession.fireAllRules();
+        }
+
+        Rete rete = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete();
+        LeftInputAdapterNode liaNode = null;
+        for (ObjectTypeNode otn : rete.getObjectTypeNodes()) {
+            if ( String.class == otn.getObjectType().getValueType().getClassType() ) {
+                AlphaNode alphaNode = (AlphaNode)otn.getSinkPropagator().getSinks()[0];
+                liaNode = (LeftInputAdapterNode)alphaNode.getSinkPropagator().getSinks()[0];
+                break;
+            }
+        }
+
+        assertNotNull(liaNode);
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)ksession).session;
+        LeftInputAdapterNode.LiaNodeMemory memory = (LeftInputAdapterNode.LiaNodeMemory) wm.getNodeMemory( liaNode );
+        LeftTupleSets stagedLeftTuples = memory.getSegmentMemory().getStagedLeftTuples();
+        assertEquals(0, stagedLeftTuples.deleteSize());
+        assertNull(stagedLeftTuples.getDeleteFirst());
+        assertEquals(0, stagedLeftTuples.insertSize());
+        assertNull(stagedLeftTuples.getInsertFirst());
     }
 }
