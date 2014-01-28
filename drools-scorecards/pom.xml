@@ -42,46 +42,4 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>include-generated-sources</id>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>${basedir}/target/generated-sources</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>jaxb2-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>xjc</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <outputDirectory>${basedir}/target/generated-sources/java</outputDirectory>
-          <packageName>org.dmg.pmml.pmml_4_1.descr</packageName>
-          <schemaDirectory>${basedir}/src/main/resources/org/dmg/pmml/pmml_4_1/descr</schemaDirectory>
-          <bindingDirectory>${basedir}/src/main/resources/org/dmg/pmml/pmml_4_1/descr</bindingDirectory>
-          <extension>true</extension>
-          <clearOutputDir>false</clearOutputDir>
-          <arguments>-no-header</arguments>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>
