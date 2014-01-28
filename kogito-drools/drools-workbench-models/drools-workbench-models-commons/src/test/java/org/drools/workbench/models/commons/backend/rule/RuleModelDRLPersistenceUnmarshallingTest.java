@@ -35,6 +35,9 @@ import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.CEPWindow;
 import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.DSLComplexVariableValue;
+import org.drools.workbench.models.datamodel.rule.DSLSentence;
+import org.drools.workbench.models.datamodel.rule.DSLVariableValue;
 import org.drools.workbench.models.datamodel.rule.ExpressionField;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
 import org.drools.workbench.models.datamodel.rule.ExpressionPart;
@@ -42,7 +45,6 @@ import org.drools.workbench.models.datamodel.rule.ExpressionUnboundFact;
 import org.drools.workbench.models.datamodel.rule.ExpressionVariable;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
-import org.drools.workbench.models.datamodel.rule.FieldNature;
 import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.models.datamodel.rule.FromAccumulateCompositeFactPattern;
@@ -53,10 +55,13 @@ import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 public class RuleModelDRLPersistenceUnmarshallingTest {
@@ -2846,36 +2851,110 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        addModelField("java.lang.Number",
-                "intValue",
-                "java.lang.Integer",
-                DataType.TYPE_NUMERIC);
+        addModelField( "java.lang.Number",
+                       "intValue",
+                       "java.lang.Integer",
+                       DataType.TYPE_NUMERIC );
 
-        addModelField("org.mortgages.Applicant",
-                "age",
-                "java.lang.Integer",
-                DataType.TYPE_NUMERIC);
+        addModelField( "org.mortgages.Applicant",
+                       "age",
+                       "java.lang.Integer",
+                       DataType.TYPE_NUMERIC );
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
-                dmo);
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           dmo );
 
-        assertNotNull(m);
+        assertNotNull( m );
 
-        assertTrue(m.lhs[0] instanceof FromAccumulateCompositeFactPattern);
+        assertTrue( m.lhs[ 0 ] instanceof FromAccumulateCompositeFactPattern );
 
-        FromAccumulateCompositeFactPattern pattern = (FromAccumulateCompositeFactPattern) m.lhs[0];
-        assertNotNull(pattern.getFactPattern());
+        FromAccumulateCompositeFactPattern pattern = (FromAccumulateCompositeFactPattern) m.lhs[ 0 ];
+        assertNotNull( pattern.getFactPattern() );
         FactPattern factPattern = pattern.getFactPattern();
-        assertNotNull(factPattern.getConstraintList());
-        assertEquals(1, factPattern.getConstraintList().getNumberOfConstraints());
-        FieldConstraint constraint = factPattern.getConstraintList().getConstraint(0);
-        assertTrue(constraint instanceof SingleFieldConstraint);
+        assertNotNull( factPattern.getConstraintList() );
+        assertEquals( 1, factPattern.getConstraintList().getNumberOfConstraints() );
+        FieldConstraint constraint = factPattern.getConstraintList().getConstraint( 0 );
+        assertTrue( constraint instanceof SingleFieldConstraint );
         SingleFieldConstraint fieldConstraint = (SingleFieldConstraint) constraint;
-        assertEquals("Number", fieldConstraint.getFactType());
-        assertEquals("intValue", fieldConstraint.getFieldName());
-        assertEquals("Integer", fieldConstraint.getFieldType());
-        assertEquals(">", fieldConstraint.getOperator());
-        assertEquals("0", fieldConstraint.getValue());
+        assertEquals( "Number", fieldConstraint.getFactType() );
+        assertEquals( "intValue", fieldConstraint.getFieldName() );
+        assertEquals( "Integer", fieldConstraint.getFieldType() );
+        assertEquals( ">", fieldConstraint.getOperator() );
+        assertEquals( "0", fieldConstraint.getValue() );
+    }
+
+    @Test
+    public void testDSLExpansionLHS() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "The credit rating is AA\n"
+                + "then\n"
+                + "end\n";
+
+        final String dslDefinition = "The credit rating is {rating:ENUM:Applicant.creditRating}";
+        final String dslFile = "[when]" + dslDefinition + "=Applicant( creditRating == {rating} )";
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl,
+                                                                                         new ArrayList<String>(),
+                                                                                         dmo,
+                                                                                         new String[]{ dslFile } );
+
+        assertNotNull( m );
+
+        assertTrue( m.lhs[ 0 ] instanceof DSLSentence );
+
+        DSLSentence dslSentence = (DSLSentence) m.lhs[ 0 ];
+        assertEquals( dslDefinition,
+                      dslSentence.getDefinition() );
+        assertEquals( 1,
+                      dslSentence.getValues().size() );
+        assertTrue( dslSentence.getValues().get( 0 ) instanceof DSLComplexVariableValue );
+        DSLComplexVariableValue dslComplexVariableValue = (DSLComplexVariableValue) dslSentence.getValues().get( 0 );
+        assertEquals( "AA",
+                      dslComplexVariableValue.getValue() );
+        assertEquals( "ENUM:Applicant.creditRating",
+                      dslComplexVariableValue.getId() );
+    }
+
+    @Test
+    public void testDSLExpansionRHS() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "$a : Applicant()"
+                + "then\n"
+                + "Set applicant name to Bob"
+                + "end\n";
+
+        final String dslDefinition = "Set applicant name to {name:\\w+ \\w+}";
+        final String dslFile = "[then]" + dslDefinition + "=$a.setName( \"{name}\" )";
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl,
+                                                                                         new ArrayList<String>(),
+                                                                                         dmo,
+                                                                                         new String[]{ dslFile } );
+
+        assertNotNull( m );
+
+        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
+        FactPattern pattern = (FactPattern) m.lhs[ 0 ];
+        assertEquals( "Applicant",
+                      pattern.getFactType() );
+        assertEquals( "$a",
+                      pattern.getBoundName() );
+
+        assertTrue( m.rhs[ 0 ] instanceof DSLSentence );
+
+        DSLSentence dslSentence = (DSLSentence) m.rhs[ 0 ];
+        assertEquals( dslDefinition,
+                      dslSentence.getDefinition() );
+        assertEquals( 1,
+                      dslSentence.getValues().size() );
+        assertTrue( dslSentence.getValues().get( 0 ) instanceof DSLComplexVariableValue );
+        DSLComplexVariableValue dslComplexVariableValue = (DSLComplexVariableValue) dslSentence.getValues().get( 0 );
+        assertEquals( "Bob",
+                      dslComplexVariableValue.getValue() );
+        assertEquals( "\\w+ \\w+",
+                      dslComplexVariableValue.getId() );
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
