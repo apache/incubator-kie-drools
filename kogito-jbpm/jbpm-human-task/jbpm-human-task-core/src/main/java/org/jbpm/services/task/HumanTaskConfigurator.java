@@ -69,14 +69,14 @@ public class HumanTaskConfigurator {
     private UserGroupCallback userGroupCallback;
     private UserInfo userInfo;
     
-    private Set<PriorityInterceptor> insterceptors = new TreeSet<PriorityInterceptor>();
+    private Set<PriorityInterceptor> interceptors = new TreeSet<PriorityInterceptor>();
     private Set<TaskLifeCycleEventListener> listeners = new HashSet<TaskLifeCycleEventListener>();
     
     public HumanTaskConfigurator interceptor(int priority, Interceptor interceptor) {
     	if (interceptor == null) {
             return this;
         }
-    	this.insterceptors.add(new PriorityInterceptor(priority, interceptor));
+    	this.interceptors.add(new PriorityInterceptor(priority, interceptor));
     	return this;
     }
     
@@ -139,7 +139,7 @@ public class HumanTaskConfigurator {
         	}
         	environment.set(EnvironmentName.TASK_USER_INFO, userInfo);
         	addDefaultInterceptor();
-        	for (PriorityInterceptor pInterceptor : insterceptors) {
+        	for (PriorityInterceptor pInterceptor : interceptors) {
         		this.commandExecutor.addInterceptor(pInterceptor.getInterceptor());
         	}        	
         	
