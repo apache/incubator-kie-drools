@@ -1996,6 +1996,7 @@ public class RuleModelDRLPersistenceImpl
             fac.setSourcePattern( parseBaseDescr( m, accumulate.getInput(), boundParams, dmo ) );
 
             FactPattern factPattern = new FactPattern( pattern.getObjectType() );
+            factPattern.setBoundName( pattern.getIdentifier() );
             parseConstraint( m,
                              factPattern,
                              pattern.getConstraint(),
