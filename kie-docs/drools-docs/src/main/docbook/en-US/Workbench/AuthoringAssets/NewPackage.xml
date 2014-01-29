@@ -65,4 +65,45 @@
     </figure>
   </section>
 
+  <section>
+    <title>Copy, Rename and Delete Packages</title>
+
+    <para>As already mentioned on <link linkend="wb.ProjectExplorerCopyRenameDeleteActions">Project Explorer</link>
+      section, users can copy, rename or delete a package directly from Project Explorer.</para>
+
+    <para>As you can see in the following screenshots, those operations behaves very similar to counter part actions in
+      most workbench editors.</para>
+    
+    <figure>
+      <title>Copying a Package</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Workbench/AuthoringAssets/package-copy.png" format="PNG"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <figure>
+      <title>Renaming a Package</title>
+      
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Workbench/AuthoringAssets/package-rename.png" format="PNG"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <figure>
+      <title>Excluding a Package</title>
+      
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Workbench/AuthoringAssets/package-delete.png" format="PNG"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+    
+  </section>
+
 </section>
