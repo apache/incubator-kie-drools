@@ -176,29 +176,29 @@
     <echo message="Checking Eclipse download ..." />
     <condition property="eclipse.not.available">
       <not>
-        <available file="${install.home}/lib/eclipse-java-juno-SR2-${download.type}.${download.extension}" />
+        <available file="${install.home}/lib/eclipse-java-kepler-R-${download.type}.${download.extension}" />
       </not>
     </condition>
   </target>
   <target name="download.eclipse" depends="download.eclipse.check" if="eclipse.not.available">
     <echo message="Getting Eclipse ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="http://download.eclipse.org/technology/epp/downloads/release/juno/SR2/eclipse-java-juno-SR2-${download.type}.${download.extension}"
-         dest="${install.home}/lib/eclipse-java-juno-SR2-${download.type}.${download.extension}"  />
+    <get src="http://download.eclipse.org/technology/epp/downloads/release/kepler/R/eclipse-java-kepler-R-${download.type}.${download.extension}"
+         dest="${install.home}/lib/eclipse-java-kepler-R-${download.type}.${download.extension}"  />
   </target>
   <target name="download.eclipse.gef.check">
     <echo message="Checking Eclipse GEF download ..." />
     <condition property="eclipse.gef.not.available">
       <not>
-        <available file="${install.home}/lib/GEF-SDK-3.8.2.zip" />
+        <available file="${install.home}/lib/GEF-SDK-3.9.1.zip" />
       </not>
     </condition>
   </target>
   <target name="download.eclipse.gef" depends="download.eclipse.gef.check" if="eclipse.gef.not.available">
     <echo message="Getting Eclipse GEF ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="http://download.eclipse.org/tools/gef/downloads/drops/3.8.2/R201301141834/GEF-SDK-3.8.2.zip"
-         dest="${install.home}/lib/GEF-SDK-3.8.2.zip" />
+    <get src="http://download.eclipse.org/tools/gef/downloads/drops/3.9.1/R201308190730/GEF-SDK-3.9.1.zip"
+         dest="${install.home}/lib/GEF-SDK-3.9.1.zip" />
   </target>
 
   <!-- Download jBPM binaries -->
@@ -262,6 +262,26 @@
     <mkdir dir="${install.home}/lib"/>
   	<get src="${jBPM.console.url}" dest="${install.home}/lib/jbpm-console-${jBPM.version}.war"  />
   </target>
+  <target name="check.jbpm.console.modules">
+    <condition property="jbpm.console.modules">
+	<equals arg1="${jBPM.console.modules}" arg2="true" />
+    </condition>
+  </target>
+  <target name="download.jBPM.console.modules.check" if="jbpm.console.modules" depends="check.jbpm.console.modules">
+    <echo message="Checking jBPM console modules download ..." />
+    <condition property="jBPM.console.modules.not.available">
+      <and>
+    	<not>
+          <available file="${install.home}/lib/jbpm-console-modules-${jBPM.version}.zip" />
+        </not>
+      </and>
+    </condition>
+  </target>
+  <target name="download.jBPM.console.modules" depends="download.jBPM.console.modules.check" if="jBPM.console.modules.not.available">
+    <echo message="Getting jBPM console modules ..." />
+    <mkdir dir="${install.home}/lib"/>
+  	<get src="${jBPM.console.modules.url}" dest="${install.home}/lib/jbpm-console-modules-${jBPM.version}.zip"  />
+  </target>
 
   <!-- ############ INSTALL ############ -->
 
@@ -274,7 +294,13 @@
     <chmod perm="a+x" file="${jboss.home}/bin/jboss-cli.sh" />
   </target>
 	
-  <!-- Install gwt-console -->
+  <!-- Install jBPM console modules -->
+  <target name="install.jBPM-console-modules.into.jboss" depends="download.jBPM.console.modules" if="jbpm.console.modules">
+    <unzip src="${install.home}/lib/jbpm-console-modules-${jBPM.version}.zip"
+           dest="${jboss.home}"/>
+  </target>
+
+  <!-- Install jBPM console -->
   <target name="install.jBPM-console.into.jboss" depends="download.db.driver,download.jBPM.console">
     <mkdir dir="${install.home}/target"/>
     <mkdir dir="${install.home}/target/jbpm-console-war"/>
@@ -344,17 +370,17 @@
     <antcall target="unzipEclipse" />	
     <antcall target="untarEclipse" />
     <unzip dest="${install.home}" overwrite="true" 
-           src="${install.home}/lib/GEF-SDK-3.8.2.zip" />				         
+           src="${install.home}/lib/GEF-SDK-3.9.1.zip" />				         
   </target>
   
   <target name="unzipEclipse" if="expandTypeZip">
     <unzip dest="${install.home}" overwrite="true" 
-           src="${install.home}/lib/eclipse-java-juno-SR2-${download.type}.zip" />  
+           src="${install.home}/lib/eclipse-java-kepler-R-${download.type}.zip" />  
   </target>
 
   <target name="untarEclipse" if="expandTypeTarGz">
-    <gunzip src="${install.home}/lib/eclipse-java-juno-SR2-${download.type}.tar.gz"/>
-    <untar dest="${install.home}" src="${install.home}/lib/eclipse-java-juno-SR2-${download.type}.tar" />
+    <gunzip src="${install.home}/lib/eclipse-java-kepler-R-${download.type}.tar.gz"/>
+    <untar dest="${install.home}" src="${install.home}/lib/eclipse-java-kepler-R-${download.type}.tar" />
     <chmod perm="a+x" file="${install.home}/eclipse/eclipse" os="Linux"/>
     <chmod perm="a+x" file="${install.home}/eclipse/Eclipse.app/Contents/MacOS/eclipse" os="Mac OS X"/>
   </target>
@@ -387,7 +413,7 @@
       <arg value="-application" />
       <arg value="org.eclipse.equinox.p2.director" />
       <arg value="-repository" />
-      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/juno,http://download.eclipse.org/releases/juno,http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130423" />
+      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/kepler,http://download.eclipse.org/releases/kepler,http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130423" />
       <arg value="-destination" />
       <arg value="${eclipse.home}" />
       <arg value="-installIU" />
@@ -400,7 +426,7 @@
       <arg value="-application" />
       <arg value="org.eclipse.equinox.p2.director" />
       <arg value="-repository" />
-      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/juno,http://download.eclipse.org/releases/juno,http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130423" />
+      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/kepler,http://download.eclipse.org/releases/kepler,http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130423" />
       <arg value="-destination" />
       <arg value="${eclipse.home}" />
       <arg value="-installIU" />
@@ -413,7 +439,7 @@
       <arg value="-application" />
       <arg value="org.eclipse.equinox.p2.director" />
       <arg value="-repository" />
-      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/juno,http://download.eclipse.org/releases/juno,http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130423" />
+      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/kepler,http://download.eclipse.org/releases/kepler,http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130423" />
       <arg value="-installIU" />
       <arg value="org.eclipse.bpmn2.modeler.feature.feature.group" />
       <arg value="-installIU" />
@@ -422,13 +448,13 @@
   </target>
 
   <!-- Install Demo -->
-  <target name="install.demo" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse,install.modeler.into.eclipse,install.dashboard.into.jboss" />
+  <target name="install.demo" depends="install.jboss,install.db.files,install.jBPM-console-modules.into.jboss,install.jBPM-console.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse,install.modeler.into.eclipse,install.dashboard.into.jboss" />
 
   <!-- Install Demo (Eclipse) -->
   <target name="install.demo.eclipse" depends="install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse,install.modeler.into.eclipse" />
 
   <!-- Install Demo (No Eclipse) -->
-  <target name="install.demo.noeclipse" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.dashboard.into.jboss" />
+  <target name="install.demo.noeclipse" depends="install.jboss,install.db.files,install.jBPM-console-modules.into.jboss,install.jBPM-console.into.jboss,install.dashboard.into.jboss" />
   
   <!-- ############ START/STOP ############ -->
   <target name="start.h2.check">
@@ -464,6 +490,7 @@
       <arg value="${jboss.bind.address}" />
       <arg value="--server-config=standalone-full.xml" />
       <arg value="-Dorg.kie.demo=true" />
+      <arg value="-Dorg.kie.example=false" />
     </exec>
     <property name="jboss.full.path.linux" location="${jboss.home}/bin/standalone.sh" />
     <exec executable="${jboss.full.path.linux}" spawn="yes" osfamily="unix">
@@ -472,6 +499,7 @@
       <arg value="${jboss.bind.address}" />
       <arg value="--server-config=standalone-full.xml" />
       <arg value="-Dorg.kie.demo=true" />
+      <arg value="-Dorg.kie.example=false" />
     </exec>
     <waitfor maxwait="5" maxwaitunit="minute" checkevery="10"
              checkeveryunit="second" timeoutproperty="jboss.timeout">
