@@ -2838,7 +2838,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("Bug 1052313 - Restrictions on Number that is result of 'accumulate' CE are not shown in GRE when the rule is reopened")
     public void testFromAccumulate() {
         String drl = "import java.lang.Number;\n"
                 + "import org.mortgages.Applicant;\n"
