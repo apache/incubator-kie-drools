@@ -1,20 +1,22 @@
 package org.drools.compiler.rule.builder.dialect.mvel;
 
+import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
+
 import java.util.Arrays;
 import java.util.Map;
 
-import org.drools.core.base.mvel.MVELCompilationUnit;
-import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
+import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.compiler.rule.builder.SalienceBuilder;
+import org.drools.core.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.compiler.rule.builder.SalienceBuilder;
+import org.drools.core.rule.Rule.SafeSalience;
 import org.drools.core.spi.KnowledgeHelper;
-
-import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
+import org.kie.internal.security.KiePolicyHelper;
 
 public class MVELSalienceBuilder
     implements
@@ -58,7 +60,7 @@ public class MVELSalienceBuilder
 
             MVELSalienceExpression expr = new MVELSalienceExpression( unit,
                                                                       dialect.getId() );
-            context.getRule().setSalience( expr );
+            context.getRule().setSalience( KiePolicyHelper.isPolicyEnabled() ? new SafeSalience(expr) : expr );
             
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
             data.addCompileable( context.getRule(),

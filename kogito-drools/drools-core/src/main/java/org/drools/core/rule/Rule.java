@@ -845,7 +845,7 @@ public class Rule
         return consequenceMetaData;
     }
     
-    private static class SafeConsequence implements Consequence, Serializable {
+    public static class SafeConsequence implements Consequence, Serializable {
         private static final long serialVersionUID = -8109957972163261899L;
         private final Consequence delegate;
         public SafeConsequence( Consequence delegate ) {
@@ -869,7 +869,7 @@ public class Rule
         }
     }
     
-    private static class SafeSalience implements Salience, Serializable {
+    public static class SafeSalience implements Salience, Serializable {
         private static final long serialVersionUID = 1L;
         private final Salience delegate;
         public SafeSalience( Salience delegate ) {
@@ -901,7 +901,7 @@ public class Rule
         }
     }
     
-    private static class SafeEnabled implements Enabled, Serializable {
+    public static class SafeEnabled implements Enabled, Serializable {
         private static final long serialVersionUID = -8361753962814039574L;
         private final Enabled delegate;
         public SafeEnabled( Enabled delegate ) {

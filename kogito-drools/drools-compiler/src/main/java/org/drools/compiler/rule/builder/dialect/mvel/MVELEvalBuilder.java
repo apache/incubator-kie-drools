@@ -16,27 +16,29 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
+import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
+
 import java.util.Arrays;
 import java.util.Map;
 
-import org.drools.core.base.mvel.MVELCompilationUnit;
-import org.drools.core.base.mvel.MVELEvalExpression;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.EvalDescr;
+import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.compiler.rule.builder.RuleConditionBuilder;
+import org.drools.core.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.mvel.MVELEvalExpression;
 import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EvalCondition;
+import org.drools.core.rule.EvalCondition.SafeEvalExpression;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
-import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.core.spi.KnowledgeHelper;
-
-import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
+import org.kie.internal.security.KiePolicyHelper;
 
 public class MVELEvalBuilder
     implements
@@ -99,7 +101,7 @@ public class MVELEvalBuilder
 
             MVELEvalExpression expr = new MVELEvalExpression( unit,
                                                               dialect.getId() );
-            eval.setEvalExpression( expr );
+            eval.setEvalExpression( KiePolicyHelper.isPolicyEnabled() ? new SafeEvalExpression(expr) : expr );
 
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
             data.addCompileable( eval,

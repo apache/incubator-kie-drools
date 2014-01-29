@@ -14,6 +14,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.ConsequenceException;
 import org.kie.internal.io.ResourceFactory;
+import org.mvel2.PropertyAccessException;
 
 /**
  * This is a sample class to launch a rule.
@@ -120,10 +121,10 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
     }
     
     @Test
-    public void testUntrustedSalience() throws Exception {
+    public void testUntrustedJavaSalience() throws Exception {
         String drl = "package org.foo.bar\n" +
                 "import "+MaliciousExitHelper.class.getName().replace('$', '.')+" \n" +
-                "rule R1 salience( MaliciousExitHelper.exit() ) \n" +
+                "rule R1 dialect \"java\" salience( MaliciousExitHelper.exit() ) \n" +
                 "when\n" +
                 "then\n" +
                 "end\n";
@@ -144,6 +145,37 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
             Assert.fail("The security policy for the rule should have prevented this from executing...");
         } catch (Exception e) {
             // test succeeded. the policy in place prevented the rule from executing the System.exit().
+        }
+    }
+
+    @Test
+    public void testUntrustedMVELSalience() throws Exception {
+        String drl = "package org.foo.bar\n" +
+                "import "+MaliciousExitHelper.class.getName().replace('$', '.')+" \n" +
+                "rule R1 dialect \"mvel\" salience( MaliciousExitHelper.exit() ) \n" +
+                "when\n" +
+                "then\n" +
+                "end\n";
+
+        try {
+            KieServices ks = KieServices.Factory.get();
+            KieFileSystem kfs = ks.newKieFileSystem().write(ResourceFactory.newByteArrayResource(drl.getBytes())
+                    .setSourcePath("org/foo/bar/r1.drl"));
+            ks.newKieBuilder(kfs).buildAll();
+
+            ReleaseId releaseId = ks.getRepository().getDefaultReleaseId();
+            KieContainer kc = ks.newKieContainer(releaseId);
+
+            KieSession ksession = kc.newKieSession();
+            ksession.fireAllRules();
+            Assert.fail("The security policy for the rule should have prevented this from executing...");
+        } catch (PropertyAccessException e) {
+            // weak way of testing but couldn't find a better way
+            if( e.toString().contains( "The security policy should have prevented" ) ) {
+                Assert.fail("The security policy for the rule should have prevented this from executing...");
+            } else {
+                // test succeeded
+            }
         }
     }
 
@@ -180,6 +212,127 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testCustomAccumulateMVEL() throws Exception {
+        String drl = "package org.foo.bar\n" +
+                "rule testRule dialect \"mvel\" \n" + 
+                "    when\n" + 
+                "        Number() from accumulate(Object(), " +
+                "               init(System.exit(-1);), " +
+                "               action(System.exit(-1);), " +
+                "               reverse(System.exit(-1);), " +
+                "               result(0))\n" + 
+                "    then\n" + 
+                "end";
+
+        try {
+            KieServices ks = KieServices.Factory.get();
+            KieFileSystem kfs = ks.newKieFileSystem().write(ResourceFactory.newByteArrayResource(drl.getBytes())
+                    .setSourcePath("org/foo/bar/r1.drl"));
+            ks.newKieBuilder(kfs).buildAll();
+
+            ReleaseId releaseId = ks.getRepository().getDefaultReleaseId();
+            KieContainer kc = ks.newKieContainer(releaseId);
+
+            KieSession ksession = kc.newKieSession();
+            ksession.fireAllRules();
+            Assert.fail("The security policy for the rule should have prevented this from executing...");
+        } catch (PropertyAccessException e) {
+            // weak way of testing but couldn't find a better way
+            if( e.toString().contains( "The security policy should have prevented" ) ) {
+                Assert.fail("The security policy for the rule should have prevented this from executing...");
+            } else {
+                // test succeeded
+            }
+        } catch( Exception e ) {
+            if( e.toString().contains("access denied (\"java.lang.RuntimePermission\" \"exitVM.-1\")")) {
+                // test succeeded
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    @Test
+    public void testAccumulateFunctionMVEL() throws Exception {
+        String drl = "package org.foo.bar\n" +
+                "import "+MaliciousExitHelper.class.getName().replace('$', '.')+" \n" +
+                "rule testRule dialect \"mvel\" \n" + 
+                "    when\n" + 
+                "        Number() from accumulate(Object(), " +
+                "               sum(MaliciousExitHelper.exit()))\n" + 
+                "    then\n" + 
+                "end";
+
+        try {
+            KieServices ks = KieServices.Factory.get();
+            KieFileSystem kfs = ks.newKieFileSystem().write(ResourceFactory.newByteArrayResource(drl.getBytes())
+                    .setSourcePath("org/foo/bar/r1.drl"));
+            ks.newKieBuilder(kfs).buildAll();
+
+            ReleaseId releaseId = ks.getRepository().getDefaultReleaseId();
+            KieContainer kc = ks.newKieContainer(releaseId);
+
+            KieSession ksession = kc.newKieSession();
+            ksession.insert("foo");
+            ksession.fireAllRules();
+            Assert.fail("The security policy for the rule should have prevented this from executing...");
+        } catch (PropertyAccessException e) {
+            // weak way of testing but couldn't find a better way
+            if( e.toString().contains( "The security policy should have prevented" ) ) {
+                Assert.fail("The security policy for the rule should have prevented this from executing...");
+            } else {
+                // test succeeded
+            }
+        } catch( Exception e ) {
+            if( e.toString().contains("access denied (\"java.lang.RuntimePermission\" \"exitVM.0\")")) {
+                // test succeeded
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    @Test
+    public void testAccumulateFunctionJava() throws Exception {
+        String drl = "package org.foo.bar\n" +
+                "import "+MaliciousExitHelper.class.getName().replace('$', '.')+" \n" +
+                "rule testRule dialect \"java\" \n" + 
+                "    when\n" + 
+                "        Number() from accumulate(Object(), " +
+                "               sum(MaliciousExitHelper.exit()))\n" + 
+                "    then\n" + 
+                "end";
+
+        try {
+            KieServices ks = KieServices.Factory.get();
+            KieFileSystem kfs = ks.newKieFileSystem().write(ResourceFactory.newByteArrayResource(drl.getBytes())
+                    .setSourcePath("org/foo/bar/r1.drl"));
+            ks.newKieBuilder(kfs).buildAll();
+
+            ReleaseId releaseId = ks.getRepository().getDefaultReleaseId();
+            KieContainer kc = ks.newKieContainer(releaseId);
+
+            KieSession ksession = kc.newKieSession();
+            ksession.insert("foo");
+            ksession.fireAllRules();
+            Assert.fail("The security policy for the rule should have prevented this from executing...");
+        } catch (PropertyAccessException e) {
+            // weak way of testing but couldn't find a better way
+            if( e.toString().contains( "The security policy should have prevented" ) ) {
+                Assert.fail("The security policy for the rule should have prevented this from executing...");
+            } else {
+                // test succeeded
+            }
+        } catch( Exception e ) {
+            if( e.toString().contains("access denied (\"java.lang.RuntimePermission\" \"exitVM.0\")")) {
+                // test succeeded
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    @Test
     public void testUntrustedEnabled() throws Exception {
         String drl = "package org.foo.bar\n" +
                 "import "+MaliciousExitHelper.class.getName().replace('$', '.')+" \n" +
@@ -204,6 +357,37 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
             Assert.fail("The security policy for the rule should have prevented this from executing...");
         } catch (Exception e) {
             // test succeeded. the policy in place prevented the rule from executing the System.exit().
+        }
+    }
+    
+    @Test
+    public void testUntrustedMVELEnabled() throws Exception {
+        String drl = "package org.foo.bar\n" +
+                "import "+MaliciousExitHelper.class.getName().replace('$', '.')+" \n" +
+                "rule R1 dialect \"mvel\" enabled( MaliciousExitHelper.isEnabled() ) \n" +
+                "when\n" +
+                "then\n" +
+                "end\n";
+
+        try {
+            KieServices ks = KieServices.Factory.get();
+            KieFileSystem kfs = ks.newKieFileSystem().write(ResourceFactory.newByteArrayResource(drl.getBytes())
+                    .setSourcePath("org/foo/bar/r1.drl"));
+            ks.newKieBuilder(kfs).buildAll();
+
+            ReleaseId releaseId = ks.getRepository().getDefaultReleaseId();
+            KieContainer kc = ks.newKieContainer(releaseId);
+
+            KieSession ksession = kc.newKieSession();
+            ksession.fireAllRules();
+            Assert.fail("The security policy for the rule should have prevented this from executing...");
+        } catch (PropertyAccessException e) {
+            // weak way of testing but couldn't find a better way
+            if( e.toString().contains( "The security policy should have prevented" ) ) {
+                Assert.fail("The security policy for the rule should have prevented this from executing...");
+            } else {
+                // test succeeded
+            }
         }
     }
     

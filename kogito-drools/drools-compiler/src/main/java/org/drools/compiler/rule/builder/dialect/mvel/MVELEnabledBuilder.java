@@ -4,18 +4,20 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.base.mvel.MVELCompilationUnit;
-import org.drools.core.base.mvel.MVELEnabledExpression;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
+import org.drools.compiler.rule.builder.EnabledBuilder;
+import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
+import org.drools.core.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.mvel.MVELEnabledExpression;
 import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.compiler.rule.builder.EnabledBuilder;
-import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.core.rule.Rule.SafeEnabled;
 import org.drools.core.spi.KnowledgeHelper;
+import org.kie.internal.security.KiePolicyHelper;
 
 public class MVELEnabledBuilder
     implements
@@ -66,7 +68,7 @@ public class MVELEnabledBuilder
 
             MVELEnabledExpression expr = new MVELEnabledExpression( unit,
                                                                     dialect.getId() );
-            context.getRule().setEnabled( expr );
+            context.getRule().setEnabled( KiePolicyHelper.isPolicyEnabled() ? new SafeEnabled(expr) : expr );
 
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
             data.addCompileable( context.getRule(),
