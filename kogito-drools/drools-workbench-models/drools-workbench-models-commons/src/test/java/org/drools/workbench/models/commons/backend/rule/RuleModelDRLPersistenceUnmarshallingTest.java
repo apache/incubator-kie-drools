@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.Assert;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.MethodInfo;
@@ -55,6 +56,7 @@ import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertNotNull;
@@ -2842,6 +2844,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
+    @Ignore("Bug 1052313 - Restrictions on Number that is result of 'accumulate' CE are not shown in GRE when the rule is reopened")
     public void testFromAccumulate() {
         String drl = "import java.lang.Number;\n"
                 + "import org.mortgages.Applicant;\n"
@@ -2871,7 +2874,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         FromAccumulateCompositeFactPattern pattern = (FromAccumulateCompositeFactPattern) m.lhs[ 0 ];
         assertNotNull( pattern.getFactPattern() );
         FactPattern factPattern = pattern.getFactPattern();
-        assertNotNull( factPattern.getConstraintList() );
+        assertEquals("total", factPattern.getBoundName());
+        assertNotNull(factPattern.getConstraintList());
         assertEquals( 1, factPattern.getConstraintList().getNumberOfConstraints() );
         FieldConstraint constraint = factPattern.getConstraintList().getConstraint( 0 );
         assertTrue( constraint instanceof SingleFieldConstraint );
