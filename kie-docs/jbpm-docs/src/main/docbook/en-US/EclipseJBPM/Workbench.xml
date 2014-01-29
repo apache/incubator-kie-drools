@@ -33,12 +33,15 @@
     by the workbench application, select "URI" and click "Next >" once more.</para> 
     
     <para>Use the following URI to connect to your workbench repositories:</para>
-    <programlisting>git://&lt;hostname&gt;/&lt;repository_name&gt;</programlisting>
+    <programlisting>ssh://&lt;hostname&gt;:8001/&lt;repository_name&gt;</programlisting>
     
     <para>For example, if you are running the workbench application on your local host (for
     example by using the jbpm-installer), and you want to import the jbpm-playground repo, use the
     following URI:</para>
-    <programlisting>git://localhost/jbpm-playground</programlisting>
+    <programlisting>ssh://localhost:8001/jbpm-playground</programlisting>
+    
+    <para>Note that you can change the port that is used by the server to provide ssh access
+    to the git repository if necessary, using the system property <code>org.uberfire.nio.git.ssh.port</code></para>
     
     <para>Fill in the URI of the repository you would like to import, as for example shown below,
     and click "Next >".</para>
