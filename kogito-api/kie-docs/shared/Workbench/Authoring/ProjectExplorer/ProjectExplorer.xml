@@ -77,7 +77,7 @@
       </itemizedlist></para>
     <para>Views can be selected by clicking on the icon within the Project Explorer, as shown
       below.</para>
-    <para>Both Project View and Repository Views can be further refined by selecting either "Show as Folders" or "Show as
+    <para>Both Project and Repository Views can be further refined by selecting either "Show as Folders" or "Show as
       Links".</para>
     <figure>
       <title>Switching view</title>
@@ -131,4 +131,46 @@
     </section>
   </section>
 
+  <section xml:id="wb.ProjectExplorerCopyRenameDeleteActions">
+    <title>Copy, Rename and Delete Actions</title>
+    <para>Copy, rename and delete actions are available on <emphasis role="italic">Links </emphasis> mode, for packages
+      (in of Project View) and for files and directories as well (in Repository View).</para>
+    <itemizedlist>
+      <listitem>
+        <para> A : Copy</para>
+      </listitem>
+      <listitem>
+        <para> B : Rename</para>
+      </listitem>
+      <listitem>
+        <para> C : Delete</para>
+      </listitem>
+    </itemizedlist>
+    <figure>
+      <title>Project View - Package actions</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Project-Links-Copy-Rename-Delete.png"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+    <figure>
+      <title>Repository View - Files and directories actions</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Repository-Copy-Rename-Delete.png"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+    
+    <warning>
+      <para>Workbench roadmap includes a refactoring and an impact analyses tools, but currenctly doesn't have it. Until
+        both tools are provided make sure that your changes (copy/rename/delete) on packages, files or directories
+        doesn't have a major impact on your project.</para>
+      <para>In cases that your change had an unexcepcted impact, Workbench allows you to restore your repository using
+        the <link linkend="wb.VFSRepositoryEditor">Repository editor</link>.</para>
+    </warning>
+    
+  </section>
+  
 </section>
