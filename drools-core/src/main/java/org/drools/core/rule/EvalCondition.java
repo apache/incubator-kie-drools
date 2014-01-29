@@ -212,7 +212,7 @@ public class EvalCondition extends ConditionalElement
         return this.expression.toString();
     }
 
-    private static class SafeEvalExpression implements EvalExpression, Serializable {
+    public static class SafeEvalExpression implements EvalExpression, Serializable {
         private static final long serialVersionUID = -5682290553015978731L;
         private EvalExpression delegate;
         public SafeEvalExpression(EvalExpression delegate) {
