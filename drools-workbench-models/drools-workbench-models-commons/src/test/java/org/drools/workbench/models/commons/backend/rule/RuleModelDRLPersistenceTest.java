@@ -275,6 +275,38 @@ public class RuleModelDRLPersistenceTest {
     }
 
     @Test
+    public void testNotNull() {
+        String expected = "" +
+                "rule \"my rule\" \n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    Customer( contact != null , contact.tel1 > 15 )\n" +
+                "  then\n" +
+                "end\n";
+        final RuleModel m = new RuleModel();
+
+        FactPattern factPattern = new FactPattern();
+        factPattern.setFactType("Customer");
+        m.lhs = new IPattern[]{factPattern};
+
+        SingleFieldConstraint constraint1 = new SingleFieldConstraint("Customer", "contact", "Contact", null);
+        constraint1.setOperator("!= null");
+        factPattern.addConstraint(constraint1);
+
+        SingleFieldConstraint constraint2 = new SingleFieldConstraint("Customer", "contact", "Contact", null);
+        factPattern.addConstraint(constraint2);
+
+        SingleFieldConstraint constraint3 = new SingleFieldConstraint("Contact", "tel1", "Integer", constraint2);
+        constraint3.setOperator(">");
+        constraint3.setValue("15");
+        factPattern.addConstraint(constraint3);
+
+        m.name = "my rule";
+
+        checkMarshallUnmarshall(expected, m);
+    }
+
+    @Test
     public void testCallFunction() throws Exception {
         String expected = "" +
                 "package org.mortgages;\n" +
