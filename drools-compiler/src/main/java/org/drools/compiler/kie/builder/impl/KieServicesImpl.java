@@ -171,7 +171,7 @@ public class KieServicesImpl implements InternalKieServices {
     }
 
     public KieBaseConfiguration newKieBaseConfiguration(Properties properties) {
-        return new RuleBaseConfiguration(properties, null);
+        return new RuleBaseConfiguration(properties);
     }
 
     public KieBaseConfiguration newKieBaseConfiguration(Properties properties, ClassLoader classLoader) {
