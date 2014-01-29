@@ -286,7 +286,12 @@ public class PhreakTimerNode {
             if ( log.isTraceEnabled() ) {
                 log.trace( "Timer Fire Now {}", leftTuple );
             }
-            doPropagateChildLeftTuple( sink, trgLeftTuples, stagedLeftTuples, leftTuple, tm );
+            LeftTuple childLeftTuple = doPropagateChildLeftTuple( sink, trgLeftTuples, stagedLeftTuples, leftTuple, tm );
+            if (childLeftTuple.getStagedType() == LeftTuple.INSERT) {
+                // Flag the newly created childLeftTuple to avoid a reevaluation in case it gets
+                // rescheduled before the end of this doNode loop
+                childLeftTuple.setObject(Boolean.TRUE);
+            }
 
             trigger.nextFireTime();
 
@@ -336,18 +341,21 @@ public class PhreakTimerNode {
         }
     }
 
-    private static void doPropagateChildLeftTuple(LeftTupleSink sink,
-                                                  LeftTupleSets trgLeftTuples,
-                                                  LeftTupleSets stagedLeftTuples,
-                                                  LeftTuple leftTuple,
-                                                  TimerNodeMemory tm) {
+    private static LeftTuple doPropagateChildLeftTuple(LeftTupleSink sink,
+                                                       LeftTupleSets trgLeftTuples,
+                                                       LeftTupleSets stagedLeftTuples,
+                                                       LeftTuple leftTuple,
+                                                       TimerNodeMemory tm) {
         LeftTuple childLeftTuple = leftTuple.getFirstChild();
         if ( childLeftTuple == null ) {
             childLeftTuple = sink.createLeftTuple( leftTuple, sink, leftTuple.getPropagationContext(), true );
-            trgLeftTuples.addInsert( childLeftTuple );
+            trgLeftTuples.addInsert(childLeftTuple);
             if ( log.isTraceEnabled() ) {
                 log.trace( "Timer Insert {}", childLeftTuple );
             }
+        } else if (childLeftTuple.getObject() == Boolean.TRUE) {
+            // This childLeftTuple has been created in this doNode loop, just skip it
+            childLeftTuple.setObject(null);
         } else {
             switch ( childLeftTuple.getStagedType() ) {
                 // handle clash with already staged entries
@@ -363,6 +371,7 @@ public class PhreakTimerNode {
                 log.trace( "Timer Update {}", childLeftTuple );
             }
         }
+        return childLeftTuple;
     }
 
     public static class TimerNodeJob

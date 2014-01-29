@@ -45,6 +45,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.time.Calendar;
 import org.kie.api.time.SessionClock;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class TimerAndCalendarTest extends CommonTestMethodBase {
     
@@ -1624,5 +1625,27 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
+    @Test
+    public void testCronFire() throws InterruptedException {
+        // BZ-1059372
+        String drl = "package test.drools\n" +
+                     "rule TestRule " +
+                     "  timer (cron:* * * * * ?) " +
+                     "when\n" +
+                     "    String() " +
+                     "    Integer() " +
+                     "then\n" +
+                     "end\n";
 
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        int repetitions = 10000;
+        for (int j = 0; j < repetitions; j++ ) {
+            ksession.insert( j );
+        }
+
+        ksession.insert( "go" );
+        ksession.fireAllRules();
+    }
 }
