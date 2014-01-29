@@ -77,7 +77,7 @@ public class LocalHTWorkItemHandler extends AbstractHTWorkItemHandler {
                 logMsg.append(". Error reported by task server: ").append(e.getMessage());
                 logger.error(logMsg.toString(), e);
                 // rethrow to cancel processing if the exception is not recoverable                
-                if (!(e instanceof TaskException) && !((TaskException) e).isRecoverable()) {
+                if (!(e instanceof TaskException) || ((e instanceof TaskException) && !((TaskException) e).isRecoverable())) {
                 	if (e instanceof RuntimeException) {
                         throw (RuntimeException) e;
                     } else {
