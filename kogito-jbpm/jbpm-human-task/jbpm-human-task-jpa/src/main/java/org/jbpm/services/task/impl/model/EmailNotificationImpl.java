@@ -23,10 +23,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 import org.kie.internal.task.api.model.EmailNotificationHeader;
 import org.kie.internal.task.api.model.Language;
@@ -34,6 +34,7 @@ import org.kie.internal.task.api.model.NotificationType;
 
 
 @Entity
+@DiscriminatorValue("EmailNotification")
 public class EmailNotificationImpl extends NotificationImpl implements org.kie.internal.task.api.model.EmailNotification{
 
     @OneToMany(cascade = CascadeType.ALL)
