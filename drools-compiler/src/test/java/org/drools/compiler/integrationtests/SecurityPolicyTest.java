@@ -148,6 +148,38 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testCustomAccumulate() throws Exception {
+        String drl = "package org.foo.bar\n" +
+                "rule testRule\n" + 
+                "    when\n" + 
+                "        Number() from accumulate(Object(), " +
+                "               init(System.exit(-1);), " +
+                "               action(System.exit(-1);), " +
+                "               reverse(System.exit(-1);), " +
+                "               result(0))\n" + 
+                "    then\n" + 
+                "end";
+
+        try {
+            KieServices ks = KieServices.Factory.get();
+            KieFileSystem kfs = ks.newKieFileSystem().write(ResourceFactory.newByteArrayResource(drl.getBytes())
+                    .setSourcePath("org/foo/bar/r1.drl"));
+            ks.newKieBuilder(kfs).buildAll();
+
+            ReleaseId releaseId = ks.getRepository().getDefaultReleaseId();
+            KieContainer kc = ks.newKieContainer(releaseId);
+
+            KieSession ksession = kc.newKieSession();
+            ksession.fireAllRules();
+            Assert.fail("The security policy for the rule should have prevented this from executing...");
+        } catch (ShouldHavePrevented e) {
+            Assert.fail("The security policy for the rule should have prevented this from executing...");
+        } catch (Exception e) {
+            // test succeeded. the policy in place prevented the rule from executing the System.exit().
+        }
+    }
+
+    @Test
     public void testUntrustedEnabled() throws Exception {
         String drl = "package org.foo.bar\n" +
                 "import "+MaliciousExitHelper.class.getName().replace('$', '.')+" \n" +

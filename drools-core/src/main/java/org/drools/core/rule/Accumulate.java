@@ -31,9 +31,11 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.spi.Accumulator;
+import org.drools.core.spi.Accumulator.SafeAccumulator;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
+import org.kie.internal.security.KiePolicyHelper;
 
 /**
  * A class to represent the Accumulate CE
@@ -353,9 +355,10 @@ public class Accumulate extends ConditionalElement
         }
 
         public void wire( Object object ) {
-            accumulators[index] = (Accumulator) object;
+            Accumulator accumulator = KiePolicyHelper.isPolicyEnabled() ? new SafeAccumulator((Accumulator) object) : (Accumulator) object;
+            accumulators[index] = accumulator;
             for ( Accumulate clone : cloned ) {
-                clone.accumulators[index] = (Accumulator) object;
+                clone.accumulators[index] = accumulator;
             }
         }
     }
