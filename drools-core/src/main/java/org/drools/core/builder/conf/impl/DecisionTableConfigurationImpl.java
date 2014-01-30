@@ -30,7 +30,7 @@ public class DecisionTableConfigurationImpl extends ResourceConfigurationImpl im
 
     private final Logger logger = LoggerFactory.getLogger( DecisionTableConfigurationImpl.class ); 
     
-    private DecisionTableInputType inputType;
+    private DecisionTableInputType inputType = DecisionTableInputType.XLS;
     
     private String worksheetName;
     
@@ -56,7 +56,9 @@ public class DecisionTableConfigurationImpl extends ResourceConfigurationImpl im
     public Properties toProperties() {
         Properties prop = super.toProperties();
         prop.setProperty( DROOLS_DT_TYPE, inputType.toString() );
-        prop.setProperty( DROOLS_DT_WORKSHEET, worksheetName );
+        if( worksheetName != null ) {
+            prop.setProperty( DROOLS_DT_WORKSHEET, worksheetName );
+        }
         return prop;
     }
 
