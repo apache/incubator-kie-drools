@@ -275,7 +275,6 @@ public class RuleModelDRLPersistenceTest {
     }
 
     @Test
-    @Ignore
     public void testNotNull() {
         String expected = "" +
                 "rule \"my rule\" \n" +
@@ -284,6 +283,37 @@ public class RuleModelDRLPersistenceTest {
                 "    Customer( contact != null , contact.tel1 > 15 )\n" +
                 "  then\n" +
                 "end\n";
+
+        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        when(
+                dmo.getProjectModelFields()
+        ).thenReturn(
+                new HashMap<String, ModelField[]>() {{
+                    put("Customer",
+                            new ModelField[]{
+                                    new ModelField(
+                                            "contact",
+                                            "Contact",
+                                            ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                            ModelField.FIELD_ORIGIN.DECLARED,
+                                            FieldAccessorsAndMutators.BOTH,
+                                            "Contact"
+                                    )
+                            });
+                    put("Contact",
+                            new ModelField[]{
+                                    new ModelField(
+                                            "tel1",
+                                            "Integer",
+                                            ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                            ModelField.FIELD_ORIGIN.DECLARED,
+                                            FieldAccessorsAndMutators.BOTH,
+                                            "Integer"
+                                    )
+                            });
+                }}
+        );
+
         final RuleModel m = new RuleModel();
 
         FactPattern factPattern = new FactPattern();
@@ -304,7 +334,7 @@ public class RuleModelDRLPersistenceTest {
 
         m.name = "my rule";
 
-        checkMarshallUnmarshall(expected, m);
+        checkMarshallUnmarshall(expected, m, dmo);
     }
 
     @Test
