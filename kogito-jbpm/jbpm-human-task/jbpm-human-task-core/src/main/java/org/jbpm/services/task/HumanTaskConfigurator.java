@@ -133,7 +133,7 @@ public class HumanTaskConfigurator {
         	if (userGroupCallback == null) {
         		userGroupCallback = new MvelUserGroupCallbackImpl(true);
         	}
-        	environment.set(EnvironmentName.TASK_USER_GROUP_CALLBASK, userGroupCallback);
+        	environment.set(EnvironmentName.TASK_USER_GROUP_CALLBACK, userGroupCallback);
         	if (userInfo == null) {
         		userInfo = new DefaultUserInfo(true);
         	}
