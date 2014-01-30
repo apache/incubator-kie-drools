@@ -58,6 +58,9 @@ public class MavenRepository {
                 for (Repository repository : profile.getRepositories()) {
                     addExtraRepository( toRemoteRepository(settings, repository) );
                 }
+                for (Repository repository : profile.getPluginRepositories()) {
+                    addExtraRepository( toRemoteRepository(settings, repository) );
+                }
             }
         }
     }
