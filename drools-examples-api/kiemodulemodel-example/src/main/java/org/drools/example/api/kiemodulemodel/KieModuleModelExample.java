@@ -27,8 +27,8 @@ public class KieModuleModelExample {
 
         KieModuleModel kModuleModel = ks.newKieModuleModel();
         kModuleModel.newKieBaseModel("kiemodulemodel")
-                    .addInclude("kiebase1")
-                    .addInclude("kiebase2")
+                    .addInclude("kbase1")
+                    .addInclude("kbase2")
                     .newKieSessionModel("ksession6");
 
         kfs.writeKModuleXML(kModuleModel.toXML());
