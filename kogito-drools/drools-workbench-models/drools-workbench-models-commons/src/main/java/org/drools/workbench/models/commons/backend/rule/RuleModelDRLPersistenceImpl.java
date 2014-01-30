@@ -740,8 +740,10 @@ public class RuleModelDRLPersistenceImpl
             if ( !gctx.isHasOutput() ) {
                 return;
             }
-            if ( gctx.getDepth() == 0 ) {
-                buf.append( ", " );
+            if ( gctx.getDepth() == 0  ) {
+                if (buf.length() > 2 && !(buf.charAt(buf.length() - 2) == ',')) {
+                    buf.append(", ");
+                }
             } else {
                 CompositeFieldConstraint cconstr = (CompositeFieldConstraint) gctx.getParent().getFieldConstraint();
                 buf.append( cconstr.getCompositeJunctionType() + " " );
@@ -800,18 +802,18 @@ public class RuleModelDRLPersistenceImpl
                 assertConstraintValue( constr );
 
                 if ( isConstraintComplete( constr ) ) {
-                    SingleFieldConstraint parent = (SingleFieldConstraint) constr.getParent();
-                    StringBuilder parentBuf = new StringBuilder();
-                    while ( parent != null ) {
-                        String fieldName = parent.getFieldName();
-                        parentBuf.insert( 0,
-                                          fieldName + "." );
-                        parent = (SingleFieldConstraint) parent.getParent();
-                    }
-                    buf.append( parentBuf );
                     if ( constr instanceof SingleFieldConstraintEBLeftSide ) {
                         buf.append( ( (SingleFieldConstraintEBLeftSide) constr ).getExpressionLeftSide().getText() );
                     } else {
+                        SingleFieldConstraint parent = (SingleFieldConstraint) constr.getParent();
+                        StringBuilder parentBuf = new StringBuilder();
+                        while ( parent != null ) {
+                            String fieldName = parent.getFieldName();
+                            parentBuf.insert( 0,
+                                    fieldName + "." );
+                            parent = (SingleFieldConstraint) parent.getParent();
+                        }
+                        buf.append( parentBuf );
                         String fieldName = constr.getFieldName();
                         buf.append( fieldName );
                     }
