@@ -15,12 +15,12 @@
   </section>
   <section>
     <title>Annotations</title>
-    <para>@KContainer, @KBaser and @KSession all support an optional 'name' attribute. CDI typically
+    <para>@KContainer, @KBase and @KSession all support an optional 'name' attribute. CDI typically
       does "getOrCreate" when it injects, all injections receive the same instance for the same set
       of annotations. the 'name' annotation forces a unique instance for each name, although all
-      intsance for that name will be identity equals.</para>
+      instance for that name will be identity equals.</para>
     <section>
-      <title>@KRealaseId</title>
+      <title>@KReleaseId</title>
       <para>Used to bind an instance to a specific version of a KieModule. If kie-ci is on the
         classpath this will resolve dependencies automatically, downloading from remote
         repositories.</para>
@@ -35,13 +35,13 @@
 private KieContainer kContainer;</programlisting>
       </figure>
       <figure>
-        <title>Injects KieContianer for Dyanmic KieModule</title>
+        <title>Injects KieContainer for Dynamic KieModule</title>
         <programlisting language="JAVA">@Inject
 @KReleaseId(groupId = "jar1", artifactId = "art1", version = "1.1")
 private KieContainer kContainer;</programlisting>
       </figure>
       <figure>
-        <title>Injects named KieContianer for Dyanmic KieModule</title>
+        <title>Injects named KieContainer for Dynamic KieModule</title>
         <programlisting language="JAVA">@Inject
 @KContainer(name = "kc1")
 @KReleaseId(groupId = "jar1", artifactId = "art1", version = "1.1")
@@ -51,8 +51,8 @@ private KieContainer kContainer;</programlisting>
     <section>
       <title>@KBase</title>
       <para>@KBase is optional as it can be detected and added by the use of @Inject and variable
-        type inferrence.</para>
-      <para>The default argument, if given, maps to the value attribute and specifie the name of the KieBase from the
+        type inference.</para>
+      <para>The default argument, if given, maps to the value attribute and specifies the name of the KieBase from the
         kmodule.xml file.</para>
       <figure>
         <title>Injects the Default KieBase from the Classpath KieContainer</title>
@@ -68,13 +68,13 @@ private KieBase kbase;</programlisting>
       <figure>
         <title>Side by side version loading for 'jar1.KBase1' KieBase</title>
         <programlisting language="JAVA">@Inject
-@KSession("kbase1") 
-@KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.0")
+@KBase("kbase1")
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
 private KieBase kbase1v10;
 
 @Inject
 @KBase("kbase1") 
-@KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.1")
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.1")
 private KieBase kbase1v10;</programlisting>
       </figure>
       <figure>
@@ -93,8 +93,8 @@ private KieBase kbase1kb2;</programlisting>
     <section>
       <title>@KSession for KieSession</title>
       <para>@KSession is optional as it can be detected and added by the use of @Inject and variable
-        type inferrence.</para>
-      <para>The default argument, if given, maps to the value attribute and specifie the name of the KieSession from the
+        type inference.</para>
+      <para>The default argument, if given, maps to the value attribute and specifies the name of the KieSession from the
         kmodule.xml file</para>
       <figure>
         <title>Injects the Default KieSession from the Classpath KieContainer</title>
@@ -111,12 +111,12 @@ private KieSession ksession;</programlisting>
         <title>Side by side version loading for 'jar1.KBase1' KieBase</title>
         <programlisting language="JAVA">@Inject
 @KSession("ksession1") 
-@KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.0")
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
 private KieSession ksessionv10;
 
 @Inject
 @KSession("ksession1") 
-@KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.1")
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.1")
 private KieSession ksessionv11;</programlisting>
       </figure>
       <figure>
@@ -135,8 +135,8 @@ private KieSession ksession1ks2</programlisting>
     <section>
       <title>@KSession for StatelessKieSession</title>
       <para>@KSession is optional as it can be detected and added by the use of @Inject and variable
-        type inferrence.</para>
-      <para>The default argument, if given, maps to the value attribute and specifie the name of the KieSession from the
+        type inference.</para>
+      <para>The default argument, if given, maps to the value attribute and specifies the name of the KieSession from the
         kmodule.xml file.</para>
       <figure>
         <title>Injects the Default StatelessKieSession from the Classpath KieContainer</title>
