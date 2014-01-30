@@ -365,13 +365,13 @@ public class ClasspathKieProject extends AbstractKieProject {
             File f = (File)m.invoke(content);
             String path = f.getPath();
 
-            if (isInJar) {
+            if (isInJar && path.contains("contents" + File.separator)) {
                 String jarName = urlString.substring(0, kModulePos);
                 jarName = jarName.substring(jarName.lastIndexOf('/')+1);
                 String jarFolderPath = path.substring( 0, path.length() - ("contents/" + KieModuleModelImpl.KMODULE_JAR_PATH).length() );
                 String jarPath = jarFolderPath + jarName;
                 path = new File(jarPath).exists() ? jarPath : jarFolderPath + "content";
-            } else if (path.endsWith(KieModuleModelImpl.KMODULE_JAR_PATH)) {
+            } else if (path.endsWith(File.separator + KieModuleModelImpl.KMODULE_FILE_NAME)) {
                 path = path.substring( 0, path.length() - ("/" + KieModuleModelImpl.KMODULE_JAR_PATH).length() );
             }
 
