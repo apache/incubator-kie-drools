@@ -22,6 +22,7 @@ import org.drools.compiler.StockTick;
 import org.drools.core.FactHandle;
 import org.drools.compiler.Foo;
 import org.drools.compiler.Pet;
+import org.drools.core.base.UndefinedCalendarExcption;
 import org.drools.core.common.TimedRuleExecution;
 import org.drools.core.time.SessionPseudoClock;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
@@ -522,7 +523,25 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals( 3, list.size() );
     }
-    
+
+    @Test
+    public void testUndefinedCalendar() throws Exception {
+        String str = "";
+        str += "rule xxx \n";
+        str += "  calendars \"cal1\"\n";
+        str += "when \n";
+        str += "then \n";
+        str += "end  \n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieSession ksession = createKnowledgeSession(kbase);
+
+        try {
+            ksession.fireAllRules();
+            fail("should throw UndefinedCalendarExcption");
+        } catch (UndefinedCalendarExcption e) { }
+    }
+
     @Test(timeout=10000)
     public void testCalendarNormalRuleMultipleCalendars() throws Exception {
         String str = "";
