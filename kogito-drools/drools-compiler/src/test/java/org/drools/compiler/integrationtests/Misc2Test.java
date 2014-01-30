@@ -33,7 +33,6 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
-import org.drools.core.common.Memory;
 import org.drools.core.common.RightTupleSets;
 import org.drools.core.conflict.SalienceConflictResolver;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -43,7 +42,6 @@ import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.Rete;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.util.FileManager;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.LeftTuple;
@@ -62,14 +60,10 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Position;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
-import org.kie.api.event.rule.AgendaGroupPoppedEvent;
-import org.kie.api.event.rule.AgendaGroupPushedEvent;
-import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
-import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.KieBaseConfiguration;
@@ -112,7 +106,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -5167,5 +5160,137 @@ public class Misc2Test extends CommonTestMethodBase {
         assertNull(stagedLeftTuples.getDeleteFirst());
         assertEquals(0, stagedLeftTuples.insertSize());
         assertNull(stagedLeftTuples.getInsertFirst());
+    }
+
+    public static class EvallerBean {
+        private final Evaller evaller = new Evaller(1);
+        public Evaller getEvaller() { return evaller; }
+    }
+
+    public static class Evaller {
+        private final int size;
+
+        public Evaller() { this(0); }
+        public Evaller(int size) { this.size = size; }
+
+        public boolean check( Object o ) { return true; }
+        public static boolean checkStatic( Object o ) { return true; }
+
+        public int size() { return size; }
+        public int getSize() { return size; }
+    }
+
+    @Test
+    public void testGlobalInConstraint() throws Exception {
+        String str =
+                "global " + Evaller.class.getCanonicalName() + " evaller;\n" +
+                "global java.util.List list;\n" +
+                "declare Foo end\n" +
+                "rule Init when then insert( new Foo() ); end\n" +
+                "rule R1 when\n" +
+                "    $s : Foo( evaller.check( this ) == true )\n" +
+                "then\n" +
+                "    list.add( 42 );\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "    $s : Foo( evaller.check( this ) == false )\n" +
+                "then\n" +
+                "    list.add( 43 );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list );
+        ksession.setGlobal("evaller", new Evaller() );
+
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals(42, (int)list.get(0));
+    }
+
+    @Test
+    public void testStaticInConstraint() throws Exception {
+        String str =
+                "import " + Evaller.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "declare Foo end\n" +
+                "rule Init when then insert( new Foo() ); end\n" +
+                "rule R1 when\n" +
+                "    $s : Foo( Evaller.checkStatic( this ) == true )\n" +
+                "then\n" +
+                "    list.add( 42 );\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "    $s : Foo( Evaller.checkStatic( this ) == false )\n" +
+                "then\n" +
+                "    list.add( 43 );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals(42, (int)list.get(0));
+    }
+
+    @Test
+    public void testFieldPrecedenceOverGlobal() throws Exception {
+        String str =
+                "import " + EvallerBean.class.getCanonicalName() + ";\n" +
+                "global " + Evaller.class.getCanonicalName() + " evaller;\n" +
+                "global java.util.List list;\n" +
+                "rule R1 when\n" +
+                "    $s : EvallerBean( evaller.size() == 1 )\n" +
+                "then\n" +
+                "    list.add( 42 );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list );
+        ksession.setGlobal("evaller", new Evaller() );
+
+        ksession.insert(new EvallerBean());
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals(42, (int)list.get(0));
+    }
+
+    @Test
+    public void testFieldPrecedenceOverDeclaration() throws Exception {
+        String str =
+                "import " + Evaller.class.getCanonicalName() + ";\n" +
+                "import " + EvallerBean.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R1 when\n" +
+                "    evaller : Evaller()\n" +
+                "    $s : EvallerBean( evaller.size() == 1 )\n" +
+                "then\n" +
+                "    list.add( 42 );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list );
+
+        ksession.insert(new Evaller());
+        ksession.insert(new EvallerBean());
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals(42, (int)list.get(0));
     }
 }
