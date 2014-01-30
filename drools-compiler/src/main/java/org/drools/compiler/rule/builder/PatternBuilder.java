@@ -1584,6 +1584,8 @@ public class PatternBuilder
                     || ( fieldName.indexOf( '.' ) > -1 || fieldName.indexOf( '[' ) > -1 || fieldName.indexOf( '(' ) > -1 ) ) {
             // we need MVEL extractor for expressions
             Dialect dialect = context.getDialect();
+            Map<String, Class< ? >> globals = context.getPackageBuilder().getGlobals();
+
             try {
                 MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
                 context.setDialect( mvelDialect );
@@ -1591,7 +1593,6 @@ public class PatternBuilder
                 Map<String, Class< ? >> declarations = getDeclarationsMap( descr,
                                                                            context,
                                                                            false );
-                Map<String, Class< ? >> globals = context.getPackageBuilder().getGlobals();
 
                 final AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                         descr,
@@ -1634,6 +1635,12 @@ public class PatternBuilder
                 ((MVELCompileable) reader).compile( data );
                 data.addCompileable( (MVELCompileable) reader );
             } catch ( final Exception e ) {
+                int dotPos = fieldName.indexOf('.');
+                String varName = dotPos > 0 ? fieldName.substring(0, dotPos).trim() : fieldName;
+                if (globals.containsKey(varName)) {
+                    return null;
+                }
+
                 if ( reportError ) {
                     DialectUtil.copyErrorLocation(e,
                             descr);
