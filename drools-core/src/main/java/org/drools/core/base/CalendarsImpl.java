@@ -49,7 +49,11 @@ public class CalendarsImpl
     }
     
     public Calendar get(String identifier) {
-        return this.map.get( identifier );
+        Calendar calendar = this.map.get( identifier );
+        if (calendar == null) {
+            throw new UndefinedCalendarExcption(identifier);
+        }
+        return calendar;
     }
     
     public void set(String identifier, Calendar calendar) {
