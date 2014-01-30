@@ -102,11 +102,10 @@ end</programlisting>
     <para>To use this rule it is necessary to put it a Drools file, just a plain
     text file with .drl extension , short for "Drools Rule Language". Let's call
     this file licenseApplication.drl, and store it in a Kie Project. A Kie Project
-    has the structure of a normal Maven project with the only peculiarity of
-    including a kmodule.xml file defining in a declaratively way the
-    <code>KieBase</code>s and <code>KieSession</code>s that can be created from it.
+    has the structure of a normal Maven project with an additional file (kmodule.xml)
+    defining the <code>KieBase</code>s and <code>KieSession</code>s that can be created.
     This file has to be placed in the resources/META-INF folder of the Maven project
-    while all the other Droools artifacts, such as the licenseApplication.drl
+    while all the other Drools artifacts, such as the licenseApplication.drl
     containing the former rule, must be stored in the resources folder or in any
     other subfolder under it.</para>
 
@@ -117,12 +116,12 @@ end</programlisting>
 &lt;kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule"/&gt;</programlisting>
 
     <para>At this point it is possible to create a <code>KieContainer</code> that reads
-    the files to be build from the classpath as it follows</para>
+    the files to be built, from the classpath.</para>
 
       <programlisting language="java">KieServices kieServices = KieServices.Factory.get();
 KieContainer kContainer = kieServices.getKieClasspathContainer();</programlisting>
 
-    <para>The above code snippet looks compiles the DRL files it can find on the classpath
+    <para>The above code snippet compiles all the DRL files found on the classpath
     and put the result of this compilation, a <code>KieModule</code>, in the <code>KieContainer</code>.
     If there are no errors, we are now ready to create our session from the <code>KieContainer</code>
     and execute against some data:</para>
@@ -157,7 +156,7 @@ public class Application {
     // getter and setter methods here
 }</programlisting>
 
-    <para>We can also add another rule to validate that the application was
+    <para>We will also add another rule to validate that the application was
     made within a period of time.</para>
 
     <programlisting>package com.company.license
@@ -178,7 +177,7 @@ then
 end
 </programlisting>
 
-    <para>Unfortunately a Java elements does not implement the
+    <para>Unfortunately a Java element does not implement the
     <code>Iterable</code> interface, so we have to use the JDK converter
     method <code>Arrays.asList(...)</code>. The code shown below executes
     against an iterable list, where all collection elements are inserted
@@ -224,7 +223,7 @@ assertEquals( new Person( "Mr John Smith" ), results.getValue( "mrSmith" ) );
   <section>
     <title>Stateful Knowledge Session</title>
 
-    <para>Stateful Sessions are longer lived and allow iterative changes over
+    <para>Stateful Sessions are long lived and allow iterative changes over
     time. Some common use cases for Stateful Sessions are, but not limited
     to:</para>
 
