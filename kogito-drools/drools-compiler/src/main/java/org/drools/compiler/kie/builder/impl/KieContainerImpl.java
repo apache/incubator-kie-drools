@@ -113,7 +113,7 @@ public class KieContainerImpl
 
     private Results update(ReleaseId currentReleaseId, ReleaseId newReleaseId) {
         // if the new and the current release are equal (a snapshot) check if there is an older version with the same releaseId
-        InternalKieModule currentKM = currentReleaseId.equals( newReleaseId ) && !currentReleaseId.equals(kr.getDefaultReleaseId()) ?
+        InternalKieModule currentKM = currentReleaseId.equals( newReleaseId ) ?
                                       (InternalKieModule) ((KieRepositoryImpl)kr).getOldKieModule( currentReleaseId ) :
                                       (InternalKieModule) kr.getKieModule( currentReleaseId );
         InternalKieModule newKM = (InternalKieModule) kr.getKieModule( newReleaseId );
