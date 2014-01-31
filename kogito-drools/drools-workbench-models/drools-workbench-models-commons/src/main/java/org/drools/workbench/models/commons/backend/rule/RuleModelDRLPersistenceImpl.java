@@ -2038,6 +2038,13 @@ public class RuleModelDRLPersistenceImpl
             FromDescr from = (FromDescr) patternSource;
             FromCompositeFactPattern fcfp = new FromCompositeFactPattern();
             FactPattern factPattern = new FactPattern( pattern.getObjectType() );
+            factPattern.setBoundName( pattern.getIdentifier() );
+            parseConstraint( m,
+                             factPattern,
+                             pattern.getConstraint(),
+                             boundParams,
+                             dmo );
+
             fcfp.setFactPattern( factPattern );
             ExpressionFormLine expression = new ExpressionFormLine();
             fcfp.setExpression( expression );
