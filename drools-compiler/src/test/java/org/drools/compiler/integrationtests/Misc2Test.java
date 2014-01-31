@@ -5258,7 +5258,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal("list", list );
-        ksession.setGlobal("evaller", new Evaller() );
+        ksession.setGlobal("evaller", new Evaller());
 
         ksession.insert(new EvallerBean());
         ksession.fireAllRules();
@@ -5291,6 +5291,32 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals(1, list.size());
-        assertEquals(42, (int)list.get(0));
+        assertEquals(42, (int) list.get(0));
+    }
+
+    @Test
+    public void testContainsOnString() {
+        // DROOLS-388
+        String str =
+                "global java.util.List list;\n" +
+                "rule R1 when\n" +
+                "    $s : String( this contains 'bcd' )\n" +
+                "then\n" +
+                "    list.add( $s );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list );
+
+        ksession.insert("abcde");
+        ksession.insert("bcdef");
+        ksession.insert("cdefg");
+        ksession.fireAllRules();
+
+        assertEquals(2, list.size());
+        assertTrue(list.containsAll(Arrays.asList("abcde", "bcdef")));
     }
 }
