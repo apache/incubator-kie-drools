@@ -642,6 +642,12 @@ public class ReteooRuleBase
                             updateDependentTypes( newPkg,
                                                   typeDeclaration );
                         }
+
+                        for ( Function function : newPkg.getFunctions().values() ) {
+                            String functionClassName = function.getClassName();
+                            byte [] def = runtime.getStore().get(convertClassToResourcePath(functionClassName));
+                            registerAndLoadTypeDefinition( functionClassName, def );
+                        }
                     }
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeDroolsException( "unable to resolve Type Declaration class '" + lastType + "'", e );
@@ -1419,7 +1425,8 @@ public class ReteooRuleBase
                                                     "' does not exist for this Rule Base." );
             }
 
-            if (!pkg.getFunctions().containsKey( functionName )) {
+            Function function = pkg.getFunctions().get(functionName);
+            if (function == null) {
                 throw new IllegalArgumentException( "function name '" + packageName +
                                                     "' does not exist in the Package '" +
                                                     packageName +
@@ -1429,6 +1436,9 @@ public class ReteooRuleBase
             removeFunction( pkg,
                             functionName );
             pkg.removeFunction( functionName );
+            if (rootClassLoader instanceof ProjectClassLoader) {
+                ((ProjectClassLoader)rootClassLoader).undefineClass(function.getClassName());
+            }
 
             addReloadDialectDatas( pkg.getDialectRuntimeRegistry() );
         } finally {

@@ -183,6 +183,16 @@ public class ProjectClassLoader extends ClassLoader {
         return defineType(name, bytecode);
     }
 
+    public void undefineClass(String name) {
+        String resourceName = convertClassToResourcePath(name);
+        if (store.remove(resourceName) != null) {
+            if (CACHE_NON_EXISTING_CLASSES) {
+                nonExistingClasses.add(name);
+            }
+            typesClassLoader = null;
+        }
+    }
+
     public void storeClass(String name, String resourceName, byte[] bytecode) {
         if (store == null) {
             store = new HashMap<String, byte[]>();

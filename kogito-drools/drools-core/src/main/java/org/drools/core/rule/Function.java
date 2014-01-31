@@ -65,16 +65,20 @@ public class Function implements  KnowledgeDefinition, Dialectable, Externalizab
         this.namespace = namespace;
     }
 
-    
+    public String getClassName() {
+        return namespace + "." + (name.length() > 1 ? name.substring(0, 1).toUpperCase() + name.substring(1) : name.toUpperCase());
+    }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        name    = (String)in.readObject();
+        name = (String)in.readObject();
+        namespace = (String)in.readObject();
         dialect = (String)in.readObject();
         resource = ( Resource ) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(name);
+        out.writeObject(namespace);
         out.writeObject(dialect);
         out.writeObject(resource);
     }
