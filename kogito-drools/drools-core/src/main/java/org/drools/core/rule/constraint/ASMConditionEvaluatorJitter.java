@@ -336,7 +336,11 @@ public class ASMConditionEvaluatorJitter {
 
             switch (operation) {
                 case CONTAINS:
-                    invokeStatic(EvaluatorHelper.class, "contains", boolean.class, Object.class, rightType.isPrimitive() ? rightType : Object.class);
+                    if (leftType == String.class && CharSequence.class.isAssignableFrom(rightType)) {
+                        invokeVirtual(String.class, "contains", boolean.class, CharSequence.class);
+                    } else {
+                        invokeStatic(EvaluatorHelper.class, "contains", boolean.class, Object.class, rightType.isPrimitive() ? rightType : Object.class);
+                    }
                     break;
                 case MATCHES:
                     invokeVirtual(type, "matches", boolean.class, String.class);
