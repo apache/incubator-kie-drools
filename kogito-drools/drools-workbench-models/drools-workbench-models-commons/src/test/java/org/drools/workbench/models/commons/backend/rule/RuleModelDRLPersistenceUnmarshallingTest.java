@@ -51,6 +51,7 @@ import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.models.datamodel.rule.FromAccumulateCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
+import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
@@ -2768,6 +2769,28 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         final String drl2 = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertEqualsIgnoreWhitespace( drl,
                                       drl2 );
+    }
+
+    @Test
+    @Ignore("1059232 - Guided rule editor: calendars attribute is broken when a list of calendars is used")
+    public void testCalendars() {
+        String drl = "package org.mortgages;\n" +
+                "\n" +
+                "import java.lang.Number;\n" +
+                "rule \"Test\"\n" +
+                "  calendars \"a,b\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "  then\n" +
+                "end\n";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                dmo);
+
+        assertNotNull(m.attributes[0]);
+        RuleAttribute attribute = m.attributes[0];
+        assertEquals("calendars", attribute.getAttributeName());
+        assertEquals("a,b", attribute.getValue());
     }
 
     @Test
