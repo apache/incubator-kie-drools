@@ -5293,4 +5293,29 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(1, list.size());
         assertEquals(42, (int)list.get(0));
     }
+
+    @Test
+    public void testFunctionJitting() {
+        // DROOLS-404
+        String str =
+                "global java.util.List list;\n" +
+                "declare Pippo end;\n" +
+                "function boolean alwaysTrue() { return true; }" +
+                "rule R1 when\n" +
+                "    $s : String( alwaysTrue() )\n" +
+                "then\n" +
+                "    list.add( $s );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list );
+
+        ksession.insert("abcde");
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+    }
 }
