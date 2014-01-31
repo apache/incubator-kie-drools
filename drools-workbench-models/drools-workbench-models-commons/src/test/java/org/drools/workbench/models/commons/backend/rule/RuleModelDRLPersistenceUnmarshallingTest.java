@@ -2786,7 +2786,43 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertNotNull( m.attributes[ 0 ] );
         RuleAttribute attribute = m.attributes[ 0 ];
         assertEquals( "calendars", attribute.getAttributeName() );
-        assertEquals( "a, b", attribute.getValue() );
+        assertEquals( "a,b", attribute.getValue() );
+    }
+
+    @Test
+    public void testFromRestrictions() {
+        String drl = "package org.mortgages;\n" +
+                "\n" +
+                "import java.lang.Number;\n" +
+                "rule \"Test\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    reserva : Reserva( )\n" +
+                "    itinerario : Itinerario( destino == \"USA\" ) from reserva.itinerarios\n" +
+                "  then\n" +
+                "end\n";
+
+        addModelField( "org.mortgages.Reserva",
+                       "itinerarios",
+                       "java.lang.List",
+                       DataType.TYPE_COLLECTION );
+        addModelField( "org.mortgages.Itinerario",
+                       "destino",
+                       "String",
+                       DataType.TYPE_STRING );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           dmo );
+        assertTrue( m.lhs[ 1 ] instanceof FromCompositeFactPattern );
+        FromCompositeFactPattern factPattern = (FromCompositeFactPattern) m.lhs[ 1 ];
+        assertNotNull( factPattern.getFactPattern().getConstraintList() );
+        assertEquals( 1, factPattern.getFactPattern().getConstraintList().getNumberOfConstraints() );
+        SingleFieldConstraint constraint = (SingleFieldConstraint) factPattern.getFactPattern().getFieldConstraints()[ 0 ];
+        assertEquals( "Itinerario", constraint.getFactType() );
+        assertEquals( "destino", constraint.getFieldName() );
+        assertEquals( DataType.TYPE_STRING, constraint.getFieldType() );
+        assertEquals( "USA", constraint.getValue() );
+        assertEquals( "==", constraint.getOperator() );
     }
 
     @Test
