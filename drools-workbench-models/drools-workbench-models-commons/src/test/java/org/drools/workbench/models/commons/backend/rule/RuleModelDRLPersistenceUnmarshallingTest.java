@@ -2794,7 +2794,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("BZ-1059166 - Guided rule editor fails to open a valid rule")
     public void testFromRestrictions() {
         String drl = "package org.mortgages;\n" +
                 "\n" +
