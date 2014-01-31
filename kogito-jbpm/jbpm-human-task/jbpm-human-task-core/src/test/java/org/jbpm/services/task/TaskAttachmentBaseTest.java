@@ -16,22 +16,25 @@
 
 package org.jbpm.services.task;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.StringReader;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
 import org.jbpm.services.task.impl.factories.TaskFactory;
-import org.jbpm.services.task.impl.model.AttachmentImpl;
-import org.jbpm.services.task.impl.model.ContentImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.junit.Assert;
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.AccessType;
+import org.kie.internal.task.api.model.InternalAttachment;
+import org.kie.internal.task.api.model.InternalContent;
 
 /**
  *
@@ -52,13 +55,13 @@ public abstract class TaskAttachmentBaseTest extends HumanTaskServicesBaseTest {
         
         assertEquals(1, tasks.size());
         TaskSummary taskSum = tasks.get(0);
-        AttachmentImpl attach = new AttachmentImpl();
-        attach.setAccessType(AccessType.Inline);
-        attach.setAttachedAt(new Date());
-        attach.setName("My first doc");
-        attach.setContentType("String");
-        ContentImpl content = new ContentImpl();
-        content.setContent(ContentMarshallerHelper.marshallContent("This is my first inline document", null));
+        Attachment attach = TaskModelProvider.getFactory().newAttachment();
+        ((InternalAttachment)attach).setAccessType(AccessType.Inline);
+        ((InternalAttachment)attach).setAttachedAt(new Date());
+        ((InternalAttachment)attach).setName("My first doc");
+        ((InternalAttachment)attach).setContentType("String");
+        Content content = TaskModelProvider.getFactory().newContent();
+        ((InternalContent)content).setContent(ContentMarshallerHelper.marshallContent("This is my first inline document", null));
         
         long attachId = taskService.addAttachment(taskSum.getId(), attach, content);
         Assert.assertNotEquals(0, attachId);
@@ -66,13 +69,13 @@ public abstract class TaskAttachmentBaseTest extends HumanTaskServicesBaseTest {
         Attachment attachmentById = taskService.getAttachmentById(attachId);
         Assert.assertNotNull(attachmentById);
         
-        AttachmentImpl attach2 = new AttachmentImpl();
-        attach2.setAccessType(AccessType.Inline);
-        attach2.setAttachedAt(new Date());
-        attach2.setName("My second doc");
-        attach2.setContentType("String");
-        ContentImpl content2 = new ContentImpl();
-        content2.setContent(ContentMarshallerHelper.marshallContent("This is my second inline document", null));
+        Attachment attach2 = TaskModelProvider.getFactory().newAttachment();
+        ((InternalAttachment)attach2).setAccessType(AccessType.Inline);
+        ((InternalAttachment)attach2).setAttachedAt(new Date());
+        ((InternalAttachment)attach2).setName("My second doc");
+        ((InternalAttachment)attach2).setContentType("String");
+        Content content2 = TaskModelProvider.getFactory().newContent();
+        ((InternalContent)content2).setContent(ContentMarshallerHelper.marshallContent("This is my second inline document", null));
         
         attachId = taskService.addAttachment(taskSum.getId(), attach2, content2);
         Assert.assertNotEquals(0, attachId);

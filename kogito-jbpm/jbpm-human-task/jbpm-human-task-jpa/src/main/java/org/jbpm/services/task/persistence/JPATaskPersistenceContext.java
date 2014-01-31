@@ -2,19 +2,14 @@ package org.jbpm.services.task.persistence;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.locks.ReentrantLock;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
 import javax.persistence.Query;
 
 import org.drools.core.util.StringUtils;
-import org.drools.persistence.TransactionManager;
-import org.drools.persistence.TransactionSynchronization;
-import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.services.task.impl.model.AttachmentImpl;
 import org.jbpm.services.task.impl.model.CommentImpl;
 import org.jbpm.services.task.impl.model.ContentImpl;
@@ -110,10 +105,15 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	@Override
 	public Group persistGroup(Group group) {
 		check();
-		this.em.persist( group );
-        if( this.pessimisticLocking ) { 
-            return this.em.find(GroupImpl.class, group.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
-        }
+		try {
+			this.em.persist( group );
+	        if( this.pessimisticLocking ) { 
+	            return this.em.find(GroupImpl.class, group.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+	        }
+		} catch (EntityExistsException e) {
+    		throw new RuntimeException("Group already exists with " + group 
+    				+ " id, please check that there is no group and user with same id");
+    	}
         return group;
 	}
 
@@ -142,10 +142,15 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	@Override
 	public User persistUser(User user) {
 		check();
-		this.em.persist( user );
-        if( this.pessimisticLocking ) { 
-            return this.em.find(UserImpl.class, user.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
-        }
+		try {
+			this.em.persist( user );
+	        if( this.pessimisticLocking ) { 
+	            return this.em.find(UserImpl.class, user.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+	        }
+		} catch (EntityExistsException e) {
+    		throw new RuntimeException("User already exists with " + user 
+    				+ " id, please check that there is no group and user with same id");
+    	}
         return user;
 	}
 
@@ -176,12 +181,15 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		check();
 	    	
         if (!StringUtils.isEmpty(orgEntity.getId())) {
-        	this.em.persist( orgEntity );
-            if( this.pessimisticLocking ) { 
-                return this.em.find(OrganizationalEntityImpl.class, orgEntity.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
-            }
-            
-            logger.debug("Persisted {} by thread {}", orgEntity, Thread.currentThread().getName());
+        	try {
+	        	this.em.persist( orgEntity );
+	            if( this.pessimisticLocking ) { 
+	                return this.em.find(OrganizationalEntityImpl.class, orgEntity.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+	            }
+        	} catch (EntityExistsException e) {
+        		throw new RuntimeException("Organizational entity already exists with " + orgEntity 
+        				+ " id, please check that there is no group and user with same id");
+        	}
         } 
 		
         return orgEntity;

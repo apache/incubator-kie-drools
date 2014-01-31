@@ -2260,4 +2260,25 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         assertEquals(Status.Completed, task2.getTaskData().getStatus());
         assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
     }
+    
+    @Test
+    public void testNewTaskWithSingleInvalidPotentialOwner() {
+        String language = "en-UK";
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new Group('invalid')  ],businessAdministrators = [ new User('Administrator') ], }),";
+        str += "names = [ new I18NText( '" + language + "', 'This is my task name')] })";
+
+
+        Task task = TaskFactory.evalTask(new StringReader(str));
+
+        taskService.addTask(task, new HashMap<String, Object>());
+        try {
+	        String potOwner = "invalid";             
+	        taskService.getTasksAssignedAsPotentialOwner(potOwner, language);
+	        fail("Should fail due to same id for group and user");
+        } catch (RuntimeException e) {
+        	assertTrue(e.getMessage().endsWith("please check that there is no group and user with same id"));
+        }
+    }
 }

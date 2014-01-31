@@ -23,6 +23,7 @@ usersgroups = [ new User('Darth Vader') : [new Group( "Knights Templer" ),  new 
                 new User('Wintermute') : [new Group( "AI" )],
                 new User('Neuromancer') : [new Group( "AI" )],
                 new User('Hideo') : [new Group( "Pilot" )],
+                new User('invalid') : [new Group( "invalid" )],
                 new User('Maelcum') : [new Group( "Ninja" )]
               ];       
 return usersgroups;
