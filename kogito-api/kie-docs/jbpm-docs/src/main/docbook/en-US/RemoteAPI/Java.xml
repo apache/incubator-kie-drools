@@ -20,7 +20,9 @@
       <title>The REST Remote Java RuntimeEngine Factory</title>     
       
       <para>In order to interact via REST with the remote runtime, the <code>RemoteRestRuntimeFactory</code>
-        can be used. The following example illustrates how the remote session can be used.</para>
+        can be used. Through this factory, you can get access to a KieSession and TaskService, which you can
+        then interact with the same way as if they were a local services. The following example illustrates
+        how the remote session can be used.</para>
       
       <programlisting language="java">// Setup the factory class with the necessarry information to communicate with the REST services
 RemoteRestRuntimeFactory restSessionFactory 
@@ -72,9 +74,9 @@ taskService.start(taskId, taskUserId);</programlisting>
               <row>
                 <entry><code>baseURL</code></entry>
                 <entry><code>java.net.URL</code></entry>
-                <entry><code>http://localhost:8080/kie-wb/</code></entry>
+                <entry><code>http://localhost:8080/jbpm-console/</code></entry>
                 <entry>
-                  <para>This is the base URL that should be used when interacting with the remote execution-server.</para>
+                  <para>This is the base URL of where the workbench application is deployed, containing the remote execution server to connect to.</para>
                 </entry>
               </row>
               <row>
@@ -347,7 +349,7 @@ private static InitialContext getRemoteInitialContext(String jbossServerHostName
     </section>
     
     
-  <section>
+  <!--section>
     <title>REST helper classe</title>
     
     <para>The <code>org.kie.services.client.api.RestRequestHelper</code> class can be used to... </para>
@@ -355,5 +357,5 @@ private static InitialContext getRemoteInitialContext(String jbossServerHostName
     <programlisting language="java">
       asdf
     </programlisting>
-  </section>
+  </section-->
 </section>
