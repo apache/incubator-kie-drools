@@ -55,7 +55,7 @@ public class BenchmarkAggregator {
     // Aggregate methods
     // ************************************************************************
 
-    public void aggregate(List<SingleBenchmarkResult> singleBenchmarkResultList) {
+    public File aggregate(List<SingleBenchmarkResult> singleBenchmarkResultList) {
         if (benchmarkDirectory == null) {
             throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory + ") must not be null.");
         }
@@ -88,6 +88,7 @@ public class BenchmarkAggregator {
 
         logger.info("Aggregation ended: statistic html overview ({}).",
                 benchmarkReport.getHtmlOverviewFile().getAbsolutePath());
+        return benchmarkReport.getHtmlOverviewFile().getAbsoluteFile();
     }
 
 }

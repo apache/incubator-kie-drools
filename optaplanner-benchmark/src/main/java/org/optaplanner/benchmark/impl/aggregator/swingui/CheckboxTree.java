@@ -15,6 +15,7 @@
  */
 package org.optaplanner.benchmark.impl.aggregator.swingui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -32,6 +33,7 @@ public class CheckboxTree extends JTree {
         super(root);
         addMouseListener(new CheckboxTreeMouseListener(this));
         setCellRenderer(new CheckboxTreeCellRenderer());
+        setToggleClickCount(0);
     }
 
     private static class CheckboxTreeMouseListener extends MouseAdapter {
@@ -129,6 +131,7 @@ public class CheckboxTree extends JTree {
         public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
             CustomCheckbox checkbox = (CustomCheckbox) node.getUserObject();
+            checkbox.setBackground(Color.WHITE);
             // TODO visual part
             return checkbox;
         }
