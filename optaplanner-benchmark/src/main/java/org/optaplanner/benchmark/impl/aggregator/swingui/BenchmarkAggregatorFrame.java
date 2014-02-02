@@ -213,11 +213,13 @@ public class BenchmarkAggregatorFrame extends JFrame {
                 for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
                     DefaultMutableTreeNode solverNode = new DefaultMutableTreeNode(new CustomCheckbox(solverBenchmarkResult.getName()));
                     problemNode.add(solverNode);
-                    for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
-                        CustomCheckbox singleCheckbox = new CustomCheckbox(singleBenchmarkResult.getName());
-                        DefaultMutableTreeNode singleNode = new DefaultMutableTreeNode(singleCheckbox);
-                        resultCheckboxMapping.put(singleCheckbox, singleBenchmarkResult);
-                        solverNode.add(singleNode);
+                    for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
+                        if (singleBenchmarkResult.getProblemBenchmarkResult().equals(problemBenchmarkResult)) {
+                            CustomCheckbox singleCheckbox = new CustomCheckbox(singleBenchmarkResult.getName());
+                            DefaultMutableTreeNode singleNode = new DefaultMutableTreeNode(singleCheckbox);
+                            resultCheckboxMapping.put(singleCheckbox, singleBenchmarkResult);
+                            solverNode.add(singleNode);
+                        }
                     }
                 }
             }
