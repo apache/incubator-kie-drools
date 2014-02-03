@@ -3335,8 +3335,16 @@ public class PackageBuilder
     private void postCompileAddFunction(final FunctionDescr functionDescr) {
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get(functionDescr.getNamespace());
         Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect(functionDescr.getDialect());
-        dialect.postCompileAddFunction(functionDescr,
-                pkgRegistry.getTypeResolver());
+        dialect.postCompileAddFunction(functionDescr, pkgRegistry.getTypeResolver());
+
+        if (rootClassLoader instanceof ProjectClassLoader) {
+            String functionClassName = functionDescr.getClassName();
+            JavaDialectRuntimeData runtime = ((JavaDialectRuntimeData) pkgRegistry.getDialectRuntimeRegistry().getDialectData( "java" ));
+            byte [] def = runtime.getStore().get(convertClassToResourcePath(functionClassName));
+            if (def != null) {
+                ((ProjectClassLoader)rootClassLoader).defineClass(functionClassName, def);
+            }
+        }
     }
 
     private Map<String, RuleBuildContext> buildRuleBuilderContext(List<RuleDescr> rules) {
