@@ -47,7 +47,7 @@ public class NQueensApp extends CommonApp {
             = "/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml";
 
     public static void main(String[] args) {
-        fixateLookAndFeel();
+        prepareSwingEnvironment();
         new NQueensApp().init();
     }
 

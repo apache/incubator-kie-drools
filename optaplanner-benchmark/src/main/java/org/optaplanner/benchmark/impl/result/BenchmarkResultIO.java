@@ -120,6 +120,9 @@ public class BenchmarkResultIO {
             for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
                 singleBenchmarkResult.setProblemBenchmarkResult(problemBenchmarkResult);
             }
+            if (problemBenchmarkResult.getProblemStatisticList() == null) {
+                problemBenchmarkResult.setProblemStatisticList(new ArrayList<ProblemStatistic>(0));
+            }
             for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
                 problemStatistic.setProblemBenchmarkResult(problemBenchmarkResult);
             }

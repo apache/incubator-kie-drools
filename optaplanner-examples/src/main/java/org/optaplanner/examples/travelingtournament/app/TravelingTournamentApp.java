@@ -34,7 +34,7 @@ public class TravelingTournamentApp extends CommonApp {
             = "/org/optaplanner/examples/travelingtournament/solver/travelingTournamentSolverConfig.xml";
 
     public static void main(String[] args) {
-        fixateLookAndFeel();
+        prepareSwingEnvironment();
         new TravelingTournamentApp().init();
     }
 

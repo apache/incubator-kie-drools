@@ -30,7 +30,7 @@ public class CloudBalancingApp extends CommonApp {
             = "/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml";
 
     public static void main(String[] args) {
-        fixateLookAndFeel();
+        prepareSwingEnvironment();
         new CloudBalancingApp().init();
     }
 

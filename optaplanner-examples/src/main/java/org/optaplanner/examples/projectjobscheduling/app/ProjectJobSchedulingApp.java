@@ -32,7 +32,7 @@ public class ProjectJobSchedulingApp extends CommonApp {
             = "/org/optaplanner/examples/projectjobscheduling/solver/projectJobSchedulingSolverConfig.xml";
 
     public static void main(String[] args) {
-        fixateLookAndFeel();
+        prepareSwingEnvironment();
         new ProjectJobSchedulingApp().init();
     }
 

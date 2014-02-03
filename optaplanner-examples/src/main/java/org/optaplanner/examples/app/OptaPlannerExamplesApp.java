@@ -38,33 +38,26 @@ import javax.swing.JTextArea;
 import javax.swing.border.TitledBorder;
 
 import org.optaplanner.examples.cloudbalancing.app.CloudBalancingApp;
-import org.optaplanner.examples.cloudbalancing.swingui.CloudBalancingPanel;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.optaplanner.examples.examination.app.ExaminationApp;
 import org.optaplanner.examples.machinereassignment.app.MachineReassignmentApp;
-import org.optaplanner.examples.machinereassignment.swingui.MachineReassignmentPanel;
 import org.optaplanner.examples.manners2009.app.Manners2009App;
 import org.optaplanner.examples.nqueens.app.NQueensApp;
-import org.optaplanner.examples.nqueens.swingui.NQueensPanel;
 import org.optaplanner.examples.nurserostering.app.NurseRosteringApp;
-import org.optaplanner.examples.nurserostering.swingui.NurseRosteringPanel;
 import org.optaplanner.examples.pas.app.PatientAdmissionScheduleApp;
 import org.optaplanner.examples.projectjobscheduling.app.ProjectJobSchedulingApp;
-import org.optaplanner.examples.projectjobscheduling.swingui.ProjectJobSchedulingPanel;
 import org.optaplanner.examples.tennis.app.TennisApp;
 import org.optaplanner.examples.travelingtournament.app.TravelingTournamentApp;
 import org.optaplanner.examples.tsp.app.TspApp;
-import org.optaplanner.examples.tsp.swingui.TspPanel;
 import org.optaplanner.examples.vehiclerouting.app.VehicleRoutingApp;
-import org.optaplanner.examples.vehiclerouting.swingui.VehicleRoutingPanel;
 
 public class OptaPlannerExamplesApp extends JFrame {
 
     public static void main(String[] args) {
-        CommonApp.fixateLookAndFeel();
+        CommonApp.prepareSwingEnvironment();
         OptaPlannerExamplesApp optaPlannerExamplesApp = new OptaPlannerExamplesApp();
         optaPlannerExamplesApp.pack();
         optaPlannerExamplesApp.setLocationRelativeTo(null);

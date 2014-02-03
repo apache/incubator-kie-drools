@@ -16,12 +16,26 @@
 
 package org.optaplanner.examples.common.app;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
+import org.optaplanner.benchmark.impl.aggregator.swingui.SwingUncaughtExceptionHandler;
+import org.optaplanner.benchmark.impl.aggregator.swingui.SwingUtils;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
@@ -40,28 +54,9 @@ public abstract class CommonApp extends LoggingMain {
      * Some examples are not compatible with every native LookAndFeel.
      * For example, NurseRosteringPanel is incompatible with Mac.
      */
-    public static void fixateLookAndFeel() {
-        String lookAndFeelName = "Metal"; // "Nimbus" is nicer but incompatible
-        Exception lookAndFeelException;
-        try {
-            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if (lookAndFeelName.equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    return;
-                }
-            }
-            lookAndFeelException = null;
-        } catch (UnsupportedLookAndFeelException e) {
-            lookAndFeelException = e;
-        } catch (ClassNotFoundException e) {
-            lookAndFeelException = e;
-        } catch (InstantiationException e) {
-            lookAndFeelException = e;
-        } catch (IllegalAccessException e) {
-            lookAndFeelException = e;
-        }
-        logger.warn("Could not switch to lookAndFeel (" + lookAndFeelName + "). Layout might be incorrect.",
-                lookAndFeelException);
+    public static void prepareSwingEnvironment() {
+        SwingUncaughtExceptionHandler.register();
+        SwingUtils.fixateLookAndFeel();
     }
 
     protected final String name;

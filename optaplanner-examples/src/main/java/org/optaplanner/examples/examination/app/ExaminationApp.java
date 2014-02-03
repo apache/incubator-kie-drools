@@ -39,7 +39,7 @@ public class ExaminationApp extends CommonApp {
             = "/org/optaplanner/examples/examination/solver/examinationSolverConfig.xml";
 
     public static void main(String[] args) {
-        fixateLookAndFeel();
+        prepareSwingEnvironment();
         new ExaminationApp().init();
     }
 
