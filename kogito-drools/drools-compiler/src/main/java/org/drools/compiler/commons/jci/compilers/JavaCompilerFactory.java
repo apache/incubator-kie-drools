@@ -96,6 +96,10 @@ public final class JavaCompilerFactory {
                 compiler = createCompiler( "janino" );
                 break;
             }
+            case JavaDialectConfiguration.NATIVE : {
+                compiler = createCompiler( "native" );
+                break;
+            }
             case JavaDialectConfiguration.ECLIPSE :
             default : {
                 compiler = createCompiler( "eclipse" );

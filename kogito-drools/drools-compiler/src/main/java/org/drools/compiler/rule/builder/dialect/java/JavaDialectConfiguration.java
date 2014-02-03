@@ -43,6 +43,7 @@ public class JavaDialectConfiguration
     
     public static final int             ECLIPSE         = 0;
     public static final int             JANINO          = 1;
+    public static final int             NATIVE          = 2;
 
     public static final String[]        LANGUAGE_LEVELS = new String[]{"1.5", "1.6", "1.7"};
 
@@ -114,6 +115,9 @@ public class JavaDialectConfiguration
             case JANINO :
                 this.compiler = JANINO;
                 break;
+            case NATIVE :
+                this.compiler = NATIVE;
+                break;
             default :
                 throw new RuntimeDroolsException( "value '" + compiler + "' is not a valid compiler" );
         }
@@ -132,7 +136,9 @@ public class JavaDialectConfiguration
         try {
             final String prop = this.conf.getChainedProperties().getProperty( JAVA_COMPILER_PROPERTY,
                                                                               "ECLIPSE" );
-            if ( prop.equals( "ECLIPSE".intern() ) ) {
+            if ( prop.equals( "NATIVE" ) ) {
+                return NATIVE;
+            } else if ( prop.equals( "ECLIPSE" ) ) {
                 return ECLIPSE;
             } else if ( prop.equals( "JANINO" ) ) {
                 return JANINO;
