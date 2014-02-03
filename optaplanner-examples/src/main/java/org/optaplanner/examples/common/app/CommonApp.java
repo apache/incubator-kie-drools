@@ -16,8 +16,20 @@
 
 package org.optaplanner.examples.common.app;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
@@ -41,6 +53,9 @@ public abstract class CommonApp extends LoggingMain {
      * For example, NurseRosteringPanel is incompatible with Mac.
      */
     public static void fixateLookAndFeel() {
+        CommonUncaughtExceptionHandler uncaughtExceptionHandler = new CommonUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler(uncaughtExceptionHandler);
+        System.setProperty("sun.awt.exception.handler", CommonUncaughtExceptionHandler.class.getName());
         String lookAndFeelName = "Metal"; // "Nimbus" is nicer but incompatible
         Exception lookAndFeelException;
         try {
@@ -62,6 +77,51 @@ public abstract class CommonApp extends LoggingMain {
         }
         logger.warn("Could not switch to lookAndFeel (" + lookAndFeelName + "). Layout might be incorrect.",
                 lookAndFeelException);
+
+    }
+
+    private static class CommonUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
+
+        @Override
+        public void uncaughtException(Thread t, Throwable e) {
+            // Not logger.error() because it needs to show up red (and linked) in the IDE console
+            System.err.append("Exception in thread \"").append(t.getName()).append("\" ");
+            e.printStackTrace();
+            displayException(t, e);
+        }
+
+        private void displayException(Thread t, Throwable e) {
+            final JFrame exceptionFrame = new JFrame("Uncaught exception: " + e.getMessage());
+            exceptionFrame.setIconImage(SolverAndPersistenceFrame.OPTA_PLANNER_ICON.getImage());
+            exceptionFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            JPanel contentPanel = new JPanel(new BorderLayout(5, 5));
+            contentPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            contentPanel.add(new JLabel("An uncaught exception has occurred: "), BorderLayout.NORTH);
+            JTextArea stackTraceTextArea = new JTextArea(10, 80);
+            stackTraceTextArea.setEditable(false);
+            stackTraceTextArea.append("Exception in thread \"" + t.getName() + "\" " + e.getClass().getName()
+                    + ": " + e.getMessage() + "\n");
+            for (StackTraceElement stackTraceElement : e.getStackTrace()) {
+                stackTraceTextArea.append("    at " + stackTraceElement.toString() + "\n");
+            }
+            JScrollPane stackTraceScrollPane = new JScrollPane(stackTraceTextArea,
+                    ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            contentPanel.add(stackTraceScrollPane, BorderLayout.CENTER);
+            stackTraceTextArea.setCaretPosition(0); // Scroll to top
+            JButton closeButton = new JButton(new AbstractAction("Close") {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    exceptionFrame.setVisible(false);
+                    exceptionFrame.dispose();
+                }
+            });
+            contentPanel.add(closeButton, BorderLayout.SOUTH);
+            exceptionFrame.setContentPane(contentPanel);
+            exceptionFrame.pack();
+            exceptionFrame.setLocationRelativeTo(null);
+            exceptionFrame.setVisible(true);
+        }
+
     }
 
     protected final String name;
