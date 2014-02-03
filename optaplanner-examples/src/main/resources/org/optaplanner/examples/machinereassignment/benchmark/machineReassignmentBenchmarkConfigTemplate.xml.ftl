@@ -2,7 +2,7 @@
 <plannerBenchmark>
   <benchmarkDirectory>local/data/machinereassignment/template</benchmarkDirectory>
   <!--<parallelBenchmarkCount>AUTO</parallelBenchmarkCount>-->
-  <warmUpSecondsSpend>30</warmUpSecondsSpend>
+  <warmUpSecondsSpend>60</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
@@ -56,8 +56,8 @@
       </customSolverPhase>
     </solver>
   </solverBenchmark>
-<#list [500, 1000, 2000, 4000] as acceptedCountLimit>
-<#list [5, 7, 9, 11] as entityTabuSize>
+<#list [7] as entityTabuSize>
+<#list [2000] as acceptedCountLimit>
     <solverBenchmark>
     <name>entityTabu${entityTabuSize}-mas${acceptedCountLimit}</name>
     <solver>
@@ -79,9 +79,32 @@
     </solver>
   </solverBenchmark>
 </#list>
-<#list [500, 1000, 2000, 4000] as lateAcceptanceSize>
+</#list>
+<#list [100000, 1000000, 10000000] as simulatedAnnealingStartingTemperature>
     <solverBenchmark>
-    <name>lateAcceptance${lateAcceptanceSize}-mas${acceptedCountLimit}</name>
+        <name>simulatedAnnealing${simulatedAnnealingStartingTemperature}soft</name>
+        <solver>
+            <customSolverPhase>
+                <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+            </customSolverPhase>
+            <localSearch>
+                <unionMoveSelector>
+                    <changeMoveSelector/>
+                    <swapMoveSelector/>
+                </unionMoveSelector>
+                <acceptor>
+                    <simulatedAnnealingStartingTemperature>0hard/${simulatedAnnealingStartingTemperature}soft</simulatedAnnealingStartingTemperature>
+                </acceptor>
+                <forager>
+                    <acceptedCountLimit>1</acceptedCountLimit>
+                </forager>
+            </localSearch>
+        </solver>
+    </solverBenchmark>
+</#list>
+<#list [500, 1000, 2000] as lateAcceptanceSize>
+    <solverBenchmark>
+    <name>lateAcceptance${lateAcceptanceSize}</name>
     <solver>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
@@ -95,11 +118,10 @@
           <lateAcceptanceSize>${lateAcceptanceSize}</lateAcceptanceSize>
         </acceptor>
         <forager>
-          <acceptedCountLimit>${acceptedCountLimit}</acceptedCountLimit>
+          <acceptedCountLimit>1</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>
   </solverBenchmark>
-</#list>
 </#list>
 </plannerBenchmark>
