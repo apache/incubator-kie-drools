@@ -1,6 +1,9 @@
 package org.jbpm.kie.services.cdi.producer;
 
+import java.util.HashSet;
+
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
@@ -91,6 +94,20 @@ public class HumanTaskServiceProducer {
 			T object = instance.get();
 			logger.debug("About to set object {} on task service", object);
 			return object;
+		} catch(AmbiguousResolutionException e) {
+			// special handling in case cdi discovered multiple injections
+			// that are actually same instances - e.g. weld on tomcat
+			HashSet<T> available = new HashSet<T>(); 
+			
+			for (T object : instance) {
+				available.add(object);
+			}
+			
+			if (available.size() == 1) {
+				return available.iterator().next();
+			} else {
+				throw e;
+			}
 		} catch (Throwable e) {
 			logger.warn("Cannot get value of of instance {} due to {}", instance, e.getMessage());
 		}

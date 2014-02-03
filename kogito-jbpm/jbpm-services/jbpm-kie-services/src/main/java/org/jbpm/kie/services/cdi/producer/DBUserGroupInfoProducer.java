@@ -20,14 +20,12 @@ public class DBUserGroupInfoProducer implements UserGroupInfoProducer {
 	private UserInfo userInfo = new DefaultUserInfo(true);
 	
 	@Override
-	@ApplicationScoped
 	@Produces
 	public UserGroupCallback produceCallback() {
 		return callback;
 	}
 
 	@Override
-	@ApplicationScoped
 	@Produces
 	public UserInfo produceUserInfo() {
 		return userInfo;

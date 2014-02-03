@@ -19,14 +19,12 @@ public class LDAPUserGroupInfoProducer implements UserGroupInfoProducer {
 	private UserInfo userInfo = new LDAPUserInfoImpl(true);
 	
 	@Override
-	@ApplicationScoped
 	@Produces
 	public UserGroupCallback produceCallback() {
 		return callback;
 	}
 
 	@Override
-	@ApplicationScoped
 	@Produces
 	public UserInfo produceUserInfo() {
 		return userInfo;
