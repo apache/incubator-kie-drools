@@ -32,7 +32,7 @@ public class Manners2009App extends CommonApp {
             = "/org/optaplanner/examples/manners2009/solver/manners2009SolverConfig.xml";
 
     public static void main(String[] args) {
-        fixateLookAndFeel();
+        prepareSwingEnvironment();
         new Manners2009App().init();
     }
 

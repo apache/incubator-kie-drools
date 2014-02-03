@@ -32,7 +32,7 @@ public class TspApp extends CommonApp {
             = "/org/optaplanner/examples/tsp/solver/tspSolverConfig.xml";
 
     public static void main(String[] args) {
-        fixateLookAndFeel();
+        prepareSwingEnvironment();
         new TspApp().init();
     }
 

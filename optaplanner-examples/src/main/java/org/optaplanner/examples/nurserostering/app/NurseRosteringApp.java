@@ -34,7 +34,7 @@ public class NurseRosteringApp extends CommonApp {
             = "/org/optaplanner/examples/nurserostering/solver/nurseRosteringSolverConfig.xml";
 
     public static void main(String[] args) {
-        fixateLookAndFeel();
+        prepareSwingEnvironment();
         new NurseRosteringApp().init();
     }
 

@@ -34,7 +34,7 @@ public class CurriculumCourseApp extends CommonApp {
             = "/org/optaplanner/examples/curriculumcourse/solver/curriculumCourseSolverConfig.xml";
 
     public static void main(String[] args) {
-        fixateLookAndFeel();
+        prepareSwingEnvironment();
         new CurriculumCourseApp().init();
     }
 

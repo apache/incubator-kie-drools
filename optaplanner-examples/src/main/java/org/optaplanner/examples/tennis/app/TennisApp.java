@@ -30,7 +30,7 @@ public class TennisApp extends CommonApp {
             = "/org/optaplanner/examples/tennis/solver/tennisSolverConfig.xml";
 
     public static void main(String[] args) {
-        fixateLookAndFeel();
+        prepareSwingEnvironment();
         new TennisApp().init();
     }
 

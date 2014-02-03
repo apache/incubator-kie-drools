@@ -34,7 +34,7 @@ public class MachineReassignmentApp extends CommonApp {
             = "/org/optaplanner/examples/machinereassignment/solver/machineReassignmentSolverConfig.xml";
 
     public static void main(String[] args) {
-        fixateLookAndFeel();
+        prepareSwingEnvironment();
         new MachineReassignmentApp().init();
     }
 
