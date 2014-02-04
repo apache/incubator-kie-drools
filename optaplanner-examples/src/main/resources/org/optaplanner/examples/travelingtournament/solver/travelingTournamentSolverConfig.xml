@@ -16,12 +16,12 @@
     <unionMoveSelector>
       <swapMoveSelector>
         <cacheType>PHASE</cacheType>
-        <selectionOrder>SHUFFLED</selectionOrder>
+        <selectionOrder>SHUFFLED</selectionOrder><!-- TODO with no acceptedCountLimit this should be ORIGINAL -->
         <filterClass>org.optaplanner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
       </swapMoveSelector>
       <moveListFactory>
         <cacheType>STEP</cacheType>
-        <selectionOrder>SHUFFLED</selectionOrder>
+        <selectionOrder>SHUFFLED</selectionOrder><!-- TODO with no acceptedCountLimit this should be ORIGINAL -->
         <moveListFactoryClass>org.optaplanner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
       </moveListFactory>
     </unionMoveSelector>

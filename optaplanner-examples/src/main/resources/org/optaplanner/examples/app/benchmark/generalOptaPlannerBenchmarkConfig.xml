@@ -7,50 +7,84 @@
     <problemBenchmarks>
       <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
-  </inheritedSolverBenchmark>
-  <solverBenchmark>
-    <name>travelingtournament_tabuSearch</name>
-    <problemBenchmarks>
-      <xstreamAnnotatedClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</xstreamAnnotatedClass>
-      <inputSolutionFile>data/travelingtournament/unsolved/1-nl14.xml</inputSolutionFile>
-    </problemBenchmarks>
     <solver>
-      <solutionClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
-      <planningEntityClass>org.optaplanner.examples.travelingtournament.domain.Match</planningEntityClass>
-      <scoreDirectorFactory>
-        <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
-        <scoreDrl>/org/optaplanner/examples/travelingtournament/solver/travelingTournamentScoreRules.drl</scoreDrl>
-      </scoreDirectorFactory>
       <termination>
         <maximumMinutesSpend>5</maximumMinutesSpend>
       </termination>
+    </solver>
+  </inheritedSolverBenchmark>
+
+
+  <solverBenchmark>
+    <name>Cloud Balancing Late Acceptance</name>
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</xstreamAnnotatedClass>
+      <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.xml</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/800computers-2400processes.xml</inputSolutionFile>
+    </problemBenchmarks>
+    <solver>
+      <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
+      <planningEntityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</planningEntityClass>
+      <scoreDirectorFactory>
+        <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+        <scoreDrl>/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+        <forager>
+          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+        </forager>
+      </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
-          <swapMoveSelector>
-            <cacheType>PHASE</cacheType>
-            <selectionOrder>SHUFFLED</selectionOrder>
-            <filterClass>org.optaplanner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
-          </swapMoveSelector>
-          <moveListFactory>
-            <cacheType>STEP</cacheType>
-            <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.optaplanner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
-          </moveListFactory>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
         </unionMoveSelector>
         <acceptor>
-          <solutionTabuSize>1500</solutionTabuSize>
-          <moveTabuSize>7</moveTabuSize>
+          <lateAcceptanceSize>400</lateAcceptanceSize>
         </acceptor>
         <forager>
-          <!-- Real world problems require to use of <acceptedCountLimit> -->
+          <acceptedCountLimit>4</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>curriculumcourse_tabuSearch</name>
+    <name>Machine Reassignment Tabu Search</name>
+    <problemBenchmarks>
+      <problemIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentProblemIO</problemIOClass>
+      <inputSolutionFile>data/machinereassignment/import/model_b_1.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_10.txt</inputSolutionFile>
+    </problemBenchmarks>
+    <solver>
+      <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
+      <planningEntityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
+      <scoreDirectorFactory>
+        <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
+        <incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+      </scoreDirectorFactory>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+          <entityTabuSize>7</entityTabuSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>2000</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Course Scheduling Late Acceptance</name>
     <problemBenchmarks>
       <xstreamAnnotatedClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</xstreamAnnotatedClass>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp07.xml</inputSolutionFile>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp08.xml</inputSolutionFile>
     </problemBenchmarks>
     <solver>
@@ -60,11 +94,8 @@
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>/org/optaplanner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
-      <termination>
-        <maximumMinutesSpend>10</maximumMinutesSpend>
-      </termination>
       <constructionHeuristic>
-        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
@@ -83,19 +114,20 @@
           </swapMoveSelector>
         </unionMoveSelector>
         <acceptor>
-          <entityTabuSize>10</entityTabuSize>
+          <lateAcceptanceSize>600</lateAcceptanceSize>
         </acceptor>
         <forager>
-          <acceptedCountLimit>900</acceptedCountLimit><!-- TODO tweak me -->
+          <acceptedCountLimit>4</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>examination_tabuSearch</name>
+    <name>Examination Tabu Search</name>
     <problemBenchmarks>
       <xstreamAnnotatedClass>org.optaplanner.examples.examination.domain.Examination</xstreamAnnotatedClass>
       <inputSolutionFile>data/examination/unsolved/exam_comp_set2.xml</inputSolutionFile>
+      <inputSolutionFile>data/examination/unsolved/exam_comp_set3.xml</inputSolutionFile>
     </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.examination.domain.Examination</solutionClass>
@@ -104,9 +136,6 @@
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>/org/optaplanner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
-      <termination>
-        <maximumMinutesSpend>10</maximumMinutesSpend>
-      </termination>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.optaplanner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
@@ -126,57 +155,20 @@
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>
-          <solutionTabuSize>1000</solutionTabuSize>
           <entityTabuSize>10</entityTabuSize>
         </acceptor>
         <forager>
-          <acceptedCountLimit>1400</acceptedCountLimit>
+          <acceptedCountLimit>2000</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>pas_tabuSearch</name>
-    <problemBenchmarks>
-      <xstreamAnnotatedClass>org.optaplanner.examples.pas.domain.PatientAdmissionSchedule</xstreamAnnotatedClass>
-      <inputSolutionFile>data/pas/unsolved/testdata01.xml</inputSolutionFile>
-    </problemBenchmarks>
-    <solver>
-      <solutionClass>org.optaplanner.examples.pas.domain.PatientAdmissionSchedule</solutionClass>
-      <planningEntityClass>org.optaplanner.examples.pas.domain.BedDesignation</planningEntityClass>
-      <scoreDirectorFactory>
-        <scoreDefinitionType>HARD_MEDIUM_SOFT</scoreDefinitionType>
-        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleScoreRules.drl</scoreDrl>
-      </scoreDirectorFactory>
-      <termination>
-        <maximumMinutesSpend>5</maximumMinutesSpend>
-      </termination>
-      <constructionHeuristic>
-        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
-      </constructionHeuristic>
-      <localSearch>
-        <unionMoveSelector>
-          <changeMoveSelector/>
-          <!--<swapMoveSelector/>-->
-          <!--<pillarSwapMoveSelector/>-->
-          <moveListFactory>
-            <moveListFactoryClass>org.optaplanner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-        </unionMoveSelector>
-        <acceptor>
-          <entityTabuSize>7</entityTabuSize>
-        </acceptor>
-        <forager>
-          <acceptedCountLimit>1000</acceptedCountLimit>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>nurseRostering_tabuSearch</name>
+    <name>Nurse Rostering Tabu Search</name>
     <problemBenchmarks>
       <xstreamAnnotatedClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</xstreamAnnotatedClass>
       <inputSolutionFile>data/nurserostering/unsolved/medium01.xml</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_hint01.xml</inputSolutionFile>
     </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</solutionClass>
@@ -185,9 +177,6 @@
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>/org/optaplanner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
-      <termination>
-        <maximumMinutesSpend>10</maximumMinutesSpend>
-      </termination>
       <constructionHeuristic>
         <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
       </constructionHeuristic>
@@ -207,8 +196,7 @@
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>
-          <solutionTabuSize>1000</solutionTabuSize>
-          <entityTabuSize>11</entityTabuSize>
+          <entityTabuSize>7</entityTabuSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>800</acceptedCountLimit>
@@ -217,46 +205,37 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>nurseRostering_simulatedAnnealing</name>
+    <name>TravelingTournament Tabu Search</name>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</xstreamAnnotatedClass>
-      <inputSolutionFile>data/nurserostering/unsolved/medium01.xml</inputSolutionFile>
+      <xstreamAnnotatedClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</xstreamAnnotatedClass>
+      <inputSolutionFile>data/travelingtournament/unsolved/1-nl14.xml</inputSolutionFile>
     </problemBenchmarks>
     <solver>
-      <solutionClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</solutionClass>
-      <planningEntityClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignment</planningEntityClass>
+      <solutionClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
+      <planningEntityClass>org.optaplanner.examples.travelingtournament.domain.Match</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
-        <scoreDrl>/org/optaplanner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
+        <scoreDrl>/org/optaplanner/examples/travelingtournament/solver/travelingTournamentScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
-      <termination>
-        <maximumMinutesSpend>10</maximumMinutesSpend>
-      </termination>
-      <constructionHeuristic>
-        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
-      </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
-          <moveListFactory>
+          <swapMoveSelector>
             <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactory</moveListFactoryClass>
-          </moveListFactory>
+            <selectionOrder>SHUFFLED</selectionOrder>
+            <filterClass>org.optaplanner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
+          </swapMoveSelector>
           <moveListFactory>
             <cacheType>STEP</cacheType>
-            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
+            <selectionOrder>SHUFFLED</selectionOrder>
+            <moveListFactoryClass>org.optaplanner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>
-          <simulatedAnnealingStartingTemperature>0hard/8soft</simulatedAnnealingStartingTemperature>
-          <entityTabuSize>5</entityTabuSize>
+          <solutionTabuSize>1500</solutionTabuSize>
+          <moveTabuSize>7</moveTabuSize>
         </acceptor>
         <forager>
-          <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
-          <acceptedCountLimit>4</acceptedCountLimit>
+          <!-- Real world problems require to use of <acceptedCountLimit> -->
         </forager>
       </localSearch>
     </solver>
