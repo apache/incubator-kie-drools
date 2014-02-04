@@ -22,7 +22,7 @@ import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
-public abstract class AbstractRankingComparatorTest {
+public abstract class AbstractSolverRankingComparatorTest {
 
     protected void addSingleBenchmark(List<SingleBenchmarkResult> singleBenchmarkResultList, int score, int bestScore, int worstScore) {
         SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(null, null);

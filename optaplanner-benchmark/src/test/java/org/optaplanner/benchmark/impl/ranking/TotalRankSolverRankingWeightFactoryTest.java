@@ -27,7 +27,7 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
-public class TotalRankSolverBenchmarkResultRankingWeightFactoryTest extends AbstractRankingComparatorTest {
+public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRankingComparatorTest {
 
     @Test
     public void normal() {
