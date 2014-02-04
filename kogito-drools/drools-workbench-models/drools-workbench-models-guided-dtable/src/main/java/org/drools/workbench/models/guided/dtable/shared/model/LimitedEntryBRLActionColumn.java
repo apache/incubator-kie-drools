@@ -36,7 +36,7 @@ public class LimitedEntryBRLActionColumn extends BRLActionColumn
     }
 
     public void setValue( DTCellValue52 value ) {
-        throw new UnsupportedOperationException( "LimitedEntryBRLActionColumn does not have a value" );
+        //Silently ignore, otherwise Errai marshalling barfs
     }
 
     @Override
@@ -46,7 +46,7 @@ public class LimitedEntryBRLActionColumn extends BRLActionColumn
 
     @Override
     public void setChildColumns( List<BRLActionVariableColumn> childColumns ) {
-        throw new UnsupportedOperationException( "LimitedEntryBRLActionColumn cannot contain variables" );
+        //Silently ignore, otherwise Errai marshalling barfs
     }
 
 }

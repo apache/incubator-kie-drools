@@ -36,7 +36,7 @@ public class LimitedEntryBRLConditionColumn extends BRLConditionColumn
     }
 
     public void setValue( DTCellValue52 value ) {
-        throw new UnsupportedOperationException( "LimitedEntryBRLConditionColumn does not have a value" );
+        //Silently ignore, otherwise Errai marshalling barfs
     }
 
     @Override
@@ -46,7 +46,7 @@ public class LimitedEntryBRLConditionColumn extends BRLConditionColumn
 
     @Override
     public void setChildColumns( List<BRLConditionVariableColumn> childColumns ) {
-        throw new UnsupportedOperationException( "LimitedEntryBRLConditionColumn cannot contain variables" );
+        //Silently ignore, otherwise Errai marshalling barfs
     }
 
 }
