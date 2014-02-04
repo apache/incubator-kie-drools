@@ -32,6 +32,7 @@ import org.optaplanner.core.impl.phase.SolverPhase;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.termination.Termination;
 import org.slf4j.Logger;
@@ -48,7 +49,7 @@ public class DefaultSolver implements Solver {
     protected SolverEventSupport solverEventSupport = new SolverEventSupport(this);
 
     protected ScoreDirectorFactory scoreDirectorFactory;
-    protected Long randomSeed;
+    protected RandomFactory randomFactory;
 
     protected BasicPlumbingTermination basicPlumbingTermination;
     // Note that the basicPlumbingTermination is a component of this termination
@@ -59,13 +60,13 @@ public class DefaultSolver implements Solver {
     protected AtomicBoolean solving = new AtomicBoolean(false);
 
     protected DefaultSolverScope solverScope = new DefaultSolverScope();
-    
-    public long getRandomSeed() {
-        return this.randomSeed;
+
+    public RandomFactory getRandomFactory() {
+        return randomFactory;
     }
 
-    public void setRandomSeed(long randomSeed) {
-        this.randomSeed = randomSeed;
+    public void setRandomFactory(RandomFactory randomFactory) {
+        this.randomFactory = randomFactory;
     }
 
     public ScoreDirectorFactory getScoreDirectorFactory() {
@@ -168,11 +169,7 @@ public class DefaultSolver implements Solver {
         }
         solverScope.setStartingSystemTimeMillis(System.currentTimeMillis());
         solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector());
-        if (randomSeed != null) {
-            solverScope.setWorkingRandom(new Random(randomSeed));
-        } else {
-            solverScope.setWorkingRandom(new Random());
-        }
+        solverScope.setWorkingRandom(randomFactory.createRandom());
         solverScope.setWorkingSolutionFromBestSolution();
         bestSolutionRecaller.solvingStarted(solverScope);
         for (SolverPhase solverPhase : solverPhaseList) {
@@ -180,7 +177,7 @@ public class DefaultSolver implements Solver {
         }
         logger.info("Solving started: time spend ({}), score ({}), new best score ({}), random seed ({}).",
                 solverScope.calculateTimeMillisSpend(), solverScope.getStartingInitializedScore(),
-                solverScope.getBestScore(), (randomSeed != null ? randomSeed : "not fixed"));
+                solverScope.getBestScore(), (randomFactory != null ? randomFactory : "not fixed"));
     }
 
     protected void runSolverPhases() {

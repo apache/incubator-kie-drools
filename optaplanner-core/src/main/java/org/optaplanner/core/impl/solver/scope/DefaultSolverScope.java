@@ -36,7 +36,6 @@ public class DefaultSolverScope {
 
     protected long startingSystemTimeMillis;
     protected ScoreDirector scoreDirector;
-
     protected Random workingRandom;
 
     protected Score startingInitializedScore; // TODO after initialization => ambiguous with setPlanningProblem
