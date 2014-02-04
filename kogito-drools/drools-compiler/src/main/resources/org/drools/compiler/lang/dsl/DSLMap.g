@@ -234,13 +234,17 @@ variable_reference
         CommonToken back2 =  (CommonToken)input.LT(-2);
         if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true;
         }
-    name=LITERAL rc=RIGHT_CURLY
+      name=variable_reference_expr rc=RIGHT_CURLY
     {if(((CommonToken)rc).getStopIndex() < ((CommonToken)input.LT(1)).getStartIndex() - 1) hasSpaceAfter = true;}
-    -> { hasSpaceBefore &&  hasSpaceAfter}? VT_SPACE ^(VT_VAR_REF $name ) VT_SPACE
-    -> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^(VT_VAR_REF $name )
-    -> {!hasSpaceBefore &&  hasSpaceAfter}?          ^(VT_VAR_REF $name ) VT_SPACE
-    ->                                               ^(VT_VAR_REF $name )
+    -> { hasSpaceBefore &&  hasSpaceAfter}? VT_SPACE ^(VT_VAR_REF LITERAL[$name.start,$name.text] ) VT_SPACE
+    -> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^(VT_VAR_REF LITERAL[$name.start,$name.text] )
+    -> {!hasSpaceBefore &&  hasSpaceAfter}?          ^(VT_VAR_REF LITERAL[$name.start,$name.text] ) VT_SPACE
+    ->                                               ^(VT_VAR_REF LITERAL[$name.start,$name.text] )
     ;
+    
+variable_reference_expr
+    :  (LITERAL | EQUALS)+
+    ;    
 
 condition_key
     :	{validateIdentifierKey("condition")||validateIdentifierKey("when")}?  value=LITERAL

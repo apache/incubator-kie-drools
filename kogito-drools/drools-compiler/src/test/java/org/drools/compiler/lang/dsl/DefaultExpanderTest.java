@@ -460,7 +460,7 @@ public class DefaultExpanderTest {
         assertFalse( ex.hasErrors() );
     }
 
-    @Test @Ignore
+    @Test 
     public void testEqualSignInTernaryOp() throws Exception {
         // BZ-1013960
         String source =
@@ -499,11 +499,12 @@ public class DefaultExpanderTest {
                 "    then\n" +
                 "        System.out.println(\"Your First Rule\");\n" +
                 "\n" +
-                "end";
+                "end\n";
 
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         file.parseAndLoad( new StringReader( dsl ) );
-        assertEquals( 0,
+        assertEquals( file.getErrors().toString(), 
+                      0,
                       file.getErrors().size() );
 
         DefaultExpander ex = new DefaultExpander();
