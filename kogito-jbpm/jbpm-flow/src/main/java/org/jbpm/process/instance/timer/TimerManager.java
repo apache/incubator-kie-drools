@@ -158,11 +158,18 @@ public class TimerManager {
     }
 
     public void cancelTimer(long timerId) {
-
-        TimerInstance timer = timers.remove(timerId);
-        if (timer != null) {
-            timerService.removeJob(timer.getJobHandle());
-        }
+		try {
+			kruntime.startOperation();
+			if (!kruntime.getActionQueue().isEmpty()) {
+				kruntime.executeQueuedActions();
+			}
+			TimerInstance timer = timers.remove(timerId);
+			if (timer != null) {
+				timerService.removeJob(timer.getJobHandle());
+			}
+		} finally {
+			kruntime.endOperation();
+		}
     }
 
     public void dispose() {

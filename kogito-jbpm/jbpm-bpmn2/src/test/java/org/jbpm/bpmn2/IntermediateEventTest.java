@@ -22,15 +22,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.bpmn2.test.RequirePersistence;
+import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
+import org.jbpm.process.instance.timer.TimerInstance;
+import org.jbpm.process.instance.timer.TimerManager;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -1050,6 +1055,33 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, ksession);
 
     }
+    
+    @Test
+    public void testTimerBoundaryEventInterruptingOnTaskCancelTimer() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventInterruptingOnTaskCancelTimer.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
+        assertProcessInstanceActive(processInstance);  
+        Collection<TimerInstance> timers = getTimerManager(ksession).getTimers();
+        assertEquals(1, timers.size());
+        
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        timers = getTimerManager(ksession).getTimers();
+        assertEquals(1, timers.size());
+        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        timers = getTimerManager(ksession).getTimers();
+        assertEquals(0, timers.size());
+        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        
+        assertProcessInstanceFinished(processInstance, ksession);
+
+    }
 
     @Test
     public void testIntermediateCatchEventSignal() throws Exception {
@@ -1525,5 +1557,17 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ksession2.dispose();
     }
 
+    /*
+     * helper methods
+     */
     
+    private TimerManager getTimerManager(KieSession ksession) {
+    	KieSession internal = ksession;
+    	if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
+    		internal =  ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession)
+                    .getCommandService().getContext()).getKieSession();
+    	}
+    	
+    	return ((InternalProcessRuntime)((StatefulKnowledgeSessionImpl)internal).getProcessRuntime()).getTimerManager();
+    }
 }
