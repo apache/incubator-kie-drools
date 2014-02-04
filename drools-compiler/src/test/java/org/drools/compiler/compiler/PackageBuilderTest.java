@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.Cheese;
+import org.drools.compiler.commons.jci.compilers.NativeJavaCompiler;
 import org.drools.core.FactHandle;
 import org.drools.compiler.Primitives;
 import org.drools.core.RuleBaseFactory;
@@ -983,12 +984,23 @@ public class PackageBuilderTest extends DroolsTestCase {
         final Field compilerField = dialect.getClass().getDeclaredField( "compiler" );
         compilerField.setAccessible( true );
         JavaCompiler compiler = (JavaCompiler) compilerField.get( dialect );
-        assertSame( EclipseJavaCompiler.class,
-                    compiler.getClass() );
 
-        // test JANINO with property settings
         PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
         JavaDialectConfiguration javaConf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
+        switch( javaConf.getCompiler() ) {
+            case JavaDialectConfiguration.NATIVE : assertSame( NativeJavaCompiler.class, compiler.getClass() );
+                break;
+            case JavaDialectConfiguration.ECLIPSE: assertSame( EclipseJavaCompiler.class, compiler.getClass() );
+                break;
+            case JavaDialectConfiguration.JANINO: assertSame( JaninoJavaCompiler.class, compiler.getClass() );
+                break;
+            default:
+                fail( "Unrecognized java compiler");
+        }
+
+        // test JANINO with property settings
+        conf = new PackageBuilderConfiguration();
+        javaConf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
         javaConf.setCompiler( JavaDialectConfiguration.JANINO );
         builder = new PackageBuilder( conf );
         builder.addPackage( pkgDescr );

@@ -116,7 +116,6 @@ public class AddRemoveRulesTest {
                "import java.util.HashMap;\n"+
                "import org.slf4j.Logger;\n"+
                "import java.util.Date;\n"+
-               "import code.*;\n"+
 
                "declare Counter \n"+
                "@role(event)\n"+
