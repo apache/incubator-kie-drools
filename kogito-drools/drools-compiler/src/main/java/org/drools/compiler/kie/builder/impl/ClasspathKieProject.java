@@ -334,6 +334,10 @@ public class ClasspathKieProject extends AbstractKieProject {
             }
         }
 
+        if (urlPath.endsWith(".jar!")) {
+            urlPath = urlPath.substring( 0, urlPath.length() - 1 );
+        }
+
         // remove any remaining protocols, normally only if it was a jar
         int firstSlash = urlPath.indexOf( '/' );
         colonIndex = firstSlash > 0 ? urlPath.lastIndexOf( ":", firstSlash ) : urlPath.lastIndexOf( ":" );
