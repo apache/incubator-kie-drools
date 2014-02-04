@@ -26,6 +26,7 @@ import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import static org.optaplanner.benchmark.impl.aggregator.swingui.MixedCheckBox.MixedCheckBoxStatus.*;
 
 public class CheckboxTree extends JTree {
 
@@ -38,9 +39,9 @@ public class CheckboxTree extends JTree {
 
     private static class CheckboxTreeMouseListener extends MouseAdapter {
 
-        CheckboxTree tree;
+        private CheckboxTree tree;
 
-        CheckboxTreeMouseListener(CheckboxTree tree) {
+        public CheckboxTreeMouseListener(CheckboxTree tree) {
             this.tree = tree;
         }
 
@@ -49,47 +50,48 @@ public class CheckboxTree extends JTree {
             TreePath path = tree.getPathForLocation(e.getX(), e.getY());
             if (path != null) {
                 DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) path.getLastPathComponent();
-                CustomCheckbox checkbox = (CustomCheckbox) currentNode.getUserObject();
+                MixedCheckBox checkbox = (MixedCheckBox) currentNode.getUserObject();
                 switch (checkbox.getStatus()) {
                     case CHECKED: {
-                        checkbox.setStatus(CustomCheckbox.UNCHECKED);
-                        selectChildren(currentNode, CustomCheckbox.UNCHECKED);
+                        checkbox.setStatus(UNCHECKED);
+                        selectChildren(currentNode, UNCHECKED);
                         TreeNode[] ancestorNodes = currentNode.getPath();
+                        // examine ancestors, don't lose track of most recent changes - bottom-up approach 
                         for (int i = ancestorNodes.length - 2; i >= 0; i--) {
                             DefaultMutableTreeNode ancestorNode = (DefaultMutableTreeNode) ancestorNodes[i];
-                            CustomCheckbox ancestorCheckbox = (CustomCheckbox) ancestorNode.getUserObject();
-                            if (checkChildren(ancestorNode, CustomCheckbox.UNCHECKED)) {
-                                ancestorCheckbox.setStatus(CustomCheckbox.UNCHECKED);
+                            MixedCheckBox ancestorCheckbox = (MixedCheckBox) ancestorNode.getUserObject();
+                            if (checkChildren(ancestorNode, UNCHECKED)) {
+                                ancestorCheckbox.setStatus(UNCHECKED);
                             } else {
-                                ancestorCheckbox.setStatus(CustomCheckbox.MIXED);
+                                ancestorCheckbox.setStatus(MIXED);
                             }
                         }
                         break;
                     }
                     case UNCHECKED: {
-                        checkbox.setStatus(CustomCheckbox.CHECKED);
-                        selectChildren(currentNode, CustomCheckbox.CHECKED);
+                        checkbox.setStatus(CHECKED);
+                        selectChildren(currentNode, CHECKED);
                         TreeNode[] ancestorNodes = currentNode.getPath();
                         for (int i = ancestorNodes.length - 2; i >= 0; i--) {
                             DefaultMutableTreeNode ancestorNode = (DefaultMutableTreeNode) ancestorNodes[i];
-                            CustomCheckbox ancestorCheckbox = (CustomCheckbox) ancestorNode.getUserObject();
-                            if (checkChildren(ancestorNode, CustomCheckbox.CHECKED)) {
-                                ancestorCheckbox.setStatus(CustomCheckbox.CHECKED);
+                            MixedCheckBox ancestorCheckbox = (MixedCheckBox) ancestorNode.getUserObject();
+                            if (checkChildren(ancestorNode, CHECKED)) {
+                                ancestorCheckbox.setStatus(CHECKED);
                             } else {
-                                ancestorCheckbox.setStatus(CustomCheckbox.MIXED);
+                                ancestorCheckbox.setStatus(MIXED);
                             }
                         }
                         break;
                     }
                     case MIXED: {
-                        checkbox.setStatus(CustomCheckbox.CHECKED);
-                        selectChildren(currentNode, CustomCheckbox.CHECKED);
+                        checkbox.setStatus(CHECKED);
+                        selectChildren(currentNode, CHECKED);
                         TreeNode[] ancestorNodes = currentNode.getPath();
                         for (int i = ancestorNodes.length - 2; i >= 0; i--) {
                             DefaultMutableTreeNode ancestorNode = (DefaultMutableTreeNode) ancestorNodes[i];
-                            CustomCheckbox ancestorCheckbox = (CustomCheckbox) ancestorNode.getUserObject();
-                            if (checkChildren(ancestorNode, CustomCheckbox.CHECKED)) {
-                                ancestorCheckbox.setStatus(CustomCheckbox.CHECKED);
+                            MixedCheckBox ancestorCheckbox = (MixedCheckBox) ancestorNode.getUserObject();
+                            if (checkChildren(ancestorNode, CHECKED)) {
+                                ancestorCheckbox.setStatus(CHECKED);
                             } else {
                                 break;
                             }
@@ -100,23 +102,23 @@ public class CheckboxTree extends JTree {
             }
         }
 
-        private void selectChildren(DefaultMutableTreeNode parent, CustomCheckbox.CheckboxStatus status) {
+        private void selectChildren(DefaultMutableTreeNode parent, MixedCheckBox.MixedCheckBoxStatus status) {
             Enumeration children = parent.children();
             while (children.hasMoreElements()) {
                 DefaultMutableTreeNode child = (DefaultMutableTreeNode) children.nextElement();
-                CustomCheckbox checkbox = (CustomCheckbox) child.getUserObject();
+                MixedCheckBox checkbox = (MixedCheckBox) child.getUserObject();
                 checkbox.setStatus(status);
                 selectChildren(child, status);
             }
         }
-        
-        private boolean checkChildren(DefaultMutableTreeNode parent, CustomCheckbox.CheckboxStatus status) {
+
+        private boolean checkChildren(DefaultMutableTreeNode parent, MixedCheckBox.MixedCheckBoxStatus status) {
             boolean childrenCheck = true;
             Enumeration children = parent.children();
             while (children.hasMoreElements()) {
                 DefaultMutableTreeNode child = (DefaultMutableTreeNode) children.nextElement();
-                CustomCheckbox checkbox = (CustomCheckbox) child.getUserObject();
-                if (!checkbox.getStatus().equals(status)) {
+                MixedCheckBox checkbox = (MixedCheckBox) child.getUserObject();
+                if (checkbox.getStatus() != status) {
                     childrenCheck = false;
                     break;
                 }
@@ -124,13 +126,13 @@ public class CheckboxTree extends JTree {
             return childrenCheck;
         }
     }
-    
+
     private static class CheckboxTreeCellRenderer implements TreeCellRenderer {
 
         @Override
         public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-            CustomCheckbox checkbox = (CustomCheckbox) node.getUserObject();
+            MixedCheckBox checkbox = (MixedCheckBox) node.getUserObject();
             checkbox.setBackground(Color.WHITE);
             // TODO visual part
             return checkbox;

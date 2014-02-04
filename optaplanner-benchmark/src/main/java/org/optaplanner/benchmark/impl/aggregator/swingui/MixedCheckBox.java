@@ -20,78 +20,74 @@ import java.awt.event.MouseEvent;
 import javax.swing.JCheckBox;
 
 
-public class CustomCheckbox extends JCheckBox {
-    
-    public static final CheckboxStatus CHECKED = CheckboxStatus.CHECKED;
-    public static final CheckboxStatus UNCHECKED = CheckboxStatus.UNCHECKED;
-    public static final CheckboxStatus MIXED = CheckboxStatus.MIXED;
-    
-    public CustomCheckbox(String text) {
+public class MixedCheckBox extends JCheckBox {
+
+    public MixedCheckBox(String text) {
         super(text);
-        setModel(new CustomCheckboxModel());
-        setStatus(UNCHECKED);
+        setModel(new MixedCheckBoxModel());
+        setStatus(MixedCheckBoxStatus.UNCHECKED);
         addMouseListener(new CustomCheckboxMouseListener());
     }
-    
-    public CheckboxStatus getStatus() {
-        return ((CustomCheckboxModel) getModel()).getStatus();
+
+    public MixedCheckBoxStatus getStatus() {
+        return ((MixedCheckBoxModel) getModel()).getStatus();
     }
-    
-    public void setStatus(CheckboxStatus status) {
-        ((CustomCheckboxModel) getModel()).setStatus(status);
+
+    public void setStatus(MixedCheckBoxStatus status) {
+        ((MixedCheckBoxModel) getModel()).setStatus(status);
     }
-    
+
     private class CustomCheckboxMouseListener extends MouseAdapter {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            ((CustomCheckboxModel) getModel()).switchStatus();
+            ((MixedCheckBoxModel) getModel()).switchStatus();
         }
     }
-    
-    private static class CustomCheckboxModel extends ToggleButtonModel {
-        
-        private CheckboxStatus getStatus() {
-            return isSelected() ? (isArmed() ? MIXED : CHECKED) : UNCHECKED; 
+
+    private static class MixedCheckBoxModel extends ToggleButtonModel {
+
+        private MixedCheckBoxStatus getStatus() {
+            return isSelected() ? (isArmed() ? MixedCheckBoxStatus.MIXED : MixedCheckBoxStatus.CHECKED) : MixedCheckBoxStatus.UNCHECKED; 
         }
-        
-        private void setStatus(CheckboxStatus status) {
-            if (CHECKED.equals(status)) {
+
+        private void setStatus(MixedCheckBoxStatus status) {
+            if (status == MixedCheckBoxStatus.CHECKED) {
                 setSelected(true);
                 setArmed(false);
                 setPressed(false);
-            } else if (UNCHECKED.equals(status)) {
+            } else if (status == MixedCheckBoxStatus.UNCHECKED) {
                 setSelected(false);
                 setArmed(false);
                 setPressed(false);
-            } else if (MIXED.equals(status)) {
+            } else if (status == MixedCheckBoxStatus.MIXED) {
                 setSelected(true);
                 setArmed(true);
                 setPressed(true);
             } else {
-                throw new IllegalArgumentException("Invalid argument '" 
-                        + status + "' supplied.");
+                throw new IllegalArgumentException("Invalid argument (" 
+                        + status + ") supplied.");
             }
         }
-        
+
         private void switchStatus() {
             switch (getStatus()) {
                 case CHECKED: {
-                    setStatus(UNCHECKED);
+                    setStatus(MixedCheckBoxStatus.UNCHECKED);
                     break;
                 }
                 case UNCHECKED: {
-                    setStatus(CHECKED);
+                    setStatus(MixedCheckBoxStatus.CHECKED);
                     break;
                 }
                 case MIXED: {
-                    setStatus(CHECKED);
+                    setStatus(MixedCheckBoxStatus.CHECKED);
                 }
             }
         }
     }
-    
-    public static enum CheckboxStatus {
+
+    public static enum MixedCheckBoxStatus {
         CHECKED, UNCHECKED, MIXED
     }
 }
