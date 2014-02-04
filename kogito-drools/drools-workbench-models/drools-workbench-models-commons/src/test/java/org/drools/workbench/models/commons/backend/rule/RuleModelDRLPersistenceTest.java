@@ -184,6 +184,42 @@ public class RuleModelDRLPersistenceTest {
     }
 
     @Test
+    public void testCalendars() {
+        //BZ1059232 - Guided rule editor: calendars attribute is broken when a list of calendars is used
+        RuleModel m = new RuleModel();
+        m.attributes = new RuleAttribute[ 1 ];
+        m.attributes[ 0 ] = new RuleAttribute( "calendars",
+                                               "a, b" );
+        final String drl = ruleModelPersistence.marshal( m );
+
+        assertTrue( drl.indexOf( "calendars \"a\", \"b\"" ) > 0 );
+    }
+
+    @Test
+    public void testCalendarsWithQuotes() {
+        //BZ1059232 - Guided rule editor: calendars attribute is broken when a list of calendars is used
+        RuleModel m = new RuleModel();
+        m.attributes = new RuleAttribute[ 1 ];
+        m.attributes[ 0 ] = new RuleAttribute( "calendars",
+                                               "\"a\", \"b\"" );
+        final String drl = ruleModelPersistence.marshal( m );
+
+        assertTrue( drl.indexOf( "calendars \"a\", \"b\"" ) > 0 );
+    }
+
+    @Test
+    public void testCalendarsWithQuotesAroundWholeValue() {
+        //BZ1059232 - Guided rule editor: calendars attribute is broken when a list of calendars is used
+        RuleModel m = new RuleModel();
+        m.attributes = new RuleAttribute[ 1 ];
+        m.attributes[ 0 ] = new RuleAttribute( "calendars",
+                                               "\"a, b\"" );
+        final String drl = ruleModelPersistence.marshal( m );
+
+        assertTrue( drl.indexOf( "calendars \"a\", \"b\"" ) > 0 );
+    }
+
+    @Test
     public void testEnumNoType() {
         //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
         String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( type == \"CheeseType.CHEDDAR\" )\n"
@@ -284,57 +320,57 @@ public class RuleModelDRLPersistenceTest {
                 "  then\n" +
                 "end\n";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
         when(
                 dmo.getProjectModelFields()
-        ).thenReturn(
+            ).thenReturn(
                 new HashMap<String, ModelField[]>() {{
-                    put("Customer",
-                            new ModelField[]{
-                                    new ModelField(
-                                            "contact",
-                                            "Contact",
-                                            ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
-                                            ModelField.FIELD_ORIGIN.DECLARED,
-                                            FieldAccessorsAndMutators.BOTH,
-                                            "Contact"
-                                    )
-                            });
-                    put("Contact",
-                            new ModelField[]{
-                                    new ModelField(
-                                            "tel1",
-                                            "Integer",
-                                            ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
-                                            ModelField.FIELD_ORIGIN.DECLARED,
-                                            FieldAccessorsAndMutators.BOTH,
-                                            "Integer"
-                                    )
-                            });
+                    put( "Customer",
+                         new ModelField[]{
+                                 new ModelField(
+                                         "contact",
+                                         "Contact",
+                                         ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                         ModelField.FIELD_ORIGIN.DECLARED,
+                                         FieldAccessorsAndMutators.BOTH,
+                                         "Contact"
+                                 )
+                         } );
+                    put( "Contact",
+                         new ModelField[]{
+                                 new ModelField(
+                                         "tel1",
+                                         "Integer",
+                                         ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                         ModelField.FIELD_ORIGIN.DECLARED,
+                                         FieldAccessorsAndMutators.BOTH,
+                                         "Integer"
+                                 )
+                         } );
                 }}
-        );
+                        );
 
         final RuleModel m = new RuleModel();
 
         FactPattern factPattern = new FactPattern();
-        factPattern.setFactType("Customer");
-        m.lhs = new IPattern[]{factPattern};
+        factPattern.setFactType( "Customer" );
+        m.lhs = new IPattern[]{ factPattern };
 
-        SingleFieldConstraint constraint1 = new SingleFieldConstraint("Customer", "contact", "Contact", null);
-        constraint1.setOperator("!= null");
-        factPattern.addConstraint(constraint1);
+        SingleFieldConstraint constraint1 = new SingleFieldConstraint( "Customer", "contact", "Contact", null );
+        constraint1.setOperator( "!= null" );
+        factPattern.addConstraint( constraint1 );
 
-        SingleFieldConstraint constraint2 = new SingleFieldConstraint("Customer", "contact", "Contact", null);
-        factPattern.addConstraint(constraint2);
+        SingleFieldConstraint constraint2 = new SingleFieldConstraint( "Customer", "contact", "Contact", null );
+        factPattern.addConstraint( constraint2 );
 
-        SingleFieldConstraint constraint3 = new SingleFieldConstraint("Contact", "tel1", "Integer", constraint2);
-        constraint3.setOperator(">");
-        constraint3.setValue("15");
-        factPattern.addConstraint(constraint3);
+        SingleFieldConstraint constraint3 = new SingleFieldConstraint( "Contact", "tel1", "Integer", constraint2 );
+        constraint3.setOperator( ">" );
+        constraint3.setValue( "15" );
+        factPattern.addConstraint( constraint3 );
 
         m.name = "my rule";
 
-        checkMarshallUnmarshall(expected, m, dmo);
+        checkMarshallUnmarshall( expected, m, dmo );
     }
 
     @Test
@@ -4064,8 +4100,8 @@ public class RuleModelDRLPersistenceTest {
         ActionInsertFact ai0 = new ActionInsertFact( "Person" );
         ai0.setBoundName( "fact0" );
         ai0.addFieldValue( new ActionFieldValue( "field1",
-                                                "55",
-                                                DataType.TYPE_NUMERIC_LONG ) );
+                                                 "55",
+                                                 DataType.TYPE_NUMERIC_LONG ) );
         ActionInsertFact ai1 = new ActionInsertFact( "Person" );
         ai1.addFieldValue( new ActionFieldValue( "field1",
                                                  "55",

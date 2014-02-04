@@ -28,6 +28,7 @@ public class RuleAttribute {
     private static final String TIMER = "timer";
     private static final String LOCK_ON_ACTIVE = "lock-on-active";
     private static final String AUTO_FOCUS = "auto-focus";
+    private static final String CALENDARS = "calendars";
 
     public RuleAttribute( final String name,
                           final String value ) {
@@ -63,6 +64,15 @@ public class RuleAttribute {
             } else {
                 ret.append( "(" ).append( this.value ).append( ")" );
             }
+        } else if ( CALENDARS.equals( this.attributeName ) ) {
+            final String raw = this.value.replaceAll( "\"|\\s", "" );
+            final String[] calendars = raw.split( "," );
+            ret.append( " " );
+            for ( String calendar : calendars ) {
+                ret.append( "\"" ).append( calendar ).append( "\", " );
+            }
+            ret.delete( ret.length() - 2,
+                        ret.length() );
         } else if ( this.value != null ) {
             ret.append( " \"" );
             ret.append( this.value );

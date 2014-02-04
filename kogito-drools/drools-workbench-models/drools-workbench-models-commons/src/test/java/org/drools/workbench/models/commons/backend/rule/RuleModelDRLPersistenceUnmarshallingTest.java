@@ -2772,25 +2772,25 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("1059232 - Guided rule editor: calendars attribute is broken when a list of calendars is used")
     public void testCalendars() {
+        //BZ1059232 - Guided rule editor: calendars attribute is broken when a list of calendars is used
         String drl = "package org.mortgages;\n" +
                 "\n" +
                 "import java.lang.Number;\n" +
                 "rule \"Test\"\n" +
-                "  calendars \"a,b\"\n" +
+                "  calendars \"a\" ,\"b\"\n" +
                 "  dialect \"mvel\"\n" +
                 "  when\n" +
                 "  then\n" +
                 "end\n";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
-                dmo);
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           dmo );
 
-        assertNotNull(m.attributes[0]);
-        RuleAttribute attribute = m.attributes[0];
-        assertEquals("calendars", attribute.getAttributeName());
-        assertEquals("a,b", attribute.getValue());
+        assertNotNull( m.attributes[ 0 ] );
+        RuleAttribute attribute = m.attributes[ 0 ];
+        assertEquals( "calendars", attribute.getAttributeName() );
+        assertEquals( "a, b", attribute.getValue() );
     }
 
     @Test
@@ -2817,16 +2817,16 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
                                                                            dmo );
-        assertTrue( m.lhs[1] instanceof FromCompositeFactPattern );
-        FromCompositeFactPattern factPattern = (FromCompositeFactPattern) m.lhs[1];
-        assertNotNull(factPattern.getFactPattern().getConstraintList());
-        assertEquals(1, factPattern.getFactPattern().getConstraintList().getNumberOfConstraints());
-        SingleFieldConstraint constraint = (SingleFieldConstraint)factPattern.getFactPattern().getFieldConstraints()[0];
-        assertEquals("Itinerario",constraint.getFactType());
-        assertEquals("destino",constraint.getFieldName());
-        assertEquals(DataType.TYPE_STRING,constraint.getFieldType());
-        assertEquals("USA",constraint.getValue());
-        assertEquals("==", constraint.getOperator());
+        assertTrue( m.lhs[ 1 ] instanceof FromCompositeFactPattern );
+        FromCompositeFactPattern factPattern = (FromCompositeFactPattern) m.lhs[ 1 ];
+        assertNotNull( factPattern.getFactPattern().getConstraintList() );
+        assertEquals( 1, factPattern.getFactPattern().getConstraintList().getNumberOfConstraints() );
+        SingleFieldConstraint constraint = (SingleFieldConstraint) factPattern.getFactPattern().getFieldConstraints()[ 0 ];
+        assertEquals( "Itinerario", constraint.getFactType() );
+        assertEquals( "destino", constraint.getFieldName() );
+        assertEquals( DataType.TYPE_STRING, constraint.getFieldType() );
+        assertEquals( "USA", constraint.getValue() );
+        assertEquals( "==", constraint.getOperator() );
     }
 
     @Test
@@ -2932,8 +2932,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         FromAccumulateCompositeFactPattern pattern = (FromAccumulateCompositeFactPattern) m.lhs[ 0 ];
         assertNotNull( pattern.getFactPattern() );
         FactPattern factPattern = pattern.getFactPattern();
-        assertEquals("total", factPattern.getBoundName());
-        assertNotNull(factPattern.getConstraintList());
+        assertEquals( "total", factPattern.getBoundName() );
+        assertNotNull( factPattern.getConstraintList() );
         assertEquals( 1, factPattern.getConstraintList().getNumberOfConstraints() );
         FieldConstraint constraint = factPattern.getConstraintList().getConstraint( 0 );
         assertTrue( constraint instanceof SingleFieldConstraint );
