@@ -51,6 +51,7 @@ import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.models.datamodel.rule.FromAccumulateCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
+import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
@@ -2769,6 +2770,63 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                       drl2 );
     }
 
+    public void testCalendars() {
+        //BZ1059232 - Guided rule editor: calendars attribute is broken when a list of calendars is used
+        String drl = "package org.mortgages;\n" +
+                "\n" +
+                "import java.lang.Number;\n" +
+                "rule \"Test\"\n" +
+                "  calendars \"a\" ,\"b\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "  then\n" +
+                "end\n";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           dmo );
+
+        assertNotNull( m.attributes[ 0 ] );
+        RuleAttribute attribute = m.attributes[ 0 ];
+        assertEquals( "calendars", attribute.getAttributeName() );
+        assertEquals( "a, b", attribute.getValue() );
+    }
+
+    @Test
+    public void testFromRestrictions() {
+        String drl = "package org.mortgages;\n" +
+                "\n" +
+                "import java.lang.Number;\n" +
+                "rule \"Test\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    reserva : Reserva( )\n" +
+                "    itinerario : Itinerario( destino == \"USA\" ) from reserva.itinerarios\n" +
+                "  then\n" +
+                "end\n";
+
+        addModelField( "org.mortgages.Reserva",
+                       "itinerarios",
+                       "java.lang.List",
+                       DataType.TYPE_COLLECTION );
+        addModelField( "org.mortgages.Itinerario",
+                       "destino",
+                       "String",
+                       DataType.TYPE_STRING );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           dmo );
+        assertTrue( m.lhs[ 1 ] instanceof FromCompositeFactPattern );
+        FromCompositeFactPattern factPattern = (FromCompositeFactPattern) m.lhs[ 1 ];
+        assertNotNull( factPattern.getFactPattern().getConstraintList() );
+        assertEquals( 1, factPattern.getFactPattern().getConstraintList().getNumberOfConstraints() );
+        SingleFieldConstraint constraint = (SingleFieldConstraint) factPattern.getFactPattern().getFieldConstraints()[ 0 ];
+        assertEquals( "Itinerario", constraint.getFactType() );
+        assertEquals( "destino", constraint.getFieldName() );
+        assertEquals( DataType.TYPE_STRING, constraint.getFieldType() );
+        assertEquals( "USA", constraint.getValue() );
+        assertEquals( "==", constraint.getOperator() );
+    }
+
     @Test
     public void testFromBoundVariable() {
         String drl = "import java.lang.Number;\n"
@@ -2872,8 +2930,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         FromAccumulateCompositeFactPattern pattern = (FromAccumulateCompositeFactPattern) m.lhs[ 0 ];
         assertNotNull( pattern.getFactPattern() );
         FactPattern factPattern = pattern.getFactPattern();
-        assertEquals("total", factPattern.getBoundName());
-        assertNotNull(factPattern.getConstraintList());
+        assertEquals( "total", factPattern.getBoundName() );
+        assertNotNull( factPattern.getConstraintList() );
         assertEquals( 1, factPattern.getConstraintList().getNumberOfConstraints() );
         FieldConstraint constraint = factPattern.getConstraintList().getConstraint( 0 );
         assertTrue( constraint instanceof SingleFieldConstraint );
