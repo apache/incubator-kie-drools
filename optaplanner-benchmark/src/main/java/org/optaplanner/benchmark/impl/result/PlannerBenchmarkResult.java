@@ -221,6 +221,11 @@ public class PlannerBenchmarkResult {
         for (SolverBenchmarkResult solverBenchmarkResult : solverBenchmarkResultList) {
             Score score = solverBenchmarkResult.getAverageScore();
             if (score != null) {
+                if (totalScore != null && !totalScore.isCompatibleArithmeticArgument(score)) {
+                    // Mixing different use cases with different score definitions.
+                    totalScore = null;
+                    break;
+                }
                 totalScore = (totalScore == null) ? score : totalScore.add(score);
                 solverBenchmarkCount++;
             }
