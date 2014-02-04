@@ -93,7 +93,8 @@ public interface Score<S extends Score> extends Comparable<S> {
 
     /**
      * @param otherScore never null
-     * @return true if the otherScore is accepted as a parameter of {@link #add(Score)} and {@link #subtract(Score)}
+     * @return true if the otherScore is accepted as a parameter of {@link #add(Score)}, {@link #subtract(Score)}
+     * and {@link #compareTo(Object)}.
      */
     boolean isCompatibleArithmeticArgument(Score otherScore);
 
