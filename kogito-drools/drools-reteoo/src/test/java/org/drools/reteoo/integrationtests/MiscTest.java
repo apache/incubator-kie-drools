@@ -2125,7 +2125,18 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( 13,
                       poisonError.getLine() );
 
-        assertTrue( errors[2].getMessage().contains( "add" ) );
+        PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
+        JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
+        switch ( javaConf.getCompiler() ) {
+            case JavaDialectConfiguration.NATIVE : assertTrue( errors[2].getMessage().contains( "illegal" ) );
+                break;
+            case JavaDialectConfiguration.ECLIPSE: assertTrue( errors[2].getMessage().contains( "add" ) );
+                break;
+            case JavaDialectConfiguration.JANINO: assertTrue( errors[2].getMessage().contains( "Unexpected" ) );
+                break;
+            default: fail( "Unknown compiler used" );
+        }
+
         // now check the RHS, not being too specific yet, as long as it has the
         // rules line number, not zero
         final DescrBuildError rhsError = (DescrBuildError) errors[2];
