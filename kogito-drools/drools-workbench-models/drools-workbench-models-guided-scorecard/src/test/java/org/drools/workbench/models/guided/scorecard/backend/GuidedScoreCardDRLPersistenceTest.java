@@ -38,7 +38,7 @@ public class GuidedScoreCardDRLPersistenceTest {
                       StringUtil.countMatches( drl,
                                                "rule \"" ) );
 
-        assertEquals( 2,
+        assertEquals( 3,
                       StringUtil.countMatches( drl,
                                                "import " ) );
     }
@@ -57,7 +57,7 @@ public class GuidedScoreCardDRLPersistenceTest {
                       StringUtil.countMatches( drl,
                                                "rule \"" ) );
 
-        assertEquals( 2,
+        assertEquals( 3,
                       StringUtil.countMatches( drl,
                                                "import " ) );
     }
@@ -76,7 +76,7 @@ public class GuidedScoreCardDRLPersistenceTest {
                       StringUtil.countMatches( drl,
                                                "rule \"" ) );
 
-        assertEquals( 2,
+        assertEquals( 3,
                       StringUtil.countMatches( drl,
                                                "import " ) );
     }
@@ -96,7 +96,7 @@ public class GuidedScoreCardDRLPersistenceTest {
                       StringUtil.countMatches( drl,
                                                "rule \"" ) );
 
-        assertEquals( 3,
+        assertEquals( 4,
                       StringUtil.countMatches( drl,
                                                "import " ) );
     }
@@ -117,7 +117,7 @@ public class GuidedScoreCardDRLPersistenceTest {
                       StringUtil.countMatches( drl,
                                                "rule \"" ) );
 
-        assertEquals( 3,
+        assertEquals( 4,
                       StringUtil.countMatches( drl,
                                                "import " ) );
     }
@@ -138,7 +138,7 @@ public class GuidedScoreCardDRLPersistenceTest {
                       StringUtil.countMatches( drl,
                                                "rule \"" ) );
 
-        assertEquals( 3,
+        assertEquals( 4,
                       StringUtil.countMatches( drl,
                                                "import " ) );
     }
