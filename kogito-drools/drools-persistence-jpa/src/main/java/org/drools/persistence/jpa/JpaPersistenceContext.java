@@ -50,6 +50,7 @@ public class JpaPersistenceContext implements PersistenceContext {
 
     public void remove(SessionInfo sessionInfo) {
         em.remove( sessionInfo );
+        em.flush();
     }
     
     public void lock(SessionInfo sessionInfo) {
