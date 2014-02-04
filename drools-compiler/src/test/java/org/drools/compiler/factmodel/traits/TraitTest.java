@@ -4985,7 +4985,7 @@ public class TraitTest extends CommonTestMethodBase {
     public void testClassLiteralsWithOr() {
 
         String drl = "package org.drools.test; " +
-                     "import org.drools.factmodel.traits.*; " +
+                     "import org.drools.core.factmodel.traits.*; " +
                      "global java.util.List list; " +
 
                      "declare Foo " +
