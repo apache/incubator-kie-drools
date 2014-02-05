@@ -5149,7 +5149,7 @@ public class Misc2Test extends CommonTestMethodBase {
         }
     }
 
-    @Test @Ignore("fixed with mvel 2.1.9.Final")
+    @Test
     public void testJittingConstraintInvokingStaticMethod() throws Exception {
         // DROOLS-410
         String str =
