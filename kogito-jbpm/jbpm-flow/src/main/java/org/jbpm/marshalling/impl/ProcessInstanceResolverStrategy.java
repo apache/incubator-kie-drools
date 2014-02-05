@@ -24,6 +24,7 @@ import org.drools.core.marshalling.impl.PersisterHelper;
 import org.jbpm.process.instance.ProcessInstanceManager;
 import org.jbpm.process.instance.ProcessRuntimeImpl;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
+import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.kie.api.definition.process.Process;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -38,7 +39,10 @@ import java.io.ObjectOutputStream;
  * </p>
  * Instead, this strategy, which may only be used for {@link ProcessInstance} objects, 
  * saves the process instance in the {@link ProcessInstanceManager}, and later retrieves
- * it from there. 
+ * it from there.
+ * </p>
+ * Should a process instance be completed or aborted, it will be restored as an empty
+ * RuleFlowProcessInstance with correct id and state completed, yet no internal details.
  * </p>
  * If you're doing tricky things with serialization and persistence, please make sure
  * to remember that the {@link ProcessInstanceManager} cache of process instances is emptied 
@@ -71,10 +75,15 @@ public class ProcessInstanceResolverStrategy
         long processInstanceId = is.readLong();
         ProcessInstanceManager pim = retrieveProcessInstanceManager( is );
         ProcessInstance processInstance = pim.getProcessInstance( processInstanceId );
-
-        connectProcessInstanceToRuntimeAndProcess( processInstance, is );
-
-        return processInstance;
+        if (processInstance == null) {
+        	RuleFlowProcessInstance result = new RuleFlowProcessInstance();
+        	result.setId( processInstanceId );
+        	result.internalSetState(ProcessInstance.STATE_COMPLETED);
+        	return result;
+        } else {
+        	connectProcessInstanceToRuntimeAndProcess( processInstance, is );
+            return processInstance;
+        }
     }
 
     /**
@@ -118,8 +127,13 @@ public class ProcessInstanceResolverStrategy
         }
         // Attach the process if not present
         if ( processInstance.getProcess() == null ) {
-            Process process = kruntime.getKieBase().getProcess( processInstance.getProcessId() );
-            processInstanceImpl.setProcess( process );
+        	String processId = processInstance.getProcessId();
+        	if (processId != null) {
+        		Process process = kruntime.getKieBase().getProcess( processId );
+        		if (process != null) {
+        			processInstanceImpl.setProcess( process );
+        		}
+        	}
         }
     }
 
@@ -166,8 +180,15 @@ public class ProcessInstanceResolverStrategy
         long processInstanceId = PersisterHelper.byteArrayToLong( object );
         ProcessInstanceManager pim = retrieveProcessInstanceManager( is );
         ProcessInstance processInstance = pim.getProcessInstance( processInstanceId );
-        connectProcessInstanceToRuntimeAndProcess( processInstance, is );
-        return processInstance;
+        if (processInstance == null) {
+        	RuleFlowProcessInstance result = new RuleFlowProcessInstance();
+        	result.setId( processInstanceId );
+        	result.internalSetState(ProcessInstance.STATE_COMPLETED);
+        	return result;
+        } else {
+        	connectProcessInstanceToRuntimeAndProcess( processInstance, is );
+        	return processInstance;
+        }
     }
 
     public Context createContext() {
