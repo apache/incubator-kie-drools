@@ -736,10 +736,11 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
       </section>
 
       <section xml:id="chainedPlanningVariable">
-        <title>Chained planning variable</title>
+        <title>Chained planning variable (TSP, VRP, ...)</title>
 
         <para>Some use cases, such as TSP and Vehicle Routing, require <emphasis>chaining</emphasis>. This means the
-        planning entities point to each other and form a chain.</para>
+        planning entities point to each other and form a chain. By modeling the problem as a set of chains (instead of a
+        set of trees/loops), the search space is heavily reduced.</para>
 
         <para>A planning variable that is chained either:</para>
 
@@ -877,8 +878,8 @@ public class Visit ... implements Standstill {
           </imageobject>
         </mediaobject>
 
-        <para><literal>To map a bi-directional relationship between 2 planning variables, annotate the master side as a
-        normal (= genuine) planning variable:</literal></para>
+        <para>To map a bi-directional relationship between 2 planning variables, annotate the master side as a normal (=
+        genuine) planning variable:</para>
 
         <programlisting language="java">@PlanningEntity
 public class Customer ... {
@@ -1469,10 +1470,10 @@ public interface Standstill {
         <title>REPRODUCIBLE (default)</title>
 
         <para>The reproducible mode is the default mode because it is recommended during development. In this mode, 2
-        runs in the same Planner version will execute the same code in the same order. <emphasis role="bold">Those 2
-        runs will have the same result</emphasis>, except if the note below applies. This allows you to consistently
-        reproduce bugs. It also allows you to benchmark certain refactorings (such as a score constraint optimization)
-        fairly across runs.</para>
+        runs in the same OptaPlanner version will execute the same code in the same order. <emphasis role="bold">Those 2
+        runs will have the same result at every step</emphasis>, except if the note below applies. This enables you to
+        reproduce bugs consistently. It also allows you to benchmark certain refactorings (such as a score constraint
+        performance optimization) fairly across runs.</para>
 
         <note>
           <para>Despite the reproducible mode, your application might still not be fully reproducible because of:</para>
@@ -1486,32 +1487,29 @@ public interface Standstill {
             </listitem>
 
             <listitem>
-              <para>Combining a time gradient dependent algorithms (most notably simulated annealing) together with time
+              <para>Combining a time gradient dependent algorithms (most notably Simulated Annealing) together with time
               spend termination. A sufficiently large difference in allocated CPU time will influence the time gradient
-              values. Replace simulated annealing with late acceptance. Or instead, replace time spend termination with
+              values. Replace Simulated Annealing with Late Acceptance. Or instead, replace time spend termination with
               step count termination.</para>
             </listitem>
           </itemizedlist>
         </note>
 
         <para>The reproducible mode is slightly slower than the production mode. If your production environment requires
-        reproducibility, use it in production too.</para>
+        reproducibility, use this mode in production too.</para>
 
-        <para>In practice, this mode uses the default random seed, and it also disables certain concurrency
-        optimizations (such as work stealing).</para>
+        <para>In practice, this mode uses the default, fixed <link linkend="randomNumberGenerator">random seed</link> if
+        no seed is specified, and it also disables certain concurrency optimizations (such as work stealing).</para>
       </section>
 
       <section>
         <title>PRODUCTION</title>
 
-        <para>The production mode is the fastest, but not reproducible. It is recommended for a production environment,
-        unless reproducibility is required.</para>
+        <para>The production mode is the fastest, but it is not reproducible. It is recommended for a production
+        environment, unless reproducibility is required.</para>
 
-        <para>The random seed is different on every run, which makes it more robust against an unlucky random seed. An
-        unlucky random seed gives a bad result on a certain data set with a certain solver configuration. Note that in
-        most use cases the impact of the random seed is relatively low on the result (even with simulated annealing). An
-        occasional bad result is far more likely to be caused by another issue (such as a <link
-        linkend="scoreTrap">score trap</link>).</para>
+        <para>In pratice, this mode uses no fixed <link linkend="randomNumberGenerator">random seed</link> if no seed is
+        specified.</para>
       </section>
     </section>
 
@@ -1567,7 +1565,7 @@ public interface Standstill {
       <para>For example, set it to <literal>debug</literal> logging, to see when the phases end and how fast steps are
       taken:</para>
 
-      <programlisting>INFO  Solving started: time spend (0), score (null), new best score (null), random seed (0).
+      <programlisting>INFO  Solving started: time spend (0), score (null), new best score (null), random (JDK with seed 0).
 DEBUG     Step index (0), time spend (1), score (0), initialized planning entity (col2@row0).
 DEBUG     Step index (1), time spend (3), score (0), initialized planning entity (col1@row2).
 DEBUG     Step index (2), time spend (4), score (0), initialized planning entity (col3@row3).
@@ -1625,6 +1623,52 @@ INFO  Solving ended: time spend (13), best score (0), average calculate count pe
   ...
 
 &lt;/log4j:configuration&gt;</programlisting>
+    </section>
+
+    <section xml:id="randomNumberGenerator">
+      <title>Random number generator</title>
+
+      <para>Many heuristics and metaheuristics depend on a pseudorandom number generator for move selection, to resolve
+      score ties, probability based move acceptance, ... During solving, the same <literal>Random</literal> instance is
+      reused to improve reproducibility, performance and uniform distribution of random values.</para>
+
+      <para>To change the random seed of that <literal>Random</literal> instance, specify a
+      <literal>randomSeed</literal>:</para>
+
+      <programlisting language="xml">&lt;solver&gt;
+  &lt;randomSeed&gt;0&lt;/randomSeed&gt;
+  ...
+&lt;/solver&gt;</programlisting>
+
+      <para>To change the pseudorandom number generator implementation, specify a <literal>randomType</literal>:</para>
+
+      <programlisting language="xml">&lt;solver&gt;
+  &lt;randomType&gt;MERSENNE_TWISTER&lt;/randomType&gt;
+  ...
+&lt;/solver&gt;</programlisting>
+
+      <para>The following types are supported:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><literal>JDK</literal> (default): Standard implementation (<literal>java.util.Random</literal>).</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>MERSENNE_TWISTER</literal>: Implementation by <link
+          xlink:href="commons.apache.org/proper/commons-math/userguide/random.html">Commons Math</link>.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>WELL512A</literal>, <literal>WELL1024A</literal>, <literal>WELL19937A</literal>,
+          <literal>WELL19937C</literal>, <literal>WELL44497A</literal> and <literal>WELL44497B</literal>: Implementation
+          by <link xlink:href="commons.apache.org/proper/commons-math/userguide/random.html">Commons Math</link>.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>For most use cases, the randomType has no significant impact on the average quality of the best solution on
+      multiple datasets. If you want to confirm this on your use case, use the <link
+      linkend="benchmarkingAndTweaking">benchmarker</link>.</para>
     </section>
   </section>
 </chapter>

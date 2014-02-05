@@ -48,8 +48,6 @@ public class DefaultRandomFactory implements RandomFactory {
         switch (randomType) {
             case JDK:
                 return randomSeed == null ? new Random() : new Random(randomSeed);
-            case ISAAC:
-                return new RandomAdaptor(randomSeed == null ? new ISAACRandom() : new ISAACRandom(randomSeed));
             case MERSENNE_TWISTER:
                 return new RandomAdaptor(randomSeed == null ? new MersenneTwister() : new MersenneTwister(randomSeed));
             case WELL512A:
@@ -67,6 +65,11 @@ public class DefaultRandomFactory implements RandomFactory {
             default:
                 throw new IllegalStateException("The randomType (" + randomType + ") is not implemented.");
         }
+    }
+
+    @Override
+    public String toString() {
+        return randomType.name() + (randomSeed == null ? "" : " with seed " + randomSeed);
     }
 
 }

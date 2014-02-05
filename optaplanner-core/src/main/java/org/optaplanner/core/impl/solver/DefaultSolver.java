@@ -175,7 +175,7 @@ public class DefaultSolver implements Solver {
         for (SolverPhase solverPhase : solverPhaseList) {
             solverPhase.solvingStarted(solverScope);
         }
-        logger.info("Solving started: time spend ({}), score ({}), new best score ({}), random seed ({}).",
+        logger.info("Solving started: time spend ({}), score ({}), new best score ({}), random ({}).",
                 solverScope.calculateTimeMillisSpend(), solverScope.getStartingInitializedScore(),
                 solverScope.getBestScore(), (randomFactory != null ? randomFactory : "not fixed"));
     }

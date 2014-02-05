@@ -31,7 +31,6 @@ public enum RandomType {
      * This is the default.
      */
     JDK,
-    ISAAC,
     MERSENNE_TWISTER,
     WELL512A,
     WELL1024A,
