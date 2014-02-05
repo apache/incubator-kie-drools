@@ -15,7 +15,7 @@
   </inheritedSolverBenchmark>
 
 
-<#list ['JDK', 'ISAAC', 'MERSENNE_TWISTER', 'WELL512A', 'WELL1024A', 'WELL19937C', 'WELL44497B'] as randomType>
+<#list ['JDK', 'MERSENNE_TWISTER', 'WELL512A', 'WELL1024A', 'WELL19937C', 'WELL44497B'] as randomType>
   <solverBenchmark>
     <name>Cloud Balancing Late Acceptance ${randomType}</name>
     <problemBenchmarks>
