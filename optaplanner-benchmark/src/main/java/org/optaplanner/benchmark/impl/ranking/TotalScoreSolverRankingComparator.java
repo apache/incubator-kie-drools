@@ -35,12 +35,14 @@ import org.optaplanner.core.impl.solution.Solution;
  */
 public class TotalScoreSolverRankingComparator implements Comparator<SolverBenchmarkResult>, Serializable {
 
-    private WorstScoreSolverRankingComparator worstScoreSolverRankingComparator
+    private final ResilientScoreComparator resilientScoreComparator
+            = new ResilientScoreComparator();
+    private final WorstScoreSolverRankingComparator worstScoreSolverRankingComparator
             = new WorstScoreSolverRankingComparator();
 
     public int compare(SolverBenchmarkResult a, SolverBenchmarkResult b) {
         return new CompareToBuilder()
-                .append(a.getTotalScore(), b.getTotalScore())
+                .append(a.getTotalScore(), b.getTotalScore(), resilientScoreComparator)
                 .append(a, b, worstScoreSolverRankingComparator)
                 .toComparison();
     }

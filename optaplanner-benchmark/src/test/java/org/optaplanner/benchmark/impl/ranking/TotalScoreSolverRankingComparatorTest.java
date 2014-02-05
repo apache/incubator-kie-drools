@@ -73,4 +73,26 @@ public class TotalScoreSolverRankingComparatorTest extends AbstractSolverRanking
         assertEquals(1, comparator.compare(b, a));
     }
 
+    @Test
+    public void differentScoreDefinitions() {
+        BenchmarkReport benchmarkReport = mock(BenchmarkReport.class);
+        TotalScoreSolverRankingComparator comparator = new TotalScoreSolverRankingComparator();
+        SolverBenchmarkResult a = new SolverBenchmarkResult(null);
+        List<SingleBenchmarkResult> aSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
+        addSingleBenchmark(aSingleBenchmarkResultList, -1000, -30, -1000);
+        addSingleBenchmark(aSingleBenchmarkResultList, -400, -30, -1000);
+        addSingleBenchmark(aSingleBenchmarkResultList, -30, -30, -1000);
+        a.setSingleBenchmarkResultList(aSingleBenchmarkResultList);
+        a.accumulateResults(benchmarkReport);
+        SolverBenchmarkResult b = new SolverBenchmarkResult(null);
+        List<SingleBenchmarkResult> bSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
+        addSingleBenchmarkWithHardSoftLongScore(bSingleBenchmarkResultList, 0, -1000, 0, -50, -10, -1000);
+        addSingleBenchmarkWithHardSoftLongScore(bSingleBenchmarkResultList, 0, -200, 0, -50, -10, -1000);
+        addSingleBenchmarkWithHardSoftLongScore(bSingleBenchmarkResultList, -7, -50, 0, -50, -10, -1000);
+        b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
+        b.accumulateResults(benchmarkReport);
+        assertEquals(-1, comparator.compare(a, b));
+        assertEquals(1, comparator.compare(b, a));
+    }
+
 }

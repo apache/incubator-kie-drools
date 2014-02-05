@@ -31,14 +31,23 @@ import org.optaplanner.core.api.score.Score;
  */
 public class WorstScoreSolverRankingComparator implements Comparator<SolverBenchmarkResult>, Serializable {
 
+    private final ResilientScoreComparator resilientScoreComparator
+            = new ResilientScoreComparator();
+
     public int compare(SolverBenchmarkResult a, SolverBenchmarkResult b) {
         List<Score> aScoreList = a.getScoreList();
         Collections.sort(aScoreList); // Worst scores become first in the list
         List<Score> bScoreList = b.getScoreList();
         Collections.sort(bScoreList); // Worst scores become first in the list
-        return new CompareToBuilder()
-                .append(aScoreList.toArray(), bScoreList.toArray())
-                .toComparison();
+        int aSize = aScoreList.size();
+        int bSize = bScoreList.size();
+        for (int i = 0; i < aSize && i < bSize; i++) {
+            int comparison = resilientScoreComparator.compare(aScoreList.get(i), bScoreList.get(i));
+            if (comparison != 0) {
+                return comparison;
+            }
+        }
+        return aSize == bSize ? 0 : aSize < bSize ? -1 : 1;
     }
 
 }
