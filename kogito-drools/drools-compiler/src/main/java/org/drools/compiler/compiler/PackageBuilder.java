@@ -3342,7 +3342,7 @@ public class PackageBuilder
             JavaDialectRuntimeData runtime = ((JavaDialectRuntimeData) pkgRegistry.getDialectRuntimeRegistry().getDialectData( "java" ));
             byte [] def = runtime.getStore().get(convertClassToResourcePath(functionClassName));
             if (def != null) {
-                ((ProjectClassLoader)rootClassLoader).defineClass(functionClassName, def);
+                ((ProjectClassLoader)rootClassLoader).storeClass(functionClassName, def);
             }
         }
     }
