@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -107,10 +108,6 @@ public class BenchmarkAggregatorFrame extends JFrame {
         pack();
         setLocationRelativeTo(null);
     }
-
-    // ************************************************************************
-    // TODO All code below is POC code: replace this code with production quality code
-    // ************************************************************************
 
     private JComponent createContentPane() {
         JPanel contentPane = new JPanel(new BorderLayout());
@@ -240,29 +237,29 @@ public class BenchmarkAggregatorFrame extends JFrame {
         @Override
         protected void done() {
             try {
-                File reportFile = get();
-                CustomDialog dialog = new CustomDialog(parentFrame, reportFile);
+                File htmlOverviewFile = get();
+                CustomDialog dialog = new CustomDialog(parentFrame, htmlOverviewFile);
                 dialog.pack();
-                dialog.setLocationRelativeTo(null);
+                dialog.setLocationRelativeTo(BenchmarkAggregatorFrame.this);
                 dialog.setVisible(true);
-            } catch (InterruptedException ex) {
-                throw new IllegalStateException(ex);
-            } catch (ExecutionException ex) {
-                throw new IllegalStateException(ex);
+            } catch (InterruptedException e) {
+                throw new IllegalStateException(e);
+            } catch (ExecutionException e) {
+                throw new IllegalStateException(e);
             } finally {
                 parentFrame.setEnabled(true);
                 frameStatusBar.setText(null);
             }
         }
+
     }
 
     private class CustomDialog extends JDialog {
 
         public CustomDialog(final JFrame parentFrame, final File reportFile) {
-            super(parentFrame, "Reprot generation finished");
+            super(parentFrame, "Report generation finished");
             JPanel contentPanel = new JPanel(new GridLayout(2, 2, 10, 10));
-            contentPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
-            contentPanel.setBackground(Color.WHITE);
+            contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
             JButton openBrowserButton = new JButton("Show in browser");
             openBrowserButton.addActionListener(new AbstractAction() {
@@ -284,7 +281,6 @@ public class BenchmarkAggregatorFrame extends JFrame {
 
             final JCheckBox exitCheckbox = new JCheckBox("Exit application”");
             exitCheckbox.setSelected(true);
-            exitCheckbox.setBackground(Color.WHITE);
             contentPanel.add(exitCheckbox);
 
             JButton closeButton = new JButton("Ok");
@@ -300,28 +296,28 @@ public class BenchmarkAggregatorFrame extends JFrame {
             });
             contentPanel.add(closeButton);
             getContentPane().add(contentPanel);
-            setPreferredSize(new Dimension(400, 150));
         }
 
         private void openReportFile(File file, Desktop.Action action) {
             Desktop desktop = Desktop.getDesktop();
             try {
                 switch (action) {
-                    case OPEN: {
+                    case OPEN:
                         if (desktop.isSupported(Desktop.Action.OPEN)) {
                             desktop.open(file);
                         }
                         break;
-                    }
-                    case BROWSE: {
+                    case BROWSE:
                         if (desktop.isSupported(Desktop.Action.BROWSE)) {
                             desktop.browse(file.toURI());
                         }
-                    }
+                        break;
                 }
-            } catch (IOException ex) {
-                throw new IllegalStateException(ex);
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
             }
         }
+
     }
+
 }
