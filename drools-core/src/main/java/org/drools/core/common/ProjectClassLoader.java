@@ -193,6 +193,10 @@ public class ProjectClassLoader extends ClassLoader {
         }
     }
 
+    public void storeClass(String name, byte[] bytecode) {
+        storeClass(name, convertClassToResourcePath(name), bytecode);
+    }
+
     public void storeClass(String name, String resourceName, byte[] bytecode) {
         if (store == null) {
             store = new HashMap<String, byte[]>();
