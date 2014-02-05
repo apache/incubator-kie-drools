@@ -489,7 +489,7 @@ public class SessionConfiguration
                 return (TimerService) MVELSafeHelper.getEvaluator().eval(className);
             } catch (Exception e) {
                 throw new IllegalArgumentException( "Timer service '" + className
-                                                + "' not found" );
+                                                + "' not found", e );
             }
         }
     }
