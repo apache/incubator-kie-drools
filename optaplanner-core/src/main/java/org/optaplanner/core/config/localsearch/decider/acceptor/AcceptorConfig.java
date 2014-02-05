@@ -46,7 +46,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.ValueRat
 public class AcceptorConfig {
 
     @XStreamImplicit(itemFieldName = "acceptorClass")
-    private List<Class<? extends Acceptor>> acceptorClassList = null; // TODO make into a list
+    private List<Class<? extends Acceptor>> acceptorClassList = null;
 
     @XStreamImplicit(itemFieldName = "acceptorType")
     private List<AcceptorType> acceptorTypeList = null;

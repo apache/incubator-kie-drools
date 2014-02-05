@@ -18,7 +18,6 @@ package org.optaplanner.core.config.solver;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -56,6 +55,7 @@ public class SolverConfig {
     protected EnvironmentMode environmentMode = null;
     protected RandomType randomType = null;
     protected Long randomSeed = null;
+    protected Class<? extends RandomFactory> randomFactoryClass = null;
 
     protected Class<? extends Solution> solutionClass = null;
     @XStreamImplicit(itemFieldName = "planningEntityClass")
@@ -92,6 +92,14 @@ public class SolverConfig {
 
     public void setRandomSeed(Long randomSeed) {
         this.randomSeed = randomSeed;
+    }
+
+    public Class<? extends RandomFactory> getRandomFactoryClass() {
+        return randomFactoryClass;
+    }
+
+    public void setRandomFactoryClass(Class<? extends RandomFactory> randomFactoryClass) {
+        this.randomFactoryClass = randomFactoryClass;
     }
 
     public Class<? extends Solution> getSolutionClass() {
@@ -144,12 +152,24 @@ public class SolverConfig {
         solver.setBasicPlumbingTermination(basicPlumbingTermination);
         EnvironmentMode environmentMode = this.environmentMode == null ? EnvironmentMode.REPRODUCIBLE
                 : this.environmentMode;
-        RandomType randomType_ = randomType == null ? RandomType.JDK : randomType;
-        Long randomSeed_ = randomSeed;
-        if (randomSeed == null && environmentMode != EnvironmentMode.PRODUCTION) {
-            randomSeed_ = DEFAULT_RANDOM_SEED;
+
+        RandomFactory randomFactory;
+        if (randomFactoryClass != null) {
+            if (randomType != null || randomSeed != null) {
+                throw new IllegalArgumentException(
+                        "The solverConfig with randomFactoryClass (" + randomFactoryClass
+                                + ") has a non-null randomType (" + randomType
+                                + ") or a non-null randomSeed (" + randomSeed + ").");
+            }
+            randomFactory = ConfigUtils.newInstance(this, "randomFactoryClass", randomFactoryClass);
+        } else {
+            RandomType randomType_ = randomType == null ? RandomType.JDK : randomType;
+            Long randomSeed_ = randomSeed;
+            if (randomSeed == null && environmentMode != EnvironmentMode.PRODUCTION) {
+                randomSeed_ = DEFAULT_RANDOM_SEED;
+            }
+            randomFactory = new DefaultRandomFactory(randomType_, randomSeed_);
         }
-        RandomFactory randomFactory = new DefaultRandomFactory(randomType_, randomSeed_);
         solver.setRandomFactory(randomFactory);
         SolutionDescriptor solutionDescriptor = buildSolutionDescriptor();
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_
@@ -216,6 +236,8 @@ public class SolverConfig {
         environmentMode = ConfigUtils.inheritOverwritableProperty(environmentMode, inheritedConfig.getEnvironmentMode());
         randomType = ConfigUtils.inheritOverwritableProperty(randomType, inheritedConfig.getRandomType());
         randomSeed = ConfigUtils.inheritOverwritableProperty(randomSeed, inheritedConfig.getRandomSeed());
+        randomFactoryClass = ConfigUtils.inheritOverwritableProperty(
+                randomFactoryClass, inheritedConfig.getRandomFactoryClass());
         solutionClass = ConfigUtils.inheritOverwritableProperty(solutionClass, inheritedConfig.getSolutionClass());
         planningEntityClassList = ConfigUtils.inheritMergeableListProperty(
                 planningEntityClassList, inheritedConfig.getPlanningEntityClassList());
