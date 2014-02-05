@@ -17,7 +17,6 @@
 package org.optaplanner.benchmark.impl.aggregator.swingui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -44,7 +43,6 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
-import javax.swing.border.EmptyBorder;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -153,8 +151,8 @@ public class BenchmarkAggregatorFrame extends JFrame {
     }
 
     private JComponent createBenchmarkTree() {
-        CheckboxTree checkboxTree = new CheckboxTree(initBenchmarkHierarchy());
-        return new JScrollPane(checkboxTree);
+        CheckBoxTree checkBoxTree = new CheckBoxTree(initBenchmarkHierarchy());
+        return new JScrollPane(checkBoxTree);
     }
 
     private void initPlannerBenchmarkResultList() {
@@ -279,7 +277,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
             });
             contentPanel.add(openFileButton);
 
-            final JCheckBox exitCheckbox = new JCheckBox("Exit application”");
+            final JCheckBox exitCheckbox = new JCheckBox("Exit application");
             exitCheckbox.setSelected(true);
             contentPanel.add(exitCheckbox);
 

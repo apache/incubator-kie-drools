@@ -28,9 +28,9 @@ import javax.swing.tree.TreePath;
 
 import static org.optaplanner.benchmark.impl.aggregator.swingui.MixedCheckBox.MixedCheckBoxStatus.*;
 
-public class CheckboxTree extends JTree {
+public class CheckBoxTree extends JTree {
 
-    public CheckboxTree(DefaultMutableTreeNode root) {
+    public CheckBoxTree(DefaultMutableTreeNode root) {
         super(root);
         addMouseListener(new CheckboxTreeMouseListener(this));
         setCellRenderer(new CheckboxTreeCellRenderer());
@@ -39,9 +39,9 @@ public class CheckboxTree extends JTree {
 
     private static class CheckboxTreeMouseListener extends MouseAdapter {
 
-        private CheckboxTree tree;
+        private CheckBoxTree tree;
 
-        public CheckboxTreeMouseListener(CheckboxTree tree) {
+        public CheckboxTreeMouseListener(CheckBoxTree tree) {
             this.tree = tree;
         }
 
@@ -50,10 +50,10 @@ public class CheckboxTree extends JTree {
             TreePath path = tree.getPathForLocation(e.getX(), e.getY());
             if (path != null) {
                 DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) path.getLastPathComponent();
-                MixedCheckBox checkbox = (MixedCheckBox) currentNode.getUserObject();
-                switch (checkbox.getStatus()) {
+                MixedCheckBox checkBox = (MixedCheckBox) currentNode.getUserObject();
+                switch (checkBox.getStatus()) {
                     case CHECKED: {
-                        checkbox.setStatus(UNCHECKED);
+                        checkBox.setStatus(UNCHECKED);
                         selectChildren(currentNode, UNCHECKED);
                         TreeNode[] ancestorNodes = currentNode.getPath();
                         // examine ancestors, don't lose track of most recent changes - bottom-up approach 
@@ -69,7 +69,7 @@ public class CheckboxTree extends JTree {
                         break;
                     }
                     case UNCHECKED: {
-                        checkbox.setStatus(CHECKED);
+                        checkBox.setStatus(CHECKED);
                         selectChildren(currentNode, CHECKED);
                         TreeNode[] ancestorNodes = currentNode.getPath();
                         for (int i = ancestorNodes.length - 2; i >= 0; i--) {
@@ -84,7 +84,7 @@ public class CheckboxTree extends JTree {
                         break;
                     }
                     case MIXED: {
-                        checkbox.setStatus(CHECKED);
+                        checkBox.setStatus(CHECKED);
                         selectChildren(currentNode, CHECKED);
                         TreeNode[] ancestorNodes = currentNode.getPath();
                         for (int i = ancestorNodes.length - 2; i >= 0; i--) {
@@ -106,8 +106,8 @@ public class CheckboxTree extends JTree {
             Enumeration children = parent.children();
             while (children.hasMoreElements()) {
                 DefaultMutableTreeNode child = (DefaultMutableTreeNode) children.nextElement();
-                MixedCheckBox checkbox = (MixedCheckBox) child.getUserObject();
-                checkbox.setStatus(status);
+                MixedCheckBox checkBox = (MixedCheckBox) child.getUserObject();
+                checkBox.setStatus(status);
                 selectChildren(child, status);
             }
         }
@@ -117,8 +117,8 @@ public class CheckboxTree extends JTree {
             Enumeration children = parent.children();
             while (children.hasMoreElements()) {
                 DefaultMutableTreeNode child = (DefaultMutableTreeNode) children.nextElement();
-                MixedCheckBox checkbox = (MixedCheckBox) child.getUserObject();
-                if (checkbox.getStatus() != status) {
+                MixedCheckBox checkBox = (MixedCheckBox) child.getUserObject();
+                if (checkBox.getStatus() != status) {
                     childrenCheck = false;
                     break;
                 }
@@ -132,10 +132,10 @@ public class CheckboxTree extends JTree {
         @Override
         public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-            MixedCheckBox checkbox = (MixedCheckBox) node.getUserObject();
-            checkbox.setBackground(Color.WHITE);
+            MixedCheckBox checkBox = (MixedCheckBox) node.getUserObject();
+            checkBox.setBackground(Color.WHITE);
             // TODO visual part
-            return checkbox;
+            return checkBox;
         }
         
     }
