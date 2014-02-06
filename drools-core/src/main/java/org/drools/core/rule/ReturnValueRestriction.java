@@ -230,7 +230,7 @@ public class ReturnValueRestriction
             return this.evaluator.evaluate( (InternalWorkingMemory) workingMemory,
                                             this.readAccessor,
                                             handle,
-                                            this.expression.evaluate( handle.getObject(),
+                                            this.expression.evaluate( handle,
                                                                       tuple,
                                                                       this.previousDeclarations,
                                                                       this.localDeclarations,
@@ -247,7 +247,7 @@ public class ReturnValueRestriction
                              final ContextEntry context) {
         try {
             ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;            
-            FieldValue value = this.expression.evaluate( handle.getObject(),
+            FieldValue value = this.expression.evaluate( handle,
                                                          null,
                                                          this.previousDeclarations,
                                                          this.localDeclarations,
@@ -266,7 +266,7 @@ public class ReturnValueRestriction
                                        final InternalFactHandle handle) {
         try {
             ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;
-            FieldValue value = this.expression.evaluate( handle.getObject(),
+            FieldValue value = this.expression.evaluate( handle,
                                                          ctx.leftTuple,
                                                          this.previousDeclarations,
                                                          this.localDeclarations,
@@ -285,7 +285,7 @@ public class ReturnValueRestriction
                                         final ContextEntry context) {
         try {
             ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;
-            FieldValue value = this.expression.evaluate( ctx.handle.getObject(),
+            FieldValue value = this.expression.evaluate( ctx.handle,
                                                          tuple,
                                                          this.previousDeclarations,
                                                          this.localDeclarations,

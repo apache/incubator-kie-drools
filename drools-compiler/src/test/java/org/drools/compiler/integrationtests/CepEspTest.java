@@ -1,6 +1,7 @@
 package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Message;
 import org.drools.compiler.OrderEvent;
 import org.drools.compiler.Sensor;
 import org.drools.compiler.StockTick;
@@ -4448,6 +4449,221 @@ public class CepEspTest extends CommonTestMethodBase {
 
         ksession.dispose();
     }
+
+
+
+    @Test
+    public void testTemporalEvaluatorsWithEventsFromNode() throws InterruptedException {
+        //DROOLS-421
+        String drl = "\n" +
+                     "import java.util.*; " +
+                     "global List list; " +
+
+                     "declare Delivery " +
+                     "  @role( event ) @timestamp( effectiveDate ) " +
+                     "  effectiveDate : Date " +
+                     "  configs : List " +
+                     "end " +
+
+                     "declare Config " +
+                     "  @role( event ) @timestamp( todate ) " +
+                     "  todate : Date " +
+                     "end " +
+
+                     "rule Control " +
+                     "when " +
+                     "  $dpo: Delivery() " +
+                     "  $gCfg: Config( todate == null || this after[ 0d ] $dpo ) from $dpo.configs " +
+                     "then " +
+                     "  list.add( 0 ); " +
+                     "end " +
+
+                     "rule Init " +
+                     "when " +
+                     "then " +
+                     "  Delivery dpo = new Delivery( new Date(), new ArrayList() ); " +
+                     "  Config gCfg = new Config(); " +
+                     "      gCfg.setTodate( new Date( new Date().getTime() + 1000 ) ); " +
+                     "  dpo.getConfigs().add( gCfg ); " +
+                     "  " +
+                     "  insert( dpo ); " +
+                     "end " +
+
+                     "";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write(ResourceFactory.newByteArrayResource( drl.getBytes() ).setTargetPath( "rules.drl" ) );
+
+        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder( kfs );
+        kbuilder.buildAll();
+
+        assertEquals( 0, kbuilder.getResults().getMessages().size() );
+
+        KieSession ksession = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieSession();
+        assertNotNull( ksession );
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        ksession.dispose();
+
+    }
+
+    @Test
+    public void testTemporalEvaluatorsUsingRawDateFields() throws InterruptedException {
+        //DROOLS-421
+        String drl = "\n" +
+                     "import java.util.*; " +
+                     "global List list; " +
+
+                     "declare Delivery " +
+                     "  effectiveDate : Date " +
+                     "end " +
+
+                     "declare Config " +
+                     "  todate : Date " +
+                     "end " +
+
+                     "rule Control " +
+                     "when " +
+                     "  $dpo: Delivery( $eff : effectiveDate ) " +
+                     "  $gCfg: Config( todate == null || todate after[ 0d ] $eff ) " +
+                     "then " +
+                     "  list.add( 0 ); " +
+                     "end " +
+
+                     "rule Init " +
+                     "when " +
+                     "then " +
+                     "  Delivery dpo = new Delivery( new Date( 1000 ) ); " +
+                     "  Config gCfg = new Config(); " +
+                     "      gCfg.setTodate( new Date( 2000 ) ); " +
+                     "  " +
+                     "  insert( dpo ); " +
+                     "  insert( gCfg ); " +
+                     "end " +
+
+                     "";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write(ResourceFactory.newByteArrayResource( drl.getBytes() ).setTargetPath( "rules.drl" ) );
+
+        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder( kfs );
+        kbuilder.buildAll();
+
+        assertEquals( 0, kbuilder.getResults().getMessages().size() );
+
+        KieSession ksession = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieSession();
+        assertNotNull( ksession );
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        ksession.dispose();
+
+    }
+
+
+    @Test
+    public void testTemporalEvaluatorsUsingRawDateFieldsFromFrom() throws InterruptedException {
+        //DROOLS-421
+        String drl = "\n" +
+                     "import java.util.*; " +
+                     "global List list; " +
+
+                     "declare Delivery " +
+                     "  effectiveDate : Date " +
+                     "end " +
+
+                     "declare Config " +
+                     "  todate : Date " +
+                     "end " +
+
+                     "rule Control " +
+                     "when " +
+                     "  $dpo: Delivery( $eff : effectiveDate ) from new Delivery( new Date( 1000 ) ) " +
+                     "  $gCfg: Config( todate == null || todate after[ 0d ] $eff ) from new Config( new Date( 2000 ) ) " +
+                     "then " +
+                     "  list.add( 0 ); " +
+                     "end " +
+
+                     "";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write(ResourceFactory.newByteArrayResource( drl.getBytes() ).setTargetPath( "rules.drl" ) );
+
+        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder( kfs );
+        kbuilder.buildAll();
+
+        assertEquals( 0, kbuilder.getResults().getMessages().size() );
+
+        KieSession ksession = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieSession();
+        assertNotNull( ksession );
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        ksession.dispose();
+
+    }
+
+    @Test
+    public void testTemporalEvaluatorsUsingSelfDates() throws InterruptedException {
+        //DROOLS-421
+        String drl = "\n" +
+                     "import java.util.*; " +
+                     "global List list; " +
+
+                     "declare Delivery " +
+                     "  thisDate : Date " +
+                     "  thatDate : Date " +
+                     "end " +
+
+                     "rule Init when then insert( new Delivery( new Date( 1000 ), new Date( 200 ) ) ); end " +
+
+                     "rule Control " +
+                     "when " +
+                     "  Delivery( thisDate == null || thisDate after[ 0d ] thatDate ) " +
+                     "then " +
+                     "  list.add( 0 ); " +
+                     "end " +
+
+                     "";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write(ResourceFactory.newByteArrayResource( drl.getBytes() ).setTargetPath( "rules.drl" ) );
+
+        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder( kfs );
+        kbuilder.buildAll();
+
+        assertEquals( 0, kbuilder.getResults().getMessages().size() );
+
+        KieSession ksession = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieSession();
+        assertNotNull( ksession );
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        ksession.dispose();
+
+    }
+
 
 
 }

@@ -23,6 +23,7 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
@@ -73,7 +74,7 @@ public class MVELPredicateExpression
         return this.unit.createFactory();
     }
 
-    public boolean evaluate(final Object object,
+    public boolean evaluate(final InternalFactHandle handle,
                             final Tuple tuple,
                             final Declaration[] previousDeclarations,
                             final Declaration[] requiredDeclarations,
@@ -83,7 +84,7 @@ public class MVELPredicateExpression
         
         unit.updateFactory( null,
                             null,
-                            object,
+                            handle,
                             (LeftTuple) tuple,
                             null,
                             (InternalWorkingMemory) workingMemory,
@@ -98,7 +99,7 @@ public class MVELPredicateExpression
         }               
 
         final Boolean result = (Boolean) MVELSafeHelper.getEvaluator().executeExpression( this.expr,
-                                                                 object,
+                                                                 handle,
                                                                  factory );
         return result.booleanValue();
     }

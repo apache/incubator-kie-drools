@@ -106,7 +106,7 @@ public class JavaAccumulatorFunctionExecutor
                            Declaration[] declarations,
                            Declaration[] innerDeclarations,
                            WorkingMemory workingMemory) throws Exception {
-        final Object value = this.expression.evaluate( handle.getObject(),
+        final Object value = this.expression.evaluate( handle,
                                                        leftTuple,
                                                        declarations,
                                                        innerDeclarations,

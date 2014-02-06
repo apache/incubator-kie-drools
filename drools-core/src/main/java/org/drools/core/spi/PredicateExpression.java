@@ -17,6 +17,7 @@
 package org.drools.core.spi;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.rule.Declaration;
 
 public interface PredicateExpression
@@ -25,7 +26,7 @@ public interface PredicateExpression
 
     public Object createContext();
 
-    public boolean evaluate(Object object,
+    public boolean evaluate(InternalFactHandle handle,
                             Tuple tuple,
                             Declaration[] previousDeclarations,
                             Declaration[] localDeclarations,
