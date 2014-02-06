@@ -214,13 +214,13 @@ public class EvaluatorWrapper
         return evaluator.getInterval();
     }
 
-    public void loadHandles(InternalWorkingMemory workingMemory, InternalFactHandle[] handles, Object rightObject) {
+    public void loadHandles(InternalWorkingMemory workingMemory, InternalFactHandle[] handles, InternalFactHandle rightHandle) {
         this.workingMemory = workingMemory;
         leftHandle = selfLeft ? null : getFactHandle(leftBinding, handles);
         if (leftHandle == null) {
-            leftHandle = (InternalFactHandle) workingMemory.getFactHandle(rightObject);
+            leftHandle = rightHandle;
         }
-        rightHandle = selfRight ? (InternalFactHandle) workingMemory.getFactHandle(rightObject) : getFactHandle(rightBinding, handles);
+        this.rightHandle = selfRight ? rightHandle : getFactHandle(rightBinding, handles);
     }
 
     @Override
