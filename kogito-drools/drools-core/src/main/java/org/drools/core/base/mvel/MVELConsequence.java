@@ -18,6 +18,7 @@ package org.drools.core.base.mvel;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.AgendaItem;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.MVELDialectRuntimeData;
@@ -84,7 +85,7 @@ public class MVELConsequence
                          final WorkingMemory workingMemory) throws Exception {
         
         VariableResolverFactory factory = unit.getFactory( knowledgeHelper,  ((AgendaItem)knowledgeHelper.getMatch()).getTerminalNode().getDeclarations(),
-                                                           knowledgeHelper.getRule(), knowledgeHelper, (LeftTuple) knowledgeHelper.getTuple(), null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
+                                                           knowledgeHelper.getRule(), (LeftTuple) knowledgeHelper.getTuple(), null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
         
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );

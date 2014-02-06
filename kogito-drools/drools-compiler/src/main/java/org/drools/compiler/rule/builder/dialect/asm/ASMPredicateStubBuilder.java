@@ -1,6 +1,7 @@
 package org.drools.compiler.rule.builder.dialect.asm;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.rule.Declaration;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
@@ -48,7 +49,7 @@ public class ASMPredicateStubBuilder extends AbstractASMPredicateBuilder {
                 mv.visitInsn(ACONST_NULL);
                 mv.visitInsn(ARETURN);
             }
-        }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, Object.class, Tuple.class, Declaration[].class, Declaration[].class, WorkingMemory.class, Object.class), new String[]{"java/lang/Exception"}, new ClassGenerator.MethodBody() {
+        }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, InternalFactHandle.class, Tuple.class, Declaration[].class, Declaration[].class, WorkingMemory.class, Object.class), new String[]{"java/lang/Exception"}, new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
                 Label syncStart = new Label();
                 Label syncEnd = new Label();
@@ -95,7 +96,7 @@ public class ASMPredicateStubBuilder extends AbstractASMPredicateBuilder {
                 mv.visitVarInsn(ALOAD, 4);
                 mv.visitVarInsn(ALOAD, 5);
                 mv.visitVarInsn(ALOAD, 6);
-                invokeInterface(PredicateExpression.class, "evaluate", Boolean.TYPE, Object.class, Tuple.class, Declaration[].class, Declaration[].class, WorkingMemory.class, Object.class);
+                invokeInterface(PredicateExpression.class, "evaluate", Boolean.TYPE, InternalFactHandle.class, Tuple.class, Declaration[].class, Declaration[].class, WorkingMemory.class, Object.class);
                 mv.visitInsn(IRETURN);
             }
         }).addMethod(ACC_PUBLIC, "setPredicate", generator.methodDescr(null, PredicateExpression.class), new ClassGenerator.MethodBody() {

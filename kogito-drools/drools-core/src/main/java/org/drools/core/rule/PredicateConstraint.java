@@ -303,7 +303,7 @@ public class PredicateConstraint extends MutableTypeConstraint
                              final InternalWorkingMemory workingMemory,
                              final ContextEntry ctx) {
         try {
-            return this.expression.evaluate( handle.getObject(),
+            return this.expression.evaluate( handle,
                                              null,
                                              this.previousDeclarations,
                                              this.localDeclarations,
@@ -326,7 +326,7 @@ public class PredicateConstraint extends MutableTypeConstraint
                                        final InternalFactHandle handle) {
         try {
             final PredicateContextEntry ctx = (PredicateContextEntry) context;
-            return this.expression.evaluate( handle.getObject(),
+            return this.expression.evaluate( handle,
                                              ctx.leftTuple,
                                              this.previousDeclarations,
                                              this.localDeclarations,
@@ -342,7 +342,7 @@ public class PredicateConstraint extends MutableTypeConstraint
                                         final ContextEntry context) {
         try {
             final PredicateContextEntry ctx = (PredicateContextEntry) context;
-            return this.expression.evaluate( ctx.rightObject,
+            return this.expression.evaluate( ctx.rightHandle,
                                              tuple,
                                              this.previousDeclarations,
                                              this.localDeclarations,
@@ -388,7 +388,7 @@ public class PredicateConstraint extends MutableTypeConstraint
         private static final long    serialVersionUID = 510l;
 
         public LeftTuple             leftTuple;
-        public Object                rightObject;
+        public InternalFactHandle    rightHandle;
         public InternalWorkingMemory workingMemory;
 
         public Object                dialectContext;
@@ -401,7 +401,7 @@ public class PredicateConstraint extends MutableTypeConstraint
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             leftTuple = (LeftTuple) in.readObject();
-            rightObject = in.readObject();
+            rightHandle = (InternalFactHandle) in.readObject();
             workingMemory = (InternalWorkingMemory) in.readObject();
             dialectContext = in.readObject();
             entry = (ContextEntry) in.readObject();
@@ -409,7 +409,7 @@ public class PredicateConstraint extends MutableTypeConstraint
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( leftTuple );
-            out.writeObject( rightObject );
+            out.writeObject( rightHandle );
             out.writeObject( workingMemory );
             out.writeObject( dialectContext );
             out.writeObject( entry );
@@ -426,7 +426,7 @@ public class PredicateConstraint extends MutableTypeConstraint
         public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
                                          final InternalFactHandle handle) {
             this.workingMemory = workingMemory;
-            this.rightObject = handle.getObject();
+            this.rightHandle = handle;
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
@@ -440,7 +440,7 @@ public class PredicateConstraint extends MutableTypeConstraint
         }
 
         public void resetFactHandle() {
-            this.rightObject = null;
+            this.rightHandle = null;
         }
     }
 
@@ -465,7 +465,7 @@ public class PredicateConstraint extends MutableTypeConstraint
             }, KiePolicyHelper.getAccessContext());
         }
 
-        public boolean evaluate(final Object object, 
+        public boolean evaluate(final InternalFactHandle handle,
                 final Tuple tuple, 
                 final Declaration[] previousDeclarations, 
                 final Declaration[] localDeclarations, 
@@ -474,7 +474,7 @@ public class PredicateConstraint extends MutableTypeConstraint
             return AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
                 @Override
                 public Boolean run() throws Exception {
-                    return delegate.evaluate(object, tuple, previousDeclarations, localDeclarations, workingMemory, context);
+                    return delegate.evaluate(handle, tuple, previousDeclarations, localDeclarations, workingMemory, context);
                 }
             }, KiePolicyHelper.getAccessContext());
         }

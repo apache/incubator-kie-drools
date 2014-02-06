@@ -37,7 +37,7 @@ public class @{invokerClassName} implements org.drools.core.spi.ReturnValueExpre
 
     public Object createContext() { return null; }
 
-    public org.drools.core.spi.FieldValue evaluate(java.lang.Object object,
+    public org.drools.core.spi.FieldValue evaluate(org.drools.core.common.InternalFactHandle handle,
                             org.drools.core.spi.Tuple tuple,
                             org.drools.core.rule.Declaration[] previousDeclarations,
                             org.drools.core.rule.Declaration[] localDeclarations,
@@ -52,7 +52,7 @@ public class @{invokerClassName} implements org.drools.core.spi.ReturnValueExpre
           @code{i0++}
           @end{}
         @else{}
-          @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.core.common.InternalWorkingMemory) workingMemory, object );
+          @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.core.common.InternalWorkingMemory) workingMemory, handle.getObject() );
           @code{i0++}
           @end{}
         @end{}
@@ -87,7 +87,7 @@ public class @{invokerClassName} implements org.drools.core.spi.PredicateExpress
 
     public Object createContext() { return null; }
 
-    public boolean evaluate(java.lang.Object object,
+    public boolean evaluate(org.drools.core.common.InternalFactHandle handle,
                             org.drools.core.spi.Tuple tuple,
                             org.drools.core.rule.Declaration[] previousDeclarations,
                             org.drools.core.rule.Declaration[] localDeclarations,
@@ -97,7 +97,7 @@ public class @{invokerClassName} implements org.drools.core.spi.PredicateExpress
         @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) previousDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.core.common.InternalWorkingMemory) workingMemory, ( (org.drools.core.common.InternalFactHandle) tuple.get( previousDeclarations[@{i0}] ) ).getObject() );
           @code{i0++}
         @end{}
-        @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.core.common.InternalWorkingMemory) workingMemory, object );
+        @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.core.common.InternalWorkingMemory) workingMemory, handle.getObject() );
           @code{i0++}
         @end{}
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
