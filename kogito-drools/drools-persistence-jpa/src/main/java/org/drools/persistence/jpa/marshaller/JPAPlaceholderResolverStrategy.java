@@ -38,10 +38,14 @@ import org.slf4j.LoggerFactory;
 
 public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy {
     private static Logger log = LoggerFactory.getLogger(JPAPlaceholderResolverStrategy.class);
-    private Environment env;
+    private EntityManagerFactory emf;
     
     public JPAPlaceholderResolverStrategy(Environment env) {
-        this.env = env;
+        this.emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
+    }
+
+    public JPAPlaceholderResolverStrategy(EntityManagerFactory emf) {
+        this.emf = emf;
     }
     
     public boolean accept(Object object) {
@@ -49,14 +53,22 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
     }
 
     public void write(ObjectOutputStream os, Object object) throws IOException {
-            os.writeUTF(object.getClass().getCanonicalName());
-            os.writeObject(getClassIdValue(object));
+        Object id = getClassIdValue(object);
+        EntityManager em = emf.createEntityManager();
+        if (id == null) {
+            em.persist(object);
+            id = getClassIdValue(object);
+        } else {
+            em.merge(object);
+        }
+        os.writeUTF(object.getClass().getCanonicalName());
+        os.writeObject(id);
     }
 
     public Object read(ObjectInputStream is) throws IOException, ClassNotFoundException {
         String canonicalName = is.readUTF();
         Object id = is.readObject();
-        EntityManagerFactory emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
+
         EntityManager em = emf.createEntityManager();
         return em.find(Class.forName(canonicalName), id);
     }
@@ -64,10 +76,18 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
     public byte[] marshal(Context context,
                           ObjectOutputStream os, 
                           Object object) throws IOException {
+        Object id = getClassIdValue(object);
+        EntityManager em = emf.createEntityManager();
+        if (id == null) {
+            em.persist(object);
+            id = getClassIdValue(object);
+        } else {
+            em.merge(object);
+        }
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream( buff );
         oos.writeUTF(object.getClass().getCanonicalName());
-        oos.writeObject(getClassIdValue(object));
+        oos.writeObject(id);
         oos.close();
         return buff.toByteArray();
     }
@@ -80,7 +100,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
         DroolsObjectInputStream is = new DroolsObjectInputStream( new ByteArrayInputStream( object ), classloader );
         String canonicalName = is.readUTF();
         Object id = is.readObject();
-        EntityManagerFactory emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
+
         EntityManager em = emf.createEntityManager();
         return em.find(Class.forName(canonicalName), id);
     }
