@@ -70,7 +70,7 @@ public class TaskContext implements org.kie.internal.task.api.TaskContext {
         return new TaskInstanceServiceImpl(persistenceContext,
         		new UserGroupLifeCycleManagerDecorator(getUserGroupCallback(),
         		new MVELLifeCycleManager(persistenceContext, getTaskContentService(), taskEventSupport)),
-        		taskEventSupport);
+        		taskEventSupport, environment);
     }
     
     public TaskDefService getTaskDefService() {

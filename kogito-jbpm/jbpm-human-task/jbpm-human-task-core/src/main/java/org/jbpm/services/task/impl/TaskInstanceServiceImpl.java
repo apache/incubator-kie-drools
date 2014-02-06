@@ -18,6 +18,7 @@ import org.jbpm.services.task.internals.lifecycle.MVELLifeCycleManager;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.command.Command;
+import org.kie.api.runtime.Environment;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
@@ -48,15 +49,18 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
    
     private TaskPersistenceContext persistenceContext;    
     private TaskEventSupport taskEventSupport;
+    private Environment environment;
 
     public TaskInstanceServiceImpl() {
     }
 
     public TaskInstanceServiceImpl(TaskPersistenceContext persistenceContext,
-    		LifeCycleManager lifeCycleManager, TaskEventSupport taskEventSupport) {
+    		LifeCycleManager lifeCycleManager, TaskEventSupport taskEventSupport,
+    		Environment environment) {
     	this.persistenceContext = persistenceContext;
     	this.lifeCycleManager = lifeCycleManager;
     	this.taskEventSupport = taskEventSupport;
+    	this.environment = environment;
     }
 
     public void setLifeCycleManager(LifeCycleManager lifeCycleManager) {
@@ -77,7 +81,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     	taskEventSupport.fireBeforeTaskAdded(task, persistenceContext);
     	
     	if (params != null) {
-			ContentData contentData = ContentMarshallerHelper.marshal(params, null);
+			ContentData contentData = ContentMarshallerHelper.marshal(params, environment);
 			Content content = TaskModelProvider.getFactory().newContent();
 			((InternalContent) content).setContent(contentData.getContent());
 			persistenceContext.persistContent(content);
