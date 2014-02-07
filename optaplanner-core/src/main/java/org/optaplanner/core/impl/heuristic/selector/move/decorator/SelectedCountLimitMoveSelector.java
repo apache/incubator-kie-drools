@@ -19,25 +19,22 @@ package org.optaplanner.core.impl.heuristic.selector.move.decorator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
-import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.move.Move;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class SelectedSizeLimitMoveSelector extends AbstractMoveSelector {
+public class SelectedCountLimitMoveSelector extends AbstractMoveSelector {
 
     protected final MoveSelector childMoveSelector;
-    protected final long selectedSizeLimit;
+    protected final long selectedCountLimit;
 
-    public SelectedSizeLimitMoveSelector(MoveSelector childMoveSelector, long selectedSizeLimit) {
+    public SelectedCountLimitMoveSelector(MoveSelector childMoveSelector, long selectedCountLimit) {
         this.childMoveSelector = childMoveSelector;
-        this.selectedSizeLimit = selectedSizeLimit;
-        if (selectedSizeLimit < 0L) {
+        this.selectedCountLimit = selectedCountLimit;
+        if (selectedCountLimit < 0L) {
             throw new IllegalArgumentException("The selector (" + this
-                    + ") has a negative selectedSizeLimit (" + selectedSizeLimit + ").");
+                    + ") has a negative selectedCountLimit (" + selectedCountLimit + ").");
         }
         solverPhaseLifecycleSupport.addEventListener(childMoveSelector);
     }
@@ -56,31 +53,31 @@ public class SelectedSizeLimitMoveSelector extends AbstractMoveSelector {
 
     public long getSize() {
         long childSize = childMoveSelector.getSize();
-        return Math.min(selectedSizeLimit, childSize);
+        return Math.min(selectedCountLimit, childSize);
     }
 
     public Iterator<Move> iterator() {
-        return new SelectedSizeLimitMoveIterator(childMoveSelector.iterator());
+        return new SelectedCountLimitMoveIterator(childMoveSelector.iterator());
     }
 
-    private class SelectedSizeLimitMoveIterator extends SelectionIterator<Move> {
+    private class SelectedCountLimitMoveIterator extends SelectionIterator<Move> {
 
         private final Iterator<Move> childMoveIterator;
         private long selectedSize;
 
-        public SelectedSizeLimitMoveIterator(Iterator<Move> childMoveIterator) {
+        public SelectedCountLimitMoveIterator(Iterator<Move> childMoveIterator) {
             this.childMoveIterator = childMoveIterator;
             selectedSize = 0L;
         }
 
         @Override
         public boolean hasNext() {
-            return selectedSize < selectedSizeLimit && childMoveIterator.hasNext();
+            return selectedSize < selectedCountLimit && childMoveIterator.hasNext();
         }
 
         @Override
         public Move next() {
-            if (selectedSize >= selectedSizeLimit) {
+            if (selectedSize >= selectedCountLimit) {
                 throw new NoSuchElementException();
             }
             selectedSize++;
@@ -91,7 +88,7 @@ public class SelectedSizeLimitMoveSelector extends AbstractMoveSelector {
 
     @Override
     public String toString() {
-        return "SelectedSizeLimit(" + childMoveSelector + ")";
+        return "SelectedCountLimit(" + childMoveSelector + ")";
     }
 
 }

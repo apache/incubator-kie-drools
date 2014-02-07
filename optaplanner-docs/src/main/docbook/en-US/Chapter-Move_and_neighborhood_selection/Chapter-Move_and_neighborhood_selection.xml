@@ -1044,16 +1044,16 @@
       <para>Selecting all possible moves sometimes does not scale well enough, especially for construction heuristics
       (which don't support <link linkend="acceptedCountLimit">acceptedCountLimit</link>).</para>
 
-      <para>To limit the number of selected moves per step, apply a <literal>selectedSizeLimit</literal> on the
+      <para>To limit the number of selected moves per step, apply a <literal>selectedCountLimit</literal> on the
       selector:</para>
 
       <programlisting language="xml">    &lt;changeMoveSelector&gt;
-      &lt;selectedSizeLimit&gt;100&lt;/selectedSizeLimit&gt;
+      &lt;selectedCountLimit&gt;100&lt;/selectedCountLimit&gt;
     &lt;/changeMoveSelector&gt;</programlisting>
 
       <note>
         <para>To scale Local Search, setting <link linkend="acceptedCountLimit">acceptedCountLimit</link> is usually
-        better than using <literal>selectedSizeLimit</literal>.</para>
+        better than using <literal>selectedCountLimit</literal>.</para>
       </note>
     </section>
   </section>
