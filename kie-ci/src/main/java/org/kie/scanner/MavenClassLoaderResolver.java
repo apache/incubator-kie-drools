@@ -58,7 +58,7 @@ public class MavenClassLoaderResolver implements ClassLoaderResolver {
 
         for (ReleaseId rid : jarDependencies) {
             try {
-                Artifact artifact = resolver.resolveArtifact(rid.toString());
+                Artifact artifact = resolver.resolveArtifact(rid);
                 if( artifact != null ) {
                     File jar = artifact.getFile(); 
                     urls.add( jar.toURI().toURL() );

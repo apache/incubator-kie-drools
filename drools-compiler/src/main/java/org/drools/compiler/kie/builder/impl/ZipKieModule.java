@@ -45,6 +45,10 @@ public class ZipKieModule extends AbstractKieModule implements InternalKieModule
         throw new UnsupportedOperationException();
     }
 
+    public long getCreationTimestamp() {
+        return file.lastModified();
+    }
+
     public String toString() {
         return "ZipKieModule[ ReleaseId=" + getReleaseId() + "file=" + file + "]";
     }
