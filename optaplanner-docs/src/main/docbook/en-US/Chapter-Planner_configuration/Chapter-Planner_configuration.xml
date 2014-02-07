@@ -914,15 +914,19 @@ public interface Standstill {
 
         <para>A shadow variable is a variables who's correct value can be deduced from the state of the genuine planning
         variables. Even though such a variable violates the principle of normalization by definition, in some use cases
-        it can be very practical to use a shadow variable. For example in vehicle routing with time windows: the arrival
-        time at a customer for a vehicle can be calculated based on the previously visited customers of that vehicle
-        (and the known travel times between 2 locations).</para>
+        it can be very practical to use a shadow variable, especially to express the constraints more naturally. For
+        example in vehicle routing with time windows: the arrival time at a customer for a vehicle can be calculated
+        based on the previously visited customers of that vehicle (and the known travel times between 2
+        locations).</para>
 
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/Chapter-Planner_configuration/planningVariableListener.png"/>
           </imageobject>
         </mediaobject>
+
+        <para>As the customers for a vehicle change, the arrival time is automatically adjusted. For more information,
+        see the <link linkend="vehicleRoutingDomainModel">vehicle routing domain model</link>.</para>
 
         <para>To use custom <literal>PlanningVariableListener</literal>, implement the interface and annotate it on the
         genuine planning variable(s) that trigger changes in the shadow variable(s):</para>

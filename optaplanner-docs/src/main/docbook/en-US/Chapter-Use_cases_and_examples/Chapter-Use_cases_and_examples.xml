@@ -825,7 +825,7 @@ comp13 has 77 teachers,  66 curricula,  82 courses, 308 lectures, 25 periods, 19
 comp14 has 68 teachers,  60 curricula,  85 courses, 275 lectures, 25 periods, 17 rooms and  486 unavailable period constraints with a search space of  10^722.</programlisting>
       </section>
 
-      <section>
+      <section xml:id="curriculumCourseDomainModel">
         <title>Domain model</title>
 
         <mediaobject>
@@ -927,7 +927,7 @@ model_b_9  has  3 resources,  5 neighborhoods, 100 locations, 1000 machines,  46
 model_b_10 has  3 resources,  5 neighborhoods, 100 locations, 5000 machines,  4896 services, 50000 processes and 1 balancePenalties with a search space of 10^184948.</programlisting>
       </section>
 
-      <section>
+      <section xml:id="machineReassignmentDomainModel">
         <title>Domain model</title>
 
         <mediaobject>
@@ -1079,6 +1079,21 @@ Homberger_1000_R110_1  has 1 depots, 250 vehicles and 1000 customers with a sear
 Homberger_1000_R210_1  has 1 depots, 250 vehicles and 1000 customers with a search space of 10^3000.
 Homberger_1000_RC110_1 has 1 depots, 250 vehicles and 1000 customers with a search space of 10^3000.
 Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a search space of 10^3000.</programlisting>
+      </section>
+
+      <section xml:id="vehicleRoutingDomainModel">
+        <title>Domain model</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/vehicleRoutingClassDiagram.png"/>
+          </imageobject>
+        </mediaobject>
+
+        <para>The vehicle routing with timewindows domain model makes heavily use of <link
+        linkend="planningVariableListener">shadow variables</link>. This allows it to express its constraints more
+        naturally, because properties such as <literal>arrivalTime</literal> and <literal>departureTime</literal>, are
+        directly available on the domain model.</para>
       </section>
     </section>
 
