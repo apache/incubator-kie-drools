@@ -91,6 +91,10 @@ public class KieContainerImpl
         return kProject.getGAV();
     }
 
+    public long getCreationTimestamp() {
+        return kProject.getCreationTimestamp();
+    }
+
     public ReleaseId getContainerReleaseId() {
         return containerReleaseId != null ? containerReleaseId : getReleaseId();
     }

@@ -22,14 +22,20 @@ import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.ArtifactRequest;
 import org.sonatype.aether.resolution.ArtifactResolutionException;
 import org.sonatype.aether.resolution.ArtifactResult;
+import org.sonatype.aether.resolution.VersionRangeRequest;
+import org.sonatype.aether.resolution.VersionRangeResolutionException;
+import org.sonatype.aether.resolution.VersionRangeResult;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.artifact.SubArtifact;
+import org.sonatype.aether.version.Version;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.kie.scanner.DependencyDescriptor.isRangedVersion;
 
 public class MavenRepository {
 
@@ -126,6 +132,18 @@ public class MavenRepository {
         return descriptors;
     }
 
+    public Artifact resolveArtifact(ReleaseId releaseId) {
+        String artifactName = releaseId.toString();
+        if (isRangedVersion(releaseId.getVersion())) {
+            Version v = resolveVersion(artifactName);
+            if (v == null) {
+                return null;
+            }
+            artifactName = releaseId.getGroupId() + ":" + releaseId.getArtifactId() + ":" + v;
+        }
+        return resolveArtifact(artifactName);
+    }
+
     public Artifact resolveArtifact(String artifactName) {
         Artifact artifact = new DefaultArtifact( artifactName );
         ArtifactRequest artifactRequest = new ArtifactRequest();
@@ -136,17 +154,32 @@ public class MavenRepository {
         for (RemoteRepository repo : extraRepositories) {
             artifactRequest.addRepository(repo);
         }
-        ArtifactResult artifactResult;
         try {
-            artifactResult = aether.getSystem().resolveArtifact(aether.getSession(), artifactRequest);
+            ArtifactResult artifactResult = aether.getSystem().resolveArtifact(aether.getSession(), artifactRequest);
+            return artifactResult.getArtifact();
         } catch (ArtifactResolutionException e) {
             return null;
         }
-
-        return artifactResult.getArtifact();
     }
-    
-  
+
+    public Version resolveVersion(String artifactName) {
+        Artifact artifact = new DefaultArtifact( artifactName );
+        VersionRangeRequest versionRequest = new VersionRangeRequest();
+        versionRequest.setArtifact(artifact);
+        for (RemoteRepository repo : aether.getRepositories()) {
+            versionRequest.addRepository(repo);
+        }
+        for (RemoteRepository repo : extraRepositories) {
+            versionRequest.addRepository(repo);
+        }
+        VersionRangeResult artifactResult;
+        try {
+            VersionRangeResult versionRangeResult = aether.getSystem().resolveVersionRange(aether.getSession(), versionRequest);
+            return versionRangeResult.getHighestVersion();
+        } catch (VersionRangeResolutionException e) {
+            return null;
+        }
+    }
 
     public void deployArtifact(ReleaseId releaseId, InternalKieModule kieModule, File pomfile) {
         File jarFile = new File( System.getProperty( "java.io.tmpdir" ), toFileName(releaseId, null) + ".jar");

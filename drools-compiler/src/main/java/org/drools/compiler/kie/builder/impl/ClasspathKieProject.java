@@ -72,6 +72,10 @@ public class ClasspathKieProject extends AbstractKieProject {
         return null;
     }
 
+    public long getCreationTimestamp() {
+        return 0L;
+    }
+
     public void discoverKieModules() {
         String[] configFiles = {KieModuleModelImpl.KMODULE_JAR_PATH, KieModuleModelImpl.KMODULE_SPRING_JAR_PATH};
         for ( String configFile : configFiles) {

@@ -132,10 +132,10 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
 
     private void init() {
         if (releaseId != null) {
-            addArtifact(artifactResolver.resolveArtifact(releaseId.toString()));
+            addArtifact(artifactResolver.resolveArtifact(releaseId));
         }
         for (DependencyDescriptor dep : artifactResolver.getAllDependecies()) {
-            addArtifact(artifactResolver.resolveArtifact(dep.toString()));
+            addArtifact(artifactResolver.resolveArtifact(dep.getReleaseId()));
         }
         packages.addAll(classes.keySet());
         packages.addAll(rulesByPackage.keySet());

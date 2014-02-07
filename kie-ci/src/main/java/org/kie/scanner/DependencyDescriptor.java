@@ -15,6 +15,8 @@ public class DependencyDescriptor {
 
     private ArtifactVersion artifactVersion;
 
+    private long artifactTimestamp = 0L;
+
     public DependencyDescriptor(Dependency dependency) {
         this(dependency.getGroupId(),
              dependency.getArtifactId(),
@@ -29,18 +31,22 @@ public class DependencyDescriptor {
              artifact.isSnapshot() ? artifact.getBaseVersion() : artifact.getVersion(),
              artifact.getExtension(),
              artifact.getVersion());
+        if (artifact.getFile() != null) {
+            artifactTimestamp = artifact.getFile().lastModified();
+        }
     }
 
     public DependencyDescriptor(ReleaseId releaseId) {
-        this(releaseId, releaseId.getVersion());
-    }
-
-    public DependencyDescriptor(ReleaseId releaseId, String currentVersion) {
         this(releaseId.getGroupId(),
              releaseId.getArtifactId(),
              releaseId.getVersion(),
              "jar",
-             currentVersion);
+             releaseId.getVersion());
+    }
+
+    public DependencyDescriptor(ReleaseId releaseId, long artifactTimestamp) {
+        this(releaseId);
+        this.artifactTimestamp = artifactTimestamp;
     }
 
     public DependencyDescriptor(String groupId, String artifactId, String version, String type, String currentVersion) {
@@ -76,11 +82,24 @@ public class DependencyDescriptor {
     }
 
     public boolean isFixedVersion() {
-        return !isSnapshot() && !version.equals("LATEST") && !version.equals("RELEASE") &&
-               version.indexOf('(') < 0 && version.indexOf(')') < 0 && version.indexOf('[') < 0 && version.indexOf(']') < 0;
+        return isFixedVersion(version);
+    }
+
+    public static boolean isFixedVersion(String version) {
+        return !isSnapshot(version) && !isRangedVersion(version)
+               && !version.equals("LATEST") && !version.equals("RELEASE");
+    }
+
+    public static boolean isRangedVersion(String version) {
+        return version.indexOf('(') >= 0 || version.indexOf(')') >= 0 ||
+               version.indexOf('[') >= 0 || version.indexOf(']') >= 0;
     }
 
     public boolean isSnapshot() {
+        return isSnapshot(version);
+    }
+
+    public static boolean isSnapshot(String version) {
         return version.endsWith("SNAPSHOT");
     }
 
@@ -126,6 +145,7 @@ public class DependencyDescriptor {
     }
 
     public boolean isNewerThan(DependencyDescriptor o) {
-        return artifactVersion.compareTo(o.artifactVersion) > 0;
+        int comparison = artifactVersion.compareTo(o.artifactVersion);
+        return comparison > 0 || ( comparison == 0 && artifactTimestamp > o.artifactTimestamp );
     }
 }
