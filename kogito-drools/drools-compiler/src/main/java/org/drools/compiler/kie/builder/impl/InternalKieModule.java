@@ -56,4 +56,6 @@ public interface InternalKieModule extends KieModule {
     Map<String, byte[]> getClassesMap(boolean includeTypeDeclarations);
 
     boolean addResourceToCompiler(CompositeKnowledgeBuilder ckbuilder, String fileName);
+
+    long getCreationTimestamp();
 }

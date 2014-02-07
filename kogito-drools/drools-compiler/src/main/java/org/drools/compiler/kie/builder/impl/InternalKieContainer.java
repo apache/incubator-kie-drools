@@ -45,5 +45,7 @@ public interface InternalKieContainer extends KieContainer {
 
     ReleaseId getContainerReleaseId();
 
+    long getCreationTimestamp();
+
     Results updateDependencyToVersion(ReleaseId currentReleaseId, ReleaseId newReleaseId);
 }

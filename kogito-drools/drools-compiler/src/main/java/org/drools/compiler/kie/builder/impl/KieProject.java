@@ -27,5 +27,6 @@ public interface KieProject {
     ClassLoader getClonedClassLoader();
 
     ResultsImpl verify();
-    
+
+    long getCreationTimestamp();
 }

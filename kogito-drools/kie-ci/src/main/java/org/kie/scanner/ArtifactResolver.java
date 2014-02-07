@@ -31,8 +31,8 @@ class ArtifactResolver {
         pomParser = new EmbeddedPomParser(mavenProject);
     }
 
-    Artifact resolveArtifact(String artifactName) {
-        return mavenRepository.resolveArtifact(artifactName);
+    Artifact resolveArtifact(ReleaseId releaseId) {
+        return mavenRepository.resolveArtifact(releaseId);
     }
 
     List<DependencyDescriptor> getArtifactDependecies(String artifactName) {

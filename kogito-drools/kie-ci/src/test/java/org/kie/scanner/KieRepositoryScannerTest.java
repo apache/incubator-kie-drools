@@ -88,9 +88,9 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
     @Test
     public void testKScannerWithRange() throws Exception {
         KieServices ks = KieServices.Factory.get();
-        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "scanner-test", "1.0.1");
-        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "scanner-test", "1.0.2");
-        ReleaseId releaseRange = ks.newReleaseId("org.kie", "scanner-test", "[1.0.0,)");
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "scanner-range-test", "1.0.1");
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "scanner-range-test", "1.0.2");
+        ReleaseId releaseRange = ks.newReleaseId("org.kie", "scanner-range-test", "[1.0.0,)");
 
         InternalKieModule kJar1 = createKieJar(ks, releaseId1, "rule1", "rule2");
         KieContainer kieContainer = ks.newKieContainer(releaseRange);

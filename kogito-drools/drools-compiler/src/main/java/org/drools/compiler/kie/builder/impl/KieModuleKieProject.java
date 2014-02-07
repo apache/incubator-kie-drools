@@ -85,6 +85,10 @@ public class KieModuleKieProject extends AbstractKieProject {
         return kieModule.getReleaseId();
     }
 
+    public long getCreationTimestamp() {
+        return kieModule.getCreationTimestamp();
+    }
+
     public InternalKieModule getKieModuleForKBase(String kBaseName) {
         return this.kJarFromKBaseName.get( kBaseName );
     }

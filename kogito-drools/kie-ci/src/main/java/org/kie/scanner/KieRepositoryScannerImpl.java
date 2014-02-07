@@ -21,13 +21,10 @@ import org.sonatype.aether.artifact.Artifact;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.zip.ZipEntry;
@@ -36,6 +33,7 @@ import java.util.zip.ZipFile;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
 import static org.kie.scanner.ArtifactResolver.getResolverFor;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.buildKieModule;
+import static org.kie.scanner.DependencyDescriptor.isFixedVersion;
 
 public class KieRepositoryScannerImpl implements InternalKieScanner {
 
@@ -43,9 +41,9 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     private static final Logger log = LoggerFactory.getLogger(KieScanner.class);
 
-    private KieContainer kieContainer;
+    private InternalKieContainer kieContainer;
 
-    private final Set<DependencyDescriptor> usedDependencies = new HashSet<DependencyDescriptor>();
+    private final Map<ReleaseId, DependencyDescriptor> usedDependencies = new HashMap<ReleaseId, DependencyDescriptor>();
 
     private ArtifactResolver artifactResolver;
 
@@ -55,18 +53,21 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         if (this.kieContainer != null) {
             throw new RuntimeException("Cannot change KieContainer on an already initialized KieScanner");
         }
-        this.kieContainer = kieContainer;
-        ReleaseId releaseId = ((InternalKieContainer)kieContainer).getContainerReleaseId();
-        if (releaseId == null) {
+        this.kieContainer = (InternalKieContainer)kieContainer;
+        ReleaseId containerReleaseId = this.kieContainer.getContainerReleaseId();
+        if (containerReleaseId == null) {
             throw new RuntimeException("The KieContainer's ReleaseId cannot be null. Are you using a KieClasspathContainer?");
-        }
-        DependencyDescriptor projectDescr = new DependencyDescriptor(releaseId, kieContainer.getReleaseId().getVersion());
-        if (!projectDescr.isFixedVersion()) {
-            usedDependencies.add(projectDescr);
         }
 
         artifactResolver = getResolverFor(kieContainer.getReleaseId(), true);
-        indexAtifacts( findKJarAtifacts() );
+
+        if (!isFixedVersion(containerReleaseId.getVersion())) {
+            usedDependencies.put(containerReleaseId,
+                                 new DependencyDescriptor(this.kieContainer.getReleaseId(),
+                                                          this.kieContainer.getCreationTimestamp()));
+        }
+
+        indexAtifacts();
         KieScannersRegistry.register(this);
         status = Status.STOPPED;
     }
@@ -83,17 +84,18 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     }
 
     public KieModule loadArtifact(ReleaseId releaseId, InputStream pomXml) {
-        String artifactName = releaseId.toString();
-        ArtifactResolver resolver = pomXml != null ? ArtifactResolver.getResolverFor(pomXml) : getArtifactResolver();
-        Artifact artifact = resolver.resolveArtifact(artifactName);
-        return artifact != null ? buildArtifact(releaseId, artifact, resolver) : loadPomArtifact(releaseId);
+        ArtifactResolver resolver = pomXml != null ?
+                                    ArtifactResolver.getResolverFor(pomXml) :
+                                    getArtifactResolver();
+        Artifact artifact = resolver.resolveArtifact(releaseId);
+        return artifact != null ? buildArtifact(artifact, resolver) : loadPomArtifact(releaseId);
     }
 
     public String getArtifactVersion(ReleaseId releaseId) {
         if (!releaseId.isSnapshot()) {
             return releaseId.getVersion();
         }
-        Artifact artifact = getArtifactResolver().resolveArtifact(releaseId.toString());
+        Artifact artifact = getArtifactResolver().resolveArtifact(releaseId);
         return artifact != null ? artifact.getVersion() : null;
     }
 
@@ -121,13 +123,15 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         return kieModule;
     }
 
-    private InternalKieModule buildArtifact(ReleaseId releaseId, Artifact artifact, ArtifactResolver resolver) {
+    private InternalKieModule buildArtifact(Artifact artifact, ArtifactResolver resolver) {
+        DependencyDescriptor dependencyDescriptor = new DependencyDescriptor(artifact);
+        ReleaseId releaseId = dependencyDescriptor.getReleaseId();
         if (releaseId.isSnapshot()) {
             ((ReleaseIdImpl)releaseId).setSnapshotVersion(artifact.getVersion());
         }
         ZipKieModule kieModule = createZipKieModule(releaseId, artifact.getFile());
         if (kieModule != null) {
-            addDependencies(kieModule, resolver, resolver.getArtifactDependecies(new DependencyDescriptor(artifact).toString()));
+            addDependencies(kieModule, resolver, resolver.getArtifactDependecies(dependencyDescriptor.toString()));
             build(kieModule);
         }
         return kieModule;
@@ -135,7 +139,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     
     private void addDependencies(InternalKieModule kieModule, ArtifactResolver resolver, List<DependencyDescriptor> dependencies) {
         for (DependencyDescriptor dep : dependencies) {
-            Artifact depArtifact = resolver.resolveArtifact(dep.toString());
+            Artifact depArtifact = resolver.resolveArtifact(dep.getReleaseId());
             if (isKJar(depArtifact.getFile())) {
                 ReleaseId depReleaseId = new DependencyDescriptor(depArtifact).getReleaseId();
                 ZipKieModule zipKieModule = createZipKieModule(depReleaseId, depArtifact.getFile());
@@ -210,7 +214,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     public void scanNow() {
         status = Status.SCANNING;
-        Map<DependencyDescriptor, Artifact> updatedArtifacts = scanForUpdates(usedDependencies);
+        Map<DependencyDescriptor, Artifact> updatedArtifacts = scanForUpdates();
         if (updatedArtifacts.isEmpty()) {
             status = Status.STOPPED;
             return;
@@ -229,69 +233,48 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         if (kieModule != null) {
             ResultsImpl messages = build(kieModule);
             if ( messages.filterMessages(Message.Level.ERROR).isEmpty()) {
-                ((InternalKieContainer)kieContainer).updateDependencyToVersion(oldDependency.getArtifactReleaseId(), newReleaseId);
+                ((InternalKieContainer)kieContainer).updateDependencyToVersion(oldDependency.getArtifactReleaseId(),
+                                                                               newReleaseId);
                 oldDependency.setArtifactVersion(artifact.getVersion());
             }
         }
     }
 
-    private Map<DependencyDescriptor, Artifact> scanForUpdates(Collection<DependencyDescriptor> dependencies) {
+    private Map<DependencyDescriptor, Artifact> scanForUpdates() {
+        Map<ReleaseId, DependencyDescriptor> replacedArtifacts = new HashMap<ReleaseId, DependencyDescriptor>();
         Map<DependencyDescriptor, Artifact> newArtifacts = new HashMap<DependencyDescriptor, Artifact>();
-        for (DependencyDescriptor dependency : dependencies) {
-            Artifact newArtifact = getArtifactResolver().resolveArtifact(dependency.toResolvableString());
+        ArtifactResolver artifactResolver = getArtifactResolver();
+
+        for (Map.Entry<ReleaseId, DependencyDescriptor> entry : usedDependencies.entrySet()) {
+            Artifact newArtifact = artifactResolver.resolveArtifact(entry.getKey());
             if (newArtifact == null) {
                 continue;
             }
             DependencyDescriptor resolvedDep = new DependencyDescriptor(newArtifact);
-            if (resolvedDep.isNewerThan(dependency)) {
-                newArtifacts.put(dependency, newArtifact);
+            if (resolvedDep.isNewerThan(entry.getValue())) {
+                newArtifacts.put(entry.getValue(), newArtifact);
+                replacedArtifacts.put(entry.getKey(), resolvedDep);
             }
         }
+
+        for (Map.Entry<ReleaseId, DependencyDescriptor> entry : replacedArtifacts.entrySet()) {
+            usedDependencies.put(entry.getKey(), entry.getValue());
+        }
+
         return newArtifacts;
     }
 
-    private void indexAtifacts(Collection<Artifact> artifacts) {
-        for (Artifact artifact : artifacts) {
-            usedDependencies.add(new DependencyDescriptor(artifact));
-        }
-    }
-
-    private Collection<Artifact> findKJarAtifacts() {
+    private void indexAtifacts() {
         Collection<DependencyDescriptor> deps = getArtifactResolver().getAllDependecies();
-        deps = filterNonFixedDependecies(deps);
-        Collection<Artifact> artifacts = filterKJarArtifacts( resolveArtifacts(deps) );
-        log.info("Artifacts containing a kjar: " + artifacts);
-        return artifacts;
-    }
-
-    private Collection<DependencyDescriptor> filterNonFixedDependecies(Collection<DependencyDescriptor> dependencies) {
-        List<DependencyDescriptor> nonFixedDeps = new ArrayList<DependencyDescriptor>();
-        for (DependencyDescriptor dep : dependencies) {
+        for (DependencyDescriptor dep : deps) {
             if (!dep.isFixedVersion()) {
-                nonFixedDeps.add(dep);
+                Artifact artifact = getArtifactResolver().resolveArtifact(dep.getReleaseId());
+                log.debug( artifact + " resolved to  " + artifact.getFile() );
+                if (isKJar(artifact.getFile())) {
+                    usedDependencies.put(dep.getReleaseId(), new DependencyDescriptor(artifact));
+                }
             }
         }
-        return nonFixedDeps;
-    }
-
-    private List<Artifact> resolveArtifacts(Collection<DependencyDescriptor> dependencies) {
-        List<Artifact> artifacts = new ArrayList<Artifact>();
-        for (DependencyDescriptor dep : dependencies) {
-            Artifact artifact = getArtifactResolver().resolveArtifact(dep.toString());
-            artifacts.add(artifact);
-            log.debug( artifact + " resolved to  " + artifact.getFile() );
-        }
-        return artifacts;
-    }
-
-    private Collection<Artifact> filterKJarArtifacts(Collection<Artifact> artifacts) {
-        List<Artifact> kJarArtifacts = new ArrayList<Artifact>();
-        for (Artifact artifact : artifacts) {
-            if (isKJar(artifact.getFile())) {
-                kJarArtifacts.add(artifact);
-            }
-        }
-        return kJarArtifacts;
     }
 
     private boolean isKJar(File jar) {

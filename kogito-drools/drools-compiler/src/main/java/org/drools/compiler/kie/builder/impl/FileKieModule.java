@@ -24,8 +24,11 @@ public class FileKieModule extends AbstractKieModule implements InternalKieModul
     @Override
     public File getFile() {
         return this.file;
-    }    
+    }
 
+    public long getCreationTimestamp() {
+        return file.lastModified();
+    }
 
     @Override
     public boolean isAvailable(String pResourceName) {

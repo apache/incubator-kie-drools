@@ -15,6 +15,7 @@ public class MemoryKieModule extends AbstractKieModule
         ResourceReader {
 
     private final MemoryFileSystem mfs;
+    private final long creationTimestamp = System.currentTimeMillis();
 
     public MemoryKieModule(ReleaseId releaseId) {
         this( releaseId, new KieModuleModelImpl(), new MemoryFileSystem() );
@@ -62,6 +63,10 @@ public class MemoryKieModule extends AbstractKieModule
     @Override
     public byte[] getBytes() {
         return mfs.writeAsBytes();
+    }
+
+    public long getCreationTimestamp() {
+        return creationTimestamp;
     }
 
     public String toString() {
