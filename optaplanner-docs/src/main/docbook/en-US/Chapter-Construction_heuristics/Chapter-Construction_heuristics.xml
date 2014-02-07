@@ -194,7 +194,7 @@
     <section>
       <title>Algorithm description</title>
 
-      <para>Advanced Greedy Fit is versatile, generic form of First Fit, First Fit Decreasing, Best Fit and Best Fit
+      <para>Advanced Greedy Fit is a versatile, generic form of First Fit, First Fit Decreasing, Best Fit and Best Fit
       Decreasing.</para>
     </section>
 
@@ -232,8 +232,8 @@
       selection</link> ensures that the winning <literal>Move</literal> changes (only) the selected entity.</para>
 
       <para>To customize the entity or value sorting, see <link linkend="sortedSelection">sorted selection</link>. Other
-      <literal>Selector</literal> customization (such as <link linkend="filteredSelection">filtering</link>) is
-      supported too.</para>
+      <literal>Selector</literal> customization (such as <link linkend="filteredSelection">filtering</link> and <link
+      linkend="limitedSelection">limiting</link>) is supported too.</para>
     </section>
 
     <section>
