@@ -21,6 +21,7 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScoreHolder;
 
 import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
 import org.optaplanner.examples.projectjobscheduling.domain.ExecutionMode;
+import org.optaplanner.examples.projectjobscheduling.domain.Job;
 import org.optaplanner.examples.projectjobscheduling.domain.JobType;
 import org.optaplanner.examples.projectjobscheduling.domain.Project;
 import org.optaplanner.examples.projectjobscheduling.domain.ResourceRequirement;
@@ -80,4 +81,28 @@ end
 // Soft constraints
 // ############################################################################
 
-// TODO unfinished
+rule "calculateSoftScore0"
+	when
+ 		$maxCriticalPath : Number( )  
+		from accumulate(
+			Project($criticalPath : criticalPathEndDate, $project : this) 
+			and Allocation( $endDate : endDate , project == $project , $job : job  )
+			and Job( this == $job , jobType == JobType.SINK ),
+			sum(-$endDate + $criticalPath )
+		) 
+	then
+		scoreHolder.addSoftConstraintMatch(kcontext, 0,  $maxCriticalPath.intValue() );
+end		
+
+
+rule "calculateSoftScore1"
+	when
+ 		$maxProjectEndDate : Number( )  
+		from accumulate(
+			Allocation( $endDate : endDate , $job : job)
+			and Job( this == $job , jobType == JobType.SINK ),
+			max($endDate)
+		)
+	then
+		scoreHolder.addSoftConstraintMatch(kcontext, 1, -$maxProjectEndDate.intValue());
+end
