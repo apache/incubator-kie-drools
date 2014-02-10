@@ -1,49 +1,39 @@
 package org.drools.scorecards;
 
-import junit.framework.Assert;
 import org.dmg.pmml.pmml_4_1.descr.Attribute;
 import org.dmg.pmml.pmml_4_1.descr.Characteristic;
 import org.dmg.pmml.pmml_4_1.descr.Characteristics;
 import org.dmg.pmml.pmml_4_1.descr.PMML;
 import org.dmg.pmml.pmml_4_1.descr.Scorecard;
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Results;
 import org.kie.api.definition.type.FactType;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.ClassObjectFilter;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+
 import static org.drools.scorecards.ScorecardCompiler.DrlType.INTERNAL_DECLARED_TYPES;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ScorecardReasonCodeTest {
-    private static PMML pmmlDocument;
-    private static String drl;
-    private static ScorecardCompiler scorecardCompiler;
-    @Before
-    public void setUp() throws Exception {
-        scorecardCompiler = new ScorecardCompiler(INTERNAL_DECLARED_TYPES);
-        boolean compileResult = scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_reasoncodes.xls"));
-        if (!compileResult) {
-            for(ScorecardError error : scorecardCompiler.getScorecardParseErrors()){
-                System.out.println("setup :"+error.getErrorLocation()+"->"+error.getErrorMessage());
-            }
-        }
-        drl = scorecardCompiler.getDRL();
-        Assert.assertNotNull(drl);
-        assertTrue(drl.length() > 0);
 
-        pmmlDocument = scorecardCompiler.getPMMLDocument();
-    }
+    private static PMML pmmlDocument;
+    private static ScorecardCompiler scorecardCompiler;
+
 
     @Test
     public void testPMMLDocument() throws Exception {
@@ -58,7 +48,7 @@ public class ScorecardReasonCodeTest {
     @Test
     public void testAbsenceOfReasonCodes() throws Exception {
         ScorecardCompiler scorecardCompiler = new ScorecardCompiler(INTERNAL_DECLARED_TYPES);
-        scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_c.xls"));
+        scorecardCompiler.compileFromExcel( PMMLDocumentTest.class.getResourceAsStream( "/scoremodel_c.xls" ) );
         PMML pmml = scorecardCompiler.getPMMLDocument();
         for (Object serializable : pmml.getAssociationModelsAndBaselineModelsAndClusteringModels()){
             if (serializable instanceof Scorecard){
@@ -69,10 +59,20 @@ public class ScorecardReasonCodeTest {
 
     @Test
     public void testUseReasonCodes() throws Exception {
+        scorecardCompiler = new ScorecardCompiler( INTERNAL_DECLARED_TYPES );
+        boolean compileResult = scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_reasoncodes.xls"));
+        if (!compileResult) {
+            for(ScorecardError error : scorecardCompiler.getScorecardParseErrors()){
+                System.out.println("setup :"+error.getErrorLocation()+"->"+error.getErrorMessage());
+            }
+        }
+
+        pmmlDocument = scorecardCompiler.getPMMLDocument();
+
         for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
             if (serializable instanceof Scorecard){
                 assertTrue(((Scorecard)serializable).isUseReasonCodes());
-                assertEquals(100.0, ((Scorecard)serializable).getInitialScore());
+                assertEquals(100.0, ((Scorecard)serializable).getInitialScore(), 0.0);
                 assertEquals("pointsBelow",((Scorecard)serializable).getReasonCodeAlgorithm());
             }
         }
@@ -80,6 +80,16 @@ public class ScorecardReasonCodeTest {
 
     @Test
     public void testReasonCodes() throws Exception {
+        scorecardCompiler = new ScorecardCompiler( INTERNAL_DECLARED_TYPES );
+        boolean compileResult = scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_reasoncodes.xls"));
+        if (!compileResult) {
+            for(ScorecardError error : scorecardCompiler.getScorecardParseErrors()){
+                System.out.println("setup :"+error.getErrorLocation()+"->"+error.getErrorMessage());
+            }
+        }
+
+        pmmlDocument = scorecardCompiler.getPMMLDocument();
+
         for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
             if (serializable instanceof Scorecard){
                 for (Object obj :((Scorecard)serializable) .getExtensionsAndCharacteristicsAndMiningSchemas()){
@@ -101,17 +111,27 @@ public class ScorecardReasonCodeTest {
 
     @Test
     public void testBaselineScores() throws Exception {
+        ScorecardCompiler scorecardCompiler = new ScorecardCompiler( INTERNAL_DECLARED_TYPES );
+        boolean compileResult = scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_reasoncodes.xls"));
+        if (!compileResult) {
+            for(ScorecardError error : scorecardCompiler.getScorecardParseErrors()){
+                System.out.println("setup :"+error.getErrorLocation()+"->"+error.getErrorMessage());
+            }
+        }
+
+        pmmlDocument = scorecardCompiler.getPMMLDocument();
+
         for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
             if (serializable instanceof Scorecard){
                 for (Object obj :((Scorecard)serializable) .getExtensionsAndCharacteristicsAndMiningSchemas()){
                     if (obj instanceof Characteristics){
                         Characteristics characteristics = (Characteristics)obj;
                         assertEquals(4, characteristics.getCharacteristics().size());
-                        assertEquals(10.0, characteristics.getCharacteristics().get(0).getBaselineScore());
-                        assertEquals(99.0, characteristics.getCharacteristics().get(1).getBaselineScore());
-                        assertEquals(12.0, characteristics.getCharacteristics().get(2).getBaselineScore());
-                        assertEquals(0.0, characteristics.getCharacteristics().get(3).getBaselineScore());
-                        assertEquals(25.0, ((Scorecard)serializable).getBaselineScore());
+                        assertEquals(10.0, characteristics.getCharacteristics().get(0).getBaselineScore(), 0.0);
+                        assertEquals(99.0, characteristics.getCharacteristics().get(1).getBaselineScore(), 0.0);
+                        assertEquals(12.0, characteristics.getCharacteristics().get(2).getBaselineScore(), 0.0);
+                        assertEquals(15.0, characteristics.getCharacteristics().get(3).getBaselineScore(), 0.0);
+                        assertEquals(25.0, ((Scorecard)serializable).getBaselineScore(), 0.0);
                         return;
                     }
                 }
@@ -137,139 +157,322 @@ public class ScorecardReasonCodeTest {
         assertEquals("$D$30", scorecardCompiler.getScorecardParseErrors().get(2).getErrorLocation());
     }
 
+
+
     @Test
     public void testReasonCodesCombinations() throws Exception {
-        ScorecardCompiler scorecardCompiler = new ScorecardCompiler(INTERNAL_DECLARED_TYPES);
-        scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_reasoncodes.xls"), "scorecards_char_reasoncode");
-        assertEquals(0, scorecardCompiler.getScorecardParseErrors().size());
-        String drl = scorecardCompiler.getDRL();
-        assertNotNull(drl);
-        //System.out.println(drl);
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
-        for (KnowledgeBuilderError error : kbuilder.getErrors()){
-            System.out.println(error.getMessage());
-        }
-        assertFalse( kbuilder.hasErrors() );
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write( ks.getResources().newClassPathResource( "scoremodel_reasoncodes.xls" )
+                           .setSourcePath( "scoremodel_reasoncodes.xls" )
+                           .setResourceType( ResourceType.SCARD ) );
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+        Results res = kieBuilder.buildAll().getResults();
+        KieContainer kieContainer = ks.newKieContainer( kieBuilder.getKieModule().getReleaseId() );
 
-        //BUILD RULEBASE
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = kieContainer.getKieBase();
+        KieSession session = kbase.newKieSession();
 
-        //NEW WORKING MEMORY
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+
         FactType scorecardType = kbase.getFactType( "org.drools.scorecards.example","SampleScore" );
+        FactType scorecardInternalsType = kbase.getFactType( "org.drools.scorecards.example","ScoreCard" );
+        FactType scorecardOutputType = kbase.getFactType( "org.drools.scorecards.example","SampleScoreOutput" );
 
-        DroolsScorecard scorecard = (DroolsScorecard) scorecardType.newInstance();
+        Object scorecard = scorecardType.newInstance();
         scorecardType.set(scorecard, "age", 10);
         session.insert(scorecard);
         session.fireAllRules();
-        session.dispose();
-        //age = 30, validLicence -1
-        assertTrue(29 == scorecard.getCalculatedScore());
-        //age-reasoncode=AGE02, license-reasoncode=VL002
-        assertEquals(2, scorecard.getReasonCodes().size());
-        assertTrue(scorecard.getReasonCodes().contains("AGE02"));
-        assertTrue(scorecard.getReasonCodes().contains("VL099"));
+        assertEquals( 129.0, scorecardType.get( scorecard, "scorecard__calculatedScore" ) );
 
-        session = kbase.newStatefulKnowledgeSession();
-        scorecard = (DroolsScorecard) scorecardType.newInstance();
-        scorecardType.set(scorecard, "age", 0);
-        scorecardType.set(scorecard, "occupation", "SKYDIVER");
-        session.insert(scorecard);
-        session.fireAllRules();
-        session.dispose();
-        //occupation = -10, age = +10, validLicense = -1;
-        assertTrue(-1 == scorecard.getCalculatedScore());
-        assertEquals(3, scorecard.getReasonCodes().size());
-        //[AGE01, VL002, OCC01]
-        assertTrue(scorecard.getReasonCodes().contains("AGE01"));
-        assertTrue(scorecard.getReasonCodes().contains("VL099"));
-        assertTrue(scorecard.getReasonCodes().contains("OCC99"));
+        Object scorecardInternals = session.getObjects( new ClassObjectFilter( scorecardInternalsType.getFactClass() ) ).iterator().next();
+        assertEquals( 129.0, scorecardInternalsType.get( scorecardInternals, "score" ) );
+        Map reasonCodesMap = (Map) scorecardInternalsType.get( scorecardInternals, "ranking" );
+        assertNotNull( reasonCodesMap );
+        assertEquals( 2, reasonCodesMap.size() );
+        assertEquals( 16.0, reasonCodesMap.get( "VL002" ) );
+        assertEquals( -20.0, reasonCodesMap.get( "AGE02" ) );
 
-        session = kbase.newStatefulKnowledgeSession();
-        scorecard = (DroolsScorecard) scorecardType.newInstance();
-        scorecardType.set(scorecard, "age", 20);
-        scorecardType.set(scorecard, "occupation", "TEACHER");
-        scorecardType.set(scorecard, "residenceState", "AP");
-        scorecardType.set(scorecard, "validLicense", true);
+        Object scorecardOutput = session.getObjects( new ClassObjectFilter( scorecardOutputType.getFactClass() ) ).iterator().next();
+        assertEquals( 129.0, scorecardOutputType.get( scorecardOutput, "calculatedScore" ) );
+        assertEquals( "VL002", scorecardOutputType.get( scorecardOutput, "reasonCode" ) );
+
+        session.dispose();
+
+
+        session = kbase.newKieSession();
+        scorecard = scorecardType.newInstance();
+        scorecardType.set( scorecard, "age", 0 );
+        scorecardType.set( scorecard, "occupation", "SKYDIVER" );
         session.insert( scorecard );
         session.fireAllRules();
+
+        assertEquals( 99.0, scorecardType.get( scorecard, "scorecard__calculatedScore" ) );
+
+        scorecardInternals = session.getObjects( new ClassObjectFilter( scorecardInternalsType.getFactClass() ) ).iterator().next();
+        System.out.println( scorecardInternals );
+        assertEquals( 99.0, scorecardInternalsType.get( scorecardInternals, "score" ) );
+        reasonCodesMap = (Map) scorecardInternalsType.get( scorecardInternals, "ranking" );
+        assertNotNull( reasonCodesMap );
+        assertEquals( 3, reasonCodesMap.size() );
+        assertEquals( 109.0, reasonCodesMap.get( "OCC01" ) );
+        assertEquals( 16.0, reasonCodesMap.get( "VL002" ) );
+        assertEquals( 0.0, reasonCodesMap.get( "AGE01" ) );
+
+        scorecardOutput = session.getObjects( new ClassObjectFilter( scorecardOutputType.getFactClass() ) ).iterator().next();
+        assertEquals( 99.0, scorecardOutputType.get( scorecardOutput, "calculatedScore" ) );
+        assertEquals( "OCC01", scorecardOutputType.get( scorecardOutput, "reasonCode" ) );
+
+
         session.dispose();
-        //occupation = +10, age = +40, state = -10, validLicense = 1
-        assertEquals(41.0,scorecard.getCalculatedScore());
-        //[OCC02, AGE03, VL001, RS001]
-        assertEquals(4, scorecard.getReasonCodes().size());
-        assertTrue(scorecard.getReasonCodes().contains("OCC99"));
-        assertTrue(scorecard.getReasonCodes().contains("AGE03"));
-        assertTrue(scorecard.getReasonCodes().contains("VL001"));
-        assertTrue(scorecard.getReasonCodes().contains("RS001"));
+
+        session = kbase.newKieSession();
+        scorecard = scorecardType.newInstance();
+        scorecardType.set( scorecard, "age", 20 );
+        scorecardType.set( scorecard, "occupation", "TEACHER" );
+        scorecardType.set( scorecard, "residenceState", "AP" );
+        scorecardType.set( scorecard, "validLicense", true );
+        session.insert( scorecard );
+        session.fireAllRules();
+
+        assertEquals( 141.0, scorecardType.get( scorecard, "scorecard__calculatedScore" ) );
+
+        scorecardInternals = session.getObjects( new ClassObjectFilter( scorecardInternalsType.getFactClass() ) ).iterator().next();
+        System.out.println( scorecardInternals );
+        assertEquals( 141.0, scorecardInternalsType.get( scorecardInternals, "score" ) );
+        reasonCodesMap = (Map) scorecardInternalsType.get( scorecardInternals, "ranking" );
+        assertNotNull( reasonCodesMap );
+        assertEquals( 4, reasonCodesMap.size() );
+        assertEquals( 89.0, reasonCodesMap.get( "OCC02" ) );
+        assertEquals( 22.0, reasonCodesMap.get( "RS001" ) );
+        assertEquals( 14.0, reasonCodesMap.get( "VL001" ) );
+        assertEquals( -30.0, reasonCodesMap.get( "AGE03" ) );
+
+
+        scorecardOutput = session.getObjects( new ClassObjectFilter( scorecardOutputType.getFactClass() ) ).iterator().next();
+        assertEquals( 141.0, scorecardOutputType.get( scorecardOutput, "calculatedScore" ) );
+        assertEquals( "OCC02", scorecardOutputType.get( scorecardOutput, "reasonCode" ) );
+
+        session.dispose();
     }
+
+
+
+
+
 
     @Test
-    public void testDRLExecution() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+    public void testPointsAbove() throws Exception {
+        ScorecardCompiler scorecardCompiler = new ScorecardCompiler(INTERNAL_DECLARED_TYPES);
+        scorecardCompiler.compileFromExcel( PMMLDocumentTest.class.getResourceAsStream("/scoremodel_reasoncodes.xls"), "scorecards_pointsAbove" );
+        assertEquals( 0, scorecardCompiler.getScorecardParseErrors().size() );
 
-        kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
-        for (KnowledgeBuilderError error : kbuilder.getErrors()){
-            System.out.println(error.getMessage());
-        }
-        assertFalse(kbuilder.hasErrors());
+        String drl = scorecardCompiler.getDRL();
+        assertNotNull(drl);
 
-        //BUILD RULEBASE
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        //NEW WORKING MEMORY
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write( ks.getResources().newByteArrayResource( drl.getBytes() )
+                           .setSourcePath( "scoremodel_pointsAbove.drl" )
+                           .setResourceType( ResourceType.DRL ) );
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+        Results res = kieBuilder.buildAll().getResults();
+        KieContainer kieContainer = ks.newKieContainer( kieBuilder.getKieModule().getReleaseId() );
+
+        KieBase kbase = kieContainer.getKieBase();
+        KieSession session = kbase.newKieSession();
+
         FactType scorecardType = kbase.getFactType( "org.drools.scorecards.example","SampleScore" );
+        FactType scorecardInternalsType = kbase.getFactType( "org.drools.scorecards.example","ScoreCard" );
+        FactType scorecardOutputType = kbase.getFactType( "org.drools.scorecards.example","SampleScoreOutput" );
 
-        DroolsScorecard scorecard = (DroolsScorecard) scorecardType.newInstance();
+        Object scorecard = scorecardType.newInstance();
         scorecardType.set(scorecard, "age", 10);
         session.insert(scorecard);
         session.fireAllRules();
+        assertEquals( 29.0, scorecardType.get( scorecard, "scorecard__calculatedScore" ) );
+
+        Object scorecardInternals = session.getObjects( new ClassObjectFilter( scorecardInternalsType.getFactClass() ) ).iterator().next();
+        assertEquals( 29.0, scorecardInternalsType.get( scorecardInternals, "score" ) );
+        Map reasonCodesMap = (Map) scorecardInternalsType.get( scorecardInternals, "ranking" );
+        assertNotNull( reasonCodesMap );
+        assertEquals( 2, reasonCodesMap.size() );
+        assertEquals( -16.0, reasonCodesMap.get( "VL002" ) );
+        assertEquals( 20.0, reasonCodesMap.get( "AGE02" ) );
+
+        Object scorecardOutput = session.getObjects( new ClassObjectFilter( scorecardOutputType.getFactClass() ) ).iterator().next();
+        assertEquals( 29.0, scorecardOutputType.get( scorecardOutput, "calculatedScore" ) );
+        assertEquals( "AGE02", scorecardOutputType.get( scorecardOutput, "reasonCode" ) );
+
         session.dispose();
-        //age = 30, validLicence -1, initialScore = 100;
-        assertTrue(129 == scorecard.getCalculatedScore());
-        //age-reasoncode=AGE02, license-reasoncode=VL002
-        assertEquals(2, scorecard.getReasonCodes().size());
-        assertTrue(scorecard.getReasonCodes().contains("AGE02"));
-        assertTrue(scorecard.getReasonCodes().contains("VL002"));
 
-        session = kbase.newStatefulKnowledgeSession();
-        scorecard = (DroolsScorecard) scorecardType.newInstance();
-        scorecardType.set(scorecard, "age", 0);
-        scorecardType.set(scorecard, "occupation", "SKYDIVER");
-        session.insert(scorecard);
-        session.fireAllRules();
-        session.dispose();
-        //occupation = -10, age = +10, validLicense = -1, initialScore = 100;
-        assertEquals(99.0, scorecard.getCalculatedScore());
 
-        assertEquals(3, scorecard.getReasonCodes().size());
-        //[AGE01, VL002, OCC01]
-        assertTrue(scorecard.getReasonCodes().contains("AGE01"));
-        assertTrue(scorecard.getReasonCodes().contains("VL002"));
-        assertTrue(scorecard.getReasonCodes().contains("OCC01"));
 
-        session = kbase.newStatefulKnowledgeSession();
-        scorecard = (DroolsScorecard) scorecardType.newInstance();
-        scorecardType.set(scorecard, "age", 20);
-        scorecardType.set(scorecard, "occupation", "TEACHER");
-        scorecardType.set(scorecard, "residenceState", "AP");
-        scorecardType.set(scorecard, "validLicense", true);
+
+        session = kbase.newKieSession();
+        scorecard = scorecardType.newInstance();
+        scorecardType.set( scorecard, "age", 0 );
+        scorecardType.set( scorecard, "occupation", "SKYDIVER" );
         session.insert( scorecard );
         session.fireAllRules();
+
+        assertEquals( -1.0, scorecardType.get( scorecard, "scorecard__calculatedScore" ) );
+
+        scorecardInternals = session.getObjects( new ClassObjectFilter( scorecardInternalsType.getFactClass() ) ).iterator().next();
+        System.out.println( scorecardInternals );
+        assertEquals( -1.0, scorecardInternalsType.get( scorecardInternals, "score" ) );
+        reasonCodesMap = (Map) scorecardInternalsType.get( scorecardInternals, "ranking" );
+        assertNotNull( reasonCodesMap );
+        assertEquals( 3, reasonCodesMap.size() );
+        assertEquals( -109.0, reasonCodesMap.get( "OCC01" ) );
+        assertEquals( -16.0, reasonCodesMap.get( "VL002" ) );
+        assertEquals( 0.0, reasonCodesMap.get( "AGE01" ) );
+        assertEquals( Arrays.asList( "AGE01", "VL002", "OCC01" ), new ArrayList( reasonCodesMap.keySet() ) );
+
+        scorecardOutput = session.getObjects( new ClassObjectFilter( scorecardOutputType.getFactClass() ) ).iterator().next();
+        assertEquals( -1.0, scorecardOutputType.get( scorecardOutput, "calculatedScore" ) );
+        assertEquals( "AGE01", scorecardOutputType.get( scorecardOutput, "reasonCode" ) );
+
         session.dispose();
-        //occupation = +10, age = +40, state = -10, validLicense = 1, initialScore = 100;
-        assertEquals(141.0,scorecard.getCalculatedScore());
-        //[OCC02, AGE03, VL001, RS001]
-        assertEquals(4, scorecard.getReasonCodes().size());
-        assertTrue(scorecard.getReasonCodes().contains("OCC02"));
-        assertTrue(scorecard.getReasonCodes().contains("AGE03"));
-        assertTrue(scorecard.getReasonCodes().contains("VL001"));
-        assertTrue(scorecard.getReasonCodes().contains("RS001"));
+
+
+        session = kbase.newKieSession();
+        scorecard = scorecardType.newInstance();
+        scorecardType.set( scorecard, "age", 20 );
+        scorecardType.set( scorecard, "occupation", "TEACHER" );
+        scorecardType.set( scorecard, "residenceState", "AP" );
+        scorecardType.set( scorecard, "validLicense", true );
+        session.insert( scorecard );
+        session.fireAllRules();
+
+        assertEquals( 41.0, scorecardType.get( scorecard, "scorecard__calculatedScore" ) );
+
+        scorecardInternals = session.getObjects( new ClassObjectFilter( scorecardInternalsType.getFactClass() ) ).iterator().next();
+        System.out.println( scorecardInternals );
+        assertEquals( 41.0, scorecardInternalsType.get( scorecardInternals, "score" ) );
+        reasonCodesMap = (Map) scorecardInternalsType.get( scorecardInternals, "ranking" );
+        assertNotNull( reasonCodesMap );
+        assertEquals( 4, reasonCodesMap.size() );
+        assertEquals( -89.0, reasonCodesMap.get( "OCC02" ) );
+        assertEquals( -22.0, reasonCodesMap.get( "RS001" ) );
+        assertEquals( -14.0, reasonCodesMap.get( "VL001" ) );
+        assertEquals( 30.0, reasonCodesMap.get( "AGE03" ) );
+        assertEquals( Arrays.asList( "AGE03", "VL001", "RS001", "OCC02" ), new ArrayList( reasonCodesMap.keySet() ) );
+
+
+        scorecardOutput = session.getObjects( new ClassObjectFilter( scorecardOutputType.getFactClass() ) ).iterator().next();
+        assertEquals( 41.0, scorecardOutputType.get( scorecardOutput, "calculatedScore" ) );
+        assertEquals( "AGE03", scorecardOutputType.get( scorecardOutput, "reasonCode" ) );
+
+        session.dispose();
+
     }
+
+
+
+
+    @Test
+    public void testPointsBelow() throws Exception {
+        ScorecardCompiler scorecardCompiler = new ScorecardCompiler(INTERNAL_DECLARED_TYPES);
+        scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_reasoncodes.xls"), "scorecards_pointsBelow");
+        assertEquals(0, scorecardCompiler.getScorecardParseErrors().size());
+        String drl = scorecardCompiler.getDRL();
+
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write( ks.getResources().newByteArrayResource( drl.getBytes() )
+                           .setSourcePath( "scoremodel_pointsAbove.drl" )
+                           .setResourceType( ResourceType.DRL ) );
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+        Results res = kieBuilder.buildAll().getResults();
+        KieContainer kieContainer = ks.newKieContainer( kieBuilder.getKieModule().getReleaseId() );
+
+        KieBase kbase = kieContainer.getKieBase();
+        KieSession session = kbase.newKieSession();
+
+        FactType scorecardType = kbase.getFactType( "org.drools.scorecards.example","SampleScore" );
+        FactType scorecardInternalsType = kbase.getFactType( "org.drools.scorecards.example","ScoreCard" );
+        FactType scorecardOutputType = kbase.getFactType( "org.drools.scorecards.example","SampleScoreOutput" );
+
+        Object scorecard = scorecardType.newInstance();
+        scorecardType.set(scorecard, "age", 10);
+        session.insert(scorecard);
+        session.fireAllRules();
+        assertEquals( 29.0, scorecardType.get( scorecard, "scorecard__calculatedScore" ) );
+
+        Object scorecardInternals = session.getObjects( new ClassObjectFilter( scorecardInternalsType.getFactClass() ) ).iterator().next();
+        assertEquals( 29.0, scorecardInternalsType.get( scorecardInternals, "score" ) );
+        Map reasonCodesMap = (Map) scorecardInternalsType.get( scorecardInternals, "ranking" );
+        assertNotNull( reasonCodesMap );
+        assertEquals( 2, reasonCodesMap.size() );
+        assertEquals( 16.0, reasonCodesMap.get( "VL002" ) );
+        assertEquals( -20.0, reasonCodesMap.get( "AGE02" ) );
+
+        Object scorecardOutput = session.getObjects( new ClassObjectFilter( scorecardOutputType.getFactClass() ) ).iterator().next();
+        assertEquals( 29.0, scorecardOutputType.get( scorecardOutput, "calculatedScore" ) );
+        assertEquals( "VL002", scorecardOutputType.get( scorecardOutput, "reasonCode" ) );
+
+        session.dispose();
+
+
+        session = kbase.newKieSession();
+        scorecard = scorecardType.newInstance();
+        scorecardType.set( scorecard, "age", 0 );
+        scorecardType.set( scorecard, "occupation", "SKYDIVER" );
+        session.insert( scorecard );
+        session.fireAllRules();
+
+        assertEquals( -1.0, scorecardType.get( scorecard, "scorecard__calculatedScore" ) );
+
+        scorecardInternals = session.getObjects( new ClassObjectFilter( scorecardInternalsType.getFactClass() ) ).iterator().next();
+        System.out.println( scorecardInternals );
+        assertEquals( -1.0, scorecardInternalsType.get( scorecardInternals, "score" ) );
+        reasonCodesMap = (Map) scorecardInternalsType.get( scorecardInternals, "ranking" );
+        assertNotNull( reasonCodesMap );
+        assertEquals( 3, reasonCodesMap.size() );
+        assertEquals( 109.0, reasonCodesMap.get( "OCC01" ) );
+        assertEquals( 16.0, reasonCodesMap.get( "VL002" ) );
+        assertEquals( 0.0, reasonCodesMap.get( "AGE01" ) );
+
+        scorecardOutput = session.getObjects( new ClassObjectFilter( scorecardOutputType.getFactClass() ) ).iterator().next();
+        assertEquals( -1.0, scorecardOutputType.get( scorecardOutput, "calculatedScore" ) );
+        assertEquals( "OCC01", scorecardOutputType.get( scorecardOutput, "reasonCode" ) );
+
+
+        session.dispose();
+
+        session = kbase.newKieSession();
+        scorecard = scorecardType.newInstance();
+        scorecardType.set( scorecard, "age", 20 );
+        scorecardType.set( scorecard, "occupation", "TEACHER" );
+        scorecardType.set( scorecard, "residenceState", "AP" );
+        scorecardType.set( scorecard, "validLicense", true );
+        session.insert( scorecard );
+        session.fireAllRules();
+
+        assertEquals( 41.0, scorecardType.get( scorecard, "scorecard__calculatedScore" ) );
+
+        scorecardInternals = session.getObjects( new ClassObjectFilter( scorecardInternalsType.getFactClass() ) ).iterator().next();
+        System.out.println( scorecardInternals );
+        assertEquals( 41.0, scorecardInternalsType.get( scorecardInternals, "score" ) );
+        reasonCodesMap = (Map) scorecardInternalsType.get( scorecardInternals, "ranking" );
+        assertNotNull( reasonCodesMap );
+        assertEquals( 4, reasonCodesMap.size() );
+        assertEquals( 89.0, reasonCodesMap.get( "OCC02" ) );
+        assertEquals( 22.0, reasonCodesMap.get( "RS001" ) );
+        assertEquals( 14.0, reasonCodesMap.get( "VL001" ) );
+        assertEquals( -30.0, reasonCodesMap.get( "AGE03" ) );
+
+
+        scorecardOutput = session.getObjects( new ClassObjectFilter( scorecardOutputType.getFactClass() ) ).iterator().next();
+        assertEquals( 41.0, scorecardOutputType.get( scorecardOutput, "calculatedScore" ) );
+        assertEquals( "OCC02", scorecardOutputType.get( scorecardOutput, "reasonCode" ) );
+
+        session.dispose();
+    }
+
+
 
 }

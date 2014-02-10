@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PMML version="4.1" xsi:schemaLocation="http://www.dmg.org/PMML-4_1 http://www.dmg.org/v4-1/pmml-4-1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_1">
+  <Header/>
+  <DataDictionary>
+    <DataField name="cage" dataType="string" optype="categorical"/>
+    <DataField name="age" dataType="integer" optype="continuous"/>
+    <DataField name="wage" dataType="double" optype="continuous"/>
+    <DataField name="calculatedScore" dataType="double" optype="continuous"/>
+  </DataDictionary>
+  <Scorecard modelName="SampleScorecard" functionName="regression"
+             useReasonCodes="true" reasonCodeAlgorithm="pointsBelow" initialScore="0" baselineMethod="other">
+    <MiningSchema>
+      <MiningField name="cage"/>
+      <MiningField name="age"/>
+      <MiningField name="wage"/>
+      <MiningField name="calculatedScore" usageType="predicted"/>
+    </MiningSchema>
+
+    <Output>
+      <OutputField name="OutScore"
+                   feature="predictedValue" dataType="double" optype="continuous"/>
+      <OutputField name="OutRC1" rank="1"
+                   feature="reasonCode" dataType="string" optype="categorical"/>
+      <OutputField name="OutRC2" rank="2"
+                   feature="reasonCode" dataType="string" optype="categorical"/>
+      <OutputField name="OutRC3" rank="3"
+                   feature="reasonCode" dataType="string" optype="categorical"/>
+    </Output>
+
+    <Characteristics>
+
+      <Characteristic name="cageScore" reasonCode="RC1" baselineScore="19">
+        <Attribute partialScore="-9">
+          <SimplePredicate field="cage" operator="isMissing"/>
+        </Attribute>
+        <Attribute partialScore="19">
+          <SimplePredicate field="cage" operator="equal" value="marketing"/>
+        </Attribute>
+        <Attribute partialScore="3">
+          <SimplePredicate field="cage" operator="equal" value="engineering"/>
+        </Attribute>
+        <Attribute partialScore="6">
+          <SimplePredicate field="cage" operator="equal" value="business"/>
+        </Attribute>
+      </Characteristic>
+
+      <Characteristic name="ageScore" reasonCode="RC2" baselineScore="18">
+        <Attribute partialScore="-1">
+          <SimplePredicate field="age" operator="isMissing"/>
+        </Attribute>
+        <Attribute partialScore="-3">
+          <SimplePredicate field="age" operator="lessOrEqual" value="18"/>
+        </Attribute>
+        <Attribute partialScore="0">
+          <CompoundPredicate booleanOperator="and">
+            <SimplePredicate field="age" operator="greaterThan" value="18"/>
+            <SimplePredicate field="age" operator="lessOrEqual" value="29"/>
+          </CompoundPredicate>
+        </Attribute>
+        <Attribute partialScore="12">
+          <CompoundPredicate booleanOperator="and">
+            <SimplePredicate field="age" operator="greaterThan" value="29"/>
+            <SimplePredicate field="age" operator="lessOrEqual" value="39"/>
+          </CompoundPredicate>
+        </Attribute>
+        <Attribute partialScore="18">
+          <SimplePredicate field="age" operator="greaterThan" value="39"/>
+        </Attribute>
+      </Characteristic>
+
+      <Characteristic name="wageScore" reasonCode="RC3" baselineScore="10">
+        <Attribute partialScore="5">
+          <SimplePredicate field="wage" operator="isMissing"/>
+        </Attribute>
+        <Attribute partialScore="26">
+          <SimplePredicate field="wage" operator="lessOrEqual" value="1000"/>
+        </Attribute>
+        <Attribute partialScore="5">
+          <CompoundPredicate booleanOperator="and">
+            <SimplePredicate field="wage" operator="greaterThan" value="1000"/>
+            <SimplePredicate field="wage" operator="lessOrEqual" value="2500"/>
+          </CompoundPredicate>
+        </Attribute>
+        <Attribute partialScore="-3">
+          <SimplePredicate field="wage" operator="greaterThan" value="2500"/>
+        </Attribute>
+      </Characteristic>
+
+    </Characteristics>
+  </Scorecard>
+</PMML>

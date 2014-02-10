@@ -21,6 +21,7 @@ import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.defeasible.DefeasibilityStatus;
 import org.drools.core.beliefsystem.defeasible.DefeasibleBeliefSet;
 import org.drools.core.common.EqualityKey;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.util.Iterator;
@@ -39,8 +40,12 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -59,7 +64,7 @@ public class DefeasibilityTest {
         kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
 
         KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.JTMS );
+        ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.DEFEASIBLE );
 
         StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession( ksConf, null );
         return kSession;
@@ -623,6 +628,226 @@ public class DefeasibilityTest {
         session.delete( handle1 );
         assertEquals( 0, session.fireAllRules() );
     }
+
+
+
+    @Test
+    public void testWMStatusOnNegativeDefeat() {
+        String droolsSource =
+                "package org.drools.tms.test; " +
+                "global java.util.List posList;" +
+                "global java.util.List negList;" +
+
+                "declare Bar value : int @key end " +
+
+                "declare entry-point 'neg' end " +
+
+                "rule Top " +
+                "@Defeasible " +
+                "@Defeats( 'Sub' ) " +
+                "when " +
+                "   $i : Integer( this < 10 ) " +
+                "then " +
+                "   insertLogical( new Bar( $i ) ); " +
+                "end " +
+
+                "rule Sub " +
+                "@Defeasible " +
+                "when " +
+                "   $i : Integer() " +
+                "then " +
+                "   insertLogical( new Bar( $i ), $i > 10 ? 'pos' : 'neg' ); " +
+                "end " +
+
+                "rule Sup " +
+                "@Defeasible " +
+                "@Defeats( 'Sub' ) " +
+                "when " +
+                "   $i : Integer( this > 10 ) " +
+                "then " +
+                "   insertLogical( new Bar( $i ), 'neg' ); " +
+                "end " +
+
+                "rule React_Pos " +
+                "when " +
+                "   $b : Bar() " +
+                "then " +
+                "   posList.add( $b ); " +
+                "   System.out.println( ' ++++ ' + $b ); " +
+                "end " +
+
+                "rule React_Neg " +
+                "when " +
+                "   $b : Bar() from entry-point 'neg' " +
+                "then " +
+                "   negList.add( $b ); " +
+                "   System.out.println( ' ---- ' + $b ); " +
+                "end " +
+
+                "";
+
+        /////////////////////////////////////
+
+        StatefulKnowledgeSession session = getSessionFromString( droolsSource );
+        List posList = new ArrayList();
+        List negList = new ArrayList();
+        session.setGlobal( "posList", posList );
+        session.setGlobal( "negList", negList );
+
+        session.insert( 20 );
+        session.insert( 5 );
+
+        session.fireAllRules();
+
+        assertEquals( 1, posList.size() );
+        assertEquals( 1, negList.size() );
+
+        Object posBar = posList.get( 0 );
+        InternalFactHandle posHandle = (InternalFactHandle) session.getFactHandle( posBar );
+        DefeasibleBeliefSet dbs = (DefeasibleBeliefSet) posHandle.getEqualityKey().getBeliefSet();
+        assertEquals( 1, dbs.size() );
+        assertFalse( dbs.isNegated() );
+        assertFalse( dbs.isUndecided() );
+        assertTrue( dbs.isPositive() );
+        assertSame( posHandle, dbs.getPositiveFactHandle() );
+        assertNull( dbs.getNegativeFactHandle() );
+        assertTrue(  dbs.isDefeasiblyPosProveable() );
+        assertTrue( session.getObjects().contains( posBar ) );
+
+        Object negBar = negList.get( 0 );
+        InternalFactHandle negHandle = (InternalFactHandle) session.getEntryPoint( "neg" ).getFactHandle( negBar );
+        dbs = (DefeasibleBeliefSet) negHandle.getEqualityKey().getBeliefSet();
+        assertEquals( 1, dbs.size() );
+        assertFalse( dbs.isPositive() );
+        assertFalse( dbs.isUndecided() );
+        assertTrue( dbs.isNegated() );
+        assertSame( negHandle, dbs.getNegativeFactHandle() );
+        assertNull( dbs.getPositiveFactHandle() );
+        assertTrue(  dbs.isDefeasiblyNegProveable() );
+        assertFalse( session.getObjects().contains( negBar ) );
+
+    }
+
+
+
+
+    @Test
+    public void testSelfDefeatWithRebuttal() {
+        String droolsSource =
+                "package org.drools.tms.test; " +
+                "global java.util.List posList;" +
+                "global java.util.List negList;" +
+
+                "declare Bar value : int @key end " +
+
+                "declare entry-point 'neg' end " +
+
+                "query bar( Integer $i, Bar $b ) " +
+                "   $b := Bar( $i ; ) " +
+                "end " +
+
+                "rule Create " +
+                "@Defeasible " +
+                "when " +
+                "   $i : Integer() " +
+                "then " +
+                "   System.out.println( 'Create Bar ' + $i ); " +
+                "   insertLogical( new Bar( $i ) ); " +
+                "end " +
+
+                "rule Defeater " +
+                "@Direct " +
+                "@Defeasible " +
+                "@Defeats( 'Create' ) " +
+                "when " +
+                "   $b1 : Bar( $val1 : value ) " +
+                "   $b2 : Bar( $val2 : value > $val1, value - $val1 < 15 ) " +
+                "then " +
+                "   System.out.println( $b2 + ' defeats ' + $b1 ); " +
+                "   insertLogical( new Bar( $val1 ), 'neg' ); " +
+                "end " +
+
+                "rule ReactP " +
+                "when " +
+                "   $b : Bar() " +
+                "then " +
+                "   posList.add( $b ); " +
+                "   System.out.println( ' ++++ ' + $b ); " +
+                "end " +
+
+                "rule ReactN " +
+                "when " +
+                "   $b : Bar() from entry-point 'neg' " +
+                "then " +
+                "   negList.add( $b ); " +
+                "   System.out.println( ' ---- ' + $b ); " +
+                "end " ;
+
+        /////////////////////////////////////
+
+        StatefulKnowledgeSession session = getSessionFromString( droolsSource );
+        List posList = new ArrayList();
+        List negList = new ArrayList();
+        session.setGlobal( "posList", posList );
+        session.setGlobal( "negList", negList );
+
+        session.insert( 10 );
+        session.insert( 20 );
+        session.insert( 30 );
+
+        session.fireAllRules();
+
+        assertEquals( 2, posList.size() );
+        assertEquals( 1, negList.size() );
+
+    }
+
+
+    @Test
+    public void testDefeatersAndDefeasibles() {
+        String droolsSource =
+                "package org.drools.tms.test; " +
+                "global java.util.List posList;" +
+
+                "declare Bar value : int @key end " +
+
+                "rule B " +
+                "@Defeater " +
+                "@Defeats( 'C' ) " +
+                "when " +
+                "   $i : Integer() " +
+                "then " +
+                "   insertLogical( new Bar( $i ) ); " +
+                "end " +
+
+                "rule C " +
+                "@Defeasible " +
+                "when " +
+                "   $i : Integer() " +
+                "then " +
+                "   insertLogical( new Bar( $i ) ); " +
+                "end " +
+
+                "rule React " +
+                "when " +
+                "   $b : Bar() " +
+                "then " +
+                "   posList.add( $b ); " +
+                "   System.out.println( ' ++++ ' + $b ); " +
+                "end " ;
+
+        /////////////////////////////////////
+
+        StatefulKnowledgeSession session = getSessionFromString( droolsSource );
+        List posList = new ArrayList();
+        session.setGlobal( "posList", posList );
+
+        session.insert( 10 );
+
+        session.fireAllRules();
+        assertEquals( 1, posList.size() );
+    }
+
 
 
 }

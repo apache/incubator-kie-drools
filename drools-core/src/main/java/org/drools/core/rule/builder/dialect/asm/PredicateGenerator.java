@@ -46,13 +46,18 @@ public class PredicateGenerator {
                 mv.visitInsn(ACONST_NULL);
                 mv.visitInsn(ARETURN);
             }
-        }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, Object.class, Tuple.class, Declaration[].class, Declaration[].class, WorkingMemory.class, Object.class), new String[]{"java/lang/Exception"}, new GeneratorHelper.EvaluateMethod() {
+        }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, InternalFactHandle.class, Tuple.class, Declaration[].class, Declaration[].class, WorkingMemory.class, Object.class), new String[]{"java/lang/Exception"}, new GeneratorHelper.EvaluateMethod() {
             public void body(MethodVisitor mv) {
                 objAstorePos = 9;
 
                 int[] previousDeclarationsParamsPos = new int[previousDeclarations.length];
 
-                mv.visitVarInsn(ALOAD, 2);
+                mv.visitVarInsn( ALOAD, 1 );
+                invokeInterface( InternalFactHandle.class, "getObject", Object.class );
+                mv.visitVarInsn( ASTORE, 1 );
+
+
+                mv.visitVarInsn( ALOAD, 2 );
                 cast(LeftTuple.class);
                 mv.visitVarInsn(ASTORE, 7); // LeftTuple
 

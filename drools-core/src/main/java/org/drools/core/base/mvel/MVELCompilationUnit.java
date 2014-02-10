@@ -271,30 +271,43 @@ public class MVELCompilationUnit
     public VariableResolverFactory getFactory(final Object knowledgeHelper,
                                               final Declaration[] prevDecl,
                                               final Rule rule,
-                                              final Object rightObject,
                                               final LeftTuple tuples,
                                               final Object[] otherVars,
                                               final InternalWorkingMemory workingMemory,
                                               final GlobalResolver globals) {
         VariableResolverFactory factory = createFactory();
-        updateFactory(knowledgeHelper, prevDecl, rule, rightObject, tuples, otherVars, workingMemory, globals, factory);
+        updateFactory(knowledgeHelper, prevDecl, rule, null, knowledgeHelper, tuples, otherVars, workingMemory, globals, factory );
+        return factory;
+    }
+
+    public VariableResolverFactory getFactory(final Object knowledgeHelper,
+                                              final Declaration[] prevDecl,
+                                              final Rule rule,
+                                              final InternalFactHandle rightHandle,
+                                              final LeftTuple tuples,
+                                              final Object[] otherVars,
+                                              final InternalWorkingMemory workingMemory,
+                                              final GlobalResolver globals) {
+        VariableResolverFactory factory = createFactory();
+        updateFactory(knowledgeHelper, prevDecl, rule, rightHandle, rightHandle != null ? rightHandle.getObject() : null, tuples, otherVars, workingMemory, globals, factory);
         return factory;
     }
     
     public void updateFactory(Object knowledgeHelper,
                               Rule rule,
-                              Object rightObject,
+                              InternalFactHandle rightHandle,
                               LeftTuple leftTuple,
                               Object[] localVars,
                               InternalWorkingMemory workingMemory,
                               GlobalResolver globalResolver,
                               VariableResolverFactory factory) {
-        updateFactory(knowledgeHelper, null, rule, rightObject, leftTuple, localVars, workingMemory, globalResolver, factory);
+        updateFactory(knowledgeHelper, null, rule, rightHandle, rightHandle != null ? rightHandle.getObject() : null, leftTuple, localVars, workingMemory, globalResolver, factory);
     }    
     
     public void updateFactory(Object knowledgeHelper,
                               Declaration[] prevDecl,
                               Rule rule,
+                              InternalFactHandle rightHandle,
                               Object rightObject,
                               LeftTuple tuples,
                               Object[] otherVars,
@@ -323,7 +336,7 @@ public class MVELCompilationUnit
             for (EvaluatorWrapper operator : operators) {
                 // TODO: need to have one operator per working memory
                 factory.getIndexedVariableResolver(i++).setValue(operator);
-                operator.loadHandles(workingMemory, handles, rightObject);
+                operator.loadHandles(workingMemory, handles, rightHandle);
             }
         }
 

@@ -1,0 +1,52 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+@comment{
+    Linearly right-extrapolates a piece-wise function, setting the value to the maximum
+    /**
+    * @param name        - derived field name
+    * @param index       - index of the linear tract (for linear piece-wise functions)
+    * @param origField   - name of the original field to be mapped
+    * @param xmin, xmax, ymin, ymax
+    */
+}
+
+
+
+@declare{'boundedUpperOutliersRule'}
+rule "outliersAsExtremesUpp_@{name}"
+@if{ isInnerFieldName( name ) } @@activationListener('direct') @end{}
+when
+  $src : @{origField}( missing == false, valid == true,
+            value > @{xmax}, $ctx : context
+            @if{ context != null } , context == @{format("string",context)} @end{})
+then
+  @{name} x = new @{name}();
+    x.setValue((@{type}) @{ymax});
+    x.setMissing(false);
+    x.setValid(true);
+    x.setContext($ctx);
+    x.setName(@{format("string",name)});
+    //x.setContinous();
+  insertLogical(x);
+end
+@end{}
+
+@includeNamed{'boundedUpperOutliersRule'}

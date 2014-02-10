@@ -1,0 +1,68 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+@comment{
+
+}
+
+@declare{'treeIOBinding'}
+
+rule "Tree Input Link @{context}"
+when
+    @foreach{ inputField : fields.keySet() }
+        @{inputField}( context == "@{context}", @{inputField} : value, m@{inputField} : missing, valid == true || ( valid == false && missing == true && value != null ) )
+    @end{}
+then
+//    System.out.println( "Creating the tree token" );
+    @{context}TreeToken tok = new @{context}TreeToken( "@{context}",
+                                                       "@{rootId}",
+                                                       null,
+                                                       "@{visitMode}",
+                                                       true,
+                                                       new java.util.ArrayList(),
+                                                       new java.util.HashMap(),
+                                                       1.0,
+                                                       0.0,
+                                                       @foreach{ inputField : fields.keySet() } @{inputField}, m@{inputField} @end{','},
+                                                       null
+                                                       );
+    insertLogical( tok );
+end
+
+rule "Result @{context}"
+salience -2
+when
+    $tok  : @{context}TreeToken( context == "@{context}", current == "null", $out : outcome != null, $conf : confidence )
+then
+//    System.out.println( "EVENTUALLY GENERATE THE SOLUTION ");
+    @{targetField} x = new @{targetField}();
+            x.setContext( "@{context}" );
+            x.setValid( true );
+            x.setMissing( false );
+            x.setValue( $out );
+            x.setWeight( $conf );
+    insertLogical( x );
+end
+
+
+@end{}
+
+
+@includeNamed{'treeIOBinding'}

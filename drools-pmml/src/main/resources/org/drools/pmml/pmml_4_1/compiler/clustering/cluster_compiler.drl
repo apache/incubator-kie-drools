@@ -1,0 +1,142 @@
+package org.drools.pmml.pmml_4_1.compiler;
+
+import org.dmg.pmml.pmml_4_1.descr.*;
+import java.util.*;
+
+dialect "mvel"
+
+
+rule "Clustering Root"
+when
+    $reg : ClusteringModel()
+then
+    utils.applyTemplate( "clusteringDeclare.drlt", utils, registry, null, theory );
+end
+
+rule "visitClustering_context"
+salience -9
+when
+    $klu : ClusteringModel( $name : modelName )
+then
+    utils.context = utils.compactUpperCase( $name );
+
+    HashMap map = new HashMap( 3 );
+        map.put( "name", utils.context );
+        map.put( "type","Clustering" );
+    utils.applyTemplate( "modelMark.drlt", null, registry, map, theory );
+end
+
+
+query extractMissingWeights( java.util.Collection $info, int $num, Object $missingWgts )
+    (
+      MissingValueWeights( this memberOf $info, $data : array.content )
+      and
+      $missingWgts := List() from collect ( String() from utils.tokenize( $data ) )
+    )
+    or
+    ( not MissingValueWeights( this memberOf $info )
+      and
+      $missingWgts := List() from collect ( String() from utils.ones( $num ) )
+    )
+end
+
+rule "Init Clustering"
+salience -17
+when
+    $klu : ClusteringModel( $info : extensionsAndClustersAndComparisonMeasures,
+                            $name : modelName,
+                            functionName == MININGFUNCTION.CLUSTERING,
+                            modelClass == "centerBased",
+                            $numClusters : numberOfClusters.intValue() )
+    accumulate( $k : Cluster() from $info,                              //need 'from' to preserve order!
+                $clusterList : collectList( $k ),
+                $num         : count( $k );
+                $num == $numClusters
+              )
+    accumulate( $kf : ClusteringField( isCenterField == true,
+                                       $fw : fieldWeight,
+                                       $fs : similarityScale ) from $info,  //need 'from' to preserve order!
+                $fieldList   : collectList( $kf ),
+                $fieldScopes : collectList( $fs != null ? $fs : 1.0 ),
+                $fieldWgts   : collectList( $fw ),
+                $numFields   : count( $kf )
+              )
+    extractMissingWeights( $info, $numFields, $missingWgts ; )
+then
+    HashMap map = new HashMap( 7 );
+        map.put( "context", utils.context );
+        map.put( "numClusters", $numClusters );
+        map.put( "numFields", $numFields );
+        map.put( "fieldWeights", $fieldWgts );
+        map.put( "fieldScopes", $fieldScopes );
+        map.put( "missingWeights", $missingWgts );
+        map.put( "klusters", $clusterList );
+    utils.applyTemplate( "clusteringInit.drlt", utils, registry, map, theory );
+end
+
+rule "Eval Clustering"
+salience -18
+when
+    $klu : ClusteringModel( $info : extensionsAndClustersAndComparisonMeasures,
+                            $name : modelName,
+                            functionName == MININGFUNCTION.CLUSTERING,
+                            modelClass == "centerBased",
+                            $numClusters : numberOfClusters.intValue() )
+    $msr : ComparisonMeasure( this memberOf $info, $defCmp : compareFunction, $kind : kind )
+    accumulate( $k : Cluster() from $info,                              //need 'from' to preserve order!
+                $clusterList : collectList( $k ),
+                $num         : count( $k );
+                $num == $numClusters
+              )
+    accumulate( $kf : ClusteringField( isCenterField == true ) from $info,  //need 'from' to preserve order!
+                $inputFields : collectList( $kf ),
+                $numFields   : count( $kf )
+              )
+then
+    HashMap map = new HashMap( 7 );
+        map.put( "context", utils.context );
+        map.put( "numClusters", $numClusters );
+        map.put( "numFields", $numFields.intValue() );
+        map.put( "klusters", $clusterList );
+        map.put( "inputFields", $inputFields );
+        map.put( "defaultCompareFunction", $defCmp );
+        map.put( "msr", $msr );
+    if ( $kind.equals( "distance" ) ) {
+        utils.applyTemplate( "clusteringEvalDistance.drlt", utils, registry, map, theory );
+    } else {
+        utils.applyTemplate( "clusteringEvalSimilarity.drlt", utils, registry, map, theory );
+    }
+end
+
+
+
+rule "Clustering Map Comparison"
+salience -15
+when
+    $klu : ClusteringModel( $info : extensionsAndClustersAndComparisonMeasures,
+                            $name : modelName,
+                            functionName == MININGFUNCTION.CLUSTERING,
+                            modelClass == "centerBased",
+                            $numClusters : numberOfClusters.intValue() )
+    $kf : ClusteringField( $fld : field, $cmp : comparisons != null )  //need 'from' to preserve order!
+    $db : DoubleMatrix( src == $cmp.matrix )
+then
+    HashMap map = new HashMap( 3 );
+        map.put( "context", utils.context );
+        map.put( "fieldName", $fld );
+        map.put( "matrix", $db );
+    utils.applyTemplate( "clusteringMatrixCompare.drlt", utils, registry, map, theory );
+end
+
+
+
+rule "Clustering_Cleanup"
+salience -20
+when
+    $klu : ClusteringModel( )
+then
+    utils.context = null;
+    retract( $klu );
+end
+
+

@@ -1,0 +1,47 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+@comment{
+    Characteristic function: sets a derived field to 0 if the original is not equal to a given value
+    /**
+    * @param name        - derived field name
+    * @param origField   - the field to check
+    * @param target      - the value to compare
+    */
+}
+
+
+
+@declare{'indicatorFieldNoRule'}
+rule "indicatorFieldNo_@{name}"
+@if{ isInnerFieldName( name ) } @@activationListener('direct') @end{}
+when
+ $src : @{origField}( missing == false, valid == true, value != @{target}, $ctx : context //!= null
+                      @if{ context != null } , context == @{format("string",context)} @end{})
+then
+  @{name} x = new @{name}();
+    x.setValue(0.0);
+    x.setMissing(false);
+    x.setValid(true);
+    x.setContext($ctx);
+    x.setName(@{format("string",name)});
+  insertLogical(x);
+end
+@end{}
+
+
+@includeNamed{'indicatorFieldNoRule'}

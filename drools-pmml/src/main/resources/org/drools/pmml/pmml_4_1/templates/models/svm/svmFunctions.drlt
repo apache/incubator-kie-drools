@@ -1,0 +1,77 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+@comment{
+
+}
+
+@declare{'svmFunctions'}
+
+function double rbf( double[] sv, double[] iv, double gamma, double coef0, double degree ) {
+    int N = sv.length;
+    double sum = 0;
+    for ( int j = 0; j < N; j++ ) {
+         sum = sum + Math.pow( sv[j] - iv[j] , 2 );
+    }
+    sum = sum * (-gamma);
+    sum = Math.exp(sum);
+    //System.out.println(sum);
+    return sum;
+}
+
+function double poly( double[] sv, double[] iv, double gamma, double coef0, double degree ) {
+    int N = sv.length;
+    double sum = 0;
+    for ( int j = 0; j < N; j++ ) {
+          sum = sum + sv[j]*iv[j];
+          }
+    sum = sum*gamma + coef0;
+    sum = Math.pow(sum, degree);
+    //System.out.println(sum);
+    return sum;
+    }
+
+
+function double linear( double[] sv, double[] iv, double gamma, double coef0, double degree ) {
+    int N = sv.length;
+    double sum = 0;
+    for ( int j = 0; j < N; j++ ) {
+          sum = sum + sv[j]*iv[j];
+    }
+    return sum;
+}
+
+function double sigmoid( double[] sv, double[] iv, double gamma, double coef0, double degree ) {
+    int N = sv.length;
+    double sum = 0;
+    for ( int j = 0; j < N; j++ ) {
+         sum = sum + sv[j]*iv[j];
+          }
+    sum = sum*gamma + coef0;
+    sum = Math.tanh(sum);
+    return sum;
+}
+
+
+
+@end{}
+
+
+@includeNamed{'svmFunctions'}

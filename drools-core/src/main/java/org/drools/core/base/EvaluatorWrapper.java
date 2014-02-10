@@ -99,7 +99,9 @@ public class EvaluatorWrapper
         return evaluator.evaluate( workingMemory,
                                    leftBinding != null ? leftExtractor : new ConstantValueReader(left),
                                    leftHandle,
-                                   rightBinding != null ? rightExtractor : new ConstantValueReader(right),
+                                   rightBinding != null ?
+                                                        ( rightHandle != null ? rightExtractor : new ConstantValueReader( rightExtractor.getValue( workingMemory, right ) ) )
+                                                        : new ConstantValueReader(right),
                                    rightHandle );
     }
 
@@ -212,13 +214,13 @@ public class EvaluatorWrapper
         return evaluator.getInterval();
     }
 
-    public void loadHandles(InternalWorkingMemory workingMemory, InternalFactHandle[] handles, Object rightObject) {
+    public void loadHandles(InternalWorkingMemory workingMemory, InternalFactHandle[] handles, InternalFactHandle rightHandle) {
         this.workingMemory = workingMemory;
         leftHandle = selfLeft ? null : getFactHandle(leftBinding, handles);
         if (leftHandle == null) {
-            leftHandle = (InternalFactHandle) workingMemory.getFactHandle(rightObject);
+            leftHandle = rightHandle;
         }
-        rightHandle = selfRight ? (InternalFactHandle) workingMemory.getFactHandle(rightObject) : getFactHandle(rightBinding, handles);
+        this.rightHandle = selfRight ? rightHandle : getFactHandle(rightBinding, handles);
     }
 
     @Override

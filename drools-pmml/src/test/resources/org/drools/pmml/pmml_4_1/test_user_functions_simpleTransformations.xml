@@ -1,0 +1,100 @@
+<PMML version="4.1" xsi:schemaLocation="http://www.dmg.org/PMML-4_1 http://www.dmg.org/v4-1/pmml-4-1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_1">
+  <Header copyright="JBoss"/>
+  <DataDictionary>
+    <DataField dataType="integer" name="Age" optype="continuous">
+      <Value property="missing" value="-1"/>
+    </DataField>
+    <DataField dataType="integer" name="Age2" optype="continuous">
+      <Value property="missing" value="-1"/>
+    </DataField>
+  </DataDictionary>
+  <TransformationDictionary>
+
+    <DefineFunction dataType="double" name="constFun" optype="continuous">
+      <ParameterField name="X" dataType="integer"/>
+      <Constant>22.0</Constant>
+    </DefineFunction>
+
+    <DefineFunction dataType="double" name="myNormCont" optype="continuous">
+      <ParameterField dataType="integer" name="X"/>
+      <NormContinuous field="X" mapMissingTo="789" outliers="asIs">
+        <LinearNorm norm="0" orig="0"/>
+        <LinearNorm norm="1" orig="100"/>
+      </NormContinuous>
+    </DefineFunction>
+
+    <DefineFunction dataType="integer" name="myAgg" optype="continuous">
+      <ParameterField name="X" dataType="integer"/>
+      <Aggregate field="X" function="sum"/>
+    </DefineFunction>
+
+    <DefineFunction name="myMapValues" optype="continuous" dataType="double">
+      <ParameterField name="X" dataType="integer"/>
+      <MapValues dataType="double" defaultValue="3" outputColumn="out">
+        <FieldColumnPair column="in1" field="X"/>
+        <InlineTable>
+          <row>
+            <in1>10</in1>
+            <out>45.5</out>
+          </row>
+        </InlineTable>
+      </MapValues>
+    </DefineFunction>
+
+    <DefineFunction name="myDiscretize" optype="categorical" dataType="integer">
+      <ParameterField name="X" dataType="integer"/>
+      <Discretize dataType="integer" defaultValue="2" field="X" mapMissingTo="-99">
+        <DiscretizeBin binValue="24">
+          <Interval closure="closedClosed" leftMargin="5" rightMargin="100"/>
+        </DiscretizeBin>
+      </Discretize>
+    </DefineFunction>
+
+    <DefineFunction name="myNormDiscrete" optype="categorical" dataType="double">
+      <ParameterField name="X" dataType="integer"/>
+      <NormDiscrete field="X" mapMissingTo="-999" method="indicator" value="10"/>
+    </DefineFunction>
+
+
+
+
+
+    <DerivedField dataType="double" name="UserAge1" optype="continuous">
+      <Apply function="constFun">
+        <FieldRef field="Age" />
+      </Apply>
+    </DerivedField>
+
+    <DerivedField dataType="double" name="UserAge2" optype="continuous">
+      <Apply function="myNormCont">
+        <FieldRef field="Age" />
+      </Apply>
+    </DerivedField>
+
+    <DerivedField dataType="integer" name="UserAge3" optype="continuous">
+      <Apply function="myAgg">
+        <FieldRef field="Age" />
+      </Apply>
+    </DerivedField>
+
+    <DerivedField dataType="integer" name="UserAge4" optype="continuous">
+      <Apply function="myDiscretize">
+        <FieldRef field="Age" />
+      </Apply>
+    </DerivedField>
+
+    <DerivedField dataType="double" name="UserAge5" optype="continuous">
+      <Apply function="myMapValues">
+        <FieldRef field="Age" />
+      </Apply>
+    </DerivedField>
+
+    <DerivedField dataType="double" name="UserAge6" optype="continuous">
+      <Apply function="myNormDiscrete">
+        <FieldRef field="Age" />
+      </Apply>
+    </DerivedField>
+
+
+  </TransformationDictionary>
+</PMML>

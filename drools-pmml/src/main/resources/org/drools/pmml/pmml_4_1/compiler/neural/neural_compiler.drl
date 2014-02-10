@@ -1,0 +1,400 @@
+package org.drools.pmml.pmml_4_1.compiler;
+
+import org.dmg.pmml.pmml_4_1.descr.*;
+import java.util.*;
+
+
+dialect "mvel"
+
+
+rule "setupNNs"
+when
+   NeuralNetwork( $name : modelName )
+   $stat : ModelStat( neuralNetwork == false )
+then
+    HashMap map = new HashMap( 7 );
+        map.put( "name", utils.compactUpperCase( $name ) );
+        map.put( "type","NeuralNetwork" );
+    utils.applyTemplate( "modelMark.drlt", null, registry, map, theory );
+
+    utils.applyTemplate( "neuralBeans.drlt", null, registry, null, theory );
+
+    utils.applyTemplate( "neuralLinkSynapses.drlt", null, registry, map, theory );
+
+    modify ( $stat ) {
+        setNeuralNetwork( true );
+    }
+end
+
+
+
+rule "visitNeuralNetwork_context"
+salience -9
+when
+    $net : NeuralNetwork( $name : modelName )
+then
+    utils.context = utils.compactUpperCase( $name );
+end
+
+
+rule "Neural_InputFieldGeneration"
+when
+    NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs , $nn : modelName )
+    NeuralInputs( this memberOf $info, $nis : neuralInputs )
+    $ni : NeuralInput( this memberOf $nis, $fld : derivedField, $id : id )
+then
+    String name = utils.compactUpperCase( $nn ) + "_" + $id;
+    $fld.setName( name );
+    insertLogical( $fld );
+
+    HashMap map = new HashMap( 7 );
+        map.put( "name", utils.compactUpperCase( name ) );
+        map.put( "context", utils.context );
+        map.put( "index", $id );
+    utils.applyTemplate( "neuralWireInput.drlt", utils, registry, map, theory );
+end
+
+
+rule "Neural_DerivedInputFieldOverride"
+dialect "mvel"
+when
+    NeuralInput( derivedField != null, $fld : derivedField.name != null )
+then
+    HashMap map = new HashMap( 7 );
+        map.put( "name", utils.compactUpperCase( $fld ) );
+        map.put( "context", utils.context );
+    utils.applyTemplate( "updateIOField.drlt", utils, registry, map, theory );
+end
+
+rule "Neural_RefInputFieldOverride"
+dialect "mvel"
+when
+    NeuralInput( derivedField != null, $fld :derivedField.fieldRef != null )
+then
+    HashMap map = new HashMap( 7 );
+        map.put( "name", utils.compactUpperCase( $fld.field ) );
+        map.put( "context", utils.context);
+    utils.applyTemplate( "updateIOField.drlt", utils, registry, map, theory );
+end
+
+
+
+
+rule "SetDefaultActivation"
+salience 100
+when
+    NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs, $act : activationFunction )
+    $nl : NeuralLayer( this memberOf $info, activationFunction == null )
+then
+    modify ( $nl ) {
+        setActivationFunction( $act );
+    }
+end
+
+rule "SetDefaultThreshold"
+salience 100
+when
+    NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs, $thold : threshold )
+    $nl : NeuralLayer( this memberOf $info, threshold == null )
+then
+    modify ( $nl ) {
+        setThreshold( $thold );
+    }
+end
+
+
+rule "SetDefaultBias"
+salience 100
+when
+    $n : Neuron( bias == null )
+then
+    modify ( $n ) {
+        setBias( 0.0 );
+    }
+end
+
+
+rule "SetDefaultNormalization"
+salience 100
+when
+    NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs,
+                    $norm : normalizationMethod != null && normalizationMethod != NNNORMALIZATIONMETHOD.NONE )
+    $nl : NeuralLayer( this memberOf $info, normalizationMethod == null)
+then
+    modify ( $nl ) {
+        setNormalizationMethod( $norm );
+    }
+end
+
+rule "Build Synapses"
+salience -10
+when
+    $n : Neuron( $links : cons, $index : id )
+then
+    HashMap map = new HashMap( 7 );
+        map.put( "model", utils.context );
+        map.put( "index", $index );
+        map.put( "links", $links );
+    utils.applyTemplate( "neuralBuildSynapses.drlt", utils, registry, map, theory );
+end
+
+
+rule "Build Neurons"
+salience -9
+when
+    NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs )
+    accumulate ( $nl : NeuralLayer() from $info,
+                 $layers : collectList( $nl ) )
+    $layer : NeuralLayer( this memberOf $info, $neurs : neurons, $act : activationFunction != null,
+                 $norm : normalizationMethod )
+then
+    HashMap map = new HashMap( 7 );
+        map.put( "model", utils.context );
+        map.put( "layerIndex", $layers.indexOf( $layer ) );
+        map.put( "neurs", $neurs );
+        map.put( "needsNormal", $norm != null );
+
+    utils.applyTemplate( "neuralBuildNeurons.drlt", utils, registry, map, theory );
+end
+
+rule "Neuron"
+salience -9
+when
+    NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs )
+    accumulate ( $nl : NeuralLayer() from $info,
+                 $layers : collectList( $nl ) )
+    $layer : NeuralLayer( $ns : neurons, $act : activationFunction != null,
+                          $thold : threshold != null, $norm : normalizationMethod )
+//    $n : Neuron( this memberOf $ns, $index : id, $bias : bias != null, $in : cons )
+then
+    //System.err.println("CREATE NEURON RULE FOR " + $index + " >> " + $act + "  " + $bias + "  " + $thold);
+
+     HashMap map = new HashMap( 7 );
+        map.put( "model", utils.context );
+        map.put( "layerIndex", $layers.indexOf( $layer ) );
+        map.put( "needsNormal", $norm != null );
+//        map.put( "index", $index );
+        map.put( "actFun", $act );
+//        map.put( "bias", $bias );
+        map.put( "thold", $thold );
+//        map.put( "inLink", $in.size() );
+    utils.applyTemplate( "neuralFire.drlt", utils, registry, map, theory );
+end
+
+
+rule "Neural_Layer_Max_Normalization"
+salience -9
+when
+    NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs , $nn : modelName )
+    accumulate ( $nl : NeuralLayer() from $info,
+                 $layers : collectList( $nl ) )
+    $nl : NeuralLayer( this memberOf $info, $ns : neurons,
+                 normalizationMethod != null && normalizationMethod == NNNORMALIZATIONMETHOD.SIMPLEMAX )
+then
+    HashMap map = new HashMap( 7 );
+        map.put( "model", utils.context );
+        map.put( "neurons", $ns );
+        map.put( "layerIndex", $layers.indexOf( $nl ) );
+    utils.applyTemplate( "neuralLayerMaxNormalization.drlt", utils, registry, map, theory );
+end
+
+
+rule "Neural_Layer_Max_SoftNormalization"
+salience -9
+when
+    NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs , $nn : modelName )
+    accumulate ( $nl : NeuralLayer() from $info,
+                 $layers : collectList( $nl ) )
+    $nl : NeuralLayer( this memberOf $info, $ns : neurons,
+                 normalizationMethod != null && normalizationMethod == NNNORMALIZATIONMETHOD.SOFTMAX )
+then
+    HashMap map = new HashMap( 7 );
+        map.put( "model", utils.context );
+        map.put( "neurons", $ns );
+        map.put( "layerIndex", $layers.indexOf( $nl ) );
+    utils.applyTemplate( "neuralLayerSoftMaxNormalization.drlt", utils, registry, map, theory );
+end
+
+
+
+rule "Neural_Output_Field_Def"
+salience -9
+when
+    NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs , $nn : modelName )
+    NeuralOutputs( this memberOf $info, $outs : neuralOutputs )
+    $out : NeuralOutput( $id : outputNeuron, $fld : derivedField )
+then
+    String name = utils.compactUpperCase( $nn ) + "_" + $id;
+
+    insertLogical( new TypeOfField( name, DATATYPE.DOUBLE ) );
+
+    HashMap map = new HashMap( 7 );
+        map.put( "model", utils.context );
+        map.put( "name", name );
+        map.put( "index", $id );
+    utils.applyTemplate( "neuralOutputField.drlt", utils, registry, map, theory );
+
+    map = new HashMap();
+        map.put( "context", utils.context );
+        map.put( "fullName", name );
+        map.put( "name", name );
+        map.put( "super", null );
+        map.put( "type", utils.mapDatatype( DATATYPE.DOUBLE ) );
+        map.put( "cyclic", false );
+        map.put( "categorical", false );
+        map.put( "continuous", true );
+        map.put( "ordinal", false );
+        map.put( "modelType", null );
+        map.put( "tgtType", null );
+    utils.applyTemplate( "ioTypeDeclare.drlt", utils, registry, map, theory );
+    utils.applyTemplate( "updateIOField.drlt", utils, registry, map, theory );
+end
+
+/*
+ rule "Neural_Output_Expose"
+ salience -9
+ when
+     NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs , $nn : modelName)
+     NeuralOutputs( this memberOf $info, $outs : neuralOutputs )
+     $out : NeuralOutput( $id : outputNeuron, $fld : derivedField )
+ then
+     String name = utils.compactUpperCase($nn)+"_"+$id;
+     insert( new QueryMarker(name,utils.context) );
+
+     HashMap map = new HashMap(7);
+         map.put("name",name);
+     utils.applyTemplate("confirm.drlt", utils, registry, map, theory);
+ end
+*/
+
+
+
+rule "Neural_Output_Invert_NormContinuous"
+salience -15
+when
+    NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs , $nn : modelName, functionName == MININGFUNCTION.REGRESSION )
+    NeuralOutputs( this memberOf $info, $outs : neuralOutputs )
+    $out : NeuralOutput( $id : outputNeuron, $fld : derivedField )
+    $df  : DerivedField( $norm : normContinuous != null ) from $fld
+    NormContinuous( $mmt : mapMissingTo, $field : field, $outl : outliers, $ls : linearNorms ) from $norm
+then
+
+    //insert( new QueryMarker(utils.compactUpperCase($field),utils.context) );
+
+    LinearNorm orig = null;
+    LinearNorm inv = null
+    NormContinuous invertedNC = new NormContinuous();
+        invertedNC.setMapMissingTo( $mmt );
+        invertedNC.setField( utils.compactUpperCase( $nn ) + "_" + $id );
+        invertedNC.setOutliers( $outl );
+        for ( int j = 0; j < $ls.size(); j++ ) {
+            orig = (LinearNorm) $ls.get( j );
+            inv = new LinearNorm();
+                inv.setNorm( orig.getOrig() );
+                inv.setOrig( orig.getNorm() );
+            invertedNC.getLinearNorms().add( inv );
+        }
+
+//    HashMap map = new HashMap(7);
+//        map.put("name",utils.compactUpperCase($field));
+//    utils.applyTemplate("confirm.drlt", utils, registry, map, theory);
+
+    $df.setName( $field );
+    $df.setNormContinuous( invertedNC );
+
+    insertLogical( $df );
+    insertLogical( invertedNC );
+end
+
+
+
+
+rule "Neural_Output_Invert_NormDiscrete_asPredicate"
+salience -15
+when
+    NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs , $nn : modelName, functionName == MININGFUNCTION.CLASSIFICATION )
+    NeuralOutputs( this memberOf $info, $outs : neuralOutputs )
+    $out : NeuralOutput( $id : outputNeuron, $fld : derivedField )
+    $df  : DerivedField( $norm : normDiscrete != null) from $fld
+    NormDiscrete( $field : field, $val : value ) from $norm
+    TypeOfField( name == $field, $type : dataType )
+then
+    HashMap map = new HashMap( 7 );
+        map.put( "model", utils.context );
+        map.put( "field", utils.compactUpperCase($field) );
+        map.put( "label", $val );
+        map.put( "type", $type );
+        map.put( "target", utils.format( $type,utils.compactUpperCase( $val ) ) );
+    utils.applyTemplate( "outputQueryPredicate.drlt", utils, registry, map, theory );
+
+    map = new HashMap( 7 );
+        map.put( "name", utils.compactUpperCase( $field ) );
+        map.put( "type", $type );
+        map.put( "model", utils.context );
+        map.put( "target", $val );
+        map.put( "origField", utils.compactUpperCase( $nn )+"_"+$id );
+    utils.applyTemplate( "predicateField.drlt", utils, registry, map, theory );
+end
+
+
+
+rule "Neural_Output_Invert_FieldRef"
+salience -15
+when
+    NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs , $nn : modelName)
+    NeuralOutputs( this memberOf $info, $outs : neuralOutputs )
+    $out : NeuralOutput( $id : outputNeuron, $fld : derivedField )
+    $df  : DerivedField( $ref : fieldRef != null ) from $fld
+    FieldRef( $field : field ) from $ref
+then
+
+    //insert( new QueryMarker(utils.compactUpperCase($field),utils.context) );
+
+    $df.setName( $field );
+    $ref.setField( utils.compactUpperCase( $nn ) + "_" + $id );
+
+    insertLogical( $ref );
+    insertLogical( $fld );
+end
+
+
+rule "Clean_WM"
+salience -19
+dialect "mvel"
+when
+    NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs , $nn : modelName )
+    $ms : MiningSchema( this memberOf $info, $fields : miningFields )
+then
+    HashMap map = new HashMap( 7 );
+        map.put( "model", utils.context );
+        map.put( "fields", $fields );
+    utils.applyTemplate( "neuralClean.drlt", utils, registry, map, theory );
+end
+
+
+rule "Clean_WM_Pre"
+salience -18
+dialect "mvel"
+when
+    NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs , $nn : modelName )
+    $ms :  MiningSchema( this memberOf $info, $fields : miningFields )
+    $fld : MiningField( usageType != null &&
+                        ( usageType == FIELDUSAGETYPE.PREDICTED || usageType == FIELDUSAGETYPE.SUPPLEMENTARY )
+           ) from $fields
+then
+    $fields.remove( $fld );
+end
+
+
+
+rule "Neural_Cleanup"
+salience -20
+when
+    $nn : NeuralNetwork( )
+then
+    utils.context = null;
+    retract( $nn );
+end
+
+
+

@@ -26,6 +26,7 @@ import org.drools.core.factmodel.traits.Entity;
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.MapWrapper;
 import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitRegistry;
@@ -40,6 +41,7 @@ import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.util.CodedHierarchyImpl;
+import org.drools.core.util.HierarchyEncoder;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -72,6 +74,7 @@ import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -4908,5 +4911,238 @@ public class TraitTest extends CommonTestMethodBase {
         }
 
     }
+
+
+    @Trait
+    public static interface SomeTrait<K> extends Thing<K> {
+        public String getFoo();
+        public void setFoo( String foo );
+    }
+
+    @Test
+    public void testTraitLegacyTraitableWithLegacyTrait() {
+        final String s1 = "package org.drools.compiler.factmodel.traits;\n" +
+                          "import " + TraitTest.class.getName() + ".SomeTrait; \n" +
+                          "import org.drools.core.factmodel.traits.*; \n" +
+                          "global java.util.List list;\n" +
+                          "" +
+                          "rule \"Don ItemStyle\"\n" +
+                          "	when\n" +
+                          "	then\n" +
+                          "		don( new StudentImpl(), SomeTrait.class );\n" +
+                          "end\n";
+
+        final KnowledgeBase kbase = getKieBaseFromString(s1);
+        TraitFactory.setMode( mode, kbase );
+        ArrayList list = new ArrayList();
+
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.fireAllRules();
+
+        assertEquals( 2, knowledgeSession.getObjects().size() );
+    }
+
+    @Test
+    public void testIsALegacyTrait() {
+        final String s1 = "package org.drools.compiler.factmodel.traits;\n" +
+                          "import " + TraitTest.class.getName() + ".SomeTrait; \n" +
+                          "import org.drools.core.factmodel.traits.*; \n" +
+                          "global java.util.List list;\n" +
+                          "" +
+                          "declare trait IStudent end \n" +
+                          "" +
+                          "rule \"Don ItemStyle\"\n" +
+                          "	when\n" +
+                          "	then\n" +
+                          "		insert( new StudentImpl() );\n" +
+                          "		don( new Entity(), IStudent.class );\n" +
+                          "end\n" +
+                          "" +
+                          "rule Check " +
+                          " when " +
+                          "  $s : StudentImpl() " +
+                          "  $e : Entity( this isA $s ) " +
+                          " then " +
+                          "  list.add( 1 ); " +
+                          " end ";
+
+        final KnowledgeBase kbase = getKieBaseFromString(s1);
+        TraitFactory.setMode( mode, kbase );
+        ArrayList list = new ArrayList();
+
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.fireAllRules();
+
+        assertEquals( Arrays.asList( 1 ), list );
+    }
+
+
+    @Test
+    public void testClassLiteralsWithOr() {
+
+        String drl = "package org.drools.test; " +
+                     "import org.drools.core.factmodel.traits.*; " +
+                     "global java.util.List list; " +
+
+                     "declare Foo " +
+                     "@Traitable " +
+                     "end " +
+
+                     "declare trait A end " +
+                     "declare trait B end " +
+
+                     "rule Init " +
+                     "when " +
+                     "then " +
+                     "  Foo f = new Foo(); " +
+                     "  insert( f ); " +
+                     "end " +
+
+                     "rule One " +
+                     "when " +
+                     "  $f : Foo( this not isA A ) " +
+                     "then " +
+                     "  don( $f, A.class ); " +
+                     "end " +
+
+                     "rule Two " +
+                     "when " +
+                     "  $f : Foo( this not isA B ) " +
+                     "then " +
+                     "  don( $f, B.class ); " +
+                     "end " +
+
+                     "rule Check " +
+                     "when " +
+                     "    $f : Foo( this isA B || this isA A ) " +
+                     "then " +
+                     "  list.add( 1 ); " +
+                     "end " +
+
+                     "";
+
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        TraitFactory.setMode( mode, kbase );
+        ArrayList list = new ArrayList();
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( 1 ), list );
+
+    }
+
+
+
+    @Test
+    public void testIsASwappedArg() {
+
+        String drl = "package org.drools.test; " +
+                     "import org.drools.core.factmodel.traits.*; " +
+                     "import org.drools.compiler.factmodel.traits.*; " +
+                     "global java.util.List list; " +
+
+                     "declare Foo " +
+                     "@Traitable " +
+                     "  object : Object " +
+                     "end " +
+
+                     "declare Bar " +
+                     "@Traitable " +
+                     "end " +
+
+                     "declare trait IPerson end " +
+                     "declare trait IStudent end " +
+
+                     "rule Init " +
+                     "when " +
+                     "then " +
+                     "  Foo f = new Foo( new StudentImpl() ); " +
+                     "  don( f, IPerson.class ); " +
+                     "end " +
+
+                     "rule Match1 " +
+                     "when " +
+                     "  $f : Foo( $x : object ) " +
+                     "  $p : StudentImpl( this isA $f ) from $x " +
+                     "then " +
+                     "  list.add( 1 ); " +
+                     "end " +
+
+                     "rule Match2 " +
+                     "when " +
+                     "  $f : Foo( $x : object ) " +
+                     "  $p : StudentImpl( $f isA this ) from $x " +
+                     "then " +
+                     "  list.add( 2 ); " +
+                     "end " +
+
+                     "";
+
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        TraitFactory.setMode( mode, kbase );
+        ArrayList list = new ArrayList();
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( 1 ) );
+        assertTrue( list.contains( 2 ) );
+
+    }
+
+
+    @Test
+    public void testHierarchyEncodeOnPackageMerge() {
+
+        String drl0 = "package org.drools.test; " +
+                      "declare trait X end ";
+
+        String drl1 = "package org.drools.test; " +
+                     "import org.drools.core.factmodel.traits.*; " +
+                     "global java.util.List list; " +
+
+                     "declare trait A end " +
+                     "declare trait B extends A end " +
+                     "declare trait C extends B end " +
+
+                     "";
+
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        TraitFactory.setMode( mode, knowledgeBase );
+
+        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kb.add( new ByteArrayResource( drl0.getBytes() ), ResourceType.DRL );
+        assertFalse( kb.hasErrors() );
+
+        knowledgeBase.addKnowledgePackages( kb.getKnowledgePackages() );
+
+        KnowledgeBuilder kb2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kb2.add( new ByteArrayResource( drl1.getBytes() ), ResourceType.DRL );
+        System.out.print( kb2.getErrors() );
+        assertFalse( kb2.hasErrors() );
+
+        knowledgeBase.addKnowledgePackages( kb2.getKnowledgePackages() );
+
+        HierarchyEncoder<String> hier = ( (ReteooRuleBase) ( (KnowledgeBaseImpl) knowledgeBase ).getRuleBase() ).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+        BitSet b = (BitSet) hier.getCode( "org.drools.test.B" ).clone();
+        BitSet c = (BitSet) hier.getCode( "org.drools.test.C" ).clone();
+
+        c.and( b );
+        assertEquals( b, c );
+
+    }
+
 
 }
