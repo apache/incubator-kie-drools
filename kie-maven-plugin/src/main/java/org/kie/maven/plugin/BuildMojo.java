@@ -6,6 +6,8 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kie.builder.impl.KieMetaInfoBuilder;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
@@ -95,6 +97,8 @@ public class BuildMojo extends AbstractMojo {
                     getLog().error(error.toString());
                 }
                 throw new MojoFailureException("Build failed!");
+            } else {
+                new KieMetaInfoBuilder(new DiskResourceStore(outputDirectory), (InternalKieModule)kModule).writeKieModuleMetaInfo();
             }
         } finally {
             Thread.currentThread().setContextClassLoader(contextClassLoader);
