@@ -2,12 +2,14 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.factmodel.traits.Traitable;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -1083,5 +1085,56 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         public String getFullName(){
             return this.name + " "+ this.lastName;
         }
+    }
+
+    @PropertyReactive
+    public static class Person {
+    	String name = "Joe";
+    	int age = 20;
+    	int weight = 150;
+
+    	public String getName() {
+    		return name;
+    	}
+
+    	public void setAge(int age) {
+    		this.age = age;
+    	}
+
+    	public void setWeight(int weight) {
+    		this.weight = weight;
+    	}
+    }
+
+    @Test
+    public void testFineGrainedPropertyChange() {
+    	String drl = "package com.sample\n"
+    			+ "import org.drools.compiler.integrationtests.PropertyReactivityTest.Person\n"
+    			+ "rule \"Set Joe's Age\"\n"
+    			+ "salience 2\n"
+    			+ "when\n"
+    			+ "    $p : Person(name == \"Joe\" )\n"
+    			+ "then\n"
+    			+ "    modify($p){ setAge( 100 ) }\n"
+    			+ "end\n"
+    			+ "rule \"Set Joe's Weight\"\n"
+    			+ "salience 1\n"
+    			+ "when\n"
+    			+ "    $p : Person(name == \"Joe\" )\n"
+    			+ "then\n"
+    			+ "    modify($p){ setWeight( 100 ) }\n"
+    			+ "end";
+
+    	KnowledgeBaseImpl kbase = (KnowledgeBaseImpl) loadKnowledgeBaseFromString(drl);
+    	Person joe = new Person();
+    	int startingWeight = joe.weight;
+    	StatelessKieSession kSession = kbase.newStatelessKieSession();
+    	//KieRuntimeLogger log = KieServices.Factory.get().getLoggers().newFileLogger(kSession, "drools-audit");
+    	kSession.execute(joe);
+    	//log.close();
+    	// higher salience rule "Set Joe's Age" should fire
+    	assertEquals(100, joe.age);
+    	// the lower salience rule should NOT fire
+    	assertEquals(startingWeight, joe.weight);
     }
 }
