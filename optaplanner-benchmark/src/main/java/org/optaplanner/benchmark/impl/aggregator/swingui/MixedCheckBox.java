@@ -22,11 +22,21 @@ import javax.swing.JCheckBox;
 
 public class MixedCheckBox extends JCheckBox {
 
+    private String detail;
+
     public MixedCheckBox(String text) {
         super(text);
         setModel(new MixedCheckBoxModel());
         setStatus(MixedCheckBoxStatus.UNCHECKED);
         addMouseListener(new CustomCheckboxMouseListener());
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 
     public MixedCheckBoxStatus getStatus() {

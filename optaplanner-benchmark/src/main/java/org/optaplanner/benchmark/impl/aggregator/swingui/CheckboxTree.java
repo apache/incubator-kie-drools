@@ -37,6 +37,19 @@ public class CheckboxTree extends JTree {
         setToggleClickCount(0);
     }
 
+    public void expandAllNodes() {
+        for (int i = 0; i < getRowCount(); i++) {
+            expandRow(i);
+        }
+    }
+
+    public void collapseAllNodes() {
+        // clear all sub-expansions
+        for (int i = getRowCount() - 1; i > 0; i--) {
+            collapseRow(i);
+        }
+    }
+
     private static class CheckboxTreeMouseListener extends MouseAdapter {
 
         private CheckboxTree tree;
