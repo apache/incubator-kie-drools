@@ -1,0 +1,41 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+@comment{
+
+}
+
+@declare{'scorecardPartialScore'}
+
+
+rule "PartialScore_@{name}_@{char.name}_@{nextCount()}"
+when
+    ScoreRow( scoreCard == "@{name}", id == "@{char.name + char.attributes.indexOf( attr )}", $val : value, $char : characteristic, $code : reasonCode )
+    $sc : @{name}ScoreCardData( @{predicate} )
+then
+//    System.out.println( "PARTIALLY SCORING SC " + $val + " " + $char );
+// weigth is @{weight}
+    insertLogical( new PartialScore( "@{name}", $val, $char, $code, @if{ weight != null } @{ weight } @else{} 1.0 @end{} ) );
+end
+
+@end{}
+
+
+@includeNamed{'scorecardPartialScore'}

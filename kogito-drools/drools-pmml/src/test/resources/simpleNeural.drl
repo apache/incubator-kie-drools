@@ -1,0 +1,59 @@
+package org.drools.pmml.pmml_4_1.test;
+
+import org.drools.pmml.pmml_4_1.ModelMarker;
+import org.drools.pmml.pmml_4_1.PMML4AbstractField;
+
+
+ declare ColdRisk
+
+ end
+
+
+
+
+rule "Input_ColdRisk"
+when
+    $in : java.lang.Double()
+    not ColdRisk( )
+then
+end
+
+
+
+
+
+
+ // Display Name : Outside Temperature
+
+ declare Temp
+ end
+
+
+
+rule "Input_Temp"
+when
+    $in : java.lang.Double() from entry-point "in_Temp"
+    not Temp( )
+then
+end
+
+
+rule "OverrideInput_Temp"
+salience 2
+when
+    $new: java.lang.Double() from entry-point "in_Temp"
+    $old: Temp( )
+then
+end
+
+
+
+rule "Mark_MockCold"
+salience 9999
+no-loop
+when
+then
+    ModelMarker mark = new ModelMarker( "MockCold", "NeuralNetwork" );
+    insertLogical( mark );
+end
+

@@ -9,6 +9,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
+import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
@@ -180,14 +181,16 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         // adds the references that defeat the current node
         if (Arrays.binarySearch(potentialSuperior.getDefeats(), rule.getName()) >= 0 ||
             Arrays.binarySearch(potentialSuperior.getDefeats(), rule.getPackage() + "." + rule.getName()) >= 0) {
-            potentialSuperior.addDefeated(potentialInferior);
-            return true;
+            if ( "neg".equals( potentialSuperior.getValue() ) ^ "neg".equals( potentialInferior.getValue() ) ) {
+                potentialSuperior.addDefeated(potentialInferior);
+                return true;
+            }
         }
         return false;
     }
 
     public void addUndefeated(DefeasibleLogicalDependency dep, LinkedListEntry<DefeasibleLogicalDependency> node) {
-        boolean pos = dep.getValue() == null || MODE.POSITIVE.getId().equals( dep.getValue().toString() );
+        boolean pos = ! ( dep.getValue() != null && MODE.NEGATIVE.getId().equals( dep.getValue().toString() ) );
         switch( dep.getStatus() ) {
             case DEFINITELY:
                 if ( pos ) {
@@ -239,7 +242,7 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
     }
 
     public void removeUndefeated(DefeasibleLogicalDependency dep, LinkedListEntry<DefeasibleLogicalDependency> node) {
-        boolean pos = dep.getValue() == null || MODE.POSITIVE.getId().equals( dep.getValue().toString() );
+        boolean pos = ! ( dep.getValue() != null && MODE.NEGATIVE.getId().equals( dep.getValue().toString() ) );
         switch( dep.getStatus() ) {
             case DEFINITELY:
                 if ( pos ) {
@@ -518,7 +521,10 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         // The rule is strict. To prove that the derivation is strict we have to check that all the premises are
         // either facts or strictly proved facts
         for ( FactHandle h : premise ) {
-            EqualityKey key = ((DefaultFactHandle) h).getEqualityKey();
+            if ( h instanceof QueryElementFactHandle ) {
+                return DefeasibilityStatus.DEFINITELY;
+            }
+            EqualityKey key = ((InternalFactHandle) h).getEqualityKey();
             if ( key != null && key.getStatus() == EqualityKey.JUSTIFIED ) {
                 //DefeasibleBeliefSet bs = (DefeasibleBeliefSet) getTruthMaintenanceSystem().getJustifiedMap().get(((DefaultFactHandle) h).getId());
 

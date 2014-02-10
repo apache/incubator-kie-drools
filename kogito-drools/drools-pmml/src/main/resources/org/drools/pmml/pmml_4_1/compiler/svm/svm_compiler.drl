@@ -1,0 +1,270 @@
+package org.drools.pmml.pmml_4_1.compiler;
+
+import org.dmg.pmml.pmml_4_1.descr.*;
+import java.util.*;
+
+dialect "mvel"
+
+rule "SVMRoot"
+when
+    $svm : SupportVectorMachineModel()
+then
+    utils.applyTemplate( "svmDeclare.drlt", utils, registry, null, theory );
+    utils.applyTemplate( "svmFunctions.drlt", utils, registry, null, theory );
+end
+
+rule "visitSVM_context"
+salience -9
+when
+    $svm : SupportVectorMachineModel( $name : modelName )
+then
+    utils.context = utils.compactUpperCase( $name );
+
+    HashMap map = new HashMap( 3 );
+        map.put( "name", utils.context );
+        map.put( "type","SupportVectorMachine" );
+    utils.applyTemplate( "modelMark.drlt", null, registry, map, theory );
+end
+
+
+rule "visitSVM_SVM_Params"
+salience -16
+when
+    $svmm : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries )
+    $svm  : SupportVectorMachine( this memberOf $info,
+                                  $bias : coefficients.absoluteValue,
+                                  $noc : coefficients.numberOfCoefficients,
+                                  $nos : supportVectors.numberOfSupportVectors,
+                                  $coeffs : coefficients, $svs : supportVectors,
+                                  $target : targetCategory, $alt : alternateTargetCategory )
+    $dic : VectorDictionary( this memberOf $info, $vlist : vectorInstances )
+    accumulate( Coefficient( $val : value, this memberOf $coeffs.coefficients ),
+                $cx : collectList( $val );
+                $cx.size == $noc )
+    accumulate( SupportVectorReference( $index : index, supportVector memberOf $svs.supportVectors ),
+                $ix : collectList ( $index ),
+                $mX : max( $index );
+                $ix.size == $nos )
+then
+    HashMap map = new HashMap(7);
+            map.put( "modelName", utils.context );
+            map.put( "svmId", utils.context + $info.indexOf( $svm ) );
+            map.put( "absoluteValue", $bias );
+            map.put( "indexes", $ix );
+            map.put( "maxIndex", $mX.intValue() );
+            map.put( "coeffs", $cx );
+            map.put( "target", $target );
+            map.put( "alt", $alt );
+    utils.applyTemplate( "svmBuild.drlt", utils, registry, map, theory );
+end
+
+
+
+declare SupportVectorReference
+    vectorInstance : VectorInstance
+    supportVector  : SupportVector
+    index          : int
+    sparse         : boolean
+end
+
+rule "Join Support Vectors and Instances"
+when
+    $sm : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries )
+    $dx : VectorDictionary( this memberOf $info, $vlist : vectorInstances )
+    $sv : SupportVector( $vid : vectorId )
+    $vi : VectorInstance( id == $vid, this memberOf $vlist )
+then
+    insertLogical( new SupportVectorReference( $vi, $sv, $vlist.indexOf ( $vi ), $vi.getREALSparseArray() != null ) );
+end
+
+rule "SVM_InitSupportVectors"
+salience -16
+when
+    $svmm : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries )
+    $ved  : VectorDictionary( this memberOf $info,
+                              $nos : numberOfVectors,
+                              $nat : vectorFields.numberOfFields )
+    accumulate( $svr : SupportVectorReference( $index : index ),
+                $ix : collectList ( $svr ) )
+then
+    HashMap map = new HashMap(7);
+            map.put( "modelName", utils.context );
+            map.put( "size", $nat.intValue() );
+            map.put( "vectors", $ix );
+    utils.applyTemplate( "svmInitSupportVector.drlt", utils, registry, map, theory );
+end
+
+
+
+rule "SVM_InputVector"
+salience -16
+when
+    $svmm : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries  )
+    $vd   : VectorDictionary( this memberOf $info, $flds : vectorFields.fieldReves )
+then
+    HashMap map = new HashMap(3);
+            map.put( "modelName", utils.context );
+            map.put( "inputVectors", $flds );
+    utils.applyTemplate( "svmInitInputVector.drlt", utils, registry, map, theory );
+end
+
+
+
+rule "SVM_KernelEvals_RBF"
+salience -16
+when
+    $svmm : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries )
+    $rbkt : RadialBasisKernelType ( this memberOf $info, $gamma : gamma )
+then
+    HashMap map = new HashMap(7);
+            map.put( "modelName", utils.context );
+            map.put( "kernelType", "rbf" );
+    utils.applyTemplate( "svmKernelEval.drlt", utils, registry, map, theory );
+            map.put( "gamma", $gamma );
+            map.put( "coef0", 0.0 );
+            map.put( "degree", 0.0 );
+    utils.applyTemplate( "svmParams.drlt", utils, registry, map, theory );
+end
+
+rule "SVM_KernelEvals_POLY"
+   salience -16
+when
+    $svmm : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries )
+    $pkt : PolynomialKernelType ( this memberOf $info, $gamma : gamma, $coef0 : coef0, $degree : degree )
+then
+    HashMap map = new HashMap(7);
+            map.put( "modelName", utils.context );
+            map.put( "kernelType", "poly" );
+    utils.applyTemplate( "svmKernelEval.drlt", utils, registry, map, theory );
+            map.put( "gamma", $gamma );
+            map.put( "coef0", $coef0 );
+            map.put( "degree", $degree );
+    utils.applyTemplate( "svmParams.drlt", utils, registry, map, theory );
+end
+
+rule "SVM_KernelEvals_LINEAR"
+salience -16
+when
+   $svmm : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries )
+   $lkt : LinearKernelType ( this memberOf $info )
+then
+    HashMap map = new HashMap(7);
+            map.put( "modelName", utils.context );
+            map.put( "kernelType", "linear" );
+    utils.applyTemplate( "svmKernelEval.drlt", utils, registry, map, theory );
+            map.put( "gamma", 0.0 );
+            map.put( "coef0", 0.0 );
+            map.put( "degree", 0.0 );
+    utils.applyTemplate( "svmParams.drlt", utils, registry, map, theory );
+end
+
+rule "SVM_KernelEvals_SIMOID"
+salience -16
+when
+    $svmm : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries )
+    $pkt : SigmoidKernelType ( this memberOf $info, $gamma : gamma, $coef0 : coef0)
+then
+    HashMap map = new HashMap(7);
+            map.put( "modelName", utils.context );
+            map.put( "kernelType", "sigmoid" );
+    utils.applyTemplate( "svmKernelEval.drlt", utils, registry, map, theory );
+            map.put( "gamma", $gamma );
+            map.put( "coef0", $coef0 );
+            map.put( "degree", 0.0 );
+    utils.applyTemplate( "svmParams.drlt", utils, registry, map, theory );
+end
+
+
+
+
+
+
+
+
+rule "SVM_Output_Gen"
+salience -16
+when
+    $svmm : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries, $baseThold : threshold, $cm : classificationMethod )
+            // if only 1 svm is present, no voting is required
+            accumulate( SupportVectorMachine( this memberOf $info ), $num : count(1) )
+    $svm  : SupportVectorMachine( this memberOf $info, $localThold : threshold,
+                                  $posCat : targetCategory, $altCat : alternateTargetCategory
+                                )
+            MiningSchema( this memberOf $info, $mfs : miningFields )
+            MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $name : name )
+            TypeOfField( name == $name, $type : dataType )
+then
+    HashMap map = new HashMap( 7 );
+            map.put( "context", utils.context );
+            map.put( "svmId", utils.context + $info.indexOf( $svm ) );
+            map.put( "target", utils.compactUpperCase( $name ) );
+            map.put( "type", $type );
+            map.put( "simple", $num.intValue() == 1 );
+            map.put( "oneVSmany", $cm.equals( SVMCLASSIFICATIONMETHOD.ONE_AGAINST_ALL ) );
+            map.put( "threshold", $baseThold  );
+            map.put( "posCat", $posCat );
+            map.put( "negCat", $altCat );
+    utils.applyTemplate( "svmOutputGeneration.drlt", utils, registry, map, theory );
+end
+
+
+rule "SVM_Output_Votes_Declare"
+salience -16
+when
+    $svmm : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries )
+            accumulate( SupportVectorMachine( this memberOf $info ), $num : count(1); $num > 1 )
+            MiningSchema( this memberOf $info, $mfs : miningFields )
+            MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $name : name )
+            TypeOfField( name == $name, $type : dataType )
+then
+    HashMap map = new HashMap( 3 );
+            map.put( "context", utils.context );
+            map.put( "target", utils.compactUpperCase( $name ) );
+            map.put( "type", $type );
+    utils.applyTemplate( "svmOutputVoteDeclare.drlt", utils, registry, map, theory );
+end
+
+rule "SVM_Output_Votes_1vN"
+salience -16
+when
+    $svmm : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries, classificationMethod == SVMCLASSIFICATIONMETHOD.ONE_AGAINST_ALL )
+            accumulate( SupportVectorMachine( this memberOf $info ), $num : count(1); $num > 1 )
+            MiningSchema( this memberOf $info, $mfs : miningFields )
+            MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $name : name )
+            TypeOfField( name == $name, $type : dataType )
+then
+    HashMap map = new HashMap( 7 );
+            map.put( "context", utils.context );
+            map.put( "target", utils.compactUpperCase( $name ) );
+            map.put( "type", $type );
+    utils.applyTemplate( "svmOutputVote1vN.drlt", utils, registry, map, theory );
+end
+
+rule "SVM_Output_Votes_1v1"
+salience -16
+when
+    $svmm : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries, classificationMethod == SVMCLASSIFICATIONMETHOD.ONE_AGAINST_ONE )
+            accumulate( SupportVectorMachine( this memberOf $info ), $num : count(1); $num > 1 )
+            MiningSchema( this memberOf $info, $mfs : miningFields )
+            MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $name : name )
+            TypeOfField( name == $name, $type : dataType )
+then
+    HashMap map = new HashMap( 7 );
+            map.put( "context", utils.context );
+            map.put( "target", utils.compactUpperCase( $name ) );
+            map.put( "type", $type );
+    utils.applyTemplate( "svmOutputVote1v1.drlt", utils, registry, map, theory );
+end
+
+
+
+rule "SVM_Cleanup"
+salience -20
+when
+    $svm : SupportVectorMachineModel( )
+then
+    utils.context = null;
+    retract($svm);
+end
+
+

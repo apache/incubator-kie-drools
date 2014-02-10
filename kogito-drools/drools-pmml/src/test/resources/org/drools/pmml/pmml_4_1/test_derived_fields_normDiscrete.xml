@@ -1,0 +1,19 @@
+<PMML version="4.1" xsi:schemaLocation="http://www.dmg.org/PMML-4_1 http://www.dmg.org/v4-1/pmml-4-1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_1">
+  <Header copyright="JBoss"/>
+  <DataDictionary>
+    <DataField dataType="string" name="CatField" optype="categorical">
+      <Value value="Value1"/>
+      <Value value="Value2"/>
+      <Value value="Value3"/>
+      <Value property="missing" value="Value0"/>
+    </DataField>
+  </DataDictionary>
+  <TransformationDictionary>
+    <DerivedField dataType="double" name="IsValue1" optype="categorical">
+      <NormDiscrete field="CatField" mapMissingTo="2.0" method="indicator" value="Value1"/>
+    </DerivedField>
+    <DerivedField dataType="double" name="IsValue2" optype="categorical">
+      <NormDiscrete field="CatField" mapMissingTo="2.0" method="indicator" value="Value2"/>
+    </DerivedField>
+  </TransformationDictionary>
+</PMML>

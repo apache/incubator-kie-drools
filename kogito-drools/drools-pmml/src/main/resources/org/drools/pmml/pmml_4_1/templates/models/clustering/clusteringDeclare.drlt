@@ -1,0 +1,63 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+@comment{
+
+}
+
+@declare{'clusteringDeclare'}
+
+declare ClusterSet
+    context         : String        @key
+    clusters        : java.util.List
+    numClusters     : int
+    fieldWgts       : double[]
+    fieldScopes     : double[]
+    missingWgts     : double[]
+end
+
+declare Cluster
+    context         : String        @key
+    index           : int           @key
+    label           : String
+    numFields       : int
+    center          : double[]
+end
+
+declare KohonenCluster extends Cluster
+    topologyCoords  : double[]
+end
+
+declare Membership
+    context         : String
+    label           : String
+    index           : int
+    input           : double[]
+    mu              : double
+end
+
+declare SimilarityMembership extends Membership end
+declare DistanceMembership extends Membership end
+
+
+@end{}
+
+
+@includeNamed{'clusteringDeclare'}

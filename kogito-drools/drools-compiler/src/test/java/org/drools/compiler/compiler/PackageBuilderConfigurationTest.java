@@ -100,10 +100,8 @@ public class PackageBuilderConfigurationTest {
 
     @Test
     public void testSystemProperties() {
-        PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
-        JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
-        assertEquals( JavaDialectConfiguration.ECLIPSE,
-                      javaConf.getCompiler() );
+        PackageBuilderConfiguration cfg;
+        JavaDialectConfiguration javaConf;
 
         System.setProperty( "drools.dialect.java.compiler",
                             "JANINO" );

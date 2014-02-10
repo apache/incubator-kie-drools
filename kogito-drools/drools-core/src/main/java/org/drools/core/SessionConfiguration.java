@@ -212,6 +212,8 @@ public class SessionConfiguration
             setTimerJobFactoryType(TimerJobFactoryType.resolveTimerJobFactoryType(StringUtils.isEmpty(value) ? "default" : value));
         } else if ( name.equals( QueryListenerOption.PROPERTY_NAME ) ) {
             setQueryListenerClass( StringUtils.isEmpty( value ) ? QueryListenerOption.STANDARD.getAsString() : value );
+        } else if ( name.equals( BeliefSystemTypeOption.PROPERTY_NAME ) ) {
+            setBeliefSystemType( StringUtils.isEmpty( value ) ? BeliefSystemType.SIMPLE : BeliefSystemType.resolveBeliefSystemType( value ) );
         }
     }
 
@@ -229,6 +231,8 @@ public class SessionConfiguration
             return this.timerJobFactoryType.toExternalForm();
         } else if ( name.equals( QueryListenerOption.PROPERTY_NAME ) ) {
             return this.queryListener.getAsString();
+        } else if ( name.equals( BeliefSystemTypeOption.PROPERTY_NAME ) ) {
+            return this.getBeliefSystemType().getId();
         }
         return null;
     }
@@ -504,6 +508,8 @@ public class SessionConfiguration
             return (T) TimerJobFactoryOption.get( getTimerJobFactoryType().toExternalForm() );
         } else if ( QueryListenerOption.class.equals( option ) ) {
             return (T) this.queryListener;
+        } else if ( BeliefSystemTypeOption.class.equals( option ) ) {
+            return (T) BeliefSystemTypeOption.get( this.getBeliefSystemType().getId() );
         }
         return null;
     }
@@ -534,6 +540,8 @@ public class SessionConfiguration
                                        ((WorkItemHandlerOption) option).getHandler() );
         } else if ( option instanceof QueryListenerOption ) {
             this.queryListener = (QueryListenerOption) option;
+        } else if ( option instanceof BeliefSystemTypeOption ) {
+            this.beliefSystemType = ((BeliefSystemType.resolveBeliefSystemType( ((BeliefSystemTypeOption) option).getBelieSystemType() )));
         }
     }
 

@@ -30,7 +30,7 @@ public class ScorecardsKModuleTest {
         FactType scorecardType = kBase.getFactType( "org.drools.scorecards.example","SampleScore" );
         assertNotNull(scorecardType);
 
-        DroolsScorecard scorecard = (DroolsScorecard) scorecardType.newInstance();
+        Object scorecard = scorecardType.newInstance();
         assertNotNull(scorecard);
 
         scorecardType.set(scorecard, "age", 10);
@@ -38,7 +38,7 @@ public class ScorecardsKModuleTest {
         kSession.fireAllRules();
         kSession.dispose();
         //occupation = 5, age = 25, validLicence -1
-        assertEquals(29.0,scorecard.getCalculatedScore());
+        assertEquals( 29.0, scorecardType.get( scorecard, "scorecard__calculatedScore" ) );
     }
 
     @Test
@@ -54,7 +54,7 @@ public class ScorecardsKModuleTest {
         FactType scorecardType = kBase.getFactType( "org.drools.scorecards.example","SampleScore" );
         assertNotNull(scorecardType);
 
-        DroolsScorecard scorecard = (DroolsScorecard) scorecardType.newInstance();
+        Object scorecard = scorecardType.newInstance();
         assertNotNull(scorecard);
 
         scorecardType.set(scorecard, "age", 50);
@@ -65,6 +65,6 @@ public class ScorecardsKModuleTest {
         kSession.fireAllRules();
         kSession.dispose();
         //age = 25, validLicence 0, occupation=5
-        assertEquals(30.0,scorecard.getCalculatedScore());
+        assertEquals( 30.0, scorecardType.get( scorecard, "scorecard__calculatedScore" ) );
     }
 }

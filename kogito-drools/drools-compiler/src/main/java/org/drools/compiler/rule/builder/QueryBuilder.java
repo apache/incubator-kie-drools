@@ -1,15 +1,20 @@
 package org.drools.compiler.rule.builder;
 
+import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.QueryDescr;
+import org.drools.core.beliefsystem.abductive.Abductive;
+import org.drools.core.rule.AbductiveQuery;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.Query;
 import org.drools.core.rule.constraint.QueryNameConstraint;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
+
+import java.util.Arrays;
 
 
 public class QueryBuilder implements EngineElementBuilder {
@@ -33,12 +38,50 @@ public class QueryBuilder implements EngineElementBuilder {
         
         InternalReadAccessor arrayExtractor = PatternBuilder.getFieldReadAccessor( context, queryDescr, argsObjectType, "elements", null, true );
 
-        String[] params = queryDescr.getParameters();
-        String[] types = queryDescr.getParameterTypes();
-        int i = 0;
-        
+        Query query = ((Query) context.getRule());
+
+        String[] params;
+        String[] types;
+        int numParams = queryDescr.getParameters().length;
+        if ( query.isAbductive() ) {
+            params = Arrays.copyOf( queryDescr.getParameters(), queryDescr.getParameters().length + 1 );
+            types = Arrays.copyOf( queryDescr.getParameterTypes(), queryDescr.getParameterTypes().length + 1 );
+        } else {
+            params = queryDescr.getParameters();
+            types = queryDescr.getParameterTypes();
+        }
+
         Declaration[] declarations = new Declaration[ params.length ];
-        
+
+        if ( query.isAbductive() ) {
+            AnnotationDescr ann = queryDescr.getAnnotation( Abductive.class.getSimpleName() );
+            String returnName = ann.getValue( "target" );
+            try {
+                Class<?> returnKlass = context.getPkg().getTypeResolver().resolveType( returnName.replace( ".class", "" ) );
+                ClassObjectType objectType = new ClassObjectType( returnKlass, false );
+                objectType = context.getPkg().getClassFieldAccessorStore().getClassObjectType( objectType,
+                                                                                               (AbductiveQuery) query );
+                params[ numParams ] = "";
+                types[ numParams ] = returnKlass.getName();
+
+                ((AbductiveQuery) query).setReturnType( objectType, params );
+
+            } catch ( ClassNotFoundException e ) {
+                context.addError( new DescrBuildError( context.getParentDescr(),
+                                                       queryDescr,
+                                                       e,
+                                                       "Unable to resolve abducible type : " + returnName ) );
+            } catch ( NoSuchMethodException e ) {
+                context.addError( new DescrBuildError( context.getParentDescr(),
+                                                       queryDescr,
+                                                       e,
+                                                       "Unable to resolve abducible constructor for type : " + returnName +
+                                                       " with types " + types ) );
+
+            }
+        }
+
+        int i = 0;
         try {
             for ( i = 0; i < params.length; i++ ) {
                 Declaration declr = pattern.addDeclaration( params[i] );
@@ -53,9 +96,9 @@ public class QueryBuilder implements EngineElementBuilder {
                 
                 declarations[i] = declr;
              }
-            
-            ((Query)context.getRule()).setParameters( declarations );
-            
+
+            query.setParameters( declarations );
+
         } catch ( ClassNotFoundException e ) {
             context.addError( new DescrBuildError( context.getParentDescr(),
                                                           queryDescr,
@@ -63,6 +106,9 @@ public class QueryBuilder implements EngineElementBuilder {
                                                           "Unable to resolve type '" + types[i] + " for parameter" + params[i] ) );
         }
         context.setPrefixPattern( pattern );
+
+
+
         return pattern;
     }
 }

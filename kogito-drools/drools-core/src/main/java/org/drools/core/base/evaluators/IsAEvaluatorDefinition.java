@@ -282,8 +282,8 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 InternalReadAccessor leftExtractor, InternalFactHandle left,
                                 InternalReadAccessor rightExtractor, InternalFactHandle right) {
-            final Object value1 = leftExtractor.getValue( workingMemory, left );
-            final Object value2 = rightExtractor.getValue( workingMemory, right );
+            final Object value1 = leftExtractor.getValue( workingMemory, left != null ? left.getObject() : left );
+            final Object value2 = rightExtractor.getValue( workingMemory, right != null ? right.getObject() : right );
 
             Object target = value1;
             Object source = value2;
@@ -296,7 +296,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                                            VariableContextEntry context, InternalFactHandle right ) {
 
             Object target = ((VariableRestriction.ObjectVariableContextEntry) context).left;
-            Object source = right.getObject();
+            Object source = context.getFieldExtractor().getValue( workingMemory, right.getObject() );
 
             return compare( source, target, workingMemory );
         }
@@ -304,8 +304,8 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         public boolean evaluateCachedRight( InternalWorkingMemory workingMemory,
                                             VariableContextEntry context, InternalFactHandle left ) {
 
-            Object target = left.getObject();
-            Object source = context.getObject();
+            Object target = context.getFieldExtractor().getValue( workingMemory, left.getObject() );
+            Object source = ((VariableRestriction.ObjectVariableContextEntry) context).right;
 
             return compare( source, target, workingMemory );
         }
@@ -317,8 +317,15 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             BitSet targetTraits = null;
             if ( source instanceof Thing ) {
                 sourceTraits = ((TraitableBean) ((Thing) source).getCore()).getCurrentTypeCode();
+                if ( sourceTraits == null && source instanceof TraitType ) {
+                    CodedHierarchy x = ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                    sourceTraits = x.getCode( ((TraitType)source).getTraitName() );
+                }
             } else if ( source instanceof TraitableBean ) {
                 sourceTraits = ((TraitableBean) source).getCurrentTypeCode();
+            } else if ( source instanceof String ) {
+                CodedHierarchy x = ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                sourceTraits = x.getCode( source );
             } else {
                 TraitableBean tbean = lookForWrapper( source, workingMemory);
                 if ( tbean != null ) {
@@ -334,6 +341,10 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 targetTraits = x.getCode( target );
             } else if ( target instanceof Thing ) {
                 targetTraits = ((TraitableBean) ((Thing) target).getCore()).getCurrentTypeCode();
+                if ( targetTraits == null && target instanceof TraitType ) {
+                    CodedHierarchy x = ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                    targetTraits = x.getCode( ((TraitType)target).getTraitName() );
+                }
             } else if ( target instanceof TraitableBean ) {
                 targetTraits = ((TraitableBean) target).getCurrentTypeCode();
             } else {

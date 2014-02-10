@@ -1,0 +1,125 @@
+<PMML version="4.1" xsi:schemaLocation="http://www.dmg.org/PMML-4_1 http://www.dmg.org/v4-1/pmml-4-1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_1">
+  <Header copyright="JBoss" description="Test example"></Header>
+  <DataDictionary numberOfFields="6">
+    <DataField dataType="string" displayName="Gender of Person" name="gender" optype="categorical">
+      <Value value="female"/>
+      <Value value="male"/>
+    </DataField>
+    <DataField dataType="string" displayName="Number of Claims" name="no of claims" optype="categorical">
+      <Value value="0"/>
+      <Value value="1"/>
+      <Value value="> 1"/>
+    </DataField>
+    <DataField dataType="integer" displayName="Meaningless out-of-order Field" name="scrambled" optype="ordinal">
+      <Value value="4"/>
+      <Value value="3"/>
+      <Value value="7"/>
+      <Value value="2"/>
+      <Value value="9"/>
+    </DataField>
+    <DataField dataType="string" displayName="Type of Domicile" name="domicile" optype="categorical">
+      <Value value="urban"/>
+      <Value value="rural"/>
+    </DataField>
+    <DataField dataType="double" displayName="Age of Car" name="age of car" optype="continuous">
+      <Interval closure="closedClosed" leftMargin="0" rightMargin="20"/>
+    </DataField>
+    <DataField dataType="double" displayName="Amount of Claims" isCyclic="1" name="amount of claims" optype="continuous"/>
+  </DataDictionary>
+  <TransformationDictionary>
+    <DerivedField dataType="double" name="IsMale" optype="continuous">
+      <NormDiscrete field="gender" method="indicator" value="male"/>
+    </DerivedField>
+    <DerivedField dataType="double" name="IsFemale" optype="continuous">
+      <NormDiscrete field="gender" method="indicator" value="female"/>
+    </DerivedField>
+  </TransformationDictionary>
+  <NeuralNetwork activationFunction="identity" algorithmName="neuralNetwork" functionName="regression" modelName="Mixed">
+    <Extension>
+      <Surveyable/>
+    </Extension>
+    <MiningSchema>
+      <MiningField name="gender"/>
+      <MiningField name="no of claims"/>
+      <MiningField name="scrambled"/>
+      <MiningField name="domicile"/>
+      <MiningField name="age of car"/>
+      <MiningField name="amount of claims" usageType="predicted"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="Out_Claims" targetField="amount of claims"/>
+    </Output>
+    <NeuralInputs>
+      <NeuralInput id="0">
+        <DerivedField dataType="double" optype="continuous">
+          <FieldRef field="IsMale"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="1">
+        <DerivedField dataType="double" optype="continuous">
+          <FieldRef field="IsFemale"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="2">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="no of claims" value="0"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="3">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="no of claims" value="1"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="4">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="no of claims" value="> 1"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="5">
+        <DerivedField dataType="double" optype="continuous">
+          <FieldRef field="scrambled"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="6">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="domicile" method="indicator" value="urban"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="7">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="domicile" method="indicator" value="rural"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="8">
+        <DerivedField dataType="double" optype="continuous">
+          <FieldRef field="age of car"/>
+        </DerivedField>
+      </NeuralInput>
+    </NeuralInputs>
+    <NeuralLayer>
+      <Neuron bias="-1" id="9">
+        <Con from="0" weight="1"/>
+        <Con from="1" weight="2"/>
+        <Con from="2" weight="3"/>
+        <Con from="3" weight="4"/>
+        <Con from="4" weight="5"/>
+        <Con from="5" weight="6"/>
+        <Con from="6" weight="7"/>
+        <Con from="7" weight="8"/>
+        <Con from="8" weight="10"/>
+      </Neuron>
+    </NeuralLayer>
+    <NeuralLayer>
+      <Neuron bias="1.0" id="10">
+        <Con from="9" weight="1.0"/>
+      </Neuron>
+    </NeuralLayer>
+    <NeuralOutputs>
+      <NeuralOutput outputNeuron="10">
+        <DerivedField dataType="double" optype="continuous">
+          <FieldRef field="amount of claims"/>
+        </DerivedField>
+      </NeuralOutput>
+    </NeuralOutputs>
+  </NeuralNetwork>
+</PMML>

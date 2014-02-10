@@ -49,7 +49,7 @@ public class ASMConditionEvaluatorJitter {
 
         generator.addMethod(ACC_PUBLIC,
                             "evaluate",
-                            generator.methodDescr(boolean.class, Object.class, InternalWorkingMemory.class, LeftTuple.class),
+                            generator.methodDescr(boolean.class, InternalFactHandle.class, InternalWorkingMemory.class, LeftTuple.class),
                             new EvaluateMethodGenerator(condition, declarations, leftTuple));
 
         return generator.newInstance(Declaration[].class, declarations);
@@ -107,6 +107,7 @@ public class ASMConditionEvaluatorJitter {
                     mv.visitInsn(AALOAD); // declarations[i]
                     mv.visitVarInsn(ALOAD, 2); // InternalWorkingMemory
                     mv.visitVarInsn(ALOAD, 1); // Object
+                    invokeInterface( InternalFactHandle.class, "getObject", Object.class );
                     declPositions[i] = decPos;
                     decPos += storeObjectFromDeclaration(declarationMatcher.getDeclaration(), decPos);
                     continue;
@@ -767,11 +768,13 @@ public class ASMConditionEvaluatorJitter {
             Method method = invocation.getMethod();
             if (firstInvocation && (method == null || (method.getModifiers() & Modifier.STATIC) == 0)) {
                 mv.visitVarInsn(ALOAD, 1);
+                invokeInterface( InternalFactHandle.class, "getObject", Object.class );
             }
 
             if (method == null) {
                 if (!firstInvocation) {
                     mv.visitVarInsn(ALOAD, 1);
+                    invokeInterface( InternalFactHandle.class, "getObject", Object.class );
                 }
                 if (!invocation.getReturnType().isAssignableFrom(currentClass)) {
                     cast(invocation.getReturnType());
@@ -827,6 +830,7 @@ public class ASMConditionEvaluatorJitter {
         private void jitMapAccessInvocation(MapAccessInvocation invocation, boolean firstInvocation) {
             if (firstInvocation) {
                 mv.visitVarInsn(ALOAD, 1);
+                invokeInterface( InternalFactHandle.class, "getObject", Object.class );
                 cast(Map.class);
             }
             Class<?> keyClass = jitExpression(invocation.getKey(), invocation.getKeyType());
@@ -845,6 +849,7 @@ public class ASMConditionEvaluatorJitter {
 
             if (firstInvocation && !isStatic) {
                 mv.visitVarInsn(ALOAD, 1);
+                invokeInterface( InternalFactHandle.class, "getObject", Object.class );
             }
             if (!isStatic && !field.getDeclaringClass().isAssignableFrom(currentClass)) {
                 cast(field.getDeclaringClass());

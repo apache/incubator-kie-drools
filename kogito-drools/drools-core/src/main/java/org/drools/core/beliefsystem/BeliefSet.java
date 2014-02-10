@@ -37,5 +37,10 @@ public interface BeliefSet {
     
     public void setWorkingMemoryAction(WorkingMemoryAction wmAction);
 
+    boolean isNegated();
+
+    boolean isUndecided();
+
+    boolean isPositive();
 
 }

@@ -1,0 +1,47 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+@comment{
+
+}
+
+@declare{'svmKernelEval'}
+
+rule "Kernel_Evals_@{kernelType}_@{modelName}"
+when
+    SvmParams( kt == "@{kernelType}", $ctx : context == "@{modelName}", $gamma : gamma, $coef0 : coef0, $degree : degree  )
+    SVM( context == $ctx, $svmId : svmId, $indexes : vectorIndexes, $coeffs : coeffs )
+    SupportVector( context == $ctx, $idx : index memberOf $indexes, $sv : value )
+    InputVector( context == $ctx, $iv : value )
+then
+    KernelEval k = new KernelEval(
+            "@{modelName}",
+             $svmId,
+             $idx,
+             $coeffs[ $idx ] * @{kernelType}( $sv, $iv, $gamma, $coef0, $degree )
+        );
+    insertLogical( k );
+end
+
+
+@end{}
+
+
+@includeNamed{'svmKernelEval'}

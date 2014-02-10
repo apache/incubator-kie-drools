@@ -77,7 +77,7 @@ public class ScorecardProviderTest {
         FactType scorecardType = kbase.getFactType( "org.drools.scorecards.example","SampleScore" );
         assertNotNull(scorecardType);
 
-        DroolsScorecard scorecard = (DroolsScorecard) scorecardType.newInstance();
+        Object scorecard =  scorecardType.newInstance();
         assertNotNull(scorecard);
 
         scorecardType.set(scorecard, "age", 10);
@@ -85,7 +85,7 @@ public class ScorecardProviderTest {
         session.fireAllRules();
         session.dispose();
         //occupation = 5, age = 25, validLicence -1
-        assertEquals(29.0,scorecard.getCalculatedScore());
+        assertEquals( 29.0, scorecardType.get( scorecard, "scorecard__calculatedScore" ) );
 
     }
 

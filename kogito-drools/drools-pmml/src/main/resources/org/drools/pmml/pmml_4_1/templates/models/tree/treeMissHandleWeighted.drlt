@@ -1,0 +1,55 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+@comment{
+
+}
+
+@declare{'treeMissHandleWeighted'}
+
+
+
+rule "Handle weighted missing values on my way back @{context}"
+salience 5
+when
+    $node : TreeNode( context == "@{context}", $id : id,
+                      $out : outcome, $children : children, $count : recordCount, $confs : confidence )
+    $tok  : @{context}TreeToken( context == "@{context}", current == $id, visitMode == "WEIGHTED_CONFIDENCE", $res : results )
+
+    not @{name}( context == "@{context}" )
+
+    accumulate( $sid : String( this memberOf $children ) from $res.keySet(), $keys : collectList( $sid ), $num : count( $sid );
+                $num > 0 && $num == $children.size() )
+    accumulate( $d : Double() from $confs.values(), $maxConf : max( $d ) )
+then
+//    System.out.println( " \t\t\t\t Before moving back I'll merge " + $keys );
+
+    for ( Object o : $keys ) { $tok.getResults().remove( o ); }
+    modify ( $tok ) {
+        setOutcome( $out ),
+        setTotalCount( $count ),
+        setConfidence( $maxConf.doubleValue() );
+    }
+end
+
+@end{}
+
+
+@includeNamed{'treeMissHandleWeighted'}

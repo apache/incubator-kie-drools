@@ -1,0 +1,76 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+@comment{
+
+}
+
+@declare{'treeMissHandleAggregate'}
+
+
+rule "Handle aggregate-prediction missing values on my way back @{context}"
+salience 5
+when
+    $node : TreeNode( context == "@{context}", $id : id, $children : children )
+    $tok  : @{context}TreeToken( context == "@{context}", current == $id, $res : results,
+                                 visitMode == "AGGREGATE_NODES", marker == $id, downward == false, trail.containsAll( $children ) )
+    not @{name}( context == "@{context}" )
+
+    accumulate ( $m : java.util.Map( ) from $res.values()
+                 and $key : Object() from $m.keySet(),
+                 $keys : collectSet( $key )
+               )
+    $wgts : java.util.Map() from accumulate (
+                 $key : String() from $keys
+                 and
+                 accumulate (
+                         $pmap : java.util.Map() from $res.values(),
+                         $acc  : sum( $pmap.get( $key ) != null ? $pmap.get( $key ) : 0.0 )
+                     ),
+                 init( java.util.Map mapp = new java.util.HashMap(); ),
+                 action( mapp.put( $key, $acc ); ),
+                 result( mapp )
+               )
+    $tot  : Double() from accumulate ( $d : Double() from $wgts.values(), sum( $d ) )
+    $konf : java.util.Map() from accumulate (
+                 $key : String() from $keys,
+                 init( java.util.Map mapc = new java.util.HashMap(); ),
+                 action( mapc.put( $key, (Double) $wgts.get( $key ) / $tot ); ),
+                 result( mapc )
+               )
+    accumulate ( $k : Double() from $konf.values(), $maxConf : max( $k ) )
+    java.util.Map.Entry( $outcome : key, value == $maxConf ) from $konf.entrySet()
+
+then
+//    System.out.println( " Aggregate, terminate " + $wgts +  " " + $konf + "  " + $maxConf + " " + $outcome );
+
+    modify ( $tok ) {
+        setOutcome( (@{ box( mapDatatype( tgtType ) ) }) $outcome ),
+        setTotalCount( $tot ),
+        setConfidence( $maxConf.doubleValue() ),
+        setCurrent( "null" );
+    }
+end
+
+
+@end{}
+
+
+@includeNamed{'treeMissHandleAggregate'}

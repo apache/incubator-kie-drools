@@ -1,0 +1,76 @@
+
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+@comment{
+
+    Rule that converts a raw data from an entry-point
+    into a "managed" datafield event bean.
+
+    /**
+    * @param name        - common name of the class
+    * @param type        - type (int, string, double, ...)
+    * @param continuous  - flag for cont. datatypes
+    * @param ordinal     - flag for ordinal datatypes
+    * @param cyclic      - flag for cyclic datatypes
+    * @param categorical - flag for categorical datatypes
+    * @notRestricted     - true if there is no restriction on the field
+    *                      A restriction is the exclusion of some values from the domain
+    */
+}
+@declare{'inputFromEPRule'}
+rule "Input_@{name}"
+when
+    $in : @{box(type)}() from entry-point "in_@{name}"
+    not @{name}( value == $in, context == null )
+then
+    // @{box(type)}
+    @{name} input = new @{name}();
+        input.setValue( $in );
+        input.setName(@{format("string",name)});
+        input.setMissing(false);
+        input.setValid(@{notRestricted});
+        input.setContext(null);
+    //System.out.println("Rule " + drools.getRule().getName() + " for input " + $in + " : will insert  " + input.toString());
+    retract( $in );
+    insert( input );
+end
+
+
+rule "OverrideInput_@{name}"
+salience 2
+when
+    $new: @{box(type)}() from entry-point "in_@{name}"
+    $old: @{name}( value != $new )
+then
+    //System.out.println(" Overriding previous values " + $old + " because of " + $new );
+    retract( $old );
+end
+@end{}
+
+
+
+
+
+@comment{
+*******************************************************************************************************
+        1.2.1) Generation rules
+*******************************************************************************************************
+}
+
+
+@includeNamed{'inputFromEPRule'}

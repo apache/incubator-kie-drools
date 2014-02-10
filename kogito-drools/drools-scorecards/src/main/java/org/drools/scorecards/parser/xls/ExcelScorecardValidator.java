@@ -21,9 +21,11 @@ import org.dmg.pmml.pmml_4_1.descr.Characteristic;
 import org.dmg.pmml.pmml_4_1.descr.Characteristics;
 import org.dmg.pmml.pmml_4_1.descr.Scorecard;
 import org.drools.core.util.StringUtils;
+import org.drools.pmml.pmml_4_1.extensions.AggregationStrategy;
+import org.drools.pmml.pmml_4_1.PMML4Helper;
 import org.drools.scorecards.ScorecardError;
 import org.drools.scorecards.StringUtil;
-import org.drools.scorecards.pmml.PMMLExtensionNames;
+import org.drools.scorecards.pmml.ScorecardPMMLExtensionNames;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
 
 import java.util.List;
@@ -46,6 +48,36 @@ class ExcelScorecardValidator {
         if (scorecard.isUseReasonCodes()){
             validator.validateReasonCodes();
             validator.validateBaselineScores();
+        }
+        if ( getScoringStrategy(scorecard).toString().startsWith("WEIGHTED")) {
+            validator.validateWeights();
+        }
+
+    }
+
+    private void validateWeights() {
+        for (Object obj :scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()){
+            if (obj instanceof Characteristics){
+                Characteristics characteristics = (Characteristics)obj;
+                for (Characteristic characteristic : characteristics.getCharacteristics()){
+                    for (Attribute attribute : characteristic.getAttributes()){
+                        String newCellRef = createDataTypeCellRef(ScorecardPMMLUtils.getExtensionValue(attribute.getExtensions(), "cellRef"),2);
+                        String weight = ScorecardPMMLUtils.getExtensionValue(attribute.getExtensions(), ScorecardPMMLExtensionNames.CHARACTERTISTIC_WEIGHT);
+                        if ( StringUtils.isEmpty(weight) || !isDouble(weight)){
+                            parseErrors.add(new ScorecardError(newCellRef, "Attribute is missing weight or specified weight is not a double."));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    protected boolean isDouble(String doubleStr){
+        try {
+            Double.parseDouble(doubleStr);
+            return true;
+        } catch (Exception e){
+            return  false;
         }
     }
 
@@ -91,7 +123,7 @@ class ExcelScorecardValidator {
             if (obj instanceof Characteristics){
                 Characteristics characteristics = (Characteristics)obj;
                 for (Characteristic characteristic : characteristics.getCharacteristics()){
-                    String dataType = ScorecardPMMLUtils.getExtensionValue(characteristic.getExtensions(), PMMLExtensionNames.CHARACTERTISTIC_DATATYPE);
+                    String dataType = ScorecardPMMLUtils.getExtensionValue(characteristic.getExtensions(), ScorecardPMMLExtensionNames.CHARACTERTISTIC_DATATYPE);
                     String newCellRef = createDataTypeCellRef(ScorecardPMMLUtils.getExtensionValue(characteristic.getExtensions(), "cellRef"),1);
                     if ( dataType == null || StringUtils.isEmpty(dataType)) {
                         parseErrors.add(new ScorecardError(newCellRef, "Missing Data Type!"));
@@ -137,5 +169,10 @@ class ExcelScorecardValidator {
     private String createDataTypeCellRef(String cellRef, int n) {
         int col = ((int)(cellRef.charAt(1)))+n;
         return "$"+((char)col)+cellRef.substring(cellRef.indexOf('$',1));
+    }
+
+    protected static AggregationStrategy getScoringStrategy( Scorecard scorecard ) {
+        String scoringStrategyName = ScorecardPMMLUtils.getExtensionValue(scorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), ScorecardPMMLExtensionNames.SCORECARD_SCORING_STRATEGY);
+        return PMML4Helper.resolveAggregationStrategy( scoringStrategyName );
     }
 }

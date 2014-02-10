@@ -1,0 +1,98 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+@comment{
+
+}
+
+@declare{'scorecardScoring'}
+
+rule "Score Card @{name}"
+salience -10  // after data are stable
+when
+    $card : ScoreCard( $ctx : modelName )
+    InitialScore( scoreCard == $ctx, $zero : value )
+    accumulate(
+        PartialScore( scoreCard == $ctx, $val : value, $wgt : weight ),
+        $tot : @{aggregator}( $val @if{ weighted } * $wgt @end{} );
+        $tot.doubleValue() + $zero != $card.getScore() )
+then
+    modify ( $card ) {
+        setScore( $zero + $tot.doubleValue() );
+    }
+end
+
+
+rule "Cumulate Code Scores"
+salience -11
+when
+    $card : ScoreCard( $ctx : modelName, enableRC == true, $below : pointsBelow )
+    accumulate( PartialScore( scoreCard == $ctx, $rc : reasonCode != null ),
+                $set : collectSet( $rc ) )
+    $code : String() from $set
+    accumulate( PartialScore( scoreCard == $ctx, reasonCode == $code, $val : value, $char : characteristic )
+                and
+                BaselineScore( scoreCard == $ctx, characteristic == $char, $base : value ),
+                $sum : sum( $below ? ($base - $val) : ($val - $base) ) )
+then
+//    System.out.println( "The CUMULATED score for code " + $code + " from set " + $set + " is >>> " + $sum );
+    insertLogical( new CodeScore( $card, $code, $sum.doubleValue() ) );
+end
+
+
+rule "Detect Scorecard ReasonCode Change"
+salience -12
+when
+    $sc : ScoreCard( enableRC == true, $map : ranking )
+    exists CodeScore( scoreCard == $sc, $c : code, score != $map.get( $c ) )
+then
+    insert( new ScoreRank( $sc, new java.util.LinkedHashMap() ) );
+end
+
+
+rule "Sort Scorecard Reason Codes"
+salience -14
+when
+    $r : ScoreRank( $sc : scoreCard, $map : rank )
+    $cs : CodeScore( scoreCard == $sc, ! $map.containsKey( code ), $s : score, $c : code )
+    not CodeScore( scoreCard == $sc, ! $map.containsKey( code ), score > $s )
+then
+    modify ( $r ) {
+        getRank().put( $c, $s );
+    }
+end
+
+
+rule "Integrate Scorecard ReasonCode Map"
+salience -15
+when
+    $s : ScoreCard( enableRC == true )
+    $x : ScoreRank( scoreCard == $s, $map : rank )
+then
+    retract( $x );
+    modify ( $s ) {
+        setRanking( $map );
+    }
+end
+
+@end{}
+
+
+@includeNamed{'scorecardScoring'}

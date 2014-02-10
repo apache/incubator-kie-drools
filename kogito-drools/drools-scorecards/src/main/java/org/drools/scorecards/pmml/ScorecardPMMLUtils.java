@@ -25,7 +25,7 @@ public class ScorecardPMMLUtils {
 
 //    public static String getDataType(org.dmg.pmml_4_1.Characteristic c) {
 //        for (Extension extension : c.getExtensions()) {
-//            if (PMMLExtensionNames.CHARACTERTISTIC_DATATYPE.equalsIgnoreCase(extension.getName())) {
+//            if (ScorecardPMMLExtensionNames.CHARACTERTISTIC_DATATYPE.equalsIgnoreCase(extension.getName())) {
 //                return extension.getValue();
 //            }
 //        }
@@ -61,6 +61,7 @@ public class ScorecardPMMLUtils {
         //default false, until the spreadsheet enables explicitly.
         scorecard.setUseReasonCodes(Boolean.FALSE);
         scorecard.setIsScorable(Boolean.TRUE);
+        scorecard.setFunctionName( MININGFUNCTION.REGRESSION );
         return scorecard;
     }
 

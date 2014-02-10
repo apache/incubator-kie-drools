@@ -1,6 +1,7 @@
 package org.drools.core.phreak;
 
 import java.util.Comparator;
+import java.util.Queue;
 
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.common.AgendaItem;
@@ -190,7 +191,7 @@ public class RuleExecutor {
             boolean evaled = false;
             if (pmem.getTupleQueue() != null) {
                 while (!pmem.getTupleQueue().isEmpty()) {
-                    removeQueuedTupleEntry();
+                    removeQueuedTupleEntry( pmem.getTupleQueue() );
                     NETWORK_EVALUATOR.evaluateNetwork(pmem, outerStack, this, wm);
                     evaled = true;
                 }
@@ -202,14 +203,22 @@ public class RuleExecutor {
         }
     }
 
-    private void removeQueuedTupleEntry() {
-        TupleEntry tupleEntry = pmem.getTupleQueue().remove();
+    public static void flushTupleQueue( Queue<TupleEntry> tupleQueue ) {
+        if ( tupleQueue != null ) {
+            while ( ! tupleQueue.isEmpty() ) {
+                removeQueuedTupleEntry( tupleQueue );
+            }
+        }
+    }
+
+    public static void removeQueuedTupleEntry( Queue<TupleEntry> tupleQueue ) {
+        TupleEntry tupleEntry = tupleQueue.remove();
         PropagationContext originalPctx = tupleEntry.getPropagationContext();
 
         boolean repeat = true;
         while (repeat) {
             if (log.isTraceEnabled()) {
-                log.trace("Stream removed entry {} {} size {}", System.identityHashCode(pmem.getTupleQueue()), tupleEntry, pmem.getTupleQueue().size());
+                log.trace("Stream removed entry {} {} size {}", System.identityHashCode(tupleQueue), tupleEntry, tupleQueue.size());
             }
             if (tupleEntry.getLeftTuple() != null) {
                 SegmentMemory sm = tupleEntry.getNodeMemory().getSegmentMemory();
@@ -247,8 +256,8 @@ public class RuleExecutor {
                         break;
                 }
             }
-            if (!pmem.getTupleQueue().isEmpty()) {
-                tupleEntry = pmem.getTupleQueue().peek();
+            if (!tupleQueue.isEmpty()) {
+                tupleEntry = tupleQueue.peek();
                 PropagationContext pctx = tupleEntry.getPropagationContext();
 
                 // repeat if either the pctx number is the same, or the event time is the same or before
@@ -273,7 +282,7 @@ public class RuleExecutor {
                 repeat = false;
             }
             if (repeat) {
-                tupleEntry = pmem.getTupleQueue().remove();
+                tupleEntry = tupleQueue.remove();
             }
         }
     }

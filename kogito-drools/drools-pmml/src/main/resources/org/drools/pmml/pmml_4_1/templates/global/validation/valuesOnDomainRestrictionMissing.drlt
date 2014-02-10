@@ -1,0 +1,45 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+@comment{
+    The rule checks for specific values determined as missing
+     /**
+      * @param name        - common name of the datafield class
+      */
+}
+@declare{'valuesOnDomainRestrictionMissingRule'}
+rule "Missing_Values_@{name}"
+dialect "mvel"
+no-loop
+salience 99
+when
+    $in : @{name}( $val : value,
+          @if{ context != null } context == @{format("string",context)}, @end{}
+          @foreach{ v : vals } value == @{v} @end{' || '}
+          )
+then
+//    System.out.println("--- Invalid -> missing");
+    modify ( $in ) {
+        setMissing( true );
+    }
+end
+@end{}
+
+
+
+@includeNamed{'valuesOnDomainRestrictionMissingRule'}

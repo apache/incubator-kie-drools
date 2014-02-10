@@ -2,29 +2,23 @@ package org.drools.scorecards.example;
 
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: vinod
- * Date: 13/7/12
- * Time: 7:50 PM
- * To change this template use File | Settings | File Templates.
- */
+
 public class Applicant {
-    int age;
+    double age;
     String occupation;
     String  residenceState;
     double totalScore;
     boolean validLicense;
 
-    public List<String> getReasonCodes() {
+    public String getReasonCodes() {
         return reasonCodes;
     }
 
-    public void setReasonCodes(List<String> reasonCodes) {
+    public void setReasonCodes( String reasonCodes ) {
         this.reasonCodes = reasonCodes;
     }
 
-    List<String> reasonCodes;
+    String reasonCodes;
 
     public boolean isValidLicense() {
         return validLicense;
@@ -45,11 +39,11 @@ public class Applicant {
         this.totalScore = totalScore;
     }
 
-    public int getAge() {
+    public double getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(double age) {
         this.age = age;
     }
 

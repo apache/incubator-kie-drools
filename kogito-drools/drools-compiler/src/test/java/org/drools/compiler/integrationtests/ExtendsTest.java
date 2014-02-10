@@ -31,6 +31,10 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Message;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -171,7 +175,7 @@ public class ExtendsTest extends CommonTestMethodBase {
      @Test
     public void testIllegalExtendsLegacy() throws Exception {
         //Test Base Fact Type
-        genSession("test_ExtLegacyIllegal.drl",2);
+        genSession("test_ExtLegacyIllegal.drl",7);
 
     }
 
@@ -1054,6 +1058,26 @@ public class ExtendsTest extends CommonTestMethodBase {
         }
         assertTrue( kBuilder.hasErrors() );
         assertEquals( 1, kBuilder.getErrors().size() );
+    }
+
+
+    @Test
+    public void testDeclareExtendsWithFullyQualifiedName() {
+        String drl = "package org.drools.extends.test; \n" +
+                     "" +
+                     "declare org.drools.extends.test.Foo end \n" +
+                     "declare org.drools.extends.test.Bar extends org.drools.extends.test.Foo end \n" +
+                     "";
+        KieServices kieServices = KieServices.Factory.get();
+        KieFileSystem kfs = kieServices.newKieFileSystem();
+        kfs.write( kieServices.getResources().newByteArrayResource( drl.getBytes() )
+                           .setSourcePath( "test.drl" )
+                           .setResourceType( ResourceType.DRL ) );
+        KieBuilder kieBuilder = kieServices.newKieBuilder( kfs );
+        kieBuilder.buildAll();
+
+        assertFalse( kieBuilder.getResults().hasMessages( Message.Level.ERROR ) );
+
     }
 
 }

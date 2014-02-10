@@ -427,6 +427,9 @@ public class MemoryFileSystem
                                  ZipOutputStream out) throws IOException {
         for ( Resource rs : f.getMembers() ) {
             if ( rs instanceof Folder ) {
+                ZipEntry entry = new ZipEntry( rs.getPath().toPortableString() );
+                out.putNextEntry( entry );
+
                 writeJarEntries( (Folder) rs,
                                  out );
             } else {

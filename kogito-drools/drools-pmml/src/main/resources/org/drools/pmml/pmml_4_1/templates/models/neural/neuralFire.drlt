@@ -1,0 +1,75 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+
+@comment{
+        Propagates stymuli along synapses
+}
+
+@declare{'neuralFireRule'}
+
+
+@code{ String ctx = format( "string", model ); }
+rule "Neural Fire_@{ model }_Layer@{ layerIndex }"
+when
+    $neur : Neuron( context == @{ ctx },
+                    layerIndex == @{ layerIndex }
+                  )
+    accumulate( $c : Charge( context == @{ ctx }, index == $neur.index, $in : value ),
+                $list : collectList( $c ),
+                $val : sum( $in );
+                $list.size() == $neur.fanIn )
+then
+    double x = $neur.getBias() + $val.doubleValue();
+    x = @{ mapNeuralActivation( actFun.value(), thold ) };
+
+    modify ( $neur ) {
+        @if{ needsNormal } setNormalized( false ), @end{}
+        setValue( x );
+    }
+end
+
+
+rule "Neural Flare @{ model }_Layer@{ layerIndex }"
+when
+    $neur : Neuron( context == @{ ctx },
+                    layerIndex == @{ layerIndex },
+                    @if{ needsNormal } normalized == true, @end{}
+                    $index : index,
+                    $val : value != null )
+    accumulate( $c : Charge( context == @{ ctx }, index == $neur.index, $in : value ),
+                    $num : count( $c );
+                    $num == $neur.fanIn )
+then
+    Stym y = new Stym();
+        y.setContext( @{ctx} );
+        y.setIndex( $index );
+        y.setValue( $val );
+
+    insertLogical( y );
+end
+
+@end{}
+
+
+
+
+
+@includeNamed{'neuralFireRule'}

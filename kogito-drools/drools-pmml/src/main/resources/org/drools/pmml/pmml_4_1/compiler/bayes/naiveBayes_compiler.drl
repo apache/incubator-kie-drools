@@ -1,0 +1,98 @@
+package org.drools.pmml.pmml_4_1.compiler;
+
+import org.dmg.pmml.pmml_4_1.descr.*;
+import java.util.*;
+
+dialect "mvel"
+
+rule "SVMRoot"
+when
+    $nbm : NaiveBayesModel()
+then
+    utils.applyTemplate( "naiveBayesDeclare.drlt", utils, registry, null, theory );
+end
+
+rule "visitNaiveBayes_context"
+salience -9
+when
+    $nbm : NaiveBayesModel( $name : modelName )
+then
+    utils.context = utils.compactUpperCase( $name );
+
+    HashMap map = new HashMap( 3 );
+        map.put( "type","NaiveBayesModel" );
+        map.put( "name", utils.context );
+
+    utils.applyTemplate( "modelMark.drlt", utils, registry, map, theory );
+end
+
+rule "visitNaiveBayes_inputs"
+salience -9
+when
+    $nbm : NaiveBayesModel( $name : modelName, $info : extensionsAndBayesOutputsAndBayesInputs, $thold : threshold )
+           BayesOutput( this memberOf $info, $tgtFld : fieldName )
+           TypeOfField( $tgtFld, $type ; )
+
+           BayesInputs( this memberOf $info, $inputs : bayesInputs )
+    $bin : BayesInput( this memberOf $inputs, $fld : fieldName, $pairs : pairCounts, $dfld : derivedField == null )
+then
+    utils.context = utils.compactUpperCase( $name );
+
+    HashMap map = new HashMap( 7 );
+        map.put( "name", utils.context );
+        map.put( "threshold", $thold );
+        map.put( "field", utils.compactUpperCase( $fld ) );
+        map.put( "datatype", $type );
+        map.put( "pairs", $pairs );
+
+    utils.applyTemplate( "naiveBayesBuildCounts.drlt", utils, registry, map, theory );
+
+    utils.applyTemplate( "naiveBayesEval.drlt", utils, registry, map, theory );
+
+end
+
+rule "visitNaiveBayes_inputs_with_discretized_fields"
+salience -9
+when
+    $nbm : NaiveBayesModel( $name : modelName, $info : extensionsAndBayesOutputsAndBayesInputs, $thold : threshold )
+           BayesOutput( this memberOf $info, $tgtFld : fieldName )
+           TypeOfField( $tgtFld, $type ; )
+
+           BayesInputs( this memberOf $info, $inputs : bayesInputs )
+    $bin : BayesInput( this memberOf $inputs, $pairs : pairCounts, $dfld : derivedField != null )
+    $dfl : DerivedField( this == $dfld, $fld : name )
+then
+    utils.context = utils.compactUpperCase( $name );
+
+    HashMap map = new HashMap( 5 );
+        map.put( "name", utils.context );
+        map.put( "field", utils.compactUpperCase( $fld ) );
+        map.put( "datatype", $type );
+        map.put( "pairs", $pairs );
+
+    utils.applyTemplate( "naiveBayesBuildCounts.drlt", utils, registry, map, theory );
+
+    utils.applyTemplate( "naiveBayesEval.drlt", utils, registry, map, theory );
+
+end
+
+
+
+rule "visitNaiveBayes_outputs"
+salience -9
+when
+    $nbm : NaiveBayesModel( $name : modelName, $info : extensionsAndBayesOutputsAndBayesInputs, $thold : threshold )
+           BayesOutput( this memberOf $info, $fld : fieldName, $tvc : targetValueCounts )
+           TypeOfField( $fld, $type ; )
+
+then
+    utils.context = utils.compactUpperCase( $name );
+
+    HashMap map = new HashMap( 7 );
+        map.put( "name", utils.context );
+        map.put( "threshold", $thold );
+        map.put( "field", utils.compactUpperCase( $fld ) );
+        map.put( "datatype", $type );
+        map.put( "tvc", $tvc );
+    utils.applyTemplate( "naiveBayesBuildOuts.drlt", utils, registry, map, theory );
+end

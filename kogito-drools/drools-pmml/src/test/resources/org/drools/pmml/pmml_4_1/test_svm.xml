@@ -1,0 +1,63 @@
+<PMML version="4.1" xsi:schemaLocation="http://www.dmg.org/PMML-4_1 http://www.dmg.org/v4-1/pmml-4-1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_1">
+  <Header copyright="JBoss"/>
+  <DataDictionary numberOfFields="3">
+    <DataField dataType="double" name="x" optype="continuous"/>
+    <DataField dataType="double" name="y" optype="continuous"/>
+    <DataField dataType="string" name="z" optype="categorical">
+      <Value value="no"/>
+      <Value value="yes"/>
+    </DataField>
+  </DataDictionary>
+  <SupportVectorMachineModel algorithmName="supportVectorMachine" functionName="classification" modelName="SVM XOR Model" svmRepresentation="SupportVectors">
+    <MiningSchema>
+      <MiningField name="x"/>
+      <MiningField name="y"/>
+      <MiningField name="z" usageType="predicted"/>
+    </MiningSchema>
+    <RadialBasisKernelType description="Radial basis kernel type" gamma="1.0"/>
+    <VectorDictionary numberOfVectors="4">
+      <VectorFields numberOfFields="2">
+        <FieldRef field="x"/>
+        <FieldRef field="y"/>
+      </VectorFields>
+      <VectorInstance id="vec1">
+        <REAL-SparseArray n="2">
+          <Indices/>
+          <REAL-Entries/>
+        </REAL-SparseArray>
+      </VectorInstance>
+      <VectorInstance id="vec2">
+        <REAL-SparseArray n="2">
+          <Indices>2</Indices>
+          <REAL-Entries>1.0</REAL-Entries>
+        </REAL-SparseArray>
+      </VectorInstance>
+      <VectorInstance id="vec3">
+        <REAL-SparseArray n="2">
+          <Indices>1</Indices>
+          <REAL-Entries>1.0</REAL-Entries>
+        </REAL-SparseArray>
+      </VectorInstance>
+      <VectorInstance id="vec4">
+        <REAL-SparseArray n="2">
+          <Indices>1 2</Indices>
+          <REAL-Entries>1.0 1.0</REAL-Entries>
+        </REAL-SparseArray>
+      </VectorInstance>
+    </VectorDictionary>
+    <SupportVectorMachine alternateTargetCategory="yes" targetCategory="no">
+      <SupportVectors numberOfAttributes="2" numberOfSupportVectors="4">
+        <SupportVector vectorId="vec1"/>
+        <SupportVector vectorId="vec2"/>
+        <SupportVector vectorId="vec3"/>
+        <SupportVector vectorId="vec4"/>
+      </SupportVectors>
+      <Coefficients absoluteValue="0" numberOfCoefficients="4">
+        <Coefficient value="-1.0"/>
+        <Coefficient value="1.0"/>
+        <Coefficient value="1.0"/>
+        <Coefficient value="-1.0"/>
+      </Coefficients>
+    </SupportVectorMachine>
+  </SupportVectorMachineModel>
+</PMML>

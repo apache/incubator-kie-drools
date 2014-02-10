@@ -1,0 +1,181 @@
+<PMML xmlns="http://www.dmg.org/PMML-4_1" version="4.1">
+  <Header copyright="Copyright (c) 2009, DMG.org"/>
+  <DataDictionary numberOfFields="5">
+    <DataField name="gender" optype="categorical" dataType="string">
+      <Value value="female"/>
+      <Value value="male"/>
+    </DataField>
+    <DataField name="no of claims" optype="categorical" dataType="string">
+      <Value value="0"/>
+      <Value value="1"/>
+      <Value value="2"/>
+      <Value value="&gt;2"/>
+    </DataField>
+    <DataField name="domicile" optype="categorical" dataType="string">
+      <Value value="suburban"/>
+      <Value value="urban"/>
+      <Value value="rural"/>
+    </DataField>
+    <DataField name="age of car" optype="continuous" dataType="double"/>
+    <DataField name="amount of claims" optype="categorical" dataType="integer">
+      <Value value="100"/>
+      <Value value="500"/>
+      <Value value="1000"/>
+      <Value value="5000"/>
+      <Value value="10000"/>
+    </DataField>
+  </DataDictionary>
+  <NaiveBayesModel modelName="NaiveBayes Insurance" functionName="classification" threshold="0.001">
+    <MiningSchema>
+      <MiningField name="gender"/>
+      <MiningField name="no of claims"/>
+      <MiningField name="domicile"/>
+      <MiningField name="age of car"/>
+      <MiningField name="amount of claims" usageType="predicted"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="Chosen Class" feature="predictedValue" targetField="amount of claims" />
+      <OutputField name="Probability of 500" feature="probability" targetField="amount of claims" value="500" />
+    </Output>
+    <BayesInputs>
+      <BayesInput fieldName="gender">
+        <PairCounts value="male">
+          <TargetValueCounts>
+            <TargetValueCount value="100" count="4273"/>
+            <TargetValueCount value="500" count="1321"/>
+            <TargetValueCount value="1000" count="780"/>
+            <TargetValueCount value="5000" count="405"/>
+            <TargetValueCount value="10000" count="42"/>
+          </TargetValueCounts>
+        </PairCounts>
+        <PairCounts value="female">
+          <TargetValueCounts>
+            <TargetValueCount value="100" count="4325"/>
+            <TargetValueCount value="500" count="1212"/>
+            <TargetValueCount value="1000" count="742"/>
+            <TargetValueCount value="5000" count="292"/>
+            <TargetValueCount value="10000" count="48"/>
+          </TargetValueCounts>
+        </PairCounts>
+      </BayesInput>
+      <BayesInput fieldName="no of claims">
+        <PairCounts value="0">
+          <TargetValueCounts>
+            <TargetValueCount value="100" count="4698"/>
+            <TargetValueCount value="500" count="623"/>
+            <TargetValueCount value="1000" count="1259"/>
+            <TargetValueCount value="5000" count="550"/>
+            <TargetValueCount value="10000" count="40"/>
+          </TargetValueCounts>
+        </PairCounts>
+        <PairCounts value="1">
+          <TargetValueCounts>
+            <TargetValueCount value="100" count="3526"/>
+            <TargetValueCount value="500" count="1798"/>
+            <TargetValueCount value="1000" count="227"/>
+            <TargetValueCount value="5000" count="152"/>
+            <TargetValueCount value="10000" count="40"/>
+          </TargetValueCounts>
+        </PairCounts>
+        <PairCounts value="2">
+          <TargetValueCounts>
+            <TargetValueCount value="100" count="225"/>
+            <TargetValueCount value="500" count="10"/>
+            <TargetValueCount value="1000" count="9"/>
+            <TargetValueCount value="5000" count="0"/>
+            <TargetValueCount value="10000" count="10"/>
+          </TargetValueCounts>
+        </PairCounts>
+        <PairCounts value="&gt;2">
+          <TargetValueCounts>
+            <TargetValueCount value="100" count="112"/>
+            <TargetValueCount value="500" count="5"/>
+            <TargetValueCount value="1000" count="1"/>
+            <TargetValueCount value="5000" count="1"/>
+            <TargetValueCount value="10000" count="8"/>
+          </TargetValueCounts>
+        </PairCounts>
+      </BayesInput>
+      <BayesInput fieldName="domicile">
+        <PairCounts value="suburban">
+          <TargetValueCounts>
+            <TargetValueCount value="100" count="2536"/>
+            <TargetValueCount value="500" count="165"/>
+            <TargetValueCount value="1000" count="516"/>
+            <TargetValueCount value="5000" count="290"/>
+            <TargetValueCount value="10000" count="42"/>
+          </TargetValueCounts>
+        </PairCounts>
+        <PairCounts value="urban">
+          <TargetValueCounts>
+            <TargetValueCount value="100" count="1679"/>
+            <TargetValueCount value="500" count="792"/>
+            <TargetValueCount value="1000" count="511"/>
+            <TargetValueCount value="5000" count="259"/>
+            <TargetValueCount value="10000" count="30"/>
+          </TargetValueCounts>
+        </PairCounts>
+        <PairCounts value="rural">
+          <TargetValueCounts>
+            <TargetValueCount value="100" count="2512"/>
+            <TargetValueCount value="500" count="1013"/>
+            <TargetValueCount value="1000" count="442"/>
+            <TargetValueCount value="5000" count="137"/>
+            <TargetValueCount value="10000" count="21"/>
+          </TargetValueCounts>
+        </PairCounts>
+      </BayesInput>
+      <BayesInput fieldName="age of car">
+        <DerivedField optype="categorical" dataType="string">
+          <Discretize field="age of car">
+            <DiscretizeBin binValue="0">
+              <Interval closure="closedOpen" leftMargin="0" rightMargin="1"/>
+            </DiscretizeBin>
+            <DiscretizeBin binValue="1">
+              <Interval closure="closedOpen" leftMargin="1" rightMargin="5"/>
+            </DiscretizeBin>
+            <DiscretizeBin binValue="2">
+              <Interval closure="closedOpen" leftMargin="5"/>
+            </DiscretizeBin>
+          </Discretize>
+        </DerivedField>
+        <PairCounts value="0">
+          <TargetValueCounts>
+            <TargetValueCount value="100" count="927"/>
+            <TargetValueCount value="500" count="183"/>
+            <TargetValueCount value="1000" count="221"/>
+            <TargetValueCount value="5000" count="50"/>
+            <TargetValueCount value="10000" count="10"/>
+          </TargetValueCounts>
+        </PairCounts>
+        <PairCounts value="1">
+          <TargetValueCounts>
+            <TargetValueCount value="100" count="830"/>
+            <TargetValueCount value="500" count="182"/>
+            <TargetValueCount value="1000" count="51"/>
+            <TargetValueCount value="5000" count="26"/>
+            <TargetValueCount value="10000" count="6"/>
+          </TargetValueCounts>
+        </PairCounts>
+        <PairCounts value="2">
+          <TargetValueCounts>
+            <TargetValueCount value="100" count="6251"/>
+            <TargetValueCount value="500" count="1901"/>
+            <TargetValueCount value="1000" count="919"/>
+            <TargetValueCount value="5000" count="623"/>
+            <TargetValueCount value="10000" count="71"/>
+          </TargetValueCounts>
+        </PairCounts>
+      </BayesInput>
+    </BayesInputs>
+    <BayesOutput fieldName="amount of claims">
+      <TargetValueCounts>
+        <TargetValueCount value="100" count="8723"/>
+        <TargetValueCount value="500" count="2557"/>
+        <TargetValueCount value="1000" count="1530"/>
+        <TargetValueCount value="5000" count="709"/>
+        <TargetValueCount value="10000" count="100"/>
+      </TargetValueCounts>
+    </BayesOutput>
+  </NaiveBayesModel>
+</PMML>

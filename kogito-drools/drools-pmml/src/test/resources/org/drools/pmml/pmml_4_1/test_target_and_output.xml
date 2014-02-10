@@ -1,0 +1,73 @@
+<PMML version="4.1" xsi:schemaLocation="http://www.dmg.org/PMML-4_1 http://www.dmg.org/v4-1/pmml-4-1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_1">
+  <Header copyright="JBoss"/>
+  <DataDictionary numberOfFields="4">
+    <DataField dataType="double" name="petal length" optype="continuous">
+      <Interval closure="closedOpen" leftMargin="0"/>
+    </DataField>
+    <DataField dataType="integer" name="petal number" optype="continuous">
+      <Value property="missing" value="0"/>
+      <Value property="invalid" value="-1"/>
+      <Value property="valid" value="4"/>
+      <Value property="valid" value="5"/>
+      <Value property="valid" value="6"/>
+    </DataField>
+    <DataField dataType="string" name="NSPECIES" optype="categorical">
+      <Value property="valid" value="Iris_setosa"/>
+      <Value property="valid" value="Iris_versicolor"/>
+      <Value property="valid" value="Iris_virginica"/>
+    </DataField>
+    <DataField dataType="double" name="NCSPECIES" optype="continuous"/>
+  </DataDictionary>
+  <NeuralNetwork activationFunction="logistic" algorithmName="Neural Net" functionName="regression" modelName="IRIS_MLP">
+    <MiningSchema>
+      <MiningField highValue="6.9" invalidValueTreatment="asMissing" lowValue="1.0" missingValueReplacement="3.95" missingValueTreatment="asMedian" name="petal length" outliers="asExtremeValues" usageType="active"/>
+      <MiningField highValue="6" invalidValueTreatment="asMissing" lowValue="4" missingValueReplacement="5" missingValueTreatment="asValue" name="petal number" outliers="asExtremeValues" usageType="active"/>
+      <MiningField name="NCSPECIES1" usageType="predicted"/>
+      <MiningField name="NCSPECIES2" usageType="predicted"/>
+    </MiningSchema>
+    <Output>
+      <OutputField dataType="double" name="outNCSP1" optype="categorical" targetField="NCSPECIES1"/>
+      <OutputField name="outNCSP2" targetField="NCSPECIES2"/>
+      <OutputField feature="predictedDisplayValue" name="outFeatDV" targetField="NCSPECIES2"/>
+      <OutputField name="outResidual" targetField="NCSPECIES2" feature="residual" value="6.0" />
+    </Output>
+    <Targets>
+      <Target castInteger="round" field="NCSPECIES1" max="0.8" min="0.2" optype="continuous" rescaleConstant="2.0" rescaleFactor="3.0"/>
+      <Target castInteger="round" field="NCSPECIES2" max="0.8" min="0.2" optype="continuous" rescaleConstant="2.0" rescaleFactor="3.0">
+        <TargetValue defaultValue="0.123" displayValue="NC Species II" priorProbability="0.05" />
+      </Target>
+    </Targets>
+    <NeuralInputs>
+      <NeuralInput id="0">
+        <DerivedField dataType="double" optype="continuous">
+          <FieldRef field="petal number"/>
+        </DerivedField>
+      </NeuralInput>
+    </NeuralInputs>
+    <NeuralLayer>
+      <Neuron id="1">
+        <Con from="0" weight="0.125"/>
+      </Neuron>
+    </NeuralLayer>
+    <NeuralLayer activationFunction="logistic">
+      <Neuron bias="1.0" id="2">
+        <Con from="1" weight="-2"/>
+      </Neuron>
+      <Neuron bias="0.0" id="3">
+        <Con from="1" weight="1.0"/>
+      </Neuron>
+    </NeuralLayer>
+    <NeuralOutputs>
+      <NeuralOutput outputNeuron="2">
+        <DerivedField dataType="double" optype="continuous">
+          <FieldRef field="NCSPECIES1"/>
+        </DerivedField>
+      </NeuralOutput>
+      <NeuralOutput outputNeuron="3">
+        <DerivedField dataType="double" optype="continuous">
+          <FieldRef field="NCSPECIES2"/>
+        </DerivedField>
+      </NeuralOutput>
+    </NeuralOutputs>
+  </NeuralNetwork>
+</PMML>

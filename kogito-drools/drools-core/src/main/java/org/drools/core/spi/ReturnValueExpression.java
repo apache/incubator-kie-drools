@@ -22,6 +22,7 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.rule.Declaration;
 import org.kie.internal.security.KiePolicyHelper;
 
@@ -31,7 +32,7 @@ public interface ReturnValueExpression
     
     public Object createContext();
     
-    public FieldValue evaluate(Object object,
+    public FieldValue evaluate(InternalFactHandle handle,
                                Tuple tuple,
                                Declaration[] previousDeclarations,
                                Declaration[] localDeclarations,
@@ -57,7 +58,7 @@ public interface ReturnValueExpression
             }, KiePolicyHelper.getAccessContext());
         }
 
-        public FieldValue evaluate(final Object object, 
+        public FieldValue evaluate(final InternalFactHandle handle,
                 final Tuple tuple, 
                 final Declaration[] previousDeclarations, 
                 final Declaration[] localDeclarations, 
@@ -66,7 +67,7 @@ public interface ReturnValueExpression
             return AccessController.doPrivileged(new PrivilegedExceptionAction<FieldValue>() {
                 @Override
                 public FieldValue run() throws Exception {
-                    return delegate.evaluate(object, tuple, previousDeclarations, localDeclarations, workingMemory, context);
+                    return delegate.evaluate(handle, tuple, previousDeclarations, localDeclarations, workingMemory, context);
                 }
             }, KiePolicyHelper.getAccessContext());
         }

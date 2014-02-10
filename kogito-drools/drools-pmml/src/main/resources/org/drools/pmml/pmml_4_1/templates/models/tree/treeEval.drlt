@@ -1,0 +1,88 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+@comment{
+    All node-specific rules, which require context information to be applied
+}
+
+@declare{'treeEval'}
+
+
+rule "Eval Tree Node @{context} - @{id} - Down"
+salience $children.size() - $children.indexOf( $child )
+dialect "mvel"
+when
+    $node : TreeNode( context == "@{context}", $id : id == "@{id}", $children : children, children.size > 0 )
+    $tok  : @{context}TreeToken( context == "@{context}", current == "@{id}", $trail : trail,
+                                 ( @{constraints} ) || ( visitMode == "AGGREGATE_NODES" && ( @{missings} ) ) )
+    $child : String( this not memberOf $trail ) from $children
+then
+//    System.out.println( "Visiting node @{id}, going down to " + $child );
+    modify ( $tok ) {
+        getTrail().add( $child ),
+        setDownward( true ),
+        setCurrent( $child );
+    }
+end
+
+
+
+rule "Eval Tree Node @{context} - @{id} - True"
+salience 3
+no-loop
+when
+    $node : TreeNode( context == "@{context}", $id : id == "@{id}", $out : outcome,
+                      children.size == 0, $conf : confidence, $tot : recordCount )
+    $tok  : @{context}TreeToken( context == "@{context}", current == "@{id}", $baseConf : confidence,
+                                 $res : results, results.keySet not contains "@{id}",
+                                 visitMode != "AGGREGATE_NODES",
+                                 @{constraints}
+                               )
+then
+//    System.out.println( "TRUE Solution found at @{id} !!!! " );
+    modify( $tok ) {
+       setConfidence( $baseConf * ( $conf.containsKey( $out ) ? (Double) $conf.get( $out ) : 1.0 ) ),
+       setTotalCount( $tot ),
+       setOutcome( $out ),
+       setCurrent( "null" );
+    }
+end
+
+
+
+
+rule "Eval Tree Node @{context} - @{id} - Unknown Weighted"
+salience 3
+when
+    $node : TreeNode( context == "@{context}", $id : id == "@{id}", $out : outcome )
+    $tok  : @{context}TreeToken( context == "@{context}", current == "@{id}",
+                                 visitMode == "WEIGHTED_CONFIDENCE" || == "LAST_PREDICTION" || == "NULL_PREDICTION",
+                                 results.keySet not contains "@{id}",
+                                 @{missings} )
+then
+//    System.out.println( "UNKNOWN found at @{id}, collecting for later evaluation !!!! " );
+    modify ( $tok ) { getResults().put( "@{id}", $out ); }
+end
+
+
+@end{}
+
+
+@includeNamed{'treeEval'}

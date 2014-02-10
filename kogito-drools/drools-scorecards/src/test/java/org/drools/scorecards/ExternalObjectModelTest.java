@@ -5,21 +5,28 @@ import org.dmg.pmml.pmml_4_1.descr.Output;
 import org.dmg.pmml.pmml_4_1.descr.OutputField;
 import org.dmg.pmml.pmml_4_1.descr.PMML;
 import org.dmg.pmml.pmml_4_1.descr.Scorecard;
+import org.drools.pmml.pmml_4_1.PMML4Compiler;
+import org.drools.pmml.pmml_4_1.extensions.PMMLExtensionNames;
 import org.drools.scorecards.example.Applicant;
-import org.drools.scorecards.pmml.PMMLExtensionNames;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Results;
+import org.kie.api.definition.type.FactType;
+import org.kie.api.runtime.ClassObjectFilter;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.io.ResourceType;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -29,36 +36,29 @@ import static junit.framework.Assert.fail;
 import static org.drools.scorecards.ScorecardCompiler.DrlType.EXTERNAL_OBJECT_MODEL;
 
 public class ExternalObjectModelTest {
-    private static String drl;
-    private PMML pmmlDocument;
     private static ScorecardCompiler scorecardCompiler;
+
     @Before
     public void setUp() throws Exception {
         scorecardCompiler = new ScorecardCompiler(EXTERNAL_OBJECT_MODEL);
+    }
+
+
+    @Test
+    public void testPMMLCustomOutput() throws Exception {
+        PMML pmmlDocument = null;
+        String drl = null;
         if (scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_externalmodel.xls")) ) {
             pmmlDocument = scorecardCompiler.getPMMLDocument();
-            assertNotNull(pmmlDocument);
+            assertNotNull( pmmlDocument );
+            PMML4Compiler.dumpModel( pmmlDocument, System.out );
             drl = scorecardCompiler.getDRL();
+            assertTrue( drl != null && ! drl.isEmpty() );
             //System.out.println(drl);
         } else {
             fail("failed to parse scoremodel Excel.");
         }
-    }
 
-    @Test
-    public void testPMMLNotNull() throws Exception {
-        assertNotNull(pmmlDocument);
-    }
-
-    @Test
-    public void testPMMLToString() throws Exception {
-        String pmml = scorecardCompiler.getPMML();
-        assertNotNull(pmml);
-        assertTrue(pmml.length() > 0);
-    }
-
-    @Test
-    public void testPMMLCustomOutput() throws Exception {
         for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
             if (serializable instanceof Scorecard){
                 Scorecard scorecard = (Scorecard)serializable;
@@ -73,7 +73,7 @@ public class ExternalObjectModelTest {
                         assertEquals("Final Score", outputField.getDisplayName());
                         assertEquals("double", outputField.getDataType().value());
                         assertEquals("predictedValue", outputField.getFeature().value());
-                        final Extension extension = ScorecardPMMLUtils.getExtension(outputField.getExtensions(), PMMLExtensionNames.SCORECARD_RESULTANT_SCORE_CLASS);
+                        final Extension extension = ScorecardPMMLUtils.getExtension(outputField.getExtensions(), PMMLExtensionNames.EXTERNAL_CLASS );
                         assertNotNull(extension);
                         assertEquals("org.drools.scorecards.example.Applicant",extension.getValue());
                         return;
@@ -84,28 +84,36 @@ public class ExternalObjectModelTest {
         fail();
     }
 
-    @Test
-    public void testDrlNoNull() throws Exception {
-        assertNotNull(drl);
-        assertTrue(drl.length() > 0);
-        //System.out.println(drl);
-    }
+
 
     @Test
     public void testDRLExecution() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
-        for (KnowledgeBuilderError error : kbuilder.getErrors()){
-            System.out.println(error.getMessage());
+        PMML pmmlDocument = null;
+        String drl = null;
+        if (scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_externalmodel.xls")) ) {
+            pmmlDocument = scorecardCompiler.getPMMLDocument();
+            assertNotNull( pmmlDocument );
+            PMML4Compiler.dumpModel( pmmlDocument, System.out );
+            drl = scorecardCompiler.getDRL();
+            assertTrue( drl != null && ! drl.isEmpty() );
+            //System.out.println(drl);
+        } else {
+            fail("failed to parse scoremodel Excel.");
         }
-        assertFalse( kbuilder.hasErrors() );
 
-        //BUILD RULEBASE
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write( ks.getResources().newByteArrayResource( drl.getBytes() )
+                           .setSourcePath( "test_scorecard_rules.drl" )
+                           .setResourceType( ResourceType.DRL ) );
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+        Results res = kieBuilder.buildAll().getResults();
+        System.err.print( res.getMessages() );
+        KieContainer kieContainer = ks.newKieContainer( kieBuilder.getKieModule().getReleaseId() );
 
-        //NEW WORKING MEMORY
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = kieContainer.getKieBase();
+        KieSession session = kbase.newKieSession();
+
         Applicant applicant = new Applicant();
         applicant.setAge(10);
         session.insert( applicant );
@@ -114,7 +122,7 @@ public class ExternalObjectModelTest {
         //occupation = 0, age = 30, validLicence -1
         assertEquals(29.0,applicant.getTotalScore());
 
-        session = kbase.newStatefulKnowledgeSession();
+        session = kbase.newKieSession();
         applicant = new Applicant();
         applicant.setOccupation("SKYDIVER");
         applicant.setAge(0);
@@ -124,7 +132,7 @@ public class ExternalObjectModelTest {
         //occupation = -10, age = +10, validLicense = -1;
         assertEquals(-1.0, applicant.getTotalScore());
 
-        session = kbase.newStatefulKnowledgeSession();
+        session = kbase.newKieSession();
         applicant = new Applicant();
         applicant.setResidenceState("AP");
         applicant.setOccupation("TEACHER");
@@ -142,32 +150,30 @@ public class ExternalObjectModelTest {
         ScorecardCompiler scorecardCompiler2 = new ScorecardCompiler(EXTERNAL_OBJECT_MODEL);
         PMML pmmlDocument2 = null;
         String drl2 = null;
-        if (scorecardCompiler2.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_externalmodel.xls"), "scorecards_initialscore") ) {
+        if ( scorecardCompiler2.compileFromExcel( PMMLDocumentTest.class.getResourceAsStream("/scoremodel_externalmodel.xls" ), "scorecards_initialscore" ) ) {
             pmmlDocument2 = scorecardCompiler2.getPMMLDocument();
             assertNotNull(pmmlDocument2);
             drl2 = scorecardCompiler2.getDRL();
-            //System.out.println(drl2);
+            PMML4Compiler.dumpModel( pmmlDocument2, System.out );
         } else {
             fail("failed to parse scoremodel Excel.");
         }
-        testDRLExecutionWithInitialScore(drl2);
-    }
+        assertNotNull( pmmlDocument2 );
+        assertTrue( drl2 != null && ! drl2.isEmpty() );
 
-    public void testDRLExecutionWithInitialScore(String drl2) throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write( ks.getResources().newByteArrayResource( drl2.getBytes() )
+                           .setSourcePath( "test_scorecard_rules.drl" )
+                           .setResourceType( ResourceType.DRL ) );
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+        Results res = kieBuilder.buildAll().getResults();
+        System.err.println( res.getMessages() );
+        KieContainer kieContainer = ks.newKieContainer( kieBuilder.getKieModule().getReleaseId() );
 
-        kbuilder.add( ResourceFactory.newByteArrayResource(drl2.getBytes()), ResourceType.DRL);
-        for (KnowledgeBuilderError error : kbuilder.getErrors()){
-            System.out.println(error.getMessage());
-        }
-        assertFalse( kbuilder.hasErrors() );
+        KieBase kbase = kieContainer.getKieBase();
+        KieSession session = kbase.newKieSession();
 
-        //BUILD RULEBASE
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        //NEW WORKING MEMORY
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         Applicant applicant = new Applicant();
         applicant.setAge(10);
         session.insert(applicant);
@@ -177,7 +183,7 @@ public class ExternalObjectModelTest {
         //occupation = 0, age = 30, validLicence -1, initialScore=100
         assertEquals(129.0,applicant.getTotalScore());
 
-        session = kbase.newStatefulKnowledgeSession();
+        session = kbase.newKieSession();
         applicant = new Applicant();
         applicant.setOccupation("SKYDIVER");
         applicant.setAge(0);
@@ -187,7 +193,7 @@ public class ExternalObjectModelTest {
         //occupation = -10, age = +10, validLicense = -1, initialScore=100;
         assertEquals(99.0, applicant.getTotalScore());
 
-        session = kbase.newStatefulKnowledgeSession();
+        session = kbase.newKieSession();
         applicant = new Applicant();
         applicant.setResidenceState("AP");
         applicant.setOccupation("TEACHER");
@@ -207,7 +213,8 @@ public class ExternalObjectModelTest {
         String drl2 = null;
         if (scorecardCompiler2.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_externalmodel.xls"), "scorecards_reasoncode") ) {
             pmmlDocument2 = scorecardCompiler2.getPMMLDocument();
-            assertNotNull(pmmlDocument2);
+            PMML4Compiler.dumpModel( pmmlDocument2, System.out );
+            assertNotNull( pmmlDocument2 );
             drl2 = scorecardCompiler2.getDRL();
             //System.out.println(drl2);
         } else {
@@ -216,35 +223,43 @@ public class ExternalObjectModelTest {
             }
             fail("failed to parse scoremodel Excel (scorecards_reasoncode).");
         }
-        testDRLExecutionWithReasonCodes(drl2);
-    }
+        assertNotNull( pmmlDocument2 );
+        assertTrue( drl2 != null && ! drl2.isEmpty() );
 
-    public void testDRLExecutionWithReasonCodes(String drl2) throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write( ks.getResources().newByteArrayResource( drl2.getBytes() )
+                           .setSourcePath( "test_scorecard_rules.drl" )
+                           .setResourceType( ResourceType.DRL ) );
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+        Results res = kieBuilder.buildAll().getResults();
+        KieContainer kieContainer = ks.newKieContainer( kieBuilder.getKieModule().getReleaseId() );
 
-        kbuilder.add( ResourceFactory.newByteArrayResource(drl2.getBytes()), ResourceType.DRL);
-        for (KnowledgeBuilderError error : kbuilder.getErrors()){
-            System.out.println("DRL Errors >> :"+error.getMessage());
-        }
-        assertFalse( kbuilder.hasErrors() );
+        KieBase kbase = kieContainer.getKieBase();
+        KieSession session = kbase.newKieSession();
 
-        //BUILD RULEBASE
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        FactType scorecardInternalsType = kbase.getFactType( "org.drools.scorecards.example","ScoreCard" );
 
-        //NEW WORKING MEMORY
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         Applicant applicant = new Applicant();
         applicant.setAge(10);
         session.insert(applicant);
         //session.addEventListener(new DebugWorkingMemoryEventListener());
         session.fireAllRules();
-        session.dispose();
         //occupation = 0, age = 30, validLicence -1, initialScore=100
-        assertEquals(129.0,applicant.getTotalScore());
-        assertTrue(applicant.getReasonCodes().size() > 0);
+        assertEquals( 129.0,applicant.getTotalScore() );
+        assertEquals( "VL0099", applicant.getReasonCodes() );
 
-        session = kbase.newStatefulKnowledgeSession();
+        Object scorecardInternals = session.getObjects( new ClassObjectFilter( scorecardInternalsType.getFactClass() ) ).iterator().next();
+        Assert.assertEquals( 129.0, scorecardInternalsType.get( scorecardInternals, "score" ) );
+        Map reasonCodesMap = (Map) scorecardInternalsType.get( scorecardInternals, "ranking" );
+        Assert.assertNotNull( reasonCodesMap );
+        Assert.assertEquals( Arrays.asList( "VL0099", "AGE02" ), new ArrayList( reasonCodesMap.keySet() ) );
+
+
+
+        session.dispose();
+
+        session = kbase.newKieSession();
         applicant = new Applicant();
         applicant.setOccupation("SKYDIVER");
         applicant.setAge(0);
@@ -254,7 +269,7 @@ public class ExternalObjectModelTest {
         //occupation = -10, age = +10, validLicense = -1, initialScore=100;
         assertEquals(99.0, applicant.getTotalScore());
 
-        session = kbase.newStatefulKnowledgeSession();
+        session = kbase.newKieSession();
         applicant = new Applicant();
         applicant.setResidenceState("AP");
         applicant.setOccupation("TEACHER");

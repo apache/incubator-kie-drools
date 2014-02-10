@@ -90,6 +90,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
                                             new Declaration[0],
                                             new int[0],
                                             new int[] { 0, 2, 5 },
+                                            false,
                                             false );
        
 

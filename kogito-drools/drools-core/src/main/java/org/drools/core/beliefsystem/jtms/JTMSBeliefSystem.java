@@ -21,8 +21,8 @@ public class JTMSBeliefSystem
 
     private TruthMaintenanceSystem tms;
 
-    private NamedEntryPoint        defEP;
-    private NamedEntryPoint        negEP;
+    protected NamedEntryPoint        defEP;
+    protected NamedEntryPoint        negEP;
 
     public JTMSBeliefSystem(NamedEntryPoint ep,
                             TruthMaintenanceSystem tms) {
@@ -92,7 +92,7 @@ public class JTMSBeliefSystem
         }
     }
 
-    private void insertBelief(LogicalDependency node,
+    protected void insertBelief(LogicalDependency node,
                               ObjectTypeConf typeConf,
                               JTMSBeliefSet jtmsBeliefSet,
                               PropagationContext context,

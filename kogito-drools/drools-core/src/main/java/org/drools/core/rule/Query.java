@@ -25,7 +25,7 @@ public class Query extends Rule implements org.kie.api.definition.rule.Query {
     private static final long serialVersionUID = 510l;
 
     public Query() {
-        
+
     }
     
     private Declaration[] parameters;
@@ -68,6 +68,10 @@ public class Query extends Rule implements org.kie.api.definition.rule.Query {
 
     public boolean isQuery() {
         return true;
+    }
+
+    public boolean isAbductive() {
+        return false;
     }
 
 }
