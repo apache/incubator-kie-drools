@@ -82,25 +82,20 @@ end
 // ############################################################################
 
 rule "totalProjectDelay"
-	when
- 		$maxCriticalPath : Number() from accumulate(
-			Project($criticalPath : criticalPathEndDate, $project : this) 
-			and Allocation($endDate : endDate, project == $project, $job : job)
-			and Job(this == $job, jobType == JobType.SINK),
-			sum(-$endDate + $criticalPath)
-		) 
-	then
-		scoreHolder.addSoftConstraintMatch(kcontext, 0,  $maxCriticalPath.intValue() );
-end		
+    when
+        Allocation(jobType == JobType.SINK, endDate != null, $endDate : endDate,
+               $criticalPathEndDate : projectCriticalPathEndDate)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, 0,  $criticalPathEndDate - $endDate);
+end        
 
 
 rule "totalMakespan"
-	when
- 		$maxProjectEndDate : Number() from accumulate(
-			Allocation($endDate : endDate, $job : job)
-			and Job(this == $job, jobType == JobType.SINK),
-			max($endDate)
-		)
-	then
-		scoreHolder.addSoftConstraintMatch(kcontext, 1, -$maxProjectEndDate.intValue());
+    when
+         $maxProjectEndDate : Number() from accumulate(
+            Allocation(jobType == JobType.SINK, $endDate : endDate),
+            max($endDate)
+        )
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, 1, -$maxProjectEndDate.intValue());
 end
