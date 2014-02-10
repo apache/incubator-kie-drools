@@ -99,4 +99,55 @@
       issue</link>.</para>
     </section>
   </section>
+
+  <section xml:id="integrationWithHumanPlanners">
+    <title>Integration with human planners (politics)</title>
+
+    <para>A good OptaPlanner implementation beats any good human planner for non-trivial datasets. Many human planners
+    fail to accept this, often because they feel threatened by an automated system.</para>
+
+    <para>But despite that, OptaPlanner can benefit from a human planner as supervisor:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><emphasis role="bold">The human planner defines and validates the score function of
+        OptaPlanner.</emphasis></para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Some examples expose a <literal>*Parametrization</literal> object, which defines the weight for each
+            score constraint. The human planner can then tweak those weights at runtime.</para>
+          </listitem>
+
+          <listitem>
+            <para>When the business changes, the score function often needs to change too. The human planner can notify
+            the developers to add, change or remove score constraints.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">The human planner is always in control of OptaPlanner.</emphasis></para>
+
+        <itemizedlist>
+          <listitem>
+            <para>As shown in the course scheduling example, the human planner can lock 1 or more planning variables to
+            a specific planning value and make those immovable. Because they are <link
+            linkend="immovablePlanningEntities">immovable</link>, OptaPlanner does not change them: it optimizes the
+            planning around the enforcements made by the human. If the human planner locks all planning variables,
+            he/she sidelines OptaPlanner completely.</para>
+          </listitem>
+
+          <listitem>
+            <para>In a prototype implementation, the human planner might use this occasionally. But as the
+            implementation matures, it must become obsolete. But do keep the feature alive: as a reassurance for the
+            humans. Or in case that one day the business changes dramatically before the score constraints can be
+            adjusted.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+    </itemizedlist>
+
+    <para>Therefore, it's often a good idea to involve the human planner in your project.</para>
+  </section>
 </chapter>
