@@ -33,6 +33,8 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
 
@@ -127,6 +129,28 @@ public class SelectorTestUtils {
         when(valueSelector.isCountable()).thenReturn(true);
         when(valueSelector.isNeverEnding()).thenReturn(false);
         when(valueSelector.getSize(any())).thenReturn((long) valueList.size());
+        return valueSelector;
+    }
+
+    public static ValueSelector mockValueSelectorForEntity(Class entityClass, Object entity, String variableName,
+            Object... values) {
+        PlanningVariableDescriptor variableDescriptor = mockVariableDescriptor(entityClass, variableName);
+        return mockValueSelectorForEntity(variableDescriptor, entity, values);
+    }
+
+    public static ValueSelector mockValueSelectorForEntity(PlanningVariableDescriptor variableDescriptor, Object entity,
+            Object... values) {
+        ValueSelector valueSelector = mock(ValueSelector.class);
+        when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
+        final List<Object> valueList = Arrays.<Object>asList(values);
+        when(valueSelector.iterator(entity)).thenAnswer(new Answer<Iterator<Object>>() {
+            public Iterator<Object> answer(InvocationOnMock invocation) throws Throwable {
+                return valueList.iterator();
+            }
+        });
+        when(valueSelector.isCountable()).thenReturn(true);
+        when(valueSelector.isNeverEnding()).thenReturn(false);
+        when(valueSelector.getSize(entity)).thenReturn((long) valueList.size());
         return valueSelector;
     }
 

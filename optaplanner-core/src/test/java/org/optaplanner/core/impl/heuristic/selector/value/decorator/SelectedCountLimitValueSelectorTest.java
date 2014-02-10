@@ -154,8 +154,8 @@ public class SelectedCountLimitValueSelectorTest {
     @Test
     public void selectSizeLimitLowerThanSelectorSizeEntityDependent() {
         TestdataEntity entity = new TestdataEntity("e1");
-        // TODO SelectorTestUtils.mockValueSelector should work and mock entity specific
-        ValueSelector childValueSelector = SelectorTestUtils.mockValueSelector(TestdataValue.class, "value",
+        ValueSelector childValueSelector = SelectorTestUtils.mockValueSelectorForEntity(TestdataValue.class,
+                entity, "value",
                 new TestdataValue("v1"), new TestdataValue("v2"), new TestdataValue("v3"), new TestdataValue("v4"), new TestdataValue("v5"));
         ValueSelector valueSelector = new SelectedCountLimitValueSelector(childValueSelector, 3L);
 
@@ -215,8 +215,8 @@ public class SelectedCountLimitValueSelectorTest {
     @Test
     public void selectSizeLimitHigherThanSelectorSizeEntityDependent() {
         TestdataEntity entity = new TestdataEntity("e1");
-        // TODO SelectorTestUtils.mockValueSelector should work and mock entity specific
-        ValueSelector childValueSelector = SelectorTestUtils.mockValueSelector(TestdataValue.class, "value",
+        ValueSelector childValueSelector = SelectorTestUtils.mockValueSelectorForEntity(TestdataValue.class,
+                entity, "value",
                 new TestdataValue("v1"), new TestdataValue("v2"), new TestdataValue("v3"));
         ValueSelector valueSelector = new SelectedCountLimitValueSelector(childValueSelector, 5L);
 
