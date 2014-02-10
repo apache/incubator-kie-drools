@@ -2,7 +2,6 @@ package org.jbpm.kie.services.impl;
 
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,7 +20,6 @@ import org.drools.core.util.StringUtils;
 import org.jbpm.kie.services.api.IdentityProvider;
 import org.jbpm.kie.services.api.Kjar;
 import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
-import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
@@ -83,6 +81,39 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 
         Map<String, String> formsData = new HashMap<String, String>();
         Collection<String> files = module.getFileNames();
+        
+        processResources(module, formsData, files, kieContainer, kmoduleUnit, deployedUnit, releaseId);
+        
+        if (module.getKieDependencies() != null) {
+	        Collection<InternalKieModule> dependencies = module.getKieDependencies().values();
+	        for (InternalKieModule depModule : dependencies) {
+	        	
+	        	logger.debug("Processing dependency module " + depModule.getReleaseId());
+	        	files = depModule.getFileNames();
+	        	
+	        	processResources(depModule, formsData, files, kieContainer, kmoduleUnit, deployedUnit, depModule.getReleaseId());
+	        }
+        }
+
+
+        KieBase kbase = kieContainer.getKieBase(kbaseName);        
+
+        AbstractAuditLogger auditLogger = setupAuditLogger(identityProvider, unit.getIdentifier());
+
+        RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+                .entityManagerFactory(getEmf())
+                .knowledgeBase(kbase)
+                .classLoader(kieContainer.getClassLoader());
+        if (beanManager != null) {
+            builder.registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, auditLogger, kieContainer,
+                    kmoduleUnit.getKsessionName()));
+        }
+        commonDeploy(unit, deployedUnit, builder.get());
+    }
+
+    
+    protected void processResources(InternalKieModule module, Map<String, String> formsData, Collection<String> files,
+    		KieContainer kieContainer, DeploymentUnit unit, DeployedUnitImpl deployedUnit, ReleaseId releaseId) {
         for (String fileName : files) {
             if(fileName.matches(".+bpmn[2]?$")) {
                 ProcessAssetDesc process;
@@ -133,20 +164,5 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                 }
             }
         }
-
-        KieBase kbase = kieContainer.getKieBase(kbaseName);        
-
-        AbstractAuditLogger auditLogger = setupAuditLogger(identityProvider, unit.getIdentifier());
-
-        RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
-                .entityManagerFactory(getEmf())
-                .knowledgeBase(kbase)
-                .classLoader(kieContainer.getClassLoader());
-        if (beanManager != null) {
-            builder.registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, auditLogger, kieContainer,
-                    kmoduleUnit.getKsessionName()));
-        }
-        commonDeploy(unit, deployedUnit, builder.get());
     }
-
 }
