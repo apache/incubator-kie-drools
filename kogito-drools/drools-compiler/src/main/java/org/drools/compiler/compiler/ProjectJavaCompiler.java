@@ -86,6 +86,11 @@ public class ProjectJavaCompiler {
         }
 
         @Override
+        public void write(final String resourceName, final byte[] clazzData, boolean createFolder) {
+            write(resourceName, clazzData);
+        }
+
+        @Override
         public byte[] read(String pResourceName) {
             return projectClassLoader.getBytecode(pResourceName);
         }

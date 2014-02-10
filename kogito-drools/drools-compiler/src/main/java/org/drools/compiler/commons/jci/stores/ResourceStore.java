@@ -22,6 +22,7 @@ package org.drools.compiler.commons.jci.stores;
 public interface ResourceStore {
 
     void write( final String pResourceName, final byte[] pResourceData );
+    void write( final String pResourceName, final byte[] pResourceData, boolean createFolder );
     byte[] read( final String pResourceName );
     //FIXME: return the result of the remove
     void remove( final String pResourceName );

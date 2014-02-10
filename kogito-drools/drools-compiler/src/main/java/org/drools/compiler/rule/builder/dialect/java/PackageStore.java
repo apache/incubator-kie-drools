@@ -53,6 +53,12 @@ public class PackageStore
         }
     }
 
+    public void write(final String resourceName,
+                      final byte[] clazzData,
+                      boolean createFolder) {
+        write(resourceName, clazzData);
+    }
+
     public byte[] read(final String resourceName) {
         byte[] clazz = null;
         try {
