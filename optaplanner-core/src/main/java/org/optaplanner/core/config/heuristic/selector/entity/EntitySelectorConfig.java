@@ -43,10 +43,13 @@ import org.optaplanner.core.impl.heuristic.selector.entity.FromSolutionEntitySel
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.CachingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.FilteringEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.ProbabilityEntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.decorator.SelectedCountLimitEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.ShufflingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.SortingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicRecordingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.decorator.SelectedCountLimitMoveSelector;
 
 @XStreamAlias("entitySelector")
 public class EntitySelectorConfig extends SelectorConfig {
@@ -71,6 +74,8 @@ public class EntitySelectorConfig extends SelectorConfig {
     protected Class<? extends SelectionSorter> sorterClass = null;
 
     protected Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass = null;
+
+    protected Long selectedCountLimit = null;
 
     public String getId() {
         return id;
@@ -168,6 +173,14 @@ public class EntitySelectorConfig extends SelectorConfig {
         this.probabilityWeightFactoryClass = probabilityWeightFactoryClass;
     }
 
+    public Long getSelectedCountLimit() {
+        return selectedCountLimit;
+    }
+
+    public void setSelectedCountLimit(Long selectedCountLimit) {
+        this.selectedCountLimit = selectedCountLimit;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -193,6 +206,7 @@ public class EntitySelectorConfig extends SelectorConfig {
         validateCacheTypeVersusSelectionOrder(resolvedCacheType, resolvedSelectionOrder);
         validateSorting(resolvedSelectionOrder);
         validateProbability(resolvedSelectionOrder);
+        validateSelectedLimit(minimumCacheType);
 
         // baseEntitySelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
         EntitySelector entitySelector = buildBaseEntitySelector(configPolicy, entityDescriptor,
@@ -204,6 +218,7 @@ public class EntitySelectorConfig extends SelectorConfig {
         entitySelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, entitySelector);
         entitySelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, entitySelector);
         entitySelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, entitySelector);
+        entitySelector = applySelectedLimit(resolvedCacheType, resolvedSelectionOrder, entitySelector);
         entitySelector = applyMimicRecording(configPolicy, entitySelector);
         return entitySelector;
     }
@@ -429,6 +444,25 @@ public class EntitySelectorConfig extends SelectorConfig {
         return entitySelector;
     }
 
+    private void validateSelectedLimit(SelectionCacheType minimumCacheType) {
+        if (selectedCountLimit != null
+                && minimumCacheType.compareTo(SelectionCacheType.JUST_IN_TIME) > 0) {
+            throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                    + ") with selectedCountLimit (" + selectedCountLimit
+                    + ") has a minimumCacheType (" + minimumCacheType
+                    + ") that is higher than " + SelectionCacheType.JUST_IN_TIME + ".");
+        }
+    }
+
+    private EntitySelector applySelectedLimit(
+            SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            EntitySelector entitySelector) {
+        if (selectedCountLimit != null) {
+            entitySelector = new SelectedCountLimitEntitySelector(entitySelector, selectedCountLimit);
+        }
+        return entitySelector;
+    }
+
     private EntitySelector applyMimicRecording(HeuristicConfigPolicy configPolicy, EntitySelector entitySelector) {
         if (id != null) {
             if (id.isEmpty()) {
@@ -467,6 +501,8 @@ public class EntitySelectorConfig extends SelectorConfig {
                 sorterClass, inheritedConfig.getSorterClass());
         probabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 probabilityWeightFactoryClass, inheritedConfig.getProbabilityWeightFactoryClass());
+        selectedCountLimit = ConfigUtils.inheritOverwritableProperty(
+                selectedCountLimit, inheritedConfig.getSelectedCountLimit());
     }
 
     @Override

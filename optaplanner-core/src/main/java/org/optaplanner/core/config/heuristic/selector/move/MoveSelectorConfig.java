@@ -338,6 +338,23 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         return moveSelector;
     }
 
+    private MoveSelector applyShuffling(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            MoveSelector moveSelector) {
+        if (resolvedSelectionOrder == SelectionOrder.SHUFFLED) {
+            moveSelector = new ShufflingMoveSelector(moveSelector, resolvedCacheType);
+        }
+        return moveSelector;
+    }
+
+    private MoveSelector applyCaching(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            MoveSelector moveSelector) {
+        if (resolvedCacheType.isCached() && resolvedCacheType.compareTo(moveSelector.getCacheType()) > 0) {
+            moveSelector = new CachingMoveSelector(moveSelector, resolvedCacheType,
+                    resolvedSelectionOrder.toRandomSelectionBoolean());
+        }
+        return moveSelector;
+    }
+
     private void validateSelectedLimit(SelectionCacheType minimumCacheType) {
         if (selectedCountLimit != null
                 && minimumCacheType.compareTo(SelectionCacheType.JUST_IN_TIME) > 0) {
@@ -353,23 +370,6 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
             MoveSelector moveSelector) {
         if (selectedCountLimit != null) {
             moveSelector = new SelectedCountLimitMoveSelector(moveSelector, selectedCountLimit);
-        }
-        return moveSelector;
-    }
-
-    private MoveSelector applyShuffling(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
-            MoveSelector moveSelector) {
-        if (resolvedSelectionOrder == SelectionOrder.SHUFFLED) {
-            moveSelector = new ShufflingMoveSelector(moveSelector, resolvedCacheType);
-        }
-        return moveSelector;
-    }
-
-    private MoveSelector applyCaching(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
-            MoveSelector moveSelector) {
-        if (resolvedCacheType.isCached() && resolvedCacheType.compareTo(moveSelector.getCacheType()) > 0) {
-            moveSelector = new CachingMoveSelector(moveSelector, resolvedCacheType,
-                    resolvedSelectionOrder.toRandomSelectionBoolean());
         }
         return moveSelector;
     }
