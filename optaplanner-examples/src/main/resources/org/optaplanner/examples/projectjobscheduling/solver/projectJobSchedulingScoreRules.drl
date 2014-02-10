@@ -81,26 +81,24 @@ end
 // Soft constraints
 // ############################################################################
 
-rule "calculateSoftScore0"
+rule "totalProjectDelay"
 	when
- 		$maxCriticalPath : Number( )  
-		from accumulate(
+ 		$maxCriticalPath : Number() from accumulate(
 			Project($criticalPath : criticalPathEndDate, $project : this) 
-			and Allocation( $endDate : endDate , project == $project , $job : job  )
-			and Job( this == $job , jobType == JobType.SINK ),
-			sum(-$endDate + $criticalPath )
+			and Allocation($endDate : endDate, project == $project, $job : job)
+			and Job(this == $job, jobType == JobType.SINK),
+			sum(-$endDate + $criticalPath)
 		) 
 	then
 		scoreHolder.addSoftConstraintMatch(kcontext, 0,  $maxCriticalPath.intValue() );
 end		
 
 
-rule "calculateSoftScore1"
+rule "totalMakespan"
 	when
- 		$maxProjectEndDate : Number( )  
-		from accumulate(
-			Allocation( $endDate : endDate , $job : job)
-			and Job( this == $job , jobType == JobType.SINK ),
+ 		$maxProjectEndDate : Number() from accumulate(
+			Allocation($endDate : endDate, $job : job)
+			and Job(this == $job, jobType == JobType.SINK),
 			max($endDate)
 		)
 	then
