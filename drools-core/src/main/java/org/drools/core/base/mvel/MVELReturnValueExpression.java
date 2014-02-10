@@ -23,6 +23,7 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.LeftTuple;
@@ -75,7 +76,7 @@ public class MVELReturnValueExpression
         return this.unit.createFactory();
     }    
 
-    public FieldValue evaluate(final Object object,
+    public FieldValue evaluate(final InternalFactHandle handle,
                                final Tuple tuple,
                                final Declaration[] previousDeclarations,
                                final Declaration[] requiredDeclarations,
@@ -85,7 +86,7 @@ public class MVELReturnValueExpression
         
         unit.updateFactory( null,
                             null,
-                            object,
+                            handle,
                             (LeftTuple) tuple,
                             null,
                             (InternalWorkingMemory) workingMemory,
@@ -102,7 +103,7 @@ public class MVELReturnValueExpression
 
 
         return ((InternalRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getFieldFactory().getFieldValue( MVELSafeHelper.getEvaluator().executeExpression( this.expr,
-                                                                                               object,
+                                                                                               handle,
                                                                                                factory ) );
     }
 

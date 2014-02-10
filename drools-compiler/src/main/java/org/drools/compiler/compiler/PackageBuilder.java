@@ -1969,8 +1969,13 @@ public class PackageBuilder
 
         if ((sup != null) && (!sup.contains(".")) && (packageDescr.getNamespace() != null && !packageDescr.getNamespace().isEmpty())) {
             for (AbstractClassTypeDeclarationDescr td : packageDescr.getClassAndEnumDeclarationDescrs()) {
-                if (sup.equals(td.getTypeName()))
-                    sup = packageDescr.getNamespace() + "." + sup;
+                if ( sup.equals( td.getTypeName() ) ) {
+                    if ( td.getType().getFullName().contains( "." ) ) {
+                        sup = td.getType().getFullName();
+                    } else {
+                        sup = packageDescr.getNamespace() + "." + sup;
+                    }
+                }
             }
 
         }
@@ -2675,6 +2680,17 @@ public class PackageBuilder
                 } else {
                     if (type.getRole() == TypeDeclaration.Role.EVENT) {
                         oldType.setRole(TypeDeclaration.Role.EVENT);
+                        if ( type.getDurationAttribute() != null ) {
+                            oldType.setDurationAttribute( type.getDurationAttribute() );
+                            oldType.setDurationExtractor( type.getDurationExtractor() );
+                        }
+                        if ( type.getTimestampAttribute() != null ) {
+                            oldType.setTimestampAttribute( type.getTimestampAttribute() );
+                            oldType.setTimestampExtractor( type.getTimestampExtractor() );
+                        }
+                        if ( type.getExpirationOffset() >= 0 ) {
+                            oldType.setExpirationOffset( type.getExpirationOffset() );
+                        }
                     }
                     if (type.isPropertyReactive()) {
                         oldType.setPropertyReactive(true);
@@ -2974,10 +2990,49 @@ public class PackageBuilder
                     // new declarations of a POJO can't declare new fields,
                     // except if the POJO was previously generated/compiled and saved into the kjar
                     if (!configuration.isPreCompiled() &&
-                            !GeneratedFact.class.isAssignableFrom(existingDeclarationClass) && !type.getTypeClassDef().getFields().isEmpty()) {
-                        type.setValid(false);
-                        this.results.add(new TypeDeclarationError(typeDescr, "New declaration of " + typeDescr.getType().getFullName()
-                                + " can't declare new fields"));
+                        !GeneratedFact.class.isAssignableFrom(existingDeclarationClass) && !type.getTypeClassDef().getFields().isEmpty()) {
+                        try {
+                            Class existingClass = pkgRegistry.getPackage().getTypeResolver().resolveType( typeDescr.getType().getFullName() );
+                            ClassFieldInspector cfi = new ClassFieldInspector( existingClass );
+
+                            int fieldCount = 0;
+                            for ( String existingFieldName : cfi.getFieldTypesField().keySet() ) {
+                                if ( ! cfi.isNonGetter( existingFieldName ) && ! "class".equals( existingFieldName ) && cfi.getSetterMethods().containsKey( existingFieldName ) ) {
+                                    if ( ! typeDescr.getFields().containsKey( existingFieldName ) ) {
+                                        type.setValid(false);
+                                        this.results.add(new TypeDeclarationError(typeDescr, "New declaration of "+typeDescr.getType().getFullName() +
+                                                                                             " does not include field " + existingFieldName ) );
+                                    } else {
+                                        String fldType = cfi.getFieldTypes().get( existingFieldName ).getName();
+                                        TypeFieldDescr declaredField = typeDescr.getFields().get( existingFieldName );
+                                        if ( ! fldType.equals( type.getTypeClassDef().getField( existingFieldName ).getTypeName() ) ) {
+                                            type.setValid(false);
+                                            this.results.add(new TypeDeclarationError(typeDescr, "New declaration of "+typeDescr.getType().getFullName() +
+                                                                                                 " redeclared field " + existingFieldName + " : \n" +
+                                                                                                 "existing : " + fldType + " vs declared : " + declaredField.getPattern().getObjectType() ) );
+                                        } else {
+                                            fieldCount++;
+                                        }
+
+                                    }
+                                }
+                            }
+
+                            if ( fieldCount != typeDescr.getFields().size() ) {
+                                this.results.add(new TypeDeclarationError(typeDescr, "New declaration of "+typeDescr.getType().getFullName()
+                                                                                     +" can't declaredeclares a different set of fields \n" +
+                                                                                     "existing : " + cfi.getFieldTypesField() + "\n" +
+                                                                                     "declared : " + typeDescr.getFields() ));
+
+                            }
+                        } catch ( IOException e ) {
+                            e.printStackTrace();
+                            type.setValid(false);
+                            this.results.add( new TypeDeclarationError( typeDescr, "Unable to redeclare " + typeDescr.getType().getFullName() + " : " + e.getMessage() ) );
+                        } catch ( ClassNotFoundException e ) {
+                            type.setValid(false);
+                            this.results.add( new TypeDeclarationError( typeDescr, "Unable to redeclare " + typeDescr.getType().getFullName() + " : " + e.getMessage() ) );
+                        }
                     }
                 } else {
 
@@ -3808,7 +3863,7 @@ public class PackageBuilder
                 taxonomy.put(name, new ArrayList<QualifiedName>());
             } else {
                 this.results.add(new TypeDeclarationError(tdescr,
-                        "Found duplicate declaration for type " + tdescr.getTypeName()));
+                        "Found duplicate declaration for type " + tdescr.getType()));
             }
 
             Collection<QualifiedName> supers = taxonomy.get(name);
@@ -3942,7 +3997,7 @@ public class PackageBuilder
                 //we can't use newFactField.getType() since it throws a NPE at this point.
                 String newFactType = ((FieldDefinition) newFactField).getTypeName();
 
-                if (!newFactType.equals(oldFactField.getType().getCanonicalName())) {
+                if (!newFactType.equals( ((FieldDefinition) oldFactField).getTypeName())) {
                     throw new IncompatibleClassChangeError("Type Declaration " + newDeclaration.getTypeName() + "." + newFactField.getName() + " has a different"
                             + " type that its previous definition: " + newFactType
                             + " != " + oldFactField.getType().getCanonicalName());

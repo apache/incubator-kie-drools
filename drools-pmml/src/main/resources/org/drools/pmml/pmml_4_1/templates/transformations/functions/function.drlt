@@ -1,0 +1,104 @@
+@comment{
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+@comment{
+    Defines a local function
+    /**
+    * @param name        - function name
+    * @param dataType    - return type
+    * @param params      - dataType / name structures
+    * @param funExpr     - function definition
+    */
+}
+
+@declare{'customFunction'}
+
+@code{ String fld; }
+
+declare @{ compactUpperCase( name ) }Goal
+    @foreach{ param : params } @{ param.name } : @{ mapDatatype( param.dataType ) } @end{'\n'}
+    ctx : String
+end
+
+
+
+query @{ compactUpperCase( name ) }_Goal( @foreach{ param : params } @{ mapDatatype( param.dataType ) } @{ param.name }  @end{','} , String $ctx )
+    @Abductive( target = @{ compactUpperCase( name ) }Goal.class )
+end
+
+query @{name}( @foreach{ param : params } @{ mapDatatype( param.dataType ) } @{ param.name }  @end{','} , String $ctx, @{ mapDatatype( dataType, true ) } $return )
+        @{ compactUpperCase( name ) }_Goal( @foreach{ param : params } @{ param.name }  @end{','} , $ctx ; )
+        @foreach{ field : innerFields }
+            @code{ if ( isInnerFieldName( field ) ) { fld = field; } else { fld = compactUpperCase( name ) + "_" + compactUpperCase( field ); } }
+            // @{ field }
+            // @{ exprFieldMap }
+            @{ fld  }( valid == true, missing == false, $ctx := context, @{ exprFieldMap.get( field ) } : value )
+        @end{}
+
+        @foreach{ dep : dependencies}
+            @{ dep }
+        @end{}
+
+       $return := @{ mapDatatype( dataType, true ) }() from @{ expr }
+end
+
+rule "@{name} Goal React"
+@code{ int j = 0; }
+@@Direct
+when
+    $q :  @{ compactUpperCase( name ) }Goal( @foreach{ param : params } @{ param.name } : @{ param.name } @end{ ', ' }, $ctx : ctx )
+then
+   //System.err.println( "QUERY @{name} SIDE EFFECT triggered by " + $q );
+
+    @code{ String pn; }
+    @foreach{ param : params }
+        @code{ pn = compactUpperCase( name ) + "_" + compactUpperCase( param.name ); }
+        @{ pn } _@{pn} = new @{pn}( @{ param.name }, $ctx );
+        _@{pn}.setValid( true );
+        insert( _@{pn} );
+    @end{}
+
+    retract( $q );
+end
+
+
+
+@code{ String pn2; }
+rule "@{name}_Clean"
+@code{ int k = 0; }
+salience -9999
+when
+    @foreach{ param : params }
+    @code{ pn2 = compactUpperCase( name ) + "_" + compactUpperCase( param.name ); }
+        var@{k++} : @{pn2}(  $ctx := context )
+    @end{}
+    not @{ compactUpperCase( name ) }Goal( $ctx := ctx )
+then
+    //System.err.println( "Now I can Cleanup @{name}" );
+    @code{ k = 0; }
+    @foreach{ param : params }
+    @code{ pn2 = compactUpperCase( name ) + "_" + compactUpperCase( param.name ); }
+        retract( var@{k++} );
+    @end{}
+end
+
+
+@end{}
+
+@includeNamed{'customFunction'}

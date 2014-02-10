@@ -31,10 +31,11 @@ import org.dmg.pmml.pmml_4_1.descr.Output;
 import org.dmg.pmml.pmml_4_1.descr.PMML;
 import org.dmg.pmml.pmml_4_1.descr.Scorecard;
 import org.drools.core.util.ArrayUtils;
+import org.drools.pmml.pmml_4_1.extensions.PMMLExtensionNames;
 import org.drools.scorecards.ScorecardCompiler;
 import org.drools.scorecards.parser.xls.XLSKeywords;
-import org.drools.scorecards.pmml.PMMLExtensionNames;
-import org.drools.scorecards.pmml.PMMLGenerator;
+import org.drools.scorecards.pmml.ScorecardPMMLExtensionNames;
+import org.drools.scorecards.pmml.ScorecardPMMLGenerator;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
@@ -62,13 +63,13 @@ public class GuidedScoreCardDRLPersistence {
         final MiningSchema miningSchema = new MiningSchema();
 
         Extension extension = new Extension();
-        extension.setName( PMMLExtensionNames.SCORECARD_RESULTANT_SCORE_CLASS );
+        extension.setName( PMMLExtensionNames.EXTERNAL_CLASS );
         extension.setValue( model.getFactName() );
 
         pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas().add( extension );
 
         extension = new Extension();
-        extension.setName( PMMLExtensionNames.SCORECARD_IMPORTS );
+        extension.setName( PMMLExtensionNames.MODEL_IMPORTS );
         pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas().add( extension );
         List<String> imports = new ArrayList<String>();
         StringBuilder importBuilder = new StringBuilder();
@@ -81,12 +82,12 @@ public class GuidedScoreCardDRLPersistence {
         extension.setValue( importBuilder.toString() );
 
         extension = new Extension();
-        extension.setName( PMMLExtensionNames.SCORECARD_RESULTANT_SCORE_FIELD );
+        extension.setName( ScorecardPMMLExtensionNames.SCORECARD_RESULTANT_SCORE_FIELD );
         extension.setValue( model.getFieldName() );
         pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas().add( extension );
 
         extension = new Extension();
-        extension.setName( PMMLExtensionNames.SCORECARD_PACKAGE );
+        extension.setName( PMMLExtensionNames.MODEL_PACKAGE );
         String pkgName = model.getPackageName();
         extension.setValue( !( pkgName == null || pkgName.isEmpty() ) ? pkgName : null );
         pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas().add( extension );
@@ -106,12 +107,12 @@ public class GuidedScoreCardDRLPersistence {
             characteristics.getCharacteristics().add( _characteristic );
 
             extension = new Extension();
-            extension.setName( PMMLExtensionNames.CHARACTERTISTIC_EXTERNAL_CLASS );
+            extension.setName( PMMLExtensionNames.EXTERNAL_CLASS );
             extension.setValue( characteristic.getFact() );
             _characteristic.getExtensions().add( extension );
 
             extension = new Extension();
-            extension.setName( PMMLExtensionNames.CHARACTERTISTIC_DATATYPE );
+            extension.setName( ScorecardPMMLExtensionNames.CHARACTERTISTIC_DATATYPE );
             if ( "string".equalsIgnoreCase( characteristic.getDataType() ) ) {
                 extension.setValue( XLSKeywords.DATATYPE_TEXT );
             } else if ( "int".equalsIgnoreCase( characteristic.getDataType() ) || "double".equalsIgnoreCase( characteristic.getDataType() ) ) {
@@ -136,7 +137,7 @@ public class GuidedScoreCardDRLPersistence {
             miningSchema.getMiningFields().add( miningField );
 
             extension = new Extension();
-            extension.setName( PMMLExtensionNames.CHARACTERTISTIC_EXTERNAL_CLASS );
+            extension.setName( PMMLExtensionNames.EXTERNAL_CLASS );
             extension.setValue( characteristic.getFact() );
             miningField.getExtensions().add( extension );
 
@@ -146,7 +147,7 @@ public class GuidedScoreCardDRLPersistence {
                 _characteristic.getAttributes().add( _attribute );
 
                 extension = new Extension();
-                extension.setName( PMMLExtensionNames.CHARACTERTISTIC_FIELD );
+                extension.setName( ScorecardPMMLExtensionNames.CHARACTERTISTIC_FIELD );
                 extension.setValue( characteristic.getField() );
                 _attribute.getExtensions().add( extension );
 
@@ -183,7 +184,7 @@ public class GuidedScoreCardDRLPersistence {
         pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas().add( miningSchema );
         pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas().add( output );
         pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas().add( characteristics );
-        return new PMMLGenerator().generateDocument( pmmlScorecard );
+        return new ScorecardPMMLGenerator().generateDocument( pmmlScorecard );
     }
 
     private static String convertToJavaIdentifier( final String modelName ) {

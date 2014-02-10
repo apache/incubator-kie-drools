@@ -1,0 +1,89 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+@comment{
+
+}
+
+
+@declare{'clusteringEvalSimilarity'}
+
+
+rule "Eval Clusters @{context}"
+when
+    $set : ClusterSet( $ctx : context == "@{context}", $clusters : clusters,
+                       $wgts : fieldWgts, misses : missingWgts, $scopes : fieldScopes )
+    $klu : Cluster( context == "@{context}",
+                    $lab : label, $klIndex : index, $center : center )
+    @foreach{ j : numFields }
+        @{ compactUpperCase( inputFields[j].field ) }( context == "@{context}", x@{j} : value, valid == true )
+    @end{}
+then
+
+    int a11 = 0;
+    int a10 = 0;
+    int a01 = 0;
+    int a00 = 0;
+
+    @foreach{ j : numFields }
+        if ( x@{j} == 1.0 && $center[ @{j} ] == 1.0 ) { a11++; }
+        if ( x@{j} == 0.0 && $center[ @{j} ] == 1.0 ) { a01++; }
+        if ( x@{j} == 1.0 && $center[ @{j} ] == 0.0 ) { a10++; }
+        if ( x@{j} == 0.0 && $center[ @{j} ] == 0.0 ) { a00++; }
+    @end{}
+
+
+    Double mu = Double.NaN;
+    @if{ msr.simpleMatching != null }
+        mu = 1.0 * ( a11 + a10 ) / ( a11 + a10 + a01 + a00 );
+    @elseif{ msr.jaccard != null }
+        mu = 1.0 * ( a11 ) / ( a11 + a10 + a01 );
+    @elseif{ msr.tanimoto != null }
+        mu = 1.0 * ( a11 + a00 ) / ( a11 + 2 * ( a10 + a01 ) + a00 );
+    @elseif{ msr.binarySimilarity != null }
+        mu = 1.0 * ( @{msr.binarySimilarity.c11parameter} * a11
+                     + @{msr.binarySimilarity.c10parameter} * a10
+                     + @{msr.binarySimilarity.c01parameter} * a01
+                     + @{msr.binarySimilarity.c00parameter} * a00 )
+                 / ( @{msr.binarySimilarity.d11parameter} * a11
+                     + @{msr.binarySimilarity.d10parameter} * a10
+                     + @{msr.binarySimilarity.d01parameter} * a01
+                     + @{msr.binarySimilarity.d00parameter} * a00
+                   );
+    @end{}
+
+    Membership membership = new SimilarityMembership(
+        "@{context}",
+        $lab,
+        $klIndex,
+        new double[] { @foreach{ j : numFields } x@{j} @end{','} },
+        mu
+    );
+    insertLogical( membership );
+
+
+end
+
+
+
+@end{}
+
+
+@includeNamed{'clusteringEvalSimilarity'}

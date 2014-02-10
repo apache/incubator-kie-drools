@@ -1,0 +1,86 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+@comment{
+
+}
+
+@declare{'regEval'}
+
+rule "Regression Model Output @{context} : @{target} - @{category}"
+@code{ int j = 0; }
+when
+    RegTable( context == "@{context}",
+              target == "@{target}",
+              category == null || == "@{category}",
+              $c0 : intercept,
+              $numC : numCoeffs, $numE : numExps,
+              $catC : catCoeffs,
+              $trmC : trmCoeffs,
+              $ix   : index )
+    @foreach{ fld : inputFields }
+    x@{j} : @{compactUpperCase( fld.name )}( context == "@{context}", valid == true, valx@{compactUpperCase( fld.name )} : value )
+    @code{ j++; }
+    @end{}
+then
+    double x = $c0;
+    @code{j=0;} @foreach{ numP : numPredictors }
+        x += $numC[ @{j} ] * Math.pow( valx@{compactUpperCase( numP.name )}, $numE[ @{j} ]  ); @code{j++;}
+    @end{}
+    @code{j=0;} @foreach{ catP : catPredictors }
+        x += $catC[ @{j} ] * ( "@{catP.value}".equals( valx@{compactUpperCase( catP.name )} ) ? 1.0 : 0.0 ); @code{j++;}
+    @end{}
+
+    @code{j=0;} @foreach{ trmP : trmPredictors }
+        x += $trmC[ @{j} ] * @foreach{ ref : trmP.fieldReves } valx@{ compactUpperCase( ref.field ) } @end{' * '}; @code{j++;}
+    @end{}
+
+
+
+    @if{ isRegression }
+        @if{ normalization != null }
+            x = @{ mapRegModelRegressionNormalization( normalization.value(), "x" ) };
+        @end{}
+        @{ target } out = new @{ target }();
+            out.setContext( "@{context}" );
+            out.setValid( true );
+            out.setMissing( false );
+            out.setValue( x );
+        insertLogical( out );
+    @else{}
+        @if{ normalization != null }
+            x = @{ mapRegModelClassificationNormalization( normalization.value(), "x" ) };
+        @end{}
+        RegTargetBit bit = new RegTargetBit(
+            "@{context}",
+            "@{target}",
+            "@{category}",
+            x,
+            @{ normalization == null || ! normalization.value.equals( "softmax" ) },
+            @{ ! isCategorical },
+            $ix );
+        insertLogical( bit );
+    @end{}
+end
+
+@end{}
+
+
+@includeNamed{'regEval'}

@@ -27,7 +27,7 @@ import org.dmg.pmml.pmml_4_1.descr.Scorecard;
 import org.drools.scorecards.ScorecardError;
 import org.drools.scorecards.parser.AbstractScorecardParser;
 import org.drools.scorecards.parser.ScorecardParseException;
-import org.drools.scorecards.pmml.PMMLGenerator;
+import org.drools.scorecards.pmml.ScorecardPMMLGenerator;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,7 +69,7 @@ public class XLSScorecardParser extends AbstractScorecardParser {
     @Override
     public PMML getPMMLDocument() {
         if (pmmlDocument == null) {
-            pmmlDocument = new PMMLGenerator().generateDocument(scorecard);
+            pmmlDocument = new ScorecardPMMLGenerator().generateDocument(scorecard);
         }
         return pmmlDocument;
     }

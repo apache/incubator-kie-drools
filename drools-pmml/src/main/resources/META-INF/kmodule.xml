@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://jboss.org/kie/6.0.0/kmodule">
+
+  <kbase name="PMML-Bayes-Rules" packages="org.drools.pmml.pmml_4_1.compiler.bayes" eventProcessingMode="stream" />
+  <kbase name="PMML-Cluster-Rules" packages="org.drools.pmml.pmml_4_1.compiler.clustering" eventProcessingMode="stream" />
+  <kbase name="PMML-Neural-Rules" packages="org.drools.pmml.pmml_4_1.compiler.neural" eventProcessingMode="stream" />
+  <kbase name="PMML-Regression-Rules" packages="org.drools.pmml.pmml_4_1.compiler.regression" eventProcessingMode="stream" />
+  <kbase name="PMML-Scorecard-Rules" packages="org.drools.pmml.pmml_4_1.compiler.scorecard" eventProcessingMode="stream" />
+  <kbase name="PMML-SVM-Rules" packages="org.drools.pmml.pmml_4_1.compiler.svm" eventProcessingMode="stream" />
+  <kbase name="PMML-Tree-Rules" packages="org.drools.pmml.pmml_4_1.compiler.tree" eventProcessingMode="stream" />
+
+  <kbase name="PMML-Base" packages="org.drools.pmml.pmml_4_1.compiler" eventProcessingMode="stream" />
+
+  <kbase name="PMML-Bayes" packages="-" eventProcessingMode="stream" includes="PMML-Base,PMML-Bayes-Rules" />
+  <kbase name="PMML-Cluster" packages="-" eventProcessingMode="stream" includes="PMML-Base,PMML-Cluster-Rules" />
+  <kbase name="PMML-Neural" packages="-" eventProcessingMode="stream" includes="PMML-Base,PMML-Neural-Rules"/>
+  <kbase name="PMML-Regression" packages="-" eventProcessingMode="stream" includes="PMML-Base,PMML-Regression-Rules"/>
+  <kbase name="PMML-Scorecard" packages="-" eventProcessingMode="stream" includes="PMML-Base,PMML-Scorecard-Rules"/>
+  <kbase name="PMML-SVM" packages="-" eventProcessingMode="stream" includes="PMML-Base,PMML-SVM-Rules"/>
+  <kbase name="PMML-Tree" packages="-" eventProcessingMode="stream" includes="PMML-Base,PMML-Tree-Rules"/>
+
+  <kbase name="PMML" packages="-" eventProcessingMode="stream" includes="PMML-Base,PMML-Bayes-Rules,PMML-Cluster-Rules,PMML-Neural-Rules,PMML-Regression-Rules,PMML-Scorecard-Rules,PMML-SVM-Rules,PMML-Tree-Rules" />
+
+</kmodule>
