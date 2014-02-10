@@ -69,5 +69,26 @@
      -->
     <maven.jdbc.url>jdbc:h2:mem:jbpm-db;MVCC=true</maven.jdbc.url>
   </properties>
-  
+
+  <build>
+    <plugins>
+      <plugin>
+        <!-- ensure that db files are deleted before _any_ run 
+        otherwise we get tests failing because of leftover db's/tx logs -->
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>btm*</include>
+                <include>*.db</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build> 
 </project>
+>>>>>>> e4b741b... BZ-1058604 - Implement REST operation for cleaning all data displayed by Jbpm Dashboard

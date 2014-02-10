@@ -19,6 +19,7 @@
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-human-task-core</artifactId>
         </dependency>  
+        
         <!-- test -->
         <dependency>
             <groupId>org.jboss.solder</groupId>
@@ -118,7 +119,23 @@
         	<artifactId>jbpm-human-task-jpa</artifactId>
         	<scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-human-task-core</artifactId>
+            <version>${project.version}</version>
+            <classifier>tests</classifier>
+        	<scope>test</scope>
+        </dependency>  
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-persistence-jpa</artifactId>
+            <version>${project.version}</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>  
     </dependencies>
+    
     <build>
     <plugins>
       <plugin>

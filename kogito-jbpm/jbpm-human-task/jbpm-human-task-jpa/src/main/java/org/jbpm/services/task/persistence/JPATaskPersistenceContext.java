@@ -352,6 +352,23 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		return queryStringWithParameters(params, singleResult, LockModeType.NONE, clazz, query);
 	}
 
+	public void queryDeleteInTransaction(String queryName) {
+	    check();
+	    Query query = this.em.createNamedQuery(queryName);
+	    query.executeUpdate();
+	}
+	
+	public void queryDeleteWithParametersInTransaction(String queryName, Map<String, Object> params) {
+	    check();
+	    Query query = this.em.createNamedQuery(queryName);
+	    if (params != null && !params.isEmpty()) {
+	        for (String name : params.keySet()) {
+	            query.setParameter(name, params.get(name));
+	        }
+	    }
+	    query.executeUpdate();
+	}
+	   
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T queryInTransaction(String queryName, Class<T> clazz) {
