@@ -21,6 +21,7 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScoreHolder;
 
 import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
 import org.optaplanner.examples.projectjobscheduling.domain.ExecutionMode;
+import org.optaplanner.examples.projectjobscheduling.domain.Job;
 import org.optaplanner.examples.projectjobscheduling.domain.JobType;
 import org.optaplanner.examples.projectjobscheduling.domain.Project;
 import org.optaplanner.examples.projectjobscheduling.domain.ResourceRequirement;
@@ -80,4 +81,21 @@ end
 // Soft constraints
 // ############################################################################
 
-// TODO unfinished
+rule "totalProjectDelay"
+    when
+        Allocation(jobType == JobType.SINK, endDate != null, $endDate : endDate,
+               $criticalPathEndDate : projectCriticalPathEndDate)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, 0,  $criticalPathEndDate - $endDate);
+end        
+
+
+rule "totalMakespan"
+    when
+         $maxProjectEndDate : Number() from accumulate(
+            Allocation(jobType == JobType.SINK, $endDate : endDate),
+            max($endDate)
+        )
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, 1, -$maxProjectEndDate.intValue());
+end

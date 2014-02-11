@@ -39,7 +39,6 @@ public class TennisGenerator extends LoggingMain {
 
     protected final SolutionDao solutionDao;
     protected final File outputDir;
-    protected Random random;
 
     public TennisGenerator() {
         solutionDao = new TennisDao();

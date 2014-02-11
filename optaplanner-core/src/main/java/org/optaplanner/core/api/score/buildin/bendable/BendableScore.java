@@ -283,4 +283,14 @@ public final class BendableScore extends AbstractScore<BendableScore>
         }
     }
 
+    @Override
+    public boolean isCompatibleArithmeticArgument(Score otherScore) {
+        if (!(otherScore instanceof BendableScore)) {
+            return false;
+        }
+        BendableScore otherBendableScore = (BendableScore) otherScore;
+        return hardScores.length == otherBendableScore.hardScores.length
+                && softScores.length == otherBendableScore.softScores.length;
+    }
+
 }

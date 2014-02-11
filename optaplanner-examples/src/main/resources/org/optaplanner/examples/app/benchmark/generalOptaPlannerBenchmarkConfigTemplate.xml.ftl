@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
-  <benchmarkDirectory>local/data/general</benchmarkDirectory>
+  <benchmarkDirectory>local/data/general/template</benchmarkDirectory>
   <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
@@ -15,8 +15,9 @@
   </inheritedSolverBenchmark>
 
 
+<#list ['JDK', 'MERSENNE_TWISTER', 'WELL512A', 'WELL1024A', 'WELL19937C', 'WELL44497B'] as randomType>
   <solverBenchmark>
-    <name>Cloud Balancing Late Acceptance</name>
+    <name>Cloud Balancing Late Acceptance ${randomType}</name>
     <problemBenchmarks>
       <xstreamAnnotatedClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</xstreamAnnotatedClass>
       <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.xml</inputSolutionFile>
@@ -25,6 +26,7 @@
     <solver>
       <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
       <planningEntityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</planningEntityClass>
+      <randomType>${randomType}</randomType>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
@@ -50,7 +52,7 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>Machine Reassignment Tabu Search</name>
+    <name>Machine Reassignment Tabu Search ${randomType}</name>
     <problemBenchmarks>
       <problemIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentProblemIO</problemIOClass>
       <inputSolutionFile>data/machinereassignment/import/model_b_1.txt</inputSolutionFile>
@@ -59,6 +61,7 @@
     <solver>
       <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
       <planningEntityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
+      <randomType>${randomType}</randomType>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
         <incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
@@ -81,7 +84,7 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>Course Scheduling Late Acceptance</name>
+    <name>Course Scheduling Late Acceptance ${randomType}</name>
     <problemBenchmarks>
       <xstreamAnnotatedClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</xstreamAnnotatedClass>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp07.xml</inputSolutionFile>
@@ -90,6 +93,7 @@
     <solver>
       <solutionClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</solutionClass>
       <planningEntityClass>org.optaplanner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
+      <randomType>${randomType}</randomType>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>/org/optaplanner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
@@ -123,7 +127,7 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>Examination Tabu Search</name>
+    <name>Examination Tabu Search ${randomType}</name>
     <problemBenchmarks>
       <xstreamAnnotatedClass>org.optaplanner.examples.examination.domain.Examination</xstreamAnnotatedClass>
       <inputSolutionFile>data/examination/unsolved/exam_comp_set2.xml</inputSolutionFile>
@@ -132,6 +136,7 @@
     <solver>
       <solutionClass>org.optaplanner.examples.examination.domain.Examination</solutionClass>
       <planningEntityClass>org.optaplanner.examples.examination.domain.Exam</planningEntityClass>
+      <randomType>${randomType}</randomType>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>/org/optaplanner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
@@ -164,7 +169,7 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>Nurse Rostering Tabu Search</name>
+    <name>Nurse Rostering Tabu Search ${randomType}</name>
     <problemBenchmarks>
       <xstreamAnnotatedClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</xstreamAnnotatedClass>
       <inputSolutionFile>data/nurserostering/unsolved/medium01.xml</inputSolutionFile>
@@ -173,6 +178,7 @@
     <solver>
       <solutionClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</solutionClass>
       <planningEntityClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignment</planningEntityClass>
+      <randomType>${randomType}</randomType>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>/org/optaplanner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
@@ -205,7 +211,7 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>TravelingTournament Tabu Search</name>
+    <name>TravelingTournament Tabu Search ${randomType}</name>
     <problemBenchmarks>
       <xstreamAnnotatedClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</xstreamAnnotatedClass>
       <inputSolutionFile>data/travelingtournament/unsolved/1-nl14.xml</inputSolutionFile>
@@ -213,6 +219,7 @@
     <solver>
       <solutionClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
       <planningEntityClass>org.optaplanner.examples.travelingtournament.domain.Match</planningEntityClass>
+      <randomType>${randomType}</randomType>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>/org/optaplanner/examples/travelingtournament/solver/travelingTournamentScoreRules.drl</scoreDrl>
@@ -240,4 +247,5 @@
       </localSearch>
     </solver>
   </solverBenchmark>
+</#list>
 </plannerBenchmark>

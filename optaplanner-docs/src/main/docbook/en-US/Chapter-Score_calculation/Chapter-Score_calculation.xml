@@ -822,8 +822,17 @@
     &lt;scoreDrl&gt;/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
-          <para>You can add multiple <literal>&lt;scoreDrl&gt;</literal> entries if needed, but normally you'll define
-          all your score rules in 1 file.</para>
+          <para>You can add multiple <literal>&lt;scoreDrl&gt;</literal> elements if needed, but normally 1 file
+          suffices to define all your score rules.</para>
+
+          <note>
+            <para>The <literal>&lt;scoreDrl&gt;</literal> element expects a classpath resource, as defined by
+            <literal>Class.getResource(String)</literal>, it does not accept a <literal>File</literal>, nor an URL, nor
+            a webapp resource.</para>
+
+            <para>In a maven build, classpath resource are located under <literal>src/main/resources</literal> by
+            default (even for a war).</para>
+          </note>
 
           <para>Optionally, you can also set drools configuration properties but beware of backwards compatibility
           issues:</para>

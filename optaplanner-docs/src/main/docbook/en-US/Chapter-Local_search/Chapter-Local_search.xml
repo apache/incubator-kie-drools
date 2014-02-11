@@ -83,7 +83,7 @@
       <para>If we turn on <literal>debug</literal> logging for the category <literal>org.optaplanner</literal>, then
       those steps are shown into the log:</para>
 
-      <programlisting>INFO  Solving started: time spend (0), score (-6), new best score (-6), random seed (0).
+      <programlisting>INFO  Solving started: time spend (0), score (-6), new best score (-6), random (JDK with seed 0).
 DEBUG     Step index (0), time spend (20), score (-3), new best score (-3), accepted/selected move count (12/12) for picked step (col1@row0 =&gt; row3).
 DEBUG     Step index (1), time spend (31), score (-1), new best score (-1), accepted/selected move count (12/12) for picked step (col0@row0 =&gt; row1).
 DEBUG     Step index (2), time spend (40), score (0), new best score (0), accepted/selected move count (12/12) for picked step (col3@row0 =&gt; row2).
@@ -146,7 +146,7 @@ INFO  Solving ended: time spend (41), best score (0), average calculate count pe
       <para><link linkend="logging">Turn on <literal>trace</literal> logging</link> to show the decision making in the
       log:</para>
 
-      <programlisting>INFO  Solver started: time spend (0), score (-6), new best score (-6), random seed (0).
+      <programlisting>INFO  Solver started: time spend (0), score (-6), new best score (-6), random (JDK with seed 0).
 TRACE         Move index (0) not doable, ignoring move (col0@row0 =&gt; row0).
 TRACE         Move index (1), score (-4), accepted (true) for move (col0@row0 =&gt; row1).
 TRACE         Move index (2), score (-4), accepted (true) for move (col0@row0 =&gt; row2).

@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -116,10 +117,6 @@ public class BenchmarkAggregatorFrame extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    // ************************************************************************
-    // TODO All code below is POC code: replace this code with production quality code
-    // ************************************************************************
-
     private JComponent createContentPane() {
         JPanel contentPane = new JPanel(new BorderLayout());
         if (plannerBenchmarkResultList.isEmpty()) {
@@ -174,8 +171,8 @@ public class BenchmarkAggregatorFrame extends JFrame {
 
     private JComponent createBenchmarkTreePanel() {
         JPanel benchmarkTreePanel = new JPanel(new BorderLayout());
-        CheckboxTree checkboxTree = createCheckBoxTree();
-        benchmarkTreePanel.add(new JScrollPane(checkboxTree), BorderLayout.CENTER);
+        CheckboxTree checkBoxTree = createCheckBoxTree();
+        benchmarkTreePanel.add(new JScrollPane(checkBoxTree), BorderLayout.CENTER);
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton generateReportButton = new JButton(new GenerateReportAction(this));
         buttonPanel.add(generateReportButton);
@@ -185,8 +182,8 @@ public class BenchmarkAggregatorFrame extends JFrame {
     }
 
     private CheckboxTree createCheckBoxTree() {
-        CheckboxTree checkboxTree = new CheckboxTree(initBenchmarkHierarchy());
-        checkboxTree.addMouseMotionListener(new MouseMotionAdapter() {
+        CheckboxTree resultCheckBoxTree = new CheckboxTree(initBenchmarkHierarchy());
+        resultCheckBoxTree.addMouseMotionListener(new MouseMotionAdapter() {
             private TreePath lastTreePath;
 
             @Override
@@ -209,8 +206,8 @@ public class BenchmarkAggregatorFrame extends JFrame {
                 }
             }
         });
-        checkBoxTree = checkboxTree;
-        return checkboxTree;
+        checkBoxTree = resultCheckBoxTree;
+        return resultCheckBoxTree;
     }
 
     private void initPlannerBenchmarkResultList() {
@@ -327,15 +324,15 @@ public class BenchmarkAggregatorFrame extends JFrame {
         @Override
         protected void done() {
             try {
-                File reportFile = get();
-                CustomDialog dialog = new CustomDialog(parentFrame, reportFile);
+                File htmlOverviewFile = get();
+                ReportFinishedDialog dialog = new ReportFinishedDialog(parentFrame, htmlOverviewFile);
                 dialog.pack();
-                dialog.setLocationRelativeTo(null);
+                dialog.setLocationRelativeTo(BenchmarkAggregatorFrame.this);
                 dialog.setVisible(true);
-            } catch (InterruptedException ex) {
-                throw new IllegalStateException(ex);
-            } catch (ExecutionException ex) {
-                throw new IllegalStateException(ex);
+            } catch (InterruptedException e) {
+                throw new IllegalStateException(e);
+            } catch (ExecutionException e) {
+                throw new IllegalStateException(e);
             } finally {
                 parentFrame.setEnabled(true);
                 detailTextArea.setText(null);
@@ -344,23 +341,24 @@ public class BenchmarkAggregatorFrame extends JFrame {
                 generateProgressBar.setStringPainted(false);
             }
         }
+
     }
 
-    private class CustomDialog extends JDialog {
+    private class ReportFinishedDialog extends JDialog {
 
-        public CustomDialog(final JFrame parentFrame, final File reportFile) {
+        public ReportFinishedDialog(final JFrame parentFrame, final File reportFile) {
             super(parentFrame, "Report generation finished");
             JPanel contentPanel = new JPanel(new GridLayout(1, 3, 10, 10));
 
-            final JCheckBox exitCheckbox = new JCheckBox("Exit application”");
-            exitCheckbox.setSelected(true);
+            final JCheckBox exitCheckBox = new JCheckBox("Exit application”");
+            exitCheckBox.setSelected(true);
 
             JButton openBrowserButton = new JButton("Show in browser");
             openBrowserButton.addActionListener(new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     openReportFile(reportFile.getAbsoluteFile(), Desktop.Action.BROWSE);
-                    if (exitCheckbox.isSelected()) {
+                    if (exitCheckBox.isSelected()) {
                         parentFrame.dispose();
                     }
                 }
@@ -372,7 +370,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     openReportFile(reportFile.getParentFile(), Desktop.Action.OPEN);
-                    if (exitCheckbox.isSelected()) {
+                    if (exitCheckBox.isSelected()) {
                         parentFrame.dispose();
                     }
                 }
@@ -383,7 +381,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
             closeButton.addActionListener(new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (exitCheckbox.isSelected()) {
+                    if (exitCheckBox.isSelected()) {
                         parentFrame.dispose();
                     } else {
                         dispose();
@@ -393,9 +391,9 @@ public class BenchmarkAggregatorFrame extends JFrame {
             contentPanel.add(closeButton);
 
             JPanel mainPanel = new JPanel(new BorderLayout(0, 10));
-            mainPanel.add(exitCheckbox, BorderLayout.NORTH);
+            mainPanel.add(exitCheckBox, BorderLayout.NORTH);
             mainPanel.add(contentPanel, BorderLayout.CENTER);
-            mainPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
+            mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             getContentPane().add(mainPanel);
             pack();
         }
@@ -404,21 +402,22 @@ public class BenchmarkAggregatorFrame extends JFrame {
             Desktop desktop = Desktop.getDesktop();
             try {
                 switch (action) {
-                    case OPEN: {
+                    case OPEN:
                         if (desktop.isSupported(Desktop.Action.OPEN)) {
                             desktop.open(file);
                         }
                         break;
-                    }
-                    case BROWSE: {
+                    case BROWSE:
                         if (desktop.isSupported(Desktop.Action.BROWSE)) {
                             desktop.browse(file.toURI());
                         }
-                    }
+                        break;
                 }
-            } catch (IOException ex) {
-                throw new IllegalStateException(ex);
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
             }
         }
+
     }
+
 }

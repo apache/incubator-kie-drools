@@ -142,6 +142,14 @@ public class Allocation extends AbstractPersistable {
         return job.getProject();
     }
 
+    public int getProjectCriticalPathEndDate() {
+        return job.getProject().getCriticalPathEndDate();
+    }
+
+    public JobType getJobType() {
+        return job.getJobType();
+    }
+
     public String getLabel() {
         return "Job " + job.getId();
     }

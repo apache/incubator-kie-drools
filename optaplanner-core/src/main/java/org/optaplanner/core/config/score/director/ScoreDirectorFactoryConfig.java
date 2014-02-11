@@ -305,7 +305,8 @@ public class ScoreDirectorFactoryConfig {
                 InputStream scoreDrlIn = getClass().getResourceAsStream(scoreDrl);
                 if (scoreDrlIn == null) {
                     throw new IllegalArgumentException("The scoreDrl (" + scoreDrl
-                            + ") does not exist as a classpath resource.");
+                            + ") does not exist as a classpath resource."
+                            + "Note that nor a file, nor a URL, nor a webapp resource are a valid classpath resource.");
                 }
                 String path = "src/main/resources/optaplanner-kie-namespace/" + scoreDrl;
                 kieFileSystem.write(path, kieResources.newInputStreamResource(scoreDrlIn, "UTF-8"));

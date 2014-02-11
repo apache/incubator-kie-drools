@@ -48,6 +48,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.CachingMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.FilteringMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.ProbabilityMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.decorator.SelectedCountLimitMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.ShufflingMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.SortingMoveSelector;
 
@@ -74,6 +75,8 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
     protected Class<? extends SelectionSorter> sorterClass = null;
 
     protected Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass = null;
+
+    protected Long selectedCountLimit = null;
 
     private Double fixedProbabilityWeight = null;
 
@@ -141,6 +144,14 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         this.probabilityWeightFactoryClass = probabilityWeightFactoryClass;
     }
 
+    public Long getSelectedCountLimit() {
+        return selectedCountLimit;
+    }
+
+    public void setSelectedCountLimit(Long selectedCountLimit) {
+        this.selectedCountLimit = selectedCountLimit;
+    }
+
     public Double getFixedProbabilityWeight() {
         return fixedProbabilityWeight;
     }
@@ -170,6 +181,7 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         validateCacheTypeVersusSelectionOrder(resolvedCacheType, resolvedSelectionOrder);
         validateSorting(resolvedSelectionOrder);
         validateProbability(resolvedSelectionOrder);
+        validateSelectedLimit(minimumCacheType);
 
         MoveSelector moveSelector = buildBaseMoveSelector(configPolicy,
                 SelectionCacheType.max(minimumCacheType, resolvedCacheType),
@@ -180,6 +192,7 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         moveSelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, moveSelector);
         moveSelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, moveSelector);
         moveSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, moveSelector);
+        moveSelector = applySelectedLimit(resolvedCacheType, resolvedSelectionOrder, moveSelector);
         return moveSelector;
     }
 
@@ -342,6 +355,25 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         return moveSelector;
     }
 
+    private void validateSelectedLimit(SelectionCacheType minimumCacheType) {
+        if (selectedCountLimit != null
+                && minimumCacheType.compareTo(SelectionCacheType.JUST_IN_TIME) > 0) {
+            throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                    + ") with selectedCountLimit (" + selectedCountLimit
+                    + ") has a minimumCacheType (" + minimumCacheType
+                    + ") that is higher than " + SelectionCacheType.JUST_IN_TIME + ".");
+        }
+    }
+
+    private MoveSelector applySelectedLimit(
+            SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            MoveSelector moveSelector) {
+        if (selectedCountLimit != null) {
+            moveSelector = new SelectedCountLimitMoveSelector(moveSelector, selectedCountLimit);
+        }
+        return moveSelector;
+    }
+
     protected void inherit(MoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
@@ -358,6 +390,8 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
                 sorterClass, inheritedConfig.getSorterClass());
         probabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 probabilityWeightFactoryClass, inheritedConfig.getProbabilityWeightFactoryClass());
+        selectedCountLimit = ConfigUtils.inheritOverwritableProperty(
+                selectedCountLimit, inheritedConfig.getSelectedCountLimit());
 
         fixedProbabilityWeight = ConfigUtils.inheritOverwritableProperty(
                 fixedProbabilityWeight, inheritedConfig.getFixedProbabilityWeight());

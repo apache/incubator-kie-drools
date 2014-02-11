@@ -90,4 +90,9 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
         return scorePattern.toString();
     }
 
+    @Override
+    public boolean isCompatibleArithmeticArgument(Score otherScore) {
+        return getClass().isInstance(otherScore);
+    }
+
 }

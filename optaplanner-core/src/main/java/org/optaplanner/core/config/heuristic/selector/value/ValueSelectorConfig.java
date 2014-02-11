@@ -45,6 +45,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.decorator.EntityDepend
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.InitializedValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ProbabilityValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ReinitializeVariableValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.SelectedCountLimitValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ShufflingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.SortingValueSelector;
 
@@ -65,6 +66,8 @@ public class ValueSelectorConfig extends SelectorConfig {
     protected Class<? extends SelectionSorter> sorterClass = null;
 
     protected Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass = null;
+
+    protected Long selectedCountLimit = null;
 
     public String getVariableName() {
         return variableName;
@@ -138,6 +141,14 @@ public class ValueSelectorConfig extends SelectorConfig {
         this.probabilityWeightFactoryClass = probabilityWeightFactoryClass;
     }
 
+    public Long getSelectedCountLimit() {
+        return selectedCountLimit;
+    }
+
+    public void setSelectedCountLimit(Long selectedCountLimit) {
+        this.selectedCountLimit = selectedCountLimit;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -163,6 +174,7 @@ public class ValueSelectorConfig extends SelectorConfig {
         validateCacheTypeVersusSelectionOrder(resolvedCacheType, resolvedSelectionOrder);
         validateSorting(resolvedSelectionOrder);
         validateProbability(resolvedSelectionOrder);
+        validateSelectedLimit(minimumCacheType);
 
         // baseValueSelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
         ValueSelector valueSelector = buildBaseValueSelector(configPolicy, variableDescriptor,
@@ -176,6 +188,7 @@ public class ValueSelectorConfig extends SelectorConfig {
         valueSelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, valueSelector);
+        valueSelector = applySelectedLimit(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyReinitializeVariableFiltering(configPolicy, valueSelector);
         return valueSelector;
     }
@@ -410,6 +423,25 @@ public class ValueSelectorConfig extends SelectorConfig {
         return valueSelector;
     }
 
+    private void validateSelectedLimit(SelectionCacheType minimumCacheType) {
+        if (selectedCountLimit != null
+                && minimumCacheType.compareTo(SelectionCacheType.JUST_IN_TIME) > 0) {
+            throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                    + ") with selectedCountLimit (" + selectedCountLimit
+                    + ") has a minimumCacheType (" + minimumCacheType
+                    + ") that is higher than " + SelectionCacheType.JUST_IN_TIME + ".");
+        }
+    }
+
+    private ValueSelector applySelectedLimit(
+            SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            ValueSelector valueSelector) {
+        if (selectedCountLimit != null) {
+            valueSelector = new SelectedCountLimitValueSelector(valueSelector, selectedCountLimit);
+        }
+        return valueSelector;
+    }
+
     private ValueSelector applyReinitializeVariableFiltering(HeuristicConfigPolicy configPolicy,
             ValueSelector valueSelector) {
         if (configPolicy.isReinitializeVariableFilterEnabled()) {
@@ -437,6 +469,8 @@ public class ValueSelectorConfig extends SelectorConfig {
                 sorterClass, inheritedConfig.getSorterClass());
         probabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 probabilityWeightFactoryClass, inheritedConfig.getProbabilityWeightFactoryClass());
+        selectedCountLimit = ConfigUtils.inheritOverwritableProperty(
+                selectedCountLimit, inheritedConfig.getSelectedCountLimit());
     }
 
     @Override

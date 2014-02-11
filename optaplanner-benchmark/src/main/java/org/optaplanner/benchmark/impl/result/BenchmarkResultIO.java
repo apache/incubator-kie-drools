@@ -26,6 +26,8 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.thoughtworks.xstream.XStream;
@@ -71,6 +73,7 @@ public class BenchmarkResultIO {
                     + ") is not a directory.");
         }
         File[] benchmarkReportDirectories = benchmarkDirectory.listFiles((FileFilter) DirectoryFileFilter.INSTANCE);
+        Arrays.sort(benchmarkReportDirectories);
         List<PlannerBenchmarkResult> plannerBenchmarkResultList = new ArrayList<PlannerBenchmarkResult>(
                 benchmarkReportDirectories.length);
         for (File benchmarkReportDirectory : benchmarkReportDirectories) {

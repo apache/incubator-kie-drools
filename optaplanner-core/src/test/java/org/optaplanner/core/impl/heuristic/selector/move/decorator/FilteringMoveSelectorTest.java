@@ -57,11 +57,11 @@ public class FilteringMoveSelectorTest {
 
     public void runCacheType(SelectionCacheType cacheType, int timesCalled) {
         MoveSelector childMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
-                new DummyMove("e1"), new DummyMove("e2"), new DummyMove("e3"), new DummyMove("e4"));
+                new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"), new DummyMove("a4"));
 
         SelectionFilter<DummyMove> filter = new SelectionFilter<DummyMove>() {
             public boolean accept(ScoreDirector scoreDirector, DummyMove move) {
-                return !move.getCode().equals("e3");
+                return !move.getCode().equals("a3");
             }
         };
         List<SelectionFilter> filterList = Arrays.<SelectionFilter>asList(filter);
@@ -80,13 +80,13 @@ public class FilteringMoveSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
-        assertAllCodesOfMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
+        assertAllCodesOfMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "a1", "a2", "a4");
         moveSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA2);
-        assertAllCodesOfMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
+        assertAllCodesOfMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "a1", "a2", "a4");
         moveSelector.stepEnded(stepScopeA2);
 
         moveSelector.phaseEnded(phaseScopeA);
@@ -98,19 +98,19 @@ public class FilteringMoveSelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB1);
-        assertAllCodesOfMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
+        assertAllCodesOfMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "a1", "a2", "a4");
         moveSelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB2);
-        assertAllCodesOfMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
+        assertAllCodesOfMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "a1", "a2", "a4");
         moveSelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB3);
-        assertAllCodesOfMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
+        assertAllCodesOfMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "a1", "a2", "a4");
         moveSelector.stepEnded(stepScopeB3);
 
         moveSelector.phaseEnded(phaseScopeB);

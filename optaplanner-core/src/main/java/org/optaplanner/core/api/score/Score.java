@@ -80,15 +80,22 @@ public interface Score<S extends Score> extends Comparable<S> {
     S power(double exponent);
 
     /**
-     * Returns an array of doubles representing the Score. Each double represents 1 score level.
+     * Returns an array of numbers representing the Score. Each number represents 1 score level.
      * A greater score level uses a lower array index than a lesser score level.
      * <p/>
      * When rounding is needed, each rounding should be floored (as defined by {@link Math#floor(double)}.
      * The length of the returned array must be stable for a specific {@link Score} implementation.
      * <p/>
-     * For example: -0hard/-7soft returns new double{-0.0, -7.0}
+     * For example: -0hard/-7soft returns new int{-0, -7}
      * @return never null
      */
     Number[] toLevelNumbers();
+
+    /**
+     * @param otherScore never null
+     * @return true if the otherScore is accepted as a parameter of {@link #add(Score)}, {@link #subtract(Score)}
+     * and {@link #compareTo(Object)}.
+     */
+    boolean isCompatibleArithmeticArgument(Score otherScore);
 
 }
