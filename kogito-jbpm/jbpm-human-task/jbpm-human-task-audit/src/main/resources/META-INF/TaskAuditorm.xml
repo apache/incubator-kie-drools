@@ -7,24 +7,8 @@
     <query>select t from TaskEventImpl t where t.taskId = :taskId</query>
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>
-  <named-query name="deleteTaskEventsForTask">
-    <query>delete from TaskEventImpl t where t.taskId = :taskId</query>
-    <!-- hint name="org.hibernate.timeout" value="200"/ -->
-  </named-query>
-  <named-query name="deleteAllTaskEvents">
-    <query>delete from TaskEventImpl</query>
-    <!-- hint name="org.hibernate.timeout" value="200"/ -->
-  </named-query>
   <named-query name="getAllBAMTaskSummaries">
     <query>select b from BAMTaskSummaryImpl b where b.taskId = :taskId</query>
-    <!-- hint name="org.hibernate.timeout" value="200"/ -->
-  </named-query>
-  <named-query name="deleteBAMTaskSummariesForTask">
-    <query>delete from BAMTaskSummaryImpl b where b.taskId = :taskId</query>
-    <!-- hint name="org.hibernate.timeout" value="200"/ -->
-  </named-query>
-  <named-query name="deleteAllBAMTaskSummaries">
-    <query>delete from BAMTaskSummaryImpl b</query>
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>
 </entity-mappings>

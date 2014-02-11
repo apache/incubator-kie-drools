@@ -1,14 +1,10 @@
 package org.jbpm.services.task.impl.model.command;
 
-import java.util.HashMap;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.drools.persistence.jpa.JpaPersistenceContext;
 import org.jbpm.services.task.commands.TaskCommand;
-import org.jbpm.services.task.persistence.JPATaskPersistenceContext;
 import org.kie.internal.command.Context;
 import org.kie.internal.task.api.TaskContext;
 import org.kie.internal.task.api.TaskPersistenceContext;
@@ -30,17 +26,10 @@ public class DeleteBAMTaskSummariesCommand extends TaskCommand<Void> {
     @Override
     public Void execute(Context context) {
         TaskPersistenceContext persistenceContext = ((TaskContext) context).getPersistenceContext();
-        JPATaskPersistenceContext persistenceContextImpl = null;
-        if( !(persistenceContext instanceof JPATaskPersistenceContext) ) { 
-           throw new UnsupportedOperationException("This operation is not supported on the " + persistenceContext.getClass() ); 
-        }
-        persistenceContextImpl = (JPATaskPersistenceContext) persistenceContext;
         if( this.taskId != null ) { 
-            HashMap<String, Object> params = new HashMap<String, Object>();
-            params.put("taskId", this.taskId);
-            persistenceContextImpl.queryDeleteWithParametersInTransaction("deleteBAMTaskSummariesForTask", params);
+            persistenceContext.executeUpdateString("delete from BAMTaskSummaryImpl b where b.taskId = "+ this.taskId);
         } else { 
-            persistenceContextImpl.queryDeleteInTransaction("deleteAllBAMTaskSummaries");
+            persistenceContext.executeUpdateString("delete from BAMTaskSummaryImpl b");
         }
         return null;
     }
