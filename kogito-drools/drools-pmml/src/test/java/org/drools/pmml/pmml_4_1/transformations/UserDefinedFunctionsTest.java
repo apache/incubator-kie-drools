@@ -124,8 +124,6 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
 
         getKSession().fireAllRules();
 
-        System.err.println( reportWMObjects( getKSession() ) );
-
         checkFirstDataFieldOfTypeStatus( userAge3, true, false, null, 10 );
 
     }
@@ -141,8 +139,6 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
         getKSession().getEntryPoint( "in_Age" ).insert( 10 );
 
         getKSession().fireAllRules();
-
-        System.err.println( reportWMObjects( getKSession() ) );
 
         checkFirstDataFieldOfTypeStatus( userAge4, true, false, null, 24 );
 
@@ -228,8 +224,6 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
 
         getKSession().fireAllRules();
 
-        System.err.println( reportWMObjects( getKSession() ) );
-
         checkFirstDataFieldOfTypeStatus( userAge1, true, false, null, 6270.0 );
         checkFirstDataFieldOfTypeStatus( userAge2, true, false, null, 44.1 );
 
@@ -240,8 +234,6 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
 
         getKSession().delete( getKSession().getFactHandle( aged ) );
         getKSession().fireAllRules();
-
-        System.err.println( reportWMObjects( getKSession() ) );
 
         assertEquals( 0, getKSession().getFactCount() );
 
@@ -256,8 +248,6 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
 
         checkFirstDataFieldOfTypeStatus( userAge1, true, false, null, 12870.0 );
         checkFirstDataFieldOfTypeStatus( userAge2, true, false, null, 306.3 );
-
-        System.err.println( reportWMObjects( getKSession() ) );
 
         assertEquals( 4, getKSession().getFactCount() );
 

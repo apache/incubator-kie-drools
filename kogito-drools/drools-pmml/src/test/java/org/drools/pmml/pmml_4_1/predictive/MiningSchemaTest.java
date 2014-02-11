@@ -100,8 +100,6 @@ public class MiningSchemaTest extends DroolsAbstractPMMLTest {
         getKSession().getEntryPoint("in_Feat2").insert(-1);
         getKSession().fireAllRules();
 
-        System.err.println(reportWMObjects(getKSession()));
-
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"Feat2"),
                 false,false,null,-1);
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"Feat2"),
@@ -119,8 +117,6 @@ public class MiningSchemaTest extends DroolsAbstractPMMLTest {
 
         getKSession().getEntryPoint("in_Feat2").insert(0);
         getKSession().fireAllRules();
-
-        System.err.println(reportWMObjects(getKSession()));
 
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"Feat2"),
                 false,true,null,0);

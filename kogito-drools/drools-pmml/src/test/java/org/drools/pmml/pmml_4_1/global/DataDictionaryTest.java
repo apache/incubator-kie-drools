@@ -150,8 +150,6 @@ public class DataDictionaryTest extends DroolsAbstractPMMLTest {
 
         getKSession().fireAllRules();
 
-        System.err.println(reportWMObjects(getKSession()));
-
         assertEquals( 6, getKSession().getObjects().size() );
         assertEquals( 1, getKSession().getObjects( new ClassObjectFilter( gender.getFactClass() ) ).size() );
         assertEquals( 1, getKSession().getObjects( new ClassObjectFilter( noclaims.getFactClass() ) ).size() );

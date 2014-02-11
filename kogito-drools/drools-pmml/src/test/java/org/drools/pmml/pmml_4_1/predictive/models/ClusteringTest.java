@@ -56,8 +56,6 @@ public class ClusteringTest extends DroolsAbstractPMMLTest {
 
         kSession.fireAllRules();
         
-        System.err.println( reportWMObjects( kSession ) );
-
         FactType mu = kSession.getKieBase().getFactType( packageName, "DistanceMembership" );
         Collection mus = kSession.getObjects( new ClassObjectFilter( mu.getFactClass()) );
         assertTrue( mus.size() > 0 );

@@ -68,10 +68,6 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
         kSession.fireAllRules();
 
-
-
-        System.err.println( reportWMObjects( kSession ) );
-
         checkFirstDataFieldOfTypeStatus( tgt, true, false, "Missing", "tgtY" );
     }
     
@@ -103,8 +99,6 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
         kSession.fireAllRules();
 
-        System.err.println( reportWMObjects( kSession ) );
-
         Object token = getToken( kSession );
         assertEquals( 0.6, tok.get( token, "confidence" ) );
         assertEquals( "null", tok.get( token, "current" ) );
@@ -132,8 +126,6 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         kSession.getEntryPoint( "in_Fld3" ).insert( "optA" );
 
         kSession.fireAllRules();
-
-        System.err.println( reportWMObjects( kSession ) );
 
         Object token = getToken( kSession );
         assertEquals( 0.8, tok.get( token, "confidence" ) );
@@ -164,8 +156,6 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         kSession.getEntryPoint( "in_Fld3" ).insert( "miss" );
 
         kSession.fireAllRules();
-
-        System.err.println( reportWMObjects( kSession ) );
 
         Object token = getToken( kSession );
         assertEquals( 0.6, tok.get( token, "confidence" ) );
@@ -208,8 +198,6 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
         kSession.fireAllRules();
 
-        System.err.println( reportWMObjects( kSession ) );
-
         Object token = getToken( kSession );
         assertEquals( 0.72, (Double) tok.get( token, "confidence" ), 1e-6 );
         assertEquals( "null", tok.get( token, "current" ) );
@@ -251,8 +239,6 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         kSession.getEntryPoint( "in_Fld3" ).insert( "miss" );
 
         kSession.fireAllRules();
-
-        System.err.println( reportWMObjects( kSession ) );
 
         Object token = getToken( kSession );
         assertEquals( 1.0, (Double) tok.get( token, "confidence" ), 1e-6 );
@@ -298,8 +284,6 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
         kSession.fireAllRules();
 
-        System.err.println( reportWMObjects( kSession ) );
-
         Object token = getToken( kSession );
         assertEquals( 0.8, (Double) tok.get( token, "confidence" ), 1e-6 );
         assertEquals( "null", tok.get( token, "current" ) );
@@ -344,8 +328,6 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
         kSession.fireAllRules();
 
-        System.err.println( reportWMObjects( kSession ) );
-
         Object token = getToken( kSession );
         assertEquals( 0.0, (Double) tok.get( token, "confidence" ), 1e-6 );
         assertEquals( "null", tok.get( token, "current" ) );
@@ -388,8 +370,6 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         kSession.getEntryPoint( "in_Fld3" ).insert( "miss" );
 
         kSession.fireAllRules();
-
-        System.err.println( reportWMObjects( kSession ) );
 
         Object token = getToken( kSession );
         assertEquals( 0.47, (Double) tok.get( token, "confidence" ), 1e-2 );
@@ -434,8 +414,6 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
         kSession.fireAllRules();
 
-        System.err.println( reportWMObjects( kSession ) );
-
         Object token = getToken( kSession );
         assertEquals( 0.6, (Double) tok.get( token, "confidence" ), 1e-6 );
         assertEquals( "null", tok.get( token, "current" ) );
@@ -461,8 +439,6 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         kSession.getEntryPoint( "in_Fld3" ).insert( "optA" );
 
         kSession.fireAllRules();
-
-        System.err.println( reportWMObjects( kSession ) );
 
         Object token = getToken( kSession );
         assertEquals( 0.8, tok.get( token, "confidence" ) );

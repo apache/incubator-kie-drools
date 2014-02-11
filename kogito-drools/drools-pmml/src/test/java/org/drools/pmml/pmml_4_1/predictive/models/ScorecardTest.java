@@ -60,8 +60,6 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
         kSession.fireAllRules();  //init model
 
-        System.err.println( reportWMObjects( kSession ) );
-
         FactType scoreCardType = getKbase().getFactType( "org.drools.scorecards.example", "ScoreCard" );
         assertNotNull( scoreCardType );
 
@@ -101,8 +99,6 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         kSession.getEntryPoint( "in_Wage" ).insert( 500.0 );
 
         kSession.fireAllRules();  //init model
-
-        System.err.println( reportWMObjects( kSession ) );
 
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutRC1"),
                         true, false,"SampleScorecard", "RC2" );
