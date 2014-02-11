@@ -173,35 +173,6 @@ public class BenchmarkReport {
     // Smart getters
     // ************************************************************************
 
-    public int getAvailableProcessors() {
-        return Runtime.getRuntime().availableProcessors();
-    }
-
-    public long getMaxMemory() {
-        return Runtime.getRuntime().maxMemory();
-    }
-
-    public String getJavaVersion() {
-        return "Java " + System.getProperty("java.version") + " (" + System.getProperty("java.vendor") + ")";
-    }
-
-    public String getJavaVM() {
-        return "Java " + System.getProperty("java.vm.name") + " " + System.getProperty("java.vm.version")
-                + " (" + System.getProperty("java.vm.vendor") + ")";
-    }
-
-    public String getOperatingSystem() {
-        return System.getProperty("os.name") + " " + System.getProperty("os.arch")
-                + " " + System.getProperty("os.version");
-    }
-
-    /**
-     * @return sometimes null (only during development)
-     */
-    public String getPlannerVersion() {
-        return SolverFactory.class.getPackage().getImplementationVersion();
-    }
-
     public String getRelativePathToBenchmarkReportDirectory(File file) {
         String benchmarkReportDirectoryPath = plannerBenchmarkResult.getBenchmarkReportDirectory().getAbsolutePath();
         String filePath = file.getAbsolutePath();
@@ -251,10 +222,12 @@ public class BenchmarkReport {
             warningList.add("The Java VM (" + javaVmName + ") is the Client VM."
                     + " Consider starting the java process with the argument \"-server\" to get better results.");
         }
-        int availableProcessors = getAvailableProcessors();
-        if (plannerBenchmarkResult.getParallelBenchmarkCount() > availableProcessors) {
+        if (plannerBenchmarkResult.getParallelBenchmarkCount() != null
+                && plannerBenchmarkResult.getAvailableProcessors() != null
+                && plannerBenchmarkResult.getParallelBenchmarkCount() > plannerBenchmarkResult.getAvailableProcessors()) {
             warningList.add("The parallelBenchmarkCount (" + plannerBenchmarkResult.getParallelBenchmarkCount()
-                    + ") is higher than the number of availableProcessors (" + availableProcessors + ").");
+                    + ") is higher than the number of availableProcessors ("
+                    + plannerBenchmarkResult.getAvailableProcessors() + ").");
         }
     }
 

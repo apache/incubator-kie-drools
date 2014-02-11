@@ -96,6 +96,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                     "The solverBenchmarkResultList (" + solverBenchmarkResultList + ") cannot be empty.");
         }
         initBenchmarkDirectoryAndSubdirs();
+        plannerBenchmarkResult.initSystemProperties();
         executorService = Executors.newFixedThreadPool(plannerBenchmarkResult.getParallelBenchmarkCount());
         benchmarkResultIO = new BenchmarkResultIO();
         logger.info("Benchmarking started: solverBenchmarkResultList size ({}), parallelBenchmarkCount ({}).",

@@ -533,44 +533,44 @@
                         <td>${benchmarkReport.plannerBenchmarkResult.aggregation?string}</td>
                     </tr>
                     <tr>
-                        <th>startingTimestamp</th>
-                        <td>${benchmarkReport.plannerBenchmarkResult.startingTimestamp?datetime}</td>
-                    </tr>
-                    <tr>
-                        <th>warmUpTimeMillisSpend</th>
-                        <td>${benchmarkReport.plannerBenchmarkResult.warmUpTimeMillisSpend} ms</td>
-                    </tr>
-                    <tr>
-                        <th>parallelBenchmarkCount / availableProcessors</th>
-                        <td>${benchmarkReport.plannerBenchmarkResult.parallelBenchmarkCount} / ${benchmarkReport.availableProcessors}</td>
-                    </tr>
-                    <tr>
-                        <th>benchmarkTimeMillisSpend</th>
-                        <td>${benchmarkReport.plannerBenchmarkResult.benchmarkTimeMillisSpend!""} ms</td>
-                    </tr>
-                    <tr>
                         <th>failureCount</th>
                         <td>${benchmarkReport.plannerBenchmarkResult.failureCount}</td>
                     </tr>
                     <tr>
+                        <th>startingTimestamp</th>
+                        <td>${(benchmarkReport.plannerBenchmarkResult.startingTimestamp?datetime)!"Differs"}</td>
+                    </tr>
+                    <tr>
+                        <th>warmUpTimeMillisSpend</th>
+                        <td>${benchmarkReport.plannerBenchmarkResult.warmUpTimeMillisSpend!"Differs"} ms</td>
+                    </tr>
+                    <tr>
+                        <th>parallelBenchmarkCount / availableProcessors</th>
+                        <td>${benchmarkReport.plannerBenchmarkResult.parallelBenchmarkCount!"Differs"} / ${benchmarkReport.plannerBenchmarkResult.availableProcessors!"Differs"}</td>
+                    </tr>
+                    <tr>
+                        <th>benchmarkTimeMillisSpend</th>
+                        <td>${benchmarkReport.plannerBenchmarkResult.benchmarkTimeMillisSpend!"Differs"} ms</td>
+                    </tr>
+                    <tr>
                         <th>VM max memory (as in -Xmx but lower)</th>
-                        <td>${benchmarkReport.maxMemory?string.number} bytes</td>
-                    </tr>
-                    <tr>
-                        <th>Operating system</th>
-                        <td>${benchmarkReport.operatingSystem}</td>
-                    </tr>
-                    <tr>
-                        <th>Java version</th>
-                        <td>${benchmarkReport.javaVersion}</td>
-                    </tr>
-                    <tr>
-                        <th>Java VM</th>
-                        <td>${benchmarkReport.javaVM}</td>
+                        <td>${(benchmarkReport.plannerBenchmarkResult.maxMemory?string.number)!"Differs"} bytes</td>
                     </tr>
                     <tr>
                         <th>OptaPlanner version</th>
-                        <td>${benchmarkReport.plannerVersion!"Unjarred development snapshot"}</td>
+                        <td>${benchmarkReport.plannerBenchmarkResult.optaPlannerVersion!"Differs"}</td>
+                    </tr>
+                    <tr>
+                        <th>Java version</th>
+                        <td>${benchmarkReport.plannerBenchmarkResult.javaVersion!"Differs"}</td>
+                    </tr>
+                    <tr>
+                        <th>Java VM</th>
+                        <td>${benchmarkReport.plannerBenchmarkResult.javaVM!"Differs"}</td>
+                    </tr>
+                    <tr>
+                        <th>Operating system</th>
+                        <td>${benchmarkReport.plannerBenchmarkResult.operatingSystem!"Differs"}</td>
                     </tr>
                     <tr>
                         <th>Report locale</th>

@@ -37,6 +37,7 @@ import org.drools.core.util.StringUtils;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.util.ConfigUtils;
 
 /**
@@ -51,6 +52,13 @@ public class PlannerBenchmarkResult {
     private File benchmarkReportDirectory;
 
     // If it is an aggregation, many properties can stay null
+
+    private Integer availableProcessors = null;
+    private Long maxMemory;
+    private String optaPlannerVersion;
+    private String javaVersion;
+    private String javaVM;
+    private String operatingSystem;
 
     private Integer parallelBenchmarkCount = null;
     private Long warmUpTimeMillisSpend = null;
@@ -94,6 +102,30 @@ public class PlannerBenchmarkResult {
 
     public void setBenchmarkReportDirectory(File benchmarkReportDirectory) {
         this.benchmarkReportDirectory = benchmarkReportDirectory;
+    }
+
+    public Integer getAvailableProcessors() {
+        return availableProcessors;
+    }
+
+    public Long getMaxMemory() {
+        return maxMemory;
+    }
+
+    public String getJavaVersion() {
+        return javaVersion;
+    }
+
+    public String getJavaVM() {
+        return javaVM;
+    }
+
+    public String getOperatingSystem() {
+        return operatingSystem;
+    }
+
+    public String getOptaPlannerVersion() {
+        return optaPlannerVersion;
     }
 
     public Integer getParallelBenchmarkCount() {
@@ -190,6 +222,20 @@ public class PlannerBenchmarkResult {
         for (ProblemBenchmarkResult problemBenchmarkResult : unifiedProblemBenchmarkResultList) {
             problemBenchmarkResult.makeDirs(benchmarkReportDirectory);
         }
+    }
+
+    public void initSystemProperties() {
+        availableProcessors = Runtime.getRuntime().availableProcessors();
+        maxMemory = Runtime.getRuntime().maxMemory();
+        optaPlannerVersion = SolverFactory.class.getPackage().getImplementationVersion();
+        if (optaPlannerVersion == null) {
+            optaPlannerVersion = "Unjarred development snapshot";
+        }
+        javaVersion = "Java " + System.getProperty("java.version") + " (" + System.getProperty("java.vendor") + ")";
+        javaVM = "Java " + System.getProperty("java.vm.name") + " " + System.getProperty("java.vm.version")
+                + " (" + System.getProperty("java.vm.vendor") + ")";
+        operatingSystem = System.getProperty("os.name") + " " + System.getProperty("os.arch")
+                + " " + System.getProperty("os.version");
     }
 
     public void accumulateResults(BenchmarkReport benchmarkReport) {
@@ -331,21 +377,37 @@ public class PlannerBenchmarkResult {
                 if (newResult == null) {
                     newResult = new PlannerBenchmarkResult();
                     newResult.setAggregation(true);
+                    newResult.availableProcessors = oldResult.availableProcessors;
+                    newResult.maxMemory = oldResult.maxMemory;
+                    newResult.optaPlannerVersion = oldResult.optaPlannerVersion;
+                    newResult.javaVersion = oldResult.javaVersion;
+                    newResult.javaVM = oldResult.javaVM;
+                    newResult.operatingSystem = oldResult.operatingSystem;
+
                     newResult.parallelBenchmarkCount = oldResult.parallelBenchmarkCount;
                     newResult.warmUpTimeMillisSpend = oldResult.warmUpTimeMillisSpend;
                     newResult.solverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>();
                     newResult.unifiedProblemBenchmarkResultList = new ArrayList<ProblemBenchmarkResult>();
-                    newResult.startingTimestamp = oldResult.startingTimestamp;
-                    newResult.benchmarkTimeMillisSpend = oldResult.benchmarkTimeMillisSpend;
+                    newResult.startingTimestamp = null;
+                    newResult.benchmarkTimeMillisSpend = null;
                 } else {
+                    newResult.availableProcessors = ConfigUtils.mergeProperty(
+                            newResult.availableProcessors, oldResult.availableProcessors);
+                    newResult.maxMemory = ConfigUtils.mergeProperty(
+                            newResult.maxMemory, oldResult.maxMemory);
+                    newResult.optaPlannerVersion = ConfigUtils.mergeProperty(
+                            newResult.optaPlannerVersion, oldResult.optaPlannerVersion);
+                    newResult.javaVersion = ConfigUtils.mergeProperty(
+                            newResult.javaVersion, oldResult.javaVersion);
+                    newResult.javaVM = ConfigUtils.mergeProperty(
+                            newResult.javaVM, oldResult.javaVM);
+                    newResult.operatingSystem = ConfigUtils.mergeProperty(
+                            newResult.operatingSystem, oldResult.operatingSystem);
+
                     newResult.parallelBenchmarkCount = ConfigUtils.mergeProperty(
                             newResult.parallelBenchmarkCount, oldResult.parallelBenchmarkCount);
                     newResult.warmUpTimeMillisSpend = ConfigUtils.mergeProperty(
                             newResult.warmUpTimeMillisSpend, oldResult.warmUpTimeMillisSpend);
-                    newResult.startingTimestamp = ConfigUtils.mergeProperty(
-                            newResult.startingTimestamp, oldResult.startingTimestamp);
-                    newResult.benchmarkTimeMillisSpend = ConfigUtils.mergeProperty(
-                            newResult.benchmarkTimeMillisSpend, oldResult.benchmarkTimeMillisSpend);
                 }
                 mergeMap.put(oldResult, newResult);
             }
