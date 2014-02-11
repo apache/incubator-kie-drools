@@ -97,7 +97,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
     private List<PlannerBenchmarkResult> plannerBenchmarkResultList;
     private Map<MixedCheckBox, SingleBenchmarkResult> resultCheckBoxMapping = new LinkedHashMap<MixedCheckBox, SingleBenchmarkResult>();
 
-    private CheckboxTree checkBoxTree;
+    private CheckBoxTree checkBoxTree;
     private JTextArea detailTextArea;
     private JProgressBar generateProgressBar;
 
@@ -171,7 +171,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
 
     private JComponent createBenchmarkTreePanel() {
         JPanel benchmarkTreePanel = new JPanel(new BorderLayout());
-        CheckboxTree checkBoxTree = createCheckBoxTree();
+        CheckBoxTree checkBoxTree = createCheckBoxTree();
         benchmarkTreePanel.add(new JScrollPane(checkBoxTree), BorderLayout.CENTER);
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton generateReportButton = new JButton(new GenerateReportAction(this));
@@ -181,8 +181,8 @@ public class BenchmarkAggregatorFrame extends JFrame {
         return benchmarkTreePanel;
     }
 
-    private CheckboxTree createCheckBoxTree() {
-        CheckboxTree resultCheckBoxTree = new CheckboxTree(initBenchmarkHierarchy());
+    private CheckBoxTree createCheckBoxTree() {
+        CheckBoxTree resultCheckBoxTree = new CheckBoxTree(initBenchmarkHierarchy());
         resultCheckBoxTree.addMouseMotionListener(new MouseMotionAdapter() {
             private TreePath lastTreePath;
 
