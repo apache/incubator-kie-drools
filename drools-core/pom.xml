@@ -181,6 +181,9 @@
                org.jbpm.process.instance.event;resolution:=optional,
                *
             </Import-Package>
+            <DynamicImport-Package>
+              *
+            </DynamicImport-Package>
             <Bundle-Activator>org.drools.core.osgi.Activator</Bundle-Activator>
             <_removeheaders>Private-Package</_removeheaders>
           </instructions>
