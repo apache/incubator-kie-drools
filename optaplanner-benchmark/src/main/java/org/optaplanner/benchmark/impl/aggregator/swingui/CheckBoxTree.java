@@ -37,7 +37,7 @@ public class CheckBoxTree extends JTree {
         setToggleClickCount(0);
     }
 
-        public void expandAllNodes() {
+    public void expandAllNodes() {
         for (int i = 0; i < getRowCount(); i++) {
             expandRow(i);
         }
