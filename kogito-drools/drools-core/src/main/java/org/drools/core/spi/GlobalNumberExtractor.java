@@ -135,7 +135,7 @@ public class GlobalNumberExtractor extends BaseDateClassFieldReader
     }
 
     public boolean isSelfReference() {
-        return true;
+        return false;
     }
     
     public boolean getBooleanValue(Object object) {
