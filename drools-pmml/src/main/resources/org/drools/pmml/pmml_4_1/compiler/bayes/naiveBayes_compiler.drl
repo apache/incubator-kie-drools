@@ -96,3 +96,16 @@ then
         map.put( "tvc", $tvc );
     utils.applyTemplate( "naiveBayesBuildOuts.drlt", utils, registry, map, theory );
 end
+
+
+
+rule "NaiveBayes_Cleanup"
+salience -20
+when
+    $nbm : NaiveBayesModel( )
+then
+    utils.context = null;
+    retract( $nbm );
+end
+
+

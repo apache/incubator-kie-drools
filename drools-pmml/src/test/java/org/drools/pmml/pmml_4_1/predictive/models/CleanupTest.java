@@ -65,8 +65,6 @@ public class CleanupTest extends DroolsAbstractPMMLTest {
         kSession.getEntryPoint( "enable_Neuiris" ).insert( Boolean.FALSE );
         kSession.fireAllRules();
 
-        System.err.println(reportWMObjects(kSession));
-
         assertEquals( 1, kSession.getObjects().size() );
         kSession.dispose();
     }
@@ -94,23 +92,16 @@ public class CleanupTest extends DroolsAbstractPMMLTest {
 
         getKSession().fireAllRules();
 
-        System.err.println( reportWMObjects( getKSession() ) );
-
         assertEquals( 1, getKSession().getObjects().size() );
 
         getKSession().getEntryPoint( "enable_Neuiris" ).insert( Boolean.TRUE );
         getKSession().fireAllRules();
-
-        System.err.println( reportWMObjects(getKSession()) );
 
         getKSession().getEntryPoint( "in_PetalNum" ).insert(101);
         getKSession().getEntryPoint( "in_PetalWid" ).insert(2);
         getKSession().getEntryPoint( "in_Species" ).insert("virginica");
         getKSession().getEntryPoint( "in_SepalWid" ).insert(30);
         getKSession().fireAllRules();
-
-
-        System.err.println( reportWMObjects( getKSession() ) );
 
         Assert.assertEquals( 24.0, queryIntegerField( "OutSepLen", "Neuiris" ) );
 
@@ -133,8 +124,6 @@ public class CleanupTest extends DroolsAbstractPMMLTest {
         kSession.getEntryPoint( "enable_TreeTest" ).insert(Boolean.FALSE);
         kSession.fireAllRules();
 
-        System.err.println(reportWMObjects(kSession));
-
         assertEquals( 1, kSession.getObjects().size() );
 
         kSession.dispose();
@@ -151,8 +140,6 @@ public class CleanupTest extends DroolsAbstractPMMLTest {
 
         kSession.getEntryPoint( "enable_LinReg" ).insert(Boolean.FALSE);
         kSession.fireAllRules();
-
-        System.err.println(reportWMObjects(kSession));
 
         assertEquals( 1, kSession.getObjects().size() );
 
@@ -171,8 +158,6 @@ public class CleanupTest extends DroolsAbstractPMMLTest {
         kSession.getEntryPoint( "enable_CenterClustering" ).insert(Boolean.FALSE);
         kSession.fireAllRules();
 
-        System.err.println(reportWMObjects(kSession));
-
         assertEquals( 1, kSession.getObjects().size() );
 
         kSession.dispose();
@@ -190,8 +175,6 @@ public class CleanupTest extends DroolsAbstractPMMLTest {
         kSession.getEntryPoint( "enable_SVMXORModel" ).insert(Boolean.FALSE);
         kSession.fireAllRules();
 
-        System.err.println(reportWMObjects(kSession));
-
         assertEquals( 1, kSession.getObjects().size() );
 
         kSession.dispose();
@@ -208,8 +191,6 @@ public class CleanupTest extends DroolsAbstractPMMLTest {
 
         kSession.getEntryPoint( "enable_SampleScore" ).insert(Boolean.FALSE);
         kSession.fireAllRules();
-
-        System.err.println(reportWMObjects(kSession));
 
         assertEquals( 1, kSession.getObjects().size() );
 

@@ -69,8 +69,6 @@ public class MultipleModelTest extends DroolsAbstractPMMLTest {
 
         kSession.fireAllRules();
 
-        System.err.println(reportWMObjects(kSession));
-
         assertEquals( 2, kSession.getObjects( new ClassObjectFilter( ModelMarker.class ) ).size() );
         assertEquals( 11, kSession.getObjects( new ClassObjectFilter( kSession.getKieBase().getFactType( packageName, "Synapse" ).getFactClass() ) ).size() );
 
@@ -100,8 +98,6 @@ public class MultipleModelTest extends DroolsAbstractPMMLTest {
         kc.updateToVersion( releaseId1 );
 
         kSession.fireAllRules();
-
-        System.err.println(reportWMObjects(kSession));
 
         assertEquals( 2, kSession.getObjects( new ClassObjectFilter( ModelMarker.class ) ).size() );
         assertEquals( 11, kSession.getObjects( new ClassObjectFilter( kSession.getKieBase().getFactType( packageName, "Synapse" ).getFactClass() ) ).size() );

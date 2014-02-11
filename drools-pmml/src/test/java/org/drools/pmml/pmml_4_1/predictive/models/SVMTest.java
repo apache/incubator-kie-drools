@@ -67,9 +67,6 @@ public class SVMTest extends DroolsAbstractPMMLTest {
         kSession.fireAllRules();
         checkFirstDataFieldOfTypeStatus( ztype, true, false, "SVMXORMODEL", "yes" );
 
-        System.err.println( reportWMObjects(kSession)  );
-
-
         kSession.getEntryPoint( "in_Y" ).insert( -0.12 );
         kSession.fireAllRules();
         checkFirstDataFieldOfTypeStatus( ztype, true, false, "SVMXORMODEL", "no" );
@@ -97,8 +94,6 @@ public class SVMTest extends DroolsAbstractPMMLTest {
         kSession.getEntryPoint( "in_Y" ).insert( 0.0 );
         kSession.fireAllRules();
 
-        System.err.println( reportWMObjects(kSession)  );
-
         checkFirstDataFieldOfTypeStatus( ztype, true, false, "SVMXORMODEL", "no" );
 
         checkFirstDataFieldOfTypeStatus( kSession.getKieBase().getFactType( packageName, "OutZ" ),
@@ -123,8 +118,6 @@ public class SVMTest extends DroolsAbstractPMMLTest {
         kSession.getEntryPoint( "in_X" ).insert( 0.63 );
         kSession.getEntryPoint( "in_Y" ).insert( 0.0 );
         kSession.fireAllRules();
-
-        System.err.println( reportWMObjects(kSession)  );
 
         checkFirstDataFieldOfTypeStatus( ztype, true, false, "SVMXORMODEL", "yes" );
 

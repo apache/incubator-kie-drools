@@ -62,7 +62,6 @@ public class SimpleRegressionTest extends DroolsAbstractPMMLTest {
         
         checkFirstDataFieldOfTypeStatus( tgt, true, false, "LinReg", x );
 
-        System.err.println( reportWMObjects( kSession ) );
     }
 
 
@@ -81,8 +80,6 @@ public class SimpleRegressionTest extends DroolsAbstractPMMLTest {
         kSession.getEntryPoint( "in_Fld2" ).insert( 1.0 );
         kSession.getEntryPoint( "in_Fld3" ).insert( "x" );
         kSession.fireAllRules();
-
-        System.err.println( reportWMObjects( kSession ) );
 
         checkFirstDataFieldOfTypeStatus( kSession.getKieBase().getFactType( packageName, "RegOut" ),
                                             true, false, "LinReg", "catC" );

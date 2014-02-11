@@ -51,7 +51,6 @@ public class FunctionsWithNestedTest extends DroolsAbstractPMMLTest {
 
         getKSession().fireAllRules();
 
-        System.err.println( reportWMObjects( getKSession() ) );
         checkFirstDataFieldOfTypeStatus( getKbase().getFactType( packageName, "MappedAge" ), true, false, null,
                                          10 + 20 //from constants
                                          + 10  //from aggregate

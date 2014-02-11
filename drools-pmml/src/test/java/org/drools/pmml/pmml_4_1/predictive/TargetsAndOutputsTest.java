@@ -45,9 +45,6 @@ public class TargetsAndOutputsTest extends DroolsAbstractPMMLTest {
         getKSession().getEntryPoint("in_PetalLength").insert(3.5);
         getKSession().fireAllRules();
 
-        System.err.println(reportWMObjects(getKSession()));
-
-
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutNCSP1"),
                 true, false,"IRIS_MLP",3.0);
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutNCSP2"),
@@ -64,9 +61,6 @@ public class TargetsAndOutputsTest extends DroolsAbstractPMMLTest {
         getKSession().getEntryPoint("in_PetalNumber").insert(4);
         getKSession().getEntryPoint("in_PetalLength").insert(3.5);
         getKSession().fireAllRules();
-
-        System.err.println(reportWMObjects(getKSession()));
-
 
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutNCSP1"),
                 true, false,"IRIS_MLP",3.0);
@@ -85,9 +79,6 @@ public class TargetsAndOutputsTest extends DroolsAbstractPMMLTest {
         getKSession().getEntryPoint("in_PetalLength").insert(3.5);
         getKSession().fireAllRules();
 
-        System.err.println(reportWMObjects(getKSession()));
-
-
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutFeatDV"),
                 true, false,"IRIS_MLP", "NC Species II");
 
@@ -101,9 +92,6 @@ public class TargetsAndOutputsTest extends DroolsAbstractPMMLTest {
         getKSession().getEntryPoint("in_PetalNumber").insert(4);
         getKSession().getEntryPoint("in_PetalLength").insert(3.5);
         getKSession().fireAllRules();
-
-        System.err.println(reportWMObjects(getKSession()));
-
 
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutResidual"),
                 true, false,"IRIS_MLP", 2.0 );

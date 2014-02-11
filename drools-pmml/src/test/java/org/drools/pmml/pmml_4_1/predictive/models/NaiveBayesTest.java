@@ -56,8 +56,6 @@ public class NaiveBayesTest extends DroolsAbstractPMMLTest {
 
         kieSession.fireAllRules();
 
-        System.err.println( reportWMObjects( kieSession ) );
-
         QueryResults q1 = kieSession.getQueryResults( "ProbabilityOf500", "NaiveBayesInsurance", Variable.v );
         assertEquals( 1, q1.size() );
         Object a1 = q1.iterator().next().get( q1.getIdentifiers()[ 1 ] );

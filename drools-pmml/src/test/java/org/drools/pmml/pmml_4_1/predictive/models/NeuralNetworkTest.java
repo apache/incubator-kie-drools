@@ -105,8 +105,6 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
 
         getKSession().fireAllRules();
 
-        System.err.println( reportWMObjects( getKSession() ) );
-
         Assert.assertEquals( 0.44, queryDoubleField( "Cold", "MockCold" ), 1e-6 );
     }
 
@@ -326,8 +324,6 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         getKSession().getEntryPoint( "in_Feat1" ).insert( 3.5 );
         getKSession().fireAllRules();
 
-        System.err.println( reportWMObjects( getKSession() ) );
-
         checkFirstDataFieldOfTypeStatus( getKbase().getFactType( packageName, "MockOutput2" ),
                 true, false, "Test_MLP",1.0 );
         checkFirstDataFieldOfTypeStatus( getKbase().getFactType( packageName, "MockOutput1" ),
@@ -445,9 +441,6 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
 
         getKSession().fireAllRules();
 
-        System.err.println( reportWMObjects( getKSession() ) );
-
-
         assertEquals( 24.0, queryDoubleField("Out_sPIP", "SmartVent"), 0.5 );
         assertEquals( 5, queryDoubleField("Out_sPEEP", "SmartVent"), 0.1 );
         assertEquals( 30, queryDoubleField("Out_sRATE", "SmartVent"), 0.5 );
@@ -466,9 +459,6 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         getKSession().getEntryPoint( "in_FIO2" ).insert(38.0);
 
         getKSession().fireAllRules();
-
-        System.err.println( reportWMObjects( getKSession() ) );
-
 
         assertEquals( 18, queryDoubleField("Out_sPIP", "SmartVent"), 0.5 );
         assertEquals( 4.12, queryDoubleField("Out_sPEEP", "SmartVent"), 0.1 );
@@ -492,7 +482,6 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         getKSession().fireAllRules();
 
         Thread.sleep(200);
-        System.err.println( reportWMObjects( getKSession() ) );
 
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"ColdCat"),
                         true, false,"MockCold","SURE");
