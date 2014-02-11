@@ -356,13 +356,13 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://docs.jboss.org/cdi/beans_1_0.xsd"&gt;
 
   &lt;alternatives&gt;
-    &lt;class&gt;org.jbpm.services.task.identity.JAASUserGroupCallbackImpl&lt;/class&gt;
+    &lt;class&gt;org.jbpm.kie.services.cdi.producer.JAASUserGroupInfoProducer&lt;/class&gt;
   &lt;/alternatives&gt;
 
 &lt;/beans&gt;</programlisting>
 
       <para><note>
-          <para>org.jbpm.services.task.identity.JAASUserGroupCallbackImpl is
+          <para>org.jbpm.kie.services.cdi.producer.JAASUserGroupInfoProducer is
           just an example here which usually is the good fit for JBoss
           Application Server to reuse security settings on application server
           regardless of what it actually is (LDAP, DB, etc). Check Human Task
