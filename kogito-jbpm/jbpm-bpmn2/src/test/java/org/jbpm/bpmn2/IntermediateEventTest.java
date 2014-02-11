@@ -19,8 +19,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.GenericCommand;
@@ -823,6 +825,39 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
         assertEquals(1, executednodes.size());
 
+    }
+    
+    @Test
+    public void testEventSubprocessMessageWithLocalVars() throws Exception {
+        KieBase kbase = createKnowledgeBase("subprocess/BPMN2-EventSubProcessWithLocalVariables.bpmn2");
+        final Set<String> variablevalues = new HashSet<String>();
+        ProcessEventListener listener = new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+            	@SuppressWarnings("unchecked")
+				Map<String, String> variable = (Map<String, String>)event.getNodeInstance().getVariable("richiesta");
+            	if (variable != null) {
+            		variablevalues.addAll(variable.keySet());
+            	}
+            }
+
+        };
+        ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(listener);
+        ProcessInstance processInstance = ksession.startProcess("EventSPWithVars");
+        assertProcessInstanceActive(processInstance);
+        
+        Map<String, String> data = new HashMap<String, String>();
+        ksession.signalEvent("Message-MAIL", data, processInstance.getId());
+        Thread.sleep(3000);
+        
+        processInstance = ksession.getProcessInstance(processInstance.getId());
+        assertNull(processInstance);   
+        
+        assertEquals(2, variablevalues.size());
+        assertTrue(variablevalues.contains("SCRIPT1"));
+        assertTrue(variablevalues.contains("SCRIPT2"));
     }
 
     @Test

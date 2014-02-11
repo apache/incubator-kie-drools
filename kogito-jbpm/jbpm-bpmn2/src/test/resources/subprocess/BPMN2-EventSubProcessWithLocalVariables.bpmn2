@@ -1,0 +1,84 @@
+<definitions id="Definition"
+				 targetNamespace="http://www.omg.org/bpmn20"
+				 typeLanguage="http://www.java.com/javaTypes"
+				 expressionLanguage="http://www.mvel.org/2.0"
+				 xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				 xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+				 xmlns:g="http://www.jboss.org/drools/flow/gpd"
+				 xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+				 xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+				 xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+				 xmlns:tns="http://www.jboss.org/drools">
+
+<itemDefinition id="documentType" structureRef="java.util.HashMap"/>
+<itemDefinition id="MessageType" structureRef="java.util.HashMap"/>
+
+<message id="MAIL" itemRef="MessageType" />
+
+<process processType="Private" tns:version="2.0" isExecutable="true" id="EventSPWithVars" name="EventSPWithVars" tns:packageName="default">
+
+<startEvent id="block3" name="Inizio procedimento" isInterrupting="false"></startEvent>
+<sequenceFlow id="con_341" sourceRef="block11" targetRef="block16"></sequenceFlow>
+<intermediateCatchEvent id="block11" >
+  <timerEventDefinition>
+		<timeDuration xsi:type="tFormalExpression">P10D</timeDuration>
+  </timerEventDefinition>
+</intermediateCatchEvent> 
+<sequenceFlow id="con_346" sourceRef="block3" targetRef="block11"></sequenceFlow>
+<endEvent id="block16" name="Chiusura procedimento"></endEvent>
+
+<subProcess id="block8" name="Verifica richiesta"  triggeredByEvent="true">
+
+			<property id="richiesta" itemSubjectRef="documentType"/>
+
+    
+			<sequenceFlow id="con_275" sourceRef="main_block8_block54" targetRef="main_block8_block52"></sequenceFlow>
+
+			<sequenceFlow id="con_280" sourceRef="main_block8_block0" targetRef="main_block8_block55"></sequenceFlow>
+
+			<scriptTask id="main_block8_block55" name="Script-task" >
+				<script>
+					<![CDATA[	
+			 		 ((java.util.Map)richiesta).put("SCRIPT1", "executed");			 		 
+					]]>
+					
+					//before time variable is ok
+				</script>
+			</scriptTask>
+
+			<intermediateCatchEvent id="main_block8_block57" >
+			  <timerEventDefinition>
+					<timeDuration xsi:type="tFormalExpression">PT2S</timeDuration>
+			  </timerEventDefinition>
+			</intermediateCatchEvent> 
+
+			<scriptTask id="main_block8_block54" name="Script-task" >
+				<script>
+					<![CDATA[					 
+			 		 ((java.util.Map)richiesta).put("SCRIPT2", "executed");			 		 
+			 		 ]]>
+				</script>
+			</scriptTask>
+
+            <sequenceFlow id="con_290" sourceRef="main_block8_block57" targetRef="main_block8_block54"></sequenceFlow>
+
+            <sequenceFlow id="con_285" sourceRef="main_block8_block55" targetRef="main_block8_block57"></sequenceFlow>
+
+            <startEvent id="main_block8_block0" name="Verifica richiesta (Inizio)" isInterrupting="true">
+				<dataOutput id="main_block8_block0_Output" name="main_block8_block0" />
+				<outputSet>
+					<dataOutputRefs>main_block8_block0_Output</dataOutputRefs>
+				</outputSet>
+				<dataOutputAssociation>
+					<sourceRef>main_block8_block0_Output</sourceRef>
+					<targetRef>richiesta</targetRef>
+				</dataOutputAssociation>
+				<messageEventDefinition messageRef="MAIL"></messageEventDefinition>
+			</startEvent>
+            <endEvent id="main_block8_block52" name="Verifica richiesta (Fine)"></endEvent>
+
+</subProcess> 
+
+</process>
+</definitions>

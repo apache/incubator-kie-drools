@@ -634,6 +634,15 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                     readNodeInstance( context,
                                       (EventSubProcessNodeInstance) nodeInstance,
                                       processInstance );
+                    VariableScopeInstance variableScopeInstance = (VariableScopeInstance) ((EventSubProcessNodeInstance) nodeInstance).getContextInstance( VariableScope.VARIABLE_SCOPE );
+                    for ( JBPMMessages.Variable _variable : _node.getContent().getComposite().getVariableList() ) {
+                        try {
+                            Object _value = ProtobufProcessMarshaller.unmarshallVariableValue( context, _variable );
+                            variableScopeInstance.internalSetVariable( _variable.getName(), _value );
+                        } catch ( ClassNotFoundException e ) {
+                            throw new IllegalArgumentException( "Could not reload variable " + _variable.getName() );
+                        }
+                    }
                 }
                 break;
             default :
