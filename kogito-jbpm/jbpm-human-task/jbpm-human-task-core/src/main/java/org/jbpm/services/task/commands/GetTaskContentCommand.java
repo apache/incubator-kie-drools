@@ -30,7 +30,10 @@ public class GetTaskContentCommand extends TaskCommand<Map<String, Object>> {
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        Task taskById =context.getTaskQueryService().getTaskInstanceById(taskId);
+        Task taskById = context.getTaskQueryService().getTaskInstanceById(taskId);
+        if (taskById == null) {
+        	throw new IllegalStateException("Unable to find task with id " + taskId);
+        }
         
         TaskContentService contentService = context.getTaskContentService();
         
