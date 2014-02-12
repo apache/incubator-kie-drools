@@ -26,6 +26,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescript
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -37,181 +38,313 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 public class FromSolutionEntitySelectorTest {
 
     @Test
-    public void originalAndCacheTypeSolver() {
-        runOriginalAndCacheType(SelectionCacheType.SOLVER, 1);
-    }
-
-    @Test
-    public void originalAndCacheTypePhase() {
-        runOriginalAndCacheType(SelectionCacheType.PHASE, 2);
-    }
-
-    @Test
-    public void originalAndCacheTypeStep() {
-        runOriginalAndCacheType(SelectionCacheType.STEP, 5);
-    }
-
-    public void runOriginalAndCacheType(SelectionCacheType cacheType, int timesCalled) {
+    public void originalWithoutEntityListDirty() {
         TestdataSolution workingSolution = new TestdataSolution();
         final List<Object> entityList = Arrays.<Object>asList(
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
         PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
         when(entityDescriptor.extractEntities(workingSolution)).thenReturn(entityList);
-        FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, cacheType, false);
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        when(scoreDirector.getWorkingSolution()).thenReturn(workingSolution);
+        when(scoreDirector.getWorkingEntityListRevision()).thenReturn(7L);
+        when(scoreDirector.isWorkingEntityListDirty(7L)).thenReturn(false);
+        FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, false);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
-        when(solverScope.getWorkingSolution()).thenReturn(workingSolution);
         entitySelector.solvingStarted(solverScope);
 
         AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
+        when(phaseScopeA.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.phaseStarted(phaseScopeA);
 
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA1.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.stepStarted(stepScopeA1);
-        runOriginalAsserts(entitySelector, "e1", "e2", "e3");
+        assertAllCodesOfEntitySelector(entitySelector, "e1", "e2", "e3");
         entitySelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA2.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.stepStarted(stepScopeA2);
-        runOriginalAsserts(entitySelector, "e1", "e2", "e3");
+        assertAllCodesOfEntitySelector(entitySelector, "e1", "e2", "e3");
         entitySelector.stepEnded(stepScopeA2);
 
         entitySelector.phaseEnded(phaseScopeA);
 
         AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
+        when(phaseScopeB.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.phaseStarted(phaseScopeB);
 
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB1.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.stepStarted(stepScopeB1);
-        runOriginalAsserts(entitySelector, "e1", "e2", "e3");
+        assertAllCodesOfEntitySelector(entitySelector, "e1", "e2", "e3");
         entitySelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB2.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.stepStarted(stepScopeB2);
-        runOriginalAsserts(entitySelector, "e1", "e2", "e3");
+        assertAllCodesOfEntitySelector(entitySelector, "e1", "e2", "e3");
         entitySelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB3.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.stepStarted(stepScopeB3);
-        runOriginalAsserts(entitySelector, "e1", "e2", "e3");
+        assertAllCodesOfEntitySelector(entitySelector, "e1", "e2", "e3");
         entitySelector.stepEnded(stepScopeB3);
 
         entitySelector.phaseEnded(phaseScopeB);
 
         entitySelector.solvingEnded(solverScope);
 
-        verify(entityDescriptor, times(timesCalled)).extractEntities(workingSolution);
-    }
-
-    private void runOriginalAsserts(FromSolutionEntitySelector entitySelector, String... codes) {
-        Iterator<Object> iterator = entitySelector.iterator();
-        assertNotNull(iterator);
-        for (String code : codes) {
-            assertTrue(iterator.hasNext());
-            assertCode(code, iterator.next());
-        }
-        assertFalse(iterator.hasNext());
-        assertEquals(true, entitySelector.isCountable());
-        assertEquals(false, entitySelector.isNeverEnding());
-        assertEquals(3L, entitySelector.getSize());
+        verify(entityDescriptor, times(2)).extractEntities(workingSolution);
     }
 
     @Test
-    public void randomAndCacheTypeSolver() {
-        runRandomAndCacheType(SelectionCacheType.SOLVER, 1);
+    public void originalWithEntityListDirty() {
+        TestdataSolution workingSolution = new TestdataSolution();
+        PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
+        when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object>asList(
+                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        when(scoreDirector.getWorkingSolution()).thenReturn(workingSolution);
+        when(scoreDirector.getWorkingEntityListRevision()).thenReturn(7L);
+        when(scoreDirector.isWorkingEntityListDirty(7L)).thenReturn(false);
+        FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, false);
+
+        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        entitySelector.solvingStarted(solverScope);
+
+        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
+        when(phaseScopeA.getScoreDirector()).thenReturn(scoreDirector);
+        entitySelector.phaseStarted(phaseScopeA);
+
+        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA1.getScoreDirector()).thenReturn(scoreDirector);
+        entitySelector.stepStarted(stepScopeA1);
+        assertAllCodesOfEntitySelector(entitySelector, "e1", "e2", "e3");
+        entitySelector.stepEnded(stepScopeA1);
+
+        when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object>asList(
+                new TestdataEntity("f1"), new TestdataEntity("f2"), new TestdataEntity("f3")));
+        when(scoreDirector.getWorkingEntityListRevision()).thenReturn(8L);
+        when(scoreDirector.isWorkingEntityListDirty(7L)).thenReturn(true);
+        when(scoreDirector.isWorkingEntityListDirty(8L)).thenReturn(false);
+
+        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
+        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA2.getScoreDirector()).thenReturn(scoreDirector);
+        entitySelector.stepStarted(stepScopeA2);
+        assertAllCodesOfEntitySelector(entitySelector, "f1", "f2", "f3");
+        entitySelector.stepEnded(stepScopeA2);
+
+        entitySelector.phaseEnded(phaseScopeA);
+
+        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
+        when(phaseScopeB.getScoreDirector()).thenReturn(scoreDirector);
+        entitySelector.phaseStarted(phaseScopeB);
+
+        AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
+        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB1.getScoreDirector()).thenReturn(scoreDirector);
+        entitySelector.stepStarted(stepScopeB1);
+        assertAllCodesOfEntitySelector(entitySelector, "f1", "f2", "f3");
+        entitySelector.stepEnded(stepScopeB1);
+
+        AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
+        when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB2.getScoreDirector()).thenReturn(scoreDirector);
+        entitySelector.stepStarted(stepScopeB2);
+        assertAllCodesOfEntitySelector(entitySelector, "f1", "f2", "f3");
+        entitySelector.stepEnded(stepScopeB2);
+
+        when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object>asList(
+                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
+        when(scoreDirector.getWorkingEntityListRevision()).thenReturn(9L);
+        when(scoreDirector.isWorkingEntityListDirty(8L)).thenReturn(true);
+        when(scoreDirector.isWorkingEntityListDirty(9L)).thenReturn(false);
+
+        AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
+        when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB3.getScoreDirector()).thenReturn(scoreDirector);
+        entitySelector.stepStarted(stepScopeB3);
+        assertAllCodesOfEntitySelector(entitySelector, "e1", "e2", "e3");
+        entitySelector.stepEnded(stepScopeB3);
+
+        entitySelector.phaseEnded(phaseScopeB);
+
+        entitySelector.solvingEnded(solverScope);
+
+        verify(entityDescriptor, times(4)).extractEntities(workingSolution);
     }
 
     @Test
-    public void randomAndCacheTypePhase() {
-        runRandomAndCacheType(SelectionCacheType.PHASE, 2);
-    }
-
-    @Test
-    public void randomAndCacheTypeStep() {
-        runRandomAndCacheType(SelectionCacheType.STEP, 5);
-    }
-
-    public void runRandomAndCacheType(SelectionCacheType cacheType, int timesCalled) {
+    public void randomWithoutEntityListDirty() {
         TestdataSolution workingSolution = new TestdataSolution();
         final List<Object> entityList = Arrays.<Object>asList(
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
         PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
         when(entityDescriptor.extractEntities(workingSolution)).thenReturn(entityList);
-        FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, cacheType, true);
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        when(scoreDirector.getWorkingSolution()).thenReturn(workingSolution);
+        when(scoreDirector.getWorkingEntityListRevision()).thenReturn(7L);
+        when(scoreDirector.isWorkingEntityListDirty(7L)).thenReturn(false);
+        FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, true);
 
         Random workingRandom = mock(Random.class);
         when(workingRandom.nextInt(3)).thenReturn(1, 0, 0, 2, 1, 2, 2, 1, 0);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
-        when(solverScope.getWorkingSolution()).thenReturn(workingSolution);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         entitySelector.solvingStarted(solverScope);
 
         AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
+        when(phaseScopeA.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.phaseStarted(phaseScopeA);
 
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA1.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.stepStarted(stepScopeA1);
-        runRandomAsserts(entitySelector, "e2", "e1", "e1", "e3");
+        assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "e2", "e1", "e1", "e3");
         entitySelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA2.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.stepStarted(stepScopeA2);
-        runRandomAsserts(entitySelector, "e2", "e3");
+        assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "e2", "e3");
         entitySelector.stepEnded(stepScopeA2);
 
         entitySelector.phaseEnded(phaseScopeA);
 
         AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
+        when(phaseScopeB.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.phaseStarted(phaseScopeB);
 
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB1.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.stepStarted(stepScopeB1);
-        runRandomAsserts(entitySelector, "e3");
+        assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "e3");
         entitySelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB2.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.stepStarted(stepScopeB2);
-        runRandomAsserts(entitySelector, "e2");
+        assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "e2");
         entitySelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB3.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.stepStarted(stepScopeB3);
-        runRandomAsserts(entitySelector, "e1");
+        assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "e1");
         entitySelector.stepEnded(stepScopeB3);
 
         entitySelector.phaseEnded(phaseScopeB);
 
         entitySelector.solvingEnded(solverScope);
 
-        verify(entityDescriptor, times(timesCalled)).extractEntities(workingSolution);
+        verify(entityDescriptor, times(2)).extractEntities(workingSolution);
     }
 
-    private void runRandomAsserts(FromSolutionEntitySelector entitySelector, String... codes) {
-        Iterator<Object> iterator = entitySelector.iterator();
-        assertNotNull(iterator);
-        for (String code : codes) {
-            assertTrue(iterator.hasNext());
-            assertCode(code, iterator.next());
-        }
-        assertTrue(iterator.hasNext());
-        assertEquals(true, entitySelector.isCountable());
-        assertEquals(true, entitySelector.isNeverEnding());
-        assertEquals(3L, entitySelector.getSize());
+    @Test
+    public void randomWithEntityListDirty() {
+        TestdataSolution workingSolution = new TestdataSolution();
+        PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
+        when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object>asList(
+                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        when(scoreDirector.getWorkingSolution()).thenReturn(workingSolution);
+        when(scoreDirector.getWorkingEntityListRevision()).thenReturn(7L);
+        when(scoreDirector.isWorkingEntityListDirty(7L)).thenReturn(false);
+        FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, true);
+
+        Random workingRandom = mock(Random.class);
+        when(workingRandom.nextInt(3)).thenReturn(1, 0, 0, 2, 1, 2, 2, 1, 0);
+
+        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
+        entitySelector.solvingStarted(solverScope);
+
+        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
+        when(phaseScopeA.getScoreDirector()).thenReturn(scoreDirector);
+        entitySelector.phaseStarted(phaseScopeA);
+
+        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA1.getScoreDirector()).thenReturn(scoreDirector);
+        entitySelector.stepStarted(stepScopeA1);
+        assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "e2", "e1", "e1", "e3");
+        entitySelector.stepEnded(stepScopeA1);
+
+        when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object>asList(
+                new TestdataEntity("f1"), new TestdataEntity("f2"), new TestdataEntity("f3")));
+        when(scoreDirector.getWorkingEntityListRevision()).thenReturn(8L);
+        when(scoreDirector.isWorkingEntityListDirty(7L)).thenReturn(true);
+        when(scoreDirector.isWorkingEntityListDirty(8L)).thenReturn(false);
+
+        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
+        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA2.getScoreDirector()).thenReturn(scoreDirector);
+        entitySelector.stepStarted(stepScopeA2);
+        assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "f2", "f3");
+        entitySelector.stepEnded(stepScopeA2);
+
+        entitySelector.phaseEnded(phaseScopeA);
+
+        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
+        when(phaseScopeB.getScoreDirector()).thenReturn(scoreDirector);
+        entitySelector.phaseStarted(phaseScopeB);
+
+        AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
+        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB1.getScoreDirector()).thenReturn(scoreDirector);
+        entitySelector.stepStarted(stepScopeB1);
+        assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "f3");
+        entitySelector.stepEnded(stepScopeB1);
+
+        AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
+        when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB2.getScoreDirector()).thenReturn(scoreDirector);
+        entitySelector.stepStarted(stepScopeB2);
+        assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "f2");
+        entitySelector.stepEnded(stepScopeB2);
+
+        when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object>asList(
+                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
+        when(scoreDirector.getWorkingEntityListRevision()).thenReturn(9L);
+        when(scoreDirector.isWorkingEntityListDirty(8L)).thenReturn(true);
+        when(scoreDirector.isWorkingEntityListDirty(9L)).thenReturn(false);
+
+        AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
+        when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
+        when(stepScopeB3.getScoreDirector()).thenReturn(scoreDirector);
+        entitySelector.stepStarted(stepScopeB3);
+        assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "e1");
+        entitySelector.stepEnded(stepScopeB3);
+
+        entitySelector.phaseEnded(phaseScopeB);
+
+        entitySelector.solvingEnded(solverScope);
+
+        verify(entityDescriptor, times(4)).extractEntities(workingSolution);
     }
 
 }

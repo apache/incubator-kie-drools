@@ -25,29 +25,25 @@ import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecyc
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRandomIterator;
+import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * This is the common {@link EntitySelector} implementation.
  */
-public class FromSolutionEntitySelector extends AbstractEntitySelector implements SelectionCacheLifecycleListener {
+public class FromSolutionEntitySelector extends AbstractEntitySelector {
 
     protected final PlanningEntityDescriptor entityDescriptor;
-    protected final SelectionCacheType cacheType;
     protected final boolean randomSelection;
 
     protected List<Object> cachedEntityList = null;
+    protected Long cachedEntityListRevision = null;
 
-    public FromSolutionEntitySelector(PlanningEntityDescriptor entityDescriptor,
-            SelectionCacheType cacheType, boolean randomSelection) {
+    public FromSolutionEntitySelector(PlanningEntityDescriptor entityDescriptor, boolean randomSelection) {
         this.entityDescriptor = entityDescriptor;
-        this.cacheType = cacheType;
         this.randomSelection = randomSelection;
-        if (cacheType.isNotCached()) {
-            throw new IllegalArgumentException("The selector (" + this
-                    + ") does not support the cacheType (" + cacheType + ").");
-        }
-        solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }
 
     public PlanningEntityDescriptor getEntityDescriptor() {
@@ -56,19 +52,33 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector implement
 
     @Override
     public SelectionCacheType getCacheType() {
-        return cacheType;
+        return SelectionCacheType.STEP;
     }
 
     // ************************************************************************
     // Cache lifecycle methods
     // ************************************************************************
 
-    public void constructCache(DefaultSolverScope solverScope) {
-        cachedEntityList = entityDescriptor.extractEntities(solverScope.getWorkingSolution());
+    @Override
+    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+        ScoreDirector scoreDirector = phaseScope.getScoreDirector();
+        cachedEntityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
+        cachedEntityListRevision = scoreDirector.getWorkingEntityListRevision();
     }
 
-    public void disposeCache(DefaultSolverScope solverScope) {
+    @Override
+    public void stepStarted(AbstractStepScope stepScope) {
+        ScoreDirector scoreDirector = stepScope.getScoreDirector();
+        if (scoreDirector.isWorkingEntityListDirty(cachedEntityListRevision)) {
+            cachedEntityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
+            cachedEntityListRevision = scoreDirector.getWorkingEntityListRevision();
+        }
+    }
+
+    @Override
+    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
         cachedEntityList = null;
+        cachedEntityListRevision = null;
     }
 
     // ************************************************************************

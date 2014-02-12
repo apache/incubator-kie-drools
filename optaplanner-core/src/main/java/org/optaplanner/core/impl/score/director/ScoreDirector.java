@@ -33,6 +33,82 @@ import org.optaplanner.core.impl.solution.Solution;
 public interface ScoreDirector {
 
     /**
+     * The {@link Solution} that is used to calculate the {@link Score}.
+     * <p/>
+     * Because a {@link Score} is best calculated incrementally (by delta's),
+     * the {@link ScoreDirector} needs to be notified when it's {@link Solution workingSolution} changes.
+     * <p/>
+     * If the {@link Solution} has been changed since {@link #calculateScore} has been called,
+     * the {@link Solution#getScore()} of this {@link Solution} won't be correct.
+     * @return never null
+     */
+    Solution getWorkingSolution();
+
+    /**
+     * Calculates the {@link Score} and updates the {@link Solution workingSolution} accordingly.
+     * @return never null, the {@link Score} of the {@link Solution workingSolution}
+     */
+    Score calculateScore();
+
+    /**
+     * @return true if {@link #getConstraintMatchTotals()} can be called
+     */
+    boolean isConstraintMatchEnabled();
+
+    /**
+     * @return never null
+     * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
+     */
+    Collection<ConstraintMatchTotal> getConstraintMatchTotals();
+
+    void beforeEntityAdded(Object entity);
+
+    void afterEntityAdded(Object entity);
+
+    void beforeVariableChanged(Object entity, String variableName);
+
+    void afterVariableChanged(Object entity, String variableName);
+
+    void beforeEntityRemoved(Object entity);
+
+    void afterEntityRemoved(Object entity);
+
+    // TODO extract this set of methods into a separate interface, only used by ProblemFactChange
+
+    void beforeProblemFactAdded(Object problemFact);
+
+    void afterProblemFactAdded(Object problemFact);
+
+    void beforeProblemFactChanged(Object problemFact);
+
+    void afterProblemFactChanged(Object problemFact);
+
+    void beforeProblemFactRemoved(Object problemFact);
+
+    void afterProblemFactRemoved(Object problemFact);
+
+    /**
+     * Needs to be called after use because some implementations needs to clean up their resources.
+     */
+    void dispose();
+
+
+    // ************************************************************************
+    // TODO extract these methods to non-public interface
+    // ************************************************************************
+
+    /**
+     * @return used to check {@link #isWorkingEntityListDirty(long)} later on
+     */
+    long getWorkingEntityListRevision();
+
+    /**
+     * @param expectedWorkingEntityListRevision an
+     * @return true if the entityList might have a different set of instances now
+     */
+    boolean isWorkingEntityListDirty(long expectedWorkingEntityListRevision);
+
+    /**
      * @return never null
      */
     ScoreDirectorFactory getScoreDirectorFactory();
@@ -46,18 +122,6 @@ public interface ScoreDirector {
      * @return never null
      */
     ScoreDefinition getScoreDefinition();
-
-    /**
-     * The {@link Solution} that is used to calculate the {@link Score}.
-     * <p/>
-     * Because a {@link Score} is best calculated incrementally (by delta's),
-     * the {@link ScoreDirector} needs to be notified when it's {@link Solution workingSolution} changes.
-     * <p/>
-     * If the {@link Solution} has been changed since {@link #calculateScore} has been called,
-     * the {@link Solution#getScore()} of this {@link Solution} won't be correct.
-     * @return never null
-     */
-    Solution getWorkingSolution();
 
     /**
      * The {@link Solution workingSolution} must never be the same instance as the {@link Solution bestSolution},
@@ -91,26 +155,9 @@ public interface ScoreDirector {
     boolean isWorkingSolutionInitialized();
 
     /**
-     * Calculates the {@link Score} and updates the {@link Solution workingSolution} accordingly.
-     * @return never null, the {@link Score} of the {@link Solution workingSolution}
-     */
-    Score calculateScore();
-
-    /**
      * @return at least 0L
      */
     long getCalculateCount();
-
-    /**
-     * @return true if {@link #getConstraintMatchTotals()} can be called
-     */
-    boolean isConstraintMatchEnabled();
-
-    /**
-     * @return never null
-     * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
-     */
-    Collection<ConstraintMatchTotal> getConstraintMatchTotals();
 
     /**
      * Clones this {@link ScoreDirector} and its {@link Solution workingSolution}.
@@ -123,11 +170,6 @@ public interface ScoreDirector {
     ScoreDirector clone();
 
     /**
-     * Needs to be called after use because some implementations needs to clean up their resources.
-     */
-    void dispose();
-
-    /**
      * @param chainedVariableDescriptor never null, must be {@link PlanningVariableDescriptor#isChained()} true
      * and known to the {@link SolutionDescriptor}
      * @param planningValue sometimes null
@@ -135,31 +177,11 @@ public interface ScoreDirector {
      */
     Object getTrailingEntity(PlanningVariableDescriptor chainedVariableDescriptor, Object planningValue);
 
-    void beforeEntityAdded(Object entity);
-
-    void afterEntityAdded(Object entity);
-
-    void beforeVariableChanged(Object entity, String variableName);
-
-    void afterVariableChanged(Object entity, String variableName);
-
-    void beforeEntityRemoved(Object entity);
-
-    void afterEntityRemoved(Object entity);
-
-    // TODO extract this set of methods into a separate interface, only used by ProblemFactChange
-
-    void beforeProblemFactAdded(Object problemFact);
-
-    void afterProblemFactAdded(Object problemFact);
-
-    void beforeProblemFactChanged(Object problemFact);
-
-    void afterProblemFactChanged(Object problemFact);
-
-    void beforeProblemFactRemoved(Object problemFact);
-
-    void afterProblemFactRemoved(Object problemFact);
+    /**
+     * Do not waste performance by propagating changes to step (or higher) mechanisms.
+     * @param allChangesWillBeUndoneBeforeStepEnds true if all changes will be undone
+     */
+    void setAllChangesWillBeUndoneBeforeStepEnds(boolean allChangesWillBeUndoneBeforeStepEnds);
 
     /**
      * Asserts that if the {@link Score} is calculated for the current {@link Solution workingSolution}

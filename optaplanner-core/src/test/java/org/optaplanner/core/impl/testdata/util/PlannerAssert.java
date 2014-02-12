@@ -213,6 +213,7 @@ public class PlannerAssert extends Assert {
     }
 
     public static void assertCodesOfNeverEndingMoveSelector(MoveSelector moveSelector, String... codes) {
+        // TODO why codes.length instead of DO_NOT_ASSERT_SIZE like in assertCodesOfNeverEndingOfEntitySelector()
         assertCodesOfNeverEndingMoveSelector(moveSelector, (long) codes.length, codes);
     }
 
@@ -249,6 +250,21 @@ public class PlannerAssert extends Assert {
         assertAllCodesOfIterator(entitySelector.iterator(), codes);
         assertEquals(true, entitySelector.isCountable());
         assertEquals(false, entitySelector.isNeverEnding());
+        if (size != DO_NOT_ASSERT_SIZE) {
+            assertEquals(size, entitySelector.getSize());
+        }
+    }
+
+    public static void assertCodesOfNeverEndingOfEntitySelector(EntitySelector entitySelector, String... codes) {
+        assertCodesOfNeverEndingOfEntitySelector(entitySelector, DO_NOT_ASSERT_SIZE, codes);
+    }
+
+    public static void assertCodesOfNeverEndingOfEntitySelector(EntitySelector entitySelector, long size, String... codes) {
+        Iterator<Object> iterator = entitySelector.iterator();
+        assertCodesOfIterator(iterator, codes);
+        assertTrue(iterator.hasNext());
+        assertEquals(true, entitySelector.isCountable());
+        assertEquals(true, entitySelector.isNeverEnding());
         if (size != DO_NOT_ASSERT_SIZE) {
             assertEquals(size, entitySelector.getSize());
         }

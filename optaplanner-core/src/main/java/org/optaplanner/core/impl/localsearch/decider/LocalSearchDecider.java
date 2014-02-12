@@ -94,6 +94,7 @@ public class LocalSearchDecider {
 
     public void decideNextStep(LocalSearchStepScope stepScope) {
         ScoreDirector scoreDirector = stepScope.getScoreDirector();
+        scoreDirector.setAllChangesWillBeUndoneBeforeStepEnds(true);
         int moveIndex = 0;
         for (Move move : moveSelector) {
             LocalSearchMoveScope moveScope = new LocalSearchMoveScope(stepScope);
@@ -113,6 +114,7 @@ public class LocalSearchDecider {
                 break;
             }
         }
+        scoreDirector.setAllChangesWillBeUndoneBeforeStepEnds(false);
         LocalSearchMoveScope pickedMoveScope = forager.pickMove(stepScope);
         if (pickedMoveScope != null) {
             Move step = pickedMoveScope.getMove();

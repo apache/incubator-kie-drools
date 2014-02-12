@@ -58,6 +58,9 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     protected PlanningVariableListenerSupport variableListenerSupport;
 
     protected Solution workingSolution;
+    protected long workingEntityListRevision = 0L;
+
+    protected boolean allChangesWillBeUndoneBeforeStepEnds = false;
 
     protected long calculateCount = 0L;
 
@@ -84,6 +87,18 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         return workingSolution;
     }
 
+    public long getWorkingEntityListRevision() {
+        return workingEntityListRevision;
+    }
+
+    public boolean isAllChangesWillBeUndoneBeforeStepEnds() {
+        return allChangesWillBeUndoneBeforeStepEnds;
+    }
+
+    public void setAllChangesWillBeUndoneBeforeStepEnds(boolean allChangesWillBeUndoneBeforeStepEnds) {
+        this.allChangesWillBeUndoneBeforeStepEnds = allChangesWillBeUndoneBeforeStepEnds;
+    }
+
     public long getCalculateCount() {
         return calculateCount;
     }
@@ -95,6 +110,15 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     public void setWorkingSolution(Solution workingSolution) {
         this.workingSolution = workingSolution;
         trailingEntityMapSupport.resetTrailingEntityMap(workingSolution);
+        setWorkingEntityListDirty();
+    }
+
+    public boolean isWorkingEntityListDirty(long expectedWorkingEntityListRevision) {
+        return workingEntityListRevision != expectedWorkingEntityListRevision;
+    }
+
+    protected void setWorkingEntityListDirty() {
+        workingEntityListRevision++;
     }
 
     public Solution cloneWorkingSolution() {
@@ -209,6 +233,9 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     public void afterEntityAdded(PlanningEntityDescriptor entityDescriptor, Object entity) {
         trailingEntityMapSupport.insertInTrailingEntityMap(entityDescriptor, entity);
         variableListenerSupport.afterEntityAdded(this, entityDescriptor, entity);
+        if (!allChangesWillBeUndoneBeforeStepEnds) {
+            setWorkingEntityListDirty();
+        }
     }
 
     public void beforeVariableChanged(PlanningVariableDescriptor variableDescriptor, Object entity) {
@@ -236,6 +263,9 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
 
     public void afterEntityRemoved(PlanningEntityDescriptor entityDescriptor, Object entity) {
         variableListenerSupport.afterEntityRemoved(this, entityDescriptor, entity);
+        if (!allChangesWillBeUndoneBeforeStepEnds) {
+            setWorkingEntityListDirty();
+        }
     }
 
     // ************************************************************************

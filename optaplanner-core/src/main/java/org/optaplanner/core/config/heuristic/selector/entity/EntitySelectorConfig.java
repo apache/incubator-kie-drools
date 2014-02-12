@@ -282,12 +282,7 @@ public class EntitySelectorConfig extends SelectorConfig {
             throw new IllegalArgumentException("The minimumCacheType (" + minimumCacheType
                     + ") is not yet supported. Please use " + SelectionCacheType.PHASE + " instead.");
         }
-        // FromSolutionEntitySelector caches by design, so it uses the minimumCacheType
-        if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
-            // cacheType upgrades to SelectionCacheType.STEP (without shuffling) because JIT is not supported
-            minimumCacheType = SelectionCacheType.STEP;
-        }
-        return new FromSolutionEntitySelector(entityDescriptor, minimumCacheType, randomSelection);
+        return new FromSolutionEntitySelector(entityDescriptor, randomSelection);
     }
 
     private boolean hasFiltering(PlanningEntityDescriptor entityDescriptor) {
