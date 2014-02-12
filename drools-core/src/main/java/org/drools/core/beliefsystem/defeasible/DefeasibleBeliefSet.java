@@ -11,7 +11,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.WorkingMemoryAction;
-import org.drools.core.rule.Rule;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
@@ -101,7 +101,7 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         DefeasibleLogicalDependency newDep = (DefeasibleLogicalDependency) ((LinkedListEntry) node).getObject();
         newDep.setStatus(resolveStatus(newDep));
 
-        Rule rule = newDep.getJustifier().getRule();
+        RuleImpl rule = newDep.getJustifier().getRule();
 
         // first iterate to see if this new dep is defeated. If it's defeated, it can no longer impacts any deps
         // if we checked what it defeats, and later this was defeated, we would have undo action. So we do the cheaper work first.
@@ -170,7 +170,7 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         updateStatus();
     }
 
-    private boolean checkAndApplyIsDefeated(DefeasibleLogicalDependency potentialInferior, Rule rule, DefeasibleLogicalDependency potentialSuperior) {
+    private boolean checkAndApplyIsDefeated(DefeasibleLogicalDependency potentialInferior, RuleImpl rule, DefeasibleLogicalDependency potentialSuperior) {
         if ( potentialSuperior.getDefeats() == null ) {
             return false;
         }

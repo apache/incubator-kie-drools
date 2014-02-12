@@ -17,6 +17,11 @@
 package org.drools.core.event;
 
 import org.drools.core.WorkingMemory;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.BeforeMatchFiredEvent;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,54 +35,43 @@ public class DebugAgendaEventListener
         // intentionally left blank
     }
 
-    public void activationCreated(final ActivationCreatedEvent event,
-                                  final WorkingMemory workingMemory) {
+    public void matchCreated(MatchCreatedEvent event) {
         logger.info( event.toString() );
     }
 
-    public void activationCancelled(final ActivationCancelledEvent event,
-                                    final WorkingMemory workingMemory) {
+    public void matchCancelled(MatchCancelledEvent event) {
         logger.info( event.toString() );
     }
 
-    public void beforeActivationFired(final BeforeActivationFiredEvent event,
-                                      final WorkingMemory workingMemory) {
+    public void beforeMatchFired(BeforeMatchFiredEvent event) {
         logger.info( event.toString() );
     }
 
-    public void afterActivationFired(final AfterActivationFiredEvent event,
-                                     final WorkingMemory workingMemory) {
+    public void afterMatchFired(AfterMatchFiredEvent event) {
         logger.info( event.toString() );
     }
 
-    public void agendaGroupPopped(final AgendaGroupPoppedEvent event,
-                                  final WorkingMemory workingMemory) {
+    public void agendaGroupPopped(org.kie.api.event.rule.AgendaGroupPoppedEvent event) {
         logger.info( event.toString() );
     }
 
-    public void agendaGroupPushed(final AgendaGroupPushedEvent event,
-                                  final WorkingMemory workingMemory) {
+    public void agendaGroupPushed(org.kie.api.event.rule.AgendaGroupPushedEvent event) {
         logger.info( event.toString() );
     }
 
-    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-                                            WorkingMemory workingMemory) {
+    public void beforeRuleFlowGroupActivated(org.kie.api.event.rule.RuleFlowGroupActivatedEvent event) {
         logger.info( event.toString() );
     }
 
-    public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
-                                              WorkingMemory workingMemory) {
+    public void afterRuleFlowGroupActivated(org.kie.api.event.rule.RuleFlowGroupActivatedEvent event) {
         logger.info( event.toString() );
     }
 
-    public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-            WorkingMemory workingMemory) {
+    public void beforeRuleFlowGroupDeactivated(org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent event) {
         logger.info( event.toString() );
     }
 
-    public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
-                                               WorkingMemory workingMemory) {
+    public void afterRuleFlowGroupDeactivated(org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent event) {
         logger.info( event.toString() );
     }
-
 }

@@ -29,9 +29,8 @@ import java.util.List;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.io.impl.ClassPathResource;
-import org.drools.core.runtime.rule.impl.AgendaImpl;
-import org.drools.core.runtime.rule.impl.InternalAgenda;
 import org.drools.persistence.util.PersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -81,7 +80,7 @@ public class AgendaRuleFlowGroupsTest {
 		
 		CommandBasedStatefulKnowledgeSession ksession = createSession(-1, "ruleflow-groups.drl");
 		
-		org.drools.core.spi.AgendaGroup[] groups = ((AgendaImpl)stripSession(ksession).getAgenda()).getAgenda().getAgendaGroups();
+		org.drools.core.spi.AgendaGroup[] groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroups();
 		// only main is available
 		assertEquals(1, groups.length);
 		assertEquals("MAIN", groups[0].getName());
@@ -95,7 +94,7 @@ public class AgendaRuleFlowGroupsTest {
 		ksession.dispose();        
         ksession = createSession(id, "ruleflow-groups.drl");
         
-        groups = ((AgendaImpl)stripSession(ksession).getAgenda()).getAgenda().getAgendaGroups();
+        groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroups();
         // main and rule flow is now on the agenda
         assertEquals(2, groups.length);
         assertEquals("MAIN", groups[0].getName());
@@ -107,7 +106,7 @@ public class AgendaRuleFlowGroupsTest {
         
         CommandBasedStatefulKnowledgeSession ksession = createSession(-1, "agenda-groups.drl");
         
-        org.drools.core.spi.AgendaGroup[] groups = ((AgendaImpl)stripSession(ksession).getAgenda()).getAgenda().getAgendaGroups();
+        org.drools.core.spi.AgendaGroup[] groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroups();
         // only main is available
         assertEquals(1, groups.length);
         assertEquals("MAIN", groups[0].getName());
@@ -121,7 +120,7 @@ public class AgendaRuleFlowGroupsTest {
         ksession.dispose();        
         ksession = createSession(id, "agenda-groups.drl");
         
-        groups = ((AgendaImpl)stripSession(ksession).getAgenda()).getAgenda().getAgendaGroups();
+        groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroups();
         // main and agenda group is now on the agenda
         assertEquals(2, groups.length);
         assertEquals("MAIN", groups[0].getName());
@@ -134,7 +133,7 @@ public class AgendaRuleFlowGroupsTest {
         
         CommandBasedStatefulKnowledgeSession ksession = createSession(-1, "agenda-groups.drl", "ruleflow-groups.drl");
         
-        org.drools.core.spi.AgendaGroup[] groups = ((AgendaImpl)stripSession(ksession).getAgenda()).getAgenda().getAgendaGroups();
+        org.drools.core.spi.AgendaGroup[] groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroups();
         // only main is available
         assertEquals(1, groups.length);
         assertEquals("MAIN", groups[0].getName());
@@ -149,7 +148,7 @@ public class AgendaRuleFlowGroupsTest {
         ksession.dispose();        
         ksession = createSession(id, "agenda-groups.drl", "ruleflow-groups.drl");
         
-        groups = ((AgendaImpl)stripSession(ksession).getAgenda()).getAgenda().getAgendaGroups();
+        groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroups();
         // main and agenda group is now on the agenda
         assertEquals(3, groups.length);
         assertEquals("MAIN", groups[0].getName());

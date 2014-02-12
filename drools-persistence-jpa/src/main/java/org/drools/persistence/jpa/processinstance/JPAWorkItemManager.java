@@ -1,25 +1,23 @@
 package org.drools.persistence.jpa.processinstance;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.drools.core.WorkItemHandlerNotFoundException;
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.common.InternalRuleBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.persistence.PersistenceContext;
-import org.drools.persistence.PersistenceContextManager;
-import org.drools.persistence.info.WorkItemInfo;
-import org.drools.persistence.jpa.JpaPersistenceContext;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.drools.persistence.PersistenceContext;
+import org.drools.persistence.PersistenceContextManager;
+import org.drools.persistence.info.WorkItemInfo;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class JPAWorkItemManager implements WorkItemManager {
 
@@ -197,8 +195,7 @@ public class JPAWorkItemManager implements WorkItemManager {
 
     private WorkItem internalGetWorkItem(WorkItemInfo workItemInfo) { 
         Environment env = kruntime.getEnvironment();
-        InternalRuleBase ruleBase = (InternalRuleBase) ((KnowledgeBaseImpl) kruntime.getKieBase()).getRuleBase();
-        WorkItem workItem = workItemInfo.getWorkItem(env, ruleBase); 
+        WorkItem workItem = workItemInfo.getWorkItem(env, (InternalKnowledgeBase) kruntime.getKieBase());
         return workItem;
     }
     

@@ -1,6 +1,7 @@
 package org.drools.compiler.compiler;
 
-import org.drools.core.rule.Package;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.core.definitions.InternalKnowledgePackage;
 
 /**
  * Each Dialect can have its own configuration. Implementations of this class are typically
@@ -9,9 +10,12 @@ import org.drools.core.rule.Package;
  */
 public interface DialectConfiguration {
     
-    public void init(PackageBuilderConfiguration  configuration);
+    public void init(KnowledgeBuilderConfigurationImpl configuration);
     
-    public Dialect newDialect(PackageBuilder packageBuilder, PackageRegistry pkgRegistry, Package pkg);
+    public Dialect newDialect(ClassLoader rootClassLoader,
+                              KnowledgeBuilderConfigurationImpl pkgConf,
+                              PackageRegistry pkgRegistry,
+                              InternalKnowledgePackage pkg);
     
-    public PackageBuilderConfiguration getPackageBuilderConfiguration();
+    public KnowledgeBuilderConfigurationImpl getPackageBuilderConfiguration();
 }

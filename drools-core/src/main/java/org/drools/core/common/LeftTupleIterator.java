@@ -72,7 +72,7 @@ public class LeftTupleIterator
     public LeftTuple getFirstLeftTuple(LeftTupleSource source,
                                        LeftTupleSink sink,
                                        InternalWorkingMemory wm) {
-        if ( ((InternalRuleBase)wm.getRuleBase()).getConfiguration().isPhreakEnabled() && source instanceof AccumulateNode ) {
+        if ( wm.getKnowledgeBase().getConfiguration().isPhreakEnabled() && source instanceof AccumulateNode ) {
             AccumulateMemory accmem = (AccumulateMemory) wm.getNodeMemory( (MemoryFactory) source );
             BetaMemory memory = accmem.betaMemory;
             
@@ -247,7 +247,7 @@ public class LeftTupleIterator
             factHandleEntry = null;
             otnIterator = null;
 
-        } else if ( ((InternalRuleBase)wm.getRuleBase()).getConfiguration().isPhreakEnabled() && source instanceof AccumulateNode ) {
+        } else if ( wm.getKnowledgeBase().getConfiguration().isPhreakEnabled() && source instanceof AccumulateNode ) {
             // when using phreak, accumulate result tuples will not link to leftParent, but to parent instead 
             BetaMemory memory = ((AccumulateMemory) wm.getNodeMemory( (MemoryFactory) source )).betaMemory;
             FastIterator localIt = memory.getLeftTupleMemory().fullFastIterator( leftTuple.getParent() );

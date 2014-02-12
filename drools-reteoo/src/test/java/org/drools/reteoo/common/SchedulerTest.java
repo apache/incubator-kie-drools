@@ -16,20 +16,18 @@
 
 package org.drools.reteoo.common;
 
-import org.drools.core.Agenda;
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.WorkingMemory;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.ReteooBuilder.IdGenerator;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.test.model.DroolsTestCase;
@@ -37,6 +35,8 @@ import org.drools.core.time.impl.DurationTimer;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.runtime.rule.Agenda;
+import org.kie.internal.KnowledgeBaseFactory;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -49,22 +49,22 @@ import static org.junit.Assert.assertEquals;
 @Ignore
 public class SchedulerTest extends DroolsTestCase {
     private PropagationContextFactory pctxFactory;
-    private ReteooRuleBase ruleBase;
+    private InternalKnowledgeBase kBase;
     private BuildContext   buildContext;
 
     @Before
     public void setUp() throws Exception {
-        ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        buildContext = new BuildContext(ruleBase, ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator());
-        pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        buildContext = new BuildContext(kBase, kBase.getReteooBuilder().getIdGenerator());
+        pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
     }
 
     @Test
     public void testScheduledActivation() throws Exception {
-        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
-        InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
+        IdGenerator idGenerator = kBase.getReteooBuilder().getIdGenerator();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        final Rule rule = new Rule("test-rule");
+        final RuleImpl rule = new RuleImpl("test-rule");
         final RuleTerminalNode node = new RuleTerminalNode(idGenerator.getNextId(),
                                                            new MockTupleSource(idGenerator.getNextId()),
                                                            rule,
@@ -113,8 +113,8 @@ public class SchedulerTest extends DroolsTestCase {
 
         node.assertLeftTuple(tuple,
                              context,
-                             workingMemory);
-        workingMemory.fireAllRules();
+                             ksession);
+        ksession.fireAllRules();
 
         // sleep for 300ms
         Thread.sleep(300);
@@ -126,12 +126,12 @@ public class SchedulerTest extends DroolsTestCase {
 
     @Test
     public void testDoLoopScheduledActivation() throws Exception {
-        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
+        IdGenerator idGenerator = kBase.getReteooBuilder().getIdGenerator();
 
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
-        final Agenda agenda = workingMemory.getAgenda();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        final Agenda agenda = ksession.getAgenda();
 
-        final Rule rule = new Rule("test-rule");
+        final RuleImpl rule = new RuleImpl("test-rule");
         final RuleTerminalNode node = new RuleTerminalNode(idGenerator.getNextId(),
                                                            new MockTupleSource(idGenerator.getNextId()),
                                                            rule,
@@ -159,7 +159,7 @@ public class SchedulerTest extends DroolsTestCase {
                                                                                            true);
                     node.assertLeftTuple(tuple2,
                                          context2,
-                                         (AbstractWorkingMemory) workingMemory);
+                                         (StatefulKnowledgeSessionImpl) workingMemory);
                 }
                 data.add("tested");
             }
@@ -191,11 +191,11 @@ public class SchedulerTest extends DroolsTestCase {
 
         node.assertLeftTuple(tuple1,
                              context1,
-                             workingMemory);
+                             ksession);
 
         assertEquals(0,
                      data.size());
-        workingMemory.fireAllRules();
+        ksession.fireAllRules();
 
         // sleep for 2 seconds
         Thread.sleep(2000);
@@ -208,13 +208,13 @@ public class SchedulerTest extends DroolsTestCase {
 
     @Test
     public void testNoLoopScheduledActivation() throws Exception {
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        IdGenerator idGenerator = kBase.getReteooBuilder().getIdGenerator();
 
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
-        final Agenda agenda = workingMemory.getAgenda();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        final Agenda agenda = ksession.getAgenda();
 
-        final Rule rule = new Rule("test-rule");
+        final RuleImpl rule = new RuleImpl("test-rule");
         final List data = new ArrayList();
 
         final RuleTerminalNode node = new RuleTerminalNode(idGenerator.getNextId(),
@@ -246,7 +246,7 @@ public class SchedulerTest extends DroolsTestCase {
                                                                                            true);
                     node.assertLeftTuple(tuple2,
                                          context2,
-                                         (AbstractWorkingMemory) workingMemory);
+                                         (StatefulKnowledgeSessionImpl) workingMemory);
                 }
                 data.add("tested");
             }
@@ -276,11 +276,11 @@ public class SchedulerTest extends DroolsTestCase {
                                                                                true);
         node.assertLeftTuple(tuple1,
                              context1,
-                             workingMemory);
+                             ksession);
         assertEquals(0,
                      data.size());
 
-        workingMemory.fireAllRules();
+        ksession.fireAllRules();
 
         // sleep for 0.5 seconds
         Thread.sleep(500);

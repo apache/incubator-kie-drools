@@ -18,10 +18,8 @@ import org.drools.compiler.Worker;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.util.Entry;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.core.util.ObjectHashSet;
@@ -197,7 +195,7 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( set,
                       newSet );
 
-        FlatQueryResults flatResults = new FlatQueryResults( ((StatefulKnowledgeSessionImpl) session).session.getQueryResults( "cheeses" ) );
+        FlatQueryResults flatResults = new FlatQueryResults( ((StatefulKnowledgeSessionImpl) session).getQueryResults( "cheeses" ) );
         assertEquals( 3,
                       flatResults.size() );
         assertEquals( 2,
@@ -366,11 +364,7 @@ public class QueryTest extends CommonTestMethodBase {
 
         StatefulKnowledgeSessionImpl sessionImpl = (StatefulKnowledgeSessionImpl) ksession;
 
-        ReteooWorkingMemoryInterface reteWorkingMemory = sessionImpl.session;
-        AbstractWorkingMemory abstractWorkingMemory = (AbstractWorkingMemory) reteWorkingMemory;
-
-        InternalRuleBase ruleBase = (InternalRuleBase) abstractWorkingMemory.getRuleBase();
-        Collection<EntryPointNode> entryPointNodes = ruleBase.getRete().getEntryPointNodes().values();
+        Collection<EntryPointNode> entryPointNodes = sessionImpl.getKnowledgeBase().getRete().getEntryPointNodes().values();
 
         EntryPointNode defaultEntryPointNode = null;
         for ( EntryPointNode epNode : entryPointNodes ) {
@@ -385,7 +379,7 @@ public class QueryTest extends CommonTestMethodBase {
 
         ObjectType key = new ClassObjectType( DroolsQuery.class );
         ObjectTypeNode droolsQueryNode = obnodes.get( key );
-        ObjectHashSet droolsQueryMemory = ((ObjectTypeNodeMemory) abstractWorkingMemory.getNodeMemory( droolsQueryNode )).memory;
+        ObjectHashSet droolsQueryMemory = ((ObjectTypeNodeMemory) sessionImpl.getNodeMemory( droolsQueryNode )).memory;
         assertEquals( 0,
                       droolsQueryMemory.size() );
 

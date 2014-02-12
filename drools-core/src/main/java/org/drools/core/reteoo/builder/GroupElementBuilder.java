@@ -246,7 +246,7 @@ public class GroupElementBuilder
 
             NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
 
-            if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() && !context.isTupleMemoryEnabled() && existSubNetwort ) {
+            if ( !context.getKnowledgeBase().getConfiguration().isPhreakEnabled() && !context.isTupleMemoryEnabled() && existSubNetwort ) {
                 // If there is a RIANode, so need to handle. This only happens with queries, so need to worry about sharing
                 context.setTupleSource( (LeftTupleSource) utils.attachNode( context, nfactory.buildQueryRiaFixerNode( context.getNextId(), context.getTupleSource(), context ) ) );
             }
@@ -340,7 +340,7 @@ public class GroupElementBuilder
 
             NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
 
-            if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() && !context.isTupleMemoryEnabled() && existSubNetwort ) {
+            if ( !context.getKnowledgeBase().getConfiguration().isPhreakEnabled() && !context.isTupleMemoryEnabled() && existSubNetwort ) {
                 // If there is a RIANode, so need to handle. This only happens with queries, so need to worry about sharing
                 context.setTupleSource( (LeftTupleSource) utils.attachNode( context, nfactory.buildQueryRiaFixerNode( context.getNextId(), context.getTupleSource(), context ) ) );
             }

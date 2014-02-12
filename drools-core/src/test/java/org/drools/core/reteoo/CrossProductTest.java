@@ -22,25 +22,27 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.WorkingMemory;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Package;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.ObjectType;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.KnowledgeBaseFactory;
 
 public class CrossProductTest {
-    private Package       pkg;
-    private WorkingMemory workingMemory;
+    private InternalKnowledgePackage pkg;
+    private KieSession    ksession;
     private List          values;
 
     @Before
@@ -48,7 +50,7 @@ public class CrossProductTest {
         final ObjectType list1ObjectType = new ClassObjectType( String.class );
         final ObjectType list2ObjectType = new ClassObjectType( String.class );
 
-        final Rule rule = new Rule( "rule-1" );
+        final RuleImpl rule = new RuleImpl( "rule-1" );
 
         final Pattern list1Pattern = new Pattern( 0,
                                                list1ObjectType,
@@ -89,23 +91,23 @@ public class CrossProductTest {
             }
         } );
 
-        this.pkg = new Package( "org.drools" );
+        this.pkg = new KnowledgePackageImpl( "org.drools" );
         this.pkg.addRule( rule );
     }
 
     @Test
     public void testNotRemoveIdentities() throws Exception {
         // Default is remove identity FALSE
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( this.pkg );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        kBase.addPackage( this.pkg );
 
-        this.workingMemory = ruleBase.newStatefulSession();
-        this.workingMemory.insert( "F1" );
-        this.workingMemory.insert( "F2" );
-        this.workingMemory.insert( "F3" );
-        this.workingMemory.insert( "F4" );
+        this.ksession = kBase.newKieSession();
+        this.ksession.insert( "F1" );
+        this.ksession.insert( "F2" );
+        this.ksession.insert( "F3" );
+        this.ksession.insert( "F4" );
 
-        this.workingMemory.fireAllRules();
+        this.ksession.fireAllRules();
 
         // A full cross product is 16, this is just 12
         System.out.println(values);
@@ -118,16 +120,16 @@ public class CrossProductTest {
         System.setProperty( "drools.removeIdentities",
                             "true" );
         try {
-            final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-            ruleBase.addPackage( this.pkg );
+            InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+            kBase.addPackage( this.pkg );
 
-            this.workingMemory = ruleBase.newStatefulSession();
-            this.workingMemory.insert( "F1" );
-            this.workingMemory.insert( "F2" );
-            this.workingMemory.insert( "F3" );
-            this.workingMemory.insert( "F4" );
+            this.ksession = kBase.newKieSession();
+            this.ksession.insert( "F1" );
+            this.ksession.insert( "F2" );
+            this.ksession.insert( "F3" );
+            this.ksession.insert( "F4" );
 
-            this.workingMemory.fireAllRules();
+            this.ksession.fireAllRules();
 
             // A full cross product is 16, this is just 12
             assertEquals( 12,

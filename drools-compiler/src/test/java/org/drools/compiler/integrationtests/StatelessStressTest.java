@@ -2,44 +2,26 @@ package org.drools.compiler.integrationtests;
 
 import static org.junit.Assert.assertFalse;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.Address;
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatelessSession;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.rule.Package;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.StatelessKieSession;
 
 /**
  * This is for testing possible PermSpace issues (leaking) when spawning lots of sessions in concurrent threads.
  * Normally this test will be XXX'ed out, as when running it will not terminate.
  */
-public class StatelessStressTest {
-
-    private static RuleBase getRuleBase(Package pkg) throws IOException, ClassNotFoundException {
-        RuleBase ruleBase    = RuleBaseFactory.newRuleBase();
-
-        ruleBase.addPackage( pkg );
-        return SerializationHelper.serializeObject(ruleBase);
-    }
+public class StatelessStressTest extends CommonTestMethodBase {
 
     @Test @Ignore
     public void testLotsOfStateless() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "thread_class_test.drl" ) ) );
-        assertFalse(builder.hasErrors());
-
-        
-        
-
-        final RuleBase rb  = getRuleBase( builder.getPackage() );
+        final KieBase kbase = loadKnowledgeBase("thread_class_test.drl");
 
         int numThreads = 100;
         Thread[] ts = new Thread[numThreads];
@@ -55,7 +37,7 @@ public class StatelessStressTest {
                         
                         while (true) {
                             start = System.currentTimeMillis();
-                            StatelessSession sess = rb.newStatelessSession();
+                            StatelessKieSession sess = kbase.newStatelessKieSession();
                             try {
                                 sess    = SerializationHelper.serializeObject(sess);
                             } catch (Exception ex) {

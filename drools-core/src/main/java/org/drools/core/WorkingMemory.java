@@ -20,12 +20,14 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.drools.core.spi.AgendaFilter;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.spi.AsyncExceptionHandler;
 import org.drools.core.spi.GlobalResolver;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.api.runtime.rule.Agenda;
+import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.time.SessionClock;
 
 /**
@@ -87,7 +89,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      *
      * @return The <code>RuleBase</code>.
      */
-    RuleBase getRuleBase();
+    InternalKnowledgeBase getKnowledgeBase();
 
     /**
      * Fire all items on the agenda until empty.
@@ -206,7 +208,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @throws IllegalArgumentException
      *         if no query named "query" is found in the rulebase
      */
-    public QueryResults getQueryResults(String query, Object... arguments);
+    public QueryResultsImpl getQueryResults(String query, Object... arguments);
 
     /**
      * Sets the AsyncExceptionHandler to handle exceptions thrown by the Agenda

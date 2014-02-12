@@ -29,7 +29,6 @@ import org.drools.core.RuntimeDroolsException;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.BaseNode;
@@ -38,7 +37,6 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -81,8 +79,6 @@ import org.drools.core.reteoo.WindowNode;
 import org.drools.core.reteoo.WindowNode.WindowMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.Package;
-import org.drools.core.rule.Rule;
 import org.drools.core.rule.SlidingLengthWindow;
 import org.drools.core.rule.SlidingLengthWindow.SlidingLengthWindowContext;
 import org.drools.core.rule.SlidingTimeWindow;
@@ -99,6 +95,7 @@ import org.drools.core.time.impl.PseudoClockScheduler;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.RuleRuntime;
 
 public class InputMarshaller {
 
@@ -146,7 +143,7 @@ public class InputMarshaller {
         if (context.readBoolean()) {
             String entryPointId = context.readUTF();
             if (entryPointId != null && !entryPointId.equals( "" )) {
-                entryPoint = context.wm.getEntryPoints().get( entryPointId );
+                entryPoint = ((RuleRuntime)context.wm).getEntryPoint( entryPointId );
             }
         }
 

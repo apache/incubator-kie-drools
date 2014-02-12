@@ -27,8 +27,8 @@ import java.util.Map.Entry;
 
 import org.drools.core.RuntimeDroolsException;
 import org.drools.core.beliefsystem.simple.BeliefSystemLogicalCallback;
-import org.drools.core.common.AbstractWorkingMemory.WorkingMemoryReteAssertAction;
-import org.drools.core.common.AbstractWorkingMemory.WorkingMemoryReteExpireAction;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteAssertAction;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.common.WorkingMemoryAction;
@@ -290,8 +290,8 @@ public class PersisterHelper {
 		ClassLoader classLoader = null;
                 if (context.classLoader != null ){
                     classLoader = context.classLoader;
-                } else if(context.ruleBase != null){
-                    classLoader = context.ruleBase.getRootClassLoader();
+                } else if(context.kBase != null){
+                    classLoader = context.kBase.getRootClassLoader();
                 }
                 ctx.read( new DroolsObjectInputStream( _entry.getData().newInput(), classLoader) );
             }

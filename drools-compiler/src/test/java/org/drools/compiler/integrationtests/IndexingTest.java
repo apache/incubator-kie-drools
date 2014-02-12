@@ -54,7 +54,7 @@ public class IndexingTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, Person.class );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
         AlphaNode alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
         CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter)alphaNode1.getSinkPropagator();
@@ -95,7 +95,7 @@ public class IndexingTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
         
         ObjectTypeNode node = getObjectTypeNode(kbase, Person.class );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
         JoinNode j2 = ( JoinNode ) liaNode.getSinkPropagator().getSinks()[0]; // $p2
@@ -192,7 +192,7 @@ public class IndexingTest extends CommonTestMethodBase {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         
-        List<ObjectTypeNode> nodes = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete().getObjectTypeNodes();
+        List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
         ObjectTypeNode node = null;
         for ( ObjectTypeNode n : nodes ) {
             if ( ((ClassObjectType)n.getObjectType()).getClassType() == DroolsQuery.class ) {
@@ -201,7 +201,7 @@ public class IndexingTest extends CommonTestMethodBase {
             }
         }    
         
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         
         AlphaNode alphanode = ( AlphaNode ) node.getSinkPropagator().getSinks()[0];
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getSinkPropagator().getSinks()[0];
@@ -226,7 +226,7 @@ public class IndexingTest extends CommonTestMethodBase {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
-        List<ObjectTypeNode> nodes = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete().getObjectTypeNodes();
+        List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
         ObjectTypeNode node = null;
         for ( ObjectTypeNode n : nodes ) {
             if ( ((ClassObjectType)n.getObjectType()).getClassType() == DroolsQuery.class ) {
@@ -235,7 +235,7 @@ public class IndexingTest extends CommonTestMethodBase {
             }
         }
 
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
         AlphaNode alphanode = ( AlphaNode ) node.getSinkPropagator().getSinks()[0];
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getSinkPropagator().getSinks()[0];
@@ -368,7 +368,7 @@ public class IndexingTest extends CommonTestMethodBase {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
-        List<ObjectTypeNode> nodes = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete().getObjectTypeNodes();
+        List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
         ObjectTypeNode node = null;
         for ( ObjectTypeNode n : nodes ) {
             if ( ((ClassObjectType)n.getObjectType()).getClassType() == DroolsQuery.class ) {
@@ -377,7 +377,7 @@ public class IndexingTest extends CommonTestMethodBase {
             }
         }
 
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
         AlphaNode alphanode = ( AlphaNode ) node.getSinkPropagator().getSinks()[0];
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getSinkPropagator().getSinks()[0];
@@ -446,7 +446,7 @@ public class IndexingTest extends CommonTestMethodBase {
     }
 
     public static ObjectTypeNode getObjectTypeNode(KnowledgeBase kbase, Class<?> nodeClass) {
-        List<ObjectTypeNode> nodes = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete().getObjectTypeNodes();
+        List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
         for ( ObjectTypeNode n : nodes ) {
             if ( ((ClassObjectType)n.getObjectType()).getClassType() == nodeClass ) {
                 return n;

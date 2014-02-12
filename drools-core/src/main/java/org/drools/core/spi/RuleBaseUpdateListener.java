@@ -16,9 +16,9 @@
 
 package org.drools.core.spi;
 
-import org.drools.core.StatefulSession;
-import org.drools.core.event.RuleBaseEventListener;
+import org.drools.core.event.KnowledgeBaseEventListener;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 
-public interface RuleBaseUpdateListener extends RuleBaseEventListener {
-    public void setSession(StatefulSession session);
+public interface RuleBaseUpdateListener extends KnowledgeBaseEventListener {
+    public void setSession(StatefulKnowledgeSessionImpl session);
 }

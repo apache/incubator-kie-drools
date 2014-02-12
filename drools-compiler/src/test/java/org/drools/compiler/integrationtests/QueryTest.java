@@ -1,13 +1,5 @@
 package org.drools.compiler.integrationtests;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.drools.compiler.Address;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
@@ -18,13 +10,8 @@ import org.drools.compiler.Person;
 import org.drools.compiler.Worker;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
-import org.drools.core.util.Entry;
-import org.drools.core.util.ObjectHashMap.ObjectEntry;
-import org.drools.core.util.ObjectHashSet;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -32,17 +19,28 @@ import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.spi.ObjectType;
+import org.drools.core.util.Entry;
+import org.drools.core.util.ObjectHashMap.ObjectEntry;
+import org.drools.core.util.ObjectHashSet;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
 import org.kie.api.definition.rule.Rule;
-import org.kie.internal.builder.conf.RuleEngineOption;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.conf.QueryListenerOption;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.builder.conf.RuleEngineOption;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class QueryTest extends CommonTestMethodBase {
 
@@ -197,7 +195,7 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( set,
                       newSet );
 
-        FlatQueryResults flatResults = new FlatQueryResults( ((StatefulKnowledgeSessionImpl) session).session.getQueryResults( "cheeses" ) );
+        FlatQueryResults flatResults = new FlatQueryResults( ((StatefulKnowledgeSessionImpl) session).getQueryResults( "cheeses" ) );
         assertEquals( 3,
                       flatResults.size() );
         assertEquals( 2,
@@ -366,11 +364,7 @@ public class QueryTest extends CommonTestMethodBase {
 
         StatefulKnowledgeSessionImpl sessionImpl = (StatefulKnowledgeSessionImpl) ksession;
 
-        ReteooWorkingMemoryInterface reteWorkingMemory = sessionImpl.session;
-        AbstractWorkingMemory abstractWorkingMemory = (AbstractWorkingMemory) reteWorkingMemory;
-
-        InternalRuleBase ruleBase = (InternalRuleBase) abstractWorkingMemory.getRuleBase();
-        Collection<EntryPointNode> entryPointNodes = ruleBase.getRete().getEntryPointNodes().values();
+        Collection<EntryPointNode> entryPointNodes = sessionImpl.getKnowledgeBase().getRete().getEntryPointNodes().values();
 
         EntryPointNode defaultEntryPointNode = null;
         for ( EntryPointNode epNode : entryPointNodes ) {
@@ -385,7 +379,7 @@ public class QueryTest extends CommonTestMethodBase {
 
         ObjectType key = new ClassObjectType( DroolsQuery.class );
         ObjectTypeNode droolsQueryNode = obnodes.get( key );
-        ObjectHashSet droolsQueryMemory = ((ObjectTypeNodeMemory) abstractWorkingMemory.getNodeMemory( droolsQueryNode )).memory;
+        ObjectHashSet droolsQueryMemory = ((ObjectTypeNodeMemory) sessionImpl.getNodeMemory( droolsQueryNode )).memory;
         assertEquals( 0,
                       droolsQueryMemory.size() );
 

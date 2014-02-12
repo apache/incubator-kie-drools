@@ -16,6 +16,8 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.definitions.rule.impl.RuleImpl;
+
 /**
  * Validity exception indicating that a <code>Rule</code> does not contain a
  * <code>Consequence</code>s.
@@ -33,7 +35,7 @@ public class NoConsequenceException extends InvalidRuleException {
      * @param rule
      *            The invalid <code>Rule</code>.
      */
-    public NoConsequenceException(final Rule rule) {
+    public NoConsequenceException(final RuleImpl rule) {
         super( rule );
     }
 }

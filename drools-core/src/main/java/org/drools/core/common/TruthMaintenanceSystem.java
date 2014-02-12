@@ -16,25 +16,15 @@
 
 package org.drools.core.common;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.core.FactException;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
-import org.drools.core.util.ObjectHashMap;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.PersisterHelper;
-import org.drools.core.marshalling.impl.ProtobufMessages;
-import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
-import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.ObjectHashMap;
 
 /**
  * The Truth Maintenance System is responsible for tracking two things. Firstly
@@ -45,7 +35,7 @@ import org.drools.core.spi.PropagationContext;
  */
 public class TruthMaintenanceSystem {
 
-    private AbstractWorkingMemory wm;
+    private StatefulKnowledgeSessionImpl wm;
 
     private NamedEntryPoint       ep;
 
@@ -55,7 +45,7 @@ public class TruthMaintenanceSystem {
 
     public TruthMaintenanceSystem() {}
 
-    public TruthMaintenanceSystem(final AbstractWorkingMemory wm,
+    public TruthMaintenanceSystem(StatefulKnowledgeSessionImpl wm,
                                   NamedEntryPoint ep) {
         this.wm = wm;
 
@@ -64,8 +54,7 @@ public class TruthMaintenanceSystem {
         this.equalityKeyMap.setComparator( EqualityKeyComparator.getInstance() );
 
 
-        InternalRuleBase rbase = ( InternalRuleBase ) wm.getRuleBase();
-        beliefSystem = rbase.getConfiguration().getComponentFactory().getBeliefSystemFactory().createBeliefSystem(wm.getSessionConfiguration().getBeliefSystemType(), ep, this);
+        beliefSystem = wm.getKnowledgeBase().getConfiguration().getComponentFactory().getBeliefSystemFactory().createBeliefSystem(wm.getSessionConfiguration().getBeliefSystemType(), ep, this);
     }
 
     public ObjectHashMap getEqualityKeyMap() {
@@ -105,7 +94,7 @@ public class TruthMaintenanceSystem {
                                       final Object value,
                                       final Activation activation,
                                       final PropagationContext context,
-                                      final Rule rule,
+                                      final RuleImpl rule,
                                       final ObjectTypeConf typeConf) throws FactException {
         addLogicalDependency( handle, object, value, activation, context, rule, typeConf, true );
     }
@@ -115,7 +104,7 @@ public class TruthMaintenanceSystem {
                                      final Object value,
                                      final Activation activation,
                                      final PropagationContext context,
-                                     final Rule rule,
+                                     final RuleImpl rule,
                                      final ObjectTypeConf typeConf) throws FactException {
         addLogicalDependency( handle, object, value, activation, context, rule, typeConf, false );
     }
@@ -125,7 +114,7 @@ public class TruthMaintenanceSystem {
                                      final Object value,
                                      final Activation activation,
                                      final PropagationContext context,
-                                     final Rule rule,
+                                     final RuleImpl rule,
                                      final ObjectTypeConf typeConf,
                                      final boolean read) throws FactException {
         BeliefSet beliefSet = handle.getEqualityKey().getBeliefSet();

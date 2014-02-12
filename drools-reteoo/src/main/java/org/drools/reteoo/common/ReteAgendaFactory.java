@@ -19,18 +19,18 @@ package org.drools.reteoo.common;
 
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.InternalAgenda;
-import org.drools.core.common.InternalRuleBase;
+import org.drools.core.impl.InternalKnowledgeBase;
 
 import java.io.Serializable;
 
 public class ReteAgendaFactory implements AgendaFactory, Serializable {
 
-    public InternalAgenda createAgenda(InternalRuleBase ruleBase, boolean initMain) {
-        return new ReteAgenda( ruleBase, initMain );
+    public InternalAgenda createAgenda(InternalKnowledgeBase kBase, boolean initMain) {
+        return new ReteAgenda( kBase, initMain );
     }
 
-    public InternalAgenda createAgenda(InternalRuleBase ruleBase) {
-        return new ReteAgenda( ruleBase );
+    public InternalAgenda createAgenda(InternalKnowledgeBase kBase) {
+        return new ReteAgenda( kBase );
     }
 
 }

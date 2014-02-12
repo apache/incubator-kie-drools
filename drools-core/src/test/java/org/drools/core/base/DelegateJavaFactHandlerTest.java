@@ -16,11 +16,14 @@
 
 package org.drools.core.base;
 
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.junit.Test;
+import org.kie.internal.KnowledgeBaseFactory;
+
 import java.lang.reflect.Field;
 
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.WorkingMemory;
-import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class DelegateJavaFactHandlerTest {
@@ -32,7 +35,9 @@ public class DelegateJavaFactHandlerTest {
         final Field field = handler.getClass().getDeclaredField( "entries" );
         field.setAccessible( true );
 
-        final WorkingMemory wm1 = RuleBaseFactory.newRuleBase().newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalWorkingMemory wm1 = ((StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession());
+
         handler.register( wm1 );
 
         JavaFactRegistryEntry[] entries = (JavaFactRegistryEntry[]) field.get( handler );
@@ -46,7 +51,9 @@ public class DelegateJavaFactHandlerTest {
         assertSame( wm1,
                     handler.listWorkingMemories()[0].getWorkingMemory() );
 
-        final WorkingMemory wm2 = RuleBaseFactory.newRuleBase().newStatefulSession();
+        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalWorkingMemory wm2 = ((StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession());
+
         assertFalse( handler.isRegistered( wm2 ) );
 
         handler.unregister( wm1 );
@@ -62,8 +69,10 @@ public class DelegateJavaFactHandlerTest {
         final Field field = handler.getClass().getDeclaredField( "entries" );
         field.setAccessible( true );
 
-        final WorkingMemory wm1 = RuleBaseFactory.newRuleBase().newStatefulSession();
-        final WorkingMemory wm2 = RuleBaseFactory.newRuleBase().newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalWorkingMemory wm1 = ((StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession());
+        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalWorkingMemory wm2 = ((StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession());
         handler.register( wm1 );
         handler.register( wm2 );
 
@@ -115,9 +124,12 @@ public class DelegateJavaFactHandlerTest {
         final Field field = handler.getClass().getDeclaredField( "entries" );
         field.setAccessible( true );
 
-        final WorkingMemory wm1 = RuleBaseFactory.newRuleBase().newStatefulSession();
-        final WorkingMemory wm2 = RuleBaseFactory.newRuleBase().newStatefulSession();
-        final WorkingMemory wm3 = RuleBaseFactory.newRuleBase().newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalWorkingMemory wm1 = ((StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession());
+        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalWorkingMemory wm2 = ((StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession());
+        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalWorkingMemory wm3 = ((StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession());
         handler.register( wm1 );
         handler.register( wm2 );
         handler.register( wm3 );

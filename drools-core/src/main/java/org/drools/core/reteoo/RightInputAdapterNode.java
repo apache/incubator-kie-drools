@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
@@ -76,7 +75,7 @@ public class RightInputAdapterNode extends ObjectSource
                                  final BuildContext context) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
+               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation() );
         this.tupleSource = source;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
         this.startTupleSource = startTupleSource;
@@ -162,12 +161,12 @@ public class RightInputAdapterNode extends ObjectSource
 
     public void attach( BuildContext context ) {
         this.tupleSource.addTupleSink( this, context );
-        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
+        if (context == null || context.getKnowledgeBase().getConfiguration().isPhreakEnabled() ) {
             return;
         }
 
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
+            PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
             final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
             this.tupleSource.updateSink( this,
                                          propagationContext,

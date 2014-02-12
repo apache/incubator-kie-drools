@@ -25,9 +25,9 @@ import javax.rules.admin.RuleAdministrator;
 import javax.rules.admin.RuleExecutionSet;
 import javax.rules.admin.RuleExecutionSetProvider;
 
-import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.jsr94.rules.RuleEngineTestBase;
-import org.drools.core.rule.Package;
 
 import org.junit.After;
 import org.junit.Before;
@@ -43,7 +43,7 @@ public class RuleExecutionSetProviderTest extends RuleEngineTestBase {
 
     private RuleExecutionSetProvider ruleSetProvider;
 
-    private Package                  pkg;
+    private InternalKnowledgePackage pkg;
 
     /**
      * Setup the test case.
@@ -60,9 +60,9 @@ public class RuleExecutionSetProviderTest extends RuleEngineTestBase {
     private void initPackage() {
         final InputStream resourceAsStream = null;
         try {
-            final PackageBuilder builder = new PackageBuilder();
+            final KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
             builder.addPackageFromDrl( new InputStreamReader( RuleEngineTestBase.class.getResourceAsStream( this.bindUri ) ) );
-            final Package pkg = builder.getPackage();
+            InternalKnowledgePackage pkg = builder.getPackage();
 
             this.pkg = pkg;
         } catch ( final IOException e ) {

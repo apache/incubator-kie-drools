@@ -4,10 +4,10 @@ import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.TypeResolver;
 import org.drools.compiler.compiler.FunctionError;
 import org.drools.compiler.rule.builder.FunctionBuilder;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.util.StringUtils;
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.core.rule.LineMappings;
-import org.drools.core.rule.Package;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.templates.TemplateRuntime;
@@ -38,7 +38,7 @@ public class JavaFunctionBuilder
     /* (non-Javadoc)
      * @see org.kie.rule.builder.dialect.java.JavaFunctionBuilder#build(org.kie.rule.Package, org.kie.lang.descr.FunctionDescr, org.codehaus.jfdi.interpreter.TypeResolver, java.util.Map)
      */
-    public String build(final Package pkg,
+    public String build(final InternalKnowledgePackage pkg,
                         final FunctionDescr functionDescr,
                         final TypeResolver typeResolver,
                         final Map<String, LineMappings> lineMappings,

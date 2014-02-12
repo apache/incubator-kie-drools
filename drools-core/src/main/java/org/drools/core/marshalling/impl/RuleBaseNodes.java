@@ -16,11 +16,8 @@
 
 package org.drools.core.marshalling.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.InternalRuleBase;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSink;
@@ -32,25 +29,28 @@ import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.WindowNode;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class RuleBaseNodes {
-    public static Map<Integer, BaseNode> getNodeMap(InternalRuleBase ruleBase) {
+    public static Map<Integer, BaseNode> getNodeMap(InternalKnowledgeBase kBase) {
         Map<Integer, BaseNode> nodes = new HashMap<Integer, BaseNode>();
-        buildNodeMap( ruleBase, nodes );
+        buildNodeMap( kBase, nodes );
         return nodes;
     }
     
-    private static void buildNodeMap(InternalRuleBase ruleBase,
+    private static void buildNodeMap(InternalKnowledgeBase kBase,
                                      Map<Integer, BaseNode> nodes) {
-        for ( ObjectTypeNode sink : ruleBase.getRete().getObjectTypeNodes() ) {
+        for ( ObjectTypeNode sink : kBase.getRete().getObjectTypeNodes() ) {
             nodes.put( sink.getId(),
                        sink );
-            addObjectSink( ruleBase,
+            addObjectSink( kBase,
                            sink,
                            nodes );
         }
     }
 
-    private static void addObjectSink(InternalRuleBase ruleBase,
+    private static void addObjectSink(InternalKnowledgeBase kBase,
                                      ObjectSink sink,
                                      Map<Integer, BaseNode> nodes) {
         // we don't need to store alpha nodes, as they have no state to serialise
@@ -60,7 +60,7 @@ public class RuleBaseNodes {
         if ( sink instanceof LeftTupleSource ) {
             LeftTupleSource node = (LeftTupleSource) sink;
             for ( LeftTupleSink leftTupleSink : node.getSinkPropagator().getSinks() ) {
-                addLeftTupleSink(ruleBase,
+                addLeftTupleSink(kBase,
                                  leftTupleSink,
                                  nodes);
             }
@@ -68,32 +68,32 @@ public class RuleBaseNodes {
             WindowNode node = (WindowNode) sink;
             nodes.put( sink.getId(), ((BaseNode)sink) );
             for ( ObjectSink objectSink : node.getSinkPropagator().getSinks() ) {
-                addObjectSink(ruleBase, objectSink, nodes);
+                addObjectSink(kBase, objectSink, nodes);
             }
         } else {
             ObjectSource node = ( ObjectSource ) sink;
             for ( ObjectSink objectSink : node.getSinkPropagator().getSinks() ) {
-                addObjectSink( ruleBase,
+                addObjectSink( kBase,
                                objectSink,
                                nodes );
             }
         }
     }
 
-    private static void addLeftTupleSink(InternalRuleBase ruleBase,
+    private static void addLeftTupleSink(InternalKnowledgeBase kBase,
                                         LeftTupleSink sink,
                                         Map<Integer, BaseNode> nodes) {
         if ( sink instanceof QueryRiaFixerNode ) {
             nodes.put( sink.getId(),
                        (LeftTupleSource) sink );
-            addLeftTupleSink( ruleBase,
+            addLeftTupleSink( kBase,
                               ((QueryRiaFixerNode)sink).getBetaNode(),
                               nodes );
         } else if ( sink instanceof LeftTupleSource ) {
             nodes.put( sink.getId(),
                        (LeftTupleSource) sink );
             for ( LeftTupleSink leftTupleSink : ((LeftTupleSource) sink).getSinkPropagator().getSinks() ) {
-                addLeftTupleSink( ruleBase,
+                addLeftTupleSink( kBase,
                                   leftTupleSink,
                                   nodes );
             }
@@ -102,7 +102,7 @@ public class RuleBaseNodes {
             nodes.put( sink.getId(), 
                        (ObjectSource) sink );
             for ( ObjectSink objectSink : ((ObjectSource)sink).getSinkPropagator().getSinks() ) {
-                addObjectSink( ruleBase,
+                addObjectSink( kBase,
                                objectSink,
                                nodes );
             }

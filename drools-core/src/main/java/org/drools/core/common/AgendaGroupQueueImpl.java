@@ -18,6 +18,7 @@ package org.drools.core.common;
 
 import org.drools.core.conflict.PhreakConflictResolver;
 import org.drools.core.conflict.SequentialConflictResolver;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
@@ -29,7 +30,6 @@ import org.drools.core.util.BinaryHeapQueue;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,7 +40,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * for requested salience values.
  *
  * @see PriorityQueue
- * @see ActivationQueue
  */
 public class AgendaGroupQueueImpl
         implements
@@ -65,23 +64,21 @@ public class AgendaGroupQueueImpl
 
     /**
      * Construct an <code>AgendaGroup</code> with the given name.
-     *
-     * @param name The <AgendaGroup> name.
      */
     public AgendaGroupQueueImpl() {
 
     }
 
     public AgendaGroupQueueImpl(final String name,
-                                final InternalRuleBase ruleBase) {
+                                final InternalKnowledgeBase kBase) {
         this.name = name;
-        if (ruleBase.getConfiguration().isPhreakEnabled()) {
+        if (kBase.getConfiguration().isPhreakEnabled()) {
             this.priorityQueue = new BinaryHeapQueue(new PhreakConflictResolver());
         } else {
-            if (ruleBase.getConfiguration().isSequential()) {
+            if (kBase.getConfiguration().isSequential()) {
                 this.priorityQueue = new BinaryHeapQueue(new SequentialConflictResolver());
             } else {
-                this.priorityQueue = new BinaryHeapQueue(ruleBase.getConfiguration().getConflictResolver());
+                this.priorityQueue = new BinaryHeapQueue(kBase.getConfiguration().getConflictResolver());
             }
         }
 
@@ -118,8 +115,11 @@ public class AgendaGroupQueueImpl
     }
 
     public void clear() {
+        ((InternalAgenda)workingMemory.getAgenda()).clearAndCancelAgendaGroup(this.name);
+    }
+
+    public void reset() {
         this.priorityQueue.clear();
-//        this.active = false;
     }
 
     public Activation[] getAndClear() {
@@ -138,10 +138,6 @@ public class AgendaGroupQueueImpl
     }
 
     public Activation remove() {
-//        Activation act = this.priorityQueue.dequeue();
-//        if ( this.priorityQueue.isEmpty() && autoDeactivate ) {
-//            setActive( false );
-//        }
         return (Activation) this.priorityQueue.dequeue();
     }
 
@@ -226,7 +222,7 @@ public class AgendaGroupQueueImpl
     }
 
     public void setFocus() {
-        throw new UnsupportedOperationException();
+        ((InternalAgenda)workingMemory.getAgenda()).setFocus( this.name );
     }
 
     public void remove(final Activation activation) {

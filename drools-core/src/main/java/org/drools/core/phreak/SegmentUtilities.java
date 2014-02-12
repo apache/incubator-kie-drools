@@ -5,6 +5,8 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.SynchronizedLeftTupleSets;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.AlphaNode;
@@ -32,7 +34,6 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.RiaPathMemory;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
@@ -40,13 +41,10 @@ import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
-import org.drools.core.rule.Rule;
 import org.drools.core.rule.constraint.QueryNameConstraint;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Queue;
 
 public class SegmentUtilities {
@@ -192,13 +190,13 @@ public class SegmentUtilities {
 
         nodeTypesInSegment = updateRiaAndTerminalMemory(tupleSource, tupleSource, smem, wm, false, nodeTypesInSegment);
 
-        ((ReteooRuleBase)wm.getRuleBase()).registerSegmentPrototype(segmentRoot, smem);
+        ((KnowledgeBaseImpl)wm.getKnowledgeBase()).registerSegmentPrototype(segmentRoot, smem);
 
         return smem;
     }
 
     private static SegmentMemory restoreSegmentFromPrototype(InternalWorkingMemory wm, LeftTupleSource segmentRoot, int nodeTypesInSegment) {
-        SegmentMemory smem = ((ReteooRuleBase)wm.getRuleBase()).getSegmentFromPrototype(wm, segmentRoot);
+        SegmentMemory smem = ((KnowledgeBaseImpl)wm.getKnowledgeBase()).getSegmentFromPrototype(wm, segmentRoot);
         if ( smem != null ) {
             // there is a prototype for this segment memory
             for (NetworkNode node : smem.getNodesInSegment()) {
@@ -505,7 +503,7 @@ public class SegmentUtilities {
 
     }
 
-    public static boolean parentInSameSegment(LeftTupleSource lt, Rule removingRule) {
+    public static boolean parentInSameSegment(LeftTupleSource lt, RuleImpl removingRule) {
         LeftTupleSource parentLt = lt.getLeftTupleSource();
         if (parentLt == null) {
             return false;

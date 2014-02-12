@@ -16,23 +16,20 @@
 
 package org.drools.core;
 
-import org.drools.core.rule.Rule;
+
+import org.drools.core.definitions.rule.impl.RuleImpl;
 
 /**
  * Indicates an error integrating a <code>Rule</code> or <code>Package</code>
  * into a <code>RuleBase</code>.
- * 
- * @see RuleBase#addRule
- * @see RuleBase#addPackage
- * 
  *
- * @version $Id: RuleIntegrationException.java,v 1.6 2004/09/17 00:14:06
+ *  @version $Id: RuleIntegrationException.java,v 1.6 2004/09/17 00:14:06
  *          mproctor Exp $
  */
 public class RuleIntegrationException extends IntegrationException {
     private static final long serialVersionUID = 510l;
     /** The rule. */
-    private final Rule        rule;
+    private final RuleImpl rule;
 
     /**
      * @see java.lang.Exception#Exception()
@@ -40,7 +37,7 @@ public class RuleIntegrationException extends IntegrationException {
      * @param rule
      *            The offending rule.
      */
-    public RuleIntegrationException(final Rule rule) {
+    public RuleIntegrationException(final RuleImpl rule) {
         super( createMessage( rule ) );
         this.rule = rule;
     }
@@ -51,7 +48,7 @@ public class RuleIntegrationException extends IntegrationException {
      * @param rule
      *            The offending rule.
      */
-    public RuleIntegrationException(final Rule rule,
+    public RuleIntegrationException(final RuleImpl rule,
                                     final Throwable cause) {
         super( createMessage( rule ),
                cause );
@@ -63,11 +60,11 @@ public class RuleIntegrationException extends IntegrationException {
      * 
      * @return The rule.
      */
-    public Rule getRule() {
+    public RuleImpl getRule() {
         return this.rule;
     }
 
-    private static String createMessage(final Rule rule) {
+    private static String createMessage(final RuleImpl rule) {
         return rule.getName() + " cannot be integrated";
     }
 }

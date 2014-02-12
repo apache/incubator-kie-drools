@@ -5,19 +5,19 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.BindingDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Accumulate;
-import org.drools.core.rule.Package;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,11 +46,11 @@ public class JavaAccumulateBuilderTest {
         accumDescr.setResultCode( "new Integer( x )" );
         
         //org.drools.core.rule.Package pkg = new org.kie.rule.Package( "org.kie" );
-        final PackageBuilder pkgBuilder = new PackageBuilder();
+        final KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl();
         pkgBuilder.addPackage( new PackageDescr( "org.drools" ) );
-        final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
+        final KnowledgeBuilderConfigurationImpl conf = pkgBuilder.getBuilderConfiguration();
         PackageRegistry pkgReg = pkgBuilder.getPackageRegistry( "org.drools" );
-        Package pkg = pkgReg.getPackage();
+        InternalKnowledgePackage pkg = pkgReg.getPackage();
         DialectCompiletimeRegistry dialectRegistry = pkgReg.getDialectCompiletimeRegistry();
         Dialect dialect = dialectRegistry.getDialect( "java" );
                 

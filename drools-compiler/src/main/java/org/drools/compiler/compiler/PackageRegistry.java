@@ -1,14 +1,15 @@
 package org.drools.compiler.compiler;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.core.base.ClassTypeResolver;
 import org.drools.core.base.TypeResolver;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.ImportDeclaration;
-import org.drools.core.rule.Package;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Consequence;
 import org.kie.api.io.Resource;
 
@@ -16,7 +17,7 @@ import java.util.HashSet;
 import java.util.Map;
 
 public class PackageRegistry {
-    private final Package                    pkg;
+    private final InternalKnowledgePackage pkg;
     private String                           dialect;
 
     private final DialectRuntimeRegistry     dialectRuntimeRegistry;
@@ -24,22 +25,20 @@ public class PackageRegistry {
 
     private final TypeResolver               typeResolver;
 
-    public PackageRegistry(PackageBuilder packageBuilder, Package pkg) {
+    public PackageRegistry(ClassLoader rootClassLoader, KnowledgeBuilderConfigurationImpl pkgConf, InternalKnowledgePackage pkg) {
         this.pkg = pkg;
-        this.dialectCompiletimeRegistry = packageBuilder.getPackageBuilderConfiguration().buildDialectRegistry( packageBuilder,
-                                                                                                                this,
-                                                                                                                pkg );
+        this.dialectCompiletimeRegistry = pkgConf.buildDialectRegistry(rootClassLoader, pkgConf, this, pkg);
         this.dialectRuntimeRegistry = pkg.getDialectRuntimeRegistry();
 
         this.typeResolver = new ClassTypeResolver( new HashSet<String>( this.pkg.getImports().keySet() ),
-                                                   packageBuilder.getRootClassLoader(),
+                                                   rootClassLoader,
                                                    this.pkg.getName() );
 
         this.typeResolver.addImport( pkg.getName() + ".*" );
         pkg.setTypeResolver(typeResolver);
     }
 
-    private PackageRegistry(Package pkg, DialectRuntimeRegistry runtimeRegistry, DialectCompiletimeRegistry compiletimeRegistry, TypeResolver typeResolver) {
+    private PackageRegistry(InternalKnowledgePackage pkg, DialectRuntimeRegistry runtimeRegistry, DialectCompiletimeRegistry compiletimeRegistry, TypeResolver typeResolver) {
         this.pkg = pkg;
         this.dialectRuntimeRegistry = runtimeRegistry;
         this.dialectCompiletimeRegistry = compiletimeRegistry;
@@ -47,13 +46,13 @@ public class PackageRegistry {
     }
 
     PackageRegistry clonePackage(ClassLoader classLoader) {
-        Package clonedPkg = ClassUtils.deepClone(pkg, classLoader);
+        InternalKnowledgePackage clonedPkg = ClassUtils.deepClone(pkg, classLoader);
         clonedPkg.setDialectRuntimeRegistry(pkg.getDialectRuntimeRegistry());
-        for (Rule rule : pkg.getRules()) {
-            Rule clonedRule = clonedPkg.getRule(rule.getName());
-            clonedRule.setConsequence(rule.getConsequence());
-            if (rule.hasNamedConsequences()) {
-                for (Map.Entry<String, Consequence> namedConsequence : rule.getNamedConsequences().entrySet()) {
+        for (org.kie.api.definition.rule.Rule rule : pkg.getRules()) {
+            RuleImpl clonedRule = clonedPkg.getRule(rule.getName());
+            clonedRule.setConsequence(((RuleImpl)rule).getConsequence());
+            if (((RuleImpl)rule).hasNamedConsequences()) {
+                for (Map.Entry<String, Consequence> namedConsequence : ((RuleImpl)rule).getNamedConsequences().entrySet()) {
                     clonedRule.addNamedConsequence(namedConsequence.getKey(), namedConsequence.getValue());
                 }
             }
@@ -72,7 +71,7 @@ public class PackageRegistry {
         this.dialect = dialect;
     }
 
-    public Package getPackage() {
+    public InternalKnowledgePackage getPackage() {
         return pkg;
     }
 

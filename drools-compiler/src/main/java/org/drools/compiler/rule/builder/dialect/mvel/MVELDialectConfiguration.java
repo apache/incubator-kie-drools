@@ -1,11 +1,10 @@
 package org.drools.compiler.rule.builder.dialect.mvel;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectConfiguration;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.rule.Package;
+import org.drools.core.definitions.InternalKnowledgePackage;
 
 /**
  * The MVEL dialect.
@@ -19,25 +18,23 @@ public class MVELDialectConfiguration
     implements
         DialectConfiguration {
 
-    private PackageBuilderConfiguration conf;
+    private KnowledgeBuilderConfigurationImpl conf;
 
     private boolean                     strict;
     
     private int                         langLevel;
 
-    public Dialect newDialect(PackageBuilder packageBuilder, PackageRegistry pkgRegistry, Package pkg) {
-        return new MVELDialect(packageBuilder,
-                               pkgRegistry,
-                               pkg);
+    public Dialect newDialect(ClassLoader rootClassLoader, KnowledgeBuilderConfigurationImpl pkgConf, PackageRegistry pkgRegistry, InternalKnowledgePackage pkg) {
+        return new MVELDialect(rootClassLoader, pkgConf, pkgRegistry, pkg);
     }
 
-    public void init(PackageBuilderConfiguration conf) {
+    public void init(KnowledgeBuilderConfigurationImpl conf) {
         this.conf = conf;
         setStrict( determineStrict() );
         setLangLevel( determineLangLevel() );
     }
 
-    public PackageBuilderConfiguration getPackageBuilderConfiguration() {
+    public KnowledgeBuilderConfigurationImpl getPackageBuilderConfiguration() {
         return this.conf;
     }
 

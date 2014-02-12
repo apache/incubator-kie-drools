@@ -18,11 +18,11 @@ package org.drools.core.reteoo;
 
 import java.util.List;
 
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
@@ -30,26 +30,27 @@ import org.drools.core.spi.Tuple;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.internal.KnowledgeBaseFactory;
 
 import static org.junit.Assert.*;
 
 @Ignore("phreak")
 public class LeftInputAdapterNodeTest extends DroolsTestCase {
-    private ReteooRuleBase ruleBase;
+    private InternalKnowledgeBase kBase;
     private BuildContext buildContext;
     
     @Before
     public void setUp() throws Exception {
-        this.ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
-        this.buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+        this.kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        this.buildContext = new BuildContext( kBase, kBase.getReteooBuilder().getIdGenerator() );
     }
     
     @Test
     
     public void testLeftInputAdapterNode() {
-        BuildContext context = new BuildContext(ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
+        BuildContext context = new BuildContext(kBase, kBase.getReteooBuilder().getIdGenerator() );
         final EntryPointNode entryPoint = new EntryPointNode( -1,
-                                                              ruleBase.getRete(),
+                                                              kBase.getRete(),
                                                               context );
         entryPoint.attach(context);
                         
@@ -82,12 +83,12 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
      */
     @Test
     public void testAssertObjectWithoutMemory() throws Exception {
-        PropagationContextFactory pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         final PropagationContext pcontext = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
 
-        BuildContext context = new BuildContext(ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
+        BuildContext context = new BuildContext(kBase, kBase.getReteooBuilder().getIdGenerator() );
         final EntryPointNode entryPoint = new EntryPointNode( -1,
-                                                              ruleBase.getRete(),
+                                                              kBase.getRete(),
                                                               context );
         entryPoint.attach(context);
 
@@ -103,8 +104,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                                                                        buildContext );
         liaNode.attach(context);
 
-        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1, kBase );
 
         final MockLeftTupleSink sink = new MockLeftTupleSink();
         liaNode.addTupleSink( sink );

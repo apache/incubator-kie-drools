@@ -17,31 +17,27 @@
 package org.drools.reteoo.common;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.SalienceInteger;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.ActivationCancelledEvent;
 import org.drools.core.event.DefaultAgendaEventListener;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.ReteooBuilder.IdGenerator;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Rule;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.ActivationGroup;
-import org.drools.core.spi.AgendaFilter;
+import org.drools.core.spi.InternalActivationGroup;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.ConsequenceException;
@@ -55,7 +51,9 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.event.rule.MatchCancelledCause;
+import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.Match;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
 
 import java.io.IOException;
@@ -66,16 +64,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 @Ignore
 public class AgendaTest extends DroolsTestCase {
-    private InternalRuleBase          ruleBase;
+    private InternalKnowledgeBase     kBase;
     private BuildContext              buildContext;
     private PropagationContextFactory pctxFactory;
 
@@ -83,20 +76,20 @@ public class AgendaTest extends DroolsTestCase {
     public void setUp() throws Exception {
         RuleBaseConfiguration config = new RuleBaseConfiguration();
         config.setPhreakEnabled(false);
-        ruleBase = (InternalRuleBase) RuleBaseFactory.newRuleBase(config);
-        buildContext = new BuildContext(ruleBase,
-                                        ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator());
-        pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        buildContext = new BuildContext(kBase,
+                                        kBase.getReteooBuilder().getIdGenerator());
+        pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
     }
 
     @Test
     public void testClearAgenda() {
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        final InternalAgenda agenda = (InternalAgenda) ksession.getAgenda();
 
-        final Rule rule1 = new Rule("test-rule1");
-        final Rule rule2 = new Rule("test-rule2");
+        final RuleImpl rule1 = new RuleImpl("test-rule1");
+        final RuleImpl rule2 = new RuleImpl("test-rule2");
 
         final RuleTerminalNode node1 = new RuleTerminalNode(3,
                                                             new MockTupleSource(2),
@@ -177,11 +170,11 @@ public class AgendaTest extends DroolsTestCase {
 
         node1.assertLeftTuple(tuple1,
                               context1,
-                              workingMemory);
+                              ksession);
 
         node2.assertLeftTuple(tuple2,
                               context1,
-                              workingMemory);
+                              ksession);
 
         agenda.unstageActivations();
 
@@ -203,11 +196,11 @@ public class AgendaTest extends DroolsTestCase {
 
     @Test
     public void testActivationUnMatchListener() {
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        final InternalAgenda agenda = (InternalAgenda) ksession.getAgenda();
 
-        final Rule rule1 = new Rule("test-rule1");
+        final RuleImpl rule1 = new RuleImpl("test-rule1");
 
         final RuleTerminalNode node1 = new RuleTerminalNode(3,
                                                             new MockTupleSource(2),
@@ -265,7 +258,7 @@ public class AgendaTest extends DroolsTestCase {
 
         node1.assertLeftTuple(tuple,
                               context1,
-                              workingMemory);
+                              ksession);
 
 
         agenda.unstageActivations();
@@ -278,20 +271,20 @@ public class AgendaTest extends DroolsTestCase {
                                                                                  null,
                                                                                  new DefaultFactHandle());
 
-        node1.retractLeftTuple(tuple, context0, workingMemory);
+        node1.retractLeftTuple(tuple, context0, ksession);
 
         assertEquals(50, cheese.getPrice());
     }
 
     @Test
     public void testFilters() throws Exception {
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        final InternalAgenda agenda = (InternalAgenda) ksession.getAgenda();
 
         final Boolean[] filtered = new Boolean[]{false};
 
-        workingMemory.addEventListener(new DefaultAgendaEventListener() {
+        ksession.addEventListener(new DefaultAgendaEventListener() {
 
             public void activationCancelled(ActivationCancelledEvent event,
                                             WorkingMemory workingMemory) {
@@ -301,7 +294,7 @@ public class AgendaTest extends DroolsTestCase {
             }
         });
 
-        final Rule rule = new Rule("test-rule");
+        final RuleImpl rule = new RuleImpl("test-rule");
         final RuleTerminalNode node = new RuleTerminalNode(3,
                                                            new MockTupleSource(2),
                                                            rule,
@@ -352,7 +345,7 @@ public class AgendaTest extends DroolsTestCase {
         final AgendaFilter filterTrue = new
 
                 AgendaFilter() {
-                    public boolean accept(Activation item) {
+                    public boolean accept(Match item) {
                         return true;
                     }
                 };
@@ -360,7 +353,7 @@ public class AgendaTest extends DroolsTestCase {
         rule.setNoLoop(false);
         node.assertLeftTuple(tuple,
                              context,
-                             workingMemory);
+                             ksession);
 
         agenda.unstageActivations();
 
@@ -388,7 +381,7 @@ public class AgendaTest extends DroolsTestCase {
         final AgendaFilter filterFalse = new
 
                 AgendaFilter() {
-                    public boolean accept(Activation item) {
+                    public boolean accept(Match item) {
                         return false;
                     }
                 };
@@ -396,7 +389,7 @@ public class AgendaTest extends DroolsTestCase {
         rule.setNoLoop(false);
         node.assertLeftTuple(tuple,
                              context,
-                             workingMemory);
+                             ksession);
 
         agenda.unstageActivations();
 
@@ -418,7 +411,7 @@ public class AgendaTest extends DroolsTestCase {
 
     @Test
     public void testFocusStack() throws ConsequenceException {
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         // create the consequence
         final Consequence consequence = new Consequence() {
@@ -444,7 +437,7 @@ public class AgendaTest extends DroolsTestCase {
         };
 
         // create a rule for each agendaGroup
-        final Rule rule0 = new Rule("test-rule0");
+        final RuleImpl rule0 = new RuleImpl("test-rule0");
         final RuleTerminalNode node0 = new RuleTerminalNode(3,
                                                             new MockTupleSource(2),
                                                             rule0,
@@ -458,7 +451,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                                  null,
                                                                                  new DefaultFactHandle());
 
-        final Rule rule1 = new Rule("test-rule1",
+        final RuleImpl rule1 = new RuleImpl("test-rule1",
                                     "agendaGroup1");
         final RuleTerminalNode node1 = new RuleTerminalNode(5,
                                                             new MockTupleSource(4),
@@ -473,7 +466,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                                  null,
                                                                                  new DefaultFactHandle());
 
-        final Rule rule2 = new Rule("test-rule2",
+        final RuleImpl rule2 = new RuleImpl("test-rule2",
                                     "agendaGroup2");
         final RuleTerminalNode node2 = new RuleTerminalNode(7,
                                                             new MockTupleSource(6),
@@ -488,7 +481,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                                  null,
                                                                                  new DefaultFactHandle());
 
-        final Rule rule3 = new Rule("test-rule3",
+        final RuleImpl rule3 = new RuleImpl("test-rule3",
                                     "agendaGroup3");
         final RuleTerminalNode node3 = new RuleTerminalNode(9,
                                                             new MockTupleSource(8),
@@ -528,19 +521,19 @@ public class AgendaTest extends DroolsTestCase {
                                                                                node3,
                                                                                true);
 
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        final InternalAgenda agenda = (InternalAgenda) ksession.getAgenda();
 
         // create the AgendaGroups
         final AgendaGroup agendaGroup1 = new AgendaGroupQueueImpl("agendaGroup1",
-                                                                  ruleBase);
+                                                                  kBase);
         agenda.addAgendaGroup(agendaGroup1);
 
         final AgendaGroup agendaGroup2 = new AgendaGroupQueueImpl("agendaGroup2",
-                                                                  ruleBase);
+                                                                  kBase);
         agenda.addAgendaGroup(agendaGroup2);
 
         final AgendaGroup agendaGroup3 = new AgendaGroupQueueImpl("agendaGroup3",
-                                                                  ruleBase);
+                                                                  kBase);
         agenda.addAgendaGroup(agendaGroup3);
 
         // focus at this point is MAIN
@@ -549,7 +542,7 @@ public class AgendaTest extends DroolsTestCase {
 
         node0.assertLeftTuple(tuple1,
                               context0,
-                              workingMemory);
+                              ksession);
 
         agenda.unstageActivations();
 
@@ -562,7 +555,7 @@ public class AgendaTest extends DroolsTestCase {
                      agenda.getFocus().size());
         node2.assertLeftTuple(tuple2,
                               context2,
-                              workingMemory);
+                              ksession);
 
         agenda.unstageActivations();
 
@@ -581,7 +574,7 @@ public class AgendaTest extends DroolsTestCase {
         // put another one on agendaGroup 2
         node2.assertLeftTuple(tuple3,
                               context2,
-                              workingMemory);
+                              ksession);
 
         agenda.unstageActivations();
 
@@ -611,7 +604,7 @@ public class AgendaTest extends DroolsTestCase {
         // add to agendaGroup 3
         node3.assertLeftTuple(tuple4,
                               context3,
-                              workingMemory);
+                              ksession);
 
         agenda.unstageActivations();
 
@@ -620,7 +613,7 @@ public class AgendaTest extends DroolsTestCase {
 
         node3.assertLeftTuple(tuple5,
                               context3,
-                              workingMemory);
+                              ksession);
 
         agenda.unstageActivations();
 
@@ -696,12 +689,12 @@ public class AgendaTest extends DroolsTestCase {
     //
     @Test
     public void testAutoFocus() throws ConsequenceException {
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        final InternalAgenda agenda = (InternalAgenda) ksession.getAgenda();
 
         // create the agendaGroup
         final AgendaGroup agendaGroup = new AgendaGroupQueueImpl("agendaGroup",
-                                                                 ruleBase);
+                                                                 kBase);
         agenda.addAgendaGroup(agendaGroup);
 
         // create the consequence
@@ -729,7 +722,7 @@ public class AgendaTest extends DroolsTestCase {
 
 
         // create a rule for the agendaGroup
-        final Rule rule = new Rule("test-rule",
+        final RuleImpl rule = new RuleImpl("test-rule",
                                    "agendaGroup");
         final RuleTerminalNode node = new RuleTerminalNode(2,
                                                            new MockTupleSource(2),
@@ -755,7 +748,7 @@ public class AgendaTest extends DroolsTestCase {
 
         node.assertLeftTuple(tuple,
                              context,
-                             workingMemory);
+                             ksession);
 
         agenda.unstageActivations();
 
@@ -780,7 +773,7 @@ public class AgendaTest extends DroolsTestCase {
 
         node.assertLeftTuple(tuple,
                              context,
-                             workingMemory);
+                             ksession);
 
         agenda.unstageActivations();
 
@@ -793,16 +786,16 @@ public class AgendaTest extends DroolsTestCase {
 
     @Test
     public void testAgendaGroupLockOnActive() {
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        final InternalAgenda agenda = (InternalAgenda) ksession.getAgenda();
 
         // create the agendaGroup
         final InternalAgendaGroup agendaGroup = new AgendaGroupQueueImpl("agendaGroup",
-                                                                         ruleBase);
+                                                                         kBase);
         agenda.addAgendaGroup(agendaGroup);
 
         // create a rule for the agendaGroup
-        final Rule rule = new Rule("test-rule",
+        final RuleImpl rule = new RuleImpl("test-rule",
                                    "agendaGroup");
         final RuleTerminalNode node = new RuleTerminalNode(2,
                                                            new MockTupleSource(2),
@@ -828,7 +821,7 @@ public class AgendaTest extends DroolsTestCase {
         agendaGroup.setActive(true);
         node.assertLeftTuple(tuple,
                              context,
-                             workingMemory);
+                             ksession);
         // activation should be ignored
         assertEquals(0,
                      agendaGroup.size());
@@ -837,7 +830,7 @@ public class AgendaTest extends DroolsTestCase {
         rule.setLockOnActive(false);
         node.assertLeftTuple(tuple,
                              context,
-                             workingMemory);
+                             ksession);
 
         agenda.unstageActivations();
 
@@ -849,7 +842,7 @@ public class AgendaTest extends DroolsTestCase {
         agendaGroup.setActive(false);
         node.assertLeftTuple(tuple,
                              context,
-                             workingMemory);
+                             ksession);
         agenda.unstageActivations();
         assertEquals(2,
                      agendaGroup.size());
@@ -857,9 +850,9 @@ public class AgendaTest extends DroolsTestCase {
 
     @Test
     public void testActivationGroup() {
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        final InternalAgenda agenda = (InternalAgenda) ksession.getAgenda();
 
         final List list = new ArrayList();
 
@@ -887,7 +880,7 @@ public class AgendaTest extends DroolsTestCase {
         };
 
         // create a rule for each agendaGroup
-        final Rule rule0 = new Rule("test-rule0");
+        final RuleImpl rule0 = new RuleImpl("test-rule0");
         rule0.setActivationGroup("activation-group-0");
         final RuleTerminalNode node0 = new RuleTerminalNode(3,
                                                             new MockTupleSource(2),
@@ -902,7 +895,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                                  null,
                                                                                  new DefaultFactHandle());
 
-        final Rule rule1 = new Rule("test-rule1");
+        final RuleImpl rule1 = new RuleImpl("test-rule1");
         rule1.setActivationGroup("activation-group-0");
         rule1.setSalience(new SalienceInteger(10));
         final RuleTerminalNode node1 = new RuleTerminalNode(5,
@@ -918,7 +911,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                                  null,
                                                                                  new DefaultFactHandle());
 
-        final Rule rule2 = new Rule("test-rule2");
+        final RuleImpl rule2 = new RuleImpl("test-rule2");
         rule2.setSalience(new SalienceInteger(-5));
         final RuleTerminalNode node2 = new RuleTerminalNode(7,
                                                             new MockTupleSource(6),
@@ -933,7 +926,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                                  null,
                                                                                  new DefaultFactHandle());
 
-        final Rule rule3 = new Rule("test-rule3",
+        final RuleImpl rule3 = new RuleImpl("test-rule3",
                                     "agendaGroup3");
         rule3.setSalience(new SalienceInteger(-10));
         rule3.setActivationGroup("activation-group-3");
@@ -961,23 +954,23 @@ public class AgendaTest extends DroolsTestCase {
         // Assert the tuple and check it was added to activation-group-0
         node0.assertLeftTuple(tuple1,
                               context0,
-                              workingMemory);
+                              ksession);
         agenda.unstageActivations();
-        final ActivationGroup activationGroup0 = agenda.getActivationGroup("activation-group-0");
+        final InternalActivationGroup activationGroup0 = agenda.getActivationGroup("activation-group-0");
         assertEquals(1,
                      activationGroup0.size());
 
         // Removing a tuple should remove the activation from the activation-group-0 again
         node0.retractLeftTuple(tuple1,
                                context0,
-                               workingMemory);
+                               ksession);
         assertEquals(0,
                      activationGroup0.size());
 
         // Assert the tuple again and check it was added to activation-group-0
         node0.assertLeftTuple(tuple3,
                               context0,
-                              workingMemory);
+                              ksession);
         agenda.unstageActivations();
         assertEquals(1,
                      activationGroup0.size());
@@ -985,7 +978,7 @@ public class AgendaTest extends DroolsTestCase {
         // Assert another tuple and check it was added to activation-group-0
         node1.assertLeftTuple(tuple4,
                               context1,
-                              workingMemory);
+                              ksession);
         agenda.unstageActivations();
         assertEquals(2,
                      activationGroup0.size());
@@ -1017,16 +1010,16 @@ public class AgendaTest extends DroolsTestCase {
         // Now try a more complex scenario involving  two Xor Groups and one  rule not in a Group
         node0.assertLeftTuple(tuple5,
                               context0,
-                              workingMemory);
+                              ksession);
         node1.assertLeftTuple(tuple6,
                               context1,
-                              workingMemory);
+                              ksession);
         node2.assertLeftTuple(tuple7,
                               context2,
-                              workingMemory);
+                              ksession);
         node3.assertLeftTuple(tuple8,
                               context3,
-                              workingMemory);
+                              ksession);
         agenda.unstageActivations();
 
         // activation-group-0 should be populated again
@@ -1034,7 +1027,7 @@ public class AgendaTest extends DroolsTestCase {
                      activationGroup0.size());
 
         // make sure the activation-group-3 is cleared when we can clear the Agenda Group for the activation that is in both
-        final ActivationGroup activationGroup3 = agenda.getActivationGroup("activation-group-3");
+        final InternalActivationGroup activationGroup3 = agenda.getActivationGroup("activation-group-3");
 
         assertEquals(4,
                      agenda.agendaSize());
@@ -1076,9 +1069,9 @@ public class AgendaTest extends DroolsTestCase {
      */
     @Test
     public void testRuleFlowGroup() {
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        final InternalAgenda agenda = (InternalAgenda) ksession.getAgenda();
 
         final List list = new ArrayList();
 
@@ -1106,7 +1099,7 @@ public class AgendaTest extends DroolsTestCase {
         };
 
         // create a rule for each rule flow groups
-        final Rule rule0 = new Rule("test-rule0");
+        final RuleImpl rule0 = new RuleImpl("test-rule0");
         rule0.setAgendaGroup("rule-flow-group-0");
         rule0.setConsequence(consequence);
 
@@ -1117,7 +1110,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             0,
                                                             buildContext);
 
-        final Rule rule1 = new Rule("test-rule1");
+        final RuleImpl rule1 = new RuleImpl("test-rule1");
         rule1.setAgendaGroup("rule-flow-group-1");
         rule1.setConsequence(consequence);
 
@@ -1128,7 +1121,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             0,
                                                             buildContext);
 
-        final Rule rule2 = new Rule("test-rule2");
+        final RuleImpl rule2 = new RuleImpl("test-rule2");
         rule2.setAgendaGroup("rule-flow-group-2");
         rule2.setConsequence(consequence);
         rule2.setSalience(new SalienceInteger(10));
@@ -1156,7 +1149,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                                true);
         node0.assertLeftTuple(tuple0,
                               context0,
-                              workingMemory);
+                              ksession);
 
         final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple(new DefaultFactHandle(1,
                                                                                                      "cheese"),
@@ -1164,7 +1157,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                                true);
         node0.assertLeftTuple(tuple1,
                               context0,
-                              workingMemory);
+                              ksession);
 
         final RuleTerminalNodeLeftTuple tuple2 = new RuleTerminalNodeLeftTuple(new DefaultFactHandle(1,
                                                                                                      "cheese"),
@@ -1172,7 +1165,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                                true);
         node1.assertLeftTuple(tuple2,
                               context0,
-                              workingMemory);
+                              ksession);
 
         final RuleTerminalNodeLeftTuple tuple3 = new RuleTerminalNodeLeftTuple(new DefaultFactHandle(1,
                                                                                                      "cheese"),
@@ -1180,7 +1173,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                                true);
         node2.assertLeftTuple(tuple3,
                               context0,
-                              workingMemory);
+                              ksession);
         agenda.unstageActivations();
 
         assertEquals(2,
@@ -1252,9 +1245,9 @@ public class AgendaTest extends DroolsTestCase {
      */
     @Test
     public void testRuleFlowGroup1() {
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        final StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        final InternalAgenda agenda = (InternalAgenda) ksession.getAgenda();
 
         // create rule1
         final Consequence consequence1 = new Consequence() {
@@ -1279,7 +1272,7 @@ public class AgendaTest extends DroolsTestCase {
             }
         };
 
-        final Rule rule1 = new Rule("test-rule1");
+        final RuleImpl rule1 = new RuleImpl("test-rule1");
         rule1.setAgendaGroup("rule-flow-group-0");
         rule1.setConsequence(consequence1);
 
@@ -1312,7 +1305,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                                                true);
                         node1.assertLeftTuple(tuple1,
                                               context0,
-                                              workingMemory);
+                                              ksession);
                     }
 
                     public void readExternal(ObjectInput in) throws IOException,
@@ -1329,7 +1322,7 @@ public class AgendaTest extends DroolsTestCase {
                     }
                 };
 
-        final Rule rule0 = new Rule("test-rule0");
+        final RuleImpl rule0 = new RuleImpl("test-rule0");
         rule0.setAgendaGroup("rule-flow-group-0");
         rule0.setConsequence(consequence0);
 
@@ -1349,7 +1342,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                                true);
         node0.assertLeftTuple(tuple0,
                               context0,
-                              workingMemory);
+                              ksession);
         agenda.unstageActivations();
 
         // RuleFlowGroup should be populated, but the agenda shouldn't be
@@ -1380,9 +1373,9 @@ public class AgendaTest extends DroolsTestCase {
      */
     @Test
     public void testRuleFlowGroup2() {
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        final StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        final InternalAgenda agenda = (InternalAgenda) ksession.getAgenda();
 
         // create rule1
         final Consequence consequence1 = new Consequence() {
@@ -1407,7 +1400,7 @@ public class AgendaTest extends DroolsTestCase {
             }
         };
 
-        final Rule rule1 = new Rule("test-rule1");
+        final RuleImpl rule1 = new RuleImpl("test-rule1");
         rule1.setAgendaGroup("rule-flow-group-0");
         rule1.setConsequence(consequence1);
 
@@ -1441,7 +1434,7 @@ public class AgendaTest extends DroolsTestCase {
                         // deactivate rule1
                         node1.retractLeftTuple(tuple1,
                                                context0,
-                                               workingMemory);
+                                               ksession);
                     }
 
                     public void readExternal(ObjectInput in) throws IOException,
@@ -1458,7 +1451,7 @@ public class AgendaTest extends DroolsTestCase {
                     }
                 };
 
-        final Rule rule0 = new Rule("test-rule0");
+        final RuleImpl rule0 = new RuleImpl("test-rule0");
         rule0.setAgendaGroup("rule-flow-group-0");
         rule0.setConsequence(consequence0);
         rule0.setSalience(new SalienceInteger(10));
@@ -1479,11 +1472,11 @@ public class AgendaTest extends DroolsTestCase {
                                                                                true);
         node0.assertLeftTuple(tuple0,
                               context0,
-                              workingMemory);
+                              ksession);
 
         node1.assertLeftTuple(tuple1,
                               context0,
-                              workingMemory);
+                              ksession);
         agenda.unstageActivations();
 
         // RuleFlowGroup should be populated
@@ -1514,9 +1507,9 @@ public class AgendaTest extends DroolsTestCase {
      */
     @Test
     public void testRuleFlowGroup3() {
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        final InternalAgenda agenda = (InternalAgenda) ksession.getAgenda();
 
         // create rule0
         final Consequence consequence0 = new Consequence() {
@@ -1541,7 +1534,7 @@ public class AgendaTest extends DroolsTestCase {
             }
         };
 
-        final Rule rule0 = new Rule("test-rule0");
+        final RuleImpl rule0 = new RuleImpl("test-rule0");
         rule0.setAgendaGroup("rule-flow-group-0");
         rule0.setConsequence(consequence0);
 
@@ -1568,14 +1561,14 @@ public class AgendaTest extends DroolsTestCase {
                                                                                true);
         node0.assertLeftTuple(tuple0,
                               context0,
-                              workingMemory);
+                              ksession);
         final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple(new DefaultFactHandle(1,
                                                                                                      "cheese"),
                                                                                node0,
                                                                                true);
         node0.assertLeftTuple(tuple1,
                               context0,
-                              workingMemory);
+                              ksession);
         agenda.unstageActivations();
 
         // RuleFlowGroup should be populated, but the agenda shouldn't be
@@ -1611,11 +1604,10 @@ public class AgendaTest extends DroolsTestCase {
      */
     @Test
     public void testRuleFlowGroup4() {
-        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
-        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
-        ;
+        IdGenerator idGenerator = kBase.getReteooBuilder().getIdGenerator();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        final InternalAgenda agenda = (InternalAgenda) ksession.getAgenda();
 
         // create rule0
         final Consequence consequence0 = new Consequence() {
@@ -1640,7 +1632,7 @@ public class AgendaTest extends DroolsTestCase {
             }
         };
 
-        final Rule rule0 = new Rule("test-rule0");
+        final RuleImpl rule0 = new RuleImpl("test-rule0");
         rule0.setAgendaGroup("rule-flow-group-0");
         rule0.setConsequence(consequence0);
 
@@ -1670,9 +1662,9 @@ public class AgendaTest extends DroolsTestCase {
                                                                                true);
         node0.assertLeftTuple(tuple0,
                               context0,
-                              workingMemory);
+                              ksession);
 
-        workingMemory.fireAllRules();
+        ksession.fireAllRules();
 
         // RuleFlowGroup should be populated, but the agenda shouldn't be
         assertEquals(1,
@@ -1702,7 +1694,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                                true);
         node0.assertLeftTuple(tuple1,
                               context0,
-                              workingMemory);
+                              ksession);
         agenda.unstageActivations();
         agenda.activateRuleFlowGroup("rule-flow-group-0");
         assertEquals(1,
@@ -1713,7 +1705,7 @@ public class AgendaTest extends DroolsTestCase {
         agenda.fireNextItem(null, 0, -1);
         assertEquals(0,
                      ruleFlowGroup0.size());
-        workingMemory.executeQueuedActions();
+        ksession.executeQueuedActions();
         assertEquals(0, ruleFlowGroup0.size());
         agenda.fireNextItem(null, 0, -1);
         assertFalse(ruleFlowGroup0.isActive());
@@ -1725,7 +1717,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                                true);
         node0.assertLeftTuple(tuple2,
                               context0,
-                              workingMemory);
+                              ksession);
         agenda.unstageActivations();
         assertEquals(1,
                      ruleFlowGroup0.size());
@@ -1736,9 +1728,9 @@ public class AgendaTest extends DroolsTestCase {
      */
     @Test
     public void testRuleFlowGroup5() {
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        final InternalAgenda agenda = (InternalAgenda) ksession.getAgenda();
 
         // create rule0
         final Consequence consequence0 = new Consequence() {
@@ -1763,7 +1755,7 @@ public class AgendaTest extends DroolsTestCase {
             }
         };
 
-        final Rule rule0 = new Rule("test-rule0");
+        final RuleImpl rule0 = new RuleImpl("test-rule0");
         rule0.setRuleFlowGroup("rule-flow-group-0");
         rule0.setConsequence(consequence0);
 
@@ -1791,8 +1783,8 @@ public class AgendaTest extends DroolsTestCase {
 
     @Test
     public void testRuleFlowGroupLockOnActive() {
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        final InternalAgenda agenda = (InternalAgenda) ksession.getAgenda();
 
         // create the agendaGroup
         //final AgendaGroupImpl agendaGroup = new AgendaGroupImpl( "agendaGroup" );
@@ -1801,7 +1793,7 @@ public class AgendaTest extends DroolsTestCase {
         final RuleFlowGroup ruleFlowGroup = (RuleFlowGroup) agenda.getRuleFlowGroup("rule-flow-group-0");
 
         // create a rule for the agendaGroup
-        final Rule rule = new Rule("test-rule");
+        final RuleImpl rule = new RuleImpl("test-rule");
         rule.setAgendaGroup("rule-flow-group-0");
         final RuleTerminalNode node = new RuleTerminalNode(2,
                                                            new MockTupleSource(2),
@@ -1826,7 +1818,7 @@ public class AgendaTest extends DroolsTestCase {
         ((InternalRuleFlowGroup) ruleFlowGroup).setActive(true);
         node.assertLeftTuple(tuple1,
                              context,
-                             workingMemory);
+                             ksession);
         // activation should be ignored
         assertEquals(0, ruleFlowGroup.size());
 
@@ -1834,7 +1826,7 @@ public class AgendaTest extends DroolsTestCase {
         rule.setLockOnActive(false);
         node.assertLeftTuple(tuple2,
                              context,
-                             workingMemory);
+                             ksession);
         agenda.unstageActivations();
         assertEquals(1,
                      ruleFlowGroup.size());
@@ -1844,7 +1836,7 @@ public class AgendaTest extends DroolsTestCase {
         ((InternalAgendaGroup) ruleFlowGroup).setActive(false);
         node.assertLeftTuple(tuple3,
                              context,
-                             workingMemory);
+                             ksession);
         agenda.unstageActivations();
         assertEquals(2,
                      ruleFlowGroup.size());
@@ -1855,7 +1847,7 @@ public class AgendaTest extends DroolsTestCase {
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setPhreakEnabled(false);
         conf.setSequential(true);
-        InternalRuleBase ruleBase = (InternalRuleBase) RuleBaseFactory.newRuleBase(conf);
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(conf);
 
         // create the consequence
         final Consequence consequence = new Consequence() {
@@ -1881,7 +1873,7 @@ public class AgendaTest extends DroolsTestCase {
         };
 
         // create a rule for each agendaGroup
-        final Rule rule0 = new Rule("test-rule0");
+        final RuleImpl rule0 = new RuleImpl("test-rule0");
         final RuleTerminalNode node0 = new RuleTerminalNode(3,
                                                             new MockTupleSource(2),
                                                             rule0,
@@ -1896,7 +1888,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                                  null,
                                                                                  new DefaultFactHandle());
 
-        final Rule rule1 = new Rule("test-rule1",
+        final RuleImpl rule1 = new RuleImpl("test-rule1",
                                     "agendaGroup1");
         final RuleTerminalNode node1 = new RuleTerminalNode(5,
                                                             new MockTupleSource(4),
@@ -1911,7 +1903,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                                  null,
                                                                                  new DefaultFactHandle());
 
-        final Rule rule2 = new Rule("test-rule2",
+        final RuleImpl rule2 = new RuleImpl("test-rule2",
                                     "agendaGroup1");
         final RuleTerminalNode node2 = new RuleTerminalNode(7,
                                                             new MockTupleSource(6),
@@ -1926,7 +1918,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                                  null,
                                                                                  new DefaultFactHandle());
 
-        final Rule rule3 = new Rule("test-rule3",
+        final RuleImpl rule3 = new RuleImpl("test-rule3",
                                     "agendaGroup2");
         final RuleTerminalNode node3 = new RuleTerminalNode(9,
                                                             new MockTupleSource(8),
@@ -1947,8 +1939,7 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNodeLeftTuple tuple3_1 = new RuleTerminalNodeLeftTuple(new DefaultFactHandle(4, "cheese"), node3, true);
         final RuleTerminalNodeLeftTuple tuple3_2 = new RuleTerminalNodeLeftTuple(new DefaultFactHandle(5, "cheese"), node3, true);
 
-        InternalWorkingMemory workingMemory = new AbstractWorkingMemory(0,
-                                                                        ruleBase);
+        InternalWorkingMemory workingMemory = new StatefulKnowledgeSessionImpl(0, kBase);
 
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
@@ -2092,9 +2083,9 @@ public class AgendaTest extends DroolsTestCase {
 
     @Test
     public void testNullErrorOnGetScheduledActivations() {
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
         try {
-            ((InternalAgenda) workingMemory.getAgenda()).getScheduledActivations();
+            ((InternalAgenda) ksession.getAgenda()).getScheduledActivations();
         } catch (NullPointerException e) {
             fail("Exception Should not have been thrown");
         }

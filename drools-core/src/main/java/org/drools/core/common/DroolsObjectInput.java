@@ -18,15 +18,15 @@ package org.drools.core.common;
 
 import java.io.ObjectInput;
 
-import org.drools.core.rule.Package;
+import org.drools.core.impl.InternalKnowledgeBase;
 
 public interface DroolsObjectInput extends ObjectInput {
     ClassLoader getParentClassLoader();
     ClassLoader getClassLoader();
     void setClassLoader(ClassLoader classLoader);
-    
-    InternalRuleBase getRuleBase();
-    void setRuleBase(InternalRuleBase ruleBase);
+
+    InternalKnowledgeBase getKnowledgeBase();
+    void setKnowledgeBase(InternalKnowledgeBase kBase);
     
     void setWorkingMemory(InternalWorkingMemory workingMemory);
     InternalWorkingMemory getWorkingMemory();

@@ -77,9 +77,9 @@ public class PropagationQueuingNode extends ObjectSource
                                   final BuildContext context) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
+               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
                objectSource,
-               context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
+               context.getKnowledgeBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.action = new PropagateAction( this );
         initDeclaredMask(context);
     }

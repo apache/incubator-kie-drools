@@ -25,10 +25,10 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Scheduler.ActivationTimerJobContext;
 import org.drools.core.common.Scheduler.ActivationTimerOutputMarshaller;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.PhreakTimerNode.TimerNodeJobContext;
 import org.drools.core.phreak.PhreakTimerNode.TimerNodeTimerOutputMarshaller;
 import org.drools.core.reteoo.LeftTuple;
@@ -44,7 +44,7 @@ import org.kie.internal.marshalling.MarshallerFactory;
 
 public class MarshallerWriteContext extends ObjectOutputStream {
     public final MarshallerWriteContext                                            stream;
-    public final InternalRuleBase                                                  ruleBase;
+    public final InternalKnowledgeBase                                             kBase;
     public final InternalWorkingMemory                                             wm;
     public final Map<Integer, BaseNode>                                            sinks;
 
@@ -67,13 +67,13 @@ public class MarshallerWriteContext extends ObjectOutputStream {
     public Object                                                                  parameterObject;
 
     public MarshallerWriteContext(OutputStream stream,
-                                  InternalRuleBase ruleBase,
+                                  InternalKnowledgeBase kBase,
                                   InternalWorkingMemory wm,
                                   Map<Integer, BaseNode> sinks,
                                   ObjectMarshallingStrategyStore resolverStrategyFactory,
                                   Environment env) throws IOException {
         this( stream,
-              ruleBase,
+              kBase,
               wm,
               sinks,
               resolverStrategyFactory,
@@ -83,7 +83,7 @@ public class MarshallerWriteContext extends ObjectOutputStream {
     }
 
     public MarshallerWriteContext(OutputStream stream,
-                                  InternalRuleBase ruleBase,
+                                  InternalKnowledgeBase kBase,
                                   InternalWorkingMemory wm,
                                   Map<Integer, BaseNode> sinks,
                                   ObjectMarshallingStrategyStore resolverStrategyFactory,
@@ -92,7 +92,7 @@ public class MarshallerWriteContext extends ObjectOutputStream {
                                   Environment env) throws IOException {
         super( stream );
         this.stream = this;
-        this.ruleBase = ruleBase;
+        this.kBase = kBase;
         this.wm = wm;
         this.sinks = sinks;
         this.writersByClass = new HashMap<Class< ? >, TimersOutputMarshaller>();

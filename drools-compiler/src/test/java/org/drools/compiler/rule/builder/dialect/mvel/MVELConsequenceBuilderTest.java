@@ -1,9 +1,18 @@
 package org.drools.compiler.rule.builder.dialect.mvel;
 
 import org.drools.compiler.Cheese;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.WorkingMemory;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.Dialect;
+import org.drools.compiler.compiler.DialectCompiletimeRegistry;
+import org.drools.compiler.compiler.DrlParser;
+import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.compiler.lang.descr.AttributeDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.compiler.rule.builder.RuleBuilder;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.base.mvel.MVELConsequence;
@@ -11,35 +20,25 @@ import org.drools.core.base.mvel.MVELDebugHandler;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
-import org.drools.compiler.compiler.Dialect;
-import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.compiler.DrlParser;
-import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
-import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.lang.descr.AttributeDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.CompositeObjectSinkAdapterTest;
 import org.drools.core.reteoo.LeftTupleImpl;
-import org.drools.compiler.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.core.rule.Package;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.Rule;
-import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.compiler.rule.builder.RuleBuilder;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PatternExtractor;
 import org.junit.Test;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
@@ -52,22 +51,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class MVELConsequenceBuilderTest {
 
     @Test
     public void testSimpleExpression() throws Exception {
         PackageDescr pkgDescr = new PackageDescr( "pkg1" );
-        PackageBuilder pkgBuilder = new PackageBuilder();
+        KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl();
         pkgBuilder.addPackage( pkgDescr );
 
-        final Package pkg = pkgBuilder.getPackageRegistry( "pkg1" ).getPackage();
+        InternalKnowledgePackage pkg = pkgBuilder.getPackageRegistry( "pkg1" ).getPackage();
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
         ruleDescr.setNamespace( "pkg1" );
         ruleDescr.setConsequence( "modify (cheese) {price = 5 };\nretract (cheese)" );
@@ -99,26 +93,28 @@ public class MVELConsequenceBuilderTest {
         context.setDeclarationResolver( declarationResolver );
 
         final MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
-        builder.build( context, Rule.DEFAULT_CONSEQUENCE_NAME );
+        builder.build( context, RuleImpl.DEFAULT_CONSEQUENCE_NAME );
 
-        InternalRuleBase ruleBase = (InternalRuleBase)  RuleBaseFactory.newRuleBase();
-        PropagationContextFactory pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
-        ruleBase.addPackage( pkg );
-        final WorkingMemory wm = ruleBase.newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+
+        PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        kBase.addPackage(pkg);
+
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         final Cheese cheddar = new Cheese( "cheddar", 10 );
-        final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
+        final InternalFactHandle f0 = (InternalFactHandle) ksession.insert( cheddar );
         final LeftTupleImpl tuple = new LeftTupleImpl( f0, null, true );
         f0.removeLeftTuple(tuple);
 
         final AgendaItem item = new AgendaItemImpl( 0, tuple, 10,
                                                 pctxFactory.createPropagationContext(1, 1, null, tuple, null),
-                                                new RuleTerminalNode(0, new CompositeObjectSinkAdapterTest.MockBetaNode(), context.getRule(), subrule, 0, new BuildContext( (InternalRuleBase) ruleBase, null )), null, null);
-        final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( wm );
+                                                new RuleTerminalNode(0, new CompositeObjectSinkAdapterTest.MockBetaNode(), context.getRule(), subrule, 0, new BuildContext( kBase, null )), null, null);
+        final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( ksession );
         kbHelper.setActivation( item );
         ((MVELConsequence) context.getRule().getConsequence()).compile(  (MVELDialectRuntimeData) pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ));
         context.getRule().getConsequence().evaluate( kbHelper,
-                                                     wm );
+                                                     ksession );
 
         assertEquals( 5,
                       cheddar.getPrice() );
@@ -126,18 +122,17 @@ public class MVELConsequenceBuilderTest {
 
     @Test
     public void testImperativeCodeError() throws Exception {
-        final Package pkg = new Package( "pkg1" );
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
         ruleDescr.setConsequence( "if (cheese.price == 10) { cheese.price = 5; }" );
 
         Properties properties = new Properties();
         properties.setProperty( "drools.dialect.default",
                                 "mvel" );
-        PackageBuilderConfiguration cfg1 = new PackageBuilderConfiguration( properties );
+        KnowledgeBuilderConfigurationImpl cfg1 = new KnowledgeBuilderConfigurationImpl( properties );
 
-        PackageBuilder pkgBuilder = new PackageBuilder( pkg,
-                                                        cfg1 );
-        final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
+        KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl( pkg, cfg1 );
+        final KnowledgeBuilderConfigurationImpl conf = pkgBuilder.getBuilderConfiguration();
         PackageRegistry pkgRegistry = pkgBuilder.getPackageRegistry( pkg.getName() );
         DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
         MVELDialect mvelDialect = (MVELDialect) dialectRegistry.getDialect( pkgRegistry.getDialect() );
@@ -167,14 +162,14 @@ public class MVELConsequenceBuilderTest {
         context.setDeclarationResolver( declarationResolver );
 
         final MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
-        builder.build( context, Rule.DEFAULT_CONSEQUENCE_NAME );
+        builder.build( context, RuleImpl.DEFAULT_CONSEQUENCE_NAME );
 
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        final WorkingMemory wm = ruleBase.newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
-        final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
+        final InternalFactHandle f0 = (InternalFactHandle) ksession.insert( cheddar );
         final LeftTupleImpl tuple = new LeftTupleImpl( f0,
                                                null,
                                                true );
@@ -184,12 +179,12 @@ public class MVELConsequenceBuilderTest {
                                                 10,
                                                 null,
                                                 null, null, null);
-        final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( wm );
+        final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( ksession );
         kbHelper.setActivation( item );
         try {
             ((MVELConsequence) context.getRule().getConsequence()).compile( (MVELDialectRuntimeData) pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ) );
             context.getRule().getConsequence().evaluate( kbHelper,
-                                                         wm );
+                                                         ksession );
             fail( "should throw an exception, as 'if' is not allowed" );
         } catch ( Exception e ) {
         }
@@ -253,14 +248,14 @@ public class MVELConsequenceBuilderTest {
             assertFalse( parser.getErrors().toString(),
                                 parser.hasErrors() );
 
-            final Package pkg = new Package( "org.drools" );
+            InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.drools" );
 
             final RuleDescr ruleDescr = pkgDescr.getRules().get( 0 );
 
             final RuleBuilder builder = new RuleBuilder();
 
-            final PackageBuilder pkgBuilder = new PackageBuilder( pkg );
-            final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
+            final KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl( pkg );
+            final KnowledgeBuilderConfigurationImpl conf = pkgBuilder.getBuilderConfiguration();
             DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
             Dialect dialect = dialectRegistry.getDialect( "mvel" );
 
@@ -275,7 +270,7 @@ public class MVELConsequenceBuilderTest {
             assertTrue( context.getErrors().toString(),
                                context.getErrors().isEmpty() );
 
-            final Rule rule = context.getRule();
+            final RuleImpl rule = context.getRule();
 
             MVELConsequence mvelCons = (MVELConsequence) rule.getConsequence();
             mvelCons.compile( (MVELDialectRuntimeData) pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ) );
@@ -334,12 +329,11 @@ public class MVELConsequenceBuilderTest {
     private void setupTest(String consequence, Map<String, Object> namedConsequences) {
         builder = new MVELConsequenceBuilder();
 
-        Package pkg = new Package( "org.drools.compiler.test" );
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.drools.compiler.test" );
         pkg.addImport( new ImportDeclaration( Cheese.class.getCanonicalName() ) );
 
-        PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
-        PackageBuilder pkgBuilder = new PackageBuilder( pkg,
-                                                        conf );
+        KnowledgeBuilderConfigurationImpl conf = new KnowledgeBuilderConfigurationImpl();
+        KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl( pkg, conf );
 
         ruleDescr = new RuleDescr( "test consequence builder" );
         ruleDescr.setConsequence( consequence );
@@ -349,7 +343,7 @@ public class MVELConsequenceBuilderTest {
             ruleDescr.addNamedConsequences( entry.getKey(), entry.getValue() );
         }
 
-        Rule rule = new Rule( ruleDescr.getName() );
+        RuleImpl rule = new RuleImpl( ruleDescr.getName() );
         rule.addPattern( new Pattern( 0,
                                       new ClassObjectType( Cheese.class ),
                                       "$cheese" ) );
@@ -367,7 +361,7 @@ public class MVELConsequenceBuilderTest {
                                         reg.getDialect( pkgRegistry.getDialect() ) );
         context.getBuildStack().push( rule.getLhs() );
         
-        context.getDialect().getConsequenceBuilder().build( context, Rule.DEFAULT_CONSEQUENCE_NAME );
+        context.getDialect().getConsequenceBuilder().build( context, RuleImpl.DEFAULT_CONSEQUENCE_NAME );
         for ( String name : namedConsequences.keySet() ) {
             context.getDialect().getConsequenceBuilder().build( context, name );
         }

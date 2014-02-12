@@ -16,7 +16,6 @@
 
 package org.drools.verifier.redundancy;
 
-import org.drools.core.StatelessSession;
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.VerifierComponentMockFactory;
@@ -28,6 +27,7 @@ import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,9 +39,7 @@ public class NotesTest extends TestBaseOld {
 
     @Test
     public void testRedundantRestrictionsInPatternPossibilities() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Notes.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Find redundant restrictions from pattern possibilities"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Notes.drl"));
 
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
@@ -69,7 +67,10 @@ public class NotesTest extends TestBaseOld {
         session.setGlobal("result",
                           result);
 
-        session.executeWithResults(objects);
+        for (Object o : objects) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Find redundant restrictions from pattern possibilities"));
 
         Collection<VerifierMessageBase> notes = result.getBySeverity(Severity.NOTE);
 
@@ -88,9 +89,8 @@ public class NotesTest extends TestBaseOld {
 
     @Test
     public void testRedundantPatternPossibilitiesInRulePossibilities() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Notes.drl"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Notes.drl"));
 
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Find redundant pattern possibilities from rule possibilities"));
 
         VerifierRule rule = VerifierComponentMockFactory.createRule1();
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
@@ -119,7 +119,10 @@ public class NotesTest extends TestBaseOld {
         session.setGlobal("result",
                           result);
 
-        session.executeWithResults(objects);
+        for (Object o : objects) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Find redundant pattern possibilities from rule possibilities"));
 
         Collection<VerifierMessageBase> notes = result.getBySeverity(Severity.NOTE);
 

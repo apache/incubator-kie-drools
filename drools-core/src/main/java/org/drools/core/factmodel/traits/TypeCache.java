@@ -1,7 +1,6 @@
 package org.drools.core.factmodel.traits;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.reteoo.ReteooRuleBase;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -58,11 +57,10 @@ public class TypeCache implements Externalizable {
 
     public void init( WorkingMemory wm ) {
         needsInit = false;
-        ReteooRuleBase rb = (ReteooRuleBase) wm.getRuleBase();
         for ( TypeWrapper wrapper : typeCache.values() ) {
             if ( wrapper.getKlass() == null ) {
                 try {
-                    wrapper.setKlass( Class.forName( wrapper.getName(), false, rb.getRootClassLoader() ) );
+                    wrapper.setKlass( Class.forName( wrapper.getName(), false, wm.getKnowledgeBase().getRootClassLoader() ) );
                 } catch ( ClassNotFoundException e ) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }

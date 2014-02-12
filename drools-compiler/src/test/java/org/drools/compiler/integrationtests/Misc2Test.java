@@ -30,7 +30,7 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.RightTupleSets;
@@ -46,7 +46,6 @@ import org.drools.core.util.FileManager;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -382,9 +381,9 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBaseEventListener listener = new DefaultKieBaseEventListener();
         kbase.addEventListener(listener);
         kbase.addEventListener(listener);
-        assertEquals(1, ((KnowledgeBaseImpl) kbase).getRuleBase().getRuleBaseEventListeners().size());
+        assertEquals(1, ((KnowledgeBaseImpl) kbase).getRuleBaseEventListeners().size());
         kbase.removeEventListener(listener);
-        assertEquals(0, ((KnowledgeBaseImpl) kbase).getRuleBase().getRuleBaseEventListeners().size());
+        assertEquals(0, ((KnowledgeBaseImpl) kbase).getRuleBaseEventListeners().size());
     }
 
     @Test
@@ -444,7 +443,7 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.addEventListener(agendaEventListener);
 
         FactHandle fact1 = ksession.insert(new Person("Mario", 38));
-        ((AgendaImpl)ksession.getAgenda()).activateRuleFlowGroup("test");
+        ((InternalAgenda)ksession.getAgenda()).activateRuleFlowGroup("test");
         ksession.fireAllRules();
         assertEquals(1, res.size());
         res.clear();
@@ -453,7 +452,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         FactHandle fact2 = ksession.insert(new Person("Mario", 48));
         try {
-            ((AgendaImpl)ksession.getAgenda()).activateRuleFlowGroup("test");
+            ((InternalAgenda)ksession.getAgenda()).activateRuleFlowGroup("test");
             ksession.fireAllRules();
             fail("should throw an Exception");
         } catch (Exception e) { }
@@ -463,7 +462,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         // try to reuse the ksession after the Exception
         FactHandle fact3 = ksession.insert(new Person("Mario", 38));
-        ((AgendaImpl)ksession.getAgenda()).activateRuleFlowGroup("test");
+        ((InternalAgenda)ksession.getAgenda()).activateRuleFlowGroup("test");
         ksession.fireAllRules();
         assertEquals(1, res.size());
         ksession.delete(fact3);
@@ -5049,7 +5048,7 @@ public class Misc2Test extends CommonTestMethodBase {
             ksession.fireAllRules();
         }
 
-        Rete rete = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete();
+        Rete rete = ((KnowledgeBaseImpl)kbase).getRete();
         JoinNode joinNode = null;
         for (ObjectTypeNode otn : rete.getObjectTypeNodes()) {
             if ( String.class == otn.getObjectType().getValueType().getClassType() ) {
@@ -5059,7 +5058,7 @@ public class Misc2Test extends CommonTestMethodBase {
         }
 
         assertNotNull(joinNode);
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)ksession).session;
+        InternalWorkingMemory wm = (InternalWorkingMemory)ksession;
         BetaMemory memory = (BetaMemory)wm.getNodeMemory(joinNode);
         RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
         assertEquals(0, stagedRightTuples.deleteSize());
@@ -5198,7 +5197,7 @@ public class Misc2Test extends CommonTestMethodBase {
             ksession.fireAllRules();
         }
 
-        Rete rete = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete();
+        Rete rete = ((KnowledgeBaseImpl)kbase).getRete();
         LeftInputAdapterNode liaNode = null;
         for (ObjectTypeNode otn : rete.getObjectTypeNodes()) {
             if ( String.class == otn.getObjectType().getValueType().getClassType() ) {
@@ -5209,7 +5208,7 @@ public class Misc2Test extends CommonTestMethodBase {
         }
 
         assertNotNull(liaNode);
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)ksession).session;
+        InternalWorkingMemory wm = (InternalWorkingMemory)ksession;
         LeftInputAdapterNode.LiaNodeMemory memory = (LeftInputAdapterNode.LiaNodeMemory) wm.getNodeMemory( liaNode );
         LeftTupleSets stagedLeftTuples = memory.getSegmentMemory().getStagedLeftTuples();
         assertEquals(0, stagedLeftTuples.deleteSize());

@@ -16,7 +16,6 @@
 
 package org.drools.verifier.optimisation;
 
-import org.drools.core.StatelessSession;
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.components.Restriction;
@@ -27,6 +26,7 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,9 +39,7 @@ public class RestrictionOrderTest extends TestBaseOld {
 
     @Test
     public void testRestrictionOrderInsideOperator() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("RestrictionOrder.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Optimise restrictions inside operator"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("RestrictionOrder.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("OptimisationRestrictionOrderTest.drl"),
@@ -60,7 +58,10 @@ public class RestrictionOrderTest extends TestBaseOld {
         session.setGlobal("result",
                           result);
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Optimise restrictions inside operator"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.NOTE).iterator();
 
@@ -85,9 +86,7 @@ public class RestrictionOrderTest extends TestBaseOld {
 
     @Test
     public void testPredicateOrderInsideOperator() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("RestrictionOrder.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Optimise predicates inside operator"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("RestrictionOrder.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("OptimisationRestrictionOrderTest.drl"),
@@ -96,7 +95,10 @@ public class RestrictionOrderTest extends TestBaseOld {
         session.setGlobal("result",
                           result);
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Optimise predicates inside operator"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.NOTE).iterator();
 

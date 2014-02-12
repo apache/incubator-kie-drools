@@ -22,8 +22,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Enabled;
 import org.drools.core.spi.Tuple;
 
@@ -57,7 +57,7 @@ public class EnabledBoolean
 
     public boolean getValue(final Tuple tuple,
                             final Declaration[] declrs,
-                            final Rule rule,
+                            final RuleImpl rule,
                             final WorkingMemory workingMemory) {
         return this.value;
     }

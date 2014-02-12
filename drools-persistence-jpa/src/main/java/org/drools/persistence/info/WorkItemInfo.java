@@ -16,7 +16,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
-import org.drools.core.common.InternalRuleBase;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.marshalling.impl.InputMarshaller;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
@@ -98,17 +98,17 @@ public class WorkItemInfo  {
        return workItemByteArray;
     }
     
-    public WorkItem getWorkItem(Environment env, InternalRuleBase ruleBase) {
+    public WorkItem getWorkItem(Environment env, InternalKnowledgeBase kBase) {
         this.env = env;
         if ( workItem == null ) {
             try {
                 ByteArrayInputStream bais = new ByteArrayInputStream( workItemByteArray );
                 MarshallerReaderContext context = new MarshallerReaderContext( bais,
-                                                                               ruleBase,
+                                                                               kBase,
                                                                                null,
                                                                                null,
                                                                                null,
-                                                                                   env);
+                                                                               env);
                 try {
                     workItem = ProtobufInputMarshaller.readWorkItem(context);
                 } catch (Exception e) {
@@ -117,11 +117,11 @@ public class WorkItemInfo  {
                         context.close();
                         bais = new ByteArrayInputStream( workItemByteArray );
                         context = new MarshallerReaderContext( bais,
-                                ruleBase,
-                                null,
-                                null,
-                                null,
-                                env);
+                                                               kBase,
+                                                               null,
+                                                               null,
+                                                               null,
+                                                               env);
 
                         workItem = InputMarshaller.readWorkItem( context );
                     } catch (IOException e1) {

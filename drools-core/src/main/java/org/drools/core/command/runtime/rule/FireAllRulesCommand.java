@@ -97,17 +97,17 @@ public class FireAllRulesCommand
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         int fired;
         if ( max != -1 && agendaFilter != null ) {
-            fired = ((StatefulKnowledgeSessionImpl) ksession).session.fireAllRules( new StatefulKnowledgeSessionImpl.AgendaFilterWrapper( agendaFilter ), max );
+            fired = ((StatefulKnowledgeSessionImpl) ksession).fireAllRules( agendaFilter, max );
         } else if ( max != -1 ) {
             fired = ksession.fireAllRules( max );
         } else if ( agendaFilter != null ) {
-            fired = ((StatefulKnowledgeSessionImpl) ksession).session.fireAllRules( new StatefulKnowledgeSessionImpl.AgendaFilterWrapper( agendaFilter ) );
+            fired = ((StatefulKnowledgeSessionImpl) ksession).fireAllRules( agendaFilter );
         } else {
             fired = ksession.fireAllRules();
         }
 
         if ( this.outIdentifier != null ) {
-            ExecutionResultImpl results = ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult();
+            ExecutionResultImpl results = ((StatefulKnowledgeSessionImpl)ksession).getExecutionResult();
             results.getResults().put(this.outIdentifier, fired);
         }
         return fired;

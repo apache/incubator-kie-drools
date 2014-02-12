@@ -72,7 +72,7 @@ public class GetObjectCommand
         Object object = ksession.getObject( factHandle );
         
         if (this.outIdentifier != null) {
-            ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult()
+            ((StatefulKnowledgeSessionImpl)ksession).getExecutionResult()
                 .getResults().put( this.outIdentifier, object );
         }
         

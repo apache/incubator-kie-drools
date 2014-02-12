@@ -1,12 +1,12 @@
 package org.drools.compiler.compiler;
 
 import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.core.rule.Rule;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 
 public class RuleBuildError extends DescrBuildError {
-    private final Rule rule;
+    private final RuleImpl rule;
 
-    public RuleBuildError(final Rule rule,
+    public RuleBuildError(final RuleImpl rule,
                           final BaseDescr descr,
                           final Object object,
                           final String message) {
@@ -17,7 +17,7 @@ public class RuleBuildError extends DescrBuildError {
         this.rule = rule;
     }
 
-    public Rule getRule() {
+    public RuleImpl getRule() {
         return this.rule;
     }
 }

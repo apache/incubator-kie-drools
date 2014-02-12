@@ -26,6 +26,7 @@ import org.drools.compiler.Pet;
 import org.drools.core.base.UndefinedCalendarExcption;
 import org.drools.core.common.TimedRuleExecution;
 import org.drools.core.time.SessionPseudoClock;
+import org.junit.Ignore;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.runtime.conf.TimedRuleExectionOption;
 import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
@@ -1669,7 +1670,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         ksession.fireAllRules();
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 10000) @Ignore
     public void testRaceConditionWithTimedRuleExectionOption() throws Exception {
         // BZ-1073880
         String str = "package org.simple \n" +

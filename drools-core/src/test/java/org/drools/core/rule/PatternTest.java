@@ -16,6 +16,8 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -54,7 +56,7 @@ public class PatternTest {
     @Test
     public void testDeclarationsFactTemplate() throws Exception {
 
-        final Package pkg = new Package( "org.store" );
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.store" );
         final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
                                                                 0,
                                                                 String.class );

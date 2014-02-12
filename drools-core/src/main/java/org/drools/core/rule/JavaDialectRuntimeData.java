@@ -48,6 +48,8 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.drools.core.RuntimeDroolsException;
 import org.drools.core.common.ProjectClassLoader;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.Wireable;
 import org.drools.core.util.KeyStoreHelper;
@@ -401,10 +403,10 @@ public class JavaDialectRuntimeData
         return rootClassLoader;
     }
 
-    public void removeRule( Package pkg,
-                            Rule rule ) {
+    public void removeRule( KnowledgePackageImpl pkg,
+                            RuleImpl rule ) {
 
-        if (!( rule instanceof Query )) {
+        if (!( rule instanceof QueryImpl)) {
             // Query's don't have a consequence, so skip those
             final String consequenceName = rule.getConsequence().getClass().getName();
 
@@ -420,8 +422,7 @@ public class JavaDialectRuntimeData
         }
     }
 
-    public void removeFunction( Package pkg,
-            Function function ) {
+    public void removeFunction( KnowledgePackageImpl pkg, Function function ) {
         remove( pkg.getName() + "." + StringUtils.ucFirst( function.getName() ) );
     }
 

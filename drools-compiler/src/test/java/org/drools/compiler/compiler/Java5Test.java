@@ -5,6 +5,8 @@ import static org.junit.Assert.fail;
 
 import java.io.InputStreamReader;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.junit.Test;
@@ -20,12 +22,12 @@ public class Java5Test extends DroolsTestCase {
             System.out.println( "Skipping Java 1.5 tests - current JDK not compatible" );
             return;
         }
-        final PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+        final KnowledgeBuilderConfigurationImpl conf = new KnowledgeBuilderConfigurationImpl();
         JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) conf.getDialectConfiguration( "java" );
         javaConf.setCompiler( JavaDialectConfiguration.ECLIPSE );
         javaConf.setJavaLanguageLevel( "1.5" );
         
-        final PackageBuilder builder = new PackageBuilder( conf );
+        final KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl( conf );
         builder.addPackageFromDrl( new InputStreamReader( this.getClass().getResourceAsStream( "java5_rule.drl" ) ) );
         if ( builder.hasErrors() ) {
             fail( builder.getErrors().toString() );
@@ -34,10 +36,10 @@ public class Java5Test extends DroolsTestCase {
 
     @Test
     public void testJava14Defaults() throws Exception {
-        final PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+        final KnowledgeBuilderConfigurationImpl conf = new KnowledgeBuilderConfigurationImpl();
         JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) conf.getDialectConfiguration( "java" );
         javaConf.setCompiler( JavaDialectConfiguration.JANINO );
-        final PackageBuilder builder = new PackageBuilder( conf );
+        final KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl( conf );
         builder.addPackageFromDrl( new InputStreamReader( this.getClass().getResourceAsStream( "java5_rule.drl" ) ) );
         assertTrue( builder.hasErrors() );
     }

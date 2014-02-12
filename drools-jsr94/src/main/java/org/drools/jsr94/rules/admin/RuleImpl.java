@@ -49,7 +49,7 @@ public class RuleImpl
      * The <code>org.kie.rule.Rule</code> that lies at the core of
      * this <code>javax.rules.admin.Rule</code> object.
      */
-    private org.drools.core.rule.Rule rule;
+    private org.drools.core.definitions.rule.impl.RuleImpl rule;
 
     /**
      * Creates a <code>RuleImpl</code> object by wrapping an
@@ -57,7 +57,7 @@ public class RuleImpl
      *
      * @param rule the <code>org.kie.rule.Rule</code> object to be wrapped.
      */
-    RuleImpl(final org.drools.core.rule.Rule rule) {
+    RuleImpl(final org.drools.core.definitions.rule.impl.RuleImpl rule) {
         this.rule = rule;
         this.name = rule.getName();
         this.description = rule.getName();// the name of a rule is the only description
@@ -70,7 +70,7 @@ public class RuleImpl
      *
      * @return <code>org.kie.rule.Rule</code> at the core of this object.
      */
-    org.drools.core.rule.Rule getRule() {
+    org.drools.core.definitions.rule.impl.RuleImpl getRule() {
         return this.rule;
     }
 

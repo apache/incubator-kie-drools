@@ -16,17 +16,17 @@
 
 package org.drools.core.event;
 
-import org.drools.core.RuleBase;
+import org.drools.core.impl.InternalKnowledgeBase;
 
-public class BeforeRuleBaseLockedEvent extends RuleBaseEvent {
+public class BeforeRuleBaseLockedEvent extends KnowledgeBaseEvent {
 
     private static final long serialVersionUID = 510l;
 
-    public BeforeRuleBaseLockedEvent(final RuleBase ruleBase) {
-        super( ruleBase );
+    public BeforeRuleBaseLockedEvent(final InternalKnowledgeBase kBase) {
+        super( kBase );
     }
 
     public String toString() {
-        return "[BeforeRuleBaseLocked: ruleBase=" + getRuleBase() + "]";
+        return "[BeforeRuleBaseLocked: knowledgeBase=" + getKnowledgeBase() + "]";
     }
 }

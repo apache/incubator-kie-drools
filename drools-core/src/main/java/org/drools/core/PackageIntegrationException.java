@@ -16,19 +16,16 @@
 
 package org.drools.core;
 
-import org.drools.core.rule.Package;
+import org.drools.core.definitions.InternalKnowledgePackage;
 
 /**
  * Indicates an error integrating a <code>Package</code> into a
  * <code>RuleBase</code>.
- * 
- * @see RuleBase#addRule
- * @see RuleBase#addPackage
  */
 public class PackageIntegrationException extends IntegrationException {
     private static final long serialVersionUID = 510l;
     /** The rule. */
-    private final Package     pkg;
+    private final InternalKnowledgePackage     pkg;
 
     /**
      * @see java.lang.Exception#Exception()
@@ -37,7 +34,7 @@ public class PackageIntegrationException extends IntegrationException {
      *            The offending rule.
      */
     public PackageIntegrationException(final String message,
-                                       final Package pkg) {
+                                       final InternalKnowledgePackage pkg) {
         super( message );
         this.pkg = pkg;
     }
@@ -48,7 +45,7 @@ public class PackageIntegrationException extends IntegrationException {
      * @param pkg
      *            The offending rule.
      */
-    public PackageIntegrationException(final Package pkg) {
+    public PackageIntegrationException(final InternalKnowledgePackage pkg) {
         super( createMessage( pkg ) );
         this.pkg = pkg;
     }
@@ -59,7 +56,7 @@ public class PackageIntegrationException extends IntegrationException {
      * @param pkg
      *            The offending rule.
      */
-    public PackageIntegrationException(final Package pkg,
+    public PackageIntegrationException(final InternalKnowledgePackage pkg,
                                        final Throwable cause) {
         super( createMessage( pkg ),
                cause );
@@ -71,11 +68,11 @@ public class PackageIntegrationException extends IntegrationException {
      * 
      * @return The pkg
      */
-    public Package getPackage() {
+    public InternalKnowledgePackage getPackage() {
         return this.pkg;
     }
 
-    private static String createMessage(final Package pkg) {
+    private static String createMessage(final InternalKnowledgePackage pkg) {
         return pkg.getName() + " cannot be integrated";
     }
 }

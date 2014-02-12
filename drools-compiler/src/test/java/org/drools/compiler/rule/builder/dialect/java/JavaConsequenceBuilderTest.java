@@ -17,19 +17,20 @@ import java.util.Map.Entry;
 import org.antlr.runtime.RecognitionException;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Person;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.base.ClassObjectType;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.BindingDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.ImportDeclaration;
-import org.drools.core.rule.Package;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.Rule;
 import org.drools.compiler.rule.builder.PatternBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaBlockDescr;
@@ -44,12 +45,11 @@ public class JavaConsequenceBuilderTest {
     private RuleDescr              ruleDescr;
 
     private void setupTest(String consequence, Map<String, Object> namedConsequences) {
-        Package pkg = new Package( "org.drools" );
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.drools" );
         pkg.addImport( new ImportDeclaration( "org.drools.compiler.Cheese" ) );
 
-        PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
-        PackageBuilder pkgBuilder = new PackageBuilder( pkg,
-                                                        conf );
+        KnowledgeBuilderConfigurationImpl conf = new KnowledgeBuilderConfigurationImpl();
+        KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl( pkg, conf );
 
         ruleDescr = new RuleDescr( "test consequence builder" );
         ruleDescr.setConsequence( consequence );
@@ -58,11 +58,11 @@ public class JavaConsequenceBuilderTest {
             ruleDescr.addNamedConsequences( entry.getKey(), entry.getValue() );
         }
 
-        Rule rule = new Rule( ruleDescr.getName() );
+        RuleImpl rule = new RuleImpl( ruleDescr.getName() );
         
-        PackageRegistry pkgRegistry = pkgBuilder.getPackageRegistry( pkg.getName() );
-        DialectCompiletimeRegistry reg = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
-        context = new RuleBuildContext( pkgBuilder,
+        PackageRegistry pkgRegistry = kBuilder.getPackageRegistry( pkg.getName() );
+        DialectCompiletimeRegistry reg = kBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
+        context = new RuleBuildContext( kBuilder,
                                         ruleDescr,
                                         reg,
                                         pkg,
@@ -80,26 +80,26 @@ public class JavaConsequenceBuilderTest {
         
         Declaration declr = p.addDeclaration( "age" );
 
-        final InternalReadAccessor extractor = PatternBuilder.getFieldReadAccessor( context,
-                                                                                    new BindingDescr("age", "age"),
-                                                                                    p.getObjectType(),
-                                                                                    "age",
-                                                                                    declr,
-                                                                                    true );
+        final InternalReadAccessor extractor = PatternBuilder.getFieldReadAccessor(context,
+                                                                                   new BindingDescr("age", "age"),
+                                                                                   p.getObjectType(),
+                                                                                   "age",
+                                                                                   declr,
+                                                                                   true);
         
         rule.addPattern( p );
         
-        context.getBuildStack().push( rule.getLhs() );
+        context.getBuildStack().push(rule.getLhs());
         
-        context.getDialect().getConsequenceBuilder().build( context, Rule.DEFAULT_CONSEQUENCE_NAME );
+        context.getDialect().getConsequenceBuilder().build(context, RuleImpl.DEFAULT_CONSEQUENCE_NAME);
         for ( String name : namedConsequences.keySet() ) {
             context.getDialect().getConsequenceBuilder().build( context, name );
         }
         
         context.getDialect().addRule( context );
-        pkgRegistry.getPackage().addRule( context.getRule() );
-        pkgBuilder.compileAll();
-        pkgBuilder.reloadAll();
+        pkgRegistry.getPackage().addRule(context.getRule());
+        kBuilder.compileAll();
+        kBuilder.reloadAll();
     }
 
     @Test
@@ -166,7 +166,7 @@ public class JavaConsequenceBuilderTest {
                                             new HashMap(),
                                             0);
 
-            context.getPackageBuilder().getTypeDeclaration(Cheese.class).setPropertyReactive(true);
+            context.getKnowledgeBuilder().getTypeDeclaration(Cheese.class).setPropertyReactive(true);
             String fixed = fixBlockDescr(context, analysis, context.getDeclarationResolver().getDeclarations( context.getRule() ) );
 
             String expected = 
@@ -273,7 +273,7 @@ public class JavaConsequenceBuilderTest {
 
         analysis.setBoundIdentifiers(bindings);
 
-        context.getPackageBuilder().getTypeDeclaration(Cheese.class).setPropertyReactive(true);
+        context.getKnowledgeBuilder().getTypeDeclaration(Cheese.class).setPropertyReactive(true);
         String fixed = fixBlockDescr( context, analysis, context.getDeclarationResolver().getDeclarations(context.getRule()), descrs );
 
         String expected = 

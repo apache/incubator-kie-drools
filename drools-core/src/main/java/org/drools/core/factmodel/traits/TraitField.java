@@ -2,6 +2,7 @@ package org.drools.core.factmodel.traits;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.DefaultAgenda;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.KnowledgeHelper;
 
@@ -214,7 +215,7 @@ public class TraitField implements Serializable, Externalizable {
     }
 
     private boolean inspectForTraitability( Object value, WorkingMemory wm ) {
-        org.drools.core.rule.Package pack = wm.getRuleBase().getPackage( value.getClass().getPackage().getName() );
+        InternalKnowledgePackage pack = wm.getKnowledgeBase().getPackage( value.getClass().getPackage().getName() );
         if ( pack != null ) {
             TypeDeclaration decl = pack.getTypeDeclaration( value.getClass() );
             if ( decl != null ) {

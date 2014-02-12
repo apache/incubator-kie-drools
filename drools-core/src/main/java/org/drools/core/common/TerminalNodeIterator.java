@@ -2,15 +2,15 @@ package org.drools.core.common;
 
 import java.util.Map;
 
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.util.Iterator;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.kie.api.KieBase;
 
 public class TerminalNodeIterator
     implements
     Iterator {
-    private ReteooRuleBase        ruleBase;
+    private InternalKnowledgeBase kBase;
     private BaseNode[][]          nodes;
 
     private int                   i = 0;
@@ -20,14 +20,14 @@ public class TerminalNodeIterator
         
     }
 
-    private TerminalNodeIterator(KieBase kbase) {
-        this.ruleBase = (ReteooRuleBase) ((KnowledgeBaseImpl)kbase).ruleBase;
-        Map<String, BaseNode[]> rules = ruleBase.getReteooBuilder().getTerminalNodes();
+    private TerminalNodeIterator(KieBase kBase) {
+        this.kBase = (InternalKnowledgeBase)kBase;
+        Map<String, BaseNode[]> rules = this.kBase.getReteooBuilder().getTerminalNodes();
         nodes = rules.values().toArray( new BaseNode[rules.size()][] );
     }
     
-    public static Iterator iterator(KieBase kbase) {
-        return new TerminalNodeIterator(kbase);
+    public static Iterator iterator(KieBase kBase) {
+        return new TerminalNodeIterator(kBase);
     }
 
     public Object next() {

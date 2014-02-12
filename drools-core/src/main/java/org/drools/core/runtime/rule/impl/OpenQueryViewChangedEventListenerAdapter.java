@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.drools.core.base.InternalViewChangedEventListener;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 
@@ -35,7 +35,7 @@ public class OpenQueryViewChangedEventListenerAdapter
         this.viewEventListener = viewEventListener;
     }
 
-    public void rowAdded(final Rule rule,
+    public void rowAdded(final RuleImpl rule,
                          final LeftTuple leftTuple,
                          final PropagationContext context,
                          final InternalWorkingMemory workingMemory) {
@@ -45,7 +45,7 @@ public class OpenQueryViewChangedEventListenerAdapter
         this.viewEventListener.rowInserted( rowAdapter );
     }
 
-    public void rowRemoved(final Rule rule,
+    public void rowRemoved(final RuleImpl rule,
                            final LeftTuple leftTuple,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
@@ -53,7 +53,7 @@ public class OpenQueryViewChangedEventListenerAdapter
         this.viewEventListener.rowDeleted( rowAdapter );
     }
 
-    public void rowUpdated(final Rule rule,
+    public void rowUpdated(final RuleImpl rule,
                            final LeftTuple leftTuple,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {

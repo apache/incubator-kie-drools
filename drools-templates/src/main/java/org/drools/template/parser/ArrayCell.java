@@ -20,8 +20,8 @@
  */
 package org.drools.template.parser;
 
-import org.drools.core.StatefulSession;
 import org.drools.core.util.StringUtils;
+import org.kie.api.runtime.KieSession;
 
 import java.util.Map;
 
@@ -57,7 +57,7 @@ public class ArrayCell implements Cell {
         return value;
     }
 
-    public void insert(StatefulSession session) {
+    public void insert(KieSession session) {
         session.insert(this);
         for (int i = 0; i < values.length; i++) {
             Cell cell = column.getType().createCell(row);

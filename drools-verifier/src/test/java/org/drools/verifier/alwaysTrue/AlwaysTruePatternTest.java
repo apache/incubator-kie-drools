@@ -16,8 +16,6 @@
 
 package org.drools.verifier.alwaysTrue;
 
-import org.drools.core.StatelessSession;
-import org.drools.core.StatelessSessionResult;
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.verifier.TestBaseOld;
@@ -28,6 +26,7 @@ import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.*;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,9 +38,7 @@ public class AlwaysTruePatternTest extends TestBaseOld {
 
     @Test
     public void testPatternPossibilities() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Patterns.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Pattern possibility that is always true"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<Object> data = new ArrayList<Object>();
@@ -112,15 +109,16 @@ public class AlwaysTruePatternTest extends TestBaseOld {
         data.add(pp3);
         data.add(pp4);
 
-        StatelessSessionResult sessionResult = session.executeWithResults(data);
-        Iterator iter = sessionResult.iterateObjects();
+        for (Object o : data) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Pattern possibility that is always true"));
 
         boolean pp1true = false;
         boolean pp2true = false;
         boolean pp3true = false;
         boolean pp4true = false;
-        while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+        for (Object o : session.getObjects()) {
             if (o instanceof AlwaysTrue) {
                 AlwaysTrue alwaysTrue = (AlwaysTrue) o;
                 if (!pp1true) {
@@ -147,9 +145,7 @@ public class AlwaysTruePatternTest extends TestBaseOld {
     @Test
     @Ignore
     public void testPatterns() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Patterns.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Pattern that is always true"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<Object> data = new ArrayList<Object>();
@@ -194,7 +190,10 @@ public class AlwaysTruePatternTest extends TestBaseOld {
         data.add(pp4);
         data.add(alwaysTrue4);
 
-        session.executeWithResults(data);
+        for (Object o : data) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Pattern that is always true"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.NOTE).iterator();
 

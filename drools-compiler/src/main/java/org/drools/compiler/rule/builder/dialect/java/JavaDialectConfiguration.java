@@ -1,21 +1,18 @@
 package org.drools.compiler.rule.builder.dialect.java;
 
-import java.util.Arrays;
-
-import org.drools.core.RuntimeDroolsException;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectConfiguration;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.rule.Package;
+import org.drools.core.RuntimeDroolsException;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.builder.dialect.asm.ClassLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.mvel2.asm.Opcodes.V1_5;
-import static org.mvel2.asm.Opcodes.V1_6;
-import static org.mvel2.asm.Opcodes.V1_7;
+import java.util.Arrays;
+
+import static org.mvel2.asm.Opcodes.*;
 
 /**
  * 
@@ -54,14 +51,14 @@ public class JavaDialectConfiguration
 
     private String                      languageLevel;
 
-    private PackageBuilderConfiguration conf;
+    private KnowledgeBuilderConfigurationImpl conf;
 
     private int                         compiler;
 
     public JavaDialectConfiguration() {
     }
 
-    public void init(final PackageBuilderConfiguration conf) {
+    public void init(final KnowledgeBuilderConfigurationImpl conf) {
         this.conf = conf;
 
         setCompiler( getDefaultCompiler() );
@@ -69,12 +66,12 @@ public class JavaDialectConfiguration
         setJavaLanguageLevel( getDefaultLanguageLevel() );
     }
 
-    public PackageBuilderConfiguration getPackageBuilderConfiguration() {
+    public KnowledgeBuilderConfigurationImpl getPackageBuilderConfiguration() {
         return this.conf;
     }
 
-    public Dialect newDialect(PackageBuilder packageBuilder, PackageRegistry pkgRegistry, Package pkg) {
-        return new JavaDialect(packageBuilder, pkgRegistry, pkg);
+    public Dialect newDialect(ClassLoader rootClassLoader, KnowledgeBuilderConfigurationImpl pkgConf, PackageRegistry pkgRegistry, InternalKnowledgePackage pkg) {
+        return new JavaDialect(rootClassLoader, pkgConf, pkgRegistry, pkg);
     }
 
     public String getJavaLanguageLevel() {

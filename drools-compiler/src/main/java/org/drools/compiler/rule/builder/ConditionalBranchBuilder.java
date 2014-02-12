@@ -6,12 +6,12 @@ import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ConditionalBranchDescr;
 import org.drools.compiler.lang.descr.EvalDescr;
 import org.drools.compiler.lang.descr.NamedConsequenceDescr;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.ConditionalBranch;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.NamedConsequence;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.Rule;
 import org.drools.core.rule.RuleConditionElement;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public class ConditionalBranchBuilder implements RuleConditionBuilder {
         GroupElement ge = (GroupElement)context.getBuildStack().peek();
         Pattern lastPattern = getLastPattern(ge.getChildren());
         if (lastPattern == null) {
-            Rule parent = context.getRule().getParent();
+            RuleImpl parent = context.getRule().getParent();
             if (parent != null) {
                 lastPattern = getLastPattern(parent.getLhs().getChildren());
             }

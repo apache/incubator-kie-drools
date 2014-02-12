@@ -16,6 +16,7 @@
 
 package org.drools.core.common;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
@@ -23,12 +24,12 @@ import org.drools.core.FactException;
 import org.drools.core.FactHandle;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AgendaEventSupport;
-import org.drools.core.event.WorkingMemoryEventSupport;
+import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.Rule;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.spi.Activation;
@@ -46,7 +47,7 @@ public interface InternalWorkingMemory
     
     public void setId(int id);
 
-    public void setWorkingMemoryEventSupport(WorkingMemoryEventSupport workingMemoryEventSupport);
+    public void setRuleRuntimeEventSupport(RuleRuntimeEventSupport workingMemoryEventSupport);
 
     ///public ObjectHashMap getAssertMap();
 
@@ -73,10 +74,12 @@ public interface InternalWorkingMemory
     public EntryPointId getEntryPoint();
     
     public EntryPointNode getEntryPointNode();
-    
+
+    EntryPoint getEntryPoint(String name);
+
     public void insert(final InternalFactHandle handle,
                        final Object object,
-                       final Rule rule,
+                       final RuleImpl rule,
                        final Activation activation,
                        ObjectTypeConf typeConf);
     
@@ -91,7 +94,7 @@ public interface InternalWorkingMemory
     public FactHandle getFactHandleByIdentity(final Object object);
 
     void delete(final FactHandle factHandle,
-                       final Rule rule,
+                       final RuleImpl rule,
                        final Activation activation) throws FactException;
 
     public Lock getLock();
@@ -124,7 +127,7 @@ public interface InternalWorkingMemory
      */
     public Map< String, Channel> getChannels();
     
-    public Map<String, ? extends EntryPoint> getEntryPoints();
+    public Collection< ? extends EntryPoint> getEntryPoints();
 
     public SessionConfiguration getSessionConfiguration();
     

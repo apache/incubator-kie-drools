@@ -21,23 +21,24 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.StatefulSession;
 import org.drools.core.event.BeforeRuleBaseUnlockedEvent;
 import org.drools.core.event.DefaultRuleBaseEventListener;
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.spi.RuleBaseUpdateListener;
 
 public class FireAllRulesRuleBaseUpdateListener extends DefaultRuleBaseEventListener
     implements
     RuleBaseUpdateListener,
     Externalizable {
-    private StatefulSession session;
+    private StatefulKnowledgeSessionImpl session;
 
     public FireAllRulesRuleBaseUpdateListener() {
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
-        session = (StatefulSession)in.readObject();
+        session = (StatefulKnowledgeSessionImpl)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -45,12 +46,12 @@ public class FireAllRulesRuleBaseUpdateListener extends DefaultRuleBaseEventList
         out.writeObject(session);
     }
 
-    public void setSession(StatefulSession session) {
+    public void setSession(StatefulKnowledgeSessionImpl session) {
         this.session = session;
     }
 
     public void beforeRuleBaseUnlocked(BeforeRuleBaseUnlockedEvent event) {
-        if ( session.getRuleBase().getAdditionsSinceLock() > 0 ) {
+        if ( ((KnowledgeBaseImpl)session.getKnowledgeBase()).getAdditionsSinceLock() > 0 ) {
             session.fireAllRules();
         }
     }

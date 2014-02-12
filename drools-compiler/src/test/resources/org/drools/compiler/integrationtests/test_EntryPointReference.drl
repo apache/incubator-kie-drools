@@ -12,7 +12,7 @@ rule "Test entry point 1"
 when
     $st : StockTick( company == "ACME", price > 10 ) from entry-point "stream1"
 then
-    entryPoints["stream2"].insert( $st );
+    drools.getEntryPoint("stream2").insert( $st );
 end
 
 rule "Test entry point 2"
@@ -20,7 +20,7 @@ rule "Test entry point 2"
 when
     $st : StockTick( company == "ACME", price > 20 ) from entry-point "stream2"
 then
-    entryPoints["stream3"].insert( $st );
+    drools.getEntryPoint("stream3").insert( $st );
 end
 
 rule "Test entry point 3"

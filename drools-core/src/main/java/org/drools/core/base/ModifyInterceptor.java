@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.drools.core.base.mvel.MVELCompilationUnit.DroolsVarFactory;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.util.BitMaskUtil;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.KnowledgeHelper;
@@ -82,8 +81,7 @@ public class ModifyInterceptor
 
     private void calculateModificationMask(KnowledgeHelper knowledgeHelper, WithNode node) {
         Class<?> nodeClass = node.getEgressType();
-        InternalRuleBase ruleBase = (InternalRuleBase)knowledgeHelper.getWorkingMemory().getRuleBase();
-        TypeDeclaration typeDeclaration = ruleBase.getTypeDeclaration(nodeClass);
+        TypeDeclaration typeDeclaration = knowledgeHelper.getWorkingMemory().getKnowledgeBase().getTypeDeclaration(nodeClass);
         if (typeDeclaration == null || !typeDeclaration.isPropertyReactive()) {
             modificationMask = Long.MAX_VALUE;
             return;

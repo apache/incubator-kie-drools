@@ -77,7 +77,7 @@ public class MVELEvalBuilder
                                                                               evalDescr,
                                                                               evalDescr.getContent(),
                                                                               new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ),
-                                                                                                   context.getPackageBuilder().getGlobals() ) );
+                                                                                                   context.getKnowledgeBuilder().getGlobals() ) );
 
             final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
             int i = usedIdentifiers.getDeclrClasses().keySet().size();

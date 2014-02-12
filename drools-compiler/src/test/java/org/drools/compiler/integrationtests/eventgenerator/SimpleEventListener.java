@@ -1,12 +1,12 @@
 package org.drools.compiler.integrationtests.eventgenerator;
 
-import org.drools.core.WorkingMemory;
+import org.kie.api.runtime.KieSession;
 
 
 public class SimpleEventListener extends AbstractEventListener {
 
-    public SimpleEventListener(WorkingMemory wm) {
-        super(wm);
+    public SimpleEventListener(KieSession ksession) {
+        super(ksession);
         // TODO Auto-generated constructor stub
     }
 

@@ -19,7 +19,7 @@ import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.Query;
+import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.QueryElement;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.InternalReadAccessor;
@@ -59,7 +59,7 @@ public class QueryElementBuilder
     public RuleConditionElement build( RuleBuildContext context,
                                        BaseDescr descr,
                                        Pattern prefixPattern,
-                                       Query query) {
+                                       QueryImpl query) {
         PatternDescr patternDescr = (PatternDescr) descr;
 
         Declaration[] params = query.getParameters();
@@ -276,7 +276,7 @@ public class QueryElementBuilder
                 try {
                     MVELDialectRuntimeData data = ( MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
                     ParserConfiguration conf = data.getParserConfiguration();
-                    conf.setClassLoader( context.getPackageBuilder().getRootClassLoader() );
+                    conf.setClassLoader( context.getKnowledgeBuilder().getRootClassLoader() );
 
                     arguments.set( pos,
                     MVELSafeHelper.getEvaluator().executeExpression( MVEL.compileExpression( expr, new ParserContext( conf ) ) ) );
@@ -320,7 +320,7 @@ public class QueryElementBuilder
     }
 
     private void processPositional( RuleBuildContext context,
-                                    Query query,
+                                    QueryImpl query,
                                     Declaration[] params,
                                     List<Integer> declrIndexes,
                                     List<Integer> varIndexes,
@@ -373,7 +373,7 @@ public class QueryElementBuilder
             try {
                 MVELDialectRuntimeData data = ( MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
                 ParserConfiguration conf = data.getParserConfiguration();
-                conf.setClassLoader( context.getPackageBuilder().getRootClassLoader() );
+                conf.setClassLoader( context.getKnowledgeBuilder().getRootClassLoader() );
 
                 arguments.set( position, MVELSafeHelper.getEvaluator().executeExpression( MVEL.compileExpression( rewrittenExpr, new ParserContext( conf ) ) ) );
             } catch ( Exception e ) {

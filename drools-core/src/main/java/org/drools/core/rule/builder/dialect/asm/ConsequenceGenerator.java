@@ -2,7 +2,6 @@ package org.drools.core.rule.builder.dialect.asm;
 
 import org.drools.core.FactHandle;
 import org.drools.core.WorkingMemory;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.rule.builder.dialect.asm.GeneratorHelper.DeclarationMatcher;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -37,7 +36,7 @@ public class ConsequenceGenerator {
         RuleTerminalNode rtn = (RuleTerminalNode) knowledgeHelper.getMatch().getTuple().getLeftTupleSink();
         final Declaration[] declarations = rtn.getDeclarations();
         final boolean isOrRule = rtn.getRule().getTransformedLhs(
-                ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getLogicTransformerFactory().getLogicTransformer()
+                workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getLogicTransformerFactory().getLogicTransformer()
         ).length > 1;
         final LeftTuple tuple = (LeftTuple)knowledgeHelper.getTuple();
 

@@ -17,7 +17,6 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ValueType;
@@ -29,6 +28,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.MvelConstraintTestUtil;
@@ -38,6 +38,7 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PropagationContext;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.internal.KnowledgeBaseFactory;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -53,7 +54,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
 public class CompositeObjectSinkAdapterTest {
-    private ReteooRuleBase               ruleBase;
+    private InternalKnowledgeBase        kBase;
     private BuildContext                 buildContext;
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
@@ -62,9 +63,10 @@ public class CompositeObjectSinkAdapterTest {
     public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
-        this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        this.buildContext = new BuildContext( ruleBase,
-                                              ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
+        this.kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+
+        this.buildContext = new BuildContext( kBase,
+                                              kBase.getReteooBuilder().getIdGenerator() );
     }
 
     public int    la;

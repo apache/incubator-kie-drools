@@ -21,25 +21,25 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
 
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.reteoo.ReteooBuilder;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.GroupElementFactory;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.Rule;
 import org.drools.core.WorkingMemory;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 
 public class ReteooRuleBuilderTest {
     private ReteooRuleBuilder builder;
-    private ReteooRuleBase    rulebase;
+    private KnowledgeBaseImpl rulebase;
 
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
@@ -47,15 +47,12 @@ public class ReteooRuleBuilderTest {
     @Before
     public void setUp() throws Exception {
         this.builder = new ReteooRuleBuilder();
-        this.rulebase = new ReteooRuleBase( "default", null );
+        this.rulebase = new KnowledgeBaseImpl( "default", null );
     }
 
-    /**
-     * Test method for {@link org.kie.reteoo.builder.ReteooRuleBuilder#addRule(org.kie.rule.Rule, org.kie.reteoo.ReteooRuleBase, java.util.Map, int)}.
-     */
     @Test
     public void testAddRuleWithPatterns() {
-        final Rule rule = new Rule( "only patterns" );
+        final RuleImpl rule = new RuleImpl( "only patterns" );
         final Pattern c1 = new Pattern( 0,
                                 new ClassObjectType( String.class ) );
         final Pattern c2 = new Pattern( 1,

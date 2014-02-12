@@ -16,7 +16,7 @@
 
 package org.drools.core.spi;
 
-import org.drools.core.StatefulSession;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.util.ClassUtils;
 
 /** 
@@ -24,7 +24,7 @@ import org.drools.core.util.ClassUtils;
  */
 public class RuleBaseUpdateListenerFactory {
     
-    public static RuleBaseUpdateListener createListener(String className, StatefulSession session) {
+    public static RuleBaseUpdateListener createListener(String className, StatefulKnowledgeSessionImpl session) {
         try {
             RuleBaseUpdateListener listener = ( RuleBaseUpdateListener ) ClassUtils.instantiateObject( className );
             listener.setSession( session );

@@ -22,9 +22,9 @@ import java.util.List;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.QueryTerminalNode;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
 
 public class StandardQueryViewChangedEventListener
@@ -41,7 +41,7 @@ public class StandardQueryViewChangedEventListener
         return this.results;
     }
 
-    public void rowAdded(final Rule rule,
+    public void rowAdded(final RuleImpl rule,
                          final LeftTuple tuple,
                          final PropagationContext context,
                          final InternalWorkingMemory workingMemory) {
@@ -68,13 +68,13 @@ public class StandardQueryViewChangedEventListener
         this.results.add( new QueryRowWithSubruleIndex(handles, node.getSubruleIndex()) );
     }
     
-    public void rowRemoved(final Rule rule,
+    public void rowRemoved(final RuleImpl rule,
                            final LeftTuple tuple,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
     }
     
-    public void rowUpdated(final Rule rule,
+    public void rowUpdated(final RuleImpl rule,
                            final LeftTuple tuple,
                                final PropagationContext context,
             final InternalWorkingMemory workingMemory) {

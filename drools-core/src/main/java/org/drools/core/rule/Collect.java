@@ -29,7 +29,6 @@ import java.util.Set;
 
 import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 
 public class Collect extends ConditionalElement
@@ -99,7 +98,7 @@ public class Collect extends ConditionalElement
                 String className = determineResultClassName( objType );
                 this.cls = (Class<Collection<Object>>) Class.forName( className,
                                                                       true,
-                                                                      ((InternalRuleBase) wm.getRuleBase()).getRootClassLoader() );
+                                                                      wm.getKnowledgeBase().getRootClassLoader() );
             }
             return this.cls.newInstance();
         } catch ( final ClassCastException cce ) {

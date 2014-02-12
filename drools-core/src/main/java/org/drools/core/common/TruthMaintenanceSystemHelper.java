@@ -2,8 +2,8 @@ package org.drools.core.common;
 
 import org.drools.core.FactException;
 import org.drools.core.beliefsystem.BeliefSet;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.util.LinkedList;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 
@@ -26,7 +26,7 @@ public class TruthMaintenanceSystemHelper {
     
     public static void removeLogicalDependencies(final Activation activation,
                                                  final PropagationContext context,
-                                                 final Rule rule) throws FactException {
+                                                 final RuleImpl rule) throws FactException {
         final LinkedList<LogicalDependency> list = activation.getLogicalDependencies();
         if ( list == null || list.isEmpty() ) {
             return;

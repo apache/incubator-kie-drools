@@ -49,6 +49,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import static java.lang.Character.isWhitespace;
+
 /**
  * Ripped form commons StringUtil, unless specified:
  * 
@@ -209,7 +211,7 @@ public class StringUtils {
         }
         
         for ( int i = 0, length = str.length(); i < length; i++ ){
-            if ( str.charAt( i ) != ' ' )  {
+            if ( !isWhitespace(str.charAt( i )) )  {
                 return false;
             }
         }
@@ -663,7 +665,7 @@ public class StringUtils {
         if ( separatorChars == null ) {
             // Null separator means use whitespace
             while ( i < len ) {
-                if ( Character.isWhitespace( str.charAt( i ) ) ) {
+                if ( isWhitespace(str.charAt(i)) ) {
                     if ( match || preserveAllTokens ) {
                         lastMatch = true;
                         if ( sizePlus1++ == max ) {

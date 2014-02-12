@@ -21,7 +21,6 @@ import org.drools.core.FactHandle;
 import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalAgenda;
@@ -34,6 +33,8 @@ import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.TruthMaintenanceSystemHelper;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.MapCore;
 import org.drools.core.factmodel.traits.CoreWrapper;
@@ -46,13 +47,11 @@ import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitType;
 import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Package;
-import org.drools.core.rule.Rule;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.KnowledgeHelper;
@@ -475,7 +474,7 @@ public class DefaultKnowledgeHelper
         }
     }
 
-    public Rule getRule() {
+    public RuleImpl getRule() {
         return this.activation.getRule();
     }
 
@@ -488,7 +487,7 @@ public class DefaultKnowledgeHelper
     }
 
     public KnowledgeRuntime getKnowledgeRuntime() {
-        return ((AbstractWorkingMemory) this.workingMemory).getKnowledgeRuntime();
+        return (StatefulKnowledgeSessionImpl) this.workingMemory;
     }
 
     public Activation getMatch() {
@@ -524,15 +523,11 @@ public class DefaultKnowledgeHelper
     }
 
     public EntryPoint getEntryPoint(String id) {
-        return this.workingMemory.getEntryPoints().get( id );
+        return this.workingMemory.getEntryPoint(id);
     }
 
     public Channel getChannel(String id) {
-        return this.workingMemory.getChannels().get( id );
-    }
-
-    public Map<String, EntryPoint> getEntryPoints() {
-        return Collections.unmodifiableMap( this.workingMemory.getEntryPoints() );
+        return this.workingMemory.getChannels().get(id);
     }
 
     public Map<String, Channel> getChannels() {
@@ -557,7 +552,7 @@ public class DefaultKnowledgeHelper
         FactHandle handle = null;
         // entry point null means it is a generated fact, not a regular inserted fact
         // NOTE: it would probably be a good idea to create a specific attribute for that
-            for ( EntryPoint ep : workingMemory.getEntryPoints().values() ) {
+            for ( EntryPoint ep : workingMemory.getEntryPoints() ) {
                 handle = (FactHandle) ep.getFactHandle( object );
                 if ( identityMap != null ) {
                     identityMap.put( object,
@@ -681,7 +676,7 @@ public class DefaultKnowledgeHelper
     }
 
     protected  <K> ClassDefinition lookupClassDefinition( K core ) {
-        Package pack = this.getWorkingMemory().getRuleBase().getPackage( core.getClass().getPackage().getName() );
+        InternalKnowledgePackage pack = this.getWorkingMemory().getKnowledgeBase().getPackage( core.getClass().getPackage().getName() );
         if ( pack != null ) {
             TypeDeclaration decl = pack.getTypeDeclaration( core.getClass() );
             if ( decl != null ) {
@@ -855,7 +850,7 @@ public class DefaultKnowledgeHelper
     }
 
     private <K> InternalFactHandle lookupHandleForWrapper( K core ) {
-        for ( EntryPoint ep : workingMemory.getEntryPoints().values() ) {
+        for ( EntryPoint ep : workingMemory.getEntryPoints() ) {
             ObjectStore store = ((InternalWorkingMemoryEntryPoint) ep).getObjectStore();
             Iterator iter = store.iterateFactHandles();
             while ( iter.hasNext() ) {
@@ -874,7 +869,7 @@ public class DefaultKnowledgeHelper
         TraitableBean<K,? extends TraitableBean> inner = needsWrapping ? asTraitable( core, builder ) : (TraitableBean<K,? extends TraitableBean>) core;
         if ( needsWrapping ) {
             InternalFactHandle h = (InternalFactHandle) lookupFactHandle( core );
-            InternalWorkingMemoryEntryPoint ep = h != null ? (InternalWorkingMemoryEntryPoint) h.getEntryPoint() : (InternalWorkingMemoryEntryPoint) workingMemory.getEntryPoints().get( "DEFAULT" );
+            InternalWorkingMemoryEntryPoint ep = h != null ? (InternalWorkingMemoryEntryPoint) h.getEntryPoint() : (InternalWorkingMemoryEntryPoint) ((StatefulKnowledgeSessionImpl)workingMemory).getEntryPoint("DEFAULT");
             ObjectTypeConfigurationRegistry reg = ep.getObjectTypeConfigurationRegistry();
 
             ObjectTypeConf coreConf = reg.getObjectTypeConf( ep.getEntryPoint(), core );
@@ -956,7 +951,7 @@ public class DefaultKnowledgeHelper
             } else if ( core.hasTrait( trait.getName() ) ) {
                 removedTypes = core.removeTrait( trait.getName() );
             } else {
-                HierarchyEncoder hier = ((ReteooRuleBase) this.workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                HierarchyEncoder hier = this.workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
                 BitSet code = hier.getCode( trait.getName() );
                 removedTypes = core.removeTrait( code );
             }

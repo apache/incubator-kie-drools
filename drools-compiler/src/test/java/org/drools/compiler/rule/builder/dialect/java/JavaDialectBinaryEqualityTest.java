@@ -11,11 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.Person;
-import org.drools.core.definitions.impl.KnowledgePackageImp;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.PredicateConstraint;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.PredicateExpression;
@@ -37,10 +38,10 @@ public class JavaDialectBinaryEqualityTest{
         KnowledgePackage pkg1 = getKnowledgePackage1();
         KnowledgePackage pkg2 = getKnowledgePackage1();
         KnowledgePackage pkg3 = getKnowledgePackage2();
-        
-        Rule rule1 = ((KnowledgePackageImp)pkg1).pkg.getRule( "rule1" );
-        Rule rule2 = ((KnowledgePackageImp)pkg2).pkg.getRule( "rule1" );
-        Rule rule3 = ((KnowledgePackageImp)pkg3).pkg.getRule( "rule1" );
+
+        RuleImpl rule1 = ((InternalKnowledgePackage)pkg1).getRule( "rule1" );
+        RuleImpl rule2 = ((InternalKnowledgePackage)pkg2).getRule("rule1");
+        RuleImpl rule3 = ((InternalKnowledgePackage)pkg3).getRule( "rule1" );
         
         // test return value
         Pattern p1 = ( Pattern ) rule1.getLhs().getChildren().get( 0 );

@@ -21,10 +21,6 @@ import org.kie.api.definition.process.Process;
 /**
  * Indicates an error integrating a <code>Process</code> or <code>Package</code>
  * into a <code>RuleBase</code>.
- * 
- * @see RuleBase#addProcess
- * @see RuleBase#addPackage
- * 
  *
  * @version $Id: RuleIntegrationException.java,v 1.6 2004/09/17 00:14:06
  *          mproctor Exp $

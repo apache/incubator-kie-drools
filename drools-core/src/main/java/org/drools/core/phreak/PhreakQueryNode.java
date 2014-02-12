@@ -1,6 +1,5 @@
 package org.drools.core.phreak;
 
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.common.InternalFactHandle;
@@ -13,11 +12,9 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.QueryElementNode.UnificationNodeViewChangedEventListener;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.PropagationContext;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.rule.Variable;
 
 public class PhreakQueryNode {

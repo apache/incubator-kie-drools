@@ -15,7 +15,9 @@ import org.drools.builder.KnowledgeBuilderResults;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.builder.ResultSeverity;
-import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.definition.KnowledgePackage;
 import org.drools.impl.adapters.CompositeKnowledgeBuilderAdapter;
 import org.drools.impl.adapters.DecisionTableConfigurationAdapter;
@@ -30,8 +32,33 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     private final org.drools.compiler.builder.impl.KnowledgeBuilderImpl delegate;
 
-    public KnowledgeBuilderImpl(PackageBuilder pkgBuilder) {
-        delegate = new org.drools.compiler.builder.impl.KnowledgeBuilderImpl(pkgBuilder);
+    public KnowledgeBuilderImpl() {
+        delegate = new org.drools.compiler.builder.impl.KnowledgeBuilderImpl();
+    }
+
+    public KnowledgeBuilderImpl(InternalKnowledgePackage pkg) {
+        this(pkg,
+             null);
+    }
+
+    public KnowledgeBuilderImpl(InternalKnowledgeBase kBase) {
+        this(kBase,
+             null);
+    }
+
+    public KnowledgeBuilderImpl(final KnowledgeBuilderConfigurationImpl configuration) {
+        this((InternalKnowledgeBase) null,
+             configuration);
+    }
+
+    public KnowledgeBuilderImpl(InternalKnowledgeBase kBase,
+                                KnowledgeBuilderConfigurationImpl configuration) {
+        delegate = new org.drools.compiler.builder.impl.KnowledgeBuilderImpl(kBase, configuration);
+    }
+
+    public KnowledgeBuilderImpl(InternalKnowledgePackage pkg,
+                                KnowledgeBuilderConfigurationImpl configuration) {
+        delegate = new org.drools.compiler.builder.impl.KnowledgeBuilderImpl(pkg, configuration);
     }
 
     public void add(Resource resource, ResourceType type) {
