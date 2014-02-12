@@ -16,7 +16,6 @@
 
 package org.drools.core.base.extractors;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.BaseClassFieldReader;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalWorkingMemory;
@@ -57,37 +56,37 @@ public abstract class BaseBooleanClassFieldReader extends BaseClassFieldReader {
 
     public byte getByteValue(InternalWorkingMemory workingMemory,
                              final Object object) {
-        throw new RuntimeDroolsException( "Conversion to byte not supported from boolean" );
+        throw new RuntimeException( "Conversion to byte not supported from boolean" );
     }
 
     public char getCharValue(InternalWorkingMemory workingMemory,
                              final Object object) {
-        throw new RuntimeDroolsException( "Conversion to char not supported from boolean" );
+        throw new RuntimeException( "Conversion to char not supported from boolean" );
     }
 
     public double getDoubleValue(InternalWorkingMemory workingMemory,
                                  final Object object) {
-        throw new RuntimeDroolsException( "Conversion to double not supported from boolean" );
+        throw new RuntimeException( "Conversion to double not supported from boolean" );
     }
 
     public float getFloatValue(InternalWorkingMemory workingMemory,
                                final Object object) {
-        throw new RuntimeDroolsException( "Conversion to float not supported from boolean" );
+        throw new RuntimeException( "Conversion to float not supported from boolean" );
     }
 
     public int getIntValue(InternalWorkingMemory workingMemory,
                            final Object object) {
-        throw new RuntimeDroolsException( "Conversion to int not supported from boolean" );
+        throw new RuntimeException( "Conversion to int not supported from boolean" );
     }
 
     public long getLongValue(InternalWorkingMemory workingMemory,
                              final Object object) {
-        throw new RuntimeDroolsException( "Conversion to long not supported from boolean" );
+        throw new RuntimeException( "Conversion to long not supported from boolean" );
     }
 
     public short getShortValue(InternalWorkingMemory workingMemory,
                                final Object object) {
-        throw new RuntimeDroolsException( "Conversion to short not supported from boolean" );
+        throw new RuntimeException( "Conversion to short not supported from boolean" );
     }
 
     public boolean isNullValue(InternalWorkingMemory workingMemory,
@@ -100,8 +99,8 @@ public abstract class BaseBooleanClassFieldReader extends BaseClassFieldReader {
             return this.getClass().getDeclaredMethod( "getBooleanValue",
                                                       new Class[]{InternalWorkingMemory.class, Object.class} );
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
-                                              e );
+            throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
+                                        e );
         }
     }
 

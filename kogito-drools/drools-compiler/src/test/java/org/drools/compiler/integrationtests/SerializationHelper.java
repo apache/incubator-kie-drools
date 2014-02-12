@@ -6,13 +6,10 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
-import org.drools.core.RuleBase;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.StatefulSession;
-import org.drools.core.common.AbstractWorkingMemory;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.marshalling.impl.ProtobufMarshaller;
 import org.kie.api.KieBase;
@@ -39,90 +36,6 @@ public class SerializationHelper {
                                                                 ClassNotFoundException {
         return (T) DroolsStreamUtils.streamIn( DroolsStreamUtils.streamOut( obj ),
                                                classLoader );
-    }
-
-    /**
-     * @deprecated This method can't handle serialization of globals to a deficiency of the API. 
-     *             Please use getSerialisedStatefulKnowledgeSession() instead.
-     */
-    @Deprecated
-    public static StatefulSession getSerialisedStatefulSession(StatefulSession session) throws Exception {
-        return getSerialisedStatefulSession( session,
-                                             true );
-    }
-
-    /**
-     * @deprecated This method can't handle serialization of globals to a deficiency of the API. 
-     *             Please use getSerialisedStatefulKnowledgeSession() instead.
-     */
-    @Deprecated
-    public static StatefulSession getSerialisedStatefulSession(StatefulSession session,
-                                                               RuleBase ruleBase) throws Exception {
-        return getSerialisedStatefulSession( session,
-                                             ruleBase,
-                                             true );
-    }
-
-    /**
-     * @deprecated This method can't handle serialization of globals to a deficiency of the API. 
-     *             Please use getSerialisedStatefulKnowledgeSession() instead.
-     */
-    @Deprecated
-    public static StatefulSession getSerialisedStatefulSession(StatefulSession session,
-                                                               boolean dispose) throws Exception {
-        return getSerialisedStatefulSession( session,
-                                             session.getRuleBase(),
-                                             dispose );
-    }
-
-    /**
-     * @deprecated This method can't handle serialization of globals to a deficiency of the API. 
-     *             Please use getSerialisedStatefulKnowledgeSession() instead.
-     */
-    @Deprecated
-    public static StatefulSession getSerialisedStatefulSession(StatefulSession session,
-                                                               RuleBase ruleBase,
-                                                               boolean dispose) throws Exception {
-        // Serialize to a byte array
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        
-        ((AbstractWorkingMemory)session).getTimerService();
-        
-        
-        ObjectOutput out = new ObjectOutputStream( bos );
-        out.writeObject( session );
-        out.close();
-        bos.close();
-        
-        // Get the bytes of the serialized object
-        final byte[] b1 = bos.toByteArray();
-
-        ByteArrayInputStream bais = new ByteArrayInputStream( b1 );
-        StatefulSession session2 = ruleBase.newStatefulSession( bais );
-        bais.close();
-
-        // Reserialize and check that byte arrays are the same
-        bos = new ByteArrayOutputStream();
-        out = new ObjectOutputStream( bos );
-        out.writeObject( session2 );
-        out.close();
-        bos.close();
-
-        final byte[] b2 = bos.toByteArray();
-
-        // bytes should be the same.
-        if ( !areByteArraysEqual( b1,
-                                  b2 ) ) {
-            throw new IllegalArgumentException( "byte streams for serialisation test are not equal" );
-        }
-
-        session2.setGlobalResolver( session.getGlobalResolver() );
-
-        if ( dispose ) {
-            session.dispose();
-        }
-
-        return session2;
     }
 
     public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(KieSession ksession,

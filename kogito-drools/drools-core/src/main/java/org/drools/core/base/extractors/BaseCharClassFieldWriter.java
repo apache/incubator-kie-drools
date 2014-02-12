@@ -18,7 +18,6 @@ package org.drools.core.base.extractors;
 
 import java.lang.reflect.Method;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.BaseClassFieldWriter;
 import org.drools.core.base.ValueType;
 
@@ -55,7 +54,7 @@ public abstract class BaseCharClassFieldWriter extends BaseClassFieldWriter {
 
     public void setBooleanValue(final Object bean,
                                 final boolean value) {
-        throw new RuntimeDroolsException( "Conversion to char not supported from boolean" );
+        throw new RuntimeException( "Conversion to char not supported from boolean" );
     }
 
     public void setByteValue(final Object bean,
@@ -102,8 +101,8 @@ public abstract class BaseCharClassFieldWriter extends BaseClassFieldWriter {
             return this.getClass().getDeclaredMethod( "setCharValue",
                                                       new Class[]{Object.class, char.class} );
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
-                                              e );
+            throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
+                                        e );
         }
     }
 }

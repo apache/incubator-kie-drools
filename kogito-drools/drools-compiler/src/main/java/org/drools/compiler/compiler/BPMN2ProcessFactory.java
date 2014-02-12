@@ -1,5 +1,6 @@
 package org.drools.compiler.compiler;
 
+import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.utils.ServiceRegistryImpl;
 
 
@@ -9,8 +10,8 @@ public class BPMN2ProcessFactory {
 
     private static BPMN2ProcessProvider provider;
 
-    public static void configurePackageBuilder(PackageBuilder packageBuilder) {
-        getBPMN2ProcessProvider().configurePackageBuilder(packageBuilder);
+    public static void configurePackageBuilder(KnowledgeBuilder kBuilder) {
+        getBPMN2ProcessProvider().configurePackageBuilder(kBuilder);
     }
 
     public static synchronized void setBPMN2ProcessProvider(BPMN2ProcessProvider provider) {

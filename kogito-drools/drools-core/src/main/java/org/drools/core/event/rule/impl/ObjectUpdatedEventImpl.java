@@ -16,8 +16,10 @@
 
 package org.drools.core.event.rule.impl;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
+import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.spi.PropagationContext;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
 
 import java.io.IOException;
@@ -29,13 +31,17 @@ public class ObjectUpdatedEventImpl  extends RuleRuntimeEventImpl implements Obj
     private Object      object;
     private Object      oldObject;
     
-    public ObjectUpdatedEventImpl(org.drools.core.event.ObjectUpdatedEvent event) {
-        super( ((InternalWorkingMemory) event.getWorkingMemory() ).getKnowledgeRuntime(), event.getPropagationContext() );
-        factHandle = event.getFactHandle();
-        object = event.getObject();
-        oldObject = event.getOldObject();
+    public ObjectUpdatedEventImpl(final WorkingMemory workingMemory,
+                                  final PropagationContext propagationContext,
+                                  final FactHandle handle,
+                                  final Object oldObject,
+                                  final Object object) {
+        super( ((InternalWorkingMemory) workingMemory ).getKnowledgeRuntime(), propagationContext );
+        this.factHandle = handle;
+        this.oldObject = oldObject;
+        this.object = object;
     }
-    
+
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( factHandle );

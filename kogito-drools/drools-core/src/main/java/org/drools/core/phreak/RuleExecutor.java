@@ -9,20 +9,20 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.TupleEntryQueue;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.SegmentMemory;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.AgendaFilter;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.index.LeftTupleList;
 import org.kie.api.event.rule.MatchCancelledCause;
+import org.kie.api.runtime.rule.AgendaFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,7 +108,7 @@ public class RuleExecutor {
                 }
 
                 rtn = (RuleTerminalNode) leftTuple.getSink(); // branches result in multiple RTN's for a given rule, so unwrap per LeftTuple
-                Rule rule = rtn.getRule();
+                RuleImpl rule = rtn.getRule();
 
                 PropagationContext pctx = leftTuple.getPropagationContext();
                 pctx = RuleTerminalNode.findMostRecentPropagationContext(leftTuple,
@@ -278,7 +278,7 @@ public class RuleExecutor {
 
     private boolean cancelAndContinue(InternalWorkingMemory wm,
             RuleTerminalNode rtn,
-            Rule rule,
+            RuleImpl rule,
             LeftTuple leftTuple,
             PropagationContext pctx, AgendaFilter filter) {
         // NB. stopped setting the LT.object to Boolean.TRUE, that Reteoo did.

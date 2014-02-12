@@ -16,15 +16,6 @@
 
 package org.drools.core.audit;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.drools.core.FactHandle;
 import org.drools.core.WorkingMemory;
 import org.drools.core.WorkingMemoryEventManager;
 import org.drools.core.audit.event.ActivationLogEvent;
@@ -40,57 +31,63 @@ import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.event.ActivationCancelledEvent;
-import org.drools.core.event.ActivationCreatedEvent;
-import org.drools.core.event.AfterActivationFiredEvent;
-import org.drools.core.event.AfterFunctionRemovedEvent;
-import org.drools.core.event.AfterPackageAddedEvent;
-import org.drools.core.event.AfterPackageRemovedEvent;
-import org.drools.core.event.AfterProcessAddedEvent;
-import org.drools.core.event.AfterProcessRemovedEvent;
-import org.drools.core.event.AfterRuleAddedEvent;
-import org.drools.core.event.AfterRuleBaseLockedEvent;
-import org.drools.core.event.AfterRuleBaseUnlockedEvent;
-import org.drools.core.event.AfterRuleRemovedEvent;
-import org.drools.core.event.AgendaEventListener;
-import org.drools.core.event.AgendaGroupPoppedEvent;
-import org.drools.core.event.AgendaGroupPushedEvent;
-import org.drools.core.event.BeforeActivationFiredEvent;
-import org.drools.core.event.BeforeFunctionRemovedEvent;
-import org.drools.core.event.BeforePackageAddedEvent;
-import org.drools.core.event.BeforePackageRemovedEvent;
-import org.drools.core.event.BeforeProcessAddedEvent;
-import org.drools.core.event.BeforeProcessRemovedEvent;
-import org.drools.core.event.BeforeRuleAddedEvent;
-import org.drools.core.event.BeforeRuleBaseLockedEvent;
-import org.drools.core.event.BeforeRuleBaseUnlockedEvent;
-import org.drools.core.event.BeforeRuleRemovedEvent;
-import org.drools.core.event.ObjectInsertedEvent;
-import org.drools.core.event.ObjectRetractedEvent;
-import org.drools.core.event.ObjectUpdatedEvent;
-import org.drools.core.event.RuleBaseEventListener;
-import org.drools.core.event.RuleFlowGroupActivatedEvent;
-import org.drools.core.event.RuleFlowGroupDeactivatedEvent;
-import org.drools.core.event.WorkingMemoryEventListener;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatelessKnowledgeSessionImpl;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
-import org.drools.core.rule.Declaration;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.Tuple;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
-import org.kie.internal.event.KnowledgeRuntimeEventManager;
+import org.kie.api.event.kiebase.AfterFunctionRemovedEvent;
+import org.kie.api.event.kiebase.AfterKieBaseLockedEvent;
+import org.kie.api.event.kiebase.AfterKieBaseUnlockedEvent;
+import org.kie.api.event.kiebase.AfterKiePackageAddedEvent;
+import org.kie.api.event.kiebase.AfterKiePackageRemovedEvent;
+import org.kie.api.event.kiebase.AfterProcessAddedEvent;
+import org.kie.api.event.kiebase.AfterProcessRemovedEvent;
+import org.kie.api.event.kiebase.AfterRuleAddedEvent;
+import org.kie.api.event.kiebase.AfterRuleRemovedEvent;
+import org.kie.api.event.kiebase.BeforeFunctionRemovedEvent;
+import org.kie.api.event.kiebase.BeforeKieBaseLockedEvent;
+import org.kie.api.event.kiebase.BeforeKieBaseUnlockedEvent;
+import org.kie.api.event.kiebase.BeforeKiePackageAddedEvent;
+import org.kie.api.event.kiebase.BeforeKiePackageRemovedEvent;
+import org.kie.api.event.kiebase.BeforeProcessAddedEvent;
+import org.kie.api.event.kiebase.BeforeProcessRemovedEvent;
+import org.kie.api.event.kiebase.BeforeRuleAddedEvent;
+import org.kie.api.event.kiebase.BeforeRuleRemovedEvent;
+import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.AgendaGroupPoppedEvent;
+import org.kie.api.event.rule.AgendaGroupPushedEvent;
+import org.kie.api.event.rule.BeforeMatchFiredEvent;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.event.rule.ObjectDeletedEvent;
+import org.kie.api.event.rule.ObjectInsertedEvent;
+import org.kie.api.event.rule.ObjectUpdatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.Match;
+import org.kie.internal.event.KnowledgeRuntimeEventManager;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A logger of events generated by a working memory.
@@ -106,10 +103,10 @@ import org.kie.api.runtime.process.NodeInstanceContainer;
  */
 public abstract class WorkingMemoryLogger
     implements
-    WorkingMemoryEventListener,
+    RuleRuntimeEventListener,
     AgendaEventListener,
     ProcessEventListener,
-    RuleBaseEventListener {
+    KieBaseEventListener {
 
     private List<ILogEventFilter>    filters = new ArrayList<ILogEventFilter>();
 
@@ -124,43 +121,42 @@ public abstract class WorkingMemoryLogger
      * @param workingMemory
      */
     public WorkingMemoryLogger(final WorkingMemory workingMemory) {
-        workingMemory.addEventListener( (WorkingMemoryEventListener) this );
+        workingMemory.addEventListener( (RuleRuntimeEventListener) this );
         workingMemory.addEventListener( (AgendaEventListener) this );
         InternalProcessRuntime processRuntime = ((InternalWorkingMemory) workingMemory).getProcessRuntime();
         if (processRuntime != null) {
             processRuntime.addEventListener( this );
         }
-        workingMemory.addEventListener( (RuleBaseEventListener) this );
+        workingMemory.addEventListener( (KieBaseEventListener) this );
     }
     
     public WorkingMemoryLogger(final KnowledgeRuntimeEventManager session) {
         if (session instanceof StatefulKnowledgeSessionImpl) {
             StatefulKnowledgeSessionImpl statefulSession = ((StatefulKnowledgeSessionImpl) session);
-            isPhreak = ((ReteooRuleBase)statefulSession.getRuleBase()).getConfig().isPhreakEnabled();
-            WorkingMemoryEventManager eventManager = statefulSession.session;
-            eventManager.addEventListener( (WorkingMemoryEventListener) this );
+            isPhreak = statefulSession.getKnowledgeBase().getConfiguration().isPhreakEnabled();
+            WorkingMemoryEventManager eventManager = statefulSession;
+            eventManager.addEventListener( (RuleRuntimeEventListener) this );
             eventManager.addEventListener( (AgendaEventListener) this );
-            eventManager.addEventListener( (RuleBaseEventListener) this );
-            InternalProcessRuntime processRuntime = ((StatefulKnowledgeSessionImpl) session).session.getProcessRuntime();
+            eventManager.addEventListener( (KieBaseEventListener) this );
+            InternalProcessRuntime processRuntime = ((StatefulKnowledgeSessionImpl) session).getProcessRuntime();
             if (processRuntime != null) {
                 processRuntime.addEventListener( this );
             }
         } else if (session instanceof StatelessKnowledgeSessionImpl) {
             StatelessKnowledgeSessionImpl statelessSession = ((StatelessKnowledgeSessionImpl) session);
-            isPhreak = ((ReteooRuleBase)statelessSession.getRuleBase()).getConfig().isPhreakEnabled();
-            statelessSession.addWorkingMemoryEventListener( this );
-            statelessSession.addAgendaEventListener( this );
-            statelessSession.addEventListener( this );
-            statelessSession.getRuleBase().addEventListener( this );
+            isPhreak = statelessSession.getKnowledgeBase().getConfiguration().isPhreakEnabled();
+            statelessSession.addEventListener((RuleRuntimeEventListener) this);
+            statelessSession.addEventListener( (AgendaEventListener) this );
+            statelessSession.getKnowledgeBase().addEventListener( (KieBaseEventListener) this );
         } else if (session instanceof CommandBasedStatefulKnowledgeSession) {
             StatefulKnowledgeSessionImpl statefulSession =
                     ((StatefulKnowledgeSessionImpl)((KnowledgeCommandContext)((CommandBasedStatefulKnowledgeSession) session).getCommandService().getContext()).getKieSession());
-            isPhreak = ((ReteooRuleBase)statefulSession.getRuleBase()).getConfig().isPhreakEnabled();
-            ReteooWorkingMemoryInterface eventManager = statefulSession.session;
-            eventManager.addEventListener( (WorkingMemoryEventListener) this );
+            isPhreak = statefulSession.getKnowledgeBase().getConfiguration().isPhreakEnabled();
+            ReteooWorkingMemoryInterface eventManager = statefulSession;
+            eventManager.addEventListener( (RuleRuntimeEventListener) this );
             eventManager.addEventListener( (AgendaEventListener) this );
             InternalProcessRuntime processRuntime = eventManager.getProcessRuntime();
-            eventManager.addEventListener( (RuleBaseEventListener) this );
+            eventManager.addEventListener( (KieBaseEventListener) this );
             if (processRuntime != null) {
                 processRuntime.addEventListener( this );
             }
@@ -260,7 +256,7 @@ public abstract class WorkingMemoryLogger
     /**
      * @see org.kie.api.event.rule.RuleRuntimeEventListener
      */
-    public void objectRetracted(final ObjectRetractedEvent event) {
+    public void objectDeleted(final ObjectDeletedEvent event) {
         filterLogEvent( new ObjectLogEvent( LogEvent.RETRACTED,
                                             ((InternalFactHandle) event.getFactHandle()).getId(),
                                             event.getOldObject().toString() ) );
@@ -269,53 +265,49 @@ public abstract class WorkingMemoryLogger
     /**
      * @see org.kie.api.event.rule.AgendaEventListener
      */
-    public void activationCreated(final ActivationCreatedEvent event,
-                                  final WorkingMemory workingMemory) {
+    public void matchCreated(MatchCreatedEvent event) {
         filterLogEvent( new ActivationLogEvent( LogEvent.ACTIVATION_CREATED,
-                                                getActivationId( event.getActivation() ),
-                                                event.getActivation().getRule().getName(),
-                                                extractDeclarations( event.getActivation(), workingMemory ),
-                                                event.getActivation().getRule().getRuleFlowGroup(),
-                                                extractFactHandleIds( event.getActivation() ) ) );
+                                                getActivationId( event.getMatch() ),
+                                                event.getMatch().getRule().getName(),
+                                                extractDeclarations( event.getMatch() ),
+                                                ((RuleImpl)event.getMatch().getRule()).getRuleFlowGroup(),
+                                                extractFactHandleIds( (Activation) event.getMatch() ) ) );
     }
 
     /**
      * @see org.kie.api.event.rule.AgendaEventListener
      */
-    public void activationCancelled(final ActivationCancelledEvent event,
-                                    final WorkingMemory workingMemory) {
+    public void matchCancelled(MatchCancelledEvent event) {
         filterLogEvent( new ActivationLogEvent( LogEvent.ACTIVATION_CANCELLED,
-                                                getActivationId( event.getActivation() ),
-                                                event.getActivation().getRule().getName(),
-                                                extractDeclarations(event.getActivation(), workingMemory),
-                                                event.getActivation().getRule().getRuleFlowGroup(),
-                                                extractFactHandleIds(event.getActivation()) ) );
+                                                getActivationId( event.getMatch() ),
+                                                event.getMatch().getRule().getName(),
+                                                extractDeclarations( event.getMatch() ),
+                                                ((RuleImpl)event.getMatch().getRule()).getRuleFlowGroup(),
+                                                extractFactHandleIds( (Activation) event.getMatch() ) ) );
     }
 
     /**
      * @see org.kie.api.event.rule.AgendaEventListener
      */
-    public void beforeActivationFired(final BeforeActivationFiredEvent event,
-                                      final WorkingMemory workingMemory) {
+    public void beforeMatchFired(BeforeMatchFiredEvent event) {
         filterLogEvent( new ActivationLogEvent( LogEvent.BEFORE_ACTIVATION_FIRE,
-                                                getActivationId( event.getActivation() ),
-                                                event.getActivation().getRule().getName(),
-                                                extractDeclarations(event.getActivation(), workingMemory),
-                                                event.getActivation().getRule().getRuleFlowGroup(),
-                                                extractFactHandleIds(event.getActivation()) ) );
+                                                getActivationId( event.getMatch() ),
+                                                event.getMatch().getRule().getName(),
+                                                extractDeclarations( event.getMatch() ),
+                                                ((RuleImpl)event.getMatch().getRule()).getRuleFlowGroup(),
+                                                extractFactHandleIds( (Activation) event.getMatch() ) ) );
     }
 
     /**
      * @see org.kie.api.event.rule.AgendaEventListener
      */
-    public void afterActivationFired(final AfterActivationFiredEvent event,
-                                     final WorkingMemory workingMemory) {
+    public void afterMatchFired(final AfterMatchFiredEvent event) {
         filterLogEvent( new ActivationLogEvent( LogEvent.AFTER_ACTIVATION_FIRE,
-                                                getActivationId( event.getActivation() ),
-                                                event.getActivation().getRule().getName(),
-                                                extractDeclarations(event.getActivation(), workingMemory),
-                                                event.getActivation().getRule().getRuleFlowGroup(),
-                                                extractFactHandleIds(event.getActivation()) ) );
+                                                getActivationId( event.getMatch() ),
+                                                event.getMatch().getRule().getName(),
+                                                extractDeclarations( event.getMatch() ),
+                                                ((RuleImpl)event.getMatch().getRule()).getRuleFlowGroup(),
+                                                extractFactHandleIds( (Activation) event.getMatch() ) ) );
     }
 
     /**
@@ -325,36 +317,25 @@ public abstract class WorkingMemoryLogger
      * declaration, and the value is a toString of the value of the
      * parameter, followed by the id of the fact between parentheses.
      * 
-     * @param activation The activation from which the declarations should be extracted
+     * @param match The match from which the declarations should be extracted
      * @return A String represetation of the declarations of the activation.
      */
-    private String extractDeclarations(final Activation activation,  final WorkingMemory workingMemory) {
+    private String extractDeclarations(Match match) {
         final StringBuilder result = new StringBuilder();
-        final Tuple tuple = activation.getTuple();
-        final Map<?, ?> declarations = activation.getSubRule().getOuterDeclarations();
-        for ( Iterator<?> it = declarations.values().iterator(); it.hasNext(); ) {
-            final Declaration declaration = (Declaration) it.next();
-            final InternalFactHandle handle = tuple.get( declaration );
-            if ( handle != null ) {
-                if ( handle.getId() == -1 ) {
-                    // This handle is now invalid, probably due to an fact retraction
-                    continue;
-                }
-                final Object value = declaration.getValue( (InternalWorkingMemory) workingMemory, handle.getObject() );
+        List<String> declarations = match.getDeclarationIds();
+        for ( int i = 0; i < declarations.size(); i++ ) {
+            String declaration = declarations.get(i);
+            Object value = match.getDeclarationValue(declaration);
 
-                result.append( declaration.getIdentifier() );
-                result.append( "=" );
-                if ( value == null ) {
-                    // this should never occur
-                    result.append( "null" );
-                } else {
-                    result.append( value );
-                    result.append( "(" );
-                    result.append( handle.getId() );
-                    result.append( ")" );
-                }
+            result.append( declaration );
+            result.append( "=" );
+            if ( value == null ) {
+                // this should never occur
+                result.append( "null" );
+            } else {
+                result.append( value );
             }
-            if ( it.hasNext() ) {
+            if ( i < declarations.size() - 1 ) {
                 result.append( "; " );
             }
         }
@@ -391,67 +372,56 @@ public abstract class WorkingMemoryLogger
      * key of the tuple of the activation is added too (which is a set
      * of fact handle ids). 
      * 
-     * @param activation The activation for which a unique id should be generated
+     * @param match The match for which a unique id should be generated
      * @return A unique id for the activation
      */
-    private static String getActivationId(final Activation activation) {
-        final StringBuilder result = new StringBuilder( activation.getRule().getName() );
-        result.append( " [" );
-        final Tuple tuple = activation.getTuple();
-        final FactHandle[] handles = tuple.toFactHandles();
-        for ( int i = 0; i < handles.length; i++ ) {
-            result.append( ((InternalFactHandle) handles[i]).getId() );
-            if ( i < handles.length - 1 ) {
+    private static String getActivationId(Match match) {
+        final StringBuilder result = new StringBuilder( match.getRule().getName() );
+        result.append(" [");
+        List< ? extends FactHandle> factHandles = match.getFactHandles();
+        for ( int i = 0; i < factHandles.size(); i++ ) {
+            result.append( ((InternalFactHandle) factHandles.get(i)).getId() );
+            if ( i < factHandles.size() - 1 ) {
                 result.append( ", " );
             }
         }
         return result.append( "]" ).toString();
     }
     
-    public void agendaGroupPopped(final AgendaGroupPoppedEvent event,
-                                  final WorkingMemory workingMemory) {
+    public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
         // we don't audit this yet     
     }
 
-    public void agendaGroupPushed(final AgendaGroupPushedEvent event,
-                                  final WorkingMemory workingMemory) {
+    public void agendaGroupPushed(AgendaGroupPushedEvent event) {
         // we don't audit this yet        
     }
     
-    public void beforeRuleFlowGroupActivated(
-            RuleFlowGroupActivatedEvent event,
-            WorkingMemory workingMemory) {
+    public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
         filterLogEvent(new RuleFlowGroupLogEvent(
-                LogEvent.BEFORE_RULEFLOW_GROUP_ACTIVATED, event
-                        .getRuleFlowGroup().getName(), event.getRuleFlowGroup()
-                        .size()));
+                        LogEvent.BEFORE_RULEFLOW_GROUP_ACTIVATED,
+                        event.getRuleFlowGroup().getName(),
+                        ((org.drools.core.spi.RuleFlowGroup)event.getRuleFlowGroup()).size()));
     }
     
-    public void afterRuleFlowGroupActivated(
-            RuleFlowGroupActivatedEvent event,
-            WorkingMemory workingMemory) {
+    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
         filterLogEvent(new RuleFlowGroupLogEvent(
                 LogEvent.AFTER_RULEFLOW_GROUP_ACTIVATED,
                 event.getRuleFlowGroup().getName(),
-                event.getRuleFlowGroup().size()));
+                ((org.drools.core.spi.RuleFlowGroup)event.getRuleFlowGroup()).size()));
     }
 
-    public void beforeRuleFlowGroupDeactivated(
-            RuleFlowGroupDeactivatedEvent event, 
-            WorkingMemory workingMemory) {
+    public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
         filterLogEvent(new RuleFlowGroupLogEvent(
                 LogEvent.BEFORE_RULEFLOW_GROUP_DEACTIVATED,
                 event.getRuleFlowGroup().getName(),
-                event.getRuleFlowGroup().size()));
+                ((org.drools.core.spi.RuleFlowGroup)event.getRuleFlowGroup()).size()));
     }
     
-    public void afterRuleFlowGroupDeactivated(
-            RuleFlowGroupDeactivatedEvent event,
-            WorkingMemory workingMemory) {
+    public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
         filterLogEvent(new RuleFlowGroupLogEvent(
                 LogEvent.AFTER_RULEFLOW_GROUP_DEACTIVATED,
                 event.getRuleFlowGroup().getName(),
-                event.getRuleFlowGroup().size()));
+                ((org.drools.core.spi.RuleFlowGroup)event.getRuleFlowGroup()).size()));
     }
     
     public void beforeProcessStarted(ProcessStartedEvent event) {
@@ -585,101 +555,81 @@ public abstract class WorkingMemoryLogger
             event.getNewValue() == null ? "null" : event.getNewValue().toString()) );
     }
 
-    public void afterPackageAdded(AfterPackageAddedEvent event) {
+    public void afterKiePackageAdded(AfterKiePackageAddedEvent event) {
         filterLogEvent( new RuleBaseLogEvent( LogEvent.AFTER_PACKAGE_ADDED,
-                                              event.getPackage().getName(),
+                                              event.getKiePackage().getName(),
                                               null ) );
     }
 
-    public void afterPackageRemoved(AfterPackageRemovedEvent event) {
+    public void afterKiePackageRemoved(AfterKiePackageRemovedEvent event) {
         filterLogEvent( new RuleBaseLogEvent( LogEvent.AFTER_PACKAGE_REMOVED,
-                                              event.getPackage().getName(),
+                                              event.getKiePackage().getName(),
                                               null ) );
+    }
+
+    public void beforeKieBaseLocked(BeforeKieBaseLockedEvent event) {
+    }
+
+    public void afterKieBaseLocked(AfterKieBaseLockedEvent event) {
+    }
+
+    public void beforeKieBaseUnlocked(BeforeKieBaseUnlockedEvent event) {
+    }
+
+    public void afterKieBaseUnlocked(AfterKieBaseUnlockedEvent event) {
     }
 
     public void afterRuleAdded(AfterRuleAddedEvent event) {
         filterLogEvent( new RuleBaseLogEvent( LogEvent.AFTER_RULE_ADDED,
-                                              event.getPackage().getName(),
+                                              event.getRule().getPackageName(),
                                               event.getRule().getName() ) );
     }
 
     public void afterRuleRemoved(AfterRuleRemovedEvent event) {
         filterLogEvent( new RuleBaseLogEvent( LogEvent.AFTER_RULE_REMOVED,
-                                              event.getPackage().getName(),
+                                              event.getRule().getPackageName(),
                                               event.getRule().getName() ) );
     }
 
-    public void beforePackageAdded(BeforePackageAddedEvent event) {
+    public void beforeFunctionRemoved(BeforeFunctionRemovedEvent event) {
+    }
+
+    public void beforeKiePackageAdded(BeforeKiePackageAddedEvent event) {
         filterLogEvent( new RuleBaseLogEvent( LogEvent.BEFORE_PACKAGE_ADDED,
-                                              event.getPackage().getName(),
+                                              event.getKiePackage().getName(),
                                               null ) );
     }
 
-    public void beforePackageRemoved(BeforePackageRemovedEvent event) {
+    public void beforeKiePackageRemoved(BeforeKiePackageRemovedEvent event) {
         filterLogEvent( new RuleBaseLogEvent( LogEvent.BEFORE_PACKAGE_REMOVED,
-                                              event.getPackage().getName(),
+                                              event.getKiePackage().getName(),
                                               null ) );
     }
 
     public void beforeRuleAdded(BeforeRuleAddedEvent event) {
         filterLogEvent( new RuleBaseLogEvent( LogEvent.BEFORE_RULE_ADDED,
-                                              event.getPackage().getName(),
+                                              event.getRule().getPackageName(),
                                               event.getRule().getName() ) );
     }
 
     public void beforeRuleRemoved(BeforeRuleRemovedEvent event) {
         filterLogEvent( new RuleBaseLogEvent( LogEvent.BEFORE_RULE_REMOVED,
-                                              event.getPackage().getName(),
+                                              event.getRule().getPackageName(),
                                               event.getRule().getName() ) );
     }
     
     public void afterFunctionRemoved(AfterFunctionRemovedEvent event) {
-        // TODO Auto-generated method stub
-        
     }
 
-    public void afterRuleBaseLocked(AfterRuleBaseLockedEvent event) {
-        // TODO Auto-generated method stub
-        
+    public void beforeProcessAdded(BeforeProcessAddedEvent event) {
     }
 
-    public void afterRuleBaseUnlocked(AfterRuleBaseUnlockedEvent event) {
-        // TODO Auto-generated method stub
-        
+    public void afterProcessAdded(AfterProcessAddedEvent event) {
     }
 
-    public void beforeFunctionRemoved(BeforeFunctionRemovedEvent event) {
-        // TODO Auto-generated method stub
-        
+    public void beforeProcessRemoved(BeforeProcessRemovedEvent event) {
     }
 
-    public void beforeRuleBaseLocked(BeforeRuleBaseLockedEvent event) {
-        // TODO Auto-generated method stub
-        
+    public void afterProcessRemoved(AfterProcessRemovedEvent event) {
     }
-
-    public void beforeRuleBaseUnlocked(BeforeRuleBaseUnlockedEvent event) {
-        // TODO Auto-generated method stub
-        
-    }
-
-	public void beforeProcessAdded(BeforeProcessAddedEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void afterProcessAdded(AfterProcessAddedEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void beforeProcessRemoved(BeforeProcessRemovedEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void afterProcessRemoved(AfterProcessRemovedEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
 }

@@ -1,7 +1,6 @@
 package org.drools.compiler.kie.builder.impl;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.io.impl.BaseResource;
 import org.kie.api.KieServices;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
@@ -104,7 +103,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
             CompositeKnowledgeBuilder ckbuilder = kBuilder.batch();
 
             boolean modified = false;
-            PackageBuilder pkgBuilder = ((KnowledgeBuilderImpl)kBuilder).getPackageBuilder();
+            KnowledgeBuilderImpl pkgBuilder = ((KnowledgeBuilderImpl)kBuilder);
             Set<String> wrongResources = resourcesWithErrors.get(kBaseModel.getName());
             for ( String resourceName : wrongResources ) {
                 modified = pkgBuilder.removeObjectsGeneratedFromResource(new DummyResource(resourceName)) || modified;

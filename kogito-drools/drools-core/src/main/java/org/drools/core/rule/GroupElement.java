@@ -27,7 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.RuntimeDroolsException;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.spi.ObjectType;
 
 public class GroupElement extends ConditionalElement
@@ -80,7 +80,7 @@ public class GroupElement extends ConditionalElement
      */
     public void addChild(final RuleConditionElement child) {
         if ( (this.isNot() || this.isExists()) && (this.children.size() > 0) ) {
-            throw new RuntimeDroolsException( this.type.toString() + " can have only a single child element. Either a single Pattern or another CE." );
+            throw new RuntimeException( this.type.toString() + " can have only a single child element. Either a single Pattern or another CE." );
         }
         this.children.add( child );
     }
@@ -115,7 +115,7 @@ public class GroupElement extends ConditionalElement
      * @inheritDoc
      */
     public Map<String, Declaration> getOuterDeclarations() {
-        return getOuterDeclarations( Rule.DEFAULT_CONSEQUENCE_NAME );
+        return getOuterDeclarations( RuleImpl.DEFAULT_CONSEQUENCE_NAME );
     }
 
     public Map<String, Declaration> getOuterDeclarations(String consequenceName) {
@@ -408,7 +408,7 @@ public class GroupElement extends ConditionalElement
          * visible inside of an element of this type
          */
         private Map<String, Declaration> getInnerDeclarations(List<RuleConditionElement> children) {
-            return getInnerDeclarations(children, Rule.DEFAULT_CONSEQUENCE_NAME);
+            return getInnerDeclarations(children, RuleImpl.DEFAULT_CONSEQUENCE_NAME);
         }
 
         /**
@@ -468,7 +468,7 @@ public class GroupElement extends ConditionalElement
         }
 
         private boolean isConsequenceInvoker(RuleConditionElement rce, String consequenceName) {
-            if ( consequenceName == Rule.DEFAULT_CONSEQUENCE_NAME ) {
+            if ( consequenceName == RuleImpl.DEFAULT_CONSEQUENCE_NAME ) {
                 return false;
             }
             if ( rce instanceof NamedConsequenceInvoker && ((NamedConsequenceInvoker)rce).invokesConsequence(consequenceName) ) {

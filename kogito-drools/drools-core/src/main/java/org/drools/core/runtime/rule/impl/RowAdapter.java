@@ -17,19 +17,19 @@
 package org.drools.core.runtime.rule.impl;
 
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Rule;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Row;
 
 public class RowAdapter implements Row {
 
-    private Rule                 rule;
+    private RuleImpl                 rule;
     private LeftTuple            leftTuple;
     private InternalFactHandle[] factHandles;
 
-    public RowAdapter(final Rule rule,
+    public RowAdapter(final RuleImpl rule,
                       final LeftTuple leftTuple) {
         this.rule = rule;
         this.leftTuple = leftTuple;

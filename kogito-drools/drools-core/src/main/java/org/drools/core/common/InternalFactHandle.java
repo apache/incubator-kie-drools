@@ -16,7 +16,7 @@
 
 package org.drools.core.common;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.kie.api.runtime.rule.EntryPoint;

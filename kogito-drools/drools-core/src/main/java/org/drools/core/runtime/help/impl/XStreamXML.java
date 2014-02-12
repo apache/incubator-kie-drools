@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.drools.core.QueryResultsImpl;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
@@ -45,7 +46,6 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.rule.Declaration;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
-import org.drools.core.runtime.rule.impl.NativeQueryResults;
 import org.drools.core.spi.ObjectType;
 import org.kie.api.command.Command;
 import org.kie.internal.command.CommandFactory;
@@ -916,10 +916,10 @@ public class XStreamXML {
             // write out identifiers
             List<String> originalIds = Arrays.asList( results.getIdentifiers() );
             List<String> actualIds = new ArrayList();
-            if ( results instanceof NativeQueryResults ) {
+            if ( results instanceof QueryResultsImpl) {
                 for ( String identifier : originalIds ) {
                     // we don't want to marshall the query parameters
-                    Declaration declr = ((NativeQueryResults) results).getDeclarations().get( identifier );
+                    Declaration declr = ((QueryResultsImpl) results).getDeclarations(0).get( identifier );
                     ObjectType objectType = declr.getPattern().getObjectType();
                     if ( objectType instanceof ClassObjectType ) {
                         if ( ((ClassObjectType) objectType).getClassType() == DroolsQuery.class ) {

@@ -16,7 +16,6 @@
 
 package org.drools.core.base.extractors;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.BaseClassFieldReader;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalWorkingMemory;
@@ -51,7 +50,7 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
             return ((Boolean) value).booleanValue();
         }
         
-        throw new RuntimeDroolsException( "Conversion to boolean not supported from " + getExtractToClass().getName() );
+        throw new RuntimeException( "Conversion to boolean not supported from " + getExtractToClass().getName() );
     }
 
     public byte getByteValue(InternalWorkingMemory workingMemory,
@@ -63,7 +62,7 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
             return (byte) ((Character) value).charValue();
         } 
         
-        throw new RuntimeDroolsException( "Conversion to byte not supported from " +  getExtractToClass().getName());
+        throw new RuntimeException( "Conversion to byte not supported from " +  getExtractToClass().getName());
     }
 
     public char getCharValue(InternalWorkingMemory workingMemory,
@@ -75,7 +74,7 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
             return ((Character) value).charValue();
         } 
         
-        throw new RuntimeDroolsException( "Conversion to char not supported from " +  getExtractToClass().getName() );
+        throw new RuntimeException( "Conversion to char not supported from " +  getExtractToClass().getName() );
     }
 
     public double getDoubleValue(InternalWorkingMemory workingMemory,
@@ -89,7 +88,7 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
             return ((Number) value).doubleValue();
         }
         
-        throw new RuntimeDroolsException( "Conversion to double not supported from " +  getExtractToClass().getName() );
+        throw new RuntimeException( "Conversion to double not supported from " +  getExtractToClass().getName() );
     }
 
     public float getFloatValue(InternalWorkingMemory workingMemory,
@@ -103,7 +102,7 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
             return ((Number) value).floatValue();
         }
         
-        throw new RuntimeDroolsException( "Conversion to float not supported from " +  getExtractToClass().getName() );
+        throw new RuntimeException( "Conversion to float not supported from " +  getExtractToClass().getName() );
     }
 
     public int getIntValue(InternalWorkingMemory workingMemory,
@@ -117,7 +116,7 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
             return ((Number) value).intValue();
         }
         
-        throw new RuntimeDroolsException( "Conversion to int not supported from " +  getExtractToClass().getName() );
+        throw new RuntimeException( "Conversion to int not supported from " +  getExtractToClass().getName() );
     }
 
     public long getLongValue(InternalWorkingMemory workingMemory,
@@ -131,7 +130,7 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
             return ((Number) value).longValue();
         }
         
-        throw new RuntimeDroolsException( "Conversion to long not supported from " +  getExtractToClass().getName() );
+        throw new RuntimeException( "Conversion to long not supported from " +  getExtractToClass().getName() );
     }
 
     public short getShortValue(InternalWorkingMemory workingMemory,
@@ -145,7 +144,7 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
             return ((Number) value).shortValue();
         }
 
-        throw new RuntimeDroolsException( "Conversion to short not supported from " +  getExtractToClass().getName() );
+        throw new RuntimeException( "Conversion to short not supported from " +  getExtractToClass().getName() );
     }
 
     public boolean isNullValue(InternalWorkingMemory workingMemory,
@@ -163,8 +162,8 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
             return this.getClass().getMethod( getNativeReadMethodName(),
                                               new Class[]{InternalWorkingMemory.class, Object.class} );
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
-                                              e );
+            throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
+                                        e );
         }
     }
 

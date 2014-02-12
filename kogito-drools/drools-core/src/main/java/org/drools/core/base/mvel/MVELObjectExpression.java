@@ -18,10 +18,10 @@ package org.drools.core.base.mvel;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.core.rule.Package;
 import org.drools.core.spi.Activation;
 import org.drools.core.util.MVELSafeHelper;
 import org.kie.api.definition.rule.Rule;
@@ -78,7 +78,7 @@ public class MVELObjectExpression
                                                            rule, null, leftTuple, null, wm, wm.getGlobalResolver() );
         
         // do we have any functions for this namespace?
-        Package pkg = wm.getRuleBase().getPackage( "MAIN" );
+        InternalKnowledgePackage pkg = wm.getKnowledgeBase().getPackage( "MAIN" );
         if ( pkg != null ) {
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( this.id );
             factory.setNextFactory( data.getFunctionFactory() );

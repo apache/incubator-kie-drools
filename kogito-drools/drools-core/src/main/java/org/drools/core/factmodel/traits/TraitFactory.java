@@ -16,23 +16,21 @@
 
 package org.drools.core.factmodel.traits;
 
-import org.drools.core.RuleBase;
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ClassFieldAccessor;
 import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.KieComponentFactory;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;
 import org.drools.core.util.asm.ClassFieldInspector;
-import org.drools.core.rule.Package;
 import org.kie.api.KieBase;
 import org.kie.internal.KnowledgeBase;
 import org.mvel2.asm.MethodVisitor;
@@ -68,12 +66,11 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
     private Map<Class, Class<? extends CoreWrapper<?>>> wrapperCache = new HashMap<Class, Class<? extends CoreWrapper<?>>>();
 
-    private transient ReteooRuleBase ruleBase;
+    private transient InternalKnowledgeBase kBase;
     
     
-    public static void setMode( VirtualPropertyMode newMode, KieBase kBase ) {
-        RuleBase ruleBase = ((KnowledgeBaseImpl) kBase).getRuleBase();
-        KieComponentFactory rcf = ((ReteooRuleBase) ruleBase).getConfiguration().getComponentFactory();
+    public static void setMode( VirtualPropertyMode newMode, KnowledgeBase kBase ) {
+        KieComponentFactory rcf = ((InternalKnowledgeBase) kBase).getConfiguration().getComponentFactory();
         ClassBuilderFactory cbf = rcf.getClassBuilderFactory();
         rcf.getTraitFactory().mode = newMode;
         switch ( newMode ) {
@@ -91,8 +88,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
     }
 
     public static TraitFactory getTraitBuilderForKnowledgeBase( KieBase kb ) {
-        ReteooRuleBase arb = (ReteooRuleBase) ((KnowledgeBaseImpl) kb ).getRuleBase();
-        return arb.getConfiguration().getComponentFactory().getTraitFactory();
+        return ((InternalKnowledgeBase) kb).getConfiguration().getComponentFactory().getTraitFactory();
     }
 
 
@@ -141,12 +137,12 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         }
 
         T proxy = null;
-        HierarchyEncoder hier = ruleBase.getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+        HierarchyEncoder hier = kBase.getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
         try {
             switch ( mode ) {
                 case MAP    :   proxy = konst.newInstance( core, core._getDynamicProperties(), hier.getCode( trait.getName() ), hier.getBottom(), logical );
                     break;
-                case TRIPLES:   proxy = konst.newInstance( core, ruleBase.getTripleStore(), getTripleFactory(), hier.getCode( trait.getName() ), hier.getBottom(), logical );
+                case TRIPLES:   proxy = konst.newInstance( core, kBase.getTripleStore(), getTripleFactory(), hier.getCode( trait.getName() ), hier.getBottom(), logical );
                     break;
                 default     :   throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
             }
@@ -163,12 +159,12 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
     }
 
 
-    public ReteooRuleBase getRuleBase() {
-        return ruleBase;
+    public InternalKnowledgeBase getKnowledgeBase() {
+        return kBase;
     }
 
-    public void setRuleBase( ReteooRuleBase ruleBase ) {
-        this.ruleBase = ruleBase;        
+    public void setRuleBase( InternalKnowledgeBase kBase ) {
+        this.kBase = kBase;
     }
 
 
@@ -222,8 +218,8 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
 
         // get the trait classDef
-        ClassDefinition tdef = ruleBase.getTraitRegistry().getTrait( trait.getName() );
-        ClassDefinition cdef = ruleBase.getTraitRegistry().getTraitable( coreKlass.getName() );
+        ClassDefinition tdef = kBase.getTraitRegistry().getTrait( trait.getName() );
+        ClassDefinition cdef = kBase.getTraitRegistry().getTraitable( coreKlass.getName() );
 
         if ( tdef == null ) {
             if ( trait.getAnnotation( Trait.class ) != null ) {
@@ -231,41 +227,41 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
                     if ( Thing.class.isAssignableFrom( trait ) ) {
                         tdef = buildClassDefinition( trait, null );
                     } else {
-                        throw new RuntimeDroolsException( "Unable to create definition for class " + trait +
-                                                          " : trait interfaces should extend " + Thing.class.getName() + " or be DECLARED as traits explicitly" );
+                        throw new RuntimeException( "Unable to create definition for class " + trait +
+                                                    " : trait interfaces should extend " + Thing.class.getName() + " or be DECLARED as traits explicitly" );
                     }
                 } catch ( IOException e ) {
-                    throw new RuntimeDroolsException( "Unable to create definition for class " + trait + " : " + e.getMessage() );
+                    throw new RuntimeException( "Unable to create definition for class " + trait + " : " + e.getMessage() );
                 }
-                ruleBase.getTraitRegistry().addTrait( tdef );
+                kBase.getTraitRegistry().addTrait( tdef );
             } else {
-                throw new RuntimeDroolsException( "Unable to find Trait definition for class " + trait.getName() + ". It should have been DECLARED as a trait" );
+                throw new RuntimeException( "Unable to find Trait definition for class " + trait.getName() + ". It should have been DECLARED as a trait" );
             }        }
         if ( cdef == null ) {
             if ( core.getClass().getAnnotation( Traitable.class ) != null ) {
                 try {
                     cdef = buildClassDefinition( core.getClass(), core.getClass() );
                 } catch ( IOException e ) {
-                    throw new RuntimeDroolsException( "Unable to create definition for class " + coreKlass.getName() + " : " + e.getMessage() );
+                    throw new RuntimeException( "Unable to create definition for class " + coreKlass.getName() + " : " + e.getMessage() );
                 }
-                ruleBase.getTraitRegistry().addTraitable( cdef );
+                kBase.getTraitRegistry().addTraitable( cdef );
             } else {
-                throw new RuntimeDroolsException( "Unable to find Core class definition for class " + coreKlass.getName() + ". It should have been DECLARED as a trait" );
+                throw new RuntimeException( "Unable to find Core class definition for class " + coreKlass.getName() + ". It should have been DECLARED as a trait" );
             }
         }
 
         String proxyName = getProxyName( tdef, cdef );
         String wrapperName = getPropertyWrapperName( tdef, cdef );
 
-        KieComponentFactory rcf = ruleBase.getConfiguration().getComponentFactory();
+        KieComponentFactory rcf = kBase.getConfiguration().getComponentFactory();
 
 
         TraitPropertyWrapperClassBuilder propWrapperBuilder = (TraitPropertyWrapperClassBuilder) rcf.getClassBuilderFactory().getPropertyWrapperBuilder();
 
-        propWrapperBuilder.init( tdef, ruleBase.getTraitRegistry() );
+        propWrapperBuilder.init( tdef, kBase.getTraitRegistry() );
         try {
-            byte[] propWrapper = propWrapperBuilder.buildClass( cdef, ruleBase.getRootClassLoader() );
-            ruleBase.registerAndLoadTypeDefinition( wrapperName, propWrapper );
+            byte[] propWrapper = propWrapperBuilder.buildClass( cdef, kBase.getRootClassLoader() );
+            kBase.registerAndLoadTypeDefinition( wrapperName, propWrapper );
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -273,18 +269,18 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
         TraitProxyClassBuilder proxyBuilder = (TraitProxyClassBuilder) rcf.getClassBuilderFactory().getTraitProxyBuilder();
 
-        proxyBuilder.init( tdef, rcf.getBaseTraitProxyClass(), ruleBase.getTraitRegistry() );
+        proxyBuilder.init( tdef, rcf.getBaseTraitProxyClass(), kBase.getTraitRegistry() );
         try {
-            byte[] proxy = proxyBuilder.buildClass( cdef, ruleBase.getRootClassLoader() );
-            ruleBase.registerAndLoadTypeDefinition( proxyName, proxy );
+            byte[] proxy = proxyBuilder.buildClass( cdef, kBase.getRootClassLoader() );
+            kBase.registerAndLoadTypeDefinition( proxyName, proxy );
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
-            BitSet mask = ruleBase.getTraitRegistry().getFieldMask( trait.getName(), cdef.getDefinedClass().getName() );
-            Class<T> wrapperClass = (Class<T>) ruleBase.getRootClassLoader().loadClass( wrapperName );
-            Class<T> proxyClass = (Class<T>) ruleBase.getRootClassLoader().loadClass( proxyName );
+            BitSet mask = kBase.getTraitRegistry().getFieldMask( trait.getName(), cdef.getDefinedClass().getName() );
+            Class<T> wrapperClass = (Class<T>) kBase.getRootClassLoader().loadClass( wrapperName );
+            Class<T> proxyClass = (Class<T>) kBase.getRootClassLoader().loadClass( proxyName );
             return proxyClass;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -293,15 +289,15 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
     }
 
 
-    private Package getPackage(String pack) {
-        Package pkg = ruleBase.getPackage( pack );
+    private InternalKnowledgePackage getPackage(String pack) {
+        InternalKnowledgePackage pkg = kBase.getPackage( pack );
         if ( pkg == null ) {
-            pkg = new Package( pack );
+            pkg = new KnowledgePackageImpl( pack );
             JavaDialectRuntimeData data = new JavaDialectRuntimeData();
             pkg.getDialectRuntimeRegistry().setDialectData( "java", data );
             data.onAdd(pkg.getDialectRuntimeRegistry(),
-                    ruleBase.getRootClassLoader());
-            ruleBase.addPackages( Arrays.asList(pkg) );
+                       kBase.getRootClassLoader());
+            kBase.addPackages( Arrays.asList(pkg) );
         }
         return pkg;
 
@@ -341,7 +337,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         }
 
         try {
-            ruleBase.getTraitRegistry().addTraitable( buildClassDefinition( coreKlazz, wrapperClass ) );
+            kBase.getTraitRegistry().addTraitable( buildClassDefinition( coreKlazz, wrapperClass ) );
             return wrapperClass != null ? wrapperClass.newInstance() : null;
         } catch (InstantiationException e) {
             return null;
@@ -356,11 +352,11 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
     private ClassDefinition buildClassDefinition(Class<?> klazz, Class<?> wrapperClass) throws IOException {
         ClassFieldInspector inspector = new ClassFieldInspector( klazz );
 
-        Package traitPackage = ruleBase.getPackagesMap().get( pack );
+        InternalKnowledgePackage traitPackage = kBase.getPackagesMap().get( pack );
         if ( traitPackage == null ) {
-            traitPackage = new Package( pack );
-            traitPackage.setClassFieldAccessorCache( ruleBase.getClassFieldAccessorCache() );
-            ruleBase.getPackagesMap().put( pack, traitPackage );
+            traitPackage = new KnowledgePackageImpl( pack );
+            traitPackage.setClassFieldAccessorCache( kBase.getClassFieldAccessorCache() );
+            kBase.getPackagesMap().put( pack, traitPackage );
         }
         ClassFieldAccessorStore store = traitPackage.getClassFieldAccessorStore();
 
@@ -409,8 +405,8 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         String wrapperName = coreName + "Wrapper";
 
         try {
-            byte[] wrapper = new TraitCoreWrapperClassBuilderImpl().buildClass( coreDef, ruleBase.getRootClassLoader() );
-            ruleBase.registerAndLoadTypeDefinition( wrapperName, wrapper );
+            byte[] wrapper = new TraitCoreWrapperClassBuilderImpl().buildClass( coreDef, kBase.getRootClassLoader() );
+            kBase.registerAndLoadTypeDefinition( wrapperName, wrapper );
 //            JavaDialectRuntimeData data = ((JavaDialectRuntimeData) getPackage( pack ).getDialectRuntimeRegistry().
 //                getDialectData( "java" ));
 
@@ -424,7 +420,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
             e.printStackTrace();
         }
 
-        Class<CoreWrapper<K>> wrapperClass = (Class<CoreWrapper<K>>) ruleBase.getRootClassLoader().loadClass( wrapperName );
+        Class<CoreWrapper<K>> wrapperClass = (Class<CoreWrapper<K>>) kBase.getRootClassLoader().loadClass( wrapperName );
         return wrapperClass;
     }
 
@@ -540,7 +536,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
     }
 
     public TripleFactory getTripleFactory() {
-        return ruleBase.getConfiguration().getComponentFactory().getTripleFactory();
+        return kBase.getConfiguration().getComponentFactory().getTripleFactory();
     }
 
 

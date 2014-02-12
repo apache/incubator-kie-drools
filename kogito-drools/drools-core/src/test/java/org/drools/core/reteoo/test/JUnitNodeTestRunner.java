@@ -19,7 +19,6 @@ package org.drools.core.reteoo.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.reteoo.test.dsl.NodeTestDef;
 import org.drools.core.reteoo.test.dsl.NodeTestCase;
 import org.junit.runner.Description;
@@ -41,7 +40,7 @@ public class JUnitNodeTestRunner extends Runner {
             testCases = ntsuite.getTestCases();
         } catch ( Exception e ) {
             e.printStackTrace();
-            throw new RuntimeDroolsException( "Error instantiating node test runner: "+e, e );
+            throw new RuntimeException( "Error instantiating node test runner: "+e, e );
         }
         this.descr = Description.createSuiteDescription( "Node test case suite" );
 

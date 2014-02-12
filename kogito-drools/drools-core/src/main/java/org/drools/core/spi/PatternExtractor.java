@@ -16,7 +16,6 @@
 
 package org.drools.core.spi;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.BaseObjectClassFieldReader;
 import org.drools.core.common.InternalWorkingMemory;
@@ -100,8 +99,8 @@ public class PatternExtractor extends BaseObjectClassFieldReader
             return this.getClass().getDeclaredMethod( "getValue",
                                                       new Class[]{InternalWorkingMemory.class, Object.class} );
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
-                                              e );
+            throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
+                                        e );
         }
     }
 

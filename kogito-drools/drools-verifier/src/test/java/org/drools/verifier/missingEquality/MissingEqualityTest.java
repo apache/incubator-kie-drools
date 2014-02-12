@@ -16,7 +16,6 @@
 
 package org.drools.verifier.missingEquality;
 
-import org.drools.core.StatelessSession;
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.components.LiteralRestriction;
@@ -28,6 +27,7 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 
 import java.util.*;
 
@@ -38,11 +38,7 @@ public class MissingEqualityTest extends TestBaseOld {
 
     @Test
     public void testMissingEqualityInLiteralRestrictions() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass()
-                                                           .getResourceAsStream("MissingEquality.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-                "Missing restriction in LiteralRestrictions"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("MissingEquality.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
@@ -51,7 +47,10 @@ public class MissingEqualityTest extends TestBaseOld {
 
         session.setGlobal("result", result);
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Missing restriction in LiteralRestrictions"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(
                 Severity.WARNING).iterator();
@@ -79,11 +78,7 @@ public class MissingEqualityTest extends TestBaseOld {
 
     @Test
     public void testMissingEqualityInVariableRestrictions() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass()
-                                                           .getResourceAsStream("MissingEquality.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-                "Missing restriction in VariableRestrictions, equal operator"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("MissingEquality.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
@@ -100,7 +95,10 @@ public class MissingEqualityTest extends TestBaseOld {
         //            }
         //        }
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Missing restriction in VariableRestrictions, equal operator"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(
                 Severity.WARNING).iterator();
@@ -127,11 +125,7 @@ public class MissingEqualityTest extends TestBaseOld {
 
     @Test
     public void testMissingEqualityInVariableRestrictions2() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass()
-                                                           .getResourceAsStream("MissingEquality.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-                "Missing restriction in VariableRestrictions, unequal operator"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("MissingEquality.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
@@ -148,7 +142,10 @@ public class MissingEqualityTest extends TestBaseOld {
         //            }
         //        }
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Missing restriction in VariableRestrictions, unequal operator"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(
                 Severity.WARNING).iterator();
@@ -175,11 +172,7 @@ public class MissingEqualityTest extends TestBaseOld {
 
     @Test
     public void testMissingEqualityInVariableRestrictions3() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass()
-                                                           .getResourceAsStream("MissingEquality.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-                "Missing restriction in VariableRestrictions, custom operator"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("MissingEquality.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
@@ -196,7 +189,10 @@ public class MissingEqualityTest extends TestBaseOld {
         //            }
         //        }
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Missing restriction in VariableRestrictions, custom operator"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(
                 Severity.WARNING).iterator();

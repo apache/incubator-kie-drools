@@ -146,7 +146,7 @@ public class JavaAccumulateBuilder
             AccumulateFunction function = context.getConfiguration().getAccumulateFunction( fc.getFunction() );
             if( function == null ) {
                 // might have been imported in the package
-                function = context.getPackageBuilder().getPackage().getAccumulateFunctions().get(fc.getFunction());
+                function = context.getKnowledgeBuilder().getPackage().getAccumulateFunctions().get(fc.getFunction());
             }
             if ( function == null ) {
                 context.addError( new DescrBuildError( accumDescr,
@@ -177,7 +177,7 @@ public class JavaAccumulateBuilder
                                                                                                         accumDescr,
                                                                                                         fc.getParams().length > 0 ? fc.getParams()[0] : "\"\"",
                                                                                                         new BoundIdentifiers( declCls,
-                                                                                                                              context.getPackageBuilder().getGlobals() ) );
+                                                                                                                              context.getKnowledgeBuilder().getGlobals() ) );
 
             final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
 
@@ -275,7 +275,7 @@ public class JavaAccumulateBuilder
         accumDescr.setClassName( className );
 
         BoundIdentifiers available = new BoundIdentifiers( declCls,
-                                                           context.getPackageBuilder().getGlobals() );
+                                                           context.getKnowledgeBuilder().getGlobals() );
 
         final JavaAnalysisResult initCodeAnalysis = (JavaAnalysisResult) context.getDialect().analyzeBlock( context,
                                                                                                             accumDescr,

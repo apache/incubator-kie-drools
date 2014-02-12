@@ -20,7 +20,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.Visitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,8 +55,7 @@ public abstract class ReflectiveVisitor
                                (Object[]) null );
             }
         } catch ( Exception e ) {
-            throw new RuntimeDroolsException( e.toString() + " : " + object,
-                                              e);
+            throw new RuntimeException( e.toString() + " : " + object, e);
         }
     }
 
@@ -102,8 +100,7 @@ public abstract class ReflectiveVisitor
             } catch ( final Exception e ) {
                 // Shouldn't happen as long as all Visitors extend this class
                 // and this class continues to implement visitObject(Object).
-                throw new RuntimeDroolsException( e.toString() + " : " + clazz,
-                                                  e.getCause() );
+                throw new RuntimeException( e.toString() + " : " + clazz, e.getCause() );
             }
         }
         addMethodToCache(clazz, method);

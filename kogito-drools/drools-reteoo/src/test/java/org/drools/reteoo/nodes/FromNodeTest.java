@@ -16,28 +16,27 @@
 
 package org.drools.reteoo.nodes;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.FieldFactory;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.SingleBetaConstraints;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.ReteooBuilder;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.reteoo.FromNode.FromMemory;
@@ -54,6 +53,7 @@ import org.drools.core.spi.Tuple;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.internal.KnowledgeBaseFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -69,7 +69,7 @@ import static org.junit.Assert.assertSame;
 @Ignore
 public class FromNodeTest {
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
-    private ReteooRuleBase ruleBase;
+    private InternalKnowledgeBase kBase;
     private BuildContext              buildContext;
     private PropagationContextFactory pctxFactory;
 
@@ -78,17 +78,16 @@ public class FromNodeTest {
         store.setClassFieldAccessorCache(new ClassFieldAccessorCache(Thread.currentThread().getContextClassLoader()));
         store.setEagerWire(true);
 
-        ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        buildContext = new BuildContext(ruleBase,
+        this.kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        buildContext = new BuildContext(kBase,
                                         new ReteooBuilder.IdGenerator());
-        pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
     }
 
     @Test
     public void testAlphaNode() {
         final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
-        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory(1,
-                                                                              ruleBase);
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl(1, kBase);
 
         final ClassFieldReader extractor = store.getReader(Cheese.class,
                                                            "type",
@@ -191,8 +190,7 @@ public class FromNodeTest {
     public void testBetaNode() {
         final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
 
-        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1, (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase() );
 
         final ClassFieldReader priceExtractor = store.getReader( Cheese.class,
                                                                  "price",
@@ -307,8 +305,7 @@ public class FromNodeTest {
     @Test
     public void testRestract() {
         final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
-        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1, (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase() );
         final ClassFieldReader extractor = store.getReader( Cheese.class,
                                                             "type",
                                                             getClass().getClassLoader() );
@@ -385,8 +382,7 @@ public class FromNodeTest {
     @Test
     public void testAssignable() {
         final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
-        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
-                                                                           ruleBase );
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1, kBase );
 
 
         final List list = new ArrayList();

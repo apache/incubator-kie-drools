@@ -25,7 +25,6 @@ import java.util.PriorityQueue;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.WorkingMemoryAction;
@@ -188,7 +187,7 @@ public class SlidingTimeWindow
                 queue.queue.remove();
                 if( handle.isValid()) {
                     // if not expired yet, expire it
-                    PropagationContextFactory pctxFactory = ((InternalRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
+                    PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
                     final PropagationContext expiresPctx = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.EXPIRATION,
                                                                                                 null, null, handle);
                     ObjectTypeNode.doRetractObject(handle, expiresPctx, workingMemory);

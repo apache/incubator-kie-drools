@@ -21,6 +21,7 @@ package org.drools.core.reteoo.builder;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.ConditionalBranchEvaluator;
@@ -46,7 +47,6 @@ import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.From;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.QueryElement;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.ObjectType;
@@ -72,7 +72,7 @@ public interface NodeFactory {
 
     public TerminalNode buildTerminalNode( int id,
                                            LeftTupleSource source,
-                                           Rule rule,
+                                           RuleImpl rule,
                                            GroupElement subrule,
                                            int subruleIndex,
                                            BuildContext context );
@@ -117,7 +117,7 @@ public interface NodeFactory {
 
     public TerminalNode buildQueryTerminalNode( int id,
                                                 LeftTupleSource source,
-                                                Rule rule,
+                                                RuleImpl rule,
                                                 GroupElement subrule,
                                                 int subruleIndex,
                                                 BuildContext context );

@@ -1,9 +1,11 @@
 package org.drools.compiler.compiler;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.errors.ErrorHandler;
+import org.drools.compiler.builder.impl.errors.SrcErrorHandler;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
-import org.drools.compiler.commons.jci.compilers.JavaCompilerSettings;
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
 import org.drools.compiler.commons.jci.stores.ResourceStore;
@@ -11,9 +13,7 @@ import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.core.common.ProjectClassLoader;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +24,8 @@ public class ProjectJavaCompiler {
 
     private final JavaCompiler compiler;
 
-    public ProjectJavaCompiler(PackageBuilder pkgBuilder) {
-        this((JavaDialectConfiguration) pkgBuilder.getPackageBuilderConfiguration().getDialectConfiguration( "java" ));
+    public ProjectJavaCompiler(KnowledgeBuilderConfigurationImpl pkgConf) {
+        this((JavaDialectConfiguration) pkgConf.getDialectConfiguration("java"));
     }
 
     public ProjectJavaCompiler(JavaDialectConfiguration configuration) {
@@ -50,19 +50,19 @@ public class ProjectJavaCompiler {
                                                      projectClassLoader );
 
         if ( result.getErrors().length > 0 ) {
-            Map<String, PackageBuilder.ErrorHandler> errorHandlerMap = new HashMap<String, PackageBuilder.ErrorHandler>();
+            Map<String, ErrorHandler> errorHandlerMap = new HashMap<String, ErrorHandler>();
 
             for ( int i = 0; i < result.getErrors().length; i++ ) {
                 final CompilationProblem err = result.getErrors()[i];
-                PackageBuilder.ErrorHandler handler = errorHandlerMap.get( err.getFileName() );
+                ErrorHandler handler = errorHandlerMap.get( err.getFileName() );
                 if (handler == null) {
-                    handler = new PackageBuilder.SrcErrorHandler("Src compile error");
+                    handler = new SrcErrorHandler("Src compile error");
                     errorHandlerMap.put(err.getFileName(), handler);
                 }
                 handler.addError( err );
             }
 
-            for (PackageBuilder.ErrorHandler handler : errorHandlerMap.values()) {
+            for (ErrorHandler handler : errorHandlerMap.values()) {
                 if (handler.isInError()) {
                     results.add(handler.getError());
                 }

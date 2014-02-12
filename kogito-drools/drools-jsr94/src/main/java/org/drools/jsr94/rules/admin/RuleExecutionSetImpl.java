@@ -17,25 +17,22 @@
 package org.drools.jsr94.rules.admin;
 
 
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.jsr94.rules.Constants;
+import org.drools.jsr94.rules.Jsr94FactHandleFactory;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
+import org.kie.internal.KnowledgeBaseFactory;
+
+import javax.rules.ObjectFilter;
+import javax.rules.admin.RuleExecutionSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.rules.ObjectFilter;
-import javax.rules.admin.RuleExecutionSet;
-
-import org.drools.core.IntegrationException;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleIntegrationException;
-import org.drools.core.SessionConfiguration;
-import org.drools.core.StatefulSession;
-import org.drools.core.StatelessSession;
-import org.drools.jsr94.rules.Constants;
-import org.drools.jsr94.rules.Jsr94FactHandleFactory;
-import org.drools.core.rule.Package;
-import org.drools.core.rule.Rule;
 
 /**
  * The Drools implementation of the <code>RuleExecutionSet</code> interface
@@ -69,13 +66,13 @@ public class RuleExecutionSetImpl
      * The <code>RuleBase</code> associated with this
      * <code>RuleExecutionSet</code>.
      */
-    private RuleBase          ruleBase;
+    private InternalKnowledgeBase kBase;
 
     /**
      * The <code>Package</code> associated with this
      * <code>RuleExecutionSet</code>.
      */
-    private Package           pkg;
+    private InternalKnowledgePackage pkg;
 
     /**
      * The default ObjectFilter class name
@@ -89,20 +86,13 @@ public class RuleExecutionSetImpl
      * <code>RuleExecutionSetImpl</code> corresponds with an
      * <code>org.kie.Package</code> object.
      *
-     * @param package The <code>Package</code> to associate with this
+     * @param pkg The <code>Package</code> to associate with this
      *        <code>RuleExecutionSet</code>.
      * @param properties A <code>Map</code> of user-defined and
      *        Drools-defined properties. May be <code>null</code>.
-     *
-     * @throws RuleIntegrationException if an error occurs integrating
-     *         a <code>Rule</code> or <code>Package</code>
-     *         into the <code>RuleBase</code>
-     * @throws RuleSetIntegrationException if an error occurs integrating
-     *         a <code>Rule</code> or <code>Package</code>
-     *         into the <code>RuleBase</code>
      */
-    RuleExecutionSetImpl(final Package pkg,
-                         final Map properties) throws IntegrationException {
+    RuleExecutionSetImpl(final InternalKnowledgePackage pkg,
+                         final Map properties) {
         if ( null == properties ) {
             this.properties = new HashMap();
         } else {
@@ -116,10 +106,10 @@ public class RuleExecutionSetImpl
             config =  new RuleBaseConfiguration();
         }
         config.getComponentFactory().setHandleFactoryProvider(new Jsr94FactHandleFactory());
-        org.drools.core.reteoo.ReteooRuleBase ruleBase = new org.drools.core.reteoo.ReteooRuleBase( null, config);
-        ruleBase.addPackage( pkg );
+        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(config);
+        kBase.addPackage( pkg );
 
-        this.ruleBase = ruleBase;
+        this.kBase = kBase;
     }
 
     /**
@@ -159,8 +149,8 @@ public class RuleExecutionSetImpl
      *
      * @return A new WorkingMemory object.
      */
-    public StatefulSession newStatefulSession(SessionConfiguration conf) {
-        return this.ruleBase.newStatefulSession(conf, null);
+    public KieSession newStatefulSession(SessionConfiguration conf) {
+        return this.kBase.newKieSession(conf, null);
     }
     
     /**
@@ -168,8 +158,8 @@ public class RuleExecutionSetImpl
      *
      * @return A new WorkingMemory object.
      */
-    public StatelessSession newStatelessSession() {
-        return this.ruleBase.newStatelessSession();
+    public StatelessKieSession newStatelessSession() {
+        return this.kBase.newStatelessKieSession();
     }
 
     // JSR94 interface methods start here -------------------------------------
@@ -251,9 +241,8 @@ public class RuleExecutionSetImpl
     public List getRules() {
         final List jsr94Rules = new ArrayList();
 
-        final Rule[] rules = (this.pkg.getRules());
-        for ( int i = 0; i < rules.length; ++i ) {
-            jsr94Rules.add( new RuleImpl( rules[i] ) );
+        for ( org.kie.api.definition.rule.Rule rule : pkg.getRules() ) {
+            jsr94Rules.add( new RuleImpl( (org.drools.core.definitions.rule.impl.RuleImpl)rule ) );
         }
 
         return jsr94Rules;

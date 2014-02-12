@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.spi.FieldValue;
 
 public class LongFieldImpl
@@ -59,7 +58,7 @@ public class LongFieldImpl
     }
 
     public boolean getBooleanValue() {
-        throw new RuntimeDroolsException( "Conversion to boolean not supported for type long" );
+        throw new RuntimeException( "Conversion to boolean not supported for type long" );
     }
 
     public byte getByteValue() {

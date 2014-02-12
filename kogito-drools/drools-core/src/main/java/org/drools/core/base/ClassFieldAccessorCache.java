@@ -22,7 +22,6 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.util.asm.ClassFieldInspector;
 
 public class ClassFieldAccessorCache {
@@ -121,7 +120,7 @@ public class ClassFieldAccessorCache {
         try {
             return this.classLoader.loadClass( className );
         } catch ( ClassNotFoundException e ) {
-            throw new RuntimeDroolsException( "Unable to resolve class '" + className + "'" );
+            throw new RuntimeException( "Unable to resolve class '" + className + "'" );
         }
     }
 
@@ -151,7 +150,7 @@ public class ClassFieldAccessorCache {
 
         public CacheEntry(ClassLoader parentClassLoader) {
             if ( parentClassLoader == null ) {
-                throw new RuntimeDroolsException( "ClassFieldAccessorFactory cannot have a null parent ClassLoader" );
+                throw new RuntimeException( "ClassFieldAccessorFactory cannot have a null parent ClassLoader" );
             }
             this.byteArrayClassLoader = new ByteArrayClassLoader( parentClassLoader );
         }

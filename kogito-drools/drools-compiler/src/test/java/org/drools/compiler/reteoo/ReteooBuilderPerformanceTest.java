@@ -3,18 +3,19 @@ package org.drools.compiler.reteoo;
 import java.io.IOException;
 import java.io.StringReader;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.ReteooBuilder;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.compiler.integrationtests.LargeRuleBase;
-import org.drools.core.rule.Package;
-import org.drools.core.rule.Rule;
+import org.kie.api.definition.rule.Rule;
 
 /**
  * Created by IntelliJ IDEA. User: SG0521861 Date: Mar 20, 2008 Time: 2:36:47 PM To change this template use File |
@@ -30,14 +31,14 @@ public class ReteooBuilderPerformanceTest {
         addRules(generatePackage(RULE_COUNT));
     }
 
-    private static void addRules(Package pkg) {
+    private static void addRules(InternalKnowledgePackage pkg) {
         ReteooBuilder[]  reteBuilders   = getReteBuilders(RETEBUILDER_COUNT);
 
         System.out.println("Adding rules to ReteBuilder");
         long    start   = System.currentTimeMillis();
         for (ReteooBuilder reteBuilder : reteBuilders) {
             for (Rule rule : pkg.getRules())
-                reteBuilder.addRule(rule);
+                reteBuilder.addRule((RuleImpl)rule);
         }
         System.out.println("Added "+RULE_COUNT+" rules to each ReteBuilder's in "+
                            format(System.currentTimeMillis()-start));
@@ -49,16 +50,16 @@ public class ReteooBuilderPerformanceTest {
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
 
         for (int i = 0; i < reteBuilders.length; i++) {
-            reteBuilders[i] = new ReteooBuilder(new ReteooRuleBase( "id1", conf ));
+            reteBuilders[i] = new ReteooBuilder(new KnowledgeBaseImpl( "id1", conf ));
         }
         return reteBuilders;
     }
 
-    private static Package generatePackage(int ruleCount) throws DroolsParserException {
+    private static InternalKnowledgePackage generatePackage(int ruleCount) throws DroolsParserException {
         StringReader    reader  = new StringReader(generateRules(ruleCount));
         
         System.out.println("Generating packages");
-        PackageBuilder pkgBuilder = new PackageBuilder();
+        KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl();
         try {
             pkgBuilder.addPackageFromDrl( reader );
         } catch ( IOException e ) { 

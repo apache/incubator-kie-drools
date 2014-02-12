@@ -17,9 +17,8 @@ package org.drools.core.management;
 
 import java.util.List;
 
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
@@ -39,7 +38,7 @@ public class DroolsManagementAgentBean {
         instance = DroolsManagementAgent.getInstance();
         if (knowledgeBases!= null) {
             for (KnowledgeBase kbase : knowledgeBases) {
-                instance.registerKnowledgeBase((ReteooRuleBase) ((KnowledgeBaseImpl)kbase).getRuleBase());
+                instance.registerKnowledgeBase((InternalKnowledgeBase) kbase);
             }
         }
         if (statefulKnowledgeSessions!=null) {

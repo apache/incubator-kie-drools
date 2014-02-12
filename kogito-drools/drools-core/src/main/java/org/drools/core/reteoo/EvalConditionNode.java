@@ -63,7 +63,7 @@ public class EvalConditionNode extends LeftTupleSource
                              final BuildContext context) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
+               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation() );
         this.condition = eval;
         setLeftTupleSource(tupleSource);
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();

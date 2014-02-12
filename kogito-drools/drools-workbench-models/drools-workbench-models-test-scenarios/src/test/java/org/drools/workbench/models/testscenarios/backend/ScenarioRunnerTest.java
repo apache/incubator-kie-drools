@@ -16,20 +16,11 @@
 
 package org.drools.workbench.models.testscenarios.backend;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-
 import org.drools.core.base.ClassTypeResolver;
 import org.drools.core.base.TypeResolver;
-import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.reteoo.ReteooRuleBase;
-import org.drools.core.runtime.rule.impl.RuleFlowGroupImpl;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.testscenarios.shared.ActivateRuleFlowGroup;
@@ -48,7 +39,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static java.util.Arrays.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+
+import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -67,17 +65,9 @@ public class ScenarioRunnerTest extends RuleUnit {
                 knowledgeBase
         );
 
-        InternalRuleBase internalRuleBase = mock(InternalRuleBase.class);
-        when(
-                knowledgeBase.getRuleBase()
-        ).thenReturn(
-                internalRuleBase
-        );
-
         ProjectClassLoader classLoader = ProjectClassLoader.createProjectClassLoader();
-
         when(
-                internalRuleBase.getRootClassLoader()
+                knowledgeBase.getRootClassLoader()
         ).thenReturn(
                 classLoader
         );
@@ -571,7 +561,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         scenario.getFixtures().addAll(Arrays.asList(assertions));
 
         KieSession ksession = getKieSession("test_rules3.drl");
-        ClassLoader cl = ((ReteooRuleBase) ((KnowledgeBaseImpl) ksession.getKieBase()).getRuleBase()).getRootClassLoader();
+        ClassLoader cl = ((KnowledgeBaseImpl) ksession.getKieBase()).getRootClassLoader();
 
         HashSet<String> imports = new HashSet<String>();
         imports.add("foo.bar.*");
@@ -629,7 +619,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         scenario.getFixtures().addAll(Arrays.asList(assertions));
 
         KieSession ksession = getKieSession("rule_flow_actication.drl");
-        ClassLoader classLoader = ((ReteooRuleBase) ((KnowledgeBaseImpl) ksession.getKieBase()).getRuleBase()).getRootClassLoader();
+        ClassLoader classLoader = ((KnowledgeBaseImpl) ksession.getKieBase()).getRootClassLoader();
 
         HashSet<String> imports = new HashSet<String>();
         imports.add("foo.bar.*");
@@ -665,7 +655,7 @@ public class ScenarioRunnerTest extends RuleUnit {
                 false), new ActivateRuleFlowGroup("asdf")};
         scenario.getFixtures().addAll(Arrays.asList(given));
         scenario.getFixtures().add(executionTrace);
-        ((RuleFlowGroupImpl) ksession.getAgenda().getRuleFlowGroup("asdf")).setAutoDeactivate(false);
+        ((InternalAgendaGroup)ksession.getAgenda().getRuleFlowGroup( "asdf" )).setAutoDeactivate( false );
         scenarioRunner = new ScenarioRunner(ksession);
 
         scenarioRunner.run(scenario);

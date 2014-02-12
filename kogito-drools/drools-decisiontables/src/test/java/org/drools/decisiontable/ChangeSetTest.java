@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.drools.core.util.FileManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -28,27 +27,6 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 
 public class ChangeSetTest {
-    
-    FileManager fileManager;
-    
-    @Before
-    public void setUp() throws Exception {
-        fileManager = new FileManager();
-        fileManager.setUp();
-        ResourceChangeScannerConfiguration config = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
-        config.setProperty("drools.resource.scanner.interval", "1");
-        ResourceFactory.getResourceChangeScannerService().configure(config);
-        ResourceFactory.getResourceChangeNotifierService().start();
-        ResourceFactory.getResourceChangeScannerService().start();
-    }
-    
-
-    @After
-    public void tearDown() throws Exception {
-        fileManager.tearDown();
-        ResourceFactory.getResourceChangeNotifierService().stop();
-        ResourceFactory.getResourceChangeScannerService().stop();
-    }
     
     @Test
     public void testIntegration() {

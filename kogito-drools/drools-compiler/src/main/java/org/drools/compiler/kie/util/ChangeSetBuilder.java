@@ -23,8 +23,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DrlParser;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
@@ -182,7 +182,7 @@ public class ChangeSetBuilder {
 
     private String getDefaultPackageName() {
         if (defaultPackageName == null) {
-            defaultPackageName = new PackageBuilderConfiguration().getDefaultPackageName();
+            defaultPackageName = new KnowledgeBuilderConfigurationImpl().getDefaultPackageName();
         }
         return defaultPackageName;
     }

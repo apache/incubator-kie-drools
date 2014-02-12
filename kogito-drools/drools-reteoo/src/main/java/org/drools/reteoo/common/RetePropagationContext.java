@@ -16,16 +16,17 @@
 
 package org.drools.reteoo.common;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.WorkingMemoryAction;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.*;
-import org.drools.core.rule.Package;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.BitMaskUtil;
@@ -45,7 +46,7 @@ public class RetePropagationContext
 
     private int                             type;
 
-    private Rule                            rule;
+    private RuleImpl                        rule;
 
     private TerminalNode                    terminalNodeOrigin;
 
@@ -81,7 +82,7 @@ public class RetePropagationContext
 
     public RetePropagationContext(final long number,
                                   final int type,
-                                  final Rule rule,
+                                  final RuleImpl rule,
                                   final LeftTuple leftTuple,
                                   final InternalFactHandle factHandle) {
         this( number,
@@ -98,7 +99,7 @@ public class RetePropagationContext
 
     public RetePropagationContext(final long number,
                                   final int type,
-                                  final Rule rule,
+                                  final RuleImpl rule,
                                   final LeftTuple leftTuple,
                                   final InternalFactHandle factHandle,
                                   final EntryPointId entryPoint) {
@@ -115,7 +116,7 @@ public class RetePropagationContext
 
     public RetePropagationContext(final long number,
                                   final int type,
-                                  final Rule rule,
+                                  final RuleImpl rule,
                                   final LeftTuple leftTuple,
                                   final InternalFactHandle factHandle,
                                   final int activeActivations,
@@ -135,7 +136,7 @@ public class RetePropagationContext
 
     public RetePropagationContext(final long number,
                                   final int type,
-                                  final Rule rule,
+                                  final RuleImpl rule,
                                   final LeftTuple leftTuple,
                                   final InternalFactHandle factHandle,
                                   final EntryPointId entryPoint,
@@ -153,7 +154,7 @@ public class RetePropagationContext
 
     public RetePropagationContext(final long number,
                                   final int type,
-                                  final Rule rule,
+                                  final RuleImpl rule,
                                   final LeftTuple leftTuple,
                                   final InternalFactHandle factHandle,
                                   final EntryPointId entryPoint,
@@ -178,7 +179,7 @@ public class RetePropagationContext
                                             ClassNotFoundException {
         this.type = in.readInt();
         this.propagationNumber = in.readLong();
-        this.rule = (Rule) in.readObject();
+        this.rule = (RuleImpl) in.readObject();
         this.leftTuple = (LeftTuple) in.readObject();
         this.entryPoint = (EntryPointId) in.readObject();
         this.originOffset = in.readInt();
@@ -208,7 +209,7 @@ public class RetePropagationContext
      *
      * @see org.kie.reteoo.PropagationContext#getRuleOrigin()
      */
-    public Rule getRuleOrigin() {
+    public RuleImpl getRuleOrigin() {
         return this.rule;
     }
 
@@ -406,7 +407,7 @@ public class RetePropagationContext
         if ( pkgName.equals( "java.lang" ) || pkgName.equals( "java.util" ) ) {
             return Collections.EMPTY_LIST;
         }
-        Package pkg = workingMemory.getRuleBase().getPackage( pkgName );
+        InternalKnowledgePackage pkg = workingMemory.getKnowledgeBase().getPackage( pkgName );
         TypeDeclaration tdecl =  pkg != null ? pkg.getTypeDeclaration( classType ) : null;
         return tdecl != null ? tdecl.getSettableProperties() : Collections.EMPTY_LIST;
     }

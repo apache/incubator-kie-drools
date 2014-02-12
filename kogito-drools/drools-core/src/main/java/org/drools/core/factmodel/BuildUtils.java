@@ -16,7 +16,6 @@
 
 package org.drools.core.factmodel;
 
-import org.drools.core.RuntimeDroolsException;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 
@@ -301,7 +300,7 @@ public class BuildUtils {
         } else if ( "java.lang.Boolean".equals( type ) || "Boolean".equals( type )) {
             return getInternalType("boolean");
         } else {
-            throw new RuntimeDroolsException("Unable to recognize boxed primitive type " + type);
+            throw new RuntimeException("Unable to recognize boxed primitive type " + type);
         }
     }
 
@@ -326,7 +325,7 @@ public class BuildUtils {
         } else if ( "boolean".equals( type ) ) {
             return "java.lang.Boolean";
         } else {
-            throw new RuntimeDroolsException("Unable to recognize primitive type " + type);
+            throw new RuntimeException("Unable to recognize primitive type " + type);
         }
     }
 
@@ -530,7 +529,7 @@ public class BuildUtils {
         } else if ( "java.lang.Short".equals( type ) || "Short".equals( type )) {
             return "shortValue";
         } else {
-            throw new RuntimeDroolsException("Not a numeric type " + type);
+            throw new RuntimeException("Not a numeric type " + type);
         }
 
     }
@@ -573,7 +572,7 @@ public class BuildUtils {
             } else if ( "boolean".equals( type ) ) {
                 return "writeBoolean";
             } else {
-                throw new RuntimeDroolsException( "No serialization method found for " + type );
+                throw new RuntimeException( "No serialization method found for " + type );
             }
         } else {
             return "writeObject";
@@ -599,7 +598,7 @@ public class BuildUtils {
                 } else if ( "boolean".equals( type ) ) {
                     return "readBoolean";
                 } else {
-                    throw new RuntimeDroolsException( "No serialization method found for " + type );
+                    throw new RuntimeException( "No serialization method found for " + type );
                 }
             } else {
                 return "readObject";

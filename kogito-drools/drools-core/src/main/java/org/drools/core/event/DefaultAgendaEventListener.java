@@ -16,7 +16,11 @@
 
 package org.drools.core.event;
 
-import org.drools.core.WorkingMemory;
+import org.kie.api.event.rule.*;
+import org.kie.api.event.rule.AgendaGroupPoppedEvent;
+import org.kie.api.event.rule.AgendaGroupPushedEvent;
+import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 
 public class DefaultAgendaEventListener
     implements
@@ -25,53 +29,43 @@ public class DefaultAgendaEventListener
         // intentionally left blank
     }
 
-    public void activationCreated(final ActivationCreatedEvent event,
-                                  final WorkingMemory workingMemory) {
+    public void matchCreated(MatchCreatedEvent event) {
         // intentionally left blank
     }
 
-    public void activationCancelled(final ActivationCancelledEvent event,
-                                    final WorkingMemory workingMemory) {
+    public void matchCancelled(MatchCancelledEvent event) {
         // intentionally left blank
     }
 
-    public void beforeActivationFired(final BeforeActivationFiredEvent event,
-                                      final WorkingMemory workingMemory) {
+    public void beforeMatchFired(BeforeMatchFiredEvent event) {
         // intentionally left blank
     }
 
-    public void afterActivationFired(final AfterActivationFiredEvent event,
-                                     final WorkingMemory workingMemory) {
+    public void afterMatchFired(AfterMatchFiredEvent event) {
         // intentionally left blank
     }
 
-    public void agendaGroupPopped(final AgendaGroupPoppedEvent event,
-                                  final WorkingMemory workingMemory) {
+    public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
         // intentionally left blank
     }
 
-    public void agendaGroupPushed(final AgendaGroupPushedEvent event,
-                                  final WorkingMemory workingMemory) {
+    public void agendaGroupPushed(AgendaGroupPushedEvent event) {
         // intentionally left blank
     }
 
-    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-                                            WorkingMemory workingMemory) {
+    public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
         // intentionally left blank
     }
 
-    public void afterRuleFlowGroupDeactivated(
-            RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
         // intentionally left blank
     }
 
-    public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-                                             WorkingMemory workingMemory) {
+    public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
         // intentionally left blank
     }
 
-    public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
-                                               WorkingMemory workingMemory) {
+    public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
         // intentionally left blank
     }
 }

@@ -59,7 +59,7 @@ public class ExistsNode extends BetaNode {
                       final BuildContext context) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
+               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
                leftInput,
                rightInput,
                joinNodeBinder,

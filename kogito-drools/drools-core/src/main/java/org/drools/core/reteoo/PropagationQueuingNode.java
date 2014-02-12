@@ -17,7 +17,6 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
@@ -77,9 +76,9 @@ public class PropagationQueuingNode extends ObjectSource
                                   final BuildContext context) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
+               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
                objectSource,
-               context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
+               context.getKnowledgeBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.action = new PropagateAction( this );
         initDeclaredMask(context);
     }
@@ -112,7 +111,7 @@ public class PropagationQueuingNode extends ObjectSource
 
         // this is just sanity code. We may remove it in the future, but keeping it for now.
         if ( !memory.isEmpty() ) {
-            throw new RuntimeDroolsException( "Error updating sink. Not safe to update sink as the PropagatingQueueingNode memory is not empty at node: " + this.toString() );
+            throw new RuntimeException( "Error updating sink. Not safe to update sink as the PropagatingQueueingNode memory is not empty at node: " + this.toString() );
         }
 
         // as this node is simply a queue, ask object source to update the child sink directly

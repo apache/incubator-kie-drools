@@ -24,8 +24,6 @@ public interface ObjectTypeConf {
 	
     public ObjectTypeNode[] getObjectTypeNodes();
 
-    public boolean isShadowEnabled();
-
     public ObjectTypeNode getConcreteObjectTypeNode();
 
     public void resetCache();

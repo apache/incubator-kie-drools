@@ -16,9 +16,7 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.FactException;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
@@ -29,7 +27,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class MockLeftTupleSink extends LeftTupleSource
@@ -48,7 +45,7 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     public MockLeftTupleSink(final int id) {
-        super( id, RuleBasePartitionId.MAIN_PARTITION, false );
+        super(id, RuleBasePartitionId.MAIN_PARTITION, false);
     }
 
     public void assertLeftTuple(final LeftTuple tuple,
@@ -86,7 +83,7 @@ public class MockLeftTupleSink extends LeftTupleSource
 
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) throws FactException {
+                           final InternalWorkingMemory workingMemory) {
     }
 
     protected void doRemove(final RuleRemovalContext context,
@@ -95,11 +92,6 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     public void attach(BuildContext buildContext) {
-    }
-
-    public List getPropagatedTuples(final AbstractWorkingMemory workingMemory,
-                                    final LeftTupleSink sink) {
-        return Collections.EMPTY_LIST;
     }
 
     /**

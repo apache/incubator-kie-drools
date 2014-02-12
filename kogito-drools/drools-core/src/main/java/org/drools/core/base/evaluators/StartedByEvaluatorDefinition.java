@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.EventFactHandle;
@@ -254,7 +253,7 @@ public class StartedByEvaluatorDefinition
                                 final InternalReadAccessor extractor,
                                 final InternalFactHandle object1,
                                 final FieldValue object2) {
-            throw new RuntimeDroolsException( "The 'startedby' operator can only be used to compare one event to another, and never to compare to literal constraints." );
+            throw new RuntimeException( "The 'startedby' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -338,10 +337,10 @@ public class StartedByEvaluatorDefinition
                     // defined deviation for end timestamp
                     this.startDev = parameters[0].longValue();
                 } else {
-                    throw new RuntimeDroolsException("[StartedBy Evaluator]: Not possible to use negative parameter: '" + paramText + "'");
+                    throw new RuntimeException("[StartedBy Evaluator]: Not possible to use negative parameter: '" + paramText + "'");
                 }
             } else {
-                throw new RuntimeDroolsException( "[StartedBy Evaluator]: Not possible to use " + parameters.length + " parameters: '" + paramText + "'" );
+                throw new RuntimeException( "[StartedBy Evaluator]: Not possible to use " + parameters.length + " parameters: '" + paramText + "'" );
             }
         }
 

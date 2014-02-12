@@ -21,12 +21,12 @@ import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.WorkingMemory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Rule;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.rule.RuleContext;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -56,9 +56,6 @@ public interface KnowledgeHelper
      * 
      * @param object -
      *            the object to be asserted
-     * @ -
-     *             Exceptions can be thrown by conditions which are wrapped and
-     *             returned as a FactException
      */
     FactHandle insert(Object object) ;
     
@@ -70,9 +67,6 @@ public interface KnowledgeHelper
      *            the object to be asserted
      * @param dynamic -
      *            specifies the object implements onPropertyChangeListener
-     * @ -
-     *             Exceptions can be thrown by conditions which are wrapped and
-     *             returned as a FactException
      */
     FactHandle insert(Object object,
                 boolean dynamic) ;
@@ -117,7 +111,7 @@ public interface KnowledgeHelper
     /**
      * @return - The rule name
      */
-    Rule getRule();
+    RuleImpl getRule();
 
     Tuple getTuple();
 
@@ -126,8 +120,6 @@ public interface KnowledgeHelper
     WorkingMemory getWorkingMemory();
     
     EntryPoint getEntryPoint( String id );
-    
-    Map<String, EntryPoint> getEntryPoints();
     
     Channel getChannel( String id );
     

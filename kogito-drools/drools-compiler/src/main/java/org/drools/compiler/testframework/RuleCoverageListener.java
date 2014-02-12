@@ -3,16 +3,15 @@ package org.drools.compiler.testframework;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.event.ActivationCancelledEvent;
-import org.drools.core.event.ActivationCreatedEvent;
-import org.drools.core.event.AfterActivationFiredEvent;
-import org.drools.core.event.AgendaEventListener;
-import org.drools.core.event.AgendaGroupPoppedEvent;
-import org.drools.core.event.AgendaGroupPushedEvent;
-import org.drools.core.event.BeforeActivationFiredEvent;
-import org.drools.core.event.RuleFlowGroupActivatedEvent;
-import org.drools.core.event.RuleFlowGroupDeactivatedEvent;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.AgendaGroupPoppedEvent;
+import org.kie.api.event.rule.AgendaGroupPushedEvent;
+import org.kie.api.event.rule.BeforeMatchFiredEvent;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 
 /**
  * Measure the rule coverage.
@@ -31,29 +30,23 @@ public class RuleCoverageListener implements AgendaEventListener {
         this.totalCount = expectedRuleNames.size();
     }
 
-    public void activationCancelled(ActivationCancelledEvent event,
-            WorkingMemory workingMemory) {
+    public void matchCancelled(MatchCancelledEvent event) {
     }
 
-    public void activationCreated(ActivationCreatedEvent event,
-            WorkingMemory workingMemory) {
+    public void matchCreated(MatchCreatedEvent event) {
     }
 
-    public void afterActivationFired(AfterActivationFiredEvent event,
-            WorkingMemory workingMemory) {
-        rules.remove(event.getActivation().getRule().getName());
+    public void afterMatchFired(AfterMatchFiredEvent event) {
+        rules.remove(event.getMatch().getRule().getName());
     }
 
-    public void agendaGroupPopped(AgendaGroupPoppedEvent event,
-            WorkingMemory workingMemory) {
+    public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
     }
 
-    public void agendaGroupPushed(AgendaGroupPushedEvent event,
-            WorkingMemory workingMemory) {
+    public void agendaGroupPushed(AgendaGroupPushedEvent event) {
     }
 
-    public void beforeActivationFired(BeforeActivationFiredEvent event,
-            WorkingMemory workingMemory) {
+    public void beforeMatchFired(BeforeMatchFiredEvent event) {
     }
 
     /**
@@ -69,26 +62,22 @@ public class RuleCoverageListener implements AgendaEventListener {
         return (int) ((left / totalCount) * 100);
     }
 
-    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-            WorkingMemory workingMemory) {
+    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
         // TODO Auto-generated method stub
 
     }
 
-    public void afterRuleFlowGroupDeactivated(
-            RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+    public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
         // TODO Auto-generated method stub
 
     }
 
-    public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-            WorkingMemory workingMemory) {
+    public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
         // TODO Auto-generated method stub
 
     }
 
-    public void beforeRuleFlowGroupDeactivated(
-            RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+    public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
         // TODO Auto-generated method stub
 
     }

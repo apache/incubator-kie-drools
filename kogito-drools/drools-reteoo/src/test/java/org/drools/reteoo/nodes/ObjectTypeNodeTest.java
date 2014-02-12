@@ -16,24 +16,20 @@
 
 package org.drools.reteoo.nodes;
 
-import org.drools.core.FactException;
-import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.PhreakPropagationContext;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.MockObjectSink;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteooBuilder.IdGenerator;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.ObjectType;
@@ -44,39 +40,36 @@ import org.drools.core.test.model.Person;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.internal.KnowledgeBaseFactory;
 
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @Ignore
 public class ObjectTypeNodeTest extends DroolsTestCase {
     private PropagationContextFactory pctxFactory;
-    private ReteooRuleBase ruleBase;
+    private InternalKnowledgeBase kBase;
     private BuildContext              buildContext;
     private EntryPointNode entryPoint;
 
     @Before
     public void setUp() throws Exception {
-        this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        this.buildContext = new BuildContext(ruleBase, ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator());
+        this.kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        this.buildContext = new BuildContext(kBase, kBase.getReteooBuilder().getIdGenerator());
         this.entryPoint = new EntryPointNode(0,
-                                             this.ruleBase.getRete(),
+                                             this.kBase.getRete(),
                                              buildContext);
         this.entryPoint.attach(buildContext);
-        pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
     }
 
     @Test
     public void testAttach() throws Exception {
-        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
+        IdGenerator idGenerator = kBase.getReteooBuilder().getIdGenerator();
 
-        final Rete source = this.ruleBase.getRete();
+        final Rete source = this.kBase.getRete();
 
         final ObjectType objectType = new ClassObjectType(String.class);
 
@@ -111,12 +104,11 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                                 null,
                                                                                 null);
 
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
+        IdGenerator idGenerator = kBase.getReteooBuilder().getIdGenerator();
 
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        final Rete source = ruleBase.getRete();
+        final Rete source = kBase.getRete();
 
         final EntryPointNode entryPoint = new EntryPointNode(0,
                                                              source,
@@ -133,22 +125,22 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         final Object string1 = "cheese";
 
-        final InternalFactHandle handle1 = (InternalFactHandle) workingMemory.insert(string1);
+        final InternalFactHandle handle1 = (InternalFactHandle) ksession.insert(string1);
 
         // should assert as ObjectType matches
         objectTypeNode.assertObject(handle1,
                                     context,
-                                    workingMemory);
+                                    ksession);
 
         // make sure just string1 was asserted 
         final List asserted = sink.getAsserted();
         assertLength(1,
                      asserted);
         assertSame(string1,
-                   workingMemory.getObject((DefaultFactHandle) ((Object[]) asserted.get(0))[0]));
+                   ksession.getObject((DefaultFactHandle) ((Object[]) asserted.get(0))[0]));
 
         // check asserted object was added to memory
-        final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory(objectTypeNode);
+        final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) ksession.getNodeMemory(objectTypeNode);
         assertEquals(1,
                      memory.memory.size());
         assertTrue(memory.memory.contains(handle1));
@@ -165,14 +157,15 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setPhreakEnabled(false);
         conf.setSequential(true);
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase(conf);
-        buildContext = new BuildContext(ruleBase, ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator());
+
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(conf);
+        buildContext = new BuildContext(kBase, kBase.getReteooBuilder().getIdGenerator());
         buildContext.setObjectTypeNodeMemoryEnabled(false);
 
-        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory(1,
-                                                                              ruleBase);
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl(1,
+                                                                              kBase);
 
-        final Rete source = ruleBase.getRete();
+        final Rete source = kBase.getRete();
 
         final EntryPointNode entryPoint = new EntryPointNode(0,
                                                              source,
@@ -211,26 +204,26 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
     @Test
     public void testMemory() {
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        IdGenerator idGenerator = kBase.getReteooBuilder().getIdGenerator();
 
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode(idGenerator.getNextId(),
                                                                  this.entryPoint,
                                                                  new ClassObjectType(String.class),
                                                                  buildContext);
 
-        final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory(objectTypeNode);
+        final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) ksession.getNodeMemory(objectTypeNode);
 
         assertNotNull(memory);
     }
 
     @Test
     public void testIsAssignableFrom() {
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
-        final Rete source = new Rete((InternalRuleBase) ruleBase);
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        IdGenerator idGenerator = kBase.getReteooBuilder().getIdGenerator();
+        final Rete source = new Rete(kBase);
 
         ObjectTypeNode objectTypeNode = new ObjectTypeNode(idGenerator.getNextId(),
                                                            this.entryPoint,
@@ -254,17 +247,17 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
     @Test
     public void testRetractObject() throws Exception {
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        IdGenerator idGenerator = kBase.getReteooBuilder().getIdGenerator();
         final PropagationContext context = pctxFactory.createPropagationContext(0,
                                                                                 PropagationContext.INSERTION,
                                                                                 null,
                                                                                 null,
                                                                                 null);
 
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        final Rete source = new Rete((InternalRuleBase) ruleBase);
+        final Rete source = new Rete(kBase);
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode(idGenerator.getNextId(),
                                                                  this.entryPoint,
@@ -282,16 +275,16 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         // should assert as ObjectType matches
         objectTypeNode.assertObject(handle1,
                                     context,
-                                    workingMemory);
+                                    ksession);
         // check asserted object was added to memory
-        final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory(objectTypeNode);
+        final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) ksession.getNodeMemory(objectTypeNode);
         assertEquals(1,
                      memory.memory.size());
 
         // should retract as ObjectType matches
         objectTypeNode.retractObject(handle1,
                                      context,
-                                     workingMemory);
+                                     ksession);
         // check asserted object was removed from memory
         assertEquals(0,
                      memory.memory.size());
@@ -305,7 +298,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     }
 
     @Test
-    public void testUpdateSink() throws FactException {
+    public void testUpdateSink() {
         // Tests that when new child is added only the last added child is
         // updated
         // When the attachingNewNode flag is set
@@ -314,11 +307,10 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                                 null,
                                                                                 null,
                                                                                 null);
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory(1,
-                                                                              (ReteooRuleBase) ruleBase);
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl(1, kBase);
 
-        final Rete source = new Rete((InternalRuleBase) ruleBase);
+        final Rete source = new Rete(kBase);
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode(1,
                                                                  this.entryPoint,
@@ -381,11 +373,10 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     @Test
     public void testAssertObjectWithShadowEnabled() throws Exception {
 
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory(1,
-                                                                              ruleBase);
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl(1, kBase);
 
-        final Rete source = ruleBase.getRete();
+        final Rete source = kBase.getRete();
 
         final EntryPointNode entryPoint = new EntryPointNode(0,
                                                              source,
@@ -428,11 +419,11 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                                 null,
                                                                                 null);
 
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        IdGenerator idGenerator = kBase.getReteooBuilder().getIdGenerator();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        final Rete source = ruleBase.getRete();
+        final Rete source = kBase.getRete();
 
         final EntryPointNode entryPoint = new EntryPointNode(0,
                                                              source,
@@ -450,12 +441,12 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final Object person = new Person("bob",
                                          25);
 
-        final InternalFactHandle handle1 = (InternalFactHandle) workingMemory.insert(person);
+        final InternalFactHandle handle1 = (InternalFactHandle) ksession.insert(person);
 
         // should assert as ObjectType matches
         objectTypeNode.assertObject(handle1,
                                     context,
-                                    workingMemory);
+                                    ksession);
 
         // make sure just string1 was asserted 
         final List asserted = sink.getAsserted();
@@ -465,7 +456,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                      person);
 
         // check asserted object was added to memory
-        final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory(objectTypeNode);
+        final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) ksession.getNodeMemory(objectTypeNode);
         assertEquals(1,
                      memory.memory.size());
         assertTrue(memory.memory.contains(handle1));

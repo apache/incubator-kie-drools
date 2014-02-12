@@ -16,8 +16,8 @@
 
 package org.drools.template.parser;
 
-import org.drools.core.StatefulSession;
 import org.drools.template.model.DRLOutput;
+import org.kie.api.runtime.KieSession;
 
 import java.io.InputStream;
 
@@ -36,7 +36,7 @@ public class TemplateDataListener
 
     private Column[] columns;
 
-    private StatefulSession session;
+    private KieSession session;
 
     private TemplateContainer templateContainer;
 

@@ -22,7 +22,7 @@ public class InvokerGenerator {
 
     public static ClassGenerator createInvokerStubGenerator(final InvokerDataProvider data, final RuleBuildContext ruleContext) {
         return createStubGenerator(data,
-                                   ruleContext.getPackageBuilder().getRootClassLoader(),
+                                   ruleContext.getKnowledgeBuilder().getRootClassLoader(),
                                    ruleContext.getDialect("java").getPackageRegistry().getTypeResolver(),
                                    ruleContext.getPkg().getImports().keySet());
     }
@@ -104,7 +104,7 @@ public class InvokerGenerator {
     static ClassGenerator createInvokerClassGenerator(final InvokerDataProvider data, final RuleBuildContext ruleContext) {
         String className = data.getPackageName() + "." + data.getInvokerClassName();
         return GeneratorHelper.createInvokerClassGenerator(className, data,
-                                           ruleContext.getPackageBuilder().getRootClassLoader(),
+                                           ruleContext.getKnowledgeBuilder().getRootClassLoader(),
                                            ruleContext.getDialect("java").getPackageRegistry().getTypeResolver());
     }
 }

@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.DroolsObjectInput;
 import org.drools.core.spi.Evaluator;
@@ -121,14 +120,14 @@ public class EvaluatorRegistry
             EvaluatorDefinition def = defClass.newInstance();
             addEvaluatorDefinition( def );
         } catch ( ClassNotFoundException e ) {
-            throw new RuntimeDroolsException( "Class not found for evaluator definition: " + className,
-                                              e );
+            throw new RuntimeException( "Class not found for evaluator definition: " + className,
+                                        e );
         } catch ( InstantiationException e ) {
-            throw new RuntimeDroolsException( "Error instantiating class for evaluator definition: " + className,
-                                              e );
+            throw new RuntimeException( "Error instantiating class for evaluator definition: " + className,
+                                        e );
         } catch ( IllegalAccessException e ) {
-            throw new RuntimeDroolsException( "Illegal access instantiating class for evaluator definition: " + className,
-                                              e );
+            throw new RuntimeException( "Illegal access instantiating class for evaluator definition: " + className,
+                                        e );
         }
     }
 

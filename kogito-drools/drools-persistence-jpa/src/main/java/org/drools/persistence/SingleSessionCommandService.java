@@ -15,14 +15,6 @@
  */
 package org.drools.persistence;
 
-import java.lang.reflect.Constructor;
-import java.util.Collections;
-import java.util.Date;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.concurrent.locks.ReentrantLock;
-
-import org.drools.core.RuleBase;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.command.CommandService;
 import org.drools.core.command.Interceptor;
@@ -36,7 +28,6 @@ import org.drools.core.command.runtime.DisposeCommand;
 import org.drools.core.command.runtime.UnpersistableCommand;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.marshalling.impl.MarshallingConfigurationImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.time.AcceptsTimerJobFactoryManager;
@@ -55,6 +46,9 @@ import org.kie.internal.command.Context;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Constructor;
+import java.util.Date;
 
 public class SingleSessionCommandService
     implements
@@ -81,24 +75,6 @@ public class SingleSessionCommandService
             throw new IllegalArgumentException( "Environment must have an EntityManagerFactory " +
                                                 "or a PersistenceContextManager instance" );
         }
-    }
-
-    public SingleSessionCommandService(RuleBase ruleBase,
-                                       SessionConfiguration conf,
-                                       Environment env) {
-        this( new KnowledgeBaseImpl( ruleBase ),
-              conf,
-              env );
-    }
-
-    public SingleSessionCommandService(Integer sessionId,
-                                       RuleBase ruleBase,
-                                       SessionConfiguration conf,
-                                       Environment env) {
-        this( sessionId,
-              new KnowledgeBaseImpl( ruleBase ),
-              conf,
-              env );
     }
 
     public SingleSessionCommandService(KieBase kbase,

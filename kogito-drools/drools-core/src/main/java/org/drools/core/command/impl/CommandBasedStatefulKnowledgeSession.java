@@ -359,12 +359,12 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
         return this.commandService.execute( new GetFactHandleCommand( object ) );
     }
 
-    public <T extends org.kie.api.runtime.rule.FactHandle> Collection<T> getFactHandles() {
+    public <T extends FactHandle> Collection<T> getFactHandles() {
         return (Collection<T>) this.commandService.execute( new GetFactHandlesCommand() );
 
     }
 
-    public <T extends org.kie.api.runtime.rule.FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
+    public <T extends FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
         return (Collection<T>) this.commandService.execute( new GetFactHandlesCommand( filter ) );
     }
 

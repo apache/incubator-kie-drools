@@ -16,7 +16,7 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.AgendaItem;
@@ -25,10 +25,10 @@ import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.QueryElementFactHandle;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedList;
@@ -156,13 +156,13 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
      *
      * @return The rule.
      */
-    public Rule getRule() {
+    public RuleImpl getRule() {
         return getTerminalNode().getRule();
     }
 
     public Consequence getConsequence() {
         String consequenceName = ((RuleTerminalNode) getTerminalNode()).getConsequenceName();
-        return consequenceName.equals(Rule.DEFAULT_CONSEQUENCE_NAME) ? getTerminalNode().getRule().getConsequence() : getTerminalNode().getRule().getNamedConsequence(consequenceName);
+        return consequenceName.equals(RuleImpl.DEFAULT_CONSEQUENCE_NAME) ? getTerminalNode().getRule().getConsequence() : getTerminalNode().getRule().getNamedConsequence(consequenceName);
     }
 
     /**

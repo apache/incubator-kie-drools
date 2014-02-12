@@ -24,13 +24,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.drools.core.StatelessSession;
-import org.drools.core.StatelessSessionResult;
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Gap;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
 
 public class RangeCheckDatesTest extends TestBaseOld {
 
@@ -41,11 +41,7 @@ public class RangeCheckDatesTest extends TestBaseOld {
 
     @Test
     public void testSmallerOrEqual() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass()
-                .getResourceAsStream("rangeChecks/Dates.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-                "Range check for dates, if smaller than or equal is missing"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("rangeChecks/Dates.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
@@ -54,14 +50,13 @@ public class RangeCheckDatesTest extends TestBaseOld {
 
         session.setGlobal("result", result);
 
-        StatelessSessionResult sessionResult = session
-                .executeWithResults(testData);
-
-        Iterator<Object> iter = sessionResult.iterateObjects();
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Range check for dates, if smaller than or equal is missing"));
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
-        while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+        for (Object o : session.getObjects()) {
             if (o instanceof Gap) {
                 rulesThatHadErrors.add(((Gap) o).getRuleName());
             }
@@ -80,11 +75,7 @@ public class RangeCheckDatesTest extends TestBaseOld {
 
     @Test
     public void testGreaterOrEqual() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass()
-                .getResourceAsStream("rangeChecks/Dates.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-                "Range check for dates, if greater than or equal is missing"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("rangeChecks/Dates.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
@@ -93,14 +84,13 @@ public class RangeCheckDatesTest extends TestBaseOld {
 
         session.setGlobal("result", result);
 
-        StatelessSessionResult sessionResult = session
-                .executeWithResults(testData);
-
-        Iterator<Object> iter = sessionResult.iterateObjects();
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Range check for dates, if greater than or equal is missing"));
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
-        while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+        for (Object o : session.getObjects()) {
             if (o instanceof Gap) {
                 rulesThatHadErrors.add(((Gap) o).getRuleName());
             }
@@ -119,11 +109,7 @@ public class RangeCheckDatesTest extends TestBaseOld {
 
     @Test
     public void testEqualAndGreaterThan() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass()
-                .getResourceAsStream("rangeChecks/Dates.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-                "Range check for dates, equal and greater than"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("rangeChecks/Dates.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
@@ -132,14 +118,13 @@ public class RangeCheckDatesTest extends TestBaseOld {
 
         session.setGlobal("result", result);
 
-        StatelessSessionResult sessionResult = session
-                .executeWithResults(testData);
-
-        Iterator<Object> iter = sessionResult.iterateObjects();
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Range check for dates, equal and greater than"));
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
-        while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+        for (Object o : session.getObjects()) {
             if (o instanceof Gap) {
                 rulesThatHadErrors.add(((Gap) o).getRuleName());
             }
@@ -159,11 +144,7 @@ public class RangeCheckDatesTest extends TestBaseOld {
 
     @Test
     public void testEqualAndSmallerThan() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass()
-                .getResourceAsStream("rangeChecks/Dates.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-                "Range check for dates, equal and smaller than"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("rangeChecks/Dates.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
@@ -172,14 +153,13 @@ public class RangeCheckDatesTest extends TestBaseOld {
 
         session.setGlobal("result", result);
 
-        StatelessSessionResult sessionResult = session
-                .executeWithResults(testData);
-
-        Iterator<Object> iter = sessionResult.iterateObjects();
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Range check for dates, equal and smaller than"));
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
-        while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+        for (Object o : session.getObjects()) {
             if (o instanceof Gap) {
                 rulesThatHadErrors.add(((Gap) o).getRuleName());
             }

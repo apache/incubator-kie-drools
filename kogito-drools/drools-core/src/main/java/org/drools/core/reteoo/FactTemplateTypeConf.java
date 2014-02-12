@@ -16,20 +16,19 @@
 
 package org.drools.core.reteoo;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
-import org.drools.core.RuntimeDroolsException;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.facttemplates.FactTemplateObjectType;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.PatternBuilder;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 public class FactTemplateTypeConf
     implements
@@ -52,15 +51,15 @@ public class FactTemplateTypeConf
 
     public FactTemplateTypeConf(final EntryPointId entryPoint,
                                 final FactTemplate factTemplate,
-                                final InternalRuleBase ruleBase) {
+                                final InternalKnowledgeBase kBase) {
         this.factTemplate = factTemplate;
         this.entryPoint = entryPoint;
         ObjectType objectType = new FactTemplateObjectType( factTemplate );
-        this.concreteObjectTypeNode = (ObjectTypeNode) ruleBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
+        this.concreteObjectTypeNode = (ObjectTypeNode) kBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
         if ( this.concreteObjectTypeNode == null ) {
-            BuildContext context = new BuildContext( ruleBase,
-                                                     ((ReteooRuleBase) ruleBase.getRete().getRuleBase()).getReteooBuilder().getIdGenerator() );
-            if ( context.getRuleBase().getConfiguration().isSequential() ) {
+            BuildContext context = new BuildContext( kBase,
+                                                     kBase.getReteooBuilder().getIdGenerator() );
+            if ( context.getKnowledgeBase().getConfiguration().isSequential() ) {
                 // We are in sequential mode, so no nodes should have memory
                 context.setTupleMemoryEnabled( false );
                 context.setObjectTypeNodeMemoryEnabled( false );
@@ -97,14 +96,6 @@ public class FactTemplateTypeConf
             this.cache = new ObjectTypeNode[]{this.concreteObjectTypeNode};
         }
         return this.cache;
-    }
-
-    public Object getShadow(Object fact) throws RuntimeDroolsException {
-        return null;
-    }
-
-    public boolean isShadowEnabled() {
-        return false;
     }
 
     public boolean isAssignableFrom(Object object) {

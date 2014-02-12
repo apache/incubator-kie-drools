@@ -364,7 +364,7 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
             return new String[] { split[0], concatDotSeparated(split, 1, split.length) };
         }
 
-        ClassLoader cl = context.getRuleContext().getPackageBuilder().getRootClassLoader();
+        ClassLoader cl = context.getRuleContext().getKnowledgeBuilder().getRootClassLoader();
         for (int i = split.length-1; i > 1; i++) {
             String className = concatDotSeparated(split, 0, i);
             if (className.endsWith("!")) {

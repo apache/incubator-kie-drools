@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.*;
 
 import java.io.InputStream;
-import java.io.StringReader;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,14 +13,12 @@ import java.util.Map;
 
 import org.drools.compiler.compiler.PMMLCompiler;
 import org.drools.compiler.compiler.PMMLCompilerFactory;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.definitions.impl.KnowledgePackageImp;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.FileManager;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.Package;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -409,20 +406,13 @@ public class KnowledgeBuilderTest {
                       "then\n" +
                       "end\n";
 
-        PackageBuilder pkgbuilder = new PackageBuilder();
-        pkgbuilder.addPackageFromDrl( new StringReader( rule ) );
-        assertFalse( pkgbuilder.getErrors().toString(), pkgbuilder.hasErrors() );
-
-        Package pkg = pkgbuilder.getPackage();
-
-        byte[] spkg = DroolsStreamUtils.streamOut( pkg );
-
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( spkg ), ResourceType.PKG );
+        kbuilder.add(ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL);
+
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
-        assertEquals( 1, kpkgs.size() );
+        assertEquals( 2, kpkgs.size() );
         KnowledgePackage kpkg = kpkgs.iterator().next();
         assertEquals( 1, kpkg.getRules().size() );
     }
@@ -437,16 +427,9 @@ public class KnowledgeBuilderTest {
                       "then\n" +
                       "end\n";
 
-        PackageBuilder pkgbuilder = new PackageBuilder();
-        pkgbuilder.addPackageFromDrl( new StringReader( rule ) );
-        assertFalse( pkgbuilder.getErrors().toString(), pkgbuilder.hasErrors() );
-
-        Package[] pkgs = pkgbuilder.getPackages();
-
-        byte[] spkgs = DroolsStreamUtils.streamOut( pkgs );
-
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( spkgs ), ResourceType.PKG );
+        kbuilder.add(ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL);
+
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
@@ -470,7 +453,7 @@ public class KnowledgeBuilderTest {
         KnowledgePackage kp1 = kbuilder.getKnowledgePackages().iterator().next();
         assertEquals( 1, kp1.getRules().size() );
         Rule r = kp1.getRules().iterator().next();
-        assertEquals( res1, ((RuleImpl) r).getRule().getResource() );
+        assertEquals( res1, ((RuleImpl) r).getResource() );
 
         String pmml = "<PMML version=\"4.0\"><Header/></PMML>";
 
@@ -503,7 +486,7 @@ public class KnowledgeBuilderTest {
         KnowledgePackage kp2 = kbuilder2.getKnowledgePackages().iterator().next();
         assertEquals( 1, kp2.getRules().size() );
         Rule r2 = kp2.getRules().iterator().next();
-        assertEquals( res2, ((RuleImpl) r2).getRule().getResource() );
+        assertEquals( res2, ((RuleImpl) r2).getResource() );
 
     }
 
@@ -530,8 +513,8 @@ public class KnowledgeBuilderTest {
 
         assertEquals( 3, kbuilder.getKnowledgePackages().size() );
         for ( KnowledgePackage kp : kbuilder.getKnowledgePackages() ) {
-            KnowledgePackageImp kpi = (KnowledgePackageImp) kp;
-            TypeDeclaration cheez = kpi.pkg.getTypeDeclaration( "Cheese" );
+            KnowledgePackageImpl kpi = (KnowledgePackageImpl) kp;
+            TypeDeclaration cheez = kpi.getTypeDeclaration( "Cheese" );
             if ( "org.drools.compiler".equals( kpi.getName() ) ) {
                 assertNotNull( cheez );
             } else {

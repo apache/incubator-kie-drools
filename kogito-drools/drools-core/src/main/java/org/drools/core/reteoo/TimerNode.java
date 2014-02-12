@@ -19,7 +19,6 @@ package org.drools.core.reteoo;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.LeftTupleIterator;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.UpdateContext;
@@ -28,7 +27,6 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.impl.Timer;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.util.Iterator;
 import org.drools.core.util.index.LeftTupleList;
 
 import java.io.IOException;
@@ -64,7 +62,7 @@ public class TimerNode extends LeftTupleSource
                      final BuildContext context) {
         super(id,
               context.getPartitionId(),
-              context.getRuleBase().getConfiguration().isMultithreadEvaluation());
+              context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation());
         setLeftTupleSource(tupleSource);
         this.timer = timer;
         this.calendarNames = calendarNames;
@@ -93,7 +91,7 @@ public class TimerNode extends LeftTupleSource
 
     public void attach(BuildContext context) {
         this.leftInput.addTupleSink(this, context);
-        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled()) {
+        if (context == null || context.getKnowledgeBase().getConfiguration().isPhreakEnabled()) {
             return;
         }
 

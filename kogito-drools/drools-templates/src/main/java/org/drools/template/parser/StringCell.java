@@ -16,8 +16,8 @@
 
 package org.drools.template.parser;
 
-import org.drools.core.StatefulSession;
 import org.drools.core.util.StringUtils;
+import org.kie.api.runtime.KieSession;
 
 import java.util.Map;
 
@@ -66,7 +66,7 @@ public class StringCell implements Cell {
         return index;
     }
 
-    public void insert(StatefulSession session) {
+    public void insert(KieSession session) {
         session.insert(this);
     }
 

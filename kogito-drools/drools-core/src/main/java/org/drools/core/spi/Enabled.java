@@ -19,12 +19,12 @@ package org.drools.core.spi;
 import java.io.Serializable;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Rule;
 
 public interface Enabled extends Serializable {
     public boolean getValue(final Tuple tuple,
                             final Declaration[] declrs,
-                            final Rule rule,
+                            final RuleImpl rule,
                             final WorkingMemory workingMemory);
 }

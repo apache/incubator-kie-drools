@@ -23,16 +23,16 @@ import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.phreak.StackEntry;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
+import org.drools.core.rule.QueryImpl;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.PathMemory;
-import org.drools.core.rule.Query;
 import org.kie.api.runtime.rule.Variable;
 
 public final class DroolsQuery extends ArrayElements {
     private final String                           name;
     private       InternalViewChangedEventListener resultsCollector;
-    private       Query                            query;
+    private QueryImpl query;
     private       boolean                          open;
 
     private Variable[] vars;
@@ -133,12 +133,12 @@ public final class DroolsQuery extends ArrayElements {
         return this.sink;
     }
 
-    public void setQuery(Query query) {
+    public void setQuery(QueryImpl query) {
         // this is set later, as we don't yet know which Query will match this DroolsQuery propagation
         this.query = query;     
     }
 
-    public Query getQuery() {
+    public QueryImpl getQuery() {
         return this.query;
     }
 

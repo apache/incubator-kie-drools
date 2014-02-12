@@ -16,36 +16,38 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.reteoo.builder.BuildContext;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.internal.KnowledgeBaseFactory;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.common.AbstractWorkingMemory;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.reteoo.builder.BuildContext;
+import static org.junit.Assert.assertEquals;
 
 public class PropertyChangeListenerTest {
-    private ReteooRuleBase ruleBase;
+    private InternalKnowledgeBase kBase;
     private BuildContext buildContext;
     private EntryPointNode entryPoint;
     
     @Before
     public void setUp() throws Exception {
-        this.ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
-        this.buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+        this.kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        this.buildContext = new BuildContext( kBase, kBase.getReteooBuilder().getIdGenerator() );
         this.entryPoint = new EntryPointNode( 0,
-                                              this.ruleBase.getRete(),
+                                              this.kBase.getRete(),
                                               buildContext );
         this.entryPoint.attach(buildContext);
     }
     
     @Test
     public void test1() {
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   this.entryPoint,
@@ -58,8 +60,7 @@ public class PropertyChangeListenerTest {
         objectTypeNode.addObjectSink( sink );
 
         final State a = new State( "go" );
-        workingMemory.insert( a,
-                                    true );
+        ksession.insert( a, true );
 
         assertEquals( 1,
                       sink.getAsserted().size() );

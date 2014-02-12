@@ -4,9 +4,9 @@ import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.reteoo.common.RetePropagationContext;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -28,7 +28,6 @@ import org.drools.core.reteoo.RightTupleMemory;
 import org.drools.core.reteoo.RuleRemovalContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Accumulate;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
@@ -654,8 +653,8 @@ public class ReteAccumulateNode extends AccumulateNode {
             } else {
                 // retract
                 // we can't use the expiration context here, because it wouldn't cancel existing activations. however, isAllowed is false so activations should not fire
-                PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
-                PropagationContext cancelContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), org.kie.api.runtime.rule.PropagationContext.DELETION, (Rule) context.getRule(),
+                PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
+                PropagationContext cancelContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), org.kie.api.runtime.rule.PropagationContext.DELETION, (RuleImpl) context.getRule(),
                                                                                         context.getLeftTupleOrigin(), (InternalFactHandle) context.getFactHandle());
                 this.sink.propagateRetractLeftTuple( leftTuple,
                                                      cancelContext,

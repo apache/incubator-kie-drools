@@ -95,10 +95,10 @@ public class InsertElementsCommand
 
         if ( outIdentifier != null ) {
             if ( this.returnObject ) {
-                ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult().getResults().put( this.outIdentifier,
+                ((StatefulKnowledgeSessionImpl)ksession).getExecutionResult().getResults().put( this.outIdentifier,
                                                                objects);
             }
-            ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult().getFactHandles().put( this.outIdentifier,
+            ((StatefulKnowledgeSessionImpl)ksession).getExecutionResult().getFactHandles().put( this.outIdentifier,
                                                                handles );
         }
         return handles;

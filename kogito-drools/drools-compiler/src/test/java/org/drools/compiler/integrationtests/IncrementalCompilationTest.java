@@ -11,8 +11,7 @@ import java.util.Map;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
-import org.drools.core.RuleBase;
-import org.drools.core.common.InternalRuleBase;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.kie.api.builder.Results;
@@ -30,9 +29,6 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
-import org.kie.internal.builder.KieBuilderSet;
-
-import java.util.HashMap;
 
 import static java.util.Arrays.asList;
 
@@ -105,7 +101,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         int i = 0;
         for ( String ruleName : ruleNames ) {
-            assertEquals( ruleName, i++, ( (org.drools.core.definitions.rule.impl.RuleImpl) rules.get( ruleName ) ).getRule().getLoadOrder() );
+            assertEquals( ruleName, i++, ((RuleImpl) rules.get( ruleName )).getLoadOrder() );
         }
     }
 
@@ -592,28 +588,25 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         assertEquals( 3, kpkg.getRules().size() );
         Map<String, Rule> rules = rulestoMap( kpkg.getRules() );
 
-        assertNotNull( ( (org.drools.core.definitions.rule.impl.RuleImpl) rules.get( "R1" ) ) );
-        assertNotNull( ( (org.drools.core.definitions.rule.impl.RuleImpl) rules.get( "R2" ) ) );
-        assertNotNull( ( (org.drools.core.definitions.rule.impl.RuleImpl) rules.get( "R3" ) ) );
-
-        RuleBase rb_1 = ( (InternalRuleBase) ( (KnowledgeBaseImpl) kc.getKieBase() ).getRuleBase() );
-
-        RuleTerminalNode rtn1_1 = (RuleTerminalNode) ( (InternalRuleBase) ( (KnowledgeBaseImpl) kc.getKieBase() ).getRuleBase() ).getReteooBuilder().getTerminalNodes( "R1" )[ 0 ];
-        RuleTerminalNode rtn2_1 = (RuleTerminalNode) ( (InternalRuleBase) ( (KnowledgeBaseImpl) kc.getKieBase() ).getRuleBase() ).getReteooBuilder().getTerminalNodes( "R2" )[ 0 ];
-        RuleTerminalNode rtn3_1 = (RuleTerminalNode) ( (InternalRuleBase) ( (KnowledgeBaseImpl) kc.getKieBase() ).getRuleBase() ).getReteooBuilder().getTerminalNodes( "R3" )[ 0 ];
-
+        assertNotNull(((org.drools.core.definitions.rule.impl.RuleImpl) rules.get("R1")));
+        assertNotNull(((org.drools.core.definitions.rule.impl.RuleImpl) rules.get("R2")));
+        assertNotNull(((org.drools.core.definitions.rule.impl.RuleImpl) rules.get("R3")));
+ 
+        RuleTerminalNode rtn1_1  = (RuleTerminalNode) ((KnowledgeBaseImpl)kc.getKieBase()).getReteooBuilder().getTerminalNodes( "R1" )[0];
+        RuleTerminalNode rtn2_1  = (RuleTerminalNode) ((KnowledgeBaseImpl)kc.getKieBase()).getReteooBuilder().getTerminalNodes( "R2" )[0];
+        RuleTerminalNode rtn3_1  = (RuleTerminalNode) ((KnowledgeBaseImpl)kc.getKieBase()).getReteooBuilder().getTerminalNodes( "R3" )[0];
+ 
         // Create a new jar for version 1.1.0
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
         km = createAndDeployJar( ks, releaseId2, drl1 + drl3 );
 
         // try to update the container to version 1.1.0
-        kc.updateToVersion( releaseId2 );
+        kc.updateToVersion(releaseId2);
 
-        InternalRuleBase rb_2 = ( (InternalRuleBase) ( (KnowledgeBaseImpl) kc.getKieBase() ).getRuleBase() );
-        assertSame( rb_1, rb_2 );
-
-        RuleTerminalNode rtn1_2 = (RuleTerminalNode) rb_2.getReteooBuilder().getTerminalNodes( "R1" )[ 0 ];
-        RuleTerminalNode rtn3_2 = (RuleTerminalNode) rb_2.getReteooBuilder().getTerminalNodes( "R3" )[ 0 ];
+        KnowledgeBaseImpl rb_2 = ((KnowledgeBaseImpl) kc.getKieBase());
+ 
+        RuleTerminalNode rtn1_2  = (RuleTerminalNode) rb_2.getReteooBuilder().getTerminalNodes( "R1" )[0];
+        RuleTerminalNode rtn3_2  = (RuleTerminalNode) rb_2.getReteooBuilder().getTerminalNodes( "R3" )[0];
         assertNull( rb_2.getReteooBuilder().getTerminalNodes( "R2" ) );
 
         assertSame( rtn3_1, rtn3_2 );

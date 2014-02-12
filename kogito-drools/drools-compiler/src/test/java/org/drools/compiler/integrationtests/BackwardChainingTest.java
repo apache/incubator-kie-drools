@@ -20,7 +20,6 @@ import org.drools.core.InitialFact;
 import org.drools.compiler.Person;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.AccumulateNode;
@@ -1549,7 +1548,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
 
         // Get the accumulate node, so we can test it's memory later
         // now check beta memory was correctly cleared
-        List<ObjectTypeNode> nodes = ((InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase).getRete().getObjectTypeNodes();
+        List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl) kbase).getRete().getObjectTypeNodes();
         ObjectTypeNode node = null;
         for ( ObjectTypeNode n : nodes ) {
             if ( ((ClassObjectType) n.getObjectType()).getClassType() == String.class ) {
@@ -1573,7 +1572,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         NotNode notNode = (NotNode) riaNode3.getSinkPropagator().getSinks()[0];
 
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl) ksession).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl) ksession);
         AccumulateMemory accMemory = (AccumulateMemory) wm.getNodeMemory( accNode );
         BetaMemory existsMemory = (BetaMemory) wm.getNodeMemory( existsNode );
         FromMemory fromMemory = (FromMemory) wm.getNodeMemory( fromNode );

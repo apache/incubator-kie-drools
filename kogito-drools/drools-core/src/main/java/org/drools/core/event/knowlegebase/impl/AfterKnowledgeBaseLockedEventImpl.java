@@ -24,7 +24,6 @@ public class AfterKnowledgeBaseLockedEventImpl extends KnowledgeBaseEventImpl im
 
     public AfterKnowledgeBaseLockedEventImpl(KnowledgeBase knowledgeBase) {
         super( knowledgeBase );
-        // TODO Auto-generated constructor stub
     }
 
     public Rule getRule() {

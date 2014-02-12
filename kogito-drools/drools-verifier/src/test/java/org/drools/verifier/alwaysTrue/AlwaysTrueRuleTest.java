@@ -16,8 +16,6 @@
 
 package org.drools.verifier.alwaysTrue;
 
-import org.drools.core.StatelessSession;
-import org.drools.core.StatelessSessionResult;
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.VerifierComponentMockFactory;
@@ -32,6 +30,7 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,9 +42,7 @@ public class AlwaysTrueRuleTest extends TestBaseOld {
 
     @Test
     public void testPatternPossibilities() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Rules.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Rule possibility that is always true"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Rules.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<Object> data = new ArrayList<Object>();
@@ -97,15 +94,16 @@ public class AlwaysTrueRuleTest extends TestBaseOld {
         data.add(pp4);
         data.add(alwaysTrue4);
 
-        StatelessSessionResult sessionResult = session.executeWithResults(data);
-        Iterator iter = sessionResult.iterateObjects();
+        for (Object o : data) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Rule possibility that is always true"));
 
         boolean rp1true = false;
         boolean rp2true = false;
         boolean rp3true = false;
         boolean rp4true = false;
-        while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+        for (Object o : session.getObjects()) {
             if (o instanceof AlwaysTrue) {
                 AlwaysTrue alwaysTrue = (AlwaysTrue) o;
                 if (!rp1true) {
@@ -131,9 +129,7 @@ public class AlwaysTrueRuleTest extends TestBaseOld {
 
     @Test
     public void testPatterns() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Rules.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Rule that is always true"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Rules.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<Object> data = new ArrayList<Object>();
@@ -173,7 +169,10 @@ public class AlwaysTrueRuleTest extends TestBaseOld {
         data.add(rp4);
         data.add(alwaysTrue4);
 
-        session.executeWithResults(data);
+        for (Object o : data) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Rule that is always true"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.WARNING).iterator();
 

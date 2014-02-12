@@ -16,7 +16,6 @@
 
 package org.drools.verifier.incoherence;
 
-import org.drools.core.StatelessSession;
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.DefaultVerifierConfiguration;
 import org.drools.verifier.TestBaseOld;
@@ -31,6 +30,7 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
 
@@ -91,9 +91,7 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
 
     @Test
     public void testIncoherentLiteralRestrictionsInSubPattern() throws Exception {
-        StatelessSession session = getStatelessSession(getClass().getResourceAsStream("Restrictions.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Incoherent LiteralRestrictions in pattern possibility"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(getClass().getResourceAsStream("RestrictionsTest.drl"),
@@ -102,7 +100,10 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
         session.setGlobal("result",
                           result);
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Incoherent LiteralRestrictions in pattern possibility"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.ERROR).iterator();
 
@@ -127,9 +128,7 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
 
     @Test
     public void testIncoherentLiteralRestrictionsInSubPatternImpossibleRanges() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Restrictions.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Incoherent LiteralRestrictions with ranges in pattern possibility, impossible ranges"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("RestrictionsTest.drl"),
@@ -138,7 +137,10 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
         session.setGlobal("result",
                           result);
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Incoherent LiteralRestrictions with ranges in pattern possibility, impossible ranges"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.ERROR).iterator();
 
@@ -162,9 +164,7 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
 
     @Test
     public void testIncoherentLiteralRestrictionsInSubPatternImpossibleEqualityLess() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Restrictions.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Incoherent LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("RestrictionsTest.drl"),
@@ -173,7 +173,10 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
         session.setGlobal("result",
                           result);
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Incoherent LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.ERROR).iterator();
 
@@ -198,9 +201,7 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
 
     @Test
     public void testIncoherentLiteralRestrictionsInSubPatternImpossibleEqualityGreater() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Restrictions.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Incoherent LiteralRestrictions with ranges in pattern possibility, impossible equality greater"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("RestrictionsTest.drl"),
@@ -209,7 +210,10 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
         session.setGlobal("result",
                           result);
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Incoherent LiteralRestrictions with ranges in pattern possibility, impossible equality greater"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.ERROR).iterator();
 
@@ -233,9 +237,7 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
 
     @Test
     public void testIncoherentLiteralRestrictionsInSubPatternImpossibleRange() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Restrictions.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Incoherent LiteralRestrictions with ranges in pattern possibility, impossible range"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("RestrictionsTest.drl"),
@@ -244,7 +246,10 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
         session.setGlobal("result",
                           result);
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Incoherent LiteralRestrictions with ranges in pattern possibility, impossible range"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.ERROR).iterator();
 
@@ -268,9 +273,7 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
 
     @Test
     public void testIncoherentVariableRestrictionsInSubPattern() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Restrictions.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Incoherent VariableRestrictions in pattern possibility"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("RestrictionsTest.drl"),
@@ -279,7 +282,10 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
         session.setGlobal("result",
                           result);
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Incoherent VariableRestrictions in pattern possibility"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.ERROR).iterator();
 
@@ -305,9 +311,7 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
 
     @Test
     public void testIncoherentVariableRestrictionsInSubPatternImpossibleRange() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Restrictions.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Incoherent VariableRestrictions in pattern possibility, impossible range"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("RestrictionsTest.drl"),
@@ -316,7 +320,10 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
         session.setGlobal("result",
                           result);
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Incoherent VariableRestrictions in pattern possibility, impossible range"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.ERROR).iterator();
 

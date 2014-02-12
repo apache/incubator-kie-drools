@@ -16,17 +16,10 @@
 
 package org.drools.core.marshalling.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamClass;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.PBActivationsFilter;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
 import org.drools.core.phreak.PhreakTimerNode;
@@ -42,9 +35,16 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.KnowledgeRuntime;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamClass;
+import java.util.HashMap;
+import java.util.Map;
+
 public class MarshallerReaderContext extends ObjectInputStream {
     public final MarshallerReaderContext                                           stream;
-    public final InternalRuleBase                                                  ruleBase;
+    public final InternalKnowledgeBase                                             kBase;
     public InternalWorkingMemory                                                   wm;
     public KnowledgeRuntime                                                        kruntime;
     public final Map<Integer, BaseNode>                                            sinks;
@@ -77,13 +77,13 @@ public class MarshallerReaderContext extends ObjectInputStream {
     public Map<Integer, Map<TupleKey, Scheduler>>                                  timerNodeSchedulers;
 
     public MarshallerReaderContext(InputStream stream,
-                                   InternalRuleBase ruleBase,
+                                   InternalKnowledgeBase kBase,
                                    Map<Integer, BaseNode> sinks,
                                    ObjectMarshallingStrategyStore resolverStrategyFactory,
                                    Map<Integer, TimersInputMarshaller> timerReaders,
                                    Environment env) throws IOException {
         this( stream,
-              ruleBase,
+              kBase,
               sinks,
               resolverStrategyFactory,
               timerReaders,
@@ -93,7 +93,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
     }
 
     public MarshallerReaderContext(InputStream stream,
-                                   InternalRuleBase ruleBase,
+                                   InternalKnowledgeBase kBase,
                                    Map<Integer, BaseNode> sinks,
                                    ObjectMarshallingStrategyStore resolverStrategyFactory,
                                    Map<Integer, TimersInputMarshaller> timerReaders,
@@ -102,7 +102,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
                                    Environment env) throws IOException {
         super( stream );
         this.stream = this;
-        this.ruleBase = ruleBase;
+        this.kBase = kBase;
         this.sinks = sinks;
 
         this.readersByInt = timerReaders;
@@ -142,8 +142,8 @@ public class MarshallerReaderContext extends ObjectInputStream {
         String name = desc.getName();
         try {
             if ( this.classLoader == null ) {
-                if ( this.ruleBase != null ) {
-                    this.classLoader = this.ruleBase.getRootClassLoader();
+                if ( this.kBase != null ) {
+                    this.classLoader = this.kBase.getRootClassLoader();
                 }
             }
             return Class.forName( name, false, this.classLoader );

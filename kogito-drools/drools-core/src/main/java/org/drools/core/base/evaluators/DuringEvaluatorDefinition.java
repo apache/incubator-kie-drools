@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.EventFactHandle;
@@ -286,7 +285,7 @@ public class DuringEvaluatorDefinition
                                 final InternalReadAccessor extractor,
                                 final InternalFactHandle object1,
                                 final FieldValue object2) {
-            throw new RuntimeDroolsException( "The 'during' operator can only be used to compare one event to another, and never to compare to literal constraints." );
+            throw new RuntimeException( "The 'during' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -391,7 +390,7 @@ public class DuringEvaluatorDefinition
                 this.endMinDev = parameters[2].longValue();
                 this.endMaxDev = parameters[3].longValue();
             } else {
-                throw new RuntimeDroolsException( "[During Evaluator]: Not possible to use " + parameters.length + " parameters: '" + paramText + "'" );
+                throw new RuntimeException( "[During Evaluator]: Not possible to use " + parameters.length + " parameters: '" + paramText + "'" );
             }
         }
 

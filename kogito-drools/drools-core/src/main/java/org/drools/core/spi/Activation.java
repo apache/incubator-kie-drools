@@ -24,11 +24,11 @@ import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.LogicalDependency;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.Rule;
 import org.kie.api.runtime.rule.AgendaGroup;
 import org.kie.api.runtime.rule.Match;
 
@@ -48,7 +48,7 @@ public interface Activation
      * @return
      *     The rule that was activated.
      */
-    Rule getRule();
+    RuleImpl getRule();
 
     Consequence getConsequence();
     

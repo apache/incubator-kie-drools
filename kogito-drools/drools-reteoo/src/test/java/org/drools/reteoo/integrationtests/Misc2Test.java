@@ -23,27 +23,29 @@ import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.conflict.SalienceConflictResolver;
-import org.drools.core.event.ActivationCancelledEvent;
-import org.drools.core.event.ActivationCreatedEvent;
-import org.drools.core.event.AfterActivationFiredEvent;
-import org.drools.core.event.BeforeActivationFiredEvent;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.io.impl.ByteArrayResource;
-import org.drools.core.util.FileManager;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.runtime.rule.impl.AgendaImpl;
+import org.drools.core.util.FileManager;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.Position;
+import org.kie.api.definition.type.PropertyReactive;
+import org.kie.api.event.kiebase.DefaultKieBaseEventListener;
+import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.AgendaGroupPoppedEvent;
 import org.kie.api.event.rule.AgendaGroupPushedEvent;
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
@@ -52,9 +54,10 @@ import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.KieBaseConfiguration;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -63,16 +66,9 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.api.definition.type.Modifies;
-import org.kie.api.definition.type.PropertyReactive;
-import org.kie.api.event.kiebase.DefaultKieBaseEventListener;
-import org.kie.api.event.kiebase.KieBaseEventListener;
-import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,7 +90,6 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Run all the tests with the ReteOO engine implementation
@@ -334,9 +329,9 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBaseEventListener listener = new DefaultKieBaseEventListener();
         kbase.addEventListener(listener);
         kbase.addEventListener(listener);
-        assertEquals(1, ((KnowledgeBaseImpl) kbase).getRuleBase().getRuleBaseEventListeners().size());
+        assertEquals(1, ((InternalKnowledgeBase) kbase).getKieBaseEventListeners().size());
         kbase.removeEventListener(listener);
-        assertEquals(0, ((KnowledgeBaseImpl) kbase).getRuleBase().getRuleBaseEventListeners().size());
+        assertEquals(0, ((InternalKnowledgeBase) kbase).getKieBaseEventListeners().size());
     }
 
     @Test
@@ -396,7 +391,7 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.addEventListener(agendaEventListener);
 
         FactHandle fact1 = ksession.insert(new Person("Mario", 38));
-        ((AgendaImpl)ksession.getAgenda()).activateRuleFlowGroup("test");
+        ((InternalAgenda)ksession.getAgenda()).activateRuleFlowGroup("test");
         ksession.fireAllRules();
         assertEquals(1, res.size());
         res.clear();
@@ -405,7 +400,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         FactHandle fact2 = ksession.insert(new Person("Mario", 48));
         try {
-            ((AgendaImpl)ksession.getAgenda()).activateRuleFlowGroup("test");
+            ((InternalAgenda)ksession.getAgenda()).activateRuleFlowGroup("test");
             ksession.fireAllRules();
             fail("should throw an Exception");
         } catch (Exception e) { }
@@ -415,7 +410,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         // try to reuse the ksession after the Exception
         FactHandle fact3 = ksession.insert(new Person("Mario", 38));
-        ((AgendaImpl)ksession.getAgenda()).activateRuleFlowGroup("test");
+        ((InternalAgenda)ksession.getAgenda()).activateRuleFlowGroup("test");
         ksession.fireAllRules();
         assertEquals(1, res.size());
         ksession.retract(fact3);

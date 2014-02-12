@@ -16,27 +16,8 @@
 
 package org.drools.core.management;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
-
-import javax.management.ObjectName;
-
-import org.drools.core.WorkingMemory;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.event.ActivationCancelledEvent;
-import org.drools.core.event.ActivationCreatedEvent;
-import org.drools.core.event.AfterActivationFiredEvent;
-import org.drools.core.event.AgendaEventListener;
-import org.drools.core.event.AgendaGroupPoppedEvent;
-import org.drools.core.event.AgendaGroupPushedEvent;
-import org.drools.core.event.BeforeActivationFiredEvent;
-import org.drools.core.event.RuleFlowGroupActivatedEvent;
-import org.drools.core.event.RuleFlowGroupDeactivatedEvent;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.management.KieSessionMonitoringImpl.AgendaStats.AgendaStatsData;
 import org.drools.core.management.KieSessionMonitoringImpl.ProcessStats.ProcessInstanceStatsData;
 import org.drools.core.management.KieSessionMonitoringImpl.ProcessStats.ProcessStatsData;
@@ -45,7 +26,19 @@ import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.BeforeMatchFiredEvent;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.management.KieSessionMonitoringMBean;
+
+import javax.management.ObjectName;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * An MBean to monitor a given knowledge session
@@ -57,14 +50,14 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
     private static final long NANO_TO_MILLISEC = 1000000;
     
     private InternalWorkingMemory ksession;
-    private InternalRuleBase kbase;
+    private InternalKnowledgeBase kbase;
     private ObjectName name;
     public AgendaStats agendaStats;
     public ProcessStats processStats;
     
     public KieSessionMonitoringImpl(InternalWorkingMemory ksession) {
         this.ksession = ksession;
-        this.kbase = (InternalRuleBase) ksession.getRuleBase();
+        this.kbase = ksession.getKnowledgeBase();
         this.name = DroolsManagementAgent.createObjectName(KSESSION_PREFIX + ":type="+kbase.getId()+",group=Sessions,sessionId=Session-"+ksession.getId());
         this.agendaStats = new AgendaStats();
         this.processStats = new ProcessStats();
@@ -93,7 +86,7 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
         return ksession;
     }
 
-    public InternalRuleBase getKbase() {
+    public InternalKnowledgeBase getKbase() {
         return kbase;
     }
 
@@ -185,7 +178,7 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
         return result;
     }
     
-    public static class AgendaStats implements AgendaEventListener {
+    public static class AgendaStats implements org.kie.api.event.rule.AgendaEventListener {
         
         private AgendaStatsData consolidated = new AgendaStatsData();
         private ConcurrentHashMap<String, AgendaStatsData> ruleStats = new ConcurrentHashMap<String, AgendaStatsData>();
@@ -210,62 +203,40 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
             this.ruleStats.clear();
         }
         
-        public void activationCancelled(ActivationCancelledEvent event,
-                                        WorkingMemory workingMemory) {
+        public void matchCancelled(MatchCancelledEvent event) {
             this.consolidated.matchesCancelled.incrementAndGet();
-            AgendaStatsData data = getRuleStatsInstance( event.getActivation().getRule().getName() );
+            AgendaStatsData data = getRuleStatsInstance( event.getMatch().getRule().getName() );
             data.matchesCancelled.incrementAndGet();
         }
 
-        public void activationCreated(ActivationCreatedEvent event,
-                                      WorkingMemory workingMemory) {
+        public void matchCreated(MatchCreatedEvent event) {
             this.consolidated.matchesCreated.incrementAndGet();
-            AgendaStatsData data = getRuleStatsInstance( event.getActivation().getRule().getName() );
+            AgendaStatsData data = getRuleStatsInstance( event.getMatch().getRule().getName() );
             data.matchesCreated.incrementAndGet();
         }
 
-        public void afterActivationFired(AfterActivationFiredEvent event,
-                                         WorkingMemory workingMemory) {
-            AgendaStatsData data = getRuleStatsInstance( event.getActivation().getRule().getName() );
+        public void afterMatchFired(AfterMatchFiredEvent event) {
+            AgendaStatsData data = getRuleStatsInstance( event.getMatch().getRule().getName() );
             this.consolidated.stopFireClock();
             data.stopFireClock();
             this.consolidated.matchesFired.incrementAndGet();
             data.matchesFired.incrementAndGet();
         }
 
-        public void agendaGroupPopped(AgendaGroupPoppedEvent event,
-                                      WorkingMemory workingMemory) {
-            // no stats gathered for now
-        }
+        public void agendaGroupPopped(org.kie.api.event.rule.AgendaGroupPoppedEvent event) { }
 
-        public void agendaGroupPushed(AgendaGroupPushedEvent event,
-                                      WorkingMemory workingMemory) {
-            // no stats gathered for now
-        }
+        public void agendaGroupPushed(org.kie.api.event.rule.AgendaGroupPushedEvent event) { }
 
-        public void afterRuleFlowGroupActivated(
-                RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
-            // no stats gathered for now
-        }
+        public void beforeRuleFlowGroupActivated(org.kie.api.event.rule.RuleFlowGroupActivatedEvent event) { }
 
-        public void afterRuleFlowGroupDeactivated(
-                RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
-            // no stats gathered for now
-        }
+        public void afterRuleFlowGroupActivated(org.kie.api.event.rule.RuleFlowGroupActivatedEvent event) { }
 
-        public void beforeRuleFlowGroupActivated(
-                RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
-            // no stats gathered for now
-        }
+        public void beforeRuleFlowGroupDeactivated(org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent event) { }
 
-        public void beforeRuleFlowGroupDeactivated(
-                RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
-            // no stats gathered for now
-        }
+        public void afterRuleFlowGroupDeactivated(org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent event) { }
 
-        public void beforeActivationFired(BeforeActivationFiredEvent event,
-                                          WorkingMemory workingMemory) {
-            AgendaStatsData data = getRuleStatsInstance( event.getActivation().getRule().getName() );
+        public void beforeMatchFired(BeforeMatchFiredEvent event) {
+            AgendaStatsData data = getRuleStatsInstance( event.getMatch().getRule().getName() );
             this.consolidated.startFireClock();
             data.startFireClock();
         }

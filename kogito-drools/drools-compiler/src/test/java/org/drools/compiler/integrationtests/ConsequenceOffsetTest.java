@@ -1,47 +1,45 @@
 package org.drools.compiler.integrationtests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DrlParser;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+import org.kie.internal.io.ResourceFactory;
 
 public class ConsequenceOffsetTest {
     
     @Test
     public void testConsequenceOffset() throws Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newInputStreamResource(ConsequenceOffsetTest.class.getResourceAsStream( "test_consequenceOffset.drl" )), ResourceType.DRL);
+
+        assertFalse(kbuilder.hasErrors());
+
         int offset = -1;
-        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
-        Reader reader = new InputStreamReader( ConsequenceOffsetTest.class.getResourceAsStream( "test_consequenceOffset.drl" ) );
-        
-        PackageDescr packageDescr = parser.parse(reader);
-        PackageBuilder packageBuilder = new PackageBuilder();
-        packageBuilder.addPackage(packageDescr);
-        assertEquals(false, packageBuilder.hasErrors());
-        for (Object o: packageDescr.getRules()) {
-            RuleDescr rule = (RuleDescr) o;
+        assertEquals(false, kbuilder.hasErrors());
+        for (RuleDescr rule : ((KnowledgeBuilderImpl)kbuilder).getPackageDescrs("com.sample").get(0).getRules()) {
             if (rule.getName().equals("test")) {
                 offset = rule.getConsequenceOffset();
             }
         }
-        
-        reader = new InputStreamReader( ConsequenceOffsetTest.class.getResourceAsStream( "test_consequenceOffset2.drl" ) );
-        packageDescr = parser.parse(reader);
-        packageBuilder = new PackageBuilder();
-        packageBuilder.addPackage(packageDescr);
-        reader = new InputStreamReader( ConsequenceOffsetTest.class.getResourceAsStream( "test_consequenceOffset.drl" ) );
-        packageDescr = parser.parse(reader);
-        packageBuilder.addPackage(packageDescr);
-        assertEquals(false, packageBuilder.hasErrors());
-        for (Object o: packageDescr.getRules()) {
-            RuleDescr rule = (RuleDescr) o;
+
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newInputStreamResource(ConsequenceOffsetTest.class.getResourceAsStream( "test_consequenceOffset2.drl" )), ResourceType.DRL);
+        kbuilder.add(ResourceFactory.newInputStreamResource(ConsequenceOffsetTest.class.getResourceAsStream( "test_consequenceOffset.drl" )), ResourceType.DRL);
+
+        assertFalse(kbuilder.hasErrors());
+        for (RuleDescr rule : ((KnowledgeBuilderImpl)kbuilder).getPackageDescrs("com.sample").get(0).getRules()) {
             if (rule.getName().equals("test")) {
                 assertEquals(offset, rule.getConsequenceOffset());
                 return;
@@ -52,12 +50,10 @@ public class ConsequenceOffsetTest {
     
     @Test
     public void testLargeSetOfImports() throws Exception {
-        Reader reader = new InputStreamReader( ConsequenceOffsetTest.class.getResourceAsStream( "test_consequenceOffsetImports.drl" ) );
-        DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
-        PackageDescr packageDescr = parser.parse(reader);
-        PackageBuilder packageBuilder = new PackageBuilder();
-        packageBuilder.addPackage(packageDescr);
-        assertEquals(false, packageBuilder.hasErrors());
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newInputStreamResource(ConsequenceOffsetTest.class.getResourceAsStream( "test_consequenceOffsetImports.drl" )), ResourceType.DRL);
+
+        assertFalse(kbuilder.hasErrors());
     }
     
 }

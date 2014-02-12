@@ -10,6 +10,7 @@ import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.FileManager;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.core.util.IoUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.api.builder.ReleaseId;
@@ -349,7 +350,7 @@ public class AbstractKnowledgeTest {
                 byte[] bytes = mfs.getFileContents( (MemoryFile) rs );
 
                 try {
-                    FileManager.write( new java.io.File( file1, ((File) rs).getName()), bytes);
+                    IoUtils.write(new java.io.File(file1, ((File) rs).getName()), bytes);
                 } catch ( IOException e ) {
                     fail( "Unable to write project to file system\n" + e.getMessage() );
                 }

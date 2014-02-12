@@ -3,17 +3,20 @@ package org.drools.compiler.phreak;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.PhreakNotNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.NotNode;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.core.rule.Rule;
 import org.junit.Test;
 
 import java.beans.IntrospectionException;
@@ -44,7 +47,7 @@ public class PhreakNotNodeTest {
         
         notNode.addTupleSink( sinkNode );
 
-        wm = (InternalWorkingMemory) buildContext.getRuleBase().newStatefulSession( true );
+        wm = ((StatefulKnowledgeSessionImpl)buildContext.getKnowledgeBase().newStatefulKnowledgeSession());
         
         bm =(BetaMemory)  wm.getNodeMemory( notNode );
         
@@ -129,14 +132,14 @@ public class PhreakNotNodeTest {
     public BuildContext createContext() {
     
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
-    
-        ReteooRuleBase rbase = new ReteooRuleBase( "ID",
+
+        KnowledgeBaseImpl rbase = new KnowledgeBaseImpl( "ID",
                                                    conf );
         BuildContext buildContext = new BuildContext( rbase,
                                                       rbase.getReteooBuilder().getIdGenerator() );
-    
-        Rule rule = new Rule( "rule1", "org.pkg1", null );
-        org.drools.core.rule.Package pkg = new org.drools.core.rule.Package( "org.pkg1" );
+
+        RuleImpl rule = new RuleImpl( "rule1", "org.pkg1", null );
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.pkg1" );
         pkg.getDialectRuntimeRegistry().setDialectData( "mvel", new MVELDialectRuntimeData() );
         pkg.addRule( rule );
         buildContext.setRule( rule );

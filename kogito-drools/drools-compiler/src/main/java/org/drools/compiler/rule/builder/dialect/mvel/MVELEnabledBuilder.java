@@ -12,10 +12,11 @@ import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELEnabledExpression;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.core.rule.Rule.SafeEnabled;
+import org.drools.core.definitions.rule.impl.RuleImpl.SafeEnabled;
 import org.drools.core.spi.KnowledgeHelper;
 import org.kie.internal.security.KiePolicyHelper;
 
@@ -33,7 +34,7 @@ public class MVELEnabledBuilder
 
             Map<String, Class< ? >> otherVars = new HashMap<String, Class< ? >>();
             otherVars.put( "rule",
-                           org.drools.core.rule.Rule.class );
+                           RuleImpl.class );
 
             Map<String, Declaration> declrs = context.getDeclarationResolver().getDeclarations( context.getRule() );
 
@@ -41,7 +42,7 @@ public class MVELEnabledBuilder
                                                                  context.getRuleDescr(),
                                                                  (String) context.getRuleDescr().getEnabled(),
                                                                  new BoundIdentifiers( context.getDeclarationResolver().getDeclarationClasses( declrs ),
-                                                                                       context.getPackageBuilder().getGlobals() ),
+                                                                                       context.getKnowledgeBuilder().getGlobals() ),
                                                                  otherVars );
 
             final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();

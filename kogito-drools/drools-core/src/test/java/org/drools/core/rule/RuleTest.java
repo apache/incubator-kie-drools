@@ -21,12 +21,13 @@ import java.util.concurrent.TimeUnit;
 
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.core.ClockType;
 import org.drools.core.base.EnabledBoolean;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.time.impl.PseudoClockScheduler;
 
@@ -34,9 +35,9 @@ public class RuleTest {
 
     @Test
     public void testDateEffective() {
-        WorkingMemory wm = new ReteooRuleBase("x", null).newStatefulSession();
+        WorkingMemory wm = new KnowledgeBaseImpl("x", null).newStatefulSession();
 
-        final Rule rule = new Rule( "myrule" );
+        final RuleImpl rule = new RuleImpl( "myrule" );
 
         assertTrue( rule.isEffective(null, new RuleTerminalNode(), wm ) );
 
@@ -59,9 +60,9 @@ public class RuleTest {
 
     @Test
     public void testDateExpires() throws Exception {
-        WorkingMemory wm = new ReteooRuleBase("x", null).newStatefulSession();
+        WorkingMemory wm = new KnowledgeBaseImpl("x", null).newStatefulSession();
         
-        final Rule rule = new Rule( "myrule" );
+        final RuleImpl rule = new RuleImpl( "myrule" );
 
         assertTrue( rule.isEffective(null, new RuleTerminalNode(), wm ) );
 
@@ -82,9 +83,9 @@ public class RuleTest {
 
     @Test
     public void testDateEffectiveExpires() {
-        WorkingMemory wm = new ReteooRuleBase("x",null).newStatefulSession();
+        WorkingMemory wm = new KnowledgeBaseImpl("x",null).newStatefulSession();
         
-        final Rule rule = new Rule( "myrule" );
+        final RuleImpl rule = new RuleImpl( "myrule" );
 
         final Calendar past = Calendar.getInstance();
         past.setTimeInMillis( 10 );
@@ -111,9 +112,9 @@ public class RuleTest {
 
     @Test
     public void testRuleEnabled() {
-        WorkingMemory wm = new ReteooRuleBase("x", null).newStatefulSession();
+        WorkingMemory wm = new KnowledgeBaseImpl("x", null).newStatefulSession();
         
-        final Rule rule = new Rule( "myrule" );
+        final RuleImpl rule = new RuleImpl( "myrule" );
         rule.setEnabled( EnabledBoolean.ENABLED_FALSE );
         assertFalse( rule.isEffective( null, new RuleTerminalNode(), wm ) );
 
@@ -131,12 +132,12 @@ public class RuleTest {
     public void testTimeMachine() {
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.PSEUDO_CLOCK );
-        WorkingMemory wm = new ReteooRuleBase("x", null).newStatefulSession(conf, null);
+        WorkingMemory wm = new KnowledgeBaseImpl("x", null).newStatefulSession(conf, null);
         
         final Calendar future = Calendar.getInstance();
         ((PseudoClockScheduler)wm.getSessionClock()).setStartupTime( future.getTimeInMillis() );
         
-        final Rule rule = new Rule( "myrule" );
+        final RuleImpl rule = new RuleImpl( "myrule" );
         rule.setEnabled( EnabledBoolean.ENABLED_TRUE );
         assertTrue( rule.isEffective(null, new RuleTerminalNode(), wm ) );
 

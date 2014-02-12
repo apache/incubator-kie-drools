@@ -1,33 +1,13 @@
 package org.drools.compiler.rule.builder.dialect.mvel;
 
-import org.drools.core.base.EvaluatorWrapper;
-import org.drools.core.base.TypeResolver;
-import org.drools.core.base.mvel.MVELCompilationUnit;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.ImportError;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.rule.builder.AccumulateBuilder;
-import org.drools.compiler.rule.builder.ConditionalBranchBuilder;
-import org.drools.compiler.rule.builder.ConsequenceBuilder;
-import org.drools.compiler.rule.builder.EnabledBuilder;
-import org.drools.compiler.rule.builder.EngineElementBuilder;
-import org.drools.compiler.rule.builder.EntryPointBuilder;
-import org.drools.compiler.rule.builder.FromBuilder;
-import org.drools.compiler.rule.builder.GroupElementBuilder;
-import org.drools.compiler.rule.builder.NamedConsequenceBuilder;
-import org.drools.compiler.rule.builder.PredicateBuilder;
-import org.drools.compiler.rule.builder.QueryBuilder;
-import org.drools.compiler.rule.builder.ReturnValueBuilder;
-import org.drools.compiler.rule.builder.RuleClassBuilder;
-import org.drools.compiler.rule.builder.RuleConditionBuilder;
-import org.drools.compiler.rule.builder.WindowReferenceBuilder;
-import org.drools.compiler.rule.builder.dialect.DialectUtil;
-import org.drools.core.util.StringUtils;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -48,21 +28,41 @@ import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.WindowReferenceDescr;
+import org.drools.compiler.rule.builder.AccumulateBuilder;
+import org.drools.compiler.rule.builder.CollectBuilder;
+import org.drools.compiler.rule.builder.ConditionalBranchBuilder;
+import org.drools.compiler.rule.builder.ConsequenceBuilder;
+import org.drools.compiler.rule.builder.EnabledBuilder;
+import org.drools.compiler.rule.builder.EngineElementBuilder;
+import org.drools.compiler.rule.builder.EntryPointBuilder;
+import org.drools.compiler.rule.builder.ForallBuilder;
+import org.drools.compiler.rule.builder.FromBuilder;
+import org.drools.compiler.rule.builder.GroupElementBuilder;
+import org.drools.compiler.rule.builder.NamedConsequenceBuilder;
+import org.drools.compiler.rule.builder.PackageBuildContext;
+import org.drools.compiler.rule.builder.PatternBuilder;
+import org.drools.compiler.rule.builder.PredicateBuilder;
+import org.drools.compiler.rule.builder.QueryBuilder;
+import org.drools.compiler.rule.builder.ReturnValueBuilder;
+import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.compiler.rule.builder.RuleClassBuilder;
+import org.drools.compiler.rule.builder.RuleConditionBuilder;
+import org.drools.compiler.rule.builder.SalienceBuilder;
+import org.drools.compiler.rule.builder.WindowReferenceBuilder;
+import org.drools.compiler.rule.builder.dialect.DialectUtil;
+import org.drools.compiler.rule.builder.dialect.java.JavaFunctionBuilder;
+import org.drools.core.base.EvaluatorWrapper;
+import org.drools.core.base.TypeResolver;
+import org.drools.core.base.mvel.MVELCompilationUnit;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.LineMappings;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.core.rule.Package;
-import org.drools.compiler.rule.builder.CollectBuilder;
-import org.drools.compiler.rule.builder.ForallBuilder;
-import org.drools.compiler.rule.builder.PackageBuildContext;
-import org.drools.compiler.rule.builder.PatternBuilder;
-import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.compiler.rule.builder.SalienceBuilder;
-import org.drools.compiler.rule.builder.dialect.java.JavaFunctionBuilder;
 import org.drools.core.spi.KnowledgeHelper;
-import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.drools.core.util.StringUtils;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.Resource;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.mvel2.MVEL;
 import org.mvel2.optimizers.OptimizerFactory;
 
@@ -135,10 +135,8 @@ public class MVELDialect
 
     protected MemoryResourceReader         src;
 
-    protected Package                      pkg;
+    protected InternalKnowledgePackage     pkg;
     private MVELDialectConfiguration       configuration;
-
-    private final PackageBuilder           pkgBuilder;
 
     private PackageRegistry                packageRegistry;
 
@@ -147,29 +145,34 @@ public class MVELDialect
 
     private MVELDialectRuntimeData         data;
 
+    private final ClassLoader              rootClassLoader;
+
     static {
         // always use mvel reflective optimizer
         OptimizerFactory.setDefaultOptimizer(OptimizerFactory.SAFE_REFLECTIVE);
     }
 
-    public MVELDialect(PackageBuilder builder,
+    public MVELDialect(ClassLoader rootClassLoader,
+                       KnowledgeBuilderConfigurationImpl pkgConf,
                        PackageRegistry pkgRegistry,
-                       Package pkg) {
-        this( builder,
+                       InternalKnowledgePackage pkg) {
+        this( rootClassLoader,
+              pkgConf,
               pkgRegistry,
               pkg,
               "mvel" );
     }
 
-    public MVELDialect(PackageBuilder builder,
+    public MVELDialect(ClassLoader rootClassLoader,
+                       KnowledgeBuilderConfigurationImpl pkgConf,
                        PackageRegistry pkgRegistry,
-                       Package pkg,
+                       InternalKnowledgePackage pkg,
                        String id) {
+        this.rootClassLoader = rootClassLoader;
         this.id = id;
         this.pkg = pkg;
-        this.pkgBuilder = builder;
         this.packageRegistry = pkgRegistry;
-        this.configuration = (MVELDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration( "mvel" );
+        this.configuration = (MVELDialectConfiguration) pkgConf.getDialectConfiguration("mvel");
         setLanguageLevel( this.configuration.getLangLevel() );
         this.strictMode = this.configuration.isStrict();
 
@@ -190,7 +193,7 @@ public class MVELDialect
             this.pkg.getDialectRuntimeRegistry().setDialectData( getId(),
                                                                  data );
             data.onAdd( this.pkg.getDialectRuntimeRegistry(),
-                        this.pkgBuilder.getRootClassLoader() );
+                        rootClassLoader );
         } else {
             data = (MVELDialectRuntimeData) this.pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
         }
@@ -207,7 +210,7 @@ public class MVELDialect
                                             ClassNotFoundException {
         results = (List<KnowledgeBuilderResult>) in.readObject();
         src = (MemoryResourceReader) in.readObject();
-        pkg = (Package) in.readObject();
+        pkg = (InternalKnowledgePackage) in.readObject();
         packageRegistry = (PackageRegistry) in.readObject();
         configuration = (MVELDialectConfiguration) in.readObject();
         strictMode = in.readBoolean();
@@ -442,7 +445,7 @@ public class MVELDialect
         String className = staticImportEntry.substring( 0, index );
         Class cls = null;
         try {
-            cls = pkgBuilder.getRootClassLoader().loadClass( className );
+            cls = rootClassLoader.loadClass(className);
         } catch ( ClassNotFoundException e ) {
         }
         if ( cls == null ) {

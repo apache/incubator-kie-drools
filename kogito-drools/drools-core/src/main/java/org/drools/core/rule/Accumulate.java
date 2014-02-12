@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.RuleTerminalNode;
@@ -132,11 +131,6 @@ public class Accumulate extends ConditionalElement
 
     /**
      * Executes the initialization block of code
-     *
-     * @param leftTuple tuple causing the rule fire
-     * @param declarations previous declarations
-     * @param workingMemory
-     * @throws Exception
      */
     public void init(final Object[] workingMemoryContext,
                      final Object[] context,
@@ -151,19 +145,12 @@ public class Accumulate extends ConditionalElement
                                            workingMemory );
             }
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( e );
+            throw new RuntimeException( e );
         }
     }
 
     /**
      * Executes the accumulate (action) code for the given fact handle
-     *
-     * @param leftTuple
-     * @param handle
-     * @param declarations
-     * @param localDeclarations
-     * @param workingMemory
-     * @throws Exception
      */
     public void accumulate(final Object[] workingMemoryContext,
                            final Object[] context,
@@ -181,19 +168,12 @@ public class Accumulate extends ConditionalElement
                                                  workingMemory );
             }
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( e );
+            throw new RuntimeException( e );
         }
     }
 
     /**
      * Executes the reverse (action) code for the given fact handle
-     *
-     * @param leftTuple
-     * @param handle
-     * @param declarations
-     * @param localDeclarations
-     * @param workingMemory
-     * @throws Exception
      */
     public void reverse(final Object[] workingMemoryContext,
                         final Object[] context,
@@ -211,18 +191,12 @@ public class Accumulate extends ConditionalElement
                                               workingMemory );
             }
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( e );
+            throw new RuntimeException( e );
         }
     }
 
     /**
      * Gets the result of the accumulation
-     *
-     * @param leftTuple
-     * @param declarations
-     * @param workingMemory
-     * @return
-     * @throws Exception
      */
     public Object[] getResult(final Object[] workingMemoryContext,
                             final Object[] context,
@@ -239,7 +213,7 @@ public class Accumulate extends ConditionalElement
             }
             return results;
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( e );
+            throw new RuntimeException( e );
         }
     }
 

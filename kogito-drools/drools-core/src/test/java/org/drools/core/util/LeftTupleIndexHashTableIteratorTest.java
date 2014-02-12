@@ -16,10 +16,7 @@
 
 package org.drools.core.util;
 
-import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatefulSession;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
@@ -28,6 +25,7 @@ import org.drools.core.base.evaluators.Operator;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.SingleBetaConstraints;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.util.index.LeftTupleIndexHashTable;
 import org.drools.core.util.index.LeftTupleIndexHashTable.FieldIndexHashTableFullIterator;
 import org.drools.core.util.index.LeftTupleList;
@@ -40,6 +38,8 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.InternalReadAccessor;
 import org.junit.Test;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,8 +72,8 @@ public class LeftTupleIndexHashTableIteratorTest {
 
         BetaMemory betaMemory = betaConstraints.createBetaMemory( config, NodeTypeEnums.JoinNode );
 
-        RuleBase rb = RuleBaseFactory.newRuleBase();
-        StatefulSession ss = rb.newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        StatefulKnowledgeSession ss = kBase.newStatefulKnowledgeSession();
 
         InternalFactHandle fh1 = (InternalFactHandle) ss.insert( new Foo( "brie",
                                                                           1 ) );

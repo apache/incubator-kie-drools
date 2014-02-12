@@ -1,17 +1,8 @@
 package org.drools.compiler.integrationtests;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
-
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatefulSession;
 import org.drools.core.audit.WorkingMemoryFileLogger;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.KieBase;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 

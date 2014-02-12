@@ -16,6 +16,8 @@
 
 package org.drools.core.common;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -35,7 +37,7 @@ public class PriorityQueueAgendaGroupFactory implements AgendaGroupFactory, Exte
         return INSTANCE;
     }
 
-    public InternalAgendaGroup createAgendaGroup(String name, InternalRuleBase ruleBase) {
-        return new AgendaGroupQueueImpl( name, ruleBase );
+    public InternalAgendaGroup createAgendaGroup(String name, InternalKnowledgeBase kBase) {
+        return new AgendaGroupQueueImpl( name, kBase );
     }
 }

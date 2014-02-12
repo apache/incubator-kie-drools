@@ -18,7 +18,6 @@ package org.drools.compiler.compiler;
 
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.core.rule.Package;
 
 public class FieldTemplateError extends DroolsError {
     private Package   pkg;

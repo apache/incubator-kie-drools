@@ -1,16 +1,15 @@
 package org.drools.reteoo.common;
 
-import org.drools.core.FactException;
-import org.drools.core.FactHandle;
-import org.drools.core.RuleBase;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 import org.kie.api.runtime.ObjectFilter;
 
@@ -32,39 +31,39 @@ public class ReteWorkingMemoryEntryPoint implements WorkingMemoryEntryPoint, Int
     }
 
     @Override
-    public FactHandle insert(Object object) throws FactException {
+    public FactHandle insert(Object object) {
         reteWm.initInitialFact();
         return delegate.insert(object);
     }
 
     @Override
-    public FactHandle insert(Object object, boolean dynamic) throws FactException {
+    public FactHandle insert(Object object, boolean dynamic) {
         reteWm.initInitialFact();
         return delegate.insert(object, dynamic);
     }
 
     @Override
-    public void retract(org.kie.api.runtime.rule.FactHandle handle) throws FactException {
-        delegate.retract( handle );
+    public void retract(FactHandle handle) {
+        delegate.retract(handle);
     }
 
     @Override
-    public void delete(org.kie.api.runtime.rule.FactHandle handle) {
+    public void delete(FactHandle handle) {
         delegate.delete(handle);
     }
 
     @Override
-    public void update(org.kie.api.runtime.rule.FactHandle handle, Object object) throws FactException {
+    public void update(FactHandle handle, Object object) {
         delegate.update(handle, object);
     }
 
     @Override
-    public org.kie.api.runtime.rule.FactHandle getFactHandle(Object object) {
-        return delegate.getFactHandle( object );
+    public FactHandle getFactHandle(Object object) {
+        return delegate.getFactHandle(object);
     }
 
     @Override
-    public Object getObject(org.kie.api.runtime.rule.FactHandle factHandle) {
+    public Object getObject(FactHandle factHandle) {
         return delegate.getObject(factHandle);
     }
 
@@ -109,17 +108,18 @@ public class ReteWorkingMemoryEntryPoint implements WorkingMemoryEntryPoint, Int
     }
 
     @Override
-    public RuleBase getRuleBase() {
-        return ((InternalWorkingMemoryEntryPoint)delegate).getRuleBase();
+    public InternalKnowledgeBase getKnowledgeBase() {
+        return ((InternalWorkingMemoryEntryPoint)delegate).getKnowledgeBase();
+
     }
 
     @Override
-    public void delete(FactHandle factHandle, Rule rule, Activation activation) throws FactException {
+    public void delete(FactHandle factHandle, RuleImpl rule, Activation activation) {
         ((InternalWorkingMemoryEntryPoint)delegate).delete(factHandle, rule, activation);
     }
 
     @Override
-    public void update(org.kie.api.runtime.rule.FactHandle handle, Object object, long mask, Class<?> modifiedClass, Activation activation) throws FactException {
+    public void update(FactHandle handle, Object object, long mask, Class<?> modifiedClass, Activation activation) {
         ((InternalWorkingMemoryEntryPoint)delegate).update(handle, object, mask, modifiedClass, activation);
     }
 

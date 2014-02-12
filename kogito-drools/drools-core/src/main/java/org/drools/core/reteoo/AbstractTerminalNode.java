@@ -8,11 +8,11 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.Rule;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
@@ -76,12 +76,12 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         }
 
         Class objectClass = ((ClassObjectType)objectType).getClassType();
-        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
+        TypeDeclaration typeDeclaration = context.getKnowledgeBase().getTypeDeclaration(objectClass);
         if (  typeDeclaration == null || !typeDeclaration.isPropertyReactive() ) {
             // if property specific is not on, then accept all modification propagations
             setDeclaredMask( -1L );
         } else  {
-            List<String> settableProperties = getSettableProperties(context.getRuleBase(), objectClass);
+            List<String> settableProperties = getSettableProperties(context.getKnowledgeBase(), objectClass);
             setDeclaredMask( calculatePositiveMask(pattern.getListenedProperties(), settableProperties) );
             setNegativeMask( calculateNegativeMask(pattern.getListenedProperties(), settableProperties) );
         }
@@ -111,7 +111,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
                                                this, getLeftInputOtnId(), inferredMask);
     }
     
-    public abstract Rule getRule();
+    public abstract RuleImpl getRule();
     
 
     public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
@@ -123,7 +123,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     /**
      * Creates and return the node memory
      */
-    public static void initPathMemory(PathMemory pmem, LeftTupleSource tupleSource, LeftTupleSource startTupleSource, InternalWorkingMemory wm, Rule removingRule) {
+    public static void initPathMemory(PathMemory pmem, LeftTupleSource tupleSource, LeftTupleSource startTupleSource, InternalWorkingMemory wm, RuleImpl removingRule) {
         int counter = 0;
         long allLinkedTestMask = 0;
 

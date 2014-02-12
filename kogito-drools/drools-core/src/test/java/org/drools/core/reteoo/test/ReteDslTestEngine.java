@@ -44,6 +44,10 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.util.Iterator;
@@ -60,7 +64,6 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.ModifyPreviousTuples;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.core.reteoo.RightTuple;
@@ -98,7 +101,6 @@ import org.drools.core.reteoo.test.parser.NodeTestDSLParser;
 import org.drools.core.reteoo.test.parser.NodeTestDSLParser.compilation_unit_return;
 import org.drools.core.reteoo.test.parser.NodeTestDSLTree;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
@@ -256,13 +258,13 @@ public class ReteDslTestEngine {
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
 
-        ReteooRuleBase rbase = new ReteooRuleBase( "ID",
-                                                   conf );
+        KnowledgeBaseImpl rbase = new KnowledgeBaseImpl( "ID",
+                                                         conf );
         BuildContext buildContext = new BuildContext( rbase,
                                                       rbase.getReteooBuilder().getIdGenerator() );
 
-        Rule rule = new Rule("rule1", "org.pkg1", null);
-        org.drools.core.rule.Package pkg = new org.drools.core.rule.Package( "org.pkg1" );
+        RuleImpl rule = new RuleImpl("rule1", "org.pkg1", null);
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.pkg1" );
         pkg.getDialectRuntimeRegistry().setDialectData( "mvel", new MVELDialectRuntimeData() );
         pkg.addRule( rule );
         
@@ -353,7 +355,7 @@ public class ReteDslTestEngine {
                           InternalWorkingMemory wm) {
         
         final boolean lrUnlinkingEnabled = ((BuildContext) context
-                .get( BUILD_CONTEXT )).getRuleBase().getConfiguration()
+                .get( BUILD_CONTEXT )).getKnowledgeBase().getConfiguration()
                 .isPhreakEnabled();
 
         try {

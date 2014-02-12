@@ -100,7 +100,7 @@ public static class @{className} implements java.io.Serializable {
 @end{}
 
 @declare{"consequenceMethod"}
-public static void @{methodName}(KnowledgeHelper drools@if{declarations != empty},@end{} @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}, org.drools.core.FactHandle @{declr.identifier}__Handle__ @end{","}@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} ) throws java.lang.Exception { org.kie.api.runtime.rule.RuleContext kcontext = drools;
+public static void @{methodName}(KnowledgeHelper drools@if{declarations != empty},@end{} @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}, org.kie.api.runtime.rule.FactHandle @{declr.identifier}__Handle__ @end{","}@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} ) throws java.lang.Exception { org.kie.api.runtime.rule.RuleContext kcontext = drools;
     @{text}
 }
 @end{}

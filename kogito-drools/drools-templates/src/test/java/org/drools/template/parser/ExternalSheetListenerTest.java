@@ -1,28 +1,31 @@
 package org.drools.template.parser;
 
-import org.drools.core.Agenda;
-import org.drools.core.FactException;
-import org.drools.core.FactHandle;
-import org.drools.core.QueryResults;
-import org.drools.core.RuleBase;
-import org.drools.core.StatefulSession;
-import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.event.AgendaEventListener;
-import org.drools.core.event.RuleBaseEventListener;
-import org.drools.core.event.WorkingMemoryEventListener;
-import org.drools.core.process.instance.WorkItemManager;
-import org.drools.core.spi.AgendaFilter;
-import org.drools.core.spi.AgendaGroup;
-import org.drools.core.spi.AsyncExceptionHandler;
-import org.drools.core.spi.GlobalResolver;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.command.Command;
+import org.kie.api.event.process.ProcessEventListener;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.logger.KieRuntimeLogger;
+import org.kie.api.runtime.Calendars;
+import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.Globals;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.LiveQuery;
+import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -105,20 +108,121 @@ public class ExternalSheetListenerTest {
 
     private class TestTemplateRuleBase implements TemplateRuleBase {
 
-        public StatefulSession newStatefulSession() {
-            return new StatefulSession() {
-                private static final long serialVersionUID = 510l;
+        public KieSession newStatefulSession() {
+            return new KieSession() {
 
-                public void addEventListener(WorkingMemoryEventListener arg0) {
+                @Override
+                public int getId() {
+                    return 0;
+                }
+
+                @Override
+                public void dispose() {
 
                 }
 
-                public void addEventListener(AgendaEventListener arg0) {
+                @Override
+                public void destroy() {
 
                 }
 
-                public FactHandle insert(Object fact)
-                        throws FactException {
+                @Override
+                public <T> T execute(Command<T> command) {
+                    return null;
+                }
+
+                @Override
+                public <T extends SessionClock> T getSessionClock() {
+                    return null;
+                }
+
+                @Override
+                public void setGlobal(String identifier, Object value) {
+
+                }
+
+                @Override
+                public Object getGlobal(String identifier) {
+                    return null;
+                }
+
+                @Override
+                public Globals getGlobals() {
+                    return null;
+                }
+
+                @Override
+                public Calendars getCalendars() {
+                    return null;
+                }
+
+                @Override
+                public Environment getEnvironment() {
+                    return null;
+                }
+
+                @Override
+                public KieBase getKieBase() {
+                    return null;
+                }
+
+                @Override
+                public void registerChannel(String name, Channel channel) {
+
+                }
+
+                @Override
+                public void unregisterChannel(String name) {
+
+                }
+
+                @Override
+                public Map<String, Channel> getChannels() {
+                    return null;
+                }
+
+                @Override
+                public KieSessionConfiguration getSessionConfiguration() {
+                    return null;
+                }
+
+                @Override
+                public void halt() {
+
+                }
+
+                @Override
+                public org.kie.api.runtime.rule.Agenda getAgenda() {
+                    return null;
+                }
+
+                @Override
+                public EntryPoint getEntryPoint(String name) {
+                    return null;
+                }
+
+                @Override
+                public Collection<? extends EntryPoint> getEntryPoints() {
+                    return null;
+                }
+
+                @Override
+                public org.kie.api.runtime.rule.QueryResults getQueryResults(String query, Object... arguments) {
+                    return null;
+                }
+
+                @Override
+                public LiveQuery openLiveQuery(String query, Object[] arguments, ViewChangedEventListener listener) {
+                    return null;
+                }
+
+                @Override
+                public String getEntryPointId() {
+                    return null;
+                }
+
+                @Override
+                public FactHandle insert(Object fact) {
                     if (fact instanceof Row) {
                         assertedRows.put((Row) fact, currentRow);
                         currentRow = new ArrayList<StringCell>();
@@ -128,298 +232,190 @@ public class ExternalSheetListenerTest {
                     return null;
                 }
 
-                public FactHandle insert(Object arg0, boolean arg1)
-                        throws FactException {
+                @Override
+                public void retract(org.kie.api.runtime.rule.FactHandle handle) {
+
+                }
+
+                @Override
+                public void delete(org.kie.api.runtime.rule.FactHandle handle) {
+
+                }
+
+                @Override
+                public void update(org.kie.api.runtime.rule.FactHandle handle, Object object) {
+
+                }
+
+                @Override
+                public org.kie.api.runtime.rule.FactHandle getFactHandle(Object object) {
                     return null;
                 }
 
-                public void clearAgenda() {
-
-                }
-
-                public void clearAgendaGroup(String arg0) {
-
-                }
-
-                public void dispose() {
-
-                }
-
-                public int fireAllRules() throws FactException {
-                    return 0;
-                }
-
-                public int fireAllRules(AgendaFilter arg0)
-                        throws FactException {
-                    return 0;
-                }
-
-                public Agenda getAgenda() {
+                @Override
+                public Object getObject(org.kie.api.runtime.rule.FactHandle factHandle) {
                     return null;
                 }
 
-                @SuppressWarnings("unchecked")
-                public List getAgendaEventListeners() {
+                @Override
+                public Collection<? extends Object> getObjects() {
                     return null;
                 }
 
-                public FactHandle getFactHandle(Object arg0) {
+                @Override
+                public Collection<? extends Object> getObjects(ObjectFilter filter) {
                     return null;
                 }
 
-                public AgendaGroup getFocus() {
+                @Override
+                public <T extends org.kie.api.runtime.rule.FactHandle> Collection<T> getFactHandles() {
                     return null;
                 }
 
-                public Object getGlobal(String arg0) {
+                @Override
+                public <T extends org.kie.api.runtime.rule.FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
                     return null;
                 }
 
-                public QueryResults getQueryResults(String arg0) {
+                @Override
+                public long getFactCount() {
+                    return 0L;
+                }
+
+                @Override
+                public KieRuntimeLogger getLogger() {
                     return null;
                 }
 
-                public RuleBase getRuleBase() {
+                @Override
+                public void addEventListener(ProcessEventListener listener) {
+
+                }
+
+                @Override
+                public void removeEventListener(ProcessEventListener listener) {
+
+                }
+
+                @Override
+                public Collection<ProcessEventListener> getProcessEventListeners() {
                     return null;
                 }
 
-                @SuppressWarnings("unchecked")
-                public List getWorkingMemoryEventListeners() {
-                    return null;
-                }
-
-                public void update(org.kie.api.runtime.rule.FactHandle arg0, Object arg1)
-                        throws FactException {
-
-                }
-
-                public void removeEventListener(WorkingMemoryEventListener arg0) {
-
-                }
-
-                public void removeEventListener(AgendaEventListener arg0) {
-
-                }
-
-                public void retract(org.kie.api.runtime.rule.FactHandle arg0) throws FactException {
-
-                }
-
-                public void delete(org.kie.api.runtime.rule.FactHandle arg0) throws FactException {
-
-                }
-
-                public void setAsyncExceptionHandler(AsyncExceptionHandler arg0) {
-
-                }
-
-                public void setFocus(String arg0) {
-
-                }
-
-                public void setFocus(AgendaGroup arg0) {
-
-                }
-
-                public void setGlobal(String arg0, Object arg1) {
-
-                }
-
-                public void setGlobalResolver(GlobalResolver globalResolver) {
-
-                }
-
+                @Override
                 public ProcessInstance startProcess(String processId) {
                     return null;
                 }
 
-                @SuppressWarnings("unchecked")
-                public Iterator iterateFactHandles() {
+                @Override
+                public ProcessInstance startProcess(String processId, Map<String, Object> parameters) {
                     return null;
                 }
 
-                @SuppressWarnings("unchecked")
-                public Iterator iterateFactHandles(ObjectFilter filter) {
+                @Override
+                public ProcessInstance createProcessInstance(String processId, Map<String, Object> parameters) {
                     return null;
                 }
 
-                @SuppressWarnings("unchecked")
-                public Iterator iterateObjects() {
+                @Override
+                public ProcessInstance startProcessInstance(long processInstanceId) {
                     return null;
                 }
 
-                @SuppressWarnings("unchecked")
-                public Iterator iterateObjects(ObjectFilter filter) {
+                @Override
+                public void signalEvent(String type, Object event) {
+
+                }
+
+                @Override
+                public void signalEvent(String type, Object event, long processInstanceId) {
+
+                }
+
+                @Override
+                public Collection<ProcessInstance> getProcessInstances() {
                     return null;
                 }
 
-                public QueryResults getQueryResults(String query,
-                                                    Object[] arguments) {
-
+                @Override
+                public ProcessInstance getProcessInstance(long processInstanceId) {
                     return null;
                 }
 
-                public void modifyInsert(FactHandle factHandle,
-                                         Object object) {
+                @Override
+                public ProcessInstance getProcessInstance(long processInstanceId, boolean readonly) {
+                    return null;
+                }
 
+                @Override
+                public void abortProcessInstance(long processInstanceId) {
 
                 }
 
-                public void modifyRetract(FactHandle factHandle) {
+                @Override
+                public org.kie.api.runtime.process.WorkItemManager getWorkItemManager() {
+                    return null;
+                }
 
+                @Override
+                public void addEventListener(RuleRuntimeEventListener listener) {
 
                 }
 
-                public void halt() {
-
+                @Override
+                public void removeEventListener(RuleRuntimeEventListener listener) {
 
                 }
 
-                public int fireAllRules(int fireLimit) throws FactException {
+                @Override
+                public Collection<RuleRuntimeEventListener> getRuleRuntimeEventListeners() {
+                    return null;
+                }
+
+                @Override
+                public void addEventListener(org.kie.api.event.rule.AgendaEventListener listener) {
+
+                }
+
+                @Override
+                public void removeEventListener(org.kie.api.event.rule.AgendaEventListener listener) {
+
+                }
+
+                @Override
+                public Collection<org.kie.api.event.rule.AgendaEventListener> getAgendaEventListeners() {
+                    return null;
+                }
+
+                @Override
+                public int fireAllRules() {
                     return 0;
                 }
 
-                public int fireAllRules(AgendaFilter agendaFilter,
-                                        int fireLimit) throws FactException {
-
+                @Override
+                public int fireAllRules(int max) {
                     return 0;
                 }
 
-
-                public GlobalResolver getGlobalResolver() {
-
-                    return null;
+                @Override
+                public int fireAllRules(org.kie.api.runtime.rule.AgendaFilter agendaFilter) {
+                    return 0;
                 }
 
-                @SuppressWarnings("unchecked")
-                public List getRuleFlowEventListeners() {
-
-                    return null;
+                @Override
+                public int fireAllRules(org.kie.api.runtime.rule.AgendaFilter agendaFilter, int max) {
+                    return 0;
                 }
 
-                public void clearActivationGroup(String group) {
-
-
-                }
-
-                public void clearRuleFlowGroup(String group) {
-
-
-                }
-
-                public void addEventListener(RuleBaseEventListener listener) {
-
-
-                }
-
-                @SuppressWarnings("unchecked")
-                public List getRuleBaseEventListeners() {
-
-                    return null;
-                }
-
-                public void removeEventListener(RuleBaseEventListener listener) {
-
-
-                }
-
-                @SuppressWarnings("unchecked")
-                public List getRuleBaseUpdateListeners() {
-
-                    return null;
-                }
-
-                public ProcessInstance getProcessInstance(long id) {
-
-                    return null;
-                }
-
-                public ProcessInstance getProcessInstance(long id, boolean readOnly) {
-                    
-                    return null;
-                }
-
-                public WorkItemManager getWorkItemManager() {
-
-                    return null;
-                }
-
-                @SuppressWarnings("unchecked")
-                public Collection getProcessInstances() {
-
-                    return null;
-                }
-
-                public ProcessInstance startProcess(String processId,
-                                                    Map<String, Object> parameters) {
-
-                    return null;
-                }
-
-                public FactHandle getFactHandleByIdentity(Object object) {
-
-                    return null;
-                }
-
-                public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String id) {
-
-                    return null;
-                }
-
-                public SessionClock getSessionClock() {
-                    return null;
-                }
-
+                @Override
                 public void fireUntilHalt() {
-                    // TODO Auto-generated method stub
 
                 }
 
-                public void fireUntilHalt(AgendaFilter agendaFilter) {
-                    // TODO Auto-generated method stub
+                @Override
+                public void fireUntilHalt(org.kie.api.runtime.rule.AgendaFilter agendaFilter) {
 
                 }
-
-                public Object getObject(org.kie.api.runtime.rule.FactHandle handle) {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                public Environment getEnvironment() {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                public Collection<? extends org.kie.api.runtime.rule.FactHandle> getFactHandles() {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                public Collection<? extends org.kie.api.runtime.rule.FactHandle> getFactHandles(ObjectFilter filter) {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                public Collection<? extends Object> getObjects() {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                public Collection<? extends Object> getObjects(ObjectFilter filter) {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                public String getEntryPointId() {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                public long getFactCount() {
-                    // TODO Auto-generated method stub
-                    return 0;
-                }
-
             };
         }
     }

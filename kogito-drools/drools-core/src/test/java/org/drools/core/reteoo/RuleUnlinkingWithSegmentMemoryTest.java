@@ -1,21 +1,16 @@
 package org.drools.core.reteoo;
 
-import static org.junit.Assert.*;
-
-import java.util.List;
-
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.Rule;
 import org.drools.core.rule.GroupElement.Type;
 import org.drools.core.spi.PropagationContext;
 import org.junit.Test;
@@ -23,8 +18,12 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.conf.RuleEngineOption;
 
+import java.util.List;
+
+import static org.junit.Assert.*;
+
 public class RuleUnlinkingWithSegmentMemoryTest {
-    ReteooRuleBase     ruleBase;
+    InternalKnowledgeBase kBase;
     BuildContext       buildContext;
     PropagationContext context;
 
@@ -43,10 +42,10 @@ public class RuleUnlinkingWithSegmentMemoryTest {
     RuleTerminalNode   rtn1;
     RuleTerminalNode   rtn2;
     RuleTerminalNode   rtn3;
-    
-    Rule               rule1;
-    Rule               rule2;
-    Rule               rule3;
+
+    RuleImpl           rule1;
+    RuleImpl           rule2;
+    RuleImpl           rule3;
 
     static final int   JOIN_NODE             = 0;
     static final int   EXISTS_NODE           = 1;
@@ -56,7 +55,7 @@ public class RuleUnlinkingWithSegmentMemoryTest {
     private NetworkNode createNetworkNode(int id,
                                           int type,
                                           LeftTupleSource leftTupleSource,
-                                          Rule rule) {
+                                          RuleImpl rule) {
         MockObjectSource mockObjectSource = new MockObjectSource( 8 );
 
         LeftTupleSink networkNode = null;
@@ -90,13 +89,13 @@ public class RuleUnlinkingWithSegmentMemoryTest {
     }
     
     public void setUp(int type) {
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = org.kie.internal.KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( RuleEngineOption.PHREAK );
-        ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf);
-        
-        buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
+        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
 
-        PropagationContextFactory pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        buildContext = new BuildContext( kBase, kBase.getReteooBuilder().getIdGenerator() );
+
+        PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
 
         ObjectTypeNode otn = new ObjectTypeNode( 4, null, new ClassObjectType( String.class ), buildContext );
@@ -105,14 +104,14 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         n1 = (BetaNode) createNetworkNode( 10, type, lian, null );
         n2 = (BetaNode) createNetworkNode( 11, type, n1, null );
         n3 = (BetaNode) createNetworkNode( 12, type, n2, null );
-        rule1 =  new Rule("rule1");
+        rule1 =  new RuleImpl("rule1");
         rule1.setActivationListener( "agenda" );
         rtn1 = ( RuleTerminalNode ) createNetworkNode( 18, RULE_TERMINAL_NODE, n3, rule1);
         
       
         n4 = (BetaNode) createNetworkNode( 13, type, n3, null );
         n5 = (BetaNode) createNetworkNode( 14, type, n4, null );
-        rule2 =  new Rule("rule2");
+        rule2 =  new RuleImpl("rule2");
         rule2.setActivationListener( "agenda" );          
         rtn2 = ( RuleTerminalNode ) createNetworkNode( 19, RULE_TERMINAL_NODE, n5, rule2 );        
         
@@ -120,7 +119,7 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         n6 = (BetaNode) createNetworkNode( 15, type, n5, null );
         n7 = (BetaNode) createNetworkNode( 16, type, n6, null );
         n8 = (BetaNode) createNetworkNode( 17, type, n7, null );
-        rule3 =  new Rule("rule3");
+        rule3 =  new RuleImpl("rule3");
         rule3.setActivationListener( "agenda" ); 
         rtn3 = ( RuleTerminalNode ) createNetworkNode( 20, RULE_TERMINAL_NODE, n8, rule3 );
 
@@ -152,9 +151,10 @@ public class RuleUnlinkingWithSegmentMemoryTest {
     public void testRuleSegmentsAllLinkedTestMasks() {
         setUp( JOIN_NODE );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = org.kie.internal.KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( RuleEngineOption.PHREAK );
-        AbstractWorkingMemory wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration) kconf) );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl( 1, kBase );
         
         PathMemory rs = (PathMemory) wm.getNodeMemory( rtn1 );
         assertFalse( rs.isRuleLinked() );
@@ -174,9 +174,10 @@ public class RuleUnlinkingWithSegmentMemoryTest {
     public void testSegmentNodeReferencesToSegments() {
         setUp( JOIN_NODE );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = org.kie.internal.KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( RuleEngineOption.PHREAK );
-        AbstractWorkingMemory wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl( 1, kBase );
 
         BetaMemory bm = null;
         List<PathMemory> list;
@@ -278,9 +279,10 @@ public class RuleUnlinkingWithSegmentMemoryTest {
     public void testRuleSegmentLinking() {
         setUp( JOIN_NODE );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = org.kie.internal.KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( RuleEngineOption.PHREAK );
-        AbstractWorkingMemory wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl( 1, kBase );
 
         BetaMemory bm = null;
         List<PathMemory> list;

@@ -1,20 +1,15 @@
 package org.drools.reteoo.common;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatefulSession;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.LogicalDependency;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.conf.MBeansOption;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.conf.RuleEngineOption;
 
@@ -27,10 +22,10 @@ public class AgendaItemTest {
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setOption( RuleEngineOption.RETEOO );
 
-        ReteooRuleBase rbase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase(conf);
-        StatefulSession wm = rbase.newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(conf);
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
+        InternalAgenda agenda = ( InternalAgenda ) ksession.getAgenda();
         AgendaItem item1 = new RuleTerminalNodeLeftTuple();
         AgendaItem item2 = new RuleTerminalNodeLeftTuple();
         AgendaItem item3 = new RuleTerminalNodeLeftTuple();
@@ -38,7 +33,7 @@ public class AgendaItemTest {
         agenda.createAgendaItem((LeftTuple)item2, 0, null, null, null, null);
         agenda.createAgendaItem((LeftTuple)item3, 0, null, null, null, null);
         
-        DefaultKnowledgeHelper kcontext = new DefaultKnowledgeHelper( wm );
+        DefaultKnowledgeHelper kcontext = new DefaultKnowledgeHelper( ksession );
         kcontext.setActivation( item1 );
         
         // set blockers
@@ -59,7 +54,7 @@ public class AgendaItemTest {
         assertEquals( 1, item2.getBlockers().size() );
         assertEquals( 2, item3.getBlockers().size() );        
         
-        // now check correctly unblocks when parent activation is retracted
+        // now check correctly unblocks when parent activation is deleted
         
         //agenda.createAgendaItem( tuple, salience, context, rtn )-
     }
@@ -69,10 +64,10 @@ public class AgendaItemTest {
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setOption( RuleEngineOption.RETEOO );
 
-        ReteooRuleBase rbase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase(conf);
-        StatefulSession wm = rbase.newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(conf);
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
+        InternalAgenda agenda = ( InternalAgenda ) ksession.getAgenda();
         AgendaItem item1 = new RuleTerminalNodeLeftTuple();
         AgendaItem item2 = new RuleTerminalNodeLeftTuple();
         AgendaItem item3 = new RuleTerminalNodeLeftTuple();
@@ -81,7 +76,7 @@ public class AgendaItemTest {
         agenda.createAgendaItem((LeftTuple)item3, 0, null, null, null, null);
         
         // use same data structure as testAddition
-        DefaultKnowledgeHelper kcontext = new DefaultKnowledgeHelper( wm );
+        DefaultKnowledgeHelper kcontext = new DefaultKnowledgeHelper( ksession );
         kcontext.setActivation( item1 );
         
         // set blockers 
@@ -93,7 +88,7 @@ public class AgendaItemTest {
         kcontext.setActivation( item2 );
         kcontext.blockMatch( item3 );
         
-        // Check all references are updated correctly when item1 is retracted
+        // Check all references are updated correctly when item1 is deleted
         item1.removeAllBlockersAndBlocked(agenda);
         assertEquals( 0, item2.getBlockers().size() );        
         assertEquals( 1, item2.getBlocked().size() );
@@ -138,10 +133,10 @@ public class AgendaItemTest {
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setOption( RuleEngineOption.RETEOO );
 
-        ReteooRuleBase rbase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase(conf);
-        StatefulSession wm = rbase.newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(conf);
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
+        InternalAgenda agenda = ( InternalAgenda ) ksession.getAgenda();
         AgendaItem item1 = new RuleTerminalNodeLeftTuple();
         AgendaItem item2 = new RuleTerminalNodeLeftTuple();
         AgendaItem item3 = new RuleTerminalNodeLeftTuple();
@@ -150,7 +145,7 @@ public class AgendaItemTest {
         agenda.createAgendaItem((LeftTuple)item3, 0, null, null, null, null);
         
         // use same data structure as testAddition
-        DefaultKnowledgeHelper kcontext = new DefaultKnowledgeHelper( wm );
+        DefaultKnowledgeHelper kcontext = new DefaultKnowledgeHelper( ksession );
         kcontext.setActivation( item1 );
         kcontext.blockMatch( item3 );
         
@@ -175,10 +170,10 @@ public class AgendaItemTest {
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setOption( RuleEngineOption.RETEOO );
 
-        ReteooRuleBase rbase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase(conf);
-        StatefulSession wm = rbase.newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(conf);
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
+        InternalAgenda agenda = ( InternalAgenda ) ksession.getAgenda();
         AgendaItem item1 = new RuleTerminalNodeLeftTuple();
         AgendaItem item2 = new RuleTerminalNodeLeftTuple();
         AgendaItem item3 = new RuleTerminalNodeLeftTuple();
@@ -189,7 +184,7 @@ public class AgendaItemTest {
         agenda.createAgendaItem((LeftTuple)item4, 0, null, null, null, null);
         
         // use same data structure as testAddition
-        DefaultKnowledgeHelper kcontext = new DefaultKnowledgeHelper( wm );
+        DefaultKnowledgeHelper kcontext = new DefaultKnowledgeHelper( ksession );
         kcontext.setActivation( item1 );
         
         // set blockers 

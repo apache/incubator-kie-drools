@@ -16,18 +16,18 @@
 
 package org.drools.core.common;
 
+import org.drools.core.spi.InternalActivationGroup;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.ActivationGroup;
 
 public class ActivationGroupNode extends AbstractBaseLinkedListNode<ActivationGroupNode> {
 
     private final Activation      activation;
 
-    private final ActivationGroup activationGroup;
+    private final InternalActivationGroup activationGroup;
 
     public ActivationGroupNode(final Activation activation,
-                               final ActivationGroup activationGroup) {
+                               final InternalActivationGroup activationGroup) {
         super();
         this.activation = activation;
         this.activationGroup = activationGroup;
@@ -37,7 +37,7 @@ public class ActivationGroupNode extends AbstractBaseLinkedListNode<ActivationGr
         return this.activation;
     }
 
-    public ActivationGroup getActivationGroup() {
+    public InternalActivationGroup getActivationGroup() {
         return this.activationGroup;
     }
 

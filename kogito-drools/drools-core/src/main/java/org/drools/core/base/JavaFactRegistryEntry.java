@@ -16,12 +16,12 @@
 
 package org.drools.core.base;
 
-import org.drools.core.FactHandle;
 import org.drools.core.WorkingMemory;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class JavaFactRegistryEntry {
     private WorkingMemory workingMemory;
-    private FactHandle    handle;
+    private FactHandle handle;
 
     public JavaFactRegistryEntry(final WorkingMemory workingMemory,
                                  final FactHandle handle) {

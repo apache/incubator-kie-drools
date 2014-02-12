@@ -39,6 +39,4 @@ public interface RuleFlowGroup extends org.kie.api.runtime.rule.RuleFlowGroup {
      * activations when it was activated, it will be deactivated immediately.
      */
     void setAutoDeactivate(boolean autoDeactivate);
-
-    void clear();
 }

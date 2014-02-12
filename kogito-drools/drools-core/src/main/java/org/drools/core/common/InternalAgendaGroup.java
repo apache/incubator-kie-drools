@@ -33,29 +33,28 @@ public interface InternalAgendaGroup extends AgendaGroup {
 
     boolean isAutoDeactivate();
 
-    void clear();
+    void reset();
 
+    void add(Activation activation);
 
-    public void add(Activation activation);
+    Activation peek();
 
-    public Activation peek();
+    Activation remove();
 
-    public Activation remove();
+    void remove(Activation activation);
 
-    public void remove(Activation activation);
-
-    public void setActive(boolean activate);
+    void setActive(boolean activate);
 
     
-    public Activation[] getAndClear();
+    Activation[] getAndClear();
 
-    public void setActivatedForRecency(long recency);
+    void setActivatedForRecency(long recency);
     
-    public long getActivatedForRecency();
+    long getActivatedForRecency();
     
-    public void setClearedForRecency(long recency);
+    void setClearedForRecency(long recency);
     
-    public long getClearedForRecency();
+    long getClearedForRecency();
 
     void addNodeInstance(Long processInstanceId, String nodeInstanceId);
 

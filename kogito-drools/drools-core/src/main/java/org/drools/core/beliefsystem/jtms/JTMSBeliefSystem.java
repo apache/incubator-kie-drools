@@ -8,7 +8,7 @@ import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
 import org.drools.core.common.TruthMaintenanceSystem;
-import org.drools.core.rule.Rule;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
@@ -155,13 +155,13 @@ public class JTMSBeliefSystem
             if ( wasNegated ) {
                 defEP.getObjectStore().addHandle( beliefSet.getFactHandle(), beliefSet.getFactHandle().getObject() ); // was negated, so add back in, so main retract works
                 InternalFactHandle fh = jtmsBeliefSet.getNegativeFactHandle();
-                ((NamedEntryPoint) fh.getEntryPoint()).delete( fh, (Rule) context.getRuleOrigin(), node.getJustifier() );
+                ((NamedEntryPoint) fh.getEntryPoint()).delete( fh, context.getRuleOrigin(), node.getJustifier() );
             }
 
             if ( !(context.getType() == PropagationContext.DELETION && context.getFactHandle() == beliefSet.getFactHandle()) ) { // don't start retract, if the FH is already in the process of being retracted
                 // do not if the FH is the root of the context, it means it's already in the process of retraction
                 InternalFactHandle fh = jtmsBeliefSet.getFactHandle();
-                ((NamedEntryPoint) fh.getEntryPoint()).delete( fh, (Rule) context.getRuleOrigin(), node.getJustifier() );
+                ((NamedEntryPoint) fh.getEntryPoint()).delete( fh, context.getRuleOrigin(), node.getJustifier() );
             }
 
         } else if ( wasConflicting && !jtmsBeliefSet.isUndecided() ) {

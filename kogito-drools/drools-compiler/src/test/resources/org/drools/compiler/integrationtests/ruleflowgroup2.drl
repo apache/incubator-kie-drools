@@ -1,6 +1,7 @@
 package com.sample
  
-import java.util.List;
+import java.util.List
+import org.drools.core.common.InternalAgenda;
 
 global List list
 
@@ -9,7 +10,7 @@ rule "Sample Rule" @Eager(true) ruleflow-group "Group1" salience 20
         s: String()
     then
         System.out.println("Clearing ruleflow-group");
-        drools.getWorkingMemory().getAgenda().clearAndCancelRuleFlowGroup("Group1");
+        ((InternalAgenda)drools.getWorkingMemory().getAgenda()).clearAndCancelRuleFlowGroup("Group1");
 end
 
 rule "Sample Rule 2"  @Eager(true) ruleflow-group "Group1"

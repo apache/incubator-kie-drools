@@ -17,7 +17,7 @@
 package org.drools.reteoo.integrationtests;
 
 import org.drools.compiler.Cheese;
-import org.drools.reteoo.integrationtests.CommonTestMethodBase;
+import org.drools.core.common.InternalAgenda;
 import org.drools.compiler.FactA;
 import org.drools.compiler.FactB;
 import org.drools.compiler.Order;
@@ -29,13 +29,10 @@ import org.drools.compiler.StockTick;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
-import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
-import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.util.DroolsStreamUtils;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -63,7 +60,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -768,15 +764,15 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
         assertEquals( 2, kbase.getKnowledgePackages().size() );
         assertEquals( 4,
-                      ((InternalRuleBase)kbase.getRuleBase()).getPackagesMap().get("org.drools.compiler").getRules().length );
+                      kbase.getPackagesMap().get("org.drools.compiler").getRules().size() );
 
         kbase.removeRule( "org.drools.compiler", "Apply Discount on all books" );
         assertEquals( 3,
-                      ((InternalRuleBase)kbase.getRuleBase()).getPackagesMap().get("org.drools.compiler").getRules().length );
+                      kbase.getPackagesMap().get("org.drools.compiler").getRules().size() );
 
         kbase.removeRule( "org.drools.compiler", "like book" );
         assertEquals( 2,
-                      ((InternalRuleBase)kbase.getRuleBase()).getPackagesMap().get("org.drools.compiler").getRules().length );
+                      kbase.getPackagesMap().get("org.drools.compiler").getRules().size() );
 
         kbase.removeKnowledgePackage( "org.drools.compiler" );
         assertEquals( 1,
@@ -1203,7 +1199,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         }
 
         kbase.addKnowledgePackages( loadKnowledgePackages( "test_JBRULES_2206_1.drl" ));
-        ((AgendaImpl) session.getAgenda()).getAgenda().evaluateEagerList();
+        ((InternalAgenda) session.getAgenda()).evaluateEagerList();
 
         // two matching rules were added, so 2 activations should have been created 
         verify( ael, times( 2 ) ).matchCreated(any(MatchCreatedEvent.class));
@@ -1212,7 +1208,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         assertEquals( 2, fireCount );
 
         kbase.addKnowledgePackages( loadKnowledgePackages( "test_JBRULES_2206_2.drl" ));
-        ((AgendaImpl) session.getAgenda()).getAgenda().evaluateEagerList();
+        ((InternalAgenda) session.getAgenda()).evaluateEagerList();
 
         // one rule was overridden and should activate 
         verify( ael, times( 3 ) ).matchCreated(any(MatchCreatedEvent.class));

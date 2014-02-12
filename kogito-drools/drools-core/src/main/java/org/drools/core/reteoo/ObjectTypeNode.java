@@ -20,7 +20,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.ValueType;
-import org.drools.core.common.AbstractWorkingMemory.WorkingMemoryReteExpireAction;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
@@ -129,9 +129,9 @@ public class ObjectTypeNode extends ObjectSource
                           final BuildContext context) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
+               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
                source,
-               context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
+               context.getKnowledgeBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.objectType = objectType;
         idGenerator = new IdGenerator(id);
 
@@ -209,7 +209,7 @@ public class ObjectTypeNode extends ObjectSource
         // this is here as not all objectTypeNodes used ClassObjectTypes in packages (i.e. rules with those nodes did not exist yet)
         // and thus have no wiring targets
         if ( objectType instanceof ClassObjectType ) {
-            objectType = ((ReteooRuleBase) ((DroolsObjectInputStream) in).getRuleBase()).getClassFieldAccessorCache().getClassObjectType( (ClassObjectType) objectType );
+            objectType = ((DroolsObjectInputStream) in).getKnowledgeBase().getClassFieldAccessorCache().getClassObjectType( (ClassObjectType) objectType );
         }
 
         objectMemoryEnabled = in.readBoolean();
@@ -459,7 +459,7 @@ public class ObjectTypeNode extends ObjectSource
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final InternalWorkingMemory[] workingMemories) {
-        if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() && context.getCleanupAdapter() != null ) {
+        if ( !context.getKnowledgeBase().getConfiguration().isPhreakEnabled() && context.getCleanupAdapter() != null ) {
             for ( InternalWorkingMemory workingMemory : workingMemories ) {
                 CleanupAdapter adapter = context.getCleanupAdapter();
                 final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory( this );
@@ -687,10 +687,10 @@ public class ObjectTypeNode extends ObjectSource
             InternalFactHandle factHandle = inCtx.handles.get( inCtx.readInt() );
 
             String entryPointId = inCtx.readUTF();
-            EntryPointNode epn = ((ReteooRuleBase) inCtx.wm.getRuleBase()).getRete().getEntryPointNode( new EntryPointId( entryPointId ) );
+            EntryPointNode epn = inCtx.wm.getKnowledgeBase().getRete().getEntryPointNode( new EntryPointId( entryPointId ) );
 
             String className = inCtx.readUTF();
-            Class< ? > cls = ((ReteooRuleBase) inCtx.wm.getRuleBase()).getRootClassLoader().loadClass( className );
+            Class< ? > cls = inCtx.wm.getKnowledgeBase().getRootClassLoader().loadClass( className );
             ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType( cls ) );
 
             long nextTimeStamp = inCtx.readLong();
@@ -712,8 +712,8 @@ public class ObjectTypeNode extends ObjectSource
                                 Timer _timer) throws ClassNotFoundException {
             ExpireTimer _expire = _timer.getExpire();
             InternalFactHandle factHandle = inCtx.handles.get( _expire.getHandleId() );
-            EntryPointNode epn = ((ReteooRuleBase)inCtx.wm.getRuleBase()).getRete().getEntryPointNode( new EntryPointId( _expire.getEntryPointId() ) );
-            Class<?> cls = ((ReteooRuleBase)inCtx.wm.getRuleBase()).getRootClassLoader().loadClass( _expire.getClassName() );
+            EntryPointNode epn = inCtx.wm.getKnowledgeBase().getRete().getEntryPointNode( new EntryPointId( _expire.getEntryPointId() ) );
+            Class<?> cls = inCtx.wm.getKnowledgeBase().getRootClassLoader().loadClass( _expire.getClassName() );
             ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType( cls ) );
             
             TimerService clock = inCtx.wm.getTimerService();

@@ -29,9 +29,11 @@ import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.List;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.compiler.compiler.DrlParser;
-import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.util.DateUtils;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
@@ -40,9 +42,7 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.Package;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.Rule;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleBuilder;
 import org.drools.core.rule.constraint.MvelConstraint;
@@ -54,16 +54,13 @@ import org.kie.internal.builder.conf.LanguageLevelOption;
 
 public class RuleBuilderTest {
 
-    /**
-     * Test method for {@link org.drools.compiler.rule.builder.RuleBuilder#build(org.drools.core.rule.Package, org.drools.compiler.lang.descr.RuleDescr)}.
-     */
     @Test
     public void testBuild() throws Exception {
         final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
 
-        final PackageBuilder pkgBuilder = new PackageBuilder();
-        pkgBuilder.addPackage( new PackageDescr( "org.drools" ) );
-        Package pkg = pkgBuilder.getPackage();
+        final KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl();
+        kBuilder.addPackage(new PackageDescr("org.drools"));
+        InternalKnowledgePackage pkg = kBuilder.getPackage();
 
         final PackageDescr pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "nestedConditionalElements.drl" ) ) );
 
@@ -71,20 +68,20 @@ public class RuleBuilderTest {
         assertFalse( parser.getErrors().toString(),
                             parser.hasErrors() );
         
-        pkg.addGlobal( "results", List.class );
+        pkg.addGlobal("results", List.class);
 
         final RuleDescr ruleDescr = pkgDescr.getRules().get( 0 );
         final String ruleClassName = "RuleClassName.java";
         ruleDescr.setClassName( ruleClassName );
-        ruleDescr.addAttribute( new AttributeDescr( "dialect",
-                                                    "java" ) );
+        ruleDescr.addAttribute(new AttributeDescr("dialect",
+                                                  "java"));
         
-        pkgBuilder.addPackage( pkgDescr );
+        kBuilder.addPackage(pkgDescr);
 
-        assertTrue( pkgBuilder.getErrors().toString(),
-                    pkgBuilder.getErrors().isEmpty() );
+        assertTrue(kBuilder.getErrors().toString(),
+                   kBuilder.getErrors().isEmpty());
 
-        final Rule rule = pkgBuilder.getPackage().getRule( "test nested CEs" );
+        final RuleImpl rule = kBuilder.getPackage().getRule( "test nested CEs" );
 
         assertEquals( "There should be 2 rule level declarations",
                       2,
@@ -113,7 +110,7 @@ public class RuleBuilderTest {
     public void testBuildAttributes() throws Exception {
         // creates mock objects
         final RuleBuildContext context = mock( RuleBuildContext.class );
-        final Rule rule = mock( Rule.class );
+        final RuleImpl rule = mock( RuleImpl.class );
 
         // creates input object
         final RuleDescr ruleDescr = new RuleDescr( "my rule" );
@@ -149,7 +146,7 @@ public class RuleBuilderTest {
         // defining expectations on the mock object
         when( context.getRule() ).thenReturn( rule );
         when( context.getRuleDescr() ).thenReturn( ruleDescr );
-        when( context.getPackageBuilder() ).thenReturn( new PackageBuilder() );
+        when( context.getKnowledgeBuilder() ).thenReturn( new KnowledgeBuilderImpl() );
 
         // calling the build method
         RuleBuilder builder = new RuleBuilder();
@@ -176,7 +173,7 @@ public class RuleBuilderTest {
     public void testBuildMetaAttributes() throws Exception {
         // creates mock objects
         final RuleBuildContext context = mock( RuleBuildContext.class );
-        final Rule rule = mock( Rule.class );
+        final RuleImpl rule = mock( RuleImpl.class );
 
         // creates input object
         final RuleDescr ruleDescr = new RuleDescr( "my rule" );
@@ -191,7 +188,7 @@ public class RuleBuilderTest {
         // defining expectations on the mock object
         when( context.getRule() ).thenReturn( rule );
         when( context.getRuleDescr() ).thenReturn( ruleDescr );
-        when( context.getPackageBuilder() ).thenReturn( new PackageBuilder() );
+        when( context.getKnowledgeBuilder() ).thenReturn( new KnowledgeBuilderImpl() );
 
         // calling the build method
         RuleBuilder builder = new RuleBuilder();
@@ -210,7 +207,7 @@ public class RuleBuilderTest {
     public void testBuildDurationExpression() throws Exception {
         // creates mock objects
         final RuleBuildContext context = mock( RuleBuildContext.class );
-        final Rule rule = mock( Rule.class );
+        final RuleImpl rule = mock( RuleImpl.class );
 
         // creates input object
         final RuleDescr ruleDescr = new RuleDescr( "my rule" );
@@ -250,13 +247,13 @@ public class RuleBuilderTest {
         ruleDescr.setConsequence( "" );
         pkgDescr.addRule( ruleDescr );
 
-        final PackageBuilder pkgBuilder = new PackageBuilder();
-        pkgBuilder.addPackage( pkgDescr );
+        final KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl();
+        kBuilder.addPackage(pkgDescr);
 
-        assertTrue( pkgBuilder.getErrors().toString(),
-                           pkgBuilder.getErrors().isEmpty() );
+        assertTrue(kBuilder.getErrors().toString(),
+                   kBuilder.getErrors().isEmpty());
 
-        final Rule rule = pkgBuilder.getPackages()[0].getRule( "Test Rule" );
+        final RuleImpl rule = kBuilder.getPackages()[0].getRule( "Test Rule" );
         final GroupElement and = rule.getLhs();
         final Pattern pat = (Pattern) and.getChildren().get( 0 );
         if (pat.getConstraints().get(0) instanceof MvelConstraint) {
@@ -274,11 +271,11 @@ public class RuleBuilderTest {
         ruleDescr.setConsequence( "" );
         pkgDescr.addRule( ruleDescr );
 
-        final PackageBuilder pkgBuilder = new PackageBuilder();
-        pkgBuilder.addPackage( pkgDescr );
+        final KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl();
+        kBuilder.addPackage(pkgDescr);
 
-        assertFalse( pkgBuilder.getErrors().toString(),
-                     pkgBuilder.getErrors().isEmpty() );
+        assertFalse(kBuilder.getErrors().toString(),
+                    kBuilder.getErrors().isEmpty());
     }    
     
     @Test
@@ -295,13 +292,13 @@ public class RuleBuilderTest {
         ruleDescr.setConsequence( "" );
         pkgDescr.addRule( ruleDescr );
 
-        final PackageBuilder pkgBuilder = new PackageBuilder();
-        pkgBuilder.addPackage( pkgDescr );
+        final KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl();
+        kBuilder.addPackage(pkgDescr);
 
-        assertTrue( pkgBuilder.getErrors().toString(),
-                           pkgBuilder.getErrors().isEmpty() );
+        assertTrue(kBuilder.getErrors().toString(),
+                   kBuilder.getErrors().isEmpty());
 
-        final Rule rule = pkgBuilder.getPackages()[0].getRule( "Test Rule" );
+        final RuleImpl rule = kBuilder.getPackages()[0].getRule( "Test Rule" );
         final GroupElement and = rule.getLhs();
         final Pattern pat = (Pattern) and.getChildren().get( 0 );
         if (pat.getConstraints().get(0) instanceof MvelConstraint) {

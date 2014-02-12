@@ -6,7 +6,7 @@ Next node id      : @{session.nodeCount}
 User facts count  : @{session.externalFactCount}
 
 ============== Deployed Packages ===========
-@foreach{ pkg : session.packages }Package: @{pkg.name}    rules: @{pkg.rules.length} 
+@foreach{ pkg : session.packages }Package: @{pkg.name}    rules: @{pkg.rules.size}
 @end{}
 
 ============== Nodes Info ==================

@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.spi.FieldValue;
 
 public class BooleanFieldImpl
@@ -63,31 +62,31 @@ public class BooleanFieldImpl
     }
 
     public byte getByteValue() {
-        throw new RuntimeDroolsException( "Conversion to byte not supported for type boolean" );
+        throw new RuntimeException( "Conversion to byte not supported for type boolean" );
     }
 
     public char getCharValue() {
-        throw new RuntimeDroolsException( "Conversion to char not supported for type boolean" );
+        throw new RuntimeException( "Conversion to char not supported for type boolean" );
     }
 
     public double getDoubleValue() {
-        throw new RuntimeDroolsException( "Conversion to double not supported for type boolean" );
+        throw new RuntimeException( "Conversion to double not supported for type boolean" );
     }
 
     public float getFloatValue() {
-        throw new RuntimeDroolsException( "Conversion to float not supported for type boolean" );
+        throw new RuntimeException( "Conversion to float not supported for type boolean" );
     }
 
     public int getIntValue() {
-        throw new RuntimeDroolsException( "Conversion to int not supported for type boolean" );
+        throw new RuntimeException( "Conversion to int not supported for type boolean" );
     }
 
     public long getLongValue() {
-        throw new RuntimeDroolsException( "Conversion to long not supported for type boolean" );
+        throw new RuntimeException( "Conversion to long not supported for type boolean" );
     }
 
     public short getShortValue() {
-        throw new RuntimeDroolsException( "Conversion to short not supported for type boolean" );
+        throw new RuntimeException( "Conversion to short not supported for type boolean" );
     }
 
     public boolean equals(final Object object) {
@@ -135,11 +134,11 @@ public class BooleanFieldImpl
     }
 
     public BigDecimal getBigDecimalValue() {
-        throw new RuntimeDroolsException( "Conversion to BigDecimal not supported for type boolean" );
+        throw new RuntimeException( "Conversion to BigDecimal not supported for type boolean" );
     }
 
     public BigInteger getBigIntegerValue() {
-        throw new RuntimeDroolsException( "Conversion to BigInteger not supported for type boolean" );
+        throw new RuntimeException( "Conversion to BigInteger not supported for type boolean" );
     }
 
 

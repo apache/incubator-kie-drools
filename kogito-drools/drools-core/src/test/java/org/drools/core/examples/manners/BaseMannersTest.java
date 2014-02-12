@@ -23,14 +23,15 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.field.BooleanFieldImpl;
 import org.drools.core.base.field.LongFieldImpl;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.GroupElementFactory;
 import org.drools.core.rule.InvalidRuleException;
 import org.drools.core.rule.MvelConstraintTestUtil;
-import org.drools.core.rule.Package;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Consequence;
@@ -70,7 +71,7 @@ public abstract class BaseMannersTest {
     /** Maximun number of hobbies each guest should have (default: 3). */
     private final int       maxHobbies = 3;
 
-    protected Package       pkg;
+    protected InternalKnowledgePackage pkg;
 
     private ClassObjectType contextType;
     private ClassObjectType guestType;
@@ -105,7 +106,7 @@ public abstract class BaseMannersTest {
         //shadow = ShadowProxyFactory.getProxy( Chosen.class );
         this.chosenType = new ClassObjectType( Chosen.class );
 
-        this.pkg = new Package( "org.drools.examples.manners" );
+        this.pkg = new KnowledgePackageImpl( "org.drools.examples.manners" );
         this.pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store = this.pkg.getClassFieldAccessorStore();
         store.setEagerWire( true );
@@ -148,9 +149,9 @@ public abstract class BaseMannersTest {
      * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private Rule getAssignFirstSeatRule() throws IntrospectionException,
+    private RuleImpl getAssignFirstSeatRule() throws IntrospectionException,
                                          InvalidRuleException {
-        final Rule rule = new Rule( "assignFirstSeat" );
+        final RuleImpl rule = new RuleImpl( "assignFirstSeat" );
 
         // -----------
         // context : Context( state == Context.START_UP )
@@ -194,7 +195,7 @@ public abstract class BaseMannersTest {
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
                 try {
-                    Rule rule = drools.getRule();
+                    RuleImpl rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
                     Guest guest = (Guest) drools.get( guestDeclaration );
@@ -295,9 +296,9 @@ public abstract class BaseMannersTest {
      * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private Rule getFindSeating() throws IntrospectionException,
+    private RuleImpl getFindSeating() throws IntrospectionException,
                                  InvalidRuleException {
-        final Rule rule = new Rule( "findSeating" );
+        final RuleImpl rule = new RuleImpl( "findSeating" );
 
         // ---------------
         // context : Context( state == Context.ASSIGN_SEATS )
@@ -473,7 +474,7 @@ public abstract class BaseMannersTest {
                     //                    MemoryVisitor visitor = new MemoryVisitor( ( InternalWorkingMemory ) workingMemory );
                     //                    visitor.visit( workingMemory.getRuleBase() );
 
-                    Rule rule = drools.getRule();
+                    RuleImpl rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
                     Context context = (Context) drools.get( contextDeclaration );
@@ -573,9 +574,9 @@ public abstract class BaseMannersTest {
      * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private Rule getMakePath() throws IntrospectionException,
+    private RuleImpl getMakePath() throws IntrospectionException,
                               InvalidRuleException {
-        final Rule rule = new Rule( "makePath" );
+        final RuleImpl rule = new RuleImpl( "makePath" );
 
         // -----------
         // context : Context( state == Context.MAKE_PATH )
@@ -664,7 +665,7 @@ public abstract class BaseMannersTest {
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
                 try {
-                    Rule rule = drools.getRule();
+                    RuleImpl rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
                     int id = seatingIdDeclaration.getExtractor().getIntValue( (InternalWorkingMemory) workingMemory,
@@ -724,9 +725,9 @@ public abstract class BaseMannersTest {
      * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private Rule getPathDone() throws IntrospectionException,
+    private RuleImpl getPathDone() throws IntrospectionException,
                               InvalidRuleException {
-        final Rule rule = new Rule( "pathDone" );
+        final RuleImpl rule = new RuleImpl( "pathDone" );
 
         // -----------
         // context : Context( state == Context.MAKE_PATH )
@@ -766,7 +767,7 @@ public abstract class BaseMannersTest {
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
                 try {
-                    Rule rule = drools.getRule();
+                    RuleImpl rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
                     Context context = (Context) drools.get( contextDeclaration );
@@ -826,9 +827,9 @@ public abstract class BaseMannersTest {
      * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private Rule getAreWeDone() throws IntrospectionException,
+    private RuleImpl getAreWeDone() throws IntrospectionException,
                                InvalidRuleException {
-        final Rule rule = new Rule( "areWeDone" );
+        final RuleImpl rule = new RuleImpl( "areWeDone" );
 
         // -----------
         // context : Context( state == Context.CHECK_DONE )
@@ -878,7 +879,7 @@ public abstract class BaseMannersTest {
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
                 try {
-                    Rule rule = drools.getRule();
+                    RuleImpl rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
                     Context context = (Context) drools.get( contextDeclaration );
@@ -927,9 +928,9 @@ public abstract class BaseMannersTest {
      * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private Rule getContinueProcessing() throws IntrospectionException,
+    private RuleImpl getContinueProcessing() throws IntrospectionException,
                                         InvalidRuleException {
-        final Rule rule = new Rule( "continueProcessng" );
+        final RuleImpl rule = new RuleImpl( "continueProcessng" );
 
         // -----------
         // context : Context( state == Context.CHECK_DONE )
@@ -953,7 +954,7 @@ public abstract class BaseMannersTest {
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
                 try {
-                    Rule rule = drools.getRule();
+                    RuleImpl rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
                     Context context = (Context) drools.get( contextDeclaration );
@@ -1003,9 +1004,9 @@ public abstract class BaseMannersTest {
      * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private Rule getAllDone() throws IntrospectionException,
+    private RuleImpl getAllDone() throws IntrospectionException,
                              InvalidRuleException {
-        final Rule rule = new Rule( "alldone" );
+        final RuleImpl rule = new RuleImpl( "alldone" );
 
         // -----------
         // context : Context( state == Context.PRINT_RESULTS )

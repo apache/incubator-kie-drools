@@ -3,7 +3,7 @@ package org.drools.compiler.integrationtests;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.*;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -214,7 +214,7 @@ public class LinkingTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
         assertEquals( 3, liaNode.getSinkPropagator().size() );
@@ -287,7 +287,7 @@ public class LinkingTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
         LeftInputAdapterNode liaNodeA = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
         ExistsNode existsNode2 = ( ExistsNode) liaNodeA.getSinkPropagator().getSinks()[1];
@@ -390,7 +390,7 @@ public class LinkingTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
         assertEquals( 1, liaNode.getSinkPropagator().size() );
@@ -477,7 +477,7 @@ public class LinkingTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
         assertEquals( 2, liaNode.getSinkPropagator().size() );
@@ -544,7 +544,7 @@ public class LinkingTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
         assertEquals( 2, liaNode.getSinkPropagator().size() );
@@ -608,7 +608,7 @@ public class LinkingTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
         assertEquals( 1, liaNode.getSinkPropagator().size() );
@@ -691,7 +691,7 @@ public class LinkingTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
         JoinNode bNode = ( JoinNode) liaNode.getSinkPropagator().getSinks()[0];
@@ -866,7 +866,7 @@ public class LinkingTest {
         ObjectTypeNode botn = getObjectTypeNode(kbase, B.class );
         ObjectTypeNode cotn = getObjectTypeNode(kbase, C.class );
         
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -942,14 +942,14 @@ public class LinkingTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
         wm.fireAllRules();        
         assertEquals( 0, list.size() );
         
-        wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -997,7 +997,7 @@ public class LinkingTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
         
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1012,7 +1012,7 @@ public class LinkingTest {
         wm.fireAllRules();        
         assertEquals( 0, list.size() );
         
-        wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1069,7 +1069,7 @@ public class LinkingTest {
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
         
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1153,7 +1153,7 @@ public class LinkingTest {
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
         
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1211,14 +1211,14 @@ public class LinkingTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
         wm.fireAllRules();        
         assertEquals( 1, list.size() );
         
-        wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1270,7 +1270,7 @@ public class LinkingTest {
         ObjectTypeNode botn = getObjectTypeNode(kbase, A.class );
         ObjectTypeNode cotn = getObjectTypeNode(kbase, A.class );
         
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1285,7 +1285,7 @@ public class LinkingTest {
         wm.fireAllRules();        
         assertEquals( 9, list.size() );
         
-        wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1339,7 +1339,7 @@ public class LinkingTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
         assertEquals( 1, liaNode.getSinkPropagator().size() );
@@ -1400,7 +1400,7 @@ public class LinkingTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
         assertEquals( 1, liaNode.getSinkPropagator().size() );
@@ -1466,7 +1466,7 @@ public class LinkingTest {
         ObjectTypeNode botn = getObjectTypeNode(kbase, A.class );
         ObjectTypeNode cotn = getObjectTypeNode(kbase, A.class );
         
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         List list = new ArrayList();
 //        wm.setGlobal( "list", list );
 //        
@@ -1483,7 +1483,7 @@ public class LinkingTest {
 //        wm.fireAllRules();        
 //        assertEquals( 0, list.size() );
         
-        wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1538,14 +1538,14 @@ public class LinkingTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
         wm.fireAllRules();        
         assertEquals( 1, list.size() );
         
-        wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1591,14 +1591,14 @@ public class LinkingTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
         wm.fireAllRules();        
         assertEquals( 0, list.size() );
         
-        wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1652,7 +1652,7 @@ public class LinkingTest {
         ObjectTypeNode botn = getObjectTypeNode(kbase, A.class );
         ObjectTypeNode cotn = getObjectTypeNode(kbase, A.class );
         
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1714,7 +1714,7 @@ public class LinkingTest {
         ObjectTypeNode botn = getObjectTypeNode(kbase, A.class );
         ObjectTypeNode cotn = getObjectTypeNode(kbase, A.class );
         
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1757,7 +1757,7 @@ public class LinkingTest {
     }      
     
     public static ObjectTypeNode getObjectTypeNode(KnowledgeBase kbase, Class<?> nodeClass) {
-        List<ObjectTypeNode> nodes = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete().getObjectTypeNodes();
+        List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
         for ( ObjectTypeNode n : nodes ) {
             if ( ((ClassObjectType)n.getObjectType()).getClassType() == nodeClass ) {
                 return n;

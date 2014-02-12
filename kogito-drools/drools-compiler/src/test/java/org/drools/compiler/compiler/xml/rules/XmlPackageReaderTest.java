@@ -4,7 +4,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.core.util.StringUtils;
 import org.drools.compiler.lang.DrlDumper;
@@ -533,7 +533,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
     }
 
     private XmlPackageReader getXmReader() {
-        PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+        KnowledgeBuilderConfigurationImpl conf = new KnowledgeBuilderConfigurationImpl();
         XmlPackageReader xmlReader = new XmlPackageReader( conf.getSemanticModules() );
         xmlReader.getParser().setClassLoader( XmlPackageReaderTest.class.getClassLoader() );
 

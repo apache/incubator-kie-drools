@@ -17,12 +17,13 @@
 package org.drools.compiler.compiler;
 
 import org.kie.api.Service;
+import org.kie.internal.builder.KnowledgeBuilder;
 
 /**
  * ProcessBuilderFactoryService is used by the PackageBuilder to "provide" it's concrete implementation.
  */
 public interface ProcessBuilderFactoryService extends Service {
 
-    public ProcessBuilder newProcessBuilder(PackageBuilder packageBuilder);
+    public ProcessBuilder newProcessBuilder(KnowledgeBuilder kBuilder);
 
 }

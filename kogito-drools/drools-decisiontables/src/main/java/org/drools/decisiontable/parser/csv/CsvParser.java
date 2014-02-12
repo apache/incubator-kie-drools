@@ -117,7 +117,6 @@ public class CsvParser implements DecisionTableParser {
             row++;
             line = reader.readLine();
         }
-        finishSheet();
     }
 
     String calcCellText(int startMergeCol, String cell) {

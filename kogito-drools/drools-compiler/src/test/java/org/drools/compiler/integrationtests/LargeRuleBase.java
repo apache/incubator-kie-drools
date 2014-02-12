@@ -10,15 +10,18 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.StringReader;
 
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
+import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.core.rule.Package;
+import org.kie.api.io.ResourceType;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+import org.kie.internal.io.ResourceFactory;
 
 /**
  * This generates a large number of rules (complex ones) and then times
@@ -31,8 +34,8 @@ public class LargeRuleBase {
     public static void main(String[] args) throws Exception {
         System.err.println(Runtime.getRuntime().freeMemory());
 
-        // bigBlobCompile();
-        realisticSmallBlobCompile();
+        bigBlobCompile();
+        //realisticSmallBlobCompile();
         System.gc();
         Thread.sleep(5000);
         System.err.println(Runtime.getRuntime().freeMemory());
@@ -44,7 +47,7 @@ public class LargeRuleBase {
         StringBuilder buf = new StringBuilder();
         buf.append(getHeader());
 
-        for (int i = 0; i < RULE_COUNT; i++) {
+        for (int i = 0; i < 1; i++) {
             String name = "x" + i;
             int status = i;
 
@@ -52,121 +55,23 @@ public class LargeRuleBase {
             buf.append(r);
         }
 
-        /* love you */long time = System.currentTimeMillis();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(buf.toString().getBytes()), ResourceType.DRL );
 
-        DrlParser ps = new DrlParser(LanguageLevelOption.DRL5);
-        PackageDescr pkg = ps.parse(new StringReader(buf.toString()));
-
-        System.err.println("Time taken for parsing: "
-                + (System.currentTimeMillis() - time));
-
-        time = System.currentTimeMillis();
-        PackageBuilder b = new PackageBuilder();
-        b.addPackage(pkg);
-        assertFalse(b.getErrors().toString(), b.hasErrors());
-
-        System.err.println("Time taken for compiling: "
-                + (System.currentTimeMillis() - time));
-        time = System.currentTimeMillis();
-
-        Package p = b.getPackage();
-        RuleBase rb = RuleBaseFactory.newRuleBase();
-
-        rb.addPackage(p);
-
-        System.err.println("Time taken rete building: "
-                + (System.currentTimeMillis() - time));
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
         File f = new File("foo.rulebase");
         if (f.exists())
             f.delete();
 
-        time = System.currentTimeMillis();
         ObjectOutput out = new DroolsObjectOutputStream(new FileOutputStream(f));
-        out.writeObject(rb);
+        out.writeObject(kbase);
         out.flush();
         out.close();
-        System.err.println("Time taken serializing rulebase: "
-                + (System.currentTimeMillis() - time));
-
-        time = System.currentTimeMillis();
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(f));
-        RuleBase rb_ = (RuleBase) in.readObject();
-        System.err.println("Time taken de-serializing rulebase: "
-                + (System.currentTimeMillis() - time));
-
+        ObjectInputStream in = new DroolsObjectInputStream(new FileInputStream(f));
+        KnowledgeBase rb_ = (KnowledgeBase) in.readObject();
     }
-
-    private static void smallBlobCompile() throws DroolsParserException,
-            IOException, Exception {
-
-        /* love you */long time = System.currentTimeMillis();
-        PackageBuilder b = new PackageBuilder();
-        b.addPackageFromDrl(new StringReader(getHeader()));
-        for (int i = 0; i < RULE_COUNT; i++) {
-            String name = "x" + i;
-            int status = i;
-
-            String r = getTemplate2(name, i, status);
-            b.addPackageFromDrl(new StringReader(r));
-            if (i % 1000 == 0)
-                System.err.println("Rule #" + i);
-
-        }
-
-        assertFalse(b.getErrors().toString(), b.hasErrors());
-
-        System.err.println("Time taken for compiling: "
-                + (System.currentTimeMillis() - time));
-        time = System.currentTimeMillis();
-
-        Package p = b.getPackage();
-        RuleBase rb = RuleBaseFactory.newRuleBase();
-
-        rb.addPackage(p);
-
-        System.err.println("Time taken rete building: "
-                + (System.currentTimeMillis() - time));
-    }
-
-    private static void realisticSmallBlobCompile() throws DroolsParserException,
-            IOException, Exception {
-
-        /* love you */long time = System.currentTimeMillis();
-        PackageBuilder b = new PackageBuilder();
-        b.addPackageFromDrl(new StringReader(getHeader()));
-
-        int count = 0;
-
-        for (int i = 0; i < 2000; i++) {
-
-            String name = "x" + i;
-            for (int j = 0; j < 10; j++) {
-                count++;
-                int status = j;
-                String r = getTemplate2(name, count, status);
-                b.addPackageFromDrl(new StringReader(r));
-                if (count % 1000 == 0)
-                    System.err.println("Rule #" + count);
-            }
-
-        }
-
-        assertFalse(b.getErrors().toString(), b.hasErrors());
-
-        System.err.println("Time taken for compiling: "
-                + (System.currentTimeMillis() - time));
-        time = System.currentTimeMillis();
-
-        Package p = b.getPackage();
-        RuleBase rb = RuleBaseFactory.newRuleBase();
-
-        rb.addPackage(p);
-
-        System.err.println("Time taken rete building: "
-                + (System.currentTimeMillis() - time));
-    }
-
     public static String getHeader() {
         return "package org.kie.test; \n " + "import org.drools.compiler.Person; \n "
                 + "import org.drools.compiler.Cheese; \n "

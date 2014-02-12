@@ -16,9 +16,7 @@
 
 package org.drools.compiler.compiler;
 
-import org.drools.core.CheckedDroolsException;
-
-public class DroolsParserException extends CheckedDroolsException {
+public class DroolsParserException extends Exception {
     private static final long serialVersionUID = 510l;
 
     private String errorCode = null;

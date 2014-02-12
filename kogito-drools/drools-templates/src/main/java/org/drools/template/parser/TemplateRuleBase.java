@@ -16,10 +16,10 @@
 
 package org.drools.template.parser;
 
-import org.drools.core.StatefulSession;
+import org.kie.api.runtime.KieSession;
 
 public interface TemplateRuleBase {
 
-    StatefulSession newStatefulSession();
+    KieSession newStatefulSession();
 
 }

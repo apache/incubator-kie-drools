@@ -16,20 +16,23 @@
 
 package org.drools.core.common;
 
+import org.drools.core.spi.InternalActivationGroup;
 import org.drools.core.util.LinkedList;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.ActivationGroup;
 
 public class ActivationGroupImpl
     implements
-    ActivationGroup {
+    InternalActivationGroup {
     private final String                          name;
 
     private final LinkedList<ActivationGroupNode> list;
+
+    private final InternalAgenda                  agenda;
     
     private long triggeredForRecency;
 
-    public ActivationGroupImpl(final String name) {
+    public ActivationGroupImpl(InternalAgenda agenda, String name) {
+        this.agenda = agenda;
         this.name = name;
         this.list = new LinkedList();
         this.triggeredForRecency = -1;
@@ -65,7 +68,11 @@ public class ActivationGroupImpl
     }
 
     public void clear() {
-        this.list.clear();
+        agenda.clearAndCancelActivationGroup( name );
+    }
+
+    public void reset() {
+        list.clear();
     }
 
     public LinkedList<ActivationGroupNode> getList() {

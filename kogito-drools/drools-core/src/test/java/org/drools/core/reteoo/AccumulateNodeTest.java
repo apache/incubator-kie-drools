@@ -22,19 +22,20 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.ObjectType;
@@ -42,6 +43,7 @@ import org.drools.core.spi.PropagationContext;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.internal.KnowledgeBaseFactory;
 
 /**
  * A test case for AccumulateNode
@@ -49,9 +51,9 @@ import org.junit.Test;
 @Ignore("phreak")
 public class AccumulateNodeTest extends DroolsTestCase {
 
-    Rule                  rule;
+    RuleImpl              rule;
     PropagationContext    context;
-    AbstractWorkingMemory workingMemory;
+    StatefulKnowledgeSessionImpl workingMemory;
     MockObjectSource      objectSource;
     MockTupleSource       tupleSource;
     MockLeftTupleSink     sink;
@@ -66,16 +68,16 @@ public class AccumulateNodeTest extends DroolsTestCase {
      */
     @Before
     public void setUp() throws Exception {
-        this.rule = new Rule("test-rule");
+        this.rule = new RuleImpl("test-rule");
 
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         this.context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
 
-        BuildContext buildContext = new BuildContext(ruleBase,
-                                                     ruleBase.getReteooBuilder().getIdGenerator());
+        BuildContext buildContext = new BuildContext(kBase,
+                                                     kBase.getReteooBuilder().getIdGenerator());
 
-        this.workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         this.tupleSource = new MockTupleSource(4);
         this.objectSource = new MockObjectSource(4);
@@ -295,11 +297,11 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
     @Test
     public void testMemory() {
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        BuildContext buildContext = new BuildContext( ruleBase,
-                                                      ruleBase.getReteooBuilder().getIdGenerator() );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        BuildContext buildContext = new BuildContext( kBase,
+                                                      kBase.getReteooBuilder().getIdGenerator() );
 
-        this.workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         final MockObjectSource objectSource = new MockObjectSource( 1 );
         final MockTupleSource tupleSource = new MockTupleSource( 1 );
@@ -325,9 +327,9 @@ public class AccumulateNodeTest extends DroolsTestCase {
         conf.setPhreakEnabled(false);
         conf.setSequential( true );
 
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        BuildContext buildContext = new BuildContext( ruleBase,
-                                                      ruleBase.getReteooBuilder().getIdGenerator() );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        BuildContext buildContext = new BuildContext( kBase,
+                                                      kBase.getReteooBuilder().getIdGenerator() );
         buildContext.setTupleMemoryEnabled( false );
         // overide the original node, so we an set the BuildContext
         this.node = new AccumulateNode( 15,
@@ -342,8 +344,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         this.node.addTupleSink( this.sink );
 
-        this.workingMemory = new AbstractWorkingMemory( 1,
-                                                      (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf ) );
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)KnowledgeBaseFactory.newKnowledgeBase(conf).newStatefulKnowledgeSession();
 
         this.memory = ((AccumulateMemory) this.workingMemory.getNodeMemory( this.node )).betaMemory;
 

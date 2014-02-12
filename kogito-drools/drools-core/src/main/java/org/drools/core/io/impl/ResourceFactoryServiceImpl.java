@@ -31,26 +31,12 @@ public class ResourceFactoryServiceImpl
     implements
         ResourceFactoryService {
 
-    private ResourceChangeNotifier notifier;
-    private ResourceChangeScanner  scanner;
-    private Object                 lock     = new Object();
-
     public ResourceChangeNotifier getResourceChangeNotifierService() {
-        synchronized ( this.lock ) {
-            if ( this.notifier == null ) {
-                this.notifier = new ResourceChangeNotifierImpl( );
-            }
-            return this.notifier;
-        }
+        throw new UnsupportedOperationException();
     }
 
     public ResourceChangeScanner getResourceChangeScannerService() {
-        synchronized ( this.lock ) {
-            if ( scanner == null ) {
-                this.scanner = new ResourceChangeScannerImpl( );
-            }
-            return this.scanner;
-        }
+        throw new UnsupportedOperationException();
     }
 
     public Resource newByteArrayResource(byte[] bytes) {

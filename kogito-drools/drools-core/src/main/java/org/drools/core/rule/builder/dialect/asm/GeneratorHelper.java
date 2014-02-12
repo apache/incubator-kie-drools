@@ -5,6 +5,8 @@ import org.drools.core.base.ClassTypeResolver;
 import org.drools.core.base.TypeResolver;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.util.asm.MethodComparator;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.*;
@@ -114,7 +116,7 @@ public final class GeneratorHelper {
     }
 
     static TypeResolver getTypeResolver(final InvokerStub stub, final WorkingMemory workingMemory, final ClassLoader classLoader) {
-        org.drools.core.rule.Package pkg = workingMemory.getRuleBase().getPackage(stub.getPackageName());
+        InternalKnowledgePackage pkg = workingMemory.getKnowledgeBase().getPackage(stub.getPackageName());
         TypeResolver typeResolver = pkg == null ? null : pkg.getTypeResolver();
         if (typeResolver == null) {
             Set<String> imports = new HashSet<String>();
@@ -144,7 +146,7 @@ public final class GeneratorHelper {
             push(data.getPackageName());
             push(data.getMethodName());
             push(data.getInternalRuleClassName() + ".class");
-            invokeStatic(Rule.class, "getMethodBytecode", List.class, Class.class, String.class, String.class, String.class, String.class);
+            invokeStatic(RuleImpl.class, "getMethodBytecode", List.class, Class.class, String.class, String.class, String.class, String.class);
             mv.visitInsn(ARETURN);
         }
     }

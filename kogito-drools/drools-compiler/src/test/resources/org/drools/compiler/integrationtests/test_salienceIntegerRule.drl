@@ -4,7 +4,7 @@ import org.drools.compiler.Person
 
 global java.util.List list
 
-// this rule shall never fire, since person will be retracted
+// this rule shall never fire, since person will be deleted
 // by rule 2 that has a higher salience and will fire before rule 1
 rule "Salience rule 1" 
     when

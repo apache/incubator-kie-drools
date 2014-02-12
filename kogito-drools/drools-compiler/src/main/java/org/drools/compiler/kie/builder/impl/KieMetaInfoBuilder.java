@@ -51,7 +51,7 @@ public class KieMetaInfoBuilder {
         KieModuleModel kieModuleModel = kModule.getKieModuleModel();
         for ( String kieBaseName : kieModuleModel.getKieBaseModels().keySet() ) {
             KnowledgeBuilderImpl kBuilder = (KnowledgeBuilderImpl) kModule.getKnowledgeBuilderForKieBase( kieBaseName );
-            Map<String, PackageRegistry> pkgRegistryMap = kBuilder.getPackageBuilder().getPackageRegistry();
+            Map<String, PackageRegistry> pkgRegistryMap = kBuilder.getPackageRegistry();
 
             KieModuleCache.KModuleCache.Builder _kmoduleCacheBuilder = createCacheBuilder();
             KieModuleCache.CompilationData.Builder _compData = createCompilationData();

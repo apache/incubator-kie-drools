@@ -17,9 +17,9 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.NetworkNode;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.Rule;
 
 /**
  * A markup interface for terminal nodes
@@ -40,11 +40,11 @@ public interface TerminalNode
     long getInferredMask();
     void setInferredMask(long mask);
     
-    public long getNegativeMask();
+    long getNegativeMask();
     
-    public void setNegativeMask(long mask);
+    void setNegativeMask(long mask);
     
-    public Rule getRule();
+    RuleImpl getRule();
 
     GroupElement getSubRule();
 

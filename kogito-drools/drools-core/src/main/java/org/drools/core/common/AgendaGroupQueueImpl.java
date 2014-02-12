@@ -18,6 +18,7 @@ package org.drools.core.common;
 
 import org.drools.core.conflict.PhreakConflictResolver;
 import org.drools.core.conflict.SequentialConflictResolver;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
@@ -62,15 +63,15 @@ public class AgendaGroupQueueImpl
     private volatile              boolean hasRuleFlowLister;
 
     public AgendaGroupQueueImpl(final String name,
-                                final InternalRuleBase ruleBase) {
+                                final InternalKnowledgeBase kBase) {
         this.name = name;
-        if (ruleBase.getConfiguration().isPhreakEnabled()) {
+        if (kBase.getConfiguration().isPhreakEnabled()) {
             this.priorityQueue = new BinaryHeapQueue(new PhreakConflictResolver());
         } else {
-            if (ruleBase.getConfiguration().isSequential()) {
+            if (kBase.getConfiguration().isSequential()) {
                 this.priorityQueue = new BinaryHeapQueue(new SequentialConflictResolver());
             } else {
-                this.priorityQueue = new BinaryHeapQueue(ruleBase.getConfiguration().getConflictResolver());
+                this.priorityQueue = new BinaryHeapQueue(kBase.getConfiguration().getConflictResolver());
             }
         }
 
@@ -107,6 +108,10 @@ public class AgendaGroupQueueImpl
     }
 
     public void clear() {
+        ((InternalAgenda)workingMemory.getAgenda()).clearAndCancelAgendaGroup(this.name);
+    }
+
+    public void reset() {
         this.priorityQueue.clear();
     }
 
@@ -210,7 +215,7 @@ public class AgendaGroupQueueImpl
     }
 
     public void setFocus() {
-        throw new UnsupportedOperationException();
+        ((InternalAgenda)workingMemory.getAgenda()).setFocus( this.name );
     }
 
     public void remove(final Activation activation) {

@@ -42,7 +42,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
     public TraitObjectTypeNode( int id, EntryPointNode source, ObjectType objectType, BuildContext context ) {
         super( id, source, objectType, context );
 
-        typeMask = context.getRuleBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy().getCode(
+        typeMask = context.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy().getCode(
                 ((ClassObjectType) objectType).getClassName()
         );
     }

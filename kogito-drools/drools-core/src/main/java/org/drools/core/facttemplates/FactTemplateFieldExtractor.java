@@ -24,7 +24,6 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.ClassUtils;
@@ -126,8 +125,8 @@ public class FactTemplateFieldExtractor
             return this.getClass().getDeclaredMethod( "getValue",
                                                       new Class[]{InternalWorkingMemory.class, Object.class} );
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
-                                              e );
+            throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
+                                        e );
         }
     }
 

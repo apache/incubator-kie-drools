@@ -16,27 +16,29 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.FactException;
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.FieldFactory;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.reteoo.AlphaNode.AlphaMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.MvelConstraintTestUtil;
-import org.drools.core.rule.Rule;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PropagationContext;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.beans.IntrospectionException;
 
@@ -55,13 +57,13 @@ public class AlphaNodeTest extends DroolsTestCase {
 
     @Test
     public void testLiteralConstraintAssertObjectWithoutMemory() throws Exception {
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        BuildContext buildContext = new BuildContext( ruleBase,
-                                                      ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
-        AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        BuildContext buildContext = new BuildContext( kBase,
+                                                      kBase.getReteooBuilder().getIdGenerator() );
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        final Rule rule = new Rule( "test-rule" );
-        PropagationContextFactory pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        final RuleImpl rule = new RuleImpl( "test-rule" );
+        PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
@@ -85,26 +87,26 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
-        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.insert( cheddar );
+        final DefaultFactHandle f0 = (DefaultFactHandle) ksession.insert( cheddar );
 
         // check sink is empty
         assertLength( 0,
                       sink.getAsserted() );
 
         // check alpha memory is empty 
-        final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( alphaNode );
+        final AlphaMemory memory = (AlphaMemory) ksession.getNodeMemory( alphaNode );
 
         // object should assert as it passes text
         alphaNode.assertObject( f0,
                                 context,
-                                workingMemory );
+                                ksession );
 
         assertEquals( 1,
                       sink.getAsserted().size() );
 
         Object[] list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
-                    workingMemory.getObject( (DefaultFactHandle) list[0] ) );
+                    ksession.getObject( (DefaultFactHandle) list[0] ) );
 
         final Cheese stilton = new Cheese( "stilton",
                                            6 );
@@ -114,14 +116,14 @@ public class AlphaNodeTest extends DroolsTestCase {
         // object should NOT assert as it does not pass test
         alphaNode.assertObject( f1,
                                 context,
-                                workingMemory );
+                                ksession );
 
         assertLength( 1,
                       sink.getAsserted() );
 
         list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
-                    workingMemory.getObject( (DefaultFactHandle) list[0] ) );
+                    ksession.getObject( (DefaultFactHandle) list[0] ) );
     }
 
     /*
@@ -129,13 +131,13 @@ public class AlphaNodeTest extends DroolsTestCase {
      */
     @Test
     public void testReturnValueConstraintAssertObject() throws Exception {
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        BuildContext buildContext = new BuildContext( ruleBase,
-                                                      ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
-        AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        BuildContext buildContext = new BuildContext( kBase,
+                                                      kBase.getReteooBuilder().getIdGenerator() );
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        final Rule rule = new Rule( "test-rule" );
-        PropagationContextFactory pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        final RuleImpl rule = new RuleImpl( "test-rule" );
+        PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
@@ -158,7 +160,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
 
-        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.insert( cheddar );
+        final DefaultFactHandle f0 = (DefaultFactHandle) ksession.insert( cheddar );
 
         assertLength( 0,
                       sink.getAsserted() );
@@ -166,13 +168,13 @@ public class AlphaNodeTest extends DroolsTestCase {
         // object should assert as it passes text
         alphaNode.assertObject( f0,
                                 context,
-                                workingMemory );
+                                ksession );
 
         assertLength( 1,
                       sink.getAsserted() );
         final Object[] list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
-                    workingMemory.getObject( (DefaultFactHandle) list[0] ) );
+                    ksession.getObject( (DefaultFactHandle) list[0] ) );
 
         final Cheese stilton = new Cheese( "stilton",
                                            6 );
@@ -183,23 +185,22 @@ public class AlphaNodeTest extends DroolsTestCase {
         // object should not assert as it does not pass text
         alphaNode.assertObject( f0,
                                 context,
-                                workingMemory );
+                                ksession );
 
         assertLength( 0,
                       sink.getAsserted() );
     }
 
     @Test
-    public void testUpdateSinkWithoutMemory() throws FactException,
-                                             IntrospectionException {
+    public void testUpdateSinkWithoutMemory() throws IntrospectionException {
         // An AlphaNode should try and repropagate from its source
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        BuildContext buildContext = new BuildContext( ruleBase,
-                                                      ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
-        AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        BuildContext buildContext = new BuildContext( kBase,
+                                                      kBase.getReteooBuilder().getIdGenerator() );
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        final Rule rule = new Rule( "test-rule" );
-        PropagationContextFactory pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        final RuleImpl rule = new RuleImpl( "test-rule" );
+        PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
@@ -234,7 +235,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         alphaNode.assertObject( handle1,
                                 context,
-                                workingMemory );
+                                ksession );
 
         // Create a fact that should not be propagated, since the alpha node restriction will filter it out
         final Cheese stilton = new Cheese( "stilton",
@@ -246,7 +247,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         alphaNode.assertObject( handle2,
                                 context,
-                                workingMemory );
+                                ksession );
 
         assertLength( 1,
                       sink1.getAsserted() );
@@ -259,7 +260,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         // likewise the source should not do anything
         alphaNode.updateSink( sink2,
                               context,
-                              workingMemory );
+                              ksession );
 
         assertLength( 1,
                       sink1.getAsserted() );

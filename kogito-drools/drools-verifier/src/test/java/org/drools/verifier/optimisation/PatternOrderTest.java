@@ -16,7 +16,6 @@
 
 package org.drools.verifier.optimisation;
 
-import org.drools.core.StatelessSession;
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.components.RuleComponent;
@@ -26,6 +25,7 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,9 +38,7 @@ public class PatternOrderTest extends TestBaseOld {
 
     @Test
     public void testEvalOrderInsideOperator() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("PatternOrder.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Optimise evals inside pattern"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("PatternOrder.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("OptimisationPatternOrderTest.drl"),
@@ -49,7 +47,10 @@ public class PatternOrderTest extends TestBaseOld {
         session.setGlobal("result",
                           result);
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Optimise evals inside pattern"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.NOTE).iterator();
 

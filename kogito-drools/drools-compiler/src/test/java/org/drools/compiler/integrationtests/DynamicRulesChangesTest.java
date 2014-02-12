@@ -15,12 +15,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.core.RuleBase;
-import org.drools.core.StatefulSession;
-import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.rule.Rule;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -165,7 +161,7 @@ public class DynamicRulesChangesTest extends CommonTestMethodBase {
         addRule(ruleName, null);
     }
 
-    public static void addRule(String ruleName, Rule firingRule) throws Exception {
+    public static void addRule(String ruleName, RuleImpl firingRule) throws Exception {
         String rule = rules.get(ruleName);
 
         CommonTestMethodBase testBaseMethod = new CommonTestMethodBase();

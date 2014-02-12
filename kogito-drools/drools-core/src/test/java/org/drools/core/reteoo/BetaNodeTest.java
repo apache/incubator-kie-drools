@@ -19,23 +19,21 @@ package org.drools.core.reteoo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.common.EmptyBetaConstraints;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.junit.Test;
+import org.kie.internal.KnowledgeBaseFactory;
 
 public class BetaNodeTest {
 
-    /**
-     * Test method for {@link org.kie.reteoo.BetaNode#equals(java.lang.Object)}.
-     */
     @Test
     public void testEqualsObject() {
         final LeftTupleSource ts = new MockTupleSource( 1 );
         final ObjectSource os = new MockObjectSource( 2 );
 
-        ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
-        BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        BuildContext buildContext = new BuildContext( kBase, kBase.getReteooBuilder().getIdGenerator() );
         
         final BetaNode j1 = new JoinNode( 1,
                                           ts,

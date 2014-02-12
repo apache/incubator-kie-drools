@@ -18,7 +18,6 @@ package org.drools.compiler.rule.builder;
 
 import java.util.Iterator;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ConditionalElementDescr;
@@ -72,7 +71,7 @@ public class GroupElementBuilder
                     ge.addChild( element );
                 }
             } else {
-                throw new RuntimeDroolsException( "BUG: no builder found for descriptor class " + child.getClass() );
+                throw new RuntimeException( "BUG: no builder found for descriptor class " + child.getClass() );
             }
 
         }
@@ -93,7 +92,7 @@ public class GroupElementBuilder
         } else if ( ExistsDescr.class.isAssignableFrom( descr ) ) {
             return GroupElementFactory.newExistsInstance();
         } else {
-            throw new RuntimeDroolsException( "BUG: Not able to create a group element for descriptor: " + descr.getName() );
+            throw new RuntimeException( "BUG: Not able to create a group element for descriptor: " + descr.getName() );
         }
     }
 

@@ -32,6 +32,7 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.UpdateContext;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.QueryElementContext;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
@@ -40,9 +41,8 @@ import org.drools.core.phreak.StackEntry;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.AbductiveQuery;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Query;
+import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.QueryElement;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.kie.api.runtime.rule.Variable;
@@ -80,7 +80,7 @@ public class QueryElementNode extends LeftTupleSource
                             final BuildContext context) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
+               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation() );
         setLeftTupleSource(tupleSource);
         this.queryElement = queryElement;
         this.tupleMemoryEnabled = tupleMemoryEnabled;
@@ -322,13 +322,13 @@ public class QueryElementNode extends LeftTupleSource
             this.variables = variables;
         }
 
-        public void rowAdded(final Rule rule,
+        public void rowAdded(final RuleImpl rule,
                              LeftTuple resultLeftTuple,
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) {
 
             QueryTerminalNode node = (QueryTerminalNode) resultLeftTuple.getLeftTupleSink();
-            Query query = node.getQuery();
+            QueryImpl query = node.getQuery();
             Declaration[] decls = node.getDeclarations();
             DroolsQuery dquery = (DroolsQuery) this.factHandle.getObject();
             Object[] objects = new Object[ determineResultSize( query, dquery ) ];
@@ -357,7 +357,7 @@ public class QueryElementNode extends LeftTupleSource
                 }
                 Object abduced = aq.abduce( Arrays.copyOfRange( objects, 0, numArgs - 1 ) );
                 if ( abduced != null ) {
-                    EqualityKey key = ( (NamedEntryPoint) workingMemory.getEntryPoints().get( workingMemory.getEntryPointId() ) ).getTruthMaintenanceSystem().get( abduced );
+                    EqualityKey key = ( (NamedEntryPoint) workingMemory.getEntryPoint( workingMemory.getEntryPointId() ) ).getTruthMaintenanceSystem().get( abduced );
                     InternalFactHandle handle = null;
                     if ( key != null ) {
                         handle = key.getFactHandle();
@@ -396,7 +396,7 @@ public class QueryElementNode extends LeftTupleSource
 
         }
 
-        private int determineResultSize( Query query, DroolsQuery dquery ) {
+        private int determineResultSize( QueryImpl query, DroolsQuery dquery ) {
             if ( ! query.isAbductive() ) {
                 return dquery.getElements().length;
             } else {
@@ -447,7 +447,7 @@ public class QueryElementNode extends LeftTupleSource
             return handle;
         }
 
-        public void rowRemoved(final Rule rule,
+        public void rowRemoved(final RuleImpl rule,
                                final LeftTuple resultLeftTuple,
                                final PropagationContext context,
                                final InternalWorkingMemory workingMemory) {
@@ -473,7 +473,7 @@ public class QueryElementNode extends LeftTupleSource
             childLeftTuple.unlinkFromLeftParent();
         }
 
-        public void rowUpdated(final Rule rule,
+        public void rowUpdated(final RuleImpl rule,
                                final LeftTuple resultLeftTuple,
                                final PropagationContext context,
                                final InternalWorkingMemory workingMemory) {

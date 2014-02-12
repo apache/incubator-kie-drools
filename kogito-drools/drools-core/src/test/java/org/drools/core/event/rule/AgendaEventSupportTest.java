@@ -35,13 +35,12 @@ import org.drools.core.base.FieldFactory;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.runtime.rule.impl.AgendaImpl;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.test.model.Cheese;
-import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.core.rule.MvelConstraintTestUtil;
-import org.drools.core.rule.Package;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.Rule;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.FieldValue;
@@ -77,8 +76,8 @@ public class AgendaEventSupportTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         // create a simple package with one rule to test the events
-        final Package pkg = new Package( "org.drools.test" );
-        final Rule rule = new Rule( "test1" );
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.drools.test" );
+        final RuleImpl rule = new RuleImpl( "test1" );
         rule.setEager(true);
         rule.setAgendaGroup( "test group" );
         final ClassObjectType cheeseObjectType = new ClassObjectType( Cheese.class );
@@ -120,7 +119,7 @@ public class AgendaEventSupportTest {
         pkg.addRule( rule );
 
         List<KnowledgePackage> pkgs = new ArrayList<KnowledgePackage>();
-        pkgs.add( new KnowledgePackageImp( pkg ) );
+        pkgs.add( pkg );
         kbase.addKnowledgePackages( pkgs );
 
         // create a new working memory and add an AgendaEventListener
@@ -187,7 +186,7 @@ public class AgendaEventSupportTest {
                                            15 );
         FactHandle cheddarHandle = ksession.insert( cheddar );
 
-        InternalAgenda agenda = (InternalAgenda) ((AgendaImpl) ksession.getAgenda()).getAgenda();
+        InternalAgenda agenda = (InternalAgenda) ksession.getAgenda();
         agenda.evaluateEagerList();
 
         // should be one MatchCreatedEvent

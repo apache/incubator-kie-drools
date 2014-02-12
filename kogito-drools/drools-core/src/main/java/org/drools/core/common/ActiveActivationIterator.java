@@ -43,7 +43,7 @@ public class ActiveActivationIterator
     }
 
     public static Iterator iterator(InternalWorkingMemory wm) {
-        if (((InternalRuleBase)wm.getRuleBase()).getConfiguration().isPhreakEnabled()) {
+        if (wm.getKnowledgeBase().getConfiguration().isPhreakEnabled()) {
             return PhreakActiveActivationIterator.iterator(wm);
         } else {
             return new ActiveActivationIterator( wm );
@@ -52,7 +52,7 @@ public class ActiveActivationIterator
     
     public static Iterator iterator(StatefulKnowledgeSession ksession) {
         InternalWorkingMemory wm = ((InternalWorkingMemoryEntryPoint) ksession).getInternalWorkingMemory();
-        if (((InternalRuleBase)wm.getRuleBase()).getConfiguration().isPhreakEnabled()) {
+        if (wm.getKnowledgeBase().getConfiguration().isPhreakEnabled()) {
             return PhreakActiveActivationIterator.iterator(wm);
         } else {
             return new ActiveActivationIterator( ((StatefulKnowledgeSessionImpl) ksession).getInternalWorkingMemory() );

@@ -21,7 +21,6 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
@@ -80,7 +79,7 @@ public class FromNode extends LeftTupleSource
                     final From from) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
+               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation() );
         this.dataProvider = dataProvider;
         setLeftTupleSource(tupleSource);
         this.alphaConstraints = constraints;
@@ -142,7 +141,7 @@ public class FromNode extends LeftTupleSource
         ProtobufMessages.FactHandle _handle = null;
         if ( objectTypeConf == null ) {
             // use default entry point and object class. Notice that at this point object is assignable to resultClass
-            objectTypeConf = new ClassObjectTypeConf( workingMemory.getEntryPoint(), resultClass, (InternalRuleBase) workingMemory.getRuleBase() );
+            objectTypeConf = new ClassObjectTypeConf( workingMemory.getEntryPoint(), resultClass, workingMemory.getKnowledgeBase() );
         }
         if( context.getReaderContext() != null ) {
             Map<ProtobufInputMarshaller.TupleKey, List<FactHandle>> map = (Map<ProtobufInputMarshaller.TupleKey, List<ProtobufMessages.FactHandle>>) context.getReaderContext().nodeMemories.get( getId() );

@@ -98,7 +98,7 @@ public class MVELAccumulateBuilder
             declarationClasses.putAll( context.getDeclarationResolver().getDeclarationClasses( sourceOuterDeclr ) );
 
             BoundIdentifiers boundIds = new BoundIdentifiers( declarationClasses,
-                                                              context.getPackageBuilder().getGlobals() );
+                                                              context.getKnowledgeBuilder().getGlobals() );
             boundIds.setDeclarations( mergedDecl );
 
             Accumulator[] accumulators = null;
@@ -174,7 +174,7 @@ public class MVELAccumulateBuilder
             AccumulateFunction function = context.getConfiguration().getAccumulateFunction( func.getFunction() );
             if( function == null ) {
                 // might have been imported in the package
-                function = context.getPackageBuilder().getPackage().getAccumulateFunctions().get(func.getFunction());
+                function = context.getKnowledgeBuilder().getPackage().getAccumulateFunctions().get(func.getFunction());
             }
             if ( function == null ) {
                 context.addError( new DescrBuildError( accumDescr,

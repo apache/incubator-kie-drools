@@ -16,22 +16,21 @@
 
 package org.drools.core.management;
 
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.kie.api.management.KieManagementAgentMBean;
+import org.kie.api.management.KieSessionMonitoringMBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import javax.management.StandardMBean;
 import java.lang.management.ManagementFactory;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-import javax.management.StandardMBean;
-
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.reteoo.ReteooRuleBase;
-import org.kie.api.management.KieManagementAgentMBean;
-import org.kie.api.management.KieSessionMonitoringMBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The main management agent for Drools. The purpose of this 
@@ -99,7 +98,7 @@ public class DroolsManagementAgent
         return ++ksessions;
     }
 
-    public void registerKnowledgeBase(ReteooRuleBase kbase) {
+    public void registerKnowledgeBase(InternalKnowledgeBase kbase) {
         KnowledgeBaseMonitoring mbean = new KnowledgeBaseMonitoring( kbase );
         registerMBean( kbase,
                        mbean,

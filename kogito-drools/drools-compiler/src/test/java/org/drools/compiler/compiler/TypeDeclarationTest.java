@@ -2,8 +2,7 @@ package org.drools.compiler.compiler;
 
 import org.junit.Assert;
 import org.drools.core.common.EventFactHandle;
-import org.drools.core.definitions.impl.KnowledgePackageImp;
-import org.drools.core.marshalling.impl.ProtobufMessages;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.rule.TypeDeclaration;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -26,7 +25,6 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.mvel2.asm.Type;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -40,7 +38,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Collection;
-import java.util.Iterator;
 
 public class TypeDeclarationTest {
 
@@ -98,7 +95,7 @@ public class TypeDeclarationTest {
         Assert.assertEquals(1, kbuilder.getKnowledgePackages().size());
 
         //Get the Fact Type for org.kie.EventA
-        FactType factType = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getFactType("org.kie.EventA");
+        FactType factType = ((KnowledgePackageImpl)kbuilder.getKnowledgePackages().iterator().next()).getFactType("org.kie.EventA");
         assertNotNull( factType );
 
         //'name' field must still be there
@@ -110,7 +107,7 @@ public class TypeDeclarationTest {
         assertNotNull( field );
 
         //New Annotations must be there too
-        TypeDeclaration typeDeclaration = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getTypeDeclaration("EventA");
+        TypeDeclaration typeDeclaration = ((KnowledgePackageImpl)kbuilder.getKnowledgePackages().iterator().next()).getTypeDeclaration("EventA");
 
         assertEquals(TypeDeclaration.Role.EVENT, typeDeclaration.getRole());
         assertEquals("duration", typeDeclaration.getDurationAttribute());

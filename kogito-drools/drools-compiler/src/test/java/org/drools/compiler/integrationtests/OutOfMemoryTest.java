@@ -17,22 +17,19 @@
 package org.drools.compiler.integrationtests;
 
 import java.io.FileWriter;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
-import org.drools.core.RuleBase;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.StatefulSession;
 import org.drools.core.WorkingMemory;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.util.debug.SessionInspector;
 import org.drools.core.util.debug.SessionReporter;
-import org.drools.core.rule.Package;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -56,14 +53,7 @@ public class OutOfMemoryTest extends CommonTestMethodBase {
     @Test
     @Ignore
     public void testStatefulSessionsCreation() throws Exception {
-
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OutOfMemoryError.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
+        KieBase kbase = loadKnowledgeBase("test_OutOfMemoryError.drl");
 
         int i = 0;
 
@@ -71,9 +61,8 @@ public class OutOfMemoryTest extends CommonTestMethodBase {
         conf.setKeepReference( true ); // this is just for documentation purposes, since the default value is "true"
         try {
             for ( i = 0; i < 300000; i++ ) {
-                final StatefulSession session = ruleBase.newStatefulSession( conf,
-                                                                             null );
-                session.dispose();
+                KieSession ksession = kbase.newKieSession( conf, null );
+                ksession.dispose();
             }
         } catch ( Throwable e ) {
             logger.info( "Error at: " + i );
@@ -86,19 +75,13 @@ public class OutOfMemoryTest extends CommonTestMethodBase {
     @Test
     @Ignore
     public void testAgendaLoop() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OutOfMemory.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        KieBase kbase = loadKnowledgeBase("test_OutOfMemory.drl");
+        KieSession ksession = kbase.newKieSession();
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        workingMemory.insert( new Cheese( "stilton",
+        ksession.insert( new Cheese( "stilton",
                                           1 ) );
 
-        workingMemory.fireAllRules( 3000000 );
+        ksession.fireAllRules( 3000000 );
 
         // just for profiling
         //Thread.currentThread().wait();

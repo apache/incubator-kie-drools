@@ -23,19 +23,18 @@ import org.drools.core.common.AgendaItem;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ScheduledAgendaItem;
 import org.drools.core.common.TruthMaintenanceSystemHelper;
 import org.drools.core.common.UpdateContext;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.reteoo.RuleRemovalContext.CleanupAdapter;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.impl.BaseTimer;
@@ -59,7 +58,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     private static final long             serialVersionUID = 510l;
 
     /** The rule to invoke upon match. */
-    protected Rule                          rule;
+    protected RuleImpl                      rule;
     
     /**
      * the subrule reference is needed to resolve declarations
@@ -100,13 +99,13 @@ public class RuleTerminalNode extends AbstractTerminalNode {
      */
     public RuleTerminalNode(final int id,
                             final LeftTupleSource source,
-                            final Rule rule,
+                            final RuleImpl rule,
                             final GroupElement subrule,
                             final int subruleIndex,
                             final BuildContext context) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
+               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
                source );
         this.rule = rule;
         this.subrule = subrule;
@@ -160,7 +159,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal(in);
-        rule = (Rule) in.readObject();
+        rule = (RuleImpl) in.readObject();
         subrule = (GroupElement) in.readObject();
         subruleIndex = in.readInt();
         previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
@@ -195,7 +194,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
      *
      * @return The <code>Action</code> associated with this node.
      */
-    public Rule getRule() {
+    public RuleImpl getRule() {
         return this.rule;
     }
 
@@ -278,7 +277,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     }
 
     public String getConsequenceName() {
-        return consequenceName == null ? Rule.DEFAULT_CONSEQUENCE_NAME : consequenceName;
+        return consequenceName == null ? RuleImpl.DEFAULT_CONSEQUENCE_NAME : consequenceName;
     }
 
     public void setConsequenceName(String consequenceName) {
@@ -399,7 +398,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                                                                                                 MatchCancelledCause.CLEAR );
             }
 
-            PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
+            PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
             final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_REMOVAL, null, null, null);
             TruthMaintenanceSystemHelper.removeLogicalDependencies( activation,
                                                                     propagationContext,

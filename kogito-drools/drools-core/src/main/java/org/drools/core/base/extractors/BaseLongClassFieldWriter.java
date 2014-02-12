@@ -18,7 +18,6 @@ package org.drools.core.base.extractors;
 
 import java.lang.reflect.Method;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.BaseClassFieldWriter;
 import org.drools.core.base.ValueType;
 
@@ -55,7 +54,7 @@ public abstract class BaseLongClassFieldWriter extends BaseClassFieldWriter {
 
     public void setBooleanValue(final Object bean,
                                 final boolean value) {
-        throw new RuntimeDroolsException( "Conversion to long not supported from boolean" );
+        throw new RuntimeException( "Conversion to long not supported from boolean" );
     }
 
     public void setByteValue(final Object bean,
@@ -67,7 +66,7 @@ public abstract class BaseLongClassFieldWriter extends BaseClassFieldWriter {
 
     public void setCharValue(final Object bean,
                              final char value) {
-        throw new RuntimeDroolsException( "Conversion to long not supported from char" );
+        throw new RuntimeException( "Conversion to long not supported from char" );
     }
 
     public void setDoubleValue(final Object bean,
@@ -102,8 +101,8 @@ public abstract class BaseLongClassFieldWriter extends BaseClassFieldWriter {
             return this.getClass().getDeclaredMethod( "setLongValue",
                                                       new Class[]{Object.class, long.class} );
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
-                                              e );
+            throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
+                                        e );
         }
     }
 

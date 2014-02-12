@@ -28,10 +28,10 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.base.mvel.MVELCompilationUnit.DroolsVarFactory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.core.rule.Package;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.MVELSafeHelper;
@@ -121,8 +121,8 @@ public class MVELAccumulator
         MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
         VariableResolverFactory factory = factoryContext.getInitFactory();
         initUnit.updateFactory( null, null, null, (LeftTuple) leftTuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory  );
-        
-        Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
+
+        InternalKnowledgePackage pkg = workingMemory.getKnowledgeBase().getPackage( "MAIN" );
         if ( pkg != null ) {
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
             factory.setNextFactory( data.getFunctionFactory() );

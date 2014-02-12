@@ -26,6 +26,10 @@ import java.util.List;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.audit.event.LogEvent;
+import org.kie.api.event.rule.AgendaGroupPoppedEvent;
+import org.kie.api.event.rule.AgendaGroupPushedEvent;
+import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.internal.event.KnowledgeRuntimeEventManager;
 
 import com.thoughtworks.xstream.XStream;
@@ -215,5 +219,4 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
             writeToDisk();
         }
     }
-
 }

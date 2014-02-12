@@ -16,7 +16,6 @@
 
 package org.drools.core.base.evaluators;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.EventFactHandle;
@@ -293,7 +292,7 @@ public class AfterEvaluatorDefinition
                                 final InternalReadAccessor extractor,
                                 final InternalFactHandle object1,
                                 final FieldValue object2) {
-            throw new RuntimeDroolsException( "The 'after' operator can only be used to compare one event to another, and never to compare to literal constraints." );
+            throw new RuntimeException( "The 'after' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -420,7 +419,7 @@ public class AfterEvaluatorDefinition
                     this.finalRange = parameters[0].longValue();
                 }
             } else {
-                throw new RuntimeDroolsException( "[After Evaluator]: Not possible to have more than 2 parameters: '" + paramText + "'" );
+                throw new RuntimeException( "[After Evaluator]: Not possible to have more than 2 parameters: '" + paramText + "'" );
             }
         }
 

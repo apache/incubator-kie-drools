@@ -15,6 +15,7 @@
  */
 package org.drools.core.command.runtime.rule;
 
+import org.drools.core.QueryResultsRowImpl;
 import org.junit.*;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -27,7 +28,6 @@ import org.drools.core.command.SetVariableCommandFromCommand;
 import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.DefaultCommandService;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
-import org.drools.core.runtime.rule.impl.NativeQueryResults;
 import org.drools.core.world.impl.WorldImpl;
 import static org.junit.Assert.*;
 
@@ -89,7 +89,7 @@ public class QueryCommandNoBatchTest {
         GetVariableCommand getVariableCmd = new GetVariableCommand("query123", "__TEMP__");
         resolveFromContextCommand = new KnowledgeContextResolveFromContextCommand(getVariableCmd,
                 null, null, "ksession", "localResults");
-        NativeQueryResults queryResults = (NativeQueryResults) commandService.execute(resolveFromContextCommand);
+        QueryResultsRowImpl queryResults = (QueryResultsRowImpl) commandService.execute(resolveFromContextCommand);
 
         assertNotNull(queryResults);
 

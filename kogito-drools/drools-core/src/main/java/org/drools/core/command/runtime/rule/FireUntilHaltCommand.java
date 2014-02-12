@@ -19,11 +19,10 @@ package org.drools.core.command.runtime.rule;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.command.runtime.UnpersistableCommand;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
-import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.internal.command.Context;
 
 public class FireUntilHaltCommand
     implements
@@ -41,12 +40,12 @@ public class FireUntilHaltCommand
 
     public Void execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-        final ReteooWorkingMemoryInterface session = ((StatefulKnowledgeSessionImpl)ksession).session;
+        final ReteooWorkingMemoryInterface session = (ReteooWorkingMemoryInterface)ksession;
         
         new Thread(new Runnable() {
             public void run() {
                 if ( agendaFilter != null ) {
-                    session.fireUntilHalt( new StatefulKnowledgeSessionImpl.AgendaFilterWrapper( agendaFilter ) );
+                    session.fireUntilHalt( agendaFilter );
                 } else {
                     session.fireUntilHalt();
                 }

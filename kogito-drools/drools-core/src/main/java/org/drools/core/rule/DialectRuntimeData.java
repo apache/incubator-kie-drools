@@ -16,10 +16,13 @@
 
 package org.drools.core.rule;
 
-public interface DialectRuntimeData extends Cloneable {
-    public void removeRule( Package pkg, Rule rule );
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 
-    public void removeFunction( Package pkg, Function function );
+public interface DialectRuntimeData extends Cloneable {
+    public void removeRule( KnowledgePackageImpl pkg, RuleImpl rule );
+
+    public void removeFunction( KnowledgePackageImpl pkg, Function function );
 
     public void merge( DialectRuntimeRegistry registry, DialectRuntimeData newData );
 

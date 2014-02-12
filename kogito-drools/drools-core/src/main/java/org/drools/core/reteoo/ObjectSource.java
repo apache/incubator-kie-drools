@@ -142,12 +142,12 @@ public abstract class ObjectSource extends BaseNode
         }
         
         Class objectClass = ((ClassObjectType)objectType).getClassType();        
-        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
+        TypeDeclaration typeDeclaration = context.getKnowledgeBase().getTypeDeclaration(objectClass);
         if ( typeDeclaration == null || !typeDeclaration.isPropertyReactive() ) {
             // if property specific is not on, then accept all modification propagations
             declaredMask = -1L;
         } else {
-            List<String> settableProperties = getSettableProperties(context.getRuleBase(), objectClass);
+            List<String> settableProperties = getSettableProperties(context.getKnowledgeBase(), objectClass);
             declaredMask = calculateDeclaredMask(settableProperties);
         }
     }
@@ -233,7 +233,7 @@ public abstract class ObjectSource extends BaseNode
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final InternalWorkingMemory[] workingMemories) {
-        if ( !context.getRuleBase().getConfiguration().isPhreakEnabled()  && !this.isInUse() && this instanceof MemoryFactory ) {
+        if ( !context.getKnowledgeBase().getConfiguration().isPhreakEnabled()  && !this.isInUse() && this instanceof MemoryFactory ) {
             for( InternalWorkingMemory workingMemory : workingMemories ) {
                 workingMemory.clearNodeMemory( (MemoryFactory) this );
             }

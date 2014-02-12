@@ -20,12 +20,15 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.drools.core.spi.AgendaFilter;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.spi.AsyncExceptionHandler;
 import org.drools.core.spi.GlobalResolver;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.api.runtime.rule.Agenda;
+import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.time.SessionClock;
 
 /**
@@ -87,40 +90,28 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      *
      * @return The <code>RuleBase</code>.
      */
-    RuleBase getRuleBase();
+    InternalKnowledgeBase getKnowledgeBase();
 
     /**
      * Fire all items on the agenda until empty.
-     *
-     * @throws FactException
-     *             If a RuntimeException error occurs.
      */
-    int fireAllRules() throws FactException;
+    int fireAllRules();
 
     /**
      * Fire all items on the agenda until empty, using the given AgendaFiler
-     *
-     * @throws FactException
-     *             If a RuntimeException error occurs.
      */
-    int fireAllRules(AgendaFilter agendaFilter) throws FactException;
+    int fireAllRules(AgendaFilter agendaFilter);
 
     /**
      * Fire all items on the agenda until empty or at most 'fireLimit' rules have fired
-     *
-     * @throws FactException
-     *             If a RuntimeException error occurs.
      */
-    int fireAllRules( int fireLimit ) throws FactException;
+    int fireAllRules( int fireLimit );
 
     /**
      * Fire all items on the agenda using the given AgendaFiler
      * until empty or at most 'fireLimit' rules have fired
-     *
-     * @throws FactException
-     *             If a RuntimeException error occurs.
      */
-    int fireAllRules(final AgendaFilter agendaFilter, int fireLimit ) throws FactException;
+    int fireAllRules(final AgendaFilter agendaFilter, int fireLimit );
 
     /**
      * Retrieve the object associated with a <code>FactHandle</code>.
@@ -131,7 +122,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      *
      * @return The associated object.
      */
-    Object getObject(org.kie.api.runtime.rule.FactHandle handle);
+    Object getObject(FactHandle handle);
 
     /**
      * Retrieve the <code>FactHandle</code> associated with an Object.
@@ -206,7 +197,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @throws IllegalArgumentException
      *         if no query named "query" is found in the rulebase
      */
-    public QueryResults getQueryResults(String query, Object... arguments);
+    public QueryResultsImpl getQueryResults(String query, Object... arguments);
 
     /**
      * Sets the AsyncExceptionHandler to handle exceptions thrown by the Agenda

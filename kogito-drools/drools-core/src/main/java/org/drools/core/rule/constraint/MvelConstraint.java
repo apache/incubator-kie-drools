@@ -6,12 +6,8 @@ import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.base.extractors.MVELObjectClassFieldReader;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.util.AbstractHashTable.FieldIndex;
-import org.drools.core.util.BitMaskUtil;
-import org.drools.core.util.MemoryUtil;
-import org.drools.core.util.index.IndexUtil;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
@@ -30,8 +26,12 @@ import org.drools.core.rule.constraint.ConditionAnalyzer.SingleCondition;
 import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
-import org.kie.internal.concurrent.ExecutorProviderFactory;
+import org.drools.core.util.AbstractHashTable.FieldIndex;
+import org.drools.core.util.BitMaskUtil;
+import org.drools.core.util.MemoryUtil;
+import org.drools.core.util.index.IndexUtil;
 import org.kie.api.runtime.rule.Variable;
+import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExecutableStatement;
@@ -276,13 +276,13 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     private void executeJitting(InternalFactHandle handle, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
-        InternalRuleBase ruleBase = ((InternalRuleBase) workingMemory.getRuleBase());
-        if ( MemoryUtil.permGenStats.isUsageThresholdExceeded(ruleBase.getConfiguration().getPermGenThreshold()) ) {
+        InternalKnowledgeBase kBase = workingMemory.getKnowledgeBase();
+        if ( MemoryUtil.permGenStats.isUsageThresholdExceeded(kBase.getConfiguration().getPermGenThreshold()) ) {
             return;
         }
 
         try {
-            ClassLoader classLoader = ruleBase.getRootClassLoader();
+            ClassLoader classLoader = kBase.getRootClassLoader();
             if (analyzedCondition == null) {
                 analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition(handle, workingMemory, leftTuple);
             }
@@ -575,7 +575,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     protected MVELDialectRuntimeData getMVELDialectRuntimeData(InternalWorkingMemory workingMemory) {
-        return ((MVELDialectRuntimeData)workingMemory.getRuleBase().getPackage(packageName).getDialectRuntimeRegistry().getDialectData( "mvel" ));
+        return ((MVELDialectRuntimeData)workingMemory.getKnowledgeBase().getPackage(packageName).getDialectRuntimeRegistry().getDialectData( "mvel" ));
     }
 
     // MvelArrayContextEntry

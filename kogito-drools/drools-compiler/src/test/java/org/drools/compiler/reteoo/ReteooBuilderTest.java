@@ -6,28 +6,27 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.RuleBase;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectSource;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.rule.Package;
-
 import com.thoughtworks.xstream.XStream;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
 
 public class ReteooBuilderTest {
 
     private final boolean writeTree = false;
 
     /** Implementation specific subclasses must provide this. */
-    protected RuleBase getRuleBase() throws Exception {
-        return RuleBaseFactory.newRuleBase();
+    protected KnowledgeBase getKnowledgeBase() throws Exception {
+        return KnowledgeBaseFactory.newKnowledgeBase();
     }
 
     @Test
@@ -45,35 +44,35 @@ public class ReteooBuilderTest {
         //checkRuleBase( "OneAndTwoOrsPerson" );
     }
 
-    private void writeRuleBase(final RuleBase ruleBase,
+    private void writeRuleBase(final InternalKnowledgeBase kBase,
                                final String fileName) throws IOException {
         final XStream xstream = new XStream();
 
         final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( "src/test/resources/org/drools/reteoo/" + fileName ) ) );
 
-        xstream.toXML( ruleBase,
+        xstream.toXML( kBase,
                        out );
     }
 
     private void checkRuleBase(final String name) throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
+        final KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_" + name + ".drl" ) ) );
-        final Package pkg = builder.getPackage();
+        InternalKnowledgePackage pkg = builder.getPackage();
 
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) getRuleBase();
-        ruleBase.addPackage( pkg );
+        final InternalKnowledgeBase kBase = (InternalKnowledgeBase) getKnowledgeBase();
+        kBase.addPackage( pkg );
 
         if ( this.writeTree ) {
-            writeRuleBase( ruleBase,
+            writeRuleBase( kBase,
                            name );
         }
 
         final XStream xstream = new XStream();
 
-        final RuleBase goodRuleBase = (RuleBase) xstream.fromXML( getClass().getResourceAsStream( name ) );
+        final InternalKnowledgeBase goodKBase = (InternalKnowledgeBase) xstream.fromXML( getClass().getResourceAsStream( name ) );
 
-        nodesEquals( ((ReteooRuleBase) goodRuleBase).getRete(),
-                     (ruleBase).getRete() );
+        nodesEquals( goodKBase.getRete(),
+                     kBase.getRete() );
     }
 
     private void nodesEquals(final Object object1,

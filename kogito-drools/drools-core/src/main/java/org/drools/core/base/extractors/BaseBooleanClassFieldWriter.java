@@ -18,7 +18,6 @@ package org.drools.core.base.extractors;
 
 import java.lang.reflect.Method;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.BaseClassFieldWriter;
 import org.drools.core.base.ValueType;
 
@@ -62,37 +61,37 @@ public abstract class BaseBooleanClassFieldWriter extends BaseClassFieldWriter {
 
     public void setByteValue(final Object bean,
                              final byte value) {
-        throw new RuntimeDroolsException( "Conversion to boolean not supported from byte" );
+        throw new RuntimeException( "Conversion to boolean not supported from byte" );
     }
 
     public void setCharValue(final Object bean,
                              final char value) {
-        throw new RuntimeDroolsException( "Conversion to boolean not supported from char" );
+        throw new RuntimeException( "Conversion to boolean not supported from char" );
     }
 
     public void setDoubleValue(final Object bean,
                                final double value) {
-        throw new RuntimeDroolsException( "Conversion to boolean not supported from double" );
+        throw new RuntimeException( "Conversion to boolean not supported from double" );
     }
 
     public void setFloatValue(final Object bean,
                               final float value) {
-        throw new RuntimeDroolsException( "Conversion to boolean not supported from float" );
+        throw new RuntimeException( "Conversion to boolean not supported from float" );
     }
 
     public void setIntValue(final Object bean,
                             final int value) {
-        throw new RuntimeDroolsException( "Conversion to boolean not supported from int" );
+        throw new RuntimeException( "Conversion to boolean not supported from int" );
     }
 
     public void setLongValue(final Object bean,
                              final long value) {
-        throw new RuntimeDroolsException( "Conversion to boolean not supported from long" );
+        throw new RuntimeException( "Conversion to boolean not supported from long" );
     }
 
     public void setShortValue(final Object bean,
                               final short value) {
-        throw new RuntimeDroolsException( "Conversion to boolean not supported from short" );
+        throw new RuntimeException( "Conversion to boolean not supported from short" );
     }
 
     public Method getNativeWriteMethod() {
@@ -100,8 +99,8 @@ public abstract class BaseBooleanClassFieldWriter extends BaseClassFieldWriter {
             return this.getClass().getDeclaredMethod( "setBooleanValue",
                                                       new Class[]{Object.class, boolean.class} );
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
-                                              e );
+            throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
+                                        e );
         }
     }
 

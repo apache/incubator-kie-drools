@@ -16,15 +16,16 @@
 
 package org.drools.core.facttemplates;
 
+import org.drools.core.definitions.InternalKnowledgePackage;
+
 import java.io.Externalizable;
 
-import org.drools.core.rule.Package;
 
 public interface FactTemplate
     extends
     Externalizable {
 
-    Package getPackage();
+    InternalKnowledgePackage getPackage();
 
     /**
      * The name of the template may be the fully qualified

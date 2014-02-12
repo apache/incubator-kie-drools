@@ -16,8 +16,6 @@
 
 package org.drools.verifier.opposites;
 
-import org.drools.core.StatelessSession;
-import org.drools.core.StatelessSessionResult;
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.VerifierComponentMockFactory;
@@ -25,9 +23,11 @@ import org.drools.verifier.components.*;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.Opposites;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,9 +38,7 @@ public class OppositePatternsTest extends OppositesBase {
 
     @Test
     public void testPatternsPossibilitiesOpposite() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Patterns.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Opposite Patterns"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
 
@@ -118,10 +116,13 @@ public class OppositePatternsTest extends OppositesBase {
         data.add(o2);
         data.add(o3);
 
-        StatelessSessionResult sessionResult = session.executeWithResults(data);
+        for (Object o : data) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Opposite Patterns"));
 
         Map<Cause, Set<Cause>> map = createOppositesMap(VerifierComponentType.SUB_PATTERN,
-                                                        sessionResult.iterateObjects());
+                                                        (Iterator<Object>)session.getObjects().iterator());
 
         assertTrue((TestBaseOld.causeMapContains(map,
                                                  pp1,

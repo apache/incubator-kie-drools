@@ -4,14 +4,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.compiler.Cheese;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
@@ -19,20 +24,17 @@ import org.drools.core.base.mvel.MVELPredicateExpression;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.compiler.compiler.AnalysisResult;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.lang.descr.PredicateDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.compiler.reteoo.MockLeftTupleSink;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.core.rule.Package;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.PredicateConstraint;
-import org.drools.core.rule.Rule;
 import org.drools.core.rule.PredicateConstraint.PredicateContextEntry;
 import org.drools.core.spi.InternalReadAccessor;
+import org.kie.internal.KnowledgeBaseFactory;
 
 public class MVELPredicateBuilderTest {
 
@@ -47,11 +49,11 @@ public class MVELPredicateBuilderTest {
 
     @Test
     public void testSimpleExpression() {
-        final Package pkg = new Package( "pkg1" );
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
 
-        PackageBuilder pkgBuilder = new PackageBuilder( pkg );
-        final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
+        KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl( pkg );
+        final KnowledgeBuilderConfigurationImpl conf = pkgBuilder.getBuilderConfiguration();
         PackageRegistry pkgRegistry = pkgBuilder.getPackageRegistry( pkg.getName() );
         MVELDialect mvelDialect = ( MVELDialect ) pkgRegistry.getDialectCompiletimeRegistry().getDialect( "mvel" );
 
@@ -105,10 +107,10 @@ public class MVELPredicateBuilderTest {
         AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                           predicateDescr,
                                                                           predicateDescr.getContent(),
-                                                                          new BoundIdentifiers( declarationResolver.getDeclarationClasses( (Rule) null ), new HashMap(), null, Cheese.class ) );
+                                                                          new BoundIdentifiers( declarationResolver.getDeclarationClasses( (RuleImpl) null ), new HashMap(), null, Cheese.class ) );
 
         builder.build( context,
-                       new BoundIdentifiers( declarationResolver.getDeclarationClasses( (Rule) null ), new HashMap() ),
+                       new BoundIdentifiers( declarationResolver.getDeclarationClasses( (RuleImpl) null ), new HashMap() ),
                        previousDeclarations,
                        localDeclarations,
                        predicate,
@@ -117,8 +119,9 @@ public class MVELPredicateBuilderTest {
         
         ( (MVELPredicateExpression) predicate.getPredicateExpression()).compile( (MVELDialectRuntimeData) pkgRegistry.getDialectRuntimeRegistry().getDialectData( "mvel" ) );
 
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        final InternalWorkingMemory wm = (InternalWorkingMemory) ruleBase.newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        InternalWorkingMemory wm = ksession;
 
         final Cheese stilton = new Cheese( "stilton",
                                            10 );

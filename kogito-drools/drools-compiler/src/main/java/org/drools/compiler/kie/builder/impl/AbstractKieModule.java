@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.CompDataEntry;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.CompilationData;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.Header;
@@ -174,7 +174,7 @@ public abstract class AbstractKieModule
                                                     ResultsImpl messages ) {
         AbstractKieModule kModule = (AbstractKieModule) kieProject.getKieModuleForKBase(kBaseModel.getName());
 
-        PackageBuilderConfiguration pconf = new PackageBuilderConfiguration(kieProject.getClonedClassLoader());
+        KnowledgeBuilderConfigurationImpl pconf = new KnowledgeBuilderConfigurationImpl(kieProject.getClonedClassLoader());
         pconf.setCompilationCache(kModule.getCompilationCache(kBaseModel.getName()));
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(pconf);

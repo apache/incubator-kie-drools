@@ -16,14 +16,14 @@
 
 package org.drools.core.common;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.Package;
-import org.drools.core.rule.Rule;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
@@ -44,7 +44,7 @@ public class PhreakPropagationContext
 
     private int                             type;
 
-    private Rule                            rule;
+    private RuleImpl                        rule;
 
     private TerminalNode                    terminalNodeOrigin;
 
@@ -76,7 +76,7 @@ public class PhreakPropagationContext
 
     public PhreakPropagationContext(final long number,
                                     final int type,
-                                    final Rule rule,
+                                    final RuleImpl rule,
                                     final LeftTuple leftTuple,
                                     final InternalFactHandle factHandle) {
         this( number,
@@ -93,7 +93,7 @@ public class PhreakPropagationContext
 
     public PhreakPropagationContext(final long number,
                                     final int type,
-                                    final Rule rule,
+                                    final RuleImpl rule,
                                     final LeftTuple leftTuple,
                                     final InternalFactHandle factHandle,
                                     final EntryPointId entryPoint) {
@@ -110,7 +110,7 @@ public class PhreakPropagationContext
 
     public PhreakPropagationContext(final long number,
                                     final int type,
-                                    final Rule rule,
+                                    final RuleImpl rule,
                                     final LeftTuple leftTuple,
                                     final InternalFactHandle factHandle,
                                     final int activeActivations,
@@ -130,7 +130,7 @@ public class PhreakPropagationContext
 
     public PhreakPropagationContext(final long number,
                                     final int type,
-                                    final Rule rule,
+                                    final RuleImpl rule,
                                     final LeftTuple leftTuple,
                                     final InternalFactHandle factHandle,
                                     final EntryPointId entryPoint,
@@ -148,7 +148,7 @@ public class PhreakPropagationContext
 
     public PhreakPropagationContext(final long number,
                                     final int type,
-                                    final Rule rule,
+                                    final RuleImpl rule,
                                     final LeftTuple leftTuple,
                                     final InternalFactHandle factHandle,
                                     final EntryPointId entryPoint,
@@ -173,7 +173,7 @@ public class PhreakPropagationContext
                                             ClassNotFoundException {
         this.type = in.readInt();
         this.propagationNumber = in.readLong();
-        this.rule = (Rule) in.readObject();
+        this.rule = (RuleImpl) in.readObject();
         this.leftTuple = (LeftTuple) in.readObject();
         this.entryPoint = (EntryPointId) in.readObject();
         this.originOffset = in.readInt();
@@ -203,7 +203,7 @@ public class PhreakPropagationContext
      *
      * @see org.kie.reteoo.PropagationContext#getRuleOrigin()
      */
-    public Rule getRuleOrigin() {
+    public RuleImpl getRuleOrigin() {
         return this.rule;
     }
 
@@ -352,7 +352,7 @@ public class PhreakPropagationContext
         if ( pkgName.equals( "java.lang" ) || pkgName.equals( "java.util" ) ) {
             return Collections.EMPTY_LIST;
         }
-        Package pkg = workingMemory.getRuleBase().getPackage( pkgName );
+        InternalKnowledgePackage pkg = workingMemory.getKnowledgeBase().getPackage( pkgName );
         TypeDeclaration tdecl =  pkg != null ? pkg.getTypeDeclaration( classType ) : null;
         return tdecl != null ? tdecl.getSettableProperties() : Collections.EMPTY_LIST;
     }

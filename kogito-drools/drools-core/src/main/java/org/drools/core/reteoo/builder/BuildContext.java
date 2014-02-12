@@ -17,9 +17,10 @@
 package org.drools.core.reteoo.builder;
 
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.KieComponentFactory;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
@@ -28,8 +29,7 @@ import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.Query;
-import org.drools.core.rule.Rule;
+import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
@@ -55,9 +55,9 @@ public class BuildContext {
     // offset of the pattern
     private int                              currentPatternOffset;
     // rule base to add rules to
-    private InternalRuleBase                 rulebase;
+    private InternalKnowledgeBase            kBase;
     // rule being added at this moment
-    private Rule                             rule;
+    private RuleImpl                         rule;
     private GroupElement                     subRule;
     // the rule component being processed at the moment
     private Stack<RuleComponent>             ruleComponent;
@@ -97,9 +97,9 @@ public class BuildContext {
     private KieComponentFactory              componentFactory;
     private boolean                          attachPQN;
 
-    public BuildContext(final InternalRuleBase rulebase,
+    public BuildContext(final InternalKnowledgeBase kBase,
                         final ReteooBuilder.IdGenerator idGenerator) {
-        this.rulebase = rulebase;
+        this.kBase = kBase;
 
         this.idGenerator = idGenerator;
 
@@ -127,7 +127,7 @@ public class BuildContext {
 
         this.attachPQN = true;
 
-        this.componentFactory = rulebase.getConfiguration().getComponentFactory();
+        this.componentFactory = kBase.getConfiguration().getComponentFactory();
 
         this.emptyForAllBetaConstraints = false;
     }
@@ -226,8 +226,8 @@ public class BuildContext {
      *
      * @return
      */
-    public InternalRuleBase getRuleBase() {
-        return this.rulebase;
+    public InternalKnowledgeBase getKnowledgeBase() {
+        return this.kBase;
     }
 
     /**
@@ -238,7 +238,7 @@ public class BuildContext {
      */
     public InternalWorkingMemory[] getWorkingMemories() {
         if (this.workingMemories == null) {
-            this.workingMemories = this.rulebase.getWorkingMemories();
+            this.workingMemories = this.kBase.getWorkingMemories();
         }
         return this.workingMemories;
     }
@@ -410,13 +410,13 @@ public class BuildContext {
         return this.buildstack;
     }
 
-    public Rule getRule() {
+    public RuleImpl getRule() {
         return rule;
     }
 
-    public void setRule(Rule rule) {
+    public void setRule(RuleImpl rule) {
         this.rule = rule;
-        if (rule instanceof Query) {
+        if (rule.isQuery()) {
             this.query = true;
         }
     }

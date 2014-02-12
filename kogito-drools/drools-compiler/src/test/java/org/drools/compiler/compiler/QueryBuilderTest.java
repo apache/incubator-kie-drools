@@ -4,9 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Person;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.definitions.impl.KnowledgePackageImp;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BindingDescr;
@@ -17,7 +16,6 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.junit.Test;
-import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.internal.KnowledgeBase;
@@ -30,7 +28,7 @@ public class QueryBuilderTest extends DroolsTestCase {
 
     @Test
     public void testRuleWithQuery() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
+        final KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
 
         final PackageDescr packageDescr = new PackageDescr( "p1" );
 
@@ -84,7 +82,7 @@ public class QueryBuilderTest extends DroolsTestCase {
                       builder.getErrors().getErrors() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(Arrays.asList( new KnowledgePackage[] {new KnowledgePackageImp(builder.getPackage() ) } ));
+        kbase.addKnowledgePackages(Arrays.asList( new KnowledgePackage[] { builder.getPackage() } ));
         final KieSession session = kbase.newStatefulKnowledgeSession();
 
         session.insert( new Person( "bobba",
@@ -109,7 +107,7 @@ public class QueryBuilderTest extends DroolsTestCase {
 
     @Test
     public void testQuery() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
+        final KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
 
         final PackageDescr packageDescr = new PackageDescr( "p1" );
         final QueryDescr queryDescr = new QueryDescr( "query1" );
@@ -141,7 +139,7 @@ public class QueryBuilderTest extends DroolsTestCase {
                       builder.getErrors().getErrors() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(Arrays.asList( new KnowledgePackage[] {new KnowledgePackageImp(builder.getPackage() ) } ) );
+        kbase.addKnowledgePackages(Arrays.asList( new KnowledgePackage[] { builder.getPackage() } ) );
 
         final KieSession session = kbase.newStatefulKnowledgeSession();
 

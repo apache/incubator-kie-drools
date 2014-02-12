@@ -19,11 +19,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.drools.core.RuleBaseFactory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPointId;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.internal.KnowledgeBaseFactory;
 
 /**
  * <p>
@@ -39,16 +41,15 @@ import org.junit.Test;
  */
 public class LazyTMSEnablingTest {
 
-    private AbstractWorkingMemory wm;
+    private StatefulKnowledgeSessionImpl ksession;
     private TruthMaintenanceSystem tms;
 
     @Before
     public void setUp() {
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        wm = (AbstractWorkingMemory) RuleBaseFactory.newRuleBase()
-                .newStatefulSession();
-
-        tms = ((NamedEntryPoint)wm.getWorkingMemoryEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
+        tms = ((NamedEntryPoint)ksession.getWorkingMemoryEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
 
     }
 
@@ -57,7 +58,7 @@ public class LazyTMSEnablingTest {
 
         final String fact1 = "logical";
 
-        wm.insert(fact1);
+        ksession.insert(fact1);
 
         assertEquals(
                 "Shouldn't have anything, since no logical insert was performed.",
@@ -65,15 +66,15 @@ public class LazyTMSEnablingTest {
 
         final String fact2 = "logical";
 
-        wm.insertLogical(fact2);
+        ksession.insertLogical(fact2);
 
         assertEquals(
                 "Now that a logical insert was done, it should have an element.",
                 1, tms.getEqualityKeyMap().size());
 
         // Make sure the internals are fine.
-        ObjectTypeConf typeConf = wm.getObjectTypeConfigurationRegistry()
-                .getObjectTypeConf(wm.getEntryPoint(), fact1);
+        ObjectTypeConf typeConf = ksession.getObjectTypeConfigurationRegistry()
+                .getObjectTypeConf(ksession.getEntryPoint(), fact1);
 
         assertTrue("Should have enabled TMS", typeConf.isTMSEnabled());
 
@@ -91,18 +92,18 @@ public class LazyTMSEnablingTest {
 
         final Double doubleFact = 77.8;
 
-        ObjectTypeConf stringTypeConf = wm.getObjectTypeConfigurationRegistry()
-                .getObjectTypeConf(wm.getEntryPoint(), stringFact1);
+        ObjectTypeConf stringTypeConf = ksession.getObjectTypeConfigurationRegistry()
+                .getObjectTypeConf(ksession.getEntryPoint(), stringFact1);
 
-        ObjectTypeConf intTypeConf = wm.getObjectTypeConfigurationRegistry()
-                .getObjectTypeConf(wm.getEntryPoint(), intFact1);
+        ObjectTypeConf intTypeConf = ksession.getObjectTypeConfigurationRegistry()
+                .getObjectTypeConf(ksession.getEntryPoint(), intFact1);
 
-        wm.insert(stringFact1);
-        wm.insert(anotherString);
-        wm.insert(intFact1);
-        wm.insert(doubleFact);
+        ksession.insert(stringFact1);
+        ksession.insert(anotherString);
+        ksession.insert(intFact1);
+        ksession.insert(doubleFact);
 
-        for (ObjectTypeConf conf : wm.getObjectTypeConfigurationRegistry()
+        for (ObjectTypeConf conf : ksession.getObjectTypeConfigurationRegistry()
                 .values()) {
 
             assertFalse(
@@ -111,7 +112,7 @@ public class LazyTMSEnablingTest {
 
         }
 
-        wm.insertLogical(stringFact2);
+        ksession.insertLogical(stringFact2);
 
         assertTrue("Should have enabled TMS for Strings.", stringTypeConf
                 .isTMSEnabled());
@@ -119,7 +120,7 @@ public class LazyTMSEnablingTest {
         assertFalse("Shouldn't have enabled TMS for Integers.", intTypeConf
                 .isTMSEnabled());
 
-        wm.insertLogical(intFact2);
+        ksession.insertLogical(intFact2);
 
         assertTrue("Now it should have enabled TMS for Integers!.", intTypeConf
                 .isTMSEnabled());

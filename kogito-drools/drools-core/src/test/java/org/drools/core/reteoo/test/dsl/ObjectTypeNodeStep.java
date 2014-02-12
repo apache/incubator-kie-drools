@@ -51,7 +51,7 @@ public class ObjectTypeNodeStep
         ObjectTypeNode otn;
         try {
             EntryPointNode epn = new EntryPointNode( buildContext.getNextId(),
-                                                     buildContext.getRuleBase().getRete(),
+                                                     buildContext.getKnowledgeBase().getRete(),
                                                      buildContext );
             epn.attach(buildContext);
             

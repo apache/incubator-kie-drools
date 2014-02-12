@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.AccessorKey.AccessorType;
 import org.drools.core.base.extractors.MVELDateClassFieldReader;
 import org.drools.core.base.extractors.MVELNumberClassFieldReader;
@@ -466,29 +465,6 @@ public class ClassFieldAccessorStore
         writer.setWriteAccessor( cache.getWriteAcessor( writer ) );
     }
 
-    //    public void wire(PatternExtractor reader) {
-    //        ObjectType objectType = reader.getObjectType();
-    //
-    //        if ( objectType instanceof ClassObjectType ) {
-    //            ClassObjectType cot = (ClassObjectType) objectType;
-    //            try {
-    //                Class cls = this.cache.getClassLoader().loadClass( cot.getClassName() );
-    //                cot.setClassType( cls );
-    //            } catch ( ClassNotFoundException e ) {
-    //                throw new RuntimeDroolsException( "Unable to load ClassObjectType class '" + cot.getClassName() + "'" );
-    //            }
-    //        }
-    //    }
-
-//    public void wire(ClassObjectType objectType) {
-//        try {
-//            Class cls = this.cache.getClassLoader().loadClass( objectType.getClassName() );
-//            objectType.setClassType( cls );
-//        } catch ( ClassNotFoundException e ) {
-//            throw new RuntimeDroolsException( "Unable to load ClassObjectType class '" + objectType.getClassName() + "'" );
-//        }
-//    }
-
     public void wire( ClassWireable wireable ) {
         try {
             if ( wireable.getClassType() == null || ! wireable.getClassType().isPrimitive() ) {
@@ -496,7 +472,7 @@ public class ClassFieldAccessorStore
                 wireable.wire( cls );
             }
         } catch ( ClassNotFoundException e ) {
-            throw new RuntimeDroolsException( "Unable to load ClassObjectType class '" + wireable.getClassName() + "'" );
+            throw new RuntimeException( "Unable to load ClassObjectType class '" + wireable.getClassName() + "'" );
         }
     }
 

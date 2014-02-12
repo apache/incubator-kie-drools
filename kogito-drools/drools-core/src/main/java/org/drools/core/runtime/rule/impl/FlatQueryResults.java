@@ -31,7 +31,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.drools.core.QueryResult;
+import org.drools.core.QueryResultsImpl;
+import org.drools.core.QueryResultsRowImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.xml.jaxb.util.JaxbFlatQueryResultsAdapter;
 import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
@@ -72,7 +73,7 @@ public class FlatQueryResults
         this.factHandles = factHandles;
     }
     
-    public FlatQueryResults(org.drools.core.QueryResults results) {
+    public FlatQueryResults(QueryResultsImpl results) {
         Declaration[] parameters = results.getParameters();
         
         Set<String> set  = new HashSet<String>();
@@ -112,14 +113,14 @@ public class FlatQueryResults
         }
         
         
-        for ( QueryResult result : results ) {
+        for ( QueryResultsRow result : results ) {
             ArrayList<Object> row = new ArrayList<Object>();
             ArrayList<FactHandle> rowHandle = new ArrayList<FactHandle>();
 
             for ( i = 0; i < length; i++ ) {
                 Declaration declr = declrs[i];
-                row.add( result.get( declr ) );
-                rowHandle.add( result.getFactHandle( declr ) );
+                row.add( ((QueryResultsRowImpl)result).get( declr ) );
+                rowHandle.add( ((QueryResultsRowImpl)result).getFactHandle( declr ) );
             }
 
             this.results.add( row );

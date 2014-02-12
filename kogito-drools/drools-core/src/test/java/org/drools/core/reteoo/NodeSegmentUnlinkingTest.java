@@ -1,32 +1,28 @@
 package org.drools.core.reteoo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.PhreakNotNode;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.conf.RuleEngineOption;
 
+import static org.junit.Assert.*;
+
 public class NodeSegmentUnlinkingTest {
-    ReteooRuleBase       ruleBase;
+    InternalKnowledgeBase kBase;
     BuildContext         buildContext;
     PropagationContext   context;
 
@@ -39,11 +35,11 @@ public class NodeSegmentUnlinkingTest {
     BetaNode             n6;
     BetaNode             n7;
     BetaNode             n8;
-    Rule                 rule1;
-    Rule                 rule2;
-    Rule                 rule3;
-    Rule                 rule4;
-    Rule                 rule5;
+    RuleImpl             rule1;
+    RuleImpl             rule2;
+    RuleImpl             rule3;
+    RuleImpl             rule4;
+    RuleImpl             rule5;
 
     static final int     JOIN_NODE   = 0;
     static final int     EXISTS_NODE = 1;
@@ -81,19 +77,19 @@ public class NodeSegmentUnlinkingTest {
     }
     
     public void setUp(int... type) {
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = org.kie.internal.KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( RuleEngineOption.PHREAK );
-        ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf);
-        buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
+        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        buildContext = new BuildContext( kBase, kBase.getReteooBuilder().getIdGenerator() );
 
-        PropagationContextFactory pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
 
         MockTupleSource mockTupleSource = new MockTupleSource( 9 );
 
-        rule1 = new Rule( "rule1" );
-        rule2 = new Rule( "rule2" );
-        rule3 = new Rule( "rule3" );
+        rule1 = new RuleImpl( "rule1" );
+        rule2 = new RuleImpl( "rule2" );
+        rule3 = new RuleImpl( "rule3" );
         
         ObjectTypeNode otn = new ObjectTypeNode( 3, null, new ClassObjectType( String.class ), buildContext );
         liaNode = new LeftInputAdapterNode(4, otn, buildContext );
@@ -161,14 +157,14 @@ public class NodeSegmentUnlinkingTest {
     @Test
     public void testSingleNodeinSegment() {
 
-        rule1 = new Rule( "rule1" );
-        rule2 = new Rule( "rule2" );
-        rule3 = new Rule( "rule3" );
+        rule1 = new RuleImpl( "rule1" );
+        rule2 = new RuleImpl( "rule2" );
+        rule3 = new RuleImpl( "rule3" );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( RuleEngineOption.PHREAK );
-        ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf);
-        BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
+        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        BuildContext buildContext = new BuildContext( kBase, kBase.getReteooBuilder().getIdGenerator() );
 
         MockObjectSource mockObjectSource = new MockObjectSource( 8 );
         MockTupleSource mockTupleSource = new MockTupleSource( 9 );
@@ -204,20 +200,20 @@ public class NodeSegmentUnlinkingTest {
         n3.attach();
         n4.attach();
         n5.attach();
-       
-        AbstractWorkingMemory wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
-        createSegmentMemory( n2, wm );
 
-        BetaMemory bm = (BetaMemory) wm.getNodeMemory( n1 );
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        createSegmentMemory( n2, ksession );
+
+        BetaMemory bm = (BetaMemory) ksession.getNodeMemory( n1 );
         assertNull( bm.getSegmentMemory() );
 
-        bm = (BetaMemory) wm.getNodeMemory( n3 );
+        bm = (BetaMemory) ksession.getNodeMemory( n3 );
         assertNull( bm.getSegmentMemory() );
 
-        bm = (BetaMemory) wm.getNodeMemory( n4 );
+        bm = (BetaMemory) ksession.getNodeMemory( n4 );
         assertNull( bm.getSegmentMemory() );
 
-        bm = (BetaMemory) wm.getNodeMemory( n2 );
+        bm = (BetaMemory) ksession.getNodeMemory( n2 );
         assertEquals( 1, bm.getNodePosMaskBit() );
         assertEquals( 1, bm.getSegmentMemory().getAllLinkedMaskTest() );
     }
@@ -228,29 +224,34 @@ public class NodeSegmentUnlinkingTest {
         // Initialise from lian
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( RuleEngineOption.PHREAK );
-        AbstractWorkingMemory wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
-        SegmentUtilities.createSegmentMemory( liaNode, wm );
-        liaNode.assertObject( (InternalFactHandle) wm.insert( "str" ), context, wm );
+
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+
+        SegmentUtilities.createSegmentMemory( liaNode, ksession );
+        liaNode.assertObject((InternalFactHandle) ksession.insert("str"), context, ksession);
         
 
-        LiaNodeMemory liaMem = (LiaNodeMemory) wm.getNodeMemory( liaNode );
+        LiaNodeMemory liaMem = (LiaNodeMemory) ksession.getNodeMemory( liaNode );
         assertEquals( 1, liaMem.getNodePosMaskBit() );
         assertEquals( 3, liaMem.getSegmentMemory().getAllLinkedMaskTest() ); 
         
-        BetaMemory bm1 = (BetaMemory) wm.getNodeMemory( n1 );
+        BetaMemory bm1 = (BetaMemory) ksession.getNodeMemory( n1 );
         assertEquals( 2, bm1.getNodePosMaskBit() );
         assertEquals( 3, bm1.getSegmentMemory().getAllLinkedMaskTest() );         
         
         // Initialise from n1     
-        wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
-        n1.assertObject( (InternalFactHandle) wm.insert( "str" ), context, wm );
+        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+
+        n1.assertObject( (InternalFactHandle) ksession.insert( "str" ), context, ksession );
         
 
-        liaMem = (LiaNodeMemory) wm.getNodeMemory( liaNode );
+        liaMem = (LiaNodeMemory) ksession.getNodeMemory( liaNode );
         assertEquals( 1, liaMem.getNodePosMaskBit() );
         assertEquals( 3, liaMem.getSegmentMemory().getAllLinkedMaskTest() ); 
         
-        bm1 = (BetaMemory) wm.getNodeMemory( n1 );
+        bm1 = (BetaMemory) ksession.getNodeMemory( n1 );
         assertEquals( 2, bm1.getNodePosMaskBit() );
         assertEquals( 3, bm1.getSegmentMemory().getAllLinkedMaskTest() );           
     }
@@ -259,20 +260,21 @@ public class NodeSegmentUnlinkingTest {
     public void testLiaNodeLinking() {
         setUp( JOIN_NODE );
         // Initialise from lian
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = org.kie.internal.KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( RuleEngineOption.PHREAK );
-        AbstractWorkingMemory wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+
+        SegmentUtilities.createSegmentMemory( liaNode, ksession );
         
-        SegmentUtilities.createSegmentMemory( liaNode, wm ); 
+        InternalFactHandle fh1 = (InternalFactHandle) ksession.insert( "str1" );
+        n1.assertObject( fh1, context, ksession );
         
-        InternalFactHandle fh1 = (InternalFactHandle) wm.insert( "str1" );
-        n1.assertObject( fh1, context, wm );    
-        
-        LiaNodeMemory liaMem = (LiaNodeMemory) wm.getNodeMemory( liaNode );
+        LiaNodeMemory liaMem = (LiaNodeMemory) ksession.getNodeMemory( liaNode );
         assertEquals( 1, liaMem.getNodePosMaskBit() );
         assertEquals( 3, liaMem.getSegmentMemory().getAllLinkedMaskTest() ); 
         
-        BetaMemory bm1 = (BetaMemory) wm.getNodeMemory( n1 );
+        BetaMemory bm1 = (BetaMemory) ksession.getNodeMemory( n1 );
         assertEquals( 2, bm1.getNodePosMaskBit() );
         assertEquals( 3, bm1.getSegmentMemory().getAllLinkedMaskTest() );     
         
@@ -280,26 +282,26 @@ public class NodeSegmentUnlinkingTest {
         assertFalse( liaMem.getSegmentMemory().isSegmentLinked() );
         
         // now linked
-        InternalFactHandle fh2 = (InternalFactHandle) wm.insert( "str2" );
-        liaNode.assertObject( fh2, context, wm );
+        InternalFactHandle fh2 = (InternalFactHandle) ksession.insert( "str2" );
+        liaNode.assertObject( fh2, context, ksession );
         assertTrue( liaMem.getSegmentMemory().isSegmentLinked() );
         
         // test unlink after one retract
-        liaNode.retractLeftTuple( fh2.getFirstLeftTuple(), context, wm );
+        liaNode.retractLeftTuple( fh2.getFirstLeftTuple(), context, ksession );
         assertFalse( liaMem.getSegmentMemory().isSegmentLinked() );
         
         // check counter, after multiple asserts
-        InternalFactHandle fh3 = (InternalFactHandle) wm.insert( "str3" );
-        InternalFactHandle fh4 = (InternalFactHandle) wm.insert( "str4" );
-        liaNode.assertObject( fh3, context, wm );
-        liaNode.assertObject( fh4, context, wm );
+        InternalFactHandle fh3 = (InternalFactHandle) ksession.insert( "str3" );
+        InternalFactHandle fh4 = (InternalFactHandle) ksession.insert( "str4" );
+        liaNode.assertObject( fh3, context, ksession );
+        liaNode.assertObject( fh4, context, ksession );
         
         assertTrue( liaMem.getSegmentMemory().isSegmentLinked() );
         
-        liaNode.retractLeftTuple( fh3.getFirstLeftTuple(), context, wm );
+        liaNode.retractLeftTuple( fh3.getFirstLeftTuple(), context, ksession );
         assertTrue( liaMem.getSegmentMemory().isSegmentLinked() );
 
-        liaNode.retractLeftTuple( fh4.getFirstLeftTuple(), context, wm );
+        liaNode.retractLeftTuple( fh4.getFirstLeftTuple(), context, ksession );
         assertFalse( liaMem.getSegmentMemory().isSegmentLinked() );
     }
 
@@ -307,96 +309,104 @@ public class NodeSegmentUnlinkingTest {
     public void tesMultiNodeSegmentDifferentInitialisationPoints() {
         setUp( JOIN_NODE );
         // Initialise from n3
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = org.kie.internal.KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( RuleEngineOption.PHREAK );
-        AbstractWorkingMemory wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration) kconf) );
-        createSegmentMemory( n3, wm );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        BetaMemory bm = (BetaMemory) wm.getNodeMemory( n1 );
-        assertNull( bm.getSegmentMemory() );
+        createSegmentMemory(n3, ksession);
 
-        bm = (BetaMemory) wm.getNodeMemory( n3 );
+        BetaMemory bm = (BetaMemory) ksession.getNodeMemory( n1 );
+        assertNull(bm.getSegmentMemory());
+
+        bm = (BetaMemory) ksession.getNodeMemory( n3 );
         assertEquals( 1, bm.getNodePosMaskBit() );
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
 
-        bm = (BetaMemory) wm.getNodeMemory( n4 );
+        bm = (BetaMemory) ksession.getNodeMemory( n4 );
         assertEquals( 2, bm.getNodePosMaskBit() );
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
 
-        bm = (BetaMemory) wm.getNodeMemory( n5 );
+        bm = (BetaMemory) ksession.getNodeMemory( n5 );
         assertEquals( 4, bm.getNodePosMaskBit() );
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
 
-        bm = (BetaMemory) wm.getNodeMemory( n6 );
+        bm = (BetaMemory) ksession.getNodeMemory( n6 );
         assertEquals( 8, bm.getNodePosMaskBit() );
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
 
         // Initialise from n4       
-        wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
-        bm = createSegmentMemory( n4, wm );
+        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        bm = (BetaMemory) wm.getNodeMemory( n1 );
+        bm = createSegmentMemory( n4, ksession );
+
+        bm = (BetaMemory) ksession.getNodeMemory( n1 );
         assertNull( bm.getSegmentMemory() );
 
-        bm = (BetaMemory) wm.getNodeMemory( n3 );
+        bm = (BetaMemory) ksession.getNodeMemory( n3 );
         assertEquals( 1, bm.getNodePosMaskBit() );
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
 
-        bm = (BetaMemory) wm.getNodeMemory( n4 );
+        bm = (BetaMemory) ksession.getNodeMemory( n4 );
         assertEquals( 2, bm.getNodePosMaskBit() );
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
 
-        bm = (BetaMemory) wm.getNodeMemory( n5 );
+        bm = (BetaMemory) ksession.getNodeMemory( n5 );
         assertEquals( 4, bm.getNodePosMaskBit() );
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
 
-        bm = (BetaMemory) wm.getNodeMemory( n6 );
-        assertEquals( 8, bm.getNodePosMaskBit() );
+        bm = (BetaMemory) ksession.getNodeMemory( n6 );
+        assertEquals(8, bm.getNodePosMaskBit());
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
 
         // Initialise from n5
-        wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
-        createSegmentMemory( n5, wm );
+        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        bm = (BetaMemory) wm.getNodeMemory( n1 );
-        assertNull( bm.getSegmentMemory() );
+        createSegmentMemory( n5, ksession );
 
-        bm = (BetaMemory) wm.getNodeMemory( n3 );
+        bm = (BetaMemory) ksession.getNodeMemory( n1 );
+        assertNull(bm.getSegmentMemory());
+
+        bm = (BetaMemory) ksession.getNodeMemory( n3 );
         assertEquals( 1, bm.getNodePosMaskBit() );
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
 
-        bm = (BetaMemory) wm.getNodeMemory( n4 );
+        bm = (BetaMemory) ksession.getNodeMemory( n4 );
         assertEquals( 2, bm.getNodePosMaskBit() );
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
 
-        bm = (BetaMemory) wm.getNodeMemory( n5 );
+        bm = (BetaMemory) ksession.getNodeMemory( n5 );
         assertEquals( 4, bm.getNodePosMaskBit() );
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
 
-        bm = (BetaMemory) wm.getNodeMemory( n6 );
+        bm = (BetaMemory) ksession.getNodeMemory( n6 );
         assertEquals( 8, bm.getNodePosMaskBit() );
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
 
         // Initialise from n6
-        wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
-        createSegmentMemory( n6, wm );
+        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        bm = (BetaMemory) wm.getNodeMemory( n1 );
+        createSegmentMemory( n6, ksession );
+
+        bm = (BetaMemory) ksession.getNodeMemory( n1 );
         assertNull( bm.getSegmentMemory() );
 
-        bm = (BetaMemory) wm.getNodeMemory( n3 );
+        bm = (BetaMemory) ksession.getNodeMemory( n3 );
         assertEquals( 1, bm.getNodePosMaskBit() );
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
 
-        bm = (BetaMemory) wm.getNodeMemory( n4 );
+        bm = (BetaMemory) ksession.getNodeMemory( n4 );
         assertEquals( 2, bm.getNodePosMaskBit() );
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
 
-        bm = (BetaMemory) wm.getNodeMemory( n5 );
+        bm = (BetaMemory) ksession.getNodeMemory( n5 );
         assertEquals( 4, bm.getNodePosMaskBit() );
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
 
-        bm = (BetaMemory) wm.getNodeMemory( n6 );
+        bm = (BetaMemory) ksession.getNodeMemory( n6 );
         assertEquals( 8, bm.getNodePosMaskBit() );
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
     }
@@ -407,25 +417,27 @@ public class NodeSegmentUnlinkingTest {
 
         assertEquals( JoinNode.class, n3.getClass() ); // make sure it created JoinNodes
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = org.kie.internal.KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( RuleEngineOption.PHREAK );
-        AbstractWorkingMemory wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
-        DefaultFactHandle f1 = (DefaultFactHandle) wm.insert( "test1" );
-        n3.assertObject( f1, context, wm );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        BetaMemory bm = (BetaMemory) wm.getNodeMemory( n3 );
+        DefaultFactHandle f1 = (DefaultFactHandle) ksession.insert( "test1" );
+        n3.assertObject( f1, context, ksession );
+
+        BetaMemory bm = (BetaMemory) ksession.getNodeMemory( n3 );
         assertFalse( bm.getSegmentMemory().isSegmentLinked() );
 
-        n4.assertObject( f1, context, wm );
+        n4.assertObject( f1, context, ksession );
         assertFalse( bm.getSegmentMemory().isSegmentLinked() );
 
-        n5.assertObject( f1, context, wm );
+        n5.assertObject( f1, context, ksession );
         assertFalse( bm.getSegmentMemory().isSegmentLinked() );
 
-        n6.assertObject( f1, context, wm );
+        n6.assertObject( f1, context, ksession );
         assertTrue( bm.getSegmentMemory().isSegmentLinked() ); // only after all 4 nodes are populated, is the segment linked in
 
-        n6.retractRightTuple( f1.getLastRightTuple(), context, wm );
+        n6.retractRightTuple( f1.getLastRightTuple(), context, ksession );
         assertFalse( bm.getSegmentMemory().isSegmentLinked() ); // check retraction unlinks again
     }
 
@@ -435,25 +447,27 @@ public class NodeSegmentUnlinkingTest {
 
         assertEquals( ExistsNode.class, n3.getClass() ); // make sure it created ExistsNodes
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = org.kie.internal.KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( RuleEngineOption.PHREAK );
-        AbstractWorkingMemory wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
-        DefaultFactHandle f1 = (DefaultFactHandle) wm.insert( "test1" );
-        n3.assertObject( f1, context, wm );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
-        BetaMemory bm = (BetaMemory) wm.getNodeMemory( n3 );
+        DefaultFactHandle f1 = (DefaultFactHandle) ksession.insert( "test1" );
+        n3.assertObject( f1, context, ksession );
+
+        BetaMemory bm = (BetaMemory) ksession.getNodeMemory( n3 );
         assertFalse( bm.getSegmentMemory().isSegmentLinked() );
 
-        n4.assertObject( f1, context, wm );
+        n4.assertObject( f1, context, ksession );
         assertFalse( bm.getSegmentMemory().isSegmentLinked() );
 
-        n5.assertObject( f1, context, wm );
+        n5.assertObject( f1, context, ksession );
         assertFalse( bm.getSegmentMemory().isSegmentLinked() );
 
-        n6.assertObject( f1, context, wm );
+        n6.assertObject( f1, context, ksession );
         assertTrue( bm.getSegmentMemory().isSegmentLinked() ); // only after all 4 nodes are populated, is the segment linked in
 
-        n6.retractRightTuple( f1.getLastRightTuple(), context, wm );
+        n6.retractRightTuple( f1.getLastRightTuple(), context, ksession );
         assertFalse( bm.getSegmentMemory().isSegmentLinked() ); // check retraction unlinks again        
     }
 
@@ -473,22 +487,23 @@ public class NodeSegmentUnlinkingTest {
 
         assertEquals( NotNode.class, n3.getClass() ); // make sure it created NotNodes
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = org.kie.internal.KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( RuleEngineOption.PHREAK );
-        AbstractWorkingMemory wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
-                
-        BetaMemory bm = (BetaMemory) wm.getNodeMemory( n3 );
-        createSegmentMemory( n3, wm );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+
+        BetaMemory bm = (BetaMemory) ksession.getNodeMemory( n3 );
+        createSegmentMemory( n3, ksession );
         assertTrue( bm.getSegmentMemory().isSegmentLinked() ); // not nodes start off linked
 
-        DefaultFactHandle f1 = (DefaultFactHandle) wm.insert( "test1" ); // unlinked after first assertion
-        n3.assertObject( f1, context, wm );
+        DefaultFactHandle f1 = (DefaultFactHandle) ksession.insert( "test1" ); // unlinked after first assertion
+        n3.assertObject( f1, context, ksession );
                 
         // this doesn't unlink on the assertObject, as the node's memory must be processed. So use the helper method the main network evaluator uses.
-        PhreakNotNode.unlinkNotNodeOnRightInsert( (NotNode) n3, bm, wm );
+        PhreakNotNode.unlinkNotNodeOnRightInsert( (NotNode) n3, bm, ksession );
         assertFalse( bm.getSegmentMemory().isSegmentLinked() );                
 
-        n3.retractRightTuple( f1.getFirstRightTuple(), context, wm );
+        n3.retractRightTuple( f1.getFirstRightTuple(), context, ksession );
         assertTrue( bm.getSegmentMemory().isSegmentLinked() ); 
                 //assertFalse( bm.getSegmentMemory().isSigmentLinked() ); // check retraction unlinks again         
     }

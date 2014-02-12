@@ -17,7 +17,6 @@
 package org.drools.core.impl;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.SessionConfiguration;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
@@ -26,6 +25,7 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSessionConfiguration;
 
 import java.util.Properties;
+import java.util.UUID;
 
 public class KnowledgeBaseFactoryServiceImpl implements KnowledgeBaseFactoryService {
 
@@ -46,21 +46,20 @@ public class KnowledgeBaseFactoryServiceImpl implements KnowledgeBaseFactoryServ
     }
     
     public KnowledgeBase newKnowledgeBase() {
-        return new KnowledgeBaseImpl( RuleBaseFactory.newRuleBase() );
+        return newKnowledgeBase( UUID.randomUUID().toString() );
     }
     
     public KnowledgeBase newKnowledgeBase( String kbaseId ) {
-        return new KnowledgeBaseImpl( RuleBaseFactory.newRuleBase(kbaseId) );
+        return newKnowledgeBase( kbaseId, null );
     }
     
     public KnowledgeBase newKnowledgeBase(KieBaseConfiguration conf) {
-        return new KnowledgeBaseImpl( RuleBaseFactory.newRuleBase( ( RuleBaseConfiguration ) conf ) );
+        return newKnowledgeBase( UUID.randomUUID().toString(), (RuleBaseConfiguration) conf );
     }
 
     public KnowledgeBase newKnowledgeBase(String kbaseId, 
                                           KieBaseConfiguration conf) {
-        return new KnowledgeBaseImpl( RuleBaseFactory.newRuleBase( kbaseId, 
-                                                                   (RuleBaseConfiguration) conf ) );
+        return new KnowledgeBaseImpl( kbaseId, (RuleBaseConfiguration) conf);
     }
 
     public Environment newEnvironment() {

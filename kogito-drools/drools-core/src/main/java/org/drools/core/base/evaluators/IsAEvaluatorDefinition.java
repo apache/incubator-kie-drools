@@ -20,8 +20,11 @@ import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.factmodel.traits.*;
-import org.drools.core.reteoo.ReteooRuleBase;
+import org.drools.core.factmodel.traits.CoreWrapper;
+import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.core.factmodel.traits.TraitType;
+import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.rule.VariableRestriction;
 import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
@@ -232,7 +235,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         }
 
         private void cacheLiteral( Object value, InternalWorkingMemory workingMemory ) {
-            CodedHierarchy x = ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+            CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
             cachedLiteral = getCode( value, x );
         }
 
@@ -318,13 +321,13 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             if ( source instanceof Thing ) {
                 sourceTraits = ((TraitableBean) ((Thing) source).getCore()).getCurrentTypeCode();
                 if ( sourceTraits == null && source instanceof TraitType ) {
-                    CodedHierarchy x = ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                    CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
                     sourceTraits = x.getCode( ((TraitType)source).getTraitName() );
                 }
             } else if ( source instanceof TraitableBean ) {
                 sourceTraits = ((TraitableBean) source).getCurrentTypeCode();
             } else if ( source instanceof String ) {
-                CodedHierarchy x = ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
                 sourceTraits = x.getCode( source );
             } else {
                 TraitableBean tbean = lookForWrapper( source, workingMemory);
@@ -334,15 +337,15 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             }
 
             if ( target instanceof Class ) {
-                CodedHierarchy x = ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
                 targetTraits = x.getCode( ((Class) target).getName() );
             } else if ( target instanceof String ) {
-                CodedHierarchy x = ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
                 targetTraits = x.getCode( target );
             } else if ( target instanceof Thing ) {
                 targetTraits = ((TraitableBean) ((Thing) target).getCore()).getCurrentTypeCode();
                 if ( targetTraits == null && target instanceof TraitType ) {
-                    CodedHierarchy x = ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                    CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
                     targetTraits = x.getCode( ((TraitType)target).getTraitName() );
                 }
             } else if ( target instanceof TraitableBean ) {

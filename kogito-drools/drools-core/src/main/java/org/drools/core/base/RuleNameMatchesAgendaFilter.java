@@ -20,7 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.AgendaFilter;
+import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.Match;
 
 /**
@@ -28,7 +28,7 @@ import org.kie.api.runtime.rule.Match;
  */
 public class RuleNameMatchesAgendaFilter
     implements
-    AgendaFilter, org.kie.api.runtime.rule.AgendaFilter {
+    AgendaFilter {
     private final Pattern pattern;
 
     private final boolean accept;
@@ -42,15 +42,6 @@ public class RuleNameMatchesAgendaFilter
                                  final boolean accept) {
         this.pattern = Pattern.compile( regexp );
         this.accept = accept;
-    }
-
-    public boolean accept(final Activation activation) {
-        Matcher matcher = pattern.matcher( activation.getRule().getName() );
-        if ( matcher.matches() ) {
-            return this.accept;
-        } else {
-            return !this.accept;
-        }
     }
 
     public boolean accept( Match activation ) {

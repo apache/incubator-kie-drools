@@ -25,7 +25,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.util.MathUtils;
 import org.drools.core.spi.FieldValue;
@@ -90,7 +89,7 @@ public class ObjectFieldImpl
             //final Class<?> staticClass = Class.forName( enumName );
             value = (Serializable) staticClass.getField( fieldName ).get( null );
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException("Error deserializing enum value "+enumName+"."+fieldName+" : "+e.getMessage());
+            throw new RuntimeException("Error deserializing enum value "+enumName+"."+fieldName+" : "+e.getMessage());
         }
     }
 
@@ -119,7 +118,7 @@ public class ObjectFieldImpl
         } else if ( isString ) {
             return Boolean.valueOf( (String) this.value ).booleanValue();
         }
-        throw new RuntimeDroolsException( "Conversion to boolean not supported for type: " + this.value.getClass() );
+        throw new RuntimeException( "Conversion to boolean not supported for type: " + this.value.getClass() );
     }
 
     public byte getByteValue() {
@@ -128,7 +127,7 @@ public class ObjectFieldImpl
         } else if ( isString ) {
             return Byte.valueOf( (String) this.value ).byteValue();
         }
-        throw new RuntimeDroolsException( "Conversion to byte not supported for type: " + this.value.getClass() );
+        throw new RuntimeException( "Conversion to byte not supported for type: " + this.value.getClass() );
     }
 
     public char getCharValue() {
@@ -137,7 +136,7 @@ public class ObjectFieldImpl
         } else if ( isString && ((String) this.value).length() == 1 ) {
             return ((String) this.value).charAt( 0 );
         }
-        throw new RuntimeDroolsException( "Conversion to char not supported for type: " + this.value.getClass() );
+        throw new RuntimeException( "Conversion to char not supported for type: " + this.value.getClass() );
     }
 
     public double getDoubleValue() {
@@ -146,7 +145,7 @@ public class ObjectFieldImpl
         } else if ( isString ) {
             return Double.valueOf( (String) this.value ).doubleValue();
         }
-        throw new RuntimeDroolsException( "Conversion to double not supported for type: " + this.value.getClass() );
+        throw new RuntimeException( "Conversion to double not supported for type: " + this.value.getClass() );
     }
 
     public float getFloatValue() {
@@ -155,7 +154,7 @@ public class ObjectFieldImpl
         } else if ( isString ) {
             return Float.valueOf( (String) this.value ).floatValue();
         }
-        throw new RuntimeDroolsException( "Conversion to float not supported for type: " + this.value.getClass() );
+        throw new RuntimeException( "Conversion to float not supported for type: " + this.value.getClass() );
     }
 
     public int getIntValue() {
@@ -164,7 +163,7 @@ public class ObjectFieldImpl
         } else if ( isString ) {
             return Integer.valueOf( (String) this.value ).intValue();
         }
-        throw new RuntimeDroolsException( "Conversion to int not supported for type: " + this.value.getClass() );
+        throw new RuntimeException( "Conversion to int not supported for type: " + this.value.getClass() );
     }
 
     public long getLongValue() {
@@ -173,7 +172,7 @@ public class ObjectFieldImpl
         } else if ( isString ) {
             return Long.valueOf( (String) this.value ).longValue();
         }
-        throw new RuntimeDroolsException( "Conversion to long not supported for type: " + this.value.getClass() );
+        throw new RuntimeException( "Conversion to long not supported for type: " + this.value.getClass() );
     }
 
     public short getShortValue() {
@@ -182,7 +181,7 @@ public class ObjectFieldImpl
         } else if ( isString ) {
             return Short.valueOf( (String) this.value ).shortValue();
         }
-        throw new RuntimeDroolsException( "Conversion to short not supported for type: " + this.value.getClass() );
+        throw new RuntimeException( "Conversion to short not supported for type: " + this.value.getClass() );
     }
 
     public boolean equals(final Object object) {

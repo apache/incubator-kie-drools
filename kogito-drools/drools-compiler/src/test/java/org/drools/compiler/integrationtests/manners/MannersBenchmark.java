@@ -1,11 +1,12 @@
 package org.drools.compiler.integrationtests.manners;
 
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatefulSession;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.rule.Package;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.io.ResourceFactory;
 
 import java.io.*;
 import java.util.*;
@@ -32,24 +33,11 @@ public class MannersBenchmark {
     private int maxHobbies = 3;
 
     public static void main(final String[] args) throws Exception {
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl(new InputStreamReader(MannersBenchmark.class.getResourceAsStream("manners.drl")));
-        if ( builder.hasErrors() ) {
-            throw new RuntimeException( builder.getErrors().toString() );
-        }
-        Package pkg = builder.getPackage();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newInputStreamResource(MannersBenchmark.class.getResourceAsStream("manners.drl")), ResourceType.DRL);
 
-        // add the package to a rulebase
-        RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setPhreakEnabled(true);
-        
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase(conf);
-        ruleBase.addPackage(pkg);
-
-//        for (ObjectTypeNode node : ((InternalRuleBase) ruleBase).getRete().getObjectTypeNodes()) {
-//            CompiledNetwork compiledNetwork = ObjectTypeNodeCompiler.compile(builder, node);
-//            node.setCompiledNetwork(compiledNetwork);
-//        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
         String filename;
         if (args.length != 0) {
@@ -62,7 +50,7 @@ public class MannersBenchmark {
         for (int i = 0; i < 3; ++i) {
             InputStream is = MannersBenchmark.class.getResourceAsStream(filename);
             List list = getInputObjects(is);
-            StatefulSession session = ruleBase.newStatefulSession();
+            KieSession session = kbase.newStatefulKnowledgeSession();
 
             for (Iterator it = list.iterator(); it.hasNext();) {
                 Object object = it.next();

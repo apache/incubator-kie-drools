@@ -4,11 +4,11 @@ import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.util.StringUtils;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.JavaDialectRuntimeData;
-import org.drools.core.rule.Rule;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.KnowledgeHelper;
@@ -72,11 +72,11 @@ public final class JavaRuleBuilderHelper {
         final RuleDescr ruleDescr = context.getRuleDescr();
 
         BoundIdentifiers bindings = new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ),
-                                                         context.getPackageBuilder().getGlobals(),
+                                                         context.getKnowledgeBuilder().getGlobals(),
                                                          null,
                                                          KnowledgeHelper.class );
 
-        String consequenceStr = ( Rule.DEFAULT_CONSEQUENCE_NAME.equals( consequenceName ) ) ?
+        String consequenceStr = ( RuleImpl.DEFAULT_CONSEQUENCE_NAME.equals( consequenceName ) ) ?
                 (String) ruleDescr.getConsequence() :
                 (String) ruleDescr.getNamedConsequences().get( consequenceName );
         consequenceStr = consequenceStr + "\n";
@@ -211,7 +211,7 @@ public final class JavaRuleBuilderHelper {
     }
 
     public static void generateMethodTemplate(final String ruleTemplate, final RuleBuildContext context, final Map vars) {
-        TemplateRegistry registry = getRuleTemplateRegistry(context.getPackageBuilder().getRootClassLoader());
+        TemplateRegistry registry = getRuleTemplateRegistry(context.getKnowledgeBuilder().getRootClassLoader());
 
         context.addMethod((String) TemplateRuntime.execute( registry.getNamedTemplate(ruleTemplate),
                                                             null,
@@ -225,7 +225,7 @@ public final class JavaRuleBuilderHelper {
                                                final Map vars,
                                                final Object invokerLookup,
                                                final BaseDescr descrLookup) {
-        TemplateRegistry registry = getInvokerTemplateRegistry(context.getPackageBuilder().getRootClassLoader());
+        TemplateRegistry registry = getInvokerTemplateRegistry(context.getKnowledgeBuilder().getRootClassLoader());
         final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker";
 
         context.getInvokers().put( invokerClassName,

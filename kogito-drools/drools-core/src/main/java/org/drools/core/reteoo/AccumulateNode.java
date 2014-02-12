@@ -33,7 +33,6 @@ import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
 import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.util.ArrayUtils;
 import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller;
 import org.drools.core.marshalling.impl.ProtobufMessages;
@@ -76,7 +75,7 @@ public class AccumulateNode extends BetaNode {
                           final BuildContext context) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
+               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
                leftInput,
                rightInput,
                sourceBinder,
@@ -161,7 +160,7 @@ public class AccumulateNode extends BetaNode {
      * @see org.kie.reteoo.BaseNode#hashCode()
      */
     public int hashCode() {
-        return this.leftInput.hashCode() ^ this.rightInput.hashCode() ^ this.accumulate.hashCode() ^ this.resultBinder.hashCode() ^ ArrayUtils.hashCode( this.resultConstraints );
+        return this.leftInput.hashCode() ^ this.rightInput.hashCode() ^ this.accumulate.hashCode() ^ this.resultBinder.hashCode() ^ Arrays.hashCode( this.resultConstraints );
     }
 
     /* (non-Javadoc)

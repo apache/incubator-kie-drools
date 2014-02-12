@@ -69,7 +69,7 @@ public class GetGlobalCommand
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
 
         Object object = ksession.getGlobal( identifier );
-        ExecutionResultImpl results = ((StatefulKnowledgeSessionImpl) ksession).session.getExecutionResult();
+        ExecutionResultImpl results = ((StatefulKnowledgeSessionImpl) ksession).getExecutionResult();
         if ( results != null ) {
             results.getResults().put( (this.outIdentifier != null) ? this.outIdentifier : this.identifier,
                                       object );

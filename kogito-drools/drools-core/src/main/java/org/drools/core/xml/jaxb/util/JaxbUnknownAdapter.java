@@ -24,10 +24,10 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
+import org.drools.core.QueryResultsImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
-import org.drools.core.runtime.rule.impl.NativeQueryResults;
 
 public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
 
@@ -47,8 +47,8 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
                 Object obj = entry.getValue();
                 Class<? extends Object> vClass = obj.getClass();
                 
-                if ( obj instanceof NativeQueryResults ) {
-                    obj = new FlatQueryResults( ((NativeQueryResults )obj).getResults() );
+                if ( obj instanceof QueryResultsImpl) {
+                    obj = new FlatQueryResults( (QueryResultsImpl)obj );
                 } else if (obj instanceof FactHandle ) {
                     obj = ((InternalFactHandle)obj).toExternalForm();
                 } else if (List.class.isAssignableFrom(vClass) && !JaxbListWrapper.class.equals(vClass)) {

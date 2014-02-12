@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.drools.core.StatelessSession;
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.data.VerifierReport;
@@ -36,6 +35,7 @@ import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 
 public class ConsequenceTest extends TestBaseOld {
 
@@ -44,9 +44,7 @@ public class ConsequenceTest extends TestBaseOld {
 
         InputStream in = getClass().getResourceAsStream( "Consequence.drl" );
 
-        StatelessSession session = getStatelessSession( in );
-
-        session.setAgendaFilter( new RuleNameMatchesAgendaFilter( "No action - possibly commented out" ) );
+        KieSession session = getStatelessKieSession( in );
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
 
@@ -56,7 +54,10 @@ public class ConsequenceTest extends TestBaseOld {
         session.setGlobal( "result",
                            result );
 
-        session.executeWithResults( testData );
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("No action - possibly commented out"));
 
         Iterator<VerifierMessageBase> iterator = result.getBySeverity( Severity.WARNING ).iterator();
 

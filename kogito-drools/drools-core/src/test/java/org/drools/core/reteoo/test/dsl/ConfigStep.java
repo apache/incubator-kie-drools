@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.reteoo.ReteooRuleBase;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.builder.BuildContext;
 
 /**
@@ -50,7 +50,7 @@ public class ConfigStep implements Step {
             conf.setProperty(configOption[0], configOption[1]);
         }
 
-        ReteooRuleBase rbase = new ReteooRuleBase("ID", conf);
+        KnowledgeBaseImpl rbase = new KnowledgeBaseImpl("ID", conf);
         BuildContext buildContext = new BuildContext(rbase, rbase
                 .getReteooBuilder().getIdGenerator());
 

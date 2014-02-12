@@ -27,11 +27,7 @@ import org.drools.compiler.Order;
 import org.drools.compiler.OrderItem;
 import org.drools.compiler.OuterClass;
 import org.drools.compiler.Person;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.kproject.ReleaseIdImpl;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatelessSession;
 import org.drools.core.command.runtime.rule.InsertElementsCommand;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTupleSink;
@@ -60,7 +56,6 @@ import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -89,7 +84,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         final Person bob = new Person( "Bob",
                                        "stilton" );
 
-        final org.kie.api.runtime.rule.FactHandle[] cheeseHandles = new org.kie.api.runtime.rule.FactHandle[cheese.length];
+        final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.insert( cheese[i] );
         }
@@ -224,7 +219,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         final Person bob = new Person( "Bob",
                                        "stilton" );
 
-        final org.kie.api.runtime.rule.FactHandle[] cheeseHandles = new org.kie.api.runtime.rule.FactHandle[cheese.length];
+        final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.insert( cheese[i] );
         }
@@ -290,7 +285,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         final Person bob = new Person( "Bob",
                                        "stilton" );
 
-        final org.kie.api.runtime.rule.FactHandle[] cheeseHandles = new org.kie.api.runtime.rule.FactHandle[cheese.length];
+        final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.insert( cheese[i] );
         }

@@ -16,12 +16,12 @@
 
 package org.drools.core.examples.manners;
 
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.WorkingMemory;
 import org.drools.core.event.AfterActivationFiredEvent;
 import org.drools.core.event.DefaultAgendaEventListener;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.junit.Test;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.io.InputStream;
 import java.util.Iterator;
@@ -32,9 +32,9 @@ public class ReteooMannersTest extends BaseMannersTest {
     @Test
     public void testManners() throws Exception {
 
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
-        ruleBase.addPackage( this.pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        kBase.addPackage( this.pkg );
+        StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession();
 
         final DefaultAgendaEventListener listener = new DefaultAgendaEventListener() {
             private int counter = 0;
@@ -71,13 +71,13 @@ public class ReteooMannersTest extends BaseMannersTest {
         final List list = getInputObjects( is );
         for ( final Iterator it = list.iterator(); it.hasNext(); ) {
             final Object object = it.next();
-            workingMemory.insert( object );
+            kSession.insert( object );
         }
 
-        workingMemory.insert( new Count( 1 ) );
+        kSession.insert( new Count( 1 ) );
 
         final long start = System.currentTimeMillis();
-        workingMemory.fireAllRules();
+        kSession.fireAllRules();
 //        System.err.println( System.currentTimeMillis() - start );
 
         //System.out.println( listener );

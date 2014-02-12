@@ -39,7 +39,6 @@ package org.drools.core.rule;
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.AcceptsReadAccessor;
@@ -288,8 +287,8 @@ public class Declaration
                 return this.getClass().getDeclaredMethod( "getValue",
                                                           new Class[]{InternalWorkingMemory.class, Object.class} );
             } catch ( final Exception e ) {
-                throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
-                                                  e );
+                throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
+                                            e );
             }
         }
     }

@@ -32,10 +32,11 @@ import java.io.Serializable;
 
 import static org.junit.Assert.*;
 
-import org.drools.core.rule.Rule;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.Package;
 import org.junit.Test;
 
 public class DroolsObjectIOTest {
@@ -149,7 +150,7 @@ public class DroolsObjectIOTest {
 
     @Test
     public void testStreaming() throws Exception {
-        Package pkg = new Package("test");
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl("test");
 
         byte[]  buf = marshal(pkg);
         assertEquals(unmarshal(buf), pkg);
@@ -161,11 +162,12 @@ public class DroolsObjectIOTest {
     @Test
     public void testRuleStreamingWithCalendar() throws Exception {
         // DROOLS-260
-        Rule rule = new Rule("test");
+        RuleImpl rule = new RuleImpl
+                ("test");
 
         rule.setCalendars(new String[] {"mycalendar"});
         byte[] buf = marshal(rule);
-        Rule retrievedRule = (Rule)unmarshal(buf);
+        RuleImpl retrievedRule = (RuleImpl)unmarshal(buf);
         assertNotNull(retrievedRule);
         assertNotNull(retrievedRule.getCalendars());
         assertEquals(1, retrievedRule.getCalendars().length);

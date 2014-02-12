@@ -21,10 +21,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.util.ArrayUtils;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
@@ -128,7 +126,7 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
         } else if ( ConstraintType.BETA.equals(constraint.getType())) {
             this.addBetaConstraint( (BetaNodeFieldConstraint) constraint );
         } else {
-            throw new RuntimeDroolsException( "Constraint type MUST be known in advance.");
+            throw new RuntimeException( "Constraint type MUST be known in advance.");
         }
     }
 
@@ -199,9 +197,9 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * result + ArrayUtils.hashCode( this.alphaConstraints );
-        result = PRIME * result + ArrayUtils.hashCode( this.betaConstraints );
-        result = PRIME * result + ArrayUtils.hashCode( this.requiredDeclarations );
+        result = PRIME * result + Arrays.hashCode( this.alphaConstraints );
+        result = PRIME * result + Arrays.hashCode( this.betaConstraints );
+        result = PRIME * result + Arrays.hashCode( this.requiredDeclarations );
         return result;
     }
 

@@ -17,16 +17,18 @@
 package org.drools.core.common;
 
 
+import org.drools.core.impl.InternalKnowledgeBase;
+
 import java.io.Serializable;
 
 public class DefaultAgendaFactory implements AgendaFactory, Serializable {
 
-    public InternalAgenda createAgenda(InternalRuleBase ruleBase, boolean initMain) {
-        return new DefaultAgenda( ruleBase, initMain );
+    public InternalAgenda createAgenda(InternalKnowledgeBase kBase, boolean initMain) {
+        return new DefaultAgenda( kBase, initMain );
     }
 
-    public InternalAgenda createAgenda(InternalRuleBase ruleBase) {
-        return new DefaultAgenda( ruleBase );
+    public InternalAgenda createAgenda(InternalKnowledgeBase kBase) {
+        return new DefaultAgenda( kBase );
     }
 
 }

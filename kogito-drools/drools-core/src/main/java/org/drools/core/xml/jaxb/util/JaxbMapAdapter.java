@@ -24,8 +24,8 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+import org.drools.core.QueryResultsImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
-import org.drools.core.runtime.rule.impl.NativeQueryResults;
 
 
 public class JaxbMapAdapter extends XmlAdapter<JaxbStringObjectPair[], Map<String,Object>> {
@@ -41,8 +41,8 @@ public class JaxbMapAdapter extends XmlAdapter<JaxbStringObjectPair[], Map<Strin
             Object obj = entry.getValue();
             Class<? extends Object> vClass = obj.getClass();
 
-            if ( obj instanceof NativeQueryResults ) {
-                obj = new FlatQueryResults( ((NativeQueryResults )obj).getResults() );
+            if ( obj instanceof QueryResultsImpl) {
+                obj = new FlatQueryResults( (QueryResultsImpl)obj );
             } else if (List.class.isAssignableFrom(vClass) && !JaxbListWrapper.class.equals(vClass)) {
                 obj = new JaxbListWrapper( ((List<?>) obj).toArray( new Object[((List<?>) obj).size()]) );;
             }

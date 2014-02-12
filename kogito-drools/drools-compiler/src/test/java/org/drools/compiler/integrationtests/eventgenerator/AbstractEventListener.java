@@ -1,22 +1,19 @@
 package org.drools.compiler.integrationtests.eventgenerator;
 
-import org.drools.core.WorkingMemory;
+import org.kie.api.runtime.KieSession;
 
 
 public abstract class AbstractEventListener {
 
-    WorkingMemory wm;
+    KieSession ksession;
 
-    /**
-     * @param wm
-     */
-    public AbstractEventListener(WorkingMemory wm) {
-        this.wm = wm;
+    public AbstractEventListener(KieSession ksession) {
+        this.ksession = ksession;
     }
 
     public void addEventToWM (Event ev){
-        wm.insert(ev);
-        wm.fireAllRules();
+        ksession.insert(ev);
+        ksession.fireAllRules();
     }
 
     // send generated event and execute corresponding actions

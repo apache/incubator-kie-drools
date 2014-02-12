@@ -1,40 +1,24 @@
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.rule.Package;
 import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
 
-public class UnlinkingTest {
+public class UnlinkingTest extends CommonTestMethodBase {
 
     @Test
     public void multipleJoinsUsingSameOTN() throws Exception {
+        KieBase kbase = loadKnowledgeBase("test_LRUnlinking.drl");
+        kbase = SerializationHelper.serializeObject( kbase );
 
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LRUnlinking.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        final RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setPhreakEnabled(true);
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase(conf);
-
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-
-        final WorkingMemory wmOne = ruleBase.newStatefulSession();
-        final WorkingMemory wmTwo = ruleBase.newStatefulSession();
+        final KieSession wmOne = kbase.newKieSession();
+        final KieSession wmTwo = kbase.newKieSession();
 
         final List<Person> listOne = new ArrayList<Person>();
         final List<Person> listTwo = new ArrayList<Person>();

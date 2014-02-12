@@ -8,10 +8,10 @@ import org.drools.compiler.rule.builder.ConsequenceBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELConsequence;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.spi.KnowledgeHelper;
 import org.mvel2.Macro;
@@ -119,7 +119,7 @@ public class MVELConsequenceBuilder
             
             final RuleDescr ruleDescr = context.getRuleDescr();
             
-            String text = ( Rule.DEFAULT_CONSEQUENCE_NAME.equals(consequenceName) ) ?
+            String text = ( RuleImpl.DEFAULT_CONSEQUENCE_NAME.equals(consequenceName) ) ?
                     (String) ruleDescr.getConsequence() :
                     (String) ruleDescr.getNamedConsequences().get( consequenceName );
 
@@ -132,7 +132,7 @@ public class MVELConsequenceBuilder
                                                             dialect.getInterceptors(),
                                                             text,
                                                             new BoundIdentifiers(DeclarationScopeResolver.getDeclarationClasses(decls),
-                                                                                 context.getPackageBuilder().getGlobals(),
+                                                                                 context.getKnowledgeBuilder().getGlobals(),
                                                                                  null,
                                                                                  KnowledgeHelper.class),
                                                             null,
@@ -172,7 +172,7 @@ public class MVELConsequenceBuilder
                                                         dialect.getId(),
                                                         consequenceName );
             
-            if ( Rule.DEFAULT_CONSEQUENCE_NAME.equals( consequenceName ) ) {
+            if ( RuleImpl.DEFAULT_CONSEQUENCE_NAME.equals( consequenceName ) ) {
                 context.getRule().setConsequence( expr );
             } else {
                 context.getRule().addNamedConsequence(consequenceName, expr);

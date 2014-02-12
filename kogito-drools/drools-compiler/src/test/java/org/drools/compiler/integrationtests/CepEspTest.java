@@ -9,18 +9,18 @@ import org.drools.compiler.StockTickEvent;
 import org.drools.compiler.StockTickInterface;
 import org.drools.core.ClockType;
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.WorkingMemory;
 import org.drools.core.audit.WorkingMemoryFileLogger;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.Rule;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.SessionPseudoClock;
@@ -470,7 +470,7 @@ public class CepEspTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_EventExpiration.drl" );
 
         // read in the source
-        TypeDeclaration factType = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getTypeDeclaration( StockTick.class );
+        TypeDeclaration factType = ((KnowledgeBaseImpl)kbase).getTypeDeclaration( StockTick.class );
         final TimeIntervalParser parser = new TimeIntervalParser();
 
         assertEquals( parser.parse( "1h30m" )[0].longValue(),
@@ -484,10 +484,9 @@ public class CepEspTest extends CommonTestMethodBase {
         kbc.setOption( EventProcessingOption.STREAM );
         KnowledgeBase kbase = loadKnowledgeBase( kbc, "test_CEP_EventExpiration2.drl" );
 
-        final InternalRuleBase internal = (InternalRuleBase) ((KnowledgeBaseImpl)kbase).ruleBase;
         final TimeIntervalParser parser = new TimeIntervalParser();
 
-        Map<ObjectType, ObjectTypeNode> objectTypeNodes = internal.getRete().getObjectTypeNodes( EntryPointId.DEFAULT );
+        Map<ObjectType, ObjectTypeNode> objectTypeNodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes( EntryPointId.DEFAULT );
         ObjectTypeNode node = objectTypeNodes.get( new ClassObjectType( StockTick.class ) );
 
         assertNotNull( node );
@@ -504,10 +503,9 @@ public class CepEspTest extends CommonTestMethodBase {
         conf.setOption( EventProcessingOption.STREAM );
         final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_EventExpiration3.drl" );
         
-        final InternalRuleBase internal = (InternalRuleBase) ((KnowledgeBaseImpl)kbase).ruleBase;
         final TimeIntervalParser parser = new TimeIntervalParser();
 
-        Map<ObjectType, ObjectTypeNode> objectTypeNodes = internal.getRete().getObjectTypeNodes( EntryPointId.DEFAULT );
+        Map<ObjectType, ObjectTypeNode> objectTypeNodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes( EntryPointId.DEFAULT );
         ObjectTypeNode node = objectTypeNodes.get( new ClassObjectType( StockTick.class ) );
 
         assertNotNull( node );
@@ -1360,7 +1358,7 @@ public class CepEspTest extends CommonTestMethodBase {
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
 
-        final Rule rule = (Rule) kbase.getRule( "org.drools.compiler", "Delaying Not" );
+        final RuleImpl rule = (RuleImpl) kbase.getRule( "org.drools.compiler", "Delaying Not" );
         assertEquals( 10000,
                       ((DurationTimer) rule.getTimer()).getDuration() );
 
@@ -1506,10 +1504,9 @@ public class CepEspTest extends CommonTestMethodBase {
 
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
-        StatefulKnowledgeSession session = createKnowledgeSession(kbase, conf);
-        InternalWorkingMemory iwm = ((StatefulKnowledgeSessionImpl) session).session;
+        StatefulKnowledgeSessionImpl session = (StatefulKnowledgeSessionImpl)createKnowledgeSession(kbase, conf);
 
-        SessionPseudoClock clock = (SessionPseudoClock) session.<SessionClock>getSessionClock();
+        SessionPseudoClock clock = (SessionPseudoClock) session.getSessionClock();
 
         final List results = new ArrayList();
 
@@ -1534,26 +1531,26 @@ public class CepEspTest extends CommonTestMethodBase {
                                                   11000 );
 
         assertEquals( 0,
-                      iwm.getIdleTime() );
+                      session.getIdleTime() );
         InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
         clock.advanceTime( 10,
                            TimeUnit.SECONDS );
         assertEquals( 10000,
-                      iwm.getIdleTime() );
+                      session.getIdleTime() );
         InternalFactHandle handle2 = (InternalFactHandle) session.insert( tick2 );
         assertEquals( 0,
-                      iwm.getIdleTime() );
+                      session.getIdleTime() );
         clock.advanceTime( 15,
                            TimeUnit.SECONDS );
         assertEquals( 15000,
-                      iwm.getIdleTime() );
+                      session.getIdleTime() );
         clock.advanceTime( 15,
                            TimeUnit.SECONDS );
         assertEquals( 30000,
-                      iwm.getIdleTime() );
+                      session.getIdleTime() );
         InternalFactHandle handle3 = (InternalFactHandle) session.insert( tick3 );
         assertEquals( 0,
-                      iwm.getIdleTime() );
+                      session.getIdleTime() );
         clock.advanceTime( 20,
                            TimeUnit.SECONDS );
         InternalFactHandle handle4 = (InternalFactHandle) session.insert( tick4 );
@@ -1571,10 +1568,10 @@ public class CepEspTest extends CommonTestMethodBase {
         assertTrue( handle4.isEvent() );
 
         assertEquals( 10000,
-                      iwm.getIdleTime() );
+                      session.getIdleTime() );
         session.fireAllRules();
         assertEquals( 0,
-                      iwm.getIdleTime() );
+                      session.getIdleTime() );
 
         assertEquals( 2,
                       ((List) session.getGlobal( "results" )).size() );
@@ -1590,9 +1587,9 @@ public class CepEspTest extends CommonTestMethodBase {
         
         KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
+        StatefulKnowledgeSessionImpl wm = (StatefulKnowledgeSessionImpl)createKnowledgeSession( kbase, sconf );
 
-        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( wm );
+        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( (WorkingMemory) wm );
         File testTmpDir = new File( "target/test-tmp/" );
         testTmpDir.mkdirs();
         logger.setFileName( "target/test-tmp/testIdleTimeAndTimeToNextJob-audit" );
@@ -1602,7 +1599,6 @@ public class CepEspTest extends CommonTestMethodBase {
 
             wm.setGlobal( "results",
                           results );
-            InternalWorkingMemory iwm = (InternalWorkingMemory) ((StatefulKnowledgeSessionImpl)wm).session;
 
             // how to initialize the clock?
             // how to configure the clock?
@@ -1612,15 +1608,15 @@ public class CepEspTest extends CommonTestMethodBase {
 
             // there is no next job, so returns -1
             assertEquals( -1,
-                          iwm.getTimeToNextJob() );
+                          wm.getTimeToNextJob() );
             wm.insert( new OrderEvent( "1",
                                        "customer A",
                                        70 ) );
             assertEquals( 0,
-                          iwm.getIdleTime() );
+                          wm.getIdleTime() );
             // now, there is a next job in 30 seconds: expire the event
             assertEquals( 30000,
-                          iwm.getTimeToNextJob() );
+                          wm.getTimeToNextJob() );
 
             wm.fireAllRules();
             assertEquals( 1,
@@ -1633,7 +1629,7 @@ public class CepEspTest extends CommonTestMethodBase {
                                TimeUnit.SECONDS ); // 10 seconds
             // next job is in 20 seconds: expire the event
             assertEquals( 20000,
-                          iwm.getTimeToNextJob() );
+                          wm.getTimeToNextJob() );
 
             wm.insert( new OrderEvent( "2",
                                        "customer A",
@@ -1650,7 +1646,7 @@ public class CepEspTest extends CommonTestMethodBase {
                                TimeUnit.SECONDS ); // 10 seconds
             // next job is in 10 seconds: expire the event
             assertEquals( 10000,
-                          iwm.getTimeToNextJob() );
+                          wm.getTimeToNextJob() );
 
             wm.insert( new OrderEvent( "3",
                                        "customer A",
@@ -1666,7 +1662,7 @@ public class CepEspTest extends CommonTestMethodBase {
                                TimeUnit.SECONDS ); // 10 seconds
             // advancing clock time will cause events to expire
             assertEquals( 0,
-                          iwm.getIdleTime() );
+                          wm.getIdleTime() );
             // next job is in 10 seconds: expire another event
             //assertEquals( 10000, iwm.getTimeToNextJob());
 
@@ -1687,7 +1683,7 @@ public class CepEspTest extends CommonTestMethodBase {
                                        "customer A",
                                        70 ) );
             assertEquals( 0,
-                          iwm.getIdleTime() );
+                          wm.getIdleTime() );
 
             //        wm  = SerializationHelper.serializeObject(wm);
             wm.fireAllRules();

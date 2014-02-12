@@ -13,6 +13,7 @@ import org.drools.core.util.debug.SessionReporter;
 import org.drools.core.util.debug.StatefulKnowledgeSessionInfo;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -90,7 +91,7 @@ public class SessionInspectorTest extends CommonTestMethodBase {
         ksession.insert( new Integer( 16 ) );
         ksession.insert( new Integer( 17 ) );
         ksession.insert( new Integer( 18 ) );
-        org.kie.api.runtime.rule.FactHandle handle = ksession.insert( new Worker( ) );
+        FactHandle handle = ksession.insert( new Worker( ) );
         
         ksession.retract( handle );
         
@@ -174,7 +175,7 @@ public class SessionInspectorTest extends CommonTestMethodBase {
         ksession.insert( new Integer( 16 ) );
         ksession.insert( new Integer( 17 ) );
         ksession.insert( new Integer( 18 ) );
-        org.kie.api.runtime.rule.FactHandle handle = ksession.insert( new Worker( ) );
+        FactHandle handle = ksession.insert( new Worker( ) );
         
         ksession.retract( handle );
         

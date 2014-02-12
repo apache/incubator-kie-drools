@@ -16,8 +16,6 @@
 
 package org.drools.verifier.incompatibility;
 
-import org.drools.core.StatelessSession;
-import org.drools.core.StatelessSessionResult;
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.core.base.evaluators.Operator;
 import org.drools.compiler.lang.descr.PackageDescr;
@@ -26,9 +24,11 @@ import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.*;
 import org.drools.verifier.report.components.Cause;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,9 +39,7 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
 
     @Test
     public void testLiteralRestrictionsIncompatibilityLessOrEqual() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Restrictions.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
 
@@ -83,10 +81,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         data.add(r3);
         data.add(r4);
 
-        StatelessSessionResult sessionResult = session.executeWithResults(data);
+        for (Object o : data) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"));
 
         Map<Cause, Set<Cause>> map = createIncompatibilityMap(VerifierComponentType.RESTRICTION,
-                                                              sessionResult.iterateObjects());
+                                                              (Iterator<Object>)session.getObjects().iterator());
 
         assertTrue((TestBaseOld.causeMapContains(map,
                                                  r1,
@@ -101,9 +102,7 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
 
     @Test
     public void testLiteralRestrictionsIncompatibilityGreater() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Restrictions.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality greater"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
 
@@ -145,10 +144,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         data.add(r3);
         data.add(r4);
 
-        StatelessSessionResult sessionResult = session.executeWithResults(data);
+        for (Object o : data) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality greater"));
 
         Map<Cause, Set<Cause>> map = createIncompatibilityMap(VerifierComponentType.RESTRICTION,
-                                                              sessionResult.iterateObjects());
+                                                              (Iterator<Object>)session.getObjects().iterator());
 
         assertTrue((TestBaseOld.causeMapContains(map,
                                                  r1,
@@ -163,9 +165,7 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
 
     @Test
     public void testLiteralRestrictionsIncompatibilityImpossibleRange() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Restrictions.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Incompatible LiteralRestrictions with ranges in pattern possibility, impossible range"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
 
@@ -207,10 +207,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         data.add(r3);
         data.add(r4);
 
-        StatelessSessionResult sessionResult = session.executeWithResults(data);
+        for (Object o : data) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Incompatible LiteralRestrictions with ranges in pattern possibility, impossible range"));
 
         Map<Cause, Set<Cause>> map = createIncompatibilityMap(VerifierComponentType.RESTRICTION,
-                                                              sessionResult.iterateObjects());
+                                                              (Iterator<Object>)session.getObjects().iterator());
 
         assertTrue((TestBaseOld.causeMapContains(map,
                                                  r1,
@@ -225,9 +228,7 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
 
     @Test
     public void testVariableRestrictionsIncompatibilityImpossibleRange() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Restrictions.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Incoherent VariableRestrictions in pattern possibility, impossible range"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
 
@@ -284,10 +285,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         data.add(r3);
         data.add(r4);
 
-        StatelessSessionResult sessionResult = session.executeWithResults(data);
+        for (Object o : data) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Incoherent VariableRestrictions in pattern possibility, impossible range"));
 
         Map<Cause, Set<Cause>> map = createIncompatibilityMap(VerifierComponentType.RESTRICTION,
-                                                              sessionResult.iterateObjects());
+                                                              (Iterator<Object>)session.getObjects().iterator());
 
         assertTrue((TestBaseOld.causeMapContains(map,
                                                  r1,

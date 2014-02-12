@@ -16,8 +16,6 @@
 
 package org.drools.verifier.opposites;
 
-import org.drools.core.StatelessSession;
-import org.drools.core.StatelessSessionResult;
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.core.base.evaluators.Operator;
 import org.drools.verifier.TestBaseOld;
@@ -25,9 +23,11 @@ import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.*;
 import org.drools.verifier.report.components.Cause;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,9 +38,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
 
     @Test
     public void testLiteralRestrictionOpposite() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Restrictions.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Opposite LiteralRestrictions"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
 
@@ -75,10 +73,13 @@ public class OppositeRestrictionsTest extends OppositesBase {
         data.add(r3);
         data.add(r4);
 
-        StatelessSessionResult sessionResult = session.executeWithResults(data);
+        for (Object o : data) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Opposite LiteralRestrictions"));
 
         Map<Cause, Set<Cause>> map = createOppositesMap(VerifierComponentType.RESTRICTION,
-                                                        sessionResult.iterateObjects());
+                                                        (Iterator<Object>)session.getObjects().iterator());
 
         assertTrue((TestBaseOld.causeMapContains(map,
                                                  r1,
@@ -98,9 +99,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
 
     @Test
     public void testLiteralRestrictionOppositeWithRangesGreaterOrEqualAndLess() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Restrictions.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Opposite LiteralRestrictions with ranges, greater or equal - less"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
 
@@ -121,10 +120,13 @@ public class OppositeRestrictionsTest extends OppositesBase {
         data.add(r1);
         data.add(r2);
 
-        StatelessSessionResult sessionResult = session.executeWithResults(data);
+        for (Object o : data) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Opposite LiteralRestrictions with ranges, greater or equal - less"));
 
         Map<Cause, Set<Cause>> map = createOppositesMap(VerifierComponentType.RESTRICTION,
-                                                        sessionResult.iterateObjects());
+                                                        (Iterator<Object>)session.getObjects().iterator());
 
         assertTrue((TestBaseOld.causeMapContains(map,
                                                  r1,
@@ -139,9 +141,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
 
     @Test
     public void testLiteralRestrictionOppositeWithRangesGreaterAndLessOrEqual() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Restrictions.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Opposite LiteralRestrictions with ranges, greater - less or equal"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
 
@@ -161,10 +161,13 @@ public class OppositeRestrictionsTest extends OppositesBase {
         data.add(r1);
         data.add(r2);
 
-        StatelessSessionResult sessionResult = session.executeWithResults(data);
+        for (Object o : data) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Opposite LiteralRestrictions with ranges, greater - less or equal"));
 
         Map<Cause, Set<Cause>> map = createOppositesMap(VerifierComponentType.RESTRICTION,
-                                                        sessionResult.iterateObjects());
+                                                        (Iterator<Object>)session.getObjects().iterator());
 
         assertTrue((TestBaseOld.causeMapContains(map,
                                                  r1,
@@ -180,9 +183,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
 
     @Test
     public void testLiteralRestrictionOppositeWithRangesLessOrEqualAndGreaterOrEqualForIntsAndDates() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Restrictions.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Opposite LiteralRestrictions with ranges, less or equal - greater or equal for ints and dates"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
 
@@ -203,10 +204,13 @@ public class OppositeRestrictionsTest extends OppositesBase {
         data.add(r1);
         data.add(r2);
 
-        StatelessSessionResult sessionResult = session.executeWithResults(data);
+        for (Object o : data) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Opposite LiteralRestrictions with ranges, less or equal - greater or equal for ints and dates"));
 
         Map<Cause, Set<Cause>> map = createOppositesMap(VerifierComponentType.RESTRICTION,
-                                                        sessionResult.iterateObjects());
+                                                        (Iterator<Object>)session.getObjects().iterator());
 
         assertTrue((TestBaseOld.causeMapContains(map,
                                                  r1,
@@ -221,9 +225,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
 
     @Test
     public void testVariableRestrictionOpposite() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Restrictions.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Opposite VariableRestrictions"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
 
@@ -301,10 +303,13 @@ public class OppositeRestrictionsTest extends OppositesBase {
         data.add(r5);
         data.add(r6);
 
-        StatelessSessionResult sessionResult = session.executeWithResults(data);
+        for (Object o : data) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Opposite VariableRestrictions"));
 
         Map<Cause, Set<Cause>> map = createOppositesMap(VerifierComponentType.RESTRICTION,
-                                                        sessionResult.iterateObjects());
+                                                        (Iterator<Object>)session.getObjects().iterator());
 
         assertTrue((TestBaseOld.causeMapContains(map,
                                                  r1,

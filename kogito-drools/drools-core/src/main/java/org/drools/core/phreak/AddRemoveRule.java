@@ -2,14 +2,14 @@ package org.drools.core.phreak;
 
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.RightTupleSets;
 import org.drools.core.common.SynchronizedLeftTupleSets;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AbstractTerminalNode;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
@@ -29,14 +29,12 @@ import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.PathMemory;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleMemory;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
@@ -47,22 +45,20 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
- import java.util.List;
- import java.util.Set;
-
-import static org.drools.core.phreak.RuleNetworkEvaluator.getTargetStagedLeftTuples;
+import java.util.List;
+import java.util.Set;
 
 public class AddRemoveRule {
 
     private static final Logger log = LoggerFactory.getLogger(AddRemoveRule.class);
 
-    public static void addRule(TerminalNode tn, InternalWorkingMemory[] wms, InternalRuleBase ruleBase) {
+    public static void addRule(TerminalNode tn, InternalWorkingMemory[] wms, InternalKnowledgeBase kBase) {
         if ( log.isTraceEnabled() ) {
             log.trace("Adding Rule {}", tn.getRule().getName() );
         }
         LeftTupleSource splitStartLeftTupleSource = getNetworkSplitPoint(tn);
 
-        ((ReteooRuleBase)ruleBase).invalidateSegmentPrototype(splitStartLeftTupleSource);
+        kBase.invalidateSegmentPrototype(splitStartLeftTupleSource);
 
         for (InternalWorkingMemory wm : wms) {
 
@@ -120,14 +116,14 @@ public class AddRemoveRule {
         }
     }
 
-     public static void removeRule(TerminalNode tn, InternalWorkingMemory[] wms, InternalRuleBase ruleBase) {
+     public static void removeRule(TerminalNode tn, InternalWorkingMemory[] wms, InternalKnowledgeBase kBase) {
          if ( log.isTraceEnabled() ) {
              log.trace("Removing Rule {}", tn.getRule().getName() );
          }
 
          LeftTupleSource splitStartNode = getNetworkSplitPoint(tn);
 
-         ((ReteooRuleBase)ruleBase).invalidateSegmentPrototype(splitStartNode);
+         kBase.invalidateSegmentPrototype(splitStartNode);
 
          for ( InternalWorkingMemory wm : wms ) {
 
@@ -281,7 +277,7 @@ public class AddRemoveRule {
      }
 
 
-     private static List<SegmentMemory[]> reInitPathMemories(InternalWorkingMemory wm, List<PathMemory> pathMems, Rule removingRule) {
+     private static List<SegmentMemory[]> reInitPathMemories(InternalWorkingMemory wm, List<PathMemory> pathMems, RuleImpl removingRule) {
          List<SegmentMemory[]> previousSmems = new ArrayList<SegmentMemory[]>();
          for ( PathMemory pmem : pathMems) {
              // Re initialise all the PathMemories
@@ -427,7 +423,7 @@ public class AddRemoveRule {
          sm.setSegmentPosMaskBit(sm.getSegmentPosMaskBit() >> 1);
      }
 
-     public static int getSegmentPos(LeftTupleSource lts, Rule removingRule) {
+     public static int getSegmentPos(LeftTupleSource lts, RuleImpl removingRule) {
          int counter = 0;
          while ( lts.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
              if ( !SegmentUtilities.parentInSameSegment( lts, removingRule ) ) {
@@ -440,7 +436,7 @@ public class AddRemoveRule {
 
     private static void insertLiaFacts(LeftTupleSource startNode, InternalWorkingMemory wm) {
         // rule added with no sharing
-        PropagationContextFactory pctxFactory =((InternalRuleBase)wm.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
+        PropagationContextFactory pctxFactory = wm.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
         final PropagationContext pctx = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
         LeftInputAdapterNode lian = (LeftInputAdapterNode) startNode;
         RightTupleSinkAdapter liaAdapter = new RightTupleSinkAdapter(lian);
@@ -449,7 +445,7 @@ public class AddRemoveRule {
 
     private static void insertFacts(LeftTupleSink startNode, InternalWorkingMemory wm) {
         LeftTupleSink lts =  startNode;
-        PropagationContextFactory pctxFactory =((InternalRuleBase)wm.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
+        PropagationContextFactory pctxFactory = wm.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
         while (!NodeTypeEnums.isTerminalNode(lts) && lts.getLeftTupleSource().getType() != NodeTypeEnums.RightInputAdaterNode ) {
             if (NodeTypeEnums.isBetaNode(lts)) {
                 BetaNode bn = (BetaNode) lts;

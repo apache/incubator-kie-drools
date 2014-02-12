@@ -1,15 +1,9 @@
 package org.acme.insurance.launcher;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.DecisionTableConfiguration;
@@ -65,20 +59,6 @@ public class PricingRuleLauncher {
 
         return policy.getBasePrice();
 
-    }
-
-    /** Build the rule base from the generated DRL */
-    private RuleBase buildRuleBase(String drl) throws DroolsParserException,
-                                              IOException,
-                                              Exception {
-        //now we build the rule package and rulebase, as if they are normal rules
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new StringReader( drl ) );
-
-        //add the package to a rulebase (deploy the rule package).
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
-        return ruleBase;
     }
 
     private InputStream getSpreadsheetStream() {

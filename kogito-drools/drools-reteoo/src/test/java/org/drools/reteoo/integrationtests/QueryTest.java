@@ -18,10 +18,8 @@ import org.drools.compiler.Worker;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.util.Entry;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.core.util.ObjectHashSet;
@@ -33,6 +31,8 @@ import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.spi.ObjectType;
 import org.junit.Test;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.QueryResults;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.definition.rule.Rule;
 import org.kie.internal.builder.conf.RuleEngineOption;
@@ -197,7 +197,7 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( set,
                       newSet );
 
-        FlatQueryResults flatResults = new FlatQueryResults( ((StatefulKnowledgeSessionImpl) session).session.getQueryResults( "cheeses" ) );
+        FlatQueryResults flatResults = new FlatQueryResults( ((StatefulKnowledgeSessionImpl) session).getQueryResults( "cheeses" ) );
         assertEquals( 3,
                       flatResults.size() );
         assertEquals( 2,
@@ -251,20 +251,20 @@ public class QueryTest extends CommonTestMethodBase {
                                       "stilton",
                                       20 );
         p1.setStatus( "europe" );
-        final org.kie.api.runtime.rule.FactHandle c1FactHandle = session.insert( p1 );
+        final FactHandle c1FactHandle = session.insert( p1 );
         final Person p2 = new Person( "p2",
                                       "stilton",
                                       30 );
         p2.setStatus( "europe" );
-        final org.kie.api.runtime.rule.FactHandle c2FactHandle = session.insert( p2 );
+        final FactHandle c2FactHandle = session.insert( p2 );
         final Person p3 = new Person( "p3",
                                       "stilton",
                                       40 );
         p3.setStatus( "europe" );
-        final org.kie.api.runtime.rule.FactHandle c3FactHandle = session.insert( p3 );
+        final FactHandle c3FactHandle = session.insert( p3 );
         session.fireAllRules();
 
-        org.kie.api.runtime.rule.QueryResults results = session.getQueryResults( "2 persons with the same status" );
+        QueryResults results = session.getQueryResults( "2 persons with the same status" );
         assertEquals( 2,
                       results.size() );
 
@@ -351,7 +351,7 @@ public class QueryTest extends CommonTestMethodBase {
         Worker worker = new Worker();
         worker.setId( workerId );
 
-        org.kie.api.runtime.rule.FactHandle handle = ksession.insert( worker );
+        FactHandle handle = ksession.insert( worker );
         ksession.fireAllRules();
 
         assertNotNull( handle );
@@ -366,11 +366,7 @@ public class QueryTest extends CommonTestMethodBase {
 
         StatefulKnowledgeSessionImpl sessionImpl = (StatefulKnowledgeSessionImpl) ksession;
 
-        ReteooWorkingMemoryInterface reteWorkingMemory = sessionImpl.session;
-        AbstractWorkingMemory abstractWorkingMemory = (AbstractWorkingMemory) reteWorkingMemory;
-
-        InternalRuleBase ruleBase = (InternalRuleBase) abstractWorkingMemory.getRuleBase();
-        Collection<EntryPointNode> entryPointNodes = ruleBase.getRete().getEntryPointNodes().values();
+        Collection<EntryPointNode> entryPointNodes = sessionImpl.getKnowledgeBase().getRete().getEntryPointNodes().values();
 
         EntryPointNode defaultEntryPointNode = null;
         for ( EntryPointNode epNode : entryPointNodes ) {
@@ -385,7 +381,7 @@ public class QueryTest extends CommonTestMethodBase {
 
         ObjectType key = new ClassObjectType( DroolsQuery.class );
         ObjectTypeNode droolsQueryNode = obnodes.get( key );
-        ObjectHashSet droolsQueryMemory = ((ObjectTypeNodeMemory) abstractWorkingMemory.getNodeMemory( droolsQueryNode )).memory;
+        ObjectHashSet droolsQueryMemory = ((ObjectTypeNodeMemory) sessionImpl.getNodeMemory( droolsQueryNode )).memory;
         assertEquals( 0,
                       droolsQueryMemory.size() );
 
@@ -632,12 +628,12 @@ public class QueryTest extends CommonTestMethodBase {
         Cheese cheddar3 = new Cheese( "cheddar",
                                       3 );
 
-        org.kie.api.runtime.rule.FactHandle s1Fh = ksession.insert( stilton1 );
+        FactHandle s1Fh = ksession.insert( stilton1 );
         ksession.insert( stilton2 );
         ksession.insert( stilton3 );
         ksession.insert( cheddar1 );
         ksession.insert( cheddar2 );
-        org.kie.api.runtime.rule.FactHandle c3Fh = ksession.insert( cheddar3 );
+        FactHandle c3Fh = ksession.insert( cheddar3 );
 
         final List<Object[]> updated = new ArrayList<Object[]>();
         final List<Object[]> removed = new ArrayList<Object[]>();

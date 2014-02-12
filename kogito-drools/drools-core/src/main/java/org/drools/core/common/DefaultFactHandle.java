@@ -16,7 +16,7 @@
 
 package org.drools.core.common;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.factmodel.traits.TraitableBean;

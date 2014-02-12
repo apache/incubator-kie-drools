@@ -29,7 +29,7 @@ import org.drools.compiler.compiler.io.FileSystem;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.Path;
 import org.drools.compiler.compiler.io.Resource;
-import org.drools.core.util.FileManager;
+import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 
 public class MemoryFileSystem
@@ -415,7 +415,7 @@ public class MemoryFileSystem
                 byte[] bytes = getFileContents( (MemoryFile) rs );
 
                 try {
-                    FileManager.write( new java.io.File( file1, ((File) rs).getName()), bytes);
+                    IoUtils.write(new java.io.File(file1, ((File) rs).getName()), bytes);
                 } catch ( IOException e ) {
                     throw new RuntimeException("Unable to write project to file system\n", e);
                 }

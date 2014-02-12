@@ -6,7 +6,8 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.drools.core.rule.Package;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.junit.Test;
 
 public class CompilerPerfProfileTest {
@@ -37,10 +38,10 @@ public class CompilerPerfProfileTest {
 
     private void build(String msg, String resource, boolean showResults) throws DroolsParserException,
                         IOException {
-        final PackageBuilder builder = new PackageBuilder();
+        final KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         long start = System.currentTimeMillis();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( resource ) ) );
-        final Package pkg = builder.getPackage();
+        InternalKnowledgePackage pkg = builder.getPackage();
         assertFalse(builder.hasErrors());
         assertNotNull(pkg);
         if (showResults) {

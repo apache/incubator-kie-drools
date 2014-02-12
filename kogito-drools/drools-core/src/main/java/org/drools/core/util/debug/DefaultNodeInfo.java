@@ -25,20 +25,20 @@ import java.util.Set;
 
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.Rete;
-import org.drools.core.rule.Rule;
 
 public class DefaultNodeInfo
     implements
     NodeInfo {
 
     private NetworkNode node;
-    private Set<Rule>   rules;
+    private Set<RuleImpl>   rules;
 
     private boolean memoryEnabled = false;
     private long tupleMemorySize = -1;
@@ -48,14 +48,14 @@ public class DefaultNodeInfo
 
     public DefaultNodeInfo(NetworkNode node) {
         this.node = node;
-        this.rules = new HashSet<Rule>();
+        this.rules = new HashSet<RuleImpl>();
     }
 
-    public void assign(Rule rule) {
+    public void assign(RuleImpl rule) {
         this.rules.add( rule );
     }
 
-    public Set<Rule> getRules() {
+    public Set<RuleImpl> getRules() {
         return rules;
     }
 

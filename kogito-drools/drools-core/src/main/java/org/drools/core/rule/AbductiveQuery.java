@@ -12,7 +12,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AbductiveQuery extends Query implements Externalizable, AcceptsClassObjectType {
+public class AbductiveQuery extends QueryImpl implements Externalizable, AcceptsClassObjectType {
 
     private ClassObjectType returnType;
     private transient Constructor constructor;
