@@ -220,6 +220,14 @@ public class ValueSelectorConfig extends SelectorConfig {
             HeuristicConfigPolicy configPolicy, PlanningVariableDescriptor variableDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         ValueRangeDescriptor valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
+        // TODO minimumCacheType SOLVER is only a problem if the valueRange includes entities (or custom weird cloning)
+        if (minimumCacheType == SelectionCacheType.SOLVER) {
+            // TODO Solver cached entities are not compatible with DroolsScoreCalculator and IncrementalScoreDirector
+            // because between phases the entities get cloned and the KieSession/Maps contains those clones afterwards
+            // https://issues.jboss.org/browse/PLANNER-54
+            throw new IllegalArgumentException("The minimumCacheType (" + minimumCacheType
+                    + ") is not yet supported. Please use " + SelectionCacheType.PHASE + " instead.");
+        }
         if (valueRangeDescriptor.isEntityIndependent()) {
             // FromSolutionPropertyValueSelector caches by design, so it uses the minimumCacheType
             if (variableDescriptor.isValueRangeImmutableDuringPhase()) {

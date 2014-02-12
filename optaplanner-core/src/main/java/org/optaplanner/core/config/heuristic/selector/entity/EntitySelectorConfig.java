@@ -275,17 +275,17 @@ public class EntitySelectorConfig extends SelectorConfig {
     private EntitySelector buildBaseEntitySelector(
             HeuristicConfigPolicy configPolicy, PlanningEntityDescriptor entityDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
+        if (minimumCacheType == SelectionCacheType.SOLVER) {
+            // TODO Solver cached entities are not compatible with DroolsScoreCalculator and IncrementalScoreDirector
+            // because between phases the entities get cloned and the KieSession/Maps contains those clones afterwards
+            // https://issues.jboss.org/browse/PLANNER-54
+            throw new IllegalArgumentException("The minimumCacheType (" + minimumCacheType
+                    + ") is not yet supported. Please use " + SelectionCacheType.PHASE + " instead.");
+        }
         // FromSolutionEntitySelector caches by design, so it uses the minimumCacheType
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
             // cacheType upgrades to SelectionCacheType.STEP (without shuffling) because JIT is not supported
             minimumCacheType = SelectionCacheType.STEP;
-        }
-        if (minimumCacheType == SelectionCacheType.SOLVER) {
-            // TODO Solver cached entities are not compatible with DroolsScoreCalculator
-            // because between phases the entities get cloned and the KieSession contains those clones afterwards
-            // https://issues.jboss.org/browse/PLANNER-54
-            throw new IllegalArgumentException("The minimumCacheType (" + minimumCacheType
-                    + ") is not yet supported. Please use " + SelectionCacheType.PHASE + " instead.");
         }
         return new FromSolutionEntitySelector(entityDescriptor, minimumCacheType, randomSelection);
     }
