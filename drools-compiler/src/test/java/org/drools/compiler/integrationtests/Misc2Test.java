@@ -5401,4 +5401,37 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertEquals(1, list.size());
     }
+
+    @Test
+    public void testGlobalExtractor() {
+        String str = "package org.test; " +
+                     "import java.util.*; " +
+
+                     "global java.util.List list; " +
+                     "global java.util.Date tat; " +
+
+                     "declare Foo @role(event) @timestamp( ts ) " +
+                     "  tis : Date = new Date( 1000 ) " +
+                     "  ts  : Date = new Date( 0 ) " +
+                     "end " +
+
+                     "rule Init when then insert( new Foo() ); end " +
+
+                     "rule R1 when\n" +
+                     "    $s : Foo( tis before tat )\n" +
+                     "then\n" +
+                     "    list.add( $s );\n" +
+                     "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list );
+        ksession.setGlobal("tat", new Date( 2000 ) );
+
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+    }
 }
