@@ -123,7 +123,7 @@ public class GlobalDateExtractor extends BaseDateClassFieldReader
     }
 
     public boolean isSelfReference() {
-        return true;
+        return false;
     }
     
     public boolean getBooleanValue(Object object) {
