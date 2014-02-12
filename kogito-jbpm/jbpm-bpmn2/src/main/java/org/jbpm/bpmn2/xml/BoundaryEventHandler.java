@@ -155,7 +155,9 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
-            if ("errorEventDefinition".equals(nodeName)) {
+            if ("dataOutputAssociation".equals(nodeName)) {
+                readDataOutputAssociation(xmlNode, eventNode);
+            } else if ("errorEventDefinition".equals(nodeName)) {
                 String errorRef = ((Element) xmlNode).getAttribute("errorRef");
                 if (errorRef != null && errorRef.trim().length() > 0) {
                 	List<Error> errors = (List<Error>) ((ProcessBuildData) parser.getData()).getMetaData("Errors");
@@ -172,12 +174,16 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
 		                throw new IllegalArgumentException("Could not find error " + errorRef);
 		            }
 		            String type = error.getErrorCode();
+		            if (type == null) {
+		            	type = error.getId();
+		            }
                     List<EventFilter> eventFilters = new ArrayList<EventFilter>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
                     eventFilter.setType("Error-" + attachedTo + "-" + type);
                     eventFilters.add(eventFilter);
                     eventNode.setEventFilters(eventFilters);
                     eventNode.setMetaData("ErrorEvent", type);
+                    eventNode.setMetaData("ErrorStructureRef", error.getStructureRef());
                 }
             }
             xmlNode = xmlNode.getNextSibling();
@@ -319,7 +325,9 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
-            if ("conditionalEventDefinition".equals(nodeName)) {
+            if ("dataOutputAssociation".equals(nodeName)) {
+                readDataOutputAssociation(xmlNode, eventNode);
+            } else if ("conditionalEventDefinition".equals(nodeName)) {
                 org.w3c.dom.Node subNode = xmlNode.getFirstChild();
                 while (subNode != null) {
                     String subnodeName = subNode.getNodeName();

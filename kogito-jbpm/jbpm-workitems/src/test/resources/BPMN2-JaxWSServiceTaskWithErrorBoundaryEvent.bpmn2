@@ -3,6 +3,7 @@
   <bpmn2:import importType="http://schemas.xmlsoap.org/wsdl/" location="http://127.0.0.1:9876/HelloService/greeting?wsdl" namespace="http://bpmn2.workitem.process.jbpm.org/"/>
   <bpmn2:itemDefinition id="_sItem" structureRef="java.lang.String"/>
   <bpmn2:itemDefinition id="_modeItem" structureRef="java.lang.String"/>
+  <bpmn2:itemDefinition id="_exceptionItem" structureRef="java.lang.Exception"/>
   <bpmn2:itemDefinition id="_7A7A581E-EDEB-403A-8978-5A1B705D767D_InMessageType"/>
   <bpmn2:message id="_7A7A581E-EDEB-403A-8978-5A1B705D767D_InMessage" itemRef="_7A7A581E-EDEB-403A-8978-5A1B705D767D_InMessageType"/>
   <bpmn2:interface id="_7A7A581E-EDEB-403A-8978-5A1B705D767D_ServiceInterface" name="SimpleService" implementationRef="SimpleService">
@@ -10,13 +11,14 @@
       <bpmn2:inMessageRef>_7A7A581E-EDEB-403A-8978-5A1B705D767D_InMessage</bpmn2:inMessageRef>
     </bpmn2:operation>
   </bpmn2:interface>
-  <bpmn2:error id="_MeIzyO3zEeKWjtlslmwi-w"/>
+  <bpmn2:error id="_MeIzyO3zEeKWjtlslmwi-w" errorCode="WsError" structureRef="org.jbpm.bpmn2.handler.WorkItemHandlerRuntimeException"/>
   <bpmn2:itemDefinition id="__7A7A581E-EDEB-403A-8978-5A1B705D767D_ParameterInputItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__7A7A581E-EDEB-403A-8978-5A1B705D767D_modeInputItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__7A7A581E-EDEB-403A-8978-5A1B705D767D_ResultOutputItem" structureRef="Object"/>
   <bpmn2:process id="WebServiceTaskError" drools:packageName="HR.src.main.resources" drools:version="1" name="Default Process">
     <bpmn2:property id="s" itemSubjectRef="_sItem"/>
     <bpmn2:property id="mode" itemSubjectRef="_modeItem"/>
+    <bpmn2:property id="exception" itemSubjectRef="_exceptionItem"/>
     <bpmn2:startEvent id="_DFF38662-154E-48DC-AF04-F2A3C8D7C9E9" drools:bgcolor="#9acd32" drools:selectable="true" name="">
       <bpmn2:outgoing>_45E9A311-EE1B-4E66-BA17-F62FBBD2EAFD</bpmn2:outgoing>
     </bpmn2:startEvent>
@@ -62,7 +64,7 @@
     <bpmn2:scriptTask id="_AECEAF1A-615F-46CB-9200-FA3C5DCA6DEC" drools:selectable="true" name="Error handled" scriptFormat="http://www.java.com/java">
       <bpmn2:incoming>_ACDEBBF8-2878-4283-9D2C-35E0DF06344C</bpmn2:incoming>
       <bpmn2:outgoing>_5DEF28F9-91DD-47AC-BC17-6ED64963D349</bpmn2:outgoing>
-      <bpmn2:script><![CDATA[System.out.println("Error handled");]]></bpmn2:script>
+      <bpmn2:script><![CDATA[System.out.println("Error handled of type " + exception);]]></bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="_ACDEBBF8-2878-4283-9D2C-35E0DF06344C" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_42C0825B-7BE7-4D1C-B63C-848FF662147A" targetRef="_AECEAF1A-615F-46CB-9200-FA3C5DCA6DEC"/>
     <bpmn2:endEvent id="_0924C1ED-7E1B-4EC2-83B6-58A8FE24FE52" drools:bgcolor="#ff6347" drools:selectable="true" name="">
@@ -71,6 +73,14 @@
     <bpmn2:sequenceFlow id="_5DEF28F9-91DD-47AC-BC17-6ED64963D349" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_AECEAF1A-615F-46CB-9200-FA3C5DCA6DEC" targetRef="_0924C1ED-7E1B-4EC2-83B6-58A8FE24FE52"/>
     <bpmn2:boundaryEvent id="_42C0825B-7BE7-4D1C-B63C-848FF662147A" drools:bgcolor="#f5deb3" drools:selectable="true" drools:bordercolor="#a0522d" drools:boundaryca="false" name="" attachedToRef="_7A7A581E-EDEB-403A-8978-5A1B705D767D" cancelActivity="false">
       <bpmn2:outgoing>_ACDEBBF8-2878-4283-9D2C-35E0DF06344C</bpmn2:outgoing>
+      <bpmn2:dataOutput id="_2F4E34BF-235A-4920-88A4-31A9EA5F142C_wsError" name="wsError"/>
+      <bpmn2:outputSet id="_ZsNDcJPqEeOjx4w8N4BZ6Q">
+        <bpmn2:dataOutputRefs>_2F4E34BF-235A-4920-88A4-31A9EA5F142C_wsError</bpmn2:dataOutputRefs>
+      </bpmn2:outputSet>      
+      <bpmn2:dataOutputAssociation id="_ZsNDcZPqEeOjx4w8N4BZ6Q">
+        <bpmn2:sourceRef>_2F4E34BF-235A-4920-88A4-31A9EA5F142C_wsError</bpmn2:sourceRef>
+        <bpmn2:targetRef>exception</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
       <bpmn2:errorEventDefinition id="_MeIzx-3zEeKWjtlslmwi-w" errorRef="_MeIzyO3zEeKWjtlslmwi-w"/>
     </bpmn2:boundaryEvent>
   </bpmn2:process>

@@ -1,7 +1,9 @@
 package org.jbpm.process.workitem.bpmn2;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +18,7 @@ import org.drools.core.impl.KnowledgeBaseFactoryServiceImpl;
 import org.drools.core.marshalling.impl.ProcessMarshallerFactory;
 import org.drools.core.runtime.process.ProcessRuntimeFactory;
 import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
+import org.jbpm.bpmn2.handler.WorkItemHandlerRuntimeException;
 import org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl;
 import org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
@@ -119,6 +122,9 @@ public class JaxWSServiceTaskTest extends AbstractBaseTest {
         
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("WebServiceTaskError", params);        
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        Object error = processInstance.getVariable("exception");
+        assertNotNull(error);
+        assertTrue(error instanceof WorkItemHandlerRuntimeException);
     }
     
     @Test
