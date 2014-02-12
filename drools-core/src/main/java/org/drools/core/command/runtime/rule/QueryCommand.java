@@ -103,8 +103,8 @@ public class QueryCommand  implements GenericCommand<QueryResults>, Identifiable
         QueryResults results = ksession.getQueryResults( name, this.arguments.toArray() );
         
         if ( this.outIdentifier != null ) {
-            if(((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult() != null){
-                ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult().getResults().put( this.outIdentifier, results );
+            if(((StatefulKnowledgeSessionImpl)ksession).getExecutionResult() != null){
+                ((StatefulKnowledgeSessionImpl)ksession).getExecutionResult().getResults().put( this.outIdentifier, results );
             }    
         }
 

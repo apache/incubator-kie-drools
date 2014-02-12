@@ -16,12 +16,13 @@
 
 package org.drools.core.facttemplates;
 
+import org.drools.core.definitions.InternalKnowledgePackage;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
 
-import org.drools.core.rule.Package;
 
 public class FactTemplateImpl
     implements
@@ -39,14 +40,14 @@ public class FactTemplateImpl
     }
 
     private FieldTemplate[] fields;
-    private Package         pkg;
+    private InternalKnowledgePackage pkg;
     private String          name;
 
     public FactTemplateImpl() {
         
     }
 
-    public FactTemplateImpl(final Package pkg,
+    public FactTemplateImpl(final InternalKnowledgePackage pkg,
                             final String name,
                             final FieldTemplate[] fields) {
         this.pkg = pkg;
@@ -56,7 +57,7 @@ public class FactTemplateImpl
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        pkg     = (Package)in.readObject();
+        pkg     = (InternalKnowledgePackage)in.readObject();
         name    = (String)in.readObject();
         fields  = (FieldTemplate[])in.readObject();
     }
@@ -67,13 +68,12 @@ public class FactTemplateImpl
         out.writeObject(fields);
     }
 
-    public Package getPackage() {
+    public InternalKnowledgePackage getPackage() {
         return this.pkg;
     }
 
     /**
      * the template name is an alias for an object
-     * @param name
      */
     public String getName() {
         return this.name;
@@ -112,8 +112,6 @@ public class FactTemplateImpl
 
     /**
      * get the Slot at the given pattern id
-     * @param id
-     * @return
      */
     public FieldTemplate getFieldTemplate(final int index) {
         return this.fields[index];
@@ -121,8 +119,6 @@ public class FactTemplateImpl
 
     /**
      * Look up the pattern index of the slot
-     * @param name
-     * @return
      */
     public int getFieldTemplateIndex(final String name) {
         for ( int index = 0; index < this.fields.length; index++ ) {
@@ -135,9 +131,6 @@ public class FactTemplateImpl
 
     /**
      * Method takes a list of Slots and creates a deffact from it.
-     * @param data
-     * @param id
-     * @return
      */
     public Fact createFact(final long id) {
         return new FactImpl( this,

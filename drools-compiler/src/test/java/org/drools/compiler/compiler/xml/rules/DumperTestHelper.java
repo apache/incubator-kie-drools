@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DrlParser;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.compiler.lang.DrlDumper;
@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 public class DumperTestHelper {
     
     public static void XmlFile(String filename) throws Exception {
-        PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+        KnowledgeBuilderConfigurationImpl conf = new KnowledgeBuilderConfigurationImpl();
         
         XmlPackageReader xmlPackageReader = new XmlPackageReader( conf.getSemanticModules() );
         xmlPackageReader.getParser().setClassLoader( DumperTestHelper.class.getClassLoader() );

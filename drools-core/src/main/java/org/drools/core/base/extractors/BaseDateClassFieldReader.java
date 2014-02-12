@@ -16,7 +16,6 @@
 
 package org.drools.core.base.extractors;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.BaseClassFieldReader;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalWorkingMemory;
@@ -53,7 +52,7 @@ public abstract class BaseDateClassFieldReader extends BaseClassFieldReader {
     }
 
     public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
-        throw new RuntimeDroolsException( "Conversion to boolean not supported from Date" );
+        throw new RuntimeException( "Conversion to boolean not supported from Date" );
     }
 
     public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
@@ -99,8 +98,8 @@ public abstract class BaseDateClassFieldReader extends BaseClassFieldReader {
             return this.getClass().getDeclaredMethod( "getValue",
                                                       new Class[]{InternalWorkingMemory.class, Object.class} );
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
-                                              e );
+            throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
+                                        e );
         }
     }
 

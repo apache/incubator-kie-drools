@@ -9,7 +9,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.util.MVELSafeHelper;
 import org.kie.api.builder.model.KieSessionModel;
@@ -41,7 +40,7 @@ public class CDIHelper {
 
     private static void wireListnersAndWIHs(BeanCreator beanCreator, KieSessionModel model, KieSession kSession) {
         BeanCreator fallbackBeanCreator = new ReflectionBeanCreator();
-        ClassLoader cl = ((InternalRuleBase)((InternalKnowledgeBase)kSession.getKieBase()).getRuleBase()).getRootClassLoader();
+        ClassLoader cl = ((InternalKnowledgeBase)kSession.getKieBase()).getRootClassLoader();
 
         for (ListenerModel listenerModel : model.getListenerModels()) {
             Object listener;

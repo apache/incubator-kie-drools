@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.core.io.impl.UrlResource;
 import org.drools.core.xml.XmlChangeSetReader;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class ChangeSetTest extends CommonTestMethodBase {
     public void testXmlParser() throws SAXException,
                                IOException {
 
-        PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+        KnowledgeBuilderConfigurationImpl conf = new KnowledgeBuilderConfigurationImpl();
         XmlChangeSetReader xmlReader = new XmlChangeSetReader( conf.getSemanticModules() );
         xmlReader.setClassLoader( ChangeSetTest.class.getClassLoader(), ChangeSetTest.class );
 
@@ -98,7 +98,7 @@ public class ChangeSetTest extends CommonTestMethodBase {
     public void testBasicAuthentication() throws SAXException,
                                IOException {
 
-        PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+        KnowledgeBuilderConfigurationImpl conf = new KnowledgeBuilderConfigurationImpl();
         XmlChangeSetReader xmlReader = new XmlChangeSetReader( conf.getSemanticModules() );
         xmlReader.setClassLoader( ChangeSetTest.class.getClassLoader(), ChangeSetTest.class );
 

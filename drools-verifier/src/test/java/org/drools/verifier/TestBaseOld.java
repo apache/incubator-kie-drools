@@ -16,8 +16,7 @@
 
 package org.drools.verifier;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertFalse;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,19 +26,22 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatelessSession;
 import org.drools.compiler.compiler.DrlParser;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.core.rule.Package;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.visitor.PackageDescrVisitor;
 import org.junit.Before;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 abstract public class TestBaseOld {
 
@@ -50,30 +52,14 @@ abstract public class TestBaseOld {
                             "dd-MMM-yyyy" );
     }
 
-    public StatelessSession getStatelessSession(InputStream stream) throws Exception {
-        // read in the source
-        Reader source = new InputStreamReader( stream );
+    public KieSession getStatelessKieSession(InputStream stream) throws Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newInputStreamResource(stream), ResourceType.DRL);
+        assertFalse(kbuilder.hasErrors());
 
-        PackageBuilder builder = new PackageBuilder();
-
-        builder.addPackageFromDrl( source );
-
-        Package pkg = builder.getPackage();
-
-        if ( builder.hasErrors() ) {
-            for ( KnowledgeBuilderError error : builder.getErrors() ) {
-                System.out.println( error.getMessage() );
-            }
-            fail( "Builder has errors" );
-        }
-
-        assertTrue( "Package was null.",
-                    pkg != null );
-
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-
-        return ruleBase.newStatelessSession();
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        return kbase.newStatefulKnowledgeSession();
     }
 
     /**

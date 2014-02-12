@@ -16,12 +16,12 @@
 
 package org.drools.template.parser;
 
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatefulSession;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.rule.Package;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.template.model.*;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.KnowledgeBaseFactory;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -50,17 +50,17 @@ import java.util.Map;
  * end
  */
 public class DefaultTemplateRuleBase implements TemplateRuleBase {
-    private RuleBase ruleBase;
+    private InternalKnowledgeBase kBase;
 
     public DefaultTemplateRuleBase(final TemplateContainer tc) {
-        ruleBase = readRule(getDTRules(tc.getTemplates()));
+        kBase = readKnowledgeBase(getDTRules(tc.getTemplates()));
     }
 
     /* (non-Javadoc)
      * @see org.kie.decisiontable.parser.TemplateRuleBase#newWorkingMemory()
      */
-    public StatefulSession newStatefulSession() {
-        return ruleBase.newStatefulSession();
+    public KieSession newStatefulSession() {
+        return kBase.newKieSession();
     }
 
     /**
@@ -124,19 +124,19 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
         return consequence;
     }
 
-    private RuleBase readRule(String drl) {
+    private InternalKnowledgeBase readKnowledgeBase(String drl) {
         try {
             //            logger.info(drl);
             // read in the source
             Reader source = new StringReader(drl);
-            PackageBuilder builder = new PackageBuilder();
+            KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
             builder.addPackageFromDrl(source);
-            Package pkg = builder.getPackage();
+            InternalKnowledgePackage pkg = builder.getPackage();
 
             // add the package to a rulebase (deploy the rule package).
-            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-            ruleBase.addPackage(pkg);
-            return ruleBase;
+            InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+            kBase.addPackage(pkg);
+            return kBase;
 
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -79,7 +79,7 @@ public class GetObjectInEntryPointCommand
         Object object = ep.getObject( factHandle );
         
         if (this.outIdentifier != null) {
-            ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult()
+            ((StatefulKnowledgeSessionImpl)ksession).getExecutionResult()
                 .getResults().put( this.outIdentifier, object );
         }
         

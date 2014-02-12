@@ -21,17 +21,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.DroolsWarning;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Dialectable;
-import org.drools.core.rule.Package;
 
 /**
  * A context for the current build
@@ -39,9 +39,9 @@ import org.drools.core.rule.Package;
 public class PackageBuildContext {
 
     // current package
-    private Package                     pkg;
+    private InternalKnowledgePackage    pkg;
 
-    private PackageBuilder pkgBuilder;
+    private KnowledgeBuilderImpl        kBuilder;
 
     // the contianer descr
     private BaseDescr                   parentDescr;
@@ -78,13 +78,13 @@ public class PackageBuildContext {
     /**
      * Default constructor
      */
-    public void init(final PackageBuilder pkgBuilder,
-                     final Package pkg,
+    public void init(final KnowledgeBuilderImpl kBuilder,
+                     final InternalKnowledgePackage pkg,
                      final BaseDescr parentDescr,
                      final DialectCompiletimeRegistry dialectRegistry,
                      final Dialect defaultDialect,
                      final Dialectable component) {
-        this.pkgBuilder = pkgBuilder;
+        this.kBuilder = kBuilder;
         
         this.pkg = pkg;
 
@@ -164,7 +164,7 @@ public class PackageBuildContext {
      * Returns the current package being built
      * @return
      */
-    public Package getPkg() {
+    public InternalKnowledgePackage getPkg() {
         return this.pkg;
     }
 
@@ -228,12 +228,12 @@ public class PackageBuildContext {
         return this.counter++;
     }
 
-    public PackageBuilderConfiguration getConfiguration() {
-        return this.pkgBuilder.getPackageBuilderConfiguration();
+    public KnowledgeBuilderConfigurationImpl getConfiguration() {
+        return this.kBuilder.getBuilderConfiguration();
     }
     
-    public PackageBuilder getPackageBuilder() {
-        return this.pkgBuilder;
+    public KnowledgeBuilderImpl getKnowledgeBuilder() {
+        return this.kBuilder;
     }
 
     public boolean isTypesafe() {

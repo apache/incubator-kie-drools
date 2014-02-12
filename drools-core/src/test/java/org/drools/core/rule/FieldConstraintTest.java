@@ -16,7 +16,6 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
@@ -25,9 +24,10 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.FieldFactory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.reteoo.LeftTupleImpl;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.rule.PredicateConstraint.PredicateContextEntry;
 import org.drools.core.rule.constraint.MvelConstraint;
@@ -36,6 +36,8 @@ import org.drools.core.spi.PredicateExpression;
 import org.drools.core.spi.Tuple;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.KnowledgeBaseFactory;
 
 import java.beans.IntrospectionException;
 import java.io.IOException;
@@ -74,8 +76,8 @@ public class FieldConstraintTest {
      */
     @Test
     public void testLiteralConstraint() throws IntrospectionException {
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         final ClassFieldReader extractor = store.getReader(Cheese.class,
                 "type",
@@ -90,21 +92,21 @@ public class FieldConstraintTest {
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
 
-        final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.insert( cheddar );
+        final InternalFactHandle cheddarHandle = (InternalFactHandle) ksession.insert( cheddar );
 
         // check constraint
         assertTrue( constraint.isAllowed( cheddarHandle,
-                                          workingMemory,
+                                          ksession,
                                           context ) );
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
 
-        final InternalFactHandle stiltonHandle = (InternalFactHandle) workingMemory.insert( stilton );
+        final InternalFactHandle stiltonHandle = (InternalFactHandle) ksession.insert( stilton );
 
         // check constraint
         assertFalse( constraint.isAllowed( stiltonHandle,
-                                           workingMemory,
+                                           ksession,
                                            context ) );
     }
 
@@ -121,8 +123,8 @@ public class FieldConstraintTest {
      */
     @Test
     public void testPrimitiveLiteralConstraint() throws IntrospectionException {
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         final ClassFieldReader extractor = store.getReader(Cheese.class,
                 "price",
@@ -136,21 +138,21 @@ public class FieldConstraintTest {
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
 
-        final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.insert( cheddar );
+        final InternalFactHandle cheddarHandle = (InternalFactHandle) ksession.insert( cheddar );
 
         // check constraint
         assertTrue( constraint.isAllowed( cheddarHandle,
-                                          workingMemory,
+                                          ksession,
                                           context ) );
 
         final Cheese stilton = new Cheese( "stilton",
                                            10 );
 
-        final InternalFactHandle stiltonHandle = (InternalFactHandle) workingMemory.insert( stilton );
+        final InternalFactHandle stiltonHandle = (InternalFactHandle) ksession.insert( stilton );
 
         // check constraint
         assertFalse(constraint.isAllowed(stiltonHandle,
-                workingMemory,
+                                         ksession,
                 context));
     }
 
@@ -168,8 +170,8 @@ public class FieldConstraintTest {
      */
     @Test
     public void testPredicateConstraint() throws IntrospectionException {
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         final InternalReadAccessor priceExtractor = store.getReader( Cheese.class,
                                                                      "price",
@@ -232,14 +234,14 @@ public class FieldConstraintTest {
 
         final Cheese cheddar0 = new Cheese( "cheddar",
                                             5 );
-        final InternalFactHandle f0 = (InternalFactHandle) workingMemory.insert( cheddar0 );
+        final InternalFactHandle f0 = (InternalFactHandle) ksession.insert( cheddar0 );
         LeftTupleImpl tuple = new LeftTupleImpl( f0,
                                          null,
                                          true );
 
         final Cheese cheddar1 = new Cheese( "cheddar",
                                             10 );
-        final InternalFactHandle f1 = (InternalFactHandle) workingMemory.insert( cheddar1 );
+        final InternalFactHandle f1 = (InternalFactHandle) ksession.insert( cheddar1 );
 
         tuple = new LeftTupleImpl( tuple,
                                new RightTuple( f1,
@@ -248,7 +250,7 @@ public class FieldConstraintTest {
                                true );
 
         final PredicateContextEntry context = (PredicateContextEntry) constraint1.createContextEntry();
-        context.updateFromTuple(workingMemory,
+        context.updateFromTuple(ksession,
                 tuple);
         assertTrue( constraint1.isAllowedCachedLeft( context,
                                                      f1 ) );

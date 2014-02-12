@@ -25,33 +25,32 @@ import static org.mockito.Mockito.when;
 
 import java.beans.IntrospectionException;
 
-import org.drools.core.FactException;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DefaultBetaConstraints;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.internal.KnowledgeBaseFactory;
 
 @Ignore("phreak")
 public class NotNodeTest extends DroolsTestCase {
-    Rule                    rule;
+    RuleImpl                rule;
     PropagationContext      context;
-    AbstractWorkingMemory   workingMemory;
+    StatefulKnowledgeSessionImpl workingMemory;
     MockObjectSource        objectSource;
     MockTupleSource         tupleSource;
     MockLeftTupleSink       sink;
@@ -74,18 +73,18 @@ public class NotNodeTest extends DroolsTestCase {
 
         when(constraint.createContextEntry()).thenReturn(c);
 
-        InternalRuleBase rbase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
 
-        this.rule = new Rule("test-rule");
-        pctxFactory = rbase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        this.rule = new RuleImpl("test-rule");
+        pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         this.context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
-        this.workingMemory = new AbstractWorkingMemory(1, rbase);
+        this.workingMemory = new StatefulKnowledgeSessionImpl(1, kBase);
 
         final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
 
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        BuildContext buildContext = new BuildContext(ruleBase,
-                                                     ruleBase.getReteooBuilder().getIdGenerator());
+        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        BuildContext buildContext = new BuildContext(kBase,
+                                                     kBase.getReteooBuilder().getIdGenerator());
 
         this.objectSource = new MockObjectSource(155);
         this.tupleSource = new MockTupleSource(60);
@@ -113,7 +112,7 @@ public class NotNodeTest extends DroolsTestCase {
     }
 
 
-    public void testNotStandard() throws FactException {
+    public void testNotStandard() {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(true);
         when( constraint.isAllowedCachedRight( any( LeftTupleImpl.class ), any( ContextEntry.class ) )).thenReturn(true);
 
@@ -146,7 +145,7 @@ public class NotNodeTest extends DroolsTestCase {
         assertEquals( 1,
                       this.memory.getLeftTupleMemory().size() );
 
-        // assert will match, so propagated tuple should be retracted
+        // assert will match, so propagated tuple should be deleted
         final Cheese brie = new Cheese( "brie",
                                         10 );
         final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.insert( brie );
@@ -194,7 +193,7 @@ public class NotNodeTest extends DroolsTestCase {
         assertEquals( 1,
                       this.memory.getRightTupleMemory().size() );
 
-        // When this is retracted both tuples should assert
+        // When this is deleted both tuples should assert
         this.node.retractRightTuple( f1.getFirstRightTuple(),
                                      this.context,
                                      this.workingMemory );
@@ -212,7 +211,7 @@ public class NotNodeTest extends DroolsTestCase {
     }
 
     @Test
-    public void testNotWithConstraints() throws FactException {
+    public void testNotWithConstraints() {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(false);
         when( constraint.isAllowedCachedRight( any( LeftTupleImpl.class ), any( ContextEntry.class ) )).thenReturn(false);
 
@@ -279,7 +278,7 @@ public class NotNodeTest extends DroolsTestCase {
      * Tests memory consistency after insert/update/retract calls
      *
      */
-    public void TestNotMemoryManagement() throws FactException {
+    public void TestNotMemoryManagement() {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(true);
         when( constraint.isAllowedCachedRight( any( LeftTupleImpl.class ), any( ContextEntry.class ) )).thenReturn(true);
 
@@ -296,7 +295,7 @@ public class NotNodeTest extends DroolsTestCase {
                                        this.context,
                                        this.workingMemory );
 
-            // assert will match, so propagated tuple should be retracted
+            // assert will match, so propagated tuple should be deleted
             final Cheese brie = new Cheese( "brie",
                                             10 );
             final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.insert( brie );
@@ -360,9 +359,9 @@ public class NotNodeTest extends DroolsTestCase {
 
         final BetaConstraints nullConstraints = EmptyBetaConstraints.getInstance();
 
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        BuildContext buildContext = new BuildContext( ruleBase,
-                                                      ruleBase.getReteooBuilder().getIdGenerator() );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        BuildContext buildContext = new BuildContext( kBase,
+                                                      kBase.getReteooBuilder().getIdGenerator() );
 
         final NotNode notNode = new NotNode( 1,
                                              this.tupleSource,
@@ -387,13 +386,12 @@ public class NotNodeTest extends DroolsTestCase {
         conf.setPhreakEnabled(false);
         conf.setSequential( true );
 
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(conf);
 
-        this.workingMemory = new AbstractWorkingMemory( 1,
-                                                      ruleBase );
+        this.workingMemory = new StatefulKnowledgeSessionImpl( 1, kBase );
 
-        BuildContext buildContext = new BuildContext( ruleBase,
-                                                      ruleBase.getReteooBuilder().getIdGenerator() );
+        BuildContext buildContext = new BuildContext( kBase,
+                                                      kBase.getReteooBuilder().getIdGenerator() );
 
         buildContext.setTupleMemoryEnabled( false );
         buildContext.setObjectTypeNodeMemoryEnabled( false );

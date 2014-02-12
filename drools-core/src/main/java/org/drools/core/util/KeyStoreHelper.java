@@ -15,7 +15,6 @@ import java.security.cert.CertificateException;
 import java.util.Properties;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuntimeDroolsException;
 
 /**
  * A helper class to deal with the key store and signing process during 
@@ -90,8 +89,7 @@ public class KeyStoreHelper {
                                                     "" ).toCharArray();
             initKeyStore();
         } catch ( Exception e ) {
-            throw new RuntimeDroolsException( "Error initialising KeyStore: " + e.getMessage(),
-                                              e );
+            throw new RuntimeException( "Error initialising KeyStore: " + e.getMessage(), e );
         }
     }
 
@@ -131,7 +129,7 @@ public class KeyStoreHelper {
                                                      InvalidKeyException,
                                                      SignatureException {
         if( pvtKeyStore == null ) {
-            throw new RuntimeDroolsException( "Key store with private key not configured. Please configure it properly before using signed serialization." );
+            throw new RuntimeException( "Key store with private key not configured. Please configure it properly before using signed serialization." );
         }
         PrivateKey pvtkey = (PrivateKey) pvtKeyStore.getKey( pvtKeyAlias,
                                                              pvtKeyPassword );
@@ -163,11 +161,11 @@ public class KeyStoreHelper {
                                                                  InvalidKeyException,
                                                                  SignatureException {
         if( pubKeyStore == null ) {
-            throw new RuntimeDroolsException( "Key store with public key not configured. Please configure it properly before using signed serialization." );
+            throw new RuntimeException( "Key store with public key not configured. Please configure it properly before using signed serialization." );
         }
         Certificate cert = pubKeyStore.getCertificate( publicKeyAlias );
         if( cert == null ) {
-            throw new RuntimeDroolsException( "Public certificate for key '"+publicKeyAlias+"' not found in the configured key store. Impossible to deserialize the object." );
+            throw new RuntimeException( "Public certificate for key '"+publicKeyAlias+"' not found in the configured key store. Impossible to deserialize the object." );
         }
         Signature sig = Signature.getInstance( "MD5withRSA" );
         sig.initVerify( cert.getPublicKey() );

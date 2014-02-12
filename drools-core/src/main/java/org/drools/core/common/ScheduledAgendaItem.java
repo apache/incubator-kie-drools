@@ -16,12 +16,12 @@
 
 package org.drools.core.common;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.JobHandle;
@@ -127,7 +127,7 @@ public class ScheduledAgendaItem
         agendaItem.setActivationUnMatchListener(activationUnMatchListener);
     }
 
-    public Rule getRule() {
+    public RuleImpl getRule() {
         return agendaItem.getRule();
     }
 

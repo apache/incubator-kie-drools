@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.AbstractHashTable.AbstractObjectComparator;
 

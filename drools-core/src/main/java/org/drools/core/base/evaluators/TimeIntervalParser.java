@@ -16,7 +16,6 @@
 
 package org.drools.core.base.evaluators;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.time.TimeUtils;
 
 /**
@@ -26,11 +25,6 @@ public class TimeIntervalParser
     implements
     EvaluatorParametersParser {
 
-    /**
-     * @inheritDoc
-     * 
-     * @see org.kie.base.evaluators.EvaluatorParametersParser#parse(java.lang.String)
-     */
     public Long[] parse(String paramText) {
         if ( paramText == null || paramText.trim().length() == 0 ) {
             return new Long[0];
@@ -43,7 +37,7 @@ public class TimeIntervalParser
             if ( trimmed.length() > 0 ) {
                 result[index++] = TimeUtils.parseTimeString( param );
             } else {
-                throw new RuntimeDroolsException( "Empty parameters not allowed in: [" + paramText + "]" );
+                throw new RuntimeException( "Empty parameters not allowed in: [" + paramText + "]" );
             }
         }
         return result;

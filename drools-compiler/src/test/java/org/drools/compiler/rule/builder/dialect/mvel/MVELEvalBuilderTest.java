@@ -4,27 +4,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.compiler.Cheese;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.RuleBase;
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.phreak.SegmentUtilities;
-import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.mvel.MVELEvalExpression;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.lang.descr.EvalDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.reteoo.LeftTupleImpl;
@@ -32,9 +28,9 @@ import org.drools.compiler.reteoo.MockLeftTupleSink;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.core.rule.Package;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.InternalReadAccessor;
+import org.kie.internal.KnowledgeBaseFactory;
 
 public class MVELEvalBuilderTest {
 
@@ -48,11 +44,11 @@ public class MVELEvalBuilderTest {
 
     @Test
     public void testSimpleExpression() {
-        final Package pkg = new Package( "pkg1" );
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
 
-        PackageBuilder pkgBuilder = new PackageBuilder( pkg );
-        final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
+        KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl( pkg );
+        final KnowledgeBuilderConfigurationImpl conf = pkgBuilder.getBuilderConfiguration();
         DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
         MVELDialect mvelDialect = ( MVELDialect ) dialectRegistry.getDialect( "mvel" );
 
@@ -87,13 +83,13 @@ public class MVELEvalBuilderTest {
                                                                   evalDescr );
         ((MVELEvalExpression) eval.getEvalExpression()).compile( (MVELDialectRuntimeData) pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ) );
 
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        final InternalWorkingMemory wm = (InternalWorkingMemory) ruleBase.newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         MockLeftTupleSink sink = new MockLeftTupleSink();
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
-        final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
+        final InternalFactHandle f0 = (InternalFactHandle) ksession.insert( cheddar );
 
         final LeftTupleImpl tuple = new LeftTupleImpl( f0, sink, true );
         f0.removeLeftTuple(tuple);
@@ -101,14 +97,14 @@ public class MVELEvalBuilderTest {
         Object evalContext = eval.createContext();
 
         assertTrue( eval.isAllowed( tuple,
-                                    wm,
+                                    ksession,
                                     evalContext ) );
 
         cheddar.setPrice( 9 );
-        wm.update( f0,
+        ksession.update( f0,
                    cheddar );
         assertFalse( eval.isAllowed( tuple,
-                                     wm,
+                                     ksession,
                                      evalContext ) );
     }
 

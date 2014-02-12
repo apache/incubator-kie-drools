@@ -23,7 +23,6 @@ import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.DeclarationScopeResolver;
-import org.drools.core.util.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -232,7 +231,7 @@ public class LogicTransformer {
             }
 
             
-            List<Integer> varIndexes = ArrayUtils.asList( qe.getVariableIndexes() );
+            List<Integer> varIndexes = asList( qe.getVariableIndexes() );
             for ( int i = 0; i < qe.getDeclIndexes().length; i++ ) {
                 Declaration declr = (Declaration) qe.getArgTemplate()[qe.getDeclIndexes()[i]];
                 Declaration resolved = resolver.getDeclaration( null,
@@ -255,7 +254,7 @@ public class LogicTransformer {
                     varIndexes.add( qe.getDeclIndexes()[i] );
                 }                  
             }
-            qe.setVariableIndexes( ArrayUtils.toIntArray( varIndexes ) );            
+            qe.setVariableIndexes( toIntArray( varIndexes ) );
         }  else if ( element instanceof ConditionalBranch ) {
             processBranch( resolver, (ConditionalBranch) element );
         } else {
@@ -267,6 +266,22 @@ public class LogicTransformer {
             }
             contextStack.pop();
         }
+    }
+
+    private static List<Integer> asList(int[] ints) {
+        List<Integer> list = new ArrayList<Integer>(ints.length);
+        for ( int i : ints ) {
+            list.add( i );
+        }
+        return list;
+    }
+
+    private static int[] toIntArray(List<Integer> list) {
+        int[] ints = new int[list.size()];
+        for ( int i = 0; i < list.size(); i++ ) {
+            ints[i] = list.get( i );
+        }
+        return ints;
     }
 
     private void processEvalCondition(DeclarationScopeResolver resolver, EvalCondition element) {

@@ -74,7 +74,7 @@ public class MVELFromBuilder
                                                                  descr,
                                                                  text,
                                                                  new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ),
-                                                                                      context.getPackageBuilder().getGlobals() ) );
+                                                                                      context.getKnowledgeBuilder().getGlobals() ) );
             if ( analysis == null ) {
                 // something bad happened
                 return null;

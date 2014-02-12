@@ -27,6 +27,7 @@ import java.util.List;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
 import org.kie.api.definition.rule.Rule;
@@ -90,7 +91,7 @@ public class SerializableActivation
     }
 
     public Object getDeclarationValue(String variableName) {
-        Declaration decl = ((org.drools.core.rule.Rule)this.rule).getDeclaration( variableName );
+        Declaration decl = ((RuleImpl)this.rule).getDeclaration( variableName );
         return decl.getValue( null, ((InternalFactHandle)factHandles.get(decl.getPattern().getOffset())).getObject() );
     }
 

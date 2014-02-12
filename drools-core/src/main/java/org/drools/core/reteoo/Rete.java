@@ -18,11 +18,11 @@ package org.drools.core.reteoo;
 
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.ObjectType;
@@ -66,7 +66,7 @@ public class Rete extends ObjectSource
 
     private Map<EntryPointId, EntryPointNode> entryPoints;
 
-    private transient InternalRuleBase      ruleBase;
+    private transient InternalKnowledgeBase kBase;
 
     public Rete() {
         this( null );
@@ -76,10 +76,10 @@ public class Rete extends ObjectSource
     // Constructors
     // ------------------------------------------------------------
 
-    public Rete(InternalRuleBase ruleBase) {
-        super( 0, RuleBasePartitionId.MAIN_PARTITION, ruleBase != null ? ruleBase.getConfiguration().isMultithreadEvaluation() : false );
+    public Rete(InternalKnowledgeBase kBase) {
+        super( 0, RuleBasePartitionId.MAIN_PARTITION, kBase != null ? kBase.getConfiguration().isMultithreadEvaluation() : false );
         this.entryPoints = Collections.synchronizedMap( new HashMap<EntryPointId, EntryPointNode>() );
-        this.ruleBase = ruleBase;
+        this.kBase = kBase;
     }
 
     public short getType() {
@@ -152,13 +152,13 @@ public class Rete extends ObjectSource
     public void addObjectSink(final ObjectSink objectSink) {
         final EntryPointNode node = (EntryPointNode) objectSink;
         entryPoints.put(node.getEntryPoint(), node);
-        ruleBase.registerAddedEntryNodeCache(node);
+        kBase.registerAddedEntryNodeCache(node);
     }
 
     public void removeObjectSink(final ObjectSink objectSink) {
         final EntryPointNode node = (EntryPointNode) objectSink;
         entryPoints.remove(node.getEntryPoint());
-        ruleBase.registeRremovedEntryNodeCache(node);
+        kBase.registeRremovedEntryNodeCache(node);
     }
 
     public void attach( BuildContext context ) {
@@ -191,8 +191,8 @@ public class Rete extends ObjectSource
         return this.entryPoints.get( entryPoint ).getObjectTypeNodes();
     }
 
-    public InternalRuleBase getRuleBase() {
-        return this.ruleBase;
+    public InternalKnowledgeBase getKnowledgeBase() {
+        return this.kBase;
     }
 
     public int hashCode() {
@@ -235,11 +235,11 @@ public class Rete extends ObjectSource
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         entryPoints = (Map<EntryPointId, EntryPointNode>) in.readObject();
-        ruleBase = ((DroolsObjectInputStream)in).getRuleBase();
+        kBase = ((DroolsObjectInputStream)in).getKnowledgeBase();
         for (Map.Entry<EntryPointId, EntryPointNode> entry : entryPoints.entrySet()) {
             EntryPointNode node = entry.getValue();
             if (node.getEntryPoint() == null) node.setEntryPoint(entry.getKey());
-            ruleBase.registerAddedEntryNodeCache(node);
+            kBase.registerAddedEntryNodeCache(node);
         }
         super.readExternal( in );
     }

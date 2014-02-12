@@ -19,7 +19,6 @@ package org.drools.core.command.runtime.rule;
 import org.drools.core.command.IdentifiableResult;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
 import org.kie.api.runtime.KieSession;
@@ -85,19 +84,19 @@ public class GetObjectsInEntryPointCommand
         if ( this.outIdentifier != null ) {
             List objects = new ArrayList( col );
 
-            ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult().getResults().put( this.outIdentifier, objects );
+            ((StatefulKnowledgeSessionImpl)ksession).getExecutionResult().getResults().put( this.outIdentifier, objects );
         }
 
         return col;
     }
 
-    public Collection< ? extends Object > getObjects(AbstractWorkingMemory session) {
+    public Collection< ? extends Object > getObjects(StatefulKnowledgeSessionImpl session) {
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        null,
                                        ObjectStoreWrapper.OBJECT );
     }
 
-    public Collection< ? extends Object > getObjects(AbstractWorkingMemory session, ObjectFilter filter) {
+    public Collection< ? extends Object > getObjects(StatefulKnowledgeSessionImpl session, ObjectFilter filter) {
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        filter,
                                        ObjectStoreWrapper.OBJECT );

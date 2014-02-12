@@ -2,11 +2,11 @@ package org.drools.core.reteoo.builder;
 
 import org.drools.core.ActivationListenerFactory;
 import org.drools.core.common.UpdateContext;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.NamedConsequence;
-import org.drools.core.rule.Rule;
 import org.drools.core.rule.RuleConditionElement;
 
 public class NamedConsequenceBuilder implements ReteooComponentBuilder {
@@ -28,10 +28,10 @@ public class NamedConsequenceBuilder implements ReteooComponentBuilder {
     }
 
     static RuleTerminalNode buildTerminalNodeForNamedConsequence(BuildContext context, NamedConsequence namedConsequence) {
-        Rule rule = context.getRule();
+        RuleImpl rule = context.getRule();
         GroupElement subrule = (GroupElement) context.peek();
 
-        ActivationListenerFactory factory = context.getRuleBase().getConfiguration().getActivationListenerFactory( rule.getActivationListener() );
+        ActivationListenerFactory factory = context.getKnowledgeBase().getConfiguration().getActivationListenerFactory( rule.getActivationListener() );
         TerminalNode terminal = factory.createActivationListener( context.getNextId(),
                                                                   context.getTupleSource(),
                                                                   rule,

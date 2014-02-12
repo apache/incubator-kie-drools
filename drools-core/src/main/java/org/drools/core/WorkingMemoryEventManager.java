@@ -16,24 +16,26 @@
 
 package org.drools.core;
 
+import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.event.AgendaEventListener;
-import org.drools.core.event.WorkingMemoryEventListener;
+import org.kie.api.event.kiebase.KieBaseEventManager;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 
 /**
  * The EventManager class is implemented by classes wishing to add,remove and get the various Drools EventListeners.
  */
 public interface WorkingMemoryEventManager
     extends
-    RuleBaseEventManager {
+    KieBaseEventManager {
     /**
      * Add an event listener.
      * 
      * @param listener
      *            The listener to add.
      */
-    public void addEventListener(WorkingMemoryEventListener listener);
+    public void addEventListener(RuleRuntimeEventListener listener);
 
     /**
      * Remove an event listener.
@@ -41,14 +43,14 @@ public interface WorkingMemoryEventManager
      * @param listener
      *            The listener to remove.
      */
-    public void removeEventListener(WorkingMemoryEventListener listener);
+    public void removeEventListener(RuleRuntimeEventListener listener);
 
     /**
      * Returns all event listeners.
      * 
      * @return listeners The listeners.
      */
-    public List getWorkingMemoryEventListeners();
+    public Collection<RuleRuntimeEventListener> getRuleRuntimeEventListeners();
 
     /**
      * Add an event listener.
@@ -71,6 +73,6 @@ public interface WorkingMemoryEventManager
      * 
      * @return listeners The listeners.
      */
-    public List getAgendaEventListeners();
+    public Collection<AgendaEventListener> getAgendaEventListeners();
 
 }

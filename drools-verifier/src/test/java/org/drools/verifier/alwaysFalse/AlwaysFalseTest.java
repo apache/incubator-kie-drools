@@ -16,7 +16,6 @@
 
 package org.drools.verifier.alwaysFalse;
 
-import org.drools.core.StatelessSession;
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.Verifier;
@@ -28,6 +27,7 @@ import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.*;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
 
@@ -41,9 +41,7 @@ public class AlwaysFalseTest extends TestBaseOld {
 
     @Test
     public void testPatterns() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Patterns.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Pattern that is always false"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<Object> data = new ArrayList<Object>();
@@ -116,7 +114,10 @@ public class AlwaysFalseTest extends TestBaseOld {
         data.add(pp3);
         data.add(pp4);
 
-        session.executeWithResults(data);
+        for (Object o : data) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Pattern that is always false"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.ERROR).iterator();
 
@@ -156,9 +157,7 @@ public class AlwaysFalseTest extends TestBaseOld {
      */
     @Test
     public void testSinglePatternNoRestrictions() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Patterns.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Pattern that is always false"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<Object> data = new ArrayList<Object>();
@@ -173,7 +172,10 @@ public class AlwaysFalseTest extends TestBaseOld {
         data.add(rule1);
         data.add(pattern1);
 
-        session.executeWithResults(data);
+        for (Object o : data) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Pattern that is always false"));
 
         assertEquals(0,
                      result.getBySeverity(Severity.ERROR).size());
@@ -185,9 +187,7 @@ public class AlwaysFalseTest extends TestBaseOld {
 
     @Test
     public void testRules() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Rules.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Rule that is always false"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Rules.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<Object> data = new ArrayList<Object>();
@@ -264,7 +264,10 @@ public class AlwaysFalseTest extends TestBaseOld {
         data.add(rp3);
         data.add(rp4);
 
-        session.executeWithResults(data);
+        for (Object o : data) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Rule that is always false"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.ERROR).iterator();
 

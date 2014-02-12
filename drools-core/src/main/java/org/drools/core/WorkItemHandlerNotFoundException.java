@@ -1,7 +1,7 @@
 package org.drools.core;
 
 
-public class WorkItemHandlerNotFoundException extends RuntimeDroolsException {
+public class WorkItemHandlerNotFoundException extends RuntimeException {
 
     private String workItemName;
 

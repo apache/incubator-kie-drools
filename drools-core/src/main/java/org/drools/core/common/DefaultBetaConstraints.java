@@ -90,7 +90,7 @@ public class DefaultBetaConstraints
     }
 
     public void init(BuildContext context, short betaNodeType) {
-        RuleBaseConfiguration config = context.getRuleBase().getConfiguration();
+        RuleBaseConfiguration config = context.getKnowledgeBase().getConfiguration();
 
         if ( disableIndexing || (!config.isIndexLeftBetaMemory() && !config.isIndexRightBetaMemory()) ) {
             indexed = 0;

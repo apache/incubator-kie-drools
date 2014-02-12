@@ -30,13 +30,12 @@ import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELObjectExpressionBuilder;
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.base.mvel.MVELObjectExpression;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Salience;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.time.impl.CronExpression;
@@ -93,7 +92,7 @@ public class RuleBuilder {
 
             context.getRule().setLhs( ce );
         } else {
-            throw new RuntimeDroolsException( "BUG: builder not found for descriptor class " + ruleDescr.getLhs().getClass() );
+            throw new RuntimeException( "BUG: builder not found for descriptor class " + ruleDescr.getLhs().getClass() );
         }
 
         // build all the rule's attributes
@@ -106,7 +105,7 @@ public class RuleBuilder {
             // do not build the consequence if we have a query
 
             ConsequenceBuilder consequenceBuilder = context.getDialect().getConsequenceBuilder();
-            consequenceBuilder.build( context, Rule.DEFAULT_CONSEQUENCE_NAME );
+            consequenceBuilder.build( context, RuleImpl.DEFAULT_CONSEQUENCE_NAME );
             
             for ( String name : ruleDescr.getNamedConsequences().keySet() ) {
                 consequenceBuilder.build( context, name );
@@ -115,7 +114,7 @@ public class RuleBuilder {
     }
 
     public void buildMetaAttributes(final RuleBuildContext context ) {
-        Rule rule = context.getRule();
+        RuleImpl rule = context.getRule();
         for ( String metaAttr : context.getRuleDescr().getAnnotationNames() ) {
             AnnotationDescr ad = context.getRuleDescr().getAnnotation( metaAttr );
             if ( ad.hasValue() ) {
@@ -147,7 +146,7 @@ public class RuleBuilder {
     }
 
     public void buildAttributes(final RuleBuildContext context) {
-        final Rule rule = context.getRule();
+        final RuleImpl rule = context.getRule();
         final RuleDescr ruleDescr = context.getRuleDescr();
         boolean enforceEager = false;
 
@@ -181,7 +180,7 @@ public class RuleBuilder {
             } else if ( name.equals( "date-effective" ) ) {
                 try {
                     Date date = DateUtils.parseDate( attributeDescr.getValue(),
-                                                     context.getPackageBuilder().getDateFormats()  );
+                                                     context.getKnowledgeBuilder().getDateFormats()  );
                     final Calendar cal = Calendar.getInstance();
                     cal.setTime( date );
                     rule.setDateEffective( cal );
@@ -193,7 +192,7 @@ public class RuleBuilder {
             } else if ( name.equals( "date-expires" ) ) {
                 try {
                     Date date = DateUtils.parseDate( attributeDescr.getValue(),
-                                                     context.getPackageBuilder().getDateFormats()  );
+                                                     context.getKnowledgeBuilder().getDateFormats()  );
                     final Calendar cal = Calendar.getInstance();
                     cal.setTime( date );
                     rule.setDateExpires( cal );
@@ -279,7 +278,7 @@ public class RuleBuilder {
         }
     }
     
-    private void buildCalendars(Rule rule, String calendarsString, RuleBuildContext context) {
+    private void buildCalendars(RuleImpl rule, String calendarsString, RuleBuildContext context) {
         Object val = null;
         try {
             val = MVELSafeHelper.getEvaluator().eval( calendarsString );
@@ -303,7 +302,7 @@ public class RuleBuilder {
         }
     }
     
-    private void buildTimer(Rule rule, String timerString, RuleBuildContext context) {
+    private void buildTimer(RuleImpl rule, String timerString, RuleBuildContext context) {
         if( timerString.indexOf( '(' ) >=0 ) {
             timerString = timerString.substring( timerString.indexOf( '(' )+1, timerString.lastIndexOf( ')' ) ).trim();
         }
@@ -413,7 +412,7 @@ public class RuleBuilder {
             return null;
         }
         try {
-            DateUtils.parseDate( expr, context.getPackageBuilder().getDateFormats() );
+            DateUtils.parseDate( expr, context.getKnowledgeBuilder().getDateFormats() );
             expr = "\"" + expr + "\""; // if expr is a valid date wrap in quotes
         } catch (Exception e) { }
         return MVELObjectExpressionBuilder.build( expr, context );

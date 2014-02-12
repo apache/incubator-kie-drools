@@ -37,7 +37,7 @@ import org.drools.core.test.model.Cheese;
 public class RuleRuntimeEventSupportTest {
     @Test
     public void testIsSerializable() {
-        assertTrue( Serializable.class.isAssignableFrom( WorkingMemoryEventSupport.class ) );
+        assertTrue( Serializable.class.isAssignableFrom( RuleRuntimeEventSupport.class ) );
     }
 
     @Test

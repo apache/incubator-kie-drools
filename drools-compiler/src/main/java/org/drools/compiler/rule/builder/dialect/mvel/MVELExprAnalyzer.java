@@ -89,7 +89,7 @@ public class MVELExprAnalyzer {
             MVELDialectRuntimeData data = ( MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
             ParserConfiguration conf = data.getParserConfiguration();
 
-            conf.setClassLoader( context.getPackageBuilder().getRootClassLoader() );
+            conf.setClassLoader( context.getKnowledgeBuilder().getRootClassLoader() );
 
             // first compilation is for verification only
             // @todo proper source file name

@@ -9,7 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import org.drools.compiler.compiler.DecisionTableFactory;
-import org.drools.core.rule.Rule;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -39,12 +39,12 @@ public class ColumnReplaceTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         
-        assertTrue(((Rule)kbase.getRule("org.drools.decisiontable", "lockOnActiveRule")).isLockOnActive());
+        assertTrue(((RuleImpl)kbase.getRule("org.drools.decisiontable", "lockOnActiveRule")).isLockOnActive());
         // lock-on-active was not set on autoFocusRule, so it should be by default false
-        assertFalse(((Rule)kbase.getRule("org.drools.decisiontable", "autoFocusRule")).isLockOnActive());
+        assertFalse(((RuleImpl)kbase.getRule("org.drools.decisiontable", "autoFocusRule")).isLockOnActive());
         
-        assertFalse(((Rule)kbase.getRule("org.drools.decisiontable", "lockOnActiveRule")).getAutoFocus());
+        assertFalse(((RuleImpl)kbase.getRule("org.drools.decisiontable", "lockOnActiveRule")).getAutoFocus());
         // auto-focus was set to be true, so it should be true
-        assertTrue(((Rule)kbase.getRule("org.drools.decisiontable", "autoFocusRule")).getAutoFocus());
+        assertTrue(((RuleImpl)kbase.getRule("org.drools.decisiontable", "autoFocusRule")).getAutoFocus());
 	}
 }

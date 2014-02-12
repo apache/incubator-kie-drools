@@ -1,11 +1,11 @@
 package org.drools.core.common;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
@@ -24,7 +24,7 @@ public interface AgendaItem extends Activation {
 
     void setPropagationContext(PropagationContext context);
 
-    Rule getRule();
+    RuleImpl getRule();
 
     Consequence getConsequence();
 

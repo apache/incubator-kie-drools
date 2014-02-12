@@ -16,6 +16,8 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.definitions.rule.impl.RuleImpl;
+
 /**
  * Indicates an attempt to add a <code>Rule</code> to a <code>Package</code>
  * that already contains a <code>Rule</code> with the same name.
@@ -30,10 +32,10 @@ public class DuplicateRuleNameException extends RuleConstructionException {
     private Package           pkg;
 
     /** The member rule. */
-    private Rule              originalRule;
+    private RuleImpl originalRule;
 
     /** The conflicting rule. */
-    private Rule              conflictingRule;
+    private RuleImpl conflictingRule;
 
     /**
      * @see java.lang.Exception#Exception()
@@ -46,8 +48,8 @@ public class DuplicateRuleNameException extends RuleConstructionException {
      *            The new, conflicting <code>Rule</code>.
      */
     public DuplicateRuleNameException(final Package pkg,
-                                      final Rule originalRule,
-                                      final Rule conflictingRule) {
+                                      final RuleImpl originalRule,
+                                      final RuleImpl conflictingRule) {
         super( createMessage( pkg,
                               conflictingRule ) );
         this.pkg = pkg;
@@ -66,8 +68,8 @@ public class DuplicateRuleNameException extends RuleConstructionException {
      *            The new, conflicting <code>Rule</code>.
      */
     public DuplicateRuleNameException(final Package pkg,
-                                      final Rule originalRule,
-                                      final Rule conflictingRule,
+                                      final RuleImpl originalRule,
+                                      final RuleImpl conflictingRule,
                                       final Throwable cause) {
         super( createMessage( pkg,
                               conflictingRule ),
@@ -91,7 +93,7 @@ public class DuplicateRuleNameException extends RuleConstructionException {
      * 
      * @return The <code>Rule</code>.
      */
-    public Rule getOriginalRule() {
+    public RuleImpl getOriginalRule() {
         return this.originalRule;
     }
 
@@ -100,12 +102,12 @@ public class DuplicateRuleNameException extends RuleConstructionException {
      * 
      * @return The <code>Rule</code>.
      */
-    public Rule getConflictingRule() {
+    public RuleImpl getConflictingRule() {
         return this.conflictingRule;
     }
 
     private static String createMessage(final Package pkg,
-                                        final Rule rule) {
+                                        final RuleImpl rule) {
         return "Package " + ((pkg.getName() != null) ? pkg.getName() : "<no-name>") + " already contains rule with name " + rule.getName();
     }
 }

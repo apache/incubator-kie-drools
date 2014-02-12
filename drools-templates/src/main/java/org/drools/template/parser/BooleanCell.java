@@ -16,7 +16,7 @@
 
 package org.drools.template.parser;
 
-import org.drools.core.StatefulSession;
+import org.kie.api.runtime.KieSession;
 
 import java.util.Map;
 
@@ -61,7 +61,7 @@ public class BooleanCell implements Cell {
         vars.put(column.getName(), value);
     }
 
-    public void insert(StatefulSession session) {
+    public void insert(KieSession session) {
         session.insert(this);
     }
 

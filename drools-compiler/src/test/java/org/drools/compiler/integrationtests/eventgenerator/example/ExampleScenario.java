@@ -7,15 +7,17 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.WorkingMemory;
 import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.integrationtests.eventgenerator.PseudoSessionClock;
 import org.drools.compiler.integrationtests.eventgenerator.SimpleEventGenerator;
 import org.drools.compiler.integrationtests.eventgenerator.SimpleEventListener;
-import org.drools.core.rule.Package;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.io.ResourceFactory;
 
 
 public class ExampleScenario {
@@ -33,47 +35,16 @@ public class ExampleScenario {
     public final static int AVG_OCCUR_ALERT_EVENT = 1800000; // average time in milliseconds after which an alarm is sent; default: 1800000 = 30 mis
     public final static int MIN_OCCUR_ALERT_EVENT = 0; // average time in milliseconds after which an alarm is sent; default: 1800000 = 30 mis
 
-    private static WorkingMemory wm;
+    private static KieSession wm;
     //private static WorkingMemoryFileLogger logger;
 
     public static void setup(){
-        // read in the source
-        Reader source = new InputStreamReader (ExampleScenario.class.getResourceAsStream(FILE_NAME_RULES));
-        // Use package builder to build up a rule package.
-        // An alternative lower level class called DrlParser can also be used ...
-        PackageBuilder builder = new PackageBuilder();
-        // this will parse and compile in one step
-        // NOTE: There are 2 methods here, the one argument one is for normal DRL.
-        try {
-                builder.addPackageFromDrl(source);
-        } catch (DroolsParserException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        // get the compiled package (which is serializable)
-        Package pkg = builder.getPackage();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newInputStreamResource(ExampleScenario.class.getResourceAsStream(FILE_NAME_RULES)), ResourceType.DRL);
 
-        // add defined object types
-        //FactTemplate ftEvent = new FactTemplateImpl();
-        //pkg.addFactTemplate(ftEvent);
-
-        // add the package to a rulebase (deploy the rule package).
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        try {
-            ruleBase.addPackage (pkg);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        wm = ruleBase.newStatefulSession();
-        // create a new Working Memory Logger, that logs to file.
-        //logger = new WorkingMemoryFileLogger(wm);
-        // an event.log file is created in the log dir (which must exist)
-        // in the working directory
-        //logger.setFileName(FILE_NAME_LOGGER);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        wm = kbase.newStatefulKnowledgeSession();
     }
 
     public static final void main (String[] args) {

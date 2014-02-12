@@ -10,20 +10,20 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.event.ActivationCancelledEvent;
-import org.drools.core.event.ActivationCreatedEvent;
-import org.drools.core.event.AfterActivationFiredEvent;
-import org.drools.core.event.AgendaEventListener;
-import org.drools.core.event.AgendaGroupPoppedEvent;
-import org.drools.core.event.AgendaGroupPushedEvent;
-import org.drools.core.event.BeforeActivationFiredEvent;
-import org.drools.core.event.RuleFlowGroupActivatedEvent;
-import org.drools.core.event.RuleFlowGroupDeactivatedEvent;
-import org.drools.core.rule.Rule;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.AgendaFilter;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
+import org.kie.api.definition.rule.Rule;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.AgendaGroupPoppedEvent;
+import org.kie.api.event.rule.AgendaGroupPushedEvent;
+import org.kie.api.event.rule.BeforeMatchFiredEvent;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.api.runtime.rule.Match;
 
 /**
  * This tracks what is happening in the engine with rule activations and firings.
@@ -44,9 +44,9 @@ public class TestingEventListener implements AgendaEventListener {
 
     public AgendaFilter getAgendaFilter(final HashSet<String> ruleNames, final boolean inclusive) {
         return new AgendaFilter() {
-            public boolean accept(Activation activation) {
+            public boolean accept(Match match) {
                 if (ruleNames.size() ==0) return true;
-                String ruleName = activation.getRule().getName();
+                String ruleName = match.getRule().getName();
 
                 http://www.wtf.com
 
@@ -113,32 +113,27 @@ public class TestingEventListener implements AgendaEventListener {
 
 
 
-    public void activationCancelled(ActivationCancelledEvent event,
-            WorkingMemory workingMemory) {
+    public void matchCancelled(MatchCancelledEvent event) {
     }
 
-    public void activationCreated(ActivationCreatedEvent event,
-            WorkingMemory workingMemory) {
+    public void matchCreated(MatchCreatedEvent event) {
     }
 
-    public void afterActivationFired(AfterActivationFiredEvent event,
-            WorkingMemory workingMemory) {
-        recordFiring(event.getActivation().getRule());
+    public void afterMatchFired(AfterMatchFiredEvent event) {
+        recordFiring(event.getMatch().getRule());
     }
 
     private void recordFiring(Rule rule) {
         record(rule, this.firingCounts);
     }
 
-    public void agendaGroupPopped(AgendaGroupPoppedEvent event,
-            WorkingMemory workingMemory) {
+    public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
     }
 
-    public void agendaGroupPushed(AgendaGroupPushedEvent event,
-            WorkingMemory workingMemory) {
+    public void agendaGroupPushed(AgendaGroupPushedEvent event) {
     }
 
-    public void beforeActivationFired(BeforeActivationFiredEvent event, WorkingMemory workingMemory) {
+    public void beforeMatchFired(BeforeMatchFiredEvent event) {
     }
 
     private void record(Rule rule, Map<String, Integer> counts) {
@@ -176,26 +171,22 @@ public class TestingEventListener implements AgendaEventListener {
         return r;
     }
 
-    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-            WorkingMemory workingMemory) {
+    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
         // TODO Auto-generated method stub
 
     }
 
-    public void afterRuleFlowGroupDeactivated(
-            RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+    public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
         // TODO Auto-generated method stub
 
     }
 
-    public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-            WorkingMemory workingMemory) {
+    public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
         // TODO Auto-generated method stub
 
     }
 
-    public void beforeRuleFlowGroupDeactivated(
-            RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+    public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
         // TODO Auto-generated method stub
 
     }

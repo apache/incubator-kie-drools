@@ -16,26 +16,20 @@
 
 package org.drools.compiler.runtime.pipeline.impl;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FilterOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-
+import com.sun.codemodel.CodeWriter;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JPackage;
+import com.sun.tools.xjc.BadCommandLineException;
+import com.sun.tools.xjc.ErrorReceiver;
+import com.sun.tools.xjc.ModelLoader;
+import com.sun.tools.xjc.Options;
+import com.sun.tools.xjc.model.Model;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
+import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.ProjectJavaCompiler;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.command.runtime.GetGlobalCommand;
 import org.drools.core.command.runtime.SetGlobalCommand;
@@ -49,36 +43,37 @@ import org.drools.core.command.runtime.rule.GetObjectsCommand;
 import org.drools.core.command.runtime.rule.InsertElementsCommand;
 import org.drools.core.command.runtime.rule.InsertObjectCommand;
 import org.drools.core.command.runtime.rule.ModifyCommand;
-import org.drools.core.command.runtime.rule.QueryCommand;
 import org.drools.core.command.runtime.rule.ModifyCommand.SetterImpl;
+import org.drools.core.command.runtime.rule.QueryCommand;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.InternalRuleBase;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.common.ProjectClassLoader;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.xml.jaxb.util.JaxbListWrapper;
+import org.kie.api.io.Resource;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.help.DroolsJaxbHelperProvider;
-import org.kie.api.io.Resource;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 
-import com.sun.codemodel.CodeWriter;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JPackage;
-import com.sun.tools.xjc.BadCommandLineException;
-import com.sun.tools.xjc.ErrorReceiver;
-import com.sun.tools.xjc.ModelLoader;
-import com.sun.tools.xjc.Options;
-import com.sun.tools.xjc.model.Model;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import java.io.ByteArrayOutputStream;
+import java.io.FilterOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class DroolsJaxbHelperProviderImpl
     implements DroolsJaxbHelperProvider {
@@ -106,9 +101,9 @@ public class DroolsJaxbHelperProviderImpl
             GetObjectsCommand.class.getName()};
 
     public static String[] addXsdModel(Resource resource,
-                                PackageBuilder pkgBuilder,
-                                Options xjcOpts,
-                                String systemId) throws IOException {
+                                       KnowledgeBuilderImpl kBuilder,
+                                       Options xjcOpts,
+                                       String systemId) throws IOException {
         InputSource source = new InputSource( new CachingRewindableReader( resource.getReader() ) );
         source.setSystemId( systemId.trim().startsWith( "." ) ? systemId : "." + systemId );
 
@@ -134,7 +129,7 @@ public class DroolsJaxbHelperProviderImpl
 
         MemoryResourceReader src = new MemoryResourceReader();
 
-        boolean useProjectClassLoader = pkgBuilder.getRootClassLoader() instanceof ProjectClassLoader;
+        boolean useProjectClassLoader = kBuilder.getRootClassLoader() instanceof ProjectClassLoader;
 
         List<String> classNames = new ArrayList<String>();
         List<String> srcNames = new ArrayList<String>();
@@ -154,10 +149,10 @@ public class DroolsJaxbHelperProviderImpl
                 pkgName = pkgName.substring( 0, dotPos );
             }
 
-            PackageRegistry pkgReg = pkgBuilder.getPackageRegistry( pkgName );
+            PackageRegistry pkgReg = kBuilder.getPackageRegistry( pkgName );
             if ( pkgReg == null ) {
-                pkgBuilder.addPackage( new PackageDescr( pkgName ) );
-                pkgReg = pkgBuilder.getPackageRegistry( pkgName );
+                kBuilder.addPackage( new PackageDescr( pkgName ) );
+                pkgReg = kBuilder.getPackageRegistry( pkgName );
             }
 
             if (useProjectClassLoader) {
@@ -172,26 +167,26 @@ public class DroolsJaxbHelperProviderImpl
         }
 
         if (useProjectClassLoader) {
-            ProjectJavaCompiler compiler = new ProjectJavaCompiler(pkgBuilder);
-            List<KnowledgeBuilderResult> results = compiler.compileAll((ProjectClassLoader)pkgBuilder.getRootClassLoader(),
+            ProjectJavaCompiler compiler = new ProjectJavaCompiler(kBuilder.getBuilderConfiguration());
+            List<KnowledgeBuilderResult> results = compiler.compileAll((ProjectClassLoader)kBuilder.getRootClassLoader(),
                                                                        srcNames,
                                                                        src);
             for (String className : classNames) {
                 Class<?> clazz = null;
                 try {
-                    clazz = Class.forName( className, true, pkgBuilder.getRootClassLoader() );
+                    clazz = Class.forName( className, true, kBuilder.getRootClassLoader() );
                 } catch (ClassNotFoundException e) {
                     continue;
                 }
                 String pkgName = className.substring( 0, className.lastIndexOf( '.' ) );
-                PackageRegistry pkgReg = pkgBuilder.getPackageRegistry(pkgName);
+                PackageRegistry pkgReg = kBuilder.getPackageRegistry(pkgName);
                 pkgReg.getPackage().addTypeDeclaration( new TypeDeclaration( clazz ) );
             }
 
-            pkgBuilder.updateResults(results);
+            kBuilder.updateResults(results);
         } else {
-            pkgBuilder.compileAll();
-            pkgBuilder.updateResults();
+            kBuilder.compileAll();
+            kBuilder.updateResults();
         }
 
         return classNames.toArray( new String[classNames.size()] );
@@ -216,8 +211,7 @@ public class DroolsJaxbHelperProviderImpl
                                 KnowledgeBuilder kbuilder,
                                 Options xjcOpts,
                                 String systemId) throws IOException {
-        PackageBuilder pkgBuilder = ((KnowledgeBuilderImpl) kbuilder).getPackageBuilder();
-        return addXsdModel( resource, pkgBuilder, xjcOpts, systemId );
+        return addXsdModel( resource, (KnowledgeBuilderImpl)kbuilder, xjcOpts, systemId );
     }
 
     public JAXBContext newJAXBContext(String[] classNames,
@@ -230,8 +224,7 @@ public class DroolsJaxbHelperProviderImpl
     public JAXBContext newJAXBContext(String[] classNames,
                                       Map<String, ? > properties,
                                       KnowledgeBase kbase) throws JAXBException {
-        ClassLoader classLoader = ((InternalRuleBase) ((KnowledgeBaseImpl) kbase)
-                .getRuleBase()).getRootClassLoader();
+        ClassLoader classLoader = ((InternalKnowledgeBase) kbase).getRootClassLoader();
         int i = 0;
         try {
             Class<?>[] classes = new Class[classNames.length

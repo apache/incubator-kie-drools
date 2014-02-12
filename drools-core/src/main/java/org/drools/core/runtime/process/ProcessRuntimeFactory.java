@@ -1,6 +1,6 @@
 package org.drools.core.runtime.process;
 
-import org.drools.core.common.AbstractWorkingMemory;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.kie.internal.utils.ServiceRegistryImpl;
 
 
@@ -8,7 +8,7 @@ public class ProcessRuntimeFactory {
 
     private static ProcessRuntimeFactoryService provider;
 
-    public static InternalProcessRuntime newProcessRuntime(AbstractWorkingMemory workingMemory) {
+    public static InternalProcessRuntime newProcessRuntime(StatefulKnowledgeSessionImpl workingMemory) {
         return getProcessRuntimeFactoryService().newProcessRuntime(workingMemory);
     }
 

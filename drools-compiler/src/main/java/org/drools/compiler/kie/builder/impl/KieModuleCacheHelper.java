@@ -26,7 +26,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 
 import org.drools.compiler.kie.builder.impl.KieModuleCache.Header;
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.util.KeyStoreHelper;
 
 import com.google.protobuf.ByteString;
@@ -62,8 +61,8 @@ public class KieModuleCacheHelper {
                                       .setSignature( ByteString.copyFrom( helper.signDataWithPrivateKey( buff ) ) )
                                       .build() );
             } catch (Exception e) {
-                throw new RuntimeDroolsException( "Error signing session: " + e.getMessage(),
-                                                  e );
+                throw new RuntimeException( "Error signing session: " + e.getMessage(),
+                                            e );
             }
         }
     }
@@ -100,34 +99,34 @@ public class KieModuleCacheHelper {
         KeyStoreHelper helper = new KeyStoreHelper();
         boolean signed = _header.hasSignature();
         if ( helper.isSigned() != signed ) {
-            throw new RuntimeDroolsException( "This environment is configured to work with " +
-                                              (helper.isSigned() ? "signed" : "unsigned") +
-                                              " serialized objects, but the given object is " +
-                                              (signed ? "signed" : "unsigned") + ". Deserialization aborted." );
+            throw new RuntimeException( "This environment is configured to work with " +
+                                        (helper.isSigned() ? "signed" : "unsigned") +
+                                        " serialized objects, but the given object is " +
+                                        (signed ? "signed" : "unsigned") + ". Deserialization aborted." );
         }
         if ( signed ) {
             if ( helper.getPubKeyStore() == null ) {
-                throw new RuntimeDroolsException( "The session was serialized with a signature. Please configure a public keystore with the public key to check the signature. Deserialization aborted." );
+                throw new RuntimeException( "The session was serialized with a signature. Please configure a public keystore with the public key to check the signature. Deserialization aborted." );
             }
             try {
                 if ( !helper.checkDataWithPublicKey( _header.getSignature().getKeyAlias(),
                                                      sessionbuff,
                                                      _header.getSignature().getSignature().toByteArray() ) ) {
-                    throw new RuntimeDroolsException(
+                    throw new RuntimeException(
                                                       "Signature does not match serialized package. This is a security violation. Deserialisation aborted." );
                 }
             } catch ( InvalidKeyException e ) {
-                throw new RuntimeDroolsException( "Invalid key checking signature: " + e.getMessage(),
-                                                  e );
+                throw new RuntimeException( "Invalid key checking signature: " + e.getMessage(),
+                                            e );
             } catch ( KeyStoreException e ) {
-                throw new RuntimeDroolsException( "Error accessing Key Store: " + e.getMessage(),
-                                                  e );
+                throw new RuntimeException( "Error accessing Key Store: " + e.getMessage(),
+                                            e );
             } catch ( NoSuchAlgorithmException e ) {
-                throw new RuntimeDroolsException( "No algorithm available: " + e.getMessage(),
-                                                  e );
+                throw new RuntimeException( "No algorithm available: " + e.getMessage(),
+                                            e );
             } catch ( SignatureException e ) {
-                throw new RuntimeDroolsException( "Signature Exception: " + e.getMessage(),
-                                                  e );
+                throw new RuntimeException( "Signature Exception: " + e.getMessage(),
+                                            e );
             }
         }
     }

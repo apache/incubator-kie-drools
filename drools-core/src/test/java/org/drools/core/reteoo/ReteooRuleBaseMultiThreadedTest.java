@@ -15,20 +15,24 @@
  */
 
 package org.drools.core.reteoo;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatefulSession;
+
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.test.model.DroolsTestCase;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.rule.JavaDialectRuntimeData;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.test.model.DroolsTestCase;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.KnowledgeBaseFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test case to ensure that the ReteooRuleBase is thread safe. Specifically to test for
@@ -36,24 +40,24 @@ import static org.junit.Assert.*;
  */
 public class ReteooRuleBaseMultiThreadedTest extends DroolsTestCase {
 
-    ReteooRuleBase ruleBase;
-    Rule rule;
-    org.drools.core.rule.Package pkg;
+    InternalKnowledgeBase kBase;
+    RuleImpl rule;
+    InternalKnowledgePackage pkg;
 
     @Before
     public void setUp() {
-        this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        this.kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
 
-        pkg = new org.drools.core.rule.Package("org.droos.test");
+        pkg = new KnowledgePackageImpl("org.droos.test");
         pkg.setClassFieldAccessorCache(new ClassFieldAccessorCache(Thread.currentThread().getContextClassLoader()));
 
         JavaDialectRuntimeData data = new JavaDialectRuntimeData();
-        data.onAdd(pkg.getDialectRuntimeRegistry(), ruleBase.getRootClassLoader());
+        data.onAdd(pkg.getDialectRuntimeRegistry(), kBase.getRootClassLoader());
         pkg.getDialectRuntimeRegistry().setDialectData("java", data);
 
         // we need to add one rule to the package because the previous deadlock was encountered
         // while removing rules from a package when said package is removed from the rulebase
-        rule = new Rule("Test");
+        rule = new RuleImpl("Test");
         rule.setDialect("java");
         rule.setConsequence(new Consequence() {
             public void evaluate(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) throws Exception {
@@ -66,7 +70,7 @@ public class ReteooRuleBaseMultiThreadedTest extends DroolsTestCase {
         });
         pkg.addRule(rule);
 
-        ruleBase.addPackage(pkg);
+        kBase.addPackage(pkg);
     }
 
     @Test @Ignore
@@ -163,8 +167,8 @@ public class ReteooRuleBaseMultiThreadedTest extends DroolsTestCase {
         }
 
         void doOperation() {
-            ruleBase.removePackage(pkg.getName());
-            ruleBase.addPackage(pkg);
+            kBase.removeKiePackage(pkg.getName());
+            kBase.addPackage(pkg);
         }
     }
 
@@ -178,10 +182,10 @@ public class ReteooRuleBaseMultiThreadedTest extends DroolsTestCase {
         }
 
         void doOperation() {
-            StatefulSession session = null;
+            KieSession session = null;
 
             try {
-                session = ruleBase.newStatefulSession();
+                session = kBase.newKieSession();
             } finally {
                 if (session != null) {
                     session.dispose();

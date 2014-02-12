@@ -21,15 +21,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.mvel.ActivationPropertyHandler;
 import org.drools.core.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
 import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InstanceNotEqualsConstraint;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -198,12 +197,12 @@ public class PatternBuilder
                 linkAlphaConstraint( (AlphaNodeFieldConstraint) constraint, alphaConstraints );
             } else if ( constraint.getType().equals( Constraint.ConstraintType.BETA ) ) {
                 linkBetaConstraint( (BetaNodeFieldConstraint) constraint, betaConstraints );
-                if ( isNegative && context.getRuleBase().getConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM && pattern.getObjectType().isEvent() && constraint.isTemporal() ) {
+                if ( isNegative && context.getKnowledgeBase().getConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM && pattern.getObjectType().isEvent() && constraint.isTemporal() ) {
                     checkDelaying( context,
                             constraint );
                 }
             } else {
-                throw new RuntimeDroolsException( "Unknown constraint type: " + constraint.getType() + ". This is a bug. Please contact development team." );
+                throw new RuntimeException( "Unknown constraint type: " + constraint.getType() + ". This is a bug. Please contact development team." );
             }
 
         }
@@ -272,7 +271,7 @@ public class PatternBuilder
 
     public static ObjectTypeNode attachObjectTypeNode(BuildContext context,
                                                       ObjectType objectType) {
-        final InternalRuleBase ruleBase = context.getRuleBase();
+        final InternalKnowledgeBase ruleBase = context.getKnowledgeBase();
         ruleBase.lock();
         try {
             InternalWorkingMemory[] wms = context.getWorkingMemories();
@@ -301,7 +300,7 @@ public class PatternBuilder
     private static long getExpiratioOffsetForType(BuildContext context,
                                                   ObjectType objectType) {
         long expirationOffset = -1;
-        for ( TypeDeclaration type : context.getRuleBase().getTypeDeclarations() ) {
+        for ( TypeDeclaration type : context.getKnowledgeBase().getTypeDeclarations() ) {
             if ( type.getObjectType().isAssignableFrom( objectType ) ) {
                 expirationOffset = Math.max( type.getExpirationOffset(),
                                              expirationOffset );
@@ -327,7 +326,7 @@ public class PatternBuilder
         NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
         
         if ( context.getCurrentEntryPoint() != EntryPointId.DEFAULT && context.isAttachPQN() ) {
-            if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
+            if ( !context.getKnowledgeBase().getConfiguration().isPhreakEnabled() ) {
                 context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                           nfactory.buildPropagationQueuingNode( context.getNextId(),
                                                                                                                 context.getObjectSource(),
@@ -366,7 +365,7 @@ public class PatternBuilder
                                                  (EntryPointNode) context.getObjectSource(),
                                                  objectType,
                                                  context );
-        if ( objectType.isEvent() && EventProcessingOption.STREAM.equals( context.getRuleBase().getConfiguration().getEventProcessingMode() ) ) {
+        if ( objectType.isEvent() && EventProcessingOption.STREAM.equals( context.getKnowledgeBase().getConfiguration().getEventProcessingMode() ) ) {
             long expirationOffset = getExpiratioOffsetForType( context,
                                                                objectType );
             if( expirationOffset != -1 ) {
@@ -407,7 +406,7 @@ public class PatternBuilder
     private void checkRemoveIdentities(final BuildContext context,
                                        final Pattern pattern,
                                        final List<BetaNodeFieldConstraint> betaConstraints) {
-        if ( context.getRuleBase().getConfiguration().isRemoveIdentities() && pattern.getObjectType().getClass() == ClassObjectType.class ) {
+        if ( context.getKnowledgeBase().getConfiguration().isRemoveIdentities() && pattern.getObjectType().getClass() == ClassObjectType.class ) {
             // Check if this object type exists before
             // If it does we need stop instance equals cross product
             final Class< ? > thisClass = ((ClassObjectType) pattern.getObjectType()).getClassType();

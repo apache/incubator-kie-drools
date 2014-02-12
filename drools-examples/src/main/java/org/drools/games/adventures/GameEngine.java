@@ -1,7 +1,6 @@
 package org.drools.games.adventures;
 
 import org.apache.commons.io.IOUtils;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -34,7 +33,7 @@ public class GameEngine {
         ksession.setGlobal( "counter",
                             c );
 
-        classLoader = (((InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase).getRootClassLoader());
+        classLoader = ((KnowledgeBaseImpl) kbase).getRootClassLoader();
         ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader( classLoader );

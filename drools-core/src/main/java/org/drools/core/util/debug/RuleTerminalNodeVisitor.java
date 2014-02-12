@@ -19,8 +19,8 @@ package org.drools.core.util.debug;
 import java.util.Stack;
 
 import org.drools.core.common.NetworkNode;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.rule.Rule;
 
 public class RuleTerminalNodeVisitor extends AbstractNetworkNodeVisitor {
     
@@ -34,7 +34,7 @@ public class RuleTerminalNodeVisitor extends AbstractNetworkNodeVisitor {
                            Stack<NetworkNode> nodeStack,
                            StatefulKnowledgeSessionInfo info) {
         RuleTerminalNode rtn = (RuleTerminalNode) node;
-        Rule rule = rtn.getRule();
+        RuleImpl rule = rtn.getRule();
         // first thing, associate all nodes belonging to this rule
         for( NetworkNode snode : nodeStack ) {
             info.assign( snode, rule );

@@ -8,14 +8,14 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 
-import org.drools.core.FactHandle;
 import org.drools.core.WorkingMemory;
-
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 
 
 public class SimpleEventGenerator {
 
-    private WorkingMemory wm;
+    private KieSession ksession;
     private long generationEndTime;
     private static AbstractEventListener sendListener;
     private boolean endInfinite;
@@ -25,23 +25,16 @@ public class SimpleEventGenerator {
     private PseudoSessionClock myClock;
     FactHandle clockHandle;
 
-    /**
-     * @param wm
-     */
-    public SimpleEventGenerator(WorkingMemory wm, AbstractEventListener l) {
-        this (wm, l, 0);
+    public SimpleEventGenerator(KieSession ksession, AbstractEventListener l) {
+        this (ksession, l, 0);
     }
 
-    /**
-     * @param wm
-     * @param generationDuration
-     */
-    public SimpleEventGenerator(WorkingMemory wm, AbstractEventListener l, long generationDuration) {
-        this.wm = wm;
+    public SimpleEventGenerator(KieSession ksession, AbstractEventListener l, long generationDuration) {
+        this.ksession = ksession;
         this.sendListener = l;
         // add session clock to working memory
         this.myClock = new PseudoSessionClock();
-        this.clockHandle = wm.insert(myClock);
+        this.clockHandle = ksession.insert(myClock);
 
         this.generationEndTime = this.myClock.calcFuturePointInTime(generationDuration);
         this.endInfinite = (generationDuration == 0);
@@ -125,7 +118,7 @@ public class SimpleEventGenerator {
             //System.out.println ("Sender "+currentEGT.getEventSenderId() + ": Sent "+currentEvent.getEventId()+" event for parent id " + currentEvent.getParentId() + " at " + Tools.formattedDate(currentEGT.getNextOccurrenceTime()));
 
             //update clock in working memory in order being able to process time sensitive rules
-            wm.update(clockHandle, myClock);
+            ksession.update(clockHandle, myClock);
 
             // determine new event generation time for this event type
             boolean occIsValid = currentEGT.calculateNextEventOccurrence();

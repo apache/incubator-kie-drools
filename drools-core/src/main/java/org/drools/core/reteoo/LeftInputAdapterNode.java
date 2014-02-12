@@ -100,7 +100,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                 final BuildContext context) {
         super(id,
               context.getPartitionId(),
-              context.getRuleBase().getConfiguration().isMultithreadEvaluation());
+              context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation());
         this.objectSource = source;
         this.leftTupleMemoryEnabled = context.isTupleMemoryEnabled();
         ObjectSource current = source;
@@ -128,7 +128,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         Class objectClass = ((ClassWireable) objectType).getClassType();
         return isPropertyReactive( context, objectClass ) ?
                calculatePositiveMask( pattern.getListenedProperties(),
-                                      getSettableProperties( context.getRuleBase(), objectClass ) ) :
+                                      getSettableProperties( context.getKnowledgeBase(), objectClass ) ) :
                -1L;
     }
 

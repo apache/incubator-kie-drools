@@ -30,12 +30,13 @@ import javax.rules.RuleRuntime;
 import javax.rules.RuleSessionCreateException;
 import javax.rules.StatefulRuleSession;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.StatefulSession;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.jsr94.rules.admin.RuleExecutionSetImpl;
 import org.drools.jsr94.rules.repository.RuleExecutionSetRepository;
 import org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryException;
+import org.kie.api.runtime.KieSession;
 
 /**
  * The Drools implementation of the <code>StatefulRuleSession</code> interface
@@ -64,7 +65,7 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
 
     private static final long serialVersionUID = 510l;
     
-    private StatefulSession session;
+    private KieSession session;
 
     /**
      * Gets the <code>RuleExecutionSet</code> for this URI and associates it
@@ -283,7 +284,7 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
      *         currect state of the rule session.
      */
     public List getHandles() {
-        return IteratorToList.convert( this.session.iterateFactHandles() );
+        return new ArrayList(this.session.getFactHandles());
     }
     
     /**
@@ -332,8 +333,13 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
      */
     public List getObjects(final ObjectFilter filter) throws InvalidRuleSessionException {
         checkRuleSessionValidity();
-        
-        return IteratorToList.convert( this.session.iterateObjects( new ObjectFilterAdapter( filter ) ) );
+
+        List list = new ArrayList();
+        for ( FactHandle fh : this.session.getFactHandles( new ObjectFilterAdapter( filter ) ) ) {
+            list.add(((InternalFactHandle) fh).getObject());
+        }
+
+        return list;
     }
 
     /**

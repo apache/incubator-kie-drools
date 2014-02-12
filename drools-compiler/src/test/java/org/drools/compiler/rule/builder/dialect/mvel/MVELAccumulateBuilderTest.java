@@ -1,15 +1,17 @@
 package org.drools.compiler.rule.builder.dialect.mvel;
 
 import org.drools.compiler.Cheese;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.WorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.core.RuleBase;
 import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.compiler.lang.descr.AccumulateDescr;
@@ -21,20 +23,20 @@ import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.compiler.reteoo.MockLeftTupleSink;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.core.rule.Package;
 import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.kie.internal.KnowledgeBaseFactory;
 
 public class MVELAccumulateBuilderTest {
 
     @Test
     public void testSimpleExpression() {
-        PackageBuilder pkgBuilder = new PackageBuilder();
+        KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl();
         pkgBuilder.addPackage( new PackageDescr( "pkg1" ) );
 
-        final Package pkg = pkgBuilder.getPackage();
+        InternalKnowledgePackage pkg = pkgBuilder.getPackage();
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
 
-        final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
+        final KnowledgeBuilderConfigurationImpl conf = pkgBuilder.getBuilderConfiguration();
         DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
         MVELDialect mvelDialect = (MVELDialect) dialectRegistry.getDialect( "mvel" );
 
@@ -59,17 +61,17 @@ public class MVELAccumulateBuilderTest {
 
         ((MVELCompileable) acc.getAccumulators()[0]).compile( (MVELDialectRuntimeData) pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ) );
 
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        final WorkingMemory wm = ruleBase.newStatefulSession();
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         MockLeftTupleSink sink = new MockLeftTupleSink();
         final Cheese cheddar1 = new Cheese( "cheddar",
                                             10 );
         final Cheese cheddar2 = new Cheese( "cheddar",
                                             8 );
-        final InternalFactHandle f0 = (InternalFactHandle) wm.insert( new InitialFactImpl() );
-        final InternalFactHandle f1 = (InternalFactHandle) wm.insert( cheddar1 );
-        final InternalFactHandle f2 = (InternalFactHandle) wm.insert( cheddar2 );
+        final InternalFactHandle f0 = (InternalFactHandle) ksession.insert( new InitialFactImpl() );
+        final InternalFactHandle f1 = (InternalFactHandle) ksession.insert( cheddar1 );
+        final InternalFactHandle f2 = (InternalFactHandle) ksession.insert( cheddar2 );
         final LeftTupleImpl tuple = new LeftTupleImpl( f0,
                                                sink,
                                                true );
@@ -79,36 +81,36 @@ public class MVELAccumulateBuilderTest {
         acc.init( wmContext,
                   accContext,
                   tuple,
-                  wm );
+                  ksession );
 
         acc.accumulate( wmContext,
                         accContext,
                         tuple,
                         f1,
-                        wm );
+                        ksession );
         acc.accumulate( wmContext,
                         accContext,
                         tuple,
                         f2,
-                        wm );
+                        ksession );
 
         assertEquals( new Integer( 18 ),
                       acc.getResult( wmContext,
                                      accContext,
                                      tuple,
-                                     wm )[0] );
+                                     ksession )[0] );
 
         acc.reverse( wmContext,
                      accContext,
                      tuple,
                      f1,
-                     wm );
+                     ksession );
 
         assertEquals( new Integer( 8 ),
                       acc.getResult( wmContext,
                                      accContext,
                                      tuple,
-                                     wm )[0] );
+                                     ksession )[0] );
     }
 
 }

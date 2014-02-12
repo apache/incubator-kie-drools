@@ -2,7 +2,6 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.rule.Rule;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBaseFactory;

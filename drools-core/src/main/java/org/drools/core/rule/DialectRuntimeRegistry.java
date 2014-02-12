@@ -16,6 +16,9 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -80,16 +83,16 @@ public class DialectRuntimeRegistry
         return this.dialects.get( dialect );
     }
 
-    public DialectRuntimeData removeRule(final Package pkg,
-                                         final Rule rule) {
+    public DialectRuntimeData removeRule(KnowledgePackageImpl pkg,
+                                         RuleImpl rule) {
         DialectRuntimeData dialect = this.dialects.get( rule.getDialect() );
         dialect.removeRule( pkg,
                             rule );
         return dialect;
     }
 
-    public DialectRuntimeData removeFunction(final Package pkg,
-                                             final Function function) {
+    public DialectRuntimeData removeFunction(KnowledgePackageImpl pkg,
+                                             Function function) {
         DialectRuntimeData dialect = this.dialects.get( function.getDialect() );
         dialect.removeFunction( pkg,
                                 function );

@@ -3,17 +3,14 @@ package org.drools.reteoo.nodes;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.InternalViewChangedEventListener;
 import org.drools.core.base.extractors.ArrayElementReader;
-import org.drools.core.common.TupleStartEqualsConstraint;
-import org.drools.core.common.TupleStartEqualsConstraint.TupleStartEqualsConstraintContextEntry;
-import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleIterator;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.WorkingMemoryAction;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
@@ -23,7 +20,6 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.LeftTupleSourceUtils;
 import org.drools.core.reteoo.ModifyPreviousTuples;
-import org.drools.core.reteoo.NodeSet;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.ReteooBuilder;
@@ -32,9 +28,7 @@ import org.drools.core.reteoo.RuleRemovalContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.QueryElement;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.index.RightTupleList;
 import org.kie.api.runtime.rule.Variable;
@@ -188,7 +182,7 @@ public class ReteQueryElementNode extends QueryElementNode {
         }
 
         for (InternalWorkingMemory workingMemory : context.getWorkingMemories()) {
-            PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
+            PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
             final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION,
                                                                                                null, null, null);
             this.leftInput.updateSink(this,
@@ -247,7 +241,7 @@ public class ReteQueryElementNode extends QueryElementNode {
             super(leftTuple, variables, node, tupleMemoryEnabled);
         }
 
-        public void rowAdded(final Rule rule,
+        public void rowAdded(final RuleImpl rule,
                              LeftTuple resultLeftTuple,
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) {
@@ -303,7 +297,7 @@ public class ReteQueryElementNode extends QueryElementNode {
             return rightTuple;
         }
 
-        public void rowRemoved(final Rule rule,
+        public void rowRemoved(final RuleImpl rule,
                                final LeftTuple resultLeftTuple,
                                final PropagationContext context,
                                final InternalWorkingMemory workingMemory) {
@@ -329,7 +323,7 @@ public class ReteQueryElementNode extends QueryElementNode {
             rightTuples.add(rightTuple);
         }
 
-        public void rowUpdated(final Rule rule,
+        public void rowUpdated(final RuleImpl rule,
                                final LeftTuple resultLeftTuple,
                                final PropagationContext context,
                                final InternalWorkingMemory workingMemory) {

@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DefaultBetaConstraints;
@@ -99,12 +98,12 @@ public class BuildUtils {
         RuleBasePartitionId partition = null;
         if ( candidate.getType() == NodeTypeEnums.EntryPointNode ) {
             // entry point nodes are always shared
-            node = context.getRuleBase().getRete().getEntryPointNode( ((EntryPointNode) candidate).getEntryPoint() );
+            node = context.getKnowledgeBase().getRete().getEntryPointNode( ((EntryPointNode) candidate).getEntryPoint() );
             // all EntryPointNodes belong to the main partition
             partition = RuleBasePartitionId.MAIN_PARTITION;
         } else if ( candidate.getType() == NodeTypeEnums.ObjectTypeNode ) {
             // object type nodes are always shared
-            Map<ObjectType, ObjectTypeNode> map = context.getRuleBase().getRete().getObjectTypeNodes( context.getCurrentEntryPoint() );
+            Map<ObjectType, ObjectTypeNode> map = context.getKnowledgeBase().getRete().getObjectTypeNodes( context.getCurrentEntryPoint() );
             if ( map != null ) {
                 ObjectTypeNode otn = map.get( ((ObjectTypeNode) candidate).getObjectType() );
                 if ( otn != null ) {
@@ -123,7 +122,7 @@ public class BuildUtils {
             } else if ( (context.getObjectSource() != null) && NodeTypeEnums.isObjectSink( candidate ) ) {
                 node = context.getObjectSource().getSinkPropagator().getMatchingNode( candidate );
             } else {
-                throw new RuntimeDroolsException( "This is a bug on node sharing verification. Please report to development team." );
+                throw new RuntimeException( "This is a bug on node sharing verification. Please report to development team." );
             }
         }
 
@@ -137,7 +136,7 @@ public class BuildUtils {
                 // if it does not has a predefined label
                 if ( context.getPartitionId() == null ) {
                     // if no label in current context, create one
-                    context.setPartitionId( context.getRuleBase().createNewPartitionId() );
+                    context.setPartitionId( context.getKnowledgeBase().createNewPartitionId() );
                 }
                 partition = context.getPartitionId();
             }
@@ -165,9 +164,9 @@ public class BuildUtils {
     private boolean isSharingEnabledForNode(final BuildContext context,
                                             final BaseNode node) {
         if ( NodeTypeEnums.isLeftTupleSource( node )) {
-            return context.getRuleBase().getConfiguration().isShareBetaNodes();
+            return context.getKnowledgeBase().getConfiguration().isShareBetaNodes();
         } else if ( NodeTypeEnums.isObjectSource( node ) ) {
-            return context.getRuleBase().getConfiguration().isShareAlphaNodes();
+            return context.getKnowledgeBase().getConfiguration().isShareAlphaNodes();
         }
         return false;
     }
@@ -190,27 +189,27 @@ public class BuildUtils {
                 break;
             case 1 :
                 constraints = new SingleBetaConstraints( list.get( 0 ),
-                                                         context.getRuleBase().getConfiguration(),
+                                                         context.getKnowledgeBase().getConfiguration(),
                                                          disableIndexing );
                 break;
             case 2 :
                 constraints = new DoubleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
-                                                         context.getRuleBase().getConfiguration(),
+                                                         context.getKnowledgeBase().getConfiguration(),
                                                          disableIndexing );
                 break;
             case 3 :
                 constraints = new TripleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
-                                                         context.getRuleBase().getConfiguration(),
+                                                         context.getKnowledgeBase().getConfiguration(),
                                                          disableIndexing );
                 break;
             case 4 :
                 constraints = new QuadroupleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
-                                                             context.getRuleBase().getConfiguration(),
+                                                             context.getKnowledgeBase().getConfiguration(),
                                                              disableIndexing );
                 break;
             default :
                 constraints = new DefaultBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
-                                                          context.getRuleBase().getConfiguration(),
+                                                          context.getKnowledgeBase().getConfiguration(),
                                                           disableIndexing );
         }
         return constraints;

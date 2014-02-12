@@ -20,11 +20,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 
@@ -51,7 +51,7 @@ public class RuleTerminalNodeStep
                 leftTupleSource = (LeftTupleSource) context.get( leftInput );
             }
 
-            Rule rule = new Rule( name );
+            RuleImpl rule = new RuleImpl( name );
 
             final RuleTerminalNode rtn = new RuleTerminalNode( buildContext.getNextId(),
                                                                leftTupleSource,

@@ -34,7 +34,6 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.Rule;
 import org.drools.core.rule.RuleConditionElement;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
@@ -547,7 +546,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
 
         KnowledgePackage rebuiltPkg = knowledgeBuilder.getKnowledgePackages().iterator().next();
         org.kie.api.definition.rule.Rule rule = rebuiltPkg.getRules().iterator().next();
-        Rule r = ((RuleImpl) rule).getRule();
+        RuleImpl r = ((RuleImpl) rule);
 
         assertEquals( 2, r.getLhs().getChildren().size() );
         Iterator<RuleConditionElement> iter = r.getLhs().getChildren().iterator();

@@ -1,9 +1,15 @@
 package org.drools.persistence.info;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Date;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.marshalling.impl.InputMarshaller;
+import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.marshalling.impl.ProtobufInputMarshaller;
+import org.drools.core.marshalling.impl.ProtobufOutputMarshaller;
+import org.drools.core.process.instance.WorkItem;
+import org.kie.api.runtime.Environment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,20 +21,10 @@ import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
 import javax.persistence.Version;
-
-import org.drools.core.common.InternalRuleBase;
-import org.drools.core.marshalling.impl.InputMarshaller;
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.OutputMarshaller;
-import org.drools.core.marshalling.impl.ProcessMarshaller;
-import org.drools.core.marshalling.impl.ProcessMarshallerFactory;
-import org.drools.core.marshalling.impl.ProtobufInputMarshaller;
-import org.drools.core.marshalling.impl.ProtobufOutputMarshaller;
-import org.drools.core.process.instance.WorkItem;
-import org.kie.api.runtime.Environment;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Date;
 
 @Entity
 @SequenceGenerator(name="workItemInfoIdSeq", sequenceName="WORKITEMINFO_ID_SEQ")
@@ -98,17 +94,17 @@ public class WorkItemInfo  {
        return workItemByteArray;
     }
     
-    public WorkItem getWorkItem(Environment env, InternalRuleBase ruleBase) {
+    public WorkItem getWorkItem(Environment env, InternalKnowledgeBase kBase) {
         this.env = env;
         if ( workItem == null ) {
             try {
                 ByteArrayInputStream bais = new ByteArrayInputStream( workItemByteArray );
                 MarshallerReaderContext context = new MarshallerReaderContext( bais,
-                                                                               ruleBase,
+                                                                               kBase,
                                                                                null,
                                                                                null,
                                                                                null,
-                                                                                   env);
+                                                                               env);
                 try {
                     workItem = ProtobufInputMarshaller.readWorkItem(context);
                 } catch (Exception e) {
@@ -117,13 +113,13 @@ public class WorkItemInfo  {
                         context.close();
                         bais = new ByteArrayInputStream( workItemByteArray );
                         context = new MarshallerReaderContext( bais,
-                                ruleBase,
-                                null,
-                                null,
-                                null,
-                                env);
+                                                               kBase,
+                                                               null,
+                                                               null,
+                                                               null,
+                                                               env);
 
-                        workItem = InputMarshaller.readWorkItem( context );
+                        workItem = InputMarshaller.readWorkItem(context);
                     } catch (IOException e1) {
                         logger.error("Unable to read work item with InputMarshaller", e1);
                         // throw the original exception produced by failed protobuf op

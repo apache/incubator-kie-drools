@@ -16,89 +16,27 @@
 
 package org.drools.core.marshalling.impl;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.TimeUnit;
-
-import org.drools.core.RuntimeDroolsException;
-import org.drools.core.SessionConfiguration;
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.DroolsQuery;
-import org.drools.core.common.AbstractWorkingMemory;
-import org.drools.core.common.AgendaGroupQueueImpl;
-import org.drools.core.common.AgendaItem;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
-import org.drools.core.common.InternalAgenda;
-import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
-import org.drools.core.common.InternalRuleFlowGroup;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NamedEntryPoint;
-import org.drools.core.common.ObjectStore;
-import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.QueryElementFactHandle;
-import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.common.ScheduledAgendaItem;
-import org.drools.core.common.WorkingMemoryAction;
-import org.drools.core.common.WorkingMemoryFactory;
-import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
-import org.drools.core.util.ObjectHashMap;
-import org.drools.core.util.ObjectHashSet;
-import org.drools.core.util.StringUtils;
-import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
-import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.BetaNode;
-import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.FromNode.FromMemory;
-import org.drools.core.reteoo.InitialFactImpl;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleImpl;
-import org.drools.core.reteoo.LeftTupleSink;
-import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.QueryElementNode;
-import org.drools.core.reteoo.QueryElementNode.UnificationNodeViewChangedEventListener;
-import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RightTupleSink;
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.reteoo.WindowNode;
-import org.drools.core.reteoo.WindowNode.WindowMemory;
-import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.Package;
-import org.drools.core.rule.Rule;
-import org.drools.core.rule.SlidingLengthWindow;
-import org.drools.core.rule.SlidingLengthWindow.SlidingLengthWindowContext;
-import org.drools.core.rule.SlidingTimeWindow;
-import org.drools.core.rule.SlidingTimeWindow.SlidingTimeWindowContext;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.AgendaGroup;
-import org.drools.core.spi.FactHandleFactory;
-import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.Trigger;
 import org.drools.core.time.impl.CronTrigger;
 import org.drools.core.time.impl.IntervalTrigger;
 import org.drools.core.time.impl.PointInTimeTrigger;
-import org.drools.core.time.impl.PseudoClockScheduler;
+import org.drools.core.util.StringUtils;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.RuleRuntime;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.Date;
 
 public class InputMarshaller {
 
@@ -146,7 +84,7 @@ public class InputMarshaller {
         if (context.readBoolean()) {
             String entryPointId = context.readUTF();
             if (entryPointId != null && !entryPointId.equals( "" )) {
-                entryPoint = context.wm.getEntryPoints().get( entryPointId );
+                entryPoint = ((RuleRuntime)context.wm).getEntryPoint( entryPointId );
             }
         }
 

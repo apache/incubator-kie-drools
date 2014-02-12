@@ -17,11 +17,14 @@
 package org.drools.core;
 
 
+import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
+
 /**
  * An interface for instances that allow handling of entry-point-scoped
  * facts
  */
-public interface WorkingMemoryEntryPoint extends org.kie.api.runtime.rule.EntryPoint {
+public interface WorkingMemoryEntryPoint extends EntryPoint {
     /**
      * Assert a fact.
      * 
@@ -29,11 +32,8 @@ public interface WorkingMemoryEntryPoint extends org.kie.api.runtime.rule.EntryP
      *            The fact object.
      * 
      * @return The new fact-handle associated with the object.
-     * 
-     * @throws FactException
-     *             If a RuntimeException error occurs.
      */
-    FactHandle insert(Object object) throws FactException;
+    FactHandle insert(Object object);
 
     /**
      * Insert a fact registering JavaBean <code>PropertyChangeListeners</code>
@@ -47,23 +47,17 @@ public interface WorkingMemoryEntryPoint extends org.kie.api.runtime.rule.EntryP
      *            <code>PropertyChangeListeners</code> to the object.
      * 
      * @return The new fact-handle associated with the object.
-     * 
-     * @throws FactException
-     *             If a RuntimeException error occurs.
      */
     FactHandle insert(Object object,
-                      boolean dynamic) throws FactException;
+                      boolean dynamic);
 
     /**
      * Retract a fact.
      * 
      * @param handle
      *            The fact-handle associated with the fact to retract.
-     * 
-     * @throws FactException
-     *             If a RuntimeException error occurs.
      */
-    void retract(org.kie.api.runtime.rule.FactHandle handle) throws FactException;
+    void retract(FactHandle handle);
 
     /**
      * Inform the WorkingMemory that a Fact has been modified and that it
@@ -73,12 +67,9 @@ public interface WorkingMemoryEntryPoint extends org.kie.api.runtime.rule.EntryP
      *            The fact-handle associated with the fact to modify.
      * @param object
      *            The new value of the fact.
-     * 
-     * @throws FactException
-     *             If a RuntimeException error occurs.
      */
-    void update(org.kie.api.runtime.rule.FactHandle handle,
-                Object object) throws FactException;
+    void update(FactHandle handle,
+                Object object);
 
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name);
     

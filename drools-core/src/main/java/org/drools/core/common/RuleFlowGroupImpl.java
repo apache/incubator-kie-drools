@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
@@ -70,10 +71,10 @@ public class RuleFlowGroupImpl
      * @param name
      *      The RuleFlowGroup name.
      */
-    public RuleFlowGroupImpl(final String name, InternalRuleBase rbase) {
+    public RuleFlowGroupImpl(final String name, InternalKnowledgeBase kBase) {
         //this.name = name;
         //this.list = new LinkedList();
-        agendaGroup = new AgendaGroupQueueImpl(name, rbase);
+        agendaGroup = new AgendaGroupQueueImpl(name, kBase);
     }
 
     public RuleFlowGroupImpl(final String name,
@@ -209,9 +210,15 @@ public class RuleFlowGroupImpl
         }
     }
 
+    public void reset() {
+        synchronized ( agendaGroup ) {
+            agendaGroup.reset();
+        }
+    }
+
     @Override
     public void setFocus() {
-        //agendaGroup.getAgenda().setFocus(this);
+        //agendaGroup.setFocus();
     }
 
     @Override

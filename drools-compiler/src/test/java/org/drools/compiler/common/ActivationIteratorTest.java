@@ -10,7 +10,6 @@ import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.util.Iterator;
 import org.junit.Test;
 import org.kie.api.definition.rule.Rule;
@@ -83,7 +82,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     }
 
     private void evaluateEagerList(StatefulKnowledgeSession ksession) {
-        ((AgendaImpl) ksession.getAgenda()).getAgenda().evaluateEagerList();
+        ((InternalAgenda) ksession.getAgenda()).evaluateEagerList();
     }
 
     @Test

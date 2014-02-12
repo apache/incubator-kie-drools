@@ -16,15 +16,16 @@
 
 package org.drools.core.facttemplates;
 
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.core.rule.Package;
 
 public class FactTemplateTest {
     @Test
     public void testFieldsAndGetters() {
-        final Package pkg = new Package( "org.store" );
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.store" );
         final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
                                                                 0,
                                                                 String.class );
@@ -65,7 +66,7 @@ public class FactTemplateTest {
 
     @Test
     public void testEqualsAndHashCode() {
-        final Package pkg = new Package( "org.store" );
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.store" );
 
         // Create cheese1 with name and price fields
         final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
@@ -119,7 +120,7 @@ public class FactTemplateTest {
 
     @Test
     public void testFacts() {
-        final Package pkg = new Package( "org.store" );
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.store" );
         final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
                                                                 0,
                                                                 String.class );

@@ -20,7 +20,7 @@ import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.FactA;
 import org.drools.compiler.StockTick;
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.compiler.Foo;
 import org.drools.compiler.Pet;
 import org.drools.core.base.UndefinedCalendarExcption;
@@ -1430,7 +1430,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     }    
     
     
-    @Test(timeout=10000)
+    @Test(timeout=10000) @Ignore
     public void testHaltAfterSomeTimeThenRestart() throws Exception {
         if ( CommonTestMethodBase.phreak == RuleEngineOption.RETEOO ) {
             return; // fails randomly for Rete
@@ -1621,7 +1621,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         epb.insert( tock );
         ksession.insert( tack );
 
-        org.kie.api.runtime.rule.FactHandle handle = ksession.insert("go1");
+        FactHandle handle = ksession.insert("go1");
         ksession.fireAllRules();
         System.out.println( "***** " + list + " *****");
         assertEquals( Arrays.asList(0L, 1L, 1L), list );

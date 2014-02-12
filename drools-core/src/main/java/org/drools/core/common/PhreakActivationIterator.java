@@ -16,7 +16,6 @@ import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
@@ -60,7 +59,7 @@ public class PhreakActivationIterator
 
     public static PhreakActivationIterator iterator(InternalWorkingMemory wm) {
         return new PhreakActivationIterator( wm,
-                                             new KnowledgeBaseImpl( wm.getRuleBase() ) );
+                                             wm.getKnowledgeBase() );
     }
 
     public static PhreakActivationIterator iterator(StatefulKnowledgeSession ksession) {
@@ -79,7 +78,7 @@ public class PhreakActivationIterator
 
 
     public static List<RuleTerminalNode> populateRuleTerminalNodes(InternalKnowledgeBase kbase, Set<RuleTerminalNode>  nodeSet) {
-        Collection<BaseNode[]> nodesWithArray = ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).getReteooBuilder().getTerminalNodes().values();
+        Collection<BaseNode[]> nodesWithArray = ((InternalKnowledgeBase) kbase).getReteooBuilder().getTerminalNodes().values();
 
         for (BaseNode[] nodeArray : nodesWithArray) {
             for (BaseNode node : nodeArray) {

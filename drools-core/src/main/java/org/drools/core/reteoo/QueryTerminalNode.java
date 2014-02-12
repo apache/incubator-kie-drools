@@ -19,11 +19,11 @@ package org.drools.core.reteoo;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.UpdateContext;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.Query;
-import org.drools.core.rule.Rule;
+import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.PropagationContext;
 
 import java.io.IOException;
@@ -48,7 +48,7 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     public static final short type             = 8;
 
     /** The rule to invoke upon match. */
-    protected Query             query;
+    protected QueryImpl query;
     private GroupElement      subrule;
     private int               subruleIndex;    
     private Declaration[]     declarations;
@@ -75,15 +75,15 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
      */
     public QueryTerminalNode(final int id,
                              final LeftTupleSource source,
-                             final Rule rule,
+                             final RuleImpl rule,
                              final GroupElement subrule,
                              final int subruleIndex,                              
                              final BuildContext context) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
+               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
                source );
-        this.query = (Query) rule;
+        this.query = (QueryImpl) rule;
         this.subrule = subrule;
         this.subruleIndex = subruleIndex;
         
@@ -97,7 +97,7 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
-        query = (Query) in.readObject();
+        query = (QueryImpl) in.readObject();
         subrule = (GroupElement) in.readObject();
         subruleIndex = in.readInt();        
     }
@@ -109,11 +109,11 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         out.writeInt(subruleIndex);
     }
 
-    public Query getQuery() {
+    public QueryImpl getQuery() {
         return query;
     }
 
-    public Rule getRule() {
+    public RuleImpl getRule() {
         return this.query;
     }
 

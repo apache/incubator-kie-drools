@@ -3,11 +3,15 @@ package org.drools.compiler.rule.builder.dialect.mvel;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.RuleBase;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.AgendaItemImpl;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.definition.rule.Rule;
@@ -15,7 +19,6 @@ import org.kie.api.definition.rule.Rule;
 import static org.junit.Assert.*;
 
 import org.drools.compiler.Person;
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.base.mvel.MVELSalienceExpression;
@@ -27,26 +30,26 @@ import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.core.rule.Package;
 import org.drools.core.rule.Pattern;
 import org.drools.compiler.rule.builder.SalienceBuilder;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.Salience;
+import org.kie.internal.KnowledgeBaseFactory;
 
 public class MVELSalienceBuilderTest {
     private InstrumentedBuildContent context;
-    private RuleBase                 ruleBase;
+    private InternalKnowledgeBase kBase ;
 
     @Before
     public void setUp() throws Exception {
-        final Package pkg = new Package( "pkg1" );
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
         ruleDescr.addAttribute( new AttributeDescr( "salience",
                                                     "(p.age + 20)/2" ) );
         ruleDescr.setConsequence( "" );
 
-        PackageBuilder pkgBuilder = new PackageBuilder( pkg );
+        KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl( pkg );
         DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
         MVELDialect mvelDialect = (MVELDialect) dialectRegistry.getDialect( "mvel" );
 
@@ -74,7 +77,7 @@ public class MVELSalienceBuilderTest {
         declarationResolver.setDeclarations( map );
         context.setDeclarationResolver( declarationResolver );
 
-        ruleBase = RuleBaseFactory.newRuleBase();
+        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         SalienceBuilder salienceBuilder = new MVELSalienceBuilder();
         salienceBuilder.build( context );
 
@@ -85,12 +88,12 @@ public class MVELSalienceBuilderTest {
 
     @Test
     public void testSimpleExpression() {
-        WorkingMemory wm = ruleBase.newStatefulSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         final Person p = new Person( "mark",
                                      "",
                                      31 );
-        final InternalFactHandle f0 = (InternalFactHandle) wm.insert( p );
+        final InternalFactHandle f0 = (InternalFactHandle) ksession.insert( p );
         final LeftTupleImpl tuple = new LeftTupleImpl( f0,
                                                        null,
                                                        true );
@@ -101,9 +104,9 @@ public class MVELSalienceBuilderTest {
 
 
         assertEquals( 25,
-                      context.getRule().getSalience().getValue( new DefaultKnowledgeHelper( item, wm ),
+                      context.getRule().getSalience().getValue( new DefaultKnowledgeHelper( item, ksession ),
                                                                 context.getRule(),
-                                                                wm ) );
+                                                                ksession ) );
 
     }
 
@@ -114,7 +117,7 @@ public class MVELSalienceBuilderTest {
         final Thread[] threads = new Thread[tcount];
         for ( int i = 0; i < evals.length; i++ ) {
                         
-            evals[i] = new SalienceEvaluator( ruleBase,
+            evals[i] = new SalienceEvaluator( kBase,
                                               context,
                                               context.getRule(),
                                               context.getRule().getSalience(),
@@ -160,12 +163,13 @@ public class MVELSalienceBuilderTest {
 
         private boolean                  error;
 
-        public SalienceEvaluator(RuleBase ruleBase,
+        public SalienceEvaluator(InternalKnowledgeBase kBase,
                                  InstrumentedBuildContent context,
                                  Rule rule,
                                  Salience salience,
                                  Person person) {
-            wm = ruleBase.newStatefulSession();
+            wm = ((StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession());
+
             this.context = context;
             final InternalFactHandle f0 = (InternalFactHandle) wm.insert( person );
             tuple = new LeftTupleImpl( f0,

@@ -16,8 +16,10 @@
 
 package org.drools.core.event.rule.impl;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
+import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.spi.PropagationContext;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 
 import java.io.IOException;
@@ -28,12 +30,15 @@ public class ObjectDeletedEventImpl extends RuleRuntimeEventImpl implements Obje
     private FactHandle factHandle;
     private Object oldbOject;
     
-    public ObjectDeletedEventImpl(org.drools.core.event.ObjectRetractedEvent event) {
-        super( ((InternalWorkingMemory) event.getWorkingMemory() ).getKnowledgeRuntime(), event.getPropagationContext() );
-        factHandle = event.getFactHandle();
-        oldbOject = event.getOldObject();
+    public ObjectDeletedEventImpl(final WorkingMemory workingMemory,
+                                   final PropagationContext propagationContext,
+                                   final FactHandle handle,
+                                   final Object object) {
+        super( ((InternalWorkingMemory) workingMemory ).getKnowledgeRuntime(), propagationContext );
+        this.factHandle = handle;
+        this.oldbOject = object;
     }
-    
+
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( factHandle );

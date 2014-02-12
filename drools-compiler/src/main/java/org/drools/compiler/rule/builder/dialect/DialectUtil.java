@@ -1,22 +1,13 @@
 package org.drools.compiler.rule.builder.dialect;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.rule.builder.dialect.java.parser.JavaIfBlockDescr;
-import org.drools.compiler.rule.builder.dialect.java.parser.JavaTryBlockDescr;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELConsequenceBuilder;
-import org.drools.core.util.BitMaskUtil;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.factmodel.ClassDefinition;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.core.rule.ConsequenceMetaData;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.TypeDeclaration;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.java.JavaAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaBlockDescr;
@@ -25,16 +16,25 @@ import org.drools.compiler.rule.builder.dialect.java.parser.JavaContainerBlockDe
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaElseBlockDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaFinalBlockDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaForBlockDescr;
+import org.drools.compiler.rule.builder.dialect.java.parser.JavaIfBlockDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaInterfacePointsDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr.IdentifierDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaModifyBlockDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaThrowBlockDescr;
+import org.drools.compiler.rule.builder.dialect.java.parser.JavaTryBlockDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaWhileBlockDescr;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
+import org.drools.compiler.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.core.factmodel.ClassDefinition;
+import org.drools.core.rule.ConsequenceMetaData;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.util.BitMaskUtil;
+import org.drools.core.util.ClassUtils;
 import org.kie.api.definition.type.FactField;
 import org.mvel2.CompileException;
 import org.mvel2.Macro;
@@ -51,9 +51,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.drools.core.util.ClassUtils.findClass;
-import static org.drools.core.util.ClassUtils.getter2property;
-import static org.drools.core.util.ClassUtils.setter2property;
+import static org.drools.core.util.ClassUtils.*;
 import static org.drools.core.util.StringUtils.*;
 
 public final class DialectUtil {
@@ -574,7 +572,7 @@ public final class DialectUtil {
         }
 
         if ( declr == null || declr.isInternalFact() ) {
-           consequence.append( "org.drools.core.FactHandle " );
+           consequence.append( "org.kie.api.runtime.rule.FactHandle " );
            consequence.append( obj );
            consequence.append( "__Handle2__ = drools.getFactHandle(" );
            consequence.append( obj );
@@ -608,7 +606,7 @@ public final class DialectUtil {
         List<String> settableProperties = null;
 
         Class<?> typeClass = findModifiedClass(context, d, declr);
-        TypeDeclaration typeDeclaration = typeClass == null ? null : context.getPackageBuilder().getTypeDeclaration(typeClass);
+        TypeDeclaration typeDeclaration = typeClass == null ? null : context.getKnowledgeBuilder().getTypeDeclaration(typeClass);
         boolean isPropertyReactive = typeDeclaration != null && typeDeclaration.isPropertyReactive();
         if (isPropertyReactive) {
             typeDeclaration.setTypeClass(typeClass);
@@ -663,7 +661,7 @@ public final class DialectUtil {
         long modificationMask = Long.MAX_VALUE;
 
         Class<?> typeClass = findModifiedClass(context, d, declr);
-        TypeDeclaration typeDeclaration = typeClass == null ? null : context.getPackageBuilder().getTypeDeclaration(typeClass);
+        TypeDeclaration typeDeclaration = typeClass == null ? null : context.getKnowledgeBuilder().getTypeDeclaration(typeClass);
 
         if (typeDeclaration != null) {
             boolean isPropertyReactive = typeDeclaration != null && typeDeclaration.isPropertyReactive();
@@ -817,7 +815,7 @@ public final class DialectUtil {
         }
 
         String namespace = context.getRuleDescr().getNamespace();
-        PackageBuilder packageBuilder = context.getPackageBuilder();
+        KnowledgeBuilderImpl packageBuilder = context.getKnowledgeBuilder();
 
         Class<?> clazz = null;
         try {
@@ -875,7 +873,7 @@ public final class DialectUtil {
             if (argsStart > 0) {
                 String className = expr.substring(4, argsStart).trim();
                 Class<?> typeClass = findClassByName(context, className);
-                TypeDeclaration typeDeclaration = typeClass == null ? null : context.getPackageBuilder().getTypeDeclaration(typeClass);
+                TypeDeclaration typeDeclaration = typeClass == null ? null : context.getKnowledgeBuilder().getTypeDeclaration(typeClass);
                 if (typeDeclaration != null) {
                     ConsequenceMetaData.Statement statement = new ConsequenceMetaData.Statement(ConsequenceMetaData.Statement.Type.INSERT, typeClass);
                     context.getRule().getConsequenceMetaData().addStatement(statement);
@@ -916,7 +914,7 @@ public final class DialectUtil {
 
     private static FunctionDescr lookupFunction(RuleBuildContext context, String functionName) {
         String packageName = context.getRule().getPackageName();
-        List<PackageDescr> pkgDescrs = context.getPackageBuilder().getPackageDescrs(packageName);
+        List<PackageDescr> pkgDescrs = context.getKnowledgeBuilder().getPackageDescrs(packageName);
         for (PackageDescr pkgDescr : pkgDescrs) {
             for (FunctionDescr function : pkgDescr.getFunctions()) {
                 if (function.getName().equals(functionName)) {

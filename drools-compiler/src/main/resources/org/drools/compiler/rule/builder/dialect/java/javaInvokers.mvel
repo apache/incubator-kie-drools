@@ -1,6 +1,6 @@
 @declare{"getMethodBytecode"}
     public java.util.List getMethodBytecode() {
-        return org.drools.core.rule.Rule.getMethodBytecode(getClass(), "@{ruleClassName}", "@{package}", "@{methodName}", "@{ (package + '.' + ruleClassName).replace( '.', '/' ) + '.class' }" );
+        return org.drools.core.definitions.rule.impl.RuleImpl.getMethodBytecode(getClass(), "@{ruleClassName}", "@{package}", "@{methodName}", "@{ (package + '.' + ruleClassName).replace( '.', '/' ) + '.class' }" );
     }
 @end{}
 
@@ -298,7 +298,7 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
                 bos.write(data, 0, byteCount);
             }
         } catch ( java.io.IOException e ) {
-            throw new org.drools.core.RuntimeDroolsException("Unable getResourceAsStream for Class '@{ruleClassName}@{'$'}@{className}' ");
+            throw new RuntimeException("Unable getResourceAsStream for Class '@{ruleClassName}@{'$'}@{className}' ");
         }
         return Collections.singletonList( bos );
     }

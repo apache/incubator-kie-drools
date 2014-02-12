@@ -21,7 +21,6 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.ExpanderResolver;
 
@@ -61,7 +60,7 @@ public class DefaultExpanderResolver
             this.expanders.put( "*",
                                 expander );
         } else {
-            throw new RuntimeDroolsException( "Error parsing and loading DSL file." + file.getErrors() );
+            throw new RuntimeException( "Error parsing and loading DSL file." + file.getErrors() );
         }
     }
 
