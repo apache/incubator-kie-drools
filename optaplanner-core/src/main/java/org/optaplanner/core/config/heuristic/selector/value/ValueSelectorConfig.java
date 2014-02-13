@@ -245,8 +245,8 @@ public class ValueSelectorConfig extends SelectorConfig {
                     (EntityIndependentValueRangeDescriptor) valueRangeDescriptor,
                     minimumCacheType, randomSelection);
         } else {
-            // TODO should we ignore the minimumCacheType so it can be cached on changeMoves too?
-            return new FromEntityPropertyValueSelector(valueRangeDescriptor, minimumCacheType, randomSelection);
+            // TODO Do not PHASE cache FromEntity the ValueSelector, except if the moveSelector is PHASE cached too.
+            return new FromEntityPropertyValueSelector(valueRangeDescriptor, randomSelection);
         }
     }
 

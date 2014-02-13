@@ -36,14 +36,9 @@ public class FromEntityPropertyValueSelector extends AbstractValueSelector {
 
     protected Solution workingSolution;
 
-    public FromEntityPropertyValueSelector(ValueRangeDescriptor valueRangeDescriptor,
-            SelectionCacheType cacheType, boolean randomSelection) {
+    public FromEntityPropertyValueSelector(ValueRangeDescriptor valueRangeDescriptor, boolean randomSelection) {
         this.valueRangeDescriptor = valueRangeDescriptor;
         this.randomSelection = randomSelection;
-        if (cacheType.compareTo(SelectionCacheType.STEP) > 0) {
-            throw new IllegalArgumentException("The selector (" + this
-                    + ") does not support the cacheType (" + cacheType + ").");
-        }
     }
 
     public PlanningVariableDescriptor getVariableDescriptor() {
