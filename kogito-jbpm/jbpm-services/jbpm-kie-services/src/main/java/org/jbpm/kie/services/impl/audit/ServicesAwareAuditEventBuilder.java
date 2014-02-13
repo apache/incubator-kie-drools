@@ -2,7 +2,6 @@ package org.jbpm.kie.services.impl.audit;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
@@ -100,11 +99,15 @@ public class ServicesAwareAuditEventBuilder extends DefaultAuditEventBuilderImpl
             name = identityProvider.getName();
             logger.debug( "Used original identity provider with user: {}", name);
         } catch (ContextNotActiveException e) {
-            RequestScopedBackupIdentityProvider provider = getBackupIdentityProvider();
-            // if the beanManager field has NOT been set, then provider == null
-            if( provider != null ) { 
-                name = provider.getName();
-                logger.debug( "Used debug identity provider with user: {}", name);
+            try {
+	        	RequestScopedBackupIdentityProvider provider = getBackupIdentityProvider();
+	            // if the beanManager field has NOT been set, then provider == null
+	            if( provider != null ) { 
+	                name = provider.getName();
+	                logger.debug( "Used debug identity provider with user: {}", name);
+	            }
+            } catch (ContextNotActiveException ex) {
+            	name = "unknown";
             }
         }
 
