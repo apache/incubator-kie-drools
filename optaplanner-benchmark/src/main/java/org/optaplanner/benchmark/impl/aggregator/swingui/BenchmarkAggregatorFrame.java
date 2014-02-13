@@ -22,6 +22,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.File;
@@ -48,7 +49,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
-import javax.swing.border.EmptyBorder;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -151,8 +151,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
         JPanel detailPanel = new JPanel(new BorderLayout());
         JLabel detailLabel = new JLabel("Details");
         detailPanel.add(detailLabel, BorderLayout.NORTH);
-        detailTextArea = new JTextArea();
-        detailTextArea.setRows(4);
+        detailTextArea = new JTextArea(4, 80);
         detailTextArea.setEditable(false);
         detailPanel.add(detailTextArea, BorderLayout.SOUTH);
         return detailPanel;
@@ -177,35 +176,15 @@ public class BenchmarkAggregatorFrame extends JFrame {
         JButton generateReportButton = new JButton(new GenerateReportAction(this));
         buttonPanel.add(generateReportButton);
         benchmarkTreePanel.add(buttonPanel, BorderLayout.SOUTH);
-        benchmarkTreePanel.setBorder(new EmptyBorder(0, 0, 15, 0));
+        benchmarkTreePanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
         return benchmarkTreePanel;
     }
 
     private CheckBoxTree createCheckBoxTree() {
         CheckBoxTree resultCheckBoxTree = new CheckBoxTree(initBenchmarkHierarchy());
-        resultCheckBoxTree.addMouseMotionListener(new MouseMotionAdapter() {
-            private TreePath lastTreePath;
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                TreePath treePath = checkBoxTree.getPathForLocation(e.getX(), e.getY());
-                if (treePath != null) { // node hit
-                    if (treePath.equals(lastTreePath)) { // the same node, change nothing
-                        return;
-                    }
-                    DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) treePath.getLastPathComponent();
-                    MixedCheckBox checkBox = (MixedCheckBox) currentNode.getUserObject();
-                    detailTextArea.setText(checkBox.getDetail());
-                    lastTreePath = treePath;
-                } else {
-                    if (lastTreePath == null) { // continuous node miss
-                        return;
-                    }
-                    detailTextArea.setText(null);
-                    lastTreePath = null;
-                }
-            }
-        });
+        CheckBoxTreeMouseListener checkBoxTreeMouseListener = new CheckBoxTreeMouseListener();
+        resultCheckBoxTree.addMouseListener(checkBoxTreeMouseListener);
+        resultCheckBoxTree.addMouseMotionListener(checkBoxTreeMouseListener);
         checkBoxTree = resultCheckBoxTree;
         return resultCheckBoxTree;
     }
@@ -213,6 +192,37 @@ public class BenchmarkAggregatorFrame extends JFrame {
     private void initPlannerBenchmarkResultList() {
         plannerBenchmarkResultList = benchmarkResultIO.readPlannerBenchmarkResultList(
                 benchmarkAggregator.getBenchmarkDirectory());
+    }
+
+    private class CheckBoxTreeMouseListener extends MouseAdapter {
+
+        private TreePath lastTreePath;
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            TreePath treePath = checkBoxTree.getPathForLocation(e.getX(), e.getY());
+            if (treePath != null) { // node hit
+                if (treePath.equals(lastTreePath)) { // the same node, change nothing
+                    return;
+                }
+                DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) treePath.getLastPathComponent();
+                MixedCheckBox checkBox = (MixedCheckBox) currentNode.getUserObject();
+                detailTextArea.setText(checkBox.getDetail());
+                lastTreePath = treePath;
+            } else {
+                if (lastTreePath == null) { // continuous node miss
+                    return;
+                }
+                detailTextArea.setText(null);
+                lastTreePath = null;
+            }
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            detailTextArea.setText(null);
+            lastTreePath = null;
+        }
     }
 
     private class GenerateReportAction extends AbstractAction {

@@ -44,7 +44,7 @@ public class CheckBoxTree extends JTree {
     }
 
     public void collapseAllNodes() {
-        // clear all sub-expansions
+        // Collapse nodes from the bottom upwards to assure that all nodes are collapsed
         for (int i = getRowCount() - 1; i > 0; i--) {
             collapseRow(i);
         }
