@@ -66,8 +66,14 @@ public class JaxbTask implements InternalTask {
     @XmlElement
     private JaxbTaskData taskData;
     
+
     @XmlElement
     private JaxbDeadlines deadlines = new JaxbDeadlines();
+
+    @XmlElement(name="form-name")
+    @XmlSchemaType(name="String")
+    private String formName;
+
     
     public JaxbTask() { 
         // Default constructor
@@ -98,6 +104,7 @@ public class JaxbTask implements InternalTask {
         
         this.taskData = new JaxbTaskData(task.getTaskData());
         this.taskType = task.getTaskType();
+        this.formName = ((InternalTask)task).getFormName();
     }
     
     @Override
@@ -284,6 +291,16 @@ public class JaxbTask implements InternalTask {
     }
     
     @Override
+    public void setFormName(String formName) {
+        this.formName = formName;
+    }
+
+    @Override
+    public String getFormName() {
+        return this.formName;
+    }
+
+    @Override
     public void readExternal(ObjectInput arg0) throws IOException, ClassNotFoundException {
         String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
         throw new UnsupportedOperationException( methodName + " is not supported on the JAXB " + Task.class.getSimpleName() + " implementation.");
@@ -314,18 +331,6 @@ public class JaxbTask implements InternalTask {
 
     @Override
     public int getVersion() {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException( methodName + " is not supported on the JAXB " + Task.class.getSimpleName() + " implementation.");
-    }
-
-    @Override
-    public void setFormName(String formName) {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException( methodName + " is not supported on the JAXB " + Task.class.getSimpleName() + " implementation.");
-    }
-
-    @Override
-    public String getFormName() {
         String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
         throw new UnsupportedOperationException( methodName + " is not supported on the JAXB " + Task.class.getSimpleName() + " implementation.");
     }

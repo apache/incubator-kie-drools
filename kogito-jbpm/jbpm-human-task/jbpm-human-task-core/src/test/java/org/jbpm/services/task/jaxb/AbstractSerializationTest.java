@@ -77,6 +77,7 @@ public abstract class AbstractSerializationTest {
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.FullTask));
         Task task = (Task) TaskFactory.evalTask(reader, vars);
+        ((InternalTask)task).setFormName("Bruno's Form");
         InternalTaskData taskData = (InternalTaskData) task.getTaskData();
 
         String payload = "brainwashArmitageRecruitCaseGetPasswordFromLady3JaneAscentToStraylightIcebreakerUniteWithNeuromancer";
