@@ -13,9 +13,9 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 
 import org.jbpm.kie.services.api.IdentityProvider;
-import org.jbpm.kie.services.api.RequestScopedBackupIdentityProvider;
 import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
 import org.jbpm.kie.services.impl.event.Deploy;
@@ -46,6 +46,7 @@ public abstract class AbstractDeploymentService implements DeploymentService {
     @Inject
     private RuntimeDataService runtimeDataService;
     @Inject
+    @PersistenceUnit(unitName = "org.jbpm.domain")
     private EntityManagerFactory emf;
     @Inject
     @Deploy

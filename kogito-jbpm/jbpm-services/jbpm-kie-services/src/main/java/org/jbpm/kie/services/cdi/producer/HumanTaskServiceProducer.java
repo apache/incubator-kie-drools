@@ -9,6 +9,7 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 
 import org.jbpm.services.task.HumanTaskConfigurator;
 import org.jbpm.services.task.HumanTaskServiceFactory;
@@ -61,6 +62,7 @@ public class HumanTaskServiceProducer {
 	private InternalTaskService taskService;
 	
 	@Produces
+	@PersistenceUnit(unitName = "org.jbpm.domain")
 	public CommandBasedTaskService produceTaskService(EntityManagerFactory emf) {
 		if (mode.equalsIgnoreCase("none")) {
 			return null;
