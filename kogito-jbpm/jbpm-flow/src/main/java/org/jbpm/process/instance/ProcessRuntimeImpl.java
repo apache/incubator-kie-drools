@@ -165,10 +165,15 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 
     public ProcessInstance startProcess(String processId,
                                         Map<String, Object> parameters) {
+    	return startProcess(processId, parameters, null);
+    }
+    
+    public ProcessInstance startProcess(String processId,
+            Map<String, Object> parameters, String trigger) {
     	ProcessInstance processInstance = createProcessInstance(processId, parameters);
         if ( processInstance != null ) {
             // start process instance
-        	return startProcessInstance(processInstance.getId());
+        	return startProcessInstance(processInstance.getId(), trigger);
         }
         return null;
     }
@@ -178,20 +183,24 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         return createProcessInstance(processId, null, parameters);
     }
     
-    public ProcessInstance startProcessInstance(long processInstanceId) {
-        try {
+    public ProcessInstance startProcessInstance(long processInstanceId, String trigger) {
+    	try {
             kruntime.startOperation();
             if ( !kruntime.getActionQueue().isEmpty() ) {
             	kruntime.executeQueuedActions();
             }
             ProcessInstance processInstance = getProcessInstance(processInstanceId);
 	        getProcessEventSupport().fireBeforeProcessStarted( processInstance, kruntime );
-	        ((org.jbpm.process.instance.ProcessInstance) processInstance).start();
+	        ((org.jbpm.process.instance.ProcessInstance) processInstance).start(trigger);
 	        getProcessEventSupport().fireAfterProcessStarted( processInstance, kruntime );
 	        return processInstance;
         } finally {
         	kruntime.endOperation();
         }
+    }
+    
+    public ProcessInstance startProcessInstance(long processInstanceId) {
+        return startProcessInstance(processInstanceId, null);
     }
     
     @Override
@@ -382,7 +391,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	            }
 	        }
 	        startProcess( processId,
-	                      params );
+	                      params, type );
 	    }
 	}
 

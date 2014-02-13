@@ -44,6 +44,7 @@ import org.jbpm.marshalling.impl.ProtobufProcessMarshaller;
 import org.jbpm.process.core.timer.impl.RegisteredTimerServiceDelegate;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.process.instance.ProcessRuntimeImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.time.SessionClock;
@@ -332,7 +333,7 @@ public class TimerManager {
                 if (ctx.getTrigger().hasNextFireTime() == null) {
                     ctx.getTimer().setPeriod(0);
                 }
-                kruntime.startProcess(ctx.getProcessId(), ctx.getParamaeters());
+                ((ProcessRuntimeImpl)kruntime.getProcessRuntime()).startProcess(ctx.getProcessId(), ctx.getParamaeters(), "timer");
 
                 TimerManager tm = ((InternalProcessRuntime) ctx.getKnowledgeRuntime().getProcessRuntime()).getTimerManager();
 

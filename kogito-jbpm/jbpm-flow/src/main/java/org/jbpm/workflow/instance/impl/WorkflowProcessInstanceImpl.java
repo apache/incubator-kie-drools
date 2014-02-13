@@ -342,6 +342,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 
 	public void start() {
+		start(null);
+	}
+	
+	public void start(String trigger) {
 		synchronized (this) {
 			registerExternalEventNodeListeners();
 			// activate timer event sub processes
@@ -355,7 +359,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	                }
 	            }
 	        }
-			super.start();
+			super.start(trigger);
 		}
 	}
 

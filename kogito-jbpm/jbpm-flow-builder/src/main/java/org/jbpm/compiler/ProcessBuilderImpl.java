@@ -56,6 +56,7 @@ import org.jbpm.process.core.impl.ProcessImpl;
 import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.process.core.validation.ProcessValidator;
 import org.jbpm.process.core.validation.ProcessValidatorRegistry;
+import org.jbpm.process.instance.ProcessRuntimeImpl;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
@@ -503,9 +504,9 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
             for ( Map.Entry<String, String> entry : inMappings.entrySet() ) {
                 result += "        params.put(\"" + entry.getKey() + "\", " + entry.getValue() + ");\n";
             }
-            result += "        kcontext.getKnowledgeRuntime().startProcess(\"" + process.getId() + "\", params);\n" + "end\n\n";
+            result += "        ((org.jbpm.process.instance.ProcessRuntimeImpl)((org.drools.core.common.InternalKnowledgeRuntime)kcontext.getKnowledgeRuntime()).getProcessRuntime()).startProcess(\"" + process.getId() + "\", params, \"conditional\");\n" + "end\n\n";
         } else {
-            result += "        kcontext.getKnowledgeRuntime().startProcess(\"" + process.getId() + "\");\n" + "end\n\n";
+            result += "        ((org.jbpm.process.instance.ProcessRuntimeImpl)((org.drools.core.common.InternalKnowledgeRuntime)kcontext.getKnowledgeRuntime()).getProcessRuntime()).startProcess(\"" + process.getId() + "\", null, \"conditional\");\n" + "end\n\n";
         }
         return result;
     }

@@ -29,8 +29,8 @@ public class RuleFlowProcessInstance extends WorkflowProcessInstanceImpl {
         return (RuleFlowProcess) getProcess();
     }
 
-    public void internalStart() {
-    	StartNode startNode = getRuleFlowProcess().getStart();
+    public void internalStart(String trigger) {
+    	StartNode startNode = getRuleFlowProcess().getStart(trigger);
     	if (startNode != null) {
     		((NodeInstance) getNodeInstance(startNode)).trigger(null, null);
     	}

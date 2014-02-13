@@ -319,6 +319,110 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    public void testMultipleEventBasedStartEventsDifferentPaths() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-MultipleStartEventProcessDifferentPaths.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+
+        final List<Long> list = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                list.add(event.getProcessInstance().getId());
+            }
+        });
+
+        ksession.startProcess("muliplestartevents", null);
+
+        assertEquals(1, list.size());
+        WorkItem workItem = workItemHandler.getWorkItem();
+        long processInstanceId = ((WorkItemImpl) workItem)
+                .getProcessInstanceId();
+
+        ProcessInstance processInstance = ksession
+                .getProcessInstance(processInstanceId);
+        ksession = restoreSession(ksession, true);
+
+        assertNotNull(workItem);
+        assertEquals("john", workItem.getParameter("ActorId"));
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertProcessInstanceFinished(processInstance, ksession);
+        assertNodeTriggered(processInstanceId, "Start", "Script 1", "User task", "End");
+    }
+    
+    @Test
+    public void testMultipleEventBasedStartEventsTimerDifferentPaths() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-MultipleStartEventProcessDifferentPaths.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+
+        final List<Long> list = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                list.add(event.getProcessInstance().getId());
+            }
+        });
+
+        assertEquals(0, list.size());
+        for (int i = 0; i < 2; i++) {
+            Thread.sleep(600);
+        }
+
+        assertEquals(2, list.size());
+        List<WorkItem> workItems = workItemHandler.getWorkItems();
+        
+        for (WorkItem workItem : workItems) {
+        	long processInstanceId = ((WorkItemImpl) workItem).getProcessInstanceId();
+
+	        ProcessInstance processInstance = ksession
+	                .getProcessInstance(processInstanceId);
+	        ksession = restoreSession(ksession, true);
+	
+	        assertNotNull(workItem);
+	        assertEquals("john", workItem.getParameter("ActorId"));
+	        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+	        assertProcessInstanceFinished(processInstance, ksession);
+	        assertNodeTriggered(processInstanceId, "StartTimer", "Script 2", "User task", "End");
+        }
+    }
+    
+    @Test
+    public void testMultipleEventBasedStartEventsSignalDifferentPaths() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-MultipleStartEventProcessDifferentPaths.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+
+        final List<Long> list = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                list.add(event.getProcessInstance().getId());
+            }
+        });
+
+        ksession.signalEvent("startSignal", null);
+
+        assertEquals(1, list.size());
+        WorkItem workItem = workItemHandler.getWorkItem();
+        long processInstanceId = ((WorkItemImpl) workItem)
+                .getProcessInstanceId();
+
+        ProcessInstance processInstance = ksession
+                .getProcessInstance(processInstanceId);
+        ksession = restoreSession(ksession, true);
+
+        assertNotNull(workItem);
+        assertEquals("john", workItem.getParameter("ActorId"));
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertProcessInstanceFinished(processInstance, ksession);
+        assertNodeTriggered(processInstanceId, "StartSignal", "Script 3", "User task", "End");
+    }
+    
+    @Test
     public void testMultipleEventBasedStartEventsStartOnTimer()
             throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleEventBasedStartEventProcess.bpmn2");

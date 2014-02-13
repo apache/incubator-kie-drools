@@ -105,7 +105,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
         }
 
         // check start node of process
-        if ( process.getStart() == null && !process.isDynamic()) {
+        if ( process.getStartNodes().isEmpty() && !process.isDynamic()) {
             errors.add(new ProcessValidationErrorImpl(process,
                 "Process has no start node."));
         }
@@ -530,9 +530,11 @@ public class RuleFlowProcessValidator implements ProcessValidator {
         		}
         	}
         } else {
-	        final Node start = process.getStart();
+	        final List<Node> start = process.getStartNodes();
 	        if (start != null) {
-	            processNode(start, processNodes);
+	        	for (Node s : start) {
+	        		processNode(s, processNodes);
+	        	}
 	        }
         }
         for (Node eventNode: eventNodes) {
