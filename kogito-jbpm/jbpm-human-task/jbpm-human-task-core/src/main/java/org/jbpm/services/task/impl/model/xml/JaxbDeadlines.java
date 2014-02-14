@@ -1,5 +1,7 @@
 package org.jbpm.services.task.impl.model.xml;
 
+import static org.jbpm.services.task.impl.model.xml.AbstractJaxbTaskObject.unsupported;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -43,14 +45,12 @@ public class JaxbDeadlines implements Deadlines {
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException(methodName + " is not supported on the JAXB " + Deadlines.class.getSimpleName() + " implementation.");
+        unsupported(Deadlines.class);
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException(methodName + " is not supported on the JAXB " + Deadlines.class.getSimpleName() + " implementation.");
+        unsupported(Deadlines.class);
     }
 
 }

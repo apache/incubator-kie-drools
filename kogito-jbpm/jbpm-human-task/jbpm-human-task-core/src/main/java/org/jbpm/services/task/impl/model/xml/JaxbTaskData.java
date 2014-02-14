@@ -14,7 +14,6 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.jbpm.services.task.impl.model.xml.adapter.StatusXmlAdapter;
-import org.jbpm.services.task.impl.model.xml.adapter.UserXmlAdapter;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.Status;
@@ -35,12 +34,10 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
     private Status previousStatus;
 
     @XmlElement(name = "actual-owner")
-    @XmlJavaTypeAdapter(value = UserXmlAdapter.class)
-    private User actualOwner;
+    private String actualOwner;
 
     @XmlElement(name = "created-by")
-    @XmlJavaTypeAdapter(value = UserXmlAdapter.class)
-    private User createdBy;
+    private String createdBy;
 
     @XmlElement(name = "created-on")
     @XmlSchemaType(name = "dateTime")
@@ -122,6 +119,14 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
 
     public JaxbTaskData(TaskData taskData) {
         super(taskData, TaskData.class);
+        User createdByUser = taskData.getCreatedBy();
+        if( createdByUser != null ) { 
+            this.createdBy = createdByUser.getId();
+        }
+        User actualOwnerUser = taskData.getActualOwner();
+        if( actualOwnerUser != null ) { 
+            this.actualOwner = actualOwnerUser.getId();
+        }
         List<JaxbComment> commentList = new ArrayList<JaxbComment>();
         for (Object comment : taskData.getComments() ) {
             commentList.add(new JaxbComment((Comment) comment));
@@ -146,12 +151,12 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
 
     @Override
     public User getActualOwner() {
-        return actualOwner;
+        return new GetterUser(actualOwner);
     }
 
     @Override
     public User getCreatedBy() {
-        return createdBy;
+        return new GetterUser(createdBy);
     }
 
     @Override

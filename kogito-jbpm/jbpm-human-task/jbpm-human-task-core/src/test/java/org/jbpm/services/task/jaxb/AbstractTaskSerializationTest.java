@@ -43,11 +43,11 @@ import org.reflections.util.ClasspathHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractSerializationTest {
+public abstract class AbstractTaskSerializationTest {
 
     protected final Logger logger;
     
-    public AbstractSerializationTest() { 
+    public AbstractTaskSerializationTest() { 
          logger = LoggerFactory.getLogger(this.getClass());
     }
     
@@ -66,8 +66,8 @@ public abstract class AbstractSerializationTest {
     
     @Test
     public void jaxbTaskTest() throws Exception {
-        // Json and Yaml serialization not yet supported.. :/ 
-        Assume.assumeTrue(getType().equals(TestType.JAXB));
+        // Yaml serialization requires major changes in order to be supported.. :/ 
+        Assume.assumeTrue(! getType().equals(TestType.YAML));
         
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
@@ -101,7 +101,11 @@ public abstract class AbstractSerializationTest {
         taskData.addAttachment(attach);
 
         JaxbTask xmlTask = new JaxbTask(task);
+        assertNotNull(xmlTask.getNames());
+        assertTrue(xmlTask.getNames().size() > 0);
         JaxbTask bornAgainTask = (JaxbTask) testRoundTrip(xmlTask);
+        assertNotNull(bornAgainTask.getNames());
+        assertTrue("Round-tripped task has empty 'names' list!", !bornAgainTask.getNames().isEmpty());
 
         ComparePair compare = new ComparePair(task, bornAgainTask, Task.class);
         Queue<ComparePair> compares = new LinkedList<ComparePair>();
@@ -109,6 +113,9 @@ public abstract class AbstractSerializationTest {
         while (!compares.isEmpty()) {
             compares.addAll(compares.poll().compare());
         }
+
+        assertNotNull( ((InternalTask) xmlTask).getFormName() );
+        assertEquals( ((InternalTask) xmlTask).getFormName(), ((InternalTask) bornAgainTask).getFormName() );
     }
 
     private static class ComparePair {
@@ -152,7 +159,8 @@ public abstract class AbstractSerializationTest {
                     } else if (origField instanceof List<?>) {
                         List<?> origList = (List) origField;
                         List<?> copyList = (List) copyField;
-                        for (int i = 0; i < origList.size(); ++i) {
+                        assertEquals(fieldName + " list size:", origList.size(), copyList.size());
+                        for (int i = 0; i < origList.size() && !origList.isEmpty(); ++i) {
                             Class<?> newInterface = origField.getClass();
                             while (newInterface.getInterfaces().length > 0) {
                                 newInterface = newInterface.getInterfaces()[0];
@@ -187,6 +195,9 @@ public abstract class AbstractSerializationTest {
     
     @Test
     public void taskCommandSubTypesCanBeSerialized() throws Exception { 
+        // Yaml serialization not required for commands
+        Assume.assumeTrue(! getType().equals(TestType.YAML));
+        
         for (Class<?> jaxbClass : reflections.getSubTypesOf(TaskCommand.class) ) { 
         	if (jaxbClass.equals(UserGroupCallbackTaskCommand.class) ) {
         		continue;

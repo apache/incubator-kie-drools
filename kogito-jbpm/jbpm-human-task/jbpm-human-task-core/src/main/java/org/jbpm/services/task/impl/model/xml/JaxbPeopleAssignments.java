@@ -1,5 +1,9 @@
 package org.jbpm.services.task.impl.model.xml;
 
+import static org.jbpm.services.task.impl.model.xml.AbstractJaxbTaskObject.*;
+import static org.jbpm.services.task.impl.model.xml.JaxbOrganizationalEntity.convertListFromInterfaceToJaxbImpl;
+import static org.jbpm.services.task.impl.model.xml.JaxbOrganizationalEntity.convertListFromJaxbImplToInterface;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -10,9 +14,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.bind.annotation.XmlSchemaType;
 
-import org.jbpm.services.task.impl.model.xml.adapter.OrganizationalEntityXmlAdapter;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.PeopleAssignments;
 import org.kie.api.task.model.User;
@@ -24,124 +27,123 @@ import org.kie.internal.task.api.model.InternalPeopleAssignments;
 public class JaxbPeopleAssignments implements InternalPeopleAssignments {
 
     @XmlElement(name="task-initiator")
-    @XmlJavaTypeAdapter(value=OrganizationalEntityXmlAdapter.class)
-    private User taskInitiator;
+    @XmlSchemaType(name="string")
+    private String taskInitiator;
 
     @XmlElement(name="potential-owner")
-    @XmlJavaTypeAdapter(value=OrganizationalEntityXmlAdapter.class)
-    private List<OrganizationalEntity> potentialOwners;
+    private List<JaxbOrganizationalEntity> potentialOwners;
 
     @XmlElement(name="business-administrator")
-    @XmlJavaTypeAdapter(value=OrganizationalEntityXmlAdapter.class)
-    private List<OrganizationalEntity> businessAdministrators;
+    private List<JaxbOrganizationalEntity> businessAdministrators;
 
     @XmlElement(name="excluded-owners")
-    @XmlJavaTypeAdapter(value=OrganizationalEntityXmlAdapter.class)
-    private List<OrganizationalEntity> excludedOwners;
+    private List<JaxbOrganizationalEntity> excludedOwners;
 
     @XmlElement(name="task-stakeholders")
-    @XmlJavaTypeAdapter(value=OrganizationalEntityXmlAdapter.class)
-    private List<OrganizationalEntity> taskStakeholders;
+    private List<JaxbOrganizationalEntity> taskStakeholders;
 
     @XmlElement(name="recipients")
-    @XmlJavaTypeAdapter(value=OrganizationalEntityXmlAdapter.class)
-    private List<OrganizationalEntity> recipients;
+    private List<JaxbOrganizationalEntity> recipients;
     
     public JaxbPeopleAssignments() { 
        // Default constructor for JAXB
     }
     
     public JaxbPeopleAssignments(PeopleAssignments peopleAssignments) { 
-        this.taskInitiator = peopleAssignments.getTaskInitiator();
-        this.potentialOwners = peopleAssignments.getPotentialOwners();
-        this.potentialOwners.toArray();
-        this.businessAdministrators = peopleAssignments.getBusinessAdministrators();
-        this.businessAdministrators.toArray();
+        User taskInitiatorUser = peopleAssignments.getTaskInitiator();
+        if( taskInitiatorUser != null ) { 
+            this.taskInitiator = taskInitiatorUser.getId();
+        }
+        this.businessAdministrators = convertListFromInterfaceToJaxbImpl(((InternalPeopleAssignments) peopleAssignments).getBusinessAdministrators());
+        this.excludedOwners = convertListFromInterfaceToJaxbImpl(((InternalPeopleAssignments) peopleAssignments).getExcludedOwners());
+        this.potentialOwners = convertListFromInterfaceToJaxbImpl(((InternalPeopleAssignments) peopleAssignments).getPotentialOwners());
+        this.recipients = convertListFromInterfaceToJaxbImpl(((InternalPeopleAssignments) peopleAssignments).getRecipients());
+        this.taskStakeholders = convertListFromInterfaceToJaxbImpl(((InternalPeopleAssignments) peopleAssignments).getTaskStakeholders());
     }
     
     @Override
     public User getTaskInitiator() {
-        return taskInitiator;
+        if( this.taskInitiator != null ) { 
+            return new GetterUser(this.taskInitiator);
+        } 
+        return null;
     }
 
-    public void setTaskInitiator(User taskInitiator) {
-        this.taskInitiator = taskInitiator;
+    public void setTaskInitiator(User taskInitiatorUser) {
+        if( taskInitiatorUser != null ) { 
+            this.taskInitiator = taskInitiatorUser.getId();
+        }
     }
 
     @Override
     public List<OrganizationalEntity> getPotentialOwners() {
         if( potentialOwners == null ) { 
-            potentialOwners = Collections.emptyList();
+            return Collections.emptyList();
         }
-        return Collections.unmodifiableList(potentialOwners);
+        return Collections.unmodifiableList(convertListFromJaxbImplToInterface(potentialOwners));
     }
 
     public void setPotentialOwners(List<OrganizationalEntity> potentialOwners) {
-        this.potentialOwners = potentialOwners;
+        this.potentialOwners = convertListFromInterfaceToJaxbImpl(potentialOwners);
     }
 
     @Override
     public List<OrganizationalEntity> getBusinessAdministrators() {
         if( businessAdministrators == null ) { 
-            businessAdministrators = Collections.emptyList();
+            return Collections.emptyList();
         }
-        return Collections.unmodifiableList(businessAdministrators);
+        return Collections.unmodifiableList(convertListFromJaxbImplToInterface(businessAdministrators));
     }
 
     public void setBusinessAdministrators(List<OrganizationalEntity> businessAdministrators) {
-        this.businessAdministrators = businessAdministrators;
+        this.businessAdministrators = convertListFromInterfaceToJaxbImpl(businessAdministrators);
     }
 
     @Override
     public List<OrganizationalEntity> getExcludedOwners() {
         if( excludedOwners == null ) { 
-            excludedOwners = Collections.emptyList();
+            return Collections.emptyList();
         }
-        return Collections.unmodifiableList(excludedOwners); 
+        return Collections.unmodifiableList(convertListFromJaxbImplToInterface(excludedOwners)); 
     }
 
     @Override
     public void setExcludedOwners(List<OrganizationalEntity> excludedOwners) {
-        this.excludedOwners = excludedOwners;
+        this.excludedOwners = convertListFromInterfaceToJaxbImpl(excludedOwners);
     }
 
     @Override
     public List<OrganizationalEntity> getTaskStakeholders() {
         if( taskStakeholders == null ) { 
-            taskStakeholders = Collections.emptyList();
+            return Collections.emptyList();
         }
-        return Collections.unmodifiableList(taskStakeholders); 
+        return Collections.unmodifiableList(convertListFromJaxbImplToInterface(taskStakeholders)); 
     }
 
     @Override
     public void setTaskStakeholders(List<OrganizationalEntity> taskStakeholders) {
-        this.taskStakeholders = taskStakeholders;
+        this.taskStakeholders = convertListFromInterfaceToJaxbImpl(taskStakeholders);
     }
 
     @Override
     public List<OrganizationalEntity> getRecipients() {
         if( recipients == null ) { 
-            recipients = Collections.emptyList();
+            return Collections.emptyList();
         }
-        return Collections.unmodifiableList(recipients); 
+        return Collections.unmodifiableList(convertListFromJaxbImplToInterface(recipients)); 
     }
 
     @Override
     public void setRecipients(List<OrganizationalEntity> recipients) {
-        this.recipients = recipients;
+        this.recipients = convertListFromInterfaceToJaxbImpl(recipients);
     }
 
     public void readExternal(ObjectInput arg0) throws IOException, ClassNotFoundException {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException(methodName + " is not supported on the JAXB " + PeopleAssignments.class.getSimpleName()
-                + " implementation.");
+        unsupported(PeopleAssignments.class);
     }
 
     public void writeExternal(ObjectOutput arg0) throws IOException {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException(methodName + " is not supported on the JAXB " + PeopleAssignments.class.getSimpleName()
-                + " implementation.");
+        unsupported(PeopleAssignments.class);
     }
-
 
 }

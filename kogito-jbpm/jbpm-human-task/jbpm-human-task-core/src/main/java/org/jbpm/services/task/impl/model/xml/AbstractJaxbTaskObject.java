@@ -6,6 +6,9 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.kie.api.task.model.Group;
+import org.kie.api.task.model.User;
+
 public class AbstractJaxbTaskObject<T> {
 
     protected Class<?> realClass;
@@ -18,12 +21,15 @@ public class AbstractJaxbTaskObject<T> {
        this.realClass = realClass; 
     }
     
-    public AbstractJaxbTaskObject(T taskObject, Class objectInterface) {
+    public AbstractJaxbTaskObject(T taskObject, Class<?> objectInterface) {
         this(objectInterface);
         if (taskObject != null) {
 	        for (Method getIsMethod : objectInterface.getDeclaredMethods() ) { 
 	            String methodName = getIsMethod.getName();
 	            String fieldName;
+	            if( getIsMethod.getReturnType().equals(User.class) ) { 
+	                continue;
+	            }
 	            if (methodName.startsWith("get")) {
 	                fieldName = methodName.substring(3);
 	            } else if (methodName.startsWith("is")) {
@@ -49,15 +55,50 @@ public class AbstractJaxbTaskObject<T> {
         }
     }
     
+    /**
+     * I was forced to do this because we put the interfaces to our *ENTITIES* in the *PUBLIC* API. 
+     */
+    static class GetterUser implements User {
+    
+        private final String id;
+        public GetterUser(String id) { 
+            this.id = id;
+        }
+        
+        @Override
+        public String getId() {
+            return this.id;
+        }
+    
+        public void writeExternal(ObjectOutput out) throws IOException { unsupported(User.class); }
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException { unsupported(User.class); } 
+    }
+    
+    static class GetterGroup implements Group { 
+        private final String id;
+        public GetterGroup(String id) { 
+            this.id = id;
+        }
+        
+        @Override
+        public String getId() {
+            return this.id;
+        }
+    
+        public void writeExternal(ObjectOutput out) throws IOException { unsupported(User.class); }
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException { unsupported(User.class); } 
+    }
+
     public void readExternal(ObjectInput arg0) throws IOException, ClassNotFoundException {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException(methodName + " is not supported on the JAXB " + realClass.getSimpleName()
-                + " implementation.");
+        unsupported(realClass);
     }
 
     public void writeExternal(ObjectOutput arg0) throws IOException {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException(methodName + " is not supported on the JAXB " + realClass.getSimpleName()
-                + " implementation.");
+        unsupported(realClass);
+    }
+    
+    static Object unsupported(Class<?> realClass) { 
+        String methodName = (new Throwable()).getStackTrace()[1].getMethodName();
+        throw new UnsupportedOperationException(methodName + " is not supported on the JAXB " + realClass.getSimpleName() + " implementation.");
     }
 }

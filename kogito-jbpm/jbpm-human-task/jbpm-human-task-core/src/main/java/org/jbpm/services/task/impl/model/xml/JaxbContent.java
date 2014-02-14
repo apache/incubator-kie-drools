@@ -1,5 +1,7 @@
 package org.jbpm.services.task.impl.model.xml;
 
+import static org.jbpm.services.task.impl.model.xml.AbstractJaxbTaskObject.unsupported;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -91,14 +93,10 @@ public class JaxbContent implements Content {
     } 
     
     public void readExternal(ObjectInput arg0) throws IOException, ClassNotFoundException {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException(methodName + " is not supported on the JAXB " + Content.class.getSimpleName()
-                + " implementation.");
+        unsupported(Content.class);
     }
 
     public void writeExternal(ObjectOutput arg0) throws IOException {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException(methodName + " is not supported on the JAXB " + Content.class.getSimpleName()
-                + " implementation.");
+        unsupported(Content.class);
     }
 }

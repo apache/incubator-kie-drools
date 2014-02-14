@@ -7,9 +7,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.jbpm.services.task.impl.model.xml.adapter.UserXmlAdapter;
 import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.User;
 
@@ -26,8 +24,8 @@ public class JaxbComment extends AbstractJaxbTaskObject<Comment> implements Comm
     private String text;
     
     @XmlElement(name="added-by")
-    @XmlJavaTypeAdapter(value=UserXmlAdapter.class)
-    private User addedBy;
+    @XmlSchemaType(name = "string")
+    private String addedBy;
     
     @XmlElement(name="added-at")
     @XmlSchemaType(name = "dateTime")
@@ -39,6 +37,12 @@ public class JaxbComment extends AbstractJaxbTaskObject<Comment> implements Comm
     
     public JaxbComment(Comment comment) { 
         super(comment, Comment.class);
+        if( comment != null ) { 
+            User adder = comment.getAddedBy();
+            if( adder != null ) { 
+                this.addedBy = adder.getId();
+            }
+        }
     }
     
     @Override
@@ -53,7 +57,7 @@ public class JaxbComment extends AbstractJaxbTaskObject<Comment> implements Comm
 
     @Override
     public User getAddedBy() {
-        return addedBy;
+        return new GetterUser(this.addedBy);
     }
 
     @Override

@@ -16,6 +16,7 @@
 
 package org.jbpm.services.task.impl.model;
 
+import static org.jbpm.services.task.impl.model.TaskDataImpl.*;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -150,7 +151,7 @@ public class AttachmentImpl implements InternalAttachment {
     }
 
     public void setAttachedBy(User attachedBy) {
-        this.attachedBy = (UserImpl)attachedBy;
+        this.attachedBy = convertToUserImpl(attachedBy);
     }    
     
     public int getSize() {

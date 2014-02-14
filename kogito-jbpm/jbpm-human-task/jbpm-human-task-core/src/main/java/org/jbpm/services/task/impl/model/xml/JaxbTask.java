@@ -1,5 +1,7 @@
 package org.jbpm.services.task.impl.model.xml;
 
+import static org.jbpm.services.task.impl.model.xml.AbstractJaxbTaskObject.unsupported;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -12,9 +14,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.jbpm.services.task.impl.model.xml.adapter.I18NTextXmlAdapter;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
@@ -49,16 +49,13 @@ public class JaxbTask implements InternalTask {
     private String taskType; 
 
     @XmlElement(name="name")
-    @XmlJavaTypeAdapter(value=I18NTextXmlAdapter.class)
-    private List<I18NText> names;
+    private List<JaxbI18NText> names;
     
     @XmlElement(name="subject")
-    @XmlJavaTypeAdapter(value=I18NTextXmlAdapter.class)
-    private List<I18NText> subjects;
+    private List<JaxbI18NText> subjects;
     
     @XmlElement(name="description")
-    @XmlJavaTypeAdapter(value=I18NTextXmlAdapter.class)
-    private List<I18NText> descriptions;
+    private List<JaxbI18NText> descriptions;
     
     @XmlElement(name="people-assignments")
     private JaxbPeopleAssignments peopleAssignments;
@@ -66,10 +63,6 @@ public class JaxbTask implements InternalTask {
     @XmlElement
     private JaxbTaskData taskData;
     
-
-    @XmlElement
-    private JaxbDeadlines deadlines = new JaxbDeadlines();
-
     @XmlElement(name="form-name")
     @XmlSchemaType(name="String")
     private String formName;
@@ -95,12 +88,9 @@ public class JaxbTask implements InternalTask {
         // .. so we "eager-initialize" all values here to avoid problems later. (Also in JaxbPeopleAssignments)
         // Collection.toArray() == PersistenceBag.toArray(), which calls PersistenceBag.read(), initializing collection
         // See org.hibernate.collection.internal.PersistenceBag
-        this.names = task.getNames();
-        this.names.toArray();
-        this.subjects = task.getSubjects();
-        this.subjects.toArray();
-        this.descriptions = task.getDescriptions();
-        this.descriptions.toArray();
+        this.names = JaxbI18NText.convertListFromInterfaceToJaxbImpl(task.getNames());
+        this.subjects = JaxbI18NText.convertListFromInterfaceToJaxbImpl(task.getSubjects());
+        this.descriptions = JaxbI18NText.convertListFromInterfaceToJaxbImpl(task.getDescriptions());
         
         this.taskData = new JaxbTaskData(task.getTaskData());
         this.taskType = task.getTaskType();
@@ -140,11 +130,11 @@ public class JaxbTask implements InternalTask {
         if( names == null ) { 
             names = Collections.emptyList();
         }
-        return Collections.unmodifiableList(names);
+        return Collections.unmodifiableList(JaxbI18NText.convertListFromJaxbImplToInterface(names));
     }
 
     public void setNames(List<I18NText> names) {
-        this.names = names;
+        this.names = JaxbI18NText.convertListFromInterfaceToJaxbImpl(names);
     }
 
     @Override
@@ -152,11 +142,11 @@ public class JaxbTask implements InternalTask {
         if( subjects == null ) { 
             subjects = Collections.emptyList();
         }
-        return Collections.unmodifiableList(subjects);
+        return Collections.unmodifiableList(JaxbI18NText.convertListFromJaxbImplToInterface(subjects));
     }
 
     public void setSubjects(List<I18NText> subjects) {
-        this.subjects = subjects;
+        this.subjects = JaxbI18NText.convertListFromInterfaceToJaxbImpl(subjects);
     }
 
     @Override
@@ -164,11 +154,11 @@ public class JaxbTask implements InternalTask {
         if( descriptions == null ) { 
             descriptions = Collections.emptyList();
         }
-        return Collections.unmodifiableList(descriptions);
+        return Collections.unmodifiableList(JaxbI18NText.convertListFromJaxbImplToInterface(descriptions));
     }
 
     public void setDescriptions(List<I18NText> descriptions) {
-        this.descriptions = descriptions;
+        this.descriptions = JaxbI18NText.convertListFromInterfaceToJaxbImpl(descriptions);
     }
 
     @Override
@@ -204,16 +194,6 @@ public class JaxbTask implements InternalTask {
 
     public void setTaskType(String taskType) {
         this.taskType = taskType;
-    }
-
-    @Override
-    public Deadlines getDeadlines() {
-        return this.deadlines;
-    }
-
-    @Override
-    public void setDeadlines(Deadlines deadlines) {
-        // no-op
     }
 
     public Task getTask() { 
@@ -302,67 +282,66 @@ public class JaxbTask implements InternalTask {
 
     @Override
     public void readExternal(ObjectInput arg0) throws IOException, ClassNotFoundException {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException( methodName + " is not supported on the JAXB " + Task.class.getSimpleName() + " implementation.");
+        unsupported(Task.class);
     }
 
     @Override
     public void writeExternal(ObjectOutput arg0) throws IOException {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException( methodName + " is not supported on the JAXB " + Task.class.getSimpleName() + " implementation.");
+        unsupported(Task.class);
     }
 
     @Override
     public Boolean isArchived() {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException( methodName + " is not supported on the JAXB " + Task.class.getSimpleName() + " implementation.");
+        return (Boolean) unsupported(Task.class);
     }
 
     @Override
     public void setArchived(Boolean archived) {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException( methodName + " is not supported on the JAXB " + Task.class.getSimpleName() + " implementation.");
+        unsupported(Task.class);
+    }
+
+    @Override
+    public Deadlines getDeadlines() {
+        return (Deadlines) unsupported(Task.class);
+    }
+
+    @Override
+    public void setDeadlines(Deadlines deadlines) {
+        unsupported(Task.class);
     }
 
     public void setVersion(Integer version) {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException( methodName + " is not supported on the JAXB " + Task.class.getSimpleName() + " implementation.");
+        unsupported(Task.class);
     }
 
     @Override
     public int getVersion() {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException( methodName + " is not supported on the JAXB " + Task.class.getSimpleName() + " implementation.");
+        return (Integer) unsupported(Task.class);
     }
 
     @Override
     public Delegation getDelegation() {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException( methodName + " is not supported on the JAXB " + Task.class.getSimpleName() + " implementation.");
+        return (Delegation) unsupported(Task.class);
     }
 
     @Override
     public void setDelegation(Delegation delegation) {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException( methodName + " is not supported on the JAXB " + Task.class.getSimpleName() + " implementation.");
+        unsupported(Task.class);
     }
 
     @Override
     public Short getArchived() {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException( methodName + " is not supported on the JAXB " + Task.class.getSimpleName() + " implementation.");
+        return (Short) unsupported(Task.class);
     }
 
     @Override
     public SubTasksStrategy getSubTaskStrategy() {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException( methodName + " is not supported on the JAXB " + Task.class.getSimpleName() + " implementation.");
+        return (SubTasksStrategy) unsupported(Task.class);
     }
 
     @Override
     public void setSubTaskStrategy(SubTasksStrategy subTaskStrategy) {
-        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
-        throw new UnsupportedOperationException( methodName + " is not supported on the JAXB " + Task.class.getSimpleName() + " implementation.");
+        unsupported(Task.class);
     }
 
 }

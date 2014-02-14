@@ -2,7 +2,7 @@ package org.jbpm.services.task.jaxb;
 
 import org.yaml.snakeyaml.Yaml;
 
-public class YamlSerializationTest extends AbstractSerializationTest {
+public class YamlTaskSerializationTest extends AbstractTaskSerializationTest {
 
     public TestType getType() { 
         return TestType.YAML;

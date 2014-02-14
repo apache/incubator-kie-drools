@@ -15,15 +15,17 @@
  */
 package org.jbpm.services.task.commands;
 
+import static org.jbpm.services.task.impl.model.xml.JaxbOrganizationalEntity.convertListFromInterfaceToJaxbImpl;
+import static org.jbpm.services.task.impl.model.xml.JaxbOrganizationalEntity.convertListFromJaxbImplToInterface;
+
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.jbpm.services.task.impl.model.xml.adapter.OrganizationalEntityXmlAdapter;
+import org.jbpm.services.task.impl.model.xml.JaxbOrganizationalEntity;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.internal.command.Context;
 
@@ -44,8 +46,7 @@ public class NominateTaskCommand extends UserGroupCallbackTaskCommand<Void> {
 	private static final long serialVersionUID = 1874781422343631410L;
 
 	@XmlElement(name="potential-owner")
-    @XmlJavaTypeAdapter(value=OrganizationalEntityXmlAdapter.class)
-    private List<OrganizationalEntity> potentialOwners;
+    private List<JaxbOrganizationalEntity> potentialOwners;
     
     public NominateTaskCommand() {
     }
@@ -53,24 +54,24 @@ public class NominateTaskCommand extends UserGroupCallbackTaskCommand<Void> {
     public NominateTaskCommand(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
         this.taskId = taskId;
         this.userId = userId;
-        this.potentialOwners = potentialOwners;
+        setPotentialOwners(potentialOwners);
     }
 
     public void setPotentialOwners(List<OrganizationalEntity> potentialOwners) {
-		this.potentialOwners = potentialOwners;
+		this.potentialOwners = convertListFromInterfaceToJaxbImpl(potentialOwners);
 	}
 
 	public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         doCallbackUserOperation(userId, context);
-        doCallbackOperationForPotentialOwners(potentialOwners, context);
+        List<OrganizationalEntity> realPotOwners = convertListFromJaxbImplToInterface(potentialOwners);
+        doCallbackOperationForPotentialOwners(realPotOwners, context);
         doUserGroupCallbackOperation(userId, null, context);
-    	context.getTaskInstanceService().nominate(taskId, userId, potentialOwners);
-    	return null;
-       
+        context.getTaskInstanceService().nominate(taskId, userId, realPotOwners);
+        return null;
     }
 
-    public List<OrganizationalEntity> getPotentialOwners() {
+    public List<JaxbOrganizationalEntity> getPotentialOwners() {
         return potentialOwners;
     }
     

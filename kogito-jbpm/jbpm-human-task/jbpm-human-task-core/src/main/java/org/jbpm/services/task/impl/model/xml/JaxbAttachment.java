@@ -7,9 +7,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.jbpm.services.task.impl.model.xml.adapter.UserXmlAdapter;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.User;
 
@@ -33,9 +31,9 @@ public class JaxbAttachment extends AbstractJaxbTaskObject<Attachment> implement
     @XmlSchemaType(name = "dateTime")
     private Date attachedAt;
 
-    @XmlElement
-    @XmlJavaTypeAdapter(value=UserXmlAdapter.class)
-    private User attachedBy;
+    @XmlElement(name="attached-by")
+    @XmlSchemaType(name = "string")
+    private String attachedBy;
 
     @XmlElement
     @XmlSchemaType(name = "size")
@@ -51,6 +49,10 @@ public class JaxbAttachment extends AbstractJaxbTaskObject<Attachment> implement
     
     public JaxbAttachment(Attachment attachment) { 
         super(attachment, Attachment.class);
+        User attacher = attachment.getAttachedBy();
+        if( attacher != null ) { 
+            this.attachedBy = attacher.getId();
+        }
     }
         
     @Override
@@ -75,7 +77,7 @@ public class JaxbAttachment extends AbstractJaxbTaskObject<Attachment> implement
 
     @Override
     public User getAttachedBy() {
-        return attachedBy;
+        return new GetterUser(this.attachedBy);
     }
 
     @Override

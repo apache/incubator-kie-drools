@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
 import org.junit.Test;
 
-public class JaxbSerializationTest extends AbstractSerializationTest {
+public class JaxbTaskSerializationTest extends AbstractTaskSerializationTest {
 
     private Class<?>[] jaxbClasses = { JaxbTask.class };
     

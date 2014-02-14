@@ -38,6 +38,7 @@ import org.jbpm.services.task.exception.IllegalTaskStateException;
 import org.jbpm.services.task.utils.CollectionUtils;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
+import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.User;
@@ -420,14 +421,12 @@ public class TaskDataImpl implements InternalTaskData {
             // if there is a single potential owner, assign and set status to Reserved
             OrganizationalEntity potentialOwner = potentialOwners.get(0);
             // if there is a single potential user owner, assign and set status to Reserved
-            if (potentialOwner instanceof UserImpl) {
-                setActualOwner((UserImpl) potentialOwner);
-
+            if (potentialOwner instanceof User) {
+                setActualOwner((User) potentialOwner);
                 assignedStatus = Status.Reserved;
             }
             //If there is a group set as potentialOwners, set the status to Ready ??
-            if (potentialOwner instanceof GroupImpl) {
-
+            if (potentialOwner instanceof Group) {
                 assignedStatus = Status.Ready;
             }
         } else if (potentialOwners.size() > 1) {
@@ -469,7 +468,7 @@ public class TaskDataImpl implements InternalTaskData {
     }
 
     public void setActualOwner(User actualOwner) {
-        this.actualOwner = (UserImpl) actualOwner;
+        this.actualOwner = convertToUserImpl(actualOwner);
     }
 
     public User getCreatedBy() {
@@ -477,7 +476,7 @@ public class TaskDataImpl implements InternalTaskData {
     }
 
     public void setCreatedBy(User createdBy) {
-        this.createdBy = (UserImpl) createdBy;
+        this.createdBy = convertToUserImpl(createdBy);
     }
 
     public Date getCreatedOn() {
@@ -846,6 +845,28 @@ public class TaskDataImpl implements InternalTaskData {
     @Override
     public void setDeploymentId(String deploymentId) {
         this.deploymentId = deploymentId;
+    }
+    
+    static UserImpl convertToUserImpl(User user) { 
+        if( user == null ) { 
+            return null;
+        }
+        if( user instanceof UserImpl ) { 
+            return (UserImpl) user;
+        } else { 
+            return new UserImpl(user.getId());
+        }
+    }
+
+    static GroupImpl convertToGroupImpl(GroupImpl group) { 
+        if( group == null ) { 
+            return null;
+        }
+        if( group instanceof GroupImpl ) { 
+            return (GroupImpl) group;
+        } else { 
+            return new GroupImpl(group.getId());
+        }
     }
 
 }
