@@ -282,7 +282,7 @@ public class EntitySelectorConfig extends SelectorConfig {
             throw new IllegalArgumentException("The minimumCacheType (" + minimumCacheType
                     + ") is not yet supported. Please use " + SelectionCacheType.PHASE + " instead.");
         }
-        return new FromSolutionEntitySelector(entityDescriptor, randomSelection);
+        return new FromSolutionEntitySelector(entityDescriptor, minimumCacheType, randomSelection);
     }
 
     private boolean hasFiltering(PlanningEntityDescriptor entityDescriptor) {

@@ -21,14 +21,11 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleBridge;
-import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRandomIterator;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * This is the common {@link EntitySelector} implementation.
@@ -36,13 +33,16 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 public class FromSolutionEntitySelector extends AbstractEntitySelector {
 
     protected final PlanningEntityDescriptor entityDescriptor;
+    protected final SelectionCacheType minimumCacheType;
     protected final boolean randomSelection;
 
     protected List<Object> cachedEntityList = null;
     protected Long cachedEntityListRevision = null;
 
-    public FromSolutionEntitySelector(PlanningEntityDescriptor entityDescriptor, boolean randomSelection) {
+    public FromSolutionEntitySelector(PlanningEntityDescriptor entityDescriptor,
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
         this.entityDescriptor = entityDescriptor;
+        this.minimumCacheType = minimumCacheType;
         this.randomSelection = randomSelection;
     }
 
@@ -52,7 +52,9 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
 
     @Override
     public SelectionCacheType getCacheType() {
-        return SelectionCacheType.STEP;
+        SelectionCacheType inheritCacheType = SelectionCacheType.STEP;
+        return (inheritCacheType.compareTo(minimumCacheType) > 0)
+                ? inheritCacheType : minimumCacheType;
     }
 
     // ************************************************************************
@@ -72,6 +74,10 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
         super.stepStarted(stepScope);
         ScoreDirector scoreDirector = stepScope.getScoreDirector();
         if (scoreDirector.isWorkingEntityListDirty(cachedEntityListRevision)) {
+            if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
+                throw new IllegalStateException("The selector (" + this + ") with minimumCacheType (" + minimumCacheType
+                        + ")'s workingEntityList becomes dirty between steps.");
+            }
             cachedEntityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
             cachedEntityListRevision = scoreDirector.getWorkingEntityListRevision();
         }

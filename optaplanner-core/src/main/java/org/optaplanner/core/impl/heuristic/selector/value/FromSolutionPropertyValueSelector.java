@@ -37,6 +37,7 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
         implements EntityIndependentValueSelector {
 
     protected final EntityIndependentValueRangeDescriptor valueRangeDescriptor;
+    protected final SelectionCacheType minimumCacheType;
     protected final boolean randomSelection;
     protected final boolean valueRangeMightContainEntity;
 
@@ -44,8 +45,9 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
     protected Long cachedEntityListRevision = null;
 
     public FromSolutionPropertyValueSelector(EntityIndependentValueRangeDescriptor valueRangeDescriptor,
-            boolean randomSelection) {
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
         this.valueRangeDescriptor = valueRangeDescriptor;
+        this.minimumCacheType = minimumCacheType;
         this.randomSelection = randomSelection;
         valueRangeMightContainEntity = valueRangeDescriptor.mightContainEntity();
     }
@@ -56,7 +58,10 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
 
     @Override
     public SelectionCacheType getCacheType() {
-        return valueRangeMightContainEntity ? SelectionCacheType.STEP : SelectionCacheType.PHASE;
+        SelectionCacheType inheritCacheType = valueRangeMightContainEntity
+                ? SelectionCacheType.STEP : SelectionCacheType.PHASE;
+        return (inheritCacheType.compareTo(minimumCacheType) > 0)
+                ? inheritCacheType : minimumCacheType;
     }
 
     // ************************************************************************
@@ -80,6 +85,11 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
         if (valueRangeMightContainEntity) {
             ScoreDirector scoreDirector = stepScope.getScoreDirector();
             if (scoreDirector.isWorkingEntityListDirty(cachedEntityListRevision)) {
+                if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
+                    throw new IllegalStateException("The selector (" + this
+                            + ") with minimumCacheType (" + minimumCacheType
+                            + ")'s workingEntityList becomes dirty between steps.");
+                }
                 cachedValueRange = (ValueRange<Object>)
                         valueRangeDescriptor.extractValueRange(scoreDirector.getWorkingSolution());
                 cachedEntityListRevision = scoreDirector.getWorkingEntityListRevision();

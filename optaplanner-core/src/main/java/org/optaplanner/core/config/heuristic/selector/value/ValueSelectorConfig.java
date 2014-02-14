@@ -230,7 +230,7 @@ public class ValueSelectorConfig extends SelectorConfig {
         }
         if (valueRangeDescriptor.isEntityIndependent()) {
             return new FromSolutionPropertyValueSelector(
-                    (EntityIndependentValueRangeDescriptor) valueRangeDescriptor, randomSelection);
+                    (EntityIndependentValueRangeDescriptor) valueRangeDescriptor, minimumCacheType, randomSelection);
         } else {
             // TODO Do not allow PHASE cache on FromEntityPropertyValueSelector, except if the moveSelector is PHASE cached too.
             return new FromEntityPropertyValueSelector(valueRangeDescriptor, randomSelection);
