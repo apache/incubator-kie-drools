@@ -43,6 +43,7 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
 
     protected ValueRange<Object> cachedValueRange = null;
     protected Long cachedEntityListRevision = null;
+    protected boolean cachedEntityListIsDirty = false;
 
     public FromSolutionPropertyValueSelector(EntityIndependentValueRangeDescriptor valueRangeDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
@@ -76,6 +77,7 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
                 valueRangeDescriptor.extractValueRange(scoreDirector.getWorkingSolution());
         if (valueRangeMightContainEntity) {
             cachedEntityListRevision = scoreDirector.getWorkingEntityListRevision();
+            cachedEntityListIsDirty = false;
         }
     }
 
@@ -86,13 +88,12 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
             ScoreDirector scoreDirector = stepScope.getScoreDirector();
             if (scoreDirector.isWorkingEntityListDirty(cachedEntityListRevision)) {
                 if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
-                    throw new IllegalStateException("The selector (" + this
-                            + ") with minimumCacheType (" + minimumCacheType
-                            + ")'s workingEntityList becomes dirty between steps.");
+                    cachedEntityListIsDirty = true;
+                } else {
+                    cachedValueRange = (ValueRange<Object>)
+                            valueRangeDescriptor.extractValueRange(scoreDirector.getWorkingSolution());
+                    cachedEntityListRevision = scoreDirector.getWorkingEntityListRevision();
                 }
-                cachedValueRange = (ValueRange<Object>)
-                        valueRangeDescriptor.extractValueRange(scoreDirector.getWorkingSolution());
-                cachedEntityListRevision = scoreDirector.getWorkingEntityListRevision();
             }
         }
     }
@@ -103,6 +104,7 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
         cachedValueRange = null;
         if (valueRangeMightContainEntity) {
             cachedEntityListRevision = null;
+            cachedEntityListIsDirty = false;
         }
     }
 
@@ -131,10 +133,18 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
     }
 
     public Iterator<Object> iterator() {
+        checkCachedEntityListIsDirty();
         if (!randomSelection) {
             return ((CountableValueRange<Object>) cachedValueRange).createOriginalIterator();
         } else {
             return cachedValueRange.createRandomIterator(workingRandom);
+        }
+    }
+
+    private void checkCachedEntityListIsDirty() {
+        if (cachedEntityListIsDirty) {
+            throw new IllegalStateException("The selector (" + this + ") with minimumCacheType (" + minimumCacheType
+                    + ")'s workingEntityList became dirty between steps but is still used afterwards.");
         }
     }
 

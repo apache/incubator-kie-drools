@@ -38,6 +38,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
 
     protected List<Object> cachedEntityList = null;
     protected Long cachedEntityListRevision = null;
+    protected boolean cachedEntityListIsDirty = false;
 
     public FromSolutionEntitySelector(PlanningEntityDescriptor entityDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
@@ -67,6 +68,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
         ScoreDirector scoreDirector = phaseScope.getScoreDirector();
         cachedEntityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
         cachedEntityListRevision = scoreDirector.getWorkingEntityListRevision();
+        cachedEntityListIsDirty = false;
     }
 
     @Override
@@ -75,11 +77,11 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
         ScoreDirector scoreDirector = stepScope.getScoreDirector();
         if (scoreDirector.isWorkingEntityListDirty(cachedEntityListRevision)) {
             if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
-                throw new IllegalStateException("The selector (" + this + ") with minimumCacheType (" + minimumCacheType
-                        + ")'s workingEntityList becomes dirty between steps.");
+                cachedEntityListIsDirty = true;
+            } else {
+                cachedEntityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
+                cachedEntityListRevision = scoreDirector.getWorkingEntityListRevision();
             }
-            cachedEntityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
-            cachedEntityListRevision = scoreDirector.getWorkingEntityListRevision();
         }
     }
 
@@ -88,6 +90,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
         super.phaseEnded(phaseScope);
         cachedEntityList = null;
         cachedEntityListRevision = null;
+        cachedEntityListIsDirty = false;
     }
 
     // ************************************************************************
@@ -108,6 +111,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     }
 
     public Iterator<Object> iterator() {
+        checkCachedEntityListIsDirty();
         if (!randomSelection) {
             return cachedEntityList.iterator();
         } else {
@@ -116,6 +120,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     }
 
     public ListIterator<Object> listIterator() {
+        checkCachedEntityListIsDirty();
         if (!randomSelection) {
             return cachedEntityList.listIterator();
         } else {
@@ -125,6 +130,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     }
 
     public ListIterator<Object> listIterator(int index) {
+        checkCachedEntityListIsDirty();
         if (!randomSelection) {
             return cachedEntityList.listIterator(index);
         } else {
@@ -134,7 +140,15 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     }
 
     public Iterator<Object> endingIterator() {
+        checkCachedEntityListIsDirty();
         return cachedEntityList.iterator();
+    }
+
+    private void checkCachedEntityListIsDirty() {
+        if (cachedEntityListIsDirty) {
+            throw new IllegalStateException("The selector (" + this + ") with minimumCacheType (" + minimumCacheType
+                    + ")'s workingEntityList became dirty between steps but is still used afterwards.");
+        }
     }
 
     @Override
