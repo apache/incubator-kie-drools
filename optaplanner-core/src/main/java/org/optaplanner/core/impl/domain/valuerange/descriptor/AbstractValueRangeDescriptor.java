@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.domain.valuerange.descriptor;
 
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.buildin.composite.NullableCountableValueRange;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 
@@ -40,6 +41,18 @@ public abstract class AbstractValueRangeDescriptor implements ValueRangeDescript
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    @Override
+    public boolean mightContainEntity() {
+        SolutionDescriptor solutionDescriptor = variableDescriptor.getEntityDescriptor().getSolutionDescriptor();
+        Class<?> variablePropertyType = variableDescriptor.getVariablePropertyType();
+        for (Class<?> entityClass : solutionDescriptor.getPlanningEntityClassSet()) {
+            if (variablePropertyType.isAssignableFrom(entityClass)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     protected <T> ValueRange<T> doNullInValueRangeWrapping(ValueRange<T> valueRange) {
         if (addNullInValueRange) {

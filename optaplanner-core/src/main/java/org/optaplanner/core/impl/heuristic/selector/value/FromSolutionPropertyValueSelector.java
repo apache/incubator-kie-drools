@@ -25,30 +25,29 @@ import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDesc
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * This is the common {@link ValueSelector} implementation.
  */
 public class FromSolutionPropertyValueSelector extends AbstractValueSelector
-        implements EntityIndependentValueSelector, SelectionCacheLifecycleListener {
+        implements EntityIndependentValueSelector {
 
     protected final EntityIndependentValueRangeDescriptor valueRangeDescriptor;
-    protected final SelectionCacheType cacheType;
     protected final boolean randomSelection;
+    protected final boolean valueRangeMightContainEntity;
 
     protected ValueRange<Object> cachedValueRange = null;
+    protected Long cachedEntityListRevision = null;
 
     public FromSolutionPropertyValueSelector(EntityIndependentValueRangeDescriptor valueRangeDescriptor,
-            SelectionCacheType cacheType, boolean randomSelection) {
+            boolean randomSelection) {
         this.valueRangeDescriptor = valueRangeDescriptor;
-        this.cacheType = cacheType;
         this.randomSelection = randomSelection;
-        if (cacheType.isNotCached()) {
-            throw new IllegalArgumentException("The selector (" + this
-                    + ") does not support the cacheType (" + cacheType + ").");
-        }
-        solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
+        valueRangeMightContainEntity = valueRangeDescriptor.mightContainEntity();
     }
 
     public PlanningVariableDescriptor getVariableDescriptor() {
@@ -57,20 +56,44 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
 
     @Override
     public SelectionCacheType getCacheType() {
-        return cacheType;
+        return valueRangeMightContainEntity ? SelectionCacheType.STEP : SelectionCacheType.PHASE;
     }
 
     // ************************************************************************
     // Cache lifecycle methods
     // ************************************************************************
 
-    public void constructCache(DefaultSolverScope solverScope) {
+    @Override
+    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+        super.phaseStarted(phaseScope);
+        ScoreDirector scoreDirector = phaseScope.getScoreDirector();
         cachedValueRange = (ValueRange<Object>)
-                valueRangeDescriptor.extractValueRange(solverScope.getWorkingSolution());
+                valueRangeDescriptor.extractValueRange(scoreDirector.getWorkingSolution());
+        if (valueRangeMightContainEntity) {
+            cachedEntityListRevision = scoreDirector.getWorkingEntityListRevision();
+        }
     }
 
-    public void disposeCache(DefaultSolverScope solverScope) {
+    @Override
+    public void stepStarted(AbstractStepScope stepScope) {
+        super.stepStarted(stepScope);
+        if (valueRangeMightContainEntity) {
+            ScoreDirector scoreDirector = stepScope.getScoreDirector();
+            if (scoreDirector.isWorkingEntityListDirty(cachedEntityListRevision)) {
+                cachedValueRange = (ValueRange<Object>)
+                        valueRangeDescriptor.extractValueRange(scoreDirector.getWorkingSolution());
+                cachedEntityListRevision = scoreDirector.getWorkingEntityListRevision();
+            }
+        }
+    }
+
+    @Override
+    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+        super.phaseEnded(phaseScope);
         cachedValueRange = null;
+        if (valueRangeMightContainEntity) {
+            cachedEntityListRevision = null;
+        }
     }
 
     // ************************************************************************

@@ -303,11 +303,6 @@ public class PlanningVariableDescriptor {
         variablePropertyAccessor.executeSetter(entity, value);
     }
 
-    public boolean isValueRangeImmutableDuringPhase() {
-        // TODO if chained and not entityCountStable return false
-        return true;
-    }
-
     public SelectionSorter getIncreasingStrengthSorter() {
         return increasingStrengthSorter;
     }

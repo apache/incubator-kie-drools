@@ -220,7 +220,7 @@ public class ValueSelectorConfig extends SelectorConfig {
             HeuristicConfigPolicy configPolicy, PlanningVariableDescriptor variableDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         ValueRangeDescriptor valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
-        // TODO minimumCacheType SOLVER is only a problem if the valueRange includes entities (or custom weird cloning)
+        // TODO minimumCacheType SOLVER is only a problem if the valueRange includes entities or custom weird cloning
         if (minimumCacheType == SelectionCacheType.SOLVER) {
             // TODO Solver cached entities are not compatible with DroolsScoreCalculator and IncrementalScoreDirector
             // because between phases the entities get cloned and the KieSession/Maps contains those clones afterwards
@@ -229,23 +229,10 @@ public class ValueSelectorConfig extends SelectorConfig {
                     + ") is not yet supported. Please use " + SelectionCacheType.PHASE + " instead.");
         }
         if (valueRangeDescriptor.isEntityIndependent()) {
-            // FromSolutionPropertyValueSelector caches by design, so it uses the minimumCacheType
-            if (variableDescriptor.isValueRangeImmutableDuringPhase()) {
-                if (minimumCacheType.compareTo(SelectionCacheType.PHASE) < 0) {
-                    // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
-                    minimumCacheType = SelectionCacheType.PHASE;
-                }
-            } else {
-                if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
-                    // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
-                    minimumCacheType = SelectionCacheType.STEP;
-                }
-            }
             return new FromSolutionPropertyValueSelector(
-                    (EntityIndependentValueRangeDescriptor) valueRangeDescriptor,
-                    minimumCacheType, randomSelection);
+                    (EntityIndependentValueRangeDescriptor) valueRangeDescriptor, randomSelection);
         } else {
-            // TODO Do not PHASE cache FromEntity the ValueSelector, except if the moveSelector is PHASE cached too.
+            // TODO Do not allow PHASE cache on FromEntityPropertyValueSelector, except if the moveSelector is PHASE cached too.
             return new FromEntityPropertyValueSelector(valueRangeDescriptor, randomSelection);
         }
     }

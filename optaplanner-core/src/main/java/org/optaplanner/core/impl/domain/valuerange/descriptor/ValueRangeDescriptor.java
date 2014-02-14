@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.domain.valuerange.descriptor;
 
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
@@ -34,10 +35,17 @@ public interface ValueRangeDescriptor {
     boolean isCountable();
 
     /**
-     * If this method return true, this instance is safe to cast to {@link EntityIndependentValueRangeDescriptor}.
+     * If this method return true, this instance is safe to cast to {@link EntityIndependentValueRangeDescriptor},
+     * otherwise it requires an entity to determine the {@link ValueRange}.
      * @return true if the {@link ValueRange} is the same for all entities of the same solution
      */
     boolean isEntityIndependent();
+
+    /**
+     * @return true if the {@link ValueRange} might contain a planning entity instance
+     * (not necessarily of the same entity class as this entity class of this descriptor.
+     */
+    boolean mightContainEntity();
 
     /**
      * @param solution never null

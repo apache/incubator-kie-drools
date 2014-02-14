@@ -61,6 +61,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
 
     @Override
     public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+        super.phaseStarted(phaseScope);
         ScoreDirector scoreDirector = phaseScope.getScoreDirector();
         cachedEntityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
         cachedEntityListRevision = scoreDirector.getWorkingEntityListRevision();
@@ -68,6 +69,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
 
     @Override
     public void stepStarted(AbstractStepScope stepScope) {
+        super.stepStarted(stepScope);
         ScoreDirector scoreDirector = stepScope.getScoreDirector();
         if (scoreDirector.isWorkingEntityListDirty(cachedEntityListRevision)) {
             cachedEntityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
@@ -77,6 +79,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
 
     @Override
     public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+        super.phaseEnded(phaseScope);
         cachedEntityList = null;
         cachedEntityListRevision = null;
     }
