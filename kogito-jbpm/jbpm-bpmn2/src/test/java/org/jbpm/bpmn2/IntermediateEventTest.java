@@ -27,13 +27,19 @@ import java.util.Set;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.persistence.SingleSessionCommandService;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.bpmn2.test.RequirePersistence;
+import org.jbpm.persistence.ProcessPersistenceContext;
+import org.jbpm.persistence.ProcessPersistenceContextManager;
+import org.jbpm.persistence.processinstance.JPASignalManager;
 import org.jbpm.process.instance.InternalProcessRuntime;
+import org.jbpm.process.instance.ProcessRuntimeImpl;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.process.instance.timer.TimerInstance;
@@ -51,8 +57,10 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
@@ -1590,6 +1598,76 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ksession2.signalEvent("MyMessage", "SomeValue");
         assertProcessInstanceFinished(processInstance2, ksession2);
         ksession2.dispose();
+    }
+    
+    @Test
+    @RequirePersistence
+    public void testEventTypesLifeCycle() throws Exception {
+        // JBPM-4246
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchSignalBetweenUserTasks.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
+        ksession.startProcess("BPMN2-IntermediateCatchSignalBetweenUserTasks");
+
+        int signalListSize = ksession.execute(new GenericCommand<Integer>() {
+            public Integer execute(Context context) {
+                SingleSessionCommandService commandService = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) ksession)
+                        .getCommandService();
+                InternalKnowledgeRuntime kruntime = (InternalKnowledgeRuntime) commandService.getKieSession();
+                ProcessPersistenceContextManager contextManager = (ProcessPersistenceContextManager) kruntime
+                        .getEnvironment().get(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER);
+                ProcessPersistenceContext pcontext = contextManager.getProcessPersistenceContext();
+
+                List<Long> processInstancesToSignalList = pcontext.getProcessInstancesWaitingForEvent("MySignal");
+                return processInstancesToSignalList.size();
+            }
+        });
+        
+        // Process instance is not waiting for signal
+        assertEquals(0, signalListSize);
+
+        ksession.getWorkItemManager().completeWorkItem(1, null);
+        
+        signalListSize = ksession.execute(new GenericCommand<Integer>() {
+            public Integer execute(Context context) {
+                SingleSessionCommandService commandService = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) ksession)
+                        .getCommandService();
+                InternalKnowledgeRuntime kruntime = (InternalKnowledgeRuntime) commandService.getKieSession();
+                ProcessPersistenceContextManager contextManager = (ProcessPersistenceContextManager) kruntime
+                        .getEnvironment().get(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER);
+                ProcessPersistenceContext pcontext = contextManager.getProcessPersistenceContext();
+
+                List<Long> processInstancesToSignalList = pcontext.getProcessInstancesWaitingForEvent("MySignal");
+                return processInstancesToSignalList.size();
+            }
+        });
+        
+        // Process instance is waiting for signal now
+        assertEquals(1, signalListSize);
+
+        ksession.signalEvent("MySignal", null);
+        
+        signalListSize = ksession.execute(new GenericCommand<Integer>() {
+            public Integer execute(Context context) {
+                SingleSessionCommandService commandService = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) ksession)
+                        .getCommandService();
+                InternalKnowledgeRuntime kruntime = (InternalKnowledgeRuntime) commandService.getKieSession();
+                ProcessPersistenceContextManager contextManager = (ProcessPersistenceContextManager) kruntime
+                        .getEnvironment().get(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER);
+                ProcessPersistenceContext pcontext = contextManager.getProcessPersistenceContext();
+
+                List<Long> processInstancesToSignalList = pcontext.getProcessInstancesWaitingForEvent("MySignal");
+                return processInstancesToSignalList.size();
+            }
+        });
+        
+        // Process instance is not waiting for signal
+        assertEquals(0, signalListSize);
+        
+        ksession.getWorkItemManager().completeWorkItem(2, null);
+
+        ksession.dispose();
+
     }
 
     /*
