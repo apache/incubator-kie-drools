@@ -50,6 +50,8 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
     protected final SolutionDescriptor solutionDescriptor;
     protected final Map<Class, Constructor> constructorCache = new HashMap<Class, Constructor>();
     protected final Map<Class, List<Field>> fieldListCache = new HashMap<Class, List<Field>>();
+    protected final Map<Field, Boolean> deepCloneDecisionFieldCache = new HashMap<Field, Boolean>();
+    protected final Map<Class, Boolean> deepCloneDecisionActualValueClassCache = new HashMap<Class, Boolean>();
 
     public FieldAccessingSolutionCloner(SolutionDescriptor solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
@@ -87,6 +89,68 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             fieldListCache.put(clazz, fieldList);
         }
         return fieldList;
+    }
+
+    protected boolean retrieveDeepCloneDecision(Field field, Class<?> actualValueClass) {
+        Boolean deepCloneDecision = deepCloneDecisionFieldCache.get(field);
+        if (deepCloneDecision == null) {
+            deepCloneDecision = isFieldAnEntityPropertyOnSolution(field) || isFieldAnEntityOrSolution(field);
+            deepCloneDecisionFieldCache.put(field, deepCloneDecision);
+        }
+        if (deepCloneDecision) {
+            return true;
+        }
+        deepCloneDecision = deepCloneDecisionActualValueClassCache.get(actualValueClass);
+        if (deepCloneDecision == null) {
+            deepCloneDecision = isClassEntityOrSolution(actualValueClass);
+            deepCloneDecisionActualValueClassCache.put(actualValueClass, deepCloneDecision);
+        }
+        return deepCloneDecision;
+    }
+
+    protected boolean isFieldAnEntityPropertyOnSolution(Field field) {
+        Class<?> declaringClass = field.getDeclaringClass();
+        if (solutionDescriptor.getSolutionClass().isAssignableFrom(declaringClass)) {
+            String fieldName = field.getName();
+            // This assumes we're dealing with a simple getter/setter.
+            // If that assumption is false, validateCloneSolution(...) fails-fast.
+            if (solutionDescriptor.getEntityPropertyAccessorMap().get(fieldName) != null) {
+                return true;
+            }
+            // This assumes we're dealing with a simple getter/setter.
+            // If that assumption is false, validateCloneSolution(...) fails-fast.
+            if (solutionDescriptor.getEntityCollectionPropertyAccessorMap().get(fieldName) != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected boolean isFieldAnEntityOrSolution(Field field) {
+        Class<?> type = field.getType();
+        if (isClassEntityOrSolution(type)) {
+            return true;
+        }
+        if (Collection.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type)) {
+            // Check the generic type arguments of the field.
+            // Yes, it is possible for fields and methods, but not instances!
+            Type genericType = field.getGenericType();
+            if (genericType instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) genericType;
+                for (Type actualTypeArgument : parameterizedType.getActualTypeArguments()) {
+                    if (actualTypeArgument instanceof Class
+                            && isClassEntityOrSolution((Class) actualTypeArgument)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isClassEntityOrSolution(Class<?> type) {
+        return solutionDescriptor.hasEntityDescriptor(type)
+                || solutionDescriptor.getSolutionClass().isAssignableFrom(type);
     }
 
     protected class FieldAccessingSolutionClonerRun {
@@ -160,69 +224,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             if (originalValue == null) {
                 return false;
             }
-            if (isFieldAnEntityPropertyOnSolution(field)) {
-                return true;
-            }
-            if (isFieldAnEntityOrSolution(field)) {
-                return true;
-            }
-            if (isValueAnEntityOrSolution(originalValue)) {
-                return true;
-            }
-            return false;
-        }
-
-        protected boolean isFieldAnEntityPropertyOnSolution(Field field) {
-            Class<?> declaringClass = field.getDeclaringClass();
-            if (solutionDescriptor.getSolutionClass().isAssignableFrom(declaringClass)) {
-                String fieldName = field.getName();
-                // This assumes we're dealing with a simple getter/setter.
-                // If that assumption is false, validateCloneSolution(...) fails-fast.
-                if (solutionDescriptor.getEntityPropertyAccessorMap().get(fieldName) != null) {
-                    return true;
-                }
-                // This assumes we're dealing with a simple getter/setter.
-                // If that assumption is false, validateCloneSolution(...) fails-fast.
-                if (solutionDescriptor.getEntityCollectionPropertyAccessorMap().get(fieldName) != null) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        protected boolean isFieldAnEntityOrSolution(Field field) {
-            Class<?> type = field.getType();
-            if (isClassEntityOrSolution(type)) {
-                return true;
-            }
-            if (Collection.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type)) {
-                // Check the generic type arguments of the field.
-                // Yes, it is possible for fields and methods, but not instances!
-                Type genericType = field.getGenericType();
-                if (genericType instanceof ParameterizedType) {
-                    ParameterizedType parameterizedType = (ParameterizedType) genericType;
-                    for (Type actualTypeArgument : parameterizedType.getActualTypeArguments()) {
-                        if (actualTypeArgument instanceof Class
-                                && isClassEntityOrSolution((Class) actualTypeArgument)) {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-
-        protected boolean isValueAnEntityOrSolution(Object originalValue) {
-            Class valueClass = originalValue.getClass();
-            if (isClassEntityOrSolution(valueClass)) {
-                return true;
-            }
-            return false;
-        }
-
-        private boolean isClassEntityOrSolution(Class<?> type) {
-            return solutionDescriptor.hasEntityDescriptor(type)
-                    || solutionDescriptor.getSolutionClass().isAssignableFrom(type);
+            return retrieveDeepCloneDecision(field, originalValue.getClass());
         }
 
         protected void processQueue() {
