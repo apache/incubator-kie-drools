@@ -18,6 +18,7 @@ package org.drools.core.factmodel.traits;
 
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
+import org.drools.core.factmodel.DefaultBeanClassBuilder;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.mvel2.asm.ClassVisitor;
@@ -51,7 +52,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
     }
 
 
-    public byte[] buildClass( ClassDefinition core ) throws IOException,
+    public byte[] buildClass( ClassDefinition core, ClassLoader classLoader ) throws IOException,
             IntrospectionException,
             SecurityException,
             IllegalArgumentException,
@@ -63,7 +64,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
             NoSuchFieldException {
 
 
-        ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
+        ClassWriter cw = new ClassGenerator.InternalClassWriter( classLoader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES );
         FieldVisitor fv;
         MethodVisitor mv;
 
@@ -120,7 +121,6 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
             initSoftFields( mv, trait, core, internalWrapper, mask, 2 );
 
             mv.visitInsn( RETURN );
-//            mv.visitMaxs( 2 + stackSize, 3 );
             mv.visitMaxs( 0, 0 );
             mv.visitEnd();
 
@@ -263,8 +263,8 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
                 if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
                     TraitFactory.valueOf( mv, field.getTypeName() );
                 }
-                mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( Map.class ), "put", 
-                                    "(" + Type.getDescriptor( Object.class ) + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ) );
+                mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( Map.class ), "put",
+                                    Type.getMethodDescriptor( Type.getType( Object.class ), new Type[] { Type.getType( Object.class ), Type.getType( Object.class ) } ) );
                 mv.visitInsn( POP );
 
                 if ( core.isFullTraiting() ) {

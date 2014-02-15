@@ -55,7 +55,7 @@ public class Jenerator {
             }
             JarEntry je = new JarEntry(packagePath + "/" + facts[i].name + ".class");
             jout.putNextEntry(je);
-            jout.write(cb.buildClass(classDef));
+            jout.write(cb.buildClass(classDef,null));
             jout.closeEntry();
         }
         jout.flush();

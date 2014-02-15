@@ -32,7 +32,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +70,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
      * @throws NoSuchFieldException
      * @throws InstantiationException
      */
-    public byte[] buildClass( ClassDefinition classDef ) throws IOException,
+    public byte[] buildClass( ClassDefinition classDef, ClassLoader classLoader ) throws IOException,
             IntrospectionException,
             SecurityException,
             IllegalArgumentException,
@@ -82,7 +81,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             InstantiationException,
             NoSuchFieldException {
 
-        ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
+        ClassWriter cw = new ClassGenerator.InternalClassWriter( classLoader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES );
         //ClassVisitor cw = new CheckClassAdapter(cwr);
 
         this.buildClassHeader( cw,
@@ -1875,8 +1874,6 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         }
 
     }
-
-    
 
 }
 

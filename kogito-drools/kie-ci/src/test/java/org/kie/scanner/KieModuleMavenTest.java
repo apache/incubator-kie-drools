@@ -109,7 +109,7 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
 
         ClassDefinition def = new ClassDefinition(pojoNS + "." + className);
         def.addField(new FieldDefinition("text", String.class.getName()));
-        byte[] messageClazz = ClassBuilderFactory.getDefaultBeanClassBuilder().buildClass(def);
+        byte[] messageClazz = ClassBuilderFactory.getDefaultBeanClassBuilder().buildClass(def,null);
         MemoryFileSystem mfs = new MemoryFileSystem();
         mfs.write(pojoNS.replace('.', '/') + "/" + className+".class", messageClazz);
         byte[] pomContent = generatePomXml(pojoID).getBytes();

@@ -54,7 +54,7 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Seria
      * @throws NoSuchFieldException
      * @throws InstantiationException
      */
-    public byte[] buildClass( ClassDefinition classDef ) throws IOException,
+    public byte[] buildClass( ClassDefinition classDef, ClassLoader classLoader ) throws IOException,
             IntrospectionException,
             SecurityException,
             IllegalArgumentException,
@@ -71,7 +71,7 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Seria
 
         EnumClassDefinition edef = (EnumClassDefinition) classDef;
 
-        ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
+        ClassWriter cw = new ClassGenerator.InternalClassWriter( classLoader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES );
 
         this.buildClassHeader( cw,
                 edef );

@@ -51,10 +51,11 @@ public class ClassBuilderTest {
     }
 
     private Class build(ClassBuilder builder, ClassDefinition classDef) throws Exception {
-        byte[] d = builder.buildClass( classDef);
+        classLoader = new PackageClassLoader(data, ProjectClassLoader.createProjectClassLoader());
+        byte[] d = builder.buildClass( classDef, classLoader);
                      
         data.write( convertClassToResourcePath(classDef.getClassName()), d );
-        classLoader = new PackageClassLoader(data, ProjectClassLoader.createProjectClassLoader());
+
         
         this.store = new ClassFieldAccessorStore();
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( classLoader ) );
@@ -97,7 +98,7 @@ public class ClassBuilderTest {
                                                                stringDef.getName(),
                                                                classLoader ) );
 
-            byte[] d = builder.buildClass( classDef );
+            byte[] d = builder.buildClass( classDef, classLoader );
 
             assertSame( "Returned class should be the same",
                                clazz,

@@ -3243,6 +3243,7 @@ public class PackageBuilder
                     try {
                         buildClass(def, fullName, dialect, configuration.getClassBuilderFactory().getTraitBuilder());
                     } catch (Exception e) {
+                        e.printStackTrace();
                         this.results.add(new TypeDeclarationError(typeDescr,
                                 "Unable to compile declared trait " + fullName +
                                         ": " + e.getMessage() + ";"));
@@ -3263,6 +3264,7 @@ public class PackageBuilder
                     try {
                         buildClass(def, fullName, dialect, configuration.getClassBuilderFactory().getBeanClassBuilder());
                     } catch (Exception e) {
+                        e.printStackTrace();
                         this.results.add(new TypeDeclarationError(typeDescr,
                                 "Unable to create a class for declared type " + fullName +
                                         ": " + e.getMessage() + ";"));
@@ -3275,7 +3277,7 @@ public class PackageBuilder
     }
 
     private void buildClass(ClassDefinition def, String fullName, JavaDialectRuntimeData dialect, ClassBuilder cb) throws Exception {
-        byte[] bytecode = cb.buildClass(def);
+        byte[] bytecode = cb.buildClass(def, rootClassLoader);
         String resourceName = convertClassToResourcePath(fullName);
         dialect.putClassDefinition(resourceName, bytecode);
         if (ruleBase != null) {
