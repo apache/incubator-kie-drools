@@ -264,7 +264,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
         propWrapperBuilder.init( tdef, ruleBase.getTraitRegistry() );
         try {
-            byte[] propWrapper = propWrapperBuilder.buildClass( cdef );
+            byte[] propWrapper = propWrapperBuilder.buildClass( cdef, ruleBase.getRootClassLoader() );
             ruleBase.registerAndLoadTypeDefinition( wrapperName, propWrapper );
         } catch (Exception e) {
             e.printStackTrace();
@@ -275,7 +275,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
         proxyBuilder.init( tdef, rcf.getBaseTraitProxyClass(), ruleBase.getTraitRegistry() );
         try {
-            byte[] proxy = proxyBuilder.buildClass( cdef );
+            byte[] proxy = proxyBuilder.buildClass( cdef, ruleBase.getRootClassLoader() );
             ruleBase.registerAndLoadTypeDefinition( proxyName, proxy );
         } catch (Exception e) {
             e.printStackTrace();
@@ -283,8 +283,8 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
         try {
             BitSet mask = ruleBase.getTraitRegistry().getFieldMask( trait.getName(), cdef.getDefinedClass().getName() );
-            Class<T> proxyClass = (Class<T>) ruleBase.getRootClassLoader().loadClass( proxyName );
             Class<T> wrapperClass = (Class<T>) ruleBase.getRootClassLoader().loadClass( wrapperName );
+            Class<T> proxyClass = (Class<T>) ruleBase.getRootClassLoader().loadClass( proxyName );
             return proxyClass;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -409,7 +409,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         String wrapperName = coreName + "Wrapper";
 
         try {
-            byte[] wrapper = new TraitCoreWrapperClassBuilderImpl().buildClass( coreDef );
+            byte[] wrapper = new TraitCoreWrapperClassBuilderImpl().buildClass( coreDef, ruleBase.getRootClassLoader() );
             ruleBase.registerAndLoadTypeDefinition( wrapperName, wrapper );
 //            JavaDialectRuntimeData data = ((JavaDialectRuntimeData) getPackage( pack ).getDialectRuntimeRegistry().
 //                getDialectData( "java" ));

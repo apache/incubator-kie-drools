@@ -18,6 +18,7 @@ package org.drools.core.factmodel.traits;
 
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
+import org.drools.core.factmodel.DefaultBeanClassBuilder;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.core.util.Triple;
@@ -58,7 +59,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
     }
 
 
-    public byte[] buildClass( ClassDefinition core ) throws IOException,
+    public byte[] buildClass( ClassDefinition core, ClassLoader classLoader ) throws IOException,
             IntrospectionException,
             SecurityException,
             IllegalArgumentException,
@@ -70,7 +71,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
             NoSuchFieldException {
 
 
-        ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
+        ClassWriter cw = new ClassGenerator.InternalClassWriter( classLoader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES );
         FieldVisitor fv;
         MethodVisitor mv;
 
@@ -561,20 +562,16 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
             j++;
             if ( ! BuildUtils.isPrimitive( field.getTypeName() ) ) {
                 TraitFactory.invokeExtractor( mv, wrapperName, trait, core, field );
-                if ( j != N ) {
                     Label l1 = new Label();
                     mv.visitJumpInsn( IFNONNULL, l1 );
                     mv.visitInsn( ICONST_1 );
                     mv.visitInsn( IRETURN );
                     mv.visitLabel( l1 );
-                } else {
-                    mv.visitJumpInsn( IFNONNULL, l99 );
-                    mv.visitInsn( ICONST_1 );
-                    mv.visitInsn( IRETURN );
-                    mv.visitLabel( l99 );
-                }
 
             }
+        }
+        if ( hasNillable ) {
+            mv.visitLabel( l99 );
         }
 
         mv.visitVarInsn( ALOAD, 0 );
@@ -585,7 +582,6 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
                             "(" + Type.getDescriptor( Object.class ) + ")Z" );
 
         mv.visitInsn( IRETURN );
-//        mv.visitMaxs( core.getFieldsDefinitions().size() > 0 ? 3 : 2, 2 );
         mv.visitMaxs( 0, 0 );
         mv.visitEnd();
 

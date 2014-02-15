@@ -25,7 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public interface ClassBuilder extends Opcodes, Service {
 
-    public byte[] buildClass( ClassDefinition def ) throws IOException,
+    public byte[] buildClass( ClassDefinition def, ClassLoader classLoader ) throws IOException,
             IntrospectionException,
             SecurityException,
             IllegalArgumentException,

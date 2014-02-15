@@ -48,10 +48,11 @@ public class InstancesHashcodedTest {
  */
 
     private Class build(ClassBuilder builder, ClassDefinition classDef) throws Exception {
-        byte[] d = builder.buildClass( classDef);
+        ProjectClassLoader prjClassLoader = ProjectClassLoader.createProjectClassLoader();
+        byte[] d = builder.buildClass( classDef, prjClassLoader );
         JavaDialectRuntimeData data = new JavaDialectRuntimeData();
         data.write( convertClassToResourcePath(classDef.getClassName()), d );
-        ClassLoader classLoader = new PackageClassLoader(data, ProjectClassLoader.createProjectClassLoader());
+        ClassLoader classLoader = new PackageClassLoader(data, prjClassLoader);
         
         ClassFieldAccessorStore store = new ClassFieldAccessorStore();
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( classLoader ) );

@@ -19,6 +19,7 @@ package org.drools.core.factmodel.traits;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
+import org.drools.core.factmodel.DefaultBeanClassBuilder;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.GeneratedFact;
 import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
@@ -34,11 +35,11 @@ import java.util.List;
 public class TraitClassBuilderImpl implements TraitClassBuilder, Serializable {
 
 
-    public byte[] buildClass( ClassDefinition classDef ) {
+    public byte[] buildClass( ClassDefinition classDef, ClassLoader classLoader ) {
 
         init( classDef );
 
-        ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
+        ClassWriter cw = new ClassGenerator.InternalClassWriter( classLoader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES );
 
 
         try {
