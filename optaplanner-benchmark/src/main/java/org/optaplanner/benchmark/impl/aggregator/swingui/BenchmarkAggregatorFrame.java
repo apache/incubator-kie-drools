@@ -444,4 +444,4 @@ public class BenchmarkAggregatorFrame extends JFrame {
 
     }
 
-} 
+}
