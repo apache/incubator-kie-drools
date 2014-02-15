@@ -22,9 +22,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,6 +32,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -49,6 +47,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -87,7 +87,12 @@ public class BenchmarkAggregatorFrame extends JFrame {
         benchmarkAggregatorFrame.setVisible(true);
     }
 
-    private static final String DETAIL_TEMPLATE = "Score: %s%nPlanning entity count: %d%nUsed memory: %d%nTime millis spend: %d";
+    private static final String DETAIL_TEMPLATE_PLANNER_BENCHMARK = "Average score: %s%nAverage problem scale: %d";
+    private static final String DETAIL_TEMPLATE_PROBLEM_BENCHMARK = "Problem scale: %d%nUsed memory: %s";
+    private static final String DETAIL_TEMPLATE_SINGLE_BENCHMARK = "Score: %s%nPlanning entity"
+            + " count: %d%nUsed memory: %s%nTime millis spend: %d ms";
+    private static final String DETAIL_TEMPLATE_SOLVER_BENCHMARK = "Average score: %s%nTotal score: %s%n"
+            + "Average time millis spend: %d ms%nTotal winning score difference: %s";
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -151,9 +156,11 @@ public class BenchmarkAggregatorFrame extends JFrame {
         JPanel detailPanel = new JPanel(new BorderLayout());
         JLabel detailLabel = new JLabel("Details");
         detailPanel.add(detailLabel, BorderLayout.NORTH);
-        detailTextArea = new JTextArea(4, 80);
+        detailTextArea = new JTextArea(5, 80);
         detailTextArea.setEditable(false);
-        detailPanel.add(detailTextArea, BorderLayout.SOUTH);
+        JScrollPane detailScrollPane = new JScrollPane(detailTextArea,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        detailPanel.add(detailScrollPane, BorderLayout.SOUTH);
         return detailPanel;
     }
 
@@ -182,9 +189,19 @@ public class BenchmarkAggregatorFrame extends JFrame {
 
     private CheckBoxTree createCheckBoxTree() {
         CheckBoxTree resultCheckBoxTree = new CheckBoxTree(initBenchmarkHierarchy());
-        CheckBoxTreeMouseListener checkBoxTreeMouseListener = new CheckBoxTreeMouseListener();
-        resultCheckBoxTree.addMouseListener(checkBoxTreeMouseListener);
-        resultCheckBoxTree.addMouseMotionListener(checkBoxTreeMouseListener);
+        resultCheckBoxTree.addTreeSelectionListener(new TreeSelectionListener() {
+
+            @Override
+            public void valueChanged(TreeSelectionEvent e) {
+                TreePath treeSelectionPath = e.getNewLeadSelectionPath();
+                if (treeSelectionPath != null) {
+                    DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) treeSelectionPath.getLastPathComponent();
+                    MixedCheckBox checkBox = (MixedCheckBox) treeNode.getUserObject();
+                    detailTextArea.setText(checkBox.getDetail());
+                    detailTextArea.setCaretPosition(0);
+                }
+            }
+        });
         checkBoxTree = resultCheckBoxTree;
         return resultCheckBoxTree;
     }
@@ -192,36 +209,9 @@ public class BenchmarkAggregatorFrame extends JFrame {
     private void initPlannerBenchmarkResultList() {
         plannerBenchmarkResultList = benchmarkResultIO.readPlannerBenchmarkResultList(
                 benchmarkAggregator.getBenchmarkDirectory());
-    }
-
-    private class CheckBoxTreeMouseListener extends MouseAdapter {
-
-        private TreePath lastTreePath;
-
-        @Override
-        public void mouseMoved(MouseEvent e) {
-            TreePath treePath = checkBoxTree.getPathForLocation(e.getX(), e.getY());
-            if (treePath != null) { // node hit
-                if (treePath.equals(lastTreePath)) { // the same node, change nothing
-                    return;
-                }
-                DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) treePath.getLastPathComponent();
-                MixedCheckBox checkBox = (MixedCheckBox) currentNode.getUserObject();
-                detailTextArea.setText(checkBox.getDetail());
-                lastTreePath = treePath;
-            } else {
-                if (lastTreePath == null) { // continuous node miss
-                    return;
-                }
-                detailTextArea.setText(null);
-                lastTreePath = null;
-            }
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-            detailTextArea.setText(null);
-            lastTreePath = null;
+        for (PlannerBenchmarkResult plannerBenchmarkResult : plannerBenchmarkResultList) {
+            plannerBenchmarkResult.accumulateResults(
+                    benchmarkAggregator.getBenchmarkReportConfig().buildBenchmarkReport(plannerBenchmarkResult));
         }
     }
 
@@ -262,7 +252,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
     private class ExpandAllNodesAction extends AbstractAction {
 
         public ExpandAllNodesAction() {
-            super("Expand all");
+            super("Expand all", new ImageIcon(BenchmarkAggregatorFrame.class.getResource("expandAll.png")));
         }
 
         @Override
@@ -274,7 +264,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
     private class CollapseAllNodesAction extends AbstractAction {
 
         public CollapseAllNodesAction() {
-            super("Collapse all");
+            super("Collapse all", new ImageIcon(BenchmarkAggregatorFrame.class.getResource("collapseAll.png")));
         }
 
         @Override
@@ -286,19 +276,18 @@ public class BenchmarkAggregatorFrame extends JFrame {
     private DefaultMutableTreeNode initBenchmarkHierarchy() {
         DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(new MixedCheckBox("Planner benchmarks"));
         for (PlannerBenchmarkResult plannerBenchmarkResult : plannerBenchmarkResultList) {
-            DefaultMutableTreeNode plannerNode = new DefaultMutableTreeNode(new MixedCheckBox(plannerBenchmarkResult.getName()));
+            DefaultMutableTreeNode plannerNode = new DefaultMutableTreeNode(createPlannerBenchmarkCheckBox(plannerBenchmarkResult));
             parentNode.add(plannerNode);
-            for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
-                DefaultMutableTreeNode problemNode = new DefaultMutableTreeNode(new MixedCheckBox(problemBenchmarkResult.getName()));
-                plannerNode.add(problemNode);
-                for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
-                    DefaultMutableTreeNode solverNode = new DefaultMutableTreeNode(new MixedCheckBox(solverBenchmarkResult.getName()));
-                    problemNode.add(solverNode);
-                    for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
+            for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
+                DefaultMutableTreeNode solverNode = new DefaultMutableTreeNode(createSolverBenchmarkCheckBox(solverBenchmarkResult));
+                plannerNode.add(solverNode);
+                for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
+                    DefaultMutableTreeNode problemNode = new DefaultMutableTreeNode(createProblemBenchmarkCheckBox(problemBenchmarkResult));
+                    solverNode.add(problemNode);
+                    for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
                         if (singleBenchmarkResult.getProblemBenchmarkResult().equals(problemBenchmarkResult)) {
-                            MixedCheckBox singleCheckBox = createMixedCheckBox(singleBenchmarkResult);
-                            DefaultMutableTreeNode singleNode = new DefaultMutableTreeNode(singleCheckBox);
-                            solverNode.add(singleNode);
+                            DefaultMutableTreeNode singleNode = new DefaultMutableTreeNode(createSingleBenchmarkCheckBox(singleBenchmarkResult));
+                            problemNode.add(singleNode);
                         }
                     }
                 }
@@ -307,13 +296,38 @@ public class BenchmarkAggregatorFrame extends JFrame {
         return parentNode;
     }
 
-    private MixedCheckBox createMixedCheckBox(SingleBenchmarkResult singleBenchmarkResult) {
-        MixedCheckBox singleBenchmarkCheckbox = new MixedCheckBox(singleBenchmarkResult.getName());
-        singleBenchmarkCheckbox.setDetail(String.format(DETAIL_TEMPLATE, singleBenchmarkResult.getScore(),
-                singleBenchmarkResult.getPlanningEntityCount(), singleBenchmarkResult.getUsedMemoryAfterInputSolution(),
-                singleBenchmarkResult.getTimeMillisSpend()));
-        resultCheckBoxMapping.put(singleBenchmarkCheckbox, singleBenchmarkResult);
-        return singleBenchmarkCheckbox;
+    private MixedCheckBox createPlannerBenchmarkCheckBox(PlannerBenchmarkResult plannerBenchmarkResult) {
+        String plannerBenchmarkDetail = String.format(DETAIL_TEMPLATE_PLANNER_BENCHMARK, plannerBenchmarkResult.getAverageScore(),
+                plannerBenchmarkResult.getAverageProblemScale());
+        return new MixedCheckBox(plannerBenchmarkResult.getName(), plannerBenchmarkDetail);
+    }
+
+    private MixedCheckBox createSolverBenchmarkCheckBox(SolverBenchmarkResult solverBenchmarkResult) {
+        String solverCheckBoxName = solverBenchmarkResult.getName() + " (" + solverBenchmarkResult.getRanking() + ")";
+        String solverBenchmarkDetail = String.format(DETAIL_TEMPLATE_SOLVER_BENCHMARK, solverBenchmarkResult.getAverageScore(),
+                solverBenchmarkResult.getTotalScore(), solverBenchmarkResult.getAverageTimeMillisSpend(),
+                solverBenchmarkResult.getTotalWinningScoreDifference());
+        return new MixedCheckBox(solverCheckBoxName, solverBenchmarkDetail);
+    }
+
+    private MixedCheckBox createProblemBenchmarkCheckBox(ProblemBenchmarkResult problemBenchmarkResult) {
+        String problemBenchmarkDetail = String.format(DETAIL_TEMPLATE_PROBLEM_BENCHMARK, problemBenchmarkResult.getProblemScale(),
+                toEmptyStringIfNull(problemBenchmarkResult.getAverageUsedMemoryAfterInputSolution()));
+        return new MixedCheckBox(problemBenchmarkResult.getName(), problemBenchmarkDetail);
+    }
+
+    private MixedCheckBox createSingleBenchmarkCheckBox(SingleBenchmarkResult singleBenchmarkResult) {
+        String singleCheckBoxName = singleBenchmarkResult.getName() + " (" + singleBenchmarkResult.getRanking() + ")";
+        String singleBenchmarkDetail = String.format(DETAIL_TEMPLATE_SINGLE_BENCHMARK, singleBenchmarkResult.getScore(),
+                singleBenchmarkResult.getPlanningEntityCount(), toEmptyStringIfNull(singleBenchmarkResult.getUsedMemoryAfterInputSolution()),
+                singleBenchmarkResult.getTimeMillisSpend());
+        MixedCheckBox singleBenchmarkCheckBox = new MixedCheckBox(singleCheckBoxName, singleBenchmarkDetail);
+        resultCheckBoxMapping.put(singleBenchmarkCheckBox, singleBenchmarkResult);
+        return singleBenchmarkCheckBox;
+    }
+
+    private String toEmptyStringIfNull(Object obj) {
+        return obj == null ? "" : obj.toString();
     }
 
     private class GenerateReportWorker extends SwingWorker<File, Void> {
@@ -430,4 +444,4 @@ public class BenchmarkAggregatorFrame extends JFrame {
 
     }
 
-}
+} 

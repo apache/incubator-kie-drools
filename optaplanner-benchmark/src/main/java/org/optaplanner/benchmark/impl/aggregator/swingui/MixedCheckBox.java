@@ -24,8 +24,17 @@ public class MixedCheckBox extends JCheckBox {
 
     private String detail;
 
+    public MixedCheckBox() {
+        this(null);
+    }
+
     public MixedCheckBox(String text) {
+        this(text, null);
+    }
+
+    public MixedCheckBox(String text, String detail) {
         super(text);
+        this.detail = detail;
         setModel(new MixedCheckBoxModel());
         setStatus(MixedCheckBoxStatus.UNCHECKED);
         addMouseListener(new CustomCheckboxMouseListener());
