@@ -80,7 +80,6 @@ public class BenchmarkResultIO {
             File plannerBenchmarkResultFile = new File(benchmarkReportDirectory, PLANNER_BENCHMARK_RESULT_FILENAME);
             if (plannerBenchmarkResultFile.exists()) {
                 PlannerBenchmarkResult plannerBenchmarkResult = readPlannerBenchmarkResult(plannerBenchmarkResultFile);
-                // TODO plannerBenchmarkResult.accumulateResults();
                 plannerBenchmarkResultList.add(plannerBenchmarkResult);
             }
         }
