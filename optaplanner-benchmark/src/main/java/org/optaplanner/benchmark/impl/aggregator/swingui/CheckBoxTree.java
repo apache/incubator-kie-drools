@@ -71,7 +71,7 @@ public class CheckBoxTree extends JTree {
             if (path != null) {
                 DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) path.getLastPathComponent();
                 MixedCheckBox checkBox = (MixedCheckBox) currentNode.getUserObject();
-                // ignore clicks on checkbox's label
+                // ignore clicks on checkbox's label - enables to select it without changing the state
                 if (e.getX() - tree.getPathBounds(path).getX() > unlabeledMixedCheckBoxWidth) {
                     return;
                 }

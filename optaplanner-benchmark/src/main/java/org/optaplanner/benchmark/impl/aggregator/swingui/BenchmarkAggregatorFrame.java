@@ -284,7 +284,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
                 for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
                     DefaultMutableTreeNode problemNode = new DefaultMutableTreeNode(createProblemBenchmarkCheckBox(problemBenchmarkResult));
                     solverNode.add(problemNode);
-                    for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
+                    for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
                         if (singleBenchmarkResult.getProblemBenchmarkResult().equals(problemBenchmarkResult)) {
                             DefaultMutableTreeNode singleNode = new DefaultMutableTreeNode(createSingleBenchmarkCheckBox(singleBenchmarkResult));
                             problemNode.add(singleNode);
