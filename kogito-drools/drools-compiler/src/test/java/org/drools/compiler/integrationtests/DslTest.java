@@ -298,6 +298,22 @@ public class DslTest extends CommonTestMethodBase {
         assertTrue(doTest(dsl, drl).contains("OK"));
     }
 
+    @Test
+    public void testDSLWithSingleDotRegex() {
+        // DROOLS-430
+        String dsl = "[then]Log {message:.}=list.add(\"{message}\");";
+
+        String drl = "import org.drools.compiler.Person;\n"
+                + "global java.util.List list\n"
+                + "rule R1\n"
+                + "when\n"
+                + "then\n"
+                + "Log X\n"
+                + "end\n";
+
+        assertTrue(doTest(dsl, drl).contains("X"));
+    }
+
     private List doTest(String dsl, String drl) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource(dsl.getBytes()), ResourceType.DSL );

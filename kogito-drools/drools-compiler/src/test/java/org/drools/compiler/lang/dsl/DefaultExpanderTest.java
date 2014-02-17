@@ -18,23 +18,24 @@ import static org.junit.Assert.assertEquals;
 import org.drools.compiler.lang.ExpanderException;
 
 public class DefaultExpanderTest {
-    private static final String NL = System.getProperty( "line.separator" );
 
-    private DSLMappingFile file          = null;
+    private static final String     NL            = System.getProperty("line.separator");
+
+    private DSLMappingFile          file          = null;
     private DSLTokenizedMappingFile tokenizedFile = null;
-    private DefaultExpander expander      = null;
+    private DefaultExpander         expander      = null;
 
     @Before
     public void setUp() throws Exception {
         final String filename = "test_metainfo.dsl";
-        final Reader reader = new InputStreamReader( this.getClass().getResourceAsStream( filename ) );
+        final Reader reader = new InputStreamReader(this.getClass().getResourceAsStream(filename));
         this.file = new DSLTokenizedMappingFile();
         this.tokenizedFile = new DSLTokenizedMappingFile();
-        this.file.parseAndLoad( reader );
+        this.file.parseAndLoad(reader);
         reader.close();
 
-        final Reader reader2 = new InputStreamReader( this.getClass().getResourceAsStream( filename ) );
-        this.tokenizedFile.parseAndLoad( reader2 );
+        final Reader reader2 = new InputStreamReader(this.getClass().getResourceAsStream(filename));
+        this.tokenizedFile.parseAndLoad(reader2);
         reader2.close();
 
         this.expander = new DefaultExpander();
@@ -42,39 +43,39 @@ public class DefaultExpanderTest {
 
     @Test
     public void testAddDSLMapping() {
-        this.expander.addDSLMapping( this.file.getMapping() );
+        this.expander.addDSLMapping(this.file.getMapping());
         // should not raise any exception
     }
 
     @Test
     public void testANTLRAddDSLMapping() {
-        this.expander.addDSLMapping( this.tokenizedFile.getMapping() );
+        this.expander.addDSLMapping(this.tokenizedFile.getMapping());
         // should not raise any exception
     }
 
     @Test
     public void testRegexp() throws Exception {
-        this.expander.addDSLMapping( this.file.getMapping() );
-        final Reader rules = new InputStreamReader( this.getClass().getResourceAsStream( "test_expansion.dslr" ) );
-        final String result = this.expander.expand( rules );
+        this.expander.addDSLMapping(this.file.getMapping());
+        final Reader rules = new InputStreamReader(this.getClass().getResourceAsStream("test_expansion.dslr"));
+        final String result = this.expander.expand(rules);
     }
 
     @Test
     public void testANTLRRegexp() throws Exception {
-        this.expander.addDSLMapping( this.tokenizedFile.getMapping() );
-        final Reader rules = new InputStreamReader( this.getClass().getResourceAsStream( "test_expansion.dslr" ) );
-        final String result = this.expander.expand( rules );
+        this.expander.addDSLMapping(this.tokenizedFile.getMapping());
+        final Reader rules = new InputStreamReader(this.getClass().getResourceAsStream("test_expansion.dslr"));
+        final String result = this.expander.expand(rules);
     }
 
     @Test
     public void testExpandParts() throws Exception {
         DSLMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]foo=Foo()\n[then]bar {num}=baz({num});";
-        file.parseAndLoad( new StringReader( dsl ) );
-        assertEquals( 0,
-                      file.getErrors().size() );
+        file.parseAndLoad(new StringReader(dsl));
+        assertEquals(0,
+                file.getErrors().size());
         DefaultExpander ex = new DefaultExpander();
-        ex.addDSLMapping( file.getMapping() );
+        ex.addDSLMapping(file.getMapping());
 
         //System.err.println(ex.expand( "rule 'x' \n when \n foo \n then \n end" ));
     }
@@ -83,18 +84,18 @@ public class DefaultExpanderTest {
     public void testExpandKeyword() throws Exception {
         DSLMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[keyword]key {param}=Foo( attr=={param} )";
-        file.parseAndLoad( new StringReader( dsl ) );
-        assertEquals( 0,
-                      file.getErrors().size() );
+        file.parseAndLoad(new StringReader(dsl));
+        assertEquals(0,
+                file.getErrors().size());
         DefaultExpander ex = new DefaultExpander();
-        ex.addDSLMapping( file.getMapping() );
+        ex.addDSLMapping(file.getMapping());
 
         String source = "rule x\nwhen\n key 1 \n key 2 \nthen\nend";
-        String drl = ex.expand( source );
-        System.out.println( drl );
+        String drl = ex.expand(source);
+        System.out.println(drl);
 
-        assertTrue( drl.contains( "attr==1" ) );
-        assertTrue( drl.contains( "attr==2" ) );
+        assertTrue(drl.contains("attr==1"));
+        assertTrue(drl.contains("attr==2"));
         //System.err.println(ex.expand( "rule 'x' \n when \n foo \n then \n end" ));
     }
 
@@ -102,11 +103,11 @@ public class DefaultExpanderTest {
     public void testANTLRExpandParts() throws Exception {
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]foo=Foo()\n[then]bar {num}=baz({num});";
-        file.parseAndLoad( new StringReader( dsl ) );
-        assertEquals( 0,
-                      file.getErrors().size() );
+        file.parseAndLoad(new StringReader(dsl));
+        assertEquals(0,
+                file.getErrors().size());
         DefaultExpander ex = new DefaultExpander();
-        ex.addDSLMapping( file.getMapping() );
+        ex.addDSLMapping(file.getMapping());
 
         //System.err.println(ex.expand( "rule 'x' \n when \n foo \n then \n end" ));
     }
@@ -116,25 +117,25 @@ public class DefaultExpanderTest {
 
         DSLMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]foo=Foo()\n[then]bar {num}=baz({num});";
-        file.parseAndLoad( new StringReader( dsl ) );
-        assertEquals( 0,
-                      file.getErrors().size() );
+        file.parseAndLoad(new StringReader(dsl));
+        assertEquals(0,
+                file.getErrors().size());
 
         DefaultExpander ex = new DefaultExpander();
-        ex.addDSLMapping( file.getMapping() );
+        ex.addDSLMapping(file.getMapping());
         String source = "rule 'q'\nagenda-group 'x'\nwhen\n    foo  \nthen\n    bar 42\nend";
-        String drl = ex.expand( source );
-        assertFalse( ex.hasErrors() );
+        String drl = ex.expand(source);
+        assertFalse(ex.hasErrors());
 
         ex = new DefaultExpander();
-        ex.addDSLMapping( file.getMapping() );
+        ex.addDSLMapping(file.getMapping());
 
         source = "rule 'q' agenda-group 'x'\nwhen\n    foos \nthen\n    bar 42\n end";
-        drl = ex.expand( source );
+        drl = ex.expand(source);
         //System.out.println( drl );
-        assertTrue( ex.hasErrors() );
-        assertEquals( 1,
-                      ex.getErrors().size() );
+        assertTrue(ex.hasErrors());
+        assertEquals(1,
+                ex.getErrors().size());
         //System.err.println(( (ExpanderException) ex.getErrors().get( 0 )).getMessage());
     }
 
@@ -143,25 +144,25 @@ public class DefaultExpanderTest {
 
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]foo=Foo()\n[then]bar {num}=baz({num});";
-        file.parseAndLoad( new StringReader( dsl ) );
-        assertEquals( 0,
-                      file.getErrors().size() );
+        file.parseAndLoad(new StringReader(dsl));
+        assertEquals(0,
+                file.getErrors().size());
 
         DefaultExpander ex = new DefaultExpander();
-        ex.addDSLMapping( file.getMapping() );
+        ex.addDSLMapping(file.getMapping());
         String source = "rule 'q'\nagenda-group 'x'\nwhen\n    foo  \nthen\n    bar 42\nend";
-        String drl = ex.expand( source );
-        assertFalse( ex.hasErrors() );
+        String drl = ex.expand(source);
+        assertFalse(ex.hasErrors());
 
         ex = new DefaultExpander();
-        ex.addDSLMapping( file.getMapping() );
+        ex.addDSLMapping(file.getMapping());
 
         source = "rule 'q' agenda-group 'x'\nwhen\n    foos \nthen\n    bar 42\n end";
-        drl = ex.expand( source );
+        drl = ex.expand(source);
         //System.out.println( drl );
-        assertTrue( ex.hasErrors() );
-        assertEquals( 1,
-                      ex.getErrors().size() );
+        assertTrue(ex.hasErrors());
+        assertEquals(1,
+                ex.getErrors().size());
         //System.err.println(( (ExpanderException) ex.getErrors().get( 0 )).getMessage());
     }
 
@@ -170,20 +171,20 @@ public class DefaultExpanderTest {
 
         DSLMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]Invoke rule executor=ruleExec: RuleExecutor()\n" + "[then]Execute rule \"{id}\"=ruleExec.ExecuteSubRule( new Long({id}));";
-        file.parseAndLoad( new StringReader( dsl ) );
-        assertEquals( 0,
-                      file.getErrors().size() );
+        file.parseAndLoad(new StringReader(dsl));
+        assertEquals(0,
+                file.getErrors().size());
 
         DefaultExpander ex = new DefaultExpander();
-        ex.addDSLMapping( file.getMapping() );
+        ex.addDSLMapping(file.getMapping());
         String source = "package something;\n\nrule \"1\"\nwhen\n    Invoke rule executor\nthen\n    Execute rule \"5\"\nend";
         String expected = "package something;\n\nrule \"1\"\nwhen\n   ruleExec: RuleExecutor()\nthen\n   ruleExec.ExecuteSubRule( new Long(5));\nend\n";
-        String drl = ex.expand( source );
+        String drl = ex.expand(source);
         //        System.out.println("["+drl+"]" );
         //        System.out.println("["+expected+"]" );
-        assertFalse( ex.hasErrors() );
+        assertFalse(ex.hasErrors());
         equalsIgnoreWhiteSpace(expected,
-                               drl);
+                drl);
 
     }
 
@@ -192,18 +193,18 @@ public class DefaultExpanderTest {
 
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]Invoke rule executor=ruleExec: RuleExecutor()\n" + "[then]Execute rule \"{id}\"=ruleExec.ExecuteSubRule( new Long({id}));";
-        file.parseAndLoad( new StringReader( dsl ) );
-        assertEquals( 0,
-                      file.getErrors().size() );
+        file.parseAndLoad(new StringReader(dsl));
+        assertEquals(0,
+                file.getErrors().size());
 
         DefaultExpander ex = new DefaultExpander();
-        ex.addDSLMapping( file.getMapping() );
+        ex.addDSLMapping(file.getMapping());
         String source = "package something;\n\nrule \"1\"\nwhen\n    Invoke rule executor\nthen\n    Execute rule \"5\"\nend";
         String expected = "package something;\n\nrule \"1\"\nwhen\n    ruleExec: RuleExecutor()\nthen\n    ruleExec.ExecuteSubRule( new Long(5));\nend";
-        String drl = ex.expand( source );
+        String drl = ex.expand(source);
         //        System.out.println("["+drl+"]" );
         //        System.out.println("["+expected+"]" );
-        assertFalse( ex.hasErrors() );
+        assertFalse(ex.hasErrors());
         assertEquals(expected,
                 drl);
     }
@@ -212,22 +213,22 @@ public class DefaultExpanderTest {
     public void testLineNumberError() throws Exception {
         DSLMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]foo=Foo()" + NL + "[then]bar {num}=baz({num});";
-        file.parseAndLoad( new StringReader( dsl ) );
+        file.parseAndLoad(new StringReader(dsl));
 
         DefaultExpander ex = new DefaultExpander();
-        ex.addDSLMapping( file.getMapping() );
+        ex.addDSLMapping(file.getMapping());
         String source = "rule 'q'" + NL + "agenda-group 'x'" + NL + "when" + NL + "    __  " + NL +
                 "then" + NL + "    bar 42" + NL + "\tgoober" + NL + "end";
-        ex.expand( source );
-        assertTrue( ex.hasErrors() );
-        assertEquals( 2,
-                      ex.getErrors().size() );
-        ExpanderException err = (ExpanderException) ex.getErrors().get( 0 );
-        assertEquals( 4,
-                      err.getLine() );
-        err = (ExpanderException) ex.getErrors().get( 1 );
-        assertEquals( 7,
-                      err.getLine() );
+        ex.expand(source);
+        assertTrue(ex.hasErrors());
+        assertEquals(2,
+                ex.getErrors().size());
+        ExpanderException err = (ExpanderException) ex.getErrors().get(0);
+        assertEquals(4,
+                err.getLine());
+        err = (ExpanderException) ex.getErrors().get(1);
+        assertEquals(7,
+                err.getLine());
 
     }
 
@@ -235,22 +236,22 @@ public class DefaultExpanderTest {
     public void testANTLRLineNumberError() throws Exception {
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]foo=Foo()" + NL + "[then]bar {num}=baz({num});";
-        file.parseAndLoad( new StringReader( dsl ) );
+        file.parseAndLoad(new StringReader(dsl));
 
         DefaultExpander ex = new DefaultExpander();
-        ex.addDSLMapping( file.getMapping() );
+        ex.addDSLMapping(file.getMapping());
         String source = "rule 'q'" + NL + "agenda-group 'x'" + NL + "when" + NL + "    __  " + NL +
                 "then" + NL + "    bar 42" + NL + "\tgoober" + NL + "end";
-        ex.expand( source );
-        assertTrue( ex.hasErrors() );
-        assertEquals( 2,
-                      ex.getErrors().size() );
-        ExpanderException err = (ExpanderException) ex.getErrors().get( 0 );
-        assertEquals( 4,
-                      err.getLine() );
-        err = (ExpanderException) ex.getErrors().get( 1 );
-        assertEquals( 7,
-                      err.getLine() );
+        ex.expand(source);
+        assertTrue(ex.hasErrors());
+        assertEquals(2,
+                ex.getErrors().size());
+        ExpanderException err = (ExpanderException) ex.getErrors().get(0);
+        assertEquals(4,
+                err.getLine());
+        err = (ExpanderException) ex.getErrors().get(1);
+        assertEquals(7,
+                err.getLine());
 
     }
 
@@ -258,11 +259,11 @@ public class DefaultExpanderTest {
     public void testANTLREnumExpand() throws Exception {
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]When the credit rating is {rating:ENUM:Applicant.creditRating} = applicant:Applicant(credit=={rating})";
-        file.parseAndLoad( new StringReader( dsl ) );
-        assertEquals( 0,
-                      file.getErrors().size() );
+        file.parseAndLoad(new StringReader(dsl));
+        assertEquals(0,
+                file.getErrors().size());
         DefaultExpander ex = new DefaultExpander();
-        ex.addDSLMapping( file.getMapping() );
+        ex.addDSLMapping(file.getMapping());
         String source = "rule \"TestNewDslSetup\"\ndialect \"mvel\"\nwhen\nWhen the credit rating is AA\nthen \nend";
 
         //        String source="rule \"TestNewDslSetup\"\n"+
@@ -272,49 +273,49 @@ public class DefaultExpanderTest {
         //                        "then\n"+
         //                        "end\n";
 
-        String drl = ex.expand( source );
+        String drl = ex.expand(source);
 
         String expected = "rule \"TestNewDslSetup\"\n" +
-                          "dialect \"mvel\"\n" +
-                          "when\n" +
-                          "applicant:Applicant(credit==AA)\n" +
-                          "then  \nend";
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "applicant:Applicant(credit==AA)\n" +
+                "then  \nend";
 
-        assertFalse( ex.getErrors().toString(),
-                     ex.hasErrors() );
-        assertEquals( expected,
-                      drl );
+        assertFalse(ex.getErrors().toString(),
+                ex.hasErrors());
+        assertEquals(expected,
+                drl);
 
         //System.err.println(ex.expand( "rule 'x' \n when \n foo \n then \n end" ));
     }
 
     private boolean equalsIgnoreWhiteSpace(String expected,
-                                           String actual) {
-        String patternStr = expected.replaceAll( "\\s+",
-                                                 "(\\\\s|\\\\n|\\\\r)*" );//.replaceAll( "\\n", "\\s*\\$" );
-        Pattern pattern = Pattern.compile( patternStr,
-                                           Pattern.DOTALL );
-        Matcher m = pattern.matcher( actual );
+            String actual) {
+        String patternStr = expected.replaceAll("\\s+",
+                "(\\\\s|\\\\n|\\\\r)*");//.replaceAll( "\\n", "\\s*\\$" );
+        Pattern pattern = Pattern.compile(patternStr,
+                Pattern.DOTALL);
+        Matcher m = pattern.matcher(actual);
         return m.matches();
     }
 
     @Test
     public void testExpandComplex() throws Exception {
         String source = "rule \"R\"\n"
-                        + "dialect \"mvel\"\n"
-                        + "when\n"
-                        + "There is an TestObject\n"
-                        + "-startDate is before 01-Jul-2011\n"
-                        + "-endDate is after 01-Jul-2011\n"
-                        + "then\n"
-                        + "end\n";
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "There is an TestObject\n"
+                + "-startDate is before 01-Jul-2011\n"
+                + "-endDate is after 01-Jul-2011\n"
+                + "then\n"
+                + "end\n";
 
         String expected = "rule \"R\"\n"
-                          + "dialect \"mvel\"\n"
-                          + "when\n"
-                          + "TestObject(startDate>DateUtils.parseDate(\"01-Jul-2011\"), endDate>DateUtils.parseDate(\"01-Jul-2011\"))\n"
-                          + "then\n"
-                          + "end\n";
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "TestObject(startDate>DateUtils.parseDate(\"01-Jul-2011\"), endDate>DateUtils.parseDate(\"01-Jul-2011\"))\n"
+                + "then\n"
+                + "end\n";
 
         checkExpansion(source, expected);
     }
@@ -370,17 +371,17 @@ public class DefaultExpanderTest {
         String dsl = "[when]There is an TestObject=TestObject()\n"
                 + "[when]-startDate is before {date}=startDate>DateUtils.parseDate(\"{date}\")\n"
                 + "[when]-endDate is after {date}=endDate>DateUtils.parseDate(\"{date}\")";
-        file.parseAndLoad( new StringReader( dsl ) );
-        assertEquals( 0,
-                file.getErrors().size() );
+        file.parseAndLoad(new StringReader(dsl));
+        assertEquals(0,
+                file.getErrors().size());
 
         DefaultExpander ex = new DefaultExpander();
-        ex.addDSLMapping( file.getMapping() );
+        ex.addDSLMapping(file.getMapping());
 
-        String drl = ex.expand( source );
-        assertFalse( ex.hasErrors() );
+        String drl = ex.expand(source);
+        assertFalse(ex.hasErrors());
 
-        assertEquals( expected, drl );
+        assertEquals(expected, drl);
     }
 
     @Test
@@ -399,17 +400,17 @@ public class DefaultExpanderTest {
                 "Person(age  >  18)\n" +
                 "end\n";
 
-        file.parseAndLoad( new StringReader( dsl ) );
-        assertEquals( 0,
-                file.getErrors().size() );
+        file.parseAndLoad(new StringReader(dsl));
+        assertEquals(0,
+                file.getErrors().size());
 
         DefaultExpander ex = new DefaultExpander();
-        ex.addDSLMapping( file.getMapping() );
+        ex.addDSLMapping(file.getMapping());
 
-        String drl = ex.expand( source );
-        assertFalse( ex.hasErrors() );
+        String drl = ex.expand(source);
+        assertFalse(ex.hasErrors());
 
-        assertEquals( expected, drl );
+        assertEquals(expected, drl);
     }
 
     @Test
@@ -417,102 +418,142 @@ public class DefaultExpanderTest {
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]Name of Applicant {nameVar:CF:Applicant.age}= System.out.println({nameVar})";
 
-        String source = "rule \"test rule for custom form in DSL\"\n" + 
-        		"     dialect \"mvel\"\n" + 
-        		"     when\n" + 
-        		"         Name of Applicant Bojan Oklahoma and NJ,Andrew AMW Test\n" + 
-        		"     then\n" + 
-        		"end";
+        String source = "rule \"test rule for custom form in DSL\"\n" +
+                "     dialect \"mvel\"\n" +
+                "     when\n" +
+                "         Name of Applicant Bojan Oklahoma and NJ,Andrew AMW Test\n" +
+                "     then\n" +
+                "end";
 
         String expected = "rule \"test rule for custom form in DSL\"\n" +
-                "     dialect \"mvel\"\n" + 
-                "     when\n" + 
-                "         System.out.println(Bojan Oklahoma and NJ,Andrew AMW Test)\n" + 
-                "     then\n" + 
+                "     dialect \"mvel\"\n" +
+                "     when\n" +
+                "         System.out.println(Bojan Oklahoma and NJ,Andrew AMW Test)\n" +
+                "     then\n" +
                 "end";
 
         file.parseAndLoad(new StringReader(dsl));
-        assertEquals( 0,
-                file.getErrors().size() );
+        assertEquals(0,
+                file.getErrors().size());
 
         DefaultExpander ex = new DefaultExpander();
-        ex.addDSLMapping( file.getMapping() );
+        ex.addDSLMapping(file.getMapping());
 
-        String drl = ex.expand( source );
-        
-        assertFalse( ex.hasErrors() );
+        String drl = ex.expand(source);
+
+        assertFalse(ex.hasErrors());
 
         assertEquals(expected, drl);
     }
 
-    @Test(timeout=1000)
+    @Test(timeout = 1000)
     public void testExpandInfiniteLoop() throws Exception {
         // DROOLS-73
         DSLMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]Foo with {var} bars=Foo( bars == {var} )";
-        file.parseAndLoad( new StringReader( dsl ) );
-        assertEquals( 0, file.getErrors().size() );
+        file.parseAndLoad(new StringReader(dsl));
+        assertEquals(0, file.getErrors().size());
 
         DefaultExpander ex = new DefaultExpander();
-        ex.addDSLMapping( file.getMapping() );
+        ex.addDSLMapping(file.getMapping());
         String source = "rule 'dsl rule'\nwhen\n Foo with {var} bars\nthen\n\nend";
-        ex.expand( source );
-        assertFalse( ex.hasErrors() );
+        ex.expand(source);
+        assertFalse(ex.hasErrors());
     }
 
-    @Test 
+    @Test
     public void testEqualSignInTernaryOp() throws Exception {
         // BZ-1013960
         String source =
                 "declare Person\n" +
-                "    age : int\n" +
-                "    name : String\n" +
-                "end\n" +
-                "\n" +
-                "rule \"Your First Rule\"\n" +
-                "    when\n" +
-                "        There is a Person\n" +
-                "            - with a negative age\n" +
-                "            - with a positive age\n" +
-                "            - with a zero age\n" +
-                "    then\n" +
-                "        print \"Your First Rule\"\n" +
-                "\n" +
-                "end\n";
+                        "    age : int\n" +
+                        "    name : String\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule \"Your First Rule\"\n" +
+                        "    when\n" +
+                        "        There is a Person\n" +
+                        "            - with a negative age\n" +
+                        "            - with a positive age\n" +
+                        "            - with a zero age\n" +
+                        "    then\n" +
+                        "        print \"Your First Rule\"\n" +
+                        "\n" +
+                        "end\n";
 
         String dsl =
                 "[when][]There is an? {entity}=${entity!lc}: {entity!ucfirst}()\n" +
-                "[when][]- with an? {attr} greater than {amount}={attr} > {amount!num}\n" +
-                "[then]print \"{text}\"=System.out.println(\"{text}\");\n" +
-                "\n" +
-                "[when]- with a {what} {attr}={attr} {what!zero?==0/!=0}\n";
+                        "[when][]- with an? {attr} greater than {amount}={attr} > {amount!num}\n" +
+                        "[then]print \"{text}\"=System.out.println(\"{text}\");\n" +
+                        "\n" +
+                        "[when]- with a {what} {attr}={attr} {what!zero?==0/!=0}\n";
 
         String expected =
                 "declare Person\n" +
-                "    age : int\n" +
-                "    name : String\n" +
-                "end\n" +
-                "\n" +
-                "rule \"Your First Rule\"\n" +
-                "    when\n" +
-                "        $person: Person(age  !=0, age  !=0, age  ==0)\n" +
-                "    then\n" +
-                "        System.out.println(\"Your First Rule\");\n" +
-                "\n" +
-                "end\n";
+                        "    age : int\n" +
+                        "    name : String\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule \"Your First Rule\"\n" +
+                        "    when\n" +
+                        "        $person: Person(age  !=0, age  !=0, age  ==0)\n" +
+                        "    then\n" +
+                        "        System.out.println(\"Your First Rule\");\n" +
+                        "\n" +
+                        "end\n";
 
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
-        file.parseAndLoad( new StringReader( dsl ) );
-        assertEquals( file.getErrors().toString(), 
-                      0,
-                      file.getErrors().size() );
+        file.parseAndLoad(new StringReader(dsl));
+        assertEquals(file.getErrors().toString(),
+                0,
+                file.getErrors().size());
 
         DefaultExpander ex = new DefaultExpander();
-        ex.addDSLMapping( file.getMapping() );
+        ex.addDSLMapping(file.getMapping());
 
-        String drl = ex.expand( source );
-        assertFalse( ex.hasErrors() );
+        String drl = ex.expand(source);
+        assertFalse(ex.hasErrors());
 
-        assertEquals( expected, drl );
+        assertEquals(expected, drl);
     }
+
+    @Test
+    public void testDotInPattern() throws Exception {
+        // BZ-1013960
+        String source =
+                "import org.drools.compiler.Person;\n"
+                        + "global java.util.List list\n"
+                        + "rule R1\n"
+                        + "when\n"
+                        + "then\n"
+                        + "Log X\n"
+                        + "end\n";
+
+        String dsl =
+                "[then]Log {message:.}=list.add(\"{message}\");";
+
+        String expected =
+                "import org.drools.compiler.Person;\n"
+                        + "global java.util.List list\n"
+                        + "rule R1\n"
+                        + "when\n"
+                        + "then\n"
+                        + "list.add(\"X\");\n"
+                        + "end\n";
+
+        DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
+        file.parseAndLoad(new StringReader(dsl));
+        assertEquals(file.getErrors().toString(),
+                0,
+                file.getErrors().size());
+
+        DefaultExpander ex = new DefaultExpander();
+        ex.addDSLMapping(file.getMapping());
+
+        String drl = ex.expand(source);
+        assertFalse(ex.hasErrors());
+
+        assertEquals(expected, drl);
+    }
+
 }
