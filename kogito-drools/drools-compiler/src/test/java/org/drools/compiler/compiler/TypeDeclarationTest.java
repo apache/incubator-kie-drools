@@ -648,4 +648,28 @@ public class TypeDeclarationTest {
 
 
     }
+
+    @Test
+    public void testDeclaresInForeignPackages() {
+        String str1 = "" +
+                      "package org.drools \n" +
+
+                      "declare foreign.ClassC fld : foreign.ClassD end " +
+
+                      "declare foreign.ClassD end " +
+
+                      "";
+
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( str1.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+    }
+
 }

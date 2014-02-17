@@ -56,7 +56,7 @@ public class DrlFromPMMLTest {
 
     @Test
     public void testImports() throws Exception {
-        assertEquals( 3, StringUtil.countMatches(drl, "import ") );
+        assertEquals( 2, StringUtil.countMatches(drl, "import ") );
     }
 
     @Test

@@ -2333,6 +2333,9 @@ public class PackageBuilder
      * @param packageDescr
      */
     List<TypeDefinition> processTypeDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr, List<TypeDefinition> unresolvedTypes) {
+
+        Map<String, PackageDescr> foreignPackages = null;
+
         for (AbstractClassTypeDeclarationDescr typeDescr : packageDescr.getClassAndEnumDeclarationDescrs()) {
             if (filterAccepts(typeDescr.getNamespace(), typeDescr.getTypeName()) ) {
 
@@ -2400,7 +2403,19 @@ public class PackageBuilder
 
                 if (!typeDescr.getNamespace().equals(packageDescr.getNamespace())) {
                     // If the type declaration is for a different namespace, process that separately.
-                    PackageDescr altDescr = new PackageDescr(typeDescr.getNamespace());
+                    PackageDescr altDescr = null;
+
+                    if ( foreignPackages == null ) {
+                        foreignPackages = new HashMap<String, PackageDescr>(  );
+                    }
+
+                    if ( foreignPackages.containsKey( typeDescr.getNamespace() ) ) {
+                        altDescr = foreignPackages.get( typeDescr.getNamespace() );
+                    } else {
+                        altDescr = new PackageDescr(typeDescr.getNamespace());
+                        foreignPackages.put( typeDescr.getNamespace(), altDescr );
+                    }
+
                     if (typeDescr instanceof TypeDeclarationDescr) {
                         altDescr.addTypeDeclaration((TypeDeclarationDescr) typeDescr);
                     } else if (typeDescr instanceof EnumDeclarationDescr) {
@@ -2413,9 +2428,15 @@ public class PackageBuilder
                     if (!getPackageRegistry().containsKey(altDescr.getNamespace())) {
                         newPackage(altDescr);
                     }
-                    mergePackage(this.pkgRegistryMap.get(altDescr.getNamespace()), altDescr);
                 }
             }
+        }
+
+        if ( foreignPackages != null ) {
+            for ( String ns : foreignPackages.keySet() ) {
+                mergePackage( this.pkgRegistryMap.get( ns ), foreignPackages.get( ns ) );
+            }
+            foreignPackages.clear();
         }
 
         // sort declarations : superclasses must be generated first

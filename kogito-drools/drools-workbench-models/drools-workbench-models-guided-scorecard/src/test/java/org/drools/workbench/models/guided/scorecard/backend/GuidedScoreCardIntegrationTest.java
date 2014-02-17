@@ -36,7 +36,6 @@ public class GuidedScoreCardIntegrationTest {
     }
 
     @Test
-    @Ignore("https://issues.jboss.org/browse/DROOLS-431")
     public void testCompletedScoreCardCompilation() throws Exception {
         String xml1 = createGuidedScoreCardXML();
 
@@ -53,7 +52,6 @@ public class GuidedScoreCardIntegrationTest {
     }
 
     @Test
-    @Ignore("https://issues.jboss.org/browse/DROOLS-431")
     public void testIncrementalCompilation() throws Exception {
         String xml1_1 = createEmptyGuidedScoreCardXML();
         String xml1_2 = createGuidedScoreCardXML();
@@ -72,7 +70,7 @@ public class GuidedScoreCardIntegrationTest {
         //Update with complete Score Card
         kfs.write( "src/main/resources/sc1.scgd",
                    xml1_2 );
-        IncrementalResults results = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/sc1.scgd" ).build();
+        IncrementalResults results = ( (InternalKieBuilder) kieBuilder ).incrementalBuild();
 
         final List<Message> addedMessages = results.getAddedMessages();
         final List<Message> removedMessages = results.getRemovedMessages();

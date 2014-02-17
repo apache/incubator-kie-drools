@@ -124,8 +124,8 @@ public class GuidedScoreCardDRLPersistence {
             }
             _characteristic.getExtensions().add( extension );
 
+            _characteristic.setBaselineScore( characteristic.getBaselineScore() );
             if ( model.isUseReasonCodes() ) {
-                _characteristic.setBaselineScore( characteristic.getBaselineScore() );
                 _characteristic.setReasonCode( characteristic.getReasonCode() );
             }
             _characteristic.setName( characteristic.getName() );
