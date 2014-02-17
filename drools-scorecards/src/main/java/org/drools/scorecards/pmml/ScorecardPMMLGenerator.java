@@ -89,7 +89,9 @@ public class ScorecardPMMLGenerator {
                             Extension extension = ScorecardPMMLUtils.getExtension(characteristic.getExtensions(), PMMLExtensionNames.EXTERNAL_CLASS );
                             if ( extension != null ) {
                                 characteristic.getExtensions().remove(extension);
-                                miningField.getExtensions().add(extension);
+                                if ( ScorecardPMMLUtils.getExtension(miningField.getExtensions(), PMMLExtensionNames.EXTERNAL_CLASS ) == null ) {
+                                    miningField.getExtensions().add(extension);
+                                }
                             }
                         }
                     }
