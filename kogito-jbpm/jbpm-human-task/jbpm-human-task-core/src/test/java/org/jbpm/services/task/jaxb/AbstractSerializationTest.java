@@ -1,9 +1,6 @@
 package org.jbpm.services.task.jaxb;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -30,12 +27,12 @@ import org.jbpm.services.task.impl.model.xml.JaxbTask;
 import org.junit.Assume;
 import org.junit.Test;
 import org.kie.api.task.model.Task;
-import org.kie.api.task.model.TaskData;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.InternalAttachment;
 import org.kie.internal.task.api.model.InternalComment;
 import org.kie.internal.task.api.model.InternalOrganizationalEntity;
+import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
 import org.reflections.Reflections;
 import org.reflections.scanners.FieldAnnotationsScanner;

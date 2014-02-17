@@ -3,7 +3,6 @@ package org.jbpm.services.task.jaxb;
 import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
-import org.jbpm.services.task.jaxb.AbstractSerializationTest.TestType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
