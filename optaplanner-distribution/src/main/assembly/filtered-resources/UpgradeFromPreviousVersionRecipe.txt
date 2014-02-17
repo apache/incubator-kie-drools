@@ -3808,3 +3808,25 @@ After in *BenchmarkConfig.xml:
   <benchmarkReport>
     <solverRankingType>...</solverRankingType>
   </benchmarkReport>
+
+[MINOR] If you explicitly configured all your <entitySelector> elements with <cacheType>PHASE</cacheType> for performance,
+you know no longer have to do that, as OptaPlanner does the fast thing out of the box,
+if and only if no other properties (such as filtering) were specified on that <entitySelector>.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <unionMoveSelector>
+      <changeMoveSelector>
+        <entitySelector>
+          <cacheType>PHASE</cacheType>
+        </entitySelector>
+      </changeMoveSelector>
+      <swapMoveSelector>
+        <entitySelector>
+          <cacheType>PHASE</cacheType>
+        </entitySelector>
+      </swapMoveSelector>
+    </unionMoveSelector>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <unionMoveSelector>
+      <changeMoveSelector/>
+      <swapMoveSelector/>
+    </unionMoveSelector>
