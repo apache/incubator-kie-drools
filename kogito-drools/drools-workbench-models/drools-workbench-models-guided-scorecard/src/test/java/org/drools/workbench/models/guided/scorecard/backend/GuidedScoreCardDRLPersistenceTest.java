@@ -15,8 +15,16 @@
  */
 package org.drools.workbench.models.guided.scorecard.backend;
 
+import org.dmg.pmml.pmml_4_1.descr.PMML;
+import org.dmg.pmml.pmml_4_1.descr.Scorecard;
+import org.drools.pmml.pmml_4_1.PMML4Compiler;
+import org.drools.scorecards.ScorecardCompiler;
 import org.drools.scorecards.StringUtil;
+import org.drools.scorecards.pmml.ScorecardPMMLGenerator;
+import org.drools.scorecards.pmml.ScorecardPMMLUtils;
 import org.drools.workbench.models.datamodel.imports.Import;
+import org.drools.workbench.models.guided.scorecard.shared.Attribute;
+import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.junit.Test;
 
@@ -30,7 +38,6 @@ public class GuidedScoreCardDRLPersistenceTest {
         model.setName( "test" );
 
         final String drl = GuidedScoreCardDRLPersistence.marshal( model );
-        System.out.println( drl );
         assertNotNull( drl );
 
         assertFalse( drl.contains( "package" ) );
@@ -141,6 +148,47 @@ public class GuidedScoreCardDRLPersistenceTest {
         assertEquals( 4,
                       StringUtil.countMatches( drl,
                                                "import " ) );
+    }
+
+    @Test
+    public void testBasicModel() {
+
+        final ScoreCardModel model = new ScoreCardModel();
+        model.setName( "test" );
+
+        model.setPackageName( "org.drools.workbench.models.guided.scorecard.backend" );
+        model.getImports().addImport( new Import( "org.drools.workbench.models.guided.scorecard.backend.Applicant" ) );
+        model.setReasonCodesAlgorithm( "none" );
+        model.setBaselineScore( 0.0 );
+        model.setInitialScore( 0.0 );
+
+        model.setFactName( "org.drools.workbench.models.guided.scorecard.backend.Applicant" );
+        model.setFieldName( "score" );
+        model.setUseReasonCodes( false );
+        model.setReasonCodeField( "" );
+
+        final Characteristic c = new Characteristic();
+        c.setName( "c1" );
+        c.setFact( "org.drools.workbench.models.guided.scorecard.backend.Applicant" );
+        c.setDataType( "Double" );
+        c.setField( "age" );
+        c.setBaselineScore( 0.0 );
+        c.setReasonCode( "" );
+
+        final Attribute a = new Attribute();
+        a.setOperator( "=" );
+        a.setValue( "10" );
+        a.setPartialScore( 0.1 );
+        a.setReasonCode( "" );
+
+        c.getAttributes().add( a );
+        model.getCharacteristics().add( c );
+
+        final String drl1 = GuidedScoreCardDRLPersistence.marshal( model );
+        assertNotNull( drl1 );
+
+        final String drl2 = GuidedScoreCardDRLPersistence.marshal( model );
+        assertNotNull( drl2 );
     }
 
 }
