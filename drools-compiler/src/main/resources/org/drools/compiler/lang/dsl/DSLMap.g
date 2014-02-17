@@ -218,6 +218,8 @@ variable_definition
 
 pattern 
         : ( literal
+          | DOT
+          | MISC
           | LEFT_CURLY literal RIGHT_CURLY
           | LEFT_SQUARE pattern RIGHT_SQUARE
           )+
