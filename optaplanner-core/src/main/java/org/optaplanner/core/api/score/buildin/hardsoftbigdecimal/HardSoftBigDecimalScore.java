@@ -125,7 +125,7 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
         BigDecimal exponentBigDecimal = BigDecimal.valueOf(exponent);
         // The (unspecified) scale/precision of the exponent should have no impact on the returned scale/precision
         // TODO FIXME remove .intValue() so non-integer exponents produce correct results
-        // None of the normal Java libraries support BigDecima.pow(BigDecimal)
+        // None of the normal Java libraries support BigDecimal.pow(BigDecimal)
         return new HardSoftBigDecimalScore(
                 hardScore.pow(exponentBigDecimal.intValue()).setScale(hardScore.scale()),
                 softScore.pow(exponentBigDecimal.intValue()).setScale(softScore.scale()));
