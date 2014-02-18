@@ -22,7 +22,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class PhaseToSolverTerminationBridge extends AbstractTermination {
 
-    private Termination solverTermination;
+    private final Termination solverTermination;
 
     public PhaseToSolverTerminationBridge(Termination solverTermination) {
         this.solverTermination = solverTermination;

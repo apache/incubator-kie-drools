@@ -24,21 +24,20 @@ import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
- * Abstract superclass for CompositeTermination classes that combine multiple Terminations.
+ * Abstract superclass that combines multiple {@link Termination}s.
+ * @see AndCompositeTermination
+ * @see OrCompositeTermination
  */
 public abstract class AbstractCompositeTermination extends AbstractTermination implements Termination {
 
-    protected List<Termination> terminationList;
+    protected final List<Termination> terminationList;
 
-    public AbstractCompositeTermination() {
+    protected AbstractCompositeTermination(List<Termination> terminationList) {
+        this.terminationList = terminationList;
     }
 
     public AbstractCompositeTermination(Termination... terminations) {
-        terminationList = Arrays.asList(terminations);
-    }
-
-    public void setTerminationList(List<Termination> terminationList) {
-        this.terminationList = terminationList;
+        this(Arrays.asList(terminations));
     }
 
     // ************************************************************************

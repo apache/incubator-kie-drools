@@ -181,14 +181,13 @@ public class TerminationConfig implements Cloneable {
         } else if (terminationList.size() > 1) {
             AbstractCompositeTermination compositeTermination;
             if (terminationCompositionStyle == null || terminationCompositionStyle == TerminationCompositionStyle.OR) {
-                compositeTermination = new OrCompositeTermination();
+                compositeTermination = new OrCompositeTermination(terminationList);
             } else if (terminationCompositionStyle == TerminationCompositionStyle.AND) {
-                compositeTermination = new AndCompositeTermination();
+                compositeTermination = new AndCompositeTermination(terminationList);
             } else {
                 throw new IllegalStateException("The terminationCompositionStyle (" + terminationCompositionStyle
                         + ") is not implemented.");
             }
-            compositeTermination.setTerminationList(terminationList);
             return compositeTermination;
         } else {
             return null;

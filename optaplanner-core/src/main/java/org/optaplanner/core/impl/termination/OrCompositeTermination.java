@@ -16,12 +16,15 @@
 
 package org.optaplanner.core.impl.termination;
 
+import java.util.List;
+
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class OrCompositeTermination extends AbstractCompositeTermination {
 
-    public OrCompositeTermination() {
+    public OrCompositeTermination(List<Termination> terminationList) {
+        super(terminationList);
     }
 
     public OrCompositeTermination(Termination... terminations) {
@@ -44,6 +47,7 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
         }
         return false;
     }
+
     /**
      * @param phaseScope never null
      * @return true if any of the Termination is terminated.

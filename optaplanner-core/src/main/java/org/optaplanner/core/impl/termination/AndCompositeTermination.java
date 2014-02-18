@@ -16,12 +16,15 @@
 
 package org.optaplanner.core.impl.termination;
 
+import java.util.List;
+
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class AndCompositeTermination extends AbstractCompositeTermination {
 
-    public AndCompositeTermination() {
+    public AndCompositeTermination(List<Termination>terminationList) {
+        super(terminationList);
     }
 
     public AndCompositeTermination(Termination... terminations) {
