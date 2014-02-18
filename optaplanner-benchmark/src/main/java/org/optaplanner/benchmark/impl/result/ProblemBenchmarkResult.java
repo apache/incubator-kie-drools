@@ -219,7 +219,7 @@ public class ProblemBenchmarkResult {
             TerminationConfig originalTerminationConfig = solverBenchmarkResult.getSolverConfig().getTerminationConfig();
             TerminationConfig tmpTerminationConfig = originalTerminationConfig == null
                     ? new TerminationConfig() : originalTerminationConfig.clone();
-            tmpTerminationConfig.shortenMaximumTimeMillisSpendTotal(timeLeft);
+            tmpTerminationConfig.shortenTimeMillisSpentLimit(timeLeft);
             solverBenchmarkResult.getSolverConfig().setTerminationConfig(tmpTerminationConfig);
 
             Solver solver = solverBenchmarkResult.getSolverConfig().buildSolver();
@@ -227,8 +227,8 @@ public class ProblemBenchmarkResult {
             solver.solve();
 
             solverBenchmarkResult.getSolverConfig().setTerminationConfig(originalTerminationConfig);
-            long timeSpend = System.currentTimeMillis() - startingTimeMillis;
-            timeLeft = warmUpTimeMillisSpend - timeSpend;
+            long timeSpent = System.currentTimeMillis() - startingTimeMillis;
+            timeLeft = warmUpTimeMillisSpend - timeSpent;
             if (timeLeft <= 0L) {
                 return timeLeft;
             }

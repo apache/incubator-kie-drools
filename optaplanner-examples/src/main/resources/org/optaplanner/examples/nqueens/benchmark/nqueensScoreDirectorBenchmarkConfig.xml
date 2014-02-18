@@ -18,7 +18,7 @@
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>
       </scoreDirectorFactory>
       <termination>
-        <scoreAttained>0</scoreAttained>
+        <bestScoreLimit>0</bestScoreLimit>
       </termination>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>

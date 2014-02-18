@@ -82,7 +82,7 @@
         &lt;scoreDrl&gt;/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
       &lt;/scoreDirectorFactory&gt;
       &lt;termination&gt;
-        &lt;maximumSecondsSpend&gt;20&lt;/maximumSecondsSpend&gt;
+        &lt;secondsSpentLimit&gt;20&lt;/secondsSpentLimit&gt;
       &lt;/termination&gt;
       &lt;constructionHeuristic&gt;
         &lt;constructionHeuristicType&gt;FIRST_FIT_DECREASING&lt;/constructionHeuristicType&gt;

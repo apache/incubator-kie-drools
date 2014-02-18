@@ -10,7 +10,7 @@
   </scoreDirectorFactory>
 
   <termination>
-    <maximumSecondsSpend>300</maximumSecondsSpend>
+    <secondsSpentLimit>300</secondsSpentLimit>
   </termination>
   <constructionHeuristic>
     <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>

@@ -21,8 +21,8 @@
       </scoreDirectorFactory>
       <termination>
         <terminationCompositionStyle>OR</terminationCompositionStyle>
-        <scoreAttained>0</scoreAttained>
-        <maximumSecondsSpend>20</maximumSecondsSpend>
+        <bestScoreLimit>0</bestScoreLimit>
+        <secondsSpentLimit>20</secondsSpentLimit>
       </termination>
     </solver>
   </inheritedSolverBenchmark>

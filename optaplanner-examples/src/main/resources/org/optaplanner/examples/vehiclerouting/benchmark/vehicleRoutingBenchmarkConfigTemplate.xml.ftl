@@ -95,7 +95,7 @@
       </scoreDirectorFactory>
 
       <termination>
-        <maximumMinutesSpend>5</maximumMinutesSpend>
+        <minutesSpentLimit>5</minutesSpentLimit>
       </termination>
     </solver>
   </inheritedSolverBenchmark>

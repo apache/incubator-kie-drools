@@ -28,7 +28,7 @@
       </constructionHeuristic>
       <localSearch>
         <termination>
-          <maximumStepCount>100</maximumStepCount>
+          <stepCountLimit>100</stepCountLimit>
         </termination>
         <changeMoveSelector>
           <selectionOrder>ORIGINAL</selectionOrder>

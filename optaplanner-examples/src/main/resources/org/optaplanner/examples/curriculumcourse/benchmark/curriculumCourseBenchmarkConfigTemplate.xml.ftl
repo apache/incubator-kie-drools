@@ -32,7 +32,7 @@
         <scoreDrl>/org/optaplanner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
-        <maximumSecondsSpend>300</maximumSecondsSpend>
+        <secondsSpentLimit>300</secondsSpentLimit>
       </termination>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>

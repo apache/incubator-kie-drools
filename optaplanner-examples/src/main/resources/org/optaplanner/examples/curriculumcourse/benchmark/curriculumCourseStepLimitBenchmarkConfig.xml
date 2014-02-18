@@ -22,7 +22,7 @@
     <solver>
       <localSearch>
         <termination>
-          <maximumStepCount>500</maximumStepCount>
+          <stepCountLimit>500</stepCountLimit>
         </termination>
         <unionMoveSelector>
           <changeMoveSelector>

@@ -25,7 +25,7 @@
         <scoreDrl>/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
-        <maximumMinutesSpend>5</maximumMinutesSpend>
+        <minutesSpentLimit>5</minutesSpentLimit>
       </termination>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>

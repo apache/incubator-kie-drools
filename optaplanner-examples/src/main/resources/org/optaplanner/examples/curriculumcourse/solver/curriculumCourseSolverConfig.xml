@@ -18,12 +18,12 @@
 
   <termination>
     <!--
-      Official benchmark maximumSecondsSpend allowed on:
+      Official benchmark secondsSpentLimit allowed on:
       ge0ffrey's main pc: 429
       ge0ffrey's old pc: 1152
     -->
-    <maximumSecondsSpend>429</maximumSecondsSpend>
-    <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
+    <secondsSpentLimit>429</secondsSpentLimit>
+    <!--<bestScoreLimit>-0hard/-999999soft</bestScoreLimit>-->
   </termination>
   <constructionHeuristic>
     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>

@@ -21,13 +21,13 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class StepCountTermination extends AbstractTermination {
 
-    private final int maximumStepCount;
+    private final int stepCountLimit;
 
-    public StepCountTermination(int maximumStepCount) {
-        this.maximumStepCount = maximumStepCount;
-        if (maximumStepCount < 0) {
-            throw new IllegalArgumentException("Property maximumStepCount (" + maximumStepCount
-                    + ") must be greater or equal to 0.");
+    public StepCountTermination(int stepCountLimit) {
+        this.stepCountLimit = stepCountLimit;
+        if (stepCountLimit < 0) {
+            throw new IllegalArgumentException("The stepCountLimit (" + stepCountLimit
+                    + ") cannot be negative.");
         }
     }
 
@@ -42,7 +42,7 @@ public class StepCountTermination extends AbstractTermination {
 
     public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
         int nextStepIndex = phaseScope.getLastCompletedStepScope().getStepIndex() + 1;
-        return nextStepIndex >= maximumStepCount;
+        return nextStepIndex >= stepCountLimit;
     }
 
     // ************************************************************************
@@ -56,7 +56,7 @@ public class StepCountTermination extends AbstractTermination {
 
     public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
         int nextStepIndex = phaseScope.getLastCompletedStepScope().getStepIndex() + 1;
-        double timeGradient = ((double) nextStepIndex) / ((double) maximumStepCount);
+        double timeGradient = ((double) nextStepIndex) / ((double) stepCountLimit);
         return Math.min(timeGradient, 1.0);
     }
 

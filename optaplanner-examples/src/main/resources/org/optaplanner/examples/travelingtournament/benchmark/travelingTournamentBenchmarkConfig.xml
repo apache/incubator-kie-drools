@@ -18,8 +18,8 @@
         <scoreDrl>/org/optaplanner/examples/travelingtournament/solver/travelingTournamentScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
-        <maximumHoursSpend>2</maximumHoursSpend>
-        <!--<maximumMinutesSpend>10</maximumMinutesSpend>-->
+        <hoursSpentLimit>2</hoursSpentLimit>
+        <!--<minutesSpentLimit>10</minutesSpentLimit>-->
       </termination>
     </solver>
   </inheritedSolverBenchmark>

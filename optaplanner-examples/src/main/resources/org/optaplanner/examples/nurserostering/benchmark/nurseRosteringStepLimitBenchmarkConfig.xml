@@ -26,7 +26,7 @@
       </constructionHeuristic>
       <localSearch>
         <termination>
-          <maximumStepCount>100</maximumStepCount>
+          <stepCountLimit>100</stepCountLimit>
         </termination>
         <unionMoveSelector>
           <moveListFactory>

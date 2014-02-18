@@ -235,7 +235,7 @@
 
   &lt;!-- Optimization algorithms configuration --&gt;
   &lt;termination&gt;
-    &lt;maximumSecondsSpend&gt;120&lt;/maximumSecondsSpend&gt;
+    &lt;secondsSpentLimit&gt;120&lt;/secondsSpentLimit&gt;
   &lt;/termination&gt;
   &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;FIRST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
@@ -286,7 +286,7 @@
           you can tweak it to get even better results.</para>
 
           <programlisting language="xml">  &lt;termination&gt;
-    &lt;maximumSecondsSpend&gt;120&lt;/maximumSecondsSpend&gt;
+    &lt;secondsSpentLimit&gt;120&lt;/secondsSpentLimit&gt;
   &lt;/termination&gt;
   &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;FIRST_FIT_DECREASING&lt;/constructionHeuristicType&gt;

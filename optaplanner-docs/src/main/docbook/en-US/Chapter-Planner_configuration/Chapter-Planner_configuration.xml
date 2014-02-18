@@ -145,11 +145,11 @@
       <literal>SolverConfig</literal> class with <literal>getSolverConfig()</literal> to configure the dynamic value at
       runtime:</para>
 
-      <programlisting language="java">        XmlSolverFactory solverFactory = new XmlSolverFactory();
+      <programlisting language="java">        SolverFactory solverFactory = new XmlSolverFactory(
                 "/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
 
         SolverConfig solverConfig = solverFactory.getSolverConfig();
-        solverConfig.getTerminationConfig().setMaximumMinutesSpend(userInput);
+        solverConfig.getTerminationConfig().setMinutesSpentLimit(userInput);
         Solver solver = solverConfig.buildSolver();</programlisting>
     </section>
   </section>
@@ -1492,8 +1492,8 @@ public interface Standstill {
 
             <listitem>
               <para>Combining a time gradient dependent algorithms (most notably Simulated Annealing) together with time
-              spend termination. A sufficiently large difference in allocated CPU time will influence the time gradient
-              values. Replace Simulated Annealing with Late Acceptance. Or instead, replace time spend termination with
+              spent termination. A sufficiently large difference in allocated CPU time will influence the time gradient
+              values. Replace Simulated Annealing with Late Acceptance. Or instead, replace time spent termination with
               step count termination.</para>
             </listitem>
           </itemizedlist>

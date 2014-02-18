@@ -28,7 +28,7 @@
       </customSolverPhase>
       <localSearch>
         <termination>
-          <maximumStepCount>3000</maximumStepCount>
+          <stepCountLimit>3000</stepCountLimit>
         </termination>
         <unionMoveSelector>
           <changeMoveSelector/>

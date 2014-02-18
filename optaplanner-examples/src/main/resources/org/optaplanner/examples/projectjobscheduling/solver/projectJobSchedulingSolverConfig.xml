@@ -12,7 +12,7 @@
     <!--<scoreDrl>/org/optaplanner/examples/projectjobscheduling/solver/projectJobSchedulingScoreRules.drl</scoreDrl>-->
   </scoreDirectorFactory>
   <termination>
-    <maximumSecondsSpend>290</maximumSecondsSpend>
+    <secondsSpentLimit>290</secondsSpentLimit>
   </termination>
 
   <constructionHeuristic>

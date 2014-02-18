@@ -41,8 +41,8 @@ public class NQueensBruteForceTest extends SolverPerformanceTest {
     }
 
     @Override
-    protected SolverFactory buildSolverFactory(String scoreAttainedString, EnvironmentMode environmentMode) {
-        SolverFactory solverFactory = super.buildSolverFactory(scoreAttainedString, environmentMode);
+    protected SolverFactory buildSolverFactory(String bestScoreLimitString, EnvironmentMode environmentMode) {
+        SolverFactory solverFactory = super.buildSolverFactory(bestScoreLimitString, environmentMode);
         solverFactory.getSolverConfig().setSolverPhaseConfigList(
                 Collections.<SolverPhaseConfig>singletonList(new BruteForceSolverPhaseConfig())
         );

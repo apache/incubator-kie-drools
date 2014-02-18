@@ -11,8 +11,8 @@
 
   <termination>
     <!--<terminationCompositionStyle>OR</terminationCompositionStyle>-->
-    <!--<maximumMinutesSpend>1</maximumMinutesSpend>-->
-    <scoreAttained>0</scoreAttained>
+    <!--<minutesSpentLimit>1</minutesSpentLimit>-->
+    <bestScoreLimit>0</bestScoreLimit>
   </termination>
   <customSolverPhase>
     <customSolverPhaseCommandClass>org.optaplanner.examples.manners2009.solver.solution.initializer.Manners2009SolutionInitializer</customSolverPhaseCommandClass>

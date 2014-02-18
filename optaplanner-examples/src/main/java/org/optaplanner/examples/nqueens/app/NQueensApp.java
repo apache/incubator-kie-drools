@@ -91,7 +91,7 @@ public class NQueensApp extends CommonApp {
         solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
 
         TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setScoreAttained("0");
+        terminationConfig.setBestScoreLimit("0");
         solverConfig.setTerminationConfig(terminationConfig);
         List<SolverPhaseConfig> solverPhaseConfigList = new ArrayList<SolverPhaseConfig>();
         ConstructionHeuristicSolverPhaseConfig constructionHeuristicSolverPhaseConfig

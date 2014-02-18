@@ -20,7 +20,7 @@
 
   <!-- Optimization algorithms configuration -->
   <termination>
-    <maximumSecondsSpend>120</maximumSecondsSpend>
+    <secondsSpentLimit>120</secondsSpentLimit>
   </termination>
   <constructionHeuristic>
     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>

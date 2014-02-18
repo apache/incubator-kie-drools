@@ -23,7 +23,7 @@
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
       </scoreDirectorFactory>
       <termination>
-        <maximumMinutesSpend>20</maximumMinutesSpend>
+        <minutesSpentLimit>20</minutesSpentLimit>
       </termination>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>

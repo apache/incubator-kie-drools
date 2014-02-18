@@ -15,7 +15,7 @@
   </scoreDirectorFactory>
 
   <termination>
-    <maximumMinutesSpend>2</maximumMinutesSpend>
+    <minutesSpentLimit>2</minutesSpentLimit>
   </termination>
   <constructionHeuristic>
     <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>

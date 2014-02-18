@@ -651,8 +651,8 @@ DEBUG     Step index (0), time spent (6), score (-3), new best score (-3), accep
 
         <listitem>
           <para>A <literal>Config</literal> class is often easier and clearer to configure. For example:
-          <literal>TerminationConfig</literal> translates <literal>maximumMinutesSpend</literal> and
-          <literal>maximumSecondsSpend</literal> into <literal>maximumTimeMillisSpend</literal>.</para>
+          <literal>TerminationConfig</literal> translates <literal>minutesSpentLimit</literal> and
+          <literal>secondsSpentLimit</literal> into <literal>timeMillisSpentLimit</literal>.</para>
         </listitem>
       </itemizedlist>
     </note>

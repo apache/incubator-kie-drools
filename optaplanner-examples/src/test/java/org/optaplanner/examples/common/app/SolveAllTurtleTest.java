@@ -69,9 +69,9 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
     }
 
     protected Solution buildAndSolve(SolverFactory solverFactory, EnvironmentMode environmentMode,
-            Solution planningProblem, long maximumMinutesSpend) {
+            Solution planningProblem, long maximumMinutesSpent) {
         SolverConfig solverConfig = solverFactory.getSolverConfig();
-        solverConfig.getTerminationConfig().setMaximumMinutesSpend(maximumMinutesSpend);
+        solverConfig.getTerminationConfig().setMinutesSpentLimit(maximumMinutesSpent);
         solverConfig.setEnvironmentMode(environmentMode);
         Class<? extends SimpleScoreCalculator> simpleScoreCalculatorClass = overwritingSimpleScoreCalculatorClass();
         if (simpleScoreCalculatorClass != null && environmentMode.isAsserted()) {
@@ -98,7 +98,7 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
     protected SolverFactory buildSolverFactory() {
         SolverFactory solverFactory = new XmlSolverFactory(createSolverConfigResource());
         TerminationConfig terminationConfig = new TerminationConfig();
-        // buildAndSolve() fills in maximumMinutesSpend
+        // buildAndSolve() fills in minutesSpentLimit
         solverFactory.getSolverConfig().setTerminationConfig(terminationConfig);
         return solverFactory;
     }

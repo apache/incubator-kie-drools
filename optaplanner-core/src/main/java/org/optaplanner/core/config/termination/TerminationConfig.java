@@ -27,11 +27,11 @@ import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.termination.AbstractCompositeTermination;
 import org.optaplanner.core.impl.termination.AndCompositeTermination;
+import org.optaplanner.core.impl.termination.BestScoreTermination;
 import org.optaplanner.core.impl.termination.OrCompositeTermination;
-import org.optaplanner.core.impl.termination.ScoreAttainedTermination;
 import org.optaplanner.core.impl.termination.StepCountTermination;
 import org.optaplanner.core.impl.termination.Termination;
-import org.optaplanner.core.impl.termination.TimeMillisSpendTermination;
+import org.optaplanner.core.impl.termination.TimeMillisSpentTermination;
 import org.optaplanner.core.impl.termination.UnimprovedStepCountTermination;
 
 @XStreamAlias("termination")
@@ -41,13 +41,13 @@ public class TerminationConfig implements Cloneable {
 
     private TerminationCompositionStyle terminationCompositionStyle = null;
 
-    private Long maximumTimeMillisSpend = null;
-    private Long maximumSecondsSpend = null;
-    private Long maximumMinutesSpend = null;
-    private Long maximumHoursSpend = null;
-    private String scoreAttained = null;
-    private Integer maximumStepCount = null;
-    private Integer maximumUnimprovedStepCount = null;
+    private Long millisecondsSpentLimit = null;
+    private Long secondsSpentLimit = null;
+    private Long minutesSpentLimit = null;
+    private Long hoursSpentLimit = null;
+    private String bestScoreLimit = null;
+    private Integer stepCountLimit = null;
+    private Integer unimprovedStepCountLimit = null;
 
     @XStreamImplicit(itemFieldName = "termination")
     private List<TerminationConfig> terminationConfigList = null;
@@ -68,60 +68,60 @@ public class TerminationConfig implements Cloneable {
         this.terminationCompositionStyle = terminationCompositionStyle;
     }
 
-    public Long getMaximumTimeMillisSpend() {
-        return maximumTimeMillisSpend;
+    public Long getMillisecondsSpentLimit() {
+        return millisecondsSpentLimit;
     }
 
-    public void setMaximumTimeMillisSpend(Long maximumTimeMillisSpend) {
-        this.maximumTimeMillisSpend = maximumTimeMillisSpend;
+    public void setMillisecondsSpentLimit(Long millisecondsSpentLimit) {
+        this.millisecondsSpentLimit = millisecondsSpentLimit;
     }
 
-    public Long getMaximumSecondsSpend() {
-        return maximumSecondsSpend;
+    public Long getSecondsSpentLimit() {
+        return secondsSpentLimit;
     }
 
-    public void setMaximumSecondsSpend(Long maximumSecondsSpend) {
-        this.maximumSecondsSpend = maximumSecondsSpend;
+    public void setSecondsSpentLimit(Long secondsSpentLimit) {
+        this.secondsSpentLimit = secondsSpentLimit;
     }
 
-    public Long getMaximumMinutesSpend() {
-        return maximumMinutesSpend;
+    public Long getMinutesSpentLimit() {
+        return minutesSpentLimit;
     }
 
-    public void setMaximumMinutesSpend(Long maximumMinutesSpend) {
-        this.maximumMinutesSpend = maximumMinutesSpend;
+    public void setMinutesSpentLimit(Long minutesSpentLimit) {
+        this.minutesSpentLimit = minutesSpentLimit;
     }
 
-    public Long getMaximumHoursSpend() {
-        return maximumHoursSpend;
+    public Long getHoursSpentLimit() {
+        return hoursSpentLimit;
     }
 
-    public void setMaximumHoursSpend(Long maximumHoursSpend) {
-        this.maximumHoursSpend = maximumHoursSpend;
+    public void setHoursSpentLimit(Long hoursSpentLimit) {
+        this.hoursSpentLimit = hoursSpentLimit;
     }
 
-    public String getScoreAttained() {
-        return scoreAttained;
+    public String getBestScoreLimit() {
+        return bestScoreLimit;
     }
 
-    public void setScoreAttained(String scoreAttained) {
-        this.scoreAttained = scoreAttained;
+    public void setBestScoreLimit(String bestScoreLimit) {
+        this.bestScoreLimit = bestScoreLimit;
     }
 
-    public Integer getMaximumStepCount() {
-        return maximumStepCount;
+    public Integer getStepCountLimit() {
+        return stepCountLimit;
     }
 
-    public void setMaximumStepCount(Integer maximumStepCount) {
-        this.maximumStepCount = maximumStepCount;
+    public void setStepCountLimit(Integer stepCountLimit) {
+        this.stepCountLimit = stepCountLimit;
     }
 
-    public Integer getMaximumUnimprovedStepCount() {
-        return maximumUnimprovedStepCount;
+    public Integer getUnimprovedStepCountLimit() {
+        return unimprovedStepCountLimit;
     }
 
-    public void setMaximumUnimprovedStepCount(Integer maximumUnimprovedStepCount) {
-        this.maximumUnimprovedStepCount = maximumUnimprovedStepCount;
+    public void setUnimprovedStepCountLimit(Integer unimprovedStepCountLimit) {
+        this.unimprovedStepCountLimit = unimprovedStepCountLimit;
     }
 
     public List<TerminationConfig> getTerminationConfigList() {
@@ -150,22 +150,22 @@ public class TerminationConfig implements Cloneable {
             Termination termination  = ConfigUtils.newInstance(this, "terminationClass", terminationClass);
             terminationList.add(termination);
         }
-        Long maximumTimeMillisSpendTotal = calculateMaximumTimeMillisSpendTotal();
-        if (maximumTimeMillisSpendTotal != null) {
-            TimeMillisSpendTermination termination = new TimeMillisSpendTermination(maximumTimeMillisSpendTotal);
+        Long timeMillisSpentLimit = calculateTimeMillisSpentLimit();
+        if (timeMillisSpentLimit != null) {
+            TimeMillisSpentTermination termination = new TimeMillisSpentTermination(timeMillisSpentLimit);
             terminationList.add(termination);
         }
-        if (scoreAttained != null) {
-            Score scoreAttained_ = configPolicy.getScoreDefinition().parseScore(scoreAttained);
-            ScoreAttainedTermination termination = new ScoreAttainedTermination(scoreAttained_);
+        if (bestScoreLimit != null) {
+            Score bestScoreLimit_ = configPolicy.getScoreDefinition().parseScore(bestScoreLimit);
+            BestScoreTermination termination = new BestScoreTermination(bestScoreLimit_);
             terminationList.add(termination);
         }
-        if (maximumStepCount != null) {
-            StepCountTermination termination = new StepCountTermination(maximumStepCount);
+        if (stepCountLimit != null) {
+            StepCountTermination termination = new StepCountTermination(stepCountLimit);
             terminationList.add(termination);
         }
-        if (maximumUnimprovedStepCount != null) {
-            UnimprovedStepCountTermination termination = new UnimprovedStepCountTermination(maximumUnimprovedStepCount);
+        if (unimprovedStepCountLimit != null) {
+            UnimprovedStepCountTermination termination = new UnimprovedStepCountTermination(unimprovedStepCountLimit);
             terminationList.add(termination);
         }
         if (!CollectionUtils.isEmpty(terminationConfigList)) {
@@ -194,34 +194,34 @@ public class TerminationConfig implements Cloneable {
         }
     }
 
-    public Long calculateMaximumTimeMillisSpendTotal() {
-        if (maximumTimeMillisSpend == null && maximumSecondsSpend == null && maximumMinutesSpend == null
-                && maximumHoursSpend == null) {
+    public Long calculateTimeMillisSpentLimit() {
+        if (millisecondsSpentLimit == null && secondsSpentLimit == null && minutesSpentLimit == null
+                && hoursSpentLimit == null) {
             return null;
         }
-        long maximumTimeMillisSpendTotal = 0L;
-        if (maximumTimeMillisSpend != null) {
-            maximumTimeMillisSpendTotal += maximumTimeMillisSpend;
+        long timeMillisSpentLimit = 0L;
+        if (millisecondsSpentLimit != null) {
+            timeMillisSpentLimit += millisecondsSpentLimit;
         }
-        if (maximumSecondsSpend != null) {
-            maximumTimeMillisSpendTotal += maximumSecondsSpend * 1000L;
+        if (secondsSpentLimit != null) {
+            timeMillisSpentLimit += secondsSpentLimit * 1000L;
         }
-        if (maximumMinutesSpend != null) {
-            maximumTimeMillisSpendTotal += maximumMinutesSpend * 60000L;
+        if (minutesSpentLimit != null) {
+            timeMillisSpentLimit += minutesSpentLimit * 60000L;
         }
-        if (maximumHoursSpend != null) {
-            maximumTimeMillisSpendTotal += maximumHoursSpend * 3600000L;
+        if (hoursSpentLimit != null) {
+            timeMillisSpentLimit += hoursSpentLimit * 3600000L;
         }
-        return maximumTimeMillisSpendTotal;
+        return timeMillisSpentLimit;
     }
 
-    public void shortenMaximumTimeMillisSpendTotal(long maximumTimeMillisSpendTotal) {
-        Long oldMaximumTimeMillisSpendTotal = calculateMaximumTimeMillisSpendTotal();
-        if (oldMaximumTimeMillisSpendTotal == null || maximumTimeMillisSpendTotal < oldMaximumTimeMillisSpendTotal) {
-            maximumTimeMillisSpend = maximumTimeMillisSpendTotal;
-            maximumSecondsSpend = null;
-            maximumMinutesSpend = null;
-            maximumHoursSpend = null;
+    public void shortenTimeMillisSpentLimit(long timeMillisSpentLimit) {
+        Long oldLimit = calculateTimeMillisSpentLimit();
+        if (oldLimit == null || timeMillisSpentLimit < oldLimit) {
+            millisecondsSpentLimit = timeMillisSpentLimit;
+            secondsSpentLimit = null;
+            minutesSpentLimit = null;
+            hoursSpentLimit = null;
         }
     }
 
@@ -232,26 +232,26 @@ public class TerminationConfig implements Cloneable {
         if (terminationCompositionStyle == null) {
             terminationCompositionStyle = inheritedConfig.getTerminationCompositionStyle();
         }
-        if (maximumTimeMillisSpend == null) {
-            maximumTimeMillisSpend = inheritedConfig.getMaximumTimeMillisSpend();
+        if (millisecondsSpentLimit == null) {
+            millisecondsSpentLimit = inheritedConfig.getMillisecondsSpentLimit();
         }
-        if (maximumSecondsSpend == null) {
-            maximumSecondsSpend = inheritedConfig.getMaximumSecondsSpend();
+        if (secondsSpentLimit == null) {
+            secondsSpentLimit = inheritedConfig.getSecondsSpentLimit();
         }
-        if (maximumMinutesSpend == null) {
-            maximumMinutesSpend = inheritedConfig.getMaximumMinutesSpend();
+        if (minutesSpentLimit == null) {
+            minutesSpentLimit = inheritedConfig.getMinutesSpentLimit();
         }
-        if (maximumHoursSpend == null) {
-            maximumHoursSpend = inheritedConfig.getMaximumHoursSpend();
+        if (hoursSpentLimit == null) {
+            hoursSpentLimit = inheritedConfig.getHoursSpentLimit();
         }
-        if (scoreAttained == null) {
-            scoreAttained = inheritedConfig.getScoreAttained();
+        if (bestScoreLimit == null) {
+            bestScoreLimit = inheritedConfig.getBestScoreLimit();
         }
-        if (maximumStepCount == null) {
-            maximumStepCount = inheritedConfig.getMaximumStepCount();
+        if (stepCountLimit == null) {
+            stepCountLimit = inheritedConfig.getStepCountLimit();
         }
-        if (maximumUnimprovedStepCount == null) {
-            maximumUnimprovedStepCount = inheritedConfig.getMaximumUnimprovedStepCount();
+        if (unimprovedStepCountLimit == null) {
+            unimprovedStepCountLimit = inheritedConfig.getUnimprovedStepCountLimit();
         }
         terminationConfigList = ConfigUtils.inheritMergeableListProperty(
                 terminationConfigList, inheritedConfig.getTerminationConfigList());

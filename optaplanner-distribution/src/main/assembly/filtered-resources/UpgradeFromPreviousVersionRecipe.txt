@@ -3834,6 +3834,35 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
 [README] The phrase "time spend" has been renamed to "time spent".
 This includes the log output and the benchmark report.
 
+[MAJOR] All child elements of <termination> have been renamed:
+<maximumTimeMillisSpend> has been renamed to <millisecondsSpentLimit>
+<maximumSecondsSpend> has been renamed to <secondsSpentLimit>
+<maximumMinutesSpend> has been renamed to <minutesSpentLimit>
+<maximumHoursSpend> has been renamed to <hoursSpentLimit>
+<scoreAttained> has been renamed to <bestScoreLimit>
+<maximumStepCount> has been renamed to <stepCountLimit>
+<maximumUnimprovedStepCount> has been renamed to <unimprovedStepCountLimit>
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <termination>
+      <maximumTimeMillisSpend>...</maximumTimeMillisSpend>
+      <maximumSecondsSpend>...</maximumSecondsSpend>
+      <maximumMinutesSpend>...</maximumMinutesSpend>
+      <maximumHoursSpend>...</maximumHoursSpend>
+      <scoreAttained>...</scoreAttained>
+      <maximumStepCount>...</maximumStepCount>
+      <maximumUnimprovedStepCount>...</maximumUnimprovedStepCount>
+    </termination>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <termination>
+      <millisecondsSpentLimit>...</millisecondsSpentLimit>
+      <secondsSpentLimit>...</secondsSpentLimit>
+      <minutesSpentLimit>...</minutesSpentLimit>
+      <hoursSpentLimit>...</hoursSpentLimit>
+      <bestScoreLimit>...</bestScoreLimit>
+      <stepCountLimit>...</stepCountLimit>
+      <unimprovedStepCountLimit>...</unimprovedStepCountLimit>
+    </termination>
+
 [MAJOR] In Solver and BestSolutionChangedEvent, the method getTimeMillisSpend() has been renamed to getTimeMillisSpent().
 Before in *.java:
     ... = solver.getTimeMillisSpend();
@@ -3847,3 +3876,4 @@ After in *.java:
         public void bestSolutionChanged(BestSolutionChangedEvent event) {
             ... = event.getTimeMillisSpent();
         }
+

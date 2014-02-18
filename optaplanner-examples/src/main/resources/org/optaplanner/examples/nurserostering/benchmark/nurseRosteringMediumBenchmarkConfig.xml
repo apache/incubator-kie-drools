@@ -36,11 +36,11 @@
       </scoreDirectorFactory>
       <termination>
         <!--
-          Official benchmark maximumSecondsSpend allowed on:
+          Official benchmark secondsSpentLimit allowed on:
           - ge0ffrey's main pc: sprint 11, medium 700, long 42000
         -->
-        <maximumSecondsSpend>700</maximumSecondsSpend>
-        <!--<scoreAttained>0hard/-999999999soft</scoreAttained>-->
+        <secondsSpentLimit>700</secondsSpentLimit>
+        <!--<bestScoreLimit>0hard/-999999999soft</bestScoreLimit>-->
       </termination>
       <constructionHeuristic>
         <constructionHeuristicType>BEST_FIT</constructionHeuristicType>

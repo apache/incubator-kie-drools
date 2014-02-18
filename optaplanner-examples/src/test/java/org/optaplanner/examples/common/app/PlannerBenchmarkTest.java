@@ -43,8 +43,8 @@ import org.optaplanner.core.config.termination.TerminationConfig;
 public abstract class PlannerBenchmarkTest extends LoggingTest {
 
     private static final int MAXIMUM_SOLVER_BENCHMARK_SIZE = 6;
-    private static final long WARM_UP_SECONDS_SPEND = 5L;
-    private static final long MAXIMUM_SECONDS_SPEND = 30L;
+    private static final long WARM_UP_SECONDS_SPENT = 5L;
+    private static final long MAXIMUM_SECONDS_SPENT = 30L;
 
     protected abstract String createBenchmarkConfigResource();
 
@@ -66,7 +66,7 @@ public abstract class PlannerBenchmarkTest extends LoggingTest {
         plannerBenchmarkConfig.setBenchmarkDirectory(new File(path.replace(prefix, "target/test/data/")));
         plannerBenchmarkConfig.setWarmUpHoursSpend(0L);
         plannerBenchmarkConfig.setWarmUpMinutesSpend(0L);
-        plannerBenchmarkConfig.setWarmUpSecondsSpend(WARM_UP_SECONDS_SPEND);
+        plannerBenchmarkConfig.setWarmUpSecondsSpend(WARM_UP_SECONDS_SPENT);
         plannerBenchmarkConfig.setWarmUpTimeMillisSpend(0L);
         List<SolverBenchmarkConfig> solverBenchmarkConfigList = plannerBenchmarkConfig.getSolverBenchmarkConfigList();
         if (CollectionUtils.isEmpty(solverBenchmarkConfigList)) {
@@ -77,7 +77,7 @@ public abstract class PlannerBenchmarkTest extends LoggingTest {
             solverBenchmarkConfigList = solverBenchmarkConfigList.subList(0, MAXIMUM_SOLVER_BENCHMARK_SIZE);
             plannerBenchmarkConfig.setSolverBenchmarkConfigList(solverBenchmarkConfigList);
         }
-        long maximumSecondsSpendPerSolverBenchmark = MAXIMUM_SECONDS_SPEND / solverBenchmarkConfigList.size();
+        long maximumSecondsSpentPerSolverBenchmark = MAXIMUM_SECONDS_SPENT / solverBenchmarkConfigList.size();
         SolverBenchmarkConfig inheritedSolverBenchmarkConfig = plannerBenchmarkConfig.getInheritedSolverBenchmarkConfig();
         if (inheritedSolverBenchmarkConfig != null) {
             ProblemBenchmarksConfig problemBenchmarksConfig = inheritedSolverBenchmarkConfig.getProblemBenchmarksConfig();
@@ -88,7 +88,7 @@ public abstract class PlannerBenchmarkTest extends LoggingTest {
             problemBenchmarksConfig.setInputSolutionFileList(
                     Collections.singletonList(unsolvedDataFile));
             TerminationConfig terminationConfig = new TerminationConfig();
-            terminationConfig.setMaximumSecondsSpend(maximumSecondsSpendPerSolverBenchmark);
+            terminationConfig.setSecondsSpentLimit(maximumSecondsSpentPerSolverBenchmark);
             inheritedSolverBenchmarkConfig.getSolverConfig().setTerminationConfig(terminationConfig);
         }
         for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {

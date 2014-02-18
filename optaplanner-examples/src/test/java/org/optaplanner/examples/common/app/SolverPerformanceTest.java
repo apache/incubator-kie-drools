@@ -54,21 +54,21 @@ public abstract class SolverPerformanceTest extends LoggingTest {
 
     protected abstract SolutionDao createSolutionDao();
 
-    protected void runSpeedTest(File unsolvedDataFile, String scoreAttainedString) {
-        runSpeedTest(unsolvedDataFile, scoreAttainedString, EnvironmentMode.REPRODUCIBLE);
+    protected void runSpeedTest(File unsolvedDataFile, String bestScoreLimitString) {
+        runSpeedTest(unsolvedDataFile, bestScoreLimitString, EnvironmentMode.REPRODUCIBLE);
     }
 
-    protected void runSpeedTest(File unsolvedDataFile, String scoreAttainedString, EnvironmentMode environmentMode) {
-        SolverFactory solverFactory = buildSolverFactory(scoreAttainedString, environmentMode);
+    protected void runSpeedTest(File unsolvedDataFile, String bestScoreLimitString, EnvironmentMode environmentMode) {
+        SolverFactory solverFactory = buildSolverFactory(bestScoreLimitString, environmentMode);
         Solver solver = solve(solverFactory, unsolvedDataFile);
-        assertBestSolution(solver, scoreAttainedString);
+        assertBestSolution(solver, bestScoreLimitString);
     }
 
-    protected SolverFactory buildSolverFactory(String scoreAttainedString, EnvironmentMode environmentMode) {
+    protected SolverFactory buildSolverFactory(String bestScoreLimitString, EnvironmentMode environmentMode) {
         SolverFactory solverFactory = new XmlSolverFactory(createSolverConfigResource());
         solverFactory.getSolverConfig().setEnvironmentMode(environmentMode);
         TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setScoreAttained(scoreAttainedString);
+        terminationConfig.setBestScoreLimit(bestScoreLimitString);
         solverFactory.getSolverConfig().setTerminationConfig(terminationConfig);
         return solverFactory;
     }
@@ -81,13 +81,13 @@ public abstract class SolverPerformanceTest extends LoggingTest {
         return solver;
     }
 
-    private void assertBestSolution(Solver solver, String scoreAttainedString) {
+    private void assertBestSolution(Solver solver, String bestScoreLimitString) {
         Solution bestSolution = solver.getBestSolution();
         assertNotNull(bestSolution);
         Score bestScore = bestSolution.getScore();
-        Score scoreAttained = solver.getScoreDirectorFactory().getScoreDefinition().parseScore(scoreAttainedString);
-        assertTrue("The bestScore (" + bestScore + ") must be at least scoreAttained (" + scoreAttained + ").",
-                bestScore.compareTo(scoreAttained) >= 0);
+        Score bestScoreLimit = solver.getScoreDirectorFactory().getScoreDefinition().parseScore(bestScoreLimitString);
+        assertTrue("The bestScore (" + bestScore + ") must be at least bestScoreLimit (" + bestScoreLimit + ").",
+                bestScore.compareTo(bestScoreLimit) >= 0);
     }
 
 }

@@ -10,7 +10,7 @@
   </scoreDirectorFactory>
 
   <termination>
-    <scoreAttained>0hard/0soft</scoreAttained>
+    <bestScoreLimit>0hard/0soft</bestScoreLimit>
   </termination>
   <localSearch>
     <unionMoveSelector>

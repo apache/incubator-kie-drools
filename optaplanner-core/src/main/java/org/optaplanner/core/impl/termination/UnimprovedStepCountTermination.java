@@ -21,13 +21,13 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class UnimprovedStepCountTermination extends AbstractTermination {
 
-    private final int maximumUnimprovedStepCount;
+    private final int unimprovedStepCountLimit;
 
-    public UnimprovedStepCountTermination(int maximumUnimprovedStepCount) {
-        this.maximumUnimprovedStepCount = maximumUnimprovedStepCount;
-        if (maximumUnimprovedStepCount < 0) {
-            throw new IllegalArgumentException("Property maximumUnimprovedStepCount (" + maximumUnimprovedStepCount
-                    + ") must be greater or equal to 0.");
+    public UnimprovedStepCountTermination(int unimprovedStepCountLimit) {
+        this.unimprovedStepCountLimit = unimprovedStepCountLimit;
+        if (unimprovedStepCountLimit < 0) {
+            throw new IllegalArgumentException("The unimprovedStepCountLimit (" + unimprovedStepCountLimit
+                    + ") cannot be negative.");
         }
     }
 
@@ -42,7 +42,7 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
 
     public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
         int unimprovedStepCount = calculateUnimprovedStepCount(phaseScope);
-        return unimprovedStepCount >= maximumUnimprovedStepCount;
+        return unimprovedStepCount >= unimprovedStepCountLimit;
     }
 
     protected int calculateUnimprovedStepCount(AbstractSolverPhaseScope phaseScope) {
@@ -62,7 +62,7 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
 
     public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
         int unimprovedStepCount = calculateUnimprovedStepCount(phaseScope);
-        double timeGradient = ((double) unimprovedStepCount) / ((double) maximumUnimprovedStepCount);
+        double timeGradient = ((double) unimprovedStepCount) / ((double) unimprovedStepCountLimit);
         return Math.min(timeGradient, 1.0);
     }
 

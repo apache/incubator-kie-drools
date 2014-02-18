@@ -16,16 +16,19 @@
 
 package org.optaplanner.core.impl.termination;
 
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-public class ScoreAttainedTermination extends AbstractTermination {
+public class TimeMillisSpentTermination extends AbstractTermination {
 
-    private final Score scoreAttained;
+    private final long timeMillisSpentLimit;
 
-    public ScoreAttainedTermination(Score scoreAttained) {
-        this.scoreAttained = scoreAttained;
+    public TimeMillisSpentTermination(long timeMillisSpentLimit) {
+        this.timeMillisSpentLimit = timeMillisSpentLimit;
+        if (timeMillisSpentLimit <= 0L) {
+            throw new IllegalArgumentException("The timeMillisSpentLimit (" + timeMillisSpentLimit
+                    + ") cannot be negative.");
+        }
     }
 
     // ************************************************************************
@@ -33,15 +36,17 @@ public class ScoreAttainedTermination extends AbstractTermination {
     // ************************************************************************
 
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
-        return isTerminated(solverScope.isBestSolutionInitialized(), solverScope.getBestScore());
+        long solverTimeMillisSpent = solverScope.calculateTimeMillisSpent();
+        return isTerminated(solverTimeMillisSpent);
     }
 
     public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
-        return isTerminated(phaseScope.isBestSolutionInitialized(), phaseScope.getBestScore());
+        long phaseTimeMillisSpent = phaseScope.calculatePhaseTimeMillisSpent();
+        return isTerminated(phaseTimeMillisSpent);
     }
 
-    protected boolean isTerminated(boolean bestSolutionInitialized, Score bestScore) {
-        return bestSolutionInitialized && bestScore.compareTo(scoreAttained) >= 0;
+    protected boolean isTerminated(long timeMillisSpent) {
+        return timeMillisSpent >= timeMillisSpentLimit;
     }
 
     // ************************************************************************
@@ -49,16 +54,18 @@ public class ScoreAttainedTermination extends AbstractTermination {
     // ************************************************************************
 
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
-        Score startingInitializedScore = solverScope.getStartingInitializedScore();
-        Score bestScore = solverScope.getBestScore();
-        return solverScope.getScoreDefinition().calculateTimeGradient(
-                startingInitializedScore, scoreAttained, bestScore);
+        long solverTimeMillisSpent = solverScope.calculateTimeMillisSpent();
+        return calculateTimeGradient(solverTimeMillisSpent);
     }
 
     public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
-        Score startingInitializedScore = phaseScope.getStartingScore();
-        Score bestScore = phaseScope.getBestScore();
-        return phaseScope.getScoreDefinition().calculateTimeGradient(startingInitializedScore, scoreAttained, bestScore);
+        long phaseTimeMillisSpent = phaseScope.calculatePhaseTimeMillisSpent();
+        return calculateTimeGradient(phaseTimeMillisSpent);
+    }
+
+    protected double calculateTimeGradient(double timeMillisSpent) {
+        double timeGradient = ((double) timeMillisSpent) / ((double) timeMillisSpentLimit);
+        return Math.min(timeGradient, 1.0);
     }
 
 }

@@ -18,7 +18,7 @@
         <scoreDrl>/org/optaplanner/examples/travelingtournament/solver/travelingTournamentScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
-        <maximumStepCount>100</maximumStepCount>
+        <stepCountLimit>100</stepCountLimit>
       </termination>
       <localSearch>
         <unionMoveSelector>

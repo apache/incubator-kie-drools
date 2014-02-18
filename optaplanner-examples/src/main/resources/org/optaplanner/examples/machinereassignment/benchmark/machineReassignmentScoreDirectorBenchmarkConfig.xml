@@ -28,7 +28,7 @@
         <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
       </scoreDirectorFactory>
       <termination>
-        <maximumMinutesSpend>5</maximumMinutesSpend>
+        <minutesSpentLimit>5</minutesSpentLimit>
       </termination>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
