@@ -305,7 +305,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
     private MixedCheckBox createSolverBenchmarkCheckBox(SolverBenchmarkResult solverBenchmarkResult) {
         String solverCheckBoxName = solverBenchmarkResult.getName() + " (" + solverBenchmarkResult.getRanking() + ")";
         String solverBenchmarkDetail = String.format(DETAIL_TEMPLATE_SOLVER_BENCHMARK, solverBenchmarkResult.getAverageScore(),
-                solverBenchmarkResult.getTotalScore(), solverBenchmarkResult.getAverageTimeMillisSpend(),
+                solverBenchmarkResult.getTotalScore(), solverBenchmarkResult.getAverageTimeMillisSpent(),
                 solverBenchmarkResult.getTotalWinningScoreDifference());
         return new MixedCheckBox(solverCheckBoxName, solverBenchmarkDetail);
     }
@@ -320,7 +320,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
         String singleCheckBoxName = singleBenchmarkResult.getName() + " (" + singleBenchmarkResult.getRanking() + ")";
         String singleBenchmarkDetail = String.format(DETAIL_TEMPLATE_SINGLE_BENCHMARK, singleBenchmarkResult.getScore(),
                 singleBenchmarkResult.getPlanningEntityCount(), toEmptyStringIfNull(singleBenchmarkResult.getUsedMemoryAfterInputSolution()),
-                singleBenchmarkResult.getTimeMillisSpend());
+                singleBenchmarkResult.getTimeMillisSpent());
         MixedCheckBox singleBenchmarkCheckBox = new MixedCheckBox(singleCheckBoxName, singleBenchmarkDetail);
         resultCheckBoxMapping.put(singleBenchmarkCheckBox, singleBenchmarkResult);
         return singleBenchmarkCheckBox;

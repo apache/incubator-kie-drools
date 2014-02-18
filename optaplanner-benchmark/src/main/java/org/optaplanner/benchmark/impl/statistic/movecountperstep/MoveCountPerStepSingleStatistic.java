@@ -22,7 +22,6 @@ import java.util.List;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationStatisticPoint;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
@@ -73,8 +72,8 @@ public class MoveCountPerStepSingleStatistic extends SingleStatistic<MoveCountPe
         }        
         
         private void localSearchStepEnded(LocalSearchStepScope stepScope) {
-            long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
-            pointList.add(new MoveCountPerStepStatisticPoint(timeMillisSpend,
+            long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
+            pointList.add(new MoveCountPerStepStatisticPoint(timeMillisSpent,
                     new MoveCountPerStepMeasurement(stepScope.getAcceptedMoveCount(), stepScope.getSelectedMoveCount())
             ));
         }
@@ -87,7 +86,7 @@ public class MoveCountPerStepSingleStatistic extends SingleStatistic<MoveCountPe
 
     @Override
     protected String getCsvHeader() {
-        return MoveCountPerStepStatisticPoint.buildCsvLine("timeMillisSpend", "acceptedMoveCount", "selectedMoveCount");
+        return MoveCountPerStepStatisticPoint.buildCsvLine("timeMillisSpent", "acceptedMoveCount", "selectedMoveCount");
     }
 
     @Override

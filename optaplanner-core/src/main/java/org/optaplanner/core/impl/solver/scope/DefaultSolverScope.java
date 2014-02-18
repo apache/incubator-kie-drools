@@ -172,7 +172,7 @@ public class DefaultSolverScope {
         return bestUninitializedVariableCount == 0;
     }
 
-    public long calculateTimeMillisSpend() {
+    public long calculateTimeMillisSpent() {
         long now = System.currentTimeMillis();
         return now - startingSystemTimeMillis;
     }

@@ -16,22 +16,20 @@
 
 package org.optaplanner.benchmark.impl.statistic.memoryuse;
 
-import java.util.List;
-
 import org.optaplanner.benchmark.impl.statistic.StatisticPoint;
 
 public class MemoryUseStatisticPoint extends StatisticPoint {
 
-    private final long timeMillisSpend;
+    private final long timeMillisSpent;
     private final MemoryUseMeasurement memoryUseMeasurement;
 
-    public MemoryUseStatisticPoint(long timeMillisSpend, MemoryUseMeasurement memoryUseMeasurement) {
-        this.timeMillisSpend = timeMillisSpend;
+    public MemoryUseStatisticPoint(long timeMillisSpent, MemoryUseMeasurement memoryUseMeasurement) {
+        this.timeMillisSpent = timeMillisSpent;
         this.memoryUseMeasurement = memoryUseMeasurement;
     }
 
-    public long getTimeMillisSpend() {
-        return timeMillisSpend;
+    public long getTimeMillisSpent() {
+        return timeMillisSpent;
     }
 
     public MemoryUseMeasurement getMemoryUseMeasurement() {
@@ -40,7 +38,7 @@ public class MemoryUseStatisticPoint extends StatisticPoint {
 
     @Override
     public String toCsvLine() {
-        return buildCsvLineWithLongs(timeMillisSpend, memoryUseMeasurement.getUsedMemory(), memoryUseMeasurement.getMaxMemory());
+        return buildCsvLineWithLongs(timeMillisSpent, memoryUseMeasurement.getUsedMemory(), memoryUseMeasurement.getMaxMemory());
     }
 
 }

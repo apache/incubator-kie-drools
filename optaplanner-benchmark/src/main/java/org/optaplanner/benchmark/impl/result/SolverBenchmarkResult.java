@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -36,8 +35,6 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.impl.score.ScoreUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Represents 1 {@link Solver} configuration benchmarked on multiple problem instances (data sets).
@@ -70,7 +67,7 @@ public class SolverBenchmarkResult {
     private ScoreDifferencePercentage averageWorstScoreDifferencePercentage = null;
     // The average of the average is not just the overall average if the SingleBenchmarkResult's timeMillisSpend differ
     private Long averageAverageCalculateCountPerSecond = null;
-    private Long averageTimeMillisSpend = null;
+    private Long averageTimeMillisSpent = null;
 
     // Ranking starts from 0
     private Integer ranking = null;
@@ -135,8 +132,8 @@ public class SolverBenchmarkResult {
         return averageAverageCalculateCountPerSecond;
     }
 
-    public Long getAverageTimeMillisSpend() {
-        return averageTimeMillisSpend;
+    public Long getAverageTimeMillisSpent() {
+        return averageTimeMillisSpent;
     }
 
     public Integer getRanking() {
@@ -260,7 +257,7 @@ public class SolverBenchmarkResult {
         totalWinningScoreDifference = null;
         ScoreDifferencePercentage totalWorstScoreDifferencePercentage = null;
         long totalAverageCalculateCountPerSecond = 0L;
-        long totalTimeMillisSpend = 0L;
+        long totalTimeMillisSpent = 0L;
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             if (singleBenchmarkResult.isFailure()) {
                 failureCount++;
@@ -270,7 +267,7 @@ public class SolverBenchmarkResult {
                     totalWinningScoreDifference = singleBenchmarkResult.getWinningScoreDifference();
                     totalWorstScoreDifferencePercentage = singleBenchmarkResult.getWorstScoreDifferencePercentage();
                     totalAverageCalculateCountPerSecond = singleBenchmarkResult.getAverageCalculateCountPerSecond();
-                    totalTimeMillisSpend = singleBenchmarkResult.getTimeMillisSpend();
+                    totalTimeMillisSpent = singleBenchmarkResult.getTimeMillisSpent();
                     firstNonFailure = false;
                 } else {
                     totalScore = totalScore.add(singleBenchmarkResult.getScore());
@@ -279,7 +276,7 @@ public class SolverBenchmarkResult {
                     totalWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.add(
                             singleBenchmarkResult.getWorstScoreDifferencePercentage());
                     totalAverageCalculateCountPerSecond += singleBenchmarkResult.getAverageCalculateCountPerSecond();
-                    totalTimeMillisSpend += singleBenchmarkResult.getTimeMillisSpend();
+                    totalTimeMillisSpent += singleBenchmarkResult.getTimeMillisSpent();
                 }
             }
         }
@@ -288,7 +285,7 @@ public class SolverBenchmarkResult {
             averageScore = totalScore.divide(successCount);
             averageWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.divide((double) successCount);
             averageAverageCalculateCountPerSecond = totalAverageCalculateCountPerSecond / (long) successCount;
-            averageTimeMillisSpend = totalTimeMillisSpend / (long) successCount;
+            averageTimeMillisSpent = totalTimeMillisSpent / (long) successCount;
         }
     }
 

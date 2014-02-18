@@ -67,14 +67,14 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
             decider.decideNextStep(stepScope, placement);
             if (stepScope.getStep() == null) {
                 if (termination.isPhaseTerminated(phaseScope)) {
-                    logger.trace("    Step index ({}), time spend ({}) terminated without picking a nextStep.",
+                    logger.trace("    Step index ({}), time spent ({}) terminated without picking a nextStep.",
                             stepScope.getStepIndex(),
-                            stepScope.getPhaseScope().calculateSolverTimeMillisSpend());
+                            stepScope.getPhaseScope().calculateSolverTimeMillisSpent());
                 } else if (stepScope.getSelectedMoveCount() == 0L) {
-                    logger.warn("    No doable selected move at step index ({}), time spend ({})."
+                    logger.warn("    No doable selected move at step index ({}), time spent ({})."
                             + " Terminating phase early.",
                             stepScope.getStepIndex(),
-                            stepScope.getPhaseScope().calculateSolverTimeMillisSpend());
+                            stepScope.getPhaseScope().calculateSolverTimeMillisSpent());
                 } else {
                     throw new IllegalStateException("The step index (" + stepScope.getStepIndex()
                             + ") has selected move count (" + stepScope.getSelectedMoveCount()
@@ -132,10 +132,10 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
         entityPlacer.stepEnded(stepScope);
         decider.stepEnded(stepScope);
         if (logger.isDebugEnabled()) {
-            long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
-            logger.debug("    Step index ({}), time spend ({}), score ({}), selected move count ({})"
+            long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
+            logger.debug("    Step index ({}), time spent ({}), score ({}), selected move count ({})"
                     + " for constructing step ({}).",
-                    stepScope.getStepIndex(), timeMillisSpend,
+                    stepScope.getStepIndex(), timeMillisSpent,
                     stepScope.getScore(),
                     stepScope.getSelectedMoveCount(),
                     stepScope.getStepString());
@@ -151,10 +151,10 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
                 newBestSolution, newBestUninitializedVariableCount);
         entityPlacer.phaseEnded(phaseScope);
         decider.phaseEnded(phaseScope);
-        logger.info("Phase ({}) constructionHeuristic ended: step total ({}), time spend ({}), best score ({}).",
+        logger.info("Phase ({}) constructionHeuristic ended: step total ({}), time spent ({}), best score ({}).",
                 phaseIndex,
                 phaseScope.getLastCompletedStepScope().getStepIndex() + 1,
-                phaseScope.calculateSolverTimeMillisSpend(),
+                phaseScope.calculateSolverTimeMillisSpent(),
                 phaseScope.getBestScore());
     }
 

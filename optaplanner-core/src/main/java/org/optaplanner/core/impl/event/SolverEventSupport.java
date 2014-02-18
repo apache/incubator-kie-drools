@@ -19,17 +19,17 @@ package org.optaplanner.core.impl.event;
 import java.util.Iterator;
 
 import org.drools.core.event.AbstractEventSupport;
-import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.impl.solver.DefaultSolver;
 
 /**
  * Internal API.
  */
 public class SolverEventSupport extends AbstractEventSupport<SolverEventListener> {
 
-    private Solver solver;
+    private DefaultSolver solver;
 
-    public SolverEventSupport(Solver solver) {
+    public SolverEventSupport(DefaultSolver solver) {
         this.solver = solver;
     }
 
@@ -37,7 +37,7 @@ public class SolverEventSupport extends AbstractEventSupport<SolverEventListener
         final Iterator<SolverEventListener> it = getEventListenersIterator();
         if (it.hasNext()) {
             final BestSolutionChangedEvent event = new BestSolutionChangedEvent(solver,
-                    solver.getTimeMillisSpend(), newBestSolution);
+                    solver.getSolverScope().calculateTimeMillisSpent(), newBestSolution);
             do {
                 it.next().bestSolutionChanged(event);
             } while (it.hasNext());

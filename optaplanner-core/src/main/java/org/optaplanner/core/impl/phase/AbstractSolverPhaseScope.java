@@ -91,11 +91,11 @@ public abstract class AbstractSolverPhaseScope {
         return solverScope.getScoreDefinition();
     }
 
-    public long calculateSolverTimeMillisSpend() {
-        return solverScope.calculateTimeMillisSpend();
+    public long calculateSolverTimeMillisSpent() {
+        return solverScope.calculateTimeMillisSpent();
     }
 
-    public long calculatePhaseTimeMillisSpend() {
+    public long calculatePhaseTimeMillisSpent() {
         long now = System.currentTimeMillis();
         return now - startingSystemTimeMillis;
     }

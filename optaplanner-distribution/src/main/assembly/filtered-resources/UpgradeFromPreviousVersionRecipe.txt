@@ -3797,17 +3797,17 @@ After in *.java:
 The elements <benchmarkReportLocale>, <solverRankingType>, <solverRankingComparatorClass>
 and <solverRankingWeightFactoryClass> have been moved inside the new element <benchmarkReport>.
 Before in *BenchmarkConfig.xml:
-  <benchmarkReportLocale>...</benchmarkReportLocale>
+    <benchmarkReportLocale>...</benchmarkReportLocale>
 After in *BenchmarkConfig.xml:
-  <benchmarkReport>
-    <locale>...</locale>
-  </benchmarkReport>
+    <benchmarkReport>
+      <locale>...</locale>
+    </benchmarkReport>
 Before in *BenchmarkConfig.xml:
-  <solverRankingType>...</solverRankingType>
-After in *BenchmarkConfig.xml:
-  <benchmarkReport>
     <solverRankingType>...</solverRankingType>
-  </benchmarkReport>
+After in *BenchmarkConfig.xml:
+    <benchmarkReport>
+      <solverRankingType>...</solverRankingType>
+    </benchmarkReport>
 
 [MINOR] If you explicitly configured all your <entitySelector> elements with <cacheType>PHASE</cacheType> for performance,
 you know no longer have to do that, as OptaPlanner does the fast thing out of the box,
@@ -3830,3 +3830,20 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <changeMoveSelector/>
       <swapMoveSelector/>
     </unionMoveSelector>
+
+[README] The phrase "time spend" has been renamed to "time spent".
+This includes the log output and the benchmark report.
+
+[MAJOR] In Solver and BestSolutionChangedEvent, the method getTimeMillisSpend() has been renamed to getTimeMillisSpent().
+Before in *.java:
+    ... = solver.getTimeMillisSpend();
+After in *.java:
+    ... = solver.getTimeMillisSpent();
+Before in *.java:
+        public void bestSolutionChanged(BestSolutionChangedEvent event) {
+            ... = event.getTimeMillisSpend();
+        }
+After in *.java:
+        public void bestSolutionChanged(BestSolutionChangedEvent event) {
+            ... = event.getTimeMillisSpent();
+        }

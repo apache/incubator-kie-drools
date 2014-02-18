@@ -69,7 +69,7 @@ public class MoveCountPerStepProblemStatistic extends ProblemStatistic {
     @Override
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
         Locale locale = benchmarkReport.getLocale();
-        NumberAxis xAxis = new NumberAxis("Time spend");
+        NumberAxis xAxis = new NumberAxis("Time spent");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
         NumberAxis yAxis = new NumberAxis("Accepted/selected moves per step");
         yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
@@ -88,11 +88,11 @@ public class MoveCountPerStepProblemStatistic extends ProblemStatistic {
                 MoveCountPerStepSingleStatistic singleStatistic = (MoveCountPerStepSingleStatistic)
                         singleBenchmarkResult.getSingleStatistic(problemStatisticType);
                 for (MoveCountPerStepStatisticPoint point : singleStatistic.getPointList()) {
-                    long timeMillisSpend = point.getTimeMillisSpend();
+                    long timeMillisSpent = point.getTimeMillisSpent();
                     long acceptedMoveCount = point.getMoveCountPerStepMeasurement().getAcceptedMoveCount();
                     long selectedMoveCount = point.getMoveCountPerStepMeasurement().getSelectedMoveCount();
-                    acceptedSeries.add(timeMillisSpend, acceptedMoveCount);
-                    selectedSeries.add(timeMillisSpend, selectedMoveCount);
+                    acceptedSeries.add(timeMillisSpent, acceptedMoveCount);
+                    selectedSeries.add(timeMillisSpent, selectedMoveCount);
                 }
             }
             XYSeriesCollection seriesCollection = new XYSeriesCollection();

@@ -65,7 +65,7 @@ public class BestScoreSingleStatistic extends SingleStatistic<BestScoreStatistic
 
         public void bestSolutionChanged(BestSolutionChangedEvent event) {
             pointList.add(new BestScoreStatisticPoint(
-                    event.getTimeMillisSpend(), event.getNewBestSolution().getScore()));
+                    event.getTimeMillisSpent(), event.getNewBestSolution().getScore()));
         }
 
     }
@@ -76,7 +76,7 @@ public class BestScoreSingleStatistic extends SingleStatistic<BestScoreStatistic
 
     @Override
     protected String getCsvHeader() {
-        return BestScoreStatisticPoint.buildCsvLine("timeMillisSpend", "score");
+        return BestScoreStatisticPoint.buildCsvLine("timeMillisSpent", "score");
     }
 
     @Override

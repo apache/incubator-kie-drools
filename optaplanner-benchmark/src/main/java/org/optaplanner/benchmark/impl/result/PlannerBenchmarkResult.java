@@ -69,7 +69,7 @@ public class PlannerBenchmarkResult {
     private List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = null;
 
     private Date startingTimestamp = null;
-    private Long benchmarkTimeMillisSpend = null;
+    private Long benchmarkTimeMillisSpent = null;
 
     // ************************************************************************
     // Report accumulates
@@ -168,12 +168,12 @@ public class PlannerBenchmarkResult {
         this.startingTimestamp = startingTimestamp;
     }
 
-    public Long getBenchmarkTimeMillisSpend() {
-        return benchmarkTimeMillisSpend;
+    public Long getBenchmarkTimeMillisSpent() {
+        return benchmarkTimeMillisSpent;
     }
 
-    public void setBenchmarkTimeMillisSpend(Long benchmarkTimeMillisSpend) {
-        this.benchmarkTimeMillisSpend = benchmarkTimeMillisSpend;
+    public void setBenchmarkTimeMillisSpent(Long benchmarkTimeMillisSpent) {
+        this.benchmarkTimeMillisSpent = benchmarkTimeMillisSpent;
     }
 
     public Integer getFailureCount() {
@@ -389,7 +389,7 @@ public class PlannerBenchmarkResult {
                     newResult.solverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>();
                     newResult.unifiedProblemBenchmarkResultList = new ArrayList<ProblemBenchmarkResult>();
                     newResult.startingTimestamp = null;
-                    newResult.benchmarkTimeMillisSpend = null;
+                    newResult.benchmarkTimeMillisSpent = null;
                 } else {
                     newResult.availableProcessors = ConfigUtils.mergeProperty(
                             newResult.availableProcessors, oldResult.availableProcessors);

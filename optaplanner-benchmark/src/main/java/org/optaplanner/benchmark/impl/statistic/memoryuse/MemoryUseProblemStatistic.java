@@ -66,7 +66,7 @@ public class MemoryUseProblemStatistic extends ProblemStatistic {
     @Override
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
         Locale locale = benchmarkReport.getLocale();
-        NumberAxis xAxis = new NumberAxis("Time spend");
+        NumberAxis xAxis = new NumberAxis("Time spent");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
         NumberAxis yAxis = new NumberAxis("Memory");
         yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
@@ -84,10 +84,10 @@ public class MemoryUseProblemStatistic extends ProblemStatistic {
                 MemoryUseSingleStatistic singleStatistic = (MemoryUseSingleStatistic)
                         singleBenchmarkResult.getSingleStatistic(problemStatisticType);
                 for (MemoryUseStatisticPoint point : singleStatistic.getPointList()) {
-                    long timeMillisSpend = point.getTimeMillisSpend();
+                    long timeMillisSpent = point.getTimeMillisSpent();
                     MemoryUseMeasurement memoryUseMeasurement = point.getMemoryUseMeasurement();
-                    usedSeries.add(timeMillisSpend, memoryUseMeasurement.getUsedMemory());
-//                    maxSeries.add(timeMillisSpend, memoryUseMeasurement.getMaxMemory());
+                    usedSeries.add(timeMillisSpent, memoryUseMeasurement.getUsedMemory());
+//                    maxSeries.add(timeMillisSpent, memoryUseMeasurement.getMaxMemory());
                 }
             }
             XYSeriesCollection seriesCollection = new XYSeriesCollection();

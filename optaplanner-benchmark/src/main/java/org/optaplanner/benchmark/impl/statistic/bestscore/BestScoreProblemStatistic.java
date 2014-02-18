@@ -79,26 +79,26 @@ public class BestScoreProblemStatistic extends ProblemStatistic {
                 BestScoreSingleStatistic singleStatistic = (BestScoreSingleStatistic)
                         singleBenchmarkResult.getSingleStatistic(problemStatisticType);
                 for (BestScoreStatisticPoint point : singleStatistic.getPointList()) {
-                    long timeMillisSpend = point.getTimeMillisSpend();
+                    long timeMillisSpent = point.getTimeMillisSpent();
                     double[] levelValues = ScoreUtils.extractLevelDoubles(point.getScore());
                     for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= seriesList.size()) {
                             seriesList.add(new XYSeries(
                                     singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix()));
                         }
-                        seriesList.get(i).add(timeMillisSpend, levelValues[i]);
+                        seriesList.get(i).add(timeMillisSpent, levelValues[i]);
                     }
                 }
                 // TODO if startingSolution is initialized and no improvement is made, a horizontal line should be shown
                 // Draw a horizontal line from the last new best step to how long the solver actually ran
-                long timeMillisSpend = singleBenchmarkResult.getTimeMillisSpend();
+                long timeMillisSpent = singleBenchmarkResult.getTimeMillisSpent();
                 double[] bestScoreLevels = ScoreUtils.extractLevelDoubles(singleBenchmarkResult.getScore());
                 for (int i = 0; i < bestScoreLevels.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                     if (i >= seriesList.size()) {
                         seriesList.add(new XYSeries(
                                 singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix()));
                     }
-                    seriesList.get(i).add(timeMillisSpend, bestScoreLevels[i]);
+                    seriesList.get(i).add(timeMillisSpent, bestScoreLevels[i]);
                 }
                 if (singleStatistic.getPointList().size() <= 1) {
                     // Workaround for https://sourceforge.net/tracker/?func=detail&aid=3387330&group_id=15494&atid=115494
@@ -130,7 +130,7 @@ public class BestScoreProblemStatistic extends ProblemStatistic {
 
     private XYPlot createPlot(BenchmarkReport benchmarkReport, int scoreLevelIndex) {
         Locale locale = benchmarkReport.getLocale();
-        NumberAxis xAxis = new NumberAxis("Time spend");
+        NumberAxis xAxis = new NumberAxis("Time spent");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
         NumberAxis yAxis = new NumberAxis("Best score level " + scoreLevelIndex);
         yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));

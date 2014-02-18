@@ -22,7 +22,6 @@ import java.util.List;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationStatisticPoint;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
@@ -79,13 +78,13 @@ public class MemoryUseSingleStatistic extends SingleStatistic<MemoryUseStatistic
 
         @Override
         public void stepEnded(AbstractStepScope stepScope) {
-            long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
-            if (timeMillisSpend >= nextTimeMillisThreshold) {
-                pointList.add(new MemoryUseStatisticPoint(timeMillisSpend, MemoryUseMeasurement.create()));
+            long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
+            if (timeMillisSpent >= nextTimeMillisThreshold) {
+                pointList.add(new MemoryUseStatisticPoint(timeMillisSpent, MemoryUseMeasurement.create()));
 
                 nextTimeMillisThreshold += timeMillisThresholdInterval;
-                if (nextTimeMillisThreshold < timeMillisSpend) {
-                    nextTimeMillisThreshold = timeMillisSpend;
+                if (nextTimeMillisThreshold < timeMillisSpent) {
+                    nextTimeMillisThreshold = timeMillisSpent;
                 }
             }
         }
@@ -98,7 +97,7 @@ public class MemoryUseSingleStatistic extends SingleStatistic<MemoryUseStatistic
 
     @Override
     protected String getCsvHeader() {
-        return MemoryUseStatisticPoint.buildCsvLine("timeMillisSpend", "usedMemory", "maxMemory");
+        return MemoryUseStatisticPoint.buildCsvLine("timeMillisSpent", "usedMemory", "maxMemory");
     }
 
     @Override

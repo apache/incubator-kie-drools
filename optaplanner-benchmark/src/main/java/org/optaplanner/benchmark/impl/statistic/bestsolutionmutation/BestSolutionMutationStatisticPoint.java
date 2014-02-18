@@ -16,22 +16,20 @@
 
 package org.optaplanner.benchmark.impl.statistic.bestsolutionmutation;
 
-import java.util.List;
-
 import org.optaplanner.benchmark.impl.statistic.StatisticPoint;
 
 public class BestSolutionMutationStatisticPoint extends StatisticPoint {
 
-    private final long timeMillisSpend;
+    private final long timeMillisSpent;
     private final int mutationCount;
 
-    public BestSolutionMutationStatisticPoint(long timeMillisSpend, int mutationCount) {
-        this.timeMillisSpend = timeMillisSpend;
+    public BestSolutionMutationStatisticPoint(long timeMillisSpent, int mutationCount) {
+        this.timeMillisSpent = timeMillisSpent;
         this.mutationCount = mutationCount;
     }
 
-    public long getTimeMillisSpend() {
-        return timeMillisSpend;
+    public long getTimeMillisSpent() {
+        return timeMillisSpent;
     }
 
     public int getMutationCount() {
@@ -40,7 +38,7 @@ public class BestSolutionMutationStatisticPoint extends StatisticPoint {
 
     @Override
     public String toCsvLine() {
-        return buildCsvLineWithLongs(timeMillisSpend, mutationCount);
+        return buildCsvLineWithLongs(timeMillisSpent, mutationCount);
     }
 
 }

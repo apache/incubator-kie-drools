@@ -88,7 +88,7 @@ public class BestSolutionMutationSingleStatistic extends SingleStatistic<BestSol
                 mutationCount = mutationCounter.countMutations(oldBestSolution, newBestSolution);
             }
             pointList.add(new BestSolutionMutationStatisticPoint(
-                    event.getTimeMillisSpend(), mutationCount));
+                    event.getTimeMillisSpent(), mutationCount));
             oldBestSolution = newBestSolution;
         }
 
@@ -100,7 +100,7 @@ public class BestSolutionMutationSingleStatistic extends SingleStatistic<BestSol
 
     @Override
     protected String getCsvHeader() {
-        return BestSolutionMutationStatisticPoint.buildCsvLine("timeMillisSpend", "mutationCount");
+        return BestSolutionMutationStatisticPoint.buildCsvLine("timeMillisSpent", "mutationCount");
     }
 
     @Override

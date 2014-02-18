@@ -66,7 +66,7 @@ public class BestSolutionMutationProblemStatistic extends ProblemStatistic {
     @Override
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
         Locale locale = benchmarkReport.getLocale();
-        NumberAxis xAxis = new NumberAxis("Time spend");
+        NumberAxis xAxis = new NumberAxis("Time spent");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
         NumberAxis yAxis = new NumberAxis("Best solution mutation count");
         yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
@@ -81,9 +81,9 @@ public class BestSolutionMutationProblemStatistic extends ProblemStatistic {
                 BestSolutionMutationSingleStatistic singleStatistic = (BestSolutionMutationSingleStatistic)
                         singleBenchmarkResult.getSingleStatistic(problemStatisticType);
                 for (BestSolutionMutationStatisticPoint point : singleStatistic.getPointList()) {
-                    long timeMillisSpend = point.getTimeMillisSpend();
+                    long timeMillisSpent = point.getTimeMillisSpent();
                     long mutationCount = point.getMutationCount();
-                    series.add(timeMillisSpend, mutationCount);
+                    series.add(timeMillisSpent, mutationCount);
                 }
             }
             plot.setDataset(seriesIndex, new XYSeriesCollection(series));

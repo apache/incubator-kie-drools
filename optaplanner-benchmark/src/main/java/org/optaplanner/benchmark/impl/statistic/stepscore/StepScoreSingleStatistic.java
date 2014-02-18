@@ -22,7 +22,6 @@ import java.util.List;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationStatisticPoint;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
@@ -67,8 +66,8 @@ public class StepScoreSingleStatistic extends SingleStatistic<StepScoreStatistic
         @Override
         public void stepEnded(AbstractStepScope stepScope) {
             if (stepScope.hasNoUninitializedVariables()) {
-                long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
-                pointList.add(new StepScoreStatisticPoint(timeMillisSpend, stepScope.getScore()));
+                long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
+                pointList.add(new StepScoreStatisticPoint(timeMillisSpent, stepScope.getScore()));
             }
         }
 
@@ -80,7 +79,7 @@ public class StepScoreSingleStatistic extends SingleStatistic<StepScoreStatistic
 
     @Override
     protected String getCsvHeader() {
-        return StepScoreStatisticPoint.buildCsvLine("timeMillisSpend", "score");
+        return StepScoreStatisticPoint.buildCsvLine("timeMillisSpent", "score");
     }
 
     @Override

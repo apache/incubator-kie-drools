@@ -66,7 +66,7 @@ public class CalculateCountProblemStatistic extends ProblemStatistic {
     @Override
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
         Locale locale = benchmarkReport.getLocale();
-        NumberAxis xAxis = new NumberAxis("Time spend");
+        NumberAxis xAxis = new NumberAxis("Time spent");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
         NumberAxis yAxis = new NumberAxis("Calculate count per second");
         yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
@@ -81,9 +81,9 @@ public class CalculateCountProblemStatistic extends ProblemStatistic {
                 CalculateCountSingleStatistic singleStatistic = (CalculateCountSingleStatistic)
                         singleBenchmarkResult.getSingleStatistic(problemStatisticType);
                 for (CalculateCountStatisticPoint point : singleStatistic.getPointList()) {
-                    long timeMillisSpend = point.getTimeMillisSpend();
+                    long timeMillisSpent = point.getTimeMillisSpent();
                     long calculateCountPerSecond = point.getCalculateCountPerSecond();
-                    series.add(timeMillisSpend, calculateCountPerSecond);
+                    series.add(timeMillisSpent, calculateCountPerSecond);
                 }
             }
             plot.setDataset(seriesIndex, new XYSeriesCollection(series));

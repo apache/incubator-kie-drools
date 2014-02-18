@@ -18,14 +18,12 @@ package org.optaplanner.core.impl.solver;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.bestsolution.BestSolutionRecaller;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.event.SolverEventListener;
 import org.optaplanner.core.impl.event.SolverEventSupport;
 import org.optaplanner.core.impl.phase.SolverPhase;
@@ -107,12 +105,8 @@ public class DefaultSolver implements Solver {
     }
 
     // TODO this shouldn't change after the solve is done
-    public long getTimeMillisSpend() {
-        return solverScope.calculateTimeMillisSpend();
-    }
-
-    public SolutionDescriptor getSolutionDescriptor() {
-        return solverScope.getSolutionDescriptor();
+    public long getTimeMillisSpent() {
+        return solverScope.calculateTimeMillisSpent();
     }
 
     public DefaultSolverScope getSolverScope() {
@@ -175,8 +169,8 @@ public class DefaultSolver implements Solver {
         for (SolverPhase solverPhase : solverPhaseList) {
             solverPhase.solvingStarted(solverScope);
         }
-        logger.info("Solving started: time spend ({}), score ({}), new best score ({}), random ({}).",
-                solverScope.calculateTimeMillisSpend(), solverScope.getStartingInitializedScore(),
+        logger.info("Solving started: time spent ({}), score ({}), new best score ({}), random ({}).",
+                solverScope.calculateTimeMillisSpent(), solverScope.getStartingInitializedScore(),
                 solverScope.getBestScore(), (randomFactory != null ? randomFactory : "not fixed"));
     }
 
@@ -197,14 +191,14 @@ public class DefaultSolver implements Solver {
             solverPhase.solvingEnded(solverScope);
         }
         bestSolutionRecaller.solvingEnded(solverScope);
-        long timeMillisSpend = solverScope.calculateTimeMillisSpend();
-        if (timeMillisSpend == 0L) {
+        long timeMillisSpent = solverScope.calculateTimeMillisSpent();
+        if (timeMillisSpent == 0L) {
             // Avoid divide by zero exception on a fast CPU
-            timeMillisSpend = 1L;
+            timeMillisSpent = 1L;
         }
-        long averageCalculateCountPerSecond = solverScope.getCalculateCount() * 1000L / timeMillisSpend;
-        logger.info("Solving ended: time spend ({}), best score ({}), average calculate count per second ({}).",
-                timeMillisSpend,
+        long averageCalculateCountPerSecond = solverScope.getCalculateCount() * 1000L / timeMillisSpent;
+        logger.info("Solving ended: time spent ({}), best score ({}), average calculate count per second ({}).",
+                timeMillisSpent,
                 solverScope.getBestScoreWithUninitializedPrefix(),
                 averageCalculateCountPerSecond);
     }

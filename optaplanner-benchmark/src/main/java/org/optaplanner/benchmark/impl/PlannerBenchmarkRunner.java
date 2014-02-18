@@ -186,18 +186,18 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
             throw new IllegalStateException("Impossible state: notExecutedBenchmarkList size ("
                     + notExecutedBenchmarkList + ").");
         }
-        plannerBenchmarkResult.setBenchmarkTimeMillisSpend(calculateTimeMillisSpend());
+        plannerBenchmarkResult.setBenchmarkTimeMillisSpent(calculateTimeMillisSpent());
         benchmarkResultIO.writePlannerBenchmarkResult(plannerBenchmarkResult.getBenchmarkReportDirectory(),
                 plannerBenchmarkResult);
         benchmarkReport.writeReport();
         if (plannerBenchmarkResult.getFailureCount() == 0) {
-            logger.info("Benchmarking ended: time spend ({}), favoriteSolverBenchmark ({}), statistic html overview ({}).",
-                    plannerBenchmarkResult.getBenchmarkTimeMillisSpend(),
+            logger.info("Benchmarking ended: time spent ({}), favoriteSolverBenchmark ({}), statistic html overview ({}).",
+                    plannerBenchmarkResult.getBenchmarkTimeMillisSpent(),
                     plannerBenchmarkResult.getFavoriteSolverBenchmarkResult().getName(),
                     benchmarkReport.getHtmlOverviewFile().getAbsolutePath());
         } else {
-            logger.info("Benchmarking failed: time spend ({}), failureCount ({}), statistic html overview ({}).",
-                    plannerBenchmarkResult.getBenchmarkTimeMillisSpend(),
+            logger.info("Benchmarking failed: time spent ({}), failureCount ({}), statistic html overview ({}).",
+                    plannerBenchmarkResult.getBenchmarkTimeMillisSpent(),
                     plannerBenchmarkResult.getFailureCount(),
                     benchmarkReport.getHtmlOverviewFile().getAbsolutePath());
             throw new PlannerBenchmarkException("Benchmarking failed: failureCount ("
@@ -208,7 +208,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         }
     }
 
-    public long calculateTimeMillisSpend() {
+    public long calculateTimeMillisSpent() {
         long now = System.currentTimeMillis();
         return now - startingSystemTimeMillis;
     }

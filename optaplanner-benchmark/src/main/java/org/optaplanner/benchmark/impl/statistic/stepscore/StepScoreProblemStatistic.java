@@ -79,14 +79,14 @@ public class StepScoreProblemStatistic extends ProblemStatistic {
                 StepScoreSingleStatistic singleStatistic = (StepScoreSingleStatistic)
                         singleBenchmarkResult.getSingleStatistic(problemStatisticType);
                 for (StepScoreStatisticPoint point : singleStatistic.getPointList()) {
-                    long timeMillisSpend = point.getTimeMillisSpend();
+                    long timeMillisSpent = point.getTimeMillisSpent();
                     double[] levelValues = ScoreUtils.extractLevelDoubles(point.getScore());
                     for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= seriesList.size()) {
                             seriesList.add(new XYSeries(
                                     singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix()));
                         }
-                        seriesList.get(i).add(timeMillisSpend, levelValues[i]);
+                        seriesList.get(i).add(timeMillisSpent, levelValues[i]);
                     }
                 }
                 if (singleStatistic.getPointList().size() <= 1) {
@@ -119,7 +119,7 @@ public class StepScoreProblemStatistic extends ProblemStatistic {
 
     private XYPlot createPlot(BenchmarkReport benchmarkReport, int scoreLevelIndex) {
         Locale locale = benchmarkReport.getLocale();
-        NumberAxis xAxis = new NumberAxis("Time spend");
+        NumberAxis xAxis = new NumberAxis("Time spent");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
         NumberAxis yAxis = new NumberAxis("Step score level " + scoreLevelIndex);
         yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));

@@ -45,10 +45,9 @@ public interface Solver {
     Solution getBestSolution();
 
     /**
-     * TODO timeMillisSpend should not continue to increase after the solver has been terminated
-     * @return the amount of millis spend since this solver started
+     * @return the amount of millis spent between when this solver started and when it ended
      */
-    long getTimeMillisSpend();
+    long getTimeMillisSpent();
 
     /**
      * Solves the planning problem.

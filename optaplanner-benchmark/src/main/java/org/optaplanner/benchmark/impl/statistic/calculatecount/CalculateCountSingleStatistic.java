@@ -22,7 +22,6 @@ import java.util.List;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationStatisticPoint;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
@@ -77,29 +76,29 @@ public class CalculateCountSingleStatistic extends SingleStatistic<CalculateCoun
     private class CalculateCountSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {
 
         private long nextTimeMillisThreshold = timeMillisThresholdInterval;
-        private long lastTimeMillisSpend = 0L;
+        private long lastTimeMillisSpent = 0L;
         private long lastCalculateCount = 0L;
 
         @Override
         public void stepEnded(AbstractStepScope stepScope) {
-            long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
-            if (timeMillisSpend >= nextTimeMillisThreshold) {
+            long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
+            if (timeMillisSpent >= nextTimeMillisThreshold) {
                 DefaultSolverScope solverScope = stepScope.getPhaseScope().getSolverScope();
                 long calculateCount = solverScope.getCalculateCount();
                 long calculateCountInterval = calculateCount - lastCalculateCount;
-                long timeMillisSpendInterval = timeMillisSpend - lastTimeMillisSpend;
-                if (timeMillisSpendInterval == 0L) {
+                long timeMillisSpentInterval = timeMillisSpent - lastTimeMillisSpent;
+                if (timeMillisSpentInterval == 0L) {
                     // Avoid divide by zero exception on a fast CPU
-                    timeMillisSpendInterval = 1L;
+                    timeMillisSpentInterval = 1L;
                 }
-                long averageCalculateCountPerSecond = calculateCountInterval * 1000L / timeMillisSpendInterval;
-                pointList.add(new CalculateCountStatisticPoint(timeMillisSpend, averageCalculateCountPerSecond));
+                long averageCalculateCountPerSecond = calculateCountInterval * 1000L / timeMillisSpentInterval;
+                pointList.add(new CalculateCountStatisticPoint(timeMillisSpent, averageCalculateCountPerSecond));
                 lastCalculateCount = calculateCount;
 
-                lastTimeMillisSpend = timeMillisSpend;
+                lastTimeMillisSpent = timeMillisSpent;
                 nextTimeMillisThreshold += timeMillisThresholdInterval;
-                if (nextTimeMillisThreshold < timeMillisSpend) {
-                    nextTimeMillisThreshold = timeMillisSpend;
+                if (nextTimeMillisThreshold < timeMillisSpent) {
+                    nextTimeMillisThreshold = timeMillisSpent;
                 }
             }
         }
@@ -112,7 +111,7 @@ public class CalculateCountSingleStatistic extends SingleStatistic<CalculateCoun
 
     @Override
     protected String getCsvHeader() {
-        return CalculateCountStatisticPoint.buildCsvLine("timeMillisSpend", "calculateCountPerSecond");
+        return CalculateCountStatisticPoint.buildCsvLine("timeMillisSpent", "calculateCountPerSecond");
     }
 
     @Override

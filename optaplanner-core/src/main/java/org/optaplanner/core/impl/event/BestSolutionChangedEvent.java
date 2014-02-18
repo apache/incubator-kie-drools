@@ -26,26 +26,25 @@ import org.optaplanner.core.impl.solution.Solution;
  */
 public class BestSolutionChangedEvent extends EventObject {
 
-    private final long timeMillisSpend;
+    private final long timeMillisSpent;
     private final Solution newBestSolution;
 
     /**
-     * Internal API.
      * @param source never null
-     * @param timeMillisSpend >= 0L
+     * @param timeMillisSpent >= 0L
      * @param newBestSolution never null
      */
-    public BestSolutionChangedEvent(Solver source, long timeMillisSpend, Solution newBestSolution) {
+    protected BestSolutionChangedEvent(Solver source, long timeMillisSpent, Solution newBestSolution) {
         super(source);
-        this.timeMillisSpend = timeMillisSpend;
+        this.timeMillisSpent = timeMillisSpent;
         this.newBestSolution = newBestSolution;
     }
 
     /**
-     * @return the amount of millis spend since the solver started until that best solution was found
+     * @return the amount of millis spent since the solver started until {@link #getNewBestSolution()} was found
      */
-    public long getTimeMillisSpend() {
-        return timeMillisSpend;
+    public long getTimeMillisSpent() {
+        return timeMillisSpent;
     }
 
     /**

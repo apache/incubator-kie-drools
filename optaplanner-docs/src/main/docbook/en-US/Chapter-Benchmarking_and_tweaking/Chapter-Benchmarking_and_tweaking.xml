@@ -436,33 +436,33 @@
       constraint.</para>
     </section>
 
-    <section xml:id="benchmarkReportTimeSpendSummary">
-      <title>Time spend summary (graph and table)</title>
+    <section xml:id="benchmarkReportTimeSpentSummary">
+      <title>Time spent summary (graph and table)</title>
 
-      <para>Shows the time spend per <literal>inputSolutionFile</literal> for each solver configuration. This is
+      <para>Shows the time spent per <literal>inputSolutionFile</literal> for each solver configuration. This is
       pointless if it's benchmarking against a fixed time limit.</para>
 
       <para>Useful for visualizing the performance of construction heuristics (presuming that no other solver phases are
       configured).</para>
     </section>
 
-    <section xml:id="benchmarkReportTimeSpendScalabilitySummary">
-      <title>Time spend scalability summary (graph)</title>
+    <section xml:id="benchmarkReportTimeSpentScalabilitySummary">
+      <title>Time spent scalability summary (graph)</title>
 
-      <para>Shows the time spend per problem scale for each solver configuration. This is pointless if it's benchmarking
+      <para>Shows the time spent per problem scale for each solver configuration. This is pointless if it's benchmarking
       against a fixed time limit.</para>
 
       <para>Useful for extrapolating the scalability of construction heuristics (presuming that no other solver phases
       are configured).</para>
     </section>
 
-    <section xml:id="benchmarkReportBestScorePerTimeSpendSummary">
-      <title>Best score per time spend summary (graph)</title>
+    <section xml:id="benchmarkReportBestScorePerTimeSpentSummary">
+      <title>Best score per time spent summary (graph)</title>
 
-      <para>Shows the best score per time spend for each solver configuration. This is pointless if it's benchmarking
+      <para>Shows the best score per time spent for each solver configuration. This is pointless if it's benchmarking
       against a fixed time limit.</para>
 
-      <para>Useful for visualizing trade-off between the best score versus the time spend for construction heuristics
+      <para>Useful for visualizing trade-off between the best score versus the time spent for construction heuristics
       (presuming that no other solver phases are configured).</para>
     </section>
   </section>
@@ -531,7 +531,7 @@
       <note>
         <para>A time gradient based algorithm (such as Simulated Annealing) will have a different statistic if it's run
         with a different time limit configuration. That's because this Simulated Annealing implementation automatically
-        determines its velocity based on the amount of time that can be spend. On the other hand, for the Tabu Search
+        determines its velocity based on the amount of time that can be spent. On the other hand, for the Tabu Search
         and Late Annealing, what you see is what you'd get.</para>
       </note>
     </section>

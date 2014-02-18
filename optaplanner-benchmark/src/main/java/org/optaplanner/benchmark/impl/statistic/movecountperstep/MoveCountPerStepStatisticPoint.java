@@ -16,18 +16,16 @@
 
 package org.optaplanner.benchmark.impl.statistic.movecountperstep;
 
-import java.util.List;
-
 import org.optaplanner.benchmark.impl.statistic.StatisticPoint;
 
 public class MoveCountPerStepStatisticPoint extends StatisticPoint {
 
-    private final long timeMillisSpend;
+    private final long timeMillisSpent;
     private final MoveCountPerStepMeasurement moveCountPerStepMeasurement;
 
-    public MoveCountPerStepStatisticPoint(long timeMillisSpend,
+    public MoveCountPerStepStatisticPoint(long timeMillisSpent,
             MoveCountPerStepMeasurement moveCountPerStepMeasurement) {
-        this.timeMillisSpend = timeMillisSpend;
+        this.timeMillisSpent = timeMillisSpent;
         this.moveCountPerStepMeasurement = moveCountPerStepMeasurement;
     }
 
@@ -35,13 +33,13 @@ public class MoveCountPerStepStatisticPoint extends StatisticPoint {
         return moveCountPerStepMeasurement;
     }
 
-    public long getTimeMillisSpend() {
-        return timeMillisSpend;
+    public long getTimeMillisSpent() {
+        return timeMillisSpent;
     }
 
     @Override
     public String toCsvLine() {
-        return buildCsvLineWithLongs(timeMillisSpend, moveCountPerStepMeasurement.getAcceptedMoveCount(),
+        return buildCsvLineWithLongs(timeMillisSpent, moveCountPerStepMeasurement.getAcceptedMoveCount(),
                 moveCountPerStepMeasurement.getSelectedMoveCount());
     }
    

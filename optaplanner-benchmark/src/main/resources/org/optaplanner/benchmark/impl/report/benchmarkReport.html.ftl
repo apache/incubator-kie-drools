@@ -284,13 +284,13 @@
                                 <a href="#summary_averageCalculateCount" data-toggle="tab">Average calculation count</a>
                             </li>
                             <li>
-                                <a href="#summary_timeSpend" data-toggle="tab">Time spend</a>
+                                <a href="#summary_timeSpent" data-toggle="tab">Time spent</a>
                             </li>
                             <li>
-                                <a href="#summary_timeSpendScalability" data-toggle="tab">Time spend scalability</a>
+                                <a href="#summary_timeSpentScalability" data-toggle="tab">Time spent scalability</a>
                             </li>
                             <li>
-                                <a href="#summary_bestScorePerTimeSpend" data-toggle="tab">Best score per time spend</a>
+                                <a href="#summary_bestScorePerTimeSpent" data-toggle="tab">Best score per time spent</a>
                             </li>
                         </ul>
                         <div class="tab-content">
@@ -342,11 +342,11 @@
                                 </#list>
                                 </table>
                             </div>
-                            <div class="tab-pane" id="summary_timeSpend">
-                                <h3>Time spend summary</h3>
+                            <div class="tab-pane" id="summary_timeSpent">
+                                <h3>Time spent summary</h3>
                                 <p>Useful for visualizing the performance of construction heuristics (presuming that no other solver phases are configured).</p>
                                 <div class="benchmark-chart">
-                                    <img src="summary/${benchmarkReport.timeSpendSummaryChartFile.name}"/>
+                                    <img src="summary/${benchmarkReport.timeSpentSummaryChartFile.name}"/>
                                 </div>
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
@@ -369,7 +369,7 @@
                                 <#list benchmarkReport.plannerBenchmarkResult.solverBenchmarkResultList as solverBenchmarkResult>
                                     <tr<#if solverBenchmarkResult.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmarkResult.name}&nbsp;<@addSolverRankingBadge solverBenchmarkResult=solverBenchmarkResult/></th>
-                                        <td>${solverBenchmarkResult.averageTimeMillisSpend!""}</td>
+                                        <td>${solverBenchmarkResult.averageTimeMillisSpent!""}</td>
                                         <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
                                             <#if !solverBenchmarkResult.findSingleBenchmark(problemBenchmarkResult)??>
                                                 <td></td>
@@ -378,7 +378,7 @@
                                                 <#if !singleBenchmarkResult.success>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
-                                                    <td>${singleBenchmarkResult.timeMillisSpend}</td>
+                                                    <td>${singleBenchmarkResult.timeMillisSpent}</td>
                                                 </#if>
                                             </#if>
                                         </#list>
@@ -386,17 +386,17 @@
                                 </#list>
                                 </table>
                             </div>
-                            <div class="tab-pane" id="summary_timeSpendScalability">
-                                <h3>Time spend scalability summary</h3>
+                            <div class="tab-pane" id="summary_timeSpentScalability">
+                                <h3>Time spent scalability summary</h3>
                                 <p>Useful for extrapolating the scalability of construction heuristics (presuming that no other solver phases are configured).</p>
                                 <div class="benchmark-chart">
-                                    <img src="summary/${benchmarkReport.timeSpendScalabilitySummaryChartFile.name}"/>
+                                    <img src="summary/${benchmarkReport.timeSpentScalabilitySummaryChartFile.name}"/>
                                 </div>
                             </div>
-                            <div class="tab-pane" id="summary_bestScorePerTimeSpend">
-                                <h3>Best score per time spend summary</h3>
-                                <p>Useful for visualizing trade-off between the best score versus the time spend for construction heuristics (presuming that no other solver phases are configured).</p>
-                                <@addScoreLevelChartList chartFileList=benchmarkReport.bestScorePerTimeSpendSummaryChartFileList idPrefix="summary_bestScorePerTimeSpend" />
+                            <div class="tab-pane" id="summary_bestScorePerTimeSpent">
+                                <h3>Best score per time spent summary</h3>
+                                <p>Useful for visualizing trade-off between the best score versus the time spent for construction heuristics (presuming that no other solver phases are configured).</p>
+                                <@addScoreLevelChartList chartFileList=benchmarkReport.bestScorePerTimeSpentSummaryChartFileList idPrefix="summary_bestScorePerTimeSpent" />
                             </div>
                         </div>
                         <!-- HACK Duplication to show the navigation tabs in the same viewport as the tables -->
@@ -405,13 +405,13 @@
                                 <a href="#summary_averageCalculateCount" data-toggle="tab">Average calculation count</a>
                             </li>
                             <li>
-                                <a href="#summary_timeSpend" data-toggle="tab">Time spend</a>
+                                <a href="#summary_timeSpent" data-toggle="tab">Time spent</a>
                             </li>
                             <li>
-                                <a href="#summary_timeSpendScalability" data-toggle="tab">Time spend scalability</a>
+                                <a href="#summary_timeSpentScalability" data-toggle="tab">Time spent scalability</a>
                             </li>
                             <li>
-                                <a href="#summary_bestScorePerTimeSpend" data-toggle="tab">Best score per time spend</a>
+                                <a href="#summary_bestScorePerTimeSpent" data-toggle="tab">Best score per time spent</a>
                             </li>
                         </ul>
                     </div>
@@ -535,11 +535,11 @@
                         <td>${benchmarkReport.plannerBenchmarkResult.aggregation?string}</td>
                     </tr>
                     <tr>
-                        <th>failureCount</th>
+                        <th>Failure count</th>
                         <td>${benchmarkReport.plannerBenchmarkResult.failureCount}</td>
                     </tr>
                     <tr>
-                        <th>startingTimestamp</th>
+                        <th>Starting timestamp</th>
                         <td>${(benchmarkReport.plannerBenchmarkResult.startingTimestamp?datetime)!"Differs"}</td>
                     </tr>
                     <tr>
@@ -547,12 +547,12 @@
                         <td>${benchmarkReport.plannerBenchmarkResult.warmUpTimeMillisSpend!"Differs"} ms</td>
                     </tr>
                     <tr>
-                        <th>parallelBenchmarkCount / availableProcessors</th>
+                        <th>Parallel benchmark count / available processors</th>
                         <td>${benchmarkReport.plannerBenchmarkResult.parallelBenchmarkCount!"Differs"} / ${benchmarkReport.plannerBenchmarkResult.availableProcessors!"Differs"}</td>
                     </tr>
                     <tr>
-                        <th>benchmarkTimeMillisSpend</th>
-                        <td>${benchmarkReport.plannerBenchmarkResult.benchmarkTimeMillisSpend!"Differs"} ms</td>
+                        <th>Benchmark time spent</th>
+                        <td>${benchmarkReport.plannerBenchmarkResult.benchmarkTimeMillisSpent!"Differs"} ms</td>
                     </tr>
                     <tr>
                         <th>VM max memory (as in -Xmx but lower)</th>

@@ -16,23 +16,21 @@
 
 package org.optaplanner.benchmark.impl.statistic.stepscore;
 
-import java.util.List;
-
 import org.optaplanner.benchmark.impl.statistic.StatisticPoint;
 import org.optaplanner.core.api.score.Score;
 
 public class StepScoreStatisticPoint extends StatisticPoint {
 
-    private final long timeMillisSpend;
+    private final long timeMillisSpent;
     private final Score score;
 
-    public StepScoreStatisticPoint(long timeMillisSpend, Score score) {
-        this.timeMillisSpend = timeMillisSpend;
+    public StepScoreStatisticPoint(long timeMillisSpent, Score score) {
+        this.timeMillisSpent = timeMillisSpent;
         this.score = score;
     }
 
-    public long getTimeMillisSpend() {
-        return timeMillisSpend;
+    public long getTimeMillisSpent() {
+        return timeMillisSpent;
     }
 
     public Score getScore() {
@@ -41,7 +39,7 @@ public class StepScoreStatisticPoint extends StatisticPoint {
 
     @Override
     public String toCsvLine() {
-        return buildCsvLineWithStrings(timeMillisSpend, score.toString());
+        return buildCsvLineWithStrings(timeMillisSpent, score.toString());
     }
 
 }

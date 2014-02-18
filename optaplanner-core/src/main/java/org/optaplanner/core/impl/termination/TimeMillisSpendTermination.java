@@ -36,12 +36,12 @@ public class TimeMillisSpendTermination extends AbstractTermination {
     // ************************************************************************
 
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
-        long solverTimeMillisSpend = solverScope.calculateTimeMillisSpend();
+        long solverTimeMillisSpend = solverScope.calculateTimeMillisSpent();
         return isTerminated(solverTimeMillisSpend);
     }
 
     public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
-        long phaseTimeMillisSpend = phaseScope.calculatePhaseTimeMillisSpend();
+        long phaseTimeMillisSpend = phaseScope.calculatePhaseTimeMillisSpent();
         return isTerminated(phaseTimeMillisSpend);
     }
 
@@ -50,17 +50,17 @@ public class TimeMillisSpendTermination extends AbstractTermination {
     }
 
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
-        long solverTimeMillisSpend = solverScope.calculateTimeMillisSpend();
-        return calculateTimeGradient(solverTimeMillisSpend);
+        long solverTimeMillisSpent = solverScope.calculateTimeMillisSpent();
+        return calculateTimeGradient(solverTimeMillisSpent);
     }
 
     public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
-        long phaseTimeMillisSpend = phaseScope.calculatePhaseTimeMillisSpend();
+        long phaseTimeMillisSpend = phaseScope.calculatePhaseTimeMillisSpent();
         return calculateTimeGradient(phaseTimeMillisSpend);
     }
 
-    private double calculateTimeGradient(double timeMillisSpend) {
-        double timeGradient = ((double) timeMillisSpend) / ((double) maximumTimeMillisSpend);
+    private double calculateTimeGradient(double timeMillisSpent) {
+        double timeGradient = ((double) timeMillisSpent) / ((double) maximumTimeMillisSpend);
         return Math.min(timeGradient, 1.0);
     }
 

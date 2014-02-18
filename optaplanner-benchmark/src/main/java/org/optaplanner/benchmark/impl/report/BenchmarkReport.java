@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -38,7 +37,6 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.apache.commons.io.IOUtils;
-import org.drools.core.util.StringUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
@@ -62,7 +60,6 @@ import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.score.ScoreUtils;
 
 public class BenchmarkReport {
@@ -80,9 +77,9 @@ public class BenchmarkReport {
     private List<File> winningScoreDifferenceSummaryChartFileList = null;
     private List<File> worstScoreDifferencePercentageSummaryChartFileList = null;
     private File averageCalculateCountSummaryChartFile = null;
-    private File timeSpendSummaryChartFile = null;
-    private File timeSpendScalabilitySummaryChartFile = null;
-    private List<File> bestScorePerTimeSpendSummaryChartFileList = null;
+    private File timeSpentSummaryChartFile = null;
+    private File timeSpentScalabilitySummaryChartFile = null;
+    private List<File> bestScorePerTimeSpentSummaryChartFileList = null;
 
     private Integer defaultShownScoreLevelIndex = null;
     private List<String> warningList = null;
@@ -145,16 +142,16 @@ public class BenchmarkReport {
         return averageCalculateCountSummaryChartFile;
     }
 
-    public File getTimeSpendSummaryChartFile() {
-        return timeSpendSummaryChartFile;
+    public File getTimeSpentSummaryChartFile() {
+        return timeSpentSummaryChartFile;
     }
 
-    public File getTimeSpendScalabilitySummaryChartFile() {
-        return timeSpendScalabilitySummaryChartFile;
+    public File getTimeSpentScalabilitySummaryChartFile() {
+        return timeSpentScalabilitySummaryChartFile;
     }
 
-    public List<File> getBestScorePerTimeSpendSummaryChartFileList() {
-        return bestScorePerTimeSpendSummaryChartFileList;
+    public List<File> getBestScorePerTimeSpentSummaryChartFileList() {
+        return bestScorePerTimeSpentSummaryChartFileList;
     }
 
     public Integer getDefaultShownScoreLevelIndex() {
@@ -201,7 +198,7 @@ public class BenchmarkReport {
         writeWinningScoreDifferenceSummaryChart();
         writeWorstScoreDifferencePercentageSummaryChart();
         writeAverageCalculateCountPerSecondSummaryChart();
-        writeTimeSpendSummaryChart();
+        writeTimeSpentSummaryChart();
         writeTimeSpendScalabilitySummaryChart();
         writeBestScorePerTimeSpendSummaryChart();
         for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
@@ -389,22 +386,22 @@ public class BenchmarkReport {
         averageCalculateCountSummaryChartFile = writeChartToImageFile(chart, "averageCalculateCountSummary");
     }
 
-    private void writeTimeSpendSummaryChart() {
+    private void writeTimeSpentSummaryChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             String solverLabel = solverBenchmarkResult.getNameWithFavoriteSuffix();
             for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
                 String planningProblemLabel = singleBenchmarkResult.getProblemBenchmarkResult().getName();
                 if (singleBenchmarkResult.isSuccess()) {
-                    long timeMillisSpend = singleBenchmarkResult.getTimeMillisSpend();
-                    dataset.addValue(timeMillisSpend, solverLabel, planningProblemLabel);
+                    long timeMillisSpent = singleBenchmarkResult.getTimeMillisSpent();
+                    dataset.addValue(timeMillisSpent, solverLabel, planningProblemLabel);
                 }
             }
         }
-        CategoryPlot plot = createBarChartPlot(dataset, "Time spend", new MillisecondsSpendNumberFormat(locale));
-        JFreeChart chart = new JFreeChart("Time spend summary (lower time is better)",
+        CategoryPlot plot = createBarChartPlot(dataset, "Time spent", new MillisecondsSpendNumberFormat(locale));
+        JFreeChart chart = new JFreeChart("Time spent summary (lower time is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        timeSpendSummaryChartFile = writeChartToImageFile(chart, "timeSpendSummary");
+        timeSpentSummaryChartFile = writeChartToImageFile(chart, "timeSpentSummary");
     }
 
     private void writeTimeSpendScalabilitySummaryChart() {
@@ -415,18 +412,18 @@ public class BenchmarkReport {
             for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
                 if (singleBenchmarkResult.isSuccess()) {
                     long problemScale = singleBenchmarkResult.getProblemBenchmarkResult().getProblemScale();
-                    long timeMillisSpend = singleBenchmarkResult.getTimeMillisSpend();
-                    series.add((Long) problemScale, (Long) timeMillisSpend);
+                    long timeMillisSpent = singleBenchmarkResult.getTimeMillisSpent();
+                    series.add((Long) problemScale, (Long) timeMillisSpent);
                 }
             }
             seriesList.add(series);
         }
         XYPlot plot = createScalabilityPlot(seriesList,
                 "Problem scale", NumberFormat.getInstance(locale),
-                "Time spend", new MillisecondsSpendNumberFormat(locale));
-        JFreeChart chart = new JFreeChart("Time spend scalability summary (lower is better)",
+                "Time spent", new MillisecondsSpendNumberFormat(locale));
+        JFreeChart chart = new JFreeChart("Time spent scalability summary (lower is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        timeSpendScalabilitySummaryChartFile = writeChartToImageFile(chart, "timeSpendScalabilitySummary");
+        timeSpentScalabilitySummaryChartFile = writeChartToImageFile(chart, "timeSpentScalabilitySummary");
     }
 
     private void writeBestScorePerTimeSpendSummaryChart() {
@@ -438,7 +435,7 @@ public class BenchmarkReport {
             String solverLabel = solverBenchmarkResult.getNameWithFavoriteSuffix();
             for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
                 if (singleBenchmarkResult.isSuccess()) {
-                    long timeMillisSpend = singleBenchmarkResult.getTimeMillisSpend();
+                    long timeMillisSpent = singleBenchmarkResult.getTimeMillisSpent();
                     double[] levelValues = ScoreUtils.extractLevelDoubles(singleBenchmarkResult.getScore());
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= seriesListList.size()) {
@@ -449,23 +446,23 @@ public class BenchmarkReport {
                         while (solverBenchmarkIndex >= seriesList.size()) {
                             seriesList.add(new XYSeries(solverLabel));
                         }
-                        seriesList.get(solverBenchmarkIndex).add((Long) timeMillisSpend, (Double) levelValues[i]);
+                        seriesList.get(solverBenchmarkIndex).add((Long) timeMillisSpent, (Double) levelValues[i]);
                     }
                 }
             }
             solverBenchmarkIndex++;
         }
-        bestScorePerTimeSpendSummaryChartFileList = new ArrayList<File>(seriesListList.size());
+        bestScorePerTimeSpentSummaryChartFileList = new ArrayList<File>(seriesListList.size());
         int scoreLevelIndex = 0;
         for (List<XYSeries> seriesList : seriesListList) {
             XYPlot plot = createScalabilityPlot(seriesList,
-                    "Time spend", new MillisecondsSpendNumberFormat(locale),
+                    "Time spent", new MillisecondsSpendNumberFormat(locale),
                     "Score level " + scoreLevelIndex, NumberFormat.getInstance(locale));
             JFreeChart chart = new JFreeChart(
-                    "Best score per time spend level " + scoreLevelIndex + " summary (higher left is better)",
+                    "Best score per time spent level " + scoreLevelIndex + " summary (higher left is better)",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-            bestScorePerTimeSpendSummaryChartFileList.add(
-                    writeChartToImageFile(chart, "bestScorePerTimeSpendSummaryLevel" + scoreLevelIndex));
+            bestScorePerTimeSpentSummaryChartFileList.add(
+                    writeChartToImageFile(chart, "bestScorePerTimeSpentSummaryLevel" + scoreLevelIndex));
             scoreLevelIndex++;
         }
     }

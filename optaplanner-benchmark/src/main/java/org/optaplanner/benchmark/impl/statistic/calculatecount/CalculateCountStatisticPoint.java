@@ -16,22 +16,20 @@
 
 package org.optaplanner.benchmark.impl.statistic.calculatecount;
 
-import java.util.List;
-
 import org.optaplanner.benchmark.impl.statistic.StatisticPoint;
 
 public class CalculateCountStatisticPoint extends StatisticPoint {
 
-    private final long timeMillisSpend;
+    private final long timeMillisSpent;
     private final long calculateCountPerSecond;
 
-    public CalculateCountStatisticPoint(long timeMillisSpend, long calculateCountPerSecond) {
-        this.timeMillisSpend = timeMillisSpend;
+    public CalculateCountStatisticPoint(long timeMillisSpent, long calculateCountPerSecond) {
+        this.timeMillisSpent = timeMillisSpent;
         this.calculateCountPerSecond = calculateCountPerSecond;
     }
 
-    public long getTimeMillisSpend() {
-        return timeMillisSpend;
+    public long getTimeMillisSpent() {
+        return timeMillisSpent;
     }
 
     public long getCalculateCountPerSecond() {
@@ -40,7 +38,7 @@ public class CalculateCountStatisticPoint extends StatisticPoint {
 
     @Override
     public String toCsvLine() {
-        return buildCsvLineWithLongs(timeMillisSpend, calculateCountPerSecond);
+        return buildCsvLineWithLongs(timeMillisSpent, calculateCountPerSecond);
     }
 
 }

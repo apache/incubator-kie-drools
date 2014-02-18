@@ -50,7 +50,7 @@ public class SingleBenchmarkResult {
 
     private Boolean succeeded = null;
     private Score score = null;
-    private long timeMillisSpend = -1L;
+    private long timeMillisSpent = -1L;
     private long calculateCount = -1L;
 
     // ************************************************************************
@@ -133,12 +133,12 @@ public class SingleBenchmarkResult {
         this.score = score;
     }
 
-    public long getTimeMillisSpend() {
-        return timeMillisSpend;
+    public long getTimeMillisSpent() {
+        return timeMillisSpent;
     }
 
-    public void setTimeMillisSpend(long timeMillisSpend) {
-        this.timeMillisSpend = timeMillisSpend;
+    public void setTimeMillisSpent(long timeMillisSpent) {
+        this.timeMillisSpent = timeMillisSpent;
     }
 
     public long getCalculateCount() {
@@ -202,12 +202,12 @@ public class SingleBenchmarkResult {
     }
 
     public Long getAverageCalculateCountPerSecond() {
-        long timeMillisSpend = this.timeMillisSpend;
-        if (timeMillisSpend == 0L) {
+        long timeMillisSpent = this.timeMillisSpent;
+        if (timeMillisSpent == 0L) {
             // Avoid divide by zero exception on a fast CPU
-            timeMillisSpend = 1L;
+            timeMillisSpent = 1L;
         }
-        return calculateCount * 1000L / timeMillisSpend;
+        return calculateCount * 1000L / timeMillisSpent;
     }
 
     public boolean isWinner() {
@@ -257,7 +257,7 @@ public class SingleBenchmarkResult {
         // Skip oldResult.usedMemoryAfterInputSolution
         newResult.succeeded = oldResult.succeeded;
         newResult.score = oldResult.score;
-        newResult.timeMillisSpend = oldResult.timeMillisSpend;
+        newResult.timeMillisSpent = oldResult.timeMillisSpent;
         newResult.calculateCount = oldResult.calculateCount;
 
         solverBenchmarkResult.getSingleBenchmarkResultList().add(newResult);

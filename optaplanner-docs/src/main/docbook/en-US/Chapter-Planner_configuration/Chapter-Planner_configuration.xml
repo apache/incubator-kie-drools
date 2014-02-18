@@ -1569,18 +1569,18 @@ public interface Standstill {
       <para>For example, set it to <literal>debug</literal> logging, to see when the phases end and how fast steps are
       taken:</para>
 
-      <programlisting>INFO  Solving started: time spend (0), score (null), new best score (null), random (JDK with seed 0).
-DEBUG     Step index (0), time spend (1), score (0), initialized planning entity (col2@row0).
-DEBUG     Step index (1), time spend (3), score (0), initialized planning entity (col1@row2).
-DEBUG     Step index (2), time spend (4), score (0), initialized planning entity (col3@row3).
-DEBUG     Step index (3), time spend (5), score (-1), initialized planning entity (col0@row1).
-INFO  Phase (0) constructionHeuristic ended: step total (4), time spend (6), best score (-1).
-DEBUG     Step index (0), time spend (10), score (-1),     best score (-1), accepted/selected move count (12/12) for picked step (col1@row2 =&gt; row3).
-DEBUG     Step index (1), time spend (12), score (0), new best score (0), accepted/selected move count (12/12) for picked step (col3@row3 =&gt; row2).
-INFO  Phase (1) localSearch ended: step total (2), time spend (13), best score (0).
-INFO  Solving ended: time spend (13), best score (0), average calculate count per second (4846).</programlisting>
+      <programlisting>INFO  Solving started: time spent (0), score (null), new best score (null), random (JDK with seed 0).
+DEBUG     Step index (0), time spent (1), score (0), initialized planning entity (col2@row0).
+DEBUG     Step index (1), time spent (3), score (0), initialized planning entity (col1@row2).
+DEBUG     Step index (2), time spent (4), score (0), initialized planning entity (col3@row3).
+DEBUG     Step index (3), time spent (5), score (-1), initialized planning entity (col0@row1).
+INFO  Phase (0) constructionHeuristic ended: step total (4), time spent (6), best score (-1).
+DEBUG     Step index (0), time spent (10), score (-1),     best score (-1), accepted/selected move count (12/12) for picked step (col1@row2 =&gt; row3).
+DEBUG     Step index (1), time spent (12), score (0), new best score (0), accepted/selected move count (12/12) for picked step (col3@row3 =&gt; row2).
+INFO  Phase (1) localSearch ended: step total (2), time spent (13), best score (0).
+INFO  Solving ended: time spent (13), best score (0), average calculate count per second (4846).</programlisting>
 
-      <para>All time spends are in milliseconds.</para>
+      <para>All time spent values are in milliseconds.</para>
 
       <para>Everything is logged to <link xlink:href="http://www.slf4j.org/">SLF4J</link>, which is a simple logging
       facade which delegates every log message to Logback, Apache Commons Logging, Log4j or java.util.logging. Add a

@@ -26,27 +26,27 @@ public abstract class StatisticPoint {
 
     public abstract String toCsvLine();
 
-    public static String buildCsvLineWithLongs(long timeMillisSpend, long... values) {
+    public static String buildCsvLineWithLongs(long timeMillisSpent, long... values) {
         StringBuilder line = new StringBuilder(values.length * 10);
-        line.append(Long.toString(timeMillisSpend));
+        line.append(Long.toString(timeMillisSpent));
         for (long value : values) {
             line.append(",").append(Long.toString(value));
         }
         return line.toString();
     }
 
-    public static String buildCsvLineWithDoubles(long timeMillisSpend, double... values) {
+    public static String buildCsvLineWithDoubles(long timeMillisSpent, double... values) {
         StringBuilder line = new StringBuilder(values.length * 10);
-        line.append(Long.toString(timeMillisSpend));
+        line.append(Long.toString(timeMillisSpent));
         for (double value : values) {
             line.append(",").append(Double.toString(value));
         }
         return line.toString();
     }
 
-    public static String buildCsvLineWithStrings(long timeMillisSpend, String... values) {
+    public static String buildCsvLineWithStrings(long timeMillisSpent, String... values) {
         StringBuilder line = new StringBuilder(values.length * 10);
-        line.append(Long.toString(timeMillisSpend));
+        line.append(Long.toString(timeMillisSpent));
         for (String value : values) {
             line.append(",").append("\"").append(value.replaceAll("\"", "\"\"")).append("\"");
         }
