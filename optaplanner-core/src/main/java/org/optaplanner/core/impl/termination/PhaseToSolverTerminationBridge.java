@@ -29,7 +29,7 @@ public class PhaseToSolverTerminationBridge extends AbstractTermination {
     }
 
     // ************************************************************************
-    // Worker methods
+    // Lifecycle methods
     // ************************************************************************
 
     @Override
@@ -62,6 +62,10 @@ public class PhaseToSolverTerminationBridge extends AbstractTermination {
         // Do not delegate the event to the solverTermination, because it already gets the event from the DefaultSolver
     }
 
+    // ************************************************************************
+    // Terminated methods
+    // ************************************************************************
+
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
         throw new UnsupportedOperationException(
                 getClass().getSimpleName() + " can only be used for phase termination.");
@@ -70,6 +74,10 @@ public class PhaseToSolverTerminationBridge extends AbstractTermination {
     public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
         return solverTermination.isSolverTerminated(phaseScope.getSolverScope());
     }
+
+    // ************************************************************************
+    // Time gradient methods
+    // ************************************************************************
 
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
         throw new UnsupportedOperationException(

@@ -41,7 +41,7 @@ public abstract class AbstractCompositeTermination extends AbstractTermination i
     }
 
     // ************************************************************************
-    // Worker methods
+    // Lifecycle methods
     // ************************************************************************
 
     @Override

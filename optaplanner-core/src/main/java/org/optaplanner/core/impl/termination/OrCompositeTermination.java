@@ -32,7 +32,7 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
     }
 
     // ************************************************************************
-    // Worker methods
+    // Terminated methods
     // ************************************************************************
 
     /**
@@ -60,6 +60,10 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
         }
         return false;
     }
+
+    // ************************************************************************
+    // Time gradient methods
+    // ************************************************************************
 
     /**
      * Calculates the minimum timeGradient of all Terminations.

@@ -29,7 +29,7 @@ public class ScoreAttainedTermination extends AbstractTermination {
     }
 
     // ************************************************************************
-    // Worker methods
+    // Terminated methods
     // ************************************************************************
 
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
@@ -40,9 +40,13 @@ public class ScoreAttainedTermination extends AbstractTermination {
         return isTerminated(phaseScope.isBestSolutionInitialized(), phaseScope.getBestScore());
     }
 
-    private boolean isTerminated(boolean bestSolutionInitialized, Score bestScore) {
+    protected boolean isTerminated(boolean bestSolutionInitialized, Score bestScore) {
         return bestSolutionInitialized && bestScore.compareTo(scoreAttained) >= 0;
     }
+
+    // ************************************************************************
+    // Time gradient methods
+    // ************************************************************************
 
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
         Score startingInitializedScore = solverScope.getStartingInitializedScore();

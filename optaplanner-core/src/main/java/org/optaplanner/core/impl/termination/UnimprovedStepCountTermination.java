@@ -32,7 +32,7 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
     }
 
     // ************************************************************************
-    // Worker methods
+    // Terminated methods
     // ************************************************************************
 
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
@@ -45,6 +45,16 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
         return unimprovedStepCount >= maximumUnimprovedStepCount;
     }
 
+    protected int calculateUnimprovedStepCount(AbstractSolverPhaseScope phaseScope) {
+        int bestStepIndex = phaseScope.getBestSolutionStepIndex();
+        int lastStepIndex = phaseScope.getLastCompletedStepScope().getStepIndex();
+        return lastStepIndex - bestStepIndex;
+    }
+
+    // ************************************************************************
+    // Time gradient methods
+    // ************************************************************************
+
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
         throw new UnsupportedOperationException(
                 getClass().getSimpleName() + " can only be used for phase termination.");
@@ -54,12 +64,6 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
         int unimprovedStepCount = calculateUnimprovedStepCount(phaseScope);
         double timeGradient = ((double) unimprovedStepCount) / ((double) maximumUnimprovedStepCount);
         return Math.min(timeGradient, 1.0);
-    }
-
-    private int calculateUnimprovedStepCount(AbstractSolverPhaseScope phaseScope) {
-        int bestStepIndex = phaseScope.getBestSolutionStepIndex();
-        int lastStepIndex = phaseScope.getLastCompletedStepScope().getStepIndex();
-        return lastStepIndex - bestStepIndex;
     }
 
 }

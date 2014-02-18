@@ -32,7 +32,7 @@ public class StepCountTermination extends AbstractTermination {
     }
 
     // ************************************************************************
-    // Worker methods
+    // Terminated methods
     // ************************************************************************
 
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
@@ -44,6 +44,10 @@ public class StepCountTermination extends AbstractTermination {
         int nextStepIndex = phaseScope.getLastCompletedStepScope().getStepIndex() + 1;
         return nextStepIndex >= maximumStepCount;
     }
+
+    // ************************************************************************
+    // Time gradient methods
+    // ************************************************************************
 
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
         throw new UnsupportedOperationException(

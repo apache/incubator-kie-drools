@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.termination;
 
+import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
@@ -25,6 +26,9 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * A Termination determines when a {@link Solver} or a {@link SolverPhase} should stop.
+ * <p/>
+ * An implementation must extend {@link AbstractTermination} to ensure backwards compatibility in future versions.
+ * @see AbstractTermination
  */
 public interface Termination extends SolverPhaseLifecycleListener {
 

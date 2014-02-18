@@ -32,7 +32,7 @@ public class TimeMillisSpendTermination extends AbstractTermination {
     }
 
     // ************************************************************************
-    // Worker methods
+    // Terminated methods
     // ************************************************************************
 
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
@@ -45,9 +45,13 @@ public class TimeMillisSpendTermination extends AbstractTermination {
         return isTerminated(phaseTimeMillisSpend);
     }
 
-    private boolean isTerminated(long timeMillisSpend) {
+    protected boolean isTerminated(long timeMillisSpend) {
         return timeMillisSpend >= maximumTimeMillisSpend;
     }
+
+    // ************************************************************************
+    // Time gradient methods
+    // ************************************************************************
 
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
         long solverTimeMillisSpent = solverScope.calculateTimeMillisSpent();
@@ -59,7 +63,7 @@ public class TimeMillisSpendTermination extends AbstractTermination {
         return calculateTimeGradient(phaseTimeMillisSpend);
     }
 
-    private double calculateTimeGradient(double timeMillisSpent) {
+    protected double calculateTimeGradient(double timeMillisSpent) {
         double timeGradient = ((double) timeMillisSpent) / ((double) maximumTimeMillisSpend);
         return Math.min(timeGradient, 1.0);
     }
