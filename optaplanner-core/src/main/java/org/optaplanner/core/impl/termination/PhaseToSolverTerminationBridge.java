@@ -64,7 +64,7 @@ public class PhaseToSolverTerminationBridge extends AbstractTermination {
 
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
         throw new UnsupportedOperationException(
-                "PhaseToSolverTerminationBridge can only be used for phase termination.");
+                getClass().getSimpleName() + " can only be used for phase termination.");
     }
 
     public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
@@ -73,7 +73,7 @@ public class PhaseToSolverTerminationBridge extends AbstractTermination {
 
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
         throw new UnsupportedOperationException(
-                "PhaseToSolverTerminationBridge can only be used for phase termination.");
+                getClass().getSimpleName() + " can only be used for phase termination.");
     }
 
     public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
