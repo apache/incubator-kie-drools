@@ -2356,8 +2356,18 @@ public class PackageBuilder
                         } else if (tail.equals("*")) {
                             typeClass = getClassForType(imp.substring(0, imp.length() - 1) + typeDescr.getType().getName());
                             if (typeClass != null) {
-                                typeDescr.setNamespace(imp.substring(0, separator));
-                                break;
+                                String resolvedNamespace = imp.substring(0, separator);
+                                if ( resolvedNamespace.equals( typeDescr.getNamespace() ) ) {
+                                    // the class was found in the declared namespace, so stop here
+                                    break;
+                                    // here, the class was found in a different namespace. It means that the class was declared
+                                    // with no namespace and the initial guess was wrong, or that there is an ambiguity.
+                                    // So, we need to check that the resolved class is compatible with the declaration.
+                                } else if ( isCompatible( typeClass, typeDescr ) ) {
+                                    typeDescr.setNamespace( resolvedNamespace );
+                                } else {
+                                    typeClass = null;
+                                }
                             }
                         }
                     }
@@ -2569,6 +2579,39 @@ public class PackageBuilder
         }
 
         return unresolvedTypes;
+    }
+
+    private boolean isCompatible( Class<?> typeClass, AbstractClassTypeDeclarationDescr typeDescr ) {
+        try {
+            if ( typeDescr.getFields().isEmpty() ) {
+                return true;
+            }
+            Class<?> sup = typeClass.getSuperclass();
+            if ( sup == null ) {
+                return true;
+            }
+            if ( ! sup.getName().equals( typeDescr.getSupertTypeFullName() ) ) {
+                return false;
+            }
+            ClassFieldInspector cfi = new ClassFieldInspector( typeClass, false );
+            if ( cfi.getGetterMethods().size() != typeDescr.getFields().size() ) {
+                return false;
+            }
+            for ( String fieldName : cfi.getFieldTypes().keySet() ) {
+                if ( ! typeDescr.getFields().containsKey( fieldName ) ) {
+                    return false;
+                }
+                String fieldTypeName = typeDescr.getFields().get( fieldName ).getPattern().getObjectType();
+                Class fieldType = cfi.getFieldTypes().get( fieldName );
+                if ( ! fieldTypeName.equals( fieldType.getName() ) || ! fieldTypeName.equals( fieldType.getSimpleName() ) ) {
+                    return false;
+                }
+            }
+
+        } catch ( IOException e ) {
+            return false;
+        }
+        return true;
     }
 
     private boolean processTypeFields(PackageRegistry pkgRegistry,
