@@ -21,9 +21,9 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class UnimprovedStepCountTermination extends AbstractTermination {
 
-    private int maximumUnimprovedStepCount = 100;
+    private final int maximumUnimprovedStepCount;
 
-    public void setMaximumUnimprovedStepCount(int maximumUnimprovedStepCount) {
+    public UnimprovedStepCountTermination(int maximumUnimprovedStepCount) {
         this.maximumUnimprovedStepCount = maximumUnimprovedStepCount;
         if (maximumUnimprovedStepCount < 0) {
             throw new IllegalArgumentException("Property maximumUnimprovedStepCount (" + maximumUnimprovedStepCount

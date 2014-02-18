@@ -21,9 +21,9 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class TimeMillisSpendTermination extends AbstractTermination {
 
-    private long maximumTimeMillisSpend;
+    private final long maximumTimeMillisSpend;
 
-    public void setMaximumTimeMillisSpend(long maximumTimeMillisSpend) {
+    public TimeMillisSpendTermination(long maximumTimeMillisSpend) {
         this.maximumTimeMillisSpend = maximumTimeMillisSpend;
         if (maximumTimeMillisSpend <= 0L) {
             throw new IllegalArgumentException("Property maximumTimeMillisSpend (" + maximumTimeMillisSpend

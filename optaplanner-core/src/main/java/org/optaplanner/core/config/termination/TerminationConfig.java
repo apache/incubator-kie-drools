@@ -22,6 +22,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.collections.CollectionUtils;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.termination.AbstractCompositeTermination;
@@ -151,23 +152,20 @@ public class TerminationConfig implements Cloneable {
         }
         Long maximumTimeMillisSpendTotal = calculateMaximumTimeMillisSpendTotal();
         if (maximumTimeMillisSpendTotal != null) {
-            TimeMillisSpendTermination termination = new TimeMillisSpendTermination();
-            termination.setMaximumTimeMillisSpend(maximumTimeMillisSpendTotal);
+            TimeMillisSpendTermination termination = new TimeMillisSpendTermination(maximumTimeMillisSpendTotal);
             terminationList.add(termination);
         }
         if (scoreAttained != null) {
-            ScoreAttainedTermination termination = new ScoreAttainedTermination();
-            termination.setScoreAttained(configPolicy.getScoreDefinition().parseScore(scoreAttained));
+            Score scoreAttained_ = configPolicy.getScoreDefinition().parseScore(scoreAttained);
+            ScoreAttainedTermination termination = new ScoreAttainedTermination(scoreAttained_);
             terminationList.add(termination);
         }
         if (maximumStepCount != null) {
-            StepCountTermination termination = new StepCountTermination();
-            termination.setMaximumStepCount(maximumStepCount);
+            StepCountTermination termination = new StepCountTermination(maximumStepCount);
             terminationList.add(termination);
         }
         if (maximumUnimprovedStepCount != null) {
-            UnimprovedStepCountTermination termination = new UnimprovedStepCountTermination();
-            termination.setMaximumUnimprovedStepCount(maximumUnimprovedStepCount);
+            UnimprovedStepCountTermination termination = new UnimprovedStepCountTermination(maximumUnimprovedStepCount);
             terminationList.add(termination);
         }
         if (!CollectionUtils.isEmpty(terminationConfigList)) {

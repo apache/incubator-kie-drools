@@ -22,9 +22,9 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class ScoreAttainedTermination extends AbstractTermination {
 
-    private Score scoreAttained;
+    private final Score scoreAttained;
 
-    public void setScoreAttained(Score scoreAttained) {
+    public ScoreAttainedTermination(Score scoreAttained) {
         this.scoreAttained = scoreAttained;
     }
 
