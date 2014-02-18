@@ -781,9 +781,9 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         kfs.generateAndWritePomXML( id );
         kfs.write( ks.getResources()
-                     .newReaderResource( new StringReader( drl1 ) )
-                     .setResourceType( ResourceType.DRL )
-                     .setSourcePath( "drl1.drl" ) );
+                           .newReaderResource( new StringReader( drl1 ) )
+                           .setResourceType( ResourceType.DRL )
+                           .setSourcePath( "drl1.drl" ) );
 
         kieBuilder.buildAll();
 
@@ -794,18 +794,79 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         kfs.write( ks.getResources()
-                     .newReaderResource( new StringReader(drl2) )
-                     .setResourceType(ResourceType.DRL)
-                     .setSourcePath("drl2.txt") );
+                           .newReaderResource( new StringReader( drl2 ) )
+                           .setResourceType( ResourceType.DRL )
+                           .setSourcePath( "drl2.txt" ) );
 
         IncrementalResults results = ((InternalKieBuilder) kieBuilder).incrementalBuild();
         assertEquals(0, results.getAddedMessages().size());
 
         Results updateResults = kc.updateToVersion( id );
-        assertEquals(0, updateResults.getMessages().size());
+        assertEquals( 0, updateResults.getMessages().size() );
 
         ksession.fireAllRules();
         assertEquals( 2, list.size() );
 
     }
+
+    @Test
+    public void testIncrementalCompilationWithAmbiguousRedeclares() {
+        String drl1 = "package domestic; " +
+
+                      "import foreign.*; " +
+
+                      "declare foreign.Score " +
+                      "    id       : String " +
+                      "end ";
+
+        String drl2 = "\n" +
+                      "package domestic; " +
+
+                      "import foreign.*; " +
+
+                      "declare foreign.Score " +
+                      "    id       : String " +
+                      "end\n" +
+
+                      "declare Score " +
+                      "    value : double " +
+                      "end " +
+
+                      "";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        ReleaseId id = ks.newReleaseId( "org.test", "foo", "1.0-SNAPSHOT" );
+
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+
+        kfs.generateAndWritePomXML( id );
+        kfs.write( ks.getResources()
+                     .newReaderResource( new StringReader( drl1 ) )
+                     .setResourceType( ResourceType.DRL )
+                     .setSourcePath( "drl1.drl" ) );
+
+        kieBuilder.buildAll();
+
+        KieContainer kc = ks.newKieContainer( id );
+        KieSession ksession = kc.newKieSession();
+        List<String> list = new ArrayList<String>();
+        ksession.fireAllRules();
+
+        kfs.write( ks.getResources()
+                     .newReaderResource( new StringReader(drl2) )
+                     .setResourceType(ResourceType.DRL)
+                     .setSourcePath("drl2.drl") );
+
+        IncrementalResults results = ((InternalKieBuilder) kieBuilder).incrementalBuild();
+        System.out.println( results.getAddedMessages() );
+        assertEquals(0, results.getAddedMessages().size());
+
+        Results updateResults = kc.updateToVersion( id );
+        assertEquals(0, updateResults.getMessages().size());
+
+    }
+
+
+
 }
