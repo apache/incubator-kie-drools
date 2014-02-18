@@ -25,6 +25,7 @@ import org.drools.compiler.compiler.DecisionTableProvider;
 import org.drools.core.marshalling.impl.ProcessMarshallerFactoryService;
 import org.drools.core.runtime.process.ProcessRuntimeFactoryService;
 import org.kie.api.Service;
+import org.kie.api.builder.KieScanner;
 import org.kie.internal.builder.KnowledgeBuilderFactoryService;
 import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.api.osgi.Activator.BundleContextInstantiator;
@@ -50,6 +51,7 @@ public class Activator
     private ServiceTracker      bpmn2Tracker;
     private ServiceTracker      processRuntimeTracker;
     private ServiceTracker      processMarshallerTracker;
+    private ServiceTracker      scannerTracker;
 
     public void start(BundleContext bc) throws Exception {
         logger.info( "registering compiler services" );
@@ -85,6 +87,11 @@ public class Activator
                                                                                       this ) );
         this.processRuntimeTracker.open();
 
+        this.scannerTracker = new ServiceTracker( bc,
+                                                  KieScanner.class.getName(),
+                                                  new DroolsServiceTracker( bc, this, KieScanner.class ) );
+        this.scannerTracker.open();
+
         logger.info( "compiler services registered" );
     }
 
@@ -94,18 +101,24 @@ public class Activator
         this.bpmn2Tracker.close();
         this.processRuntimeTracker.close();
         this.processMarshallerTracker.close();
+        this.scannerTracker.close();
     }
 
     public static class DroolsServiceTracker
         implements
         ServiceTrackerCustomizer {
-        private BundleContext bc;
-        private Activator     activator;
+        private final BundleContext bc;
+        private final Activator     activator;
+        private final Class         serviceClass;
 
-        public DroolsServiceTracker(BundleContext bc,
-                                    Activator activator) {
+        public DroolsServiceTracker(BundleContext bc, Activator activator) {
+            this(bc, activator, null);
+        }
+
+        public DroolsServiceTracker(BundleContext bc, Activator activator, Class serviceClass) {
             this.bc = bc;
             this.activator = activator;
+            this.serviceClass = serviceClass;
         }
 
         public Object addingService(ServiceReference ref) {
@@ -122,7 +135,7 @@ public class Activator
                      "true" );
             activator.kbuilderReg.setProperties( dic );
 
-            ServiceRegistryImpl.getInstance().registerLocator( service.getClass().getInterfaces()[0],
+            ServiceRegistryImpl.getInstance().registerLocator( serviceClass != null ? serviceClass : service.getClass().getInterfaces()[0],
                                                                new BundleContextInstantiator( this.bc,
                                                                                               ref ) );
             return service;

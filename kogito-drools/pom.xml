@@ -59,6 +59,7 @@
     <module>drools-scorecards</module>
     <module>kie-maven-plugin</module>
     <module>kie-ci</module>
+    <module>kie-ci-osgi</module>
     <module>drools-examples-api</module>
     <module>drools-examples-cdi</module>
     <module>drools-workbench-models</module>

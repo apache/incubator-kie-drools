@@ -31,7 +31,7 @@ public class MinimalPomParser extends DefaultHandler {
         model = new PomModel();
     }
     
-    static PomModel parse(String path, InputStream is) {
+    public static PomModel parse(String path, InputStream is) {
         MinimalPomParser handler = new MinimalPomParser();        
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
