@@ -65,7 +65,7 @@ public class SolverBenchmarkResult {
     private double[] standardDeviationDoubles = null;
     private Score totalWinningScoreDifference = null;
     private ScoreDifferencePercentage averageWorstScoreDifferencePercentage = null;
-    // The average of the average is not just the overall average if the SingleBenchmarkResult's timeMillisSpend differ
+    // The average of the average is not just the overall average if the SingleBenchmarkResult's timeMillisSpent differ
     private Long averageAverageCalculateCountPerSecond = null;
     private Long averageTimeMillisSpent = null;
 

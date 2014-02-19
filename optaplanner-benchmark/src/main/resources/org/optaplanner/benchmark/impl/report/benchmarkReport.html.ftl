@@ -543,8 +543,8 @@
                         <td>${(benchmarkReport.plannerBenchmarkResult.startingTimestamp?datetime)!"Differs"}</td>
                     </tr>
                     <tr>
-                        <th>warmUpTimeMillisSpend</th>
-                        <td>${benchmarkReport.plannerBenchmarkResult.warmUpTimeMillisSpend!"Differs"} ms</td>
+                        <th>Warm up time spent</th>
+                        <td>${benchmarkReport.plannerBenchmarkResult.warmUpTimeMillisSpentLimit!"Differs"} ms</td>
                     </tr>
                     <tr>
                         <th>Parallel benchmark count / available processors</th>

@@ -213,7 +213,7 @@ public class ProblemBenchmarkResult {
         }
     }
 
-    public long warmUp(long startingTimeMillis, long warmUpTimeMillisSpend, long timeLeft) {
+    public long warmUp(long startingTimeMillis, long warmUpTimeMillisSpentLimit, long timeLeft) {
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             SolverBenchmarkResult solverBenchmarkResult = singleBenchmarkResult.getSolverBenchmarkResult();
             TerminationConfig originalTerminationConfig = solverBenchmarkResult.getSolverConfig().getTerminationConfig();
@@ -228,7 +228,7 @@ public class ProblemBenchmarkResult {
 
             solverBenchmarkResult.getSolverConfig().setTerminationConfig(originalTerminationConfig);
             long timeSpent = System.currentTimeMillis() - startingTimeMillis;
-            timeLeft = warmUpTimeMillisSpend - timeSpent;
+            timeLeft = warmUpTimeMillisSpentLimit - timeSpent;
             if (timeLeft <= 0L) {
                 return timeLeft;
             }

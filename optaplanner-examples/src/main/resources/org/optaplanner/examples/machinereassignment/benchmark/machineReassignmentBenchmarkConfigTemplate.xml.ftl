@@ -2,7 +2,7 @@
 <plannerBenchmark>
   <benchmarkDirectory>local/data/machinereassignment/template</benchmarkDirectory>
   <!--<parallelBenchmarkCount>AUTO</parallelBenchmarkCount>-->
-  <warmUpSecondsSpend>60</warmUpSecondsSpend>
+  <warmUpSecondsSpentLimit>60</warmUpSecondsSpentLimit>
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>

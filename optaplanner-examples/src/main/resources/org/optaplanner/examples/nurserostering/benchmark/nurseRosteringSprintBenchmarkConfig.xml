@@ -2,7 +2,7 @@
 <plannerBenchmark>
   <benchmarkDirectory>local/data/nurserostering/sprint</benchmarkDirectory>
   <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
-  <warmUpSecondsSpend>5</warmUpSecondsSpend>
+  <warmUpSecondsSpentLimit>5</warmUpSecondsSpentLimit>
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>

@@ -34,7 +34,7 @@ import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpendNumberFormat;
+import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 
@@ -67,7 +67,7 @@ public class CalculateCountProblemStatistic extends ProblemStatistic {
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
         Locale locale = benchmarkReport.getLocale();
         NumberAxis xAxis = new NumberAxis("Time spent");
-        xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
+        xAxis.setNumberFormatOverride(new MillisecondsSpentNumberFormat(locale));
         NumberAxis yAxis = new NumberAxis("Calculate count per second");
         yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
         yAxis.setAutoRangeIncludesZero(false);

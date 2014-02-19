@@ -3835,13 +3835,13 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
 This includes the log output and the benchmark report.
 
 [MAJOR] All child elements of <termination> have been renamed:
-<maximumTimeMillisSpend> has been renamed to <millisecondsSpentLimit>
-<maximumSecondsSpend> has been renamed to <secondsSpentLimit>
-<maximumMinutesSpend> has been renamed to <minutesSpentLimit>
-<maximumHoursSpend> has been renamed to <hoursSpentLimit>
-<scoreAttained> has been renamed to <bestScoreLimit>
-<maximumStepCount> has been renamed to <stepCountLimit>
-<maximumUnimprovedStepCount> has been renamed to <unimprovedStepCountLimit>
+The element <maximumTimeMillisSpend> has been renamed to <millisecondsSpentLimit>
+The element <maximumSecondsSpend> has been renamed to <secondsSpentLimit>
+The element <maximumMinutesSpend> has been renamed to <minutesSpentLimit>
+The element <maximumHoursSpend> has been renamed to <hoursSpentLimit>
+The element <scoreAttained> has been renamed to <bestScoreLimit>
+The element <maximumStepCount> has been renamed to <stepCountLimit>
+The element <maximumUnimprovedStepCount> has been renamed to <unimprovedStepCountLimit>
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
     <termination>
       <maximumTimeMillisSpend>...</maximumTimeMillisSpend>
@@ -3877,3 +3877,24 @@ After in *.java:
             ... = event.getTimeMillisSpent();
         }
 
+[MAJOR] Benchmarker: the <warmUp*> elements have been renamed:
+The element <warmUpTimeMillisSpend> has been renamed to <warmUpMillisecondsSpentLimit>
+The element <warmUpSecondsSpend> has been renamed to <warmUpSecondsSpentLimit>
+The element <warmUpMinutesSpend> has been renamed to <warmUpMinutesSpentLimit>
+The element <warmUpHoursSpend> has been renamed to <warmUpHoursSpentLimit>
+Before in *BenchmarkConfig.xml:
+    <plannerBenchmark>
+      <warmUpTimeMillisSpend>...</warmUpTimeMillisSpend>
+      <warmUpSecondsSpend>...</warmUpSecondsSpend>
+      <warmUpMinutesSpend>...</warmUpMinutesSpend>
+      <warmUpHoursSpend>...</warmUpHoursSpend>
+      ...
+    <//plannerBenchmark>
+After in *BenchmarkConfig.xml:
+    <plannerBenchmark>
+      <warmUpMillisecondsSpentLimit>...</warmUpMillisecondsSpentLimit>
+      <warmUpSecondsSpentLimit>...</warmUpSecondsSpentLimit>
+      <warmUpMinutesSpentLimit>...</warmUpMinutesSpentLimit>
+      <warmUpHoursSpentLimit>...</warmUpHoursSpentLimit>
+      ...
+    <//plannerBenchmark>

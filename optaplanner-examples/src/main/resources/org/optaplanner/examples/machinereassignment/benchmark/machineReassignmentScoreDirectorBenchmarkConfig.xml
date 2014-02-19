@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
   <benchmarkDirectory>local/data/machinereassignment/scoreDirector</benchmarkDirectory>
-  <warmUpSecondsSpend>60</warmUpSecondsSpend>
+  <warmUpSecondsSpentLimit>60</warmUpSecondsSpentLimit>
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>

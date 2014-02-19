@@ -113,12 +113,12 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
     }
 
     private void warmUp() {
-        if (plannerBenchmarkResult.getWarmUpTimeMillisSpend() > 0L) {
+        if (plannerBenchmarkResult.getWarmUpTimeMillisSpentLimit() > 0L) {
             logger.info("================================================================================");
-            logger.info("Warming up started");
+            logger.info("Warm up started");
             logger.info("================================================================================");
             long startingTimeMillis = System.currentTimeMillis();
-            long timeLeft = plannerBenchmarkResult.getWarmUpTimeMillisSpend();
+            long timeLeft = plannerBenchmarkResult.getWarmUpTimeMillisSpentLimit();
             List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList();
             Iterator<ProblemBenchmarkResult> it = unifiedProblemBenchmarkResultList.iterator();
             while (timeLeft > 0L) {
@@ -126,10 +126,10 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                     it = unifiedProblemBenchmarkResultList.iterator();
                 }
                 ProblemBenchmarkResult problemBenchmarkResult = it.next();
-                timeLeft = problemBenchmarkResult.warmUp(startingTimeMillis, plannerBenchmarkResult.getWarmUpTimeMillisSpend(), timeLeft);
+                timeLeft = problemBenchmarkResult.warmUp(startingTimeMillis, plannerBenchmarkResult.getWarmUpTimeMillisSpentLimit(), timeLeft);
             }
             logger.info("================================================================================");
-            logger.info("Warming up ended");
+            logger.info("Warm up ended");
             logger.info("================================================================================");
         }
     }

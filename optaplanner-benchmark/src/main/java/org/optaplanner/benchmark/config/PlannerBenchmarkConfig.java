@@ -18,11 +18,9 @@ package org.optaplanner.benchmark.config;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -31,19 +29,11 @@ import javax.script.ScriptException;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
-import org.optaplanner.benchmark.api.ranking.SolverRankingWeightFactory;
-import org.optaplanner.benchmark.api.ranking.SolverRankingType;
 import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
-import org.optaplanner.benchmark.impl.ranking.TotalScoreSolverRankingComparator;
-import org.optaplanner.benchmark.impl.ranking.WorstScoreSolverRankingComparator;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.PlannerBenchmarkRunner;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
-import org.optaplanner.benchmark.impl.ranking.TotalRankSolverRankingWeightFactory;
-import org.optaplanner.benchmark.impl.report.BenchmarkReport;
-import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
-import org.optaplanner.core.config.util.ConfigUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,10 +52,10 @@ public class PlannerBenchmarkConfig {
     private File benchmarkDirectory = null;
 
     private String parallelBenchmarkCount = null;
-    private Long warmUpTimeMillisSpend = null;
-    private Long warmUpSecondsSpend = null;
-    private Long warmUpMinutesSpend = null;
-    private Long warmUpHoursSpend = null;
+    private Long warmUpMillisecondsSpentLimit = null;
+    private Long warmUpSecondsSpentLimit = null;
+    private Long warmUpMinutesSpentLimit = null;
+    private Long warmUpHoursSpentLimit = null;
 
     @XStreamAlias("benchmarkReport")
     private BenchmarkReportConfig benchmarkReportConfig = null;
@@ -107,36 +97,36 @@ public class PlannerBenchmarkConfig {
         this.parallelBenchmarkCount = parallelBenchmarkCount;
     }
 
-    public Long getWarmUpTimeMillisSpend() {
-        return warmUpTimeMillisSpend;
+    public Long getWarmUpMillisecondsSpentLimit() {
+        return warmUpMillisecondsSpentLimit;
     }
 
-    public void setWarmUpTimeMillisSpend(Long warmUpTimeMillisSpend) {
-        this.warmUpTimeMillisSpend = warmUpTimeMillisSpend;
+    public void setWarmUpMillisecondsSpentLimit(Long warmUpMillisecondsSpentLimit) {
+        this.warmUpMillisecondsSpentLimit = warmUpMillisecondsSpentLimit;
     }
 
-    public Long getWarmUpSecondsSpend() {
-        return warmUpSecondsSpend;
+    public Long getWarmUpSecondsSpentLimit() {
+        return warmUpSecondsSpentLimit;
     }
 
-    public void setWarmUpSecondsSpend(Long warmUpSecondsSpend) {
-        this.warmUpSecondsSpend = warmUpSecondsSpend;
+    public void setWarmUpSecondsSpentLimit(Long warmUpSecondsSpentLimit) {
+        this.warmUpSecondsSpentLimit = warmUpSecondsSpentLimit;
     }
 
-    public Long getWarmUpMinutesSpend() {
-        return warmUpMinutesSpend;
+    public Long getWarmUpMinutesSpentLimit() {
+        return warmUpMinutesSpentLimit;
     }
 
-    public void setWarmUpMinutesSpend(Long warmUpMinutesSpend) {
-        this.warmUpMinutesSpend = warmUpMinutesSpend;
+    public void setWarmUpMinutesSpentLimit(Long warmUpMinutesSpentLimit) {
+        this.warmUpMinutesSpentLimit = warmUpMinutesSpentLimit;
     }
 
-    public Long getWarmUpHoursSpend() {
-        return warmUpHoursSpend;
+    public Long getWarmUpHoursSpentLimit() {
+        return warmUpHoursSpentLimit;
     }
 
-    public void setWarmUpHoursSpend(Long warmUpHoursSpend) {
-        this.warmUpHoursSpend = warmUpHoursSpend;
+    public void setWarmUpHoursSpentLimit(Long warmUpHoursSpentLimit) {
+        this.warmUpHoursSpentLimit = warmUpHoursSpentLimit;
     }
 
     public BenchmarkReportConfig getBenchmarkReportConfig() {
@@ -178,7 +168,7 @@ public class PlannerBenchmarkConfig {
         PlannerBenchmarkRunner plannerBenchmarkRunner = new PlannerBenchmarkRunner(plannerBenchmarkResult);
         plannerBenchmarkRunner.setBenchmarkDirectory(benchmarkDirectory);
         plannerBenchmarkResult.setParallelBenchmarkCount(resolveParallelBenchmarkCount());
-        plannerBenchmarkResult.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
+        plannerBenchmarkResult.setWarmUpTimeMillisSpentLimit(calculateWarmUpTimeMillisSpentLimit());
         BenchmarkReportConfig benchmarkReportConfig_ = benchmarkReportConfig == null ? new BenchmarkReportConfig()
                 : benchmarkReportConfig;
         plannerBenchmarkRunner.setBenchmarkReport(benchmarkReportConfig_.buildBenchmarkReport(plannerBenchmarkResult));
@@ -288,21 +278,21 @@ public class PlannerBenchmarkConfig {
         return resolvedParallelBenchmarkCount;
     }
 
-    protected long calculateWarmUpTimeMillisSpendTotal() {
-        long warmUpTimeMillisSpendTotal = 0L;
-        if (warmUpTimeMillisSpend != null) {
-            warmUpTimeMillisSpendTotal += warmUpTimeMillisSpend;
+    protected long calculateWarmUpTimeMillisSpentLimit() {
+        long warmUpTimeMillisSpentLimit = 0L;
+        if (warmUpMillisecondsSpentLimit != null) {
+            warmUpTimeMillisSpentLimit += warmUpMillisecondsSpentLimit;
         }
-        if (warmUpSecondsSpend != null) {
-            warmUpTimeMillisSpendTotal += warmUpSecondsSpend * 1000L;
+        if (warmUpSecondsSpentLimit != null) {
+            warmUpTimeMillisSpentLimit += warmUpSecondsSpentLimit * 1000L;
         }
-        if (warmUpMinutesSpend != null) {
-            warmUpTimeMillisSpendTotal += warmUpMinutesSpend * 60000L;
+        if (warmUpMinutesSpentLimit != null) {
+            warmUpTimeMillisSpentLimit += warmUpMinutesSpentLimit * 60000L;
         }
-        if (warmUpHoursSpend != null) {
-            warmUpTimeMillisSpendTotal += warmUpHoursSpend * 3600000L;
+        if (warmUpHoursSpentLimit != null) {
+            warmUpTimeMillisSpentLimit += warmUpHoursSpentLimit * 3600000L;
         }
-        return warmUpTimeMillisSpendTotal;
+        return warmUpTimeMillisSpentLimit;
     }
 
 }

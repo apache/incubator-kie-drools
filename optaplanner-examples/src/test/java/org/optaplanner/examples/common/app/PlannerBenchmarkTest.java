@@ -64,10 +64,10 @@ public abstract class PlannerBenchmarkTest extends LoggingTest {
             throw new IllegalStateException("The path (" + path + ") should start with prefix (" + prefix + ")");
         }
         plannerBenchmarkConfig.setBenchmarkDirectory(new File(path.replace(prefix, "target/test/data/")));
-        plannerBenchmarkConfig.setWarmUpHoursSpend(0L);
-        plannerBenchmarkConfig.setWarmUpMinutesSpend(0L);
-        plannerBenchmarkConfig.setWarmUpSecondsSpend(WARM_UP_SECONDS_SPENT);
-        plannerBenchmarkConfig.setWarmUpTimeMillisSpend(0L);
+        plannerBenchmarkConfig.setWarmUpHoursSpentLimit(0L);
+        plannerBenchmarkConfig.setWarmUpMinutesSpentLimit(0L);
+        plannerBenchmarkConfig.setWarmUpSecondsSpentLimit(WARM_UP_SECONDS_SPENT);
+        plannerBenchmarkConfig.setWarmUpMillisecondsSpentLimit(0L);
         List<SolverBenchmarkConfig> solverBenchmarkConfigList = plannerBenchmarkConfig.getSolverBenchmarkConfigList();
         if (CollectionUtils.isEmpty(solverBenchmarkConfigList)) {
             throw new IllegalStateException("The benchmarkConfigResource (" + benchmarkConfigResource

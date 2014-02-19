@@ -65,7 +65,7 @@
 &lt;plannerBenchmark&gt;
   &lt;benchmarkDirectory&gt;local/data/nqueens&lt;/benchmarkDirectory&gt;
   &lt;!--&lt;parallelBenchmarkCount&gt;AUTO&lt;/parallelBenchmarkCount&gt;--&gt;
-  &lt;warmUpSecondsSpend&gt;30&lt;/warmUpSecondsSpend&gt;
+  &lt;warmUpSecondsSpentLimit&gt;30&lt;/warmUpSecondsSpentLimit&gt;
 
   &lt;inheritedSolverBenchmark&gt;
     &lt;problemBenchmarks&gt;
@@ -262,7 +262,7 @@
 
       <programlisting language="xml">&lt;plannerBenchmark&gt;
   ...
-  &lt;warmUpSecondsSpend&gt;30&lt;/warmUpSecondsSpend&gt;
+  &lt;warmUpSecondsSpentLimit&gt;30&lt;/warmUpSecondsSpentLimit&gt;
   ...
 &lt;/plannerBenchmark&gt;</programlisting>
     </section>

@@ -61,7 +61,7 @@ public class PlannerBenchmarkResult {
     private String operatingSystem;
 
     private Integer parallelBenchmarkCount = null;
-    private Long warmUpTimeMillisSpend = null;
+    private Long warmUpTimeMillisSpentLimit = null;
 
     @XStreamImplicit(itemFieldName = "solverBenchmarkResult")
     private List<SolverBenchmarkResult> solverBenchmarkResultList = null;
@@ -136,12 +136,12 @@ public class PlannerBenchmarkResult {
         this.parallelBenchmarkCount = parallelBenchmarkCount;
     }
 
-    public Long getWarmUpTimeMillisSpend() {
-        return warmUpTimeMillisSpend;
+    public Long getWarmUpTimeMillisSpentLimit() {
+        return warmUpTimeMillisSpentLimit;
     }
 
-    public void setWarmUpTimeMillisSpend(Long warmUpTimeMillisSpend) {
-        this.warmUpTimeMillisSpend = warmUpTimeMillisSpend;
+    public void setWarmUpTimeMillisSpentLimit(Long warmUpTimeMillisSpentLimit) {
+        this.warmUpTimeMillisSpentLimit = warmUpTimeMillisSpentLimit;
     }
 
     public List<SolverBenchmarkResult> getSolverBenchmarkResultList() {
@@ -385,7 +385,7 @@ public class PlannerBenchmarkResult {
                     newResult.operatingSystem = oldResult.operatingSystem;
 
                     newResult.parallelBenchmarkCount = oldResult.parallelBenchmarkCount;
-                    newResult.warmUpTimeMillisSpend = oldResult.warmUpTimeMillisSpend;
+                    newResult.warmUpTimeMillisSpentLimit = oldResult.warmUpTimeMillisSpentLimit;
                     newResult.solverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>();
                     newResult.unifiedProblemBenchmarkResultList = new ArrayList<ProblemBenchmarkResult>();
                     newResult.startingTimestamp = null;
@@ -406,8 +406,8 @@ public class PlannerBenchmarkResult {
 
                     newResult.parallelBenchmarkCount = ConfigUtils.mergeProperty(
                             newResult.parallelBenchmarkCount, oldResult.parallelBenchmarkCount);
-                    newResult.warmUpTimeMillisSpend = ConfigUtils.mergeProperty(
-                            newResult.warmUpTimeMillisSpend, oldResult.warmUpTimeMillisSpend);
+                    newResult.warmUpTimeMillisSpentLimit = ConfigUtils.mergeProperty(
+                            newResult.warmUpTimeMillisSpentLimit, oldResult.warmUpTimeMillisSpentLimit);
                 }
                 mergeMap.put(oldResult, newResult);
             }

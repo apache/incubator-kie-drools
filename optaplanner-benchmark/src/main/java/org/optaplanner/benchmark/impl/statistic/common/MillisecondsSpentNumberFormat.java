@@ -21,7 +21,7 @@ import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.Locale;
 
-public class MillisecondsSpendNumberFormat extends NumberFormat {
+public class MillisecondsSpentNumberFormat extends NumberFormat {
 
     private static final long DAY_MILLIS = 3600000L * 24L;
     private static final long HOUR_MILLIS = 3600000L;
@@ -30,7 +30,7 @@ public class MillisecondsSpendNumberFormat extends NumberFormat {
 
     private final Locale locale;
 
-    public MillisecondsSpendNumberFormat(Locale locale) {
+    public MillisecondsSpentNumberFormat(Locale locale) {
         this.locale = locale;
     }
 
