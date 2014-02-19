@@ -177,7 +177,6 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                     eventFilter.setType(type);
                     eventFilters.add(eventFilter);
                     eventNode.setEventFilters(eventFilters);
-                    eventNode.setScope("external");
                 }
             }
             xmlNode = xmlNode.getNextSibling();

@@ -10,7 +10,7 @@ import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.audit.VariableInstanceLog;
-import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
+import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -47,7 +47,7 @@ public class AuditCommandsTest extends JbpmBpmn2TestCase {
         String processId = "IntermediateCatchEvent";
         KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventSignal.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess(processId);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
 

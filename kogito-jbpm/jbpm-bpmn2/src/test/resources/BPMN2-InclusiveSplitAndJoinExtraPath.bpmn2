@@ -1,64 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
-  <itemDefinition id="_xItem" structureRef="java.lang.Integer"/>
-  <process id="com.sample.test" name="Test" isExecutable="true" processType="Private">
-    <property id="x" itemSubjectRef="_xItem"/>
-    <startEvent id="_1" name="Start">
-      <outgoing>_1-_2</outgoing>
-    </startEvent>
-    <inclusiveGateway id="_2" name="Split" gatewayDirection="Diverging">
-      <incoming>_1-_2</incoming>
-      <outgoing>SequenceFlow_6</outgoing>
-      <outgoing>SequenceFlow_7</outgoing>
-      <outgoing>SequenceFlow_8</outgoing>
-    </inclusiveGateway>
-    <endEvent id="_6" name="End">
-      <incoming>SequenceFlow_2</incoming>
-    </endEvent>
-    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2"/>
-    <inclusiveGateway id="InclusiveGateway_1" name="" gatewayDirection="Converging">
-      <incoming>SequenceFlow_1</incoming>
-      <incoming>SequenceFlow_9</incoming>
-      <incoming>SequenceFlow_10</incoming>
-      <incoming>SequenceFlow_4</incoming>
-      <outgoing>SequenceFlow_2</outgoing>
-    </inclusiveGateway>
-    <sequenceFlow id="SequenceFlow_1" tns:priority="1" sourceRef="UserTask_1" targetRef="InclusiveGateway_1"/>
-    <sequenceFlow id="SequenceFlow_2" tns:priority="1" name="" sourceRef="InclusiveGateway_1" targetRef="_6"/>
-    <userTask id="UserTask_1" name="User Task 1">
-      <incoming>SequenceFlow_6</incoming>
-      <outgoing>SequenceFlow_1</outgoing>
-    </userTask>
-    <sequenceFlow id="SequenceFlow_6" tns:priority="1" name="" sourceRef="_2" targetRef="UserTask_1">
-      <conditionExpression xsi:type="tFormalExpression" id="FormalExpression_4" language="http://www.java.com/java">return x > 0;</conditionExpression>
-    </sequenceFlow>
-    <userTask id="UserTask_2" name="User Task 2">
-      <incoming>SequenceFlow_7</incoming>
-      <outgoing>SequenceFlow_9</outgoing>
-    </userTask>
-    <userTask id="UserTask_3" name="User Task 3">
-      <incoming>SequenceFlow_8</incoming>
-      <outgoing>SequenceFlow_10</outgoing>
-    </userTask>
-    <sequenceFlow id="SequenceFlow_7" tns:priority="1" name="" sourceRef="_2" targetRef="UserTask_2">
-      <conditionExpression xsi:type="tFormalExpression" id="FormalExpression_5" language="http://www.java.com/java">return x > 10;</conditionExpression>
-    </sequenceFlow>
-    <sequenceFlow id="SequenceFlow_8" tns:priority="1" name="" sourceRef="_2" targetRef="UserTask_3">
-      <conditionExpression xsi:type="tFormalExpression" id="FormalExpression_6" language="http://www.java.com/java">return x > 20;</conditionExpression>
-    </sequenceFlow>
-    <sequenceFlow id="SequenceFlow_9" tns:priority="1" name="" sourceRef="UserTask_2" targetRef="InclusiveGateway_1"/>
-    <sequenceFlow id="SequenceFlow_10" tns:priority="1" name="" sourceRef="UserTask_3" targetRef="InclusiveGateway_1"/>
-    <intermediateCatchEvent id="IntermediateCatchEvent_1" name="">
-      <outgoing>SequenceFlow_3</outgoing>
-      <signalEventDefinition id="SignalEventDefinition_1" signalRef="signal"/>
-    </intermediateCatchEvent>
-    <userTask id="UserTask_4" name="User Task 4">
-      <incoming>SequenceFlow_3</incoming>
-      <outgoing>SequenceFlow_4</outgoing>
-    </userTask>
-    <sequenceFlow id="SequenceFlow_3" tns:priority="1" name="" sourceRef="IntermediateCatchEvent_1" targetRef="UserTask_4"/>
-    <sequenceFlow id="SequenceFlow_4" tns:priority="1" name="" sourceRef="UserTask_4" targetRef="InclusiveGateway_1"/>
-  </process>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_xItem" structureRef="java.lang.Integer"/>
+  <bpmn2:process id="com.sample.test" name="Test" isExecutable="true" processType="Private">
+    <bpmn2:property id="x" itemSubjectRef="_xItem"/>
+    <bpmn2:startEvent id="_1" name="Start">
+      <bpmn2:outgoing>_1-_2</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:inclusiveGateway id="_2" name="Split" gatewayDirection="Diverging">
+      <bpmn2:incoming>_1-_2</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_5</bpmn2:outgoing>
+    </bpmn2:inclusiveGateway>
+    <bpmn2:endEvent id="_6" name="End">
+      <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2"/>
+    <bpmn2:inclusiveGateway id="InclusiveGateway_1" name="" gatewayDirection="Converging">
+      <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_9</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_10</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
+    </bpmn2:inclusiveGateway>
+    <bpmn2:sequenceFlow id="SequenceFlow_1" tns:priority="1" sourceRef="UserTask_1" targetRef="InclusiveGateway_1"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_2" tns:priority="1" name="" sourceRef="InclusiveGateway_1" targetRef="_6"/>
+    <bpmn2:userTask id="UserTask_1" name="User Task 1">
+      <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_6" tns:priority="1" name="" sourceRef="_2" targetRef="UserTask_1">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_4" language="http://www.java.com/java">return x > 0;</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:userTask id="UserTask_2" name="User Task 2">
+      <bpmn2:incoming>SequenceFlow_7</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_9</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="UserTask_3" name="User Task 3">
+      <bpmn2:incoming>SequenceFlow_8</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_10</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_7" tns:priority="1" name="" sourceRef="_2" targetRef="UserTask_2">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_5" language="http://www.java.com/java">return x > 10;</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="SequenceFlow_8" tns:priority="1" name="" sourceRef="_2" targetRef="UserTask_3">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_6" language="http://www.java.com/java">return x > 20;</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="SequenceFlow_9" tns:priority="1" name="" sourceRef="UserTask_2" targetRef="InclusiveGateway_1"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_10" tns:priority="1" name="" sourceRef="UserTask_3" targetRef="InclusiveGateway_1"/>
+    <bpmn2:intermediateCatchEvent id="IntermediateCatchEvent_1" name="">
+      <bpmn2:incoming>SequenceFlow_5</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
+      <bpmn2:signalEventDefinition id="SignalEventDefinition_1" signalRef="signal"/>
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:userTask id="UserTask_4" name="User Task 4">
+      <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_3" tns:priority="1" name="" sourceRef="IntermediateCatchEvent_1" targetRef="UserTask_4"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_4" tns:priority="1" name="" sourceRef="UserTask_4" targetRef="InclusiveGateway_1"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_5" tns:priority="1" name="" sourceRef="_2" targetRef="IntermediateCatchEvent_1">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_1" language="http://www.java.com/java">return x > 10;</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+  </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="com.sample.test">
       <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1">
@@ -128,6 +133,10 @@
         <di:waypoint xsi:type="dc:Point" x="295.0" y="270.0"/>
         <di:waypoint xsi:type="dc:Point" x="425.0" y="145.0"/>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_5" sourceElement="BPMNShape_InclusiveGateway_1" targetElement="BPMNShape_IntermediateCatchEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="120.0" y="145.0"/>
+        <di:waypoint xsi:type="dc:Point" x="88.0" y="250.0"/>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-</definitions>
+</bpmn2:definitions>
