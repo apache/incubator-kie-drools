@@ -182,6 +182,7 @@ public abstract class AbstractKieModule
 
         Map<String, InternalKieModule> assets = new HashMap<String, InternalKieModule>();
 
+        boolean allIncludesAreValid = true;
         for (String include : getTransitiveIncludes(kieProject, kBaseModel)) {
             if (StringUtils.isEmpty(include)) {
                 continue;
@@ -191,16 +192,17 @@ public abstract class AbstractKieModule
                 String text = "Unable to build KieBase, could not find include: " + include;
                 log.error(text);
                 messages.addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH, text);
-                return null;
+                allIncludesAreValid = false;
+                continue;
             }
-            addFiles(assets,
-                    kieProject.getKieBaseModel(include),
-                    includeModule);
+            addFiles( assets, kieProject.getKieBaseModel(include), includeModule );
         }
 
-        addFiles(assets,
-                kBaseModel,
-                kModule);
+        if (!allIncludesAreValid) {
+            return null;
+        }
+
+        addFiles( assets, kBaseModel, kModule );
 
         if (assets.isEmpty()) {
             if (kModule instanceof FileKieModule) {
