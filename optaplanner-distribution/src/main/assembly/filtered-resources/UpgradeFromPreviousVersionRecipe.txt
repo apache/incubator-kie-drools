@@ -3898,3 +3898,5 @@ After in *BenchmarkConfig.xml:
       <warmUpHoursSpentLimit>...</warmUpHoursSpentLimit>
       ...
     <//plannerBenchmark>
+
+[MINOR] Real time planning: addProblemFactChange(...) no longer causes solver Terminations to reset.

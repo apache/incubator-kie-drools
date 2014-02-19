@@ -171,6 +171,14 @@ public class DefaultSolver implements Solver {
         // Must be kept open for doProblemFactChange
         solverScope.getScoreDirector().dispose();
         solverScope.setEndingSystemTimeMillis(System.currentTimeMillis());
+        long timeMillisSpent = getTimeMillisSpent();
+        // Avoid divide by zero exception on a fast CPU
+        long averageCalculateCountPerSecond = solverScope.getCalculateCount() * 1000L
+                / (timeMillisSpent == 0L ? 1L : timeMillisSpent);
+        logger.info("Solving ended: time spent ({}), best score ({}), average calculate count per second ({}).",
+                timeMillisSpent,
+                solverScope.getBestScoreWithUninitializedPrefix(),
+                averageCalculateCountPerSecond);
         solving.set(false);
     }
 
@@ -204,16 +212,6 @@ public class DefaultSolver implements Solver {
             solverPhase.solvingEnded(solverScope);
         }
         bestSolutionRecaller.solvingEnded(solverScope);
-        long timeMillisSpent = solverScope.calculateTimeMillisSpent();
-        if (timeMillisSpent == 0L) {
-            // Avoid divide by zero exception on a fast CPU
-            timeMillisSpent = 1L;
-        }
-        long averageCalculateCountPerSecond = solverScope.getCalculateCount() * 1000L / timeMillisSpent;
-        logger.info("Solving ended: time spent ({}), best score ({}), average calculate count per second ({}).",
-                timeMillisSpent,
-                solverScope.getBestScoreWithUninitializedPrefix(),
-                averageCalculateCountPerSecond);
     }
 
     private void checkProblemFactChanges() {
