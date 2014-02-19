@@ -34,7 +34,8 @@ public class DefaultSolverScope {
 
     protected boolean restartSolver = false;
 
-    protected long startingSystemTimeMillis;
+    protected Long startingSystemTimeMillis;
+    protected Long endingSystemTimeMillis;
     protected ScoreDirector scoreDirector;
     protected Random workingRandom;
 
@@ -48,12 +49,20 @@ public class DefaultSolverScope {
         return restartSolver;
     }
 
-    public long getStartingSystemTimeMillis() {
+    public Long getStartingSystemTimeMillis() {
         return startingSystemTimeMillis;
     }
 
-    public void setStartingSystemTimeMillis(long startingSystemTimeMillis) {
+    public void setStartingSystemTimeMillis(Long startingSystemTimeMillis) {
         this.startingSystemTimeMillis = startingSystemTimeMillis;
+    }
+
+    public Long getEndingSystemTimeMillis() {
+        return endingSystemTimeMillis;
+    }
+
+    public void setEndingSystemTimeMillis(Long endingSystemTimeMillis) {
+        this.endingSystemTimeMillis = endingSystemTimeMillis;
     }
 
     public void setRestartSolver(boolean restartSolver) {

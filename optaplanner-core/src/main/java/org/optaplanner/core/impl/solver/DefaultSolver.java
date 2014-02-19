@@ -104,9 +104,12 @@ public class DefaultSolver implements Solver {
         return solverScope.getBestSolution();
     }
 
-    // TODO this shouldn't change after the solve is done
     public long getTimeMillisSpent() {
-        return solverScope.calculateTimeMillisSpent();
+        Long endingSystemTimeMillis = solverScope.getEndingSystemTimeMillis();
+        if (endingSystemTimeMillis == null) {
+            endingSystemTimeMillis = System.currentTimeMillis();
+        }
+        return endingSystemTimeMillis - solverScope.getStartingSystemTimeMillis();
     }
 
     public DefaultSolverScope getSolverScope() {
@@ -141,8 +144,7 @@ public class DefaultSolver implements Solver {
     }
 
     public final void solve() {
-        solving.set(true);
-        basicPlumbingTermination.resetTerminateEarly();
+        outerSolvingStarted(solverScope);
         solverScope.setRestartSolver(true);
         while (solverScope.isRestartSolver()) {
             solverScope.setRestartSolver(false);
@@ -151,17 +153,28 @@ public class DefaultSolver implements Solver {
             solvingEnded(solverScope);
             checkProblemFactChanges();
         }
-        // Must be kept open for doProblemFactChange
-        solverScope.getScoreDirector().dispose();
-        solving.set(false);
+        outerSolvingEnded(solverScope);
     }
 
-    public void solvingStarted(DefaultSolverScope solverScope) {
+    public void outerSolvingStarted(DefaultSolverScope solverScope) {
+        solving.set(true);
+        basicPlumbingTermination.resetTerminateEarly();
+        solverScope.setStartingSystemTimeMillis(System.currentTimeMillis());
+        solverScope.setEndingSystemTimeMillis(null);
         if (solverScope.getBestSolution() == null) {
             throw new IllegalStateException("The planningProblem must not be null." +
                     " Use Solver.setPlanningProblem(Solution).");
         }
-        solverScope.setStartingSystemTimeMillis(System.currentTimeMillis());
+    }
+
+    public void outerSolvingEnded(DefaultSolverScope solverScope) {
+        // Must be kept open for doProblemFactChange
+        solverScope.getScoreDirector().dispose();
+        solverScope.setEndingSystemTimeMillis(System.currentTimeMillis());
+        solving.set(false);
+    }
+
+    public void solvingStarted(DefaultSolverScope solverScope) {
         solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector());
         solverScope.setWorkingRandom(randomFactory.createRandom());
         solverScope.setWorkingSolutionFromBestSolution();

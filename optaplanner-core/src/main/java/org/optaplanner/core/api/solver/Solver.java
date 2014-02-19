@@ -45,7 +45,7 @@ public interface Solver {
     Solution getBestSolution();
 
     /**
-     * @return the amount of millis spent between when this solver started and when it ended
+     * @return the amount of millis spent between when this solver started and ended
      */
     long getTimeMillisSpent();
 
