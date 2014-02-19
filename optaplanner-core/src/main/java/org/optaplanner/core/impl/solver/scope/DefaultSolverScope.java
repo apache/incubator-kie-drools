@@ -32,9 +32,8 @@ public class DefaultSolverScope {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected boolean restartSolver = false;
-
     protected Long startingSystemTimeMillis;
+    protected int startingSolverCount;
     protected Long endingSystemTimeMillis;
     protected ScoreDirector scoreDirector;
     protected Random workingRandom;
@@ -45,9 +44,6 @@ public class DefaultSolverScope {
     protected int bestUninitializedVariableCount; // TODO remove me by folding me into bestSolution.getScore()
     protected Score bestScore; // TODO remove me by folding me into bestSolution.getScore()
 
-    public boolean isRestartSolver() {
-        return restartSolver;
-    }
 
     public Long getStartingSystemTimeMillis() {
         return startingSystemTimeMillis;
@@ -57,16 +53,20 @@ public class DefaultSolverScope {
         this.startingSystemTimeMillis = startingSystemTimeMillis;
     }
 
+    public int getStartingSolverCount() {
+        return startingSolverCount;
+    }
+
+    public void setStartingSolverCount(int startingSolverCount) {
+        this.startingSolverCount = startingSolverCount;
+    }
+
     public Long getEndingSystemTimeMillis() {
         return endingSystemTimeMillis;
     }
 
     public void setEndingSystemTimeMillis(Long endingSystemTimeMillis) {
         this.endingSystemTimeMillis = endingSystemTimeMillis;
-    }
-
-    public void setRestartSolver(boolean restartSolver) {
-        this.restartSolver = restartSolver;
     }
 
     public ScoreDirector getScoreDirector() {

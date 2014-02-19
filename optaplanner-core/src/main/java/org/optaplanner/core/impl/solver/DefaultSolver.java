@@ -145,13 +145,12 @@ public class DefaultSolver implements Solver {
 
     public final void solve() {
         outerSolvingStarted(solverScope);
-        solverScope.setRestartSolver(true);
-        while (solverScope.isRestartSolver()) {
-            solverScope.setRestartSolver(false);
+        boolean restartSolver = true;
+        while (restartSolver) {
             solvingStarted(solverScope);
             runSolverPhases();
             solvingEnded(solverScope);
-            checkProblemFactChanges();
+            restartSolver = checkProblemFactChanges();
         }
         outerSolvingEnded(solverScope);
     }
@@ -161,25 +160,11 @@ public class DefaultSolver implements Solver {
         basicPlumbingTermination.resetTerminateEarly();
         solverScope.setStartingSystemTimeMillis(System.currentTimeMillis());
         solverScope.setEndingSystemTimeMillis(null);
+        solverScope.setStartingSolverCount(0);
         if (solverScope.getBestSolution() == null) {
             throw new IllegalStateException("The planningProblem must not be null." +
                     " Use Solver.setPlanningProblem(Solution).");
         }
-    }
-
-    public void outerSolvingEnded(DefaultSolverScope solverScope) {
-        // Must be kept open for doProblemFactChange
-        solverScope.getScoreDirector().dispose();
-        solverScope.setEndingSystemTimeMillis(System.currentTimeMillis());
-        long timeMillisSpent = getTimeMillisSpent();
-        // Avoid divide by zero exception on a fast CPU
-        long averageCalculateCountPerSecond = solverScope.getCalculateCount() * 1000L
-                / (timeMillisSpent == 0L ? 1L : timeMillisSpent);
-        logger.info("Solving ended: time spent ({}), best score ({}), average calculate count per second ({}).",
-                timeMillisSpent,
-                solverScope.getBestScoreWithUninitializedPrefix(),
-                averageCalculateCountPerSecond);
-        solving.set(false);
     }
 
     public void solvingStarted(DefaultSolverScope solverScope) {
@@ -190,7 +175,10 @@ public class DefaultSolver implements Solver {
         for (SolverPhase solverPhase : solverPhaseList) {
             solverPhase.solvingStarted(solverScope);
         }
-        logger.info("Solving started: time spent ({}), score ({}), new best score ({}), random ({}).",
+        int startingSolverCount = solverScope.getStartingSolverCount() + 1;
+        solverScope.setStartingSolverCount(startingSolverCount);
+        logger.info("Solving {}: time spent ({}), score ({}), new best score ({}), random ({}).",
+                (startingSolverCount == 1 ? "started" : "restarted"),
                 solverScope.calculateTimeMillisSpent(), solverScope.getStartingInitializedScore(),
                 solverScope.getBestScore(), (randomFactory != null ? randomFactory : "not fixed"));
     }
@@ -214,29 +202,45 @@ public class DefaultSolver implements Solver {
         bestSolutionRecaller.solvingEnded(solverScope);
     }
 
-    private void checkProblemFactChanges() {
+    public void outerSolvingEnded(DefaultSolverScope solverScope) {
+        // Must be kept open for doProblemFactChange
+        solverScope.getScoreDirector().dispose();
+        solverScope.setEndingSystemTimeMillis(System.currentTimeMillis());
+        long timeMillisSpent = getTimeMillisSpent();
+        // Avoid divide by zero exception on a fast CPU
+        long averageCalculateCountPerSecond = solverScope.getCalculateCount() * 1000L
+                / (timeMillisSpent == 0L ? 1L : timeMillisSpent);
+        logger.info("Solving ended: time spent ({}), best score ({}), average calculate count per second ({}).",
+                timeMillisSpent,
+                solverScope.getBestScoreWithUninitializedPrefix(),
+                averageCalculateCountPerSecond);
+        solving.set(false);
+    }
+
+    private boolean checkProblemFactChanges() {
         BlockingQueue<ProblemFactChange> problemFactChangeQueue
                 = basicPlumbingTermination.getProblemFactChangeQueue();
-        if (!problemFactChangeQueue.isEmpty()) {
-            solverScope.setRestartSolver(true);
-            solverScope.setWorkingSolutionFromBestSolution();
-            Score score = null;
-            int count = 0;
-            ProblemFactChange problemFactChange = problemFactChangeQueue.poll();
-            while (problemFactChange != null) {
-                score = doProblemFactChange(problemFactChange);
-                count++;
-                problemFactChange = problemFactChangeQueue.poll();
-            }
-            Solution newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
-            // TODO BestSolutionRecaller.solverStarted() already calls countUninitializedVariables()
-            int newBestUninitializedVariableCount = solverScope.getSolutionDescriptor()
-                    .countUninitializedVariables(newBestSolution);
-            bestSolutionRecaller.updateBestSolution(solverScope,
-                    newBestSolution, newBestUninitializedVariableCount);
-            logger.info("Done {} ProblemFactChange(s): new score ({}) possibly uninitialized. Restarting solver.",
-                    count, score);
+        if (problemFactChangeQueue.isEmpty()) {
+            return false;
         }
+        solverScope.setWorkingSolutionFromBestSolution();
+        Score score = null;
+        int count = 0;
+        ProblemFactChange problemFactChange = problemFactChangeQueue.poll();
+        while (problemFactChange != null) {
+            score = doProblemFactChange(problemFactChange);
+            count++;
+            problemFactChange = problemFactChangeQueue.poll();
+        }
+        Solution newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
+        // TODO BestSolutionRecaller.solverStarted() already calls countUninitializedVariables()
+        int newBestUninitializedVariableCount = solverScope.getSolutionDescriptor()
+                .countUninitializedVariables(newBestSolution);
+        bestSolutionRecaller.updateBestSolution(solverScope,
+                newBestSolution, newBestUninitializedVariableCount);
+        logger.info("Done {} ProblemFactChange(s): new score ({}) possibly uninitialized. Restarting solver.",
+                count, score);
+        return true;
     }
 
     private Score doProblemFactChange(ProblemFactChange problemFactChange) {
