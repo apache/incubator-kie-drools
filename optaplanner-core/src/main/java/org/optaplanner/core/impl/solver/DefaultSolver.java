@@ -225,11 +225,11 @@ public class DefaultSolver implements Solver {
         }
         solverScope.setWorkingSolutionFromBestSolution();
         Score score = null;
-        int count = 0;
+        int stepIndex = 0;
         ProblemFactChange problemFactChange = problemFactChangeQueue.poll();
         while (problemFactChange != null) {
-            score = doProblemFactChange(problemFactChange);
-            count++;
+            score = doProblemFactChange(problemFactChange, stepIndex);
+            stepIndex++;
             problemFactChange = problemFactChangeQueue.poll();
         }
         Solution newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
@@ -238,15 +238,15 @@ public class DefaultSolver implements Solver {
                 .countUninitializedVariables(newBestSolution);
         bestSolutionRecaller.updateBestSolution(solverScope,
                 newBestSolution, newBestUninitializedVariableCount);
-        logger.info("Done {} ProblemFactChange(s): new score ({}) possibly uninitialized. Restarting solver.",
-                count, score);
+        logger.info("Real-time problem fact changes done: step total ({}), new {} best score ({}).",
+                stepIndex, (newBestUninitializedVariableCount <= 0 ? "initialized" : "uninitialized"), score);
         return true;
     }
 
-    private Score doProblemFactChange(ProblemFactChange problemFactChange) {
+    private Score doProblemFactChange(ProblemFactChange problemFactChange, int stepIndex) {
         problemFactChange.doChange(solverScope.getScoreDirector());
         Score score = solverScope.calculateScore();
-        logger.debug("    Done ProblemFactChange: new score ({}).", score);
+        logger.debug("    Step index ({}), new score ({}) for real-time problem fact change.", stepIndex, score);
         return score;
     }
 
