@@ -1,12 +1,12 @@
 package org.drools.impl.adapters;
 
-import org.kie.api.definition.process.Process;
+import static org.drools.impl.adapters.AdapterUtil.adaptKnowledgeType;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import static org.drools.impl.adapters.AdapterUtil.adaptKnowledgeType;
+import org.kie.api.definition.process.Process;
 
 public class ProcessAdapter implements org.drools.definition.process.Process {
 
@@ -16,6 +16,10 @@ public class ProcessAdapter implements org.drools.definition.process.Process {
         this.delegate = delegate;
     }
 
+	public Process getDelegate() {
+		return delegate;
+	}
+	
     public KnowledgeType getKnowledgeType() {
         return adaptKnowledgeType(delegate.getKnowledgeType());
     }
@@ -48,9 +52,8 @@ public class ProcessAdapter implements org.drools.definition.process.Process {
         return delegate.getMetaData();
     }
 
-    @Override
     public Object getMetaData(String name) {
-        throw new UnsupportedOperationException("org.drools.impl.adapter.ProcessAdapter.getMetaData -> TODO");
+        return delegate.getMetaData().get(name);
     }
 
     public static Collection<org.drools.definition.process.Process> adaptProcesses(Collection<Process> processes) {

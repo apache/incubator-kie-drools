@@ -13,6 +13,10 @@ public class NodeInstanceAdapter implements org.drools.runtime.process.NodeInsta
 		this.delegate = delegate;
 	}
 	
+	public NodeInstance getDelegate() {
+		return delegate;
+	}
+	
 	public long getId() {
 		return delegate.getId();
 	}
@@ -22,7 +26,7 @@ public class NodeInstanceAdapter implements org.drools.runtime.process.NodeInsta
 	}
 
 	public Node getNode() {
-		throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.getChannels -> TODO");
+		return new NodeAdapter(delegate.getNode());
 	}
 
 	public String getNodeName() {
@@ -30,11 +34,11 @@ public class NodeInstanceAdapter implements org.drools.runtime.process.NodeInsta
 	}
 
 	public WorkflowProcessInstance getProcessInstance() {
-		throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.getChannels -> TODO");
+		return new WorkflowProcessInstanceAdapter(delegate.getProcessInstance());
 	}
 
 	public NodeInstanceContainer getNodeInstanceContainer() {
-		throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.getChannels -> TODO");
+		return new NodeInstanceContainerAdapter(delegate.getNodeInstanceContainer());
 	}
 
 	public Object getVariable(String variableName) {

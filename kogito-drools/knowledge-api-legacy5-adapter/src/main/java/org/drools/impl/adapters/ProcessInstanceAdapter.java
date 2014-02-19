@@ -1,12 +1,10 @@
 package org.drools.impl.adapters;
 
-import org.drools.definition.process.*;
-import org.drools.definition.rule.Rule;
-import org.kie.api.runtime.process.ProcessInstance;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import org.kie.api.runtime.process.ProcessInstance;
 
 public class ProcessInstanceAdapter implements org.drools.runtime.process.ProcessInstance {
 
@@ -16,6 +14,10 @@ public class ProcessInstanceAdapter implements org.drools.runtime.process.Proces
         this.delegate = delegate;
     }
 
+	public ProcessInstance getDelegate() {
+		return delegate;
+	}
+	
     public String getProcessId() {
         return delegate.getProcessId();
     }
