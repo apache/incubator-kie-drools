@@ -115,7 +115,7 @@ public class CloudProcess extends AbstractPersistable {
 
     @Override
     public String toString() {
-        return getLabel() + "->" + computer;
+        return super.getId() + "@" + computer;
     }
 
 }
