@@ -1,6 +1,8 @@
 package org.kie.api.event.rule;
 
-public interface RuleRuntimeEventListener {
+import java.util.EventListener;
+
+public interface RuleRuntimeEventListener extends EventListener {
     void objectInserted(ObjectInsertedEvent event);
 
     void objectUpdated(ObjectUpdatedEvent event);
