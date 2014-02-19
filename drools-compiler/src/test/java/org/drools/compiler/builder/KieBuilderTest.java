@@ -28,7 +28,6 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
@@ -152,14 +151,16 @@ public class KieBuilderTest extends CommonTestMethodBase {
         KieModuleModel module = ks.newKieModuleModel();
 
         final String defaultBaseName = "defaultKBase";
-        KieBaseModel defaultBase = module.newKieBaseModel(defaultBaseName).addInclude("notExistingKB");
+        KieBaseModel defaultBase = module.newKieBaseModel(defaultBaseName)
+                                         .addInclude("notExistingKB1")
+                                         .addInclude("notExistingKB2");
         defaultBase.setDefault(true);
         defaultBase.addPackage("*");
         defaultBase.newKieSessionModel("defaultKSession").setDefault(true);
 
         kfs.writeKModuleXML(module.toXML());
         KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
-        assertEquals( 1, kb.getResults().getMessages().size() );
+        assertEquals( 2, kb.getResults().getMessages().size() );
     }
 
     @Test
