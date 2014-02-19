@@ -31,11 +31,8 @@ import org.apache.maven.execution.MavenExecutionRequestPopulationException;
 import org.apache.maven.execution.MavenExecutionRequestPopulator;
 import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
 import org.apache.maven.model.building.ModelSource;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.plugin.LegacySupport;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
@@ -54,15 +51,11 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.Os;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.sonatype.aether.RepositorySystemSession;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -74,18 +67,9 @@ import java.util.Properties;
 
 
 public class MavenEmbedder {
-    public static final String userHome = System.getProperty( "user.home" );
-
-    public static final File userMavenConfigurationHome = new File( userHome, ".m2" );
-
-    public static final File DEFAULT_USER_SETTINGS_FILE = new File( userMavenConfigurationHome, "settings.xml" );
 
     public static final File DEFAULT_GLOBAL_SETTINGS_FILE =
             new File( System.getProperty( "maven.home", System.getProperty( "user.dir", "" ) ), "conf/settings.xml" );
-
-    private MavenXpp3Reader modelReader;
-
-    private MavenXpp3Writer modelWriter;
 
     private final File mavenHome;
     
@@ -208,31 +192,21 @@ public class MavenEmbedder {
         if (mavenRequest.getWorkspaceReader() != null) {
             mavenExecutionRequest.setWorkspaceReader( mavenRequest.getWorkspaceReader() );
         }
-        
-        // FIXME inactive profiles 
 
-        //this.mavenExecutionRequest.set
-        
         return  mavenExecutionRequest;
-        
     }
-    
-    
-    
+
     private Properties getEnvVars( ) {
         Properties envVars = new Properties();
         boolean caseSensitive = !Os.isFamily( Os.FAMILY_WINDOWS );
-        for ( Entry<String, String> entry : System.getenv().entrySet() )
-        {
+        for ( Entry<String, String> entry : System.getenv().entrySet() ) {
             String key = "env." + ( caseSensitive ? entry.getKey() : entry.getKey().toUpperCase( Locale.ENGLISH ) );
             envVars.setProperty( key, entry.getValue() );
         }
         return envVars;
     }
 
-    public Settings getSettings()
-        throws MavenEmbedderException, ComponentLookupException {
-
+    public Settings getSettings() throws MavenEmbedderException, ComponentLookupException {
         SettingsBuildingRequest settingsBuildingRequest = new DefaultSettingsBuildingRequest();
         if ( this.mavenRequest.getGlobalSettingsFile() != null ) {
             settingsBuildingRequest.setGlobalSettingsFile( new File( this.mavenRequest.getGlobalSettingsFile() ) );
@@ -242,7 +216,10 @@ public class MavenEmbedder {
         if ( this.mavenRequest.getUserSettingsFile() != null ) {
             settingsBuildingRequest.setUserSettingsFile( new File( this.mavenRequest.getUserSettingsFile() ) );
         } else {
-            settingsBuildingRequest.setUserSettingsFile( DEFAULT_USER_SETTINGS_FILE );
+            File userSettingsFile = MavenSettings.getUserSettingsFile();
+            if (userSettingsFile != null) {
+                settingsBuildingRequest.setUserSettingsFile( userSettingsFile );
+            }
         }
 
         settingsBuildingRequest.setUserProperties( this.mavenRequest.getUserProperties() );
@@ -290,18 +267,6 @@ public class MavenEmbedder {
             path = RepositorySystem.defaultUserLocalRepository.getAbsolutePath();
         }
         return path;
-    }
-
-    // ----------------------------------------------------------------------
-    // Model
-    // ----------------------------------------------------------------------
-
-    public Model readModel( File model ) throws XmlPullParserException, FileNotFoundException, IOException {
-        return modelReader.read( new FileReader( model ) );
-    }
-
-    public void writeModel( Writer writer, Model model ) throws IOException {
-        modelWriter.write( writer, model );
     }
 
     // ----------------------------------------------------------------------
