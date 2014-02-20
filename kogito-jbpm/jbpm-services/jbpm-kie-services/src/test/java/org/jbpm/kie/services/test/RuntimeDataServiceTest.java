@@ -158,7 +158,7 @@ public class RuntimeDataServiceTest extends AbstractBaseTest {
         // BZ1048741
         assertNotNull(managerFactory);
         String id = "custom-manager";
-        AbstractAuditLogger auditLogger = AuditLoggerFactory.newJPAInstance(emf);
+        AbstractAuditLogger auditLogger = AuditLoggerFactory.newJPAInstance();
         ServicesAwareAuditEventBuilder auditEventBuilder = new ServicesAwareAuditEventBuilder();
         auditEventBuilder.setIdentityProvider(new TestIdentityProvider());
         auditEventBuilder.setDeploymentUnitId(id);
