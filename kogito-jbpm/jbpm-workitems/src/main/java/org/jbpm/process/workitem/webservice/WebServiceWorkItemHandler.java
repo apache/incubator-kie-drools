@@ -28,6 +28,7 @@ import javax.xml.namespace.QName;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.endpoint.ClientCallback;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
+import org.apache.cxf.message.Message;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.bpmn2.core.Bpmn2Import;
 import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
@@ -77,6 +78,7 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
     	Object[] parameters = null;
         String interfaceRef = (String) workItem.getParameter("Interface");
         String operationRef = (String) workItem.getParameter("Operation");
+        String endpointAddress = (String) workItem.getParameter("Endpoint");
         if ( workItem.getParameter("Parameter") instanceof Object[]) {
         	parameters =  (Object[]) workItem.getParameter("Parameter");
         } else if (workItem.getParameter("Parameter") != null && workItem.getParameter("Parameter").getClass().isArray()) {
@@ -97,6 +99,11 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
              if (client == null) {
                  throw new IllegalStateException("Unable to create client for web service " + interfaceRef + " - " + operationRef);
              }
+             //Override endpoint address if configured.
+             if (endpointAddress != null && !"".equals(endpointAddress)) {
+            	 client.getRequestContext().put(Message.ENDPOINT_ADDRESS, endpointAddress) ;
+             }
+             
              switch (mode) {
                 case SYNC:
                     Object[] result = client.invoke(operationRef, parameters);

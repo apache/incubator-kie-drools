@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
+import org.apache.cxf.message.Message;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.executor.api.Command;
 import org.kie.internal.executor.api.CommandContext;
@@ -37,8 +38,9 @@ import org.slf4j.LoggerFactory;
  *  <li>Interface - valid interface/service name of the web service (port type name from wsdl)</li>
  *  <li>Operation - valid operation name</li>
  *  <li>Parameter - object that is going to be used as web service message</li>
- *  <li>Url - location of thw wsdl file used to look up service definition</li>
- *  <li>Namespace - name space of the web service</li> 
+ *  <li>Url - location of the wsdl file used to look up service definition</li>
+ *  <li>Namespace - name space of the web service</li>
+ *  <li>Endpoint - overrides the endpoint address defined in the referenced WSDL.</li>
  * </ul>
  * 
  * Web service call is synchronous but since it's executor command it will be invoked as asynchronous task any way.
@@ -56,6 +58,7 @@ public class WebServiceCommand implements Command {
         
         String interfaceRef = (String) workItem.getParameter("Interface");
         String operationRef = (String) workItem.getParameter("Operation");
+        String endpointAddress = (String) workItem.getParameter("Endpoint");
         if ( workItem.getParameter("Parameter") instanceof Object[]) {
         	parameters =  (Object[]) workItem.getParameter("Parameter");
         } else if (workItem.getParameter("Parameter") != null && workItem.getParameter("Parameter").getClass().isArray()) {
@@ -69,6 +72,11 @@ public class WebServiceCommand implements Command {
         }
         
         Client client = getWSClient(workItem, interfaceRef);
+        
+        //Override endpoint address if configured.
+        if (endpointAddress != null && !"".equals(endpointAddress)) {
+       	 client.getRequestContext().put(Message.ENDPOINT_ADDRESS, endpointAddress) ;
+        }
         
         Object[] result = client.invoke(operationRef, parameters);
         
