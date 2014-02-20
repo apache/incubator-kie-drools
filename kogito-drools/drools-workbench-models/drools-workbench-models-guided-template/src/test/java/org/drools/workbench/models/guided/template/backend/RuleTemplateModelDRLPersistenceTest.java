@@ -101,19 +101,19 @@ public class RuleTemplateModelDRLPersistenceTest {
         m.addLhsItem( p );
 
         ActionInsertFact actionInsertFact = new ActionInsertFact();
-        actionInsertFact.setFactType("Applicant");
-        ActionFieldValue actionFieldValue = new ActionFieldValue("age", "123", "Integer");
-        actionFieldValue.setNature(SingleFieldConstraint.TYPE_LITERAL );
-        actionInsertFact.addFieldValue(actionFieldValue);
+        actionInsertFact.setFactType( "Applicant" );
+        ActionFieldValue actionFieldValue = new ActionFieldValue( "age", "123", "Integer" );
+        actionFieldValue.setNature( SingleFieldConstraint.TYPE_LITERAL );
+        actionInsertFact.addFieldValue( actionFieldValue );
 
-        m.addRhsItem(actionInsertFact);
+        m.addRhsItem( actionInsertFact );
 
         m.addRow( new String[]{ "foo" } );
 
         String expected = "rule \"t1_0\"" +
                 "dialect \"mvel\"\n" +
                 "when \n"
-                +  "Person( field1 == \"foo\" )\n"
+                + "Person( field1 == \"foo\" )\n"
                 + "then \n"
                 + "  Applicant fact0 = new Applicant(); \n"
                 + "  fact0.setAge(123); \n"
@@ -3262,6 +3262,52 @@ public class RuleTemplateModelDRLPersistenceTest {
                 + "end";
 
         m.addRow( new String[]{ null, "bar" } );
+
+        checkMarshall( expected,
+                       m );
+    }
+
+    @Test
+    public void testEmptyFreeForm() {
+        //https://bugzilla.redhat.com/show_bug.cgi?id=1058247
+        TemplateModel m = new TemplateModel();
+        m.name = "Empty FreeFormLine";
+
+        FreeFormLine fl = new FreeFormLine();
+        m.addLhsItem( fl );
+
+        FactPattern fp = new FactPattern( "Person" );
+        fp.setBoundName( "$p" );
+        SingleFieldConstraint sfc1 = new SingleFieldConstraint();
+        sfc1.setFieldName( "field1" );
+        sfc1.setFieldType( DataType.TYPE_STRING );
+        sfc1.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE );
+        sfc1.setValue( "$f1" );
+        sfc1.setOperator( "==" );
+        fp.addConstraint( sfc1 );
+        m.addLhsItem( fp );
+
+        FreeFormLine fr = new FreeFormLine();
+        m.addRhsItem( fr );
+
+        ActionSetField asf = new ActionSetField( "$p" );
+        ActionFieldValue afv0 = new ActionFieldValue();
+        afv0.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv0.setType( DataType.TYPE_STRING );
+        afv0.setField( "field1" );
+        afv0.setValue( "$asf1" );
+        asf.addFieldValue( afv0 );
+        m.addRhsItem( asf );
+
+        String expected = "rule \"Empty FreeFormLine_0\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "$p : Person( field1 == \"foo\" )\n"
+                + "then\n"
+                + "$p.setField1(\"bar\");\n"
+                + "end";
+
+        m.addRow( new String[]{ "foo", "bar" } );
 
         checkMarshall( expected,
                        m );

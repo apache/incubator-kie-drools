@@ -68,7 +68,6 @@ import org.drools.workbench.models.datamodel.workitems.PortableIntegerParameterD
 import org.drools.workbench.models.datamodel.workitems.PortableStringParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -4159,6 +4158,24 @@ public class RuleModelDRLPersistenceTest {
                 + "end";
 
         checkMarshallUnmarshall( expected, m );
+    }
+
+    @Test
+    public void testEmptyFreeForm() {
+        //https://bugzilla.redhat.com/show_bug.cgi?id=1058247
+        RuleModel m = new RuleModel();
+        m.name = "Empty FreeFormLine";
+        m.lhs = new IPattern[ 1 ];
+        m.rhs = new IAction[ 1 ];
+
+        FreeFormLine fl = new FreeFormLine();
+        m.lhs[ 0 ] = fl;
+
+        FreeFormLine fr = new FreeFormLine();
+        m.rhs[ 0 ] = fr;
+
+        String drl = ruleModelPersistence.marshal( m );
+        assertNotNull( drl );
     }
 
 }
