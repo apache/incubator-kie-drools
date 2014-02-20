@@ -62,11 +62,11 @@ public class StatefulKnowledgeSessionAdapter extends KnowledgeRuntimeAdapter imp
     }
 
     public int fireAllRules(AgendaFilter agendaFilter) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.fireAllRules -> TODO");
+        return ((StatefulKnowledgeSession)delegate).fireAllRules(new AgendaFilterAdapter(agendaFilter));
     }
 
     public int fireAllRules(AgendaFilter agendaFilter, int max) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.fireAllRules -> TODO");
+        return ((StatefulKnowledgeSession)delegate).fireAllRules(new AgendaFilterAdapter(agendaFilter), max);
     }
 
     public void fireUntilHalt() {
@@ -74,7 +74,7 @@ public class StatefulKnowledgeSessionAdapter extends KnowledgeRuntimeAdapter imp
     }
 
     public void fireUntilHalt(AgendaFilter agendaFilter) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.fireUntilHalt -> TODO");
+        ((StatefulKnowledgeSession)delegate).fireUntilHalt(new AgendaFilterAdapter(agendaFilter));
     }
 
     public static List<org.drools.runtime.StatefulKnowledgeSession> adaptStatefulKnowledgeSession(Collection<org.kie.internal.runtime.StatefulKnowledgeSession> sessions) {
