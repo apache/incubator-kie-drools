@@ -1157,7 +1157,7 @@ public interface Standstill {
         <literal>Student</literal> instances.</para>
       </section>
 
-      <section>
+      <section xml:id="cloningASolution">
         <title>Cloning a <literal>Solution</literal></title>
 
         <para>Most (if not all) optimization algorithms clone the solution each time they encounter a new best solution

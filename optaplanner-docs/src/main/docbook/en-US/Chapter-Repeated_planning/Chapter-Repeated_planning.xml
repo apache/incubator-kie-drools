@@ -165,6 +165,9 @@ public class ShiftAssignment {
                         scoreDirector.afterVariableChanged(process, "computer");
                     }
                 }
+                // A SolutionCloner does not clone problem fact lists (such as computerList)
+                // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
+                cloudBalance.setComputerList(new ArrayList&lt;CloudComputer&gt;(cloudBalance.getComputerList()));
                 // Next remove it the planning fact itself
                 for (Iterator&lt;CloudComputer&gt; it = cloudBalance.getComputerList().iterator(); it.hasNext(); ) {
                     CloudComputer workingComputer = it.next();
@@ -180,16 +183,28 @@ public class ShiftAssignment {
     }</programlisting>
 
     <warning>
+      <para>Any change on the problem facts or planning entities in a <literal>ProblemFactChange</literal> must be told
+      to the <literal>ScoreDirector</literal>.</para>
+    </warning>
+
+    <warning>
       <para>Any change on the problem facts or planning entities in a <literal>ProblemFactChange</literal> must be done
       on the instances of the <literal>Solution</literal> of <literal>scoreDirector.getWorkingSolution()</literal>. Note
       that these are not the same entity instances as in the bestSolution (or therefore your user interface): they are
       clones.</para>
     </warning>
 
-    <warning>
-      <para>Any change on the problem facts or planning entities in a <literal>ProblemFactChange</literal> must be told
-      to the <literal>ScoreDirector</literal>.</para>
-    </warning>
+    <important>
+      <para>A <literal>BestSolutionChangedEvent</literal>'s <literal>bestSolution</literal> is <link
+      linkend="cloningASolution">a planning clone</link> of the <literal>workingSolution</literal>. <emphasis>Therefore
+      the <literal>workingSolution</literal> and the <literal>bestSolution</literal> share the same problem fact
+      instances and the same problem fact list instances. </emphasis></para>
+
+      <para>Any problem fact or problem fact list changed by a <literal>ProblemFactChange</literal> must be problem
+      cloned first (which can imply rerouting references in other problem facts and planning entities). Otherwise, if
+      the workingSolution and bestSolution are used in different threads (for example a solver thread and a GUI event
+      thread), a race condition can occur.</para>
+    </important>
 
     <note>
       <para>Many types of changes can leave a planning entity uninitialized, resulting in a partially initialized
