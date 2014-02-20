@@ -168,7 +168,7 @@ public class CloudComputerPanel extends JPanel {
         processList.remove(process);
     }
 
-    public void clearAllProcesses() {
+    public void clearProcesses() {
         processList.clear();
     }
 

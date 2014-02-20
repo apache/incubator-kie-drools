@@ -214,6 +214,7 @@ public class EmployeePanel extends JPanel {
     public void clearShiftAssignments() {
         for (JPanel shiftPanel : shiftPanelMap.values()) {
             shiftPanel.removeAll();
+            shiftPanel.repaint();
         }
         shiftAssignmentButtonMap.clear();
     }

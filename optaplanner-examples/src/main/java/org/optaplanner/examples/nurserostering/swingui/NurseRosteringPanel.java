@@ -61,7 +61,6 @@ public class NurseRosteringPanel extends SolutionPanel {
     private JButton advancePlanningWindowStartButton;
     private EmployeePanel unassignedPanel;
     private Map<Employee, EmployeePanel> employeeToPanelMap;
-    private Map<ShiftAssignment, EmployeePanel> shiftAssignmentToPanelMap;
 
     public NurseRosteringPanel() {
         employeeIcon = new ImageIcon(getClass().getResource("employee.png"));
@@ -112,7 +111,6 @@ public class NurseRosteringPanel extends SolutionPanel {
         employeeListPanel.add(unassignedPanel);
         employeeToPanelMap = new LinkedHashMap<Employee, EmployeePanel>();
         employeeToPanelMap.put(null, unassignedPanel);
-        shiftAssignmentToPanelMap = new LinkedHashMap<ShiftAssignment, EmployeePanel>();
     }
 
     @Override
@@ -133,7 +131,6 @@ public class NurseRosteringPanel extends SolutionPanel {
         }
         employeeToPanelMap.clear();
         employeeToPanelMap.put(null, unassignedPanel);
-        shiftAssignmentToPanelMap.clear();
         unassignedPanel.clearShiftAssignments();
         List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
         List<Shift> shiftList = nurseRoster.getShiftList();
@@ -158,28 +155,13 @@ public class NurseRosteringPanel extends SolutionPanel {
                 employeeListPanel.add(employeePanel);
                 employeeToPanelMap.put(employee, employeePanel);
             }
+            employeePanel.clearShiftAssignments();
         }
-        Set<ShiftAssignment> deadShiftAssignmentSet = new LinkedHashSet<ShiftAssignment>(
-                shiftAssignmentToPanelMap.keySet());
+        unassignedPanel.clearShiftAssignments();
         for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {
-            deadShiftAssignmentSet.remove(shiftAssignment);
-            EmployeePanel employeePanel = shiftAssignmentToPanelMap.get(shiftAssignment);
             Employee employee = shiftAssignment.getEmployee();
-            if (employeePanel != null
-                    && !ObjectUtils.equals(employeePanel.getEmployee(), employee)) {
-                shiftAssignmentToPanelMap.remove(shiftAssignment);
-                employeePanel.removeShiftAssignment(shiftAssignment);
-                employeePanel = null;
-            }
-            if (employeePanel == null) {
-                employeePanel = employeeToPanelMap.get(employee);
-                employeePanel.addShiftAssignment(shiftAssignment);
-                shiftAssignmentToPanelMap.put(shiftAssignment, employeePanel);
-            }
-        }
-        for (ShiftAssignment deadShiftAssignment : deadShiftAssignmentSet) {
-            EmployeePanel deadEmployeePanel = shiftAssignmentToPanelMap.remove(deadShiftAssignment);
-            deadEmployeePanel.removeShiftAssignment(deadShiftAssignment);
+            EmployeePanel employeePanel = employeeToPanelMap.get(employee);
+            employeePanel.addShiftAssignment(shiftAssignment);
         }
         for (Employee deadEmployee : deadEmployeeSet) {
             EmployeePanel deadEmployeePanel = employeeToPanelMap.remove(deadEmployee);

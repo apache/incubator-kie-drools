@@ -53,7 +53,6 @@ public class MachineReassignmentPanel extends SolutionPanel {
     private MrMachinePanel unassignedPanel;
     private JLabel tooBigLabel = null;
     private Map<MrMachine, MrMachinePanel> machineToPanelMap;
-    private Map<MrProcessAssignment, MrMachinePanel> processAssignmentToPanelMap;
 
     public MachineReassignmentPanel() {
         GroupLayout layout = new GroupLayout(this);
@@ -75,7 +74,6 @@ public class MachineReassignmentPanel extends SolutionPanel {
         machineListPanel.add(unassignedPanel);
         machineToPanelMap = new LinkedHashMap<MrMachine, MrMachinePanel>();
         machineToPanelMap.put(null, unassignedPanel);
-        processAssignmentToPanelMap = new LinkedHashMap<MrProcessAssignment, MrMachinePanel>();
     }
 
     private MachineReassignment getMachineReassignment() {
@@ -90,8 +88,7 @@ public class MachineReassignmentPanel extends SolutionPanel {
         }
         machineToPanelMap.clear();
         machineToPanelMap.put(null, unassignedPanel);
-        processAssignmentToPanelMap.clear();
-        unassignedPanel.clearMrProcessAssignments();
+        unassignedPanel.clearProcessAssignments();
         updatePanel(solution);
     }
 
@@ -120,28 +117,13 @@ public class MachineReassignmentPanel extends SolutionPanel {
                     machineListPanel.add(machinePanel);
                     machineToPanelMap.put(machine, machinePanel);
                 }
+                machinePanel.clearProcessAssignments();
             }
-            Set<MrProcessAssignment> deadProcessAssignmentSet = new LinkedHashSet<MrProcessAssignment>(
-                    processAssignmentToPanelMap.keySet());
+            unassignedPanel.clearProcessAssignments();
             for (MrProcessAssignment processAssignment : machineReassignment.getProcessAssignmentList()) {
-                deadProcessAssignmentSet.remove(processAssignment);
-                MrMachinePanel machinePanel = processAssignmentToPanelMap.get(processAssignment);
                 MrMachine machine = processAssignment.getMachine();
-                if (machinePanel != null
-                        && !ObjectUtils.equals(machinePanel.getMachine(), machine)) {
-                    processAssignmentToPanelMap.remove(processAssignment);
-                    machinePanel.removeMrProcessAssignment(processAssignment);
-                    machinePanel = null;
-                }
-                if (machinePanel == null) {
-                    machinePanel = machineToPanelMap.get(machine);
-                    machinePanel.addMrProcessAssignment(processAssignment);
-                    processAssignmentToPanelMap.put(processAssignment, machinePanel);
-                }
-            }
-            for (MrProcessAssignment deadProcessAssignment : deadProcessAssignmentSet) {
-                MrMachinePanel deadMachinePanel = processAssignmentToPanelMap.remove(deadProcessAssignment);
-                deadMachinePanel.removeMrProcessAssignment(deadProcessAssignment);
+                MrMachinePanel machinePanel = machineToPanelMap.get(machine);
+                machinePanel.addProcessAssignment(processAssignment);
             }
             for (MrMachine deadMachine : deadMachineSet) {
                 MrMachinePanel deadMachinePanel = machineToPanelMap.remove(deadMachine);

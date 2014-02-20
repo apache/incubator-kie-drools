@@ -133,15 +133,15 @@ public class MrMachinePanel extends JPanel {
         add(resourceListPanel, BorderLayout.CENTER);
     }
 
-    public void addMrProcessAssignment(MrProcessAssignment processAssignment) {
+    public void addProcessAssignment(MrProcessAssignment processAssignment) {
         processAssignmentList.add(processAssignment);
     }
 
-    public void removeMrProcessAssignment(MrProcessAssignment processAssignment) {
+    public void removeProcessAssignment(MrProcessAssignment processAssignment) {
         processAssignmentList.remove(processAssignment);
     }
 
-    public void clearMrProcessAssignments() {
+    public void clearProcessAssignments() {
         processAssignmentList.clear();
     }
 

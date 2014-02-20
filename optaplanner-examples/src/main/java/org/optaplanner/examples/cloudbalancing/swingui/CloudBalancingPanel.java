@@ -166,9 +166,9 @@ public class CloudBalancingPanel extends SolutionPanel {
                 computersPanel.add(computerPanel);
                 computerToPanelMap.put(computer, computerPanel);
             }
-            computerPanel.clearAllProcesses();
+            computerPanel.clearProcesses();
         }
-        unassignedPanel.clearAllProcesses();
+        unassignedPanel.clearProcesses();
         for (CloudProcess process : cloudBalance.getProcessList()) {
             CloudComputer computer = process.getComputer();
             CloudComputerPanel computerPanel = computerToPanelMap.get(computer);
