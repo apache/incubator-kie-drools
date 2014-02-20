@@ -29,6 +29,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.swing.AbstractAction;
@@ -50,6 +51,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.io.FilenameUtils;
@@ -260,39 +262,44 @@ public class SolverAndPersistenceFrame extends JFrame {
 
     private class SolveAction extends AbstractAction {
 
-        // TODO This should be replaced with a java 6 SwingWorker once drools's hudson is on JDK 1.6
-        private ExecutorService solvingExecutor = Executors.newFixedThreadPool(1);
-
         public SolveAction() {
             super("Solve", new ImageIcon(SolverAndPersistenceFrame.class.getResource("solveAction.png")));
         }
 
         public void actionPerformed(ActionEvent e) {
             setSolvingState(true);
-            final Solution planningProblem = solutionBusiness.getSolution(); // In event thread
-            // TODO This should be replaced with a java 6 SwingWorker once drools's hudson is on JDK 1.6
-            solvingExecutor.submit(new Runnable() {
-                public void run() {
-                    Solution bestSolution;
-                    try {
-                        bestSolution = solutionBusiness.solve(planningProblem); // Not in event thread
-                    } catch (final Throwable e) {
-                        // Otherwise the newFixedThreadPool will eat the exception...
-                        logger.error("Solving failed.", e);
-                        bestSolution = null;
-                    }
-                    final Solution newSolution = bestSolution;
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            if (newSolution != null) {
-                                solutionBusiness.setSolution(newSolution); // In event thread
-                            }
-                            setSolvingState(false);
-                            resetScreen();
-                        }
-                    });
-                }
-            });
+            Solution planningProblem = solutionBusiness.getSolution();
+            new SolveWorker(planningProblem).execute();
+        }
+
+    }
+
+    protected class SolveWorker extends SwingWorker<Solution, Void> {
+
+        protected final Solution planningProblem;
+
+        public SolveWorker(Solution planningProblem) {
+            this.planningProblem = planningProblem;
+        }
+
+        @Override
+        protected Solution doInBackground() throws Exception {
+            return solutionBusiness.solve(planningProblem);
+        }
+
+        @Override
+        protected void done() {
+            try {
+                Solution bestSolution = get();
+                solutionBusiness.setSolution(bestSolution);
+            } catch (InterruptedException e) {
+                throw new IllegalStateException("Solving interrupted.", e);
+            } catch (ExecutionException e) {
+                throw new IllegalStateException("Solving failed.", e.getCause());
+            } finally {
+                setSolvingState(false);
+                resetScreen();
+            }
         }
 
     }
