@@ -275,6 +275,9 @@ public class NurseRosteringPanel extends SolutionPanel {
                         scoreDirector.afterEntityRemoved(shiftAssignment);
                     }
                 }
+                // A SolutionCloner does not clone problem fact lists (such as employeeList)
+                // Shallow clone the employeeList so only workingSolution is affected, not bestSolution or guiSolution
+                nurseRoster.setEmployeeList(new ArrayList<Employee>(nurseRoster.getEmployeeList()));
                 // Next remove it the planning fact itself
                 for (Iterator<Employee> it = nurseRoster.getEmployeeList().iterator(); it.hasNext(); ) {
                     Employee workingEmployee = it.next();

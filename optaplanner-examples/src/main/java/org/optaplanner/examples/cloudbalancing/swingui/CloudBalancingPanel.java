@@ -18,6 +18,7 @@ package org.optaplanner.examples.cloudbalancing.swingui;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -200,6 +201,9 @@ public class CloudBalancingPanel extends SolutionPanel {
                         scoreDirector.afterEntityRemoved(process);
                     }
                 }
+                // A SolutionCloner does not clone problem fact lists (such as computerList)
+                // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
+                cloudBalance.setComputerList(new ArrayList<CloudComputer>(cloudBalance.getComputerList()));
                 // Next remove it the planning fact itself
                 for (Iterator<CloudComputer> it = cloudBalance.getComputerList().iterator(); it.hasNext(); ) {
                     CloudComputer workingComputer = it.next();

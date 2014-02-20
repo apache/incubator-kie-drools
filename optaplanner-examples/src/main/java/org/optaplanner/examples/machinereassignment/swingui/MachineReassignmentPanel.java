@@ -18,6 +18,7 @@ package org.optaplanner.examples.machinereassignment.swingui;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -168,6 +169,9 @@ public class MachineReassignmentPanel extends SolutionPanel {
                         scoreDirector.afterEntityRemoved(processAssignment);
                     }
                 }
+                // A SolutionCloner does not clone problem fact lists (such as machineList)
+                // Shallow clone the machineList so only workingSolution is affected, not bestSolution or guiSolution
+                machineReassignment.setMachineList(new ArrayList<MrMachine>(machineReassignment.getMachineList()));
                 // Next remove it the planning fact itself
                 for (Iterator<MrMachine> it = machineReassignment.getMachineList().iterator(); it.hasNext(); ) {
                     MrMachine workingMachine = it.next();
