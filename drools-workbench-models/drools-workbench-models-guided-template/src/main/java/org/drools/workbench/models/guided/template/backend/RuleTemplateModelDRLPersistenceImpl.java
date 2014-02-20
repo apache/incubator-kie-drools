@@ -285,8 +285,10 @@ public class RuleTemplateModelDRLPersistenceImpl
 
         @Override
         public void visitFreeFormLine( final FreeFormLine ffl ) {
+            if ( ffl.getText() == null ) {
+                return;
+            }
             final Matcher matcherTemplateKey = patternTemplateKey.matcher( ffl.getText() );
-
             boolean found = matcherTemplateKey.find();
             if ( found ) {
                 buf.append( "@if{" );
@@ -317,8 +319,10 @@ public class RuleTemplateModelDRLPersistenceImpl
                 // note this actually duplicates another inner check for the FFL itself
                 // @TODO the FFL should get a reference to the parent, so it can avoid this duplication.
                 final FreeFormLine ffl = (FreeFormLine) pattern.getRightPattern();
+                if ( ffl.getText() == null ) {
+                    return;
+                }
                 final Matcher matcherTemplateKey = patternTemplateKey.matcher( ffl.getText() );
-
                 boolean found = matcherTemplateKey.find();
                 if ( found ) {
                     buf.append( "@if{" );
@@ -365,23 +369,26 @@ public class RuleTemplateModelDRLPersistenceImpl
                    indentation );
         }
 
-        protected void generateSetMethodCall(String variableName,
-                ActionFieldValue fieldValue) {
+        protected void generateSetMethodCall( String variableName,
+                                              ActionFieldValue fieldValue ) {
 
-            if (fieldValue.getNature() == FieldNatureType.TYPE_TEMPLATE) {
-                buf.append("@if{" + fieldValue.getValue() + " != empty}");
-                super.generateSetMethodCall(variableName,
-                        fieldValue);
-                buf.append("@end{}");
+            if ( fieldValue.getNature() == FieldNatureType.TYPE_TEMPLATE ) {
+                buf.append( "@if{" + fieldValue.getValue() + " != empty}" );
+                super.generateSetMethodCall( variableName,
+                                             fieldValue );
+                buf.append( "@end{}" );
             } else {
-                super.generateSetMethodCall(variableName,
-                        fieldValue);
+                super.generateSetMethodCall( variableName,
+                                             fieldValue );
 
             }
         }
 
         @Override
         public void visitFreeFormLine( FreeFormLine ffl ) {
+            if ( ffl.getText() == null ) {
+                return;
+            }
             final Matcher matcherTemplateKey = patternTemplateKey.matcher( ffl.getText() );
             boolean found = matcherTemplateKey.find();
             if ( found ) {
