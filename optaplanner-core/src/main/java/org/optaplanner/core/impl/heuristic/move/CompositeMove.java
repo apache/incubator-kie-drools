@@ -64,6 +64,7 @@ public class CompositeMove implements Move {
             Move undoMove = move.createUndoMove(scoreDirector);
             undoMoveList.add(undoMove);
         }
+        // TODO performance leak: use a reversed view instead, for example guava's Lists.reverse(List)
         Collections.reverse(undoMoveList);
         return new CompositeMove(undoMoveList);
     }
