@@ -26,7 +26,7 @@
 
 rule "Regression Model Classification Reconciliation @{context} : @{target} "
 when
-    $winner : RegTargetBit( context == "@{context}",
+    $winner : @{ pmmlPackageName }.RegTargetBit( context == "@{context}",
                             target == "@{target}",
                             $winCat : value,
                             $winWgt : weight,

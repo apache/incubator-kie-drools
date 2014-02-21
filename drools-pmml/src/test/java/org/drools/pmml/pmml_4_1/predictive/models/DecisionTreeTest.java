@@ -22,6 +22,7 @@ import org.dmg.pmml.pmml_4_1.descr.PMML;
 import org.dmg.pmml.pmml_4_1.descr.TreeModel;
 import org.drools.pmml.pmml_4_1.DroolsAbstractPMMLTest;
 import org.drools.pmml.pmml_4_1.PMML4Compiler;
+import org.drools.pmml.pmml_4_1.PMML4Helper;
 import org.junit.After;
 import org.junit.Test;
 import org.kie.api.definition.type.FactType;
@@ -74,7 +75,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
     
     
     protected Object getToken( KieSession kSession ) {
-        FactType tok = kSession.getKieBase().getFactType( packageName, "TreeToken" );
+        FactType tok = kSession.getKieBase().getFactType( PMML4Helper.pmmlDefaultPackageName(), "TreeToken" );
         assertNotNull( tok );
         Collection c = kSession.getObjects( new ClassObjectFilter( tok.getFactClass() ) );
         assertEquals( 1, c.size() );
@@ -91,7 +92,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         kSession.fireAllRules();  //init model
 
         FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld9" );
-        FactType tok = kSession.getKieBase().getFactType( packageName, "TreeToken" );
+        FactType tok = kSession.getKieBase().getFactType( PMML4Helper.pmmlDefaultPackageName(), "TreeToken" );
 
         kSession.getEntryPoint( "in_Fld1" ).insert( 45.0 );
         kSession.getEntryPoint( "in_Fld2" ).insert( 60.0 );
@@ -119,7 +120,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         kSession.fireAllRules();  //init model
 
         FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld9" );
-        FactType tok = kSession.getKieBase().getFactType( packageName, "TreeToken" );
+        FactType tok = kSession.getKieBase().getFactType( PMML4Helper.pmmlDefaultPackageName(), "TreeToken" );
 
         kSession.getEntryPoint( "in_Fld1" ).insert( -1.0 );
         kSession.getEntryPoint( "in_Fld2" ).insert( -1.0 );
@@ -149,7 +150,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         kSession.fireAllRules();  //init model
 
         FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld9" );
-        FactType tok = kSession.getKieBase().getFactType( packageName, "TreeToken" );
+        FactType tok = kSession.getKieBase().getFactType( PMML4Helper.pmmlDefaultPackageName(), "TreeToken" );
 
         kSession.getEntryPoint( "in_Fld1" ).insert( -1.0 );
         kSession.getEntryPoint( "in_Fld2" ).insert( -1.0 );
@@ -190,7 +191,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         kSession.fireAllRules();  //init model
 
         FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld9" );
-        FactType tok = kSession.getKieBase().getFactType( packageName, "TreeToken" );
+        FactType tok = kSession.getKieBase().getFactType( PMML4Helper.pmmlDefaultPackageName(), "TreeToken" );
 
         kSession.getEntryPoint( "in_Fld1" ).insert( 70.0 );
         kSession.getEntryPoint( "in_Fld2" ).insert( 40.0 );
@@ -232,7 +233,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         kSession.fireAllRules();  //init model
 
         FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld9" );
-        FactType tok = kSession.getKieBase().getFactType( packageName, "TreeToken" );
+        FactType tok = kSession.getKieBase().getFactType( PMML4Helper.pmmlDefaultPackageName(), "TreeToken" );
 
         kSession.getEntryPoint( "in_Fld1" ).insert( -1.0 );
         kSession.getEntryPoint( "in_Fld2" ).insert( -1.0 );
@@ -276,7 +277,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         kSession.fireAllRules();  //init model
 
         FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld9" );
-        FactType tok = kSession.getKieBase().getFactType( packageName, "TreeToken" );
+        FactType tok = kSession.getKieBase().getFactType( PMML4Helper.pmmlDefaultPackageName(), "TreeToken" );
 
         kSession.getEntryPoint( "in_Fld1" ).insert( -1.0 );
         kSession.getEntryPoint( "in_Fld2" ).insert( -1.0 );
@@ -320,7 +321,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         kSession.fireAllRules();  //init model
 
         FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld9" );
-        FactType tok = kSession.getKieBase().getFactType( packageName, "TreeToken" );
+        FactType tok = kSession.getKieBase().getFactType( PMML4Helper.pmmlDefaultPackageName(), "TreeToken" );
 
         kSession.getEntryPoint( "in_Fld1" ).insert( -1.0 );
         kSession.getEntryPoint( "in_Fld2" ).insert( -1.0 );
@@ -363,7 +364,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         kSession.fireAllRules();  //init model
 
         FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld9" );
-        FactType tok = kSession.getKieBase().getFactType( packageName, "TreeToken" );
+        FactType tok = kSession.getKieBase().getFactType( PMML4Helper.pmmlDefaultPackageName(), "TreeToken" );
 
         kSession.getEntryPoint( "in_Fld1" ).insert( 45.0 );
         kSession.getEntryPoint( "in_Fld2" ).insert( 90.0 );
@@ -406,7 +407,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         kSession.fireAllRules();  //init model
 
         FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld9" );
-        FactType tok = kSession.getKieBase().getFactType( packageName, "TreeToken" );
+        FactType tok = kSession.getKieBase().getFactType( PMML4Helper.pmmlDefaultPackageName(), "TreeToken" );
 
         kSession.getEntryPoint( "in_Fld1" ).insert( -1.0 );
         kSession.getEntryPoint( "in_Fld2" ).insert( -1.0 );
@@ -432,7 +433,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         kSession.fireAllRules();  //init model
 
         FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld9" );
-        FactType tok = kSession.getKieBase().getFactType( packageName, "TreeToken" );
+        FactType tok = kSession.getKieBase().getFactType( PMML4Helper.pmmlDefaultPackageName(), "TreeToken" );
 
         kSession.getEntryPoint( "in_Fld1" ).insert( -1.0 );
         kSession.getEntryPoint( "in_Fld2" ).insert( -1.0 );

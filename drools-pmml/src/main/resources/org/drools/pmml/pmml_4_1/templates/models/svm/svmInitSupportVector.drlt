@@ -29,7 +29,7 @@ when
     ModelMarker( "@{context}" ; enabled == true )
 then
     @foreach{ sv : vectors }
-    insertLogical( new SupportVector (
+    insertLogical( new @{ pmmlPackageName }.SupportVector (
                                  "@{modelName}",
                                  "@{sv.supportVector.vectorId}",
                                   @{sv.index},

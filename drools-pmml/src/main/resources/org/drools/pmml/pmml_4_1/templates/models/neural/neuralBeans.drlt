@@ -24,14 +24,14 @@
 
 @declare{'neuralBeans'}
 
-declare Stym
+declare @{ pmmlPackageName }.Stym
     @@role(event)
     context     : String
     index       : String = "-1"
     value       : double
 end
 
-declare Synapse
+declare @{ pmmlPackageName }.Synapse
     context     : String            @key
     source      : String = "-1"     @key
     target      : String = "-1"     @key
@@ -39,7 +39,7 @@ declare Synapse
 end
 
 
-declare Charge
+declare @{ pmmlPackageName }.Charge
     @@role( event )
     context     : String
     index       : String = "-1"
@@ -47,7 +47,7 @@ declare Charge
     value       : double
 end
 
-declare Neuron
+declare @{ pmmlPackageName }.Neuron
 @propertyReactive
     context     : String            @key
 	index       : String            @key

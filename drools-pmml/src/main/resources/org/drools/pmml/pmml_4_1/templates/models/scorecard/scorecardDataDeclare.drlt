@@ -25,7 +25,8 @@
 @declare{'scorecardHolderDeclare'}
 
 
-declare @{name}ScoreCardData extends ScoreCardData
+
+declare @{name}ScoreCardData extends @{ pmmlPackageName }.ScoreCardData
 @propertyReactive
 
     @foreach{ fieldName : fields.keySet() }

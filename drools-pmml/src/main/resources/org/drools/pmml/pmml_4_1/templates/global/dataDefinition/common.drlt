@@ -22,22 +22,22 @@
 
 @declare{'common'}
 
-declare DataMatrix
+declare @{ pmmlPackageName }.DataMatrix
     context : String
     label   : String
     rows    : int
     cols    : int
 end
 
-declare StringTable extends DataMatrix
+declare @{ pmmlPackageName }.StringTable extends @{ pmmlPackageName }.DataMatrix
     data    : String[][]
 end
 
-declare IntTable extends DataMatrix
+declare @{ pmmlPackageName }.IntTable extends @{ pmmlPackageName }.DataMatrix
     data    : int[][]
 end
 
-declare DoubleTable extends DataMatrix
+declare @{ pmmlPackageName }.DoubleTable extends @{ pmmlPackageName }.DataMatrix
     data    : double[][]
 end
 

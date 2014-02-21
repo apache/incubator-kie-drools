@@ -26,12 +26,12 @@
 
 rule "Kernel_Evals_@{kernelType}_@{modelName}"
 when
-    SvmParams( kt == "@{kernelType}", $ctx : context == "@{modelName}", $gamma : gamma, $coef0 : coef0, $degree : degree  )
-    SVM( context == $ctx, $svmId : svmId, $indexes : vectorIndexes, $coeffs : coeffs )
-    SupportVector( context == $ctx, $idx : index memberOf $indexes, $sv : value )
-    InputVector( context == $ctx, $iv : value )
+    @{ pmmlPackageName }.SvmParams( kt == "@{kernelType}", $ctx : context == "@{modelName}", $gamma : gamma, $coef0 : coef0, $degree : degree  )
+    @{ pmmlPackageName }.SVM( context == $ctx, $svmId : svmId, $indexes : vectorIndexes, $coeffs : coeffs )
+    @{ pmmlPackageName }.SupportVector( context == $ctx, $idx : index memberOf $indexes, $sv : value )
+    @{ pmmlPackageName }.InputVector( context == $ctx, $iv : value )
 then
-    KernelEval k = new KernelEval(
+    @{ pmmlPackageName }.KernelEval k = new @{ pmmlPackageName }.KernelEval(
             "@{modelName}",
              $svmId,
              $idx,

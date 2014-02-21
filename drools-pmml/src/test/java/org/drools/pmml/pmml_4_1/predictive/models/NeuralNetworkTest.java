@@ -19,6 +19,7 @@ package org.drools.pmml.pmml_4_1.predictive.models;
 
 import junit.framework.Assert;
 import org.drools.pmml.pmml_4_1.DroolsAbstractPMMLTest;
+import org.drools.pmml.pmml_4_1.PMML4Helper;
 import org.junit.After;
 import org.junit.Test;
 import org.kie.api.definition.type.FactType;
@@ -227,14 +228,14 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
 //        Assert.assertEquals("Test_versicolor",
 //                getFieldValue("Cspecies_versicolor", "Test_MLP"));
 
-        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"SpecSetosa"),
+        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName ,"SpecSetosa"),
                                 true, false,"Test_MLP",0.001111);
-        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"SpecVirgin"),
+        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName ,"SpecVirgin"),
                                 true, false,"Test_MLP",0.716639);
-        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"SpecVersic"),
+        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName ,"SpecVersic"),
                                 true, false,"Test_MLP",0.282249);
 
-        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"SpecOut"),
+        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName ,"SpecOut"),
                                         true, false,"Test_MLP","virginica");
 
     }
@@ -274,10 +275,10 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         Assert.assertEquals(3.0,
                 truncN(getDoubleFieldValue(t6), 3));
 
-        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutSpecies"),
+        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName ,"OutSpecies"),
                                                 true, false,"Test_MLP","versicolor");
 
-        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutProb"),
+        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName ,"OutProb"),
                                                         true, false,"Test_MLP",0.999999);
 
 
@@ -365,9 +366,9 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
 
 
         //System.err.println(reportWMObjects(getKSession()));
-        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutN"),
+        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName ,"OutN"),
                 true, false,"HEART_MLP",">50_1");
-        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutP"),
+        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName ,"OutP"),
                 true, false,"HEART_MLP",0.943336);
 
     }
@@ -495,7 +496,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
 
 
     private int getNumAssertedSynapses() {
-        Class<?> synClass = getKSession().getKieBase().getFactType(packageName,"Synapse").getFactClass();
+        Class<?> synClass = getKSession().getKieBase().getFactType( PMML4Helper.pmmlDefaultPackageName(),"Synapse").getFactClass();
         return getKSession().getObjects(new ClassObjectFilter(synClass)).size();
     }
 

@@ -27,8 +27,8 @@
 rule "Handle none-prediction missing values on my way back @{context}"
 salience 5
 when
-    $node : TreeNode( context == "@{context}", $id : id, $children : children, $out : outcome, $tot : recordCount, $conf : confidence )
-    $tok  : @{context}TreeToken( context == "@{context}", current == $id,
+    $node : @{ pmmlPackageName }.TreeNode( context == "@{context}", $id : id, $children : children, $out : outcome, $tot : recordCount, $conf : confidence )
+    $tok  : @{ pmmlPackageName }.@{context}TreeToken( context == "@{context}", current == $id,
                                  trail.containsAll( $children ), $res : results, visitMode == "NONE", downward == false )
     not @{name}( context == "@{context}" )
     not String( this memberOf $children ) from $res.keySet()

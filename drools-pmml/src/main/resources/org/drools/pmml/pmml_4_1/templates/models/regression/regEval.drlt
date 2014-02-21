@@ -27,7 +27,7 @@
 rule "Regression Model Output @{context} : @{target} - @{category}"
 @code{ int j = 0; }
 when
-    RegTable( context == "@{context}",
+    @{ pmmlPackageName }.RegTable( context == "@{context}",
               target == "@{target}",
               category == null || == "@{category}",
               $c0 : intercept,
@@ -68,7 +68,7 @@ then
         @if{ normalization != null }
             x = @{ mapRegModelClassificationNormalization( normalization.value(), "x" ) };
         @end{}
-        RegTargetBit bit = new RegTargetBit(
+        @{ pmmlPackageName }.RegTargetBit bit = new @{ pmmlPackageName }.RegTargetBit(
             "@{context}",
             "@{target}",
             "@{category}",

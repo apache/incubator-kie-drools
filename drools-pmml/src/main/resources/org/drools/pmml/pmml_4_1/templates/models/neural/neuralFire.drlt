@@ -29,10 +29,10 @@
 @code{ String ctx = format( "string", model ); }
 rule "Neural Fire_@{ model }_Layer@{ layerIndex }"
 when
-    $neur : Neuron( context == @{ ctx },
+    $neur : @{ pmmlPackageName }.Neuron( context == @{ ctx },
                     layerIndex == @{ layerIndex }
                   )
-    accumulate( $c : Charge( context == @{ ctx }, index == $neur.index, $in : value ),
+    accumulate( $c : @{ pmmlPackageName }.Charge( context == @{ ctx }, index == $neur.index, $in : value ),
                 $list : collectList( $c ),
                 $val : sum( $in );
                 $list.size() == $neur.fanIn )
@@ -49,16 +49,16 @@ end
 
 rule "Neural Flare @{ model }_Layer@{ layerIndex }"
 when
-    $neur : Neuron( context == @{ ctx },
+    $neur : @{ pmmlPackageName }.Neuron( context == @{ ctx },
                     layerIndex == @{ layerIndex },
                     @if{ needsNormal } normalized == true, @end{}
                     $index : index,
                     $val : value != null )
-    accumulate( $c : Charge( context == @{ ctx }, index == $neur.index, $in : value ),
+    accumulate( $c : @{ pmmlPackageName }.Charge( context == @{ ctx }, index == $neur.index, $in : value ),
                     $num : count( $c );
                     $num == $neur.fanIn )
 then
-    Stym y = new Stym();
+    @{ pmmlPackageName }.Stym y = new @{ pmmlPackageName }.Stym();
         y.setContext( @{ctx} );
         y.setIndex( $index );
         y.setValue( $val );

@@ -34,7 +34,7 @@ public class ClusteringTest extends DroolsAbstractPMMLTest {
 
     private static final boolean VERBOSE = true;
     private static final String source1 = "org/drools/pmml/pmml_4_1/test_clustering.xml";
-    private static final String packageName = "org.drools.pmml.pmml_4_1.test";
+    private static final String packageName = "org.drools.pmml.pmml_4_1";
 
 
     @After

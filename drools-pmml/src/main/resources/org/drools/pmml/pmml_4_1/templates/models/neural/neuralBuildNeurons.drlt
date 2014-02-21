@@ -27,7 +27,7 @@ when
     ModelMarker( "@{ model }" ; enabled == true )
 then
 @foreach{ neuron : neurs }
-    insertLogical( new Neuron( @{ format( "string", model ) },
+    insertLogical( new @{ pmmlPackageName }.Neuron( @{ format( "string", model ) },
                                @{ format( "string", neuron.id ) },
                                @{ layerIndex },
                                @{ neuron.bias != null ? neuron.bias : 0.0 },

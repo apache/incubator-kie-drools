@@ -28,12 +28,12 @@
 
 rule "First base value @{context} - @{target}"
 when
-    $bit : RegTargetBit( context == "@{context}",
+    $bit : @{ pmmlPackageName }.RegTargetBit( context == "@{context}",
                          target == "@{target}",
                          $first : index,
                          normalized == true,
                          cumulative == true )
-    not    RegTargetBit( index < $first )
+    not    @{ pmmlPackageName }.RegTargetBit( index < $first )
 then
     modify ( $bit ) {
         setCumulative( false );
@@ -45,13 +45,13 @@ end
 
 rule "Regression Model Ordinal Values Decumulation @{context} - @{target}"
 when
-    $bit  : RegTargetBit( context == "@{context}",
+    $bit  : @{ pmmlPackageName }.RegTargetBit( context == "@{context}",
                           target == "@{target}",
                           $wgt : weight,
                           $ix : index,
                           normalized == true,
                           cumulative == true )
-    $prev : RegTargetBit( context == "@{context}",
+    $prev : @{ pmmlPackageName }.RegTargetBit( context == "@{context}",
                           target == "@{target}",
                           $wgt2 : weight,
                           index == $ix - 1,

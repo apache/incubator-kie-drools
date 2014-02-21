@@ -27,9 +27,9 @@
 rule "Handle last-prediction missing values on my way back @{context}"
 salience 5
 when
-    $node : TreeNode( context == "@{context}", $id : id,
+    $node : @{ pmmlPackageName }.TreeNode( context == "@{context}", $id : id,
                       $out : outcome, $children : children, $count : recordCount, $confs : confidence )
-    $tok  : @{context}TreeToken( context == "@{context}", current == $id, $trail : trail, $res : results, visitMode == "LAST_PREDICTION" )
+    $tok  : @{ pmmlPackageName }.@{context}TreeToken( context == "@{context}", current == $id, $trail : trail, $res : results, visitMode == "LAST_PREDICTION" )
 
     not @{name}( context == "@{context}" )
 

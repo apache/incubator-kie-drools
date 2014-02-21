@@ -28,7 +28,7 @@ rule "Init Svm @{svmId}"
 when
     ModelMarker( "@{context}" ; enabled == true )
 then
-    insertLogical( new SVM ( "@{svmId}",
+    insertLogical( new @{ pmmlPackageName }.SVM ( "@{svmId}",
                       "@{modelName}",
                       "@{target}",
                       "@{alt}",
