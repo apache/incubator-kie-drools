@@ -144,7 +144,7 @@ public class CachingMoveSelectorTest {
         when(stepScopeA1.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.stepStarted(stepScopeA1);
         when(workingRandom.nextInt(3)).thenReturn(1, 0, 2);
-        assertCodesOfNeverEndingMoveSelector(moveSelector, "a2", "a1", "a3");
+        assertCodesOfNeverEndingMoveSelector(moveSelector, 3L, "a2", "a1", "a3");
         moveSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
@@ -152,7 +152,7 @@ public class CachingMoveSelectorTest {
         when(stepScopeA2.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.stepStarted(stepScopeA2);
         when(workingRandom.nextInt(3)).thenReturn(2, 0, 1);
-        assertCodesOfNeverEndingMoveSelector(moveSelector, "a3", "a1", "a2");
+        assertCodesOfNeverEndingMoveSelector(moveSelector, 3L, "a3", "a1", "a2");
         moveSelector.stepEnded(stepScopeA2);
 
         moveSelector.phaseEnded(phaseScopeA);
@@ -167,7 +167,7 @@ public class CachingMoveSelectorTest {
         when(stepScopeB1.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.stepStarted(stepScopeB1);
         when(workingRandom.nextInt(3)).thenReturn(1, 2, 0);
-        assertCodesOfNeverEndingMoveSelector(moveSelector, "a2", "a3", "a1");
+        assertCodesOfNeverEndingMoveSelector(moveSelector, 3L, "a2", "a3", "a1");
         moveSelector.stepEnded(stepScopeB1);
 
         moveSelector.phaseEnded(phaseScopeB);

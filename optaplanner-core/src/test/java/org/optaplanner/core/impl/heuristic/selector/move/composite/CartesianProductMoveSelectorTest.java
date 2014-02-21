@@ -297,7 +297,7 @@ public class CartesianProductMoveSelectorTest {
         moveSelector.stepStarted(stepScopeA1);
 
         if (ignoreEmptyChildIterators) {
-            assertCodesOfNeverEndingMoveSelector(moveSelector, "b1", "b2");
+            assertCodesOfNeverEndingMoveSelector(moveSelector, 2L, "b1", "b2");
         } else {
             assertEmptyNeverEndingMoveSelector(moveSelector);
         }

@@ -213,8 +213,7 @@ public class PlannerAssert extends Assert {
     }
 
     public static void assertCodesOfNeverEndingMoveSelector(MoveSelector moveSelector, String... codes) {
-        // TODO why codes.length instead of DO_NOT_ASSERT_SIZE like in assertCodesOfNeverEndingOfEntitySelector()
-        assertCodesOfNeverEndingMoveSelector(moveSelector, (long) codes.length, codes);
+        assertCodesOfNeverEndingMoveSelector(moveSelector, DO_NOT_ASSERT_SIZE, codes);
     }
 
     public static void assertCodesOfNeverEndingMoveSelector(MoveSelector moveSelector, long size, String... codes) {
