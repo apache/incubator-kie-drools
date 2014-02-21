@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.event;
+package org.optaplanner.core.api.solver.event;
 
 import java.util.EventListener;
 
@@ -33,7 +33,7 @@ public interface SolverEventListener extends EventListener {
      * <b>Should return fast, because it steals time from the {@link Solver}.</b>
      * <p/>
      * If {@link Solver#addProblemFactChange(ProblemFactChange)} has been called once or more,
-     * all {@link ProblemFactChange}s will be processed and this method is called once.
+     * all {@link ProblemFactChange}s in the queue will be processed and this method is called only once.
      * In that case, the former best {@link Solution} is considered stale,
      * so it doesn't matter whether the new {@link Score} is better than that or not.
      * @param event never null

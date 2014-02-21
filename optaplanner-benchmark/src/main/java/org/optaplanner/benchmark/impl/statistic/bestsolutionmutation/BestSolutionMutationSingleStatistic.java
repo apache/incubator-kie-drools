@@ -25,8 +25,8 @@ import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.solution.mutation.MutationCounter;
-import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
-import org.optaplanner.core.impl.event.SolverEventListener;
+import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
+import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solution.Solution;
 

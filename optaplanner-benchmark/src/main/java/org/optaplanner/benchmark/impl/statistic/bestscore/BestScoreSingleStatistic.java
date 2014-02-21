@@ -23,8 +23,8 @@ import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
-import org.optaplanner.core.impl.event.SolverEventListener;
+import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
+import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public class BestScoreSingleStatistic extends SingleStatistic<BestScoreStatisticPoint> {

@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.event;
+package org.optaplanner.core.impl.solver.event;
 
 import java.util.Iterator;
 
 import org.drools.core.event.AbstractEventSupport;
+import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
+import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 

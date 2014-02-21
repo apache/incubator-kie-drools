@@ -3899,4 +3899,14 @@ After in *BenchmarkConfig.xml:
       ...
     <//plannerBenchmark>
 
-[MINOR] Real time planning: addProblemFactChange(...) no longer causes solver Terminations to reset.
+[MINOR] Real time planning: addProblemFactChange(...) no longer causes solver Terminations to reset
+(but it still causes phase terminations to reset).
+
+[MAJOR] Classes BestSolutionChangedEvent and SolverEventListener moved from package impl.event to api.solver.event.
+They are now part of the public api.
+Before in *.java:
+    import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
+    import org.optaplanner.core.impl.event.SolverEventListener;
+After in *.java:
+    import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
+    import org.optaplanner.core.api.solver.event.SolverEventListener;

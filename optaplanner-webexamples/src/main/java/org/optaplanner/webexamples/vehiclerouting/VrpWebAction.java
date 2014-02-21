@@ -24,8 +24,8 @@ import javax.servlet.http.HttpSession;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.XmlSolverFactory;
-import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
-import org.optaplanner.core.impl.event.SolverEventListener;
+import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
+import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporter;
 

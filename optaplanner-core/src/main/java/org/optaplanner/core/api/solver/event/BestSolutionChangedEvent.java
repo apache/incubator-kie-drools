@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.event;
+package org.optaplanner.core.api.solver.event;
 
 import java.util.EventObject;
 
@@ -22,7 +22,8 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.solution.Solution;
 
 /**
- * Delivered when the best solution changes during solving.
+ * Delivered when the best {@link Solution} changes during solving.
+ * Delivered in the solver thread (which is the thread that calls {@link Solver#solve()}.
  */
 public class BestSolutionChangedEvent extends EventObject {
 
@@ -34,14 +35,15 @@ public class BestSolutionChangedEvent extends EventObject {
      * @param timeMillisSpent >= 0L
      * @param newBestSolution never null
      */
-    protected BestSolutionChangedEvent(Solver source, long timeMillisSpent, Solution newBestSolution) {
+    public BestSolutionChangedEvent(Solver source, long timeMillisSpent, Solution newBestSolution) {
         super(source);
         this.timeMillisSpent = timeMillisSpent;
         this.newBestSolution = newBestSolution;
     }
 
     /**
-     * @return the amount of millis spent since the solver started until {@link #getNewBestSolution()} was found
+     * @return &gt;= 0, the amount of millis spent since the {@link Solver} started
+     * until {@link #getNewBestSolution()} was found
      */
     public long getTimeMillisSpent() {
         return timeMillisSpent;
