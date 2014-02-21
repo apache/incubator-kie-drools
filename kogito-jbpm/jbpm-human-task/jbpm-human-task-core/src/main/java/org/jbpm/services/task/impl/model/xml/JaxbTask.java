@@ -63,6 +63,9 @@ public class JaxbTask implements InternalTask {
     @XmlElement
     private JaxbTaskData taskData;
     
+    @XmlElement
+    private JaxbDeadlines deadlines = new JaxbDeadlines();
+    
     @XmlElement(name="form-name")
     @XmlSchemaType(name="String")
     private String formName;
@@ -196,6 +199,16 @@ public class JaxbTask implements InternalTask {
         this.taskType = taskType;
     }
 
+    @Override
+    public Deadlines getDeadlines() {
+        return this.deadlines;
+    }
+
+    @Override
+    public void setDeadlines(Deadlines deadlines) {
+        // no-op
+    }
+
     public Task getTask() { 
         Task taskImpl = TaskModelProvider.getFactory().newTask();
         List<I18NText> names = new ArrayList<I18NText>();
@@ -297,16 +310,6 @@ public class JaxbTask implements InternalTask {
 
     @Override
     public void setArchived(Boolean archived) {
-        unsupported(Task.class);
-    }
-
-    @Override
-    public Deadlines getDeadlines() {
-        return (Deadlines) unsupported(Task.class);
-    }
-
-    @Override
-    public void setDeadlines(Deadlines deadlines) {
         unsupported(Task.class);
     }
 
