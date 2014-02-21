@@ -124,6 +124,20 @@
             <classifier>sources</classifier>
         </dependency>
 
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-ci</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-ci</artifactId>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-ci-osgi</artifactId>
+        </dependency>
+
         <!-- Examples -->
         <dependency>
             <groupId>org.drools</groupId>
