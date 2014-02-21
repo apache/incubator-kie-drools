@@ -26,9 +26,9 @@ rule "BuildSynapses_@{model}_Neuron@{index}"
 when
     ModelMarker( "@{model}" ; enabled == true )
 then
-    Synapse syn;
+    @{ pmmlPackageName }.Synapse syn;
     @foreach{ con : links }
-           syn = new Synapse();
+           syn = new @{ pmmlPackageName }.Synapse();
            syn.setSource( @{ format( "string", con.from ) } );
            syn.setTarget( @{ format( "string", index ) } );
            syn.setContext( @{ format( "string", model ) } );

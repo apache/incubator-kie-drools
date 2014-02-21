@@ -33,7 +33,7 @@ when
     @end{}
 then
     @code{ j = 1; }
-    insertLogical ( new InputVector(  "@{modelName}",
+    insertLogical ( new @{ pmmlPackageName }.InputVector(  "@{modelName}",
                                        new double[] { @foreach{ fld : inputVectors } valx@{j++} @end{ ',' } } ) );
 end
 

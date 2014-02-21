@@ -24,12 +24,12 @@
 
 @declare{'svmOutputVoteDeclare'}
 
-declare @{context}SVMVote_@{target} extends SVMVote
+declare @{ pmmlPackageName }.@{context}SVMVote_@{target} extends SVMVote
     outcome  : @{mapDatatype(type)}
     weight   : double
 end
 
-declare @{context}SVMPoll_@{target}
+declare @{ pmmlPackageName }.@{context}SVMPoll_@{target}
     outcome  : @{mapDatatype(type)}
     num      : Number
     weight   : double

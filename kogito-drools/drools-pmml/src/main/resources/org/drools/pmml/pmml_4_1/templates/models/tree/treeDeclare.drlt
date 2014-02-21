@@ -24,7 +24,8 @@
 
 @declare{'treeDeclare'}
 
-declare TreeToken
+declare @{ pmmlPackageName }.TreeToken
+@propertyReactive
     context     : String
     current     : String
     marker      : String
@@ -36,7 +37,8 @@ declare TreeToken
     totalCount  : double
 end
 
-declare TreeNode
+declare @{ pmmlPackageName }.TreeNode
+@propertyReactive
     context     : String            @key
     id          : String            @key
     parent      : String

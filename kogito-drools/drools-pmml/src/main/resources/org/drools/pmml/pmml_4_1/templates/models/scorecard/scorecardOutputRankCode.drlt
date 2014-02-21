@@ -28,7 +28,7 @@
 rule "Scorecard @{context} rank code @{index}"
 salience -5
 when
-    ScoreCard( modelName == "@{context}", $ranks : ranking, $keys : ranking.keySet() ) @watch( ranking )
+    @{ pmmlPackageName }.ScoreCard( modelName == "@{context}", $ranks : ranking, $keys : ranking.keySet() ) @watch( ranking )
 then
     String code = null;
 

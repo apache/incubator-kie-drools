@@ -29,8 +29,8 @@ rule "Eval Tree Node @{context} - @{id} - Down"
 salience $children.size() - $children.indexOf( $child )
 dialect "mvel"
 when
-    $node : TreeNode( context == "@{context}", $id : id == "@{id}", $children : children, children.size > 0 )
-    $tok  : @{context}TreeToken( context == "@{context}", current == "@{id}", $trail : trail,
+    $node : @{ pmmlPackageName }.TreeNode( context == "@{context}", $id : id == "@{id}", $children : children, children.size > 0 )
+    $tok  : @{ pmmlPackageName }.@{context}TreeToken( context == "@{context}", current == "@{id}", $trail : trail,
                                  ( @{constraints} ) || ( visitMode == "AGGREGATE_NODES" && ( @{missings} ) ) )
     $child : String( this not memberOf $trail ) from $children
 then
@@ -48,9 +48,9 @@ rule "Eval Tree Node @{context} - @{id} - True"
 salience 3
 no-loop
 when
-    $node : TreeNode( context == "@{context}", $id : id == "@{id}", $out : outcome,
+    $node : @{ pmmlPackageName }.TreeNode( context == "@{context}", $id : id == "@{id}", $out : outcome,
                       children.size == 0, $conf : confidence, $tot : recordCount )
-    $tok  : @{context}TreeToken( context == "@{context}", current == "@{id}", $baseConf : confidence,
+    $tok  : @{ pmmlPackageName }.@{context}TreeToken( context == "@{context}", current == "@{id}", $baseConf : confidence,
                                  $res : results, results.keySet not contains "@{id}",
                                  visitMode != "AGGREGATE_NODES",
                                  @{constraints}
@@ -71,8 +71,8 @@ end
 rule "Eval Tree Node @{context} - @{id} - Unknown Weighted"
 salience 3
 when
-    $node : TreeNode( context == "@{context}", $id : id == "@{id}", $out : outcome )
-    $tok  : @{context}TreeToken( context == "@{context}", current == "@{id}",
+    $node : @{ pmmlPackageName }.TreeNode( context == "@{context}", $id : id == "@{id}", $out : outcome )
+    $tok  : @{ pmmlPackageName }.@{context}TreeToken( context == "@{context}", current == "@{id}",
                                  visitMode == "WEIGHTED_CONFIDENCE" || == "LAST_PREDICTION" || == "NULL_PREDICTION",
                                  results.keySet not contains "@{id}",
                                  @{missings} )

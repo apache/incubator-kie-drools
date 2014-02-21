@@ -26,7 +26,7 @@
 
 rule "Eval Tree Node @{context} - Up"
 when
-    $node : TreeNode( context == "@{context}", $id : id, $master : parent )
+    $node : @{ pmmlPackageName }.TreeNode( context == "@{context}", $id : id, $master : parent )
     $tok  : @{context}TreeToken( context == "@{context}", current == $id )
     not @{name}( context == "@{context}" )
 then

@@ -28,7 +28,7 @@
 rule "Eval Tree Node @{context} - @{id} - Down Aggregate Mark"
 salience $children.size() + 1
 when
-    $node : TreeNode( context == "@{context}", $id : id == "@{id}", $master : parent, $children : children )
+    $node : @{ pmmlPackageName }.TreeNode( context == "@{context}", $id : id == "@{id}", $master : parent, $children : children )
     $tok  : @{context}TreeToken( context == "@{context}", current == "@{id}", marker == null,
                                  visitMode == "AGGREGATE_NODES", @{missings}  )
 then
@@ -43,7 +43,7 @@ rule "Eval Tree Node @{context} - @{id} - True On Aggregates"
 salience 3
 no-loop
 when
-    $node : TreeNode( context == "@{context}", $id : id == "@{id}", children.size == 0, $counts : counts )
+    $node : @{ pmmlPackageName }.TreeNode( context == "@{context}", $id : id == "@{id}", children.size == 0, $counts : counts )
     $tok  : @{context}TreeToken( context == "@{context}", current == "@{id}",
                                  results.keySet not contains "@{id}",
                                  visitMode == "AGGREGATE_NODES",

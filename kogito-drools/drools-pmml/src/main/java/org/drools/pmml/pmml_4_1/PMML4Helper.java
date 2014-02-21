@@ -76,6 +76,13 @@ public class PMML4Helper {
     }
 
 
+    public static String pmmlDefaultPackageName() {
+        return PMML4Compiler.PMML_DROOLS;
+    }
+
+    public String getPmmlPackageName() {
+        return PMML4Helper.pmmlDefaultPackageName();
+    }
 
 
     public void addModelBeanDefinition(String beanType) {

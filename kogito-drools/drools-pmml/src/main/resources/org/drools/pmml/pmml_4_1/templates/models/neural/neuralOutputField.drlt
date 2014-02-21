@@ -29,7 +29,7 @@
 
 rule "NeuralOutput_@{model}_@{index}"
 when
-    Stym( context == @{ctx} , index == @{ format( "string", index ) }, $val : value )
+    @{ pmmlPackageName }.Stym( context == @{ctx} , index == @{ format( "string", index ) }, $val : value )
 then
     @{name} x = new @{ name }();
         x.setContext( @{ctx} );

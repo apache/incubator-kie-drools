@@ -33,7 +33,7 @@ when
                   $model : context == @{format("string",context)},
                   $val : value )
 then
-    Stym x = new Stym( $model,
+    @{ pmmlPackageName }.Stym x = new @{ pmmlPackageName }.Stym( $model,
                        @{ format( "string", index ) },
                        $val );
     insertLogical(x);

@@ -31,7 +31,7 @@ when
     @end{}
 then
 //    System.out.println( "Creating the tree token" );
-    @{context}TreeToken tok = new @{context}TreeToken( "@{context}",
+    @{ pmmlPackageName }.@{context}TreeToken tok = new @{ pmmlPackageName }.@{context}TreeToken( "@{context}",
                                                        "@{rootId}",
                                                        null,
                                                        "@{visitMode}",
@@ -49,7 +49,7 @@ end
 rule "Result @{context}"
 salience -2
 when
-    $tok  : @{context}TreeToken( context == "@{context}", current == "null", $out : outcome != null, $conf : confidence )
+    $tok  : @{ pmmlPackageName }.@{context}TreeToken( context == "@{context}", current == "null", $out : outcome != null, $conf : confidence )
 then
 //    System.out.println( "EVENTUALLY GENERATE THE SOLUTION ");
     @{targetField} x = new @{targetField}();

@@ -28,7 +28,7 @@ rule " Create tree @{context}"
 when
     ModelMarker( "@{context}" ; enabled == true )
 then
-    TreeNode node;
+    @{ pmmlPackageName }.TreeNode node;
     java.util.Map count;
     java.util.Map confs;
 
@@ -38,7 +38,7 @@ then
         confs = new java.util.HashMap();
             @foreach{ val : confs[ node.id ].keySet() } confs.put( @{format( tgtType, val ) }, @{ confs[ node.id ][ val ] } ); @end{}
 
-        node = new TreeNode( "@{context}",
+        node = new @{ pmmlPackageName }.TreeNode( "@{context}",
                              "@{node.id}",
                              "@{parents[ node.id ]}",
                              java.util.Arrays.asList( @foreach{ child : node.nodes } "@{ child.id }" @end{','} ),
@@ -56,9 +56,9 @@ end
 rule "Ensure Tree Statistics are Filled"
 dialect "mvel"
 when
-    $node : TreeNode( $id : id, $master : counts, $confs : confidence, counts.size() == 0, $children : children, $numChi : children.size() )
+    $node : @{ pmmlPackageName }.TreeNode( $id : id, $master : counts, $confs : confidence, counts.size() == 0, $children : children, $numChi : children.size() )
 
-    accumulate( TreeNode( id memberOf $children, counts.size() > 0, $sub : counts, $x : recordCount )
+    accumulate( @{ pmmlPackageName }.TreeNode( id memberOf $children, counts.size() > 0, $sub : counts, $x : recordCount )
                 and $k : String() from $sub.keySet(),
                           $keys : collectSet( $k );
                           $keys.size() > 0 )
@@ -92,7 +92,7 @@ end
 rule "Ensure Tree Scores are Filled"
 dialect "mvel"
 when
-    $node : TreeNode( $id : id, outcome == null, confidence.size() > 0, $conf : confidence )
+    $node : @{ pmmlPackageName }.TreeNode( $id : id, outcome == null, confidence.size() > 0, $conf : confidence )
     accumulate( $k : String() from $conf.keySet(),
                      $maxConf : max( $conf[ $k ] ) )
     java.util.Map.Entry( $best : key, value == $maxConf ) from $conf.entrySet()

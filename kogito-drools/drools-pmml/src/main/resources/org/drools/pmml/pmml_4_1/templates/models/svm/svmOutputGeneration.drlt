@@ -27,9 +27,9 @@
 
 rule "SVM Output Generation @{svmId}"
 when
-    SvmParams( $ctx : context )
-    SVM( context == $ctx, $svmId : svmId == "@{svmId}", $bias : bias, $numKernel : numSvs, target == "@{posCat}", alt == "@{negCat}" )
-    accumulate( $k : KernelEval( svmId == $svmId, $v : value ),
+    @{ pmmlPackageName }.SvmParams( $ctx : context )
+    @{ pmmlPackageName }.SVM( context == $ctx, $svmId : svmId == "@{svmId}", $bias : bias, $numKernel : numSvs, target == "@{posCat}", alt == "@{negCat}" )
+    accumulate( $k : @{ pmmlPackageName }.KernelEval( svmId == $svmId, $v : value ),
                 $num : count( $k ),
                 $sum : sum( $v );
                 $num == $numKernel

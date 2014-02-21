@@ -28,8 +28,8 @@
 rule "Handle aggregate-prediction missing values on my way back @{context}"
 salience 5
 when
-    $node : TreeNode( context == "@{context}", $id : id, $children : children )
-    $tok  : @{context}TreeToken( context == "@{context}", current == $id, $res : results,
+    $node : @{ pmmlPackageName }.TreeNode( context == "@{context}", $id : id, $children : children )
+    $tok  : @{ pmmlPackageName }.@{context}TreeToken( context == "@{context}", current == $id, $res : results,
                                  visitMode == "AGGREGATE_NODES", marker == $id, downward == false, trail.containsAll( $children ) )
     not @{name}( context == "@{context}" )
 

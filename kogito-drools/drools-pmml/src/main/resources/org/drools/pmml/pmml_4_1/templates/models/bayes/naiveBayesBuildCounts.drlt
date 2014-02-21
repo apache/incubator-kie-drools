@@ -30,7 +30,7 @@ when
     ModelMarker( "@{name}" ; enabled == true )
 then
     map = new java.util.HashMap();
-    bc = new BayesCounts( "@{name}", "@{field}", map, null );
+    bc = new @{ pmmlPackageName }.BayesCounts( "@{name}", "@{field}", map, null );
     @foreach{ pair : pairs }
         map.put( "@{ pair.value }", [ @foreach{ tvc : pair.targetValueCounts.targetValueCounts } @{ tvc.count } @end{ ',' } ] );
     @end{}

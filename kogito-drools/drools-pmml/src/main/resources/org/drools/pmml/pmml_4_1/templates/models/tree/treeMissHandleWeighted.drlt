@@ -29,9 +29,9 @@
 rule "Handle weighted missing values on my way back @{context}"
 salience 5
 when
-    $node : TreeNode( context == "@{context}", $id : id,
+    $node : @{ pmmlPackageName }.TreeNode( context == "@{context}", $id : id,
                       $out : outcome, $children : children, $count : recordCount, $confs : confidence )
-    $tok  : @{context}TreeToken( context == "@{context}", current == $id, visitMode == "WEIGHTED_CONFIDENCE", $res : results )
+    $tok  : @{ pmmlPackageName }.@{context}TreeToken( context == "@{context}", current == $id, visitMode == "WEIGHTED_CONFIDENCE", $res : results )
 
     not @{name}( context == "@{context}" )
 

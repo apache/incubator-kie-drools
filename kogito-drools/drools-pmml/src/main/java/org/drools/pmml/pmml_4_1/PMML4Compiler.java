@@ -68,9 +68,11 @@ import java.util.Map;
 public class PMML4Compiler implements PMMLCompiler {
 
 
-    public static final String PMML = "org.dmg.pmml.pmml_4_1.descr";
+    public static final String PMML_NAMESPACE = "org.dmg.pmml.pmml_4_1";
+    public static final String PMML_DROOLS = "org.drools.pmml.pmml_4_1";
+    public static final String PMML = PMML_NAMESPACE + ".descr";
     public static final String SCHEMA_PATH = "xsd/org/dmg/pmml/pmml_4_1/pmml-4-1.xsd";
-    public static final String BASE_PACK = PMML4Compiler.class.getPackage().getName().replace('.','/');
+    public static final String BASE_PACK = PMML_DROOLS.replace('.','/');
     
 
     protected static boolean globalLoaded = false;

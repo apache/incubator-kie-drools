@@ -40,8 +40,8 @@ end
 rule "Sort @{context}"
 salience -2
 when
-    accumulate( @{context}SVMPoll_@{target}( $num : num ), $max : max( $num ) )
-    @{context}SVMPoll_@{target}( num == $max.intValue(), $val : outcome, $wgt : weight )
+    accumulate( @{ pmmlPackageName }.@{context}SVMPoll_@{target}( $num : num ), $max : max( $num ) )
+    @{ pmmlPackageName }.@{context}SVMPoll_@{target}( num == $max.intValue(), $val : outcome, $wgt : weight )
 then
     @{ target } x = new @{ target }();
             x.setContext( "@{context}" );
@@ -55,7 +55,7 @@ end
 rule "Resolve Ties @{context}"
 salience 10
 when
-    $poll : @{context}SVMPoll_@{target}( $val : outcome )
+    $poll : @{ pmmlPackageName }.@{context}SVMPoll_@{target}( $val : outcome )
     @{target}( value != $val )
 then
     retract( $poll );

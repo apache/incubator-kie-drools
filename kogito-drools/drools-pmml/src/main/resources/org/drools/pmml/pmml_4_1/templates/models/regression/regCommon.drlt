@@ -40,7 +40,7 @@ function double probitPhi( double z ) {
 rule "After Normalization"
 salience -1
 when
-    $rnf : RegNormalizationFactor();
+    $rnf : @{ pmmlPackageName }.RegNormalizationFactor();
 then
     retract( $rnf );
 end

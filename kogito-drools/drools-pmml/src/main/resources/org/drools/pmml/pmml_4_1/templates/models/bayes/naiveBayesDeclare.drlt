@@ -24,7 +24,7 @@
 
 @declare{'naiveBayesDeclare'}
 
-declare BayesCounts
+declare @{ pmmlPackageName }.BayesCounts
 @propertyReactive
     context         : String        @key
     field           : String        @key
@@ -32,7 +32,8 @@ declare BayesCounts
     aggregates      : java.util.List
 end
 
-declare BayesPriors
+declare @{ pmmlPackageName }.BayesPriors
+@propertyReactive
     context         : String        @key
     field           : String        @key
     values          : java.util.List
@@ -40,13 +41,15 @@ declare BayesPriors
     threshold       : Double
 end
 
-declare BayesConditional
+declare @{ pmmlPackageName }.BayesConditional
+@propertyReactive
     context         : String        @key
     field           : String        @key
     counts          : java.util.List
 end
 
-declare BayesPosterior
+declare @{ pmmlPackageName }.BayesPosterior
+@propertyReactive
     context         : String        @key
     field           : String        @key
 //    value           : String        @key

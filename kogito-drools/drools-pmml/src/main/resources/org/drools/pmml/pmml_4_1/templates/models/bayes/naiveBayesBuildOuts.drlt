@@ -29,7 +29,7 @@ dialect "mvel"
 when
     ModelMarker( "@{name}" ; enabled == true )
 then
-    bp = new BayesPriors( "@{name}", "@{field}",
+    bp = new @{ pmmlPackageName }.BayesPriors( "@{name}", "@{field}",
                           [ @foreach{ tvc : tvc.targetValueCounts } @{ format( datatype, tvc.value ) } @end{ ',' } ],
                           [ @foreach{ tvc : tvc.targetValueCounts }  @{ tvc.count }  @end{ ',' } ],
                           @{threshold} );
@@ -39,8 +39,8 @@ end
 rule "NaiveBayesEvalPosterior_@{name}"
 salience -20
 when
-           BayesPriors( context == "@{name}", $vals : values, $priors : counts, $thold : threshold )
-           exists BayesConditional( context == "@{name}" )
+           @{ pmmlPackageName }.BayesPriors( context == "@{name}", $vals : values, $priors : counts, $thold : threshold )
+           exists @{ pmmlPackageName }.BayesConditional( context == "@{name}" )
     $pro : java.util.List() from accumulate(
                 $tgt : @{ mapDatatype( datatype, true ) }() from $vals
                 and
@@ -55,7 +55,7 @@ when
                 result( m )
            )
 then
-    BayesPosterior bp = new BayesPosterior( "@{name}", "@{field}", $pro );
+    @{ pmmlPackageName }.BayesPosterior bp = new @{ pmmlPackageName }.BayesPosterior( "@{name}", "@{field}", $pro );
     insertLogical( bp );
 end
 
@@ -63,8 +63,8 @@ end
 rule "NaiveBayesUpdateAggregates_@{name}"
 salience 1000
 when
-    $bcs : BayesCounts( context == "@{name}", $cts : counts )
-           BayesPriors( context == "@{name}", $values : values, values.size() > 0, $priors : counts )
+    $bcs : @{ pmmlPackageName }.BayesCounts( context == "@{name}", $cts : counts )
+           @{ pmmlPackageName }.BayesPriors( context == "@{name}", $values : values, values.size() > 0, $priors : counts )
     $ags : java.util.List() from accumulate(
                 $tgt : @{ mapDatatype( datatype, true ) }() from $values
                 and
@@ -87,8 +87,8 @@ end
 
 rule "NaiveBayesMapToOutput_@{name}"
 when
-    $bcs : BayesPosterior( context == "@{name}", $wgts : prob )
-           BayesPriors( context == "@{name}", $values : values )
+    $bcs : @{ pmmlPackageName }.BayesPosterior( context == "@{name}", $wgts : prob )
+           @{ pmmlPackageName }.BayesPriors( context == "@{name}", $values : values )
            accumulate( $x : Double() from $wgts, $den : sum( $x ) )
     $val : @{ mapDatatype( datatype, true ) }() from $values
 then

@@ -28,7 +28,7 @@
 rule "Scorecard @{context} output"
 salience -5
 when
-    ScoreCard( modelName == "@{context}", $score : score )
+    @{ pmmlPackageName }.ScoreCard( modelName == "@{context}", $score : score )
 then
     @{ target } x = new @{ target }();
         x.setContext( "@{context}" );

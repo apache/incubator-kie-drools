@@ -52,7 +52,7 @@ public class MultipleModelTest extends DroolsAbstractPMMLTest {
     private static final String source3 = "org/drools/pmml/pmml_4_1/mock_breastcancer.xml";
     private static final String source4 = "org/drools/pmml/pmml_4_1/test_svm.xml";
 
-    private static final String packageName = "org.drools.pmml.pmml_4_1.test";
+    private static final String packageName = "org.drools.pmml.pmml_4_1";
 
     @Test
     public void testCompositeBuilding() throws Exception {

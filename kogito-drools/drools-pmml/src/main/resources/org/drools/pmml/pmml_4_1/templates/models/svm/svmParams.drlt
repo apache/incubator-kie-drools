@@ -22,7 +22,7 @@ rule "Init SvmParams @{modelName}"
 when
     ModelMarker( "@{context}" ; enabled == true )
 then
-    insertLogical( new SvmParams ( "@{modelName}",
+    insertLogical( new @{ pmmlPackageName }.SvmParams ( "@{modelName}",
                                    "@{kernelType}",
                                    @{gamma},
                                    @{coef0},
