@@ -76,7 +76,7 @@ public interface Move {
 
     /**
      * Returns all planning entities that are being changed by this move.
-     * Required for {@link AcceptorConfig.AcceptorType#PLANNING_ENTITY_TABU}.
+     * Required for {@link AcceptorConfig.AcceptorType#ENTITY_TABU}.
      * <p/>
      * Duplicates entries in the returned {@link Collection} are best avoided.
      * The returned {@link Collection} is recommended to be in a stable order.
@@ -87,7 +87,7 @@ public interface Move {
 
     /**
      * Returns all planning values that entities are being assigned to by this move.
-     * Required for {@link AcceptorConfig.AcceptorType#PLANNING_VALUE_TABU}.
+     * Required for {@link AcceptorConfig.AcceptorType#VALUE_TABU}.
      * <p/>
      * Duplicates entries in the returned {@link Collection} are best avoided.
      * The returned {@link Collection} is recommended to be in a stable order.

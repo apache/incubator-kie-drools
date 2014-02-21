@@ -279,7 +279,7 @@ public class AcceptorConfig {
             HillClimbingAcceptor acceptor = new HillClimbingAcceptor();
             acceptorList.add(acceptor);
         }
-        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.PLANNING_ENTITY_TABU))
+        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.ENTITY_TABU))
                 || entityTabuSize != null || entityTabuRatio != null
                 || fadingEntityTabuSize != null || fadingEntityTabuRatio != null) {
             EntityTabuAcceptor acceptor = new EntityTabuAcceptor();
@@ -307,7 +307,7 @@ public class AcceptorConfig {
             }
             acceptorList.add(acceptor);
         }
-        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.PLANNING_VALUE_TABU))
+        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.VALUE_TABU))
                 || valueTabuSize != null || valueTabuRatio != null
                 || fadingValueTabuSize != null  || fadingValueTabuRatio != null) {
             ValueTabuAcceptor acceptor = new ValueTabuAcceptor();
@@ -494,8 +494,8 @@ public class AcceptorConfig {
 
     public static enum AcceptorType {
         HILL_CLIMBING,
-        PLANNING_ENTITY_TABU,
-        PLANNING_VALUE_TABU,
+        ENTITY_TABU,
+        VALUE_TABU,
         MOVE_TABU,
         UNDO_MOVE_TABU,
         SOLUTION_TABU,

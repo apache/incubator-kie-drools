@@ -3935,3 +3935,14 @@ After in *.java:
     import org.optaplanner.core.impl.heuristic.move.Move;
     import org.optaplanner.core.impl.heuristic.move.CompositeMove;
     import org.optaplanner.core.impl.heuristic.move.NoChangeMove;
+
+[MINOR] The <acceptorType> values PLANNING_ENTITY_TABU and PLANNING_VALUE_TABU are renamed to ENTITY_TABU and VALUE_TABU.
+It's very unlikely that you're using either, because neither specifies the tabu size.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <acceptorType>PLANNING_ENTITY_TABU</acceptorType>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <acceptorType>ENTITY_TABU</acceptorType>
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <acceptorType>PLANNING_VALUE_TABU</acceptorType>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <acceptorType>VALUE_TABU</acceptorType>
