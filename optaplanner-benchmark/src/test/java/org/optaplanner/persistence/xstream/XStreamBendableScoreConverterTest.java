@@ -21,7 +21,7 @@ import java.io.Serializable;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
-import org.optaplanner.core.impl.util.SerializationTestUtils;
+import org.optaplanner.core.impl.testdata.util.SerializationTestUtils;
 
 import static org.junit.Assert.*;
 

@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
-import org.optaplanner.core.impl.util.SerializationTestUtils;
+import org.optaplanner.core.impl.testdata.util.SerializationTestUtils;
 
 import static org.junit.Assert.*;
 

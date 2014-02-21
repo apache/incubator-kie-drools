@@ -22,7 +22,7 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
-import org.optaplanner.core.impl.util.SerializationTestUtils;
+import org.optaplanner.core.impl.testdata.util.SerializationTestUtils;
 
 import static org.junit.Assert.*;
 
