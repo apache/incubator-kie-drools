@@ -36,15 +36,15 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
 public interface Solution<S extends Score> {
 
     /**
-     * Returns the Score of this Solution.
+     * Returns the {@link Score} of this Solution.
      * @return null if the Solution is uninitialized
-     *         or the last calculated Score is dirty the new Score has not yet been recalculated
+     *         or the last calculated {@link Score} is dirty the new {@link Score} has not yet been recalculated
      */
     S getScore();
 
     /**
-     * Called by the {@link Solver} when the Score of this Solution has been calculated.
-     * @param score null if the Solution has changed and the new Score has not yet been recalculated
+     * Called by the {@link Solver} when the {@link Score} of this Solution has been calculated.
+     * @param score null if the Solution has changed and the new {@link Score} has not yet been recalculated
      */
     void setScore(S score);
 
