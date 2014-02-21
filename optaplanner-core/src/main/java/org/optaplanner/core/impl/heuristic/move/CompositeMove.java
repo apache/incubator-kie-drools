@@ -28,21 +28,24 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 /**
  * A CompositeMove is composed out of multiple other moves.
  * <p/>
- * Warning: one of the moveList moves should not rely on the effect on of a previous moveList move
- * to create an uncorrupted undoMove.
+ * Warning: each of moves in the moveList must not rely on the effect of a previous move in the moveList
+ * to create its undoMove correctly.
  * @see Move
  */
 public class CompositeMove implements Move {
 
-    protected List<Move> moveList;
+    protected final List<Move> moveList;
 
     /**
-     * @param moveList cannot be null
+     * @param moveList never null
      */
     public CompositeMove(List<Move> moveList) {
         this.moveList = moveList;
     }
 
+    /**
+     * @return never null
+     */
     public List<Move> getMoveList() {
         return moveList;
     }
@@ -59,8 +62,7 @@ public class CompositeMove implements Move {
     public Move createUndoMove(ScoreDirector scoreDirector) {
         List<Move> undoMoveList = new ArrayList<Move>(moveList.size());
         for (Move move : moveList) {
-            // Note: this undoMove doesn't have the affect of a previous move in the moveList
-            // This could be made possible by merging the methods createUndoMove and doMove...
+            // Note: this undoMove creation doesn't have the effect yet of a previous move in the moveList
             Move undoMove = move.createUndoMove(scoreDirector);
             undoMoveList.add(undoMove);
         }
