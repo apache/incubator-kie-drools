@@ -1,6 +1,7 @@
 package org.jbpm.kie.services.cdi.producer;
 
 import java.util.HashSet;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.Any;
@@ -13,7 +14,7 @@ import javax.persistence.PersistenceUnit;
 import org.jbpm.services.task.HumanTaskConfigurator;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.impl.command.CommandBasedTaskService;
-import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
+import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.UserInfo;

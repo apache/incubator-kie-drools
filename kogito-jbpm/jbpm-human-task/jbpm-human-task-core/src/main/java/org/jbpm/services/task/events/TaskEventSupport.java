@@ -3,7 +3,7 @@ package org.jbpm.services.task.events;
 import java.util.Iterator;
 
 import org.drools.core.event.AbstractEventSupport;
-import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
+import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.TaskPersistenceContext;
 

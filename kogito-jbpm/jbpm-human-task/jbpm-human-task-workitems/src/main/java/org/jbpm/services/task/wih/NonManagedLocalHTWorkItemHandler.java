@@ -18,11 +18,11 @@ package org.jbpm.services.task.wih;
 import java.util.Date;
 
 import org.jbpm.services.task.exception.PermissionDeniedException;
-import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.services.task.utils.OnErrorAction;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.EventService;
