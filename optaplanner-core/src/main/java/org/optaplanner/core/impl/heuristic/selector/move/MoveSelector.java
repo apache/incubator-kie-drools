@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move;
 
 import org.optaplanner.core.impl.heuristic.selector.IterableSelector;
-import org.optaplanner.core.impl.move.Move;
+import org.optaplanner.core.impl.heuristic.move.Move;
 
 /**
  * Generates {@link Move}s.

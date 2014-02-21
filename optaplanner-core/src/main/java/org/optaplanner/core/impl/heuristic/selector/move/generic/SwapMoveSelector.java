@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractOrig
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedSwapMove;
-import org.optaplanner.core.impl.move.Move;
+import org.optaplanner.core.impl.heuristic.move.Move;
 
 public class SwapMoveSelector extends GenericMoveSelector {
 

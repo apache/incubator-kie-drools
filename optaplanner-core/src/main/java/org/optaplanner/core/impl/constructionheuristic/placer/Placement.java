@@ -3,7 +3,7 @@ package org.optaplanner.core.impl.constructionheuristic.placer;
 import java.io.Serializable;
 import java.util.Iterator;
 
-import org.optaplanner.core.impl.move.Move;
+import org.optaplanner.core.impl.heuristic.move.Move;
 
 public class Placement implements Iterable<Move>, Serializable {
 

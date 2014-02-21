@@ -21,8 +21,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
-import org.optaplanner.core.impl.move.CompositeMove;
-import org.optaplanner.core.impl.move.Move;
+import org.optaplanner.core.impl.heuristic.move.CompositeMove;
+import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;

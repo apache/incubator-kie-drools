@@ -3711,7 +3711,7 @@ because a ConstraintMatch can survive many Local Search steps, but its Total (wh
 Instead it has getConstraintPackage(), getConstraintName() and getScoreLevel().
 
 
-From 6.0.0.Final to 6.1.0.Alpha1
+From 6.0.0.Final to 6.1.0.Beta1
 --------------------------------
 
 [MINOR] Simulated Annealing now uses the time gradient of the current step instead of the time gradient of the last step.
@@ -3923,3 +3923,15 @@ After in *.java:
 [IMPL_DETAIL] RandomUtils moved from package impl.util to impl.solver.random.
 
 [IMPL_DETAIL] AbstractSolverPhaseScope and AbstractStepScope moved to package impl.phase.scope.
+
+[MAJOR] All classes in the package impl.move have been moved to impl.heuristic.move.
+None of them are future-proof enough at this time to be added the public API.
+Prefer generic moves whenever possible.
+Before in *.java:
+    import org.optaplanner.core.impl.move.Move;
+    import org.optaplanner.core.impl.move.CompositeMove;
+    import org.optaplanner.core.impl.move.NoChangeMove;
+After in *.java:
+    import org.optaplanner.core.impl.heuristic.move.Move;
+    import org.optaplanner.core.impl.heuristic.move.CompositeMove;
+    import org.optaplanner.core.impl.heuristic.move.NoChangeMove;

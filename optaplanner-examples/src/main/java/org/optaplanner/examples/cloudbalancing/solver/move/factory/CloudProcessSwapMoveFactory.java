@@ -21,8 +21,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
-import org.optaplanner.core.impl.move.Move;
-import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.examples.cloudbalancing.solver.move.CloudProcessSwapMove;

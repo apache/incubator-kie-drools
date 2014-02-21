@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.impl.move.Move;
+import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.solution.Solution;
 
 /**

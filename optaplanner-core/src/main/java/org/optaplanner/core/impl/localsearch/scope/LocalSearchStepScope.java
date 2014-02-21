@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.localsearch.scope;
 
-import org.optaplanner.core.impl.move.Move;
+import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 
 public class LocalSearchStepScope extends AbstractStepScope {

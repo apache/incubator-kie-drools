@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.move;
+package org.optaplanner.core.impl.heuristic.move;
 
 import java.util.Collection;
 import java.util.Collections;

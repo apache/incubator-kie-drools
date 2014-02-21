@@ -7,7 +7,7 @@ import org.apache.commons.collections.IteratorUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.move.Move;
+import org.optaplanner.core.impl.heuristic.move.Move;
 
 public class QueuedEntityPlacer extends AbstractEntityPlacer implements EntityPlacer {
 
