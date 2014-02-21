@@ -62,6 +62,7 @@
     <dependencySets>
         <dependencySet>
             <excludes>
+                <exclude>org.kie:kie-ci-osgi</exclude>
                 <exclude>org.drools:drools-examples</exclude>
                 <exclude>com.miglayout:miglayout</exclude>
                 <!-- Examples dependency -->
@@ -76,6 +77,16 @@
                 <exclude>*:*:jar:sources</exclude>
             </excludes>
             <outputDirectory>binaries</outputDirectory>
+            <useStrictFiltering>true</useStrictFiltering>
+        </dependencySet>
+        <dependencySet>
+            <includes>
+                <include>org.kie:kie-ci-osgi:jar</include>
+            </includes>
+            <!--excludes>
+                <exclude>*:sources</exclude>
+            </excludes-->
+            <outputDirectory>osgi-binaries</outputDirectory>
             <useStrictFiltering>true</useStrictFiltering>
         </dependencySet>
         <dependencySet>
