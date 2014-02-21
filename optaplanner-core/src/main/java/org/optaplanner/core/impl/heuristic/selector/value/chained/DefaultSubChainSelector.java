@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSele
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-import org.optaplanner.core.impl.util.RandomUtils;
+import org.optaplanner.core.impl.solver.random.RandomUtils;
 
 /**
  * This is the common {@link SubChainSelector} implementation.

@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.util.RandomUtils;
+import org.optaplanner.core.impl.solver.random.RandomUtils;
 
 /**
  * A {@link CompositeMoveSelector} that unions 2 or more {@link MoveSelector}s.

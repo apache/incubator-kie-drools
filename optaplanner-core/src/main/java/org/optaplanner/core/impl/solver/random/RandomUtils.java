@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.util;
+package org.optaplanner.core.impl.solver.random;
 
 import java.util.Random;
 

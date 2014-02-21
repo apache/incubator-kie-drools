@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-import org.optaplanner.core.impl.util.RandomUtils;
+import org.optaplanner.core.impl.solver.random.RandomUtils;
 
 public class ProbabilityValueSelector extends AbstractValueSelector
         implements EntityIndependentValueSelector, SelectionCacheLifecycleListener  {

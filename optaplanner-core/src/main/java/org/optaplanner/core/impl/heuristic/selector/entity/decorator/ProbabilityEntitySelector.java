@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelecto
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-import org.optaplanner.core.impl.util.RandomUtils;
+import org.optaplanner.core.impl.solver.random.RandomUtils;
 
 public class ProbabilityEntitySelector extends AbstractEntitySelector implements SelectionCacheLifecycleListener {
 

@@ -25,7 +25,7 @@ import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.util.ValueRangeIterator;
-import org.optaplanner.core.impl.util.RandomUtils;
+import org.optaplanner.core.impl.solver.random.RandomUtils;
 
 public class NullableCountableValueRange<T> extends AbstractCountableValueRange<T> {
 

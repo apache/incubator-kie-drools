@@ -6,7 +6,7 @@ import java.util.Random;
 
 import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
 import org.optaplanner.core.impl.domain.valuerange.util.ValueRangeIterator;
-import org.optaplanner.core.impl.util.RandomUtils;
+import org.optaplanner.core.impl.solver.random.RandomUtils;
 
 public class IntValueRange extends AbstractCountableValueRange<Integer> {
 

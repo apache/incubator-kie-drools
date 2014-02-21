@@ -3919,3 +3919,5 @@ Before in *.java:
 After in *.java:
     import org.optaplanner.core.config.solver.termination....;
     import org.optaplanner.core.impl.solver.termination....;
+
+[IMPL_DETAIL] RandomUtils moved from package impl.util to impl.solver.random.
