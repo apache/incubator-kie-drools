@@ -16,12 +16,14 @@
 
 package org.kie.api.builder;
 
+import org.kie.api.Service;
+
 /**
  * A KieScanner is a scanner of the maven repositories (both local and remote)
  * used to automatically discover if there are new releases for a given KieModule and its dependencies
  * and eventually deploy them in the KieRepository
  */
-public interface KieScanner {
+public interface KieScanner extends Service {
 
     /**
      * Starts this KieScanner polling the maven repositories with the given interval expressed in milliseconds
