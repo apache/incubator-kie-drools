@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.termination;
+package org.optaplanner.core.impl.solver.termination;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;

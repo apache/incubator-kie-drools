@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-import org.optaplanner.core.impl.termination.AbstractTermination;
+import org.optaplanner.core.impl.solver.termination.AbstractTermination;
 
 public class BasicPlumbingTermination extends AbstractTermination {
 

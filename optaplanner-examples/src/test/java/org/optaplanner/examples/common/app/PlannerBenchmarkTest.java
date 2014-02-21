@@ -27,7 +27,7 @@ import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 import org.optaplanner.benchmark.config.XmlPlannerBenchmarkFactory;
-import org.optaplanner.core.config.termination.TerminationConfig;
+import org.optaplanner.core.config.solver.termination.TerminationConfig;
 
 /**
  * Runs an example solver.

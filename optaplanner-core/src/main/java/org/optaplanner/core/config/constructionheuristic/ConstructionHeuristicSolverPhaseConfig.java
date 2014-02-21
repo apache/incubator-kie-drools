@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.constructionheuristic.DefaultConstructionHeuris
 import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
 import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
-import org.optaplanner.core.impl.termination.Termination;
+import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XStreamAlias("constructionHeuristic")
 public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {

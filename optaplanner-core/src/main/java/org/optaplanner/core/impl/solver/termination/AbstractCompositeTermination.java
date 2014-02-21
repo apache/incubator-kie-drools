@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.termination;
+package org.optaplanner.core.impl.solver.termination;
 
 import java.util.Arrays;
 import java.util.List;

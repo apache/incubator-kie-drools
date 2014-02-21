@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.termination;
+package org.optaplanner.core.impl.solver.termination;
 
 import org.junit.Test;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
@@ -22,7 +22,6 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 import static org.junit.Assert .*;
 import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class TimeMillisSpentTerminationTest {
 

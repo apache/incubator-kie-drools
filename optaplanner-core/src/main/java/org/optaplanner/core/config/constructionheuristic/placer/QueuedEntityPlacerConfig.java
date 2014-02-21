@@ -38,7 +38,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDesc
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.termination.Termination;
+import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XStreamAlias("queuedEntityPlacer")
 public class QueuedEntityPlacerConfig extends EntityPlacerConfig {

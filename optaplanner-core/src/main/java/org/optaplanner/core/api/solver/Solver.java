@@ -25,7 +25,7 @@ import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
-import org.optaplanner.core.impl.termination.Termination;
+import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * A Solver solves planning problems.

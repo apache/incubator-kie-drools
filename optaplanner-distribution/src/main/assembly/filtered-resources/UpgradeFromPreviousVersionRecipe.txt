@@ -3910,3 +3910,12 @@ Before in *.java:
 After in *.java:
     import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
     import org.optaplanner.core.api.solver.event.SolverEventListener;
+
+[MINOR] The package config.termination has been moved to config.solver.termination.
+Similarly, the package impl.termination has been moved to impl.solver.termination.
+Before in *.java:
+    import org.optaplanner.core.config.termination....;
+    import org.optaplanner.core.impl.termination....;
+After in *.java:
+    import org.optaplanner.core.config.solver.termination....;
+    import org.optaplanner.core.impl.solver.termination....;

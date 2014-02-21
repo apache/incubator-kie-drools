@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.termination;
+package org.optaplanner.core.impl.solver.termination;
 
-import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;

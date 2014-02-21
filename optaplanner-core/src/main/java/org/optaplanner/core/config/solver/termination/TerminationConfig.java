@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.config.termination;
+package org.optaplanner.core.config.solver.termination;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +25,14 @@ import org.apache.commons.collections.CollectionUtils;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.termination.AbstractCompositeTermination;
-import org.optaplanner.core.impl.termination.AndCompositeTermination;
-import org.optaplanner.core.impl.termination.BestScoreTermination;
-import org.optaplanner.core.impl.termination.OrCompositeTermination;
-import org.optaplanner.core.impl.termination.StepCountTermination;
-import org.optaplanner.core.impl.termination.Termination;
-import org.optaplanner.core.impl.termination.TimeMillisSpentTermination;
-import org.optaplanner.core.impl.termination.UnimprovedStepCountTermination;
+import org.optaplanner.core.impl.solver.termination.AbstractCompositeTermination;
+import org.optaplanner.core.impl.solver.termination.AndCompositeTermination;
+import org.optaplanner.core.impl.solver.termination.BestScoreTermination;
+import org.optaplanner.core.impl.solver.termination.OrCompositeTermination;
+import org.optaplanner.core.impl.solver.termination.StepCountTermination;
+import org.optaplanner.core.impl.solver.termination.Termination;
+import org.optaplanner.core.impl.solver.termination.TimeMillisSpentTermination;
+import org.optaplanner.core.impl.solver.termination.UnimprovedStepCountTermination;
 
 @XStreamAlias("termination")
 public class TerminationConfig implements Cloneable {

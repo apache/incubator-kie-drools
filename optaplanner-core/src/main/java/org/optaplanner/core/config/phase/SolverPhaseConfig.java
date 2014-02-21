@@ -23,11 +23,11 @@ import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicSo
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.localsearch.LocalSearchSolverPhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomSolverPhaseConfig;
-import org.optaplanner.core.config.termination.TerminationConfig;
+import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.phase.AbstractSolverPhase;
 import org.optaplanner.core.impl.phase.SolverPhase;
-import org.optaplanner.core.impl.termination.PhaseToSolverTerminationBridge;
-import org.optaplanner.core.impl.termination.Termination;
+import org.optaplanner.core.impl.solver.termination.PhaseToSolverTerminationBridge;
+import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XStreamInclude({
         CustomSolverPhaseConfig.class,

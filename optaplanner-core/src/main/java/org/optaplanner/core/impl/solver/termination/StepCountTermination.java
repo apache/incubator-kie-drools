@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.termination;
+package org.optaplanner.core.impl.solver.termination;
 
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-public class TimeMillisSpentTermination extends AbstractTermination {
+public class StepCountTermination extends AbstractTermination {
 
-    private final long timeMillisSpentLimit;
+    private final int stepCountLimit;
 
-    public TimeMillisSpentTermination(long timeMillisSpentLimit) {
-        this.timeMillisSpentLimit = timeMillisSpentLimit;
-        if (timeMillisSpentLimit <= 0L) {
-            throw new IllegalArgumentException("The timeMillisSpentLimit (" + timeMillisSpentLimit
+    public StepCountTermination(int stepCountLimit) {
+        this.stepCountLimit = stepCountLimit;
+        if (stepCountLimit < 0) {
+            throw new IllegalArgumentException("The stepCountLimit (" + stepCountLimit
                     + ") cannot be negative.");
         }
     }
@@ -36,17 +36,13 @@ public class TimeMillisSpentTermination extends AbstractTermination {
     // ************************************************************************
 
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
-        long solverTimeMillisSpent = solverScope.calculateTimeMillisSpent();
-        return isTerminated(solverTimeMillisSpent);
+        throw new UnsupportedOperationException(
+                getClass().getSimpleName() + " can only be used for phase termination.");
     }
 
     public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
-        long phaseTimeMillisSpent = phaseScope.calculatePhaseTimeMillisSpent();
-        return isTerminated(phaseTimeMillisSpent);
-    }
-
-    protected boolean isTerminated(long timeMillisSpent) {
-        return timeMillisSpent >= timeMillisSpentLimit;
+        int nextStepIndex = phaseScope.getNextStepIndex();
+        return nextStepIndex >= stepCountLimit;
     }
 
     // ************************************************************************
@@ -54,17 +50,13 @@ public class TimeMillisSpentTermination extends AbstractTermination {
     // ************************************************************************
 
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
-        long solverTimeMillisSpent = solverScope.calculateTimeMillisSpent();
-        return calculateTimeGradient(solverTimeMillisSpent);
+        throw new UnsupportedOperationException(
+                getClass().getSimpleName() + " can only be used for phase termination.");
     }
 
     public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
-        long phaseTimeMillisSpent = phaseScope.calculatePhaseTimeMillisSpent();
-        return calculateTimeGradient(phaseTimeMillisSpent);
-    }
-
-    protected double calculateTimeGradient(double timeMillisSpent) {
-        double timeGradient = ((double) timeMillisSpent) / ((double) timeMillisSpentLimit);
+        int nextStepIndex = phaseScope.getNextStepIndex();
+        double timeGradient = ((double) nextStepIndex) / ((double) stepCountLimit);
         return Math.min(timeGradient, 1.0);
     }
 
