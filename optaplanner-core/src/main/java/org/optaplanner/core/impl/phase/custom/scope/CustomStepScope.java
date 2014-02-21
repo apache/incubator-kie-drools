@@ -25,7 +25,7 @@ public class CustomStepScope extends AbstractStepScope {
     private int uninitializedVariableCount = -1;
 
     public CustomStepScope(CustomSolverPhaseScope phaseScope) {
-        this(phaseScope, phaseScope.getLastCompletedStepScope().getStepIndex() + 1);
+        this(phaseScope, phaseScope.getNextStepIndex());
     }
 
     public CustomStepScope(CustomSolverPhaseScope phaseScope, int stepIndex) {

@@ -31,7 +31,7 @@ public class LocalSearchStepScope extends AbstractStepScope {
     private Long acceptedMoveCount = null;
 
     public LocalSearchStepScope(LocalSearchSolverPhaseScope phaseScope) {
-        this(phaseScope, phaseScope.getLastCompletedStepScope().getStepIndex() + 1);
+        this(phaseScope, phaseScope.getNextStepIndex());
     }
 
     public LocalSearchStepScope(LocalSearchSolverPhaseScope phaseScope, int stepIndex) {

@@ -41,7 +41,7 @@ public class StepCountTermination extends AbstractTermination {
     }
 
     public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
-        int nextStepIndex = phaseScope.getLastCompletedStepScope().getStepIndex() + 1;
+        int nextStepIndex = phaseScope.getNextStepIndex();
         return nextStepIndex >= stepCountLimit;
     }
 
@@ -55,7 +55,7 @@ public class StepCountTermination extends AbstractTermination {
     }
 
     public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
-        int nextStepIndex = phaseScope.getLastCompletedStepScope().getStepIndex() + 1;
+        int nextStepIndex = phaseScope.getNextStepIndex();
         double timeGradient = ((double) nextStepIndex) / ((double) stepCountLimit);
         return Math.min(timeGradient, 1.0);
     }

@@ -153,7 +153,7 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
         decider.phaseEnded(phaseScope);
         logger.info("Phase ({}) constructionHeuristic ended: step total ({}), time spent ({}), best score ({}).",
                 phaseIndex,
-                phaseScope.getLastCompletedStepScope().getStepIndex() + 1,
+                phaseScope.getNextStepIndex(),
                 phaseScope.calculateSolverTimeMillisSpent(),
                 phaseScope.getBestScore());
     }

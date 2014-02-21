@@ -145,7 +145,7 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
         decider.phaseEnded(phaseScope);
         logger.info("Phase ({}) localSearch ended: step total ({}), time spent ({}), best score ({}).",
                 phaseIndex,
-                phaseScope.getLastCompletedStepScope().getStepIndex() + 1,
+                phaseScope.getNextStepIndex(),
                 phaseScope.calculateSolverTimeMillisSpent(),
                 phaseScope.getBestScore());
     }

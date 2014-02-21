@@ -30,7 +30,7 @@ public class ConstructionHeuristicStepScope extends AbstractStepScope {
     private Long selectedMoveCount = null;
 
     public ConstructionHeuristicStepScope(ConstructionHeuristicSolverPhaseScope phaseScope) {
-        this(phaseScope, phaseScope.getLastCompletedStepScope().getStepIndex() + 1);
+        this(phaseScope, phaseScope.getNextStepIndex());
     }
 
     public ConstructionHeuristicStepScope(ConstructionHeuristicSolverPhaseScope phaseScope, int stepIndex) {

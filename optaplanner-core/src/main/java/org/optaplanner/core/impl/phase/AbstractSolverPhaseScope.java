@@ -162,6 +162,10 @@ public abstract class AbstractSolverPhaseScope {
         return solverScope.getBestScore();
     }
 
+    public int getNextStepIndex() {
+        return getLastCompletedStepScope().getStepIndex() + 1;
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName(); // TODO add + "(" + phaseIndex + ")"
