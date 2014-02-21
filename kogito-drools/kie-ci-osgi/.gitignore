@@ -1,5 +1,6 @@
 /target
 /local
+dependency-reduced-pom.xml
 
 # Eclipse, Netbeans and IntelliJ files
 /.*
