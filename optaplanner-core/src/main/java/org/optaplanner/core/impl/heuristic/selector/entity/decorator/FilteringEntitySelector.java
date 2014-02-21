@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFi
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class FilteringEntitySelector extends AbstractEntitySelector {

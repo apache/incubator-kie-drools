@@ -20,7 +20,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.AbstractTermination;
 

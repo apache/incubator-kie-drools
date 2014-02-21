@@ -33,9 +33,9 @@ import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 import org.optaplanner.core.impl.move.CompositeMove;
 import org.optaplanner.core.impl.move.Move;
-import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
-import org.optaplanner.core.impl.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 import static org.mockito.Mockito.*;

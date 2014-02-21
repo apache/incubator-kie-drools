@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.phase.step;
+package org.optaplanner.core.impl.phase.scope;
 
 import java.util.Random;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
 

@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDesc
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
-import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**

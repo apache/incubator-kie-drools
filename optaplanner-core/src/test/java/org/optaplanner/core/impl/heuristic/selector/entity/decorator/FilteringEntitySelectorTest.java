@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Test;
@@ -25,8 +24,8 @@ import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
-import org.optaplanner.core.impl.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;

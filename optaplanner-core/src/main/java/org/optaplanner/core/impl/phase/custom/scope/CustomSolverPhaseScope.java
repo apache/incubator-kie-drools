@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.phase.custom.scope;
 
-import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class CustomSolverPhaseScope extends AbstractSolverPhaseScope {

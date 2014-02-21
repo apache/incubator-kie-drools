@@ -22,8 +22,7 @@ import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.solution.Solution;
 
 /**

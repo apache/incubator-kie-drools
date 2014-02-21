@@ -21,7 +21,7 @@ import java.util.Iterator;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.move.Move;
-import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**

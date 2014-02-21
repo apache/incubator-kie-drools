@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
-import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class EntityDependentSortingValueSelector extends AbstractValueSelector {

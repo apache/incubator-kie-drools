@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.phase.custom.scope;
 
-import org.optaplanner.core.impl.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 
 public class CustomStepScope extends AbstractStepScope {
 

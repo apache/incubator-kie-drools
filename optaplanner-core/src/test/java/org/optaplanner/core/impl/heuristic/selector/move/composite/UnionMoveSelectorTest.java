@@ -26,8 +26,8 @@ import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.FixedSelectorProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.move.DummyMove;
-import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
-import org.optaplanner.core.impl.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 import static org.mockito.Mockito.*;

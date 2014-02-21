@@ -19,8 +19,8 @@ package org.optaplanner.core.impl.phase.event;
 import java.util.Iterator;
 
 import org.drools.core.event.AbstractEventSupport;
-import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
-import org.optaplanner.core.impl.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**

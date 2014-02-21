@@ -3921,3 +3921,5 @@ After in *.java:
     import org.optaplanner.core.impl.solver.termination....;
 
 [IMPL_DETAIL] RandomUtils moved from package impl.util to impl.solver.random.
+
+[IMPL_DETAIL] AbstractSolverPhaseScope and AbstractStepScope moved to package impl.phase.scope.

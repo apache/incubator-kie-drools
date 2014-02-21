@@ -26,7 +26,7 @@ import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
-import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 

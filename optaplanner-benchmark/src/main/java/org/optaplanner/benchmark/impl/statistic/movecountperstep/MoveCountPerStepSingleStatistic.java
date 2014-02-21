@@ -25,7 +25,7 @@ import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
-import org.optaplanner.core.impl.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 

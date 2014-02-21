@@ -22,13 +22,10 @@ import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleBridge;
-import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
-import org.optaplanner.core.impl.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * This is the common {@link ValueSelector} implementation.

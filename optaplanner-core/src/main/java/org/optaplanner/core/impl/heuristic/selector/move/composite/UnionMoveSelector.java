@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionPr
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.move.Move;
-import org.optaplanner.core.impl.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
 

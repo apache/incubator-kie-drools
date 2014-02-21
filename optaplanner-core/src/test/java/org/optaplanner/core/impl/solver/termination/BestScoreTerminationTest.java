@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.solver.termination;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
