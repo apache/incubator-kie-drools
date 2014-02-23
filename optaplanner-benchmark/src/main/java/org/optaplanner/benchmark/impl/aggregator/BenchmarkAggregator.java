@@ -108,5 +108,5 @@ public class BenchmarkAggregator {
                 benchmarkReport.getHtmlOverviewFile().getAbsolutePath());
         return benchmarkReport.getHtmlOverviewFile().getAbsoluteFile();
     }
-    
+
 }

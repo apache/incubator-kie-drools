@@ -69,7 +69,7 @@ public class MixedCheckBox extends JCheckBox {
     public void setStatus(MixedCheckBoxStatus status) {
         ((MixedCheckBoxModel) getModel()).setStatus(status);
     }
-    
+
     private class CustomCheckboxMouseListener extends MouseAdapter {
 
         @Override
