@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
@@ -53,8 +55,10 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import org.drools.core.util.StringUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
@@ -90,9 +94,9 @@ public class BenchmarkAggregatorFrame extends JFrame {
     private static final String DETAIL_TEMPLATE_PLANNER_BENCHMARK = "Average score: %s%nAverage problem scale: %d";
     private static final String DETAIL_TEMPLATE_PROBLEM_BENCHMARK = "Problem scale: %d%nUsed memory: %s";
     private static final String DETAIL_TEMPLATE_SINGLE_BENCHMARK = "Score: %s%nPlanning entity"
-            + " count: %d%nUsed memory: %s%nTime millis spend: %d ms";
+            + " count: %d%nUsed memory: %s%nTime spent: %d ms";
     private static final String DETAIL_TEMPLATE_SOLVER_BENCHMARK = "Average score: %s%nTotal score: %s%n"
-            + "Average time millis spend: %d ms%nTotal winning score difference: %s";
+            + "Average time spent: %d ms%nTotal winning score difference: %s";
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -101,6 +105,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
 
     private List<PlannerBenchmarkResult> plannerBenchmarkResultList;
     private Map<MixedCheckBox, SingleBenchmarkResult> resultCheckBoxMapping = new LinkedHashMap<MixedCheckBox, SingleBenchmarkResult>();
+    private Map<SolverBenchmarkResult, String> solverBenchmarkResultNameMapping = new HashMap<SolverBenchmarkResult, String>();
 
     private CheckBoxTree checkBoxTree;
     private JTextArea detailTextArea;
@@ -165,13 +170,16 @@ public class BenchmarkAggregatorFrame extends JFrame {
     }
 
     private JComponent createTopButtonPanel() {
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 3));
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 3));
         JButton expandNodesButton = new JButton(new ExpandAllNodesAction());
         buttonPanel.add(expandNodesButton);
         JButton collapseNodesButton = new JButton(new CollapseAllNodesAction());
         buttonPanel.add(collapseNodesButton);
         generateProgressBar = new JProgressBar();
         buttonPanel.add(generateProgressBar);
+        buttonPanel.add(new JButton(new MoveNodeAction(true)));
+        buttonPanel.add(new JButton(new MoveNodeAction(false)));
+        buttonPanel.add(new JButton(new RenameNodeAction()));
         return buttonPanel;
     }
 
@@ -273,6 +281,93 @@ public class BenchmarkAggregatorFrame extends JFrame {
         }
     }
 
+    private class MoveNodeAction extends AbstractAction {
+
+        private boolean directionUp;
+
+        public MoveNodeAction(boolean directionUp) {
+            super(directionUp ? "Move up" : "Move down");
+            this.directionUp = directionUp;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (checkBoxTree.getSelectionPath() != null) {
+                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) checkBoxTree.getSelectionPath().getLastPathComponent();
+                DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) selectedNode.getParent();
+                if (parentNode != null) {
+                    DefaultMutableTreeNode immediateSiblingNode = directionUp ? (DefaultMutableTreeNode) parentNode.getChildBefore(selectedNode)
+                            : (DefaultMutableTreeNode) parentNode.getChildAfter(selectedNode);
+                    if (immediateSiblingNode != null) {
+                        parentNode.insert(immediateSiblingNode, parentNode.getIndex(selectedNode));
+                        ((DefaultTreeModel) checkBoxTree.getModel()).nodeStructureChanged(parentNode);
+                        checkBoxTree.setSelectionPath(new TreePath(selectedNode.getPath()));
+                    }
+                }
+            }
+        }
+    }
+
+    private class RenameNodeAction extends AbstractAction {
+
+        public RenameNodeAction() {
+            super("Rename");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (checkBoxTree.getSelectionPath() != null) {
+                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) checkBoxTree.getSelectionPath().getLastPathComponent();
+                if (selectedNode != null && ((MixedCheckBox) selectedNode.getUserObject()).getBenchmarkResult() != null) {
+                    RenameNodeDialog renameNodeDialog = new RenameNodeDialog(selectedNode);
+                    renameNodeDialog.pack();
+                    renameNodeDialog.setLocationRelativeTo(BenchmarkAggregatorFrame.this);
+                    renameNodeDialog.setVisible(true);
+                }
+            }
+        }
+    }
+
+    private class RenameNodeDialog extends JDialog {
+
+        public RenameNodeDialog(final DefaultMutableTreeNode treeNode) {
+            super(BenchmarkAggregatorFrame.this, "Rename node");
+            final MixedCheckBox mixedCheckBox = (MixedCheckBox) treeNode.getUserObject();
+            final Object benchmarkResult = mixedCheckBox.getBenchmarkResult();
+
+            JPanel mainPanel = new JPanel(new BorderLayout());
+            final JTextField benchmarkResultNameTextField = new JTextField(benchmarkResult.toString(), 30);
+            mainPanel.add(benchmarkResultNameTextField, BorderLayout.WEST);
+            JButton confirmRenameButton = new JButton("Rename");
+            mainPanel.add(confirmRenameButton, BorderLayout.EAST);
+            setContentPane(mainPanel);
+            mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+            confirmRenameButton.addActionListener(new AbstractAction() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String newBenchmarkResultName = benchmarkResultNameTextField.getText();
+                    if (StringUtils.isEmpty(newBenchmarkResultName)) {
+                        JOptionPane.showMessageDialog(BenchmarkAggregatorFrame.this, "New benchmark's name cannot be empty.",
+                                "Warning", JOptionPane.WARNING_MESSAGE);
+                    } else {
+                        if (benchmarkResult instanceof PlannerBenchmarkResult) {
+                            ((PlannerBenchmarkResult) benchmarkResult).setName(newBenchmarkResultName);
+                            mixedCheckBox.setText(newBenchmarkResultName);
+                            ((DefaultTreeModel) checkBoxTree.getModel()).nodeChanged(treeNode);
+                        } else if (benchmarkResult instanceof SolverBenchmarkResult) {
+                            mixedCheckBox.setText(newBenchmarkResultName);
+                            ((DefaultTreeModel) checkBoxTree.getModel()).nodeChanged(treeNode);
+                            solverBenchmarkResultNameMapping.put((SolverBenchmarkResult) benchmarkResult, newBenchmarkResultName);
+                        }
+                        dispose();
+                    }
+                }
+            });
+        }
+    }
+
     private DefaultMutableTreeNode initBenchmarkHierarchy() {
         DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(new MixedCheckBox("Planner benchmarks"));
         for (PlannerBenchmarkResult plannerBenchmarkResult : plannerBenchmarkResultList) {
@@ -299,7 +394,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
     private MixedCheckBox createPlannerBenchmarkCheckBox(PlannerBenchmarkResult plannerBenchmarkResult) {
         String plannerBenchmarkDetail = String.format(DETAIL_TEMPLATE_PLANNER_BENCHMARK, plannerBenchmarkResult.getAverageScore(),
                 plannerBenchmarkResult.getAverageProblemScale());
-        return new MixedCheckBox(plannerBenchmarkResult.getName(), plannerBenchmarkDetail);
+        return new MixedCheckBox(plannerBenchmarkResult.getName(), plannerBenchmarkDetail, plannerBenchmarkResult);
     }
 
     private MixedCheckBox createSolverBenchmarkCheckBox(SolverBenchmarkResult solverBenchmarkResult) {
@@ -307,7 +402,8 @@ public class BenchmarkAggregatorFrame extends JFrame {
         String solverBenchmarkDetail = String.format(DETAIL_TEMPLATE_SOLVER_BENCHMARK, solverBenchmarkResult.getAverageScore(),
                 solverBenchmarkResult.getTotalScore(), solverBenchmarkResult.getAverageTimeMillisSpent(),
                 solverBenchmarkResult.getTotalWinningScoreDifference());
-        return new MixedCheckBox(solverCheckBoxName, solverBenchmarkDetail);
+        solverBenchmarkResultNameMapping.put(solverBenchmarkResult, solverBenchmarkResult.getName());
+        return new MixedCheckBox(solverCheckBoxName, solverBenchmarkDetail, solverBenchmarkResult);
     }
 
     private MixedCheckBox createProblemBenchmarkCheckBox(ProblemBenchmarkResult problemBenchmarkResult) {
@@ -342,7 +438,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
 
         @Override
         protected File doInBackground() {
-            return benchmarkAggregator.aggregate(singleBenchmarkResultList);
+            return benchmarkAggregator.aggregate(singleBenchmarkResultList, solverBenchmarkResultNameMapping);
         }
 
         @Override

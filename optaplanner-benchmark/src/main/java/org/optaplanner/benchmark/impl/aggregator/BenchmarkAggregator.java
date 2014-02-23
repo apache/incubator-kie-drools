@@ -19,11 +19,14 @@ package org.optaplanner.benchmark.impl.aggregator;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +59,11 @@ public class BenchmarkAggregator {
     // ************************************************************************
 
     public File aggregate(List<SingleBenchmarkResult> singleBenchmarkResultList) {
+        return aggregate(singleBenchmarkResultList, null);
+    }
+
+    public File aggregate(List<SingleBenchmarkResult> singleBenchmarkResultList,
+            Map<SolverBenchmarkResult, String> solverBenchamkarkResultNameMap) {
         if (benchmarkDirectory == null) {
             throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory + ") must not be null.");
         }
@@ -77,6 +85,16 @@ public class BenchmarkAggregator {
                 singleStatistic.readCsvStatisticFile();
             }
         }
+        // Handle renamed solver benchmarks after statistics have been read (they're resolved by
+        // original solver benchmarks' names)
+        if (solverBenchamkarkResultNameMap != null) {
+            for (Entry<SolverBenchmarkResult, String> results : solverBenchamkarkResultNameMap.entrySet()) {
+                if (!results.getKey().getName().equals(results.getValue())) {
+                    results.getKey().setName(results.getValue());
+                }
+            }
+        }
+
         PlannerBenchmarkResult plannerBenchmarkResult
                 = PlannerBenchmarkResult.createMergedResult(singleBenchmarkResultList);
         plannerBenchmarkResult.setStartingTimestamp(startingTimestamp);
@@ -90,5 +108,5 @@ public class BenchmarkAggregator {
                 benchmarkReport.getHtmlOverviewFile().getAbsolutePath());
         return benchmarkReport.getHtmlOverviewFile().getAbsoluteFile();
     }
-
+    
 }
