@@ -66,6 +66,7 @@ public class BuildUtils {
      */
     public static String getInternalType(String type) {
         String internalType = null;
+
         if ( "byte".equals( type ) ) {
             internalType = "B";
         } else if ( "char".equals( type ) ) {
@@ -106,6 +107,7 @@ public class BuildUtils {
      */
     public static String getTypeDescriptor(String type) {
         String internalType = null;
+
         if ( "byte".equals( type ) ) {
             internalType = "B";
         } else if ( "char".equals( type ) ) {
@@ -142,6 +144,8 @@ public class BuildUtils {
 
 
 
+
+    // Can only be used with internal names, i.e. after [ has been prefix
     public static String arrayType( String type ) {
         if ( isArray( type ) )
             if ( type.length() == arrayDimSize(type) +1  ) {
@@ -156,6 +160,34 @@ public class BuildUtils {
         return null;
     }
 
+
+    public static int externalArrayDimSize( String className ) {
+        int j = className.length() - 1;
+        int dim = 0;
+        while ( j > 0 && className.charAt( j ) == ']' ) {
+            dim++;
+            j = j - 2;
+        }
+        return dim;
+    }
+
+    public static String resolveDeclaredType( String className ) {
+        int arrayDim = externalArrayDimSize( className );
+        String prefix = "L";
+        String coreType = arrayDim == 0 ? className : className.substring( 0, className.indexOf( "[" ) );
+
+        if ( arrayDim > 0 ) {
+            for ( int j = 0; j < arrayDim; j++ ) {
+                prefix = "[" + prefix;
+            }
+        } else {
+            return className;
+        }
+
+        return prefix + coreType + ";";
+    }
+
+    // Can only be used with internal names, i.e. after [ has been prefix
     public static int arrayDimSize(String type) {
         int j = 0;
         while ( type.charAt( j ) == '[' ) {
@@ -182,6 +214,7 @@ public class BuildUtils {
 
     /**
      * Returns true if the provided type is an arrayType
+     * Can only be used with internal names, i.e. after [ has been prefix
      *
      * @param type
      * @return
