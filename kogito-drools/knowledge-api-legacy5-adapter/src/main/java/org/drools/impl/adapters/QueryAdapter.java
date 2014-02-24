@@ -31,17 +31,17 @@ public class QueryAdapter implements org.drools.definition.rule.Query {
     }
 
     public Collection<String> listMetaAttributes() {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.QueryAdapter.listMetaAttributes -> TODO");
+        throw new UnsupportedOperationException("This operation is no longer supported");
     }
 
     @Override
     public Map<String, Object> getMetaAttributes() {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.QueryAdapter.getMetaAttributes -> TODO");
+        throw new UnsupportedOperationException("This operation is no longer supported");
     }
 
     @Override
     public String getMetaAttribute(String key) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.QueryAdapter.getMetaAttribute -> TODO");
+        throw new UnsupportedOperationException("This operation is no longer supported");
     }
 
     @Override

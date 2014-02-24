@@ -33,7 +33,7 @@ public class StatelessKnowledgeSessionAdapter implements org.drools.runtime.Stat
     }
 
     public <T> T execute(Command<T> command) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatelessKnowledgeSessionAdapter.execute -> TODO");
+        throw new UnsupportedOperationException("This operation is no longer supported");
     }
 
     public void addEventListener(ProcessEventListener listener) {

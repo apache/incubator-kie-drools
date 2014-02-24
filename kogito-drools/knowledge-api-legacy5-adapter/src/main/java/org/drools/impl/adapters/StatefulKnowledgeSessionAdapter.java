@@ -50,7 +50,7 @@ public class StatefulKnowledgeSessionAdapter extends KnowledgeRuntimeAdapter imp
     }
 
     public <T> T execute(Command<T> command) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.execute -> TODO");
+        throw new UnsupportedOperationException("This operation is no longer supported");
     }
 
     public int fireAllRules() {

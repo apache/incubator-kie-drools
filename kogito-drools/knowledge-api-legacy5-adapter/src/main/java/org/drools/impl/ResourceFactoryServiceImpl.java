@@ -17,11 +17,11 @@ public class ResourceFactoryServiceImpl implements ResourceFactoryService {
     private final org.drools.core.io.impl.ResourceFactoryServiceImpl delegate = new org.drools.core.io.impl.ResourceFactoryServiceImpl();
 
     public ResourceChangeNotifier getResourceChangeNotifierService() {
-        throw new UnsupportedOperationException("org.drools.impl.ResourceFactoryServiceImpl.getResourceChangeNotifierService -> TODO");
+        throw new UnsupportedOperationException("This operation is no longer supported");
     }
 
     public ResourceChangeScanner getResourceChangeScannerService() {
-        throw new UnsupportedOperationException("org.drools.impl.ResourceFactoryServiceImpl.getResourceChangeScannerService -> TODO");
+        throw new UnsupportedOperationException("This operation is no longer supported");
     }
 
     public Resource newUrlResource(URL url) {

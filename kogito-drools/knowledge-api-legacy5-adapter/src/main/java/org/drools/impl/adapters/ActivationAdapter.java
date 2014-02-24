@@ -22,7 +22,7 @@ public class ActivationAdapter implements Activation {
     }
 
     public PropagationContext getPropagationContext() {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.ActivationAdapter.getPropagationContext -> TODO");
+        throw new UnsupportedOperationException("This operation is no longer supported");
     }
 
     public List<? extends FactHandle> getFactHandles() {
@@ -46,6 +46,6 @@ public class ActivationAdapter implements Activation {
     }
 
     public boolean isActive() {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.ActivationAdapter.isActive -> TODO");
+        throw new UnsupportedOperationException("This operation is no longer supported");
     }
 }
