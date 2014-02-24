@@ -13,6 +13,7 @@ import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.marshalling.impl.MarshallerProviderImpl;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieScannerFactoryService;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -120,7 +121,8 @@ public class KieServicesImpl implements InternalKieServices {
     }    
 
     public KieScanner newKieScanner(KieContainer kieContainer) {
-        InternalKieScanner scanner = (InternalKieScanner)ServiceRegistryImpl.getInstance().get( KieScanner.class );
+        KieScannerFactoryService scannerFactoryService = ServiceRegistryImpl.getInstance().get( KieScannerFactoryService.class );
+        InternalKieScanner scanner = (InternalKieScanner)scannerFactoryService.newKieScanner();
         scanner.setKieContainer(kieContainer);
         return scanner;
     }
