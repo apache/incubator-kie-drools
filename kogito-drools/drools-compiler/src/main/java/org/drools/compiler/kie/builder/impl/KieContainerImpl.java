@@ -101,12 +101,16 @@ public class KieContainerImpl
 
     public Results updateToVersion(ReleaseId newReleaseId) {
         checkNotClasspathKieProject();
-        return update(kProject.getGAV(), newReleaseId);
+        return update(((KieModuleKieProject) kProject).getInternalKieModule(), newReleaseId);
     }
 
     public Results updateDependencyToVersion(ReleaseId currentReleaseId, ReleaseId newReleaseId) {
         checkNotClasspathKieProject();
-        return update(currentReleaseId, newReleaseId);
+        // if the new and the current release are equal (a snapshot) check if there is an older version with the same releaseId
+        InternalKieModule currentKM = currentReleaseId.equals( newReleaseId ) ?
+                                      (InternalKieModule) ((KieRepositoryImpl)kr).getOldKieModule( currentReleaseId ) :
+                                      (InternalKieModule) kr.getKieModule( currentReleaseId );
+        return update(currentKM, newReleaseId);
     }
 
     private void checkNotClasspathKieProject() {
@@ -115,13 +119,8 @@ public class KieContainerImpl
         }
     }
 
-    private Results update(ReleaseId currentReleaseId, ReleaseId newReleaseId) {
-        // if the new and the current release are equal (a snapshot) check if there is an older version with the same releaseId
-        InternalKieModule currentKM = currentReleaseId.equals( newReleaseId ) ?
-                                      (InternalKieModule) ((KieRepositoryImpl)kr).getOldKieModule( currentReleaseId ) :
-                                      (InternalKieModule) kr.getKieModule( currentReleaseId );
+    private Results update(InternalKieModule currentKM, ReleaseId newReleaseId) {
         InternalKieModule newKM = (InternalKieModule) kr.getKieModule( newReleaseId );
-
         ChangeSetBuilder csb = new ChangeSetBuilder();
         KieJarChangeSet cs = csb.build( currentKM, newKM );
         List<String> modifiedClasses = getModifiedClasses(cs);
