@@ -56,6 +56,7 @@
                             org.apache.maven.settings,
                             org.apache.maven.settings.building,
                             org.apache.maven.wagon,
+                            org.apache.maven.wagon.providers.http,
                             org.apache.maven.artifact.versioning,
                             org.codehaus.plexus.classworlds,
                             org.codehaus.plexus.classworlds.realm,
