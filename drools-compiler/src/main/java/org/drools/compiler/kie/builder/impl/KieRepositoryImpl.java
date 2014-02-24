@@ -26,6 +26,7 @@ import org.drools.core.io.internal.InternalResource;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.KieScanner;
+import org.kie.api.builder.KieScannerFactoryService;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.Resource;
@@ -118,7 +119,8 @@ public class KieRepositoryImpl
     private InternalKieScanner getInternalKieScanner() {
         if (internalKieScanner == null) {
             try {
-                internalKieScanner = (InternalKieScanner) ServiceRegistryImpl.getInstance().get(KieScanner.class);
+                KieScannerFactoryService scannerFactoryService = ServiceRegistryImpl.getInstance().get( KieScannerFactoryService.class );
+                internalKieScanner = (InternalKieScanner)scannerFactoryService.newKieScanner();
             } catch (Exception e) {
                 // kie-ci is not on the classpath
                 internalKieScanner = new DummyKieScanner();
