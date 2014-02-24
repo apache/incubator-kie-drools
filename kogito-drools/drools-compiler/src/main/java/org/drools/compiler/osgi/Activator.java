@@ -25,7 +25,7 @@ import org.drools.compiler.compiler.DecisionTableProvider;
 import org.drools.core.marshalling.impl.ProcessMarshallerFactoryService;
 import org.drools.core.runtime.process.ProcessRuntimeFactoryService;
 import org.kie.api.Service;
-import org.kie.api.builder.KieScanner;
+import org.kie.api.builder.KieScannerFactoryService;
 import org.kie.internal.builder.KnowledgeBuilderFactoryService;
 import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.api.osgi.Activator.BundleContextInstantiator;
@@ -88,8 +88,8 @@ public class Activator
         this.processRuntimeTracker.open();
 
         this.scannerTracker = new ServiceTracker( bc,
-                                                  KieScanner.class.getName(),
-                                                  new DroolsServiceTracker( bc, this, KieScanner.class ) );
+                                                  KieScannerFactoryService.class.getName(),
+                                                  new DroolsServiceTracker( bc, this ) );
         this.scannerTracker.open();
 
         logger.info( "compiler services registered" );
