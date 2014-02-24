@@ -22,6 +22,7 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.ConversionException;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -65,10 +66,15 @@ public class XmlSolverFactory implements SolverFactory {
     public XmlSolverFactory configure(String solverConfigResource) {
         InputStream in = getClass().getResourceAsStream(solverConfigResource);
         if (in == null) {
-            throw new IllegalArgumentException("Reading the solverConfigResource (" + solverConfigResource
-                    + ") failed.");
+            throw new IllegalArgumentException("The solverConfigResource (" + solverConfigResource
+                    + ") does not exist in the classpath.");
         }
-        return configure(in);
+        try {
+            return configure(in);
+        } catch (ConversionException e) {
+            throw new IllegalArgumentException("Unmarshalling of solverConfigResource (" + solverConfigResource
+                    + ") fails.", e);
+        }
     }
 
     public XmlSolverFactory configure(InputStream in) {

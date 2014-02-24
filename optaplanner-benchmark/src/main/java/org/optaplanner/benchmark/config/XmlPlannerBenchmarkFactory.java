@@ -22,6 +22,7 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.ConversionException;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
@@ -60,10 +61,15 @@ public class XmlPlannerBenchmarkFactory implements PlannerBenchmarkFactory {
     public XmlPlannerBenchmarkFactory configure(String benchmarkConfigResource) {
         InputStream in = getClass().getResourceAsStream(benchmarkConfigResource);
         if (in == null) {
-            throw new IllegalArgumentException("Reading the benchmarkConfigResource (" + benchmarkConfigResource
-                    + ") failed.");
+            throw new IllegalArgumentException("The benchmarkConfigResource (" + benchmarkConfigResource
+                    + ") does not exist in the classpath.");
         }
-        return configure(in);
+        try {
+            return configure(in);
+        } catch (ConversionException e) {
+            throw new IllegalArgumentException("Unmarshalling of benchmarkConfigResource (" + benchmarkConfigResource
+                    + ") fails.", e);
+        }
     }
 
     public XmlPlannerBenchmarkFactory configure(InputStream in) {
