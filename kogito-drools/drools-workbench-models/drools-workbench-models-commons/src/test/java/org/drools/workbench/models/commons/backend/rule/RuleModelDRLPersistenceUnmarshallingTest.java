@@ -2945,6 +2945,51 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( "0", fieldConstraint.getValue() );
     }
 
+
+    @Test
+    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1067923 - Guided rules loosing entry fields")
+    public void testSimpleDSLExpansionLHS() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "Es gibt einen Vertrag\n"
+                + "- Rabatt nicht mehr als 123\n"
+                + "then\n"
+                + "end\n";
+
+        final String dslDefinition = "Es gibt einen Vertrag";
+        final String dslFile = "[condition][vertrag]" + dslDefinition + "=vertrag : Vertrag()";
+
+        final String dslDefinition2 = "- Rabatt nicht mehr als {rabatt}";
+        final String dslFile2 = "[condition][vertrag]" + dslDefinition2 + "=rabatt < {rabatt}";
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl,
+                new ArrayList<String>(),
+                dmo,
+                new String[]{ dslFile, dslFile2 } );
+
+        assertNotNull( m );
+
+        assertTrue( m.lhs[ 0 ] instanceof DSLSentence );
+
+        DSLSentence dslSentence = (DSLSentence) m.lhs[ 0 ];
+        assertEquals( dslDefinition,
+                dslSentence.getDefinition() );
+        assertEquals( 0,
+                dslSentence.getValues().size() );
+
+        DSLSentence dslSentence2 = (DSLSentence) m.lhs[ 1 ];
+        assertEquals( dslDefinition2,
+                dslSentence2.getDefinition() );
+        assertEquals( 0,
+                dslSentence2.getValues().size() );
+
+        assertTrue( dslSentence2.getValues().get( 0 ) instanceof DSLVariableValue );
+
+        DSLVariableValue dslComplexVariableValue = dslSentence2.getValues().get( 0 );
+        assertEquals( "123",
+                dslComplexVariableValue.getValue() );
+    }
+
     @Test
     public void testDSLExpansionLHS() {
         String drl = "rule \"rule1\"\n"
