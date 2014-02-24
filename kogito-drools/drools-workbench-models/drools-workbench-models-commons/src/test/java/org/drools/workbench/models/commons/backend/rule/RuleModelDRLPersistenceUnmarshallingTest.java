@@ -2947,7 +2947,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
 
     @Test
-    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1067923 - Guided rules loosing entry fields")
     public void testSimpleDSLExpansionLHS() {
         String drl = "rule \"rule1\"\n"
                 + "when\n"
@@ -2980,7 +2979,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         DSLSentence dslSentence2 = (DSLSentence) m.lhs[ 1 ];
         assertEquals( dslDefinition2,
                 dslSentence2.getDefinition() );
-        assertEquals( 0,
+        assertEquals( 1,
                 dslSentence2.getValues().size() );
 
         assertTrue( dslSentence2.getValues().get( 0 ) instanceof DSLVariableValue );

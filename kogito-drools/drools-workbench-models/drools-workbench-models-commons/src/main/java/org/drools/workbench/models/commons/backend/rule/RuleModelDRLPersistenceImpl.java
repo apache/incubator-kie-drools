@@ -1550,8 +1550,8 @@ public class RuleModelDRLPersistenceImpl
                         expandedDRLInfo.lhsDslPatterns.add( extractDslPattern( dslPattern.substring( "[when]".length() ) ) );
                     } else if ( dslPattern.startsWith( "[then]" ) ) {
                         expandedDRLInfo.rhsDslPatterns.add( extractDslPattern( dslPattern.substring( "[then]".length() ) ) );
-                    } else if ( dslPattern.startsWith( "[]" ) ) {
-                        String pattern = extractDslPattern( dslPattern.substring( "[]".length() ) );
+                    } else if ( dslPattern.startsWith( "[" ) ) {
+                        String pattern = extractDslPattern( removeDslTopics(dslPattern) );
                         expandedDRLInfo.lhsDslPatterns.add( pattern );
                         expandedDRLInfo.rhsDslPatterns.add( pattern );
                     }
@@ -1559,6 +1559,26 @@ public class RuleModelDRLPersistenceImpl
             }
         }
         return expandedDRLInfo;
+    }
+     private String removeDslTopics( String line ) {
+        int lastClosedSquare = -1;
+        boolean lookForOpen = true;
+        for (int i = 0; i < line.length(); i++) {
+            char ch = line.charAt(i);
+            if (lookForOpen) {
+                if (ch == '[') {
+                    lookForOpen = false;
+                } else if (!Character.isWhitespace(ch)) {
+                    break;
+                }
+            } else {
+                if (ch == ']') {
+                    lastClosedSquare = i;
+                    lookForOpen = true;
+                }
+            }
+        }
+        return line.substring(lastClosedSquare+1);
     }
 
     private String extractDslPattern( String line ) {
