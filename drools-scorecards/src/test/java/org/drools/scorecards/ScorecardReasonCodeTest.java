@@ -5,6 +5,7 @@ import org.dmg.pmml.pmml_4_1.descr.Characteristic;
 import org.dmg.pmml.pmml_4_1.descr.Characteristics;
 import org.dmg.pmml.pmml_4_1.descr.PMML;
 import org.dmg.pmml.pmml_4_1.descr.Scorecard;
+import org.drools.pmml.pmml_4_1.PMML4Helper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -176,7 +177,7 @@ public class ScorecardReasonCodeTest {
 
 
         FactType scorecardType = kbase.getFactType( "org.drools.scorecards.example","SampleScore" );
-        FactType scorecardInternalsType = kbase.getFactType( "org.drools.scorecards.example","ScoreCard" );
+        FactType scorecardInternalsType = kbase.getFactType( PMML4Helper.pmmlDefaultPackageName(),"ScoreCard" );
         FactType scorecardOutputType = kbase.getFactType( "org.drools.scorecards.example","SampleScoreOutput" );
 
         Object scorecard = scorecardType.newInstance();
@@ -284,7 +285,7 @@ public class ScorecardReasonCodeTest {
         KieSession session = kbase.newKieSession();
 
         FactType scorecardType = kbase.getFactType( "org.drools.scorecards.example","SampleScore" );
-        FactType scorecardInternalsType = kbase.getFactType( "org.drools.scorecards.example","ScoreCard" );
+        FactType scorecardInternalsType = kbase.getFactType( PMML4Helper.pmmlDefaultPackageName(),"ScoreCard" );
         FactType scorecardOutputType = kbase.getFactType( "org.drools.scorecards.example","SampleScoreOutput" );
 
         Object scorecard = scorecardType.newInstance();
@@ -393,7 +394,7 @@ public class ScorecardReasonCodeTest {
         KieSession session = kbase.newKieSession();
 
         FactType scorecardType = kbase.getFactType( "org.drools.scorecards.example","SampleScore" );
-        FactType scorecardInternalsType = kbase.getFactType( "org.drools.scorecards.example","ScoreCard" );
+        FactType scorecardInternalsType = kbase.getFactType( PMML4Helper.pmmlDefaultPackageName(),"ScoreCard" );
         FactType scorecardOutputType = kbase.getFactType( "org.drools.scorecards.example","SampleScoreOutput" );
 
         Object scorecard = scorecardType.newInstance();

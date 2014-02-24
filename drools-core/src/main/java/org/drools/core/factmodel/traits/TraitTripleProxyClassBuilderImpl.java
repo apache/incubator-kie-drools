@@ -18,6 +18,7 @@ package org.drools.core.factmodel.traits;
 
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
+import org.drools.core.factmodel.DefaultBeanClassBuilder;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.core.util.Triple;
@@ -73,7 +74,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
 
 
 
-    public byte[] buildClass( ClassDefinition core ) throws IOException,
+    public byte[] buildClass( ClassDefinition core, ClassLoader classLoader ) throws IOException,
             IntrospectionException,
             SecurityException,
             IllegalArgumentException,
@@ -85,7 +86,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
             NoSuchFieldException {
 
 
-        ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
+        ClassWriter cw = new ClassGenerator.InternalClassWriter( classLoader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES );
         FieldVisitor fv;
         MethodVisitor mv;
 

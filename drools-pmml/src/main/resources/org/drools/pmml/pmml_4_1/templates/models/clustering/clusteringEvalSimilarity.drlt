@@ -28,9 +28,9 @@
 
 rule "Eval Clusters @{context}"
 when
-    $set : ClusterSet( $ctx : context == "@{context}", $clusters : clusters,
+    $set : @{ pmmlPackageName }.ClusterSet( $ctx : context == "@{context}", $clusters : clusters,
                        $wgts : fieldWgts, misses : missingWgts, $scopes : fieldScopes )
-    $klu : Cluster( context == "@{context}",
+    $klu : @{ pmmlPackageName }.Cluster( context == "@{context}",
                     $lab : label, $klIndex : index, $center : center )
     @foreach{ j : numFields }
         @{ compactUpperCase( inputFields[j].field ) }( context == "@{context}", x@{j} : value, valid == true )
@@ -69,7 +69,7 @@ then
                    );
     @end{}
 
-    Membership membership = new SimilarityMembership(
+    @{ pmmlPackageName }.Membership membership = new @{ pmmlPackageName }.SimilarityMembership(
         "@{context}",
         $lab,
         $klIndex,

@@ -27,8 +27,8 @@
 rule "NaiveBayesBuildConditionals_@{name}_@{field}"
 when
            @{field}( $name : name, $val : value != null, context == "@{name}" )
-           BayesPriors( context == "@{name}", $vals : values )
-           BayesCounts( context == "@{name}", field == $name, $priors : counts, $aggs : aggregates )
+           @{ pmmlPackageName }.BayesPriors( context == "@{name}", $vals : values )
+           @{ pmmlPackageName }.BayesCounts( context == "@{name}", field == $name, $priors : counts, $aggs : aggregates )
     $res : java.util.List() from accumulate(
                        $tgt : @{ mapDatatype( datatype, true ) }() from $vals,
                        init( java.util.List m = new java.util.ArrayList( $vals ); ),
@@ -38,7 +38,7 @@ when
                        result( m )
            )
 then
-    BayesConditional bc = new BayesConditional( "@{name}", "@{field}", $res );
+    @{ pmmlPackageName }.BayesConditional bc = new @{ pmmlPackageName }.BayesConditional( "@{name}", "@{field}", $res );
     insertLogical( bc );
 end
 

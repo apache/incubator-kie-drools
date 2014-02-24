@@ -17,9 +17,9 @@ then
         map.put( "type","NeuralNetwork" );
     utils.applyTemplate( "modelMark.drlt", null, registry, map, theory );
 
-    utils.applyTemplate( "neuralBeans.drlt", null, registry, null, theory );
+    utils.applyTemplate( "neuralBeans.drlt", utils, registry, null, theory );
 
-    utils.applyTemplate( "neuralLinkSynapses.drlt", null, registry, map, theory );
+    utils.applyTemplate( "neuralLinkSynapses.drlt", utils, registry, map, theory );
 
     modify ( $stat ) {
         setNeuralNetwork( true );

@@ -24,7 +24,8 @@
 
 @declare{'regDeclare'}
 
-declare RegTable
+declare @{ pmmlPackageName }.RegTable
+@propertyReactive
     context         : String        @key
     target          : String
     category        : String
@@ -36,7 +37,8 @@ declare RegTable
     index           : int           @key
 end
 
-declare RegTargetBit
+declare @{ pmmlPackageName }.RegTargetBit
+@propertyReactive
     context         : String        @key
     target          : String
     value           : String
@@ -46,7 +48,8 @@ declare RegTargetBit
     index           : int           @key
 end
 
-declare RegNormalizationFactor
+declare @{ pmmlPackageName }.RegNormalizationFactor
+@propertyReactive
     context         : String        @key
     target          : String        @key
     den             : double

@@ -27,23 +27,23 @@
 
 rule "Regression Model Normalization Factor @{context} - @{target}"
 when
-    accumulate( $bit     : RegTargetBit( context == "@{context}",
+    accumulate( $bit     : @{ pmmlPackageName }.RegTargetBit( context == "@{context}",
                                          target == "@{target}",
                                          $wgt : weight,
                                          normalized == false ),
                 $den     : sum( $wgt ),
                 $list    : collectList( $bit ) )
 then
-    insert( new RegNormalizationFactor( "@{context}", "@{target}", $den.doubleValue() ) );
+    insert( new @{ pmmlPackageName }.RegNormalizationFactor( "@{context}", "@{target}", $den.doubleValue() ) );
 end
 
 rule "Regression Model Normalization @{context} - @{target}"
 when
-    $bit : RegTargetBit( context == "@{context}",
+    $bit : @{ pmmlPackageName }.RegTargetBit( context == "@{context}",
                          target == "@{target}",
                          $wgt : weight,
                          normalized == false )
-    RegNormalizationFactor( context == "@{context}",
+    @{ pmmlPackageName }.RegNormalizationFactor( context == "@{context}",
                             target == "@{target}",
                             $den : den > 0 )
 then

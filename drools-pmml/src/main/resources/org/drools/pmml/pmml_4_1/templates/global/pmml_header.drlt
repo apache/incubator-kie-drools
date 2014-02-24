@@ -34,6 +34,5 @@
 
 @if{ pack != null }package @{pack};@end{}
 
-import org.drools.pmml.pmml_4_1.ModelMarker;
-import org.drools.pmml.pmml_4_1.PMML4AbstractField;
+import org.drools.pmml.pmml_4_1.*;
 import org.drools.core.factmodel.traits.Traitable;

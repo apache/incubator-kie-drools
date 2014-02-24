@@ -24,7 +24,8 @@
 
 @declare{'clusteringDeclare'}
 
-declare ClusterSet
+declare @{ pmmlPackageName }.ClusterSet
+@propertyReactive
     context         : String        @key
     clusters        : java.util.List
     numClusters     : int
@@ -33,7 +34,8 @@ declare ClusterSet
     missingWgts     : double[]
 end
 
-declare Cluster
+declare @{ pmmlPackageName }.Cluster
+@propertyReactive
     context         : String        @key
     index           : int           @key
     label           : String
@@ -41,11 +43,13 @@ declare Cluster
     center          : double[]
 end
 
-declare KohonenCluster extends Cluster
+declare @{ pmmlPackageName }.KohonenCluster extends @{ pmmlPackageName }.Cluster
+@propertyReactive
     topologyCoords  : double[]
 end
 
-declare Membership
+declare @{ pmmlPackageName }.Membership
+@propertyReactive
     context         : String
     label           : String
     index           : int
@@ -53,8 +57,13 @@ declare Membership
     mu              : double
 end
 
-declare SimilarityMembership extends Membership end
-declare DistanceMembership extends Membership end
+declare @{ pmmlPackageName }.SimilarityMembership extends @{ pmmlPackageName }.Membership
+@propertyReactive
+end
+
+declare @{ pmmlPackageName }.DistanceMembership extends @{ pmmlPackageName }.Membership
+@propertyReactive
+end
 
 
 @end{}

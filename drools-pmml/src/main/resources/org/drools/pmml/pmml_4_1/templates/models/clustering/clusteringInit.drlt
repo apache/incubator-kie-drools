@@ -29,7 +29,7 @@ when
     ModelMarker( "@{context}" ; enabled == true )
 then
     java.util.List clusters = new java.util.ArrayList();
-    ClusterSet model = new ClusterSet(
+    @{ pmmlPackageName }.ClusterSet model = new ClusterSet(
         "@{context}",
         clusters,
         @{ numClusters },
@@ -41,7 +41,7 @@ then
     @code{ boolean kohonen; }
     @foreach{ j : numClusters }
         @code{ kohonen = klusters[j].kohonenMap != null; }
-        Cluster cluster@{j} = new @if{ kohonen } KohonenCluster( @else{} Cluster( @end{}
+        @{ pmmlPackageName }.Cluster cluster@{j} = new @if{ kohonen } @{ pmmlPackageName }.KohonenCluster( @else{} @{ pmmlPackageName }.Cluster( @end{}
             "@{context}",
             @{ j },
             "@{ compactUpperCase( klusters[j].name ) }",

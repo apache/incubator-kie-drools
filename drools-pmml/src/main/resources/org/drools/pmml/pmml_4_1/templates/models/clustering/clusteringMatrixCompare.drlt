@@ -29,11 +29,11 @@ when
     ModelMarker( "@{context}" ; enabled == true )
 then
     double[][] mat = new double[][] { @foreach{ j : matrix.rows }  { @foreach{ k : matrix.cols } @{matrix.data[j][k]} @end{','} } @end{','} };
-    insertLogical( new DoubleTable( "@{ context }", "@{ compactUpperCase( fieldName ) }", @{matrix.rows}, @{matrix.cols}, mat ) );
+    insertLogical( new @{ pmmlPackageName }.DoubleTable( "@{ context }", "@{ compactUpperCase( fieldName ) }", @{matrix.rows}, @{matrix.cols}, mat ) );
 end
 
 query  compare@{ context }@{ compactUpperCase( fieldName ) }( Double $x, Double $y, double[][] $val )
-    DoubleTable( "@{ context }", "@{ compactUpperCase( fieldName ) }" ; $val := data )
+    @{ pmmlPackageName }.DoubleTable( "@{ context }", "@{ compactUpperCase( fieldName ) }" ; $val := data )
 end
 
 

@@ -28,7 +28,7 @@ rule "Init Regression Model @{context} : @{target} - @{category}"
 when
     ModelMarker( "@{context}" ; enabled == true )
 then
-    insertLogical( new RegTable( "@{context}",
+    insertLogical( new @{ pmmlPackageName }.RegTable( "@{context}",
                                  @if{ target != null } "@{target}" @else{} null @end{},
                                  @if{ category != null } "@{category}" @else{} null @end{},
                                  new double[] { @foreach{ numC : numCoeffs } @{numC} @end{','} },

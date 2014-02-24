@@ -27,10 +27,10 @@
 rule "Score Card @{name}"
 salience -10  // after data are stable
 when
-    $card : ScoreCard( $ctx : modelName )
-    InitialScore( scoreCard == $ctx, $zero : value )
+    $card : @{ pmmlPackageName }.ScoreCard( $ctx : modelName )
+    @{ pmmlPackageName }.InitialScore( scoreCard == $ctx, $zero : value )
     accumulate(
-        PartialScore( scoreCard == $ctx, $val : value, $wgt : weight ),
+        @{ pmmlPackageName }.PartialScore( scoreCard == $ctx, $val : value, $wgt : weight ),
         $tot : @{aggregator}( $val @if{ weighted } * $wgt @end{} );
         $tot.doubleValue() + $zero != $card.getScore() )
 then
@@ -43,36 +43,36 @@ end
 rule "Cumulate Code Scores"
 salience -11
 when
-    $card : ScoreCard( $ctx : modelName, enableRC == true, $below : pointsBelow )
-    accumulate( PartialScore( scoreCard == $ctx, $rc : reasonCode != null ),
+    $card : @{ pmmlPackageName }.ScoreCard( $ctx : modelName, enableRC == true, $below : pointsBelow )
+    accumulate( @{ pmmlPackageName }.PartialScore( scoreCard == $ctx, $rc : reasonCode != null ),
                 $set : collectSet( $rc ) )
     $code : String() from $set
-    accumulate( PartialScore( scoreCard == $ctx, reasonCode == $code, $val : value, $char : characteristic )
+    accumulate( @{ pmmlPackageName }.PartialScore( scoreCard == $ctx, reasonCode == $code, $val : value, $char : characteristic )
                 and
-                BaselineScore( scoreCard == $ctx, characteristic == $char, $base : value ),
+                @{ pmmlPackageName }.BaselineScore( scoreCard == $ctx, characteristic == $char, $base : value ),
                 $sum : sum( $below ? ($base - $val) : ($val - $base) ) )
 then
 //    System.out.println( "The CUMULATED score for code " + $code + " from set " + $set + " is >>> " + $sum );
-    insertLogical( new CodeScore( $card, $code, $sum.doubleValue() ) );
+    insertLogical( new @{ pmmlPackageName }.CodeScore( $card, $code, $sum.doubleValue() ) );
 end
 
 
 rule "Detect Scorecard ReasonCode Change"
 salience -12
 when
-    $sc : ScoreCard( enableRC == true, $map : ranking )
-    exists CodeScore( scoreCard == $sc, $c : code, score != $map.get( $c ) )
+    $sc :  @{ pmmlPackageName }.ScoreCard( enableRC == true, $map : ranking )
+    exists @{ pmmlPackageName }.CodeScore( scoreCard == $sc, $c : code, score != $map.get( $c ) )
 then
-    insert( new ScoreRank( $sc, new java.util.LinkedHashMap() ) );
+    insert( new @{ pmmlPackageName }.ScoreRank( $sc, new java.util.LinkedHashMap() ) );
 end
 
 
 rule "Sort Scorecard Reason Codes"
 salience -14
 when
-    $r : ScoreRank( $sc : scoreCard, $map : rank )
-    $cs : CodeScore( scoreCard == $sc, ! $map.containsKey( code ), $s : score, $c : code )
-    not CodeScore( scoreCard == $sc, ! $map.containsKey( code ), score > $s )
+    $r  : @{ pmmlPackageName }.ScoreRank( $sc : scoreCard, $map : rank )
+    $cs : @{ pmmlPackageName }.CodeScore( scoreCard == $sc, ! $map.containsKey( code ), $s : score, $c : code )
+    not   @{ pmmlPackageName }.CodeScore( scoreCard == $sc, ! $map.containsKey( code ), score > $s )
 then
     modify ( $r ) {
         getRank().put( $c, $s );

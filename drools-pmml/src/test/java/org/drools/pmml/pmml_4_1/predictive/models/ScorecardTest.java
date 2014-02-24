@@ -18,14 +18,28 @@ package org.drools.pmml.pmml_4_1.predictive.models;
 
 
 import org.drools.pmml.pmml_4_1.DroolsAbstractPMMLTest;
+import org.drools.pmml.pmml_4_1.PMML4Helper;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Message;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.builder.IncrementalResults;
+import org.kie.internal.builder.InternalKieBuilder;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -42,7 +56,7 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
     @After
     public void tearDown() {
-        getKSession().dispose();
+        //getKSession().dispose();
     }
 
     @Test
@@ -60,7 +74,7 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
         kSession.fireAllRules();  //init model
 
-        FactType scoreCardType = getKbase().getFactType( "org.drools.scorecards.example", "ScoreCard" );
+        FactType scoreCardType = getKbase().getFactType( PMML4Helper.pmmlDefaultPackageName(), "ScoreCard" );
         assertNotNull( scoreCardType );
 
         assertEquals( 1, kSession.getObjects( new ClassObjectFilter( scoreCardType.getFactClass() ) ).size() );
@@ -111,5 +125,43 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
 
 
+    @Test
+    public void testSimple() throws IOException {
+        FileInputStream fis = new FileInputStream( "/home/davide/Projects/Git/drools6/drools/drools-pmml/src/test/resources/simpl0.drl" );
+        byte[] data = new byte[ fis.available() ];
+        fis.read( data );
+        String s = new String( data );
+
+        FileInputStream fis2 = new FileInputStream( "/home/davide/Projects/Git/drools6/drools/drools-pmml/src/test/resources/simpleScore.drl" );
+        byte[] data2 = new byte[ fis2.available() ];
+        fis2.read( data2 );
+        String s2 = new String( data2 );
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+
+        kfs.write( "src/main/resources/sc1.drl", s );
+
+
+        //Add empty Score Card
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        final List<Message> messages = kieBuilder.getResults().getMessages();
+        assertEquals( 0,
+                      messages.size() );
+
+        //Update with complete Score Card
+        kfs.write( "src/main/resources/sc1.drl",
+                   s2 );
+        IncrementalResults results = ( (InternalKieBuilder) kieBuilder ).incrementalBuild();
+
+        final List<Message> addedMessages = results.getAddedMessages();
+        final List<Message> removedMessages = results.getRemovedMessages();
+        System.out.println( addedMessages );
+        assertEquals( 0,
+                      addedMessages.size() );
+        assertEquals( 0,
+                      removedMessages.size() );
+
+    }
 
 }

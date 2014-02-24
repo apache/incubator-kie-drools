@@ -27,52 +27,52 @@
 @comment{ The inner data structure collects the info from the datafield, and is used to be compatible with predicates,
  as in decision trees. The containment is then used to update data and aggregate scores independently, preserving truth maintenance }
 
-declare ScoreCard
+declare @{ pmmlPackageName }.ScoreCard
 @propertyReactive
     modelName   : String @key
     score       : double
-    holder      : ScoreCardData
+    holder      : @{ pmmlPackageName }.ScoreCardData
     enableRC    : boolean
     pointsBelow : boolean
     ranking     : java.util.Map
 end
 
 
-declare ScoreRank
-    scoreCard   : ScoreCard
+declare @{ pmmlPackageName }.ScoreRank
+    scoreCard   : @{ pmmlPackageName }.ScoreCard
     rank        : java.util.Map
 end
 
-declare ScoreCardData
+declare @{ pmmlPackageName }.ScoreCardData
 @propertyReactive
     modelName       : String @key
 end
 
-declare Score
+declare @{ pmmlPackageName }.Score
     scoreCard       : String    @key
     value           : double    @key
 end
 
-declare InitialScore extends Score
+declare @{ pmmlPackageName }.InitialScore extends @{ pmmlPackageName }.Score
 end
 
-declare BaselineScore extends Score
+declare @{ pmmlPackageName }.BaselineScore extends @{ pmmlPackageName }.Score
     characteristic  : String    @key
 end
 
-declare PartialScore extends Score
+declare @{ pmmlPackageName }.PartialScore extends @{ pmmlPackageName }.Score
     characteristic  : String    @key
     reasonCode      : String
     weight          : Double
 end
 
-declare ScoreRow extends Score
+declare @{ pmmlPackageName }.ScoreRow extends @{ pmmlPackageName }.Score
     characteristic  : String    @key
     reasonCode      : String
     id              : String
 end
 
-declare CodeScore
+declare @{ pmmlPackageName }.CodeScore
     scoreCard       : ScoreCard @key
     code            : String    @key
     score           : double    @key

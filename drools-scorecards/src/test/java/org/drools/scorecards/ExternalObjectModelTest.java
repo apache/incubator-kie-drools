@@ -6,6 +6,7 @@ import org.dmg.pmml.pmml_4_1.descr.OutputField;
 import org.dmg.pmml.pmml_4_1.descr.PMML;
 import org.dmg.pmml.pmml_4_1.descr.Scorecard;
 import org.drools.pmml.pmml_4_1.PMML4Compiler;
+import org.drools.pmml.pmml_4_1.PMML4Helper;
 import org.drools.pmml.pmml_4_1.extensions.PMMLExtensionNames;
 import org.drools.scorecards.example.Applicant;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
@@ -238,7 +239,7 @@ public class ExternalObjectModelTest {
         KieBase kbase = kieContainer.getKieBase();
         KieSession session = kbase.newKieSession();
 
-        FactType scorecardInternalsType = kbase.getFactType( "org.drools.scorecards.example","ScoreCard" );
+        FactType scorecardInternalsType = kbase.getFactType( PMML4Helper.pmmlDefaultPackageName(),"ScoreCard" );
 
         Applicant applicant = new Applicant();
         applicant.setAge(10);

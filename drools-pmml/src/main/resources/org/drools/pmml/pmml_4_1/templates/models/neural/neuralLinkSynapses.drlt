@@ -24,10 +24,10 @@
 
 rule "LinkSynapses_@{name}"
 when
-    Stym( $ctx : context == "@{name}", $index : index, $val : value )
-    Synapse( context == $ctx, source == $index, $target : target, $w : weight )
+    @{ pmmlPackageName }.Stym( $ctx : context == "@{name}", $index : index, $val : value )
+    @{ pmmlPackageName }.Synapse( context == $ctx, source == $index, $target : target, $w : weight )
 then
-    Charge c = new Charge();
+    @{ pmmlPackageName }.Charge c = new @{ pmmlPackageName }.Charge();
         c.setContext( $ctx );
         c.setSource( $index );
         c.setIndex( $target );

@@ -27,8 +27,8 @@
 rule "Handle null-prediction missing values on my way back @{context}"
 salience 5
 when
-    $node : TreeNode( context == "@{context}", $id : id, $children : children )
-    $tok  : @{context}TreeToken( context == "@{context}", current == $id, $trail : trail, $res : results, visitMode == "NULL_PREDICTION" )
+    $node : @{ pmmlPackageName }.TreeNode( context == "@{context}", $id : id, $children : children )
+    $tok  : @{ pmmlPackageName }.@{context}TreeToken( context == "@{context}", current == $id, $trail : trail, $res : results, visitMode == "NULL_PREDICTION" )
 
     not @{name}( context == "@{context}" )
 
