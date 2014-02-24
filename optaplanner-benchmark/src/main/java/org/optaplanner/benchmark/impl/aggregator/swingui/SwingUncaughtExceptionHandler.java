@@ -67,6 +67,17 @@ public class SwingUncaughtExceptionHandler implements Thread.UncaughtExceptionHa
         for (StackTraceElement stackTraceElement : e.getStackTrace()) {
             stackTraceTextArea.append("    at " + stackTraceElement.toString() + "\n");
         }
+        Throwable parentException = e;
+        Throwable cause = e.getCause();
+        while (cause != null && cause != parentException) {
+            stackTraceTextArea.append("Caused by: " + "\" " + e.getClass().getName()
+                    + ": " + e.getMessage() + "\n");
+            for (StackTraceElement stackTraceElement : e.getStackTrace()) {
+                stackTraceTextArea.append("    at " + stackTraceElement.toString() + "\n");
+            }
+            parentException = cause;
+            cause = cause.getCause();
+        }
         JScrollPane stackTraceScrollPane = new JScrollPane(stackTraceTextArea,
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         contentPanel.add(stackTraceScrollPane, BorderLayout.CENTER);
