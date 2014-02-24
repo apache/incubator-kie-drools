@@ -30,11 +30,11 @@ public class RuleAdapter implements org.drools.definition.rule.Rule {
     }
 
     public Collection<String> listMetaAttributes() {
-        throw new UnsupportedOperationException("org.drools.impl.adapter.RuleAdapter.listMetaAttributes -> TODO");
+        throw new UnsupportedOperationException("This operation is no longer supported");
     }
 
     public Map<String, Object> getMetaAttributes() {
-        throw new UnsupportedOperationException("org.drools.impl.adapter.RuleAdapter.getMetaAttributes -> TODO");
+        throw new UnsupportedOperationException("This operation is no longer supported");
    }
 
     public String getMetaAttribute(String key) {

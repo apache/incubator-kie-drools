@@ -28,7 +28,7 @@ public class WorkingMemoryEventListenerAdapter implements org.kie.api.event.rule
             }
 
             public PropagationContext getPropagationContext() {
-                throw new UnsupportedOperationException(".getPropagationContext -> TODO");
+                throw new UnsupportedOperationException("This operation is no longer supported");
             }
 
             public KnowledgeRuntime getKnowledgeRuntime() {
@@ -56,7 +56,7 @@ public class WorkingMemoryEventListenerAdapter implements org.kie.api.event.rule
 
             @Override
             public PropagationContext getPropagationContext() {
-                throw new UnsupportedOperationException(".getPropagationContext -> TODO");
+                throw new UnsupportedOperationException("This operation is no longer supported");
             }
 
             @Override
@@ -80,7 +80,7 @@ public class WorkingMemoryEventListenerAdapter implements org.kie.api.event.rule
 
             @Override
             public PropagationContext getPropagationContext() {
-                throw new UnsupportedOperationException(".getPropagationContext -> TODO");
+                throw new UnsupportedOperationException("This operation is no longer supported");
 
             }
 
