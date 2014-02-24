@@ -122,7 +122,6 @@ public class BenchmarkAggregatorFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         initPlannerBenchmarkResultList();
         setContentPane(createContentPane());
-        setPreferredSize(new Dimension(500, 400));
         pack();
         setLocationRelativeTo(null);
     }
@@ -170,13 +169,9 @@ public class BenchmarkAggregatorFrame extends JFrame {
     }
 
     private JComponent createTopButtonPanel() {
-        JPanel buttonPanel = new JPanel(new GridLayout(2, 3));
-        JButton expandNodesButton = new JButton(new ExpandAllNodesAction());
-        buttonPanel.add(expandNodesButton);
-        JButton collapseNodesButton = new JButton(new CollapseAllNodesAction());
-        buttonPanel.add(collapseNodesButton);
-        generateProgressBar = new JProgressBar();
-        buttonPanel.add(generateProgressBar);
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 5));
+        buttonPanel.add(new JButton(new ExpandAllNodesAction()));
+        buttonPanel.add(new JButton(new CollapseAllNodesAction()));
         buttonPanel.add(new JButton(new MoveNodeAction(true)));
         buttonPanel.add(new JButton(new MoveNodeAction(false)));
         buttonPanel.add(new JButton(new RenameNodeAction()));
@@ -187,10 +182,14 @@ public class BenchmarkAggregatorFrame extends JFrame {
         JPanel benchmarkTreePanel = new JPanel(new BorderLayout());
         CheckBoxTree checkBoxTree = createCheckBoxTree();
         benchmarkTreePanel.add(new JScrollPane(checkBoxTree), BorderLayout.CENTER);
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel buttonPanelWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 10, 0));
         JButton generateReportButton = new JButton(new GenerateReportAction(this));
         buttonPanel.add(generateReportButton);
-        benchmarkTreePanel.add(buttonPanel, BorderLayout.SOUTH);
+        generateProgressBar = new JProgressBar();
+        buttonPanel.add(generateProgressBar);
+        buttonPanelWrapper.add(buttonPanel);
+        benchmarkTreePanel.add(buttonPanelWrapper, BorderLayout.SOUTH);
         benchmarkTreePanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
         return benchmarkTreePanel;
     }
@@ -357,7 +356,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
                             mixedCheckBox.setText(newBenchmarkResultName);
                             ((DefaultTreeModel) checkBoxTree.getModel()).nodeChanged(treeNode);
                         } else if (benchmarkResult instanceof SolverBenchmarkResult) {
-                            mixedCheckBox.setText(newBenchmarkResultName);
+                            mixedCheckBox.setText(newBenchmarkResultName  + " (" + ((SolverBenchmarkResult) benchmarkResult).getRanking() + ")");
                             ((DefaultTreeModel) checkBoxTree.getModel()).nodeChanged(treeNode);
                             solverBenchmarkResultNameMapping.put((SolverBenchmarkResult) benchmarkResult, newBenchmarkResultName);
                         }
@@ -470,7 +469,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
             super(parentFrame, "Report generation finished");
             JPanel contentPanel = new JPanel(new GridLayout(1, 3, 10, 10));
 
-            final JCheckBox exitCheckBox = new JCheckBox("Exit application”");
+            final JCheckBox exitCheckBox = new JCheckBox("Exit application");
             exitCheckBox.setSelected(true);
 
             JButton openBrowserButton = new JButton("Show in browser");
