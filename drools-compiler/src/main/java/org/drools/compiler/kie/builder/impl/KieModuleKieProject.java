@@ -93,6 +93,10 @@ public class KieModuleKieProject extends AbstractKieProject {
         return this.kJarFromKBaseName.get( kBaseName );
     }
 
+    public InternalKieModule getInternalKieModule() {
+        return kieModule;
+    }
+
     public ClassLoader getClassLoader() {
         return this.cl;
     }

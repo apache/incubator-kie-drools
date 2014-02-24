@@ -2,6 +2,7 @@ package org.drools.compiler.integrationtests;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -772,11 +773,11 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         KieBuilder kieBuilder = ks.newKieBuilder( kfs );
 
-        kfs.generateAndWritePomXML( id );
-        kfs.write( ks.getResources()
-                     .newReaderResource( new StringReader( drl1 ) )
-                     .setResourceType( ResourceType.DRL )
-                     .setSourcePath( "drl1.drl" ) );
+        kfs.generateAndWritePomXML(id);
+        kfs.write(ks.getResources()
+                    .newReaderResource(new StringReader(drl1))
+                    .setResourceType(ResourceType.DRL)
+                    .setSourcePath("drl1.drl"));
 
         kieBuilder.buildAll();
 
@@ -786,19 +787,89 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
 
-        kfs.write( ks.getResources()
-                     .newReaderResource( new StringReader(drl2) )
-                     .setResourceType(ResourceType.DRL)
-                     .setSourcePath("drl2.txt") );
+        kfs.write(ks.getResources()
+                    .newReaderResource(new StringReader(drl2))
+                    .setResourceType(ResourceType.DRL)
+                    .setSourcePath("drl2.txt"));
 
         IncrementalResults results = ((InternalKieBuilder) kieBuilder).incrementalBuild();
         assertEquals(0, results.getAddedMessages().size());
 
         Results updateResults = kc.updateToVersion( id );
         assertEquals(0, updateResults.getMessages().size());
+    }
 
+    @Test
+    public void testIncrementalCompilationWithModuleOverride() {
+        String drl1 = "package org.test.compiler; " +
+                      "global java.util.List list; " +
+
+                      "rule A when $s : String() then System.out.println( 'AAA' + $s ); list.add( 'A' + $s ); end " +
+                      "";
+
+        String drl2 = "package totally.unrelated.pack; " +
+                      "global java.util.List list; " +
+
+                      "rule B when $s : String() then System.out.println( 'BBB' + $s ); list.add( 'B' + $s ); end " +
+                      "";
+
+        String drl3 = "package totally.unrelated.pack; " +
+                      "global java.util.List list; " +
+
+                      "rule C when $s : String() then System.out.println( 'CCC' + $s ); list.add( 'C' + $s ); end " +
+                      "";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        ReleaseId id = ks.newReleaseId( "org.test", "foo", "1.0-SNAPSHOT" );
+
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+        kfs.generateAndWritePomXML( id );
+        kfs.write( ks.getResources()
+                     .newReaderResource(new StringReader(drl1))
+                     .setResourceType(ResourceType.DRL)
+                     .setSourcePath("drl1.drl") );
+
+        kieBuilder.buildAll();
+
+        KieContainer kc = ks.newKieContainer( id );
+        KieSession ksession = kc.newKieSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert("X");
         ksession.fireAllRules();
-        assertEquals( 2, list.size() );
+        assertTrue( list.contains( "AX" ) );
 
+
+        KieFileSystem kfs2 = ks.newKieFileSystem();
+        KieBuilder kieBuilder2 = ks.newKieBuilder( kfs2 );
+        kfs2.generateAndWritePomXML( id );
+        kfs2.write( ks.getResources()
+                      .newReaderResource( new StringReader( drl2 ) )
+                      .setResourceType( ResourceType.DRL )
+                      .setSourcePath( "drla.drl" ) );
+
+        kieBuilder2.buildAll();
+
+        KieContainer kc2 = ks.newKieContainer( id );
+        KieSession ksession2 = kc2.newKieSession();
+        ksession2.setGlobal( "list", list );
+
+        ksession2.insert( "X" );
+        ksession2.fireAllRules();
+
+        kfs2.write(ks.getResources()
+                     .newReaderResource(new StringReader(drl3))
+                     .setResourceType(ResourceType.DRL)
+                     .setSourcePath("drlb.drl"));
+
+        IncrementalResults results = ((InternalKieBuilder) kieBuilder2).incrementalBuild();
+        assertEquals(0, results.getAddedMessages().size());
+
+        Results updateResults = kc2.updateToVersion( id );
+        ksession2.fireAllRules();
+
+        assertEquals( Arrays.asList("AX", "BX", "CX"), list );
     }
 }
