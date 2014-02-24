@@ -23,6 +23,7 @@ import javax.swing.JCheckBox;
 public class MixedCheckBox extends JCheckBox {
 
     private String detail;
+    private Object benchmarkResult;
 
     public MixedCheckBox() {
         this(null);
@@ -33,8 +34,13 @@ public class MixedCheckBox extends JCheckBox {
     }
 
     public MixedCheckBox(String text, String detail) {
+        this(text, detail, null);
+    }
+
+    public MixedCheckBox(String text, String detail, Object benchmarkResult) {
         super(text);
         this.detail = detail;
+        this.benchmarkResult = benchmarkResult;
         setModel(new MixedCheckBoxModel());
         setStatus(MixedCheckBoxStatus.UNCHECKED);
         addMouseListener(new CustomCheckboxMouseListener());
@@ -46,6 +52,14 @@ public class MixedCheckBox extends JCheckBox {
 
     public void setDetail(String detail) {
         this.detail = detail;
+    }
+
+    public Object getBenchmarkResult() {
+        return benchmarkResult;
+    }
+
+    public void setBenchmarkResult(Object benchmarkResult) {
+        this.benchmarkResult = benchmarkResult;
     }
 
     public MixedCheckBoxStatus getStatus() {
