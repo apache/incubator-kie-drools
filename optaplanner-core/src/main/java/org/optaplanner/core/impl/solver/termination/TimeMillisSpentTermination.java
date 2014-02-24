@@ -63,7 +63,7 @@ public class TimeMillisSpentTermination extends AbstractTermination {
         return calculateTimeGradient(phaseTimeMillisSpent);
     }
 
-    protected double calculateTimeGradient(double timeMillisSpent) {
+    protected double calculateTimeGradient(long timeMillisSpent) {
         double timeGradient = ((double) timeMillisSpent) / ((double) timeMillisSpentLimit);
         return Math.min(timeGradient, 1.0);
     }
