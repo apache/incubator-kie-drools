@@ -870,7 +870,6 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
     public void testIncrementalCompilationWithModuleOverride() {
         String drl1 = "package org.test.compiler; " +
                       "global java.util.List list; " +
@@ -885,6 +884,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                       "";
 
         String drl3 = "package totally.unrelated.pack; " +
+                      "global java.util.List list; " +
 
                       "rule C when $s : String() then System.out.println( 'CCC' + $s ); list.add( 'C' + $s ); end " +
                       "";
