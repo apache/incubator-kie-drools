@@ -57,9 +57,9 @@ public class XStreamProblemIO implements ProblemIO {
             reader = new InputStreamReader(new FileInputStream(inputSolutionFile), "UTF-8");
             unsolvedSolution = (Solution) xStream.fromXML(reader);
         } catch (XStreamException e) {
-            throw new IllegalArgumentException("Problem reading inputSolutionFile: " + inputSolutionFile, e);
+            throw new IllegalArgumentException("Problem reading inputSolutionFile (" + inputSolutionFile + ").", e);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Problem reading inputSolutionFile: " + inputSolutionFile, e);
+            throw new IllegalArgumentException("Problem reading inputSolutionFile (" + inputSolutionFile + ").", e);
         } finally {
             IOUtils.closeQuietly(reader);
         }
@@ -72,7 +72,7 @@ public class XStreamProblemIO implements ProblemIO {
             writer = new OutputStreamWriter(new FileOutputStream(outputSolutionFile), "UTF-8");
             xStream.toXML(solution, writer);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing outputSolutionFile: " + outputSolutionFile, e);
+            throw new IllegalArgumentException("Problem writing outputSolutionFile (" + outputSolutionFile + ").", e);
         } finally {
             IOUtils.closeQuietly(writer);
         }

@@ -33,6 +33,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.collections.comparators.ReverseComparator;
+import org.drools.core.rule.Collect;
 import org.drools.core.util.StringUtils;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.core.api.score.Score;
@@ -54,11 +55,11 @@ public class PlannerBenchmarkResult {
     // If it is an aggregation, many properties can stay null
 
     private Integer availableProcessors = null;
-    private Long maxMemory;
-    private String optaPlannerVersion;
-    private String javaVersion;
-    private String javaVM;
-    private String operatingSystem;
+    private Long maxMemory = null;
+    private String optaPlannerVersion = null;
+    private String javaVersion = null;
+    private String javaVM = null;
+    private String operatingSystem = null;
 
     private Integer parallelBenchmarkCount = null;
     private Long warmUpTimeMillisSpentLimit = null;
@@ -413,6 +414,14 @@ public class PlannerBenchmarkResult {
             }
         }
         return newResult;
+    }
+
+    public static PlannerBenchmarkResult createUnmarshallingFailedResult(String benchmarkReportDirectoryName) {
+        PlannerBenchmarkResult result = new PlannerBenchmarkResult();
+        result.setName("Failed reading " + benchmarkReportDirectoryName);
+        result.setSolverBenchmarkResultList(Collections.<SolverBenchmarkResult>emptyList());
+        result.setUnifiedProblemBenchmarkResultList(Collections.<ProblemBenchmarkResult>emptyList());
+        return result;
     }
 
     @Override

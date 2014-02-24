@@ -32,6 +32,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
+import com.thoughtworks.xstream.converters.ConversionException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
@@ -96,12 +97,17 @@ public class BenchmarkResultIO {
         try {
             reader = new InputStreamReader(new FileInputStream(plannerBenchmarkResultFile), "UTF-8");
             plannerBenchmarkResult = (PlannerBenchmarkResult) xStream.fromXML(reader);
+        } catch (ConversionException e) {
+            // If the plannerBenchmarkResultFile's format has changed, the app should not crash entirely
+            String benchmarkReportDirectoryName = plannerBenchmarkResultFile.getParentFile().getName();
+            plannerBenchmarkResult = PlannerBenchmarkResult.createUnmarshallingFailedResult(
+                    benchmarkReportDirectoryName);
         } catch (XStreamException e) {
             throw new IllegalArgumentException(
-                    "Problem reading plannerBenchmarkResultFile: " + plannerBenchmarkResultFile, e);
+                    "Problem reading plannerBenchmarkResultFile (" + plannerBenchmarkResultFile + ").", e);
         } catch (IOException e) {
             throw new IllegalArgumentException(
-                    "Problem reading plannerBenchmarkResultFile: " + plannerBenchmarkResultFile, e);
+                    "Problem reading plannerBenchmarkResultFile (" + plannerBenchmarkResultFile + ").", e);
         } finally {
             IOUtils.closeQuietly(reader);
         }
