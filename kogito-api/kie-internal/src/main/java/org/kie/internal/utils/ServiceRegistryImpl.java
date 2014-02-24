@@ -33,6 +33,7 @@ package org.kie.internal.utils;
 import org.kie.api.KieServices;
 import org.kie.api.Service;
 import org.kie.api.builder.KieScanner;
+import org.kie.api.builder.KieScannerFactoryService;
 import org.kie.api.concurrent.KieExecutors;
 import org.kie.api.marshalling.KieMarshallers;
 import org.kie.api.persistence.jpa.KieStoreServices;
@@ -43,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * This is an internal class, not for public consumption.
@@ -192,8 +194,8 @@ public class ServiceRegistryImpl
                      "org.drools.core.concurrent.ExecutorProviderImpl");
         addDefault(  KieServices.class,
                      "org.drools.compiler.kie.builder.impl.KieServicesImpl");
-        addDefault( KieScanner.class,
-                    "org.kie.scanner.KieRepositoryScannerImpl");
+        addDefaultFactory(KieScannerFactoryService.class,
+                          "org.kie.scanner.KieScannerFactoryServiceImpl");
         addDefault( KieStoreServices.class,
                     "org.drools.persistence.jpa.KnowledgeStoreServiceImpl");
         addDefault( CorrelationKeyFactory.class,
@@ -212,6 +214,18 @@ public class ServiceRegistryImpl
         ReflectionInstantiator<Service> resourceRi = new ReflectionInstantiator<Service>( impl );
         defaultServices.put( service,
                              resourceRi );
+    }
+
+    public synchronized void addDefaultFactory(Class cls,
+                                               String impl) {
+        addDefaultFactory(cls.getName(), impl);
+    }
+
+    private synchronized void addDefaultFactory(String service,
+                                                String impl) {
+        FactoryInstantiator<Service> resourceRi = new FactoryInstantiator<Service>( impl );
+        defaultServices.put(service,
+                            resourceRi);
     }
 
     static class ReflectionInstantiator<V>
@@ -235,6 +249,30 @@ public class ServiceRegistryImpl
                 throw new IllegalArgumentException( "Unable to instantiate '" + name + "'",
                                                     e2 );
             }
+        }
+    }
+
+    static class FactoryInstantiator<V>
+            implements
+            Callable<V> {
+        private final String name;
+        private final AtomicReference<V> service = new AtomicReference<V>();
+
+        public FactoryInstantiator(String name) {
+            this.name = name;
+        }
+
+        public V call() throws Exception {
+            if (service.get() == null) {
+                try {
+                    Class<V> cls = (Class<V>) Class.forName( name );
+                    service.compareAndSet(null, cls.newInstance());
+                } catch ( Exception e ) {
+                    throw new IllegalArgumentException( "Unable to instantiate '" + name + "'",
+                                                        e );
+                }
+            }
+            return service.get();
         }
     }
 
