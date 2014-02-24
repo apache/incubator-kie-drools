@@ -37,10 +37,14 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.core.config.solver.XmlSolverFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BenchmarkResultIO {
 
     private static final String PLANNER_BENCHMARK_RESULT_FILENAME = "plannerBenchmarkResult.xml";
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private final XStream xStream;
 
@@ -98,6 +102,8 @@ public class BenchmarkResultIO {
             reader = new InputStreamReader(new FileInputStream(plannerBenchmarkResultFile), "UTF-8");
             plannerBenchmarkResult = (PlannerBenchmarkResult) xStream.fromXML(reader);
         } catch (ConversionException e) {
+            logger.warn(
+                    "Problem reading plannerBenchmarkResultFile (" + plannerBenchmarkResultFile + ").", e);
             // If the plannerBenchmarkResultFile's format has changed, the app should not crash entirely
             String benchmarkReportDirectoryName = plannerBenchmarkResultFile.getParentFile().getName();
             plannerBenchmarkResult = PlannerBenchmarkResult.createUnmarshallingFailedResult(

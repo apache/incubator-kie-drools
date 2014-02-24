@@ -418,7 +418,7 @@ public class PlannerBenchmarkResult {
 
     public static PlannerBenchmarkResult createUnmarshallingFailedResult(String benchmarkReportDirectoryName) {
         PlannerBenchmarkResult result = new PlannerBenchmarkResult();
-        result.setName("Failed reading " + benchmarkReportDirectoryName);
+        result.setName("Failed unmarshalling " + benchmarkReportDirectoryName);
         result.setSolverBenchmarkResultList(Collections.<SolverBenchmarkResult>emptyList());
         result.setUnifiedProblemBenchmarkResultList(Collections.<ProblemBenchmarkResult>emptyList());
         return result;
