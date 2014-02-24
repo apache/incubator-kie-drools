@@ -161,6 +161,15 @@ public abstract class AbstractSolverPhaseScope {
         return solverScope.getBestScore();
     }
 
+    public long getPhaseBestSolutionTimeMillis() {
+        long bestSolutionTimeMillis = solverScope.getBestSolutionTimeMillis();
+        // If the termination is explicitly phase configured, previous phases must not affect it
+        if (bestSolutionTimeMillis < startingSystemTimeMillis) {
+            bestSolutionTimeMillis = startingSystemTimeMillis;
+        }
+        return bestSolutionTimeMillis;
+    }
+
     public int getNextStepIndex() {
         return getLastCompletedStepScope().getStepIndex() + 1;
     }

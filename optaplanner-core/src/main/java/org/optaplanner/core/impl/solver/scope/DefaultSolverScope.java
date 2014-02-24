@@ -43,6 +43,7 @@ public class DefaultSolverScope {
     protected Solution bestSolution;
     protected int bestUninitializedVariableCount; // TODO remove me by folding me into bestSolution.getScore()
     protected Score bestScore; // TODO remove me by folding me into bestSolution.getScore()
+    protected Long bestSolutionTimeMillis;
 
 
     public Long getStartingSystemTimeMillis() {
@@ -171,6 +172,14 @@ public class DefaultSolverScope {
 
     public void setBestScore(Score bestScore) {
         this.bestScore = bestScore;
+    }
+
+    public Long getBestSolutionTimeMillis() {
+        return bestSolutionTimeMillis;
+    }
+
+    public void setBestSolutionTimeMillis(Long bestSolutionTimeMillis) {
+        this.bestSolutionTimeMillis = bestSolutionTimeMillis;
     }
 
     // ************************************************************************
