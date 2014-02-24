@@ -122,46 +122,4 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
                         true, false,"SampleScorecard", "RC1" );
 
     }
-
-
-
-    @Test
-    public void testSimple() throws IOException {
-        FileInputStream fis = new FileInputStream( "/home/davide/Projects/Git/drools6/drools/drools-pmml/src/test/resources/simpl0.drl" );
-        byte[] data = new byte[ fis.available() ];
-        fis.read( data );
-        String s = new String( data );
-
-        FileInputStream fis2 = new FileInputStream( "/home/davide/Projects/Git/drools6/drools/drools-pmml/src/test/resources/simpleScore.drl" );
-        byte[] data2 = new byte[ fis2.available() ];
-        fis2.read( data2 );
-        String s2 = new String( data2 );
-
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
-
-        kfs.write( "src/main/resources/sc1.drl", s );
-
-
-        //Add empty Score Card
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-        final List<Message> messages = kieBuilder.getResults().getMessages();
-        assertEquals( 0,
-                      messages.size() );
-
-        //Update with complete Score Card
-        kfs.write( "src/main/resources/sc1.drl",
-                   s2 );
-        IncrementalResults results = ( (InternalKieBuilder) kieBuilder ).incrementalBuild();
-
-        final List<Message> addedMessages = results.getAddedMessages();
-        final List<Message> removedMessages = results.getRemovedMessages();
-        System.out.println( addedMessages );
-        assertEquals( 0,
-                      addedMessages.size() );
-        assertEquals( 0,
-                      removedMessages.size() );
-
-    }
-
 }
