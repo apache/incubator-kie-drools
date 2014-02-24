@@ -23,7 +23,7 @@ import org.kie.api.Service;
  * used to automatically discover if there are new releases for a given KieModule and its dependencies
  * and eventually deploy them in the KieRepository
  */
-public interface KieScanner extends Service {
+public interface KieScanner {
 
     /**
      * Starts this KieScanner polling the maven repositories with the given interval expressed in milliseconds
