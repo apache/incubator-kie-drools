@@ -16,7 +16,6 @@
 
 package org.kie.api.builder;
 
-import org.kie.api.Service;
 
 /**
  * A KieScanner is a scanner of the maven repositories (both local and remote)
