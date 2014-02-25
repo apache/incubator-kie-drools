@@ -2830,6 +2830,66 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
+    public void testFactsWithSameName() {
+        String drl = "package org.pkg1;\n" +
+                "\n" +
+                "import java.lang.Number;\n" +
+                "rule \"Test\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    Fact( field.field )\n" +
+                "  then\n" +
+                "end\n";
+
+        addModelField( "org.pkg1.Fact",
+                       "field",
+                       "org.pkg1.SubFact",
+                       "SubFact" );
+        addModelField( "org.pkg1.SubFact",
+                       "field",
+                       "String",
+                       DataType.TYPE_STRING );
+        addModelField( "org.pkg2.Fact",
+                      "someOtherField",
+                      "org.pkg2.SubFact",
+                      "SubFact" );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           dmo );
+        assertEquals(1, m.lhs.length);
+     }
+
+    @Test
+    public void testFactsWithSameNameImports() {
+        String drl = "package org.test;\n" +
+                "\n" +
+                "import org.pkg1.Fact;\n" +
+                "rule \"Test\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    Fact( field.field )\n" +
+                "  then\n" +
+                "end\n";
+
+        addModelField( "org.pkg1.Fact",
+                       "field",
+                       "org.pkg1.SubFact",
+                       "SubFact" );
+        addModelField( "org.pkg1.SubFact",
+                       "field",
+                       "String",
+                       DataType.TYPE_STRING );
+        addModelField( "org.pkg2.Fact",
+                      "someOtherField",
+                      "org.pkg2.SubFact",
+                      "SubFact" );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           dmo );
+        assertEquals(1, m.lhs.length);
+     }
+
+    @Test
     public void testFromBoundVariable() {
         String drl = "import java.lang.Number;\n"
                 + "import org.drools.workbench.models.commons.backend.rule.Counter;\n"
