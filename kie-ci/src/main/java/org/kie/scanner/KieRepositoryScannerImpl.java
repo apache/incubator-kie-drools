@@ -14,6 +14,9 @@ import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
+import org.kie.scanner.management.KieScannerMBean;
+import org.kie.scanner.management.KieScannerMBeanImpl;
+import org.kie.scanner.management.MBeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.aether.artifact.Artifact;
@@ -49,6 +52,8 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     private Status status = Status.STARTING;
 
+    private KieScannerMBean mbean;
+
     public void setKieContainer(KieContainer kieContainer) {
         if (this.kieContainer != null) {
             throw new RuntimeException("Cannot change KieContainer on an already initialized KieScanner");
@@ -70,6 +75,10 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         indexAtifacts();
         KieScannersRegistry.register(this);
         status = Status.STOPPED;
+        
+        if( MBeanUtils.isMBeanEnabled() ) {
+            mbean = new KieScannerMBeanImpl(this);
+        }
     }
 
     private ArtifactResolver getArtifactResolver() {
@@ -286,5 +295,9 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         }
         ZipEntry zipEntry = zipFile.getEntry( KieModuleModelImpl.KMODULE_JAR_PATH );
         return zipEntry != null;
+    }
+    
+    public KieScannerMBean getMBean() {
+        return this.mbean;
     }
 }
