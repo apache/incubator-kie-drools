@@ -69,11 +69,11 @@ public class KieCDIExtension
     public KieCDIExtension() { }
 
     public void init() {
-        KieServices ks = KieServices.Factory.get();
+        final KieServices ks = KieServices.Factory.get();
         gavs = new HashMap<ReleaseId, KieContainer>();
-        classpathKContainer = (KieContainerImpl) ks.getKieClasspathContainer(); //new KieContainerImpl( kProject, null );
+        classpathKContainer = (KieContainerImpl) ks.newKieClasspathContainer(); //new KieContainerImpl( kProject, null );
         named = new HashMap<String, KieCDIExtension.KieCDIEntry>();
-    }    
+    }
 
     public <Object> void processInjectionTarget(@Observes ProcessInjectionTarget<Object> pit,
                                                 BeanManager beanManager) {
