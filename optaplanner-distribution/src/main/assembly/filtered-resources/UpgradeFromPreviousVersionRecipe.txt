@@ -3946,3 +3946,9 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
     <acceptorType>PLANNING_VALUE_TABU</acceptorType>
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
     <acceptorType>VALUE_TABU</acceptorType>
+
+[IMPL_DETAIL] BestSolutionRecaller moved from package impl.bestsolution to impl.solver.recaller.
+Before in *.java:
+    import org.optaplanner.core.impl.bestsolution.BestSolutionRecaller;
+After in *.java:
+    import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
