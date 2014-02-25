@@ -2877,7 +2877,7 @@ public class RuleModelDRLPersistenceImpl
             SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
 
             fieldName = setFieldBindingOnContraint( fieldName, con );
-            String classType = getFQFactType( factPattern.getFactType() );
+            String classType = getFQFactType( m, factPattern.getFactType() );
             con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( factPattern ) );
 
             parseExpression( m, classType, fieldName, con.getExpressionLeftSide() );
@@ -2899,7 +2899,7 @@ public class RuleModelDRLPersistenceImpl
 
             boolean isBoundParam = false;
             if ( factType == null ) {
-                factType = getFQFactType( boundParams.get( splits[ 0 ].trim() ) );
+                factType = getFQFactType( m, boundParams.get( splits[ 0 ].trim() ) );
                 isBoundParam = true;
             }
 
@@ -2951,12 +2951,26 @@ public class RuleModelDRLPersistenceImpl
             return expressionPart.trim();
         }
 
-        private String getFQFactType( String factType ) {
-            for ( String type : dmo.getProjectModelFields().keySet() ) {
+        private String getFQFactType( RuleModel ruleModel, String factType ) {
+
+            Set<String> factTypes = dmo.getProjectModelFields().keySet();
+
+            if (factTypes.contains(ruleModel.getPackageName() + "." + factType)) {
+                return ruleModel.getPackageName() + "." + factType;
+            }
+
+            for(String item:ruleModel.getImports().getImportStrings()){
+                if(item.endsWith("."+factType)){
+                    return item;
+                }
+            }
+
+            for ( String type : factTypes) {
                 if ( type.endsWith( "." + factType ) ) {
                     return type;
                 }
             }
+
             return factType;
         }
 
@@ -3070,7 +3084,8 @@ public class RuleModelDRLPersistenceImpl
                     if ( value.equals( "true" ) || value.equals( "false" ) ) {
                         type = DataType.TYPE_BOOLEAN;
                         con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_ENUM );
-                    } else if ( isEnumerationValue( factPattern,
+                    } else if ( isEnumerationValue( m,
+                                                    factPattern,
                                                     con ) ) {
                         type = DataType.TYPE_COMPARABLE;
                         con.setConstraintValueType( SingleFieldConstraint.TYPE_ENUM );
@@ -3107,8 +3122,9 @@ public class RuleModelDRLPersistenceImpl
             return type;
         }
 
-        private boolean isEnumerationValue( FactPattern factPattern,
-                                            BaseSingleFieldConstraint con ) {
+        private boolean isEnumerationValue( RuleModel ruleModel,
+                                            FactPattern factPattern,
+                                            BaseSingleFieldConstraint con) {
             String factType = null;
             String fieldName = null;
             if ( con instanceof SingleFieldConstraintEBLeftSide ) {
@@ -3128,7 +3144,7 @@ public class RuleModelDRLPersistenceImpl
                 return false;
             }
 
-            final String fullyQualifiedFactType = getFQFactType( factType );
+            final String fullyQualifiedFactType = getFQFactType( ruleModel, factType );
             final String key = fullyQualifiedFactType + "#" + fieldName;
             final Map<String, String[]> projectJavaEnumDefinitions = dmo.getProjectJavaEnumDefinitions();
 
