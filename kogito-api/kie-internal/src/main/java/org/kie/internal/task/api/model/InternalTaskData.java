@@ -37,21 +37,6 @@ public interface InternalTaskData extends TaskData {
      */
     Status initialize();
 
-    /**
-     * This method will potentially assign the actual owner of this TaskData and set the status
-     * of the data.
-     * <li>If there is only 1 potential owner, and it is a <code>User</code>, that will become the actual
-     * owner of the TaskData and the status will be set to <code>Status.Reserved</code>.</li>
-     * <li>f there is only 1 potential owner, and it is a <code>Group</code>,  no owner will be assigned
-     * and the status will be set to <code>Status.Ready</code>.</li>
-     * <li>If there are more than 1 potential owners, the status will be set to <code>Status.Ready</code>.</li>
-     * <li>otherwise, the task data will be unchanged</li>
-     *
-     * @param potentialOwners - list of potential owners
-     * @return current status of task data
-     */
-    Status assignOwnerAndStatus(List<OrganizationalEntity> potentialOwners);
-
     void setStatus(Status status);
 
     void setPreviousStatus(Status previousStatus);
