@@ -2,7 +2,6 @@ package org.jbpm.kie.services.cdi.producer;
 
 import java.util.HashSet;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -41,7 +40,6 @@ import org.slf4j.LoggerFactory;
  * <code>HumanTaskConfigurator</code> for <code>TaskService</code> instances creations.
  * @see HumanTaskConfigurator
  */
-@ApplicationScoped
 public class HumanTaskServiceProducer {
 
     private static final Logger logger = LoggerFactory.getLogger( HumanTaskServiceProducer.class );

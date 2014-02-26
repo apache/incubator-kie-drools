@@ -27,8 +27,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.persistence.NoResultException;
 
 import org.drools.core.command.impl.GenericCommand;
@@ -39,7 +37,6 @@ import org.jbpm.shared.services.impl.commands.PersistObjectCommand;
 import org.kie.internal.command.Context;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.Executor;
-import org.kie.internal.executor.api.ExecutorQueryService;
 import org.kie.internal.executor.api.STATUS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,16 +53,13 @@ import org.slf4j.LoggerFactory;
  * Additionally executor can be disable to not start at all when system property org.kie.executor.disabled is 
  * set to true
  */
-@ApplicationScoped
 public class ExecutorImpl implements Executor {
 
     private static final Logger logger = LoggerFactory.getLogger(ExecutorImpl.class);
 
-    @Inject
+   
     private ExecutorRunnable runnableTask;
-    @Inject
-    private ExecutorQueryService queryService;
-    @Inject
+   
     private TransactionalCommandService commandService;
     
     private ScheduledFuture<?> handle;
@@ -86,9 +80,6 @@ public class ExecutorImpl implements Executor {
         this.runnableTask = runnableTask;
     }
 
-    public void setQueryService(ExecutorQueryService queryService) {
-        this.queryService = queryService;
-    }
 
     /**
      * {@inheritDoc}

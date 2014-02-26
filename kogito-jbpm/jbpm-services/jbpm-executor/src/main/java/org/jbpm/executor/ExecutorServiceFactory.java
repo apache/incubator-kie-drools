@@ -36,16 +36,25 @@ import org.kie.internal.executor.api.ExecutorService;
  * environment.
  */
 public class ExecutorServiceFactory {
+	
+	private final static String mode = System.getProperty( "org.jbpm.cdi.executor.mode", "singleton" );
    
+	private static ExecutorService serviceInstance;
     
     public static ExecutorService newExecutorService(EntityManagerFactory emf){
-        
-        return configure(emf);
+    	if ( mode.equalsIgnoreCase( "singleton" ) ) {
+            if (serviceInstance == null || !serviceInstance.isActive()) {
+            	serviceInstance = configure(emf);
+            }
+            return serviceInstance;
+        } else {
+            return configure(emf);
+        }        
     }
 
     private static ExecutorService configure(EntityManagerFactory emf) {
     	// create instances of executor services
-    	ExecutorService service = new ExecutorServiceImpl();
+    	
     	ExecutorQueryService queryService = new ExecutorQueryServiceImpl();
     	Executor executor = new ExecutorImpl();    	
         ExecutorRunnable runnable = new ExecutorRunnable();
@@ -63,6 +72,7 @@ public class ExecutorServiceFactory {
         ((ExecutorRunnable) runnable).setCommandService(commandService);
         
         // configure services
+        ExecutorService service = new ExecutorServiceImpl(executor);
     	((ExecutorServiceImpl)service).setQueryService(queryService);
     	((ExecutorServiceImpl)service).setExecutor(executor);               
         ((ExecutorServiceImpl)service).setAdminService(adminService);
@@ -70,9 +80,9 @@ public class ExecutorServiceFactory {
         runnable.setClassCacheManager(classCacheManager);
         runnable.setQueryService(queryService);
 
-        ((ExecutorImpl)executor).setExecutorRunnable(runnable);
-        ((ExecutorImpl)executor).setQueryService(queryService);        
+        ((ExecutorImpl)executor).setExecutorRunnable(runnable);        
         
+
         
         return service;
     }

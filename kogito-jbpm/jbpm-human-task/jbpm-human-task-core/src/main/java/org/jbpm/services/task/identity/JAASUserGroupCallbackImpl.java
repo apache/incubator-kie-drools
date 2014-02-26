@@ -23,11 +23,13 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.security.jacc.PolicyContext;
 
+import org.jbpm.services.task.identity.adapter.UserGroupAdapter;
 import org.kie.internal.task.api.UserGroupCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +55,8 @@ public class JAASUserGroupCallbackImpl implements UserGroupCallback {
 	private static final Logger logger = LoggerFactory.getLogger(JAASUserGroupCallbackImpl.class);
 	
 	protected static final String DEFAULT_PROPERTIES_NAME = "/jbpm.usergroup.callback.properties";
+	
+	private ServiceLoader<UserGroupAdapter> ugAdapterServiceLoader = ServiceLoader.load(UserGroupAdapter.class);
 	
 	private String rolePrincipleName = null;
 
@@ -105,9 +109,9 @@ public class JAASUserGroupCallbackImpl implements UserGroupCallback {
 
 	public List<String> getGroupsForUser(String userId, List<String> groupIds,
 			List<String> allExistingGroupIds) {
-		List<String> roles = null;
+		List<String> roles = new ArrayList<String>();
         try {
-            Subject subject = (Subject) PolicyContext.getContext("javax.security.auth.Subject.container");
+            Subject subject = getSubjectFromContainer();
     
             if (subject != null) {
                 Set<Principal> principals = subject.getPrincipals();
@@ -129,11 +133,27 @@ public class JAASUserGroupCallbackImpl implements UserGroupCallback {
     
                     }
                 }
-            }
+            } else {
+				// use adapters
+				for (UserGroupAdapter adapter : ugAdapterServiceLoader) {
+					List<String> userRoles = adapter.getGroupsForUser(userId);
+					if (userRoles != null) {
+						roles.addAll(userRoles);
+					}
+				}
+			}
         } catch (Exception e) {
             logger.error("Error when getting user roles, userid:" + userId, e);
         }
         return roles;
 	}
+	
+	protected Subject getSubjectFromContainer() {
+         try {
+             return (Subject) PolicyContext.getContext( "javax.security.auth.Subject.container" );
+         } catch (Exception e) {
+             return null;
+         }
+     }
 
 }

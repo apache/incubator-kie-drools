@@ -52,7 +52,7 @@ public class CDISimpleExecutorTest extends BasicExecutorBaseTest {
                 .addAsManifestResource("META-INF/beans.xml", ArchivePaths.create("beans.xml"));
 
     }
-    
+
     private static PoolingDataSource pds;
     
     @BeforeClass

@@ -23,8 +23,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import org.apache.commons.io.input.ClassLoaderObjectInputStream;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jbpm.executor.entities.ErrorInfo;
@@ -53,13 +51,10 @@ public class ExecutorRunnable implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(ExecutorRunnable.class);
 
    
-    @Inject
     private ExecutorQueryService queryService;
    
-    @Inject
     private ClassCacheManager classCacheManager;
 
-    @Inject
     private TransactionalCommandService commandService;
    
     public void setCommandService(TransactionalCommandService commandService) {

@@ -19,12 +19,6 @@ package org.jbpm.executor.impl;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.jbpm.shared.services.cdi.BootOnLoad;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ErrorInfo;
 import org.kie.internal.executor.api.Executor;
@@ -39,19 +33,17 @@ import org.kie.internal.executor.api.STATUS;
  * via this service to ensure all internals are properly initialized
  *
  */
-@BootOnLoad
-@ApplicationScoped
 public class ExecutorServiceImpl implements ExecutorService {
-    @Inject
+    
     private Executor executor;
     private boolean executorStarted = false;
-    @Inject 
+     
     private ExecutorQueryService queryService;
-    @Inject
+    
     private ExecutorAdminService adminService;
     
 
-    public ExecutorServiceImpl() {
+    public ExecutorServiceImpl(Executor executor) {
     }
 
     public Executor getExecutor() {
@@ -126,16 +118,20 @@ public class ExecutorServiceImpl implements ExecutorService {
         executor.cancelRequest(requestId);
     }
 
-    @PostConstruct
+    
     public void init() {
-        executor.init();
-        this.executorStarted = true;
+    	if (!executorStarted) {
+	        executor.init();
+	        this.executorStarted = true;
+    	}
     }
     
-    @PreDestroy
-    public void destroy() {
-    	this.executorStarted = false;
-        executor.destroy();
+    
+    public void destroy() {  
+    	if (executorStarted) {
+	    	this.executorStarted = false;
+	        executor.destroy();
+    	}
     }
     
     public boolean isActive() {

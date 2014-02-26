@@ -18,8 +18,6 @@ package org.jbpm.executor.impl;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
@@ -33,7 +31,7 @@ import org.kie.internal.executor.api.ExecutorAdminService;
  */
 public class ExecutorRequestAdminServiceImpl implements ExecutorAdminService {
 
-    @Inject
+    
     private TransactionalCommandService commandService;
    
     public ExecutorRequestAdminServiceImpl() {
