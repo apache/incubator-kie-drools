@@ -143,13 +143,13 @@ public class PhreakJoinNodeTest {
               .run();
         
         test().left().update( a0 )
-              .result().update( t(a0, b1) )        
+              .result().update()
               .preStaged(smem0).insert( )
                                .delete( t(a1,b0) )
                                .update( )
-              .postStaged(smem0).insert(  )
+              .postStaged(smem0).insert( t(a0, b1)  )
                                 .delete( t(a1, b0) )
-                                .update( t(a0, b1) )
+                                .update( )
                              
               .run();        
        // @formatter:on        
@@ -181,11 +181,12 @@ public class PhreakJoinNodeTest {
                                           t(a1, b0) )
                                  .delete( )
                                  .update( )                                       
-                .postStaged(smem0).insert( t(a2, b0),
+                .postStaged(smem0).insert( t(a2, b1),
+                                           t(a2, b0),
                                            t(a1, b2),
-                                           t(a1, b0) )                                      
-                                  .delete( t(a2, b2) )
-                                  .update( t(a2, b1) )                                      
+                                           t(a1, b0) )
+                                  .delete(t(a2, b2))
+                                  .update( )
                 .run();             
      // @formatter:on        
     }    
