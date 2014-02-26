@@ -248,18 +248,9 @@ public class PhreakJoinNode {
                                                                      sink,
                                                                      true));
                     } else {
-                        switch (childLeftTuple.getStagedType()) {
-                            // handle clash with already staged entries
-                            case LeftTuple.INSERT:
-                                stagedLeftTuples.removeInsert(childLeftTuple);
-                                break;
-                            case LeftTuple.UPDATE:
-                                stagedLeftTuples.removeUpdate(childLeftTuple);
-                                break;
-                        }
-
                         // update, childLeftTuple is updated
-                        trgLeftTuples.addUpdate(childLeftTuple);
+                        childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
+                        updateChildLeftTuple(childLeftTuple, stagedLeftTuples, trgLeftTuples);
 
                         LeftTuple nextChildLeftTuple = childLeftTuple.getLeftParentNext();
                         childLeftTuple.reAddRight();
@@ -367,19 +358,9 @@ public class PhreakJoinNode {
                                                                      sink,
                                                                      true));
                     } else {
-                        switch (childLeftTuple.getStagedType()) {
-                            // handle clash with already staged entries
-                            case LeftTuple.INSERT:
-                                stagedLeftTuples.removeInsert(childLeftTuple);
-                                break;
-                            case LeftTuple.UPDATE:
-                                stagedLeftTuples.removeUpdate(childLeftTuple);
-                                break;
-                        }
-
                         // update, childLeftTuple is updated
                         childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
-                        trgLeftTuples.addUpdate(childLeftTuple);
+                        updateChildLeftTuple(childLeftTuple, stagedLeftTuples, trgLeftTuples);
 
                         LeftTuple nextChildLeftTuple = childLeftTuple.getRightParentNext();
                         childLeftTuple.reAddLeft();
@@ -448,6 +429,24 @@ public class PhreakJoinNode {
             }
             rightTuple.clearStaged();
             rightTuple = next;
+        }
+    }
+
+    public static void updateChildLeftTuple(LeftTuple childLeftTuple,
+                                            LeftTupleSets stagedLeftTuples,
+                                            LeftTupleSets trgLeftTuples) {
+        switch (childLeftTuple.getStagedType()) {
+            // handle clash with already staged entries
+            case LeftTuple.INSERT:
+                stagedLeftTuples.removeInsert(childLeftTuple);
+                trgLeftTuples.addInsert(childLeftTuple);
+                break;
+            case LeftTuple.UPDATE:
+                stagedLeftTuples.removeUpdate(childLeftTuple);
+                trgLeftTuples.addUpdate(childLeftTuple);
+                break;
+            default:
+                trgLeftTuples.addUpdate(childLeftTuple);
         }
     }
 }

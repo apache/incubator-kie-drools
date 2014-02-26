@@ -5434,4 +5434,36 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertEquals(1, list.size());
     }
+
+    @Test
+    public void testSharedNotWithLeftUpdateAndRightInsert() throws Exception {
+        // BZ-1070092
+        String str =
+                "import " + Foo.class.getCanonicalName() + ";\n" +
+                "import " + Foo2.class.getCanonicalName() + ";\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "    f1 : Foo( )\n" +
+                "    Foo2( )\n" +
+                "    Person( age == f1.x )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "    Foo(  )\n" +
+                "    f2 : Foo2( )\n" +
+                "    not Person()\n" +
+                "then\n" +
+                "    modify( f2 ) { x = 3 };\n" +
+                "    insert( new Person() );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        Foo f1 = new Foo();
+        Foo2 f2 = new Foo2();
+        ksession.insert( f1 );
+        ksession.insert( f2 );
+        assertEquals(2, ksession.fireAllRules() );
+        assertEquals(3, f2.getX());
+    }
 }

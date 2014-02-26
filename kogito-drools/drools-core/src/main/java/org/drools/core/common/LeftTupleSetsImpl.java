@@ -63,6 +63,11 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
     }
 
     public boolean addInsert(LeftTuple leftTuple) {
+        if (leftTuple.getStagedType() == LeftTuple.UPDATE) {
+            // do nothing, it's already staged as an update, which means it's already scheduled for eval too.
+            return false;
+        }
+
         leftTuple.setStagedType( LeftTuple.INSERT );
         if ( insertFirst == null ) {
             insertFirst = leftTuple;

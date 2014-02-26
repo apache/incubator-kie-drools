@@ -148,36 +148,47 @@ public class SegmentPropagationTest {
                                         t(a1, b0) )
                           .delete( )
                           .update( ) 
-              .postStaged(smem0).insert( t(a1, b2),
+              .postStaged(smem0).insert( t(a0, b2),
+                                         t(a0, b1),
+                                         t(a1, b2),
                                          t(a1, b0) )
                                 .delete( )
-                                .update( t(a0, b2),
-                                         t(a0, b1) )
+                                .update( )
               .postStaged( smem1 ).insert( t(a0, b1),
                                            t(a0, b2),
                                            t(a1, b0),
-                                           t(a1, b2) )
+                                           t(a1, b2),
+                                           t(a0, b1),
+                                           t(a0, b2) )
                                   .delete( )
                                   .update( )
                 .postStaged( smem2 ).insert( t(a0, b1),
                                              t(a0, b2),
                                              t(a1, b0),
-                                             t(a1, b2) )
+                                             t(a1, b2),
+                                             t(a0, b1),
+                                             t(a0, b2) )
                 .delete( )
                 .update( )
               .run();
         test().right().delete( b2 )
-              .preStaged(smem0).insert( t(a1, b0) )
+              .preStaged(smem0).insert( t(a0, b1),
+                                        t(a1, b0) )
                                .delete( )
-                               .update( t(a0, b1) )
-              .postStaged(smem0).insert( t(a1, b0) )
+                               .update( )
+              .postStaged(smem0).insert( t(a0, b1),
+                                         t(a1, b0) )
                                 .delete( t(a1, b2),
                                          t(a0, b2) )
-                                .update( t(a0, b1) )
+                                .update( )
               .postStaged( smem1 ).insert( t(a0, b1),
-                                           t(a1, b0) )
+                                           t(a0, b2),
+                                           t(a1, b0),
+                                           t(a0, b1) )
               .postStaged( smem2 ).insert( t(a0, b1),
-                                           t(a1, b0) )
+                                           t(a0, b2),
+                                           t(a1, b0),
+                                           t(a0, b1) )
               .run();
                  
         // @formatter:on

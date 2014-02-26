@@ -203,13 +203,13 @@ public class ScenarioTest {
                   .result()
                   .run();
             
-            test().left().update( a0 )                  
-                  .result().update(   )
+            test().left().update(a0)
+                  .result().insert()
                   .run();  
             // @formatter:on            
             fail("Should not reach here");
         } catch ( AssertionError e ) {
-            assertTrue( e.getMessage().contains( "update existed" ) );
+            assertTrue( e.getMessage().contains( "insert existed" ) );
         }
     }   
     
@@ -225,12 +225,12 @@ public class ScenarioTest {
                   .run();
             
             test().left().update( a0, a1 )                  
-                  .result().update( t(a0, b1)  )
+                  .result().insert( t(a0, b1)  )
                   .run();  
             // @formatter:on            
             fail("Should not reach here");
         } catch ( AssertionError e ) {
-            assertTrue( e.getMessage().contains( "Update excpected more" ) );
+            assertTrue( e.getMessage().contains( "Insert excpected more" ) );
         }
     }    
     
@@ -246,12 +246,12 @@ public class ScenarioTest {
                   .run();
             
             test().left().update( a0, a1 )                  
-                  .result().update( t(a0, b1)  )
+                  .result().insert( t(a0, b1)  )
                   .run();  
             // @formatter:on            
             fail("Should not reach here");
         } catch ( AssertionError e ) {
-            assertTrue( e.getMessage().contains( "Update excpected more" ) );
+            assertTrue( e.getMessage().contains( "Insert excpected more" ) );
         }
     }        
 
@@ -562,12 +562,12 @@ public class ScenarioTest {
                   .run();         
       
             test().left().update( a1 )
-                  .preStaged(smem0).update(  )
+                  .preStaged(smem0).insert(  )
                   .run();              
             // @formatter:on            
             fail("Should not reach here");
         } catch ( AssertionError e ) {
-            assertTrue( e.getMessage().contains( "update existed" ) );
+            assertTrue( e.getMessage().contains( "insert existed" ) );
         }
     }      
     
@@ -585,12 +585,12 @@ public class ScenarioTest {
                   .run();         
       
             test().left().update( a2 )
-                  .preStaged(smem0).update( t(a0, b1) )
+                  .preStaged(smem0).insert( t(a0, b1) )
                   .run();              
             // @formatter:on            
             fail("Should not reach here");
         } catch ( AssertionError e ) {
-            assertTrue( e.getMessage().contains( "Update excpected more" ) );
+            assertTrue( e.getMessage().contains( "Insert excpected more" ) );
         }
     }
     
@@ -685,12 +685,12 @@ public class ScenarioTest {
                   .run();
             
             test().left().update( a0 )
-                  .postStaged(smem0).update(  )
+                  .postStaged(smem0).insert(  )
                   .run();            
             // @formatter:on            
             fail("Should not reach here");
         } catch ( AssertionError e ) {
-            assertTrue( e.getMessage().contains( "update existed" ) );
+            assertTrue( e.getMessage().contains( "insert existed" ) );
         }
     }
     
@@ -705,12 +705,12 @@ public class ScenarioTest {
                   .run();
             
             test().left().update( a0, a1 )
-                  .postStaged(smem0).update( t(a0, b1) )
+                  .postStaged(smem0).insert( t(a2, b0) )
                   .run();            
             // @formatter:on            
             fail("Should not reach here");
         } catch ( AssertionError e ) {
-            assertTrue( e.getMessage().contains( "Update excpected more" ) );
+            assertTrue( e.getMessage().contains( "Insert excpected more" ) );
         }
     }    
     

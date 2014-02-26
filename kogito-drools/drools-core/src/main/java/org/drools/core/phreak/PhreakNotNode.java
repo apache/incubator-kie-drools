@@ -15,6 +15,8 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
 
+import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
+
 public class PhreakNotNode {
     public void doNode(NotNode notNode,
                        LeftTupleSink sink,
@@ -280,18 +282,10 @@ public class PhreakNotNode {
                                                                  leftTuple.getPropagationContext(), true)); // use leftTuple for the pctx here, as the right one is not available
                                                                                                             // this won't cause a problem, as the trigger tuple (to the left) will be more recent anwyay
                 } else {
-                    switch (childLeftTuple.getStagedType()) {
-                        // handle clash with already staged entries
-                        case LeftTuple.INSERT:
-                            stagedLeftTuples.removeInsert(childLeftTuple);
-                            break;
-                        case LeftTuple.UPDATE:
-                            stagedLeftTuples.removeUpdate(childLeftTuple);
-                            break;
-                    }
+                    updateChildLeftTuple(childLeftTuple, stagedLeftTuples, trgLeftTuples);
+
                     // not blocked, with children, so wasn't previous blocked and still isn't so modify
                     ltm.add(leftTuple); // add to memory so other fact handles can attempt to match
-                    trgLeftTuples.addUpdate(childLeftTuple); // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
                     childLeftTuple.reAddLeft();
                 }
             }

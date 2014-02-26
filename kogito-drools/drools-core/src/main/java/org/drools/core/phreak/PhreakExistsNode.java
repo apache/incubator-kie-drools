@@ -15,6 +15,8 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
 
+import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
+
 /**
 * Created with IntelliJ IDEA.
 * User: mdproctor
@@ -274,19 +276,9 @@ public class PhreakExistsNode {
                     LeftTuple childLeftTuple = leftTuple.getFirstChild();
 
                     while (childLeftTuple != null) {
-                        switch (childLeftTuple.getStagedType()) {
-                            // handle clash with already staged entries
-                            case LeftTuple.INSERT:
-                                stagedLeftTuples.removeInsert(childLeftTuple);
-                                break;
-                            case LeftTuple.UPDATE:
-                                stagedLeftTuples.removeUpdate(childLeftTuple);
-                                break;
-                        }
+                        childLeftTuple.setPropagationContext(leftTuple.getBlocker().getPropagationContext());
+                        updateChildLeftTuple(childLeftTuple, stagedLeftTuples, trgLeftTuples);
 
-                        // update, childLeftTuple is updated
-                        childLeftTuple.setPropagationContext( leftTuple.getBlocker().getPropagationContext() );
-                        trgLeftTuples.addUpdate(childLeftTuple);
                         childLeftTuple.reAddRight();
                         childLeftTuple = childLeftTuple.getLeftParentNext();
                     }
