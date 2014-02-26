@@ -468,7 +468,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
         if (isAllowed(user, null, (List<OrganizationalEntity>) task.getPeopleAssignments().getBusinessAdministrators())) {
 
 
-            ((InternalTaskData) task.getTaskData()).assignOwnerAndStatus(potentialOwners);
+            assignOwnerAndStatus((InternalTaskData) task, potentialOwners);
             if (task.getTaskData().getStatus() == Status.Ready) {
                 ((InternalPeopleAssignments) task.getPeopleAssignments()).setPotentialOwners(potentialOwners);
             }
@@ -476,5 +476,55 @@ public class MVELLifeCycleManager implements LifeCycleManager {
         } else {
             throw new PermissionDeniedException("User " + userId + " is not allowed to perform Nominate on Task " + taskId);
         }
+    }
+    
+    /**
+     * This method will potentially assign the actual owner of this TaskData and set the status
+     * of the data.
+     * <li>If there is only 1 potential owner, and it is a <code>User</code>, that will become the actual
+     * owner of the TaskData and the status will be set to <code>Status.Reserved</code>.</li>
+     * <li>f there is only 1 potential owner, and it is a <code>Group</code>,  no owner will be assigned
+     * and the status will be set to <code>Status.Ready</code>.</li>
+     * <li>If there are more than 1 potential owners, the status will be set to <code>Status.Ready</code>.</li>
+     * <li>otherwise, the task data will be unchanged</li>
+     *
+     * @param taskdata - task data
+     * @param potentialOwners - list of potential owners
+     * @return current status of task data
+     */
+    public Status assignOwnerAndStatus(InternalTaskData taskData, List<OrganizationalEntity> potentialOwners) {
+        if (taskData.getStatus() != Status.Created) {
+            throw new PermissionDeniedException("Can only assign task owner if status is Created!");
+        }
+
+        Status assignedStatus = null;
+
+        if (potentialOwners.size() == 1) {
+            // if there is a single potential owner, assign and set status to Reserved
+            OrganizationalEntity potentialOwner = potentialOwners.get(0);
+            // if there is a single potential user owner, assign and set status to Reserved
+            if (potentialOwner instanceof User) {
+                taskData.setActualOwner((User) potentialOwner);
+                assignedStatus = Status.Reserved;
+            }
+            //If there is a group set as potentialOwners, set the status to Ready ??
+            if (potentialOwner instanceof Group) {
+                assignedStatus = Status.Ready;
+            }
+        } else if (potentialOwners.size() > 1) {
+            // multiple potential owners, so set to Ready so one can claim.
+            assignedStatus = Status.Ready;
+        } else {
+            //@TODO we have no potential owners
+        }
+
+        if (assignedStatus != null) {
+            taskData.setStatus(assignedStatus);
+        } else {
+            // status wasn't assigned, so just return the currrent status
+            assignedStatus = taskData.getStatus();
+        }
+
+        return assignedStatus;
     }
 }
