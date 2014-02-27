@@ -106,6 +106,9 @@ public class FormProviderServiceImpl implements FormProviderService {
     @SuppressWarnings("unchecked")
     public String getFormDisplayTask(long taskId) {
         Task task = taskService.getTaskById(taskId);
+        if (task == null) {
+        	return "";
+        }
         String name = task.getNames().get(0).getText();
         ProcessAssetDesc processDesc = dataService.getProcessesByDeploymentIdProcessId(task.getTaskData().getDeploymentId(), task.getTaskData().getProcessId());
         Map<String, Object> renderContext = new HashMap<String, Object>();
