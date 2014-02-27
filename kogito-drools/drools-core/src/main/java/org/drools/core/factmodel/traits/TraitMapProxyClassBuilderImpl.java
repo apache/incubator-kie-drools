@@ -50,6 +50,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
+
 public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Serializable {
 
 
@@ -86,7 +88,6 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             NoSuchFieldException {
 
 
-        ClassWriter cw = new ClassGenerator.InternalClassWriter( classLoader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES );
         FieldVisitor fv;
         MethodVisitor mv;
 
@@ -139,11 +140,12 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
 
 
 
-        cw.visit( ClassGenerator.JAVA_VERSION, ACC_PUBLIC + ACC_SUPER,
-                  internalProxy,
-                  null,
-                  Type.getInternalName( proxyBaseClass ),
-                  new String[]{ internalTrait, Type.getInternalName( Serializable.class ) } );
+        ClassWriter cw = createClassWriter( classLoader,
+                                            ACC_PUBLIC + ACC_SUPER,
+                                            internalProxy,
+                                            null,
+                                            Type.getInternalName( proxyBaseClass ),
+                                            new String[]{ internalTrait, Type.getInternalName( Serializable.class ) } );
 
         {
             fv = cw.visitField( ACC_PRIVATE + ACC_FINAL + ACC_STATIC,

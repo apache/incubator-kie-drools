@@ -9,8 +9,13 @@ import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.rule.Package;
+import org.drools.core.rule.builder.dialect.asm.ClassLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.mvel2.asm.Opcodes.V1_5;
+import static org.mvel2.asm.Opcodes.V1_6;
+import static org.mvel2.asm.Opcodes.V1_7;
 
 /**
  * 
@@ -40,7 +45,7 @@ public class JavaDialectConfiguration
     protected static transient Logger logger = LoggerFactory.getLogger(JavaDialectConfiguration.class);
     
     public static final String          JAVA_COMPILER_PROPERTY = "drools.dialect.java.compiler";
-    
+
     public static final int             ECLIPSE         = 0;
     public static final int             JANINO          = 1;
     public static final int             NATIVE          = 2;
@@ -153,28 +158,15 @@ public class JavaDialectConfiguration
     }
 
     private String getDefaultLanguageLevel() {
-        String level = this.conf.getChainedProperties().getProperty( "drools.dialect.java.compiler.lnglevel",
-                                                                     null );
-
-        if ( level == null ) {
-            String version = System.getProperty( "java.version" );
-            if ( version.startsWith( "1.5" ) ) {
-                level = "1.5";
-            } else if ( version.startsWith( "1.6" ) ) {
-                level = "1.6";
-            } else if ( version.startsWith( "1.7" ) ) {
-                level = "1.7";
-            } else {
-                level = "1.5";
-            }
+        switch (ClassLevel.findJavaVersion(this.conf.getChainedProperties())) {
+            case V1_5:
+                return "1.5";
+            case V1_6:
+                return "1.6";
+            case V1_7:
+                return "1.7";
+            default:
+                return "1.6";
         }
-
-        if ( Arrays.binarySearch( LANGUAGE_LEVELS,
-                                  level ) < 0 ) {
-            throw new RuntimeDroolsException( "value '" + level + "' is not a valid language level" );
-        }
-
-        return level;
     }
-
 }

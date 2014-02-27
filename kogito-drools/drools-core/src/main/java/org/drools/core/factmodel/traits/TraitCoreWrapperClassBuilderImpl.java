@@ -47,6 +47,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
+
 public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBuilder, Serializable {
 
 
@@ -66,16 +68,16 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
         String coreName = coreKlazz.getName();
         String wrapperName = coreName + "Wrapper";
 
-        ClassWriter cw = new ClassGenerator.InternalClassWriter( classLoader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES );
         FieldVisitor fv;
         MethodVisitor mv;
 
-        cw.visit( ClassGenerator.JAVA_VERSION, ACC_PUBLIC + ACC_SUPER,
-                BuildUtils.getInternalType( wrapperName ),
-                BuildUtils.getTypeDescriptor( coreName ) +
-                        "Lorg/drools/factmodel/traits/CoreWrapper<" + BuildUtils.getTypeDescriptor( coreName ) + ">;",
-                BuildUtils.getInternalType( coreName ),
-                new String[] { Type.getInternalName( CoreWrapper.class ), Type.getInternalName( Externalizable.class ) } );
+        ClassWriter cw = createClassWriter( classLoader,
+                                            ACC_PUBLIC + ACC_SUPER,
+                                            BuildUtils.getInternalType( wrapperName ),
+                                            BuildUtils.getTypeDescriptor( coreName ) +
+                                                    "Lorg/drools/factmodel/traits/CoreWrapper<" + BuildUtils.getTypeDescriptor( coreName ) + ">;",
+                                            BuildUtils.getInternalType( coreName ),
+                                            new String[] { Type.getInternalName( CoreWrapper.class ), Type.getInternalName( Externalizable.class ) } );
 
         {
             AnnotationVisitor av0 = cw.visitAnnotation( Type.getDescriptor( Traitable.class ), true );

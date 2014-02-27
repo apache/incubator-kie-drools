@@ -32,6 +32,8 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 
+import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
+
 public class TraitClassBuilderImpl implements TraitClassBuilder, Serializable {
 
 
@@ -39,8 +41,7 @@ public class TraitClassBuilderImpl implements TraitClassBuilder, Serializable {
 
         init( classDef );
 
-        ClassWriter cw = new ClassGenerator.InternalClassWriter( classLoader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES );
-
+        ClassWriter cw = null;
 
         try {
             String cName = BuildUtils.getInternalType(classDef.getClassName());
@@ -63,11 +64,12 @@ public class TraitClassBuilderImpl implements TraitClassBuilder, Serializable {
                 intfaces[ tmp.length + 2 ] = Type.getInternalName( GeneratedFact.class );
             }
 
-            cw.visit( ClassGenerator.JAVA_VERSION, ACC_PUBLIC + ACC_ABSTRACT + ACC_INTERFACE,
-                    cName,
-                    genericTypes,
-                    superType,
-                    intfaces );
+            cw = createClassWriter( classLoader,
+                                    ACC_PUBLIC + ACC_ABSTRACT + ACC_INTERFACE,
+                                    cName,
+                                    genericTypes,
+                                    superType,
+                                    intfaces );
 
             {
                 if ( classDef.getDefinedClass() == null || classDef.getDefinedClass().getAnnotation( Trait.class ) == null ) {

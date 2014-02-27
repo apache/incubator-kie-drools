@@ -16,7 +16,6 @@
 
 package org.drools.core.factmodel;
 
-import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.FieldVisitor;
@@ -29,6 +28,8 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 
 import java.util.List;
+
+import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
 
 /**
  * A builder to dynamically build simple Javabean(TM) classes
@@ -71,10 +72,7 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Seria
 
         EnumClassDefinition edef = (EnumClassDefinition) classDef;
 
-        ClassWriter cw = new ClassGenerator.InternalClassWriter( classLoader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES );
-
-        this.buildClassHeader( cw,
-                edef );
+        ClassWriter cw = this.buildClassHeader( classLoader, edef );
 
         this.buildLiterals(cw,
                 edef);
@@ -105,14 +103,13 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Seria
 
 
 
-    protected void buildClassHeader(ClassWriter cw, EnumClassDefinition classDef) {
-        cw.visit( ClassGenerator.JAVA_VERSION,
-                ACC_PUBLIC + ACC_FINAL + ACC_SUPER + ACC_ENUM,
-                BuildUtils.getInternalType( classDef.getClassName() ),
-                "Ljava/lang/Enum<" + BuildUtils.getTypeDescriptor( classDef.getClassName() ) + ">;",
-                BuildUtils.getInternalType( classDef.getSuperClass() ),
-                BuildUtils.getInternalTypes( classDef.getInterfaces() ) );
-
+    protected ClassWriter buildClassHeader(ClassLoader classLoader, EnumClassDefinition classDef) {
+        return createClassWriter( classLoader,
+                                  ACC_PUBLIC + ACC_FINAL + ACC_SUPER + ACC_ENUM,
+                                  BuildUtils.getInternalType( classDef.getClassName() ),
+                                  "Ljava/lang/Enum<" + BuildUtils.getTypeDescriptor( classDef.getClassName() ) + ">;",
+                                  BuildUtils.getInternalType( classDef.getSuperClass() ),
+                                  BuildUtils.getInternalTypes( classDef.getInterfaces() ) );
     }
 
     protected void buildLiterals(ClassWriter cw, EnumClassDefinition classDef) {

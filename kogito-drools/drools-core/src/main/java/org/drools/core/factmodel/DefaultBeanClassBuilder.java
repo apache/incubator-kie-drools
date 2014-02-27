@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
+
 /**
  * A builder to dynamically build simple Javabean(TM) classes
  */
@@ -81,11 +83,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             InstantiationException,
             NoSuchFieldException {
 
-        ClassWriter cw = new ClassGenerator.InternalClassWriter( classLoader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES );
-        //ClassVisitor cw = new CheckClassAdapter(cwr);
-
-        this.buildClassHeader( cw,
-                classDef );
+        ClassWriter cw = this.buildClassHeader( classLoader, classDef );
 
         this.buildFields( cw,
                 classDef );
@@ -696,12 +694,9 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
     /**
      * Defines the class header for the given class definition
-     *
-     * @param cw
-     * @param classDef
      */
-    protected void buildClassHeader(ClassVisitor cw,
-                                    ClassDefinition classDef) {
+    protected ClassWriter buildClassHeader(ClassLoader classLoader,
+                                           ClassDefinition classDef) {
         String[] original = classDef.getInterfaces();
         String[] interfaces = new String[original.length + 1];
         for ( int i = 0; i < original.length; i++ ) {
@@ -713,20 +708,20 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         if ( classDef.isAbstrakt() ) {
             classModifiers += Opcodes.ACC_ABSTRACT;
         }
-        // Building class header
-        cw.visit( ClassGenerator.JAVA_VERSION,
-                classModifiers,
-                BuildUtils.getInternalType( classDef.getClassName() ),
-                null,
-                BuildUtils.getInternalType( classDef.getSuperClass() ),
-                interfaces );
+
+        ClassWriter cw = createClassWriter( classLoader,
+                                            classModifiers,
+                                            BuildUtils.getInternalType( classDef.getClassName() ),
+                                            null,
+                                            BuildUtils.getInternalType( classDef.getSuperClass() ),
+                                            interfaces );
 
         buildClassAnnotations(classDef, cw);
 
-
-
         cw.visitSource( classDef.getClassName() + ".java",
                         null );
+
+        return cw;
     }
 
 
