@@ -1,12 +1,10 @@
 package org.jbpm.kie.services.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.event.Event;
@@ -22,8 +20,7 @@ import org.jbpm.kie.services.impl.event.Deploy;
 import org.jbpm.kie.services.impl.event.DeploymentEvent;
 import org.jbpm.kie.services.impl.event.Undeploy;
 import org.jbpm.kie.services.impl.model.ProcessInstanceDesc;
-import org.jbpm.process.audit.AbstractAuditLogger;
-import org.jbpm.process.audit.AuditLoggerFactory;
+import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeManager;
@@ -178,43 +175,14 @@ public abstract class AbstractDeploymentService implements DeploymentService {
     public void setRuntimeDataService(RuntimeDataService runtimeDataService) {
         this.runtimeDataService = runtimeDataService;
     }
-
-    /**
-     * Provides  AuditLogger implementation, JPA or JMS.
-     * JPA is the default one and JMS requires to have configuration file (.properties)
-     * to be available on classpath under 'jbpm.audit.jms.properties' name.
-     * This file must have following properties defined:
-     * <ul>
-     *  <li>jbpm.audit.jms.connection.factory.jndi - JNDI name of the connection factory to look up - type String</li>
-     *  <li>jbpm.audit.jms.queue.jndi - JNDI name of the queue to look up - type String</li>
-     * </ul> 
-     * @return instance of the audit logger
-     */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private AbstractAuditLogger getAuditLogger() {
-        
-        if ("true".equals(System.getProperty("jbpm.audit.jms.enabled"))) {
-            try {
-                Properties properties = new Properties();
-                properties.load(this.getClass().getResourceAsStream("/jbpm.audit.jms.properties"));
-                
-                return AuditLoggerFactory.newJMSInstance((Map)properties);
-            } catch (IOException e) {
-                logger.error("Unable to load jms audit properties from {}", "/jbpm.audit.jms.properties", e);
-            }
-        } 
-        
-        return AuditLoggerFactory.newJPAInstance();
-    }
     
-    protected AbstractAuditLogger setupAuditLogger(IdentityProvider identityProvider, String deploymentUnitId) { 
-        AbstractAuditLogger auditLogger = getAuditLogger();
+    protected AuditEventBuilder setupAuditLogger(IdentityProvider identityProvider, String deploymentUnitId) { 
+       
         ServicesAwareAuditEventBuilder auditEventBuilder = new ServicesAwareAuditEventBuilder();
         auditEventBuilder.setIdentityProvider(identityProvider);
         auditEventBuilder.setDeploymentUnitId(deploymentUnitId);
-        auditEventBuilder.setBeanManager(beanManager);
-        auditLogger.setBuilder(auditEventBuilder);
+        auditEventBuilder.setBeanManager(beanManager);        
         
-        return auditLogger;
+        return auditEventBuilder;
     }
 }

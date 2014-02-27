@@ -18,6 +18,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
@@ -125,7 +126,7 @@ public class MultipleRuntimeManagerTest extends AbstractBaseTest {
                 .entityManagerFactory(emf)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
-                .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, null))
+                .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, (AuditEventBuilder)null))
                 .get();
         
         RuntimeManager manager = managerFactory.newSingletonRuntimeManager(environment);
@@ -137,7 +138,7 @@ public class MultipleRuntimeManagerTest extends AbstractBaseTest {
                 .entityManagerFactory(emf)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
-                .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, null))
+                .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, (AuditEventBuilder)null))
                 .get();
         
         manager = managerFactory.newPerRequestRuntimeManager(environment);
@@ -149,7 +150,7 @@ public class MultipleRuntimeManagerTest extends AbstractBaseTest {
                 .entityManagerFactory(emf)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
-                .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, null))
+                .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, (AuditEventBuilder)null))
                 .get();
         
         manager = managerFactory.newPerProcessInstanceRuntimeManager(environment);

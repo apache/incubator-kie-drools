@@ -15,12 +15,14 @@
  */
 package org.jbpm.runtime.manager.impl.cdi;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Any;
@@ -34,6 +36,8 @@ import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.util.CDIHelper;
 import org.drools.core.util.StringUtils;
 import org.jbpm.process.audit.AbstractAuditLogger;
+import org.jbpm.process.audit.AuditLoggerFactory;
+import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
 import org.jbpm.runtime.manager.api.EventListenerProducer;
 import org.jbpm.runtime.manager.api.GlobalProducer;
@@ -173,6 +177,8 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         List<ProcessEventListener> defaultListeners = new ArrayList<ProcessEventListener>();
         if(auditlogger != null) {
             defaultListeners.add(auditlogger);
+        } else if (getAuditBuilder() != null) {
+        	defaultListeners.add(getAuditLoggerInstance(runtime));
         }
         try {
             for (EventListenerProducer<ProcessEventListener> producer : processListenerProducer) {
@@ -273,6 +279,37 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         return instance;
     }
     
+	/**
+     * Allows to create instance of this class dynamically via <code>BeanManager</code>. This is useful in case multiple 
+     * independent instances are required on runtime and that need cannot be satisfied with regular CDI practices.
+     * @param beanManager - bean manager instance of the container
+     * @param eventBuilder - <code>AuditEventBuilder</code> logger builder instance to be used, might be null
+     * @return new instance of the factory
+     */
+    public static RegisterableItemsFactory getFactory(BeanManager beanManager, AuditEventBuilder eventBuilder) {
+        InjectableRegisterableItemsFactory instance = getInstanceByType(beanManager, InjectableRegisterableItemsFactory.class, new Annotation[]{});
+        instance.setAuditBuilder(eventBuilder);
+        return instance;
+    }
+    
+    /**
+     * Allows to create instance of this class dynamically via <code>BeanManager</code>. This is useful in case multiple 
+     * independent instances are required on runtime and that need cannot be satisfied with regular CDI practices.
+     * @param beanManager - bean manager instance of the container
+     * @param eventBuilder - <code>AbstractAuditLogger</code> logger builder instance to be used, might be null
+     * @param kieContainer - <code>KieContainer</code> that the factory is built for
+     * @param ksessionName - name of the ksession defined in kmodule to be used, 
+     * if not given default ksession from kmodule will be used.
+     * @return
+     */
+    public static RegisterableItemsFactory getFactory(BeanManager beanManager, AuditEventBuilder eventBuilder, KieContainer kieContainer, String ksessionName) {
+        InjectableRegisterableItemsFactory instance = getInstanceByType(beanManager, InjectableRegisterableItemsFactory.class, new Annotation[]{});
+        instance.setAuditBuilder(eventBuilder);
+        instance.setKieContainer(kieContainer);
+        instance.setKsessionName(ksessionName);
+        return instance;
+    }
+    
     
     protected static <T> T getInstanceByType(BeanManager manager, Class<T> type, Annotation... bindings) {
         final Bean<?> bean = manager.resolve(manager.getBeans(type, bindings));
@@ -317,5 +354,34 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         return parameters;
     }
 
+    /**
+     * Provides  AuditLogger implementation, JPA or JMS.
+     * JPA is the default one and JMS requires to have configuration file (.properties)
+     * to be available on classpath under 'jbpm.audit.jms.properties' name.
+     * This file must have following properties defined:
+     * <ul>
+     *  <li>jbpm.audit.jms.connection.factory.jndi - JNDI name of the connection factory to look up - type String</li>
+     *  <li>jbpm.audit.jms.queue.jndi - JNDI name of the queue to look up - type String</li>
+     * </ul> 
+     * @return instance of the audit logger
+     */
+    protected AbstractAuditLogger getAuditLoggerInstance(RuntimeEngine engine) {
+        AbstractAuditLogger auditLogger = null;
+        if ("true".equals(System.getProperty("jbpm.audit.jms.enabled"))) {
+            try {
+                Properties properties = new Properties();
+                properties.load(this.getClass().getResourceAsStream("/jbpm.audit.jms.properties"));
+                
+                auditLogger =  AuditLoggerFactory.newJMSInstance((Map)properties);
+            } catch (IOException e) {
+                logger.error("Unable to load jms audit properties from {}", "/jbpm.audit.jms.properties", e);
+            }
+        } 
+        
+        auditLogger = AuditLoggerFactory.newJPAInstance(engine.getKieSession().getEnvironment());
+        auditLogger.setBuilder(getAuditBuilder());
+        
+        return auditLogger;
+    }
     
 }
