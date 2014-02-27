@@ -5466,4 +5466,116 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(2, ksession.fireAllRules() );
         assertEquals(3, f2.getX());
     }
+
+    @Test
+    @Ignore
+    public void testNestedNots1() {
+        String str = "package org.test; " +
+
+                     "rule negation_over_nested " +
+                     "when " +
+                     "  not ( (String() and Integer()) " +
+                     "           or  " +
+                     "           (String() and Integer())) " +
+                     "then  " +
+                     "    System.out.println(\"negation_over_nested\"); " +
+                     "end " +
+                     " " +
+
+                     "rule negation_distributed_partially_no_sharing " +
+                     "when " +
+                     "    (not (String() and Long())) " +
+                     "    and  " +
+                     "    (not (String() and Long()))     " +
+                     "then  " +
+                     "    System.out.println(\"negation_distributed_partially_no_sharing\"); " +
+                     "end " +
+                     " " +
+
+                     "rule negation_distributed_partially_sharing " +
+                     "when " +
+                     "    (not (String() and Integer())) " +
+                     "    and  " +
+                     "    (not (String() and Integer()))     " +
+                     "then  " +
+                     "    System.out.println(\"negation_distributed_partially_sharing\"); " +
+                     "end " +
+                     " " +
+
+                     "rule negation_distributed_fully " +
+                     "when " +
+                     "    ((not String()) or (not Integer())) " +
+                     "    and " +
+                     "      ((not String()) or (not Integer())) " +
+                     "then  " +
+                     "    System.out.println(\"negation_distributed_fully\"); " +
+                     "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        int n = ksession.fireAllRules();
+
+        assertEquals(7, n);
+    }
+
+    @Test
+    @Ignore
+    public void testNestedNots2() {
+        String str = "package org.test; " +
+
+                     "rule shared_conjunct " +
+                     "when " +
+                     "     (not (String() and Integer())) " +
+                     "then " +
+                     "     System.out.println(\"shared_conjunct\"); " +
+                     "end " +
+                     
+                     "rule negation_over_nested " +
+                     "when " +
+                     "  not ( (String() and Integer()) " +
+                     "           or  " +
+                     "           (String() and Integer())) " +
+                     "then  " +
+                     "    System.out.println(\"negation_over_nested\"); " +
+                     "end " +
+                     " " +
+
+                     "rule negation_distributed_partially_no_sharing " +
+                     "when " +
+                     "    (not (String() and Long())) " +
+                     "    and  " +
+                     "    (not (String() and Long()))     " +
+                     "then  " +
+                     "    System.out.println(\"negation_distributed_partially_no_sharing\"); " +
+                     "end " +
+                     " " +
+
+                     "rule negation_distributed_partially_sharing " +
+                     "when " +
+                     "    (not (String() and Integer())) " +
+                     "    and  " +
+                     "    (not (String() and Integer()))     " +
+                     "then  " +
+                     "    System.out.println(\"negation_distributed_partially_sharing\"); " +
+                     "end " +
+                     " " +
+
+                     "rule negation_distributed_fully " +
+                     "when " +
+                     "    ((not String()) or (not Integer())) " +
+                     "    and " +
+                     "      ((not String()) or (not Integer())) " +
+                     "then  " +
+                     "    System.out.println(\"negation_distributed_fully\"); " +
+                     "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        int n = ksession.fireAllRules();
+
+        assertEquals(8, n);
+    }
+
 }
