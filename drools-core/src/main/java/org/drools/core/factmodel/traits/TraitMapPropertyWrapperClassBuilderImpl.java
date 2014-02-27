@@ -40,6 +40,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
+
 public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWrapperClassBuilder, Serializable {
 
     private transient ClassDefinition trait;
@@ -64,7 +66,6 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
             NoSuchFieldException {
 
 
-        ClassWriter cw = new ClassGenerator.InternalClassWriter( classLoader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES );
         FieldVisitor fv;
         MethodVisitor mv;
 
@@ -79,13 +80,14 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
         String internalCore     = Type.getInternalName( core.getDefinedClass() );
 
 
-        
-        cw.visit( ClassGenerator.JAVA_VERSION, ACC_PUBLIC + ACC_SUPER,
-                internalWrapper,
-                Type.getDescriptor( Object.class ) + Type.getDescriptor( Map.class ) + Type.getDescriptor( MapWrapper.class ),
-//                "Ljava/lang/Object;Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;Lorg/drools/factmodel/traits/MapWrapper;",
-                Type.getInternalName( Object.class ),
-                new String[]{ Type.getInternalName( Map.class ), Type.getInternalName( MapWrapper.class ), Type.getInternalName( Serializable.class ) } );
+
+        ClassWriter cw = createClassWriter( classLoader,
+                                            ACC_PUBLIC + ACC_SUPER,
+                                            internalWrapper,
+                                            Type.getDescriptor( Object.class ) + Type.getDescriptor( Map.class ) + Type.getDescriptor( MapWrapper.class ),
+                            //                "Ljava/lang/Object;Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;Lorg/drools/factmodel/traits/MapWrapper;",
+                                            Type.getInternalName( Object.class ),
+                                            new String[]{ Type.getInternalName( Map.class ), Type.getInternalName( MapWrapper.class ), Type.getInternalName( Serializable.class ) } );
 
         cw.visitInnerClass( Type.getInternalName( Map.Entry.class ), Type.getInternalName( Map.class ), "Entry", ACC_PUBLIC + ACC_STATIC + ACC_ABSTRACT + ACC_INTERFACE );
 

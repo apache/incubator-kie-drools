@@ -71,13 +71,10 @@ import static org.mvel2.asm.Opcodes.T_FLOAT;
 import static org.mvel2.asm.Opcodes.T_INT;
 import static org.mvel2.asm.Opcodes.T_LONG;
 import static org.mvel2.asm.Opcodes.T_SHORT;
-import static org.mvel2.asm.Opcodes.V1_6;
 
 public class ClassGenerator {
 
     private static final boolean DUMP_GENERATED_CLASSES = false;
-
-    public static final int JAVA_VERSION = V1_6;
 
     private final String className;
     private final TypeResolver typeResolver;
@@ -125,8 +122,7 @@ public class ClassGenerator {
 
     public byte[] generateBytecode() {
         if (bytecode == null) {
-            ClassWriter cw = new InternalClassWriter(classLoader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES );
-            cw.visit(JAVA_VERSION, access, getClassDescriptor(), signature, getSuperClassDescriptor(), toInteralNames(interfaces));
+            ClassWriter cw = createClassWriter(classLoader, access, getClassDescriptor(), signature, getSuperClassDescriptor(), toInteralNames(interfaces));
             for (int i = 0; i < classParts.size(); i++) { // don't use iterator to allow method visits to add more class fields and methods
                 classParts.get(i).write(this, cw);
             }
@@ -965,6 +961,12 @@ public class ClassGenerator {
                 return c.getName().replace('.', '/');
             }
         }
+    }
 
+    public static ClassWriter createClassWriter(ClassLoader classLoader, int access, String name, String signature, String superName, String[] interfaces) {
+        // TODO: add COMPUTE_FRAMES when ASM will be ok with 1_7
+        ClassWriter cw = new InternalClassWriter(classLoader, ClassWriter.COMPUTE_MAXS /* | ClassWriter.COMPUTE_FRAMES */ );
+        cw.visit(ClassLevel.getJavaVersion(classLoader), access, name, signature, superName, interfaces);
+        return cw;
     }
 }

@@ -53,6 +53,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
+
 public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder, Serializable {
 
 
@@ -86,7 +88,6 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
             NoSuchFieldException {
 
 
-        ClassWriter cw = new ClassGenerator.InternalClassWriter( classLoader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES );
         FieldVisitor fv;
         MethodVisitor mv;
 
@@ -138,13 +139,12 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         }
 
 
-
-        cw.visit( ClassGenerator.JAVA_VERSION,
-                  ACC_PUBLIC + ACC_SUPER,
-                  internalProxy,
-                  null,
-                  Type.getInternalName( proxyBaseClass ),
-                  new String[] { internalTrait, Type.getInternalName( Externalizable.class ) } );
+        ClassWriter cw = createClassWriter( classLoader,
+                                            ACC_PUBLIC + ACC_SUPER,
+                                            internalProxy,
+                                            null,
+                                            Type.getInternalName( proxyBaseClass ),
+                                            new String[] { internalTrait, Type.getInternalName( Externalizable.class ) } );
 
         {
             fv = cw.visitField( ACC_PRIVATE + ACC_FINAL + ACC_STATIC,

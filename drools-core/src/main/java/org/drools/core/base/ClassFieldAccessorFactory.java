@@ -56,6 +56,8 @@ import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
 
+import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
+
 /**
  * This generates subclasses of BaseClassFieldExtractor to provide field extractors.
  * This should not be used directly, but via ClassFieldExtractor (which ensures that it is 
@@ -228,12 +230,8 @@ public class ClassFieldAccessorFactory {
                               final Class< ? > fieldType,
                               final boolean isInterface) throws Exception {
 
-        final ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES );
-
         final Class< ? > superClass = getReaderSuperClassFor( fieldType );
-        buildClassHeader( superClass,
-                          className,
-                          cw );
+        final ClassWriter cw = buildClassHeader( superClass, className );
 
         //        buildConstructor( superClass,
         //                          className,
@@ -260,12 +258,9 @@ public class ClassFieldAccessorFactory {
                               final Class< ? > fieldType,
                               final boolean isInterface) throws Exception {
 
-        final ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES );
 
         final Class< ? > superClass = getWriterSuperClassFor( fieldType );
-        buildClassHeader( superClass,
-                          className,
-                          cw );
+        final ClassWriter cw = buildClassHeader( superClass, className );
 
         build3ArgConstructor( superClass,
                               className,
@@ -290,18 +285,19 @@ public class ClassFieldAccessorFactory {
      * @param className The extractor class name
      * @param cw
      */
-    protected void buildClassHeader(final Class< ? > superClass,
-                                    final String className,
-                                    final ClassWriter cw) {
-        cw.visit( ClassGenerator.JAVA_VERSION,
-                  Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
-                  className,
-                  null,
-                  Type.getInternalName( superClass ),
-                  null );
+    protected ClassWriter buildClassHeader(Class< ? > superClass, String className) {
+
+        ClassWriter cw = createClassWriter( superClass.getClassLoader(),
+                                            Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
+                                            className,
+                                            null,
+                                            Type.getInternalName( superClass ),
+                                            null );
 
         cw.visitSource( null,
                         null );
+
+        return cw;
     }
 
     /**
