@@ -376,9 +376,9 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
             } catch (IOException e) {
                 logger.error("Unable to load jms audit properties from {}", "/jbpm.audit.jms.properties", e);
             }
-        } 
-        
-        auditLogger = AuditLoggerFactory.newJPAInstance(engine.getKieSession().getEnvironment());
+        } else {        
+        	auditLogger = AuditLoggerFactory.newJPAInstance(engine.getKieSession().getEnvironment());
+        }
         auditLogger.setBuilder(getAuditBuilder());
         
         return auditLogger;
