@@ -27,6 +27,7 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.examples.tsp.domain.City;
+import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.domain.Visit;
 
@@ -119,6 +120,10 @@ public class TspPanel extends SolutionPanel {
             }
         });
         updatePanel(solutionBusiness.getSolution());
+    }
+
+    public void doMove(Visit visit, Standstill toStandstill) {
+        solutionBusiness.doChangeMove(visit, "previousStandstill", toStandstill);
     }
 
 }

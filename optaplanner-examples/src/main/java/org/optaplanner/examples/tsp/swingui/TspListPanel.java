@@ -27,6 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedChangeMove;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
@@ -105,8 +106,7 @@ public class TspListPanel extends JPanel {
                     "Visit " + visit.getCity().getSafeName() + " after", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Standstill toStandstill = (Standstill) previousStandstillListField.getSelectedItem();
-//                tspPanel.doMove(visit, toStandstill);
-                JOptionPane.showMessageDialog(TspListPanel.this, "Unsupported operation."); // TODO FIXME
+                tspPanel.doMove(visit, toStandstill);
                 tspPanel.getWorkflowFrame().resetScreen();
             }
         }

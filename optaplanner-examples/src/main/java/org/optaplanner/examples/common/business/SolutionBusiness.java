@@ -31,6 +31,7 @@ import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedChangeMove;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solution.Solution;
@@ -276,7 +277,11 @@ public class SolutionBusiness {
     public ChangeMove createChangeMove(Object entity, String variableName, Object toPlanningValue) {
         PlanningVariableDescriptor variableDescriptor = guiScoreDirector.getSolutionDescriptor()
                 .findVariableDescriptor(entity, variableName);
-        return new ChangeMove(entity, variableDescriptor, toPlanningValue);
+        if (variableDescriptor.isChained()) {
+            return new ChainedChangeMove(entity, variableDescriptor, toPlanningValue);
+        } else {
+            return new ChangeMove(entity, variableDescriptor, toPlanningValue);
+        }
     }
 
     public void doChangeMove(Object entity, String variableName, Object toPlanningValue) {
