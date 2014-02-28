@@ -12,9 +12,6 @@ public class ClassLevel {
     private static volatile int javaVersion = -1;
 
     public static int getJavaVersion(ClassLoader classLoader) {
-        // TODO: remove when ASM will be ok with 1_7
-        if (true) return V1_6;
-
         if (javaVersion < 0) {
             synchronized (ClassGenerator.class) {
                 if (javaVersion < 0) {

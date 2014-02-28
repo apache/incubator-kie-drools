@@ -964,8 +964,7 @@ public class ClassGenerator {
     }
 
     public static ClassWriter createClassWriter(ClassLoader classLoader, int access, String name, String signature, String superName, String[] interfaces) {
-        // TODO: add COMPUTE_FRAMES when ASM will be ok with 1_7
-        ClassWriter cw = new InternalClassWriter(classLoader, ClassWriter.COMPUTE_MAXS /* | ClassWriter.COMPUTE_FRAMES */ );
+        ClassWriter cw = new InternalClassWriter(classLoader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES );
         cw.visit(ClassLevel.getJavaVersion(classLoader), access, name, signature, superName, interfaces);
         return cw;
     }
