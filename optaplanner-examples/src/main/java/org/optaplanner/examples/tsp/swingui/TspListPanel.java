@@ -17,7 +17,9 @@
 package org.optaplanner.examples.tsp.swingui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -26,6 +28,8 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JViewport;
+import javax.swing.Scrollable;
 
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedChangeMove;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
@@ -34,7 +38,9 @@ import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.domain.Visit;
 
-public class TspListPanel extends JPanel {
+public class TspListPanel extends JPanel implements Scrollable {
+
+    public static final Dimension PREFERRED_SCROLLABLE_VIEWPORT_SIZE = new Dimension(800, 600);
 
     private static final Color HEADER_COLOR = TangoColorFactory.BUTTER_1;
 
@@ -111,6 +117,32 @@ public class TspListPanel extends JPanel {
             }
         }
 
+    }
+
+    public Dimension getPreferredScrollableViewportSize() {
+        return PREFERRED_SCROLLABLE_VIEWPORT_SIZE;
+    }
+
+    public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+        return 20;
+    }
+
+    public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+        return 20;
+    }
+
+    public boolean getScrollableTracksViewportWidth() {
+        if (getParent() instanceof JViewport) {
+            return (((JViewport) getParent()).getWidth() > getPreferredSize().width);
+        }
+        return false;
+    }
+
+    public boolean getScrollableTracksViewportHeight() {
+        if (getParent() instanceof JViewport) {
+            return (((JViewport) getParent()).getHeight() > getPreferredSize().height);
+        }
+        return false;
     }
 
 }
