@@ -497,11 +497,13 @@ public class ASMConditionEvaluatorJitter {
                 mv.visitLabel(beforeTry);
             }
 
-            mv.visitTypeInsn(NEW, internalName(toType));
-            mv.visitInsn(DUP);
-            load(regNr);
-            coerceByConstructor(fromType, toType);
-            store(regNr, toType);
+            if (!toType.isAssignableFrom(fromType)) {
+                mv.visitTypeInsn(NEW, internalName(toType));
+                mv.visitInsn(DUP);
+                load(regNr);
+                coerceByConstructor(fromType, toType);
+                store(regNr, toType);
+            }
 
             if (isNumber) {
                 Label afterCatch = new Label();
