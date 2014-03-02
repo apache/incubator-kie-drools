@@ -18,6 +18,7 @@ import javax.transaction.UserTransaction;
 import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.ProcessInstanceLog;
+import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.HumanTaskServiceFactory;
@@ -28,6 +29,9 @@ import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.event.process.DefaultProcessEventListener;
+import org.kie.api.event.process.ProcessEventListener;
+import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -659,5 +663,65 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         manager.close();
         // check if our custom task service factory was used
         assertTrue(customTaskServiceUsed.get());
+    }
+    
+    @Test
+    public void testRestoreTimersAfterManagerClose() throws Exception {
+    	 final List<Long> timerExpirations = new ArrayList<Long>();
+         
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory(){
+
+					@Override
+					public List<ProcessEventListener> getProcessEventListeners(
+							RuntimeEngine runtime) {
+						// TODO Auto-generated method stub
+						List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
+						listeners.add(new DefaultProcessEventListener(){
+				             @Override
+				             public void afterNodeLeft(ProcessNodeLeftEvent event) {
+				                 if (event.getNodeInstance().getNodeName().equals("timer")) {
+				                     timerExpirations.add(event.getProcessInstance().getId());
+				                 }
+				             }
+				             
+				         });
+						return listeners;
+					}                	
+                })
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycle3.bpmn2"), ResourceType.BPMN2)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);        
+        assertNotNull(manager);
+        // ksession for process instance #1
+        // since there is no process instance yet we need to get new session
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        KieSession ksession = runtime.getKieSession();
+        ProcessInstance pi1 = ksession.startProcess("IntermediateCatchEvent");
+        // both processes started 
+        assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
+
+        // wait a bit for some timers to fire
+        Thread.sleep(2000);
+        manager.disposeRuntimeEngine(runtime);
+        ((AbstractRuntimeManager)manager).close(true);
+        
+        manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);        
+        assertNotNull(manager);
+        
+        Thread.sleep(2000);
+        
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
+        ksession = runtime.getKieSession();
+        
+        ksession.abortProcessInstance(pi1.getId());
+        Thread.sleep(2000);
+        manager.disposeRuntimeEngine(runtime);
+        manager.close();
+        
+        assertEquals(4,  timerExpirations.size());
     }
 }

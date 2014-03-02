@@ -16,13 +16,13 @@
 package org.jbpm.runtime.manager.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.core.command.CommandService;
 import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.persistence.OrderedTransactionSynchronization;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionManagerHelper;
@@ -30,11 +30,13 @@ import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.runtime.manager.impl.factory.CDITaskServiceFactory;
 import org.jbpm.runtime.manager.impl.mapper.EnvironmentAwareProcessInstanceContext;
 import org.jbpm.runtime.manager.impl.mapper.InMemoryMapper;
+import org.jbpm.runtime.manager.impl.mapper.JPAMapper;
 import org.jbpm.runtime.manager.impl.tx.DestroySessionTransactionSynchronization;
 import org.jbpm.runtime.manager.impl.tx.DisposeSessionTransactionSynchronization;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -98,7 +100,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             if (localRuntime != null) {
                 return localRuntime;
             }
-            ksessionId = mapper.findMapping(context);
+            ksessionId = mapper.findMapping(context, this.identifier);
             if (ksessionId == null) {
                 throw new SessionNotFoundException("No session found for context " + context.getContextId());
             }
@@ -114,7 +116,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         
         saveLocalRuntime(contextId, runtime);
         
-        ksession.addEventListener(new MaintainMappingListener(ksessionId, runtime));
+        ksession.addEventListener(new MaintainMappingListener(ksessionId, runtime, this.identifier));
         return runtime;
     }
     
@@ -127,11 +129,11 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         if (context == null || context.getContextId() == null) {
             return;
         }
-        Integer ksessionId = mapper.findMapping(context);
+        Integer ksessionId = mapper.findMapping(context, this.identifier);
                 
         if (ksessionId == null) {
             // make sure ksession is not use by any other context
-            Object contextId = mapper.findContextId(ksession.getId());
+            Object contextId = mapper.findContextId(ksession.getId(), this.identifier);
             if (contextId != null) {
                 throw new IllegalStateException("KieSession with id " + ksession.getId() + " is already used by another context");
             }
@@ -175,7 +177,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
 
     
     public boolean validate(Integer ksessionId, Long processInstanceId) {
-        Integer mapped = this.mapper.findMapping(ProcessInstanceIdContext.get(processInstanceId));
+        Integer mapped = this.mapper.findMapping(ProcessInstanceIdContext.get(processInstanceId), this.identifier);
         if (mapped == ksessionId) {
             return true;
         }
@@ -188,16 +190,18 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
 
         private Integer ksessionId;
         private RuntimeEngine runtime;
+        private String managerId;
         
-        MaintainMappingListener(Integer ksessionId, RuntimeEngine runtime) {
+        MaintainMappingListener(Integer ksessionId, RuntimeEngine runtime, String managerId) {
         	this.ksessionId = ksessionId;
             this.runtime = runtime;
+            this.managerId = managerId;
         }
         @Override
         public void afterProcessCompleted(ProcessCompletedEvent event) {
             mapper.removeMapping(new EnvironmentAwareProcessInstanceContext(
             		event.getKieRuntime().getEnvironment(),
-            		event.getProcessInstance().getId()));
+            		event.getProcessInstance().getId()), managerId);
             removeLocalRuntime(runtime);
             
             registerDisposeCallback(runtime, 
@@ -208,7 +212,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         public void beforeProcessStarted(ProcessStartedEvent event) {
             mapper.saveMapping(new EnvironmentAwareProcessInstanceContext(
             		event.getKieRuntime().getEnvironment(),
-            		event.getProcessInstance().getId()), ksessionId);  
+            		event.getProcessInstance().getId()), ksessionId, managerId);  
             saveLocalRuntime(event.getProcessInstance().getId(), runtime);
         }
         
@@ -285,45 +289,105 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     @Override
     public void init() {
         // need to init one session to bootstrap all case - such as start timers
-        final KieSession initialKsession = factory.newKieSession();
-        initialKsession.execute(new GenericCommand<Void>() {            
-            private static final long serialVersionUID = 1L;
+        KieSession initialKsession = factory.newKieSession();
+        initialKsession.execute(new DestroyKSessionCommand(initialKsession, this));
+        
+        if (!"false".equalsIgnoreCase(System.getProperty("org.jbpm.rm.init.timer"))) {
+        	if (mapper instanceof JPAMapper) {
+        		List<Integer> ksessionsToInit = ((JPAMapper) mapper).findKSessionToInit(this.identifier);
+        		for (Integer id : ksessionsToInit) {
+        			initialKsession = factory.findKieSessionById(id);
+        			initialKsession.execute(new DisposeKSessionCommand(initialKsession, this));
+        		}
+        	}
+        }
+    }
 
-            @Override
-            public Void execute(org.kie.internal.command.Context context) {
-                final KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-                if (hasEnvironmentEntry("IS_JTA_TRANSACTION", false)) {
-                	ksession.destroy();
-                	return null;
-            	}
-                TransactionManager tm = getTransactionManager();
-                if (tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
-                        && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
-                        && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
-                	TransactionManagerHelper.registerTransactionSyncInContainer(tm, new OrderedTransactionSynchronization(5) {
-						
-                        @Override
-                        public void beforeCompletion() {
-                            if (initialKsession instanceof CommandBasedStatefulKnowledgeSession) {
-                                CommandService commandService = ((CommandBasedStatefulKnowledgeSession) initialKsession).getCommandService();
-                                ((SingleSessionCommandService) commandService).destroy();
-                             }                            
-                        }
+    
+    private static class DestroyKSessionCommand implements GenericCommand<Void> {            
+        private static final long serialVersionUID = 1L;
+
+        private KieSession initialKsession;
+        private AbstractRuntimeManager manager;
+        
+        public DestroyKSessionCommand(KieSession initialKsession, AbstractRuntimeManager manager) {
+        	this.initialKsession = initialKsession;
+        	this.manager = manager;
+        }
+        
+        @Override
+        public Void execute(org.kie.internal.command.Context context) {
+
+            if (manager.hasEnvironmentEntry("IS_JTA_TRANSACTION", false)) {
+            	initialKsession.destroy();
+            	return null;
+        	}
+            TransactionManager tm = (TransactionManager) initialKsession.getEnvironment().get(EnvironmentName.TRANSACTION_MANAGER);
+            if (tm != null && tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
+                    && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
+                    && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
+            	TransactionManagerHelper.registerTransactionSyncInContainer(tm, new OrderedTransactionSynchronization(5) {
+					
+                    @Override
+                    public void beforeCompletion() {
+                        if (initialKsession instanceof CommandBasedStatefulKnowledgeSession) {
+                            CommandService commandService = ((CommandBasedStatefulKnowledgeSession) initialKsession).getCommandService();
+                            ((SingleSessionCommandService) commandService).destroy();
+                         }                            
+                    }
+                    
+                    @Override
+                    public void afterCompletion(int arg0) {
+                    	initialKsession.dispose();
                         
-                        @Override
-                        public void afterCompletion(int arg0) {
-                            ksession.dispose();
-                            
-                        }
-					});
-                } else {
-                	initialKsession.destroy();
-                }
-                return null;
+                    }
+				});
+            } else {
+            	initialKsession.destroy();
             }
-        });
+            return null;
+        }
+    }
+    
+    private static class DisposeKSessionCommand implements GenericCommand<Void> {            
+        private static final long serialVersionUID = 1L;
+
+        private KieSession initialKsession;
+        private AbstractRuntimeManager manager;
         
+        public DisposeKSessionCommand(KieSession initialKsession, AbstractRuntimeManager manager) {
+        	this.initialKsession = initialKsession;
+        	this.manager = manager;
+        }
         
-    }   
+        @Override
+        public Void execute(org.kie.internal.command.Context context) {
+            
+            if (manager.hasEnvironmentEntry("IS_JTA_TRANSACTION", false)) {
+            	initialKsession.dispose();
+            	return null;
+        	}
+            TransactionManager tm = (TransactionManager) initialKsession.getEnvironment().get(EnvironmentName.TRANSACTION_MANAGER);
+            if (tm != null && tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
+                    && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
+                    && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
+            	TransactionManagerHelper.registerTransactionSyncInContainer(tm, new OrderedTransactionSynchronization(5) {
+					
+                    @Override
+                    public void beforeCompletion() {                           
+                    }
+                    
+                    @Override
+                    public void afterCompletion(int arg0) {
+                    	initialKsession.dispose();
+                        
+                    }
+				});
+            } else {
+            	initialKsession.dispose();
+            }
+            return null;
+        }
+    }
 
 }

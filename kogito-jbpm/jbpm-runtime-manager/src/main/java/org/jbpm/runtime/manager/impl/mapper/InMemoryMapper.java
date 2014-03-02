@@ -32,22 +32,22 @@ public class InMemoryMapper implements Mapper {
     
     
     @Override
-    public void saveMapping(Context<?> context, Integer ksessionId) {
+    public void saveMapping(Context<?> context, Integer ksessionId, String ownerId) {
         this.mapping.put(context.getContextId(), ksessionId);
     }
 
     @Override
-    public Integer findMapping(Context<?> context) {
+    public Integer findMapping(Context<?> context, String ownerId) {
         return this.mapping.get(context.getContextId());
     }
 
     @Override
-    public void removeMapping(Context<?> context) {
+    public void removeMapping(Context<?> context, String ownerId) {
         this.mapping.remove(context.getContextId());
     }
 
     @Override
-    public Object findContextId(Integer ksessionId) {
+    public Object findContextId(Integer ksessionId, String ownerId) {
         if (mapping.containsValue(ksessionId)) {
             for (Map.Entry<Object, Integer> entry : mapping.entrySet()) {
                 if (entry.getValue() == ksessionId) {

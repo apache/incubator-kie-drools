@@ -53,10 +53,11 @@ public class JPAMapper implements Mapper {
 
     
     @Override
-    public void saveMapping(Context context, Integer ksessionId) {
+    public void saveMapping(Context context, Integer ksessionId, String ownerId) {
 		EntityManagerInfo info = getEntityManager(context);
 		EntityManager em = info.getEntityManager();
-		em.persist(new ContextMappingInfo(resolveContext(context, em).getContextId().toString(), ksessionId));
+		em.persist(new ContextMappingInfo(resolveContext(context, em).getContextId().toString(),
+				ksessionId, ownerId));
 
 		if (!info.isShared()) {
 			em.close();
@@ -64,11 +65,11 @@ public class JPAMapper implements Mapper {
     }
 
     @Override
-    public Integer findMapping(Context context) {
+    public Integer findMapping(Context context, String ownerId) {
     	EntityManagerInfo info = getEntityManager(context);
     	EntityManager em = info.getEntityManager();
         try {
-		    ContextMappingInfo contextMapping = findContextByContextId(resolveContext(context, em), em);
+		    ContextMappingInfo contextMapping = findContextByContextId(resolveContext(context, em), ownerId, em);
 		    if (contextMapping != null) {
 		        return contextMapping.getKsessionId();
 		    }
@@ -81,11 +82,11 @@ public class JPAMapper implements Mapper {
     }
 
     @Override
-    public void removeMapping(Context context) {
+    public void removeMapping(Context context, String ownerId) {
     	EntityManagerInfo info = getEntityManager(context);
     	EntityManager em = info.getEntityManager();
         
-        ContextMappingInfo contextMapping = findContextByContextId(resolveContext(context, em), em);
+        ContextMappingInfo contextMapping = findContextByContextId(resolveContext(context, em), ownerId, em);
         if (contextMapping != null) {
             em.remove(contextMapping);
         }
@@ -102,9 +103,11 @@ public class JPAMapper implements Mapper {
         return orig;
     }
     
-    protected ContextMappingInfo findContextByContextId(Context context, EntityManager em) {
+    protected ContextMappingInfo findContextByContextId(Context context, String ownerId, EntityManager em) {
         try {
-            Query findQuery = em.createNamedQuery("FindContextMapingByContextId").setParameter("contextId", context.getContextId().toString());
+            Query findQuery = em.createNamedQuery("FindContextMapingByContextId")
+            		.setParameter("contextId", context.getContextId().toString())
+        			.setParameter("ownerId", ownerId);
             ContextMappingInfo contextMapping = (ContextMappingInfo) findQuery.getSingleResult();
             
             return contextMapping;
@@ -135,11 +138,13 @@ public class JPAMapper implements Mapper {
 
 
     @Override
-    public Object findContextId(Integer ksessionId) {
+    public Object findContextId(Integer ksessionId, String ownerId) {
         EntityManagerInfo info = getEntityManager(null);
     	EntityManager em = info.getEntityManager();
         try {
-            Query findQuery = em.createNamedQuery("FindContextMapingByKSessionId").setParameter("ksessionId", ksessionId);
+            Query findQuery = em.createNamedQuery("FindContextMapingByKSessionId")
+            		.setParameter("ksessionId", ksessionId)
+            		.setParameter("ownerId", ownerId);
             ContextMappingInfo contextMapping = (ContextMappingInfo) findQuery.getSingleResult();
             
             return contextMapping.getContextId();
@@ -191,6 +196,13 @@ public class JPAMapper implements Mapper {
 		public boolean isShared() {
 			return shared;
 		}
+    }
+    
+    
+    public List<Integer> findKSessionToInit(String ownerId) {
+        EntityManager em = emf.createEntityManager();
+        Query findQuery = em.createNamedQuery("FindKSessionToInit").setParameter("ownerId", ownerId);
+        return findQuery.getResultList();
     }
 
 }

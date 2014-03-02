@@ -40,9 +40,16 @@ import javax.persistence.Version;
 @SequenceGenerator(name="contextMappingInfoIdSeq", sequenceName="CONTEXT_MAPPING_INFO_ID_SEQ")
 @NamedQueries(value=
     {@NamedQuery(name="FindContextMapingByContextId", 
-                query="from ContextMappingInfo where contextId = :contextId"),
+                query="from ContextMappingInfo where contextId = :contextId"
+                		+ " and ownerId = :ownerId"),
                 @NamedQuery(name="FindContextMapingByKSessionId", 
-                query="from ContextMappingInfo where ksessionId = :ksessionId")})
+                query="from ContextMappingInfo where ksessionId = :ksessionId"
+                		+ " and ownerId = :ownerId"),
+    @NamedQuery(name="FindKSessionToInit", 
+                query="select cmInfo.ksessionId from ContextMappingInfo cmInfo, "
+                		+ "ProcessInstanceInfo processInstanceInfo join processInstanceInfo.eventTypes eventTypes"
+                		+ " where eventTypes = 'timer' and cmInfo.contextId = processInstanceInfo.processInstanceId"
+                		+ " and cmInfo.ownerId = :ownerId")})
 public class ContextMappingInfo implements Serializable {
 
     private static final long serialVersionUID = 533985957655465840L;
@@ -59,14 +66,17 @@ public class ContextMappingInfo implements Serializable {
     private String contextId;
     @Column(name="KSESSION_ID", nullable=false)
     private Integer ksessionId;
-    
-    public ContextMappingInfo() {
+    @Column(name="OWNER_ID")
+    private String ownerId;
+
+	public ContextMappingInfo() {
         
     }
 
-    public ContextMappingInfo(String contextId, Integer ksessionId) {
+    public ContextMappingInfo(String contextId, Integer ksessionId, String ownerId) {
         this.contextId = contextId;
         this.ksessionId = ksessionId;
+        this.ownerId = ownerId;
     }
 
     public Long getMappingId() {
@@ -100,7 +110,13 @@ public class ContextMappingInfo implements Serializable {
     public void setKsessionId(Integer ksessionId) {
         this.ksessionId = ksessionId;
     }
-    
-    
+        
+    public String getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(String ownerId) {
+		this.ownerId = ownerId;
+	}
 
 }

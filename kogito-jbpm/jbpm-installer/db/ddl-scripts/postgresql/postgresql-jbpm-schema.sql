@@ -44,6 +44,7 @@
         mappingId int8 not null,
         CONTEXT_ID varchar(255) not null,
         KSESSION_ID int4 not null,
+        OWNER_ID varchar(255),
         OPTLOCK int4,
         primary key (mappingId)
     );

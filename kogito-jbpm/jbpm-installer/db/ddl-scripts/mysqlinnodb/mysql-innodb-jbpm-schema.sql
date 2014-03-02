@@ -44,6 +44,7 @@
         mappingId bigint not null auto_increment,
         CONTEXT_ID varchar(255) not null,
         KSESSION_ID integer not null,
+        OWNER_ID varchar(255),
         OPTLOCK integer,
         primary key (mappingId)
     ) ENGINE=InnoDB;

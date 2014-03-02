@@ -205,6 +205,12 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
             } catch (SchedulerException e) {
                 throw new RuntimeException("Exception when initializing QuartzSchedulerService", e);
             }
+            
+            if (isTransactional()) {
+            	// if it's transactional service directly - meaning data base job store
+            	// disable auto init of timers
+            	System.setProperty("org.jbpm.rm.init.timer", "false");
+            }
         
         }
     }

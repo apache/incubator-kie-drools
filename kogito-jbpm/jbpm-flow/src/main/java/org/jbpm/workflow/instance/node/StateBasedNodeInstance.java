@@ -273,10 +273,12 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     
     protected void addTimerListener() {
     	((WorkflowProcessInstance) getProcessInstance()).addEventListener("timerTriggered", this, false);
+    	((WorkflowProcessInstance) getProcessInstance()).addEventListener("timer", this, true);
     }
     
     public void removeEventListeners() {
     	((WorkflowProcessInstance) getProcessInstance()).removeEventListener("timerTriggered", this, false);
+    	((WorkflowProcessInstance) getProcessInstance()).removeEventListener("timer", this, true);
     }
 
 	protected void triggerCompleted(String type, boolean remove) {
