@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xml:base="../../" xml:id="wb.Embedding" xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Embedding Workbench In Your Application</title>
+
+  <para>As we already know, Workbench provides a set of editors to author assets in different formats. According to
+    asset’s format a specialized editor is used.</para>
+
+  <para>One additional feature provided by Workbench is the ability to embed it in your own (Web) Applications thru it's
+      <emphasis role="bold">standalone</emphasis> mode. So, if you want to edit rules, processes, decision tables,
+    etc... in your own applications without switch to Workbench, you can.</para>
+
+  <para>In order to embed Workbench in your application all you'll need is the Workbench application deployed and
+    running in a web/application server and, from within your own web applications, an iframe with proper HTTP query
+    parameters as described in the following table.</para>
+
+  <table>
+    <title>HTTP query parameters for standalone mode</title>
+    <tgroup cols="4">
+      <thead>
+        <row>
+          <entry align="center">Parameter Name</entry>
+          <entry align="center">Explanation</entry>
+          <entry align="center">Allow multiple values</entry>
+          <entry align="center">Example</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry align="center">standalone</entry>
+          <entry>With just the presence of this parameter workbench will switch to standalone mode.</entry>
+          <entry align="center">no</entry>
+          <entry>(none)</entry>
+        </row>
+        <row>
+          <entry align="center">path</entry>
+          <entry>Path to the asset to be edited. Note that asset should already exists.</entry>
+          <entry align="center">no</entry>
+          <entry>git://master@uf-playground/todo.md</entry>
+        </row>
+        <row>
+          <entry align="center">perspective</entry>
+          <entry>Reference to an existing perspective name.</entry>
+          <entry align="center">no</entry>
+          <entry>org.guvnor.m2repo.client.perspectives.GuvnorM2RepoPerspective</entry>
+        </row>
+        <row>
+          <entry align="center">header</entry>
+          <entry>Defines the name of the header that should be displayed (useful for context menu headers).</entry>
+          <entry align="center">yes</entry>
+          <entry>ComplementNavArea</entry>
+        </row>
+      </tbody>
+    </tgroup>
+  </table>
+
+  <note><para>Path and Perspective parameters are mutual exclusive, so can't be used together.</para></note>
+  
+</section>
