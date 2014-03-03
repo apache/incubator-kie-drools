@@ -23,6 +23,8 @@ public interface KieModuleMetaData {
 
     Collection<String> getRuleNamesInPackage(String packageName);
 
+    ClassLoader getClassLoader();
+
     public static class Factory {
         public static KieModuleMetaData newKieModuleMetaData(KieModule kieModule) {
             return new KieModuleMetaDataImpl((InternalKieModule) kieModule);

@@ -105,7 +105,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
 		return rulesPerPackage != null ? rulesPerPackage : Collections.<String>emptyList();
     }
 
-    private ClassLoader getClassLoader() {
+    public ClassLoader getClassLoader() {
         if (classLoader == null) {
             URL[] urls = new URL[jars.size()];
             int i = 0;
