@@ -43,7 +43,7 @@
                                        }
     displayValue : String = @if{ fullName != null } @{format("string",fullName)} @else{} @{format("string",name)} @end{}
 
-    weight : double     = 1.0
+    weight : double = 1.0   @@key
 
     @if{ tgtType != null } tgtValue : @{ mapDatatype( tgtType ) } @end{}
  end

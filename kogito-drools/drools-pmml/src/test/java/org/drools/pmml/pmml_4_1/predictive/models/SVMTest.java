@@ -73,7 +73,7 @@ public class SVMTest extends DroolsAbstractPMMLTest {
 
         kSession.getEntryPoint( "in_X" ).insert( 7.85 );
         kSession.fireAllRules();
-        checkFirstDataFieldOfTypeStatus( ztype, true, false, "SVMXORMODEL", "yes" );
+        checkFirstDataFieldOfTypeStatus( ztype, true, false, "SVMXORMODEL", "no" );
     }
 
 
