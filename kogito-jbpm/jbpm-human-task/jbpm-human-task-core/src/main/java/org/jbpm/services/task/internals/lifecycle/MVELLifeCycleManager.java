@@ -466,9 +466,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
         final Task task = persistenceContext.findTask(taskId);
         final User user = persistenceContext.findUser(userId);
         if (isAllowed(user, null, (List<OrganizationalEntity>) task.getPeopleAssignments().getBusinessAdministrators())) {
-
-
-            assignOwnerAndStatus((InternalTaskData) task, potentialOwners);
+            assignOwnerAndStatus((InternalTaskData) task.getTaskData(), potentialOwners);
             if (task.getTaskData().getStatus() == Status.Ready) {
                 ((InternalPeopleAssignments) task.getPeopleAssignments()).setPotentialOwners(potentialOwners);
             }
