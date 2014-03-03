@@ -802,7 +802,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         List<String> potOwners = new ArrayList<String>();
         List<Status> statuses = new ArrayList<Status>();      
         statuses.add(Status.Reserved);
-        
+       
         long workItemId = 23;
         String busAdmin = "Wintermute";
         String potOwner = "Maelcum";
@@ -851,6 +851,27 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         workItemIds.add(workItemId);
         busAdmins.add(busAdmin);
         potOwners.add(potOwner);
+
+        // Add one more task, just to make sure things are working wel
+        workItemId = 57;
+        busAdmin = "reviewer";
+        potOwner = "translator";
+        str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { "
+                + "businessAdministrators = [new User('" + busAdmin + "')],"
+                + "potentialOwners = [new User('" + potOwner + "')]"
+                + " }),";
+        str += "names = [ new I18NText( 'nl-NL', 'Koude Bevel')] })";
+        taskImpl = TaskFactory.evalTask(new StringReader(str));
+        ((InternalTaskData) taskImpl.getTaskData()).setWorkItemId(workItemId);
+        ((InternalTaskData) taskImpl.getTaskData()).setProcessInstanceId(workItemId);
+        taskService.addTask(taskImpl, new HashMap<String, Object>());
+        assertEquals( potOwner, taskImpl.getTaskData().getActualOwner().getId() );
+        taskService.start(taskImpl.getId(), potOwner);
+        taskService.fail(taskImpl.getId(), busAdmin, null);
+        
+        results = taskService.getTasksByVariousFields(null, null, null, null, null, null, null, null, false);
+        assertEquals("List of tasks", 3, results.size());
         
         results = taskService.getTasksByVariousFields(workItemIds, null, null, null, null, null, null, null, false);
         assertEquals("List of tasks", 2, results.size());

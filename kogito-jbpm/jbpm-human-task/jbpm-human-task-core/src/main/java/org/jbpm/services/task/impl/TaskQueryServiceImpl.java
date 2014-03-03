@@ -442,7 +442,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                     procInstIds);
         }
         
-        stringQueryAdder.setAlreadyUsed(longQueryAdder.isAlreadyUsed());
+        stringQueryAdder.getQueryState(longQueryAdder);
         if( busAdmins != null && busAdmins.size() > 0 ) { 
             String paramName = "busAdminIds";
             String query = "( businessAdministrator.id in ( :" + paramName + " ) and "
@@ -468,13 +468,16 @@ public class TaskQueryServiceImpl implements TaskQueryService {
             stringQueryAdder.addToQueryBuilder(query, paramName, language);
         }
         
-        statusQueryAdder.setAlreadyUsed(stringQueryAdder.isAlreadyUsed());
+        statusQueryAdder.getQueryState(stringQueryAdder);
         if( status != null && status.size() > 0 ) { 
             String paramName = "statuses";
             String query = "( t.taskData.status in (:"+ paramName + ") ) ";
             statusQueryAdder.addToQueryBuilder(query, paramName, status);
         }
-        
+       
+        if( ! statusQueryAdder.firstUse ) { 
+           queryBuilder.append(")"); 
+        }
         String query = queryBuilder.toString();
         logger.debug("QUERY: " + query);
         return persistenceContext.queryStringWithParametersInTransaction(query, params,
@@ -516,11 +519,12 @@ public class TaskQueryServiceImpl implements TaskQueryService {
             + "  OrganizationalEntityImpl businessAdministrator, "
             + "  OrganizationalEntityImpl potentialOwners "
             + "where "
-            + "t.archived = 0 AND ";
+            + "t.archived = 0";
     
     private class WhereClauseWithListParamAppender<T> { 
 
         private final String andOr;
+        private boolean firstUse = true;
         private boolean alreadyUsed = false;
         private final StringBuilder queryBuilder;
         private final Map<String, Object> queryParams;
@@ -534,9 +538,12 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         }
         
         public void addToQueryBuilder(String query, String paramName, List<T> paramValList) { 
-            if( isAlreadyUsed() ) { 
+            if( this.firstUse ) { 
+                queryBuilder.append( " AND (");
+                this.firstUse = false;
+            } else if( this.alreadyUsed ) { 
                 queryBuilder.append( andOr );
-            }
+            } 
             queryBuilder.append( query );
             Set<T> paramVals = new HashSet<T>();
             for( T val : paramValList ) { 
@@ -545,15 +552,12 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                 }
             }
             queryParams.put(paramName, paramVals);
-            setAlreadyUsed(true);
+            this.alreadyUsed = true;
         }
 
-        public boolean isAlreadyUsed() {
-            return alreadyUsed;
-        }
-
-        public void setAlreadyUsed(boolean alreadyUsed) {
-            this.alreadyUsed = alreadyUsed;
+        public void getQueryState(WhereClauseWithListParamAppender<?> paramAppender) { 
+           this.alreadyUsed = paramAppender.alreadyUsed;
+           this.firstUse = paramAppender.firstUse;
         }
         
         @SuppressWarnings("unchecked")
