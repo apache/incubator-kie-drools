@@ -37,6 +37,7 @@ import org.drools.core.reteoo.RiaPathMemory;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.rule.Rule;
@@ -84,8 +85,9 @@ public class SegmentUtilities {
         }
 
         LeftTupleSource segmentRoot = tupleSource;
+        int nodeTypesInSegment = 0;
 
-        smem = restoreSegmentFromPrototype(wm, segmentRoot);
+        smem = restoreSegmentFromPrototype(wm, segmentRoot, nodeTypesInSegment);
         if ( smem != null ) {
             return smem;
         }
@@ -99,6 +101,7 @@ public class SegmentUtilities {
         boolean updateNodeBit = true;  // nodes after a branch CE can notify, but they cannot impact linking
 
         while (true) {
+            nodeTypesInSegment = updateNodeTypesMask(tupleSource, nodeTypesInSegment);
             if ( tupleSource.isStreamMode() && smem.getTupleQueue() == null ) {
                 // need to make sure there is one Queue, for the rule, when a stream mode node is found.
 
@@ -187,21 +190,21 @@ public class SegmentUtilities {
                 smem.setStagedTuples( new SynchronizedLeftTupleSets() );
         }
 
-        updateRiaAndTerminalMemory(tupleSource, tupleSource, smem, wm, false);
+        nodeTypesInSegment = updateRiaAndTerminalMemory(tupleSource, tupleSource, smem, wm, false, nodeTypesInSegment);
 
         ((ReteooRuleBase)wm.getRuleBase()).registerSegmentPrototype(segmentRoot, smem);
 
         return smem;
     }
 
-    private static SegmentMemory restoreSegmentFromPrototype(InternalWorkingMemory wm, LeftTupleSource segmentRoot) {
+    private static SegmentMemory restoreSegmentFromPrototype(InternalWorkingMemory wm, LeftTupleSource segmentRoot, int nodeTypesInSegment) {
         SegmentMemory smem = ((ReteooRuleBase)wm.getRuleBase()).getSegmentFromPrototype(wm, segmentRoot);
         if ( smem != null ) {
             // there is a prototype for this segment memory
             for (NetworkNode node : smem.getNodesInSegment()) {
                 wm.getNodeMemory((MemoryFactory) node).setSegmentMemory(smem);
             }
-            updateRiaAndTerminalMemory(segmentRoot, segmentRoot, smem, wm, true);
+            nodeTypesInSegment = updateRiaAndTerminalMemory(segmentRoot, segmentRoot, smem, wm, true, nodeTypesInSegment);
         }
         return smem;
     }
@@ -393,21 +396,18 @@ public class SegmentUtilities {
      * @param smem
      * @param wm
      */
-    private static void updateRiaAndTerminalMemory( LeftTupleSource lt,
+    private static int updateRiaAndTerminalMemory( LeftTupleSource lt,
                                                     LeftTupleSource originalLt,
                                                     SegmentMemory smem,
                                                     InternalWorkingMemory wm,
-                                                    boolean fromPrototype ) {
+                                                    boolean fromPrototype,
+                                                    int nodeTypesInSegment ) {
+
+        nodeTypesInSegment = checkSegmentBoundary(lt, wm, nodeTypesInSegment);
+
         for (LeftTupleSink sink : lt.getSinkPropagator().getSinks()) {
             if (NodeTypeEnums.isLeftTupleSource(sink)) {
-                if (NodeTypeEnums.NotNode == sink.getType() && ((NotNode) sink).isEmptyBetaConstraints()) {
-                    BetaMemory bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) sink);
-                    if (bm.getSegmentMemory() == null) {
-                        // Not nodes must be initialised
-                        createSegmentMemory((NotNode) sink, wm);
-                    }
-                }
-                updateRiaAndTerminalMemory((LeftTupleSource) sink, originalLt, smem, wm, fromPrototype);
+                nodeTypesInSegment = updateRiaAndTerminalMemory((LeftTupleSource) sink, originalLt, smem, wm, fromPrototype, nodeTypesInSegment);
             } else if (sink.getType() == NodeTypeEnums.RightInputAdaterNode) {
                 // Only add the RIANode, if the LeftTupleSource is part of the RIANode subnetwork.
                 if (inSubNetwork((RightInputAdapterNode) sink, originalLt)) {
@@ -421,7 +421,7 @@ public class SegmentUtilities {
                         for ( ObjectSink node : nodes ) {
                             // check if the SegmentMemory has been already created by the BetaNode and if so avoid to build it twice
                             if ( NodeTypeEnums.isLeftTupleSource(node) && wm.getNodeMemory((MemoryFactory) node).getSegmentMemory() == null )  {
-                                restoreSegmentFromPrototype(wm, (LeftTupleSource) node);
+                                restoreSegmentFromPrototype(wm, (LeftTupleSource) node, nodeTypesInSegment);
                             }
                         }
                     } else if ( ( pmem.getAllLinkedMaskTest() & ( 1L << pmem.getSegmentMemories().length ) ) == 0 ) {
@@ -443,7 +443,27 @@ public class SegmentUtilities {
                     // not's can cause segments to be linked, and the rules need to be notified for evaluation
                     smem.notifyRuleLinkSegment(wm);
                 }
+                checkEagerSegmentCreation(((TerminalNode) sink).getLeftTupleSource(), wm, nodeTypesInSegment);
             }
+        }
+        return nodeTypesInSegment;
+    }
+
+    private static int checkSegmentBoundary(LeftTupleSource lt, InternalWorkingMemory wm, int nodeTypesInSegment) {
+        if ( !parentInSameSegment( lt, null ) )  {
+            // we are in a new child segment
+            checkEagerSegmentCreation(lt.getLeftTupleSource(), wm, nodeTypesInSegment);
+            nodeTypesInSegment = 0;
+        }
+        return updateNodeTypesMask(lt, nodeTypesInSegment);
+    }
+
+    private static void checkEagerSegmentCreation(LeftTupleSource lt, InternalWorkingMemory wm, int nodeTypesInSegment) {
+        // A Not node has to be eagerly initialized unless in its segment there is at least a join or exists node
+        if ( isSet(nodeTypesInSegment, NOT_NODE_BIT) &&
+             !isSet(nodeTypesInSegment, JOIN_NODE_BIT) &&
+             !isSet(nodeTypesInSegment, EXISTS_NODE_BIT) ) {
+            createSegmentMemory(lt, wm);
         }
     }
 
@@ -487,6 +507,9 @@ public class SegmentUtilities {
 
     public static boolean parentInSameSegment(LeftTupleSource lt, Rule removingRule) {
         LeftTupleSource parentLt = lt.getLeftTupleSource();
+        if (parentLt == null) {
+            return false;
+        }
         int size = parentLt.getSinkPropagator().size();
 
         if (removingRule != null && size == 2 && parentLt.getAssociations().containsKey(removingRule)) {
@@ -565,4 +588,26 @@ public class SegmentUtilities {
         throw new RuntimeException("Unable to find query '" + queryName + "'");
     }
 
+    private static final int NOT_NODE_BIT       = 1 << 0;
+    private static final int JOIN_NODE_BIT      = 1 << 1;
+    private static final int EXISTS_NODE_BIT    = 1 << 2;
+
+    private static int updateNodeTypesMask(NetworkNode node, int mask) {
+        switch (node.getType()) {
+            case NodeTypeEnums.JoinNode:
+                mask |= JOIN_NODE_BIT;
+                break;
+            case NodeTypeEnums.ExistsNode:
+                mask |= EXISTS_NODE_BIT;
+                break;
+            case NodeTypeEnums.NotNode:
+                mask |= NOT_NODE_BIT;
+                break;
+        }
+        return mask;
+    }
+
+    public static boolean isSet(int mask, int bit) {
+        return (mask & bit) == bit;
+    }
 }

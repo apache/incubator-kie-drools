@@ -5466,4 +5466,140 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(2, ksession.fireAllRules() );
         assertEquals(3, f2.getX());
     }
+
+    @Test
+    public void testNestedNots1() {
+        // DROOLS-444
+        String str = "package org.test; " +
+
+                     "rule negation_over_nested " +
+                     "when " +
+                     " not ( (String() and Integer()) " +
+                     " or " +
+                     " (String() and Integer())) " +
+                     "then " +
+                     " System.out.println(\"negation_over_nested\"); " +
+                     "end " +
+                     " " +
+
+                     "rule negation_distributed_partially_no_sharing " +
+                     "when " +
+                     " (not (String() and Long())) " +
+                     " and " +
+                     " (not (String() and Long())) " +
+                     "then " +
+                     " System.out.println(\"negation_distributed_partially_no_sharing\"); " +
+                     "end " +
+                     " " +
+
+                     "rule negation_distributed_partially_sharing " +
+                     "when " +
+                     " (not (String() and Integer())) " +
+                     " and " +
+                     " (not (String() and Integer())) " +
+                     "then " +
+                     " System.out.println(\"negation_distributed_partially_sharing\"); " +
+                     "end " +
+                     " " +
+
+                     "rule negation_distributed_fully " +
+                     "when " +
+                     " ((not String()) or (not Integer())) " +
+                     " and " +
+                     " ((not String()) or (not Integer())) " +
+                     "then " +
+                     " System.out.println(\"negation_distributed_fully\"); " +
+                     "end";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        ks.newKieBuilder( kfs ).buildAll();
+        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+
+        int n = ksession.fireAllRules();
+        assertEquals(7, n);
+    }
+
+    @Test
+    public void testNestedNots2() {
+        // DROOLS-444
+        String str = "package org.test; " +
+
+                     "rule shared_conjunct " +
+                     "when " +
+                     " (not (String() and Integer())) " +
+                     "then " +
+                     " System.out.println(\"shared_conjunct\"); " +
+                     "end " +
+
+                     "rule negation_over_nested " +
+                     "when " +
+                     " not ( (String() and Integer()) " +
+                     " or " +
+                     " (String() and Integer())) " +
+                     "then " +
+                     " System.out.println(\"negation_over_nested\"); " +
+                     "end " +
+                     " " +
+
+                     "rule negation_distributed_partially_no_sharing " +
+                     "when " +
+                     " (not (String() and Long())) " +
+                     " and " +
+                     " (not (String() and Long())) " +
+                     "then " +
+                     " System.out.println(\"negation_distributed_partially_no_sharing\"); " +
+                     "end " +
+                     " " +
+
+                     "rule negation_distributed_partially_sharing " +
+                     "when " +
+                     " (not (String() and Integer())) " +
+                     " and " +
+                     " (not (String() and Integer())) " +
+                     "then " +
+                     " System.out.println(\"negation_distributed_partially_sharing\"); " +
+                     "end " +
+                     " " +
+
+                     "rule negation_distributed_fully " +
+                     "when " +
+                     " ((not String()) or (not Integer())) " +
+                     " and " +
+                     " ((not String()) or (not Integer())) " +
+                     "then " +
+                     " System.out.println(\"negation_distributed_fully\"); " +
+                     "end";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        ks.newKieBuilder( kfs ).buildAll();
+        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+
+        int n = ksession.fireAllRules();
+        assertEquals(8, n);
+    }
+
+    @Test
+    public void testNestedNots3() {
+        // DROOLS-444
+        String str = "package org.test; " +
+
+                     "rule negation_distributed_partially_no_sharing " +
+                     "when " +
+                     " (not String()) " +
+                     " and " +
+                     " (not (Double() and Integer())) " +
+                     "then " +
+                     " System.out.println(\"firing\"); " +
+                     "end";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        ks.newKieBuilder( kfs ).buildAll();
+        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+
+        int n = ksession.fireAllRules();
+        assertEquals(1, n);
+    }
 }
