@@ -69,9 +69,9 @@ when
                           $num == $numChi
                           )
     $map : java.util.Map() from accumulate ( $kj : String() from $keys
-                 and accumulate( $m : Map() from $subs, $x : sum( $m[ $kj ] != null ? $m[ $kj ] : 0 ) ),
+                 and accumulate( $m : Map() from $subs, $x : sumBD( $m[ $kj ] != null ? $m[ $kj ] : 0 ) ),
         init( java.util.Map mapp = new java.util.HashMap() ),
-        action( mapp.put( $kj, $x ); ),
+        action( mapp.put( $kj, $x.doubleValue() ); ),
         result( mapp )
     )
     $mpc : java.util.Map() from accumulate ( $kj : String() from $keys,

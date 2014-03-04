@@ -34,7 +34,7 @@ when
                   )
     accumulate( $c : @{ pmmlPackageName }.Charge( context == @{ ctx }, index == $neur.index, $in : value ),
                 $list : collectList( $c ),
-                $val : sum( $in );
+                $val : sumBD( $in );
                 $list.size() == $neur.fanIn )
 then
     double x = $neur.getBias() + $val.doubleValue();

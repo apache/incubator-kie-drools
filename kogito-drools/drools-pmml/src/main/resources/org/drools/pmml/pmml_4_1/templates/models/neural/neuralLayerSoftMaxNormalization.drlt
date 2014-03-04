@@ -37,7 +37,7 @@ when
                     $in : value != null
                 ) @watch( normalized, ! value ),
             $list : collectList( $neur ),
-            $den  : sum( Math.exp( $in ) );
+            $den  : sumBD( Math.exp( $in ) );
             $list.size == @{ neurons.size() }
         )
 then
