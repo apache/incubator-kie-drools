@@ -93,7 +93,7 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractScoreDefinition<H
         } else {
             BigDecimal hardScoreTotal = endScore.getHardScore().subtract(startScore.getHardScore());
             BigDecimal hardScoreDelta = score.getHardScore().subtract(startScore.getHardScore());
-           double hardTimeGradient = hardScoreDelta.divide(hardScoreTotal,2, RoundingMode.FLOOR).doubleValue();
+            double hardTimeGradient = hardScoreDelta.doubleValue() / hardScoreTotal.doubleValue();
             timeGradient += hardTimeGradient * hardScoreTimeGradientWeight;
         }
         if (score.getSoftScore().compareTo(endScore.getSoftScore()) >= 0) {
@@ -103,7 +103,7 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractScoreDefinition<H
         } else {
             BigDecimal softScoreTotal = endScore.getSoftScore().subtract(startScore.getSoftScore());
             BigDecimal softScoreDelta = score.getSoftScore().subtract(startScore.getSoftScore());
-            double softTimeGradient = softScoreDelta.divide(softScoreTotal,2, RoundingMode.FLOOR).doubleValue();
+            double softTimeGradient = softScoreDelta.doubleValue() / softScoreTotal.doubleValue();
             timeGradient += softTimeGradient * softScoreTimeGradientWeight;
         }
         return timeGradient;

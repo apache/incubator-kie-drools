@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
@@ -67,7 +68,7 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
         }
         BigDecimal scoreTotal = endScore.getScore().subtract(startScore.getScore());
         BigDecimal scoreDelta = score.getScore().subtract(startScore.getScore());
-        return scoreDelta.divide(scoreTotal).doubleValue();
+        return scoreDelta.doubleValue() / scoreTotal.doubleValue();
     }
 
     public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
