@@ -3,6 +3,7 @@ package org.kie.scanner;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Profile;
 import org.apache.maven.settings.Repository;
+import org.apache.maven.settings.RepositoryPolicy;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.kie.api.builder.ReleaseId;
@@ -78,11 +79,22 @@ public class MavenRepository {
 
     private static RemoteRepository toRemoteRepository(Settings settings, Repository repository) {
         RemoteRepository remote = new RemoteRepository( repository.getId(), repository.getLayout(), repository.getUrl() );
+        setPolicy(remote, repository.getSnapshots(), true);
+        setPolicy(remote, repository.getReleases(), false);
         Server server = settings.getServer( repository.getId() );
         if (server != null) {
             remote.setAuthentication( new Authentication(server.getUsername(), server.getPassword()) );
         }
         return remote;
+    }
+
+    private static void setPolicy(RemoteRepository remote, RepositoryPolicy policy, boolean snapshot) {
+        if (policy != null) {
+            remote.setPolicy(snapshot,
+                             new org.sonatype.aether.repository.RepositoryPolicy(policy.isEnabled(),
+                                                                                 policy.getUpdatePolicy(),
+                                                                                 policy.getChecksumPolicy()));
+        }
     }
 
     public static void addExtraRepository(RemoteRepository r) {
