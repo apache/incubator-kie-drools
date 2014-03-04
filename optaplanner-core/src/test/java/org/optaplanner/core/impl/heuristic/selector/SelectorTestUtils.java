@@ -48,7 +48,7 @@ public class SelectorTestUtils {
 
     public static PlanningEntityDescriptor mockEntityDescriptor(Class entityClass) {
         PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
-        when(entityDescriptor.getPlanningEntityClass()).thenReturn(entityClass);
+        when(entityDescriptor.getEntityClass()).thenReturn(entityClass);
         return entityDescriptor;
     }
 

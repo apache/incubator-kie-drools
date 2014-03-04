@@ -37,7 +37,7 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
 
     private ScoreDirector scoreDirector;
 
-    private Object planningEntity;
+    private Object entity;
 
     public PlanningVariableWalker(PlanningEntityDescriptor entityDescriptor) {
         this.entityDescriptor = entityDescriptor;
@@ -81,7 +81,7 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
             planningValueWalker.phaseEnded(phaseScope);
         }
         scoreDirector = null;
-        planningEntity = null;
+        entity = null;
     }
 
     public void solvingEnded(DefaultSolverScope solverScope) {
@@ -94,10 +94,10 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
     // Worker methods
     // ************************************************************************
 
-    public void initWalk(Object planningEntity) {
-        this.planningEntity = planningEntity;
+    public void initWalk(Object entity) {
+        this.entity = entity;
         for (PlanningValueWalker planningValueWalker : planningValueWalkerList) {
-            planningValueWalker.initWalk(planningEntity);
+            planningValueWalker.initWalk(entity);
         }
     }
 
@@ -133,16 +133,16 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
     }
 
     // TODO refactor variableWalker to this
-    public Iterator<Move> moveIterator(final Object planningEntity) {
+    public Iterator<Move> moveIterator(final Object entity) {
         if (planningValueWalkerList.size() == 1) {
             PlanningValueWalker planningValueWalker = planningValueWalkerList.iterator().next();
-            return planningValueWalker.moveIterator(planningEntity);
+            return planningValueWalker.moveIterator(entity);
         } else {
             final List<Iterator<Move>> moveIteratorList = new ArrayList<Iterator<Move>>(planningValueWalkerList.size());
             final List<Move> composedMoveList = new ArrayList<Move>(planningValueWalkerList.size());
             boolean moveIteratorIsFirst = true;
             for (PlanningValueWalker planningValueWalker : planningValueWalkerList) {
-                Iterator<Move> moveIterator = planningValueWalker.moveIterator(planningEntity);
+                Iterator<Move> moveIterator = planningValueWalker.moveIterator(entity);
                 moveIteratorList.add(moveIterator);
                 Move initialMove;
                 if (moveIteratorIsFirst) {
@@ -153,9 +153,9 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
                     if (!moveIterator.hasNext()) {
                         // TODO the algorithms should be able to cope with that. Mind the use of .walkerList.get(j)
                         throw new IllegalStateException("The planning entity class ("
-                                + entityDescriptor.getPlanningEntityClass() + ") for planning variable ("
+                                + entityDescriptor.getEntityClass() + ") for planning variable ("
                                 + planningValueWalker.getVariableDescriptor().getVariableName()
-                                + ") has an empty planning value range for planning entity (" + planningEntity + ").");
+                                + ") has an empty planning value range for planning entity (" + entity + ").");
                     }
                     initialMove = moveIterator.next();
                 }
@@ -183,7 +183,7 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
                             break;
                         } else {
                             // Reset a lower level (for example each 9 in 115999)
-                            moveIterator = planningValueWalkerList.get(i).moveIterator(planningEntity);
+                            moveIterator = planningValueWalkerList.get(i).moveIterator(entity);
                             moveIteratorList.set(i, moveIterator);
                             composedMoveList.set(i, moveIterator.next());
                         }

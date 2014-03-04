@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelect
 @XStreamAlias("subChainChangeMoveSelector")
 public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
 
-    private Class<?> planningEntityClass = null;
+    private Class<?> entityClass = null;
     @XStreamAlias("subChainSelector")
     private SubChainSelectorConfig subChainSelectorConfig = null;
     @XStreamAlias("valueSelector")
@@ -43,12 +43,12 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
 
     private Boolean selectReversingMoveToo = null;
 
-    public Class<?> getPlanningEntityClass() {
-        return planningEntityClass;
+    public Class<?> getEntityClass() {
+        return entityClass;
     }
 
-    public void setPlanningEntityClass(Class<?> planningEntityClass) {
-        this.planningEntityClass = planningEntityClass;
+    public void setEntityClass(Class<?> entityClass) {
+        this.entityClass = entityClass;
     }
 
     public SubChainSelectorConfig getSubChainSelectorConfig() {
@@ -82,7 +82,7 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         PlanningEntityDescriptor entityDescriptor = deduceEntityDescriptor(
-                configPolicy.getSolutionDescriptor(), planningEntityClass);
+                configPolicy.getSolutionDescriptor(), entityClass);
         SubChainSelectorConfig subChainSelectorConfig_ = subChainSelectorConfig == null ? new SubChainSelectorConfig()
                 : subChainSelectorConfig;
         SubChainSelector subChainSelector = subChainSelectorConfig_.buildSubChainSelector(configPolicy,
@@ -104,8 +104,8 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
 
     public void inherit(SubChainChangeMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        planningEntityClass = ConfigUtils.inheritOverwritableProperty(planningEntityClass,
-                inheritedConfig.getPlanningEntityClass());
+        entityClass = ConfigUtils.inheritOverwritableProperty(entityClass,
+                inheritedConfig.getEntityClass());
         if (subChainSelectorConfig == null) {
             subChainSelectorConfig = inheritedConfig.getSubChainSelectorConfig();
         } else if (inheritedConfig.getSubChainSelectorConfig() != null) {

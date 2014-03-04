@@ -53,13 +53,13 @@ public class SameValuePillarSelector extends AbstractSelector
         this.entitySelector = entitySelector;
         this.variableDescriptors = variableDescriptors;
         this.randomSelection = randomSelection;
-        Class<?> entityClass = entitySelector.getEntityDescriptor().getPlanningEntityClass();
+        Class<?> entityClass = entitySelector.getEntityDescriptor().getEntityClass();
         for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
             if (!entityClass.equals(
-                    variableDescriptor.getEntityDescriptor().getPlanningEntityClass())) {
+                    variableDescriptor.getEntityDescriptor().getEntityClass())) {
                 throw new IllegalStateException("The selector (" + this
                         + ") has a variableDescriptor (" + variableDescriptor
-                        + ") with a entityClass (" + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
+                        + ") with a entityClass (" + variableDescriptor.getEntityDescriptor().getEntityClass()
                         + ") which is not equal to the entitySelector's entityClass (" + entityClass + ").");
             }
             if (variableDescriptor.isChained()) {

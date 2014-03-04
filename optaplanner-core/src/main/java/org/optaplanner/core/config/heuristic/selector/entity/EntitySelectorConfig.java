@@ -48,8 +48,6 @@ import org.optaplanner.core.impl.heuristic.selector.entity.decorator.ShufflingEn
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.SortingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicRecordingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.decorator.SelectedCountLimitMoveSelector;
 
 @XStreamAlias("entitySelector")
 public class EntitySelectorConfig extends SelectorConfig {
@@ -518,7 +516,7 @@ public class EntitySelectorConfig extends SelectorConfig {
                     sorter = entityDescriptor.getDecreasingDifficultySorter();
                     if (sorter == null) {
                         throw new IllegalArgumentException("The sorterManner (" + this
-                                + ") on entity class (" + entityDescriptor.getPlanningEntityClass()
+                                + ") on entity class (" + entityDescriptor.getEntityClass()
                                 + ") fails because that entity class's " + PlanningEntity.class.getSimpleName()
                                 + " annotation does not declare any difficulty comparison.");
                     }

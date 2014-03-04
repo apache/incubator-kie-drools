@@ -153,7 +153,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + entityDescriptor.getPlanningEntityClass().getSimpleName() + ")";
+        return getClass().getSimpleName() + "(" + entityDescriptor.getEntityClass().getSimpleName() + ")";
     }
 
 }

@@ -44,11 +44,11 @@ public class SwapMoveSelector extends GenericMoveSelector {
         this.randomSelection = randomSelection;
         PlanningEntityDescriptor leftEntityDescriptor = leftEntitySelector.getEntityDescriptor();
         PlanningEntityDescriptor rightEntityDescriptor = rightEntitySelector.getEntityDescriptor();
-        if (!leftEntityDescriptor.getPlanningEntityClass().equals(rightEntityDescriptor.getPlanningEntityClass())) {
+        if (!leftEntityDescriptor.getEntityClass().equals(rightEntityDescriptor.getEntityClass())) {
             throw new IllegalStateException("The selector (" + this
-                    + ") has a leftEntitySelector's entityClass (" + leftEntityDescriptor.getPlanningEntityClass()
+                    + ") has a leftEntitySelector's entityClass (" + leftEntityDescriptor.getEntityClass()
                     + ") which is not equal to the rightEntitySelector's entityClass ("
-                    + rightEntityDescriptor.getPlanningEntityClass() + ").");
+                    + rightEntityDescriptor.getEntityClass() + ").");
         }
         boolean anyChained = false;
         if (variableDescriptors.isEmpty()) {
@@ -56,13 +56,13 @@ public class SwapMoveSelector extends GenericMoveSelector {
                     + ")'s variableDescriptors (" + variableDescriptors + ") is empty.");
         }
         for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
-            if (!leftEntityDescriptor.getPlanningEntityClass().equals(
-                    variableDescriptor.getEntityDescriptor().getPlanningEntityClass())) {
+            if (!leftEntityDescriptor.getEntityClass().equals(
+                    variableDescriptor.getEntityDescriptor().getEntityClass())) {
                 throw new IllegalStateException("The selector (" + this
                         + ") has a variableDescriptor with a entityClass ("
-                        + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
+                        + variableDescriptor.getEntityDescriptor().getEntityClass()
                         + ") which is not equal to the leftEntitySelector's entityClass ("
-                        + leftEntityDescriptor.getPlanningEntityClass() + ").");
+                        + leftEntityDescriptor.getEntityClass() + ").");
             }
             if (variableDescriptor.isChained()) {
                 anyChained = true;

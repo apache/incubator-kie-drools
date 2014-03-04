@@ -46,7 +46,7 @@ public abstract class AbstractValueRangeDescriptor implements ValueRangeDescript
     public boolean mightContainEntity() {
         SolutionDescriptor solutionDescriptor = variableDescriptor.getEntityDescriptor().getSolutionDescriptor();
         Class<?> variablePropertyType = variableDescriptor.getVariablePropertyType();
-        for (Class<?> entityClass : solutionDescriptor.getPlanningEntityClassSet()) {
+        for (Class<?> entityClass : solutionDescriptor.getEntityClassSet()) {
             if (variablePropertyType.isAssignableFrom(entityClass)) {
                 return true;
             }

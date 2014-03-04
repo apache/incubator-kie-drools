@@ -43,7 +43,7 @@ public abstract class EntityPlacerConfig {
             throw new IllegalArgumentException("The entityPlacerConfig (" + this
                     + ") has no entitySelector configured"
                     + " and because there are multiple in the planningEntityClassSet ("
-                    + solutionDescriptor.getPlanningEntityClassSet()
+                    + solutionDescriptor.getEntityClassSet()
                     + "), it can not be deducted automatically.");
         }
         return entityDescriptors.iterator().next();

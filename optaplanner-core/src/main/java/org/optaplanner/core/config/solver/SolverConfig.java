@@ -225,7 +225,7 @@ public class SolverConfig {
         for (Class<?> planningEntityClass : planningEntityClassList) {
             PlanningEntityDescriptor entityDescriptor = new PlanningEntityDescriptor(
                     solutionDescriptor, planningEntityClass);
-            solutionDescriptor.addPlanningEntityDescriptor(entityDescriptor);
+            solutionDescriptor.addEntityDescriptor(entityDescriptor);
             entityDescriptor.processAnnotations(descriptorPolicy);
         }
         solutionDescriptor.afterAnnotationsProcessed(descriptorPolicy);

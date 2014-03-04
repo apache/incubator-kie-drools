@@ -18,7 +18,6 @@ package org.optaplanner.benchmark.impl.aggregator.swingui;
 
 import java.awt.BorderLayout;
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -414,7 +413,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
     private MixedCheckBox createSingleBenchmarkCheckBox(SingleBenchmarkResult singleBenchmarkResult) {
         String singleCheckBoxName = singleBenchmarkResult.getName() + " (" + singleBenchmarkResult.getRanking() + ")";
         String singleBenchmarkDetail = String.format(DETAIL_TEMPLATE_SINGLE_BENCHMARK, singleBenchmarkResult.getScore(),
-                singleBenchmarkResult.getPlanningEntityCount(), toEmptyStringIfNull(singleBenchmarkResult.getUsedMemoryAfterInputSolution()),
+                singleBenchmarkResult.getEntityCount(), toEmptyStringIfNull(singleBenchmarkResult.getUsedMemoryAfterInputSolution()),
                 singleBenchmarkResult.getTimeMillisSpent());
         MixedCheckBox singleBenchmarkCheckBox = new MixedCheckBox(singleCheckBoxName, singleBenchmarkDetail);
         resultCheckBoxMapping.put(singleBenchmarkCheckBox, singleBenchmarkResult);

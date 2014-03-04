@@ -90,12 +90,12 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
         cachedPlanningValues = null;
     }
 
-    public Iterator<?> iterator(Object planningEntity) {
+    public Iterator<?> iterator(Object entity) {
         if (cachedPlanningValues != null) {
             return cachedPlanningValues.iterator();
         } else {
             CountableValueRange<?> valueRange = (CountableValueRange<?>)valueRangeDescriptor.extractValueRange(
-                    scoreDirector.getWorkingSolution(), planningEntity);
+                    scoreDirector.getWorkingSolution(), entity);
             List<?> values = IteratorUtils.toList(valueRange.createOriginalIterator(), (int) valueRange.getSize());
             return values.iterator();
         }

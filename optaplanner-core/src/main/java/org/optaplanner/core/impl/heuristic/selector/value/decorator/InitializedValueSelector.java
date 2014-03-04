@@ -107,7 +107,7 @@ public class InitializedValueSelector extends AbstractValueSelector {
 
     private boolean accept(Object value) {
         return value == null
-                || !variableDescriptor.getEntityDescriptor().getPlanningEntityClass().isAssignableFrom(value.getClass())
+                || !variableDescriptor.getEntityDescriptor().getEntityClass().isAssignableFrom(value.getClass())
                 || variableDescriptor.isInitialized(value);
     }
 

@@ -62,7 +62,7 @@ public abstract class AbstractFromPropertyValueRangeDescriptor extends AbstractV
         collectionWrapping = Collection.class.isAssignableFrom(returnType);
         if (!collectionWrapping && !ValueRange.class.isAssignableFrom(returnType)) {
             throw new IllegalArgumentException("The planningEntityClass ("
-                    + entityDescriptor.getPlanningEntityClass()
+                    + entityDescriptor.getEntityClass()
                     + ") has a " + PlanningVariable.class.getSimpleName()
                     + " annotated property (" + variableDescriptor.getVariableName()
                     + ") that refers to a " + ValueRangeProvider.class.getSimpleName()

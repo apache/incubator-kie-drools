@@ -48,21 +48,21 @@ public class PlanningEntityDescriptor {
 
     private final SolutionDescriptor solutionDescriptor;
 
-    private final Class<?> planningEntityClass;
-    private final BeanInfo planningEntityBeanInfo;
+    private final Class<?> entityClass;
+    private final BeanInfo entityBeanInfo;
     private SelectionFilter movableEntitySelectionFilter;
     private SelectionSorter decreasingDifficultySorter;
 
     private Map<String, PlanningVariableDescriptor> genuineVariableDescriptorMap;
     private Map<String, ShadowVariableDescriptor> shadowVariableDescriptorMap;
 
-    public PlanningEntityDescriptor(SolutionDescriptor solutionDescriptor, Class<?> planningEntityClass) {
+    public PlanningEntityDescriptor(SolutionDescriptor solutionDescriptor, Class<?> entityClass) {
         this.solutionDescriptor = solutionDescriptor;
-        this.planningEntityClass = planningEntityClass;
+        this.entityClass = entityClass;
         try {
-            planningEntityBeanInfo = Introspector.getBeanInfo(planningEntityClass);
+            entityBeanInfo = Introspector.getBeanInfo(entityClass);
         } catch (IntrospectionException e) {
-            throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
+            throw new IllegalStateException("The planningEntityClass (" + entityClass
                     + ") is not a valid java bean.", e);
         }
     }
@@ -74,9 +74,9 @@ public class PlanningEntityDescriptor {
     }
 
     private void processEntityAnnotations(DescriptorPolicy descriptorPolicy) {
-        PlanningEntity entityAnnotation = planningEntityClass.getAnnotation(PlanningEntity.class);
+        PlanningEntity entityAnnotation = entityClass.getAnnotation(PlanningEntity.class);
         if (entityAnnotation == null) {
-            throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
+            throw new IllegalStateException("The planningEntityClass (" + entityClass
                     + ") has been specified as a planning entity in the configuration," +
                     " but does not have a " + PlanningEntity.class.getSimpleName() + " annotation.");
         }
@@ -106,7 +106,7 @@ public class PlanningEntityDescriptor {
             difficultyWeightFactoryClass = null;
         }
         if (difficultyComparatorClass != null && difficultyWeightFactoryClass != null) {
-            throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
+            throw new IllegalStateException("The planningEntityClass (" + entityClass
                     + ") cannot have a difficultyComparatorClass (" + difficultyComparatorClass.getName()
                     + ") and a difficultyWeightFactoryClass (" + difficultyWeightFactoryClass.getName()
                     + ") at the same time.");
@@ -127,7 +127,7 @@ public class PlanningEntityDescriptor {
 
     private void processMethodAnnotations(DescriptorPolicy descriptorPolicy) {
         // This only iterates public methods
-        for (Method method : planningEntityClass.getMethods()) {
+        for (Method method : entityClass.getMethods()) {
             if (method.isAnnotationPresent(ValueRangeProvider.class)) {
                 descriptorPolicy.addFromEntityValueRangeProvider(method);
             }
@@ -135,7 +135,7 @@ public class PlanningEntityDescriptor {
     }
 
     private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
-        PropertyDescriptor[] propertyDescriptors = planningEntityBeanInfo.getPropertyDescriptors();
+        PropertyDescriptor[] propertyDescriptors = entityBeanInfo.getPropertyDescriptors();
         genuineVariableDescriptorMap = new LinkedHashMap<String, PlanningVariableDescriptor>(propertyDescriptors.length);
         shadowVariableDescriptorMap = new LinkedHashMap<String, ShadowVariableDescriptor>(propertyDescriptors.length);
         boolean noPlanningVariableAnnotation = true;
@@ -145,7 +145,7 @@ public class PlanningEntityDescriptor {
                 PlanningVariable planningVariableAnnotation = propertyGetter.getAnnotation(PlanningVariable.class);
                 noPlanningVariableAnnotation = false;
                 if (propertyDescriptor.getWriteMethod() == null) {
-                    throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
+                    throw new IllegalStateException("The planningEntityClass (" + entityClass
                             + ") has a PlanningVariable annotated property (" + propertyDescriptor.getName()
                             + ") that should have a setter.");
                 }
@@ -163,7 +163,7 @@ public class PlanningEntityDescriptor {
             }
         }
         if (noPlanningVariableAnnotation) {
-            throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
+            throw new IllegalStateException("The planningEntityClass (" + entityClass
                     + ") should have at least 1 getter with a " + PlanningVariable.class.getSimpleName()
                     + " annotation.");
         }
@@ -186,12 +186,12 @@ public class PlanningEntityDescriptor {
         return solutionDescriptor;
     }
 
-    public Class<?> getPlanningEntityClass() {
-        return planningEntityClass;
+    public Class<?> getEntityClass() {
+        return entityClass;
     }
     
     public boolean matchesEntity(Object entity) {
-        return planningEntityClass.isAssignableFrom(entity.getClass());
+        return entityClass.isAssignableFrom(entity.getClass());
     }
 
     public boolean hasMovableEntitySelectionFilter() {
@@ -207,7 +207,7 @@ public class PlanningEntityDescriptor {
     }
 
     public PropertyDescriptor getPropertyDescriptor(String propertyName) {
-        for (PropertyDescriptor propertyDescriptor : planningEntityBeanInfo.getPropertyDescriptors()) {
+        for (PropertyDescriptor propertyDescriptor : entityBeanInfo.getPropertyDescriptors()) {
             if (propertyDescriptor.getName().equals(propertyName)) {
                 return propertyDescriptor;
             }
@@ -255,30 +255,30 @@ public class PlanningEntityDescriptor {
     // ************************************************************************
 
     public List<Object> extractEntities(Solution solution) {
-        return solutionDescriptor.getEntityListByPlanningEntityClass(solution, planningEntityClass);
+        return solutionDescriptor.getEntityListByEntityClass(solution, entityClass);
     }
 
-    public long getProblemScale(Solution solution, Object planningEntity) {
+    public long getProblemScale(Solution solution, Object entity) {
         long problemScale = 1L;
         for (PlanningVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {
-            problemScale *= variableDescriptor.getValueCount(solution, planningEntity);
+            problemScale *= variableDescriptor.getValueCount(solution, entity);
         }
         return problemScale;
     }
 
-    public int countUninitializedVariables(Object planningEntity) {
+    public int countUninitializedVariables(Object entity) {
         int uninitializedVariableCount = 0;
         for (PlanningVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {
-            if (!variableDescriptor.isInitialized(planningEntity)) {
+            if (!variableDescriptor.isInitialized(entity)) {
                 uninitializedVariableCount++;
             }
         }
         return uninitializedVariableCount;
     }
 
-    public boolean isInitialized(Object planningEntity) {
+    public boolean isInitialized(Object entity) {
         for (PlanningVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {
-            if (!variableDescriptor.isInitialized(planningEntity)) {
+            if (!variableDescriptor.isInitialized(entity)) {
                 return false;
             }
         }
@@ -287,7 +287,7 @@ public class PlanningEntityDescriptor {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + planningEntityClass.getName() + ")";
+        return getClass().getSimpleName() + "(" + entityClass.getName() + ")";
     }
 
 }

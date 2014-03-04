@@ -39,12 +39,12 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
         this.rightPillarSelector = rightPillarSelector;
         this.variableDescriptors = variableDescriptors;
         this.randomSelection = randomSelection;
-        Class<?> leftEntityClass = leftPillarSelector.getEntityDescriptor().getPlanningEntityClass();
-        if (!leftEntityClass.equals(rightPillarSelector.getEntityDescriptor().getPlanningEntityClass())) {
+        Class<?> leftEntityClass = leftPillarSelector.getEntityDescriptor().getEntityClass();
+        if (!leftEntityClass.equals(rightPillarSelector.getEntityDescriptor().getEntityClass())) {
             throw new IllegalStateException("The selector (" + this
                     + ") has a leftPillarSelector's entityClass (" + leftEntityClass
                     + ") which is not equal to the rightPillarSelector's entityClass ("
-                    + rightPillarSelector.getEntityDescriptor().getPlanningEntityClass() + ").");
+                    + rightPillarSelector.getEntityDescriptor().getEntityClass() + ").");
         }
         if (variableDescriptors.isEmpty()) {
             throw new IllegalStateException("The selector (" + this
@@ -52,10 +52,10 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
         }
         for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
             if (!leftEntityClass.equals(
-                    variableDescriptor.getEntityDescriptor().getPlanningEntityClass())) {
+                    variableDescriptor.getEntityDescriptor().getEntityClass())) {
                 throw new IllegalStateException("The selector (" + this
                         + ") has a variableDescriptor (" + variableDescriptor
-                        + ") with a entityClass (" + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
+                        + ") with a entityClass (" + variableDescriptor.getEntityDescriptor().getEntityClass()
                         + ") which is not equal to the leftPillarSelector's entityClass (" + leftEntityClass + ").");
             }
             if (variableDescriptor.isChained()) {

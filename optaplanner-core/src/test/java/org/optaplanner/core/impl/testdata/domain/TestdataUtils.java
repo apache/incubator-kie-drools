@@ -31,7 +31,7 @@ public class TestdataUtils {
         for (Class<?> entityClass : entityClasses) {
             PlanningEntityDescriptor entityDescriptor = new PlanningEntityDescriptor(
                     solutionDescriptor, entityClass);
-            solutionDescriptor.addPlanningEntityDescriptor(entityDescriptor);
+            solutionDescriptor.addEntityDescriptor(entityDescriptor);
             entityDescriptor.processAnnotations(descriptorPolicy);
         }
         solutionDescriptor.afterAnnotationsProcessed(descriptorPolicy);
