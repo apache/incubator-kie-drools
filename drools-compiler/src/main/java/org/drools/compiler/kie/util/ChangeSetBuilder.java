@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.compiler.compiler.DrlParser;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
@@ -35,9 +36,13 @@ import org.kie.internal.builder.ResourceChangeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.core.util.StringUtils.isEmpty;
+
 public class ChangeSetBuilder {
     
     private final Logger logger = LoggerFactory.getLogger( ChangeSetBuilder.class );
+
+    private String defaultPackageName;
 
     public KieJarChangeSet build( InternalKieModule original, InternalKieModule currentJar ) {
         KieJarChangeSet result = new KieJarChangeSet();
@@ -84,10 +89,10 @@ public class ChangeSetBuilder {
                 PackageDescr cpkg = new DrlParser().parse( new ByteArrayResource( cb ) );
                 
                 List<RuleDescr> orules = new ArrayList<RuleDescr>( opkg.getRules() ); // needs to be cloned
-                List<RuleDescr> crules = cpkg.getRules();
+                String pkgName = isEmpty(cpkg.getName()) ? getDefaultPackageName() : cpkg.getName();
 
-                for( RuleDescr crd : crules ) {
-                    pkgcs.getLoadOrder().add(new ResourceChangeSet.RuleLoadOrder(cpkg.getName(), crd.getName(), crd.getLoadOrder() ) );
+                for( RuleDescr crd : cpkg.getRules() ) {
+                    pkgcs.getLoadOrder().add(new ResourceChangeSet.RuleLoadOrder(pkgName, crd.getName(), crd.getLoadOrder() ) );
 
                     // unfortunately have to iterate search for a rule with the same name
                     boolean found = false;
@@ -174,5 +179,11 @@ public class ChangeSetBuilder {
         
         return builder.toString();
     }
-    
+
+    private String getDefaultPackageName() {
+        if (defaultPackageName == null) {
+            defaultPackageName = new PackageBuilderConfiguration().getDefaultPackageName();
+        }
+        return defaultPackageName;
+    }
 }
