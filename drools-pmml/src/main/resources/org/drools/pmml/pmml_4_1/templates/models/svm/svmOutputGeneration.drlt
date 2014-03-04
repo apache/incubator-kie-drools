@@ -31,7 +31,7 @@ when
     @{ pmmlPackageName }.SVM( context == $ctx, $svmId : svmId == "@{svmId}", $bias : bias, $numKernel : numSvs, target == "@{posCat}", alt == "@{negCat}" )
     accumulate( $k : @{ pmmlPackageName }.KernelEval( svmId == $svmId, $v : value ),
                 $num : count( $k ),
-                $sum : sum( $v );
+                $sum : sumBD( $v );
                 $num == $numKernel
                 @if{ ! simple && oneVSmany } , $sum.doubleValue() + $bias > @{threshold} @end{} )
 then

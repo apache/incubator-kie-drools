@@ -42,10 +42,10 @@ when
                  and
                  accumulate (
                          $pmap : java.util.Map() from $res.values(),
-                         $acc  : sum( $pmap.get( $key ) != null ? $pmap.get( $key ) : 0.0 )
+                         $acc  : sumBD( $pmap.get( $key ) != null ? $pmap.get( $key ) : 0.0 )
                      ),
                  init( java.util.Map mapp = new java.util.HashMap(); ),
-                 action( mapp.put( $key, $acc ); ),
+                 action( mapp.put( $key, $acc.doubleValue() ); ),
                  result( mapp )
                )
     $tot  : Double() from accumulate ( $d : Double() from $wgts.values(), sum( $d ) )

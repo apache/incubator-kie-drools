@@ -50,7 +50,7 @@ when
     accumulate( @{ pmmlPackageName }.PartialScore( scoreCard == $ctx, reasonCode == $code, $val : value, $char : characteristic )
                 and
                 @{ pmmlPackageName }.BaselineScore( scoreCard == $ctx, characteristic == $char, $base : value ),
-                $sum : sum( $below ? ($base - $val) : ($val - $base) ) )
+                $sum : sumBD( $below ? ($base - $val) : ($val - $base) ) )
 then
 //    System.out.println( "The CUMULATED score for code " + $code + " from set " + $set + " is >>> " + $sum );
     insertLogical( new @{ pmmlPackageName }.CodeScore( $card, $code, $sum.doubleValue() ) );
