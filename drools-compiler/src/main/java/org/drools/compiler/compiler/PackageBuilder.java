@@ -3201,7 +3201,7 @@ public class PackageBuilder
 
     private String getFullTypeName(String type,
             TypeResolver typeResolver) {
-        if (type.equals("new")) {
+        if ( isLiteralOrKeyword( type ) ) {
             return type;
         }
         try {
@@ -3209,6 +3209,13 @@ public class PackageBuilder
         } catch (ClassNotFoundException e) {
             return type;
         }
+    }
+
+    private boolean isLiteralOrKeyword( String type ) {
+        return "true".equals( type )
+                || "false".equals( type )
+                || "null".equals( type )
+                || "new".equals( type );
     }
 
     private void generateDeclaredBean(AbstractClassTypeDeclarationDescr typeDescr,

@@ -31,7 +31,7 @@ when
                                          target == "@{target}",
                                          $wgt : weight,
                                          normalized == false ),
-                $den     : sum( $wgt ),
+                $den     : sumBD( $wgt ),
                 $list    : collectList( $bit ) )
 then
     insert( new @{ pmmlPackageName }.RegNormalizationFactor( "@{context}", "@{target}", $den.doubleValue() ) );
