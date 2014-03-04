@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.move.CompositeMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
@@ -32,14 +32,14 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 @Deprecated
 public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
     
-    private final PlanningEntityDescriptor entityDescriptor;
+    private final EntityDescriptor entityDescriptor;
     private List<PlanningValueWalker> planningValueWalkerList;
 
     private ScoreDirector scoreDirector;
 
     private Object entity;
 
-    public PlanningVariableWalker(PlanningEntityDescriptor entityDescriptor) {
+    public PlanningVariableWalker(EntityDescriptor entityDescriptor) {
         this.entityDescriptor = entityDescriptor;
     }
 

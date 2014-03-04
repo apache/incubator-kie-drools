@@ -31,7 +31,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.CompositeValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.FromEntityPropertyValueRangeDescriptor;
@@ -49,7 +49,7 @@ import org.optaplanner.core.impl.solution.Solution;
 
 public class PlanningVariableDescriptor {
 
-    private final PlanningEntityDescriptor entityDescriptor;
+    private final EntityDescriptor entityDescriptor;
 
     private final PropertyAccessor variablePropertyAccessor;
     private boolean chained;
@@ -62,7 +62,7 @@ public class PlanningVariableDescriptor {
     private List<ShadowVariableDescriptor> shadowVariableDescriptorList = new ArrayList<ShadowVariableDescriptor>(4);
     private List<PlanningVariableListener> nonMappedByVariableListeners;
 
-    public PlanningVariableDescriptor(PlanningEntityDescriptor entityDescriptor,
+    public PlanningVariableDescriptor(EntityDescriptor entityDescriptor,
             PropertyDescriptor propertyDescriptor) {
         this.entityDescriptor = entityDescriptor;
         variablePropertyAccessor = new ReflectionPropertyAccessor(propertyDescriptor);
@@ -87,7 +87,7 @@ public class PlanningVariableDescriptor {
     private void processMappedBy(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         String mappedBy = planningVariableAnnotation.mappedBy();
         if (!mappedBy.equals("")) {
-            throw new IllegalStateException("Impossible state: the " + PlanningEntityDescriptor.class
+            throw new IllegalStateException("Impossible state: the " + EntityDescriptor.class
                     + " would never try to build a " + PlanningVariableDescriptor.class
                     + " for a shadow variable with mappedBy (" + mappedBy + ").");
         }
@@ -231,7 +231,7 @@ public class PlanningVariableDescriptor {
     // Worker methods
     // ************************************************************************
 
-    public PlanningEntityDescriptor getEntityDescriptor() {
+    public EntityDescriptor getEntityDescriptor() {
         return entityDescriptor;
     }
 

@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.AbstractSelectorConfigTest;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.value.FromSolutionPropertyValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
@@ -35,7 +35,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
     @Test
     public void phaseOriginal() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
-        PlanningEntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
+        EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .getEntityDescriptor(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
@@ -51,7 +51,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
     @Test
     public void stepOriginal() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
-        PlanningEntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
+        EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .getEntityDescriptor(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.STEP);
@@ -68,7 +68,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
     @Test
     public void justInTimeOriginal() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
-        PlanningEntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
+        EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .getEntityDescriptor(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
@@ -84,7 +84,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
     @Test
     public void phaseRandom() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
-        PlanningEntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
+        EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .getEntityDescriptor(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
@@ -100,7 +100,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
     @Test
     public void stepRandom() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
-        PlanningEntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
+        EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .getEntityDescriptor(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.STEP);
@@ -117,7 +117,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
     @Test
     public void justInTimeRandom() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
-        PlanningEntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
+        EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .getEntityDescriptor(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
@@ -133,7 +133,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
     @Test
     public void phaseShuffled() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
-        PlanningEntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
+        EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .getEntityDescriptor(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
@@ -150,7 +150,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
     @Test
     public void stepShuffled() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
-        PlanningEntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
+        EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .getEntityDescriptor(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.STEP);
@@ -167,7 +167,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
     @Test(expected = IllegalArgumentException.class)
     public void justInTimeShuffled() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
-        PlanningEntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
+        EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .getEntityDescriptor(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);

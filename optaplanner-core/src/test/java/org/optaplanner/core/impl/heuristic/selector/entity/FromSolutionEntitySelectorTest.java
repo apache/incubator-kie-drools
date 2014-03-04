@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.junit.Test;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
@@ -54,7 +54,7 @@ public class FromSolutionEntitySelectorTest {
        TestdataSolution workingSolution = new TestdataSolution();
         final List<Object> entityList = Arrays.<Object>asList(
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
-        PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
+        EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
         when(entityDescriptor.extractEntities(workingSolution)).thenReturn(entityList);
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
         when(scoreDirector.getWorkingSolution()).thenReturn(workingSolution);
@@ -122,7 +122,7 @@ public class FromSolutionEntitySelectorTest {
     @Test
     public void originalWithEntityListDirty() {
         TestdataSolution workingSolution = new TestdataSolution();
-        PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
+        EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
         when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object>asList(
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
@@ -219,7 +219,7 @@ public class FromSolutionEntitySelectorTest {
         TestdataSolution workingSolution = new TestdataSolution();
         final List<Object> entityList = Arrays.<Object>asList(
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
-        PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
+        EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
         when(entityDescriptor.extractEntities(workingSolution)).thenReturn(entityList);
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
         when(scoreDirector.getWorkingSolution()).thenReturn(workingSolution);
@@ -291,7 +291,7 @@ public class FromSolutionEntitySelectorTest {
     @Test
     public void randomWithEntityListDirty() {
         TestdataSolution workingSolution = new TestdataSolution();
-        PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
+        EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
         when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object>asList(
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
         ScoreDirector scoreDirector = mock(ScoreDirector.class);

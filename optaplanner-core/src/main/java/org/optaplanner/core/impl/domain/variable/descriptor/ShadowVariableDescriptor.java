@@ -24,7 +24,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
 import org.optaplanner.core.impl.domain.variable.listener.ChainedMappedByVariableListener;
@@ -33,13 +33,13 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 
 public class ShadowVariableDescriptor {
 
-    private final PlanningEntityDescriptor entityDescriptor;
+    private final EntityDescriptor entityDescriptor;
 
     private final PropertyAccessor variablePropertyAccessor;
     private String mappedBy;
     private PlanningVariableDescriptor mappedByVariableDescriptor;
 
-    public ShadowVariableDescriptor(PlanningEntityDescriptor entityDescriptor,
+    public ShadowVariableDescriptor(EntityDescriptor entityDescriptor,
             PropertyDescriptor propertyDescriptor) {
         this.entityDescriptor = entityDescriptor;
         variablePropertyAccessor = new ReflectionPropertyAccessor(propertyDescriptor);
@@ -64,7 +64,7 @@ public class ShadowVariableDescriptor {
     private void processMappedBy(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         mappedBy = planningVariableAnnotation.mappedBy();
         if (mappedBy.equals("")) {
-            throw new IllegalStateException("Impossible state: the " + PlanningEntityDescriptor.class
+            throw new IllegalStateException("Impossible state: the " + EntityDescriptor.class
                     + " would never try to build a " + ShadowVariableDescriptor.class
                     + " for a non-shadow variable with mappedBy (" + mappedBy + ").");
         }
@@ -147,7 +147,7 @@ public class ShadowVariableDescriptor {
 
     public void afterAnnotationsProcessed(DescriptorPolicy descriptorPolicy) {
         Class<?> masterClass = getVariablePropertyType();
-        PlanningEntityDescriptor mappedByEntityDescriptor = getEntityDescriptor().getSolutionDescriptor()
+        EntityDescriptor mappedByEntityDescriptor = getEntityDescriptor().getSolutionDescriptor()
                 .getEntityDescriptor(masterClass);
         if (mappedByEntityDescriptor == null) {
             throw new IllegalArgumentException("The planningEntityClass ("
@@ -184,7 +184,7 @@ public class ShadowVariableDescriptor {
     // Worker methods
     // ************************************************************************
 
-    public PlanningEntityDescriptor getEntityDescriptor() {
+    public EntityDescriptor getEntityDescriptor() {
         return entityDescriptor;
     }
 

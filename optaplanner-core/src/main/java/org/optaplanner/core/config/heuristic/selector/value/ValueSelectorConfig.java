@@ -25,7 +25,7 @@ import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
@@ -164,7 +164,7 @@ public class ValueSelectorConfig extends SelectorConfig {
      * @return never null
      */
     public ValueSelector buildValueSelector(HeuristicConfigPolicy configPolicy,
-            PlanningEntityDescriptor entityDescriptor,
+            EntityDescriptor entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         PlanningVariableDescriptor variableDescriptor = deduceVariableDescriptor(entityDescriptor, variableName);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);

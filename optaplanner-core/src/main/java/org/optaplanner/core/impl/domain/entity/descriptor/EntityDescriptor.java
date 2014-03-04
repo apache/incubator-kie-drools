@@ -44,7 +44,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
 import org.optaplanner.core.impl.solution.Solution;
 
-public class PlanningEntityDescriptor {
+public class EntityDescriptor {
 
     private final SolutionDescriptor solutionDescriptor;
 
@@ -56,7 +56,7 @@ public class PlanningEntityDescriptor {
     private Map<String, PlanningVariableDescriptor> genuineVariableDescriptorMap;
     private Map<String, ShadowVariableDescriptor> shadowVariableDescriptorMap;
 
-    public PlanningEntityDescriptor(SolutionDescriptor solutionDescriptor, Class<?> entityClass) {
+    public EntityDescriptor(SolutionDescriptor solutionDescriptor, Class<?> entityClass) {
         this.solutionDescriptor = solutionDescriptor;
         this.entityClass = entityClass;
         try {

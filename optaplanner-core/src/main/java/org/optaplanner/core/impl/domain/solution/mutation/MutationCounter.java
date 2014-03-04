@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.domain.solution.mutation;
 import java.util.Iterator;
 import java.util.List;
 
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
@@ -40,7 +40,7 @@ public class MutationCounter {
      */
     public int countMutations(Solution a, Solution b) {
         int mutationCount = 0;
-        for (PlanningEntityDescriptor entityDescriptor : solutionDescriptor.getGenuineEntityDescriptors()) {
+        for (EntityDescriptor entityDescriptor : solutionDescriptor.getGenuineEntityDescriptors()) {
             List<Object> aEntities = entityDescriptor.extractEntities(a);
             List<Object> bEntities = entityDescriptor.extractEntities(b);
             for (Iterator aIt = aEntities.iterator(), bIt = bEntities.iterator() ; aIt.hasNext() && bIt.hasNext(); ) {

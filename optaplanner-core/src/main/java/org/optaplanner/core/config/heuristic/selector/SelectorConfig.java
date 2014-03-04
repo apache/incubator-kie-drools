@@ -25,7 +25,7 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
@@ -64,9 +64,9 @@ public abstract class SelectorConfig {
         }
     }
 
-    protected PlanningEntityDescriptor deduceEntityDescriptor(SolutionDescriptor solutionDescriptor,
+    protected EntityDescriptor deduceEntityDescriptor(SolutionDescriptor solutionDescriptor,
             Class<?> entityClass) {
-        PlanningEntityDescriptor entityDescriptor;
+        EntityDescriptor entityDescriptor;
         if (entityClass != null) {
             entityDescriptor = solutionDescriptor.getEntityDescriptorStrict(entityClass);
             if (entityDescriptor == null) {
@@ -77,7 +77,7 @@ public abstract class SelectorConfig {
                         + "), check your Solution implementation's annotated methods too.");
             }
         } else {
-            Collection<PlanningEntityDescriptor> entityDescriptors = solutionDescriptor.getGenuineEntityDescriptors();
+            Collection<EntityDescriptor> entityDescriptors = solutionDescriptor.getGenuineEntityDescriptors();
             if (entityDescriptors.size() != 1) {
                 throw new IllegalArgumentException("The selectorConfig (" + this
                         + ") has no entityClass (" + entityClass
@@ -91,7 +91,7 @@ public abstract class SelectorConfig {
     }
 
     protected PlanningVariableDescriptor deduceVariableDescriptor(
-            PlanningEntityDescriptor entityDescriptor, String variableName) {
+            EntityDescriptor entityDescriptor, String variableName) {
         PlanningVariableDescriptor variableDescriptor;
         if (variableName != null) {
             variableDescriptor = entityDescriptor.getVariableDescriptor(variableName);
@@ -128,7 +128,7 @@ public abstract class SelectorConfig {
     }
 
     protected Collection<PlanningVariableDescriptor> deduceVariableDescriptors(
-            PlanningEntityDescriptor entityDescriptor, List<String> variableNameIncludeList) {
+            EntityDescriptor entityDescriptor, List<String> variableNameIncludeList) {
         Collection<PlanningVariableDescriptor> variableDescriptors = entityDescriptor.getVariableDescriptors();
         if (variableNameIncludeList == null) {
             return variableDescriptors;

@@ -33,7 +33,7 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSel
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedEntityPlacer;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
@@ -74,7 +74,7 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
         String entitySelectorId = "undefined";
         if (entitySelectorConfig == null) {
             entitySelectorConfig_ = new EntitySelectorConfig();
-            PlanningEntityDescriptor entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
+            EntityDescriptor entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
             Class<?> entityClass = entityDescriptor.getEntityClass();
             entitySelectorId = entityClass.getName();
             entitySelectorConfig_.setId(entitySelectorId);
@@ -99,7 +99,7 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
 
         List<MoveSelectorConfig> moveSelectorConfigList_;
         if (CollectionUtils.isEmpty(moveSelectorConfigList)) {
-            PlanningEntityDescriptor entityDescriptor = entitySelector.getEntityDescriptor();
+            EntityDescriptor entityDescriptor = entitySelector.getEntityDescriptor();
             Collection<PlanningVariableDescriptor> variableDescriptors = entityDescriptor.getVariableDescriptors();
             List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<MoveSelectorConfig>(
                     variableDescriptors.size());

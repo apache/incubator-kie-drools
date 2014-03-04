@@ -29,7 +29,7 @@ import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
@@ -196,7 +196,7 @@ public class EntitySelectorConfig extends SelectorConfig {
         if (mimicSelectorRef != null) {
             return buildMimicReplaying(configPolicy);
         }
-        PlanningEntityDescriptor entityDescriptor = deduceEntityDescriptor(
+        EntityDescriptor entityDescriptor = deduceEntityDescriptor(
                 configPolicy.getSolutionDescriptor(), entityClass);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
@@ -247,7 +247,7 @@ public class EntitySelectorConfig extends SelectorConfig {
         return new MimicReplayingEntitySelector(mimicRecordingEntitySelector);
     }
 
-    protected boolean determineBaseRandomSelection(PlanningEntityDescriptor entityDescriptor,
+    protected boolean determineBaseRandomSelection(EntityDescriptor entityDescriptor,
             SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder) {
         switch (resolvedSelectionOrder) {
             case ORIGINAL:
@@ -271,7 +271,7 @@ public class EntitySelectorConfig extends SelectorConfig {
     }
 
     private EntitySelector buildBaseEntitySelector(
-            HeuristicConfigPolicy configPolicy, PlanningEntityDescriptor entityDescriptor,
+            HeuristicConfigPolicy configPolicy, EntityDescriptor entityDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         if (minimumCacheType == SelectionCacheType.SOLVER) {
             // TODO Solver cached entities are not compatible with DroolsScoreCalculator and IncrementalScoreDirector
@@ -283,12 +283,12 @@ public class EntitySelectorConfig extends SelectorConfig {
         return new FromSolutionEntitySelector(entityDescriptor, minimumCacheType, randomSelection);
     }
 
-    private boolean hasFiltering(PlanningEntityDescriptor entityDescriptor) {
+    private boolean hasFiltering(EntityDescriptor entityDescriptor) {
         return !CollectionUtils.isEmpty(filterClassList)
                 || entityDescriptor.hasMovableEntitySelectionFilter();
     }
 
-    private EntitySelector applyFiltering(PlanningEntityDescriptor entityDescriptor,
+    private EntitySelector applyFiltering(EntityDescriptor entityDescriptor,
             SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
             EntitySelector entitySelector) {
         if (hasFiltering(entityDescriptor)) {
@@ -509,7 +509,7 @@ public class EntitySelectorConfig extends SelectorConfig {
     public static enum EntitySorterManner {
         DECREASING_DIFFICULTY;
 
-        public SelectionSorter determineSorter(PlanningEntityDescriptor entityDescriptor) {
+        public SelectionSorter determineSorter(EntityDescriptor entityDescriptor) {
             SelectionSorter sorter;
             switch (this) {
                 case DECREASING_DIFFICULTY:

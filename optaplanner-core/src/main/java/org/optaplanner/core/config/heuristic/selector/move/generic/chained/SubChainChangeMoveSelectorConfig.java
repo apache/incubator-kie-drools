@@ -24,7 +24,7 @@ import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.chained.SubChainSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.SubChainChangeMoveSelector;
@@ -81,7 +81,7 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
 
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        PlanningEntityDescriptor entityDescriptor = deduceEntityDescriptor(
+        EntityDescriptor entityDescriptor = deduceEntityDescriptor(
                 configPolicy.getSolutionDescriptor(), entityClass);
         SubChainSelectorConfig subChainSelectorConfig_ = subChainSelectorConfig == null ? new SubChainSelectorConfig()
                 : subChainSelectorConfig;

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
@@ -48,7 +48,7 @@ public class TrailingEntityMapSupport {
         }
     }
 
-    public void insertInTrailingEntityMap(PlanningEntityDescriptor entityDescriptor, Object entity) {
+    public void insertInTrailingEntityMap(EntityDescriptor entityDescriptor, Object entity) {
         if (hasChainedVariables) {
             for (PlanningVariableDescriptor variableDescriptor : entityDescriptor.getVariableDescriptors()) {
                 if (variableDescriptor.isChained()) {
@@ -82,7 +82,7 @@ public class TrailingEntityMapSupport {
         }
     }
 
-    public void retractFromTrailingEntityMap(PlanningEntityDescriptor entityDescriptor, Object entity) {
+    public void retractFromTrailingEntityMap(EntityDescriptor entityDescriptor, Object entity) {
         if (hasChainedVariables) {
             for (PlanningVariableDescriptor variableDescriptor : entityDescriptor.getVariableDescriptors()) {
                 if (variableDescriptor.isChained()) {

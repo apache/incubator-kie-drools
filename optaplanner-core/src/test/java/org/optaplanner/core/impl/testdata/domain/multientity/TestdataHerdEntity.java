@@ -18,14 +18,14 @@ package org.optaplanner.core.impl.testdata.domain.multientity;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
 @PlanningEntity
 public class TestdataHerdEntity extends TestdataObject {
 
-    public static PlanningEntityDescriptor buildEntityDescriptor() {
+    public static EntityDescriptor buildEntityDescriptor() {
         SolutionDescriptor solutionDescriptor = TestdataMultiEntitySolution.buildSolutionDescriptor();
         return solutionDescriptor.getEntityDescriptor(TestdataHerdEntity.class);
     }

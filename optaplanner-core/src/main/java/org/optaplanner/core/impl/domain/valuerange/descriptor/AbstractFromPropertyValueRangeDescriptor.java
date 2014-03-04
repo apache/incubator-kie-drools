@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.domain.valuerange.buildin.collection.ListValueR
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.common.DefaultReadMethodAccessor;
 import org.optaplanner.core.impl.domain.common.ReadMethodAccessor;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 
 public abstract class AbstractFromPropertyValueRangeDescriptor extends AbstractValueRangeDescriptor {
@@ -57,7 +57,7 @@ public abstract class AbstractFromPropertyValueRangeDescriptor extends AbstractV
     }
 
     private void processValueRangeProviderAnnotation(ValueRangeProvider valueRangeProviderAnnotation) {
-        PlanningEntityDescriptor entityDescriptor = variableDescriptor.getEntityDescriptor();
+        EntityDescriptor entityDescriptor = variableDescriptor.getEntityDescriptor();
         Class<?> returnType = readMethodAccessor.getReturnType();
         collectionWrapping = Collection.class.isAssignableFrom(returnType);
         if (!collectionWrapping && !ValueRange.class.isAssignableFrom(returnType)) {

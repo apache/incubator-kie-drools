@@ -23,7 +23,7 @@ import java.util.ListIterator;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
@@ -46,18 +46,18 @@ public class SelectorTestUtils {
         return solutionDescriptor;
     }
 
-    public static PlanningEntityDescriptor mockEntityDescriptor(Class entityClass) {
-        PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
+    public static EntityDescriptor mockEntityDescriptor(Class entityClass) {
+        EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
         when(entityDescriptor.getEntityClass()).thenReturn(entityClass);
         return entityDescriptor;
     }
 
     public static PlanningVariableDescriptor mockVariableDescriptor(Class entityClass, String variableName) {
-        PlanningEntityDescriptor entityDescriptor = mockEntityDescriptor(entityClass);
+        EntityDescriptor entityDescriptor = mockEntityDescriptor(entityClass);
         return mockVariableDescriptor(entityDescriptor, variableName);
     }
 
-    public static PlanningVariableDescriptor mockVariableDescriptor(PlanningEntityDescriptor entityDescriptor,
+    public static PlanningVariableDescriptor mockVariableDescriptor(EntityDescriptor entityDescriptor,
             String variableName) {
         PlanningVariableDescriptor variableDescriptor = mock(PlanningVariableDescriptor.class);
         when(variableDescriptor.getEntityDescriptor()).thenReturn(entityDescriptor);
@@ -66,11 +66,11 @@ public class SelectorTestUtils {
     }
 
     public static EntitySelector mockEntitySelector(Class entityClass, Object... entities) {
-        PlanningEntityDescriptor entityDescriptor = mockEntityDescriptor(entityClass);
+        EntityDescriptor entityDescriptor = mockEntityDescriptor(entityClass);
         return mockEntitySelector(entityDescriptor, entities);
     }
 
-    public static EntitySelector mockEntitySelector(PlanningEntityDescriptor entityDescriptor,
+    public static EntitySelector mockEntitySelector(EntityDescriptor entityDescriptor,
             Object... entities) {
         EntitySelector entitySelector = mock(EntitySelector.class);
         when(entitySelector.getEntityDescriptor()).thenReturn(entityDescriptor);
@@ -109,7 +109,7 @@ public class SelectorTestUtils {
         return mockValueSelector(variableDescriptor, values);
     }
 
-    public static ValueSelector mockValueSelector(PlanningEntityDescriptor entityDescriptor, String variableName,
+    public static ValueSelector mockValueSelector(EntityDescriptor entityDescriptor, String variableName,
             Object... values) {
         PlanningVariableDescriptor variableDescriptor = mockVariableDescriptor(entityDescriptor, variableName);
         return mockValueSelector(variableDescriptor, values);

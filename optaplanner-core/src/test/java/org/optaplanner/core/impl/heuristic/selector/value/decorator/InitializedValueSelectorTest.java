@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
 import org.junit.Test;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
@@ -41,7 +41,7 @@ public class InitializedValueSelectorTest {
 
     @Test
     public void originalSelectionNullable() {
-        PlanningEntityDescriptor entityDescriptor = TestdataNullableEntity.buildEntityDescriptor();
+        EntityDescriptor entityDescriptor = TestdataNullableEntity.buildEntityDescriptor();
         TestdataNullableEntity e1 = new TestdataNullableEntity("e1");
         // This variable is unable to have entity's as values, but it's an interesting nullable test anyway
         PlanningVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("value");
@@ -78,7 +78,7 @@ public class InitializedValueSelectorTest {
 
     @Test
     public void originalSelectionChained() {
-        PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
+        EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         PlanningVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1");

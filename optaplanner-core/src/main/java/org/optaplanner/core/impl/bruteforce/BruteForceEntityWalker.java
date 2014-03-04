@@ -23,7 +23,7 @@ import java.util.List;
 import org.optaplanner.core.impl.bruteforce.event.BruteForceSolverPhaseLifecycleListener;
 import org.optaplanner.core.impl.bruteforce.scope.BruteForceSolverPhaseScope;
 import org.optaplanner.core.impl.bruteforce.scope.BruteForceStepScope;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueSelectionOrder;
@@ -46,7 +46,7 @@ public class BruteForceEntityWalker implements BruteForceSolverPhaseLifecycleLis
         List<Object> entityList = phaseScope.getWorkingEntityList();
         planningVariableWalkerList = new ArrayList<PlanningVariableWalker>(entityList.size());
         for (Object entity : entityList) {
-            PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(
+            EntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(
                     entity.getClass());
             PlanningVariableWalker planningVariableWalker = new PlanningVariableWalker(entityDescriptor);
             List<PlanningValueWalker> planningValueWalkerList = buildPlanningValueWalkerList(entityDescriptor);
@@ -57,7 +57,7 @@ public class BruteForceEntityWalker implements BruteForceSolverPhaseLifecycleLis
         }
     }
 
-    private List<PlanningValueWalker> buildPlanningValueWalkerList(PlanningEntityDescriptor entityDescriptor) {
+    private List<PlanningValueWalker> buildPlanningValueWalkerList(EntityDescriptor entityDescriptor) {
         Collection<PlanningVariableDescriptor> variableDescriptors
                 = entityDescriptor.getVariableDescriptors();
         List<PlanningValueWalker> planningValueWalkerList = new ArrayList<PlanningValueWalker>(

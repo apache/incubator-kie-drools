@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleBridge;
@@ -84,7 +84,7 @@ public class SameValuePillarSelector extends AbstractSelector
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(CACHE_TYPE, this));
     }
 
-    public PlanningEntityDescriptor getEntityDescriptor() {
+    public EntityDescriptor getEntityDescriptor() {
         return entitySelector.getEntityDescriptor();
     }
 
