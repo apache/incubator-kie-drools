@@ -20,7 +20,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class ChainedMappedByVariableListener extends AbstractVariableListener<Object> {
+public class ChainedMappedByVariableListener implements VariableListener<Object> {
 
     private final ShadowVariableDescriptor shadowVariableDescriptor;
     private final GenuineVariableDescriptor mappedByVariableDescriptor;

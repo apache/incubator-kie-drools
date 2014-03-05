@@ -22,7 +22,6 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * Changes shadow variables when a genuine planning variable changes.
  * <p/>
  * Important: it must never change a genuine planning variable!
- * @see AbstractVariableListener
  */
 public interface VariableListener<EntityG> {
 
