@@ -46,4 +46,6 @@ public class MavenPomModelGenerator implements PomModelGenerator {
 
         return pomModel;
     }
+
+
 }

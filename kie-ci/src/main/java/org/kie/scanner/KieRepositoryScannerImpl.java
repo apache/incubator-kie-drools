@@ -20,7 +20,7 @@ import org.kie.scanner.management.KieScannerMBeanImpl;
 import org.kie.scanner.management.MBeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonatype.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.Artifact;
 
 import java.io.File;
 import java.io.IOException;
@@ -110,7 +110,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     }
 
     public synchronized ReleaseId getScannerReleaseId() {
-        return ((InternalKieContainer)kieContainer).getContainerReleaseId();
+        return kieContainer.getContainerReleaseId();
     }
 
     public synchronized ReleaseId getCurrentReleaseId() {

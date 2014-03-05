@@ -6,7 +6,7 @@ import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuilder;
 import org.apache.maven.settings.building.SettingsBuildingException;
 import org.junit.Test;
-import org.sonatype.aether.repository.RemoteRepository;
+import org.eclipse.aether.repository.RemoteRepository;
 
 import java.io.File;
 import java.util.Collection;

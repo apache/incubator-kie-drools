@@ -7,31 +7,31 @@ import org.apache.maven.settings.Repository;
 import org.apache.maven.settings.RepositoryPolicy;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.kie.api.builder.ReleaseId;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.scanner.embedder.MavenSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.collection.CollectRequest;
-import org.sonatype.aether.collection.CollectResult;
-import org.sonatype.aether.collection.DependencyCollectionException;
-import org.sonatype.aether.deployment.DeployRequest;
-import org.sonatype.aether.deployment.DeploymentException;
-import org.sonatype.aether.graph.Dependency;
-import org.sonatype.aether.graph.DependencyNode;
-import org.sonatype.aether.graph.DependencyVisitor;
-import org.sonatype.aether.repository.Authentication;
-import org.sonatype.aether.repository.RemoteRepository;
-import org.sonatype.aether.resolution.ArtifactRequest;
-import org.sonatype.aether.resolution.ArtifactResolutionException;
-import org.sonatype.aether.resolution.ArtifactResult;
-import org.sonatype.aether.resolution.VersionRangeRequest;
-import org.sonatype.aether.resolution.VersionRangeResolutionException;
-import org.sonatype.aether.resolution.VersionRangeResult;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
-import org.sonatype.aether.util.artifact.SubArtifact;
-import org.sonatype.aether.version.Version;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.collection.CollectRequest;
+import org.eclipse.aether.collection.CollectResult;
+import org.eclipse.aether.collection.DependencyCollectionException;
+import org.eclipse.aether.deployment.DeployRequest;
+import org.eclipse.aether.deployment.DeploymentException;
+import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.graph.DependencyNode;
+import org.eclipse.aether.graph.DependencyVisitor;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.ArtifactResult;
+import org.eclipse.aether.resolution.VersionRangeRequest;
+import org.eclipse.aether.resolution.VersionRangeResolutionException;
+import org.eclipse.aether.resolution.VersionRangeResult;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.util.artifact.SubArtifact;
+import org.eclipse.aether.version.Version;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -81,10 +81,10 @@ public class MavenRepository {
         for (Profile profile : settings.getProfiles()) {
             if (isProfileActive(settings, profile)) {
                 for (Repository repository : profile.getRepositories()) {
-                    extraRepositories.add( toRemoteRepository(settings, repository) );
+                    extraRepositories.add( toRemoteRepositoryBuilder(settings, repository).build() );
                 }
                 for (Repository repository : profile.getPluginRepositories()) {
-                    extraRepositories.add( toRemoteRepository(settings, repository) );
+                    extraRepositories.add( toRemoteRepositoryBuilder(settings, repository).build() );
                 }
             }
         }
@@ -105,9 +105,7 @@ public class MavenRepository {
     private RemoteRepository resolveMirroredRepo(Settings settings, RemoteRepository repo) {
         for (Mirror mirror : settings.getMirrors()) {
             if (isMirror(repo, mirror.getMirrorOf())) {
-                return setRemoteRepositoryAuthentication(settings,
-                                                         new RemoteRepository(mirror.getId(), mirror.getLayout(), mirror.getUrl()),
-                                                         mirror.getId());
+                return toRemoteRepositoryBuilder(settings, mirror.getId(), mirror.getLayout(), mirror.getUrl()).build();
             }
         }
         return repo;
@@ -126,27 +124,36 @@ public class MavenRepository {
                (profile.getActivation() != null && profile.getActivation().isActiveByDefault());
     }
 
-    private RemoteRepository toRemoteRepository(Settings settings, Repository repository) {
-        RemoteRepository remote = new RemoteRepository(repository.getId(), repository.getLayout(), repository.getUrl());
-        setPolicy(remote, repository.getSnapshots(), true);
-        setPolicy(remote, repository.getReleases(), false);
-        return setRemoteRepositoryAuthentication(settings, remote, repository.getId());
+    private static RemoteRepository.Builder toRemoteRepositoryBuilder(Settings settings, Repository repository) {
+        RemoteRepository.Builder remoteBuilder = toRemoteRepositoryBuilder( settings, repository.getId(), repository.getLayout(), repository.getUrl() );
+        setPolicy(remoteBuilder, repository.getSnapshots(), true);
+        setPolicy(remoteBuilder, repository.getReleases(), false);
+        return remoteBuilder;
     }
 
-    private RemoteRepository setRemoteRepositoryAuthentication(Settings settings, RemoteRepository remote, String repoId) {
-        Server server = settings.getServer( repoId );
+    private static RemoteRepository.Builder toRemoteRepositoryBuilder(Settings settings, String id, String layout, String url) {
+        RemoteRepository.Builder remoteBuilder = new RemoteRepository.Builder( id, layout, url );
+        Server server = settings.getServer( id );
         if (server != null) {
-            remote.setAuthentication( new Authentication(server.getUsername(), server.getPassword()) );
+            remoteBuilder.setAuthentication( new AuthenticationBuilder().addUsername(server.getUsername())
+                                                                        .addPassword(server.getPassword())
+                                                                        .build() );
         }
-        return remote;
+        return remoteBuilder;
+
     }
 
-    private void setPolicy(RemoteRepository remote, RepositoryPolicy policy, boolean snapshot) {
+    private static void setPolicy(RemoteRepository.Builder builder, RepositoryPolicy policy, boolean snapshot) {
         if (policy != null) {
-            remote.setPolicy(snapshot,
-                             new org.sonatype.aether.repository.RepositoryPolicy(policy.isEnabled(),
-                                                                                 policy.getUpdatePolicy(),
-                                                                                 policy.getChecksumPolicy()));
+            org.eclipse.aether.repository.RepositoryPolicy repoPolicy =
+                    new org.eclipse.aether.repository.RepositoryPolicy(policy.isEnabled(),
+                                                                       policy.getUpdatePolicy(),
+                                                                       policy.getChecksumPolicy());
+            if (snapshot) {
+                builder.setSnapshotPolicy(repoPolicy);
+            } else {
+                builder.setReleasePolicy(repoPolicy);
+            }
         }
     }
 
@@ -195,6 +202,10 @@ public class MavenRepository {
     }
 
     public Artifact resolveArtifact(String artifactName) {
+        return resolveArtifact(artifactName, true);
+    }
+
+    public Artifact resolveArtifact(String artifactName, boolean logUnresolvedArtifact) {
         Artifact artifact = new DefaultArtifact( artifactName );
         ArtifactRequest artifactRequest = new ArtifactRequest();
         artifactRequest.setArtifact( artifact );
@@ -205,7 +216,9 @@ public class MavenRepository {
             ArtifactResult artifactResult = aether.getSystem().resolveArtifact(aether.getSession(), artifactRequest);
             return artifactResult.getArtifact();
         } catch (ArtifactResolutionException e) {
-            log.warn("Unable to resolve artifact: " + artifactName, e);
+            if (logUnresolvedArtifact) {
+                log.warn("Unable to resolve artifact: " + artifactName, e);
+            }
             return null;
         }
     }
