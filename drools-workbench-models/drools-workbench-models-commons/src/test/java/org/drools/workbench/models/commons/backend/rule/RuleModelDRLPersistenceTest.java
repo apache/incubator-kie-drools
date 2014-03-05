@@ -17,6 +17,7 @@
 package org.drools.workbench.models.commons.backend.rule;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,7 +97,9 @@ public class RuleModelDRLPersistenceTest {
 
     private void checkMarshallUnmarshall( String expected,
                                           RuleModel m ) {
-        checkMarshallUnmarshall( expected, m, mock( PackageDataModelOracle.class ) );
+        checkMarshallUnmarshall( expected,
+                                 m,
+                                 mock( PackageDataModelOracle.class ) );
     }
 
     private void checkMarshallUnmarshall( String expected,
@@ -108,7 +111,9 @@ public class RuleModelDRLPersistenceTest {
             assertEqualsIgnoreWhitespace( expected, drl );
         }
 
-        RuleModel unmarshalledModel = ruleModelPersistence.unmarshal( drl, dmo );
+        RuleModel unmarshalledModel = ruleModelPersistence.unmarshalUsingDSL( drl,
+                                                                              Collections.EMPTY_LIST,
+                                                                              dmo );
         if ( expected != null ) {
             assertEqualsIgnoreWhitespace( expected, ruleModelPersistence.marshal( unmarshalledModel ) );
         } else {
@@ -552,7 +557,8 @@ public class RuleModelDRLPersistenceTest {
                 + "\t\t>update( p1 );\n" + "\t\t>retract( p1 );\n"
                 + "\t\tSend an email to administrator\n" + "end\n";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
 
         String drl = ruleModelPersistence.marshal( m );
         assertEqualsIgnoreWhitespace( expected, drl );
@@ -3465,7 +3471,9 @@ public class RuleModelDRLPersistenceTest {
                 "end\n";
 
         PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
-        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 Collections.EMPTY_LIST,
+                                                                                 dmo );
         assertNotNull( m );
 
         assertEquals( 1,
@@ -3485,7 +3493,9 @@ public class RuleModelDRLPersistenceTest {
                 "end\n";
 
         PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
-        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 Collections.EMPTY_LIST,
+                                                                                 dmo );
         assertNotNull( m );
 
         //LHS
@@ -3528,7 +3538,9 @@ public class RuleModelDRLPersistenceTest {
                 "end\n";
 
         PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
-        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 Collections.EMPTY_LIST,
+                                                                                 dmo );
         assertNotNull( m );
 
         //LHS
@@ -3572,7 +3584,9 @@ public class RuleModelDRLPersistenceTest {
                         "list.add( $a );\n" +
                         "end\n";
 
-        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl, Arrays.asList( global ), dmo );
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 Arrays.asList( global ),
+                                                                                 dmo );
 
         assertNotNull( m );
         assertEqualsIgnoreWhitespace( drl, RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
@@ -3612,7 +3626,9 @@ public class RuleModelDRLPersistenceTest {
                 "end\n";
 
         PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
-        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 Collections.EMPTY_LIST,
+                                                                                 dmo );
         assertNotNull( m );
 
         //LHS
@@ -3655,7 +3671,9 @@ public class RuleModelDRLPersistenceTest {
                 "end\n";
 
         PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
-        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 Collections.EMPTY_LIST,
+                                                                                 dmo );
         assertNotNull( m );
 
         //LHS
@@ -3731,6 +3749,7 @@ public class RuleModelDRLPersistenceTest {
 
         PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
         RuleModel rm_ = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                             Collections.EMPTY_LIST,
                                                                              dmo );
         assertEquals( 2,
                       rm_.rhs.length );
@@ -3753,8 +3772,9 @@ public class RuleModelDRLPersistenceTest {
         final String drl = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
 
         PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
-        final RuleModel m2 = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
-                                                                                  dmo );
+        final RuleModel m2 = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl,
+                                                                                          Collections.EMPTY_LIST,
+                                                                                          dmo );
         assertNotNull( m2 );
         assertEquals( m.name,
                       m2.name );
@@ -3847,6 +3867,7 @@ public class RuleModelDRLPersistenceTest {
 
         PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
         RuleModel m2 = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                            Collections.EMPTY_LIST,
                                                                             dmo );
         assertNotNull( m2 );
         assertEquals( "with composite",
@@ -3879,6 +3900,7 @@ public class RuleModelDRLPersistenceTest {
 
         PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
         RuleModel m_ = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                            Collections.EMPTY_LIST,
                                                                             dmo );
         assertEquals( 1,
                       m_.lhs.length );
@@ -3936,10 +3958,12 @@ public class RuleModelDRLPersistenceTest {
     public void testLoadEmpty() {
         PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( "",
+                                                                           Collections.EMPTY_LIST,
                                                                            dmo );
         assertNotNull( m );
 
         m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( "",
+                                                                 Collections.EMPTY_LIST,
                                                                  dmo );
         assertNotNull( m );
     }

@@ -17,6 +17,7 @@ package org.drools.workbench.models.commons.backend.rule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,7 +121,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -147,7 +150,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -176,7 +181,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -216,7 +223,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -258,7 +267,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -318,7 +329,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -357,7 +370,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -396,7 +411,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -455,7 +472,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -496,7 +515,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -596,7 +617,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -699,7 +722,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -768,7 +793,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -836,7 +863,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -852,7 +881,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -868,7 +899,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( 1,
@@ -888,7 +921,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( 1,
@@ -908,7 +943,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( 1, m.lhs.length );
@@ -917,7 +954,24 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    public void testFreeFormLine() {
+    public void testLHSFreeFormLine() {
+        String drl = "rule rule1\n"
+                + "when\n"
+                + "//A comment\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
+        assertNotNull( m );
+        assertEquals( 1, m.lhs.length );
+        assertTrue( m.lhs[ 0 ] instanceof FreeFormLine );
+        assertEquals( "//A comment", ( (FreeFormLine) m.lhs[ 0 ] ).getText() );
+    }
+
+    @Test
+    public void testRHSFreeFormLine() {
         String drl = "rule rule1\n"
                 + "when\n"
                 + "then\n"
@@ -925,7 +979,46 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "System.out.println( \"Hello Mario!\" );\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
+        assertNotNull( m );
+        assertEquals( 2, m.rhs.length );
+        assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
+        assertEquals( "int test = (int)(1-0.8);", ( (FreeFormLine) m.rhs[ 0 ] ).getText() );
+        assertTrue( m.rhs[ 1 ] instanceof FreeFormLine );
+        assertEquals( "System.out.println( \"Hello Mario!\" );", ( (FreeFormLine) m.rhs[ 1 ] ).getText() );
+    }
+
+    @Test
+    public void testLHSFreeFormLineWithDsl() {
+        String drl = "rule rule1\n"
+                + "when\n"
+                + ">//A comment\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl,
+                                                                                   Collections.EMPTY_LIST,
+                                                                                   dmo );
+        assertNotNull( m );
+        assertEquals( 1, m.lhs.length );
+        assertTrue( m.lhs[ 0 ] instanceof FreeFormLine );
+        assertEquals( "//A comment", ( (FreeFormLine) m.lhs[ 0 ] ).getText() );
+    }
+
+    @Test
+    public void testRHSFreeFormLineWithDsl() {
+        String drl = "rule rule1\n"
+                + "when\n"
+                + "then\n"
+                + ">int test = (int)(1-0.8);\n"
+                + ">System.out.println( \"Hello Mario!\" );\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl,
+                                                                                   Collections.EMPTY_LIST,
+                                                                                   dmo );
         assertNotNull( m );
         assertEquals( 2, m.rhs.length );
         assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
@@ -943,7 +1036,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "double test = d.doubleValue();\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
         assertNotNull( m );
         assertEquals( 1, m.rhs.length );
         assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
@@ -971,7 +1066,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                         "    System.out.println(\"Executed Rule: \" + drools.getRule().getName() );\n" +
                         "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
         assertNotNull( m );
         assertEquals( 7, m.rhs.length );
         assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
@@ -1001,7 +1098,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "java.lang.Integer",
                        "Integer" );
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( 1, m.lhs.length );
@@ -1077,7 +1176,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "java.lang.Integer",
                        "Integer" );
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( 1, m.lhs.length );
@@ -1158,7 +1259,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "java.lang.Integer",
                        "Integer" );
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( 1, m.lhs.length );
@@ -1253,7 +1356,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -1305,7 +1410,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -1421,7 +1528,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -1581,7 +1690,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "java.lang.String",
                        "String" );
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -1714,7 +1825,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "java.lang.Integer",
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -1805,7 +1918,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "java.lang.String",
                        "String" );
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertNotNull( m );
         assertEquals( 1, m.lhs.length );
@@ -1919,7 +2034,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
         assertEquals( 1,
                       m.attributes.length );
         assertEquals( "calendars",
@@ -1952,7 +2069,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 globals
                         );
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertTrue( m.rhs[ 0 ] instanceof ActionCallMethod );
         ActionCallMethod actionGlobalCollectionAdd = (ActionCallMethod) m.rhs[ 0 ];
@@ -1983,7 +2102,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         when( dmo.getPackageGlobals() ).thenReturn( globals );
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertEquals( 2, m.getImports().getImports().size() );
 
@@ -2033,7 +2154,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         when( dmo.getProjectMethodInformation() ).thenReturn( methodInformation );
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertTrue( m.rhs[ 0 ] instanceof ActionCallMethod );
         ActionCallMethod mc = (ActionCallMethod) m.rhs[ 0 ];
@@ -2082,7 +2205,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         when( dmo.getProjectMethodInformation() ).thenReturn( methodInformation );
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertTrue( m.rhs[ 0 ] instanceof ActionCallMethod );
         ActionCallMethod mc = (ActionCallMethod) m.rhs[ 0 ];
@@ -2129,7 +2254,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         when( dmo.getProjectMethodInformation() ).thenReturn( methodInformation );
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertTrue( m.rhs[ 0 ] instanceof ActionCallMethod );
         ActionCallMethod mc = (ActionCallMethod) m.rhs[ 0 ];
@@ -2173,7 +2300,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 globals
                         );
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
         assertTrue( m.rhs[ 0 ] instanceof ActionGlobalCollectionAdd );
         ActionGlobalCollectionAdd actionGlobalCollectionAdd = (ActionGlobalCollectionAdd) m.rhs[ 0 ];
@@ -2191,6 +2320,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "end";
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
                                                                            dmo );
 
         assertNotNull( m );
@@ -2241,6 +2371,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "Integer" );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
                                                                            dmo );
         assertEquals( 1,
                       m.lhs.length );
@@ -2274,6 +2405,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "List" );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
                                                                            dmo );
         assertEquals( 1,
                       m.rhs.length );
@@ -2306,6 +2438,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "end";
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
                                                                            dmo );
 
         assertTrue( m.rhs[ 0 ] instanceof ActionUpdateField );
@@ -2335,6 +2468,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "Contact" );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
                                                                            dmo );
 
         FactPattern pattern = (FactPattern) m.lhs[ 0 ];
@@ -2364,6 +2498,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "org.test.Contact" );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
                                                                            dmo );
 
         FactPattern pattern = (FactPattern) m.lhs[ 0 ];
@@ -2393,6 +2528,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "org.test.Contact" );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
                                                                            dmo );
 
         FactPattern pattern = (FactPattern) m.lhs[ 0 ];
@@ -2425,6 +2561,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "String" );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
                                                                            dmo );
 
         FactPattern pattern = (FactPattern) m.lhs[ 0 ];
@@ -2478,6 +2615,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "Integer" );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
                                                                            dmo );
 
         FactPattern pattern1 = (FactPattern) m.lhs[ 0 ];
@@ -2531,6 +2669,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                new String[]{ "TestEnum.VALUE1=TestEnum.VALUE1", "TestEnum.VALUE2=TestEnum.VALUE2" } );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
                                                                            dmo );
 
         FactPattern pattern = (FactPattern) m.lhs[ 0 ];
@@ -2579,6 +2718,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                new String[]{ "TestEnum.VALUE1=TestEnum.VALUE1", "TestEnum.VALUE2=TestEnum.VALUE2" } );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
                                                                            dmo );
 
         FactPattern pattern = (FactPattern) m.lhs[ 0 ];
@@ -2630,6 +2770,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                new String[]{ "TestEnum.VALUE1=TestEnum.VALUE1", "TestEnum.VALUE2=TestEnum.VALUE2" } );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
                                                                            dmo );
 
         FactPattern pattern = (FactPattern) m.lhs[ 0 ];
@@ -2713,6 +2854,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                new String[]{ "TestEnum.VALUE1=TestEnum.VALUE1", "TestEnum.VALUE2=TestEnum.VALUE2" } );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
                                                                            dmo );
 
         FactPattern pattern = (FactPattern) m.lhs[ 0 ];
@@ -2782,6 +2924,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "end\n";
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
                                                                            dmo );
 
         assertNotNull( m.attributes[ 0 ] );
@@ -2813,6 +2956,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        DataType.TYPE_STRING );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
                                                                            dmo );
         assertTrue( m.lhs[ 1 ] instanceof FromCompositeFactPattern );
         FromCompositeFactPattern factPattern = (FromCompositeFactPattern) m.lhs[ 1 ];
@@ -2847,14 +2991,15 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "String",
                        DataType.TYPE_STRING );
         addModelField( "org.pkg2.Fact",
-                      "someOtherField",
-                      "org.pkg2.SubFact",
-                      "SubFact" );
+                       "someOtherField",
+                       "org.pkg2.SubFact",
+                       "SubFact" );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
                                                                            dmo );
-        assertEquals(1, m.lhs.length);
-     }
+        assertEquals( 1, m.lhs.length );
+    }
 
     @Test
     public void testFactsWithSameNameImports() {
@@ -2877,14 +3022,15 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "String",
                        DataType.TYPE_STRING );
         addModelField( "org.pkg2.Fact",
-                      "someOtherField",
-                      "org.pkg2.SubFact",
-                      "SubFact" );
+                       "someOtherField",
+                       "org.pkg2.SubFact",
+                       "SubFact" );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
                                                                            dmo );
-        assertEquals(1, m.lhs.length);
-     }
+        assertEquals( 1, m.lhs.length );
+    }
 
     @Test
     public void testFromBoundVariable() {
@@ -2903,6 +3049,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        DataType.TYPE_NUMERIC );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
                                                                            dmo );
 
         assertNotNull( m );
@@ -2980,6 +3127,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        DataType.TYPE_NUMERIC );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
                                                                            dmo );
 
         assertNotNull( m );
@@ -3002,7 +3150,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( "0", fieldConstraint.getValue() );
     }
 
-
     @Test
     public void testSimpleDSLExpansionLHS() {
         String drl = "rule \"rule1\"\n"
@@ -3019,9 +3166,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         final String dslFile2 = "[condition][vertrag]" + dslDefinition2 + "=rabatt < {rabatt}";
 
         final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl,
-                new ArrayList<String>(),
-                dmo,
-                new String[]{ dslFile, dslFile2 } );
+                                                                                         new ArrayList<String>(),
+                                                                                         dmo,
+                                                                                         new String[]{ dslFile, dslFile2 } );
 
         assertNotNull( m );
 
@@ -3029,21 +3176,21 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         DSLSentence dslSentence = (DSLSentence) m.lhs[ 0 ];
         assertEquals( dslDefinition,
-                dslSentence.getDefinition() );
+                      dslSentence.getDefinition() );
         assertEquals( 0,
-                dslSentence.getValues().size() );
+                      dslSentence.getValues().size() );
 
         DSLSentence dslSentence2 = (DSLSentence) m.lhs[ 1 ];
         assertEquals( dslDefinition2,
-                dslSentence2.getDefinition() );
+                      dslSentence2.getDefinition() );
         assertEquals( 1,
-                dslSentence2.getValues().size() );
+                      dslSentence2.getValues().size() );
 
         assertTrue( dslSentence2.getValues().get( 0 ) instanceof DSLVariableValue );
 
         DSLVariableValue dslComplexVariableValue = dslSentence2.getValues().get( 0 );
         assertEquals( "123",
-                dslComplexVariableValue.getValue() );
+                      dslComplexVariableValue.getValue() );
     }
 
     @Test
