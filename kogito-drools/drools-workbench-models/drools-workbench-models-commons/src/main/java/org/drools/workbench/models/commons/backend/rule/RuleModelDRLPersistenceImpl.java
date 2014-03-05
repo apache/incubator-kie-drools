@@ -716,23 +716,23 @@ public class RuleModelDRLPersistenceImpl
         }
 
         public void preGenerateConstraints( GeneratorContext gctx ) {
-            // empty, overriden by rule templates
+            // empty, overridden by rule templates
         }
 
         public void preGenerateNestedConnector( GeneratorContext gctx ) {
-            // empty, overriden by rule templates
+            // empty, overridden by rule templates
         }
 
         public void postGenerateNestedConnector( GeneratorContext gctx ) {
-            // empty, overriden by rule templates
+            // empty, overridden by rule templates
         }
 
         public void preGenerateNestedConstraint( GeneratorContext gctx ) {
-            // empty, overriden by rule templates
+            // empty, overridden by rule templates
         }
 
         public void postGenerateNestedConstraint( GeneratorContext gctx ) {
-            // empty, overriden by rule templates
+            // empty, overridden by rule templates
         }
 
         public void generateSeparator( FieldConstraint constr,
@@ -740,9 +740,9 @@ public class RuleModelDRLPersistenceImpl
             if ( !gctx.isHasOutput() ) {
                 return;
             }
-            if ( gctx.getDepth() == 0  ) {
-                if (buf.length() > 2 && !(buf.charAt(buf.length() - 2) == ',')) {
-                    buf.append(", ");
+            if ( gctx.getDepth() == 0 ) {
+                if ( buf.length() > 2 && !( buf.charAt( buf.length() - 2 ) == ',' ) ) {
+                    buf.append( ", " );
                 }
             } else {
                 CompositeFieldConstraint cconstr = (CompositeFieldConstraint) gctx.getParent().getFieldConstraint();
@@ -810,7 +810,7 @@ public class RuleModelDRLPersistenceImpl
                         while ( parent != null ) {
                             String fieldName = parent.getFieldName();
                             parentBuf.insert( 0,
-                                    fieldName + "." );
+                                              fieldName + "." );
                             parent = (SingleFieldConstraint) parent.getParent();
                         }
                         buf.append( parentBuf );
@@ -1520,14 +1520,18 @@ public class RuleModelDRLPersistenceImpl
     }
 
     /**
-     * @see RuleModelPersistence#unmarshal(String, PackageDataModelOracle)
+     * @see RuleModelPersistence#unmarshal(String, List, PackageDataModelOracle)
      */
     public RuleModel unmarshal( final String str,
+                                final List<String> globals,
                                 final PackageDataModelOracle dmo ) {
         if ( str == null || str.isEmpty() ) {
             return new RuleModel();
         }
-        return getRuleModel( preprocessDRL( str ).registerGlobals( dmo, null ), dmo );
+        return getRuleModel( preprocessDRL( str,
+                                            false ).registerGlobals( dmo,
+                                                                     globals ),
+                             dmo );
     }
 
     public RuleModel unmarshalUsingDSL( final String str,
@@ -1537,7 +1541,11 @@ public class RuleModelDRLPersistenceImpl
         if ( str == null || str.isEmpty() ) {
             return new RuleModel();
         }
-        return getRuleModel( parseDSLs( preprocessDRL( str ), dsls ).registerGlobals( dmo, globals ), dmo );
+        return getRuleModel( parseDSLs( preprocessDRL( str,
+                                                       true ),
+                                        dsls ).registerGlobals( dmo,
+                                                                globals ),
+                             dmo );
     }
 
     private ExpandedDRLInfo parseDSLs( ExpandedDRLInfo expandedDRLInfo,
@@ -1551,7 +1559,7 @@ public class RuleModelDRLPersistenceImpl
                     } else if ( dslPattern.startsWith( "[then]" ) ) {
                         expandedDRLInfo.rhsDslPatterns.add( extractDslPattern( dslPattern.substring( "[then]".length() ) ) );
                     } else if ( dslPattern.startsWith( "[" ) ) {
-                        String pattern = extractDslPattern( removeDslTopics(dslPattern) );
+                        String pattern = extractDslPattern( removeDslTopics( dslPattern ) );
                         expandedDRLInfo.lhsDslPatterns.add( pattern );
                         expandedDRLInfo.rhsDslPatterns.add( pattern );
                     }
@@ -1560,25 +1568,26 @@ public class RuleModelDRLPersistenceImpl
         }
         return expandedDRLInfo;
     }
-     private String removeDslTopics( String line ) {
+
+    private String removeDslTopics( String line ) {
         int lastClosedSquare = -1;
         boolean lookForOpen = true;
-        for (int i = 0; i < line.length(); i++) {
-            char ch = line.charAt(i);
-            if (lookForOpen) {
-                if (ch == '[') {
+        for ( int i = 0; i < line.length(); i++ ) {
+            char ch = line.charAt( i );
+            if ( lookForOpen ) {
+                if ( ch == '[' ) {
                     lookForOpen = false;
-                } else if (!Character.isWhitespace(ch)) {
+                } else if ( !Character.isWhitespace( ch ) ) {
                     break;
                 }
             } else {
-                if (ch == ']') {
+                if ( ch == ']' ) {
                     lastClosedSquare = i;
                     lookForOpen = true;
                 }
             }
         }
-        return line.substring(lastClosedSquare+1);
+        return line.substring( lastClosedSquare + 1 );
     }
 
     private String extractDslPattern( String line ) {
@@ -1622,13 +1631,12 @@ public class RuleModelDRLPersistenceImpl
         return model;
     }
 
-    private ExpandedDRLInfo preprocessDRL( String str ) {
-        boolean hasDsl = false;
+    private ExpandedDRLInfo preprocessDRL( String str,
+                                           boolean hasDsl ) {
         StringBuilder drl = new StringBuilder();
         String thenLine = null;
         List<String> lhsStatements = new ArrayList<String>();
         List<String> rhsStatements = new ArrayList<String>();
-        int statementsWithoutParanthesis = 0;
 
         String[] lines = str.split( "\n" );
         RuleSection ruleSection = RuleSection.HEADER;
@@ -1647,11 +1655,6 @@ public class RuleModelDRLPersistenceImpl
                 ruleSection = RuleSection.RHS;
                 continue;
             }
-            if ( line.trim().startsWith( ">" ) ) {
-                hasDsl = true;
-            } else if ( line.indexOf( '(' ) < 0 ) {
-                statementsWithoutParanthesis++;
-            }
             if ( ruleSection == RuleSection.LHS ) {
                 if ( lhsParenthesisBalance == 0 ) {
                     lhsStatements.add( line );
@@ -1659,18 +1662,20 @@ public class RuleModelDRLPersistenceImpl
                     String oldLine = lhsStatements.remove( lhsStatements.size() - 1 );
                     lhsStatements.add( oldLine + " " + line );
                 }
-                lhsParenthesisBalance += paranthesisBalance( line );
+                lhsParenthesisBalance += parenthesisBalance( line );
             } else {
                 rhsStatements.add( line );
             }
         }
 
-        hasDsl |= statementsWithoutParanthesis == lhsStatements.size() + rhsStatements.size();
-
-        return createExpandedDRLInfo( hasDsl, drl, thenLine, lhsStatements, rhsStatements );
+        return createExpandedDRLInfo( hasDsl,
+                                      drl,
+                                      thenLine,
+                                      lhsStatements,
+                                      rhsStatements );
     }
 
-    private int paranthesisBalance( String str ) {
+    private int parenthesisBalance( String str ) {
         int balance = 0;
         for ( char ch : str.toCharArray() ) {
             if ( ch == '(' ) {
@@ -1688,7 +1693,10 @@ public class RuleModelDRLPersistenceImpl
                                                    List<String> lhsStatements,
                                                    List<String> rhsStatements ) {
         if ( !hasDsl ) {
-            return processFreeFormStatement( drl, thenLine, lhsStatements, rhsStatements );
+            return processFreeFormStatement( drl,
+                                             thenLine,
+                                             lhsStatements,
+                                             rhsStatements );
         }
 
         ExpandedDRLInfo expandedDRLInfo = new ExpandedDRLInfo( hasDsl );
@@ -1696,10 +1704,16 @@ public class RuleModelDRLPersistenceImpl
         for ( String statement : lhsStatements ) {
             lineCounter++;
             String trimmed = statement.trim();
-            if ( trimmed.startsWith( ">" ) ) {
-                drl.append( trimmed.substring( 1 ) ).append( "\n" );
+            if ( hasDsl && trimmed.startsWith( ">" ) ) {
+                if ( isValidLHSStatement( trimmed ) ) {
+                    drl.append( trimmed.substring( 1 ) ).append( "\n" );
+                } else {
+                    expandedDRLInfo.freeFormStatementsInLhs.put( lineCounter,
+                                                                 trimmed.substring( 1 ) );
+                }
             } else {
-                expandedDRLInfo.dslStatementsInLhs.put( lineCounter, trimmed );
+                expandedDRLInfo.dslStatementsInLhs.put( lineCounter,
+                                                        trimmed );
             }
         }
 
@@ -1713,7 +1727,7 @@ public class RuleModelDRLPersistenceImpl
                 trimmed = trimmed.substring( 0, trimmed.length() - 3 ).trim();
             }
             if ( trimmed.length() > 0 ) {
-                if ( trimmed.startsWith( ">" ) ) {
+                if ( hasDsl && trimmed.startsWith( ">" ) ) {
                     drl.append( trimmed.substring( 1 ) ).append( "\n" );
                 } else {
                     expandedDRLInfo.dslStatementsInRhs.put( lineCounter, trimmed );
@@ -1735,10 +1749,12 @@ public class RuleModelDRLPersistenceImpl
         int lineCounter = -1;
         for ( String statement : lhsStatements ) {
             lineCounter++;
-            if ( isValidLHSStatement( statement ) ) {
-                drl.append( statement ).append( "\n" );
+            String trimmed = statement.trim();
+            if ( isValidLHSStatement( trimmed ) ) {
+                drl.append( trimmed ).append( "\n" );
             } else {
-                expandedDRLInfo.freeFormStatementsInLhs.put( lineCounter, statement );
+                expandedDRLInfo.freeFormStatementsInLhs.put( lineCounter,
+                                                             trimmed );
             }
         }
 
@@ -1763,7 +1779,7 @@ public class RuleModelDRLPersistenceImpl
 
     private boolean isValidLHSStatement( String lhs ) {
         // TODO: How to identify a non valid (free form) lhs statement?
-        return lhs.indexOf( '(' ) >= 0 || lhs.indexOf( ':' ) >= 0;
+        return ( lhs.indexOf( '(' ) >= 0 || lhs.indexOf( ':' ) >= 0 ) && lhs.indexOf( "//" ) == -1;
     }
 
     private enum RuleSection {HEADER, LHS, RHS}
@@ -1857,7 +1873,7 @@ public class RuleModelDRLPersistenceImpl
         boolean isJavaDialect = false;
         for ( Map.Entry<String, AttributeDescr> entry : attributes.entrySet() ) {
             String name = entry.getKey();
-            String value = normalizeAtributeValue( entry.getValue().getValue().trim() );
+            String value = normalizeAttributeValue( entry.getValue().getValue().trim() );
             RuleAttribute ruleAttribute = new RuleAttribute( name, value );
             m.addAttribute( ruleAttribute );
             isJavaDialect |= name.equals( "dialect" ) && value.equals( "java" );
@@ -1865,7 +1881,7 @@ public class RuleModelDRLPersistenceImpl
         return isJavaDialect;
     }
 
-    private String normalizeAtributeValue( String value ) {
+    private String normalizeAttributeValue( String value ) {
         if ( value.startsWith( "[" ) ) {
             value = value.substring( 1, value.length() - 1 ).trim();
         }
@@ -2951,21 +2967,22 @@ public class RuleModelDRLPersistenceImpl
             return expressionPart.trim();
         }
 
-        private String getFQFactType( RuleModel ruleModel, String factType ) {
+        private String getFQFactType( RuleModel ruleModel,
+                                      String factType ) {
 
             Set<String> factTypes = dmo.getProjectModelFields().keySet();
 
-            if (factTypes.contains(ruleModel.getPackageName() + "." + factType)) {
+            if ( factTypes.contains( ruleModel.getPackageName() + "." + factType ) ) {
                 return ruleModel.getPackageName() + "." + factType;
             }
 
-            for(String item:ruleModel.getImports().getImportStrings()){
-                if(item.endsWith("."+factType)){
+            for ( String item : ruleModel.getImports().getImportStrings() ) {
+                if ( item.endsWith( "." + factType ) ) {
                     return item;
                 }
             }
 
-            for ( String type : factTypes) {
+            for ( String type : factTypes ) {
                 if ( type.endsWith( "." + factType ) ) {
                     return type;
                 }
@@ -3124,7 +3141,7 @@ public class RuleModelDRLPersistenceImpl
 
         private boolean isEnumerationValue( RuleModel ruleModel,
                                             FactPattern factPattern,
-                                            BaseSingleFieldConstraint con) {
+                                            BaseSingleFieldConstraint con ) {
             String factType = null;
             String fieldName = null;
             if ( con instanceof SingleFieldConstraintEBLeftSide ) {
