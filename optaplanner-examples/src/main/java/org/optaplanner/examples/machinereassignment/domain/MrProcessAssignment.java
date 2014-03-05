@@ -95,37 +95,6 @@ public class MrProcessAssignment extends AbstractPersistable {
         return "Process " + getId();
     }
 
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
-     * requires them (for performance in their original state).
-     * @see #solutionHashCode()
-     */
-    public boolean solutionEquals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (o instanceof MrProcessAssignment) {
-            MrProcessAssignment other = (MrProcessAssignment) o;
-            return new EqualsBuilder()
-                    .append(process, other.process)
-                    .append(machine, other.machine)
-                    .isEquals();
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
-     * requires them (for performance in their original state).
-     * @see #solutionEquals(Object)
-     */
-    public int solutionHashCode() {
-        return new HashCodeBuilder()
-                .append(process)
-                .append(machine)
-                .toHashCode();
-    }
-
     @Override
     public String toString() {
         return process + " @ " + machine;

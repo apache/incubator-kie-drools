@@ -65,39 +65,6 @@ public class Visit extends AbstractPersistable implements Standstill {
         return city.getDistance(standstill.getCity());
     }
 
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
-     * requires them (for performance in their original state).
-     * @see #solutionHashCode()
-     */
-    public boolean solutionEquals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (o instanceof Visit) {
-            Visit other = (Visit) o;
-            return new EqualsBuilder()
-                    .append(id, other.id)
-                    .append(city, other.city) // TODO performance leak: not needed?
-                    .append(previousStandstill, other.previousStandstill) // TODO performance leak: not needed?
-                    .isEquals();
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
-     * requires them (for performance in their original state).
-     * @see #solutionEquals(Object)
-     */
-    public int solutionHashCode() {
-        return new HashCodeBuilder()
-                .append(id)
-                .append(city) // TODO performance leak: not needed?
-                .append(previousStandstill) // TODO performance leak: not needed?
-                .toHashCode();
-    }
-
     @Override
     public String toString() {
         return city + "(after " + (previousStandstill == null ? "null" : previousStandstill.getCity()) + ")";

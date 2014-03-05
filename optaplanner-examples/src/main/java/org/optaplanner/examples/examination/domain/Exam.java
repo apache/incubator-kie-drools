@@ -141,41 +141,6 @@ public class Exam extends AbstractPersistable implements PlanningCloneable<Exam>
         return clone;
     }
 
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
-     * requires them (for performance in their original state).
-     * @see #solutionHashCode()
-     */
-    public boolean solutionEquals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (o instanceof Exam) {
-            Exam other = (Exam) o;
-            return new EqualsBuilder()
-                    .append(id, other.id)
-                    .append(topic, other.topic)
-                    .append(period, other.period)
-                    .append(room, other.room)
-                    .isEquals();
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
-     * requires them (for performance in their original state).
-     * @see #solutionEquals(Object)
-     */
-    public int solutionHashCode() {
-        return new HashCodeBuilder()
-                .append(id)
-                .append(topic)
-                .append(period)
-                .append(room)
-                .toHashCode();
-    }
-
     public String getLabel() {
         return Long.toString(topic.getId());
     }

@@ -176,37 +176,4 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         return serviceDependencyList;
     }
 
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (id == null || !(o instanceof MachineReassignment)) {
-            return false;
-        } else {
-            MachineReassignment other = (MachineReassignment) o;
-            if (processAssignmentList.size() != other.processAssignmentList.size()) {
-                return false;
-            }
-            for (Iterator<MrProcessAssignment> it = processAssignmentList.iterator(),
-                    otherIt = other.processAssignmentList.iterator(); it.hasNext();) {
-                MrProcessAssignment processAssignment = it.next();
-                MrProcessAssignment otherProcessAssignment = otherIt.next();
-                // Notice: we don't use equals()
-                if (!processAssignment.solutionEquals(otherProcessAssignment)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    public int hashCode() {
-        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        for (MrProcessAssignment processAssignment : processAssignmentList) {
-            // Notice: we don't use hashCode()
-            hashCodeBuilder.append(processAssignment.solutionHashCode());
-        }
-        return hashCodeBuilder.toHashCode();
-    }
-
 }

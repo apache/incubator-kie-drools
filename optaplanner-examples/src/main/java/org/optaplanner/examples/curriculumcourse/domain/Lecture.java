@@ -124,41 +124,6 @@ public class Lecture extends AbstractPersistable {
         return course.getCode() + "-" + lectureIndexInCourse;
     }
 
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
-     * requires them (for performance in their original state).
-     * @see #solutionHashCode()
-     */
-    public boolean solutionEquals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (o instanceof Lecture) {
-            Lecture other = (Lecture) o;
-            return new EqualsBuilder()
-                    .append(id, other.id)
-                    .append(course, other.course)
-                    .append(period, other.period)
-                    .append(room, other.room)
-                    .isEquals();
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
-     * requires them (for performance in their original state).
-     * @see #solutionEquals(Object)
-     */
-    public int solutionHashCode() {
-        return new HashCodeBuilder()
-                .append(id)
-                .append(course)
-                .append(period)
-                .append(room)
-                .toHashCode();
-    }
-
     @Override
     public String toString() {
         return course + "-" + lectureIndexInCourse + " @ " + period + " + " + room;

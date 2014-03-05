@@ -110,39 +110,6 @@ public class Customer extends AbstractPersistable implements Standstill {
         return location.getMilliDistance(standstill.getLocation());
     }
 
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
-     * requires them (for performance in their original state).
-     * @see #solutionHashCode()
-     */
-    public boolean solutionEquals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (o instanceof Customer) {
-            Customer other = (Customer) o;
-            return new EqualsBuilder()
-                    .append(id, other.id)
-                    .append(location, other.location) // TODO performance leak: not needed?
-                    .append(previousStandstill, other.previousStandstill) // TODO performance leak: not needed?
-                    .isEquals();
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
-     * requires them (for performance in their original state).
-     * @see #solutionEquals(Object)
-     */
-    public int solutionHashCode() {
-        return new HashCodeBuilder()
-                .append(id)
-                .append(location) // TODO performance leak: not needed?
-                .append(previousStandstill) // TODO performance leak: not needed?
-                .toHashCode();
-    }
-
     @Override
     public String toString() {
         return location + "(after " + (previousStandstill == null ? "null" : previousStandstill.getLocation()) + ")";

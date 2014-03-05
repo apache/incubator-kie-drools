@@ -3967,3 +3967,7 @@ Before in *.java:
     public class VehicleUpdatingVariableListener extends AbstractPlanningVariableListener<Customer> {
 After in *.java:
     public class VehicleUpdatingVariableListener implements VariableListener<Customer> {
+
+[MINOR] If you've copied the solutionEquals() and solutionHashCode() from the examples,
+it's safe to remove it if you're not using solutionTabu (which is often pointless to use).
+Also remove the equals() and hashCode() method on your Solution implementation.
