@@ -35,6 +35,10 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
     protected boolean assertStepScoreFromScratch = false;
     protected boolean assertExpectedStepScore = false;
 
+    public LocalSearchDecider getDecider() {
+        return decider;
+    }
+
     public void setDecider(LocalSearchDecider decider) {
         this.decider = decider;
     }
