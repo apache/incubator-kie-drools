@@ -17,9 +17,9 @@
 package org.optaplanner.core.impl.domain.variable.listener;
 
 /**
- * Abstract superclass for {@link PlanningVariableListener}.
- * @see PlanningVariableListener
+ * Abstract superclass for {@link VariableListener}.
+ * @see VariableListener
  */
-public abstract class AbstractPlanningVariableListener<EntityG> implements PlanningVariableListener<EntityG> {
+public abstract class AbstractVariableListener<EntityG> implements VariableListener<EntityG> {
 
 }

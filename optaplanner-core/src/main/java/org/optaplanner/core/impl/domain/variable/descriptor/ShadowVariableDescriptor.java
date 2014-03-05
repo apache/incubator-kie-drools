@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
-import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.listener.ChainedMappedByVariableListener;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
@@ -134,7 +134,7 @@ public class ShadowVariableDescriptor {
     }
 
     private void processVariableListeners(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
-        Class<? extends PlanningVariableListener>[] variableListenerClasses
+        Class<? extends VariableListener>[] variableListenerClasses
                 = planningVariableAnnotation.variableListenerClasses();
         if (variableListenerClasses.length != 0) {
             throw new IllegalArgumentException("The planningEntityClass ("
@@ -196,7 +196,7 @@ public class ShadowVariableDescriptor {
         return variablePropertyAccessor.getPropertyType();
     }
 
-    public PlanningVariableListener buildPlanningVariableListener() {
+    public VariableListener buildVariableListener() {
         return new ChainedMappedByVariableListener(this);
     }
 

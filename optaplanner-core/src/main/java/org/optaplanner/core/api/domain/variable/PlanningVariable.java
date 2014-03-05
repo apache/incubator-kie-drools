@@ -23,7 +23,7 @@ import java.util.Comparator;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -147,14 +147,14 @@ public @interface PlanningVariable {
     interface NullStrengthWeightFactory extends SelectionSorterWeightFactory {}
 
     /**
-     * A {@link PlanningVariableListener} gets notified before and after a planning variable has changed.
+     * A {@link VariableListener} gets notified before and after a planning variable has changed.
      * That listener changes shadow variables (often on other planning entities) accordingly,
      * Those shadow variables can make the score calculation more natural to write.
      * <p/>
-     * For example: VRP with time windows uses a {@link PlanningVariableListener} to update the arrival times
+     * For example: VRP with time windows uses a {@link VariableListener} to update the arrival times
      * of all the trailing entities when an entity is changed.
      * @return never null
      */
-    Class<? extends PlanningVariableListener>[] variableListenerClasses() default {};
+    Class<? extends VariableListener>[] variableListenerClasses() default {};
 
 }

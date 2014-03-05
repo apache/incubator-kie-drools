@@ -1,12 +1,12 @@
 package org.optaplanner.examples.vehiclerouting.domain.solver;
 
-import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Standstill;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 
-public class VehicleUpdatingVariableListener implements PlanningVariableListener<Customer> {
+public class VehicleUpdatingVariableListener implements VariableListener<Customer> {
 
     public void beforeEntityAdded(ScoreDirector scoreDirector, Customer customer) {
         // Do nothing

@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.domain.valuerange.descriptor.CompositeValueRang
 import org.optaplanner.core.impl.domain.valuerange.descriptor.FromEntityPropertyValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.FromSolutionPropertyValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
@@ -60,7 +60,7 @@ public class GenuineVariableDescriptor {
     private SelectionSorter increasingStrengthSorter;
 
     private List<ShadowVariableDescriptor> shadowVariableDescriptorList = new ArrayList<ShadowVariableDescriptor>(4);
-    private List<PlanningVariableListener> nonMappedByVariableListeners;
+    private List<VariableListener> nonMappedByVariableListeners;
 
     public GenuineVariableDescriptor(EntityDescriptor entityDescriptor,
             PropertyDescriptor propertyDescriptor) {
@@ -210,10 +210,10 @@ public class GenuineVariableDescriptor {
     }
 
     private void processVariableListeners(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
-        Class<? extends PlanningVariableListener>[] variableListenerClasses
+        Class<? extends VariableListener>[] variableListenerClasses
                 = planningVariableAnnotation.variableListenerClasses();
-        nonMappedByVariableListeners = new ArrayList<PlanningVariableListener>(variableListenerClasses.length);
-        for (Class<? extends PlanningVariableListener> variableListenerClass : variableListenerClasses) {
+        nonMappedByVariableListeners = new ArrayList<VariableListener>(variableListenerClasses.length);
+        for (Class<? extends VariableListener> variableListenerClass : variableListenerClasses) {
             nonMappedByVariableListeners.add(
                     ConfigUtils.newInstance(this, "variableListenerClass", variableListenerClass));
         }
@@ -263,15 +263,15 @@ public class GenuineVariableDescriptor {
         return valueRangeDescriptor;
     }
 
-    public List<PlanningVariableListener> buildVariableListenerList() {
-        List<PlanningVariableListener> variableListenerList = new ArrayList<PlanningVariableListener>(
+    public List<VariableListener> buildVariableListenerList() {
+        List<VariableListener> variableListenerList = new ArrayList<VariableListener>(
                 shadowVariableDescriptorList.size() + nonMappedByVariableListeners.size());
         // Always trigger the build-in shadow variables first
         for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptorList) {
-            variableListenerList.add(shadowVariableDescriptor.buildPlanningVariableListener());
+            variableListenerList.add(shadowVariableDescriptor.buildVariableListener());
         }
         // Always trigger the non build-in shadow variables last
-        for (PlanningVariableListener variableListener : nonMappedByVariableListeners) {
+        for (VariableListener variableListener : nonMappedByVariableListeners) {
             variableListenerList.add(variableListener);
         }
         return variableListenerList;

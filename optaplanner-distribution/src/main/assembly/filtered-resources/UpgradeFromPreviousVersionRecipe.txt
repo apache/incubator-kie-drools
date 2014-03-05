@@ -3955,3 +3955,9 @@ After in *.java:
 
 [IMPL_DETAIL] PlanningEntityDescriptor has been renamed to EntityDescriptor
 [IMPL_DETAIL] PlanningVariableDescriptor has been renamed to GenuineVariableDescriptor
+
+[MAJOR] PlanningVariableListener has been renamed to VariableListener
+Before in *.java:
+    public class VehicleUpdatingVariableListener implements PlanningVariableListener<Customer> {
+After in *.java:
+    public class VehicleUpdatingVariableListener implements VariableListener<Customer> {

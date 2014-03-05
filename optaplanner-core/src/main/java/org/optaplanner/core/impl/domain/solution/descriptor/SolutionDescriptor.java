@@ -42,8 +42,8 @@ import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
 import org.optaplanner.core.impl.domain.solution.cloner.PlanningCloneableSolutionCloner;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
-import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListenerSupport;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListenerSupport;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
 
@@ -248,14 +248,14 @@ public class SolutionDescriptor {
         return chainedVariableDescriptors;
     }
 
-    public PlanningVariableListenerSupport buildVariableListenerSupport() {
+    public VariableListenerSupport buildVariableListenerSupport() {
         // Order is important, hence LinkedHashMap
-        Map<GenuineVariableDescriptor, List<PlanningVariableListener>> variableListenerMap
-                = new LinkedHashMap<GenuineVariableDescriptor, List<PlanningVariableListener>>();
+        Map<GenuineVariableDescriptor, List<VariableListener>> variableListenerMap
+                = new LinkedHashMap<GenuineVariableDescriptor, List<VariableListener>>();
         for (EntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
             entityDescriptor.addVariableListenersToMap(variableListenerMap);
         }
-        return new PlanningVariableListenerSupport(variableListenerMap);
+        return new VariableListenerSupport(variableListenerMap);
     }
 
     public GenuineVariableDescriptor findVariableDescriptor(Object entity, String variableName) {

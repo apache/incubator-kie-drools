@@ -34,7 +34,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
@@ -244,7 +244,7 @@ public class EntityDescriptor {
     }
 
     public void addVariableListenersToMap(
-            Map<GenuineVariableDescriptor, List<PlanningVariableListener>> variableListenerMap) {
+            Map<GenuineVariableDescriptor, List<VariableListener>> variableListenerMap) {
         for (GenuineVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {
             variableListenerMap.put(variableDescriptor, variableDescriptor.buildVariableListenerList());
         }

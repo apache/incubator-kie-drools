@@ -28,7 +28,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListenerSupport;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListenerSupport;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.common.TrailingEntityMapSupport;
 import org.optaplanner.core.impl.solution.Solution;
@@ -55,7 +55,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     protected boolean constraintMatchEnabledPreference = true;
 
     protected TrailingEntityMapSupport trailingEntityMapSupport;
-    protected PlanningVariableListenerSupport variableListenerSupport;
+    protected VariableListenerSupport variableListenerSupport;
 
     protected Solution workingSolution;
     protected long workingEntityListRevision = 0L;

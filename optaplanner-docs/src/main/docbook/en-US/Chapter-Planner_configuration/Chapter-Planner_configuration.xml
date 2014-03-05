@@ -906,11 +906,11 @@ public interface Standstill {
 }</programlisting>
 
         <para>The <literal>mappedBy</literal> variable is a form of a shadow variable: Planner uses a build-in
-        <literal>PlanningVariableListener</literal> to update its state.</para>
+        <literal>VariableListener</literal> to update its state.</para>
       </section>
 
-      <section xml:id="planningVariableListener">
-        <title>Planning variable listener that updates shadow variables</title>
+      <section xml:id="variableListener">
+        <title>Variable listener that updates shadow variables</title>
 
         <para>A shadow variable is a variables who's correct value can be deduced from the state of the genuine planning
         variables. Even though such a variable violates the principle of normalization by definition, in some use cases
@@ -928,7 +928,7 @@ public interface Standstill {
         <para>As the customers for a vehicle change, the arrival time is automatically adjusted. For more information,
         see the <link linkend="vehicleRoutingDomainModel">vehicle routing domain model</link>.</para>
 
-        <para>To use custom <literal>PlanningVariableListener</literal>, implement the interface and annotate it on the
+        <para>To use custom <literal>VariableListener</literal>, implement the interface and annotate it on the
         genuine planning variable(s) that trigger changes in the shadow variable(s):</para>
 
         <programlisting language="java">    @PlanningVariable(..., variableListenerClasses = {VehicleUpdatingVariableListener.class, ArrivalTimeUpdatingVariableListener.class})
@@ -939,7 +939,7 @@ public interface Standstill {
         <para>For example, the VehicleUpdatingVariableListener assures that every <literal>Customer</literal> in a chain
         has the same <literal>Vehicle</literal>, namely the chain's anchor.</para>
 
-        <programlisting language="java">public class VehicleUpdatingVariableListener implements PlanningVariableListener&lt;Customer&gt; {
+        <programlisting language="java">public class VehicleUpdatingVariableListener implements VariableListener&lt;Customer&gt; {
 
     public void afterEntityAdded(ScoreDirector scoreDirector, Customer customer) {
         updateVehicle(scoreDirector, customer);
@@ -969,7 +969,7 @@ public interface Standstill {
         variables.</para>
 
         <warning>
-          <para>A PlanningVariableListener can only change shadow variables. It must never change a genuine planning
+          <para>A <literal>VariableListener</literal> can only change shadow variables. It must never change a genuine planning
           variable or a problem fact.</para>
         </warning>
 
