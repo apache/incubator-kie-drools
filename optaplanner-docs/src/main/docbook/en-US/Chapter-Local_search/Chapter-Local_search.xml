@@ -360,32 +360,6 @@ DEBUG     Step index (0), time spent (6), score (-3), new best score (-3), accep
 
       <itemizedlist>
         <listitem>
-          <para><emphasis>Solution tabu</emphasis> makes recently visited solutions tabu. It does not accept a move that
-          leads to one of those solutions. If you can spare the memory, don't be cheap on the tabu size.</para>
-
-          <programlisting language="xml">    &lt;acceptor&gt;
-      &lt;solutionTabuSize&gt;1000&lt;/solutionTabuSize&gt;
-    &lt;/acceptor&gt;</programlisting>
-        </listitem>
-
-        <listitem>
-          <para><emphasis>Move tabu</emphasis> makes recent steps tabu. It does not accept a move equal to one of those
-          steps.</para>
-
-          <programlisting language="xml">    &lt;acceptor&gt;
-      &lt;moveTabuSize&gt;7&lt;/moveTabuSize&gt;
-    &lt;/acceptor&gt;</programlisting>
-        </listitem>
-
-        <listitem>
-          <para><emphasis>Undo move tabu </emphasis>makes the undo move of recent steps tabu.</para>
-
-          <programlisting language="xml">    &lt;acceptor&gt;
-      &lt;undoMoveTabuSize&gt;7&lt;/undoMoveTabuSize&gt;
-    &lt;/acceptor&gt;</programlisting>
-        </listitem>
-
-        <listitem>
           <para><emphasis>Planning entity tabu</emphasis> makes the planning entities of recent steps tabu. For example,
           for N queens it makes the recently moved queens tabu. It's recommended to start with this tabu type.</para>
 
@@ -415,6 +389,37 @@ DEBUG     Step index (0), time spent (6), score (-3), new best score (-3), accep
           <programlisting language="xml">    &lt;acceptor&gt;
       &lt;valueTabuRatio&gt;0.02&lt;/valueTabuRatio&gt;
     &lt;/acceptor&gt;</programlisting>
+        </listitem>
+
+        <listitem>
+          <para><emphasis>Move tabu</emphasis> makes recent steps tabu. It does not accept a move equal to one of those
+          steps.</para>
+
+          <programlisting language="xml">    &lt;acceptor&gt;
+      &lt;moveTabuSize&gt;7&lt;/moveTabuSize&gt;
+    &lt;/acceptor&gt;</programlisting>
+        </listitem>
+
+        <listitem>
+          <para><emphasis>Undo move tabu </emphasis>makes the undo move of recent steps tabu.</para>
+
+          <programlisting language="xml">    &lt;acceptor&gt;
+      &lt;undoMoveTabuSize&gt;7&lt;/undoMoveTabuSize&gt;
+    &lt;/acceptor&gt;</programlisting>
+        </listitem>
+
+        <listitem>
+          <para><emphasis>Solution tabu</emphasis> makes recently visited solutions tabu. It does not accept a move that
+          leads to one of those solutions. It requires that the <literal>Solution</literal> implements
+          <literal>equals()</literal> and <literal>hashCode()</literal> properly. If you can spare the memory, don't be
+          cheap on the tabu size.</para>
+
+          <programlisting language="xml">    &lt;acceptor&gt;
+      &lt;solutionTabuSize&gt;1000&lt;/solutionTabuSize&gt;
+    &lt;/acceptor&gt;</programlisting>
+
+          <para>For non-trivial cases, it's usually useless because the <link linkend="searchSpaceSize">search space
+          size</link> makes it statistically almost impossible to reach the same solution twice. </para>
         </listitem>
       </itemizedlist>
 
