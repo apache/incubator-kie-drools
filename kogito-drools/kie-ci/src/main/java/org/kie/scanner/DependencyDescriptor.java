@@ -5,7 +5,7 @@ import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.model.Dependency;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.kie.api.builder.ReleaseId;
-import org.sonatype.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.Artifact;
 
 public class DependencyDescriptor {
     private final String groupId;

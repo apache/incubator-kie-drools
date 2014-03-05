@@ -37,31 +37,39 @@
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
-      <artifactId>maven-model</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
       <artifactId>maven-compat</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.sonatype.aether</groupId>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-aether-provider</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.aether</groupId>
       <artifactId>aether-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.sonatype.aether</groupId>
+      <groupId>org.eclipse.aether</groupId>
       <artifactId>aether-util</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.sonatype.aether</groupId>
+      <groupId>org.eclipse.aether</groupId>
       <artifactId>aether-impl</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.sonatype.aether</groupId>
-      <artifactId>aether-connector-wagon</artifactId>
+      <groupId>org.eclipse.aether</groupId>
+      <artifactId>aether-connector-basic</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.sonatype.aether</groupId>
-      <artifactId>aether-connector-file</artifactId>
+      <groupId>org.eclipse.aether</groupId>
+      <artifactId>aether-transport-wagon</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.aether</groupId>
+      <artifactId>aether-transport-file</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.aether</groupId>
+      <artifactId>aether-transport-http</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.ant</groupId>
