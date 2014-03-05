@@ -19,14 +19,14 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 import java.util.Collection;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class ChainedSwapMove extends SwapMove {
 
-    public ChainedSwapMove(Collection<PlanningVariableDescriptor> variableDescriptors,
+    public ChainedSwapMove(Collection<GenuineVariableDescriptor> variableDescriptors,
             Object leftEntity, Object rightEntity) {
         super(variableDescriptors, leftEntity, rightEntity);
     }
@@ -41,7 +41,7 @@ public class ChainedSwapMove extends SwapMove {
     }
 
     public void doMove(ScoreDirector scoreDirector) {
-        for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
             Object oldLeftValue = variableDescriptor.getValue(leftEntity);
             Object oldRightValue = variableDescriptor.getValue(rightEntity);
             if (!ObjectUtils.equals(oldLeftValue, oldRightValue)) {

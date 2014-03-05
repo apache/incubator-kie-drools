@@ -1,7 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
@@ -11,9 +11,9 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  */
 public class NullValueReinitializeVariableEntityFilter implements SelectionFilter<Object> {
 
-    private final PlanningVariableDescriptor variableDescriptor;
+    private final GenuineVariableDescriptor variableDescriptor;
 
-    public NullValueReinitializeVariableEntityFilter(PlanningVariableDescriptor variableDescriptor) {
+    public NullValueReinitializeVariableEntityFilter(GenuineVariableDescriptor variableDescriptor) {
         this.variableDescriptor = variableDescriptor;
     }
 

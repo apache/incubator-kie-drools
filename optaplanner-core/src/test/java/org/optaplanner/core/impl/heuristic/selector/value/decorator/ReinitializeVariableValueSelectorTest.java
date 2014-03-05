@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
@@ -36,7 +36,7 @@ public class ReinitializeVariableValueSelectorTest {
     @Test
     public void oneVariable() {
         EntityDescriptor entityDescriptor = TestdataEntity.buildEntityDescriptor();
-        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("value");
+        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("value");
         TestdataEntity e1 = new TestdataEntity("e1");
         TestdataEntity e2 = new TestdataEntity("e2");
         TestdataValue v1 = new TestdataValue("v1");
@@ -100,7 +100,7 @@ public class ReinitializeVariableValueSelectorTest {
     @Test
     public void multiVariable() {
         EntityDescriptor entityDescriptor = TestdataMultiVarEntity.buildEntityDescriptor();
-        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("secondaryValue");
+        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("secondaryValue");
         TestdataMultiVarEntity e1 = new TestdataMultiVarEntity("e1");
         TestdataMultiVarEntity e2 = new TestdataMultiVarEntity("e2");
         TestdataValue p1 = new TestdataValue("p1");

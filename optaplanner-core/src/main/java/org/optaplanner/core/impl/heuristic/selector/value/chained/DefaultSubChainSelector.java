@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleListener;
@@ -80,7 +80,7 @@ public class DefaultSubChainSelector extends AbstractSelector
         }
     }
 
-    public PlanningVariableDescriptor getVariableDescriptor() {
+    public GenuineVariableDescriptor getVariableDescriptor() {
         return valueSelector.getVariableDescriptor();
     }
 
@@ -95,7 +95,7 @@ public class DefaultSubChainSelector extends AbstractSelector
 
     public void constructCache(DefaultSolverScope solverScope) {
         ScoreDirector scoreDirector = solverScope.getScoreDirector();
-        PlanningVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
+        GenuineVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
         Class<?> entityClass = variableDescriptor.getEntityDescriptor().getEntityClass();
         long valueSize = valueSelector.getSize();
         // Fail-fast when anchorTrailingChainList.size() could ever be too big

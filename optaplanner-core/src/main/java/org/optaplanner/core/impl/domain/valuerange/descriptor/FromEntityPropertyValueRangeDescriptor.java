@@ -19,13 +19,13 @@ package org.optaplanner.core.impl.domain.valuerange.descriptor;
 import java.lang.reflect.Method;
 
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
 
 public class FromEntityPropertyValueRangeDescriptor extends AbstractFromPropertyValueRangeDescriptor {
 
     public FromEntityPropertyValueRangeDescriptor(
-            PlanningVariableDescriptor variableDescriptor, boolean addNullInValueRange,
+            GenuineVariableDescriptor variableDescriptor, boolean addNullInValueRange,
             Method readMethod) {
         super(variableDescriptor, addNullInValueRange, readMethod);
     }

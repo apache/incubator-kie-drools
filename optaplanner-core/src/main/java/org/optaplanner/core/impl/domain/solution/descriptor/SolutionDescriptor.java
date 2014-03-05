@@ -41,7 +41,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
 import org.optaplanner.core.impl.domain.solution.cloner.PlanningCloneableSolutionCloner;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListenerSupport;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -235,11 +235,11 @@ public class SolutionDescriptor {
                 "If it is, check your solver configuration.");
     }
     
-    public Collection<PlanningVariableDescriptor> getChainedVariableDescriptors() {
-        Collection<PlanningVariableDescriptor> chainedVariableDescriptors
-                = new ArrayList<PlanningVariableDescriptor>();
+    public Collection<GenuineVariableDescriptor> getChainedVariableDescriptors() {
+        Collection<GenuineVariableDescriptor> chainedVariableDescriptors
+                = new ArrayList<GenuineVariableDescriptor>();
         for (EntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
-            for (PlanningVariableDescriptor variableDescriptor : entityDescriptor.getVariableDescriptors()) {
+            for (GenuineVariableDescriptor variableDescriptor : entityDescriptor.getVariableDescriptors()) {
                 if (variableDescriptor.isChained()) {
                     chainedVariableDescriptors.add(variableDescriptor);
                 }
@@ -250,15 +250,15 @@ public class SolutionDescriptor {
 
     public PlanningVariableListenerSupport buildVariableListenerSupport() {
         // Order is important, hence LinkedHashMap
-        Map<PlanningVariableDescriptor, List<PlanningVariableListener>> variableListenerMap
-                = new LinkedHashMap<PlanningVariableDescriptor, List<PlanningVariableListener>>();
+        Map<GenuineVariableDescriptor, List<PlanningVariableListener>> variableListenerMap
+                = new LinkedHashMap<GenuineVariableDescriptor, List<PlanningVariableListener>>();
         for (EntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
             entityDescriptor.addVariableListenersToMap(variableListenerMap);
         }
         return new PlanningVariableListenerSupport(variableListenerMap);
     }
 
-    public PlanningVariableDescriptor findVariableDescriptor(Object entity, String variableName) {
+    public GenuineVariableDescriptor findVariableDescriptor(Object entity, String variableName) {
         EntityDescriptor entityDescriptor = getEntityDescriptor(entity.getClass());
         return entityDescriptor.getVariableDescriptor(variableName);
     }

@@ -22,7 +22,7 @@ import java.util.List;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solution.Solution;
 
@@ -170,12 +170,12 @@ public interface ScoreDirector {
     ScoreDirector clone();
 
     /**
-     * @param chainedVariableDescriptor never null, must be {@link PlanningVariableDescriptor#isChained()} true
+     * @param chainedVariableDescriptor never null, must be {@link GenuineVariableDescriptor#isChained()} true
      * and known to the {@link SolutionDescriptor}
      * @param planningValue sometimes null
      * @return never null
      */
-    Object getTrailingEntity(PlanningVariableDescriptor chainedVariableDescriptor, Object planningValue);
+    Object getTrailingEntity(GenuineVariableDescriptor chainedVariableDescriptor, Object planningValue);
 
     /**
      * Do not waste performance by propagating changes to step (or higher) mechanisms.

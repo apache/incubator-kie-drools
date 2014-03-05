@@ -27,7 +27,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListenerSupport;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.common.TrailingEntityMapSupport;
@@ -180,7 +180,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         // Do nothing
     }
 
-    public Object getTrailingEntity(PlanningVariableDescriptor chainedVariableDescriptor, Object planningValue) {
+    public Object getTrailingEntity(GenuineVariableDescriptor chainedVariableDescriptor, Object planningValue) {
         return trailingEntityMapSupport.getTrailingEntity(chainedVariableDescriptor, planningValue);
     }
 
@@ -197,7 +197,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public final void beforeVariableChanged(Object entity, String variableName) {
-        PlanningVariableDescriptor variableDescriptor = getSolutionDescriptor()
+        GenuineVariableDescriptor variableDescriptor = getSolutionDescriptor()
                 .findVariableDescriptor(entity, variableName);
         if (variableDescriptor != null) {
             beforeVariableChanged(variableDescriptor, entity);
@@ -208,7 +208,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public final void afterVariableChanged(Object entity, String variableName) {
-        PlanningVariableDescriptor variableDescriptor = getSolutionDescriptor()
+        GenuineVariableDescriptor variableDescriptor = getSolutionDescriptor()
                 .findVariableDescriptor(entity, variableName);
         if (variableDescriptor != null) {
             afterVariableChanged(variableDescriptor, entity);
@@ -238,12 +238,12 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         }
     }
 
-    public void beforeVariableChanged(PlanningVariableDescriptor variableDescriptor, Object entity) {
+    public void beforeVariableChanged(GenuineVariableDescriptor variableDescriptor, Object entity) {
         trailingEntityMapSupport.retractFromTrailingEntityMap(variableDescriptor, entity);
         variableListenerSupport.beforeVariableChanged(this, variableDescriptor, entity);
     }
 
-    public void afterVariableChanged(PlanningVariableDescriptor variableDescriptor, Object entity) {
+    public void afterVariableChanged(GenuineVariableDescriptor variableDescriptor, Object entity) {
         trailingEntityMapSupport.insertInTrailingEntityMap(variableDescriptor, entity);
         variableListenerSupport.afterVariableChanged(this, variableDescriptor, entity);
     }

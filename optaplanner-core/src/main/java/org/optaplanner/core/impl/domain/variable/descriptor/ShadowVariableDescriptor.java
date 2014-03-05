@@ -37,7 +37,7 @@ public class ShadowVariableDescriptor {
 
     private final PropertyAccessor variablePropertyAccessor;
     private String mappedBy;
-    private PlanningVariableDescriptor mappedByVariableDescriptor;
+    private GenuineVariableDescriptor mappedByVariableDescriptor;
 
     public ShadowVariableDescriptor(EntityDescriptor entityDescriptor,
             PropertyDescriptor propertyDescriptor) {
@@ -52,7 +52,7 @@ public class ShadowVariableDescriptor {
     private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
         PlanningVariable planningVariableAnnotation = variablePropertyAccessor.getReadMethod()
                 .getAnnotation(PlanningVariable.class);
-        // Keep in sync with PlanningVariableDescriptor.processPropertyAnnotations()
+        // Keep in sync with GenuineVariableDescriptor.processPropertyAnnotations()
         processMappedBy(descriptorPolicy, planningVariableAnnotation);
         processNullable(descriptorPolicy, planningVariableAnnotation);
         processChained(descriptorPolicy, planningVariableAnnotation);
@@ -176,7 +176,7 @@ public class ShadowVariableDescriptor {
         mappedByVariableDescriptor.registerShadowVariableDescriptor(this);
     }
 
-    public PlanningVariableDescriptor getMappedByVariableDescriptor() {
+    public GenuineVariableDescriptor getMappedByVariableDescriptor() {
         return mappedByVariableDescriptor;
     }
 

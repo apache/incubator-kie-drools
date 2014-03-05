@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -32,12 +32,12 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  */
 public class SubChainSwapMove implements Move {
 
-    private final PlanningVariableDescriptor variableDescriptor;
+    private final GenuineVariableDescriptor variableDescriptor;
 
     private final SubChain leftSubChain;
     private final SubChain rightSubChain;
 
-    public SubChainSwapMove(PlanningVariableDescriptor variableDescriptor,
+    public SubChainSwapMove(GenuineVariableDescriptor variableDescriptor,
             SubChain leftSubChain, SubChain rightSubChain) {
         this.variableDescriptor = variableDescriptor;
         this.leftSubChain = leftSubChain;

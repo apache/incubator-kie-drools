@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
 import java.util.Iterator;
 
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractOriginalSwapIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
@@ -30,7 +30,7 @@ public class SubChainSwapMoveSelector extends GenericMoveSelector {
 
     protected final SubChainSelector leftSubChainSelector;
     protected final SubChainSelector rightSubChainSelector;
-    protected final PlanningVariableDescriptor variableDescriptor;
+    protected final GenuineVariableDescriptor variableDescriptor;
     protected final boolean randomSelection;
     protected final boolean selectReversingMoveToo;
 

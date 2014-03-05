@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.variable;
 
 import java.util.Iterator;
 
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedChangeMove;
@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 @Deprecated
 public class PlanningValueWalker implements SolverPhaseLifecycleListener {
 
-    private final PlanningVariableDescriptor variableDescriptor;
+    private final GenuineVariableDescriptor variableDescriptor;
     private final PlanningValueSelector planningValueSelector;
 
     private ScoreDirector scoreDirector;
@@ -43,13 +43,13 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
     private boolean isFirstValue; // TODO remove and require partially initialized entity's support in score rules
     private Object workingValue;
 
-    public PlanningValueWalker(PlanningVariableDescriptor variableDescriptor,
+    public PlanningValueWalker(GenuineVariableDescriptor variableDescriptor,
             PlanningValueSelector planningValueSelector) {
         this.variableDescriptor = variableDescriptor;
         this.planningValueSelector = planningValueSelector;
     }
 
-    public PlanningVariableDescriptor getVariableDescriptor() {
+    public GenuineVariableDescriptor getVariableDescriptor() {
         return variableDescriptor;
     }
 

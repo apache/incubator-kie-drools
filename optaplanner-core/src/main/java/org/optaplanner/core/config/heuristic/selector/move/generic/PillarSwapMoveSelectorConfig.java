@@ -26,7 +26,7 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.pillar.PillarSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
@@ -84,7 +84,7 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig {
         PillarSelector rightPillarSelector = rightPillarSelectorConfig.buildPillarSelector(
                 configPolicy,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        Collection<PlanningVariableDescriptor> variableDescriptors = deduceVariableDescriptors(
+        Collection<GenuineVariableDescriptor> variableDescriptors = deduceVariableDescriptors(
                 leftPillarSelector.getEntityDescriptor(), variableNameIncludeList);
         return new PillarSwapMoveSelector(leftPillarSelector, rightPillarSelector, variableDescriptors,
                 randomSelection);

@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic;
 import java.util.Iterator;
 
 import org.apache.commons.collections.IteratorUtils;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.IterableSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
@@ -40,7 +40,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
         this.entitySelector = entitySelector;
         this.valueSelector = valueSelector;
         this.randomSelection = randomSelection;
-        PlanningVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
+        GenuineVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
         chained = variableDescriptor.isChained();
         solverPhaseLifecycleSupport.addEventListener(entitySelector);
         solverPhaseLifecycleSupport.addEventListener(valueSelector);

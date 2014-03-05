@@ -20,7 +20,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.heuristic.move.Move;
@@ -35,7 +35,7 @@ public class SubChainReversingSwapMoveTest {
     @Test
     public void noTrailing() {
         EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
-        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
+        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -81,7 +81,7 @@ public class SubChainReversingSwapMoveTest {
     @Test
     public void noTrailingInPlace() {
         EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
-        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
+        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -122,7 +122,7 @@ public class SubChainReversingSwapMoveTest {
     @Test
     public void oldAndNewTrailing() {
         EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
-        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
+        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -172,7 +172,7 @@ public class SubChainReversingSwapMoveTest {
     @Test
     public void oldAndNewTrailingInPlace() {
         EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
-        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
+        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -215,7 +215,7 @@ public class SubChainReversingSwapMoveTest {
     @Test
     public void oldAndNewTrailingInPlaceOppositeParameterOrder() {
         EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
-        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
+        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");

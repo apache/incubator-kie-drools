@@ -25,7 +25,7 @@ import org.apache.commons.collections.IteratorUtils;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -46,7 +46,7 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
     private Random workingRandom;
     private Collection<?> cachedPlanningValues = null;
 
-    public PlanningValueSelector(PlanningVariableDescriptor variableDescriptor) {
+    public PlanningValueSelector(GenuineVariableDescriptor variableDescriptor) {
         this.valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
     }
 

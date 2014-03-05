@@ -27,7 +27,7 @@ import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 
 /**
@@ -90,9 +90,9 @@ public abstract class SelectorConfig {
         return entityDescriptor;
     }
 
-    protected PlanningVariableDescriptor deduceVariableDescriptor(
+    protected GenuineVariableDescriptor deduceVariableDescriptor(
             EntityDescriptor entityDescriptor, String variableName) {
-        PlanningVariableDescriptor variableDescriptor;
+        GenuineVariableDescriptor variableDescriptor;
         if (variableName != null) {
             variableDescriptor = entityDescriptor.getVariableDescriptor(variableName);
             if (variableDescriptor == null) {
@@ -112,7 +112,7 @@ public abstract class SelectorConfig {
                 }
             }
         } else {
-            Collection<PlanningVariableDescriptor> variableDescriptors = entityDescriptor
+            Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor
                     .getVariableDescriptors();
             if (variableDescriptors.size() != 1) {
                 throw new IllegalArgumentException("The selectorConfig (" + this
@@ -127,17 +127,17 @@ public abstract class SelectorConfig {
         return variableDescriptor;
     }
 
-    protected Collection<PlanningVariableDescriptor> deduceVariableDescriptors(
+    protected Collection<GenuineVariableDescriptor> deduceVariableDescriptors(
             EntityDescriptor entityDescriptor, List<String> variableNameIncludeList) {
-        Collection<PlanningVariableDescriptor> variableDescriptors = entityDescriptor.getVariableDescriptors();
+        Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getVariableDescriptors();
         if (variableNameIncludeList == null) {
             return variableDescriptors;
         }
-        List<PlanningVariableDescriptor> resolvedVariableDescriptors
-                = new ArrayList<PlanningVariableDescriptor>(variableDescriptors.size());
+        List<GenuineVariableDescriptor> resolvedVariableDescriptors
+                = new ArrayList<GenuineVariableDescriptor>(variableDescriptors.size());
         for (String variableNameInclude : variableNameIncludeList) {
             boolean found = false;
-            for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+            for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
                 if (variableDescriptor.getVariableName().equals(variableNameInclude)) {
                     resolvedVariableDescriptors.add(variableDescriptor);
                     found = true;

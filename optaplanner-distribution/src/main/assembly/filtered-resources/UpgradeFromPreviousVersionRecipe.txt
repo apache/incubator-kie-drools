@@ -3952,3 +3952,6 @@ Before in *.java:
     import org.optaplanner.core.impl.bestsolution.BestSolutionRecaller;
 After in *.java:
     import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
+
+[IMPL_DETAIL] PlanningEntityDescriptor has been renamed to EntityDescriptor
+[IMPL_DETAIL] PlanningVariableDescriptor has been renamed to GenuineVariableDescriptor

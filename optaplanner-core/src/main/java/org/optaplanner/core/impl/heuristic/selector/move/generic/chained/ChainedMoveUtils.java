@@ -19,14 +19,14 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class ChainedMoveUtils {
 
     public static void doChainedChange(ScoreDirector scoreDirector, Object entity,
-            PlanningVariableDescriptor variableDescriptor, Object toPlanningValue) {
+            GenuineVariableDescriptor variableDescriptor, Object toPlanningValue) {
         Object oldPlanningValue = variableDescriptor.getValue(entity);
         Object oldTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, entity);
         // If chaining == true then toPlanningValue == null guarantees an uninitialized entity
@@ -69,7 +69,7 @@ public class ChainedMoveUtils {
 
 
     public static void doSubChainChange(ScoreDirector scoreDirector, SubChain subChain,
-            PlanningVariableDescriptor variableDescriptor, Object toPlanningValue) {
+            GenuineVariableDescriptor variableDescriptor, Object toPlanningValue) {
         Object firstEntity = subChain.getFirstEntity();
         Object lastEntity = subChain.getLastEntity();
         Object oldFirstPlanningValue = variableDescriptor.getValue(firstEntity);
@@ -112,7 +112,7 @@ public class ChainedMoveUtils {
     }
 
     public static void doReverseSubChainChange(ScoreDirector scoreDirector, SubChain subChain,
-            PlanningVariableDescriptor variableDescriptor, Object toPlanningValue) {
+            GenuineVariableDescriptor variableDescriptor, Object toPlanningValue) {
         Object firstEntity = subChain.getFirstEntity();
         Object lastEntity = subChain.getLastEntity();
         Object oldFirstPlanningValue = variableDescriptor.getValue(firstEntity);

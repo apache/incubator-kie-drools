@@ -17,14 +17,14 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class ChainedChangeMove extends ChangeMove {
 
-    public ChainedChangeMove(Object entity, PlanningVariableDescriptor variableDescriptor, Object toPlanningValue) {
+    public ChainedChangeMove(Object entity, GenuineVariableDescriptor variableDescriptor, Object toPlanningValue) {
         super(entity, variableDescriptor, toPlanningValue);
     }
 

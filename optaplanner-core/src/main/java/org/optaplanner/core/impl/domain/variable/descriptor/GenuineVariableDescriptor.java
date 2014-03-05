@@ -47,7 +47,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFacto
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.NullValueReinitializeVariableEntityFilter;
 import org.optaplanner.core.impl.solution.Solution;
 
-public class PlanningVariableDescriptor {
+public class GenuineVariableDescriptor {
 
     private final EntityDescriptor entityDescriptor;
 
@@ -62,7 +62,7 @@ public class PlanningVariableDescriptor {
     private List<ShadowVariableDescriptor> shadowVariableDescriptorList = new ArrayList<ShadowVariableDescriptor>(4);
     private List<PlanningVariableListener> nonMappedByVariableListeners;
 
-    public PlanningVariableDescriptor(EntityDescriptor entityDescriptor,
+    public GenuineVariableDescriptor(EntityDescriptor entityDescriptor,
             PropertyDescriptor propertyDescriptor) {
         this.entityDescriptor = entityDescriptor;
         variablePropertyAccessor = new ReflectionPropertyAccessor(propertyDescriptor);
@@ -88,7 +88,7 @@ public class PlanningVariableDescriptor {
         String mappedBy = planningVariableAnnotation.mappedBy();
         if (!mappedBy.equals("")) {
             throw new IllegalStateException("Impossible state: the " + EntityDescriptor.class
-                    + " would never try to build a " + PlanningVariableDescriptor.class
+                    + " would never try to build a " + GenuineVariableDescriptor.class
                     + " for a shadow variable with mappedBy (" + mappedBy + ").");
         }
     }

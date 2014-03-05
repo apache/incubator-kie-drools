@@ -25,7 +25,7 @@ import java.util.ListIterator;
 import java.util.Map;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleListener;
@@ -43,18 +43,18 @@ public class SameValuePillarSelector extends AbstractSelector
     protected static final SelectionCacheType CACHE_TYPE = SelectionCacheType.STEP;
 
     protected final EntitySelector entitySelector;
-    protected final Collection<PlanningVariableDescriptor> variableDescriptors;
+    protected final Collection<GenuineVariableDescriptor> variableDescriptors;
     protected final boolean randomSelection;
 
     protected List<List<Object>> cachedPillarList = null;
 
     public SameValuePillarSelector(EntitySelector entitySelector,
-            Collection<PlanningVariableDescriptor> variableDescriptors, boolean randomSelection) {
+            Collection<GenuineVariableDescriptor> variableDescriptors, boolean randomSelection) {
         this.entitySelector = entitySelector;
         this.variableDescriptors = variableDescriptors;
         this.randomSelection = randomSelection;
         Class<?> entityClass = entitySelector.getEntityDescriptor().getEntityClass();
-        for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
             if (!entityClass.equals(
                     variableDescriptor.getEntityDescriptor().getEntityClass())) {
                 throw new IllegalStateException("The selector (" + this
@@ -68,7 +68,7 @@ public class SameValuePillarSelector extends AbstractSelector
                         + ") which is chained (" + variableDescriptor.isChained() + ").");
             }
         }
-        for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
             if (variableDescriptor.isChained()) {
                 throw new IllegalStateException("The selector (" + this
                         + ") cannot have a variableDescriptor (" + variableDescriptor
@@ -107,7 +107,7 @@ public class SameValuePillarSelector extends AbstractSelector
         Map<List<Object>, List<Object>> valueStateToPillarMap = new LinkedHashMap<List<Object>, List<Object>>((int) entitySize);
         for (Object entity : entitySelector) {
             List<Object> valueState = new ArrayList<Object>(variableDescriptors.size());
-            for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+            for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
                 Object value = variableDescriptor.getValue(entity);
                 valueState.add(value);
             }

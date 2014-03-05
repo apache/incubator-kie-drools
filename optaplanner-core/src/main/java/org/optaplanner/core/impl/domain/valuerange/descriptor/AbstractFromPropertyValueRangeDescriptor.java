@@ -29,7 +29,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.common.DefaultReadMethodAccessor;
 import org.optaplanner.core.impl.domain.common.ReadMethodAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 
 public abstract class AbstractFromPropertyValueRangeDescriptor extends AbstractValueRangeDescriptor {
 
@@ -38,7 +38,7 @@ public abstract class AbstractFromPropertyValueRangeDescriptor extends AbstractV
     protected boolean countable;
 
     public AbstractFromPropertyValueRangeDescriptor(
-            PlanningVariableDescriptor variableDescriptor, boolean addNullInValueRange,
+            GenuineVariableDescriptor variableDescriptor, boolean addNullInValueRange,
             Method readMethod) {
         super(variableDescriptor, addNullInValueRange);
         readMethodAccessor = new DefaultReadMethodAccessor(readMethod);

@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractOriginalSwapIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
@@ -31,13 +31,13 @@ public class SwapMoveSelector extends GenericMoveSelector {
 
     protected final EntitySelector leftEntitySelector;
     protected final EntitySelector rightEntitySelector;
-    protected final Collection<PlanningVariableDescriptor> variableDescriptors;
+    protected final Collection<GenuineVariableDescriptor> variableDescriptors;
     protected final boolean randomSelection;
 
     protected final boolean anyChained;
 
     public SwapMoveSelector(EntitySelector leftEntitySelector, EntitySelector rightEntitySelector,
-            Collection<PlanningVariableDescriptor> variableDescriptors, boolean randomSelection) {
+            Collection<GenuineVariableDescriptor> variableDescriptors, boolean randomSelection) {
         this.leftEntitySelector = leftEntitySelector;
         this.rightEntitySelector = rightEntitySelector;
         this.variableDescriptors = variableDescriptors;
@@ -55,7 +55,7 @@ public class SwapMoveSelector extends GenericMoveSelector {
             throw new IllegalStateException("The selector (" + this
                     + ")'s variableDescriptors (" + variableDescriptors + ") is empty.");
         }
-        for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
             if (!leftEntityDescriptor.getEntityClass().equals(
                     variableDescriptor.getEntityDescriptor().getEntityClass())) {
                 throw new IllegalStateException("The selector (" + this

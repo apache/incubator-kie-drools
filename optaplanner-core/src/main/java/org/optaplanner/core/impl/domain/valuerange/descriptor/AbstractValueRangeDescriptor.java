@@ -20,21 +20,21 @@ import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.buildin.composite.NullableCountableValueRange;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 
 public abstract class AbstractValueRangeDescriptor implements ValueRangeDescriptor {
 
-    protected final PlanningVariableDescriptor variableDescriptor;
+    protected final GenuineVariableDescriptor variableDescriptor;
     protected final boolean addNullInValueRange;
 
-    public AbstractValueRangeDescriptor(PlanningVariableDescriptor variableDescriptor,
+    public AbstractValueRangeDescriptor(GenuineVariableDescriptor variableDescriptor,
             boolean addNullInValueRange) {
         this.variableDescriptor = variableDescriptor;
         this.addNullInValueRange = addNullInValueRange;
     }
 
     @Override
-    public PlanningVariableDescriptor getVariableDescriptor() {
+    public GenuineVariableDescriptor getVariableDescriptor() {
         return variableDescriptor;
     }
 

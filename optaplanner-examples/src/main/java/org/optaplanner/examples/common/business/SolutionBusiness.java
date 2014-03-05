@@ -26,7 +26,7 @@ import org.apache.commons.io.FileUtils;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
@@ -275,7 +275,7 @@ public class SolutionBusiness {
     }
 
     public ChangeMove createChangeMove(Object entity, String variableName, Object toPlanningValue) {
-        PlanningVariableDescriptor variableDescriptor = guiScoreDirector.getSolutionDescriptor()
+        GenuineVariableDescriptor variableDescriptor = guiScoreDirector.getSolutionDescriptor()
                 .findVariableDescriptor(entity, variableName);
         if (variableDescriptor.isChained()) {
             return new ChainedChangeMove(entity, variableDescriptor, toPlanningValue);

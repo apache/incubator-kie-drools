@@ -23,7 +23,7 @@ import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
@@ -80,7 +80,7 @@ public class PillarSelectorConfig extends SelectorConfig {
                 : entitySelectorConfig;
         EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(configPolicy,
                 minimumCacheType, SelectionOrder.ORIGINAL);
-        Collection<PlanningVariableDescriptor> variableDescriptors = entitySelector.getEntityDescriptor()
+        Collection<GenuineVariableDescriptor> variableDescriptors = entitySelector.getEntityDescriptor()
                 .getVariableDescriptors();
         return new SameValuePillarSelector(entitySelector, variableDescriptors,
                 inheritedSelectionOrder.toRandomSelectionBoolean());

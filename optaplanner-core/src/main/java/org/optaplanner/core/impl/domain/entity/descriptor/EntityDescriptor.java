@@ -33,7 +33,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
@@ -53,7 +53,7 @@ public class EntityDescriptor {
     private SelectionFilter movableEntitySelectionFilter;
     private SelectionSorter decreasingDifficultySorter;
 
-    private Map<String, PlanningVariableDescriptor> genuineVariableDescriptorMap;
+    private Map<String, GenuineVariableDescriptor> genuineVariableDescriptorMap;
     private Map<String, ShadowVariableDescriptor> shadowVariableDescriptorMap;
 
     public EntityDescriptor(SolutionDescriptor solutionDescriptor, Class<?> entityClass) {
@@ -136,7 +136,7 @@ public class EntityDescriptor {
 
     private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
         PropertyDescriptor[] propertyDescriptors = entityBeanInfo.getPropertyDescriptors();
-        genuineVariableDescriptorMap = new LinkedHashMap<String, PlanningVariableDescriptor>(propertyDescriptors.length);
+        genuineVariableDescriptorMap = new LinkedHashMap<String, GenuineVariableDescriptor>(propertyDescriptors.length);
         shadowVariableDescriptorMap = new LinkedHashMap<String, ShadowVariableDescriptor>(propertyDescriptors.length);
         boolean noPlanningVariableAnnotation = true;
         for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
@@ -150,7 +150,7 @@ public class EntityDescriptor {
                             + ") that should have a setter.");
                 }
                 if (planningVariableAnnotation.mappedBy().equals("")) {
-                    PlanningVariableDescriptor variableDescriptor = new PlanningVariableDescriptor(
+                    GenuineVariableDescriptor variableDescriptor = new GenuineVariableDescriptor(
                             this, propertyDescriptor);
                     genuineVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
                     variableDescriptor.processAnnotations(descriptorPolicy);
@@ -170,7 +170,7 @@ public class EntityDescriptor {
     }
 
     public void afterAnnotationsProcessed(DescriptorPolicy descriptorPolicy) {
-        for (PlanningVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {
             variableDescriptor.afterAnnotationsProcessed(descriptorPolicy);
         }
         for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptorMap.values()) {
@@ -219,7 +219,7 @@ public class EntityDescriptor {
         return genuineVariableDescriptorMap.keySet();
     }
 
-    public Collection<PlanningVariableDescriptor> getVariableDescriptors() {
+    public Collection<GenuineVariableDescriptor> getVariableDescriptors() {
         return genuineVariableDescriptorMap.values();
     }
 
@@ -227,7 +227,7 @@ public class EntityDescriptor {
         return genuineVariableDescriptorMap.containsKey(propertyName);
     }
     
-    public PlanningVariableDescriptor getVariableDescriptor(String propertyName) {
+    public GenuineVariableDescriptor getVariableDescriptor(String propertyName) {
         return genuineVariableDescriptorMap.get(propertyName);
     }
 
@@ -244,8 +244,8 @@ public class EntityDescriptor {
     }
 
     public void addVariableListenersToMap(
-            Map<PlanningVariableDescriptor, List<PlanningVariableListener>> variableListenerMap) {
-        for (PlanningVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {
+            Map<GenuineVariableDescriptor, List<PlanningVariableListener>> variableListenerMap) {
+        for (GenuineVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {
             variableListenerMap.put(variableDescriptor, variableDescriptor.buildVariableListenerList());
         }
     }
@@ -260,7 +260,7 @@ public class EntityDescriptor {
 
     public long getProblemScale(Solution solution, Object entity) {
         long problemScale = 1L;
-        for (PlanningVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {
             problemScale *= variableDescriptor.getValueCount(solution, entity);
         }
         return problemScale;
@@ -268,7 +268,7 @@ public class EntityDescriptor {
 
     public int countUninitializedVariables(Object entity) {
         int uninitializedVariableCount = 0;
-        for (PlanningVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {
             if (!variableDescriptor.isInitialized(entity)) {
                 uninitializedVariableCount++;
             }
@@ -277,7 +277,7 @@ public class EntityDescriptor {
     }
 
     public boolean isInitialized(Object entity) {
-        for (PlanningVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {
             if (!variableDescriptor.isInitialized(entity)) {
                 return false;
             }

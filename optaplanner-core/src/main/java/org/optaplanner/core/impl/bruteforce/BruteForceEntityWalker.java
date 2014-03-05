@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.bruteforce.scope.BruteForceSolverPhaseScope;
 import org.optaplanner.core.impl.bruteforce.scope.BruteForceStepScope;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueSelectionOrder;
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueSelectionPromotion;
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueSelector;
@@ -58,11 +58,11 @@ public class BruteForceEntityWalker implements BruteForceSolverPhaseLifecycleLis
     }
 
     private List<PlanningValueWalker> buildPlanningValueWalkerList(EntityDescriptor entityDescriptor) {
-        Collection<PlanningVariableDescriptor> variableDescriptors
+        Collection<GenuineVariableDescriptor> variableDescriptors
                 = entityDescriptor.getVariableDescriptors();
         List<PlanningValueWalker> planningValueWalkerList = new ArrayList<PlanningValueWalker>(
                 variableDescriptors.size());
-        for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
             PlanningValueSelector planningValueSelector = new PlanningValueSelector(variableDescriptor);
             planningValueSelector.setSelectionOrder(PlanningValueSelectionOrder.ORIGINAL);
             planningValueSelector.setSelectionPromotion(PlanningValueSelectionPromotion.NONE);

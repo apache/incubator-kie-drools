@@ -32,7 +32,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.score.constraint.ConstraintOccurrence;
 import org.optaplanner.core.impl.score.constraint.DoubleConstraintOccurrence;
 import org.optaplanner.core.impl.score.constraint.IntConstraintOccurrence;
@@ -147,10 +147,10 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         super.afterEntityAdded(entityDescriptor, entity);
     }
 
-    // public void beforeVariableChanged(PlanningVariableDescriptor variableDescriptor, Object entity) // Do nothing
+    // public void beforeVariableChanged(GenuineVariableDescriptor variableDescriptor, Object entity) // Do nothing
 
     @Override
-    public void afterVariableChanged(PlanningVariableDescriptor variableDescriptor, Object entity) {
+    public void afterVariableChanged(GenuineVariableDescriptor variableDescriptor, Object entity) {
         update(entity);
         super.afterVariableChanged(variableDescriptor, entity);
     }

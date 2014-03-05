@@ -34,7 +34,7 @@ import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedEntityPlacer;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
@@ -100,10 +100,10 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
         List<MoveSelectorConfig> moveSelectorConfigList_;
         if (CollectionUtils.isEmpty(moveSelectorConfigList)) {
             EntityDescriptor entityDescriptor = entitySelector.getEntityDescriptor();
-            Collection<PlanningVariableDescriptor> variableDescriptors = entityDescriptor.getVariableDescriptors();
+            Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getVariableDescriptors();
             List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<MoveSelectorConfig>(
                     variableDescriptors.size());
-            for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+            for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
                 ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
                 EntitySelectorConfig changeEntitySelectorConfig = new EntitySelectorConfig();
                 changeEntitySelectorConfig.setMimicSelectorRef(entitySelectorId);
