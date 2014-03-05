@@ -490,7 +490,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
      * @param potentialOwners - list of potential owners
      * @return current status of task data
      */
-    public Status assignOwnerAndStatus(InternalTaskData taskData, List<OrganizationalEntity> potentialOwners) {
+    public static Status assignOwnerAndStatus(InternalTaskData taskData, List<OrganizationalEntity> potentialOwners) {
         if (taskData.getStatus() != Status.Created) {
             throw new PermissionDeniedException("Can only assign task owner if status is Created!");
         }

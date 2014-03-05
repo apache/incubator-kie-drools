@@ -7,9 +7,11 @@ import org.kie.api.task.model.User;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.PeopleAssignments;
 import org.jbpm.services.task.rule.TaskServiceRequest;
+import org.kie.internal.task.api.model.InternalTaskData;
 
 import org.jbpm.services.task.impl.model.*;
 import org.jbpm.services.task.internals.rule.AssignmentService;
+import org.jbpm.services.task.internals.lifecycle.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,9 +30,10 @@ rule "Exclude john"
         $actualOwner : User( id == 'john') from $task.getTaskData().getActualOwner()
     then
         $task.getPeopleAssignments().getPotentialOwners().remove($actualOwner);
-        ((TaskDataImpl)$task.getTaskData()).setActualOwner(null);
-        ((TaskDataImpl)$task.getTaskData()).setStatus(Status.Created);
-        ((TaskDataImpl)$task.getTaskData()).assignOwnerAndStatus($task.getPeopleAssignments().getPotentialOwners());
+        InternalTaskData taskData = (InternalTaskData) $task.getTaskData();
+        taskData.setActualOwner(null);
+        taskData.setStatus(Status.Created);
+        MVELLifeCycleManager.assignOwnerAndStatus(taskData, $task.getPeopleAssignments().getPotentialOwners());
 end
 
 rule "Assign to mary"
@@ -71,7 +74,8 @@ rule "Assign using service"
         PeopleAssignments(eval(potentialOwners.isEmpty())) from $task.getPeopleAssignments()
     then
         assignmentService.assignTask($task);
-        ((TaskDataImpl)$task.getTaskData()).setStatus(Status.Created);
-        ((TaskDataImpl)$task.getTaskData()).assignOwnerAndStatus($task.getPeopleAssignments().getPotentialOwners());
+        InternalTaskData taskData = (InternalTaskData) $task.getTaskData();
+        taskData.setStatus(Status.Created);
+        MVELLifeCycleManager.assignOwnerAndStatus(taskData, $task.getPeopleAssignments().getPotentialOwners());
 end
 
