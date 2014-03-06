@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.SortedSet;
 
 import org.drools.core.InitialFact;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.ActivationIterator;
@@ -126,87 +127,104 @@ public class ProtobufOutputMarshaller {
 
     private static ProtobufMessages.KnowledgeSession serializeSession(MarshallerWriteContext context) throws IOException {
         AbstractWorkingMemory wm = (AbstractWorkingMemory) context.wm;
-        wm.getAgenda().unstageActivations();
-        
-        evaluateRuleActivations( wm );
 
-        ProtobufMessages.RuleData.Builder _ruleData = ProtobufMessages.RuleData.newBuilder();
-
-        long time = 0;
-        if ( context.wm.getTimerService() instanceof PseudoClockScheduler ) {
-            time = context.clockTime;
-        }
-        _ruleData.setLastId( wm.getFactHandleFactory().getId() );
-        _ruleData.setLastRecency( wm.getFactHandleFactory().getRecency() );
-
-        InternalFactHandle handle = context.wm.getInitialFactHandle();
-        if ( handle != null ) {
-            // can be null for RETE, if fireAllRules has not yet been called
-            ProtobufMessages.FactHandle _ifh = ProtobufMessages.FactHandle.newBuilder()
-                    .setType( ProtobufMessages.FactHandle.HandleType.INITIAL_FACT )
-                    .setId( handle.getId() )
-                    .setRecency( handle.getRecency() )
-                    .build();
-            _ruleData.setInitialFact( _ifh );
-        }
-
-        writeAgenda( context, _ruleData );
-
-        writeNodeMemories( context, _ruleData );
-
-        for ( EntryPoint wmep : wm.getEntryPoints().values() ) {
-            org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint.Builder _epb = ProtobufMessages.EntryPoint.newBuilder();
-            _epb.setEntryPointId( wmep.getEntryPointId() );
-            
-            writeObjectTypeConfiguration( context,
-            		                      ((InternalWorkingMemoryEntryPoint)wmep).getObjectTypeConfigurationRegistry(),
-            		                      _epb );
-            
-            writeFactHandles( context,
-                              _epb,
-                              ((NamedEntryPoint) wmep).getObjectStore() );
-
-            writeTruthMaintenanceSystem( context,
-                                         wmep,
-                                         _epb );
-
-			_ruleData.addEntryPoint( _epb.build() );
-        }
-
-        writeActionQueue( context,
-                          _ruleData );
-
-        ProtobufMessages.KnowledgeSession.Builder _session = ProtobufMessages.KnowledgeSession.newBuilder()
-                .setMultithread( false )
-                .setTime( time )
-                .setRuleData( _ruleData.build() );
-
-        if ( processMarshaller != null ) {
-            Builder _pdata = ProtobufMessages.ProcessData.newBuilder();
-            if ( context.marshalProcessInstances ) {
-                context.parameterObject = _pdata;
-                processMarshaller.writeProcessInstances( context );
+        try {
+            wm.getLock().lock();
+            for (WorkingMemoryEntryPoint ep : wm.getEntryPoints().values()) {
+                if (ep instanceof NamedEntryPoint) {
+                    ((NamedEntryPoint)ep).lock();
+                }
             }
 
-            if ( context.marshalWorkItems ) {
-                context.parameterObject = _pdata;
-                processMarshaller.writeWorkItems( context );
+            wm.getAgenda().unstageActivations();
+
+            evaluateRuleActivations( wm );
+
+            ProtobufMessages.RuleData.Builder _ruleData = ProtobufMessages.RuleData.newBuilder();
+
+            long time = 0;
+            if ( context.wm.getTimerService() instanceof PseudoClockScheduler ) {
+                time = context.clockTime;
+            }
+            _ruleData.setLastId( wm.getFactHandleFactory().getId() );
+            _ruleData.setLastRecency( wm.getFactHandleFactory().getRecency() );
+
+            InternalFactHandle handle = context.wm.getInitialFactHandle();
+            if ( handle != null ) {
+                // can be null for RETE, if fireAllRules has not yet been called
+                ProtobufMessages.FactHandle _ifh = ProtobufMessages.FactHandle.newBuilder()
+                        .setType( ProtobufMessages.FactHandle.HandleType.INITIAL_FACT )
+                        .setId( handle.getId() )
+                        .setRecency( handle.getRecency() )
+                        .build();
+                _ruleData.setInitialFact( _ifh );
             }
 
-            // this now just assigns the writer, it will not write out any timer information
-            context.parameterObject = _pdata;
-            processMarshaller.writeProcessTimers( context );
+            writeAgenda( context, _ruleData );
 
-            _session.setProcessData( _pdata.build() );
+            writeNodeMemories( context, _ruleData );
+
+            for ( EntryPoint wmep : wm.getEntryPoints().values() ) {
+                org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint.Builder _epb = ProtobufMessages.EntryPoint.newBuilder();
+                _epb.setEntryPointId( wmep.getEntryPointId() );
+
+                writeObjectTypeConfiguration( context,
+                                              ((InternalWorkingMemoryEntryPoint)wmep).getObjectTypeConfigurationRegistry(),
+                                              _epb );
+
+                writeFactHandles( context,
+                                  _epb,
+                                  ((NamedEntryPoint) wmep).getObjectStore() );
+
+                writeTruthMaintenanceSystem( context,
+                                             wmep,
+                                             _epb );
+
+                _ruleData.addEntryPoint( _epb.build() );
+            }
+
+            writeActionQueue( context,
+                              _ruleData );
+
+            ProtobufMessages.KnowledgeSession.Builder _session = ProtobufMessages.KnowledgeSession.newBuilder()
+                    .setMultithread( false )
+                    .setTime( time )
+                    .setRuleData( _ruleData.build() );
+
+            if ( processMarshaller != null ) {
+                Builder _pdata = ProtobufMessages.ProcessData.newBuilder();
+                if ( context.marshalProcessInstances ) {
+                    context.parameterObject = _pdata;
+                    processMarshaller.writeProcessInstances( context );
+                }
+
+                if ( context.marshalWorkItems ) {
+                    context.parameterObject = _pdata;
+                    processMarshaller.writeWorkItems( context );
+                }
+
+                // this now just assigns the writer, it will not write out any timer information
+                context.parameterObject = _pdata;
+                processMarshaller.writeProcessTimers( context );
+
+                _session.setProcessData( _pdata.build() );
+            }
+
+            Timers _timers = writeTimers( context.wm.getTimerService().getTimerJobInstances( context.wm.getId() ),
+                                          context );
+            if ( _timers != null ) {
+                _session.setTimers( _timers );
+            }
+
+            return _session.build();
+        } finally {
+            for (WorkingMemoryEntryPoint ep : wm.getEntryPoints().values()) {
+                if (ep instanceof NamedEntryPoint) {
+                    ((NamedEntryPoint)ep).unlock();
+                }
+            }
+            wm.getLock().unlock();
         }
-
-        Timers _timers = writeTimers( context.wm.getTimerService().getTimerJobInstances( context.wm.getId() ),
-                                      context );
-        if ( _timers != null ) {
-            _session.setTimers( _timers );
-        }
-
-        return _session.build();
     }
 
     private static void writeObjectTypeConfiguration( MarshallerWriteContext context, 
