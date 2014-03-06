@@ -112,6 +112,14 @@ public class NamedEntryPoint
                                                          this.lock);
     }
 
+    public void lock() {
+        lock.lock();
+    }
+
+    public void unlock() {
+        lock.unlock();
+    }
+
     public void reset() {
         this.objectStore.clear();
     }
