@@ -10,7 +10,7 @@ import org.kie.api.runtime.KieContainer;
 public interface InternalKieScanner extends KieScanner {
 
     public enum Status {
-        STARTING, SCANNING, UPDATING, RUNNING, STOPPED;
+        STARTING, SCANNING, UPDATING, RUNNING, STOPPED, SHUTDOWN;
     }
 
     void setKieContainer(KieContainer kieContainer);

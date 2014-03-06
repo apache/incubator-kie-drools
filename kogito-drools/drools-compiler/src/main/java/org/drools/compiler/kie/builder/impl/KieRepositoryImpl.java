@@ -136,6 +136,8 @@ public class KieRepositoryImpl
         public void start(long pollingInterval) { }
 
         public void stop() { }
+        
+        public void shutdown() { }
 
         public void scanNow() { }
 
