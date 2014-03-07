@@ -11,7 +11,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 
 public class MimicReplayingEntitySelector extends AbstractEntitySelector {
 
-    protected final MimicRecordingEntitySelector recordingEntitySelector;
+    protected final EntityMimicRecorder entityMimicRecorder;
 
     protected boolean hasRecordingCreated;
     protected boolean hasRecording;
@@ -19,10 +19,10 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
     protected Object recording;
     protected boolean recordingAlreadyReturned;
 
-    public MimicReplayingEntitySelector(MimicRecordingEntitySelector recordingEntitySelector) {
-        this.recordingEntitySelector = recordingEntitySelector;
+    public MimicReplayingEntitySelector(MimicRecordingEntitySelector entityMimicRecorder) {
+        this.entityMimicRecorder = entityMimicRecorder;
         // No solverPhaseLifecycleSupport because the MimicRecordingEntitySelector is hooked up elsewhere too
-        recordingEntitySelector.addMimicReplayingEntitySelector(this);
+        entityMimicRecorder.addMimicReplayingEntitySelector(this);
     }
 
     // ************************************************************************
@@ -48,19 +48,19 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
     }
 
     public EntityDescriptor getEntityDescriptor() {
-        return recordingEntitySelector.getEntityDescriptor();
+        return entityMimicRecorder.getEntityDescriptor();
     }
 
     public boolean isCountable() {
-        return recordingEntitySelector.isCountable();
+        return entityMimicRecorder.isCountable();
     }
 
     public boolean isNeverEnding() {
-        return recordingEntitySelector.isNeverEnding();
+        return entityMimicRecorder.isNeverEnding();
     }
 
     public long getSize() {
-        return recordingEntitySelector.getSize();
+        return entityMimicRecorder.getSize();
     }
 
     public Iterator<Object> iterator() {
@@ -93,7 +93,7 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
         public boolean hasNext() {
             if (!hasRecordingCreated) {
                 throw new IllegalStateException("Replay must occur after record."
-                        + " The recordingEntitySelector (" + recordingEntitySelector
+                        + " The recordingEntitySelector (" + entityMimicRecorder
                         + ")'s hasNext() has not been called yet. ");
             }
             return hasRecording && !recordingAlreadyReturned;
@@ -102,7 +102,7 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
         public Object next() {
             if (!recordingCreated) {
                 throw new IllegalStateException("Replay must occur after record."
-                        + " The recordingEntitySelector (" + recordingEntitySelector
+                        + " The recordingEntitySelector (" + entityMimicRecorder
                         + ")'s next() has not been called yet. ");
             }
             if (recordingAlreadyReturned) {
@@ -118,7 +118,7 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
 
     public Iterator<Object> endingIterator() {
         // No replaying, because the endingIterator() is used for determining size
-        return recordingEntitySelector.endingIterator();
+        return entityMimicRecorder.endingIterator();
     }
 
     public ListIterator<Object> listIterator() {
@@ -133,7 +133,7 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
 
     @Override
     public String toString() {
-        return "Replaying(" + recordingEntitySelector + ")";
+        return "Replaying(" + entityMimicRecorder + ")";
     }
 
 }

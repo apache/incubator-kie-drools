@@ -25,6 +25,10 @@ public class ConstructionHeuristicDecider extends AbstractEntityPlacer {
         this.forager = forager;
     }
 
+    public ConstructionHeuristicForager getForager() {
+        return forager;
+    }
+
     public void setAssertMoveScoreFromScratch(boolean assertMoveScoreFromScratch) {
         this.assertMoveScoreFromScratch = assertMoveScoreFromScratch;
     }

@@ -10,7 +10,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIte
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
-public class MimicRecordingEntitySelector extends AbstractEntitySelector {
+public class MimicRecordingEntitySelector extends AbstractEntitySelector implements EntityMimicRecorder {
 
     protected final EntitySelector childEntitySelector;
 
