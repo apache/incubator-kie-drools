@@ -25,5 +25,7 @@ public interface KieExecutors extends Service {
 
     Executor getExecutor();
 
+    Executor newSingleThreadExecutor();
+
     <T> CompletionService<T> getCompletionService();
 }
