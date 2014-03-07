@@ -87,39 +87,26 @@ public class BenchmarkAggregator {
         }
         // Handle renamed solver benchmarks after statistics have been read (they're resolved by
         // original solver benchmarks' names)
-        handleRenamedSolverBenchmarkNames(solverBenchamkarkResultNameMap);
-
-        BenchmarkReport benchmarkReport = null;
-        try {
-            PlannerBenchmarkResult plannerBenchmarkResult = PlannerBenchmarkResult.createMergedResult(singleBenchmarkResultList);
-            plannerBenchmarkResult.setStartingTimestamp(startingTimestamp);
-            plannerBenchmarkResult.initBenchmarkReportDirectory(benchmarkDirectory);
-
-            benchmarkReport = benchmarkReportConfig.buildBenchmarkReport(plannerBenchmarkResult);
-            plannerBenchmarkResult.accumulateResults(benchmarkReport);
-            benchmarkReport.writeReport();
-            logger.info("Aggregation ended: statistic html overview ({}).",
-                    benchmarkReport.getHtmlOverviewFile().getAbsolutePath());
-            return benchmarkReport.getHtmlOverviewFile().getAbsoluteFile();
-        } finally {
-            // Make sure solver benchmarks are renamed back to their original names, so that they can be
-            // reused in another invocation of aggregate method
-            handleRenamedSolverBenchmarkNames(solverBenchamkarkResultNameMap);
-        }
-
-    }
-
-    private void handleRenamedSolverBenchmarkNames(Map<SolverBenchmarkResult, String> solverBenchamkarkResultNameMap) {
-
         if (solverBenchamkarkResultNameMap != null) {
             for (Entry<SolverBenchmarkResult, String> results : solverBenchamkarkResultNameMap.entrySet()) {
                 if (!results.getKey().getName().equals(results.getValue())) {
-                    String oldName = results.getKey().getName();
                     results.getKey().setName(results.getValue());
-                    results.setValue(oldName);
                 }
             }
         }
-    }
 
-}
+        PlannerBenchmarkResult plannerBenchmarkResult
+                = PlannerBenchmarkResult.createMergedResult(singleBenchmarkResultList);
+            plannerBenchmarkResult.setStartingTimestamp(startingTimestamp);
+            plannerBenchmarkResult.initBenchmarkReportDirectory(benchmarkDirectory);
+
+        BenchmarkReport benchmarkReport = benchmarkReportConfig.buildBenchmarkReport(plannerBenchmarkResult);
+            plannerBenchmarkResult.accumulateResults(benchmarkReport);
+            benchmarkReport.writeReport();
+
+            logger.info("Aggregation ended: statistic html overview ({}).",
+                    benchmarkReport.getHtmlOverviewFile().getAbsolutePath());
+            return benchmarkReport.getHtmlOverviewFile().getAbsoluteFile();
+        }
+
+    }
