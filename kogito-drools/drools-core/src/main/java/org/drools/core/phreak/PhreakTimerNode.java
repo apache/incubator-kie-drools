@@ -425,7 +425,7 @@ public class PhreakTimerNode {
     }
 
     private static class ExecutorHolder {
-        private static final java.util.concurrent.Executor executor = ExecutorProviderFactory.getExecutorProvider().getExecutor();
+        private static final java.util.concurrent.Executor executor = ExecutorProviderFactory.getExecutorProvider().newSingleThreadExecutor();
     }
 
     public static class Executor implements TimedRuleExecution {
