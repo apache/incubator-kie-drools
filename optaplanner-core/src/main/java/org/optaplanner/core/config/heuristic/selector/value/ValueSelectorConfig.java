@@ -25,10 +25,10 @@ import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
@@ -164,9 +164,9 @@ public class ValueSelectorConfig extends SelectorConfig {
      * @return never null
      */
     public ValueSelector buildValueSelector(HeuristicConfigPolicy configPolicy,
-            PlanningEntityDescriptor entityDescriptor,
+            EntityDescriptor entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
-        PlanningVariableDescriptor variableDescriptor = deduceVariableDescriptor(entityDescriptor, variableName);
+        GenuineVariableDescriptor variableDescriptor = deduceVariableDescriptor(entityDescriptor, variableName);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
                 inheritedSelectionOrder);
@@ -193,7 +193,7 @@ public class ValueSelectorConfig extends SelectorConfig {
         return valueSelector;
     }
 
-    protected boolean determineBaseRandomSelection(PlanningVariableDescriptor variableDescriptor,
+    protected boolean determineBaseRandomSelection(GenuineVariableDescriptor variableDescriptor,
             SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder) {
         switch (resolvedSelectionOrder) {
             case ORIGINAL:
@@ -212,12 +212,12 @@ public class ValueSelectorConfig extends SelectorConfig {
         }
     }
 
-    protected boolean isBaseInherentlyCached(PlanningVariableDescriptor variableDescriptor) {
+    protected boolean isBaseInherentlyCached(GenuineVariableDescriptor variableDescriptor) {
         return variableDescriptor.getValueRangeDescriptor().isEntityIndependent();
     }
 
     private ValueSelector buildBaseValueSelector(
-            HeuristicConfigPolicy configPolicy, PlanningVariableDescriptor variableDescriptor,
+            HeuristicConfigPolicy configPolicy, GenuineVariableDescriptor variableDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         ValueRangeDescriptor valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
         // TODO minimumCacheType SOLVER is only a problem if the valueRange includes entities or custom weird cloning
@@ -242,7 +242,7 @@ public class ValueSelectorConfig extends SelectorConfig {
     }
 
     protected ValueSelector applyInitializedChainedValueFilter(HeuristicConfigPolicy configPolicy,
-            PlanningVariableDescriptor variableDescriptor,
+            GenuineVariableDescriptor variableDescriptor,
             SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
             ValueSelector valueSelector) {
         if (configPolicy.isInitializedChainedValueFilterEnabled()
@@ -479,7 +479,7 @@ public class ValueSelectorConfig extends SelectorConfig {
     public static enum ValueSorterManner {
         INCREASING_STRENGTH;
 
-        public SelectionSorter determineSorter(PlanningVariableDescriptor variableDescriptor) {
+        public SelectionSorter determineSorter(GenuineVariableDescriptor variableDescriptor) {
             SelectionSorter sorter;
             switch (this) {
                 case INCREASING_STRENGTH:
@@ -487,7 +487,7 @@ public class ValueSelectorConfig extends SelectorConfig {
                     if (sorter == null) {
                         throw new IllegalArgumentException("The sorterManner (" + this
                                 + ") on entity class ("
-                                + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
+                                + variableDescriptor.getEntityDescriptor().getEntityClass()
                                 + ")'s variable (" + variableDescriptor.getVariableName()
                                 + ") fails because that variable getter's " + PlanningVariable.class.getSimpleName()
                                 + " annotation does not declare any strength comparison.");

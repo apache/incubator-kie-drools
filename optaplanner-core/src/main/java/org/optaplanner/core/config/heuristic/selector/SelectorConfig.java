@@ -25,9 +25,9 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 
 /**
@@ -64,25 +64,25 @@ public abstract class SelectorConfig {
         }
     }
 
-    protected PlanningEntityDescriptor deduceEntityDescriptor(SolutionDescriptor solutionDescriptor,
+    protected EntityDescriptor deduceEntityDescriptor(SolutionDescriptor solutionDescriptor,
             Class<?> entityClass) {
-        PlanningEntityDescriptor entityDescriptor;
+        EntityDescriptor entityDescriptor;
         if (entityClass != null) {
             entityDescriptor = solutionDescriptor.getEntityDescriptorStrict(entityClass);
             if (entityDescriptor == null) {
                 throw new IllegalArgumentException("The selectorConfig (" + this
                         + ") has an entityClass (" + entityClass + ") that is not a known planning entity.\n"
                         + "Check your solver configuration. If that class (" + entityClass.getSimpleName()
-                        + ") is not in the planningEntityClassSet (" + solutionDescriptor.getPlanningEntityClassSet()
+                        + ") is not in the planningEntityClassSet (" + solutionDescriptor.getEntityClassSet()
                         + "), check your Solution implementation's annotated methods too.");
             }
         } else {
-            Collection<PlanningEntityDescriptor> entityDescriptors = solutionDescriptor.getGenuineEntityDescriptors();
+            Collection<EntityDescriptor> entityDescriptors = solutionDescriptor.getGenuineEntityDescriptors();
             if (entityDescriptors.size() != 1) {
                 throw new IllegalArgumentException("The selectorConfig (" + this
                         + ") has no entityClass (" + entityClass
                         + ") configured and because there are multiple in the planningEntityClassSet ("
-                        + solutionDescriptor.getPlanningEntityClassSet()
+                        + solutionDescriptor.getEntityClassSet()
                         + "), it can not be deducted automatically.");
             }
             entityDescriptor = entityDescriptors.iterator().next();
@@ -90,34 +90,34 @@ public abstract class SelectorConfig {
         return entityDescriptor;
     }
 
-    protected PlanningVariableDescriptor deduceVariableDescriptor(
-            PlanningEntityDescriptor entityDescriptor, String variableName) {
-        PlanningVariableDescriptor variableDescriptor;
+    protected GenuineVariableDescriptor deduceVariableDescriptor(
+            EntityDescriptor entityDescriptor, String variableName) {
+        GenuineVariableDescriptor variableDescriptor;
         if (variableName != null) {
             variableDescriptor = entityDescriptor.getVariableDescriptor(variableName);
             if (variableDescriptor == null) {
                 if (entityDescriptor.getPropertyDescriptor(variableName) == null) {
                     throw new IllegalArgumentException("The selectorConfig (" + this
                             + ") has a variableName (" + variableName
-                            + ") for planningEntityClass (" + entityDescriptor.getPlanningEntityClass()
+                            + ") for planningEntityClass (" + entityDescriptor.getEntityClass()
                             + ") that does not have that as a getter.\n"
                             + "Check the spelling of the variableName (" + variableName + ").");
                 } else {
                     throw new IllegalArgumentException("The selectorConfig (" + this
                             + ") has a variableName (" + variableName
-                            + ") for planningEntityClass (" + entityDescriptor.getPlanningEntityClass()
+                            + ") for planningEntityClass (" + entityDescriptor.getEntityClass()
                             + ") that is not annotated as a planning variable.\n"
                             + "Check if your planning entity's getter has the annotation "
                             + PlanningVariable.class.getSimpleName() + ".");
                 }
             }
         } else {
-            Collection<PlanningVariableDescriptor> variableDescriptors = entityDescriptor
+            Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor
                     .getVariableDescriptors();
             if (variableDescriptors.size() != 1) {
                 throw new IllegalArgumentException("The selectorConfig (" + this
                         + ") has no configured variableName (" + variableName
-                        + ") for planningEntityClass (" + entityDescriptor.getPlanningEntityClass()
+                        + ") for planningEntityClass (" + entityDescriptor.getEntityClass()
                         + ") and because there are multiple in the variableNameSet ("
                         + entityDescriptor.getPlanningVariableNameSet()
                         + "), it can not be deducted automatically.");
@@ -127,17 +127,17 @@ public abstract class SelectorConfig {
         return variableDescriptor;
     }
 
-    protected Collection<PlanningVariableDescriptor> deduceVariableDescriptors(
-            PlanningEntityDescriptor entityDescriptor, List<String> variableNameIncludeList) {
-        Collection<PlanningVariableDescriptor> variableDescriptors = entityDescriptor.getVariableDescriptors();
+    protected Collection<GenuineVariableDescriptor> deduceVariableDescriptors(
+            EntityDescriptor entityDescriptor, List<String> variableNameIncludeList) {
+        Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getVariableDescriptors();
         if (variableNameIncludeList == null) {
             return variableDescriptors;
         }
-        List<PlanningVariableDescriptor> resolvedVariableDescriptors
-                = new ArrayList<PlanningVariableDescriptor>(variableDescriptors.size());
+        List<GenuineVariableDescriptor> resolvedVariableDescriptors
+                = new ArrayList<GenuineVariableDescriptor>(variableDescriptors.size());
         for (String variableNameInclude : variableNameIncludeList) {
             boolean found = false;
-            for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+            for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
                 if (variableDescriptor.getVariableName().equals(variableNameInclude)) {
                     resolvedVariableDescriptors.add(variableDescriptor);
                     found = true;
@@ -147,7 +147,7 @@ public abstract class SelectorConfig {
             if (!found) {
                 throw new IllegalStateException("The selectorConfig (" + this
                         + ") has a variableNameInclude (" + variableNameInclude
-                        + ") which does not exist in the entity (" + entityDescriptor.getPlanningEntityClass()
+                        + ") which does not exist in the entity (" + entityDescriptor.getEntityClass()
                         + ")'s variableDescriptors (" + variableDescriptors + ").");
             }
         }

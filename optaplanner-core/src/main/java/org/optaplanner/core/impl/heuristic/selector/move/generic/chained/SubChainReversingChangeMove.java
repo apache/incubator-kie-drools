@@ -22,7 +22,7 @@ import java.util.Collections;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -30,11 +30,11 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 public class SubChainReversingChangeMove implements Move {
 
     private final SubChain subChain;
-    private final PlanningVariableDescriptor variableDescriptor;
+    private final GenuineVariableDescriptor variableDescriptor;
     private final Object toPlanningValue;
 
     public SubChainReversingChangeMove(SubChain subChain,
-            PlanningVariableDescriptor variableDescriptor, Object toPlanningValue) {
+            GenuineVariableDescriptor variableDescriptor, Object toPlanningValue) {
         this.subChain = subChain;
         this.variableDescriptor = variableDescriptor;
         this.toPlanningValue = toPlanningValue;

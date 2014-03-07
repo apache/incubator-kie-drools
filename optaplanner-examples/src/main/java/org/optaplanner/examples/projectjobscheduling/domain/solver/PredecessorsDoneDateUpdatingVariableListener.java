@@ -4,11 +4,11 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
 
-public class PredecessorsDoneDateUpdatingVariableListener implements PlanningVariableListener<Allocation> {
+public class PredecessorsDoneDateUpdatingVariableListener implements VariableListener<Allocation> {
 
     public void beforeEntityAdded(ScoreDirector scoreDirector, Allocation allocation) {
         // Do nothing

@@ -1,14 +1,14 @@
 package org.optaplanner.examples.vehiclerouting.domain.timewindowed.solver;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Standstill;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 
 // TODO When this class is added only for TimeWindowedCustomer, use TimeWindowedCustomer instead of Customer
-public class ArrivalTimeUpdatingVariableListener implements PlanningVariableListener<Customer> {
+public class ArrivalTimeUpdatingVariableListener implements VariableListener<Customer> {
 
     public void beforeEntityAdded(ScoreDirector scoreDirector, Customer customer) {
         // Do nothing

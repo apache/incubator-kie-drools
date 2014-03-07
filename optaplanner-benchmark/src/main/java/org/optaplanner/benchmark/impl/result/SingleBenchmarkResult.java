@@ -45,7 +45,7 @@ public class SingleBenchmarkResult {
     @XStreamOmitField // Lazily restored when read through ProblemStatistic and CSV files
     private Map<StatisticType, SingleStatistic> singleStatisticMap;
 
-    private Integer planningEntityCount = null;
+    private Integer entityCount = null;
     private Long usedMemoryAfterInputSolution = null;
 
     private Boolean succeeded = null;
@@ -98,12 +98,12 @@ public class SingleBenchmarkResult {
         return singleStatisticMap;
     }
 
-    public Integer getPlanningEntityCount() {
-        return planningEntityCount;
+    public Integer getEntityCount() {
+        return entityCount;
     }
 
-    public void setPlanningEntityCount(Integer planningEntityCount) {
-        this.planningEntityCount = planningEntityCount;
+    public void setEntityCount(Integer entityCount) {
+        this.entityCount = entityCount;
     }
 
     /**
@@ -253,7 +253,7 @@ public class SingleBenchmarkResult {
             singleStatistic.setPointList(oldResult.getSingleStatistic(singleStatistic.getStatisticType()).getPointList());
         }
         // Skip oldResult.reportDirectory
-        newResult.planningEntityCount = oldResult.planningEntityCount;
+        newResult.entityCount = oldResult.entityCount;
         // Skip oldResult.usedMemoryAfterInputSolution
         newResult.succeeded = oldResult.succeeded;
         newResult.score = oldResult.score;

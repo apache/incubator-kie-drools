@@ -21,7 +21,7 @@ import java.util.Collection;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -37,13 +37,13 @@ public abstract class EntityPlacerConfig {
     // Helper methods
     // ************************************************************************
 
-    protected PlanningEntityDescriptor deduceEntityDescriptor(SolutionDescriptor solutionDescriptor) {
-        Collection<PlanningEntityDescriptor> entityDescriptors = solutionDescriptor.getGenuineEntityDescriptors();
+    protected EntityDescriptor deduceEntityDescriptor(SolutionDescriptor solutionDescriptor) {
+        Collection<EntityDescriptor> entityDescriptors = solutionDescriptor.getGenuineEntityDescriptors();
         if (entityDescriptors.size() != 1) {
             throw new IllegalArgumentException("The entityPlacerConfig (" + this
                     + ") has no entitySelector configured"
                     + " and because there are multiple in the planningEntityClassSet ("
-                    + solutionDescriptor.getPlanningEntityClassSet()
+                    + solutionDescriptor.getEntityClassSet()
                     + "), it can not be deducted automatically.");
         }
         return entityDescriptors.iterator().next();

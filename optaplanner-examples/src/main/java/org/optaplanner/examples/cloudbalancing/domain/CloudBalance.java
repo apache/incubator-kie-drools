@@ -81,36 +81,4 @@ public class CloudBalance extends AbstractPersistable implements Solution<HardSo
         return facts;
     }
 
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (id == null || !(o instanceof CloudBalance)) {
-            return false;
-        } else {
-            CloudBalance other = (CloudBalance) o;
-            if (processList.size() != other.processList.size()) {
-                return false;
-            }
-            for (Iterator<CloudProcess> it = processList.iterator(), otherIt = other.processList.iterator(); it.hasNext();) {
-                CloudProcess process = it.next();
-                CloudProcess otherProcess = otherIt.next();
-                // Notice: we don't use equals()
-                if (!process.solutionEquals(otherProcess)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    public int hashCode() {
-        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        for (CloudProcess process : processList) {
-            // Notice: we don't use hashCode()
-            hashCodeBuilder.append(process.solutionHashCode());
-        }
-        return hashCodeBuilder.toHashCode();
-    }
-
 }

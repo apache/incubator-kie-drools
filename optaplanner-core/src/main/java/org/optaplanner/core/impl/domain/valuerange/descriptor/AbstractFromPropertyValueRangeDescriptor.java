@@ -28,8 +28,8 @@ import org.optaplanner.core.impl.domain.valuerange.buildin.collection.ListValueR
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.common.DefaultReadMethodAccessor;
 import org.optaplanner.core.impl.domain.common.ReadMethodAccessor;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 
 public abstract class AbstractFromPropertyValueRangeDescriptor extends AbstractValueRangeDescriptor {
 
@@ -38,7 +38,7 @@ public abstract class AbstractFromPropertyValueRangeDescriptor extends AbstractV
     protected boolean countable;
 
     public AbstractFromPropertyValueRangeDescriptor(
-            PlanningVariableDescriptor variableDescriptor, boolean addNullInValueRange,
+            GenuineVariableDescriptor variableDescriptor, boolean addNullInValueRange,
             Method readMethod) {
         super(variableDescriptor, addNullInValueRange);
         readMethodAccessor = new DefaultReadMethodAccessor(readMethod);
@@ -57,12 +57,12 @@ public abstract class AbstractFromPropertyValueRangeDescriptor extends AbstractV
     }
 
     private void processValueRangeProviderAnnotation(ValueRangeProvider valueRangeProviderAnnotation) {
-        PlanningEntityDescriptor entityDescriptor = variableDescriptor.getEntityDescriptor();
+        EntityDescriptor entityDescriptor = variableDescriptor.getEntityDescriptor();
         Class<?> returnType = readMethodAccessor.getReturnType();
         collectionWrapping = Collection.class.isAssignableFrom(returnType);
         if (!collectionWrapping && !ValueRange.class.isAssignableFrom(returnType)) {
             throw new IllegalArgumentException("The planningEntityClass ("
-                    + entityDescriptor.getPlanningEntityClass()
+                    + entityDescriptor.getEntityClass()
                     + ") has a " + PlanningVariable.class.getSimpleName()
                     + " annotated property (" + variableDescriptor.getVariableName()
                     + ") that refers to a " + ValueRangeProvider.class.getSimpleName()

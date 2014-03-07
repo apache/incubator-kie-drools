@@ -23,9 +23,9 @@ import java.util.List;
 import org.optaplanner.core.impl.bruteforce.event.BruteForceSolverPhaseLifecycleListener;
 import org.optaplanner.core.impl.bruteforce.scope.BruteForceSolverPhaseScope;
 import org.optaplanner.core.impl.bruteforce.scope.BruteForceStepScope;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueSelectionOrder;
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueSelectionPromotion;
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueSelector;
@@ -43,26 +43,26 @@ public class BruteForceEntityWalker implements BruteForceSolverPhaseLifecycleLis
     }
 
     public void phaseStarted(BruteForceSolverPhaseScope phaseScope) {
-        List<Object> workingPlanningEntityList = phaseScope.getWorkingEntityList();
-        planningVariableWalkerList = new ArrayList<PlanningVariableWalker>(workingPlanningEntityList.size());
-        for (Object planningEntity : workingPlanningEntityList) {
-            PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(
-                    planningEntity.getClass());
+        List<Object> entityList = phaseScope.getWorkingEntityList();
+        planningVariableWalkerList = new ArrayList<PlanningVariableWalker>(entityList.size());
+        for (Object entity : entityList) {
+            EntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(
+                    entity.getClass());
             PlanningVariableWalker planningVariableWalker = new PlanningVariableWalker(entityDescriptor);
             List<PlanningValueWalker> planningValueWalkerList = buildPlanningValueWalkerList(entityDescriptor);
             planningVariableWalker.setPlanningValueWalkerList(planningValueWalkerList);
             planningVariableWalkerList.add(planningVariableWalker);
             planningVariableWalker.phaseStarted(phaseScope);
-            planningVariableWalker.initWalk(planningEntity);
+            planningVariableWalker.initWalk(entity);
         }
     }
 
-    private List<PlanningValueWalker> buildPlanningValueWalkerList(PlanningEntityDescriptor entityDescriptor) {
-        Collection<PlanningVariableDescriptor> variableDescriptors
+    private List<PlanningValueWalker> buildPlanningValueWalkerList(EntityDescriptor entityDescriptor) {
+        Collection<GenuineVariableDescriptor> variableDescriptors
                 = entityDescriptor.getVariableDescriptors();
         List<PlanningValueWalker> planningValueWalkerList = new ArrayList<PlanningValueWalker>(
                 variableDescriptors.size());
-        for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
             PlanningValueSelector planningValueSelector = new PlanningValueSelector(variableDescriptor);
             planningValueSelector.setSelectionOrder(PlanningValueSelectionOrder.ORIGINAL);
             planningValueSelector.setSelectionPromotion(PlanningValueSelectionPromotion.NONE);

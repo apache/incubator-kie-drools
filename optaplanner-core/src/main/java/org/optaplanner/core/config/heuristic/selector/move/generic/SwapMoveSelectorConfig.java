@@ -26,7 +26,7 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
@@ -84,7 +84,7 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
         EntitySelector rightEntitySelector = rightEntitySelectorConfig.buildEntitySelector(
                 configPolicy,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        Collection<PlanningVariableDescriptor> variableDescriptors = deduceVariableDescriptors(
+        Collection<GenuineVariableDescriptor> variableDescriptors = deduceVariableDescriptors(
                 leftEntitySelector.getEntityDescriptor(), variableNameIncludeList);
         return new SwapMoveSelector(leftEntitySelector, rightEntitySelector, variableDescriptors,
                 randomSelection);

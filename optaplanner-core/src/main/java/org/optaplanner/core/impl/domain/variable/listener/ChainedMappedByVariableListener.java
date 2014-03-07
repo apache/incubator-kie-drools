@@ -16,15 +16,14 @@
 
 package org.optaplanner.core.impl.domain.variable.listener;
 
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.AbstractPlanningVariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class ChainedMappedByVariableListener extends AbstractPlanningVariableListener<Object> {
+public class ChainedMappedByVariableListener implements VariableListener<Object> {
 
     private final ShadowVariableDescriptor shadowVariableDescriptor;
-    private final PlanningVariableDescriptor mappedByVariableDescriptor;
+    private final GenuineVariableDescriptor mappedByVariableDescriptor;
 
     public ChainedMappedByVariableListener(ShadowVariableDescriptor shadowVariableDescriptor) {
         this.shadowVariableDescriptor = shadowVariableDescriptor;

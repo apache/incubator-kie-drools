@@ -21,7 +21,7 @@ import java.util.Iterator;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.solution.Solution;
 
@@ -40,7 +40,7 @@ public class FromEntityPropertyValueSelector extends AbstractValueSelector {
         this.randomSelection = randomSelection;
     }
 
-    public PlanningVariableDescriptor getVariableDescriptor() {
+    public GenuineVariableDescriptor getVariableDescriptor() {
         return valueRangeDescriptor.getVariableDescriptor();
     }
 

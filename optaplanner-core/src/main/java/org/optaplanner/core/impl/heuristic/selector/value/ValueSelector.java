@@ -20,7 +20,7 @@ import java.util.Iterator;
 
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.IterableSelector;
 import org.optaplanner.core.impl.heuristic.selector.Selector;
 
@@ -49,6 +49,6 @@ public interface ValueSelector extends Selector {
     /**
      * @return never null
      */
-    PlanningVariableDescriptor getVariableDescriptor();
+    GenuineVariableDescriptor getVariableDescriptor();
 
 }

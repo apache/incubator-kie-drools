@@ -23,7 +23,7 @@ import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
@@ -35,9 +35,9 @@ public class PillarSelectorConfig extends SelectorConfig {
     @XStreamAlias("entitySelector")
     protected EntitySelectorConfig entitySelectorConfig = null;
 
-    // TODO add planningVariableName but do not duplicate from PillarSwapMoveSelectorConfig
-//    @XStreamImplicit(itemFieldName = "planningVariableName")
-//    private List<String> planningVariableNameList = null;
+    // TODO add variableName but do not duplicate from PillarSwapMoveSelectorConfig
+//    @XStreamImplicit(itemFieldName = "variableName")
+//    private List<String> variableNameList = null;
 
     public EntitySelectorConfig getEntitySelectorConfig() {
         return entitySelectorConfig;
@@ -47,12 +47,12 @@ public class PillarSelectorConfig extends SelectorConfig {
         this.entitySelectorConfig = entitySelectorConfig;
     }
 
-//    public List<String> getPlanningVariableNameList() {
-//        return planningVariableNameList;
+//    public List<String> getVariableNameList() {
+//        return variableNameList;
 //    }
 //
-//    public void setPlanningVariableNameList(List<String> planningVariableNameList) {
-//        this.planningVariableNameList = planningVariableNameList;
+//    public void setVariableNameList(List<String> variableNameList) {
+//        this.variableNameList = variableNameList;
 //    }
 
     // ************************************************************************
@@ -80,7 +80,7 @@ public class PillarSelectorConfig extends SelectorConfig {
                 : entitySelectorConfig;
         EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(configPolicy,
                 minimumCacheType, SelectionOrder.ORIGINAL);
-        Collection<PlanningVariableDescriptor> variableDescriptors = entitySelector.getEntityDescriptor()
+        Collection<GenuineVariableDescriptor> variableDescriptors = entitySelector.getEntityDescriptor()
                 .getVariableDescriptors();
         return new SameValuePillarSelector(entitySelector, variableDescriptors,
                 inheritedSelectionOrder.toRandomSelectionBoolean());
@@ -93,8 +93,8 @@ public class PillarSelectorConfig extends SelectorConfig {
         } else if (inheritedConfig.getEntitySelectorConfig() != null) {
             entitySelectorConfig.inherit(inheritedConfig.getEntitySelectorConfig());
         }
-//        planningVariableNameList = ConfigUtils.inheritMergeableListProperty(planningVariableNameList,
-//                inheritedConfig.getPlanningVariableNameList());
+//        variableNameList = ConfigUtils.inheritMergeableListProperty(variableNameList,
+//                inheritedConfig.getVariableNameList());
     }
 
     @Override

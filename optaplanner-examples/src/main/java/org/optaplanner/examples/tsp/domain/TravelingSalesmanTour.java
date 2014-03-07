@@ -101,36 +101,4 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         return facts;
     }
 
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (id == null || !(o instanceof TravelingSalesmanTour)) {
-            return false;
-        } else {
-            TravelingSalesmanTour other = (TravelingSalesmanTour) o;
-            if (visitList.size() != other.visitList.size()) {
-                return false;
-            }
-            for (Iterator<Visit> it = visitList.iterator(), otherIt = other.visitList.iterator(); it.hasNext();) {
-                Visit visit = it.next();
-                Visit otherVisit = otherIt.next();
-                // Notice: we don't use equals()
-                if (!visit.solutionEquals(otherVisit)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    public int hashCode() {
-        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        for (Visit visit : visitList) {
-            // Notice: we don't use hashCode()
-            hashCodeBuilder.append(visit.solutionHashCode());
-        }
-        return hashCodeBuilder.toHashCode();
-    }
-
 }

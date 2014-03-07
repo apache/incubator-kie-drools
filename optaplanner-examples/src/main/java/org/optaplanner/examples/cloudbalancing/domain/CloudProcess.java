@@ -82,37 +82,6 @@ public class CloudProcess extends AbstractPersistable {
         return "Process " + id;
     }
 
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
-     * requires them (for performance in their original state).
-     * @see #solutionHashCode()
-     */
-    public boolean solutionEquals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (o instanceof CloudProcess) {
-            CloudProcess other = (CloudProcess) o;
-            return new EqualsBuilder()
-                    .append(id, other.id)
-                    .append(computer, other.computer)
-                    .isEquals();
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
-     * requires them (for performance in their original state).
-     * @see #solutionEquals(Object)
-     */
-    public int solutionHashCode() {
-        return new HashCodeBuilder()
-                .append(id)
-                .append(computer)
-                .toHashCode();
-    }
-
     @Override
     public String toString() {
         return super.toString() + "@" + computer;

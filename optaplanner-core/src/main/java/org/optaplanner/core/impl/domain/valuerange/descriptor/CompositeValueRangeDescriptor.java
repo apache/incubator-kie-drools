@@ -22,7 +22,7 @@ import java.util.List;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.buildin.composite.CompositeCountableValueRange;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
 
 public class CompositeValueRangeDescriptor extends AbstractValueRangeDescriptor
@@ -32,7 +32,7 @@ public class CompositeValueRangeDescriptor extends AbstractValueRangeDescriptor
     protected boolean entityIndependent;
 
     public CompositeValueRangeDescriptor(
-            PlanningVariableDescriptor variableDescriptor, boolean addNullInValueRange,
+            GenuineVariableDescriptor variableDescriptor, boolean addNullInValueRange,
             List<ValueRangeDescriptor> childValueRangeDescriptorList) {
         super(variableDescriptor, addNullInValueRange);
         this.childValueRangeDescriptorList = childValueRangeDescriptorList;

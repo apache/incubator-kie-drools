@@ -21,7 +21,7 @@ import java.util.Arrays;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
@@ -52,7 +52,7 @@ public class SameValuePillarSelectorTest {
 
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 a, b, c, d, e, f);
-        PlanningVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
+        GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
                 entitySelector.getEntityDescriptor(), "value");
         for (final TestdataEntity entity : Arrays.asList(a, b, c, d, e, f)) {
             when(variableDescriptor.getValue(entity)).thenAnswer(new Answer<Object>() {
@@ -113,7 +113,7 @@ public class SameValuePillarSelectorTest {
         TestdataValue v3 = new TestdataValue("3");
 
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
-        PlanningVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
+        GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
                 entitySelector.getEntityDescriptor(), "value");
 
         SameValuePillarSelector pillarSelector = new SameValuePillarSelector(

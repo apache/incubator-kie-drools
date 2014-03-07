@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRandomIterator;
 import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  */
 public class FromSolutionEntitySelector extends AbstractEntitySelector {
 
-    protected final PlanningEntityDescriptor entityDescriptor;
+    protected final EntityDescriptor entityDescriptor;
     protected final SelectionCacheType minimumCacheType;
     protected final boolean randomSelection;
 
@@ -40,14 +40,14 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     protected Long cachedEntityListRevision = null;
     protected boolean cachedEntityListIsDirty = false;
 
-    public FromSolutionEntitySelector(PlanningEntityDescriptor entityDescriptor,
+    public FromSolutionEntitySelector(EntityDescriptor entityDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         this.entityDescriptor = entityDescriptor;
         this.minimumCacheType = minimumCacheType;
         this.randomSelection = randomSelection;
     }
 
-    public PlanningEntityDescriptor getEntityDescriptor() {
+    public EntityDescriptor getEntityDescriptor() {
         return entityDescriptor;
     }
 
@@ -153,7 +153,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + entityDescriptor.getPlanningEntityClass().getSimpleName() + ")";
+        return getClass().getSimpleName() + "(" + entityDescriptor.getEntityClass().getSimpleName() + ")";
     }
 
 }

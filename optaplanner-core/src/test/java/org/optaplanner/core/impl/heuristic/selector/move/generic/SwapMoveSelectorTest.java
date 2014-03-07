@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
 import org.junit.Test;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
@@ -147,7 +147,7 @@ public class SwapMoveSelectorTest {
 
     @Test
     public void originalLeftUnequalsRight() {
-        PlanningEntityDescriptor entityDescriptor = TestdataEntity.buildEntityDescriptor();
+        EntityDescriptor entityDescriptor = TestdataEntity.buildEntityDescriptor();
 
         EntitySelector leftEntitySelector  = SelectorTestUtils.mockEntitySelector(entityDescriptor,
                 new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
@@ -221,7 +221,7 @@ public class SwapMoveSelectorTest {
 
     @Test
     public void emptyRightOriginalLeftUnequalsRight() {
-        PlanningEntityDescriptor entityDescriptor = TestdataEntity.buildEntityDescriptor();
+        EntityDescriptor entityDescriptor = TestdataEntity.buildEntityDescriptor();
 
         EntitySelector leftEntitySelector = SelectorTestUtils.mockEntitySelector(entityDescriptor,
                 new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));

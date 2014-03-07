@@ -116,36 +116,4 @@ public class VehicleRoutingSolution extends AbstractPersistable implements Solut
         return facts;
     }
 
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (id == null || !(o instanceof VehicleRoutingSolution)) {
-            return false;
-        } else {
-            VehicleRoutingSolution other = (VehicleRoutingSolution) o;
-            if (customerList.size() != other.customerList.size()) {
-                return false;
-            }
-            for (Iterator<Customer> it = customerList.iterator(), otherIt = other.customerList.iterator(); it.hasNext();) {
-                Customer customer = it.next();
-                Customer otherCustomer = otherIt.next();
-                // Notice: we don't use equals()
-                if (!customer.solutionEquals(otherCustomer)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    public int hashCode() {
-        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        for (Customer customer : customerList) {
-            // Notice: we don't use hashCode()
-            hashCodeBuilder.append(customer.solutionHashCode());
-        }
-        return hashCodeBuilder.toHashCode();
-    }
-
 }

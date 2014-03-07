@@ -66,39 +66,6 @@ public class SeatDesignation extends AbstractPersistable {
         return seat.getTable();
     }
 
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
-     * requires them (for performance in their original state).
-     * @see #solutionHashCode()
-     */
-    public boolean solutionEquals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (o instanceof SeatDesignation) {
-            SeatDesignation other = (SeatDesignation) o;
-            return new EqualsBuilder()
-                    .append(id, other.id)
-                    .append(guest, other.guest)
-                    .append(seat, other.seat)
-                    .isEquals();
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
-     * requires them (for performance in their original state).
-     * @see #solutionEquals(Object)
-     */
-    public int solutionHashCode() {
-        return new HashCodeBuilder()
-                .append(id)
-                .append(guest)
-                .append(seat)
-                .toHashCode();
-    }
-
     @Override
     public String toString() {
         return guest + " @ " + seat;

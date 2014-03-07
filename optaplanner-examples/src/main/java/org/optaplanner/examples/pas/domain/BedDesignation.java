@@ -114,39 +114,6 @@ public class BedDesignation extends AbstractPersistable {
         return bed.getRoom().getGenderLimitation();
     }
 
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
-     * requires them (for performance in their original state).
-     * @see #solutionHashCode()
-     */
-    public boolean solutionEquals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (o instanceof BedDesignation) {
-            BedDesignation other = (BedDesignation) o;
-            return new EqualsBuilder()
-                    .append(id, other.id)
-                    .append(admissionPart, other.admissionPart)
-                    .append(bed, other.bed)
-                    .isEquals();
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
-     * requires them (for performance in their original state).
-     * @see #solutionEquals(Object)
-     */
-    public int solutionHashCode() {
-        return new HashCodeBuilder()
-                .append(id)
-                .append(admissionPart)
-                .append(bed)
-                .toHashCode();
-    }
-
     @Override
     public String toString() {
         return admissionPart + " @ " + bed;

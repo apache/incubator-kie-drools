@@ -188,36 +188,4 @@ public class CourseSchedule extends AbstractPersistable implements Solution<Hard
         return courseConflictList;
     }
 
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (id == null || !(o instanceof CourseSchedule)) {
-            return false;
-        } else {
-            CourseSchedule other = (CourseSchedule) o;
-            if (lectureList.size() != other.lectureList.size()) {
-                return false;
-            }
-            for (Iterator<Lecture> it = lectureList.iterator(), otherIt = other.lectureList.iterator(); it.hasNext();) {
-                Lecture lecture = it.next();
-                Lecture otherLecture = otherIt.next();
-                // Notice: we don't use equals()
-                if (!lecture.solutionEquals(otherLecture)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    public int hashCode() {
-        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        for (Lecture lecture : lectureList) {
-            // Notice: we don't use hashCode()
-            hashCodeBuilder.append(lecture.solutionHashCode());
-        }
-        return hashCodeBuilder.toHashCode();
-    }
-
 }

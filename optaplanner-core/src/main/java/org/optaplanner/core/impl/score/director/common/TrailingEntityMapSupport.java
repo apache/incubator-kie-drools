@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
 
 public class TrailingEntityMapSupport {
@@ -20,16 +20,16 @@ public class TrailingEntityMapSupport {
     protected boolean hasChainedVariables;
     // TODO it's unproven that this caching system is actually faster:
     // it happens for every step for every move, but is only needed for every step (with correction for composite moves)
-    protected Map<PlanningVariableDescriptor, Map<Object, Set<Object>>> trailingEntitiesMap;
+    protected Map<GenuineVariableDescriptor, Map<Object, Set<Object>>> trailingEntitiesMap;
 
     public TrailingEntityMapSupport(SolutionDescriptor solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
-        Collection<PlanningVariableDescriptor> chainedVariableDescriptors = solutionDescriptor
+        Collection<GenuineVariableDescriptor> chainedVariableDescriptors = solutionDescriptor
                 .getChainedVariableDescriptors();
         hasChainedVariables = !chainedVariableDescriptors.isEmpty();
-        trailingEntitiesMap = new LinkedHashMap<PlanningVariableDescriptor, Map<Object, Set<Object>>>(
+        trailingEntitiesMap = new LinkedHashMap<GenuineVariableDescriptor, Map<Object, Set<Object>>>(
                 chainedVariableDescriptors.size());
-        for (PlanningVariableDescriptor chainedVariableDescriptor : chainedVariableDescriptors) {
+        for (GenuineVariableDescriptor chainedVariableDescriptor : chainedVariableDescriptors) {
             trailingEntitiesMap.put(chainedVariableDescriptor, null);
         }
     }
@@ -37,7 +37,7 @@ public class TrailingEntityMapSupport {
     public void resetTrailingEntityMap(Solution workingSolution) {
         if (hasChainedVariables) {
             List<Object> entityList = solutionDescriptor.getEntityList(workingSolution);
-            for (Map.Entry<PlanningVariableDescriptor, Map<Object, Set<Object>>> entry
+            for (Map.Entry<GenuineVariableDescriptor, Map<Object, Set<Object>>> entry
                     : trailingEntitiesMap.entrySet()) {
                 entry.setValue(new IdentityHashMap<Object, Set<Object>>(entityList.size()));
             }
@@ -48,9 +48,9 @@ public class TrailingEntityMapSupport {
         }
     }
 
-    public void insertInTrailingEntityMap(PlanningEntityDescriptor entityDescriptor, Object entity) {
+    public void insertInTrailingEntityMap(EntityDescriptor entityDescriptor, Object entity) {
         if (hasChainedVariables) {
-            for (PlanningVariableDescriptor variableDescriptor : entityDescriptor.getVariableDescriptors()) {
+            for (GenuineVariableDescriptor variableDescriptor : entityDescriptor.getVariableDescriptors()) {
                 if (variableDescriptor.isChained()) {
                     insertInTrailingEntityMap(variableDescriptor, entity);
                 }
@@ -58,7 +58,7 @@ public class TrailingEntityMapSupport {
         }
     }
 
-    public void insertInTrailingEntityMap(PlanningVariableDescriptor variableDescriptor, Object entity) {
+    public void insertInTrailingEntityMap(GenuineVariableDescriptor variableDescriptor, Object entity) {
         if (hasChainedVariables && variableDescriptor.isChained()) {
             Map<Object, Set<Object>> valueToTrailingEntityMap = trailingEntitiesMap.get(variableDescriptor);
             if (valueToTrailingEntityMap == null) {
@@ -82,9 +82,9 @@ public class TrailingEntityMapSupport {
         }
     }
 
-    public void retractFromTrailingEntityMap(PlanningEntityDescriptor entityDescriptor, Object entity) {
+    public void retractFromTrailingEntityMap(EntityDescriptor entityDescriptor, Object entity) {
         if (hasChainedVariables) {
-            for (PlanningVariableDescriptor variableDescriptor : entityDescriptor.getVariableDescriptors()) {
+            for (GenuineVariableDescriptor variableDescriptor : entityDescriptor.getVariableDescriptors()) {
                 if (variableDescriptor.isChained()) {
                     retractFromTrailingEntityMap(variableDescriptor, entity);
                 }
@@ -92,7 +92,7 @@ public class TrailingEntityMapSupport {
         }
     }
 
-    public void retractFromTrailingEntityMap(PlanningVariableDescriptor variableDescriptor, Object entity) {
+    public void retractFromTrailingEntityMap(GenuineVariableDescriptor variableDescriptor, Object entity) {
         if (hasChainedVariables && variableDescriptor.isChained()) {
             Map<Object, Set<Object>> valueToTrailingEntityMap = trailingEntitiesMap.get(variableDescriptor);
             if (valueToTrailingEntityMap == null) {
@@ -115,7 +115,7 @@ public class TrailingEntityMapSupport {
         }
     }
 
-    public Object getTrailingEntity(PlanningVariableDescriptor chainedVariableDescriptor, Object planningValue) {
+    public Object getTrailingEntity(GenuineVariableDescriptor chainedVariableDescriptor, Object planningValue) {
         Set<Object> trailingEntities = trailingEntitiesMap.get(chainedVariableDescriptor)
                 .get(planningValue);
         if (trailingEntities == null) {

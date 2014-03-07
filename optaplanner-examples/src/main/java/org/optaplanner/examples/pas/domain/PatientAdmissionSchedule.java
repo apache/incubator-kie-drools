@@ -201,36 +201,4 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         return facts;
     }
 
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (id == null || !(o instanceof PatientAdmissionSchedule)) {
-            return false;
-        } else {
-            PatientAdmissionSchedule other = (PatientAdmissionSchedule) o;
-            if (bedDesignationList.size() != other.bedDesignationList.size()) {
-                return false;
-            }
-            for (Iterator<BedDesignation> it = bedDesignationList.iterator(), otherIt = other.bedDesignationList.iterator(); it.hasNext();) {
-                BedDesignation bedDesignation = it.next();
-                BedDesignation otherBedDesignation = otherIt.next();
-                // Notice: we don't use equals()
-                if (!bedDesignation.solutionEquals(otherBedDesignation)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    public int hashCode() {
-        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        for (BedDesignation bedDesignation : bedDesignationList) {
-            // Notice: we don't use hashCode()
-            hashCodeBuilder.append(bedDesignation.solutionHashCode());
-        }
-        return hashCodeBuilder.toHashCode();
-    }
-
 }

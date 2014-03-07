@@ -248,36 +248,4 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
         return facts;
     }
 
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (id == null || !(o instanceof NurseRoster)) {
-            return false;
-        } else {
-            NurseRoster other = (NurseRoster) o;
-            if (shiftAssignmentList.size() != other.shiftAssignmentList.size()) {
-                return false;
-            }
-            for (Iterator<ShiftAssignment> it = shiftAssignmentList.iterator(), otherIt = other.shiftAssignmentList.iterator(); it.hasNext();) {
-                ShiftAssignment shiftAssignment = it.next();
-                ShiftAssignment otherShiftAssignment = otherIt.next();
-                // Notice: we don't use equals()
-                if (!shiftAssignment.solutionEquals(otherShiftAssignment)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    public int hashCode() {
-        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        for (ShiftAssignment shiftAssignment : shiftAssignmentList) {
-            // Notice: we don't use hashCode()
-            hashCodeBuilder.append(shiftAssignment.solutionHashCode());
-        }
-        return hashCodeBuilder.toHashCode();
-    }
-
 }

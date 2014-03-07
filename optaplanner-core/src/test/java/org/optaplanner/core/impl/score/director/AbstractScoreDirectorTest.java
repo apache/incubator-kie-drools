@@ -21,10 +21,10 @@ import java.util.Arrays;
 import org.junit.Test;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
@@ -51,9 +51,9 @@ public class AbstractScoreDirectorTest {
         solution.setChainedEntityList(Arrays.asList(a1, a2, a3, b1));
 
         SolutionDescriptor solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
-        PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(
+        EntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(
                 TestdataChainedEntity.class);
-        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
+        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
 
         AbstractScoreDirectorFactory scoreDirectorFactory = mock(AbstractScoreDirectorFactory.class);
         when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);

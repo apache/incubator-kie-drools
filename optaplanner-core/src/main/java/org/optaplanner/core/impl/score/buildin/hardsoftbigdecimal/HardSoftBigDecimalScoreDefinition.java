@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal;
 
 import java.math.BigDecimal;
-
+import java.math.RoundingMode;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreHolder;
@@ -93,7 +93,7 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractScoreDefinition<H
         } else {
             BigDecimal hardScoreTotal = endScore.getHardScore().subtract(startScore.getHardScore());
             BigDecimal hardScoreDelta = score.getHardScore().subtract(startScore.getHardScore());
-            double hardTimeGradient = hardScoreDelta.divide(hardScoreTotal).doubleValue();
+            double hardTimeGradient = hardScoreDelta.doubleValue() / hardScoreTotal.doubleValue();
             timeGradient += hardTimeGradient * hardScoreTimeGradientWeight;
         }
         if (score.getSoftScore().compareTo(endScore.getSoftScore()) >= 0) {
@@ -103,7 +103,7 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractScoreDefinition<H
         } else {
             BigDecimal softScoreTotal = endScore.getSoftScore().subtract(startScore.getSoftScore());
             BigDecimal softScoreDelta = score.getSoftScore().subtract(startScore.getSoftScore());
-            double softTimeGradient = softScoreDelta.divide(softScoreTotal).doubleValue();
+            double softTimeGradient = softScoreDelta.doubleValue() / softScoreTotal.doubleValue();
             timeGradient += softTimeGradient * softScoreTimeGradientWeight;
         }
         return timeGradient;

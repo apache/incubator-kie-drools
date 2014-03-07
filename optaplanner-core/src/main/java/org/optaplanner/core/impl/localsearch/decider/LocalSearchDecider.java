@@ -42,8 +42,16 @@ public class LocalSearchDecider {
     protected boolean assertMoveScoreFromScratch = false;
     protected boolean assertExpectedUndoMoveScore = false;
 
+    public Termination getTermination() {
+        return termination;
+    }
+
     public void setTermination(Termination termination) {
         this.termination = termination;
+    }
+
+    public MoveSelector getMoveSelector() {
+        return moveSelector;
     }
 
     public void setMoveSelector(MoveSelector moveSelector) {
@@ -52,6 +60,10 @@ public class LocalSearchDecider {
 
     public void setAcceptor(Acceptor acceptor) {
         this.acceptor = acceptor;
+    }
+
+    public Acceptor getAcceptor() {
+        return acceptor;
     }
 
     public Forager getForager() {

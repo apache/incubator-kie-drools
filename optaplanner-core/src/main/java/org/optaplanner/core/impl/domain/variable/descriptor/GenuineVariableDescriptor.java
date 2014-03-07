@@ -31,13 +31,13 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.CompositeValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.FromEntityPropertyValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.FromSolutionPropertyValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
@@ -47,9 +47,9 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFacto
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.NullValueReinitializeVariableEntityFilter;
 import org.optaplanner.core.impl.solution.Solution;
 
-public class PlanningVariableDescriptor {
+public class GenuineVariableDescriptor {
 
-    private final PlanningEntityDescriptor entityDescriptor;
+    private final EntityDescriptor entityDescriptor;
 
     private final PropertyAccessor variablePropertyAccessor;
     private boolean chained;
@@ -60,9 +60,9 @@ public class PlanningVariableDescriptor {
     private SelectionSorter increasingStrengthSorter;
 
     private List<ShadowVariableDescriptor> shadowVariableDescriptorList = new ArrayList<ShadowVariableDescriptor>(4);
-    private List<PlanningVariableListener> nonMappedByVariableListeners;
+    private List<VariableListener> nonMappedByVariableListeners;
 
-    public PlanningVariableDescriptor(PlanningEntityDescriptor entityDescriptor,
+    public GenuineVariableDescriptor(EntityDescriptor entityDescriptor,
             PropertyDescriptor propertyDescriptor) {
         this.entityDescriptor = entityDescriptor;
         variablePropertyAccessor = new ReflectionPropertyAccessor(propertyDescriptor);
@@ -87,8 +87,8 @@ public class PlanningVariableDescriptor {
     private void processMappedBy(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         String mappedBy = planningVariableAnnotation.mappedBy();
         if (!mappedBy.equals("")) {
-            throw new IllegalStateException("Impossible state: the " + PlanningEntityDescriptor.class
-                    + " would never try to build a " + PlanningVariableDescriptor.class
+            throw new IllegalStateException("Impossible state: the " + EntityDescriptor.class
+                    + " would never try to build a " + GenuineVariableDescriptor.class
                     + " for a shadow variable with mappedBy (" + mappedBy + ").");
         }
     }
@@ -97,7 +97,7 @@ public class PlanningVariableDescriptor {
         nullable = planningVariableAnnotation.nullable();
         if (nullable && variablePropertyAccessor.getPropertyType().isPrimitive()) {
             throw new IllegalArgumentException("The planningEntityClass ("
-                    + entityDescriptor.getPlanningEntityClass()
+                    + entityDescriptor.getEntityClass()
                     + ") has a PlanningVariable annotated property (" + variablePropertyAccessor.getName()
                     + ") with nullable (" + nullable + "), which is not compatible with the primitive propertyType ("
                     + variablePropertyAccessor.getPropertyType() + ").");
@@ -118,17 +118,17 @@ public class PlanningVariableDescriptor {
     private void processChained(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         chained = planningVariableAnnotation.chained();
         if (chained && !variablePropertyAccessor.getPropertyType().isAssignableFrom(
-                entityDescriptor.getPlanningEntityClass())) {
+                entityDescriptor.getEntityClass())) {
             throw new IllegalArgumentException("The planningEntityClass ("
-                    + entityDescriptor.getPlanningEntityClass()
+                    + entityDescriptor.getEntityClass()
                     + ") has a PlanningVariable annotated property (" + variablePropertyAccessor.getName()
                     + ") with chained (" + chained + ") and propertyType (" + variablePropertyAccessor.getPropertyType()
                     + ") which is not a superclass/interface of or the same as the planningEntityClass ("
-                    + entityDescriptor.getPlanningEntityClass() + ").");
+                    + entityDescriptor.getEntityClass() + ").");
         }
         if (chained && nullable) {
             throw new IllegalArgumentException("The planningEntityClass ("
-                    + entityDescriptor.getPlanningEntityClass()
+                    + entityDescriptor.getEntityClass()
                     + ") has a PlanningVariable annotated property (" + variablePropertyAccessor.getName()
                     + ") with chained (" + chained + "), which is not compatible with nullable (" + nullable + ").");
         }
@@ -137,7 +137,7 @@ public class PlanningVariableDescriptor {
     private void processValueRangeRefs(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         String[] valueRangeProviderRefs = planningVariableAnnotation.valueRangeProviderRefs();
         if (ArrayUtils.isEmpty(valueRangeProviderRefs)) {
-            throw new IllegalArgumentException("The planningEntityClass (" + entityDescriptor.getPlanningEntityClass()
+            throw new IllegalArgumentException("The planningEntityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + PlanningVariable.class.getSimpleName()
                     + " annotated property (" + variablePropertyAccessor.getName()
                     + ") that has no valueRangeProviderRefs (" + Arrays.toString(valueRangeProviderRefs) + ").");
@@ -165,7 +165,7 @@ public class PlanningVariableDescriptor {
             return new FromEntityPropertyValueRangeDescriptor(this, addNullInValueRange, readMethod);
         } else {
             throw new IllegalArgumentException("The planningEntityClass ("
-                    + entityDescriptor.getPlanningEntityClass()
+                    + entityDescriptor.getEntityClass()
                     + ") has a " + PlanningVariable.class.getSimpleName()
                     + ") annotated property (" + variablePropertyAccessor.getName()
                     + ") with a valueRangeProviderRef (" + valueRangeProviderRef
@@ -189,7 +189,7 @@ public class PlanningVariableDescriptor {
         }
         if (strengthComparatorClass != null && strengthWeightFactoryClass != null) {
             throw new IllegalStateException("The planningEntityClass ("
-                    + entityDescriptor.getPlanningEntityClass()  + ") property ("
+                    + entityDescriptor.getEntityClass()  + ") property ("
                     + variablePropertyAccessor.getName()
                     + ") cannot have a strengthComparatorClass (" + strengthComparatorClass.getName()
                     + ") and a strengthWeightFactoryClass (" + strengthWeightFactoryClass.getName()
@@ -210,10 +210,10 @@ public class PlanningVariableDescriptor {
     }
 
     private void processVariableListeners(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
-        Class<? extends PlanningVariableListener>[] variableListenerClasses
+        Class<? extends VariableListener>[] variableListenerClasses
                 = planningVariableAnnotation.variableListenerClasses();
-        nonMappedByVariableListeners = new ArrayList<PlanningVariableListener>(variableListenerClasses.length);
-        for (Class<? extends PlanningVariableListener> variableListenerClass : variableListenerClasses) {
+        nonMappedByVariableListeners = new ArrayList<VariableListener>(variableListenerClasses.length);
+        for (Class<? extends VariableListener> variableListenerClass : variableListenerClasses) {
             nonMappedByVariableListeners.add(
                     ConfigUtils.newInstance(this, "variableListenerClass", variableListenerClass));
         }
@@ -231,7 +231,7 @@ public class PlanningVariableDescriptor {
     // Worker methods
     // ************************************************************************
 
-    public PlanningEntityDescriptor getEntityDescriptor() {
+    public EntityDescriptor getEntityDescriptor() {
         return entityDescriptor;
     }
 
@@ -263,15 +263,15 @@ public class PlanningVariableDescriptor {
         return valueRangeDescriptor;
     }
 
-    public List<PlanningVariableListener> buildVariableListenerList() {
-        List<PlanningVariableListener> variableListenerList = new ArrayList<PlanningVariableListener>(
+    public List<VariableListener> buildVariableListenerList() {
+        List<VariableListener> variableListenerList = new ArrayList<VariableListener>(
                 shadowVariableDescriptorList.size() + nonMappedByVariableListeners.size());
         // Always trigger the build-in shadow variables first
         for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptorList) {
-            variableListenerList.add(shadowVariableDescriptor.buildPlanningVariableListener());
+            variableListenerList.add(shadowVariableDescriptor.buildVariableListener());
         }
         // Always trigger the non build-in shadow variables last
-        for (PlanningVariableListener variableListener : nonMappedByVariableListeners) {
+        for (VariableListener variableListener : nonMappedByVariableListeners) {
             variableListenerList.add(variableListener);
         }
         return variableListenerList;
@@ -318,7 +318,7 @@ public class PlanningVariableDescriptor {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" + variablePropertyAccessor.getName()
-                + " of " + entityDescriptor.getPlanningEntityClass().getName() + ")";
+                + " of " + entityDescriptor.getEntityClass().getName() + ")";
     }
 
 }

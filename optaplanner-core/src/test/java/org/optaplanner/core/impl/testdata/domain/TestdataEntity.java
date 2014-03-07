@@ -2,13 +2,13 @@ package org.optaplanner.core.impl.testdata.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 @PlanningEntity
 public class TestdataEntity extends TestdataObject {
 
-    public static PlanningEntityDescriptor buildEntityDescriptor() {
+    public static EntityDescriptor buildEntityDescriptor() {
         SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         return solutionDescriptor.getEntityDescriptor(TestdataEntity.class);
     }

@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
@@ -51,7 +51,7 @@ public class SelectedCountLimitValueSelector extends AbstractValueSelector imple
     // Worker methods
     // ************************************************************************
 
-    public PlanningVariableDescriptor getVariableDescriptor() {
+    public GenuineVariableDescriptor getVariableDescriptor() {
         return childValueSelector.getVariableDescriptor();
     }
 

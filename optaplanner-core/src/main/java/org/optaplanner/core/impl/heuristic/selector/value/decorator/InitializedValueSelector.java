@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
 import java.util.Iterator;
 
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
  */
 public class InitializedValueSelector extends AbstractValueSelector {
 
-    protected final PlanningVariableDescriptor variableDescriptor;
+    protected final GenuineVariableDescriptor variableDescriptor;
     protected final ValueSelector childValueSelector;
     protected final boolean bailOutEnabled;
 
@@ -46,7 +46,7 @@ public class InitializedValueSelector extends AbstractValueSelector {
     // Worker methods
     // ************************************************************************
 
-    public PlanningVariableDescriptor getVariableDescriptor() {
+    public GenuineVariableDescriptor getVariableDescriptor() {
         return childValueSelector.getVariableDescriptor();
     }
 
@@ -107,7 +107,7 @@ public class InitializedValueSelector extends AbstractValueSelector {
 
     private boolean accept(Object value) {
         return value == null
-                || !variableDescriptor.getEntityDescriptor().getPlanningEntityClass().isAssignableFrom(value.getClass())
+                || !variableDescriptor.getEntityDescriptor().getEntityClass().isAssignableFrom(value.getClass())
                 || variableDescriptor.isInitialized(value);
     }
 

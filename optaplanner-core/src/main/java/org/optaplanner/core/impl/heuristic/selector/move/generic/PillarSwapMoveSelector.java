@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractOriginalSwapIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
@@ -30,32 +30,32 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
 
     protected final PillarSelector leftPillarSelector;
     protected final PillarSelector rightPillarSelector;
-    protected final Collection<PlanningVariableDescriptor> variableDescriptors;
+    protected final Collection<GenuineVariableDescriptor> variableDescriptors;
     protected final boolean randomSelection;
 
     public PillarSwapMoveSelector(PillarSelector leftPillarSelector, PillarSelector rightPillarSelector,
-            Collection<PlanningVariableDescriptor> variableDescriptors, boolean randomSelection) {
+            Collection<GenuineVariableDescriptor> variableDescriptors, boolean randomSelection) {
         this.leftPillarSelector = leftPillarSelector;
         this.rightPillarSelector = rightPillarSelector;
         this.variableDescriptors = variableDescriptors;
         this.randomSelection = randomSelection;
-        Class<?> leftEntityClass = leftPillarSelector.getEntityDescriptor().getPlanningEntityClass();
-        if (!leftEntityClass.equals(rightPillarSelector.getEntityDescriptor().getPlanningEntityClass())) {
+        Class<?> leftEntityClass = leftPillarSelector.getEntityDescriptor().getEntityClass();
+        if (!leftEntityClass.equals(rightPillarSelector.getEntityDescriptor().getEntityClass())) {
             throw new IllegalStateException("The selector (" + this
                     + ") has a leftPillarSelector's entityClass (" + leftEntityClass
                     + ") which is not equal to the rightPillarSelector's entityClass ("
-                    + rightPillarSelector.getEntityDescriptor().getPlanningEntityClass() + ").");
+                    + rightPillarSelector.getEntityDescriptor().getEntityClass() + ").");
         }
         if (variableDescriptors.isEmpty()) {
             throw new IllegalStateException("The selector (" + this
                     + ")'s variableDescriptors (" + variableDescriptors + ") is empty.");
         }
-        for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
             if (!leftEntityClass.equals(
-                    variableDescriptor.getEntityDescriptor().getPlanningEntityClass())) {
+                    variableDescriptor.getEntityDescriptor().getEntityClass())) {
                 throw new IllegalStateException("The selector (" + this
                         + ") has a variableDescriptor (" + variableDescriptor
-                        + ") with a entityClass (" + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
+                        + ") with a entityClass (" + variableDescriptor.getEntityDescriptor().getEntityClass()
                         + ") which is not equal to the leftPillarSelector's entityClass (" + leftEntityClass + ").");
             }
             if (variableDescriptor.isChained()) {

@@ -124,36 +124,4 @@ public class Manners2009 extends AbstractPersistable implements Solution<SimpleS
         return facts;
     }
 
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (id == null || !(o instanceof Manners2009)) {
-            return false;
-        } else {
-            Manners2009 other = (Manners2009) o;
-            if (seatDesignationList.size() != other.seatDesignationList.size()) {
-                return false;
-            }
-            for (Iterator<SeatDesignation> it = seatDesignationList.iterator(), otherIt = other.seatDesignationList.iterator(); it.hasNext();) {
-                SeatDesignation seatDesignation = it.next();
-                SeatDesignation otherSeatDesignation = otherIt.next();
-                // Notice: we don't use equals()
-                if (!seatDesignation.solutionEquals(otherSeatDesignation)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    public int hashCode() {
-        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        for (SeatDesignation seatDesignation : seatDesignationList) {
-            // Notice: we don't use hashCode()
-            hashCodeBuilder.append(seatDesignation.solutionHashCode());
-        }
-        return hashCodeBuilder.toHashCode();
-    }
-
 }

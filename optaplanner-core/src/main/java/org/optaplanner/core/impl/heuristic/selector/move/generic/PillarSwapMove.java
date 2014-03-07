@@ -23,7 +23,7 @@ import java.util.List;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
@@ -32,12 +32,12 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  */
 public class PillarSwapMove implements Move {
 
-    private final Collection<PlanningVariableDescriptor> variableDescriptors;
+    private final Collection<GenuineVariableDescriptor> variableDescriptors;
 
     private final List<Object> leftEntityList;
     private final List<Object> rightEntityList;
 
-    public PillarSwapMove(Collection<PlanningVariableDescriptor> variableDescriptors,
+    public PillarSwapMove(Collection<GenuineVariableDescriptor> variableDescriptors,
             List<Object> leftEntityList, List<Object> rightEntityList) {
         this.variableDescriptors = variableDescriptors;
         this.leftEntityList = leftEntityList;
@@ -57,7 +57,7 @@ public class PillarSwapMove implements Move {
     // ************************************************************************
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
-        for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
             Object leftValue = variableDescriptor.getValue(leftEntityList.get(0));
             Object rightValue = variableDescriptor.getValue(rightEntityList.get(0));
             if (!ObjectUtils.equals(leftValue, rightValue)) {
@@ -73,19 +73,19 @@ public class PillarSwapMove implements Move {
     }
 
     public void doMove(ScoreDirector scoreDirector) {
-        for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
             Object oldLeftValue = variableDescriptor.getValue(leftEntityList.get(0));
             Object oldRightValue = variableDescriptor.getValue(rightEntityList.get(0));
             if (!ObjectUtils.equals(oldLeftValue, oldRightValue)) {
-                for (Object leftPlanningEntity : leftEntityList) {
-                    scoreDirector.beforeVariableChanged(leftPlanningEntity, variableDescriptor.getVariableName());
-                    variableDescriptor.setValue(leftPlanningEntity, oldRightValue);
-                    scoreDirector.afterVariableChanged(leftPlanningEntity, variableDescriptor.getVariableName());
+                for (Object leftEntity : leftEntityList) {
+                    scoreDirector.beforeVariableChanged(leftEntity, variableDescriptor.getVariableName());
+                    variableDescriptor.setValue(leftEntity, oldRightValue);
+                    scoreDirector.afterVariableChanged(leftEntity, variableDescriptor.getVariableName());
                 }
-                for (Object rightPlanningEntity : rightEntityList) {
-                    scoreDirector.beforeVariableChanged(rightPlanningEntity, variableDescriptor.getVariableName());
-                    variableDescriptor.setValue(rightPlanningEntity, oldLeftValue);
-                    scoreDirector.afterVariableChanged(rightPlanningEntity, variableDescriptor.getVariableName());
+                for (Object rightEntity : rightEntityList) {
+                    scoreDirector.beforeVariableChanged(rightEntity, variableDescriptor.getVariableName());
+                    variableDescriptor.setValue(rightEntity, oldLeftValue);
+                    scoreDirector.afterVariableChanged(rightEntity, variableDescriptor.getVariableName());
                 }
             }
         }
@@ -101,7 +101,7 @@ public class PillarSwapMove implements Move {
 
     public Collection<? extends Object> getPlanningValues() {
         List<Object> values = new ArrayList<Object>(variableDescriptors.size() * 2);
-        for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
             values.add(variableDescriptor.getValue(leftEntityList.get(0)));
             values.add(variableDescriptor.getValue(rightEntityList.get(0)));
         }

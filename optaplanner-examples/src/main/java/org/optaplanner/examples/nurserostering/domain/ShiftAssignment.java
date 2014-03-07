@@ -104,39 +104,6 @@ public class ShiftAssignment extends AbstractPersistable {
         return shift.getShiftDate().getWeekendSundayIndex();
     }
 
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
-     * requires them (for performance in their original state).
-     * @see #solutionHashCode()
-     */
-    public boolean solutionEquals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (o instanceof ShiftAssignment) {
-            ShiftAssignment other = (ShiftAssignment) o;
-            return new EqualsBuilder()
-                    .append(id, other.id)
-                    .append(shift, other.shift)
-                    .append(employee, other.employee)
-                    .isEquals();
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
-     * requires them (for performance in their original state).
-     * @see #solutionEquals(Object)
-     */
-    public int solutionHashCode() {
-        return new HashCodeBuilder()
-                .append(id)
-                .append(shift)
-                .append(employee)
-                .toHashCode();
-    }
-
     @Override
     public String toString() {
         return shift + "@" + employee;

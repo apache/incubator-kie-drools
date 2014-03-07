@@ -195,36 +195,4 @@ public class Examination extends AbstractPersistable
         return clone;
     }
 
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (id == null || !(o instanceof Examination)) {
-            return false;
-        } else {
-            Examination other = (Examination) o;
-            if (examList.size() != other.examList.size()) {
-                return false;
-            }
-            for (Iterator<Exam> it = examList.iterator(), otherIt = other.examList.iterator(); it.hasNext();) {
-                Exam exam = it.next();
-                Exam otherExam = otherIt.next();
-                // Notice: we don't use equals()
-                if (!exam.solutionEquals(otherExam)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    public int hashCode() {
-        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        for (Exam exam : examList) {
-            // Notice: we don't use hashCode()
-            hashCodeBuilder.append(exam.solutionHashCode());
-        }
-        return hashCodeBuilder.toHashCode();
-    }
-
 }
