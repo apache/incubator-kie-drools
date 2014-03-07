@@ -3208,6 +3208,8 @@ public class PackageBuilder
             return typeResolver.getFullTypeName(type);
         } catch (ClassNotFoundException e) {
             return type;
+        } catch (NoClassDefFoundError cnf) {
+            return type;
         }
     }
 
