@@ -357,6 +357,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
         public SwitchLevelsAction(boolean solverLevelFirst) {
             super("Switch levels", new ImageIcon(BenchmarkAggregatorFrame.class.getResource("switchTree.png")));
             this.solverLevelFirst = solverLevelFirst;
+            setEnabled(!plannerBenchmarkResultList.isEmpty());
         }
 
         @Override
