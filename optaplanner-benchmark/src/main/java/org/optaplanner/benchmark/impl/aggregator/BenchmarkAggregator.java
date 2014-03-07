@@ -95,18 +95,17 @@ public class BenchmarkAggregator {
             }
         }
 
-        PlannerBenchmarkResult plannerBenchmarkResult
-                = PlannerBenchmarkResult.createMergedResult(singleBenchmarkResultList);
-            plannerBenchmarkResult.setStartingTimestamp(startingTimestamp);
-            plannerBenchmarkResult.initBenchmarkReportDirectory(benchmarkDirectory);
+        PlannerBenchmarkResult plannerBenchmarkResult = PlannerBenchmarkResult.createMergedResult(singleBenchmarkResultList);
+        plannerBenchmarkResult.setStartingTimestamp(startingTimestamp);
+        plannerBenchmarkResult.initBenchmarkReportDirectory(benchmarkDirectory);
 
         BenchmarkReport benchmarkReport = benchmarkReportConfig.buildBenchmarkReport(plannerBenchmarkResult);
-            plannerBenchmarkResult.accumulateResults(benchmarkReport);
-            benchmarkReport.writeReport();
+        plannerBenchmarkResult.accumulateResults(benchmarkReport);
+        benchmarkReport.writeReport();
 
-            logger.info("Aggregation ended: statistic html overview ({}).",
-                    benchmarkReport.getHtmlOverviewFile().getAbsolutePath());
-            return benchmarkReport.getHtmlOverviewFile().getAbsoluteFile();
-        }
-
+        logger.info("Aggregation ended: statistic html overview ({}).",
+                benchmarkReport.getHtmlOverviewFile().getAbsolutePath());
+        return benchmarkReport.getHtmlOverviewFile().getAbsoluteFile();
     }
+
+}

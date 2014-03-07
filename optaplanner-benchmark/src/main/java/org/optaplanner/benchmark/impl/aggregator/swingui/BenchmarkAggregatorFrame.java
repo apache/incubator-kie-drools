@@ -494,8 +494,8 @@ public class BenchmarkAggregatorFrame extends JFrame {
                 singleBenchmarkResult.getEntityCount(), toEmptyStringIfNull(singleBenchmarkResult.getUsedMemoryAfterInputSolution()),
                 singleBenchmarkResult.getTimeMillisSpent());
         MixedCheckBox singleBenchmarkCheckBox = new MixedCheckBox(singleCheckBoxName, singleBenchmarkDetail, singleBenchmarkResult);
-            return singleBenchmarkCheckBox;
-        }
+        return singleBenchmarkCheckBox;
+    }
 
     private String toEmptyStringIfNull(Object obj) {
         return obj == null ? "" : obj.toString();
