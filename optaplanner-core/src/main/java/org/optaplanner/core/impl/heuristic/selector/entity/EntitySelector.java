@@ -37,7 +37,8 @@ public interface EntitySelector extends ListIterableSelector<Object> {
     /**
      * If {@link #isNeverEnding()} is true, then {@link #iterator()} will never end.
      * This returns an ending {@link Iterator}, that tries to match {@link #iterator()} as much as possible,
-     * but might not respect the configuration of this {@link EntitySelector} entirely.
+     * but return each distinct element only once
+     * and therefore it might not respect the configuration of this {@link EntitySelector} entirely.
      * @return never null
      * @see #iterator()
      */
