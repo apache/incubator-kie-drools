@@ -16,7 +16,7 @@
 
 package org.drools.compiler.integrationtests;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.drools.compiler.Address;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;

@@ -17,7 +17,7 @@
 package org.drools.pmml.pmml_4_1.predictive.models;
 
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.drools.pmml.pmml_4_1.DroolsAbstractPMMLTest;
 import org.junit.After;
 import org.junit.Test;

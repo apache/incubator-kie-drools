@@ -17,7 +17,7 @@
 package org.drools.pmml.pmml_4_1.predictive.models;
 
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.drools.pmml.pmml_4_1.DroolsAbstractPMMLTest;
 import org.drools.pmml.pmml_4_1.PMML4Helper;
 import org.junit.After;
@@ -80,7 +80,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         //System.err.println(reportWMObjects(getKSession()));
 
 
-        Assert.assertEquals( 828.0, Math.floor( queryDoubleField( "OutAmOfClaims", "NeuralInsurance" ) ) );
+        Assert.assertEquals( 828.0, Math.floor( queryDoubleField( "OutAmOfClaims", "NeuralInsurance" ) ), 0.0);
 
     }
 
@@ -269,11 +269,11 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
 
 
         Assert.assertEquals(1.542,
-                truncN(getDoubleFieldValue(t4), 3));
+                truncN(getDoubleFieldValue(t4), 3), 0.0);
         Assert.assertEquals(0.0,
-                truncN(getDoubleFieldValue(t5), 3));
+                truncN(getDoubleFieldValue(t5), 3), 0.0);
         Assert.assertEquals(3.0,
-                truncN(getDoubleFieldValue(t6), 3));
+                truncN(getDoubleFieldValue(t6), 3), 0.0);
 
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName ,"OutSpecies"),
                                                 true, false,"Test_MLP","versicolor");
@@ -306,7 +306,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
 
         //System.err.println(reportWMObjects(getKSession()));
 
-        Assert.assertEquals(24.0, queryIntegerField("OutSepLen", "Neuiris"));
+        Assert.assertEquals(24.0, queryIntegerField("OutSepLen", "Neuiris"), 0.0);
 
     }
 

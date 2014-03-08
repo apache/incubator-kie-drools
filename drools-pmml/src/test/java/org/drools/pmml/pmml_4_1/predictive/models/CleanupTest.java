@@ -17,7 +17,7 @@
 package org.drools.pmml.pmml_4_1.predictive.models;
 
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.drools.pmml.pmml_4_1.DroolsAbstractPMMLTest;
 import org.drools.pmml.pmml_4_1.ModelMarker;
 import org.junit.Test;
@@ -103,7 +103,7 @@ public class CleanupTest extends DroolsAbstractPMMLTest {
         getKSession().getEntryPoint( "in_SepalWid" ).insert(30);
         getKSession().fireAllRules();
 
-        Assert.assertEquals( 24.0, queryIntegerField( "OutSepLen", "Neuiris" ) );
+        Assert.assertEquals( 24.0, queryIntegerField( "OutSepLen", "Neuiris" ), 0.0);
 
         assertEquals( 38, getKSession().getObjects().size() );
 
