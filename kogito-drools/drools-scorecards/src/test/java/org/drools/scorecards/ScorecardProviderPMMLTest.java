@@ -25,7 +25,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.io.InputStream;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 import static org.kie.internal.builder.ScoreCardConfiguration.SCORECARD_INPUT_TYPE;
 
 

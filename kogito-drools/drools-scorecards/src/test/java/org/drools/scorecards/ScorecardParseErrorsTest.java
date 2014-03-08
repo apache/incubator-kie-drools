@@ -1,10 +1,10 @@
 package org.drools.scorecards;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.drools.scorecards.ScorecardCompiler.DrlType.INTERNAL_DECLARED_TYPES;
 
 public class ScorecardParseErrorsTest {

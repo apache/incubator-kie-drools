@@ -24,7 +24,7 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 
 public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {

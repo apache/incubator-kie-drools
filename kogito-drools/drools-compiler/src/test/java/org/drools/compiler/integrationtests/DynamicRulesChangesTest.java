@@ -1,6 +1,6 @@
 package org.drools.compiler.integrationtests;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.io.StringReader;
 import java.util.ArrayList;

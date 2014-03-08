@@ -9,7 +9,7 @@ import org.kie.api.builder.Results;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 /**
  * Tests for MessageImpl

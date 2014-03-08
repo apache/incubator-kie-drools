@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 import static junit.framework.TestCase.assertNotSame;
 import static junit.framework.TestCase.assertSame;
 import static org.junit.Assert.assertEquals;

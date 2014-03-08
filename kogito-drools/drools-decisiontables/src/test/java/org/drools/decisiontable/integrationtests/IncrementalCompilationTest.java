@@ -10,7 +10,7 @@ import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 public class IncrementalCompilationTest {
 
