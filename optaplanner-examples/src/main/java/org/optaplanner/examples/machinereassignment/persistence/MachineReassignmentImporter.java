@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.ArrayTable;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
@@ -144,7 +145,11 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter {
             long machineId = 0L;
             List<MrMachineCapacity> machineCapacityList = new ArrayList<MrMachineCapacity>(machineListSize * resourceListSize);
             long machineCapacityId = 0L;
-            // 2 phases because service dependencies are not in low to high order
+            ArrayList<ArrayList<Integer>> moveCostsCache = new ArrayList<ArrayList<Integer>>(machineListSize);
+
+            // 3 phases, because:
+            // 1-2. service dependencies are not in low to high order, and
+            // 3. move costs can't be added in phase 2, because not all machines have neighborhood and location non-null
             for (int i = 0; i < machineListSize; i++) {
                 MrMachine machine = new MrMachine();
                 machine.setId(machineId);
@@ -188,14 +193,25 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter {
                     machineCapacityId++;
                 }
                 machine.setMachineCapacityList(machineCapacityListOfMachine);
-                Map<MrMachine, Integer> machineMoveCostMap = new HashMap<MrMachine, Integer>(machineListSize);
+                ArrayList<Integer> machineMoveCosts = new ArrayList<Integer>(machineListSize);
+                for (int j = 0; j < machineListSize; j++) {
+                    int moveCost = Integer.parseInt(lineTokens[moveCostOffset + j]);
+                    machineMoveCosts.add(j, moveCost);
+                }
+                moveCostsCache.add(i, machineMoveCosts);
+            }
+
+            // Phase 3 - add the move costs to each machine
+            for(int i = 0; i < machineListSize; i++) {
+                ArrayTable<MrNeighborhood, MrLocation, Integer> machineMoveCostMap = ArrayTable.create(neighborhoodList, locationList);
                 for (int j = 0; j < machineListSize; j++) {
                     MrMachine toMachine = machineList.get(j);
-                    int moveCost = Integer.parseInt(lineTokens[moveCostOffset + j]);
-                    machineMoveCostMap.put(toMachine, moveCost);
+                    int moveCost = moveCostsCache.get(i).get(j);
+                    machineMoveCostMap.put(toMachine.getNeighborhood(), toMachine.getLocation(), moveCost);
                 }
-                machine.setMachineMoveCostMap(machineMoveCostMap);
+                machineList.get(i).setMachineMoveCostTable(machineMoveCostMap);
             }
+
             machineReassignment.setNeighborhoodList(neighborhoodList);
             machineReassignment.setLocationList(locationList);
             machineReassignment.setMachineList(machineList);

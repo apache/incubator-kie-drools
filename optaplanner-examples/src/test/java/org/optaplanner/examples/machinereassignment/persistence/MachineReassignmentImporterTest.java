@@ -19,12 +19,10 @@ package org.optaplanner.examples.machinereassignment.persistence;
 import java.io.File;
 import java.util.Collection;
 
-import org.junit.Ignore;
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionImporterTest;
 
-@Ignore("https://issues.jboss.org/browse/PLANNER-200")
 public class MachineReassignmentImporterTest extends SolutionImporterTest {
 
     @Override
