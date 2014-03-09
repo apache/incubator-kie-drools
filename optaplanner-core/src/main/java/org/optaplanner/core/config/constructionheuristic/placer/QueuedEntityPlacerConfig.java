@@ -23,7 +23,6 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.apache.commons.collections.CollectionUtils;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
@@ -98,7 +97,7 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
                 SelectionCacheType.PHASE, defaultSelectionOrder);
 
         List<MoveSelectorConfig> moveSelectorConfigList_;
-        if (CollectionUtils.isEmpty(moveSelectorConfigList)) {
+        if (moveSelectorConfigList == null || moveSelectorConfigList.isEmpty()) {
             EntityDescriptor entityDescriptor = entitySelector.getEntityDescriptor();
             Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getVariableDescriptors();
             List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<MoveSelectorConfig>(

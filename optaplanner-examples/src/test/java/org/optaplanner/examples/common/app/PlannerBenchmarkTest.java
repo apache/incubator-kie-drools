@@ -20,7 +20,6 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
@@ -69,7 +68,7 @@ public abstract class PlannerBenchmarkTest extends LoggingTest {
         plannerBenchmarkConfig.setWarmUpSecondsSpentLimit(WARM_UP_SECONDS_SPENT);
         plannerBenchmarkConfig.setWarmUpMillisecondsSpentLimit(0L);
         List<SolverBenchmarkConfig> solverBenchmarkConfigList = plannerBenchmarkConfig.getSolverBenchmarkConfigList();
-        if (CollectionUtils.isEmpty(solverBenchmarkConfigList)) {
+        if (solverBenchmarkConfigList == null || solverBenchmarkConfigList.isEmpty()) {
             throw new IllegalStateException("The benchmarkConfigResource (" + benchmarkConfigResource
                     + ") should have at least 1 solverBenchmarkConfig.");
         }

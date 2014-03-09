@@ -22,7 +22,6 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
-import org.apache.commons.collections.CollectionUtils;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -234,7 +233,7 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
             SelectionCacheType minimumCacheType, boolean randomSelection);
 
     private boolean hasFiltering() {
-        return !CollectionUtils.isEmpty(filterClassList);
+        return !(filterClassList == null || filterClassList.isEmpty());
     }
 
     private MoveSelector applyFiltering(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,

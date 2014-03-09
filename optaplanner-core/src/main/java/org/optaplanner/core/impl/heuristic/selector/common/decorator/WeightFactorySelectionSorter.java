@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.commons.collections.comparators.ComparableComparator;
+import com.google.common.collect.Ordering;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
 
@@ -20,7 +20,7 @@ public class WeightFactorySelectionSorter implements SelectionSorter<Object> {
         this.selectionSorterWeightFactory = selectionSorterWeightFactory;
         switch (selectionSorterOrder) {
             case ASCENDING:
-                this.appliedWeightComparator = new ComparableComparator();
+                this.appliedWeightComparator = Ordering.arbitrary();
                 break;
             case DESCENDING:
                 this.appliedWeightComparator = Collections.reverseOrder();

@@ -21,7 +21,6 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.apache.commons.collections.CollectionUtils;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.phase.SolverPhaseConfig;
@@ -187,7 +186,7 @@ public class SolverConfig {
         solver.setTermination(termination);
         BestSolutionRecaller bestSolutionRecaller = buildBestSolutionRecaller(environmentMode);
         solver.setBestSolutionRecaller(bestSolutionRecaller);
-        if (CollectionUtils.isEmpty(solverPhaseConfigList)) {
+        if (solverPhaseConfigList == null || solverPhaseConfigList.isEmpty()) {
             throw new IllegalArgumentException(
                     "Configure at least 1 phase (for example <localSearch>) in the solver configuration.");
         }
@@ -218,7 +217,7 @@ public class SolverConfig {
         DescriptorPolicy descriptorPolicy = new DescriptorPolicy();
         SolutionDescriptor solutionDescriptor = new SolutionDescriptor(solutionClass);
         solutionDescriptor.processAnnotations(descriptorPolicy);
-        if (CollectionUtils.isEmpty(planningEntityClassList)) {
+        if (planningEntityClassList == null || planningEntityClassList.isEmpty()) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <planningEntityClass> in the solver configuration.");
         }

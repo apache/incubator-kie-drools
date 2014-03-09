@@ -3,7 +3,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.decorator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
+import com.google.common.collect.Iterators;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
@@ -57,7 +57,7 @@ public abstract class AbstractCachingMoveSelector extends AbstractMoveSelector i
                     + ") which is higher than Integer.MAX_VALUE.");
         }
         cachedMoveList = new ArrayList<Move>((int) childSize);
-        CollectionUtils.addAll(cachedMoveList, childMoveSelector.iterator());
+        Iterators.addAll(cachedMoveList, childMoveSelector.iterator());
         logger.trace("    Created cachedMoveList with size ({}) in moveSelector({}).",
                 cachedMoveList.size(), this);
     }

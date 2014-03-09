@@ -3,7 +3,7 @@ package org.optaplanner.core.impl.constructionheuristic.placer;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.collections.IteratorUtils;
+import com.google.common.collect.Iterators;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
@@ -34,7 +34,7 @@ public class QueuedEntityPlacer extends AbstractEntityPlacer implements EntityPl
 
         private QueuedEntityPlacingIterator(Iterator<Object> entityIterator) {
             this.entityIterator = entityIterator;
-            moveSelectorIterator = IteratorUtils.emptyIterator();
+            moveSelectorIterator = Iterators.emptyIterator();
         }
 
         protected Placement createUpcomingSelection() {

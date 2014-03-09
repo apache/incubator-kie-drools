@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.composite;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,7 +23,7 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import org.apache.commons.collections.iterators.IteratorChain;
+import com.google.common.collect.Iterators;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
@@ -117,11 +116,11 @@ public class UnionMoveSelector extends CompositeMoveSelector {
 
     public Iterator<Move> iterator() {
         if (!randomSelection) {
-            List<Iterator<Move>> iteratorList = new ArrayList<Iterator<Move>>(childMoveSelectorList.size());
+            Iterator<Move> iterator = Iterators.emptyIterator();
             for (MoveSelector moveSelector : childMoveSelectorList) {
-                iteratorList.add(moveSelector.iterator());
+                iterator = Iterators.concat(iterator, moveSelector.iterator());
             }
-            return new IteratorChain(iteratorList);
+            return iterator;
         } else {
             return new RandomUnionMoveIterator();
         }
