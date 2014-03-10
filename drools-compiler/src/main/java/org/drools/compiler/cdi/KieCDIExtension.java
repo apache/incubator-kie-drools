@@ -1,6 +1,7 @@
 package org.drools.compiler.cdi;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,6 +16,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -89,43 +91,46 @@ public class KieCDIExtension
                 boolean kBaseExists = false;
                 boolean kSessionExists = false;
                 boolean kContainerExists = false;
-                
-                KBase kBase = null;
-                KSession kSession = null;
-                if ( ip.getType() instanceof Class && ( KieSession.class.isAssignableFrom( (Class ) ip.getType() ) || StatelessKieSession.class.isAssignableFrom( (Class ) ip.getType() ) )  ) {
-                    kSession = ip.getAnnotated().getAnnotation( KSession.class );
-                    kSessionExists = true;
-                } else if ( ip.getType() instanceof Class && KieBase.class.isAssignableFrom( (Class ) ip.getType() ) ) {
-                    kBaseExists = true;
-                    kBase = ip.getAnnotated().getAnnotation( KBase.class );
-                } else if ( ip.getType() instanceof Class && KieContainer.class.isAssignableFrom( (Class ) ip.getType() ) ) {
-                    kContainerExists = true;
-                } 
-                
-                if ( !kSessionExists && !kBaseExists && !kContainerExists) {
-                    continue;
-                }
+                Class clazz = getClassType(ip);
 
-                                
+                if (clazz != null) {
+                    KBase kBase = null;
+                    KSession kSession = null;
+                    if ( ( KieSession.class.isAssignableFrom(  clazz ) || StatelessKieSession.class.isAssignableFrom( clazz ) )  ) {
+                        kSession = ip.getAnnotated().getAnnotation( KSession.class );
+                        kSessionExists = true;
+                    } else if (  KieBase.class.isAssignableFrom( clazz ) ) {
+                        kBaseExists = true;
+                        kBase = ip.getAnnotated().getAnnotation( KBase.class );
+                    } else if (  KieContainer.class.isAssignableFrom( clazz ) ) {
+                        kContainerExists = true;
+                    }
 
-                KReleaseId kReleaseId = ip.getAnnotated().getAnnotation( KReleaseId.class );
-                ReleaseId releaseId = null;
-                if ( kReleaseId != null ) {
-                    releaseId = ks.newReleaseId(kReleaseId.groupId(),
-                                                kReleaseId.artifactId(),
-                                                kReleaseId.version());
-                    gavs.put(releaseId,
-                              null );
-                }
+                    if ( !kSessionExists && !kBaseExists && !kContainerExists) {
+                        continue;
+                    }
 
-                Class< ? extends Annotation> scope = ApplicationScoped.class;
 
-                if ( kBaseExists ) {
-                    addKBaseInjectionPoint(ip, kBase,scope, releaseId, kReleaseId);
-                } else if ( kSessionExists ) {
-                    addKSessionInjectionPoint(ip, kSession, scope, releaseId, kReleaseId);
-                } else if ( kContainerExists ) {
-                    addKContainerInjectionPoint(ip, null, scope, releaseId, kReleaseId);
+
+                    KReleaseId kReleaseId = ip.getAnnotated().getAnnotation( KReleaseId.class );
+                    ReleaseId releaseId = null;
+                    if ( kReleaseId != null ) {
+                        releaseId = ks.newReleaseId(kReleaseId.groupId(),
+                                                    kReleaseId.artifactId(),
+                                                    kReleaseId.version());
+                        gavs.put(releaseId,
+                                  null );
+                    }
+
+                    Class< ? extends Annotation> scope = ApplicationScoped.class;
+
+                    if ( kBaseExists ) {
+                        addKBaseInjectionPoint(ip, kBase,scope, releaseId, kReleaseId);
+                    } else if ( kSessionExists ) {
+                        addKSessionInjectionPoint(ip, kSession, scope, releaseId, kReleaseId);
+                    } else if ( kContainerExists ) {
+                        addKContainerInjectionPoint(ip, null, scope, releaseId, kReleaseId);
+                    }
                 }
             }
         }
@@ -181,7 +186,7 @@ public class KieCDIExtension
         String namedStr = ( kSession == null ) ? null : kSession.name();
         
         KieCDIEntry newEntry = new KieCDIEntry( (kSession == null) ? null : kSession.value(),
-                                                (Class ) ip.getType(), 
+                                                getClassType(ip),
                                                 scope,
                                                 releaseId,
                                                 kReleaseId,
@@ -404,7 +409,7 @@ public class KieCDIExtension
         if ( StringUtils.isEmpty( kSessionName  )) {
             kSessionModel = ( entry.getType() == KieSession.class ) ? kProject.getDefaultKieSession() : kProject.getDefaultStatelessKieSession();
         } else {
-            kSessionModel =  kProject.getKieSessionModel( kSessionName );   
+            kSessionModel =  kProject.getKieSessionModel(kSessionName);
         }         
         if ( kSessionModel == null ) {
             log.error( "Annotation @KSession({}) found, but no KieSessioneModel exist.\nEither the required kproject.xml does not exist, was corrupted, or mising the KieBase entry",
@@ -1006,5 +1011,25 @@ public class KieCDIExtension
         }
 
 
+    }
+
+    private Class getClassType(InjectionPoint ip) {
+        if (ip.getType() instanceof Class) {
+
+            return (Class )ip.getType();
+        } else if (ip.getType() instanceof ParameterizedType) {
+            Type rawType = ((ParameterizedType) ip.getType()).getRawType();
+            Type[] types = ((ParameterizedType) ip.getType()).getActualTypeArguments();
+            if (rawType instanceof Class) {
+                if (rawType instanceof Class && ((Class) rawType).isAssignableFrom(Instance.class) && types.length == 1) {
+
+                    if (types[0] instanceof Class) {
+                        return  (Class )types[0];
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 }
