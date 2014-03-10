@@ -50,7 +50,10 @@ public class ConfFileUtils {
         
         // check Class folder
         if ( cls != null ) {
-            url = cls.getResource( confName );
+            URL urlResource = cls.getResource( confName );
+            if (urlResource != null) {
+                url = urlResource;
+            }
         }
 
         // check META-INF directories for all known ClassLoaders
