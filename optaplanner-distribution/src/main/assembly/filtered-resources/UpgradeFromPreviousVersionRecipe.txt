@@ -3725,16 +3725,16 @@ then you probably want to switch to a ValueRange, which uses less memory and off
 Before in *.java:
     @ValueRangeProvider(id = "delayRange")
     public List<Integer> getDelayRange() {
-        List<Integer> = new ArrayList<Integer>(DELAY_RANGE_LIMIT);
-        for (int i = 0; i < 500; i++) {
+        List<Integer> = new ArrayList<Integer>(5000);
+        for (int i = 0; i < 5000; i++) {
             delayRange.add(i);
         }
         return delayRange;
     }
 After in *.java:
     @ValueRangeProvider(id = "delayRange")
-    public ValueRange getDelayRange() {
-        return ValueRangeFactory.createIntValueRange(0, 500);
+    public CountableValueRange<Integer> getDelayRange() {
+        return ValueRangeFactory.createIntValueRange(0, 5000);
     }
 
 [MAJOR] The annotation @ValueRangeProvider has been moved into another package
