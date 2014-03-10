@@ -73,5 +73,10 @@ public class KieScannerMBeanImpl implements KieScannerMBean {
         this.scanner.stop();
     }
     
+    @Override
+    public void shutdown() {
+        this.scanner.shutdown();
+    }
+    
 
 }
