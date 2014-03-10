@@ -4,6 +4,7 @@
 
     <kbase name="cdiexample">
         <ksession name="ksession1"/>
+        <ksession name="ksession-optional"/>
     </kbase>
 
 </kmodule>
