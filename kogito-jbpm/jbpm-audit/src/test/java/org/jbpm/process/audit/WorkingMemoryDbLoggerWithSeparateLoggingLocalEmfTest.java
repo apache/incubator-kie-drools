@@ -30,6 +30,7 @@ import org.jbpm.process.audit.strategy.PersistenceStrategyType;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
@@ -43,6 +44,7 @@ import org.kie.internal.persistence.jpa.JPAKnowledgeService;
  * <li>WorkingMemoryDbLogger</li>
  * </ul>
  */
+@Ignore
 public class WorkingMemoryDbLoggerWithSeparateLoggingLocalEmfTest extends AbstractWorkingMemoryDbLoggerTest {
 
     private KieSession ksession = null;

@@ -261,13 +261,14 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
 	        if( newTx ) { 
 	            return ut;
 	        }
-        } else { 
-            EntityTransaction tx = em.getTransaction();
-            if( ! tx.isActive() ) { 
-               tx.begin();
-               return tx;
-            }
-        }
+        } 
+//        else { 
+//            EntityTransaction tx = em.getTransaction();
+//            if( ! tx.isActive() ) { 
+//               tx.begin();
+//               return tx;
+//            }
+//        }
         return null;
     }
 
