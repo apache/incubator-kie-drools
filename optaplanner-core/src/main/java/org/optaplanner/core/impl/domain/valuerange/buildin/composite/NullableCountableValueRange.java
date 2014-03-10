@@ -65,7 +65,6 @@ public class NullableCountableValueRange<T> extends AbstractCountableValueRange<
 
     @Override
     public Iterator<T> createOriginalIterator() {
-
         return Iterators.concat(childValueRange.createOriginalIterator(),
                 new NullValueRangeIterator());
     }

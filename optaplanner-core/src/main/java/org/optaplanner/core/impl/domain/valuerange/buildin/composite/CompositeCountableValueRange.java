@@ -81,7 +81,7 @@ public class CompositeCountableValueRange<T> extends AbstractCountableValueRange
             iteratorList.add(childValueRange.createOriginalIterator());
         }
         Iterator<T> originalIterator = Iterators.emptyIterator();
-        for(Iterator<T> iterator : iteratorList) {
+        for (Iterator<T> iterator : iteratorList) {
             originalIterator = Iterators.concat(originalIterator, iterator);
         }
         return originalIterator;
