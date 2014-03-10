@@ -34,6 +34,7 @@ import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.PlannerBenchmarkRunner;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
+import org.optaplanner.core.config.util.ConfigUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -191,7 +192,7 @@ public class PlannerBenchmarkConfig {
                     + ") is invalid because it does not follow the nameRegex (" + nameRegex + ")" +
                     " which might cause an illegal filename.");
         }
-        if (solverBenchmarkConfigList == null || solverBenchmarkConfigList.isEmpty()) {
+        if (ConfigUtils.isEmptyCollection(solverBenchmarkConfigList)) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <solverBenchmark> in the <plannerBenchmark> configuration.");
         }

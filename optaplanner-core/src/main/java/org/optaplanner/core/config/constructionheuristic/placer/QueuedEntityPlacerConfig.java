@@ -97,7 +97,7 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
                 SelectionCacheType.PHASE, defaultSelectionOrder);
 
         List<MoveSelectorConfig> moveSelectorConfigList_;
-        if (moveSelectorConfigList == null || moveSelectorConfigList.isEmpty()) {
+        if (ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
             EntityDescriptor entityDescriptor = entitySelector.getEntityDescriptor();
             Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getVariableDescriptors();
             List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<MoveSelectorConfig>(

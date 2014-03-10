@@ -65,7 +65,7 @@ public class CustomSolverPhaseConfig extends SolverPhaseConfig {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         DefaultCustomSolverPhase customSolverPhase = new DefaultCustomSolverPhase();
         configureSolverPhase(customSolverPhase, phaseIndex, phaseConfigPolicy, solverTermination);
-        if (customSolverPhaseCommandClassList == null || customSolverPhaseCommandClassList.isEmpty()) {
+        if (ConfigUtils.isEmptyCollection(customSolverPhaseCommandClassList)) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <customSolverPhaseCommandClass> in the <customSolverPhase> configuration.");
         }

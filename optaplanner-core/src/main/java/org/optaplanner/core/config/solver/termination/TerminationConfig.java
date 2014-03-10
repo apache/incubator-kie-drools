@@ -210,7 +210,7 @@ public class TerminationConfig implements Cloneable {
         if (unimprovedStepCountLimit != null) {
             terminationList.add(new UnimprovedStepCountTermination(unimprovedStepCountLimit));
         }
-        if (!(terminationConfigList == null || terminationConfigList.isEmpty())) {
+        if (!ConfigUtils.isEmptyCollection(terminationConfigList)) {
             for (TerminationConfig terminationConfig : terminationConfigList) {
                 Termination termination = terminationConfig.buildTermination(configPolicy);
                 if (termination != null) {

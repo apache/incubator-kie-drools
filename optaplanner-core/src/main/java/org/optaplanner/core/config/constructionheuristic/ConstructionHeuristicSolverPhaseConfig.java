@@ -93,7 +93,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         configureSolverPhase(phase, phaseIndex, phaseConfigPolicy, solverTermination);
         phase.setDecider(buildDecider(phaseConfigPolicy, phase.getTermination()));
         EntityPlacerConfig entityPlacerConfig;
-        if (entityPlacerConfigList == null || entityPlacerConfigList.isEmpty()) {
+        if (ConfigUtils.isEmptyCollection(entityPlacerConfigList)) {
             entityPlacerConfig = new QueuedEntityPlacerConfig();
         } else if (entityPlacerConfigList.size() == 1) {
             entityPlacerConfig = entityPlacerConfigList.get(0);

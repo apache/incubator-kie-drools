@@ -186,7 +186,7 @@ public class SolverConfig {
         solver.setTermination(termination);
         BestSolutionRecaller bestSolutionRecaller = buildBestSolutionRecaller(environmentMode);
         solver.setBestSolutionRecaller(bestSolutionRecaller);
-        if (solverPhaseConfigList == null || solverPhaseConfigList.isEmpty()) {
+        if (ConfigUtils.isEmptyCollection(solverPhaseConfigList)) {
             throw new IllegalArgumentException(
                     "Configure at least 1 phase (for example <localSearch>) in the solver configuration.");
         }
@@ -217,7 +217,7 @@ public class SolverConfig {
         DescriptorPolicy descriptorPolicy = new DescriptorPolicy();
         SolutionDescriptor solutionDescriptor = new SolutionDescriptor(solutionClass);
         solutionDescriptor.processAnnotations(descriptorPolicy);
-        if (planningEntityClassList == null || planningEntityClassList.isEmpty()) {
+        if (ConfigUtils.isEmptyCollection(planningEntityClassList)) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <planningEntityClass> in the solver configuration.");
         }

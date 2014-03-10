@@ -283,7 +283,7 @@ public class EntitySelectorConfig extends SelectorConfig {
     }
 
     private boolean hasFiltering(EntityDescriptor entityDescriptor) {
-        return !(filterClassList == null || filterClassList.isEmpty())
+        return !ConfigUtils.isEmptyCollection(filterClassList)
                 || entityDescriptor.hasMovableEntitySelectionFilter();
     }
 

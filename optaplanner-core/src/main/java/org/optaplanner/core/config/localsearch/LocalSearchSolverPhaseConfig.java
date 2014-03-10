@@ -133,7 +133,7 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
         MoveSelector moveSelector;
         SelectionCacheType defaultCacheType = SelectionCacheType.JUST_IN_TIME;
         SelectionOrder defaultSelectionOrder = SelectionOrder.RANDOM;
-        if (moveSelectorConfigList == null || moveSelectorConfigList.isEmpty()) {
+        if (ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
             // Default to changeMoveSelector and swapMoveSelector
             UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig();
             unionMoveSelectorConfig.setMoveSelectorConfigList(Arrays.asList(

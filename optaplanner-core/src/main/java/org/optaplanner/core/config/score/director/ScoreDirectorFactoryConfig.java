@@ -284,7 +284,7 @@ public class ScoreDirectorFactoryConfig {
 
     private KieBase buildKieBase() {
         if (kieBase != null) {
-            if (!(scoreDrlList == null || scoreDrlList.isEmpty())) {
+            if (!ConfigUtils.isEmptyCollection(scoreDrlList)) {
                 throw new IllegalArgumentException("If kieBase is not null, the scoreDrlList (" + scoreDrlList
                         + ") must be empty.");
             }
@@ -294,7 +294,7 @@ public class ScoreDirectorFactoryConfig {
             }
             return kieBase;
         } else {
-            if (scoreDrlList == null || scoreDrlList.isEmpty()) {
+            if (ConfigUtils.isEmptyCollection(scoreDrlList)) {
                 throw new IllegalArgumentException("The scoreDrlList (" + scoreDrlList + ") cannot be empty.");
             }
             KieServices kieServices = KieServices.Factory.get();

@@ -233,7 +233,7 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
             SelectionCacheType minimumCacheType, boolean randomSelection);
 
     private boolean hasFiltering() {
-        return !(filterClassList == null || filterClassList.isEmpty());
+        return !ConfigUtils.isEmptyCollection(filterClassList);
     }
 
     private MoveSelector applyFiltering(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,

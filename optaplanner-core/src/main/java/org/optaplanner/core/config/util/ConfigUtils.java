@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collection;
 
 import org.apache.commons.lang.ObjectUtils;
 
@@ -78,6 +79,10 @@ public class ConfigUtils {
     }
 
     private ConfigUtils() {
+    }
+
+    public static boolean isEmptyCollection(final Collection<?> c) {
+        return c == null || c.isEmpty();
     }
 
 }
