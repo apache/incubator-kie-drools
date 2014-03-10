@@ -16,24 +16,28 @@
 
 package org.jbpm.executor.impl;
 
-import javax.enterprise.inject.Produces;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
 
-import org.jbpm.executor.ExecutorServiceFactory;
+import org.jbpm.shared.services.cdi.BootOnLoad;
 import org.kie.internal.executor.api.ExecutorService;
 
-public class ExecutorServiceProducer {
+@BootOnLoad
+@ApplicationScoped
+public class ExecutorServiceLifeCycleController {
 
 	@Inject
-	@PersistenceUnit(unitName = "org.jbpm.domain")
-    private EntityManagerFactory emf;
+	private ExecutorService executorService;
 	
-	@Produces
-	public ExecutorService produceExecutorService() {
-		ExecutorService service = ExecutorServiceFactory.newExecutorService(emf);
-		return service;
-	}
-
+	@PostConstruct
+    public void init() {
+		executorService.init();
+    }
+    
+    @PreDestroy
+    public void destroy() {    	
+    	executorService.destroy();
+    }
 }

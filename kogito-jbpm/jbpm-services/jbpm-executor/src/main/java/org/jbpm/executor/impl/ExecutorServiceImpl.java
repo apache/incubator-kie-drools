@@ -19,6 +19,7 @@ package org.jbpm.executor.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.jbpm.executor.ExecutorServiceFactory;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ErrorInfo;
 import org.kie.internal.executor.api.Executor;
@@ -129,8 +130,9 @@ public class ExecutorServiceImpl implements ExecutorService {
     
     public void destroy() {  
     	if (executorStarted) {
+    		ExecutorServiceFactory.resetExecutorService(this);
 	    	this.executorStarted = false;
-	        executor.destroy();
+	        executor.destroy();	        
     	}
     }
     

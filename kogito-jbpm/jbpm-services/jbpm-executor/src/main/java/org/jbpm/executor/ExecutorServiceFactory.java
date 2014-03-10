@@ -41,15 +41,21 @@ public class ExecutorServiceFactory {
    
 	private static ExecutorService serviceInstance;
     
-    public static ExecutorService newExecutorService(EntityManagerFactory emf){
+    public static synchronized ExecutorService newExecutorService(EntityManagerFactory emf){
     	if ( mode.equalsIgnoreCase( "singleton" ) ) {
-            if (serviceInstance == null || !serviceInstance.isActive()) {
+            if (serviceInstance == null) {
             	serviceInstance = configure(emf);
             }
             return serviceInstance;
         } else {
             return configure(emf);
         }        
+    }
+    
+    public static synchronized void resetExecutorService(ExecutorService executorService) {
+    	if (executorService.equals(serviceInstance)) {
+    		serviceInstance = null;
+    	}
     }
 
     private static ExecutorService configure(EntityManagerFactory emf) {
@@ -81,9 +87,7 @@ public class ExecutorServiceFactory {
         runnable.setQueryService(queryService);
 
         ((ExecutorImpl)executor).setExecutorRunnable(runnable);        
-        
 
-        
         return service;
     }
 }
