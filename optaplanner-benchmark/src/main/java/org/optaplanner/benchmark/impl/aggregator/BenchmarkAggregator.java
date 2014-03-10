@@ -95,8 +95,7 @@ public class BenchmarkAggregator {
             }
         }
 
-        PlannerBenchmarkResult plannerBenchmarkResult
-                = PlannerBenchmarkResult.createMergedResult(singleBenchmarkResultList);
+        PlannerBenchmarkResult plannerBenchmarkResult = PlannerBenchmarkResult.createMergedResult(singleBenchmarkResultList);
         plannerBenchmarkResult.setStartingTimestamp(startingTimestamp);
         plannerBenchmarkResult.initBenchmarkReportDirectory(benchmarkDirectory);
 
