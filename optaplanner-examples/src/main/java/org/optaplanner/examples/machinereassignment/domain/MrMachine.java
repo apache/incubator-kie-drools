@@ -17,8 +17,8 @@
 package org.optaplanner.examples.machinereassignment.domain;
 
 import java.util.List;
+import java.util.Map;
 
-import com.google.common.collect.ArrayTable;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
@@ -30,7 +30,7 @@ public class MrMachine extends AbstractPersistable {
 
     // Order is equal to resourceList so resource.getIndex() can be used
     private List<MrMachineCapacity> machineCapacityList;
-    private ArrayTable<MrNeighborhood, MrLocation, Integer> machineMoveCostTable; // key is toMachine
+    private Map<MrMachine, Integer> machineMoveCostMap; // key is toMachine
 
     public MrNeighborhood getNeighborhood() {
         return neighborhood;
@@ -60,20 +60,20 @@ public class MrMachine extends AbstractPersistable {
         return machineCapacityList.get(resource.getIndex());
     }
 
-    public ArrayTable<MrNeighborhood, MrLocation, Integer> getMachineMoveCostTable() {
-        return machineMoveCostTable;
+    public Map<MrMachine, Integer> getMachineMoveCostMap() {
+        return machineMoveCostMap;
     }
 
-    public void setMachineMoveCostTable(ArrayTable<MrNeighborhood, MrLocation, Integer> machineMoveCostTable) {
-        this.machineMoveCostTable = machineMoveCostTable;
+    public void setMachineMoveCostMap(Map<MrMachine, Integer> machineMoveCostMap) {
+        this.machineMoveCostMap = machineMoveCostMap;
     }
 
     public String getLabel() {
         return "Machine " + getId();
     }
 
-    public int getMoveCostTo(MrMachine machine) {
-        return machineMoveCostTable.get(machine.getNeighborhood(), machine.getLocation());
+    public int getMoveCostTo(MrMachine toMachine) {
+        return machineMoveCostMap.get(toMachine);
     }
 
 }
