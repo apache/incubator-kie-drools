@@ -3,7 +3,6 @@ package org.kie.scanner.management;
 import java.lang.management.ManagementFactory;
 
 import javax.management.MBeanServer;
-import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import javax.management.StandardMBean;
 
@@ -12,9 +11,15 @@ import org.slf4j.LoggerFactory;
 
 public class MBeanUtils {
 
-    private static final Logger  logger           = LoggerFactory.getLogger(MBeanUtils.class);
-    private static final boolean IS_MBEAN_ENABLED = true;
-    private static MBeanServer     mbeanServer;
+    public static final String   MBEANS_PROPERTY = "kie.scanner.mbeans";
+    private static final Logger  logger          = LoggerFactory.getLogger(MBeanUtils.class);
+    private static final boolean IS_MBEAN_ENABLED;
+    private static MBeanServer   mbeanServer;
+
+    static {
+        String prop = System.getProperty(MBEANS_PROPERTY);
+        IS_MBEAN_ENABLED = prop != null && (prop.equalsIgnoreCase("enabled") || prop.equalsIgnoreCase("true"));
+    }
 
     public static boolean isMBeanEnabled() {
         return IS_MBEAN_ENABLED;
@@ -59,23 +64,23 @@ public class MBeanUtils {
         }
         return mbeanServer;
     }
-    
-    public static synchronized Object getAttribute( ObjectName mbeanName, String attributeName ) {
+
+    public static synchronized Object getAttribute(ObjectName mbeanName, String attributeName) {
         try {
             MBeanServer mbs = getMBeanServer();
             return mbs.getAttribute(mbeanName, attributeName);
         } catch (Exception e) {
-            logger.error("Error retrieving attribute "+attributeName+" for MBean " + mbeanName , e);
+            logger.error("Error retrieving attribute " + attributeName + " for MBean " + mbeanName, e);
             return null;
         }
     }
-    
-    public static synchronized void invoke( ObjectName mbeanName, String operation, Object[] params, String[] signature ) {
+
+    public static synchronized void invoke(ObjectName mbeanName, String operation, Object[] params, String[] signature) {
         try {
             MBeanServer mbs = getMBeanServer();
             mbs.invoke(mbeanName, operation, params, signature);
         } catch (Exception e) {
-            logger.error("Error invoking operation "+operation+" for MBean " + mbeanName , e);
+            logger.error("Error invoking operation " + operation + " for MBean " + mbeanName, e);
         }
     }
 

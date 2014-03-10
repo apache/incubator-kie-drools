@@ -13,5 +13,7 @@ public interface KieScannerMBean {
     public abstract void start(long pollingInterval);
 
     public abstract void stop();
+    
+    public abstract void shutdown();
 
 }

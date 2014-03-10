@@ -33,6 +33,7 @@ public class KieScannerMBeanTest extends AbstractKieCiTest {
 
     @Before
     public void setUp() throws Exception {
+        System.setProperty(MBeanUtils.MBEANS_PROPERTY, "enabled");
         this.fileManager = new FileManager();
         this.fileManager.setUp();
         ReleaseId releaseId = KieServices.Factory.get().newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
@@ -42,6 +43,7 @@ public class KieScannerMBeanTest extends AbstractKieCiTest {
     @After
     public void tearDown() throws Exception {
         this.fileManager.tearDown();
+        System.setProperty(MBeanUtils.MBEANS_PROPERTY, "");
     }
     
     @Test
@@ -87,6 +89,10 @@ public class KieScannerMBeanTest extends AbstractKieCiTest {
         // create a ksesion and check it works as expected
         KieSession ksession2 = kieContainer.newKieSession("KSession1");
         checkKSession(ksession2, "rule2", "rule3");
+        
+        MBeanUtils.invoke(mbeanName, "shutdown", new Object[] {}, new String[] {} );
+        
+        Assert.assertEquals( InternalKieScanner.Status.SHUTDOWN.toString(), MBeanUtils.getAttribute( mbeanName, "Status") );
         
         ks.getRepository().removeKieModule(releaseId);
     }
