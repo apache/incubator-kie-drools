@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
+import com.google.common.collect.Iterators;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleListener;
@@ -58,7 +58,7 @@ public abstract class AbstractCachingEntitySelector extends AbstractEntitySelect
                     + ") which is higher than Integer.MAX_VALUE.");
         }
         cachedEntityList = new ArrayList<Object>((int) childSize);
-        CollectionUtils.addAll(cachedEntityList, childEntitySelector.iterator());
+        Iterators.addAll(cachedEntityList, childEntitySelector.iterator());
         logger.trace("    Created cachedEntityList with size ({}) in entitySelector({}).",
                 cachedEntityList.size(), this);
     }

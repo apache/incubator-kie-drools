@@ -21,7 +21,6 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.apache.commons.collections.CollectionUtils;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
@@ -134,7 +133,7 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
         MoveSelector moveSelector;
         SelectionCacheType defaultCacheType = SelectionCacheType.JUST_IN_TIME;
         SelectionOrder defaultSelectionOrder = SelectionOrder.RANDOM;
-        if (CollectionUtils.isEmpty(moveSelectorConfigList)) {
+        if (ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
             // Default to changeMoveSelector and swapMoveSelector
             UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig();
             unionMoveSelectorConfig.setMoveSelectorConfigList(Arrays.asList(

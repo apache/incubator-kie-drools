@@ -24,7 +24,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import org.apache.commons.collections.CollectionUtils;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -285,7 +284,7 @@ public class ScoreDirectorFactoryConfig {
 
     private KieBase buildKieBase() {
         if (kieBase != null) {
-            if (!CollectionUtils.isEmpty(scoreDrlList)) {
+            if (!ConfigUtils.isEmptyCollection(scoreDrlList)) {
                 throw new IllegalArgumentException("If kieBase is not null, the scoreDrlList (" + scoreDrlList
                         + ") must be empty.");
             }
@@ -295,7 +294,7 @@ public class ScoreDirectorFactoryConfig {
             }
             return kieBase;
         } else {
-            if (CollectionUtils.isEmpty(scoreDrlList)) {
+            if (ConfigUtils.isEmptyCollection(scoreDrlList)) {
                 throw new IllegalArgumentException("The scoreDrlList (" + scoreDrlList + ") cannot be empty.");
             }
             KieServices kieServices = KieServices.Factory.get();

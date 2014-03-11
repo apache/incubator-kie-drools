@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
+import com.google.common.collect.Iterators;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
@@ -104,7 +104,7 @@ public class EntityDependentSortingValueSelector extends AbstractValueSelector {
                     + ") which is higher than Integer.MAX_VALUE.");
         }
         List<Object> cachedValueList = new ArrayList<Object>((int) childSize);
-        CollectionUtils.addAll(cachedValueList, childValueSelector.iterator(entity));
+        Iterators.addAll(cachedValueList, childValueSelector.iterator(entity));
         logger.trace("    Created cachedValueList with size ({}) in valueSelector ({}).",
                 cachedValueList.size(), this);
         sorter.sort(scoreDirector, cachedValueList);

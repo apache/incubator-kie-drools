@@ -120,7 +120,7 @@ public class ProblemBenchmarksConfig {
     }
 
     private void validate(SolverBenchmarkResult solverBenchmarkResult) {
-        if (inputSolutionFileList == null || inputSolutionFileList.isEmpty()) {
+        if (ConfigUtils.isEmptyCollection(inputSolutionFileList)) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <inputSolutionFile> for the solverBenchmarkResult (" + solverBenchmarkResult.getName()
                             + ") directly or indirectly by inheriting it.");

@@ -21,7 +21,6 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.apache.commons.collections.CollectionUtils;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -211,7 +210,7 @@ public class TerminationConfig implements Cloneable {
         if (unimprovedStepCountLimit != null) {
             terminationList.add(new UnimprovedStepCountTermination(unimprovedStepCountLimit));
         }
-        if (!CollectionUtils.isEmpty(terminationConfigList)) {
+        if (!ConfigUtils.isEmptyCollection(terminationConfigList)) {
             for (TerminationConfig terminationConfig : terminationConfigList) {
                 Termination termination = terminationConfig.buildTermination(configPolicy);
                 if (termination != null) {

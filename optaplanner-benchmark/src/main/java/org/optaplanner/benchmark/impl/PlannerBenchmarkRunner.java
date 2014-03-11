@@ -35,6 +35,7 @@ import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
+import org.optaplanner.core.config.util.ConfigUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,7 +92,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         startingSystemTimeMillis = System.currentTimeMillis();
         plannerBenchmarkResult.setStartingTimestamp(new Date());
         List<SolverBenchmarkResult> solverBenchmarkResultList = plannerBenchmarkResult.getSolverBenchmarkResultList();
-        if (solverBenchmarkResultList == null || solverBenchmarkResultList.isEmpty()) {
+        if (ConfigUtils.isEmptyCollection(solverBenchmarkResultList)) {
             throw new IllegalArgumentException(
                     "The solverBenchmarkResultList (" + solverBenchmarkResultList + ") cannot be empty.");
         }

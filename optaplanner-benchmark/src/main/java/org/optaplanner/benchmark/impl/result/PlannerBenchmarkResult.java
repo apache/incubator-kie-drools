@@ -29,10 +29,10 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import com.google.common.collect.Ordering;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import org.apache.commons.collections.comparators.ReverseComparator;
 import org.drools.core.rule.Collect;
 import org.drools.core.util.StringUtils;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -326,7 +326,7 @@ public class PlannerBenchmarkResult {
             }
         } else if (benchmarkReport.getSolverRankingWeightFactory() != null) {
             SortedMap<Comparable, List<SolverBenchmarkResult>> rankedMap
-                    = new TreeMap<Comparable, List<SolverBenchmarkResult>>(new ReverseComparator());
+                    = new TreeMap<Comparable, List<SolverBenchmarkResult>>(Ordering.arbitrary().reverse());
             for (SolverBenchmarkResult solverBenchmarkResult : rankableSolverBenchmarkResultList) {
                 Comparable rankingWeight = benchmarkReport.getSolverRankingWeightFactory()
                         .createRankingWeight(rankableSolverBenchmarkResultList, solverBenchmarkResult);

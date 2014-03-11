@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.commons.collections.IteratorUtils;
+import com.google.common.collect.Iterators;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
@@ -80,7 +80,11 @@ public class CompositeCountableValueRange<T> extends AbstractCountableValueRange
         for (CountableValueRange<T> childValueRange : childValueRangeList) {
             iteratorList.add(childValueRange.createOriginalIterator());
         }
-        return IteratorUtils.chainedIterator(iteratorList);
+        Iterator<T> originalIterator = Iterators.emptyIterator();
+        for (Iterator<T> iterator : iteratorList) {
+            originalIterator = Iterators.concat(originalIterator, iterator);
+        }
+        return originalIterator;
     }
 
     @Override

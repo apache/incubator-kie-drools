@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
 import java.util.Iterator;
 
-import org.apache.commons.collections.IteratorUtils;
+import com.google.common.collect.Iterators;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.IterableSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
@@ -88,7 +88,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
 
         private OriginalChangeMoveIterator() {
             entityIterator = entitySelector.iterator();
-            valueIterator = IteratorUtils.emptyIterator();
+            valueIterator = Iterators.emptyIterator();
         }
 
         @Override

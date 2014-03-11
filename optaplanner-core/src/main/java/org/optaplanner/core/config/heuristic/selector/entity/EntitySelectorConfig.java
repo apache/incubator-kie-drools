@@ -23,7 +23,6 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.apache.commons.collections.CollectionUtils;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
@@ -284,7 +283,7 @@ public class EntitySelectorConfig extends SelectorConfig {
     }
 
     private boolean hasFiltering(EntityDescriptor entityDescriptor) {
-        return !CollectionUtils.isEmpty(filterClassList)
+        return !ConfigUtils.isEmptyCollection(filterClassList)
                 || entityDescriptor.hasMovableEntitySelectionFilter();
     }
 

@@ -20,7 +20,6 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.apache.commons.collections.CollectionUtils;
 import org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicForagerConfig;
 import org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig;
 import org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig;
@@ -94,7 +93,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         configureSolverPhase(phase, phaseIndex, phaseConfigPolicy, solverTermination);
         phase.setDecider(buildDecider(phaseConfigPolicy, phase.getTermination()));
         EntityPlacerConfig entityPlacerConfig;
-        if (CollectionUtils.isEmpty(entityPlacerConfigList)) {
+        if (ConfigUtils.isEmptyCollection(entityPlacerConfigList)) {
             entityPlacerConfig = new QueuedEntityPlacerConfig();
         } else if (entityPlacerConfigList.size() == 1) {
             entityPlacerConfig = entityPlacerConfigList.get(0);

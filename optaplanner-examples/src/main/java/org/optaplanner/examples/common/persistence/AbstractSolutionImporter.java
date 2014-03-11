@@ -19,10 +19,12 @@ package org.optaplanner.examples.common.persistence;
 import java.io.File;
 import java.io.FileFilter;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.math.BigIntegerMath;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.app.LoggingMain;
@@ -123,8 +125,7 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
         if (possibleSolutionSize.compareTo(BigInteger.valueOf(1000L)) < 0) {
             return possibleSolutionSize.toString();
         }
-        // TODO this is slow for machinereassingment's biggest dataset
-        return "10^" + (possibleSolutionSize.toString().length() - 1);
+        return "10^" + (BigIntegerMath.log10(possibleSolutionSize, RoundingMode.FLOOR));
     }
 
 }

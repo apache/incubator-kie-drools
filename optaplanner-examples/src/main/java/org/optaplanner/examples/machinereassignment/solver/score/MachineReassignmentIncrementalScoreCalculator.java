@@ -21,8 +21,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
+import com.google.common.collect.Sets;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
@@ -437,9 +438,9 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
                 = (MachineReassignmentIncrementalScoreCalculator) uncorruptedIncrementalScoreCalculator;
         StringBuilder analysis = new StringBuilder();
         if (!serviceScorePartMap.keySet().equals(other.serviceScorePartMap.keySet())) {
-            Collection excess = CollectionUtils.subtract(serviceScorePartMap.keySet(),
+            Collection excess = Sets.difference(serviceScorePartMap.keySet(),
                     other.serviceScorePartMap.keySet());
-            Collection lacking = CollectionUtils.subtract(other.serviceScorePartMap.keySet(),
+            Collection lacking = Sets.difference(other.serviceScorePartMap.keySet(),
                     serviceScorePartMap.keySet());
             analysis.append("  The serviceScorePartMap has in excess (")
                     .append(excess).append(") and is lacking (").append(lacking).append(").\n");
@@ -449,18 +450,18 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
                 MrServiceScorePart part = entry.getValue();
                 MrServiceScorePart otherPart = other.serviceScorePartMap.get(service);
                 if (!part.locationBag.equals(otherPart.locationBag)) {
-                    Collection excess = CollectionUtils.subtract(part.locationBag.values(),
-                            otherPart.locationBag.values());
-                    Collection lacking = CollectionUtils.subtract(otherPart.locationBag.values(),
-                            part.locationBag.values());
+                    Collection excess = Sets.difference((Set<Integer>) part.locationBag.values(),
+                            (Set<Integer>) otherPart.locationBag.values());
+                    Collection lacking = Sets.difference((Set<Integer>) otherPart.locationBag.values(),
+                            (Set<Integer>) part.locationBag.values());
                     analysis.append("  On service (").append(service).append(") the locationBag has in excess (")
                             .append(excess).append(") and is lacking (").append(lacking).append(").\n");
                 }
                 if (!part.neighborhoodBag.equals(otherPart.neighborhoodBag)) {
-                    Collection excess = CollectionUtils.subtract(part.neighborhoodBag.values(),
-                            otherPart.neighborhoodBag.values());
-                    Collection lacking = CollectionUtils.subtract(otherPart.neighborhoodBag.values(),
-                            part.neighborhoodBag.values());
+                    Collection excess = Sets.difference((Set<Integer>) part.neighborhoodBag.values(),
+                            (Set<Integer>) otherPart.neighborhoodBag.values());
+                    Collection lacking = Sets.difference((Set<Integer>) otherPart.neighborhoodBag.values(),
+                            (Set<Integer>) part.neighborhoodBag.values());
                     analysis.append("  On service (").append(service).append(") the neighborhoodBag has in excess (")
                             .append(excess).append(") and is lacking (").append(lacking).append(").\n");
                 }
