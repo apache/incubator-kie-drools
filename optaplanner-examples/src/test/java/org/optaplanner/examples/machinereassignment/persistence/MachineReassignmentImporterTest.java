@@ -24,7 +24,6 @@ import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionImporterTest;
 
-@Ignore("https://issues.jboss.org/browse/PLANNER-200")
 public class MachineReassignmentImporterTest extends SolutionImporterTest {
 
     @Override
