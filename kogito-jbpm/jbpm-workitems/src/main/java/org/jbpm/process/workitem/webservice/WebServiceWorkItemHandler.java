@@ -34,8 +34,12 @@ import org.jbpm.bpmn2.core.Bpmn2Import;
 import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,6 +125,9 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
                 case ASYNC:
                     final ClientCallback callback = new ClientCallback();
                     final long workItemId = workItem.getId();
+                    final String deploymentId = nonNull(((WorkItemImpl)workItem).getDeploymentId());
+                    final long processInstanceId = workItem.getProcessInstanceId();
+                    
                     client.invoke(callback, operationRef, parameters);
                     new Thread(new Runnable() {
                        
@@ -138,7 +145,19 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
                                }
                            }
                            logger.debug("Received async response {} completeing work item {}", result, workItemId);
-                           ksession.getWorkItemManager().completeWorkItem(workItemId, output);
+                           
+                           RuntimeManager manager = RuntimeManagerRegistry.get().getManager(deploymentId);
+                           if (manager != null) {
+                               RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
+                               
+                               engine.getKieSession().getWorkItemManager().completeWorkItem(workItemId, output);
+                               
+                               manager.disposeRuntimeEngine(engine);
+                           } else {
+                        	   // in case there is no RuntimeManager available use available ksession, 
+                        	   // as it might be used without runtime manager at all 
+                        	   ksession.getWorkItemManager().completeWorkItem(workItemId, output);
+                           }
                        } catch (Exception e) {
                     	   e.printStackTrace();
                            throw new RuntimeException("Error encountered while invoking ws operation asynchronously", e);
@@ -220,5 +239,12 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
 
 	public void setClassLoader(ClassLoader classLoader) {
 		this.classLoader = classLoader;
+	}
+	
+	protected String nonNull(String value) {
+		if (value == null) {
+			return "";
+		}
+		return value;
 	}
 }

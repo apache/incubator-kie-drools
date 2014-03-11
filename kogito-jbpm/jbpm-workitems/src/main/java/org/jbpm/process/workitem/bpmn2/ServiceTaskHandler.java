@@ -34,9 +34,13 @@ import org.jbpm.bpmn2.core.Bpmn2Import;
 import org.jbpm.bpmn2.handler.WorkItemHandlerRuntimeException;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,6 +114,9 @@ public class ServiceTaskHandler implements WorkItemHandler {
                 case ASYNC:
                     final ClientCallback callback = new ClientCallback();
                     final long workItemId = workItem.getId();
+                    final String deploymentId = nonNull(((WorkItemImpl)workItem).getDeploymentId());
+                    final long processInstanceId = workItem.getProcessInstanceId();
+                    
                     client.invoke(callback, operationRef, parameter);
                     new Thread(new Runnable() {
                        
@@ -126,7 +133,18 @@ public class ServiceTaskHandler implements WorkItemHandler {
                                      output.put("Result", result[0]);
                                    }
                                }
-                               ksession.getWorkItemManager().completeWorkItem(workItemId, output);
+                               RuntimeManager manager = RuntimeManagerRegistry.get().getManager(deploymentId);
+                               if (manager != null) {
+	                               RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
+	                               
+	                               engine.getKieSession().getWorkItemManager().completeWorkItem(workItemId, output);
+	                               
+	                               manager.disposeRuntimeEngine(engine);
+                               } else {
+                            	   // in case there is no RuntimeManager available use available ksession, 
+                            	   // as it might be used without runtime manager at all
+                            	   ksession.getWorkItemManager().completeWorkItem(workItemId, output);
+                               }
                            } catch (Exception e) {
                               logger.error("Error encountered while invoking ws operation asynchronously ", e);
                            }
@@ -265,5 +283,13 @@ public class ServiceTaskHandler implements WorkItemHandler {
 
 	public void setClassLoader(ClassLoader classLoader) {
 		this.classLoader = classLoader;
+	}
+	
+	protected String nonNull(String value) {
+		if (value == null) {
+			return "";
+		}
+		
+		return value;
 	}
 }
