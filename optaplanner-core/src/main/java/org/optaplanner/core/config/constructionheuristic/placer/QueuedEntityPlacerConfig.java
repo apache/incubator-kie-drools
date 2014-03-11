@@ -68,33 +68,9 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
     // ************************************************************************
 
     public QueuedEntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy, Termination phaseTermination) {
-        SelectionOrder defaultSelectionOrder = SelectionOrder.ORIGINAL;
-        EntitySelectorConfig entitySelectorConfig_;
-        String entitySelectorId = "undefined";
-        if (entitySelectorConfig == null) {
-            entitySelectorConfig_ = new EntitySelectorConfig();
-            EntityDescriptor entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
-            Class<?> entityClass = entityDescriptor.getEntityClass();
-            entitySelectorId = entityClass.getName();
-            entitySelectorConfig_.setId(entitySelectorId);
-            entitySelectorConfig_.setEntityClass(entityClass);
-            if (configPolicy.isSortEntitiesByDecreasingDifficultyEnabled()) {
-                entitySelectorConfig_.setCacheType(SelectionCacheType.PHASE);
-                entitySelectorConfig_.setSelectionOrder(SelectionOrder.SORTED);
-                entitySelectorConfig_.setSorterManner(EntitySelectorConfig.EntitySorterManner.DECREASING_DIFFICULTY);
-            }
-        } else {
-            entitySelectorConfig_ = entitySelectorConfig;
-        }
-        if (entitySelectorConfig_.getCacheType() != null
-                && entitySelectorConfig_.getCacheType().compareTo(SelectionCacheType.PHASE) < 0) {
-            throw new IllegalArgumentException("The queuedEntityPlacer (" + this
-                    + ") cannot have an entitySelectorConfig ("  + entitySelectorConfig
-                    + ") with a cacheType (" + entitySelectorConfig_.getCacheType()
-                    + ") lower than " + SelectionCacheType.PHASE + ".");
-        }
+        EntitySelectorConfig entitySelectorConfig_ = buildEntitySelectorConfig(configPolicy);
         EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(configPolicy,
-                SelectionCacheType.PHASE, defaultSelectionOrder);
+                SelectionCacheType.PHASE, SelectionOrder.ORIGINAL);
 
         List<MoveSelectorConfig> moveSelectorConfigList_;
         if (ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
@@ -105,7 +81,7 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
             for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
                 ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
                 EntitySelectorConfig changeEntitySelectorConfig = new EntitySelectorConfig();
-                changeEntitySelectorConfig.setMimicSelectorRef(entitySelectorId);
+                changeEntitySelectorConfig.setMimicSelectorRef(entitySelectorConfig_.getId());
                 changeMoveSelectorConfig.setEntitySelectorConfig(changeEntitySelectorConfig);
                 ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
                 changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
@@ -133,9 +109,35 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
         List<MoveSelector> moveSelectorList = new ArrayList<MoveSelector>(moveSelectorConfigList_.size());
         for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList_) {
             moveSelectorList.add(moveSelectorConfig.buildMoveSelector(
-                    configPolicy, SelectionCacheType.JUST_IN_TIME, defaultSelectionOrder));
+                    configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL));
         }
         return new QueuedEntityPlacer(entitySelector, moveSelectorList);
+    }
+
+    private EntitySelectorConfig buildEntitySelectorConfig(HeuristicConfigPolicy configPolicy) {
+        EntitySelectorConfig entitySelectorConfig_;
+        if (entitySelectorConfig == null) {
+            entitySelectorConfig_ = new EntitySelectorConfig();
+            EntityDescriptor entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
+            Class<?> entityClass = entityDescriptor.getEntityClass();
+            entitySelectorConfig_.setId(entityClass.getName());
+            entitySelectorConfig_.setEntityClass(entityClass);
+            if (configPolicy.isSortEntitiesByDecreasingDifficultyEnabled()) {
+                entitySelectorConfig_.setCacheType(SelectionCacheType.PHASE);
+                entitySelectorConfig_.setSelectionOrder(SelectionOrder.SORTED);
+                entitySelectorConfig_.setSorterManner(EntitySelectorConfig.EntitySorterManner.DECREASING_DIFFICULTY);
+            }
+        } else {
+            entitySelectorConfig_ = entitySelectorConfig;
+        }
+        if (entitySelectorConfig_.getCacheType() != null
+                && entitySelectorConfig_.getCacheType().compareTo(SelectionCacheType.PHASE) < 0) {
+            throw new IllegalArgumentException("The queuedEntityPlacer (" + this
+                    + ") cannot have an entitySelectorConfig ("  + entitySelectorConfig_
+                    + ") with a cacheType (" + entitySelectorConfig_.getCacheType()
+                    + ") lower than " + SelectionCacheType.PHASE + ".");
+        }
+        return entitySelectorConfig_;
     }
 
     public void inherit(QueuedEntityPlacerConfig inheritedConfig) {

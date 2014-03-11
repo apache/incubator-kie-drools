@@ -36,6 +36,7 @@ public class ManualEntityMimicRecorder implements EntityMimicRecorder {
         replayingEntitySelectorList = new ArrayList<MimicReplayingEntitySelector>();
     }
 
+    @Override
     public void addMimicReplayingEntitySelector(MimicReplayingEntitySelector replayingEntitySelector) {
         replayingEntitySelectorList.add(replayingEntitySelector);
     }

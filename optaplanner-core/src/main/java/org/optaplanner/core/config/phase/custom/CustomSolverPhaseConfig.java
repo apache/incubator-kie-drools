@@ -27,6 +27,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.phase.custom.CustomSolverPhase;
 import org.optaplanner.core.impl.phase.custom.CustomSolverPhaseCommand;
 import org.optaplanner.core.impl.phase.custom.DefaultCustomSolverPhase;
+import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XStreamAlias("customSolverPhase")
@@ -61,10 +62,10 @@ public class CustomSolverPhaseConfig extends SolverPhaseConfig {
     // ************************************************************************
 
     public CustomSolverPhase buildSolverPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
-            Termination solverTermination) {
+            BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         DefaultCustomSolverPhase customSolverPhase = new DefaultCustomSolverPhase();
-        configureSolverPhase(customSolverPhase, phaseIndex, phaseConfigPolicy, solverTermination);
+        configureSolverPhase(customSolverPhase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
         if (ConfigUtils.isEmptyCollection(customSolverPhaseCommandClassList)) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <customSolverPhaseCommandClass> in the <customSolverPhase> configuration.");

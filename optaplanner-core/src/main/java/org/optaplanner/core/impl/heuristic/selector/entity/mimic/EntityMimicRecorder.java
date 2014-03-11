@@ -24,6 +24,11 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 public interface EntityMimicRecorder {
 
     /**
+     * @param replayingEntitySelector never null
+     */
+    void addMimicReplayingEntitySelector(MimicReplayingEntitySelector replayingEntitySelector);
+
+    /**
      * @see EntitySelector#getEntityDescriptor()
      */
     EntityDescriptor getEntityDescriptor();

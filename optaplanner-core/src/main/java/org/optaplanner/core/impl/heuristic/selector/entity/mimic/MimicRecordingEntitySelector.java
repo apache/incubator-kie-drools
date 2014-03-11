@@ -22,6 +22,7 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector impleme
         replayingEntitySelectorList = new ArrayList<MimicReplayingEntitySelector>();
     }
 
+    @Override
     public void addMimicReplayingEntitySelector(MimicReplayingEntitySelector replayingEntitySelector) {
         replayingEntitySelectorList.add(replayingEntitySelector);
     }

@@ -76,8 +76,9 @@ public class DefaultExhaustiveSearchSolverPhaseTest {
         when(lastCompletedStepScope.getExpandingNode()).thenReturn(node3A);
         when(stepScope.getExpandingNode()).thenReturn(node4B);
 
-        DefaultExhaustiveSearchSolverPhase solverPhase = new DefaultExhaustiveSearchSolverPhase(
-                mock(EntitySelector.class), mock(ExhaustiveSearchDecider.class));
+        DefaultExhaustiveSearchSolverPhase solverPhase = new DefaultExhaustiveSearchSolverPhase();
+        solverPhase.setEntitySelector(mock(EntitySelector.class));
+        solverPhase.setDecider(mock(ExhaustiveSearchDecider.class));
         solverPhase.restoreWorkingSolution(stepScope);
 
         verify(node0.getMove(), times(0)).doMove(any(ScoreDirector.class));

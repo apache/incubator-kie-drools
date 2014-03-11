@@ -41,14 +41,25 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
  */
 public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase implements ExhaustiveSearchSolverPhase {
 
-    protected final EntitySelector entitySelector;
-    protected final ExhaustiveSearchDecider decider;
+    protected EntitySelector entitySelector;
+    protected ExhaustiveSearchDecider decider;
 
     protected boolean assertWorkingSolutionScoreFromScratch = false;
     protected boolean assertExpectedWorkingSolutionScore = false;
 
-    public DefaultExhaustiveSearchSolverPhase(EntitySelector entitySelector, ExhaustiveSearchDecider decider) {
+    public EntitySelector getEntitySelector() {
+        return entitySelector;
+    }
+
+    public void setEntitySelector(EntitySelector entitySelector) {
         this.entitySelector = entitySelector;
+    }
+
+    public ExhaustiveSearchDecider getDecider() {
+        return decider;
+    }
+
+    public void setDecider(ExhaustiveSearchDecider decider) {
         this.decider = decider;
     }
 

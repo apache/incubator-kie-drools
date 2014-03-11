@@ -19,7 +19,7 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
     protected Object recording;
     protected boolean recordingAlreadyReturned;
 
-    public MimicReplayingEntitySelector(MimicRecordingEntitySelector entityMimicRecorder) {
+    public MimicReplayingEntitySelector(EntityMimicRecorder entityMimicRecorder) {
         this.entityMimicRecorder = entityMimicRecorder;
         // No solverPhaseLifecycleSupport because the MimicRecordingEntitySelector is hooked up elsewhere too
         entityMimicRecorder.addMimicReplayingEntitySelector(this);

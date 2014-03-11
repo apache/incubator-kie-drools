@@ -5,7 +5,8 @@ import java.util.Map;
 
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicRecordingEntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.mimic.EntityMimicRecorder;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public class HeuristicConfigPolicy {
@@ -19,8 +20,8 @@ public class HeuristicConfigPolicy {
     private boolean reinitializeVariableFilterEnabled = false;
     private boolean initializedChainedValueFilterEnabled = false;
 
-    private Map<String, MimicRecordingEntitySelector> mimicRecordingEntitySelectorMap
-            = new HashMap<String, MimicRecordingEntitySelector>();
+    private Map<String, EntityMimicRecorder> entityMimicRecorderMap
+            = new HashMap<String, EntityMimicRecorder>();
 
     public HeuristicConfigPolicy(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             ScoreDefinition scoreDefinition) {
@@ -65,12 +66,12 @@ public class HeuristicConfigPolicy {
         this.reinitializeVariableFilterEnabled = reinitializeVariableFilterEnabled;
     }
 
-    public Map<String, MimicRecordingEntitySelector> getMimicRecordingEntitySelectorMap() {
-        return mimicRecordingEntitySelectorMap;
+    public Map<String, EntityMimicRecorder> getEntityMimicRecorderMap() {
+        return entityMimicRecorderMap;
     }
 
-    public void setMimicRecordingEntitySelectorMap(Map<String, MimicRecordingEntitySelector> mimicRecordingEntitySelectorMap) {
-        this.mimicRecordingEntitySelectorMap = mimicRecordingEntitySelectorMap;
+    public void setEntityMimicRecorderMap(Map<String, EntityMimicRecorder> entityMimicRecorderMap) {
+        this.entityMimicRecorderMap = entityMimicRecorderMap;
     }
 
     public boolean isInitializedChainedValueFilterEnabled() {
@@ -93,15 +94,16 @@ public class HeuristicConfigPolicy {
     // Worker methods
     // ************************************************************************
 
-    public void addMimicRecordingEntitySelector(String id, MimicRecordingEntitySelector mimicRecordingEntitySelector) {
-        MimicRecordingEntitySelector put = mimicRecordingEntitySelectorMap.put(id, mimicRecordingEntitySelector);
+    public void addEntityMimicRecorder(String id, EntityMimicRecorder mimicRecordingEntitySelector) {
+        EntityMimicRecorder put = entityMimicRecorderMap.put(id, mimicRecordingEntitySelector);
         if (put != null) {
-            throw new IllegalStateException("Multiple entity selectors have the same id (" + id + ").");
+            throw new IllegalStateException("Multiple " + EntityMimicRecorder.class.getSimpleName() + "s (usually "
+                    + EntitySelector.class.getSimpleName() + "s) have the same id (" + id + ").");
         }
     }
 
-    public MimicRecordingEntitySelector getMimicRecordingEntitySelector(String id) {
-        return mimicRecordingEntitySelectorMap.get(id);
+    public EntityMimicRecorder getEntityMimicRecorder(String id) {
+        return entityMimicRecorderMap.get(id);
     }
 
 }

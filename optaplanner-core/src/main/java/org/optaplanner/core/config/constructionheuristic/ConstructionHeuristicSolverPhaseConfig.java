@@ -32,6 +32,7 @@ import org.optaplanner.core.impl.constructionheuristic.DefaultConstructionHeuris
 import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
 import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
+import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XStreamAlias("constructionHeuristic")
@@ -79,7 +80,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
 
 
     public ConstructionHeuristicSolverPhase buildSolverPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
-            Termination solverTermination) {
+            BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         phaseConfigPolicy.setReinitializeVariableFilterEnabled(true);
         phaseConfigPolicy.setInitializedChainedValueFilterEnabled(true);
@@ -90,7 +91,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         phaseConfigPolicy.setSortValuesByIncreasingStrengthEnabled(
                 constructionHeuristicType_.isSortValuesByIncreasingStrength());
         DefaultConstructionHeuristicSolverPhase phase = new DefaultConstructionHeuristicSolverPhase();
-        configureSolverPhase(phase, phaseIndex, phaseConfigPolicy, solverTermination);
+        configureSolverPhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
         phase.setDecider(buildDecider(phaseConfigPolicy, phase.getTermination()));
         EntityPlacerConfig entityPlacerConfig;
         if (ConfigUtils.isEmptyCollection(entityPlacerConfigList)) {

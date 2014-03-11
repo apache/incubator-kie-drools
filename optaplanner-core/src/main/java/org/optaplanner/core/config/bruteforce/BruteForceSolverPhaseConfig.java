@@ -22,6 +22,7 @@ import org.optaplanner.core.config.phase.SolverPhaseConfig;
 import org.optaplanner.core.impl.bruteforce.BruteForceEntityWalker;
 import org.optaplanner.core.impl.bruteforce.BruteForceSolverPhase;
 import org.optaplanner.core.impl.bruteforce.DefaultBruteForceSolverPhase;
+import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XStreamAlias("bruteForce")
@@ -35,10 +36,11 @@ public class BruteForceSolverPhaseConfig extends SolverPhaseConfig {
     // ************************************************************************
 
     public BruteForceSolverPhase buildSolverPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
-            Termination solverTermination) {
+            BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         DefaultBruteForceSolverPhase bruteForceSolverPhase = new DefaultBruteForceSolverPhase();
-        configureSolverPhase(bruteForceSolverPhase, phaseIndex, phaseConfigPolicy, solverTermination);
+        configureSolverPhase(bruteForceSolverPhase, phaseIndex, phaseConfigPolicy,
+                bestSolutionRecaller, solverTermination);
         bruteForceSolverPhase.setBruteForceEntityWalker(
                 new BruteForceEntityWalker(phaseConfigPolicy.getSolutionDescriptor()));
         return bruteForceSolverPhase;

@@ -45,6 +45,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.decorator.Probability
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.SelectedCountLimitEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.ShufflingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.SortingEntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.mimic.EntityMimicRecorder;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicRecordingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
 
@@ -236,14 +237,13 @@ public class EntitySelectorConfig extends SelectorConfig {
                     + ") with mimicSelectorRef ("  + mimicSelectorRef
                     + ") has another property that is not null.");
         }
-        MimicRecordingEntitySelector mimicRecordingEntitySelector
-                = configPolicy.getMimicRecordingEntitySelector(mimicSelectorRef);
-        if (mimicRecordingEntitySelector == null) {
+        EntityMimicRecorder entityMimicRecorder = configPolicy.getEntityMimicRecorder(mimicSelectorRef);
+        if (entityMimicRecorder == null) {
             throw new IllegalArgumentException("The entitySelectorConfig (" + this
                     + ") has a mimicSelectorRef ("  + mimicSelectorRef
                     + ") for which no entitySelector with that id exists (in its solver phase).");
         }
-        return new MimicReplayingEntitySelector(mimicRecordingEntitySelector);
+        return new MimicReplayingEntitySelector(entityMimicRecorder);
     }
 
     protected boolean determineBaseRandomSelection(EntityDescriptor entityDescriptor,
@@ -463,7 +463,7 @@ public class EntitySelectorConfig extends SelectorConfig {
             }
             MimicRecordingEntitySelector mimicRecordingEntitySelector
                     = new MimicRecordingEntitySelector(entitySelector);
-            configPolicy.addMimicRecordingEntitySelector(id, mimicRecordingEntitySelector);
+            configPolicy.addEntityMimicRecorder(id, mimicRecordingEntitySelector);
             entitySelector = mimicRecordingEntitySelector;
         }
         return entitySelector;

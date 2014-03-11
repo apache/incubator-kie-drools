@@ -373,7 +373,7 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         return moveSelector;
     }
 
-    protected void inherit(MoveSelectorConfig inheritedConfig) {
+    public void inherit(MoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());

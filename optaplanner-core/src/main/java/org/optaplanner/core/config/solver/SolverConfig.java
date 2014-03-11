@@ -193,8 +193,8 @@ public class SolverConfig {
         List<SolverPhase> solverPhaseList = new ArrayList<SolverPhase>(solverPhaseConfigList.size());
         int phaseIndex = 0;
         for (SolverPhaseConfig solverPhaseConfig : solverPhaseConfigList) {
-            SolverPhase solverPhase = solverPhaseConfig.buildSolverPhase(phaseIndex, configPolicy, termination);
-            ((AbstractSolverPhase) solverPhase).setBestSolutionRecaller(bestSolutionRecaller);
+            SolverPhase solverPhase = solverPhaseConfig.buildSolverPhase(phaseIndex, configPolicy,
+                    bestSolutionRecaller, termination);
             solverPhaseList.add(solverPhase);
             phaseIndex++;
         }

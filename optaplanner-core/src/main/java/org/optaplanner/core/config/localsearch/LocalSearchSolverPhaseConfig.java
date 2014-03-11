@@ -39,6 +39,7 @@ import org.optaplanner.core.impl.localsearch.DefaultLocalSearchSolverPhase;
 import org.optaplanner.core.impl.localsearch.LocalSearchSolverPhase;
 import org.optaplanner.core.impl.localsearch.decider.LocalSearchDecider;
 import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
+import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XStreamAlias("localSearch")
@@ -84,10 +85,10 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
     // ************************************************************************
 
     public LocalSearchSolverPhase buildSolverPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
-            Termination solverTermination) {
+            BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         DefaultLocalSearchSolverPhase phase = new DefaultLocalSearchSolverPhase();
-        configureSolverPhase(phase, phaseIndex, phaseConfigPolicy, solverTermination);
+        configureSolverPhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
         phase.setDecider(buildDecider(phaseConfigPolicy,
                 phase.getTermination()));
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
