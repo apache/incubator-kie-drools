@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
 /**
  * Filters out every value that is a planning entity for which the planning variable
- * (for which this {@link ValueSelector} applies to) and that is uninitialized too.
+ * (on which this {@link ValueSelector} applies to) is uninitialized.
  * <p/>
  * Mainly used for chained planning variables.
  */
