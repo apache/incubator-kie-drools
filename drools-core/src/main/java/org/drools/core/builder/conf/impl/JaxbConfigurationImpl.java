@@ -25,12 +25,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import com.sun.tools.xjc.Language;
-import org.kie.internal.builder.JaxbConfiguration;
 import org.kie.api.io.ResourceConfiguration;
+import org.kie.internal.builder.JaxbConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sun.tools.xjc.Language;
 import com.sun.tools.xjc.Options;
 
 public class JaxbConfigurationImpl extends ResourceConfigurationImpl implements JaxbConfiguration {
@@ -68,6 +68,14 @@ public class JaxbConfigurationImpl extends ResourceConfigurationImpl implements 
 
     public void setClasses(List<String> classes) {
         this.classes = classes;
+    }
+    
+    public void setSystemId(String systemId) {
+        this.systemId = systemId;
+    }
+    
+    public void setXjcOpts(Options xjcOpts) {
+        this.xjcOpts = xjcOpts;
     }
     
     public byte[] toByteArray() {

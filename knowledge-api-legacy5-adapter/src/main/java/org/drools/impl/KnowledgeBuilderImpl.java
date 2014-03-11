@@ -1,7 +1,14 @@
 package org.drools.impl;
 
+import static org.drools.impl.adapters.AdapterUtil.adaptResultSeverity;
+import static org.drools.impl.adapters.KnowledgePackageAdapter.adaptKnowledgePackages;
+
+import java.util.Collection;
+
 import org.drools.KnowledgeBase;
 import org.drools.builder.CompositeKnowledgeBuilder;
+import org.drools.builder.DecisionTableConfiguration;
+import org.drools.builder.JaxbConfiguration;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderResults;
@@ -11,16 +18,13 @@ import org.drools.builder.ResultSeverity;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.impl.adapters.CompositeKnowledgeBuilderAdapter;
+import org.drools.impl.adapters.DecisionTableConfigurationAdapter;
+import org.drools.impl.adapters.JaxbConfigurationAdapter;
 import org.drools.impl.adapters.KnowledgeBaseAdapter;
 import org.drools.impl.adapters.KnowledgeBuilderErrorsAdapter;
 import org.drools.impl.adapters.KnowledgeBuilderResultsAdapter;
 import org.drools.impl.adapters.ResourceAdapter;
 import org.drools.io.Resource;
-
-import java.util.Collection;
-
-import static org.drools.impl.adapters.AdapterUtil.adaptResultSeverity;
-import static org.drools.impl.adapters.KnowledgePackageAdapter.adaptKnowledgePackages;
 
 public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
@@ -35,7 +39,15 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     public void add(Resource resource, ResourceType type, ResourceConfiguration configuration) {
-        delegate.add(((ResourceAdapter)resource).getDelegate(), type.toKieResourceType(), null);
+        org.kie.api.io.ResourceConfiguration conf = null;
+        if( configuration != null ) {
+            if( configuration instanceof DecisionTableConfiguration ) {
+                conf = new DecisionTableConfigurationAdapter( (DecisionTableConfiguration) configuration );
+            } else if( configuration instanceof JaxbConfiguration ) {
+                conf = new JaxbConfigurationAdapter((JaxbConfiguration) configuration);
+            }
+        }
+        delegate.add(((ResourceAdapter)resource).getDelegate(), type.toKieResourceType(), conf );
     }
 
     public Collection<KnowledgePackage> getKnowledgePackages() {
