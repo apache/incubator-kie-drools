@@ -182,11 +182,6 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
 
     public void phaseEnded(ExhaustiveSearchSolverPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
-        Solution newBestSolution = phaseScope.getScoreDirector().cloneWorkingSolution();
-        int newBestUninitializedVariableCount = phaseScope.getSolutionDescriptor()
-                .countUninitializedVariables(newBestSolution);
-        bestSolutionRecaller.updateBestSolution(phaseScope.getSolverScope(),
-                newBestSolution, newBestUninitializedVariableCount);
         entitySelector.phaseEnded(phaseScope);
         decider.phaseEnded(phaseScope);
         logger.info("Phase ({}) ExhaustiveSearch ended: step total ({}), time spent ({}), best score ({}).",

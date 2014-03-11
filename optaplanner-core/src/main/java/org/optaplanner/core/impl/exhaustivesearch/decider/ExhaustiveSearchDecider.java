@@ -26,6 +26,8 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.ManualEntityMimicRecorder;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
@@ -35,6 +37,7 @@ public class ExhaustiveSearchDecider {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
+    protected final BestSolutionRecaller bestSolutionRecaller;
     protected final Termination termination;
     protected final ManualEntityMimicRecorder manualEntityMimicRecorder;
     protected final MoveSelector moveSelector;
@@ -43,8 +46,9 @@ public class ExhaustiveSearchDecider {
     protected boolean assertMoveScoreFromScratch = false;
     protected boolean assertExpectedUndoMoveScore = false;
 
-    public ExhaustiveSearchDecider(Termination termination,
+    public ExhaustiveSearchDecider(BestSolutionRecaller bestSolutionRecaller, Termination termination,
             ManualEntityMimicRecorder manualEntityMimicRecorder, MoveSelector moveSelector, ScoreBounder scoreBounder) {
+        this.bestSolutionRecaller = bestSolutionRecaller;
         this.termination = termination;
         this.manualEntityMimicRecorder = manualEntityMimicRecorder;
         this.moveSelector = moveSelector;
@@ -136,8 +140,7 @@ public class ExhaustiveSearchDecider {
         if (uninitializedVariableCount == 0) {
             // There is no point in bounding a fully initialized score
             phaseScope.registerPessimisticBound(score);
-            // TODO notify bestSolutionRecaller
-
+            bestSolutionRecaller.processWorkingSolutionDuringMove(uninitializedVariableCount, score, stepScope);
         } else {
             Score optimisticBound = scoreBounder.calculateOptimisticBound(phaseScope.getScoreDirector(), score,
                     uninitializedVariableCount);
