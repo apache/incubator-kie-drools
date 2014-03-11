@@ -86,10 +86,14 @@
       <artifactId>optaplanner-benchmark</artifactId>
     </dependency>
     <!-- External dependencies -->
-    <!-- Commons -->
+    <!-- Common utils -->
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
     </dependency>
     <!-- Logging -->
     <dependency>
@@ -101,7 +105,7 @@
       <artifactId>logback-classic</artifactId>
       <scope>runtime</scope>
     </dependency>
-    <!-- Xstream -->
+    <!-- XML -->
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>

@@ -78,11 +78,11 @@ public class ConfigUtils {
         return ObjectUtils.equals(a, b) ? a : null;
     }
 
-    private ConfigUtils() {
+    public static boolean isEmptyCollection(Collection<?> collection) {
+        return collection == null || collection.isEmpty();
     }
 
-    public static boolean isEmptyCollection(final Collection<?> c) {
-        return c == null || c.isEmpty();
+    private ConfigUtils() {
     }
 
 }
