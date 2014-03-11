@@ -120,6 +120,7 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
     private void initStartNode(ExhaustiveSearchSolverPhaseScope phaseScope) {
         ExhaustiveSearchLayer layer = phaseScope.getLayerList().get(0);
         ExhaustiveSearchNode startNode = new ExhaustiveSearchNode(layer, null, 0);
+        startNode.setOptimisticBound(phaseScope.getScoreDefinition().getPerfectMaximumScore());
         phaseScope.getExpandableNodeQueue().add(startNode);
         phaseScope.getLastCompletedStepScope().setExpandingNode(startNode);
     }

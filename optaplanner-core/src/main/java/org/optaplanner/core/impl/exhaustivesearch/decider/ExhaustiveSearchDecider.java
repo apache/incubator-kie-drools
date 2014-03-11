@@ -55,8 +55,16 @@ public class ExhaustiveSearchDecider {
         this.scoreBounder = scoreBounder;
     }
 
+    public ManualEntityMimicRecorder getManualEntityMimicRecorder() {
+        return manualEntityMimicRecorder;
+    }
+
     public MoveSelector getMoveSelector() {
         return moveSelector;
+    }
+
+    public ScoreBounder getScoreBounder() {
+        return scoreBounder;
     }
 
     public void setAssertMoveScoreFromScratch(boolean assertMoveScoreFromScratch) {
