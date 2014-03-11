@@ -20,6 +20,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Insets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -186,14 +187,11 @@ public class TennisPanel extends SolutionPanel {
         for (TeamAssignment teamAssignment : tennisSolution.getTeamAssignmentList()) {
             dayToTeamAssignmentListMap.get(teamAssignment.getDay()).add(teamAssignment);
         }
-        // TODO replace by better collection of guava
         Map<List<Team>, Integer> teamPairToConfrontationCountMap = new HashMap<List<Team>, Integer>();
         for (Team left : teamList) {
             for (Team right : teamList) {
                 if (left != right) {
-                    List<Team> teamPair = new ArrayList<Team>(2);
-                    teamPair.add(left);
-                    teamPair.add(right);
+                    List<Team> teamPair = Arrays.asList(left, right);
                     teamPairToConfrontationCountMap.put(teamPair, 0);
                 }
             }
@@ -202,9 +200,7 @@ public class TennisPanel extends SolutionPanel {
             for (TeamAssignment left : teamAssignmentSubList) {
                 for (TeamAssignment right : teamAssignmentSubList) {
                     if (left.getTeam() != right.getTeam()) {
-                        List<Team> teamPair = new ArrayList<Team>(2);
-                        teamPair.add(left.getTeam());
-                        teamPair.add(right.getTeam());
+                        List<Team> teamPair = Arrays.asList(left.getTeam(), right.getTeam());
                         int confrontationCount = teamPairToConfrontationCountMap.get(teamPair);
                         confrontationCount++;
                         teamPairToConfrontationCountMap.put(teamPair, confrontationCount);
