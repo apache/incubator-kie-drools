@@ -35,7 +35,7 @@ public class FindNodeInstancesCommand extends AbstractHistoryLogCommand<List<Nod
     /** generated serial version UID */
     private static final long serialVersionUID = 5374910016873481604L;
 
-    @XmlAttribute(required=true)
+    @XmlAttribute(required=true, name="process-instance-id")
     @XmlSchemaType(name="long")
     private Long processInstanceId;
     

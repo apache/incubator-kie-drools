@@ -4,7 +4,9 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 
 import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.utils.ClassUtil;
@@ -19,8 +21,16 @@ import org.kie.internal.task.api.TaskPersistenceContext;
 public class GetTasksForProcessCommand extends TaskCommand<List<TaskSummary>> {
 
 	private static final long serialVersionUID = -3784821014329573243L;
+	
+	@XmlElement(name="process-instance-id")
+	@XmlSchemaType(name="long")
 	private Long processInstanceId;
+	
+	@XmlElement(name="status")
 	private List<Status> statuses;
+	
+	@XmlElement(name="language")
+    @XmlSchemaType(name="string")
 	private String language;
 	
 	public GetTasksForProcessCommand() {

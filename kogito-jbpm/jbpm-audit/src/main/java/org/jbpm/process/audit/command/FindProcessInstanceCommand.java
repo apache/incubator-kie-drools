@@ -32,7 +32,7 @@ public class FindProcessInstanceCommand extends AbstractHistoryLogCommand<Proces
     /** generated serial version UID */
     private static final long serialVersionUID = -7548733507155126870L;
 
-    @XmlAttribute(required=true)
+    @XmlAttribute(required=true, name="process-instance-id")
     @XmlSchemaType(name="long")
     private Long processInstanceId;
     

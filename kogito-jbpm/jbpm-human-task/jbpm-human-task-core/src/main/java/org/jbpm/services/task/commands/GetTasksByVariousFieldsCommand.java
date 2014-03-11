@@ -37,7 +37,7 @@ public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand
     @XmlElement
     private List<Long> taskIds;
     
-    @XmlElement(name="process-instance-id")
+    @XmlElement(name="process-instance-ids")
     private List<Long> procInstIds;
     
     @XmlElement(name="business-admin")

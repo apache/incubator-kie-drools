@@ -16,7 +16,7 @@ public class GetTasksByProcessInstanceIdCommand extends TaskCommand<List<Long>> 
 
 	private static final long serialVersionUID = -2328845811017055632L;
 
-	@XmlElement
+	@XmlElement(name="process-instance-id")
     @XmlSchemaType(name="long")
 	private Long processInstanceId;
 	

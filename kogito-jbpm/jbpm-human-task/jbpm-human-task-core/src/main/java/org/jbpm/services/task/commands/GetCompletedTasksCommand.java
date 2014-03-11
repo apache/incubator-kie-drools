@@ -21,7 +21,7 @@ public class GetCompletedTasksCommand extends TaskCommand<List<TaskSummary>> {
 	@XmlElement
 	private Date date;
 	
-	@XmlElement
+	@XmlElement(name="process-instance-id")
 	@XmlSchemaType(name="long")
 	private Long processInstanceId;
 
