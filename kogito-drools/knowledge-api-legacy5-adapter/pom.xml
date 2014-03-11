@@ -29,6 +29,10 @@
       <artifactId>drools-reteoo</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-decisiontables</artifactId>
+    </dependency>
+    <dependency>
     <!-- External dependencies -->
     <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
