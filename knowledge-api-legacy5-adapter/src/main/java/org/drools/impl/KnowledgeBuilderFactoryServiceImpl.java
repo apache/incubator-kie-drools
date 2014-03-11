@@ -1,5 +1,7 @@
 package org.drools.impl;
 
+import java.util.Properties;
+
 import org.drools.KnowledgeBase;
 import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.JaxbConfiguration;
@@ -8,14 +10,10 @@ import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
-import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
-
-import java.util.Properties;
+import org.drools.impl.adapters.KnowledgeBuilderConfigurationAdapter;
 
 import com.sun.tools.xjc.Options;
-import org.drools.impl.adapters.JaxbConfigurationAdapter;
-import org.drools.impl.adapters.KnowledgeBuilderConfigurationAdapter;
 
 public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFactoryService {
 
@@ -58,6 +56,6 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
 
     public JaxbConfiguration newJaxbConfiguration(Options xjcOpts,
                                                   String systemId) {
-        return new JaxbConfigurationAdapter(new JaxbConfigurationImpl( xjcOpts, systemId ));
+        return new org.drools.impl.JaxbConfigurationImpl( xjcOpts, systemId );
     }
 }
