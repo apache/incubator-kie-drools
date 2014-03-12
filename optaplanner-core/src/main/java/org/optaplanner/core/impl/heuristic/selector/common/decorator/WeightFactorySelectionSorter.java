@@ -10,12 +10,12 @@ import com.google.common.collect.Ordering;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
 
-public class WeightFactorySelectionSorter implements SelectionSorter<Object> {
+public class WeightFactorySelectionSorter<T> implements SelectionSorter<T> {
 
-    private final SelectionSorterWeightFactory<Solution, Object> selectionSorterWeightFactory;
+    private final SelectionSorterWeightFactory<Solution, T> selectionSorterWeightFactory;
     private final Comparator<Comparable> appliedWeightComparator;
 
-    public WeightFactorySelectionSorter(SelectionSorterWeightFactory<Solution, Object> selectionSorterWeightFactory,
+    public WeightFactorySelectionSorter(SelectionSorterWeightFactory<Solution, T> selectionSorterWeightFactory,
             SelectionSorterOrder selectionSorterOrder) {
         this.selectionSorterWeightFactory = selectionSorterWeightFactory;
         switch (selectionSorterOrder) {
@@ -31,12 +31,12 @@ public class WeightFactorySelectionSorter implements SelectionSorter<Object> {
         }
     }
 
-    public void sort(ScoreDirector scoreDirector, List<Object> selectionList) {
+    public void sort(ScoreDirector scoreDirector, List<T> selectionList) {
         Solution solution = scoreDirector.getWorkingSolution();
-        SortedMap<Comparable, Object> selectionMap = new TreeMap<Comparable, Object>(appliedWeightComparator);
-        for (Object selection : selectionList) {
+        SortedMap<Comparable, T> selectionMap = new TreeMap<Comparable, T>(appliedWeightComparator);
+        for (T selection : selectionList) {
             Comparable difficultyWeight = selectionSorterWeightFactory.createSorterWeight(solution, selection);
-            Object previous = selectionMap.put(difficultyWeight, selection);
+            T previous = selectionMap.put(difficultyWeight, selection);
             if (previous != null) {
                 throw new IllegalStateException("The selectionList contains 2 times the same selection ("
                         + previous + ") and (" + selection + ").");
