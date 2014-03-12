@@ -326,7 +326,7 @@ public class PlannerBenchmarkResult {
             }
         } else if (benchmarkReport.getSolverRankingWeightFactory() != null) {
             SortedMap<Comparable, List<SolverBenchmarkResult>> rankedMap
-                    = new TreeMap<Comparable, List<SolverBenchmarkResult>>(Ordering.arbitrary().reverse());
+                    = new TreeMap<Comparable, List<SolverBenchmarkResult>>(Collections.reverseOrder());
             for (SolverBenchmarkResult solverBenchmarkResult : rankableSolverBenchmarkResultList) {
                 Comparable rankingWeight = benchmarkReport.getSolverRankingWeightFactory()
                         .createRankingWeight(rankableSolverBenchmarkResultList, solverBenchmarkResult);

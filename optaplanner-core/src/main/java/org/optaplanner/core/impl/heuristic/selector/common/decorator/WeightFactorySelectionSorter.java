@@ -13,14 +13,14 @@ import org.optaplanner.core.impl.solution.Solution;
 public class WeightFactorySelectionSorter implements SelectionSorter<Object> {
 
     private final SelectionSorterWeightFactory<Solution, Object> selectionSorterWeightFactory;
-    private final Comparator<Object> appliedWeightComparator;
+    private final Comparator<Comparable> appliedWeightComparator;
 
     public WeightFactorySelectionSorter(SelectionSorterWeightFactory<Solution, Object> selectionSorterWeightFactory,
             SelectionSorterOrder selectionSorterOrder) {
         this.selectionSorterWeightFactory = selectionSorterWeightFactory;
         switch (selectionSorterOrder) {
             case ASCENDING:
-                this.appliedWeightComparator = Ordering.arbitrary();
+                this.appliedWeightComparator = Ordering.natural();
                 break;
             case DESCENDING:
                 this.appliedWeightComparator = Collections.reverseOrder();
