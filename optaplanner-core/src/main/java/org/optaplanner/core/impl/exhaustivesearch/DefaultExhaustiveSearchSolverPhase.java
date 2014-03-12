@@ -85,6 +85,7 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
         while (!expandableNodeQueue.isEmpty() && !termination.isPhaseTerminated(phaseScope)) {
             ExhaustiveSearchStepScope stepScope = new ExhaustiveSearchStepScope(phaseScope);
             ExhaustiveSearchNode node = expandableNodeQueue.last();
+            expandableNodeQueue.remove(node);
             stepScope.setExpandingNode(node);
             stepStarted(stepScope);
             restoreWorkingSolution(stepScope);
