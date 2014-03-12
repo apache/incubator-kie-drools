@@ -20,8 +20,11 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -98,6 +101,31 @@ public class XPATHReturnValueEvaluator
                 return context.getVariable(variableName.getLocalPart());
             }
         });
+    	
+    	xpathEvaluator.setNamespaceContext(new NamespaceContext() {
+			private static final String DROOLS_NAMESPACE_URI = "http://www.jboss.org/drools";
+			private String[] prefixes = {"drools", "bpmn2"};
+			@Override
+			public Iterator getPrefixes(String namespaceURI) {
+				return Arrays.asList(prefixes).iterator();
+			}
+			
+			@Override
+			public String getPrefix(String namespaceURI) {
+				if (DROOLS_NAMESPACE_URI.equalsIgnoreCase(namespaceURI)) {
+					return "bpmn2";
+				}
+				return null;
+			}
+			
+			@Override
+			public String getNamespaceURI(String prefix) {
+				if ("bpmn2".equalsIgnoreCase(prefix)) {
+					return DROOLS_NAMESPACE_URI;
+				}
+				return null;
+			}
+		});
 
 		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         return xpathEvaluator.evaluate(this.expression, builder.newDocument(), XPathConstants.BOOLEAN);
