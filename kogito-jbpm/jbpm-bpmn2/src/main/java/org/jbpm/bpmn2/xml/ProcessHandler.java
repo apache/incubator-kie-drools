@@ -823,7 +823,12 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                 handleIntermediateOrEndThrowCompensationEvent((EndNode) node);
             } else if( node instanceof ActionNode ) {
                 handleIntermediateOrEndThrowCompensationEvent((ActionNode) node);
-            } 
+            } else if( node instanceof EventNode ) {
+            	final EventNode eventNode = (EventNode) node;
+                if (!(eventNode instanceof BoundaryEventNode) && eventNode.getDefaultIncomingConnections().size() == 0) {
+                	throw new IllegalArgumentException("Event node '" + node.getName() + "' [" + node.getId() + "] has no incoming connection");
+                }
+            }  
         }
     }
 

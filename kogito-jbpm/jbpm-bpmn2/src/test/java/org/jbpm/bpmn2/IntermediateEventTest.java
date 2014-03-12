@@ -1675,6 +1675,18 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ksession.dispose();
         separateEmf.close();
     }
+    
+    @Test
+    public void testIntermediateCatchEventNoIncommingConnection() throws Exception {
+        try {
+	    	KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventNoIncommingConnection.bpmn2");
+	        ksession = createKnowledgeSession(kbase);
+        } catch (RuntimeException e) {
+        	assertNotNull(e.getMessage());
+        	assertTrue(e.getMessage().contains("has no incoming connection"));
+        }
+        
+    }
 
     /*
      * helper methods
