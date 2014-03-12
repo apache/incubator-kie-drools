@@ -49,8 +49,8 @@ public class RowStrengthWeightFactory implements SelectionSorterWeightFactory<NQ
 
         public int compareTo(RowStrengthWeight other) {
             return new CompareToBuilder()
-                    // The stronger rows have a lower distance to the middle
-                    .append(other.distanceFromMiddle, distanceFromMiddle) // Decreasing (but this is debatable)
+                    // The stronger rows are on the side, so they have a higher distance to the middle
+                    .append(distanceFromMiddle, other.distanceFromMiddle)
                     .append(row.getIndex(), other.row.getIndex())
                     .toComparison();
         }
