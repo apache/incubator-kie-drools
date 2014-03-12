@@ -121,7 +121,7 @@ public class Aether {
         return session;
     }
 
-    public void renewSesion() {
+    public void renewSession() {
         session = newRepositorySystemSession( system );
     }
 

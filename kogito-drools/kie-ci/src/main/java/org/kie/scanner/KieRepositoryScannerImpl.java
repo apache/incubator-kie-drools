@@ -277,7 +277,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
         ArtifactResolver artifactResolver = getArtifactResolver();
         // WORKAROUND: since aether doesn't obey update policy we have to create a new Session for each scan
-        artifactResolver.renewSesion();
+        artifactResolver.renewSession();
 
         for (Map.Entry<ReleaseId, DependencyDescriptor> entry : usedDependencies.entrySet()) {
             Artifact newArtifact = artifactResolver.resolveArtifact(entry.getKey());
