@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -119,7 +120,7 @@ public class ExcelParser
         int maxRows = sheet.getLastRowNum();
 
         CellRangeAddress[] mergedRanges = getMergedCells( sheet );
-        DataFormatter formatter = new DataFormatter();
+        DataFormatter formatter = new DataFormatter(Locale.ENGLISH);
         FormulaEvaluator formulaEvaluator = sheet.getWorkbook().getCreationHelper().createFormulaEvaluator();
 
         for ( int i = 0; i <= maxRows; i++ ) {
