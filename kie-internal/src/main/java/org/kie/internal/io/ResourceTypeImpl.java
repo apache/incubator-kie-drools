@@ -38,7 +38,9 @@ public class ResourceTypeImpl {
         try {
             // not sure how to get the proper classloader here, but the resource configurations
             // should be accessible from the current classloader
-            ResourceConfiguration conf = (ResourceConfiguration) Class.forName( className ).newInstance();
+            ClassLoader cl = ResourceConfiguration.class.getClassLoader();
+            Class<ResourceConfiguration> confClass = (Class<ResourceConfiguration>) cl.loadClass(className);
+            ResourceConfiguration conf = confClass.newInstance();
             conf.fromProperties( prop );
             return conf;
         } catch ( Exception e ) {

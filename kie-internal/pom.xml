@@ -33,6 +33,7 @@
               org.drools.core.impl,
               org.drools.core.io.impl,
               org.drools.decisiontable;resolution:=optional,
+              org.drools.core.builder.conf.impl;resolution:=optional,
               org.jbpm.bpmn2;resolution:=optional,
               org.jbpm.process.builder;resolution:=optional,
               org.jbpm.runtime.manager.impl;resolution:=optional,
