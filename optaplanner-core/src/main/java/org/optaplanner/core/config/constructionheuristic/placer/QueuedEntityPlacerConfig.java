@@ -98,8 +98,13 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
                 subMoveSelectorConfigList.add(changeMoveSelectorConfig);
             }
             if (true) { // TODO
-                moveSelectorConfigList_ = Collections.<MoveSelectorConfig>singletonList(
-                        new CartesianProductMoveSelectorConfig(subMoveSelectorConfigList));
+                MoveSelectorConfig subMoveSelectorConfig;
+                if (subMoveSelectorConfigList.size() > 1) {
+                    subMoveSelectorConfig = new CartesianProductMoveSelectorConfig(subMoveSelectorConfigList);
+                } else {
+                    subMoveSelectorConfig = subMoveSelectorConfigList.get(0);
+                }
+                moveSelectorConfigList_ = Collections.<MoveSelectorConfig>singletonList(subMoveSelectorConfig);
             } else {
                 moveSelectorConfigList_ = subMoveSelectorConfigList;
             }

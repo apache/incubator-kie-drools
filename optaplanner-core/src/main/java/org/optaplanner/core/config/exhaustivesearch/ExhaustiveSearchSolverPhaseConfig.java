@@ -202,7 +202,11 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
                 changeMoveSelectorConfig.setValueSelectorConfig(changeValueSelectorConfig);
                 subMoveSelectorConfigList.add(changeMoveSelectorConfig);
             }
-            moveSelectorConfig_ = new CartesianProductMoveSelectorConfig(subMoveSelectorConfigList);
+            if (subMoveSelectorConfigList.size() > 1) {
+                moveSelectorConfig_ = new CartesianProductMoveSelectorConfig(subMoveSelectorConfigList);
+            } else {
+                moveSelectorConfig_ = subMoveSelectorConfigList.get(0);
+            }
         } else {
             moveSelectorConfig_ = moveSelectorConfig;
         }
