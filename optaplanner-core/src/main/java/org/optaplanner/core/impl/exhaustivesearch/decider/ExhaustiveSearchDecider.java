@@ -144,7 +144,7 @@ public class ExhaustiveSearchDecider {
             phaseScope.assertWorkingScoreFromScratch(score, moveNode.getMove());
         }
         moveNode.setScore(score);
-        int uninitializedVariableCount = phaseScope.getDepthSize() - moveNode.getDepth();
+        int uninitializedVariableCount = moveNode.getUninitializedVariableCount();
         if (uninitializedVariableCount == 0) {
             // There is no point in bounding a fully initialized score
             phaseScope.registerPessimisticBound(score);

@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.exhaustivesearch;
 
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.exhaustivesearch.decider.ExhaustiveSearchDecider;
@@ -31,7 +30,6 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
 
 import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class DefaultExhaustiveSearchSolverPhaseTest {
 
@@ -45,11 +43,11 @@ public class DefaultExhaustiveSearchSolverPhaseTest {
         Solution workingSolution = mock(Solution.class);
         when(phaseScope.getWorkingSolution()).thenReturn(workingSolution);
 
-        ExhaustiveSearchLayer layer0 = new ExhaustiveSearchLayer(0, mock(Object.class));
-        ExhaustiveSearchLayer layer1 = new ExhaustiveSearchLayer(1, mock(Object.class));
-        ExhaustiveSearchLayer layer2 = new ExhaustiveSearchLayer(2, mock(Object.class));
-        ExhaustiveSearchLayer layer3 = new ExhaustiveSearchLayer(3, mock(Object.class));
-        ExhaustiveSearchLayer layer4 = new ExhaustiveSearchLayer(4, mock(Object.class));
+        ExhaustiveSearchLayer layer0 = new ExhaustiveSearchLayer(0, mock(Object.class), 100);
+        ExhaustiveSearchLayer layer1 = new ExhaustiveSearchLayer(1, mock(Object.class), 99);
+        ExhaustiveSearchLayer layer2 = new ExhaustiveSearchLayer(2, mock(Object.class), 98);
+        ExhaustiveSearchLayer layer3 = new ExhaustiveSearchLayer(3, mock(Object.class), 97);
+        ExhaustiveSearchLayer layer4 = new ExhaustiveSearchLayer(4, mock(Object.class), 96);
         ExhaustiveSearchNode node0 = new ExhaustiveSearchNode(layer0, null, 0);
         node0.setMove(mock(Move.class));
         node0.setUndoMove(mock(Move.class));

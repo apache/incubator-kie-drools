@@ -94,6 +94,10 @@ public class ExhaustiveSearchNode {
         return layer.getDepth();
     }
 
+    public int getUninitializedVariableCount() {
+        return layer.getUninitializedVariableCount();
+    }
+
     public Object getEntity() {
         return layer.getEntity();
     }

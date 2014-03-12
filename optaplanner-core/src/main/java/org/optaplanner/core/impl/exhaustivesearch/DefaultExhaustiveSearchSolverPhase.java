@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.exhaustivesearch;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -33,7 +32,6 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.AbstractSolverPhase;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
@@ -106,13 +104,20 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
                     + ") has an entitySize (" + entitySize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
-        List<ExhaustiveSearchLayer> layerList = new ArrayList<ExhaustiveSearchLayer>((int) entitySize);
+        int entitySizeInt = (int) entitySize;
+        List<ExhaustiveSearchLayer> layerList = new ArrayList<ExhaustiveSearchLayer>(entitySizeInt);
         int depth = 0;
         for (Object entity : entitySelector) {
-            ExhaustiveSearchLayer layer = new ExhaustiveSearchLayer(depth, entity);
+            ExhaustiveSearchLayer layer = new ExhaustiveSearchLayer(depth, entity, entitySizeInt - depth);
             layerList.add(layer);
             depth++;
         }
+        if ((entitySizeInt - depth) != 0) {
+            throw new IllegalStateException("The entitySelector (" + entitySelector + ")'s size ("
+                    + entitySizeInt + ") is not accurate enough for exhaustive search.");
+        }
+        ExhaustiveSearchLayer layer = new ExhaustiveSearchLayer(depth, null, entitySizeInt - depth);
+        layerList.add(layer);
         entitySelector.stepEnded(stepScope);
         phaseScope.setLayerList(layerList);
     }
