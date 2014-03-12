@@ -35,7 +35,7 @@ public class Aether {
     public static Aether instance;
 
     private final RepositorySystem system;
-    private final RepositorySystemSession session;
+    private RepositorySystemSession session;
     private final List<RemoteRepository> repositories;
 
     private RemoteRepository localRepository;
@@ -119,6 +119,10 @@ public class Aether {
 
     public RepositorySystemSession getSession() {
         return session;
+    }
+
+    public void renewSesion() {
+        session = newRepositorySystemSession( system );
     }
 
     public List<RemoteRepository> getRepositories() {
