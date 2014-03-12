@@ -981,4 +981,90 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         KnowledgePackage cpkg = client.getKnowledgePackages().iterator().next();
         assertTrue( ((RuleImpl) cpkg.getRules().iterator().next()).getRule().getResource() instanceof ByteArrayResource );
     }
+
+    @Test
+    public void testModifyPackageUrlWithCache() throws Exception {
+        File cacheDir = new File("target/test-tmp/cache");
+        cacheDir.mkdirs();
+        UrlResource.CACHE_DIR = cacheDir;
+
+        String rule1 = this.createDefaultRule( "rule1" );
+
+        String rule2 = this.createDefaultRule( "rule2" );
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( rule1.getBytes() ),
+                      ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource( rule2.getBytes() ),
+                      ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgePackage pkg = (KnowledgePackage) kbuilder.getKnowledgePackages().iterator().next();
+        writePackage( pkg,
+                      fileManager.newFile( "pkg1.pkg" ) );
+
+        String xml = "";
+        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
+        xml += "    <add> ";
+        xml += "        <resource source='http://localhost:" + this.getPort() + "/pkg1.pkg' type='PKG' />";
+        xml += "    </add> ";
+        xml += "</change-set>";
+        File fxml = fileManager.write( "changeset.xml",
+                                       xml );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        KnowledgeAgent kagent = this.createKAgent( kbase );
+
+        applyChangeSet( kagent, ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
+
+        StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list",
+                            list );
+        ksession.fireAllRules();
+        ksession.dispose();
+
+        assertEquals( 2,
+                      list.size() );
+        assertTrue( list.contains( "rule1" ) );
+        assertTrue( list.contains( "rule2" ) );
+
+        list.clear();
+
+        rule1 = this.createDefaultRule( "rule3" );
+
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( rule1.getBytes() ),
+                      ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource( rule2.getBytes() ),
+                      ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        pkg = (KnowledgePackage) kbuilder.getKnowledgePackages().iterator().next();
+        writePackage( pkg,
+                      fileManager.newFile( "pkg1.pkg" ) );
+
+        scan( kagent );
+
+        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        list = new ArrayList<String>();
+        ksession.setGlobal( "list",
+                            list );
+        ksession.fireAllRules();
+        ksession.dispose();
+
+        assertEquals( 2,
+                      list.size() );
+
+        assertTrue( list.contains( "rule3" ) );
+        assertTrue( list.contains( "rule2" ) );
+        kagent.dispose();
+
+        UrlResource.CACHE_DIR = null; // make sure subsequent tests will not be affected
+    }
 }

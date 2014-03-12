@@ -6,6 +6,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.core.util.FileManager;
+import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.io.impl.UrlResource;
 import org.drools.io.impl.ResourceChangeScannerImpl;
@@ -36,7 +37,7 @@ public class UrlResourceTest {
         ResourceFactory.getResourceChangeNotifierService().start();
         ResourceFactory.getResourceChangeScannerService().start();
 
-        this.server = new Server(0);
+        this.server = new Server(IoUtils.findPort());
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setResourceBase( fileManager.getRootDirectory().getPath() );
         System.out.println("root : " + fileManager.getRootDirectory().getPath() );
@@ -59,6 +60,8 @@ public class UrlResourceTest {
         ((ResourceChangeScannerImpl) ResourceFactory.getResourceChangeScannerService()).reset();
 
         server.stop();
+
+        UrlResource.CACHE_DIR = null; // make sure subsequent tests will not be affected
     }
 
 
@@ -81,15 +84,17 @@ public class UrlResourceTest {
 
         InputStream ins = ur.getInputStream();
         assertNotNull(ins);
+        ins.close();
 
         server.stop();
 
-        assertNotNull(ur.getInputStream());
+        ins = ur.getInputStream();
+        assertNotNull(ins);
 
         assertTrue(ur.getLastModified() > 0);
 
-        assertTrue(ur.getInputStream() instanceof FileInputStream);
-
+        assertTrue(ins instanceof FileInputStream);
+        ins.close();
 
         //now write some more stuff
         Thread.sleep(1000);
@@ -103,8 +108,11 @@ public class UrlResourceTest {
         url = new URL("http://localhost:"+this.getPort()+"/rule1.drl");
         ur = new UrlResource(url);
 
-        assertNotNull(ur.getInputStream());
-        assertFalse(ur.getInputStream() instanceof FileInputStream);
+        ins = ur.getInputStream();
+        assertNotNull(ins);
+        assertTrue(ins instanceof FileInputStream); // returns FileInputStream right after cache update
+        ins.close();
+
         long lm_ = ur.getLastModified();
         System.err.println("lm_ : " + lm_ + " lm : " + lm );
 
@@ -114,6 +122,7 @@ public class UrlResourceTest {
         BufferedReader rdr = new BufferedReader(new InputStreamReader(in_));
         String line = rdr.readLine();
         assertEquals("More data...", line);
+        rdr.close();
 
         server.stop();
 
@@ -129,6 +138,7 @@ public class UrlResourceTest {
         rdr = new BufferedReader(new InputStreamReader(in_));
         line = rdr.readLine();
         assertEquals("More data...", line);
+        rdr.close();
 
         Thread.sleep(1000);
         server.start();
@@ -136,16 +146,12 @@ public class UrlResourceTest {
         url = new URL("http://localhost:"+this.getPort()+"/rule1.drl");
         ur = new UrlResource(url);
 
-        ur = new UrlResource(url);
         //server is started, so should have latest...
         in_= ur.getInputStream();
         rdr = new BufferedReader(new InputStreamReader(in_));
         line = rdr.readLine();
         assertEquals("Finally..", line);
-
-
-
-
+        rdr.close();
     }
 
     @Test
@@ -164,16 +170,98 @@ public class UrlResourceTest {
 
         InputStream ins = ur.getInputStream();
         assertNotNull(ins);
+        ins.close();
 
         server.stop();
         assertEquals(0, ur.getLastModified());
-
-
-
-
-
     }
 
+    @Test
+    public void testWithCacheForSameInstance() throws Exception {
+        URL url = new URL("http://localhost:"+this.getPort()+"/rule1.drl");
+        UrlResource ur = new UrlResource(url);
+        File cacheDir = new File("target/test-tmp/cache");
+        cacheDir.mkdirs();
+        UrlResource.CACHE_DIR = cacheDir;
 
-    
+        File f1 = fileManager.newFile( "rule1.drl" );
+        System.err.println("target file: " + f1.getAbsolutePath());
+        Writer output = new BufferedWriter( new FileWriter( f1 ) );
+        output.write( "Some data" );
+        output.close();
+
+        long lm = ur.getLastModified();
+        assertTrue(lm > 0);
+
+        InputStream ins = ur.getInputStream();
+        assertNotNull(ins);
+        ins.close();
+
+        server.stop();
+
+        ins = ur.getInputStream();
+        assertNotNull(ins);
+
+        assertTrue(ur.getLastModified() > 0);
+
+        assertTrue(ins instanceof FileInputStream);
+        ins.close();
+
+        //now write some more stuff
+        Thread.sleep(1000);
+        f1.delete();
+        output = new BufferedWriter( new FileWriter( f1 ) );
+        output.write( "More data..." );
+        output.close();
+
+        server.start();
+
+        url = new URL("http://localhost:"+this.getPort()+"/rule1.drl");
+        ur = new UrlResource(url);
+
+        ins = ur.getInputStream();
+        assertNotNull(ins);
+        assertTrue(ins instanceof FileInputStream); // returns FileInputStream right after cache update
+        ins.close();
+
+        long lm_ = ur.getLastModified();
+        System.err.println("lm_ : " + lm_ + " lm : " + lm );
+
+        assertTrue(lm_ > lm);
+
+        InputStream in_= ur.getInputStream();
+        BufferedReader rdr = new BufferedReader(new InputStreamReader(in_));
+        String line = rdr.readLine();
+        assertEquals("More data...", line);
+        rdr.close();
+
+        server.stop();
+
+        Thread.sleep(1000);
+        f1.delete();
+        output = new BufferedWriter( new FileWriter( f1 ) );
+        output.write( "Finally.." );
+        output.close();
+
+        //now it should be cached, so using old copy still... (server has stopped serving it up)
+        ur = new UrlResource(url);
+        in_= ur.getInputStream();
+        rdr = new BufferedReader(new InputStreamReader(in_));
+        line = rdr.readLine();
+        assertEquals("More data...", line);
+        rdr.close();
+
+        Thread.sleep(1000);
+        server.start();
+
+        url = new URL("http://localhost:"+this.getPort()+"/rule1.drl");
+        ur = new UrlResource(url);
+
+        //server is started, so should have latest...
+        in_= ur.getInputStream();
+        rdr = new BufferedReader(new InputStreamReader(in_));
+        line = rdr.readLine();
+        assertEquals("Finally..", line);
+        rdr.close();
+    }
 }

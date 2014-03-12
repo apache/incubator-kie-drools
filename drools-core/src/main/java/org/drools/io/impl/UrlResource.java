@@ -203,7 +203,18 @@ public class UrlResource extends BaseResource
             in.close();
 
             File cacheFile = getCacheFile();
-            fi.renameTo(cacheFile);
+            boolean result = fi.renameTo(cacheFile);
+            if (!result) {
+                // BZ1075293 Windows fails to rename when a target file exists
+                if (cacheFile.exists()) {
+                    cacheFile.delete();
+                }
+                boolean result2 = fi.renameTo(cacheFile);
+                if (!result2) {
+                    throw new RuntimeException("Failed to rename a tmp file to a cache file. " +
+                            "Possible cause is missing stream close: cacheFile = " + cacheFile.getAbsolutePath());
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
