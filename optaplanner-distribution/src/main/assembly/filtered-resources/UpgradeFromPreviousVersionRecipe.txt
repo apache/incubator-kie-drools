@@ -3712,7 +3712,7 @@ Instead it has getConstraintPackage(), getConstraintName() and getScoreLevel().
 
 
 From 6.0.0.Final to 6.1.0.Beta1
---------------------------------
+-------------------------------
 
 [MINOR] Simulated Annealing now uses the time gradient of the current step instead of the time gradient of the last step.
 The impact of this change is negligible.
@@ -3953,6 +3953,10 @@ Before in *.java:
     import org.optaplanner.core.impl.bestsolution.BestSolutionRecaller;
 After in *.java:
     import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
+
+
+From 6.1.0.Beta1 to 6.1.0.Beta2
+-------------------------------
 
 [IMPL_DETAIL] PlanningEntityDescriptor has been renamed to EntityDescriptor.
 [IMPL_DETAIL] PlanningVariableDescriptor has been renamed to GenuineVariableDescriptor.
