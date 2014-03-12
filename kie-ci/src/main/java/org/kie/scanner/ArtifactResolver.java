@@ -139,4 +139,8 @@ class ArtifactResolver {
             return deps;
         }
     }
+
+    public void renewSesion() {
+        mavenRepository.renewSesion();
+    }
 }
