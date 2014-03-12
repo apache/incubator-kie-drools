@@ -140,7 +140,7 @@ class ArtifactResolver {
         }
     }
 
-    public void renewSesion() {
-        mavenRepository.renewSesion();
+    public void renewSession() {
+        mavenRepository.renewSession();
     }
 }

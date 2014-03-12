@@ -290,7 +290,7 @@ public class MavenRepository {
         return releaseId.getArtifactId() + "-" + releaseId.getVersion();
     }
 
-    public void renewSesion() {
-        aether.renewSesion();
+    public void renewSession() {
+        aether.renewSession();
     }
 }
