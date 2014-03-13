@@ -45,14 +45,13 @@ import java.util.StringTokenizer;
 
 public class PMML4Helper {
 
-    private static String pack;
 
     private static final String innerFieldPrefix = "__$Inner";
 
     private static int counter = 0;
 
     private Set<String> definedModelBeans;
-    private TypeResolver resolver;
+    private ClassLoader resolver;
 
     public int nextCount() {
         return counter++;
@@ -67,7 +66,8 @@ public class PMML4Helper {
         return name != null && name.startsWith( innerFieldPrefix );
     }
 
-    public static String context = null;
+    private String context = null;
+    private String pack;
 
 
     public PMML4Helper() {
@@ -84,9 +84,24 @@ public class PMML4Helper {
         return PMML4Helper.pmmlDefaultPackageName();
     }
 
+    public String getContext() {
+        return context;
+    }
+
+    public void setContext( String context ) {
+        this.context = context;
+    }
 
     public void addModelBeanDefinition(String beanType) {
         this.definedModelBeans.add(beanType);
+    }
+
+    public ClassLoader getResolver() {
+        return resolver;
+    }
+
+    public void setResolver( ClassLoader resolver ) {
+        this.resolver = resolver;
     }
 
     public boolean isModelBeanDefined(String beanType) {
@@ -113,7 +128,7 @@ public class PMML4Helper {
             }
         } else if (flag) {
             try {
-                resolver.resolveType(pack+"."+beanType);
+                Class.forName( pack + "." + beanType, false, resolver );
                 return true;
             } catch (ClassNotFoundException cnfe) {
                 definedModelBeans.remove(beanType);
@@ -125,15 +140,6 @@ public class PMML4Helper {
     }
 
 
-    public TypeResolver getResolver() {
-        return resolver;
-    }
-
-    public void setResolver(TypeResolver resolver) {
-        this.resolver = resolver;
-    }
-
-
     public void applyTemplate(String templateName, Object context, TemplateRegistry registry, Map vars, StringBuilder builder) {
         CompiledTemplate template = registry.getNamedTemplate(templateName);
         String result = (String) TemplateRuntime.execute( template, context, vars );
@@ -141,10 +147,10 @@ public class PMML4Helper {
     }
 
 
-    public static String getPack() {
+    public String getPack() {
         return pack;
     }
-    public static void setPack(String packageName) {
+    public void setPack(String packageName) {
         pack = packageName;
     }
 

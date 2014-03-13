@@ -25,23 +25,16 @@ import org.dmg.pmml.pmml_4_1.descr.Scorecard;
 import org.dmg.pmml.pmml_4_1.descr.SupportVectorMachineModel;
 import org.dmg.pmml.pmml_4_1.descr.TreeModel;
 import org.drools.compiler.compiler.PMMLCompiler;
-import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.core.io.impl.ClassPathResource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.KieRepository;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.event.rule.DefaultRuleRuntimeEventListener;
 import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.mvel2.templates.SimpleTemplateRegistry;
 import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRegistry;
@@ -54,6 +47,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -63,7 +57,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class PMML4Compiler implements PMMLCompiler {
 
@@ -268,8 +261,9 @@ public class PMML4Compiler implements PMMLCompiler {
     }
 
 
-
-
+    public PMML4Helper getHelper() {
+        return helper;
+    }
 
     public String generateTheory( PMML pmml ) {
         StringBuilder sb = new StringBuilder();
@@ -443,23 +437,49 @@ public class PMML4Compiler implements PMMLCompiler {
     }
 
 
-    public String compile(String fileName, Map<String,PackageRegistry> registries) {
-        InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream( RESOURCE_PATH + "/" + fileName );
-        return compile(stream,registries);
+    public String compile( String resource, ClassLoader classLoader ) {
+        String theory = null;
+        Resource cpr = new ClassPathResource( resource );
+        try {
+            theory = compile( cpr.getInputStream(), classLoader );
+        } catch ( IOException e ) {
+            results.add( new PMMLError( e.toString() ) );
+            e.printStackTrace();
+        }
+        return theory;
+    }
+
+    public Resource[] transform( Resource resource, ClassLoader classLoader ) {
+        String theory = null;
+        try {
+            theory = compile( resource.getInputStream(), classLoader );
+        } catch ( IOException e ) {
+            results.add( new PMMLError( e.toString() ) );
+            e.printStackTrace();
+            return new Resource[ 0 ];
+        }
+        return new Resource[] { buildOutputResource( resource, theory ) };
+    }
+
+    private Resource buildOutputResource( Resource resource, String theory ) {
+        ByteArrayResource byteArrayResource = new ByteArrayResource( theory.getBytes() );
+        byteArrayResource.setResourceType( ResourceType.PMML );
+
+        if ( resource.getSourcePath() != null ) {
+            String originalPath = resource.getSourcePath();
+            int start = originalPath.lastIndexOf( File.separator );
+            byteArrayResource.setSourcePath( "generated-sources/" + originalPath.substring( start ) + ".pmml" );
+        } else {
+            byteArrayResource.setSourcePath( "generated-sources/" + helper.getContext() + ".pmml" );
+        }
+        return byteArrayResource;
     }
 
 
-    public String compile(InputStream source, Map<String,PackageRegistry> registries) {
+    public String compile( InputStream source, ClassLoader classLoader ) {
         this.results = new ArrayList<KnowledgeBuilderResult>();
         PMML pmml = loadModel( PMML, source );
-        if ( registries != null ) {
-            if ( registries.containsKey( helper.getPack() ) ) {
-                helper.setResolver( registries.get( helper.getPack() ).getTypeResolver() );
-            } else {
-                helper.setResolver( null );
-            }
-
-        }
+        helper.setResolver( classLoader );
         if ( getResults().isEmpty() ) {
             return generateTheory( pmml );
         } else {

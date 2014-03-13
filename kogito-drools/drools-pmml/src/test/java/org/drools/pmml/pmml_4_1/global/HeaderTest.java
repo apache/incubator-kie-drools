@@ -26,6 +26,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.definition.KnowledgePackage;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -42,11 +43,7 @@ public class HeaderTest extends DroolsAbstractPMMLTest {
 
     @Test
     public void testPMMLHeader() {
-        String source = "test_header.xml";
-
-
-		PMML4Helper wrapper = new PMML4Helper();
-			wrapper.setPack("org.drools.pmml.pmml_4_1.test");
+        String source = PMML4Helper.pmmlDefaultPackageName().replace( ".", File.separator ) + File.separator + "test_header.xml";
 
         boolean header = false;
         boolean timestamp = false;
@@ -55,7 +52,10 @@ public class HeaderTest extends DroolsAbstractPMMLTest {
         boolean copyright = false;
         boolean annotation = false;
 
-		String theory = new PMML4Compiler().compile(source,null);
+        PMML4Compiler compiler = new PMML4Compiler();
+        compiler.getHelper().setPack( "org.drools.pmml.pmml_4_1.test" );
+
+        String theory = compiler.compile(  source, null );
         BufferedReader reader = new BufferedReader(new StringReader(theory));
         try {
             String line = "";

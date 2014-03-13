@@ -25,7 +25,7 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 
 public interface PMMLCompiler extends Service {
 
-    public String compile(InputStream stream, Map<String,PackageRegistry> registries);
+    public String compile( InputStream stream, ClassLoader classLoader );
 
     public List<KnowledgeBuilderResult> getResults();
 
