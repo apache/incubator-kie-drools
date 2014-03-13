@@ -296,8 +296,10 @@ public class ObjectTypeNode extends ObjectSource
                                                                                       this );
             TimerService clock = workingMemory.getTimerService();
 
+            // DROOLS-455 the calculation of the effectiveEnd may overflow and become negative
+            long effectiveEnd = ((EventFactHandle) factHandle).getEndTimestamp() + this.expirationOffset;
             long nextTimestamp = Math.max( clock.getCurrentTime(),
-                                           ((EventFactHandle) factHandle).getEndTimestamp() + this.expirationOffset );
+                                           effectiveEnd >= 0 ? effectiveEnd : Long.MAX_VALUE );
             JobContext jobctx = new ExpireJobContext( expire,
                                                       workingMemory );
             JobHandle handle = clock.scheduleJob( job,
