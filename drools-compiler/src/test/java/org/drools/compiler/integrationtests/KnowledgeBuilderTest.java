@@ -478,7 +478,7 @@ public class KnowledgeBuilderTest {
         KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         PMMLCompilerFactory.setProvider(new PMMLCompiler() {
-            public String compile(InputStream stream, Map<String, PackageRegistry> registries) {
+            public String compile(InputStream stream, ClassLoader cl) {
                 return "rule R2 when then end";
             }
 
@@ -490,6 +490,10 @@ public class KnowledgeBuilderTest {
             @Override
             public void clearResults() {
                 //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public Resource[] transform( Resource input, ClassLoader classLoader ) {
+                return new Resource[ 0 ];
             }
         });
 
