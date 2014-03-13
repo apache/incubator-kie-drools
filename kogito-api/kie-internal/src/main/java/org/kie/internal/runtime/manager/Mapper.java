@@ -36,25 +36,25 @@ public interface Mapper {
 	 * @param context instance of the context to be stored
 	 * @param ksessionId actual identifier of ksession
 	 */
-    void saveMapping(Context<?> context, Integer ksessionId);
+    void saveMapping(Context<?> context, Integer ksessionId, String ownerId);
     
     /**
      * Finds ksession for given context
      * @param context instance of the context
      * @return ksession identifier when found otherwise null
      */
-    Integer findMapping(Context<?> context);
+    Integer findMapping(Context<?> context, String ownerId);
     
     /**
      * Finds context by ksession identifier
      * @param ksessionId identifier of ksession
      * @return context instance when wound otherwise null
      */
-    Object findContextId(Integer ksessionId);
+    Object findContextId(Integer ksessionId, String ownerId);
     
     /**
      * Remove permanently context to ksession id mapping
      * @param context context instance that mapping shall be removed for
      */
-    void removeMapping(Context<?> context);
+    void removeMapping(Context<?> context, String ownerId);
 }
