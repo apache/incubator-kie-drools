@@ -19,27 +19,26 @@ package org.optaplanner.core.impl.exhaustivesearch.node.comparator;
 import java.util.Comparator;
 
 import org.junit.Test;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
-public class DepthFirstNodeComparatorTest extends AbstractNodeComparatorTest {
+public class BreadthFirstNodeComparatorTest extends AbstractNodeComparatorTest {
 
     @Test
     public void compare() {
-        DepthFirstNodeComparator comparator = new DepthFirstNodeComparator();
+        BreadthFirstNodeComparator comparator = new BreadthFirstNodeComparator();
         assertScoreCompareToOrder(comparator,
-                buildNode(1, -110, 5),
-                buildNode(1, -110, 7),
-                buildNode(1, -90, 5),
-                buildNode(1, -90, 7),
-                buildNode(2, -110, 5),
                 buildNode(2, -110, 7),
+                buildNode(2, -110, 5),
+                buildNode(2, -90, 7),
                 buildNode(2, -90, 5),
-                buildNode(2, -90, 7));
+                buildNode(1, -110, 7),
+                buildNode(1, -110, 5),
+                buildNode(1, -90, 7),
+                buildNode(1, -90, 5));
     }
 
 }
