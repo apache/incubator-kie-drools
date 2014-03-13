@@ -4664,6 +4664,67 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
+    @Test
+    public void testEventOffsetExpirationOverflow() {
+        // DROOLS-455
+        String drl = "\n" +
+                     "import java.util.*; " +
+                     "" +
+                     "declare LongLastingEvent \n" +
+                     " @role( event )" +
+                     " @timestamp( start ) " +
+                     " @duration( duration ) " +
+                     "      start : long " +
+                     "      duration : long " +
+                     "end \n" +
+                     "" +
+                     "rule Insert " +
+                     "  when " +
+                     "  then " +
+                     "      insert( new LongLastingEvent( 100, Long.MAX_VALUE ) ); " +
+                     "  end " +
+                     " " +
+                     " " +
+                     "rule Collect \n" +
+                     "when\n" +
+                     " accumulate( $x: LongLastingEvent() over window:time(1h), $num : count($x) ) \n" +
+                     "then " +
+                     "end " +
+                     "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        //init stateful knowledge session
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sessionConfig, null );
+
+        SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
+
+        // generate the event
+        ksession.fireAllRules();
+
+        // move on..
+        clock.advanceTime( 10, TimeUnit.SECONDS );
+
+        ksession.fireAllRules();
+
+        // The event should still be there...
+
+        assertEquals( 1, ksession.getObjects().size() );
+
+        ksession.dispose();
+    }
+
 
 
 }
