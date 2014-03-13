@@ -21,25 +21,25 @@ import java.util.Comparator;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 
 /**
- * Investigate deeper nodes first, then better optimistic bound.
+ * Investigate the nodes with a better optimistic bound first, then deeper nodes.
  */
-public class DepthFirstNodeComparator implements Comparator<ExhaustiveSearchNode> {
+public class OptimisticBoundFirstNodeComparator implements Comparator<ExhaustiveSearchNode> {
 
     @Override
     public int compare(ExhaustiveSearchNode a, ExhaustiveSearchNode b) {
+        // Investigate better optimistic bound first
+        int optimisticBoundComparison = a.getOptimisticBound().compareTo(b.getOptimisticBound());
+        if (optimisticBoundComparison < 0) {
+            return -1;
+        } else if (optimisticBoundComparison > 0) {
+            return 1;
+        }
         // Investigate deeper first
         int aDepth = a.getDepth();
         int bDepth = b.getDepth();
         if (aDepth < bDepth) {
             return -1;
         } else if (aDepth > bDepth) {
-            return 1;
-        }
-        // Investigate better optimistic bound first
-        int optimisticBoundComparison = a.getOptimisticBound().compareTo(b.getOptimisticBound());
-        if (optimisticBoundComparison < 0) {
-            return -1;
-        } else if (optimisticBoundComparison > 0) {
             return 1;
         }
         // Investigate higher index first (to reduce the churn on workingSolution)
