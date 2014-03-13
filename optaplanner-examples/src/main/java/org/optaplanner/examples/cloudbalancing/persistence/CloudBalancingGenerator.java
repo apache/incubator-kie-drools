@@ -115,6 +115,22 @@ public class CloudBalancingGenerator extends LoggingMain {
         writeCloudBalance(2, 6);
         writeCloudBalance(3, 9);
         writeCloudBalance(4, 12);
+//        writeCloudBalance(5, 15);
+//        writeCloudBalance(6, 18);
+//        writeCloudBalance(7, 21);
+//        writeCloudBalance(8, 24);
+//        writeCloudBalance(9, 27);
+//        writeCloudBalance(10, 30);
+//        writeCloudBalance(11, 33);
+//        writeCloudBalance(12, 36);
+//        writeCloudBalance(13, 39);
+//        writeCloudBalance(14, 42);
+//        writeCloudBalance(15, 45);
+//        writeCloudBalance(16, 48);
+//        writeCloudBalance(17, 51);
+//        writeCloudBalance(18, 54);
+//        writeCloudBalance(19, 57);
+//        writeCloudBalance(20, 60);
         writeCloudBalance(100, 300);
         writeCloudBalance(200, 600);
         writeCloudBalance(400, 1200);
@@ -128,57 +144,58 @@ public class CloudBalancingGenerator extends LoggingMain {
         }
     }
 
-    private void writeCloudBalance(int cloudComputerListSize, int cloudProcessListSize) {
-        String inputId = determineInputId(cloudComputerListSize, cloudProcessListSize);
+    private void writeCloudBalance(int computerListSize, int processListSize) {
+        String inputId = determineInputId(computerListSize, processListSize);
         File outputFile = new File(outputDir, inputId + ".xml");
-        CloudBalance cloudBalance = createCloudBalance(inputId, cloudComputerListSize, cloudProcessListSize);
+        CloudBalance cloudBalance = createCloudBalance(inputId, computerListSize, processListSize);
         solutionDao.writeSolution(cloudBalance, outputFile);
     }
 
-    private String determineInputId(int cloudComputerListSize, int cloudProcessListSize) {
-        return cloudComputerListSize + "computers-" + cloudProcessListSize + "processes";
+    private String determineInputId(int computerListSize, int processListSize) {
+        return computerListSize + "computers-" + processListSize + "processes";
     }
 
-    public CloudBalance createCloudBalance(int cloudComputerListSize, int cloudProcessListSize) {
-        return createCloudBalance(determineInputId(cloudComputerListSize, cloudProcessListSize),
-                cloudComputerListSize, cloudProcessListSize);
+    public CloudBalance createCloudBalance(int computerListSize, int processListSize) {
+        return createCloudBalance(determineInputId(computerListSize, processListSize),
+                computerListSize, processListSize);
     }
 
-    public CloudBalance createCloudBalance(String inputId, int cloudComputerListSize, int cloudProcessListSize) {
+    public CloudBalance createCloudBalance(String inputId, int computerListSize, int processListSize) {
         random = new Random(47);
         CloudBalance cloudBalance = new CloudBalance();
         cloudBalance.setId(0L);
-        createCloudComputerList(cloudBalance, cloudComputerListSize);
-        createCloudProcessList(cloudBalance, cloudProcessListSize);
+        createComputerList(cloudBalance, computerListSize);
+        createProcessList(cloudBalance, processListSize);
+        assureComputerCapacityTotalAtLeastProcessRequiredTotal(cloudBalance);
         BigInteger possibleSolutionSize = BigInteger.valueOf(cloudBalance.getComputerList().size()).pow(
                 cloudBalance.getProcessList().size());
         logger.info("CloudBalance {} has {} computers and {} processes with a search space of {}.",
-                inputId, cloudComputerListSize, cloudProcessListSize,
+                inputId, computerListSize, processListSize,
                 AbstractSolutionImporter.getFlooredPossibleSolutionSize(possibleSolutionSize));
         return cloudBalance;
     }
 
-    private void createCloudComputerList(CloudBalance cloudBalance, int cloudComputerListSize) {
-        List<CloudComputer> cloudComputerList = new ArrayList<CloudComputer>(cloudComputerListSize);
-        for (int i = 0; i < cloudComputerListSize; i++) {
-            CloudComputer cloudComputer = new CloudComputer();
-            cloudComputer.setId((long) i);
+    private void createComputerList(CloudBalance cloudBalance, int computerListSize) {
+        List<CloudComputer> computerList = new ArrayList<CloudComputer>(computerListSize);
+        for (int i = 0; i < computerListSize; i++) {
+            CloudComputer computer = new CloudComputer();
+            computer.setId((long) i);
             int cpuPowerPricesIndex = random.nextInt(CPU_POWER_PRICES.length);
-            cloudComputer.setCpuPower(CPU_POWER_PRICES[cpuPowerPricesIndex].getHardwareValue());
+            computer.setCpuPower(CPU_POWER_PRICES[cpuPowerPricesIndex].getHardwareValue());
             int memoryPricesIndex = distortIndex(cpuPowerPricesIndex, MEMORY_PRICES.length);
-            cloudComputer.setMemory(MEMORY_PRICES[memoryPricesIndex].getHardwareValue());
+            computer.setMemory(MEMORY_PRICES[memoryPricesIndex].getHardwareValue());
             int networkBandwidthPricesIndex = distortIndex(cpuPowerPricesIndex, NETWORK_BANDWIDTH_PRICES.length);
-            cloudComputer.setNetworkBandwidth(NETWORK_BANDWIDTH_PRICES[networkBandwidthPricesIndex].getHardwareValue());
+            computer.setNetworkBandwidth(NETWORK_BANDWIDTH_PRICES[networkBandwidthPricesIndex].getHardwareValue());
             int cost = CPU_POWER_PRICES[cpuPowerPricesIndex].getCost()
                     + MEMORY_PRICES[memoryPricesIndex].getCost()
                     + NETWORK_BANDWIDTH_PRICES[networkBandwidthPricesIndex].getCost();
-            logger.trace("Created cloudComputer with cpuPowerPricesIndex ({}), memoryPricesIndex({}),"
+            logger.trace("Created computer with cpuPowerPricesIndex ({}), memoryPricesIndex({}),"
                     + " networkBandwidthPricesIndex({}).",
                     cpuPowerPricesIndex, memoryPricesIndex, networkBandwidthPricesIndex);
-            cloudComputer.setCost(cost);
-            cloudComputerList.add(cloudComputer);
+            computer.setCost(cost);
+            computerList.add(computer);
         }
-        cloudBalance.setComputerList(cloudComputerList);
+        cloudBalance.setComputerList(computerList);
     }
 
     private int distortIndex(int referenceIndex, int length) {
@@ -197,24 +214,24 @@ public class CloudBalancingGenerator extends LoggingMain {
         return index;
     }
 
-    private void createCloudProcessList(CloudBalance cloudBalance, int cloudProcessListSize) {
-        List<CloudProcess> cloudProcessList = new ArrayList<CloudProcess>(cloudProcessListSize);
-        for (int i = 0; i < cloudProcessListSize; i++) {
-            CloudProcess cloudProcess = new CloudProcess();
-            cloudProcess.setId((long) i);
+    private void createProcessList(CloudBalance cloudBalance, int processListSize) {
+        List<CloudProcess> processList = new ArrayList<CloudProcess>(processListSize);
+        for (int i = 0; i < processListSize; i++) {
+            CloudProcess process = new CloudProcess();
+            process.setId((long) i);
             int requiredCpuPower = generateRandom(MAXIMUM_REQUIRED_CPU_POWER);
-            cloudProcess.setRequiredCpuPower(requiredCpuPower);
+            process.setRequiredCpuPower(requiredCpuPower);
             int requiredMemory = generateRandom(MAXIMUM_REQUIRED_MEMORY);
-            cloudProcess.setRequiredMemory(requiredMemory);
+            process.setRequiredMemory(requiredMemory);
             int requiredNetworkBandwidth = generateRandom(MAXIMUM_REQUIRED_NETWORK_BANDWIDTH);
-            cloudProcess.setRequiredNetworkBandwidth(requiredNetworkBandwidth);
+            process.setRequiredNetworkBandwidth(requiredNetworkBandwidth);
             logger.trace("Created CloudProcess with requiredCpuPower ({}), requiredMemory({}),"
                     + " requiredNetworkBandwidth({}).",
                     requiredCpuPower, requiredMemory, requiredNetworkBandwidth);
             // Notice that we leave the PlanningVariable properties on null
-            cloudProcessList.add(cloudProcess);
+            processList.add(process);
         }
-        cloudBalance.setProcessList(cloudProcessList);
+        cloudBalance.setProcessList(processList);
     }
 
     private int generateRandom(int maximumValue) {
@@ -229,6 +246,56 @@ public class CloudBalancingGenerator extends LoggingMain {
             throw new IllegalArgumentException("Invalid generated value (" + value + ")");
         }
         return value;
+    }
+
+    private void assureComputerCapacityTotalAtLeastProcessRequiredTotal(CloudBalance cloudBalance) {
+        List<CloudComputer> computerList = cloudBalance.getComputerList();
+        int cpuPowerTotal = 0;
+        int memoryTotal = 0;
+        int networkBandwidthTotal = 0;
+        for (CloudComputer computer : computerList) {
+            cpuPowerTotal += computer.getCpuPower();
+            memoryTotal += computer.getMemory();
+            networkBandwidthTotal += computer.getNetworkBandwidth();
+        }
+        int requiredCpuPowerTotal = 0;
+        int requiredMemoryTotal = 0;
+        int requiredNetworkBandwidthTotal = 0;
+        for (CloudProcess process : cloudBalance.getProcessList()) {
+            requiredCpuPowerTotal += process.getRequiredCpuPower();
+            requiredMemoryTotal += process.getRequiredMemory();
+            requiredNetworkBandwidthTotal += process.getRequiredNetworkBandwidth();
+        }
+        int cpuPowerLacking = requiredCpuPowerTotal - cpuPowerTotal;
+        while (cpuPowerLacking > 0) {
+            CloudComputer computer = computerList.get(random.nextInt(computerList.size()));
+            int upgrade = determineUpgrade(cpuPowerLacking);
+            computer.setCpuPower(computer.getCpuPower() + upgrade);
+            cpuPowerLacking -= upgrade;
+        }
+        int memoryLacking = requiredMemoryTotal - memoryTotal;
+        while (memoryLacking > 0) {
+            CloudComputer computer = computerList.get(random.nextInt(computerList.size()));
+            int upgrade = determineUpgrade(memoryLacking);
+            computer.setMemory(computer.getMemory() + upgrade);
+            memoryLacking -= upgrade;
+        }
+        int networkBandwidthLacking = requiredNetworkBandwidthTotal - networkBandwidthTotal;
+        while (networkBandwidthLacking > 0) {
+            CloudComputer computer = computerList.get(random.nextInt(computerList.size()));
+            int upgrade = determineUpgrade(networkBandwidthLacking);
+            computer.setNetworkBandwidth(computer.getNetworkBandwidth() + upgrade);
+            networkBandwidthLacking -= upgrade;
+        }
+    }
+
+    private int determineUpgrade(int lacking) {
+        for (int upgrade : new int[] {8, 4, 2, 1}) {
+            if (lacking >= upgrade) {
+                return upgrade;
+            }
+        }
+        throw new IllegalStateException("Lacking (" + lacking + ") should be at least 1.");
     }
 
 }
