@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.exhaustivesearch;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -39,11 +40,20 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
  */
 public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase implements ExhaustiveSearchSolverPhase {
 
+    protected Comparator<ExhaustiveSearchNode> nodeComparator;
     protected EntitySelector entitySelector;
     protected ExhaustiveSearchDecider decider;
 
     protected boolean assertWorkingSolutionScoreFromScratch = false;
     protected boolean assertExpectedWorkingSolutionScore = false;
+
+    public Comparator<ExhaustiveSearchNode> getNodeComparator() {
+        return nodeComparator;
+    }
+
+    public void setNodeComparator(Comparator<ExhaustiveSearchNode> nodeComparator) {
+        this.nodeComparator = nodeComparator;
+    }
 
     public EntitySelector getEntitySelector() {
         return entitySelector;
@@ -76,8 +86,7 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
     public void solve(DefaultSolverScope solverScope) {
         ExhaustiveSearchSolverPhaseScope phaseScope = new ExhaustiveSearchSolverPhaseScope(solverScope);
         phaseStarted(phaseScope);
-        SortedSet<ExhaustiveSearchNode> expandableNodeQueue = new TreeSet<ExhaustiveSearchNode>(
-                new DepthFirstNodeComparator()); // TODO Do not hardcode type
+        SortedSet<ExhaustiveSearchNode> expandableNodeQueue = new TreeSet<ExhaustiveSearchNode>(nodeComparator);
         phaseScope.setExpandableNodeQueue(expandableNodeQueue);
         fillLayerList(phaseScope);
         initStartNode(phaseScope);

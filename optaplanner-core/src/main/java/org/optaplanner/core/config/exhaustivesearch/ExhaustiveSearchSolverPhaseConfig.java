@@ -19,6 +19,7 @@ package org.optaplanner.core.config.exhaustivesearch;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -38,8 +39,12 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.exhaustivesearch.DefaultExhaustiveSearchSolverPhase;
 import org.optaplanner.core.impl.exhaustivesearch.ExhaustiveSearchSolverPhase;
 import org.optaplanner.core.impl.exhaustivesearch.decider.ExhaustiveSearchDecider;
+import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 import org.optaplanner.core.impl.exhaustivesearch.node.bounder.FallingScoreBounder;
 import org.optaplanner.core.impl.exhaustivesearch.node.bounder.ScoreBounder;
+import org.optaplanner.core.impl.exhaustivesearch.node.comparator.BreadthFirstNodeComparator;
+import org.optaplanner.core.impl.exhaustivesearch.node.comparator.DepthFirstNodeComparator;
+import org.optaplanner.core.impl.exhaustivesearch.node.comparator.OptimisticBoundFirstNodeComparator;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.ManualEntityMimicRecorder;
@@ -101,6 +106,7 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
                 exhaustiveSearchType_.isSortValuesByIncreasingStrength());
         DefaultExhaustiveSearchSolverPhase phase = new DefaultExhaustiveSearchSolverPhase();
         configureSolverPhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
+        phase.setNodeComparator(exhaustiveSearchType_.buildNodeComparator());
         EntitySelectorConfig entitySelectorConfig_ = buildEntitySelectorConfig(phaseConfigPolicy);
         EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(phaseConfigPolicy,
                 SelectionCacheType.PHASE, SelectionOrder.ORIGINAL);
@@ -230,11 +236,15 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
     }
 
     public static enum ExhaustiveSearchType {
-        DEPTH_FIRST_BRANCH_AND_BOUND;
+        BREADTH_FIRST_BRANCH_AND_BOUND,
+        DEPTH_FIRST_BRANCH_AND_BOUND,
+        OPTIMISTIC_BOUND_FIRST_BRANCH_AND_BOUND;
 
         public boolean isSortEntitiesByDecreasingDifficulty() {
             switch (this) {
+                case BREADTH_FIRST_BRANCH_AND_BOUND:
                 case DEPTH_FIRST_BRANCH_AND_BOUND:
+                case OPTIMISTIC_BOUND_FIRST_BRANCH_AND_BOUND:
                     return true;
                 default:
                     throw new IllegalStateException("The exhaustiveSearchType ("
@@ -244,8 +254,24 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
 
         public boolean isSortValuesByIncreasingStrength() {
             switch (this) {
+                case BREADTH_FIRST_BRANCH_AND_BOUND:
                 case DEPTH_FIRST_BRANCH_AND_BOUND:
+                case OPTIMISTIC_BOUND_FIRST_BRANCH_AND_BOUND:
                     return true;
+                default:
+                    throw new IllegalStateException("The exhaustiveSearchType ("
+                            + this + ") is not implemented.");
+            }
+        }
+
+        public Comparator<ExhaustiveSearchNode> buildNodeComparator() {
+            switch (this) {
+                case BREADTH_FIRST_BRANCH_AND_BOUND:
+                    return new BreadthFirstNodeComparator();
+                case DEPTH_FIRST_BRANCH_AND_BOUND:
+                    return new DepthFirstNodeComparator();
+                case OPTIMISTIC_BOUND_FIRST_BRANCH_AND_BOUND:
+                    return new OptimisticBoundFirstNodeComparator();
                 default:
                     throw new IllegalStateException("The exhaustiveSearchType ("
                             + this + ") is not implemented.");
