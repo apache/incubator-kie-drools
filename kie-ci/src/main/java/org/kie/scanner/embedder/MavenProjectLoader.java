@@ -1,11 +1,16 @@
 package org.kie.scanner.embedder;
 
 import org.apache.maven.project.MavenProject;
+import org.kie.api.builder.KieScanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.InputStream;
 
 public class MavenProjectLoader {
+    private static final Logger log = LoggerFactory.getLogger(KieScanner.class);
+
     private static MavenProject mavenProject;
 
     public static MavenProject parseMavenPom(File pomFile) {
@@ -45,7 +50,11 @@ public class MavenProjectLoader {
     public static synchronized MavenProject loadMavenProject() {
         if (mavenProject == null) {
             File pomFile = new File( "pom.xml" );
-            mavenProject = parseMavenPom(pomFile);
+            try {
+                mavenProject = parseMavenPom(pomFile);
+            } catch (Exception e) {
+                log.warn("Unable to parse pom.xml file of the running project: " + e.getMessage());
+            }
         }
         return mavenProject;
     }
