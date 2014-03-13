@@ -15,7 +15,6 @@ import org.drools.core.RuleBase;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.junit.Ignore;
 import org.kie.api.builder.Results;
 import org.kie.api.definition.rule.Rule;
 
@@ -947,7 +946,6 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1066059")
     public void testIncrementalCompilationWithMissingKSession() throws Exception {
         //https://bugzilla.redhat.com/show_bug.cgi?id=1066059
         String pom = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -999,7 +997,8 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         kfs.write( "src/main/resources/r2.drl", drl2_2 );
         IncrementalResults results = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
 
-        assertEquals( 2, results.getAddedMessages().size() );
+        // since there's a missing include tha kiebase is not built at all
+        assertEquals( 0, results.getAddedMessages().size() );
         assertEquals( 0, results.getRemovedMessages().size() );
     }
 
