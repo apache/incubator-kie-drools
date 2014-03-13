@@ -796,11 +796,10 @@ public class PackageBuilder
         }
     }
 
-    PackageDescr pmmlModelToPackageDescr(PMMLCompiler compiler,
-                                         Resource resource) throws DroolsParserException,
-                                                                   IOException {
-        String theory = compiler.compile(resource.getInputStream(),
-                getPackageRegistry());
+    PackageDescr pmmlModelToPackageDescr( PMMLCompiler compiler,
+                                          Resource resource ) throws DroolsParserException,
+                                                                     IOException {
+        String theory = compiler.compile( resource.getInputStream(), rootClassLoader );
 
         if (!compiler.getResults().isEmpty()) {
             this.results.addAll(compiler.getResults());
