@@ -47,10 +47,12 @@ public class KieBuilderSetImpl implements KieBuilderSet {
         InternalKieModule kieModule = (InternalKieModule) kieBuilder.getKieModuleIgnoringErrors();
         for (KieBaseModel kBaseModel : kieModule.getKieModuleModel().getKieBaseModels().values()) {
             KnowledgeBuilder kBuilder = kieModule.getKnowledgeBuilderForKieBase( kBaseModel.getName() );
-            for ( KnowledgeBuilderError error : kBuilder.getErrors() ) {
-                previousErrors.add(error);
+            if (kBuilder != null) {
+                for ( KnowledgeBuilderError error : kBuilder.getErrors() ) {
+                    previousErrors.add(error);
+                }
+                resourcesWithErrors.put(kBaseModel.getName(), findResourcesWithErrors(kBuilder));
             }
-            resourcesWithErrors.put(kBaseModel.getName(), findResourcesWithErrors(kBuilder));
         }
     }
 
@@ -96,6 +98,9 @@ public class KieBuilderSetImpl implements KieBuilderSet {
         InternalKieModule kieModule = (InternalKieModule) kieBuilder.getKieModuleIgnoringErrors();
         for (KieBaseModel kBaseModel : kieModule.getKieModuleModel().getKieBaseModels().values()) {
             KnowledgeBuilder kBuilder = kieModule.getKnowledgeBuilderForKieBase( kBaseModel.getName() );
+            if (kBuilder == null) {
+                continue;
+            }
             CompositeKnowledgeBuilder ckbuilder = kBuilder.batch();
 
             boolean modified = false;

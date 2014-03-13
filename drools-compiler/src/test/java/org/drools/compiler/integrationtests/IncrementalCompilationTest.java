@@ -927,7 +927,8 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         kfs.write( "src/main/resources/r2.drl", drl2_2 );
         IncrementalResults results = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
 
-        assertEquals( 2, results.getAddedMessages().size() );
+        // since there's a missing include tha kiebase is not built at all
+        assertEquals( 0, results.getAddedMessages().size() );
         assertEquals( 0, results.getRemovedMessages().size() );
     }
 }
