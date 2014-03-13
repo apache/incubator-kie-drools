@@ -182,27 +182,13 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
         ProcessJobContext ctx = null;
         if (ctxorig instanceof ProcessJobContext) {
             ctx = (ProcessJobContext) ctxorig;
+        } else if(ctxorig instanceof NamedJobContext){
+        	return getCommandService(((NamedJobContext)ctxorig).getProcessInstanceId(), ctx);
         } else {
             return jobFactoryManager.getCommandService(); 
         }
         
-        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(ctx.getProcessInstanceId()));
-        if (runtime == null) {
-            throw new RuntimeException("No runtime engine found, could not be initialized yet");
-        }
-        
-        if (runtime.getKieSession() instanceof CommandBasedStatefulKnowledgeSession) {
-            CommandBasedStatefulKnowledgeSession cmd = (CommandBasedStatefulKnowledgeSession) runtime.getKieSession();
-            ctx.setKnowledgeRuntime((InternalKnowledgeRuntime) ((KnowledgeCommandContext) cmd.getCommandService().getContext()).getKieSession());
-            
-            return new DisposableCommandService(cmd.getCommandService(), manager, runtime, schedulerService.retryEnabled());
-        } else if (runtime.getKieSession() instanceof InternalKnowledgeRuntime) {
-            ctx.setKnowledgeRuntime((InternalKnowledgeRuntime) runtime.getKieSession());
-            
-            
-        }
-        
-        return new DisposableCommandService(jobFactoryManager.getCommandService(), manager, runtime, schedulerService.retryEnabled());
+        return getCommandService(ctx.getProcessInstanceId(), ctx);
     }
     
     public String getTimerServiceId() {
@@ -215,6 +201,25 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
     
     public JobHandle buildJobHandleForContext(NamedJobContext ctx) {
         return this.schedulerService.buildJobHandleForContext(ctx);
+    }
+    
+    protected CommandService getCommandService(Long processInstanceId, ProcessJobContext ctx) {
+    	RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
+        if (runtime == null) {
+            throw new RuntimeException("No runtime engine found, could not be initialized yet");
+        }
+        
+        if (runtime.getKieSession() instanceof CommandBasedStatefulKnowledgeSession) {
+            CommandBasedStatefulKnowledgeSession cmd = (CommandBasedStatefulKnowledgeSession) runtime.getKieSession();
+            if (ctx != null) {
+            	ctx.setKnowledgeRuntime((InternalKnowledgeRuntime) ((KnowledgeCommandContext) cmd.getCommandService().getContext()).getKieSession());
+            }
+            return new DisposableCommandService(cmd.getCommandService(), manager, runtime, schedulerService.retryEnabled());
+        } else if (runtime.getKieSession() instanceof InternalKnowledgeRuntime && ctx != null) {
+            ctx.setKnowledgeRuntime((InternalKnowledgeRuntime) runtime.getKieSession());
+        }
+        
+        return new DisposableCommandService(jobFactoryManager.getCommandService(), manager, runtime, schedulerService.retryEnabled());
     }
 
 

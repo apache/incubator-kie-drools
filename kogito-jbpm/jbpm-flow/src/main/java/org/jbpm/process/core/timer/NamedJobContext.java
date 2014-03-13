@@ -20,4 +20,6 @@ import org.drools.core.time.JobContext;
 public interface NamedJobContext extends JobContext {
 
     String getJobName();
+    
+    Long getProcessInstanceId();
 }

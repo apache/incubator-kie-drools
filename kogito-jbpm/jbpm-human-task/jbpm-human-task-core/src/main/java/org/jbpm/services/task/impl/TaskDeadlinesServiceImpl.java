@@ -94,7 +94,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                     0,
                     null,
                     null ) ;
-            JobHandle handle = timerService.scheduleJob(deadlineJob, new TaskDeadlineJobContext(deadlineJob.getId()), trigger);
+            JobHandle handle = timerService.scheduleJob(deadlineJob, new TaskDeadlineJobContext(deadlineJob.getId(), task.getTaskData().getProcessInstanceId()), trigger);
             logger.debug( "scheduling timer job for deadline {} and task {}  using timer service {}", deadlineJob.getId(), taskId, timerService);
             jobHandles.put(deadlineJob.getId(), handle);
 
@@ -140,7 +140,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                     logger.debug("unscheduling timer job for deadline {} {} and task {}  using timer service {}", deadlineJob.getId(), summary.getDeadlineId(), taskId, timerService);
                     JobHandle jobHandle = jobHandles.remove(deadlineJob.getId()); 
                     if (jobHandle == null) {        
-                        jobHandle = ((GlobalTimerService) timerService).buildJobHandleForContext(new TaskDeadlineJobContext(deadlineJob.getId()));
+                        jobHandle = ((GlobalTimerService) timerService).buildJobHandleForContext(new TaskDeadlineJobContext(deadlineJob.getId(), task.getTaskData().getProcessInstanceId()));
                     }
                     timerService.removeJob(jobHandle);
                     // mark the deadlines so they won't be rescheduled again
@@ -160,7 +160,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                     logger.debug("unscheduling timer job for deadline {} and task {}  using timer service {}", deadlineJob.getId(), taskId, timerService);
                     JobHandle jobHandle = jobHandles.remove(deadlineJob.getId()); 
                     if (jobHandle == null) {        
-                        jobHandle = ((GlobalTimerService) timerService).buildJobHandleForContext(new TaskDeadlineJobContext(deadlineJob.getId()));
+                        jobHandle = ((GlobalTimerService) timerService).buildJobHandleForContext(new TaskDeadlineJobContext(deadlineJob.getId(), task.getTaskData().getProcessInstanceId()));
                     }
                     timerService.removeJob(jobHandle);
                     // mark the deadlines so they won't be rescheduled again
@@ -321,9 +321,11 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
         private static final long serialVersionUID = -6838102884655249845L;
         private JobHandle jobHandle;
         private String jobName;
+        private Long processInstanceId;
         
-        public TaskDeadlineJobContext(String jobName) {
+        public TaskDeadlineJobContext(String jobName, Long processInstanceId) {
             this.jobName = jobName;
+            this.processInstanceId = processInstanceId;
         }
         
         @Override
@@ -340,6 +342,11 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
         public String getJobName() {
             return jobName;
         }
+
+		@Override
+		public Long getProcessInstanceId() {
+			return processInstanceId;
+		}
         
     }
 
