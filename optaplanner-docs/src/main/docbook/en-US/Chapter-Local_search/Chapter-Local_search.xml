@@ -84,10 +84,10 @@
       those steps are shown into the log:</para>
 
       <programlisting>INFO  Solving started: time spent (0), score (-6), new best score (-6), random (JDK with seed 0).
-DEBUG     Step index (0), time spent (20), score (-3), new best score (-3), accepted/selected move count (12/12) for picked step (col1@row0 =&gt; row3).
-DEBUG     Step index (1), time spent (31), score (-1), new best score (-1), accepted/selected move count (12/12) for picked step (col0@row0 =&gt; row1).
-DEBUG     Step index (2), time spent (40), score (0), new best score (0), accepted/selected move count (12/12) for picked step (col3@row0 =&gt; row2).
-INFO  Phase (0) localSearch ended: step total (3), time spent (41), best score (0).
+DEBUG     LS step (0), time spent (20), score (-3), new best score (-3), accepted/selected move count (12/12), picked move (col1@row0 =&gt; row3).
+DEBUG     LS step (1), time spent (31), score (-1), new best score (-1), accepted/selected move count (12/12), picked move (col0@row0 =&gt; row1).
+DEBUG     LS step (2), time spent (40), score (0), new best score (0), accepted/selected move count (12/12), picked move (col3@row0 =&gt; row2).
+INFO  Local Search phase (0) ended: step total (3), time spent (41), best score (0).
 INFO  Solving ended: time spent (41), best score (0), average calculate count per second (1780).</programlisting>
 
       <para>Notice that the logging uses the <literal>toString()</literal> method of the <literal>Move</literal>
@@ -148,16 +148,16 @@ INFO  Solving ended: time spent (41), best score (0), average calculate count pe
 
       <programlisting>INFO  Solver started: time spent (0), score (-6), new best score (-6), random (JDK with seed 0).
 TRACE         Move index (0) not doable, ignoring move (col0@row0 =&gt; row0).
-TRACE         Move index (1), score (-4), accepted (true) for move (col0@row0 =&gt; row1).
-TRACE         Move index (2), score (-4), accepted (true) for move (col0@row0 =&gt; row2).
-TRACE         Move index (3), score (-4), accepted (true) for move (col0@row0 =&gt; row3).
+TRACE         Move index (1), score (-4), accepted (true), move (col0@row0 =&gt; row1).
+TRACE         Move index (2), score (-4), accepted (true), move (col0@row0 =&gt; row2).
+TRACE         Move index (3), score (-4), accepted (true), move (col0@row0 =&gt; row3).
 ...
-TRACE         Move index (6), score (-3), accepted (true) for move (col1@row0 =&gt; row3).
+TRACE         Move index (6), score (-3), accepted (true), move (col1@row0 =&gt; row3).
 ...
-TRACE         Move index (9), score (-3), accepted (true) for move (col2@row0 =&gt; row3).
+TRACE         Move index (9), score (-3), accepted (true), move (col2@row0 =&gt; row3).
 ...
-TRACE         Move index (12), score (-4), accepted (true) for move (col3@row0 =&gt; row3).
-DEBUG     Step index (0), time spent (6), score (-3), new best score (-3), accepted/selected move count (12/12) for picked step (col1@row0 =&gt; row3).
+TRACE         Move index (12), score (-4), accepted (true), move (col3@row0 =&gt; row3).
+DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted/selected move count (12/12), picked move (col1@row0 =&gt; row3).
 ...</programlisting>
 
       <para>Because the last solution can degrade (for example in Tabu Search), the <literal>Solver</literal> remembers

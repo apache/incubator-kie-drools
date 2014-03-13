@@ -115,8 +115,8 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
         decider.phaseStarted(phaseScope);
         // TODO maybe this restriction should be lifted to allow LocalSearch to initialize a solution too?
         if (!phaseScope.getScoreDirector().isWorkingSolutionInitialized()) {
-            throw new IllegalStateException("Phase localSearch started with an uninitialized Solution." +
-                    " First initialize the Solution. For example, run a phase constructionHeuristic first.");
+            throw new IllegalStateException("Local Search phase started with an uninitialized Solution." +
+                    " First initialize the Solution. For example, run a Construction Heuristic phase first.");
         }
     }
 
@@ -131,12 +131,11 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
         LocalSearchSolverPhaseScope phaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {
             long timeMillisSpent = phaseScope.calculateSolverTimeMillisSpent();
-            logger.debug("    Step index ({}), time spent ({}), score ({}), {} best score ({})," +
-                    " accepted/selected move count ({}/{}) for picked step ({}).",
+            logger.debug("    LS step ({}), time spent ({}), score ({}), {} best score ({})," +
+                    " accepted/selected move count ({}/{}), picked move ({}).",
                     stepScope.getStepIndex(), timeMillisSpent,
                     stepScope.getScore(),
-                    (stepScope.getBestScoreImproved() ? "new" : "   "),
-                    phaseScope.getBestScore(),
+                    (stepScope.getBestScoreImproved() ? "new" : "   "), phaseScope.getBestScore(),
                     stepScope.getAcceptedMoveCount(),
                     stepScope.getSelectedMoveCount(),
                     stepScope.getStepString());
@@ -146,7 +145,7 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
     public void phaseEnded(LocalSearchSolverPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         decider.phaseEnded(phaseScope);
-        logger.info("Phase ({}) localSearch ended: step total ({}), time spent ({}), best score ({}).",
+        logger.info("Local Search phase ({}) ended: step total ({}), time spent ({}), best score ({}).",
                 phaseIndex,
                 phaseScope.getNextStepIndex(),
                 phaseScope.calculateSolverTimeMillisSpent(),

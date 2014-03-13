@@ -132,8 +132,8 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
         decider.stepEnded(stepScope);
         if (logger.isDebugEnabled()) {
             long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
-            logger.debug("    Step index ({}), time spent ({}), score ({}), selected move count ({})"
-                    + " for constructing step ({}).",
+            logger.debug("    CH step ({}), time spent ({}), score ({}), selected move count ({}),"
+                    + " picked move ({}).",
                     stepScope.getStepIndex(), timeMillisSpent,
                     stepScope.getScore(),
                     stepScope.getSelectedMoveCount(),
@@ -150,7 +150,7 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
                 newBestSolution, newBestUninitializedVariableCount);
         entityPlacer.phaseEnded(phaseScope);
         decider.phaseEnded(phaseScope);
-        logger.info("Phase ({}) constructionHeuristic ended: step total ({}), time spent ({}), best score ({}).",
+        logger.info("Construction Heuristic phase ({}) ended: step total ({}), time spent ({}), best score ({}).",
                 phaseIndex,
                 phaseScope.getNextStepIndex(),
                 phaseScope.calculateSolverTimeMillisSpent(),

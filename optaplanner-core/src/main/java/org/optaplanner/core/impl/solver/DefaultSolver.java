@@ -180,7 +180,8 @@ public class DefaultSolver implements Solver {
         logger.info("Solving {}: time spent ({}), score ({}), new best score ({}), random ({}).",
                 (startingSolverCount == 1 ? "started" : "restarted"),
                 solverScope.calculateTimeMillisSpent(), solverScope.getStartingInitializedScore(),
-                solverScope.getBestScore(), (randomFactory != null ? randomFactory : "not fixed"));
+                solverScope.getBestScoreWithUninitializedPrefix(),
+                (randomFactory != null ? randomFactory : "not fixed"));
     }
 
     protected void runSolverPhases() {

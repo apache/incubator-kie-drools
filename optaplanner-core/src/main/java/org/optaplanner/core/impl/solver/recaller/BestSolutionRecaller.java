@@ -104,7 +104,11 @@ public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
         } else {
             bestScoreImproved = uninitializedVariableCount < bestUninitializedVariableCount;
         }
-        stepScope.setBestScoreImproved(bestScoreImproved);
+        // The method processWorkingSolutionDuringMove() is called 0..* times
+        // bestScoreImproved is initialized on false before the first call here
+        if (bestScoreImproved) {
+            stepScope.setBestScoreImproved(bestScoreImproved);
+        }
         if (bestScoreImproved) {
             phaseScope.setBestSolutionStepIndex(stepScope.getStepIndex());
             Solution newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();

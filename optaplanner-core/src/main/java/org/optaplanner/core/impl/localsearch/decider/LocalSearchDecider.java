@@ -152,7 +152,7 @@ public class LocalSearchDecider {
                     .getPhaseScope();
             phaseScope.assertExpectedUndoMoveScore(move, undoMove);
         }
-        logger.trace("        Move index ({}), score ({}), accepted ({}) for move ({}).",
+        logger.trace("        Move index ({}), score ({}), accepted ({}), move ({}).",
                 moveScope.getMoveIndex(), moveScope.getScore(), moveScope.getAccepted(),
                 moveScope.getMove());
     }

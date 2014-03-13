@@ -199,11 +199,14 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
         // Skip entitySelector.stepEnded(stepScope)
         decider.stepEnded(stepScope);
         if (logger.isDebugEnabled()) {
-            long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
-            logger.debug("    Step index ({}), time spent ({}), exhaustive depth ({}), score ({}).",
+            ExhaustiveSearchSolverPhaseScope phaseScope = stepScope.getPhaseScope();
+            long timeMillisSpent = phaseScope.calculateSolverTimeMillisSpent();
+            logger.debug("    ES step ({}), time spent ({}), depth ({}), {} best score ({}), selected move count ({}).",
                     stepScope.getStepIndex(), timeMillisSpent,
                     stepScope.getDepth(),
-                    stepScope.getScore());
+                    (stepScope.getBestScoreImproved() ? "new" : "   "),
+                    phaseScope.getBestScoreWithUninitializedPrefix(),
+                    stepScope.getSelectedMoveCount());
         }
     }
 
@@ -211,7 +214,7 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
         super.phaseEnded(phaseScope);
         entitySelector.phaseEnded(phaseScope);
         decider.phaseEnded(phaseScope);
-        logger.info("Phase ({}) ExhaustiveSearch ended: step total ({}), time spent ({}), best score ({}).",
+        logger.info("Exhaustive Search phase ({}) ended: step total ({}), time spent ({}), best score ({}).",
                 phaseIndex,
                 phaseScope.getNextStepIndex(),
                 phaseScope.calculateSolverTimeMillisSpent(),

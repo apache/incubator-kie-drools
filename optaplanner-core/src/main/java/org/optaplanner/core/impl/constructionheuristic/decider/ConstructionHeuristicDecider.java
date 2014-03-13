@@ -107,7 +107,7 @@ public class ConstructionHeuristicDecider extends AbstractEntityPlacer {
             ConstructionHeuristicSolverPhaseScope phaseScope = moveScope.getStepScope().getPhaseScope();
             phaseScope.assertExpectedUndoMoveScore(move, undoMove);
         }
-        logger.trace("        Move index ({}), score ({}) for move ({}).",
+        logger.trace("        Move index ({}), score ({}), move ({}).",
                 moveScope.getMoveIndex(), moveScope.getScore(), moveScope.getMove());
     }
 

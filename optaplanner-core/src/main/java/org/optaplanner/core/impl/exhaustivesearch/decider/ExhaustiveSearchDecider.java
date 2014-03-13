@@ -106,11 +106,14 @@ public class ExhaustiveSearchDecider {
     public void expandNode(ExhaustiveSearchStepScope stepScope) {
         ExhaustiveSearchNode expandingNode = stepScope.getExpandingNode();
         manualEntityMimicRecorder.setRecordedEntity(expandingNode.getEntity());
+        stepScope.setBestScoreImproved(false);
 
+        int moveIndex = 0;
         ExhaustiveSearchLayer moveLayer = stepScope.getPhaseScope().getLayerList().get(expandingNode.getDepth() + 1);
         for (Move move : moveSelector) {
             ExhaustiveSearchNode moveNode = new ExhaustiveSearchNode(moveLayer, expandingNode,
                     moveLayer.assignIndexInLayer());
+            moveIndex++;
             moveNode.setMove(move);
             // Do not filter out pointless moves, because the original value of the entity(s) is irrelevant.
             // If the original value is null and the variable is nullable, the move to null must be done too.
@@ -119,6 +122,7 @@ public class ExhaustiveSearchDecider {
                 break;
             }
         }
+        stepScope.setSelectedMoveCount((long) moveIndex);
     }
 
     private void doMove(ExhaustiveSearchStepScope stepScope, ExhaustiveSearchNode moveNode) {
@@ -133,7 +137,7 @@ public class ExhaustiveSearchDecider {
             ExhaustiveSearchSolverPhaseScope phaseScope = stepScope.getPhaseScope();
             phaseScope.assertExpectedUndoMoveScore(move, undoMove);
         }
-        logger.trace("        Move indexInLayer ({}), score ({}) for move ({}).",
+        logger.trace("        Move indexInLayer ({}), score ({}), move ({}).",
                 moveNode.getIndexInLayer(), moveNode.getScore(), moveNode.getMove());
     }
 

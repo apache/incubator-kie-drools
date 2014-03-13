@@ -24,7 +24,7 @@ public class ExhaustiveSearchStepScope extends AbstractStepScope {
     private final ExhaustiveSearchSolverPhaseScope phaseScope;
 
     private ExhaustiveSearchNode expandingNode;
-//    private Long selectedMoveCount = null;
+    private Long selectedMoveCount = null;
 
     public ExhaustiveSearchStepScope(ExhaustiveSearchSolverPhaseScope phaseScope) {
         this(phaseScope, phaseScope.getNextStepIndex());
@@ -48,50 +48,13 @@ public class ExhaustiveSearchStepScope extends AbstractStepScope {
         this.expandingNode = expandingNode;
     }
 
-//
-//
-//    public Object getEntity() {
-//        return entity;
-//    }
-//
-//    public void setEntity(Object entity) {
-//        this.entity = entity;
-//    }
-//
-//    public Move getStep() {
-//        return step;
-//    }
-//
-//    public void setStep(Move step) {
-//        this.step = step;
-//    }
-//
-//    /**
-//     * @return null if logging level is to high
-//     */
-//    public String getStepString() {
-//        return stepString;
-//    }
-//
-//    public void setStepString(String stepString) {
-//        this.stepString = stepString;
-//    }
-//
-//    public Move getUndoStep() {
-//        return undoStep;
-//    }
-//
-//    public void setUndoStep(Move undoStep) {
-//        this.undoStep = undoStep;
-//    }
-//
-//    public Long getSelectedMoveCount() {
-//        return selectedMoveCount;
-//    }
-//
-//    public void setSelectedMoveCount(Long selectedMoveCount) {
-//        this.selectedMoveCount = selectedMoveCount;
-//    }
+    public Long getSelectedMoveCount() {
+        return selectedMoveCount;
+    }
+
+    public void setSelectedMoveCount(Long selectedMoveCount) {
+        this.selectedMoveCount = selectedMoveCount;
+    }
 
     // ************************************************************************
     // Calculated methods
@@ -102,7 +65,7 @@ public class ExhaustiveSearchStepScope extends AbstractStepScope {
     }
 
     @Override
-    public boolean isBestSolutionCloningDelayed() { // TODO
+    public boolean isBestSolutionCloningDelayed() {
         return true;
     }
 
@@ -111,19 +74,14 @@ public class ExhaustiveSearchStepScope extends AbstractStepScope {
      * @return throws exception
      */
     @Override
-    public int getUninitializedVariableCount() { // TODO
+    public int getUninitializedVariableCount() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean hasNoUninitializedVariables() { // TODO
-        // TODO might be true in the last step of a construction heuristic
+    public boolean hasNoUninitializedVariables() {
+        // TODO in the deepest exhaustive steps, this is almost true
         return false;
     }
-//    @Override
-//    public boolean hasNoUninitializedVariables() {
-//        // TODO might be true in the last step of a construction heuristic
-//        return false;
-//    }
 
 }
