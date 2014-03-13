@@ -57,6 +57,12 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- JSON serialization -->
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-core-asl</artifactId>
+    </dependency>
+   
     <!-- TEST -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
