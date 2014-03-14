@@ -3296,7 +3296,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals(1,actionCallMethod1.getFieldValues().length);
         assertEquals("indexOf",actionCallMethod1.getFieldValues()[0].getField());
         assertEquals("s",actionCallMethod1.getFieldValues()[0].getValue());
-        assertEquals(2,actionCallMethod1.getFieldValues()[0].getNature());
+        assertEquals(FieldNatureType.TYPE_VARIABLE, actionCallMethod1.getFieldValues()[0].getNature());
         assertEquals("String",actionCallMethod1.getFieldValues()[0].getType());
 
 
@@ -3307,8 +3307,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals(1,actionCallMethod2.getFieldValues().length);
         assertEquals("indexOf",actionCallMethod2.getFieldValues()[0].getField());
         assertEquals("0",actionCallMethod2.getFieldValues()[0].getValue());
-        assertEquals(1,actionCallMethod2.getFieldValues()[0].getNature());
-        assertEquals("Integer",actionCallMethod2.getFieldValues()[0].getType());
+        assertEquals(FieldNatureType.TYPE_LITERAL, actionCallMethod2.getFieldValues()[0].getNature());
+        assertEquals("Numeric",actionCallMethod2.getFieldValues()[0].getType());
 
     }
 
