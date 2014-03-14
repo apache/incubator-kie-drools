@@ -6,7 +6,7 @@ public class TaskModelProvider {
 	
 	private static ServiceLoader<TaskModelFactory> serviceLoader = ServiceLoader.load(TaskModelFactory.class);
 
-	public static TaskModelFactory getFactory() {
+	public synchronized static TaskModelFactory getFactory() {
 		for (TaskModelFactory factory : serviceLoader) {
 			return factory;
 		}
