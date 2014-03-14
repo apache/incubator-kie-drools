@@ -113,8 +113,6 @@ public class ProjectClassLoader extends ClassLoader {
             return internalLoadClass(name, resolve);
         } catch (ClassNotFoundException e2) {
             return loadType(name, resolve);
-        } catch (NoClassDefFoundError e) {
-            throw new ClassNotFoundException(e.getMessage());
         }
     }
 
