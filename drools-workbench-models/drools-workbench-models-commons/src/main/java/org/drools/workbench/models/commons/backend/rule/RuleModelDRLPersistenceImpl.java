@@ -2316,11 +2316,20 @@ public class RuleModelDRLPersistenceImpl
                                     if ( param.length() == 0 ) {
                                         continue;
                                     }
-                                    String dataType = methodInfo == null ?
-                                            inferDataType( param, isJavaDialect ) :
-                                            methodInfo.getParams().get( i++ );
+
+                                    String dataType = null;
+                                    if (methodInfo != null) {
+                                        dataType = methodInfo.getParams().get( i++ );
+                                    } else {
+                                        dataType = boundParams.get(param);
+                                    }
+                                    if (dataType == null) {
+                                        dataType = inferDataType( param, isJavaDialect );
+                                    }
+
                                     ActionFieldFunction actionFiled = new ActionFieldFunction( null, adjustParam( dataType, param, isJavaDialect ), dataType );
                                     actionFiled.setNature( inferFieldNature( param, boundParams ) );
+                                    actionFiled.setField( methodName );
                                     acm.addFieldValue( actionFiled );
                                 }
                             }
@@ -2373,11 +2382,11 @@ public class RuleModelDRLPersistenceImpl
         if ( boundParams.keySet().contains( param ) ) {
             return FieldNatureType.TYPE_VARIABLE;
         }
-        if ( param.startsWith( "\"" ) ) {
-            return FieldNatureType.TYPE_LITERAL;
-        }
         if ( param.contains( "+" ) || param.contains( "-" ) || param.contains( "*" ) || param.contains( "/" ) ) {
             return FieldNatureType.TYPE_FORMULA;
+        }
+        if ( param.startsWith( "\"" ) || Character.isDigit(param.charAt(0)) ) {
+            return FieldNatureType.TYPE_LITERAL;
         }
         return FieldNatureType.TYPE_UNDEFINED;
     }
