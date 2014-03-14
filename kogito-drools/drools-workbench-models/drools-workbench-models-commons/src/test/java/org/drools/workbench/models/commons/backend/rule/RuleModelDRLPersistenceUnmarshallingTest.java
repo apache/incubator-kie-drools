@@ -3270,6 +3270,48 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       dslComplexVariableValue.getId() );
     }
 
+    @Test
+    public void testFunctionCalls() {
+        String drl =
+                "rule \"rule1\"\n"
+                        + "when\n"
+                        + "  s : String()\n"
+                        + "then\n"
+                        + "  s.indexOf( s );\n"
+                        + "  s.indexOf( 0 );\n"
+                        + "end\n";
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,Collections.EMPTY_LIST, dmo);
+
+        assertNotNull( m );
+
+        assertEquals(2, m.rhs.length);
+        assertTrue( m.rhs[ 0 ] instanceof ActionCallMethod );
+        assertTrue( m.rhs[ 1 ] instanceof ActionCallMethod );
+
+        ActionCallMethod actionCallMethod1 = (ActionCallMethod) m.rhs[0];
+        assertEquals(1,actionCallMethod1.getState());
+        assertEquals("indexOf",actionCallMethod1.getMethodName());
+        assertEquals("s",actionCallMethod1.getVariable());
+        assertEquals(1,actionCallMethod1.getFieldValues().length);
+        assertEquals("indexOf",actionCallMethod1.getFieldValues()[0].getField());
+        assertEquals("s",actionCallMethod1.getFieldValues()[0].getValue());
+        assertEquals(2,actionCallMethod1.getFieldValues()[0].getNature());
+        assertEquals("String",actionCallMethod1.getFieldValues()[0].getType());
+
+
+        ActionCallMethod actionCallMethod2 = (ActionCallMethod) m.rhs[1];
+        assertEquals(1,actionCallMethod2.getState());
+        assertEquals("indexOf",actionCallMethod2.getMethodName());
+        assertEquals("s",actionCallMethod2.getVariable());
+        assertEquals(1,actionCallMethod2.getFieldValues().length);
+        assertEquals("indexOf",actionCallMethod2.getFieldValues()[0].getField());
+        assertEquals("0",actionCallMethod2.getFieldValues()[0].getValue());
+        assertEquals(1,actionCallMethod2.getFieldValues()[0].getNature());
+        assertEquals("Integer",actionCallMethod2.getFieldValues()[0].getType());
+
+    }
+
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
         final String cleanExpected = expected.replaceAll( "\\s+",
