@@ -2,10 +2,15 @@ package org.kie.maven.plugin;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.artifact.resolver.filter.CumulativeScopeArtifactFilter;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.drools.compiler.compiler.BPMN2ProcessFactory;
+import org.drools.compiler.compiler.DecisionTableFactory;
+import org.drools.compiler.compiler.PMMLCompilerFactory;
+import org.drools.compiler.compiler.ProcessBuilderFactory;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieMetaInfoBuilder;
 import org.kie.api.KieServices;
@@ -20,6 +25,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -62,7 +68,9 @@ public class BuildMojo extends AbstractMojo {
             for (String element : project.getCompileClasspathElements()) {
                 urls.add(new File(element).toURI().toURL());
             }
-            for (Artifact artifact : project.getDependencyArtifacts()) {
+
+            project.setArtifactFilter(new CumulativeScopeArtifactFilter(Arrays.asList("compile", "runtime")));
+            for (Artifact artifact : project.getArtifacts()) {
                 File file = artifact.getFile();
                 if (file != null) {
                     urls.add(file.toURI().toURL());
@@ -74,6 +82,11 @@ public class BuildMojo extends AbstractMojo {
                                                                         Thread.currentThread().getContextClassLoader());
 
             Thread.currentThread().setContextClassLoader(projectClassLoader);
+
+            BPMN2ProcessFactory.loadProvider(projectClassLoader);
+            DecisionTableFactory.loadProvider(projectClassLoader);
+            ProcessBuilderFactory.loadProvider(projectClassLoader);
+            PMMLCompilerFactory.loadProvider(projectClassLoader);
 
         } catch (DependencyResolutionRequiredException e) {
             throw new RuntimeException(e);
