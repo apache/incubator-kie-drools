@@ -20,6 +20,8 @@ import org.kie.internal.utils.ServiceRegistryImpl;
 
 public class PMMLCompilerFactory {
 
+    private static final String PROVIDER_CLASS = "org.drools.pmml.pmml_4_1.PMML4Compiler";
+
     private static PMMLCompiler provider;
 
     public static synchronized PMMLCompiler getPMMLCompiler() {
@@ -34,7 +36,15 @@ public class PMMLCompilerFactory {
     }
 
     private static void loadProvider() {
-        ServiceRegistryImpl.getInstance().addDefault( PMMLCompiler.class,  "org.drools.pmml.pmml_4_1.PMML4Compiler" );
+        ServiceRegistryImpl.getInstance().addDefault( PMMLCompiler.class,  PROVIDER_CLASS );
         setProvider(ServiceRegistryImpl.getInstance().get(PMMLCompiler.class));
+    }
+
+    public static synchronized void loadProvider(ClassLoader cl) {
+        if (provider == null) {
+            try {
+                provider = (PMMLCompiler)Class.forName(PROVIDER_CLASS, true, cl).newInstance();
+            } catch (Exception e) { }
+        }
     }
 }

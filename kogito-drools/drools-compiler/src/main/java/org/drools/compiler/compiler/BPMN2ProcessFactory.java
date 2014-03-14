@@ -5,6 +5,8 @@ import org.kie.internal.utils.ServiceRegistryImpl;
 
 public class BPMN2ProcessFactory {
 
+    private static final String PROVIDER_CLASS = "org.jbpm.bpmn2.BPMN2ProcessProviderImpl";
+
     private static BPMN2ProcessProvider provider;
 
     public static void configurePackageBuilder(PackageBuilder packageBuilder) {
@@ -24,8 +26,15 @@ public class BPMN2ProcessFactory {
 
     @SuppressWarnings("unchecked")
     private static void loadProvider() {
-        ServiceRegistryImpl.getInstance().addDefault( BPMN2ProcessProvider.class,  "org.jbpm.bpmn2.BPMN2ProcessProviderImpl" );
+        ServiceRegistryImpl.getInstance().addDefault( BPMN2ProcessProvider.class, PROVIDER_CLASS );
         setBPMN2ProcessProvider(ServiceRegistryImpl.getInstance().get( BPMN2ProcessProvider.class ) );
     }
 
+    public static synchronized void loadProvider(ClassLoader cl) {
+        if (provider == null) {
+            try {
+                provider = (BPMN2ProcessProvider)Class.forName(PROVIDER_CLASS, true, cl).newInstance();
+            } catch (Exception e) { }
+        }
+    }
 }
