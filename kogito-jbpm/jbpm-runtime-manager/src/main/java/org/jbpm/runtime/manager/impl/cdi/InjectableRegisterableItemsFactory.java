@@ -348,7 +348,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         RuntimeManager manager = ((RuntimeEngineImpl)runtime).getManager();
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("ksession", runtime.getKieSession());
-        parameters.put("taskService", runtime.getKieSession());
+        parameters.put("taskService", runtime.getTaskService());
         parameters.put("runtimeManager", manager);
         
         return parameters;
