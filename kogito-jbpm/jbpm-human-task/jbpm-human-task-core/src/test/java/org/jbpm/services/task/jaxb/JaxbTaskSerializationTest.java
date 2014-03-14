@@ -18,11 +18,12 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
+import org.jbpm.services.task.impl.model.xml.JaxbTaskSummary;
 import org.junit.Test;
 
 public class JaxbTaskSerializationTest extends AbstractTaskSerializationTest {
 
-    private Class<?>[] jaxbClasses = { JaxbTask.class };
+    private Class<?>[] jaxbClasses = { JaxbTask.class, JaxbTaskSummary.class };
     
     public TestType getType() {
         return TestType.YAML;

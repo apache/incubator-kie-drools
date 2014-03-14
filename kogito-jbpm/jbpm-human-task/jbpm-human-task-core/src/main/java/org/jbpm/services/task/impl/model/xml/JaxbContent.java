@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.jbpm.services.task.impl.model.xml.adapter.StringObjectMapXmlAdapter;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.task.model.Content;
@@ -30,7 +31,7 @@ public class JaxbContent implements Content {
     
     @XmlElement
     @XmlSchemaType(name="base64Binary")
-    private byte[] content = null;
+    private byte[] serializedContent = null;
     
     @XmlElement(name="content-map")
     @XmlJavaTypeAdapter(StringObjectMapXmlAdapter.class)
@@ -62,15 +63,16 @@ public class JaxbContent implements Content {
             }
         }
         if( serialize ) { 
-            this.content = StringObjectMapXmlAdapter.serializeObject(realContentObject, "Content(" + this.id + ").content" );
+            this.serializedContent = StringObjectMapXmlAdapter.serializeObject(realContentObject, "Content(" + this.id + ").content" );
         }
     }
     
     @Override
+    @JsonIgnore
     public byte[] getContent() {
         byte [] realContent = null;
-        if( this.content != null ) { 
-            Object contentObject = StringObjectMapXmlAdapter.deserializeObject(this.content, this.className, 
+        if( this.serializedContent != null ) { 
+            Object contentObject = StringObjectMapXmlAdapter.deserializeObject(this.serializedContent, this.className, 
                     "Content(" + this.id + ").content" );
             realContent = ContentMarshallerHelper.marshallContent(contentObject, null);
         } else if( this.contentMap != null ) { 
@@ -78,18 +80,30 @@ public class JaxbContent implements Content {
         }
         return realContent;
     }
-    
+   
     public byte[] getSerializedContent() { 
-        return this.content;
+        return this.serializedContent;
+    }
+
+    public void setSerializedContent(byte [] content) { 
+        this.serializedContent = content;
     }
 
     public Map<String, Object> getContentMap() { 
         return this.contentMap;
     }
 
+    public void setContentMap(Map<String, Object> map) { 
+        this.contentMap = map;
+    }
+
     @Override
     public long getId() {
         return this.id;
+    } 
+    
+    public void setId(Long id) {
+        this.id = id; 
     } 
     
     public void readExternal(ObjectInput arg0) throws IOException, ClassNotFoundException {

@@ -21,97 +21,31 @@ import java.io.ObjectOutput;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.jbpm.services.task.impl.model.xml.adapter.StatusXmlAdapter;
-import org.jbpm.services.task.impl.model.xml.adapter.SubTasksStrategyXmlAdapter;
-import org.jbpm.services.task.impl.model.xml.adapter.UserXmlAdapter;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.InternalTaskSummary;
 import org.kie.internal.task.api.model.SubTasksStrategy;
 
-@XmlRootElement(name="task-summary")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso(value={Status.class, SubTasksStrategy.class})
 public class TaskSummaryImpl implements InternalTaskSummary {
 
-    @XmlElement
-    @XmlSchemaType(name="long")
     private long id;
-    
-    @XmlElement
-    @XmlSchemaType(name="string")
     private String name;
-    
-    @XmlElement
-    @XmlSchemaType(name="string")
     private String subject;
-    
-    @XmlElement
-    @XmlSchemaType(name="string")
     private String description;
-    
-    @XmlElement
-    @XmlJavaTypeAdapter(value=StatusXmlAdapter.class, type=Status.class)
     private Status status;
-    
-    @XmlElement
-    @XmlSchemaType(name="int")
     private int priority;
-    
-    @XmlElement
-    @XmlSchemaType(name="boolean")
     private boolean skipable;
-    
-    @XmlElement(name="actual-owner")
-    @XmlJavaTypeAdapter(value=UserXmlAdapter.class, type=User.class)
     private User actualOwner;
-    
-    @XmlElement(name="created-by")
-    @XmlJavaTypeAdapter(value=UserXmlAdapter.class, type=User.class)
     private User createdBy;
-    
-    @XmlElement(name="created-on")
-    @XmlSchemaType(name="dateTime")
     private Date createdOn;
-    
-    @XmlElement(name="activation-time")
-    @XmlSchemaType(name="dateTime")
     private Date activationTime;
-    
-    @XmlElement(name="expiration-time")
-    @XmlSchemaType(name="dateTime")
     private Date expirationTime;
-    
-    @XmlElement(name="process-instance-id")
-    @XmlSchemaType(name="long")
     private long processInstanceId;
-    
-    @XmlElement(name="process-id")
-    @XmlSchemaType(name="string")
     private String processId;
-    
-    @XmlElement(name="process-session-id")
-    @XmlSchemaType(name="int")
     private int processSessionId;
-
-    @XmlElement(name="sub-task-strategy")
-    @XmlJavaTypeAdapter(value=SubTasksStrategyXmlAdapter.class, type=SubTasksStrategy.class)
     private SubTasksStrategy subTaskStrategy;
-    
-    @XmlElement(name="parent-id")
-    @XmlSchemaType(name="long")
     private long parentId;
-    
-    @XmlElement(name="potential-owner")
     private List<String> potentialOwners;
 
     public TaskSummaryImpl(long id,

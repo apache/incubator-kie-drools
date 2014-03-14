@@ -9,16 +9,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import org.kie.api.task.model.Task;
+
 public class ComparePair {
-    
+
     private Object orig;
     private Object copy;
     private Class<?> objInterface;
-    
-    private String [] nullFields = null;
+
+    private String[] nullFields = null;
     private boolean useGetMethods = true;
 
-    public static void compareOrig(Object origObj, Object newObj, Class objClass) { 
+    public static void compareOrig(Object origObj, Object newObj, Class objClass) {
         ComparePair compare = new ComparePair(origObj, newObj, objClass);
         Queue<ComparePair> compares = new LinkedList<ComparePair>();
         compares.add(compare);
@@ -26,7 +28,7 @@ public class ComparePair {
             compares.addAll(compares.poll().compare());
         }
     }
-    
+
     public ComparePair(Object a, Object b, Class<?> c) {
         this.orig = a;
         this.copy = b;
@@ -34,13 +36,37 @@ public class ComparePair {
     }
 
     public List<ComparePair> compare() {
-        if( useGetMethods ) { 
+        if (useGetMethods) {
             return compareObjectsViaGetMethods(orig, copy, objInterface);
-        } else { 
+        } else {
             compareObjectsViaFields(orig, copy, nullFields);
             return null;
         }
-        
+    }
+
+    public void recursiveCompare() {
+        Queue<ComparePair> compares = new LinkedList<ComparePair>();
+        compares.add(this);
+        while (!compares.isEmpty()) {
+            compares.addAll(compares.poll().compare());
+        }
+    }
+
+    public void addNullFields(String... fieldNames) {
+        if (fieldNames == null) {
+            return;
+        }
+        if (nullFields == null) {
+            nullFields = new String[0];
+        }
+        String[] newNullFields = new String[nullFields.length + fieldNames.length];
+        for (int i = 0; i < nullFields.length; ++i) {
+            newNullFields[i] = nullFields[i];
+        }
+        for (int i = 0; i < fieldNames.length; ++i) {
+            newNullFields[i + nullFields.length] = fieldNames[i];
+        }
+        this.nullFields = newNullFields;
     }
 
     private List<ComparePair> compareObjectsViaGetMethods(Object orig, Object copy, Class<?> objInterface) {
@@ -60,11 +86,27 @@ public class ComparePair {
             try {
                 Object origField = getIsMethod.invoke(orig, new Object[0]);
                 Object copyField = getIsMethod.invoke(copy, new Object[0]);
+                boolean skip = false;
                 if (origField == null) {
-                    fail("Please fill in the " + fieldName + " field in the " + objInterface.getSimpleName() + "!");
+                    if (nullFields != null) {
+                        for (String nullField : nullFields) {
+                            if (fieldName.equals(nullField)) {
+                                skip = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!skip) {
+                        fail("Please fill in the " + fieldName + " field in the " + objInterface.getSimpleName() + "!");
+                    }
                 }
-                if( !(origField instanceof Enum) && origField.getClass().getPackage().getName().startsWith("org.")) {
-                    cantCompare.add(new ComparePair(origField, copyField, getInterface(origField)));
+                if (skip) {
+                    continue;
+                }
+                if (!(origField instanceof Enum) && origField.getClass().getPackage().getName().startsWith("org.")) {
+                    ComparePair newComPair = new ComparePair(origField, copyField, getInterface(origField));
+                    newComPair.addNullFields(this.nullFields);
+                    cantCompare.add(newComPair);
                     continue;
                 } else if (origField instanceof List<?>) {
                     List<?> origList = (List) origField;
@@ -74,7 +116,9 @@ public class ComparePair {
                         while (newInterface.getInterfaces().length > 0) {
                             newInterface = newInterface.getInterfaces()[0];
                         }
-                        cantCompare.add(new ComparePair(origList.get(i), copyList.get(i), getInterface(origList.get(i))));
+                        ComparePair newCompair = new ComparePair(origList.get(i), copyList.get(i), getInterface(origList.get(i)));
+                        newCompair.addNullFields(this.nullFields);
+                        cantCompare.add(newCompair);
                     }
                     continue;
                 }
@@ -101,49 +145,61 @@ public class ComparePair {
         return newInterface;
     }
 
-    public static void compareObjectsViaFields( Object orig, Object copy ) {
-        compareObjectsViaFields(orig, copy, new String [] {} );
+    public static void compareObjectsViaFields(Object orig, Object copy) {
+        compareObjectsViaFields(orig, copy, new String[] {});
     }
-    
-    public static void compareObjectsViaFields( Object orig, Object copy, String... nullFields ) {
+
+    public static void compareObjectsViaFields(Object orig, Object copy, String... skipFields) {
         Class<?> origClass = orig.getClass();
-        assertEquals( "copy is not an instance of " + origClass + " (" + copy.getClass().getSimpleName() + ")",  
-                origClass, copy.getClass() );
-        for (Field field : orig.getClass().getDeclaredFields() ) {
-            try { 
+        assertEquals("copy is not an instance of " + origClass + " (" + copy.getClass().getSimpleName() + ")", origClass,
+                copy.getClass());
+        for (Field field : orig.getClass().getDeclaredFields()) {
+            try {
                 field.setAccessible(true);
                 Object origFieldVal = field.get(orig);
                 Object copyFieldVal = field.get(copy);
-    
+                String fieldName = field.getName();
+
+                boolean skip = false;
+                for (String skipFieldName : skipFields) {
+                    if (skipFieldName.matches(fieldName)) {
+                        skip = true;
+                        break;
+                    }
+                }
+                if (skip) {
+                    continue;
+                }
+
                 boolean nullFound = false;
-                if( origFieldVal == null || copyFieldVal == null ) { 
+                if (origFieldVal == null || copyFieldVal == null) {
                     nullFound = true;
-                    String fieldName = field.getName();
-                    for( String nullFieldName : nullFields ) { 
-                        if( nullFieldName.matches(fieldName) ) { 
+                    for (String nullFieldName : skipFields) {
+                        if (nullFieldName.matches(fieldName)) {
                             nullFound = false;
                         }
                     }
                 }
                 String failMsg = origClass.getSimpleName() + "." + field.getName() + " is null";
-                assertFalse( failMsg + "!", nullFound );
-    
-                if( copyFieldVal != origFieldVal ) { 
-                    if( copyFieldVal == null ) { 
-                        fail( failMsg + " in copy!" );
-                    } else if( origFieldVal == null ) { 
-                        fail( failMsg + "in original!" );
+                assertFalse(failMsg + "!", nullFound);
+
+                if (copyFieldVal != origFieldVal) {
+                    if (copyFieldVal == null) {
+                        fail(failMsg + " in copy!");
+                    } else if (origFieldVal == null) {
+                        fail(failMsg + "in original!");
                     }
-                    if( origFieldVal.getClass().getPackage().getName().startsWith("java.") ) { 
-                        assertEquals( origClass.getSimpleName() + "." + field.getName(), origFieldVal, copyFieldVal );
-                    } else { 
-                        compareObjectsViaFields(origFieldVal, copyFieldVal, nullFields);
+                    if (origFieldVal.getClass().getPackage().getName().startsWith("java.")) {
+                        assertEquals(origClass.getSimpleName() + "." + field.getName(), origFieldVal, copyFieldVal);
+                    } else {
+                        compareObjectsViaFields(origFieldVal, copyFieldVal, skipFields);
                     }
                 }
-            } catch( Exception e ) { 
-                throw new RuntimeException("Unable to access " + field.getName() + " when testing " + origClass.getSimpleName() + ".", e ); 
+            } catch (Exception e) {
+                throw new RuntimeException("Unable to access " + field.getName() + " when testing " + origClass.getSimpleName()
+                        + ".", e);
             }
-    
+
         }
     }
 }
