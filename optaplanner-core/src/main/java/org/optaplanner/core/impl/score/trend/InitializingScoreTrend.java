@@ -30,7 +30,7 @@ public enum InitializingScoreTrend {
     ANY,
     /**
      * During initialization, the {@link Score} is monotonically increasing.
-     * The means: given a non-fully initialized {@link Solution} with a {@link Score} A,
+     * This means: given a non-fully initialized {@link Solution} with a {@link Score} A,
      * initializing 1 or more variables (without altering the already initialized variables)
      * will give a {@link Solution} for which the {@link Score} is better or equal to A.
      * <p/>
@@ -42,7 +42,7 @@ public enum InitializingScoreTrend {
     ONLY_UP,
     /**
      * During initialization, the {@link Score} is monotonically decreasing.
-     * The means: given a non-fully initialized {@link Solution} with a {@link Score} A,
+     * This means: given a non-fully initialized {@link Solution} with a {@link Score} A,
      * initializing 1 or more variables (without altering the already initialized variables)
      * will give a {@link Solution} for which the {@link Score} is worse or equal to A.
      * <p/>
