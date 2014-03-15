@@ -16,7 +16,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
-import org.jbpm.services.task.persistence.JPATaskPersistenceContext;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
@@ -129,7 +128,7 @@ public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand
         params.put(LANGUAGE, language);
         if( maxResults != null && maxResults.intValue() > 0 ) {
             Integer [] maxResultsArr = { maxResults };
-            params.put(JPATaskPersistenceContext.MAX_RESULTS, Arrays.asList(maxResultsArr));
+            params.put("maxResults", Arrays.asList(maxResultsArr));
         }
         
         return context.getTaskQueryService().getTasksByVariousFields(params, union);

@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jbpm.services.task.persistence.JPATaskPersistenceContext;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
@@ -449,11 +448,11 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         List<String> language = stringQueryAdder.checkNullAndInstanceOf(parameters, LANGUAGE);
         List<Status> status = statusQueryAdder.checkNullAndInstanceOf(parameters, STATUS_LIST);
         
-        List<?> maxResultsList = parameters.get(JPATaskPersistenceContext.MAX_RESULTS);
+        List<?> maxResultsList = parameters.get(MAX_RESULTS);
         if( maxResultsList != null && ! maxResultsList.isEmpty() ) { 
             Object maxResults = maxResultsList.get(0);
             if( maxResults instanceof Integer ) {
-                params.put(JPATaskPersistenceContext.MAX_RESULTS, maxResults);
+                params.put(MAX_RESULTS, maxResults);
             }
         }
         
