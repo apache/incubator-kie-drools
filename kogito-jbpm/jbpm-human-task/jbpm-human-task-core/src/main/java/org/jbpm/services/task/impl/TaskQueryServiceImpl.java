@@ -17,6 +17,7 @@
 package org.jbpm.services.task.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jbpm.services.task.persistence.JPATaskPersistenceContext;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
@@ -386,6 +388,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                     persistenceContext.addParametersToMap("userId", userId, "groupIds", "", "status", status, "expirationDate", expirationDate, "language", "en-UK"),
                     ClassUtil.<List<TaskSummary>>castClass(List.class)); //@TODO: FIX LANGUANGE
     }
+   
     
     @Override
     public List<TaskSummary> getTasksByVariousFields(List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
@@ -400,6 +403,32 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         params.put(ACTUAL_OWNER_ID_LIST, taskOwners);
         params.put(STATUS_LIST, status);
         params.put(LANGUAGE, language);
+        
+        return getTasksByVariousFields(params, union);
+    }
+   
+    public static final String MAX_RESULTS = "maxResults";
+    
+    public List<TaskSummary> getTasksByVariousFields(List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
+            List<String> busAdmins, List<String> potOwners, List<String> taskOwners, 
+            List<Status> status, List<String> language, boolean union, Integer maxResults) {
+        Map<String, List<?>> params = new HashMap<String, List<?>>();
+        params.put(WORK_ITEM_ID_LIST, workItemIds);
+        params.put(TASK_ID_LIST, taskIds);
+        params.put(PROCESS_INST_ID_LIST, procInstIds);
+        params.put(BUSINESS_ADMIN_ID_LIST, busAdmins);
+        params.put(POTENTIAL_OWNER_ID_LIST, potOwners);
+        params.put(ACTUAL_OWNER_ID_LIST, taskOwners);
+        params.put(STATUS_LIST, status);
+        params.put(LANGUAGE, language);
+        
+        if( maxResults != null ) {
+            if( maxResults <= 0 ) { 
+                return new ArrayList<TaskSummary>();
+            }
+            Integer [] maxResultsArr = { maxResults };
+            params.put(MAX_RESULTS, Arrays.asList(maxResultsArr));
+        }
         
         return getTasksByVariousFields(params, union);
     }
@@ -419,6 +448,14 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         List<String> taskOwners = stringQueryAdder.checkNullAndInstanceOf(parameters, ACTUAL_OWNER_ID_LIST);
         List<String> language = stringQueryAdder.checkNullAndInstanceOf(parameters, LANGUAGE);
         List<Status> status = statusQueryAdder.checkNullAndInstanceOf(parameters, STATUS_LIST);
+        
+        List<?> maxResultsList = parameters.get(JPATaskPersistenceContext.MAX_RESULTS);
+        if( maxResultsList != null && ! maxResultsList.isEmpty() ) { 
+            Object maxResults = maxResultsList.get(0);
+            if( maxResults instanceof Integer ) {
+                params.put(JPATaskPersistenceContext.MAX_RESULTS, maxResults);
+            }
+        }
         
         if( workItemIds != null && workItemIds.size() > 0 ) { 
             String paramName = "workItemIds";
@@ -478,8 +515,12 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         if( ! statusQueryAdder.firstUse ) { 
            queryBuilder.append(")"); 
         }
+        
+        // order by task id
+        queryBuilder.append(" ORDER BY t.id" );
+        
         String query = queryBuilder.toString();
-        logger.debug("QUERY: " + query);
+        logger.debug("QUERY: {}", query);
         return persistenceContext.queryStringWithParametersInTransaction(query, params,
                 ClassUtil.<List<TaskSummary>>castClass(List.class));
     }
