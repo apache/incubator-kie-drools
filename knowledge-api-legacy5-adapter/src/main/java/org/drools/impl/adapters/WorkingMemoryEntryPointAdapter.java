@@ -80,4 +80,14 @@ public class WorkingMemoryEntryPointAdapter implements WorkingMemoryEntryPoint {
     public long getFactCount() {
         return delegate.getFactCount();
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof WorkingMemoryEntryPointAdapter && delegate.equals(((WorkingMemoryEntryPointAdapter)obj).delegate);
+    }
 }

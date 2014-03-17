@@ -20,4 +20,14 @@ public class RowAdapter implements Row {
     public FactHandle getFactHandle(String identifier) {
         return new FactHandleAdapter(delegate.getFactHandle(identifier));
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof RowAdapter && delegate.equals(((RowAdapter)obj).delegate);
+    }
 }

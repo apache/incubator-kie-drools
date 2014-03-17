@@ -244,4 +244,14 @@ public class KnowledgeBaseEventListenerAdapter implements KieBaseEventListener {
             }
         });
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof KnowledgeBaseEventListenerAdapter && delegate.equals(((KnowledgeBaseEventListenerAdapter)obj).delegate);
+    }
 }

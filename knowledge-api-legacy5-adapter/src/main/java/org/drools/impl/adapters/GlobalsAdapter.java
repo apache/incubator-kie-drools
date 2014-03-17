@@ -21,4 +21,14 @@ public class GlobalsAdapter implements org.drools.runtime.Globals {
     public void setDelegate(org.drools.runtime.Globals delegate) {
         this.delegate.setDelegate(((GlobalsAdapter)delegate).delegate);
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof GlobalsAdapter && delegate.equals(((GlobalsAdapter)obj).delegate);
+    }
 }

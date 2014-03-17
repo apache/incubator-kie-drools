@@ -40,4 +40,14 @@ public class KnowledgeBaseConfigurationAdapter implements org.drools.KnowledgeBa
     public KieBaseConfiguration getDelegate() {
         return delegate;
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof KnowledgeBaseConfigurationAdapter && delegate.equals(((KnowledgeBaseConfigurationAdapter)obj).delegate);
+    }
 }

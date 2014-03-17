@@ -21,4 +21,14 @@ public class WorkItemHandlerKieAdapter implements org.drools.runtime.process.Wor
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
         delegate.abortWorkItem(new WorkItemKieAdapter(workItem), new WorkItemManagerKieAdapter(manager));
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof WorkItemHandlerKieAdapter && delegate.equals(((WorkItemHandlerKieAdapter)obj).delegate);
+    }
 }

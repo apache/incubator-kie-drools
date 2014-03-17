@@ -29,4 +29,14 @@ public class GlobalAdapter implements org.drools.definition.rule.Global {
         }
         return result;
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof GlobalAdapter && delegate.equals(((GlobalAdapter)obj).delegate);
+    }
 }

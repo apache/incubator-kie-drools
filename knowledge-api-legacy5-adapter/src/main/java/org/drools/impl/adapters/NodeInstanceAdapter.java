@@ -49,4 +49,13 @@ public class NodeInstanceAdapter implements org.drools.runtime.process.NodeInsta
 		delegate.setVariable(variableName, value);
 	}
 
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof NodeInstanceAdapter && delegate.equals(((NodeInstanceAdapter)obj).delegate);
+    }
 }

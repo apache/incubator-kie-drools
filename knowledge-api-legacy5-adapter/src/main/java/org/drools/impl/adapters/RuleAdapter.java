@@ -60,4 +60,14 @@ public class RuleAdapter implements org.drools.definition.rule.Rule {
         }
         return result;
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof RuleAdapter && delegate.equals(((RuleAdapter)obj).delegate);
+    }
 }

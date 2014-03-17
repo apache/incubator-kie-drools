@@ -79,4 +79,14 @@ public class JaxbConfigurationAdapter extends ResourceConfigurationImpl implemen
 
         return this;
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof JaxbConfigurationAdapter && delegate.equals(((JaxbConfigurationAdapter)obj).delegate);
+    }
 }

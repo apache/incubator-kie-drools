@@ -174,4 +174,14 @@ public class ProcessEventListenerAdapter implements org.kie.api.event.process.Pr
 			}
         });
 	}
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ProcessEventListenerAdapter && delegate.equals(((ProcessEventListenerAdapter)obj).delegate);
+    }
 }

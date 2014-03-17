@@ -18,4 +18,14 @@ public class QueryResultsRowAdapter implements QueryResultsRow {
     public FactHandle getFactHandle(String identifier) {
         return new FactHandleAdapter(delegate.getFactHandle(identifier));
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof QueryResultsRowAdapter && delegate.equals(((QueryResultsRowAdapter)obj).delegate);
+    }
 }

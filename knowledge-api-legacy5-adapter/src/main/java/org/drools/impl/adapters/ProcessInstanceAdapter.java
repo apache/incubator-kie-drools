@@ -53,4 +53,14 @@ public class ProcessInstanceAdapter implements org.drools.runtime.process.Proces
         }
         return result;
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ProcessInstanceAdapter && delegate.equals(((ProcessInstanceAdapter)obj).delegate);
+    }
 }

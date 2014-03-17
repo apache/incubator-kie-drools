@@ -17,4 +17,14 @@ public class CalendarAdapter implements org.drools.time.Calendar {
     public Calendar getDelegate() {
         return delegate;
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof CalendarAdapter && delegate.equals(((CalendarAdapter)obj).delegate);
+    }
 }

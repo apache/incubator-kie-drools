@@ -24,4 +24,14 @@ public class AgendaGroupAdapter implements AgendaGroup {
     public void setFocus() {
         delegate.setFocus();
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof AgendaGroupAdapter && delegate.equals(((AgendaGroupAdapter)obj).delegate);
+    }
 }
