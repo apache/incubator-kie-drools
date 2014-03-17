@@ -488,12 +488,7 @@ public class KieContainerImpl
 
         registerLoggers(kSessionModel, kSession);
 
-        KieSession oldSession = kSessions.remove(kSessionName);
-        if (oldSession != null) {
-            oldSession.dispose();
-        }
         kSessions.put(kSessionName, kSession);
-
         return kSession;
     }
 
