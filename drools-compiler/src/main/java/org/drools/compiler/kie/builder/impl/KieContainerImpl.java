@@ -26,6 +26,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.*;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -458,6 +459,10 @@ public class KieContainerImpl
 
     public KieSession getKieSession(String kSessionName) {
         KieSession kieSession = kSessions.get(kSessionName);
+        if (kieSession instanceof StatefulKnowledgeSessionImpl && !((StatefulKnowledgeSessionImpl)kieSession).isAlive()) {
+            kSessions.remove(kSessionName);
+            kieSession = null;
+        }
         return kieSession != null ? kieSession : newKieSession(kSessionName);
     }
 
