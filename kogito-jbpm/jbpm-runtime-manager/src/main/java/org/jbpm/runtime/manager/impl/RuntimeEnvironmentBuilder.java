@@ -50,20 +50,20 @@ import org.kie.scanner.MavenRepository;
  *  <li>getEmpty() - completely empty environment for self configuration</li>
  *  <li>getClasspathKModuleDefault() - returns preconfigured environment with enabled persistence based on classpath kiecontainer</li>
  *  <li>getClasspathKModuleDefault(String, String) - returns preconfigured environment with enabled persistence based on classpath kiecontainer</li>
- * </ul>  
+ * </ul>
  *
  */
 public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFactory, org.kie.api.runtime.manager.RuntimeEnvironmentBuilder{
-	
+
 	private static final String DEFAULT_KBASE_NAME = "defaultKieBase";
-	
+
 
     private SimpleRuntimeEnvironment runtimeEnvironment;
-    
+
     public RuntimeEnvironmentBuilder() {
         this.runtimeEnvironment = new SimpleRuntimeEnvironment();
     }
-    
+
     private RuntimeEnvironmentBuilder(SimpleRuntimeEnvironment runtimeEnvironment) {
         this.runtimeEnvironment = runtimeEnvironment;
     }
@@ -75,20 +75,20 @@ public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFacto
     public static RuntimeEnvironmentBuilder getEmpty() {
         return new RuntimeEnvironmentBuilder();
     }
-    
+
     /**
      * Provides default configuration of <code>RuntimeEnvironmentBuilder</code> that is based on:
      * <ul>
      * 	<li>DefaultRuntimeEnvironment</li>
      * </ul>
      * @return new instance of <code>RuntimeEnvironmentBuilder</code> that is already preconfigured with defaults
-     * 
+     *
      * @see DefaultRuntimeEnvironment
      */
     public static RuntimeEnvironmentBuilder getDefault() {
         return new RuntimeEnvironmentBuilder(new DefaultRuntimeEnvironment());
     }
-    
+
     /**
      * Provides default configuration of <code>RuntimeEnvironmentBuilder</code> that is based on:
      * <ul>
@@ -96,7 +96,7 @@ public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFacto
      * </ul>
      * but it does not have persistence for process engine configured so it will only store process instances in memory
      * @return new instance of <code>RuntimeEnvironmentBuilder</code> that is already preconfigured with defaults
-     * 
+     *
      * @see DefaultRuntimeEnvironment
      */
     public static RuntimeEnvironmentBuilder getDefaultInMemory() {
@@ -104,10 +104,10 @@ public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFacto
         builder
         .addConfiguration("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName())
         .addConfiguration("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
-        
+
         return builder;
     }
-    
+
     /**
      * Provides default configuration of <code>RuntimeEnvironmentBuilder</code> that is based on:
      * <ul>
@@ -118,13 +118,13 @@ public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFacto
      * @param artifactId artifact id of kjar
      * @param version version number of kjar
      * @return new instance of <code>RuntimeEnvironmentBuilder</code> that is already preconfigured with defaults
-     * 
+     *
      * @see DefaultRuntimeEnvironment
      */
     public static RuntimeEnvironmentBuilder getDefault(String groupId, String artifactId, String version) {
     	return getDefault(groupId, artifactId, version, null, null);
     }
-    
+
     /**
      * Provides default configuration of <code>RuntimeEnvironmentBuilder</code> that is based on:
      * <ul>
@@ -137,14 +137,14 @@ public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFacto
      * @param kbaseName name of the kbase defined in kmodule.xml stored in kjar
      * @param ksessionName name of the ksession define in kmodule.xml stored in kjar
      * @return new instance of <code>RuntimeEnvironmentBuilder</code> that is already preconfigured with defaults
-     * 
+     *
      * @see DefaultRuntimeEnvironment
      */
     public static RuntimeEnvironmentBuilder getDefault(String groupId, String artifactId, String version, String kbaseName, String ksessionName) {
     	KieServices ks = KieServices.Factory.get();
     	return getDefault(ks.newReleaseId(groupId, artifactId, version), kbaseName, ksessionName);
     }
-    
+
     /**
      * Provides default configuration of <code>RuntimeEnvironmentBuilder</code> that is based on:
      * <ul>
@@ -153,13 +153,13 @@ public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFacto
      * This one is tailored to works smoothly with kjars as the notion of kbase and ksessions
      * @param releaseId <code>ReleaseId</code> that described the kjar
      * @return new instance of <code>RuntimeEnvironmentBuilder</code> that is already preconfigured with defaults
-     * 
+     *
      * @see DefaultRuntimeEnvironment
      */
     public static RuntimeEnvironmentBuilder getDefault(ReleaseId releaseId) {
         return getDefault(releaseId, null, null);
     }
-    
+
     /**
      * Provides default configuration of <code>RuntimeEnvironmentBuilder</code> that is based on:
      * <ul>
@@ -170,7 +170,7 @@ public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFacto
      * @param kbaseName name of the kbase defined in kmodule.xml stored in kjar
      * @param ksessionName name of the ksession define in kmodule.xml stored in kjar
      * @return new instance of <code>RuntimeEnvironmentBuilder</code> that is already preconfigured with defaults
-     * 
+     *
      * @see DefaultRuntimeEnvironment
      */
     public static RuntimeEnvironmentBuilder getDefault(ReleaseId releaseId, String kbaseName, String ksessionName) {
@@ -192,47 +192,50 @@ public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFacto
             throw new IllegalStateException("Cannot find kbase with name " + kbaseName);
         }
         KieBase kbase = kieContainer.getKieBase(kbaseName);
-        
+
         RuntimeEnvironmentBuilder builder = getDefault()
         										.knowledgeBase(kbase)
         										.classLoader(kieContainer.getClassLoader())
         										.registerableItemsFactory(new KModuleRegisterableItemsFactory(kieContainer, ksessionName));
         return builder;
     }
-    
+
     /**
      * Provides default configuration of <code>RuntimeEnvironmentBuilder</code> that is based on:
      * <ul>
      * 	<li>DefaultRuntimeEnvironment</li>
      * </ul>
-     * It relies on KieClasspathContainer that requires to have kmodule.xml present in META-INF folder which 
+     * It relies on KieClasspathContainer that requires to have kmodule.xml present in META-INF folder which
      * defines the kjar itself.
      * Expects to use default kbase and ksession from kmodule.
      * @return new instance of <code>RuntimeEnvironmentBuilder</code> that is already preconfigured with defaults
-     * 
+     *
      * @see DefaultRuntimeEnvironment
      */
     public static RuntimeEnvironmentBuilder getClasspathKmoduleDefault() {
     	return getClasspathKmoduleDefault(null, null);
     }
-    
+
     /**
      * Provides default configuration of <code>RuntimeEnvironmentBuilder</code> that is based on:
      * <ul>
      * 	<li>DefaultRuntimeEnvironment</li>
      * </ul>
-     * It relies on KieClasspathContainer that requires to have kmodule.xml present in META-INF folder which 
+     * It relies on KieClasspathContainer that requires to have kmodule.xml present in META-INF folder which
      * defines the kjar itself.
      * @param kbaseName name of the kbase defined in kmodule.xml
-     * @param ksessionName name of the ksession define in kmodule.xml   
+     * @param ksessionName name of the ksession define in kmodule.xml
      * @return new instance of <code>RuntimeEnvironmentBuilder</code> that is already preconfigured with defaults
-     * 
+     *
      * @see DefaultRuntimeEnvironment
      */
-    public static RuntimeEnvironmentBuilder getClasspathKmoduleDefault(String kbaseName, String ksessionName) {    	
-    	KieServices ks = KieServices.Factory.get();
-    	KieContainer kieContainer = ks.getKieClasspathContainer();
+    public static RuntimeEnvironmentBuilder getClasspathKmoduleDefault(String kbaseName, String ksessionName) {
+        return setupClasspathKmoduleBuilder( KieServices.Factory.get().getKieClasspathContainer(), kbaseName, ksessionName );
+    }
 
+    private static RuntimeEnvironmentBuilder setupClasspathKmoduleBuilder( KieContainer kieContainer,
+                                                                           String kbaseName,
+                                                                           String ksessionName ) {
         if (StringUtils.isEmpty(kbaseName)) {
             KieBaseModel defaultKBaseModel = ((KieContainerImpl)kieContainer).getKieProject().getDefaultKieBaseModel();
             if (defaultKBaseModel != null) {
@@ -246,20 +249,19 @@ public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFacto
             throw new IllegalStateException("Cannot find kbase with name " + kbaseName);
         }
         KieBase kbase = kieContainer.getKieBase(kbaseName);
-        
-        RuntimeEnvironmentBuilder builder = getDefault()
-        										.knowledgeBase(kbase)
-        										.classLoader(kieContainer.getClassLoader())
-        										.registerableItemsFactory(new KModuleRegisterableItemsFactory(kieContainer, ksessionName));
-        return builder;
+
+        return getDefault()
+                .knowledgeBase(kbase)
+                .classLoader(kieContainer.getClassLoader())
+                .registerableItemsFactory(new KModuleRegisterableItemsFactory(kieContainer, ksessionName));
     }
-    
+
     public RuntimeEnvironmentBuilder persistence(boolean persistenceEnabled) {
         this.runtimeEnvironment.setUsePersistence(persistenceEnabled);
-        
+
         return this;
     }
-    
+
     public RuntimeEnvironmentBuilder entityManagerFactory(Object emf) {
     	if (emf == null) {
             return this;
@@ -268,10 +270,10 @@ public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFacto
     		throw new IllegalArgumentException("Argument is not of type EntityManagerFactory");
     	}
         this.runtimeEnvironment.setEmf((EntityManagerFactory) emf);
-        
+
         return this;
     }
-    
+
     public RuntimeEnvironmentBuilder addAsset(Resource asset, ResourceType type) {
     	if (asset == null || type == null) {
             return this;
@@ -279,61 +281,61 @@ public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFacto
         this.runtimeEnvironment.addAsset(asset, type);
         return this;
     }
-    
+
     public RuntimeEnvironmentBuilder addEnvironmentEntry(String name, Object value) {
     	if (name == null || value == null) {
             return this;
         }
         this.runtimeEnvironment.addToEnvironment(name, value);
-        
+
         return this;
     }
-    
+
     public RuntimeEnvironmentBuilder addConfiguration(String name, String value) {
     	if (name == null || value == null) {
             return this;
         }
         this.runtimeEnvironment.addToConfiguration(name, value);
-        
+
         return this;
     }
-    
-    public RuntimeEnvironmentBuilder knowledgeBase(KieBase kbase) { 
+
+    public RuntimeEnvironmentBuilder knowledgeBase(KieBase kbase) {
     	if (kbase == null) {
             return this;
         }
         this.runtimeEnvironment.setKieBase(kbase);
-        
+
         return this;
     }
-    
+
     public RuntimeEnvironmentBuilder userGroupCallback(UserGroupCallback callback) {
     	if (callback == null) {
             return this;
         }
         this.runtimeEnvironment.setUserGroupCallback(callback);
-    
+
         return this;
     }
-    
+
     public RuntimeEnvironmentBuilder mapper(Mapper mapper) {
     	if (mapper == null) {
             return this;
         }
         this.runtimeEnvironment.setMapper(mapper);
-    
+
         return this;
     }
-    
-    public RuntimeEnvironmentBuilder registerableItemsFactory(RegisterableItemsFactory factory) { 
+
+    public RuntimeEnvironmentBuilder registerableItemsFactory(RegisterableItemsFactory factory) {
     	if (factory == null) {
             return this;
         }
         this.runtimeEnvironment.setRegisterableItemsFactory(factory);
-        
+
         return this;
     }
-    
+
     public RuntimeEnvironment get() {
         this.runtimeEnvironment.init();
         return this.runtimeEnvironment;
@@ -349,12 +351,12 @@ public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFacto
         this.runtimeEnvironment.setSchedulerService((GlobalSchedulerService) globalScheduler);
         return this;
     }
-    
+
     public RuntimeEnvironmentBuilder classLoader(ClassLoader cl) {
     	if (cl == null) {
             return this;
         }
-        this.runtimeEnvironment.setClassLoader(cl);        
+        this.runtimeEnvironment.setClassLoader(cl);
         return this;
     }
 
@@ -395,11 +397,11 @@ public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFacto
 
 	@Override
 	public org.kie.api.runtime.manager.RuntimeEnvironmentBuilder newClasspathKmoduleDefaultBuilder() {
-		return RuntimeEnvironmentBuilder.getClasspathKmoduleDefault();
+		return newClasspathKmoduleDefaultBuilder( null, null );
 	}
 
 	@Override
 	public org.kie.api.runtime.manager.RuntimeEnvironmentBuilder newClasspathKmoduleDefaultBuilder(String kbaseName, String ksessionName) {
-		return RuntimeEnvironmentBuilder.getClasspathKmoduleDefault(kbaseName, ksessionName);
+        return setupClasspathKmoduleBuilder( KieServices.Factory.get().newKieClasspathContainer(), kbaseName, ksessionName );
 	}
 }
