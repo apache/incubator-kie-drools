@@ -1379,6 +1379,9 @@ public class RuleModelDRLPersistenceImpl
             if ( fieldValue.isFormula() ) {
                 buildFormulaFieldValue( fieldValue,
                                         buf );
+            } else if ( fieldValue.getNature() == FieldNatureType.TYPE_VARIABLE ) {
+                buildVariableFieldValue( fieldValue,
+                                         buf );
             } else if ( fieldValue.getNature() == FieldNatureType.TYPE_TEMPLATE ) {
                 buildTemplateFieldValue( fieldValue,
                                          buf );
@@ -1394,6 +1397,11 @@ public class RuleModelDRLPersistenceImpl
         protected void buildFormulaFieldValue( final ActionFieldValue fieldValue,
                                                final StringBuilder buf ) {
             buf.append( fieldValue.getValue() );
+        }
+
+        protected void buildVariableFieldValue( final ActionFieldValue fieldValue,
+                                                final StringBuilder buf ) {
+            buf.append( fieldValue.getValue().substring( 1 ) );
         }
 
         protected void buildTemplateFieldValue( final ActionFieldValue fieldValue,
@@ -2036,6 +2044,8 @@ public class RuleModelDRLPersistenceImpl
 
             FactPattern factPattern = new FactPattern( pattern.getObjectType() );
             factPattern.setBoundName( pattern.getIdentifier() );
+            boundParams.put( factPattern.getBoundName(),
+                             factPattern.getFactType() );
             parseConstraint( m,
                              factPattern,
                              pattern.getConstraint(),
@@ -2229,7 +2239,13 @@ public class RuleModelDRLPersistenceImpl
                     ActionInsertLogicalFact action = new ActionInsertLogicalFact( type );
                     m.addRhsItem( action );
                     if ( factsType.containsKey( fact ) ) {
-                        addSettersToAction( setStatements, fact, action, isJavaDialect );
+                        addSettersToAction( setStatements,
+                                            fact,
+                                            action,
+                                            boundParams,
+                                            dmo,
+                                            m.getImports(),
+                                            isJavaDialect );
                     }
                 }
             } else if ( line.startsWith( "insert" ) ) {
@@ -2240,7 +2256,13 @@ public class RuleModelDRLPersistenceImpl
                     m.addRhsItem( action );
                     if ( factsType.containsKey( fact ) ) {
                         action.setBoundName( fact );
-                        addSettersToAction( setStatements, fact, action, isJavaDialect );
+                        addSettersToAction( setStatements,
+                                            fact,
+                                            action,
+                                            boundParams,
+                                            dmo,
+                                            m.getImports(),
+                                            isJavaDialect );
                     }
                 }
             } else if ( line.startsWith( "update" ) ) {
@@ -2248,7 +2270,13 @@ public class RuleModelDRLPersistenceImpl
                 ActionUpdateField action = new ActionUpdateField();
                 action.setVariable( variable );
                 m.addRhsItem( action );
-                addSettersToAction( setStatements, variable, action, isJavaDialect );
+                addSettersToAction( setStatements,
+                                    variable,
+                                    action,
+                                    boundParams,
+                                    dmo,
+                                    m.getImports(),
+                                    isJavaDialect );
             } else if ( line.startsWith( "retract" ) ) {
                 String variable = unwrapParenthesis( line );
                 m.addRhsItem( new ActionRetractFact( variable ) );
@@ -2290,7 +2318,7 @@ public class RuleModelDRLPersistenceImpl
                                 actionGlobalCollectionAdd.setFactName( factName );
                                 m.addRhsItem( actionGlobalCollectionAdd );
                             } else {
-                                m.addRhsItem(getActionCallMethod(m, isJavaDialect, boundParams, dmo, line, variable, methodName));
+                                m.addRhsItem( getActionCallMethod( m, isJavaDialect, boundParams, dmo, line, variable, methodName ) );
                             }
                             continue;
                         }
@@ -2320,7 +2348,12 @@ public class RuleModelDRLPersistenceImpl
 
         for ( Map.Entry<String, List<String>> entry : setStatements.entrySet() ) {
             ActionSetField action = new ActionSetField( entry.getKey() );
-            addSettersToAction( entry.getValue(), action, isJavaDialect );
+            addSettersToAction( entry.getValue(),
+                                action,
+                                boundParams,
+                                dmo,
+                                m.getImports(),
+                                isJavaDialect );
             m.addRhsItem( action, setStatementsPosition.get( entry.getKey() ) );
         }
 
@@ -2340,7 +2373,7 @@ public class RuleModelDRLPersistenceImpl
             PackageDataModelOracle dmo,
             String line,
             String variable,
-            String methodName) {
+            String methodName ) {
 
         return new ActionCallMethodBuilder(
                 model,
@@ -2350,8 +2383,8 @@ public class RuleModelDRLPersistenceImpl
         ).get(
                 variable,
                 methodName,
-                unwrapParenthesis(line).split(",")
-        );
+                unwrapParenthesis( line ).split( "," )
+             );
     }
 
     private boolean isInsertedFact( String[] lines,
@@ -2430,12 +2463,23 @@ public class RuleModelDRLPersistenceImpl
     private void addSettersToAction( Map<String, List<String>> setStatements,
                                      String variable,
                                      ActionFieldList action,
+                                     Map<String, String> boundParams,
+                                     PackageDataModelOracle dmo,
+                                     Imports imports,
                                      boolean isJavaDialect ) {
-        addSettersToAction( setStatements.remove( variable ), action, isJavaDialect );
+        addSettersToAction( setStatements.remove( variable ),
+                            action,
+                            boundParams,
+                            dmo,
+                            imports,
+                            isJavaDialect );
     }
 
     private void addSettersToAction( List<String> setters,
                                      ActionFieldList action,
+                                     Map<String, String> boundParams,
+                                     PackageDataModelOracle dmo,
+                                     Imports imports,
                                      boolean isJavaDialect ) {
         if ( setters != null ) {
             for ( String statement : setters ) {
@@ -2444,8 +2488,21 @@ public class RuleModelDRLPersistenceImpl
                 String methodName = statement.substring( dotPos + 1, argStart ).trim();
                 String field = getSettedField( methodName );
                 String value = unwrapParenthesis( statement );
-                String dataType = inferDataType( value, isJavaDialect );
-                action.addFieldValue( buildFieldValue( isJavaDialect, field, value, dataType ) );
+                String dataType = inferDataType( action,
+                                                 field,
+                                                 boundParams,
+                                                 dmo,
+                                                 imports );
+                if ( dataType == null ) {
+                    dataType = inferDataType( value,
+                                              boundParams,
+                                              isJavaDialect );
+                }
+                action.addFieldValue( buildFieldValue( isJavaDialect,
+                                                       field,
+                                                       value,
+                                                       dataType,
+                                                       boundParams ) );
             }
         }
     }
@@ -2453,7 +2510,8 @@ public class RuleModelDRLPersistenceImpl
     private ActionFieldValue buildFieldValue( boolean isJavaDialect,
                                               String field,
                                               String value,
-                                              String dataType ) {
+                                              String dataType,
+                                              Map<String, String> boundParams ) {
         if ( value.contains( "wiWorkItem.getResult" ) ) {
             field = field.substring( 0, 1 ).toUpperCase() + field.substring( 1 );
             String wiParam = field.substring( "Results".length() );
@@ -2467,9 +2525,12 @@ public class RuleModelDRLPersistenceImpl
                 return new ActionWorkItemFieldValue( field, DataType.TYPE_NUMERIC_FLOAT, "WorkItem", wiParam, Float.class.getName() );
             }
         }
-        ActionFieldValue fieldValue = new ActionFieldValue( field, adjustParam( dataType, value, isJavaDialect ), dataType );
+        ActionFieldValue fieldValue = new ActionFieldValue( field, adjustParam( dataType, value, boundParams, isJavaDialect ), dataType );
+        fieldValue.setNature( FieldNatureType.TYPE_LITERAL );
         if ( dataType == DataType.TYPE_COLLECTION || dataType == DataType.TYPE_NUMERIC ) {
             fieldValue.setNature( FieldNatureType.TYPE_FORMULA );
+        } else if ( boundParams.containsKey( value ) ) {
+            fieldValue.setNature( FieldNatureType.TYPE_VARIABLE );
         }
         return fieldValue;
     }
@@ -2485,7 +2546,6 @@ public class RuleModelDRLPersistenceImpl
         }
         return true;
     }
-
 
     private String getSettedField( String methodName ) {
         if ( methodName.length() > 3 && methodName.startsWith( "set" ) ) {
@@ -2794,7 +2854,9 @@ public class RuleModelDRLPersistenceImpl
                                                                    String operator,
                                                                    String value ) {
             SingleFieldConstraint con = new SingleFieldConstraint();
-            fieldName = setFieldBindingOnContraint( fieldName, con );
+            fieldName = setFieldBindingOnContraint( fieldName,
+                                                    con,
+                                                    boundParams );
             con.setFieldName( fieldName );
             setOperatorAndValueOnConstraint( m, operator, value, factPattern, con );
             return con;
@@ -2807,7 +2869,9 @@ public class RuleModelDRLPersistenceImpl
                                                                                        String value ) {
             SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
 
-            fieldName = setFieldBindingOnContraint( fieldName, con );
+            fieldName = setFieldBindingOnContraint( fieldName,
+                                                    con,
+                                                    boundParams );
             String classType = getFQFactType( m, factPattern.getFactType() );
             con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( factPattern ) );
 
@@ -2950,11 +3014,14 @@ public class RuleModelDRLPersistenceImpl
         }
 
         private String setFieldBindingOnContraint( String fieldName,
-                                                   SingleFieldConstraint con ) {
+                                                   SingleFieldConstraint con,
+                                                   Map<String, String> boundParams ) {
             int colonPos = fieldName.indexOf( ':' );
             if ( colonPos > 0 ) {
                 String fieldBinding = fieldName.substring( 0, colonPos ).trim();
                 con.setFieldBinding( fieldBinding );
+                boundParams.put( fieldBinding,
+                                 fieldName );
                 fieldName = fieldName.substring( colonPos + 1 ).trim();
             }
             return fieldName;

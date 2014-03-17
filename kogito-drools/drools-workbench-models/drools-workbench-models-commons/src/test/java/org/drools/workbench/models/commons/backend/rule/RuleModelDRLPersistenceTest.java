@@ -4202,4 +4202,44 @@ public class RuleModelDRLPersistenceTest {
         assertNotNull( drl );
     }
 
+    @Test
+    public void testRHSSetFieldWithVariable() {
+        //https://bugzilla.redhat.com/show_bug.cgi?id=1077212
+        RuleModel m = new RuleModel();
+        m.name = "variable";
+
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( DataType.TYPE_NUMERIC_INTEGER );
+        con.setFieldName( "field1" );
+        con.setOperator( "==" );
+        con.setValue( "44" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        con.setFieldBinding( "$f" );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        ActionInsertFact ai = new ActionInsertFact( "Person" );
+        ActionFieldValue acv = new ActionFieldValue( "field1",
+                                                     "=$f",
+                                                     DataType.TYPE_OBJECT );
+        acv.setNature( FieldNatureType.TYPE_VARIABLE );
+        ai.addFieldValue( acv );
+        m.addRhsItem( ai );
+
+        String expected = "rule \"variable\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "Person( $f : field1 == 44 )\n"
+                + "then\n"
+                + "Person fact0 = new Person();\n"
+                + "fact0.setField1( $f );\n"
+                + "insert( fact0 );\n"
+                + "end";
+
+        checkMarshallUnmarshall( expected,
+                                 m );
+    }
+
 }
