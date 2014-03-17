@@ -30,4 +30,13 @@ public class NodeContainerAdapter implements org.drools.definition.process.NodeC
 		return new NodeAdapter(delegate.getNode(id));
 	}
 
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof NodeContainerAdapter && delegate.equals(((NodeContainerAdapter)obj).delegate);
+    }
 }

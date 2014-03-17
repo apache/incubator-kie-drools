@@ -40,4 +40,13 @@ public class NodeInstanceContainerAdapter implements org.drools.runtime.process.
 		}
 	}
 
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof NodeInstanceContainerAdapter && delegate.equals(((NodeInstanceContainerAdapter)obj).delegate);
+    }
 }

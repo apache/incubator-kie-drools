@@ -158,4 +158,14 @@ public class AgendaEventListenerAdapter implements org.kie.api.event.rule.Agenda
             }
         });
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof AgendaEventListenerAdapter && delegate.equals(((AgendaEventListenerAdapter)obj).delegate);
+    }
 }

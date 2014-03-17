@@ -43,4 +43,14 @@ public class WorkItemKieAdapter implements WorkItem {
     public long getProcessInstanceId() {
         return delegate.getProcessInstanceId();
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof WorkItemKieAdapter && delegate.equals(((WorkItemKieAdapter)obj).delegate);
+    }
 }

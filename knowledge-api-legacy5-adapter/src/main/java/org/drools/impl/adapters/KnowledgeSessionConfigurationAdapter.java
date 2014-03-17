@@ -39,4 +39,14 @@ public class KnowledgeSessionConfigurationAdapter implements KnowledgeSessionCon
     public KieSessionConfiguration getDelegate() {
         return delegate;
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof KnowledgeSessionConfigurationAdapter && delegate.equals(((KnowledgeSessionConfigurationAdapter)obj).delegate);
+    }
 }

@@ -36,4 +36,13 @@ public class ConnectionAdapter implements org.drools.definition.process.Connecti
 		return delegate.getMetaData().get(name);
 	}
 
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ConnectionAdapter && delegate.equals(((ConnectionAdapter)obj).delegate);
+    }
 }

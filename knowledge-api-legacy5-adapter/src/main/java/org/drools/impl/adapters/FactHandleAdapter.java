@@ -30,4 +30,14 @@ public class FactHandleAdapter implements org.drools.runtime.rule.FactHandle {
         }
         return result;
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof FactHandleAdapter && delegate.equals(((FactHandleAdapter)obj).delegate);
+    }
 }

@@ -33,4 +33,14 @@ public class AnnotationAdapter implements org.drools.definition.type.Annotation 
         }
         return result;
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof AnnotationAdapter && delegate.equals(((AnnotationAdapter)obj).delegate);
+    }
 }

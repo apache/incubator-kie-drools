@@ -13,4 +13,14 @@ public class LiveQueryAdapter implements LiveQuery {
     public void close() {
         delegate.close();
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof LiveQueryAdapter && delegate.equals(((LiveQueryAdapter)obj).delegate);
+    }
 }

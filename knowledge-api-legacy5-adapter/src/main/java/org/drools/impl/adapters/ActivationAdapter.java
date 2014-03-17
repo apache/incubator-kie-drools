@@ -48,4 +48,14 @@ public class ActivationAdapter implements Activation {
     public boolean isActive() {
         throw new UnsupportedOperationException("This operation is no longer supported");
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ActivationAdapter && delegate.equals(((ActivationAdapter)obj).delegate);
+    }
 }

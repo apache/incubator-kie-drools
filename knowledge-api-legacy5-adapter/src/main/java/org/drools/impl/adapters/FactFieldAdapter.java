@@ -70,4 +70,14 @@ public class FactFieldAdapter implements org.drools.definition.type.FactField {
         }
         return result;
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof FactFieldAdapter && delegate.equals(((FactFieldAdapter)obj).delegate);
+    }
 }

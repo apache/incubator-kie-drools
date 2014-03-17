@@ -85,4 +85,14 @@ public class StatelessKnowledgeSessionAdapter implements org.drools.runtime.Stat
     public Collection<AgendaEventListener> getAgendaEventListeners() {
         return agendaListeners.keySet();
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof StatelessKnowledgeSessionAdapter && delegate.equals(((StatelessKnowledgeSessionAdapter)obj).delegate);
+    }
 }

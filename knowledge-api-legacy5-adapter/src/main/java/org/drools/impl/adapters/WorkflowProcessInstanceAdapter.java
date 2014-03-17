@@ -46,4 +46,13 @@ public class WorkflowProcessInstanceAdapter extends ProcessInstanceAdapter imple
 		getDelegate().setVariable(name, value);		
 	}
 
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof WorkflowProcessInstanceAdapter && delegate.equals(((WorkflowProcessInstanceAdapter)obj).delegate);
+    }
 }

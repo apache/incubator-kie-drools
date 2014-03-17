@@ -90,4 +90,14 @@ public class WorkingMemoryEventListenerAdapter implements org.kie.api.event.rule
             }
         });
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof WorkingMemoryEventListenerAdapter && delegate.equals(((WorkingMemoryEventListenerAdapter)obj).delegate);
+    }
 }

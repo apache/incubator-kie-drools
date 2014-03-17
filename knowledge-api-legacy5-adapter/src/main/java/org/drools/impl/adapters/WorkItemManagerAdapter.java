@@ -26,4 +26,13 @@ public class WorkItemManagerAdapter implements WorkItemManager {
 		delegate.registerWorkItemHandler(workItemName, new WorkItemHandlerAdapter(handler));
 	}
 
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof WorkItemManagerAdapter && delegate.equals(((WorkItemManagerAdapter)obj).delegate);
+    }
 }

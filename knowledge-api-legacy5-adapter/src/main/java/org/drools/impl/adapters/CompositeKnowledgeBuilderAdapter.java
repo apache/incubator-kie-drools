@@ -36,4 +36,14 @@ public class CompositeKnowledgeBuilderAdapter implements org.drools.builder.Comp
     public void build() {
         delegate.build();
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof CompositeKnowledgeBuilderAdapter && delegate.equals(((CompositeKnowledgeBuilderAdapter)obj).delegate);
+    }
 }
