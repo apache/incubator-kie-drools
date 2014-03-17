@@ -1,0 +1,28 @@
+package org.drools.persistence;
+
+import org.drools.persistence.session.OrderDetails;
+import org.drools.persistence.session.OrderEligibility;
+import function org.drools.persistence.session.OrderEligibilityCheck.dateDifference;
+import org.drools.persistence.session.Account;
+
+    rule "Account Eligibility"
+        dialect "java"
+    when
+        $account:Account( getAccountStatus().equals("O"))
+    then
+        $account.setAccountEligible(true);
+        System.out.println(" Account Eligibility Rule called - then part after changing value  "+$account);
+    end
+
+
+
+
+    rule "Customer Eligibility"
+        dialect "java"
+    when
+        $orderEligibility: OrderEligibility(dateDifference(getOrderDetails().getEndDate(), getOrderDetails().getStartDate()))
+    then
+        $orderEligibility.setOrderEligibile(true);
+    System.out.println(" Order Eligibility Rule called - then part after changing value  "+ $orderEligibility);
+    end
+        
