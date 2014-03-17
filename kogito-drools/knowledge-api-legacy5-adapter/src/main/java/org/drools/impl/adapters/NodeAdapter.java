@@ -78,5 +78,14 @@ public class NodeAdapter implements org.drools.definition.process.Node {
 		}
 		return result;
 	}
-	
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof NodeAdapter && delegate.equals(((NodeAdapter)obj).delegate);
+    }
 }

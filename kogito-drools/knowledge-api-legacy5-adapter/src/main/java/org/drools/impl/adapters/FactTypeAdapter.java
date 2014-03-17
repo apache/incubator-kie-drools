@@ -94,4 +94,14 @@ public class FactTypeAdapter implements org.drools.definition.type.FactType {
         }
         return result;
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof FactTypeAdapter && delegate.equals(((FactTypeAdapter)obj).delegate);
+    }
 }

@@ -60,4 +60,14 @@ public class AccumulateFunctionAdapter implements AccumulateFunction {
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         delegate.readExternal(in);
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof AccumulateFunctionAdapter && delegate.equals(((AccumulateFunctionAdapter)obj).delegate);
+    }
 }

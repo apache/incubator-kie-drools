@@ -20,4 +20,13 @@ public class WorkItemHandlerAdapter implements WorkItemHandler {
 		delegate.abortWorkItem(new WorkItemAdapter(workItem), new WorkItemManagerAdapter(manager));
 	}
 
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof WorkItemHandlerAdapter && delegate.equals(((WorkItemHandlerAdapter)obj).delegate);
+    }
 }

@@ -19,4 +19,14 @@ public class ActivationGroupAdapter implements ActivationGroup {
     public void clear() {
         delegate.clear();
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ActivationGroupAdapter && delegate.equals(((ActivationGroupAdapter)obj).delegate);
+    }
 }

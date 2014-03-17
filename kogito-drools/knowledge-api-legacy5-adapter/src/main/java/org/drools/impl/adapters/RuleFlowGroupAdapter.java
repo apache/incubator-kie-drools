@@ -19,4 +19,14 @@ public class RuleFlowGroupAdapter implements RuleFlowGroup {
     public void clear() {
         delegate.clear();
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof RuleFlowGroupAdapter && delegate.equals(((RuleFlowGroupAdapter)obj).delegate);
+    }
 }

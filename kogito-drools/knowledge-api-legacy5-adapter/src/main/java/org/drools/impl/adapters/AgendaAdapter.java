@@ -28,4 +28,14 @@ public class AgendaAdapter implements Agenda {
     public RuleFlowGroup getRuleFlowGroup(String name) {
         return new RuleFlowGroupAdapter(delegate.getRuleFlowGroup(name));
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof AgendaAdapter && delegate.equals(((AgendaAdapter)obj).delegate);
+    }
 }

@@ -64,4 +64,14 @@ public class QueryAdapter implements org.drools.definition.rule.Query {
         }
         return result;
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof QueryAdapter && delegate.equals(((QueryAdapter)obj).delegate);
+    }
 }

@@ -63,4 +63,14 @@ public class ProcessAdapter implements org.drools.definition.process.Process {
         }
         return result;
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ProcessAdapter && delegate.equals(((ProcessAdapter)obj).delegate);
+    }
 }

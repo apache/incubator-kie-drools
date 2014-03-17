@@ -124,4 +124,14 @@ public class KnowledgeBaseAdapter implements org.drools.KnowledgeBase {
     public Collection<KnowledgeBaseEventListener> getKnowledgeBaseEventListeners() {
         return listeners.keySet();
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof KnowledgeBaseAdapter && delegate.equals(((KnowledgeBaseAdapter)obj).delegate);
+    }
 }

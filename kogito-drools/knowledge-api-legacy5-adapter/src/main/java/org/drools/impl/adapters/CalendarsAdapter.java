@@ -19,4 +19,14 @@ public class CalendarsAdapter implements org.drools.runtime.Calendars {
     public void set(String identifier, Calendar value) {
         delegate.set(identifier, ((CalendarAdapter)value).getDelegate());
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof CalendarsAdapter && delegate.equals(((CalendarsAdapter)obj).delegate);
+    }
 }

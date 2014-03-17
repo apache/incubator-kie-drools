@@ -84,4 +84,14 @@ public class StatefulKnowledgeSessionAdapter extends KnowledgeRuntimeAdapter imp
         }
         return result;
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof StatefulKnowledgeSessionAdapter && delegate.equals(((StatefulKnowledgeSessionAdapter)obj).delegate);
+    }
 }

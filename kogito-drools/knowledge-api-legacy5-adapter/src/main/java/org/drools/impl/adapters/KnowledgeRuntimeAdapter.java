@@ -310,4 +310,14 @@ public class KnowledgeRuntimeAdapter implements org.drools.runtime.KnowledgeRunt
     public Collection<AgendaEventListener> getAgendaEventListeners() {
         return agendaListeners.keySet();
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof KnowledgeRuntimeAdapter && delegate.equals(((KnowledgeRuntimeAdapter)obj).delegate);
+    }
 }

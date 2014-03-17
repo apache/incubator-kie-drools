@@ -46,4 +46,14 @@ public class KnowledgeBuilderConfigurationAdapter implements org.drools.builder.
     public KnowledgeBuilderConfiguration getDelegate() {
         return delegate;
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof KnowledgeBuilderConfigurationAdapter && delegate.equals(((KnowledgeBuilderConfigurationAdapter)obj).delegate);
+    }
 }

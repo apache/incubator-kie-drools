@@ -57,4 +57,14 @@ public class DecisionTableConfigurationAdapter extends ResourceConfigurationImpl
     public void setInputType(DecisionTableInputType inputType) {
         delegate.setInputType( inputType == DecisionTableInputType.CSV ? org.drools.builder.DecisionTableInputType.CSV : org.drools.builder.DecisionTableInputType.XLS);
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof DecisionTableConfigurationAdapter && delegate.equals(((DecisionTableConfigurationAdapter)obj).delegate);
+    }
 }

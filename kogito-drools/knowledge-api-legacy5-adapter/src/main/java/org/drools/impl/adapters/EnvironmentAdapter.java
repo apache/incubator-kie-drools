@@ -30,4 +30,14 @@ public class EnvironmentAdapter implements org.drools.runtime.Environment, org.k
     public Environment getDelegate() {
         return delegate;
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof EnvironmentAdapter && delegate.equals(((EnvironmentAdapter)obj).delegate);
+    }
 }

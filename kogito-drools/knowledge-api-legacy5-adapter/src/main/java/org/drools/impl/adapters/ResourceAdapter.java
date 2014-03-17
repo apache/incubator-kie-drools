@@ -59,4 +59,14 @@ public class ResourceAdapter implements org.drools.io.Resource {
     public Resource getDelegate() {
         return delegate;
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ResourceAdapter && delegate.equals(((ResourceAdapter)obj).delegate);
+    }
 }

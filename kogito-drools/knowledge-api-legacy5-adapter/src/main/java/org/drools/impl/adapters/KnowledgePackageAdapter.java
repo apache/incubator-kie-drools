@@ -72,4 +72,14 @@ public class KnowledgePackageAdapter implements org.drools.definition.KnowledgeP
         }
         return result;
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof KnowledgePackageAdapter && delegate.equals(((KnowledgePackageAdapter)obj).delegate);
+    }
 }

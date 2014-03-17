@@ -29,4 +29,14 @@ public class KnowledgeBuilderResultAdapter implements org.drools.builder.Knowled
     public Resource getResource() {
         return new ResourceAdapter(delegate.getResource());
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof KnowledgeBuilderResultAdapter && delegate.equals(((KnowledgeBuilderResultAdapter)obj).delegate);
+    }
 }

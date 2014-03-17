@@ -48,4 +48,14 @@ public class QueryResultsAdapter implements QueryResults {
             delegate.remove();
         }
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof QueryResultsAdapter && delegate.equals(((QueryResultsAdapter)obj).delegate);
+    }
 }

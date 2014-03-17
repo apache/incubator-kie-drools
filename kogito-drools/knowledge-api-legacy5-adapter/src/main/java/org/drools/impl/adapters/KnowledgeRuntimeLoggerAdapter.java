@@ -14,4 +14,13 @@ public class KnowledgeRuntimeLoggerAdapter implements KnowledgeRuntimeLogger {
 		this.delegate.close();
 	}
 
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof KnowledgeRuntimeLoggerAdapter && delegate.equals(((KnowledgeRuntimeLoggerAdapter)obj).delegate);
+    }
 }

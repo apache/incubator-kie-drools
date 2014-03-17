@@ -15,4 +15,14 @@ public class AgendaFilterAdapter implements AgendaFilter {
     public boolean accept(Match match) {
         return delegate.accept(new ActivationAdapter(match));
     }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof AgendaFilterAdapter && delegate.equals(((AgendaFilterAdapter)obj).delegate);
+    }
 }
