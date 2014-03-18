@@ -352,4 +352,28 @@ public class AnnotationsTest  extends CommonTestMethodBase {
         }
 
     }
+
+
+
+    public static class Duration { }
+
+    @Test
+    public void testAnnotationNameClashWithRegularClass() {
+        String drl = "package org.drools.test\n" +
+                     "import " + Duration.class.getCanonicalName() + "; " +
+
+                     "declare Annot " +
+                     "  @role( event )" +
+                     "  @duration( durat ) " +
+                     "  durat : long " +
+                     "end\n" +
+                     "";
+
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+
+        KnowledgeBase kbase = loadKnowledgeBase( "kb1", drl, conf );
+        FactType ft = kbase.getFactType( "org.drools.test", "Annot" );
+        assertNotNull( ft );
+    }
+
 }

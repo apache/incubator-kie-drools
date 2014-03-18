@@ -2985,7 +2985,7 @@ public class PackageBuilder
         for (String annotationName : typeDescr.getAnnotationNames()) {
             Class annotation = resolveAnnotation(annotationName,
                     pkgRegistry.getTypeResolver());
-            if (annotation != null) {
+            if (annotation != null && annotation.isAnnotation() ) {
                 try {
                     AnnotationDefinition annotationDefinition = AnnotationDefinition.build(annotation,
                             typeDescr.getAnnotations().get(annotationName).getValueMap(),
@@ -3431,7 +3431,7 @@ public class PackageBuilder
                 for (String annotationName : field.getAnnotationNames()) {
                     Class annotation = resolveAnnotation(annotationName,
                             pkgRegistry.getTypeResolver());
-                    if (annotation != null) {
+                    if (annotation != null && annotation.isAnnotation() ) {
                         try {
                             AnnotationDefinition annotationDefinition = AnnotationDefinition.build(annotation,
                                     field.getAnnotations().get(annotationName).getValueMap(),
