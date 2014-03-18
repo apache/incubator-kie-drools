@@ -27,7 +27,6 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.CompositeAcceptor;
-import org.optaplanner.core.impl.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.hillclimbing.HillClimbingAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.lateacceptance.LateAcceptanceAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.latesimulatedannealing.LateSimulatedAnnealingAcceptor;
@@ -67,9 +66,6 @@ public class AcceptorConfig {
     protected Integer fadingSolutionTabuSize = null;
 
     protected String simulatedAnnealingStartingTemperature = null;
-
-    protected Double greatDelugeWaterLevelUpperBoundRate = null;
-    protected Double greatDelugeWaterRisingRate = null;
 
     protected Integer lateAcceptanceSize = null;
 
@@ -212,22 +208,6 @@ public class AcceptorConfig {
 
     public void setSimulatedAnnealingStartingTemperature(String simulatedAnnealingStartingTemperature) {
         this.simulatedAnnealingStartingTemperature = simulatedAnnealingStartingTemperature;
-    }
-
-    public Double getGreatDelugeWaterLevelUpperBoundRate() {
-        return greatDelugeWaterLevelUpperBoundRate;
-    }
-
-    public void setGreatDelugeWaterLevelUpperBoundRate(Double greatDelugeWaterLevelUpperBoundRate) {
-        this.greatDelugeWaterLevelUpperBoundRate = greatDelugeWaterLevelUpperBoundRate;
-    }
-
-    public Double getGreatDelugeWaterRisingRate() {
-        return greatDelugeWaterRisingRate;
-    }
-
-    public void setGreatDelugeWaterRisingRate(Double greatDelugeWaterRisingRate) {
-        this.greatDelugeWaterRisingRate = greatDelugeWaterRisingRate;
     }
 
     public Integer getLateAcceptanceSize() {
@@ -393,14 +373,6 @@ public class AcceptorConfig {
                     .parseScore(simulatedAnnealingStartingTemperature));
             acceptorList.add(acceptor);
         }
-        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.GREAT_DELUGE))
-                || greatDelugeWaterLevelUpperBoundRate != null || greatDelugeWaterRisingRate != null) {
-            double waterLevelUpperBoundRate = (Double) ObjectUtils.defaultIfNull(
-                    greatDelugeWaterLevelUpperBoundRate, 1.20);
-            double waterRisingRate = (Double) ObjectUtils.defaultIfNull(
-                    greatDelugeWaterRisingRate, 0.0000001);
-            acceptorList.add(new GreatDelugeAcceptor(waterLevelUpperBoundRate, waterRisingRate));
-        }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.LATE_ACCEPTANCE))
                 || lateAcceptanceSize != null) {
             LateAcceptanceAcceptor acceptor = new LateAcceptanceAcceptor();
@@ -478,10 +450,6 @@ public class AcceptorConfig {
                 inheritedConfig.getFadingSolutionTabuSize());
         simulatedAnnealingStartingTemperature = ConfigUtils.inheritOverwritableProperty(
                 simulatedAnnealingStartingTemperature, inheritedConfig.getSimulatedAnnealingStartingTemperature());
-        greatDelugeWaterLevelUpperBoundRate = ConfigUtils.inheritOverwritableProperty(
-                greatDelugeWaterLevelUpperBoundRate, inheritedConfig.getGreatDelugeWaterLevelUpperBoundRate());
-        greatDelugeWaterRisingRate = ConfigUtils.inheritOverwritableProperty(greatDelugeWaterRisingRate,
-                inheritedConfig.getGreatDelugeWaterRisingRate());
         lateAcceptanceSize = ConfigUtils.inheritOverwritableProperty(lateAcceptanceSize,
                 inheritedConfig.getLateAcceptanceSize());
         stepCountingHillClimbingSize = ConfigUtils.inheritOverwritableProperty(stepCountingHillClimbingSize,
@@ -500,7 +468,6 @@ public class AcceptorConfig {
         UNDO_MOVE_TABU,
         SOLUTION_TABU,
         SIMULATED_ANNEALING,
-        GREAT_DELUGE,
         LATE_ACCEPTANCE,
         STEP_COUNTING_HILL_CLIMBING,
         LATE_SIMULATED_ANNEALING,
