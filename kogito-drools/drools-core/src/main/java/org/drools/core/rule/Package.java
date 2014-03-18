@@ -571,7 +571,15 @@ public class Package
         // beginning of the type name
         String key = this.name == null ? typeName : typeName.substring( this.name.length() + 1 );
         TypeDeclaration decl = this.typeDeclarations.get( key );
-        return decl != null ? decl.getTypeClassDef() : null;
+        if ( decl == null ) {
+            return null;
+        } else {
+            if ( decl.getNature() == TypeDeclaration.Nature.DEFINITION ) {
+                return decl.getTypeClassDef();
+            } else {
+                throw new UnsupportedOperationException( "KieBase.getFactType should only be used to retrieve declared beans. Class " + typeName + " exists outside DRL " );
+            }
+        }
     }
 
     public Map<String, FactType> getFactTypes() {
