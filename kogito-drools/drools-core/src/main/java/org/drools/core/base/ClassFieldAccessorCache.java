@@ -187,11 +187,13 @@ public class ClassFieldAccessorCache {
                 writer = ClassFieldAccessorFactory.getInstance().getClassFieldWriter( cls,
                                                                                       key.getFieldName(),
                                                                                       this );
-                BaseClassFieldWriter existingWriter = this.writeCache.putIfAbsent( key,
-                                                                                   writer );
-                if ( existingWriter != null ) {
-                    // Raced, use the (now) existing entry
-                    writer = existingWriter;
+                if ( writer != null ) {
+                    BaseClassFieldWriter existingWriter = this.writeCache.putIfAbsent( key,
+                                                                                       writer );
+                    if ( existingWriter != null ) {
+                        // Raced, use the (now) existing entry
+                        writer = existingWriter;
+                    }
                 }
             }
 
