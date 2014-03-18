@@ -1,13 +1,13 @@
 package org.drools.scorecards;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.dmg.pmml.pmml_4_1.descr.*;
 import org.drools.pmml.pmml_4_1.extensions.PMMLExtensionNames;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 import static org.drools.scorecards.ScorecardCompiler.DrlType.INTERNAL_DECLARED_TYPES;
 
 public class PMMLDocumentTest {
