@@ -71,7 +71,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
     private transient ReteooRuleBase ruleBase;
     
     
-    public static void setMode( VirtualPropertyMode newMode, KnowledgeBase kBase ) {
+    public static void setMode( VirtualPropertyMode newMode, KieBase kBase ) {
         RuleBase ruleBase = ((KnowledgeBaseImpl) kBase).getRuleBase();
         KieComponentFactory rcf = ((ReteooRuleBase) ruleBase).getConfiguration().getComponentFactory();
         ClassBuilderFactory cbf = rcf.getClassBuilderFactory();
