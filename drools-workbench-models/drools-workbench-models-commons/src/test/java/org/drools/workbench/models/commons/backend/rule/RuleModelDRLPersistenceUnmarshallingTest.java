@@ -3273,7 +3273,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore(" Still does not know the difference between indexOf(int) and indexOf(String) ")
     public void testFunctionCalls() {
         String drl =
                 "package org.mortgages\n" +
@@ -3289,21 +3288,19 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                         + "end\n";
 
         Map<String, List<MethodInfo>> methodInformation = new HashMap<String, List<MethodInfo>>();
-        List<MethodInfo> mapMethodInformation1 = new ArrayList<MethodInfo>();
-        mapMethodInformation1.add( new MethodInfo( "indexOf",
+        List<MethodInfo> mapMethodInformation = new ArrayList<MethodInfo>();
+        mapMethodInformation.add( new MethodInfo( "indexOf",
                                                    Arrays.asList( new String[]{ "String" } ),
                                                    "int",
                                                    null,
                                                    "String" ) );
-        List<MethodInfo> mapMethodInformation2 = new ArrayList<MethodInfo>();
-        mapMethodInformation2.add( new MethodInfo( "indexOf",
+        mapMethodInformation.add( new MethodInfo( "indexOf",
                                                    Arrays.asList( new String[]{ "Integer" } ),
                                                    "int",
                                                    null,
                                                    "String" ) );
 
-        methodInformation.put( "java.lang.String", mapMethodInformation2 );
-        methodInformation.put( "java.lang.String", mapMethodInformation1 );
+        methodInformation.put( "java.lang.String", mapMethodInformation );
 
         when( dmo.getProjectMethodInformation() ).thenReturn( methodInformation );
 
