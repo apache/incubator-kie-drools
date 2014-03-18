@@ -116,21 +116,55 @@ public class ActionCallMethodBuilder {
     }
 
     private MethodInfo getMethodInfo() {
-        String variableType = boundParams.get( variable );
-        if ( variableType != null ) {
-            List<MethodInfo> methods = getMethodInfosForType( model,
-                                                              dmo,
-                                                              variableType );
-            if ( methods != null ) {
-                for ( MethodInfo method : methods ) {
-                    if ( method.getName().equals( methodName ) ) {
-                        return method;
+        String variableType = boundParams.get(variable);
+        if (variableType != null) {
+            List<MethodInfo> methods = getMethodInfosForType(model,
+                    dmo,
+                    variableType);
+            if (methods != null) {
+
+                ArrayList<MethodInfo> methodInfos = getMethodInfos(methodName, methods);
+
+                if (methodInfos.size() > 1) {
+                    // Now if there were more than one method with the same name
+                    // we need to start figuring out what is the correct one.
+                    for (MethodInfo methodInfo : methodInfos) {
+                        if (compareParameters(methodInfo.getParams())) {
+                            return methodInfo;
+                        }
                     }
+                } else if (!methodInfos.isEmpty()){
+                    // Not perfect, but works on most cases.
+                    // There is no check if the parameter types match.
+                    return methodInfos.get(0);
                 }
             }
         }
 
         return null;
+    }
+
+    private ArrayList<MethodInfo> getMethodInfos(String methodName, List<MethodInfo> methods) {
+        ArrayList<MethodInfo> result = new ArrayList<MethodInfo>();
+        for (MethodInfo method : methods) {
+            if (method.getName().equals(methodName)) {
+                result.add(method);
+            }
+        }
+        return result;
+    }
+
+    private boolean compareParameters(List<String> methodParams) {
+        if (methodParams.size() != parameters.length) {
+            return false;
+        } else {
+            for (int index = 0; index < methodParams.size(); index++) {
+                if (!methodParams.get(index).equals(boundParams.get(parameters[index]))) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 
 }
