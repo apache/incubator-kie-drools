@@ -59,6 +59,7 @@ import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertNotNull;
@@ -3270,7 +3271,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore(" Still does not know the difference between indexOf(int) and indexOf(String) ")
+    @Ignore("Still does not know the difference between indexOf(int) and indexOf(String) ")
     public void testFunctionCalls() {
         String drl =
                 "package org.mortgages\n" +
