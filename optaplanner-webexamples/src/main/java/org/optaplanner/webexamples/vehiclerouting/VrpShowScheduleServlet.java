@@ -19,6 +19,7 @@ package org.optaplanner.webexamples.vehiclerouting;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +40,10 @@ public class VrpShowScheduleServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //Avoid image caching
+        resp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        resp.setHeader("Pragma", "no-cache");
+        resp.setHeader("Expires", "0");
         HttpSession session = req.getSession();
         VehicleRoutingSolution shownSolution = (VehicleRoutingSolution) session.getAttribute(VrpSessionAttributeName.SHOWN_SOLUTION);
         Dimension size = new Dimension(800, 600);
