@@ -15,7 +15,7 @@
  */
 package org.drools.persistence.jta;
 
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;

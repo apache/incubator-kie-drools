@@ -21,7 +21,7 @@ import org.kie.api.runtime.StatelessKieSession;
 
 import java.io.InputStream;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 import static org.drools.scorecards.ScorecardCompiler.DrlType.INTERNAL_DECLARED_TYPES;
 
 public class ScoringStrategiesTest {
@@ -59,7 +59,7 @@ public class ScoringStrategiesTest {
 
         double finalScore = executeAndFetchScore("scorecards");
         //age==10 (30), validLicense==FALSE (-1)
-        assertEquals(29.0, finalScore);
+        assertEquals(29.0, finalScore, 0.0);
     }
 
     @Test
@@ -68,14 +68,14 @@ public class ScoringStrategiesTest {
         double finalScore = executeAndFetchScore("scorecards_avg");
         //age==10 (30), validLicense==FALSE (-1)
         //count = 2
-        assertEquals(14.5, finalScore);
+        assertEquals(14.5, finalScore, 0.0);
     }
 
     @Test
     public void testMinimum() throws Exception {
         double finalScore = executeAndFetchScore("scorecards_min");
         //age==10 (30), validLicense==FALSE (-1)
-        assertEquals(-1.0, finalScore);
+        assertEquals(-1.0, finalScore, 0.0);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class ScoringStrategiesTest {
 
         double finalScore = executeAndFetchScore("scorecards_max");
         //age==10 (30), validLicense==FALSE (-1)
-        assertEquals(30.0, finalScore);
+        assertEquals(30.0, finalScore, 0.0);
     }
 
     @Test
@@ -91,7 +91,7 @@ public class ScoringStrategiesTest {
 
         double finalScore = executeAndFetchScore("scorecards_w_aggregate");
         //age==10 (score=30, w=20), validLicense==FALSE (score=-1, w=1)
-        assertEquals(599.0, finalScore);
+        assertEquals(599.0, finalScore, 0.0);
     }
 
     @Test
@@ -99,7 +99,7 @@ public class ScoringStrategiesTest {
 
         double finalScore = executeAndFetchScore("scorecards_w_avg");
         //age==10 (score=30, w=20), validLicense==FALSE (score=-1, w=1)
-        assertEquals(299.5, finalScore);
+        assertEquals(299.5, finalScore, 0.0);
     }
 
     @Test
@@ -107,7 +107,7 @@ public class ScoringStrategiesTest {
 
         double finalScore = executeAndFetchScore("scorecards_w_max");
         //age==10 (score=30, w=20), validLicense==FALSE (score=-1, w=1)
-        assertEquals(600.0, finalScore);
+        assertEquals(600.0, finalScore, 0.0);
     }
 
     @Test
@@ -115,7 +115,7 @@ public class ScoringStrategiesTest {
 
         double finalScore = executeAndFetchScore("scorecards_w_min");
         //age==10 (score=30, w=20), validLicense==FALSE (score=-1, w=1)
-        assertEquals(-1.0, finalScore);
+        assertEquals(-1.0, finalScore, 0.0);
     }
 
     /* Tests with Initial Score */
@@ -125,7 +125,7 @@ public class ScoringStrategiesTest {
         double finalScore = executeAndFetchScore("scorecards_initial_score");
         //age==10 (30), validLicense==FALSE (-1)
         //initialScore = 100
-        assertEquals(129.0, finalScore);
+        assertEquals(129.0, finalScore, 0.0);
     }
 
     @Test
@@ -134,7 +134,7 @@ public class ScoringStrategiesTest {
         //age==10 (30), validLicense==FALSE (-1)
         //count = 2
         //initialScore = 100
-        assertEquals(114.5, finalScore);
+        assertEquals(114.5, finalScore, 0.0);
     }
 
     @Test
@@ -142,7 +142,7 @@ public class ScoringStrategiesTest {
         double finalScore = executeAndFetchScore("scorecards_min_initial_score");
         //age==10 (30), validLicense==FALSE (-1)
         //initialScore = 100
-        assertEquals(99.0, finalScore);
+        assertEquals(99.0, finalScore, 0.0);
     }
 
     @Test
@@ -151,7 +151,7 @@ public class ScoringStrategiesTest {
         double finalScore = executeAndFetchScore("scorecards_max_initial_score");
         //age==10 (30), validLicense==FALSE (-1)
         //initialScore = 100
-        assertEquals(130.0, finalScore);
+        assertEquals(130.0, finalScore, 0.0);
     }
 
     @Test
@@ -160,7 +160,7 @@ public class ScoringStrategiesTest {
         double finalScore = executeAndFetchScore("scorecards_w_aggregate_initial");
         //age==10 (score=30, w=20), validLicense==FALSE (score=-1, w=1)
         //initialScore = 100
-        assertEquals(699.0, finalScore);
+        assertEquals(699.0, finalScore, 0.0);
     }
 
     @Test
@@ -169,7 +169,7 @@ public class ScoringStrategiesTest {
         double finalScore = executeAndFetchScore("scorecards_w_avg_initial");
         //age==10 (score=30, w=20), validLicense==FALSE (score=-1, w=1)
         //initialScore = 100
-        assertEquals(399.5, finalScore);
+        assertEquals(399.5, finalScore, 0.0);
     }
 
     @Test
@@ -178,7 +178,7 @@ public class ScoringStrategiesTest {
         double finalScore = executeAndFetchScore("scorecards_w_max_initial");
         //age==10 (score=30, w=20), validLicense==FALSE (score=-1, w=1)
         //initialScore = 100
-        assertEquals(700.0, finalScore);
+        assertEquals(700.0, finalScore, 0.0);
     }
 
     @Test
@@ -187,7 +187,7 @@ public class ScoringStrategiesTest {
         double finalScore = executeAndFetchScore("scorecards_w_min_initial");
         //age==10 (score=30, w=20), validLicense==FALSE (score=-1, w=1)
         //initialScore = 100
-        assertEquals(99.0, finalScore);
+        assertEquals(99.0, finalScore, 0.0);
     }
 
     /* Internal functions */

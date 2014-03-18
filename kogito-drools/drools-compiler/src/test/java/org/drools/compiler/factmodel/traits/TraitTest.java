@@ -16,7 +16,7 @@
 
 package org.drools.compiler.factmodel.traits;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.core.common.InternalFactHandle;

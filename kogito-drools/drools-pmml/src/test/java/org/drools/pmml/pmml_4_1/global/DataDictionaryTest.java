@@ -17,7 +17,7 @@
 package org.drools.pmml.pmml_4_1.global;
 
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.drools.pmml.pmml_4_1.DroolsAbstractPMMLTest;
 import org.junit.After;
 import org.junit.Test;
@@ -25,7 +25,7 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.rule.EntryPoint;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 
 public class DataDictionaryTest extends DroolsAbstractPMMLTest {

@@ -19,10 +19,10 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.io.InputStream;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 
 
 public class ScorecardProviderTest {

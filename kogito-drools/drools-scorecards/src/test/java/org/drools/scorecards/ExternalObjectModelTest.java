@@ -29,11 +29,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.drools.scorecards.ScorecardCompiler.DrlType.EXTERNAL_OBJECT_MODEL;
 
 public class ExternalObjectModelTest {
@@ -121,7 +121,7 @@ public class ExternalObjectModelTest {
         session.fireAllRules();
         session.dispose();
         //occupation = 0, age = 30, validLicence -1
-        assertEquals(29.0,applicant.getTotalScore());
+        assertEquals(29.0,applicant.getTotalScore(), 0.0);
 
         session = kbase.newKieSession();
         applicant = new Applicant();
@@ -131,7 +131,7 @@ public class ExternalObjectModelTest {
         session.fireAllRules();
         session.dispose();
         //occupation = -10, age = +10, validLicense = -1;
-        assertEquals(-1.0, applicant.getTotalScore());
+        assertEquals(-1.0, applicant.getTotalScore(), 0.0);
 
         session = kbase.newKieSession();
         applicant = new Applicant();
@@ -143,7 +143,7 @@ public class ExternalObjectModelTest {
         session.fireAllRules();
         session.dispose();
         //occupation = +10, age = +40, state = -10, validLicense = 1
-        assertEquals(41.0,applicant.getTotalScore());
+        assertEquals(41.0,applicant.getTotalScore(), 0.0);
     }
 
     @Test
@@ -182,7 +182,7 @@ public class ExternalObjectModelTest {
         session.fireAllRules();
         session.dispose();
         //occupation = 0, age = 30, validLicence -1, initialScore=100
-        assertEquals(129.0,applicant.getTotalScore());
+        assertEquals(129.0,applicant.getTotalScore(), 0.0);
 
         session = kbase.newKieSession();
         applicant = new Applicant();
@@ -192,7 +192,7 @@ public class ExternalObjectModelTest {
         session.fireAllRules();
         session.dispose();
         //occupation = -10, age = +10, validLicense = -1, initialScore=100;
-        assertEquals(99.0, applicant.getTotalScore());
+        assertEquals(99.0, applicant.getTotalScore(), 0.0);
 
         session = kbase.newKieSession();
         applicant = new Applicant();
@@ -204,7 +204,7 @@ public class ExternalObjectModelTest {
         session.fireAllRules();
         session.dispose();
         //occupation = +10, age = +40, state = -10, validLicense = 1, initialScore=100
-        assertEquals(141.0,applicant.getTotalScore());
+        assertEquals(141.0,applicant.getTotalScore(), 0.0);
     }
 
     @Test
@@ -247,7 +247,7 @@ public class ExternalObjectModelTest {
         //session.addEventListener(new DebugWorkingMemoryEventListener());
         session.fireAllRules();
         //occupation = 0, age = 30, validLicence -1, initialScore=100
-        assertEquals( 129.0,applicant.getTotalScore() );
+        assertEquals( 129.0,applicant.getTotalScore(), 0.0 );
         assertEquals( "VL0099", applicant.getReasonCodes() );
 
         Object scorecardInternals = session.getObjects( new ClassObjectFilter( scorecardInternalsType.getFactClass() ) ).iterator().next();
@@ -268,7 +268,7 @@ public class ExternalObjectModelTest {
         session.fireAllRules();
         session.dispose();
         //occupation = -10, age = +10, validLicense = -1, initialScore=100;
-        assertEquals(99.0, applicant.getTotalScore());
+        assertEquals(99.0, applicant.getTotalScore(), 0.0);
 
         session = kbase.newKieSession();
         applicant = new Applicant();
@@ -280,6 +280,6 @@ public class ExternalObjectModelTest {
         session.fireAllRules();
         session.dispose();
         //occupation = +10, age = +40, state = -10, validLicense = 1, initialScore=100
-        assertEquals(141.0,applicant.getTotalScore());
+        assertEquals(141.0,applicant.getTotalScore(), 0.0);
     }
 }

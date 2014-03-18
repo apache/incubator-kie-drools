@@ -16,7 +16,7 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 public class KieModuleBuilderTest extends AbstractKieCiTest {
 

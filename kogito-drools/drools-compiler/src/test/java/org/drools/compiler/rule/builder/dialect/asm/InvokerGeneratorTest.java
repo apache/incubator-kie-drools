@@ -7,7 +7,7 @@ import org.junit.*;
 
 import java.util.*;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 public class InvokerGeneratorTest {
 
