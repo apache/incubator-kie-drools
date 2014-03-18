@@ -6,6 +6,11 @@ import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.rule.TypeDeclaration;
 import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Message;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -727,5 +732,30 @@ public class TypeDeclarationTest {
                 }
             }
         }
+    }
+
+    @Test( expected = UnsupportedOperationException.class )
+    public void testPreventReflectionAPIsOnJavaClasses() {
+        String drl = "package org.test; " +
+
+                     // existing java class
+                     "declare org.drools.compiler.Person " +
+                     "  @role(event) " +
+                     "end \n" +
+
+                     "";
+        KieServices kieServices = KieServices.Factory.get();
+        KieFileSystem kfs = kieServices.newKieFileSystem();
+        kfs.write( kieServices.getResources().newByteArrayResource( drl.getBytes() )
+                           .setSourcePath( "test.drl" )
+                           .setResourceType( ResourceType.DRL ) );
+        KieBuilder kieBuilder = kieServices.newKieBuilder( kfs );
+        kieBuilder.buildAll();
+
+        assertFalse( kieBuilder.getResults().hasMessages( Message.Level.ERROR ) );
+        KieBase kieBase = kieServices.newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
+
+        FactType type = kieBase.getFactType( "org.drools.compiler", "Person" );
+
     }
 }
