@@ -217,7 +217,7 @@ end
 
 
 rule "Scorecard_Cleanup"
-salience -20
+salience -21
 when
     $sc : Scorecard( )
 then
