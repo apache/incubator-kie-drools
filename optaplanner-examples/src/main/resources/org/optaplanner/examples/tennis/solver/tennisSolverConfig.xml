@@ -11,6 +11,7 @@
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_MEDIUM_SOFT</scoreDefinitionType>
     <scoreDrl>/org/optaplanner/examples/tennis/solver/tennisScoreRules.drl</scoreDrl>
+    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>
 
   <!-- Optimization algorithms configuration -->
@@ -19,9 +20,6 @@
   </termination>
   <constructionHeuristic>
     <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
-    <!--<forager>-->
-      <!--<pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>-->
-    <!--</forager>-->
   </constructionHeuristic>
   <localSearch>
     <acceptor>

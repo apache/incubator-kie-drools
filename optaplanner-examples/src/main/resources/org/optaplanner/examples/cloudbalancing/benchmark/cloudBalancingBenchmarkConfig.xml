@@ -10,6 +10,22 @@
       <!--<inputSolutionFile>data/cloudbalancing/unsolved/2computers-6processes.xml</inputSolutionFile>-->
       <!--<inputSolutionFile>data/cloudbalancing/unsolved/3computers-9processes.xml</inputSolutionFile>-->
       <!--<inputSolutionFile>data/cloudbalancing/unsolved/4computers-12processes.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/5computers-15processes.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/6computers-18processes.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/7computers-21processes.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/8computers-24processes.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/9computers-27processes.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/10computers-30processes.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/11computers-33processes.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/12computers-36processes.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/13computers-39processes.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/14computers-42processes.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/15computers-45processes.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/16computers-48processes.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/17computers-51processes.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/18computers-54processes.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/19computers-57processes.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/20computers-60processes.xml</inputSolutionFile>-->
       <inputSolutionFile>data/cloudbalancing/unsolved/100computers-300processes.xml</inputSolutionFile>
       <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.xml</inputSolutionFile>
       <inputSolutionFile>data/cloudbalancing/unsolved/400computers-1200processes.xml</inputSolutionFile>
@@ -29,6 +45,7 @@
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
+        <initializingScoreTrend>ONLY_DOWN/ONLY_DOWN</initializingScoreTrend>
       </scoreDirectorFactory>
       <termination>
         <minutesSpentLimit>5</minutesSpentLimit>
@@ -37,10 +54,11 @@
   </inheritedSolverBenchmark>
 
   <!--<solverBenchmark>-->
-    <!--<name>bruteForce</name>-->
+    <!--<name>DEPTH_FIRST_BRANCH_AND_BOUND</name>-->
     <!--<solver>-->
-      <!--<bruteForce>-->
-      <!--</bruteForce>-->
+      <!--<exhaustiveSearch>-->
+        <!--<exhaustiveSearchType>DEPTH_FIRST_BRANCH_AND_BOUND</exhaustiveSearchType>-->
+      <!--</exhaustiveSearch>-->
     <!--</solver>-->
   <!--</solverBenchmark>-->
 
@@ -49,9 +67,6 @@
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
-        <forager>
-          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-        </forager>
       </constructionHeuristic>
     </solver>
   </solverBenchmark>
@@ -60,9 +75,6 @@
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <forager>
-          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-        </forager>
       </constructionHeuristic>
     </solver>
   </solverBenchmark>
@@ -72,9 +84,6 @@
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <forager>
-          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-        </forager>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
@@ -95,9 +104,6 @@
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <forager>
-          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-        </forager>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
@@ -118,9 +124,6 @@
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <forager>
-          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-        </forager>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
@@ -141,9 +144,6 @@
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <forager>
-          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-        </forager>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>

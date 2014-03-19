@@ -23,15 +23,13 @@
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
+        <initializingScoreTrend>ONLY_DOWN/ONLY_DOWN</initializingScoreTrend>
       </scoreDirectorFactory>
       <termination>
         <minutesSpentLimit>5</minutesSpentLimit>
       </termination>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <forager>
-          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-        </forager>
       </constructionHeuristic>
     </solver>
   </inheritedSolverBenchmark>

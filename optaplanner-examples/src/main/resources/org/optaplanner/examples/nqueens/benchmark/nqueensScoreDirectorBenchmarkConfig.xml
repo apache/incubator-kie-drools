@@ -16,15 +16,13 @@
       <planningEntityClass>org.optaplanner.examples.nqueens.domain.Queen</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
       </scoreDirectorFactory>
       <termination>
         <bestScoreLimit>0</bestScoreLimit>
       </termination>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <forager>
-          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-        </forager>
       </constructionHeuristic>
       <localSearch>
         <changeMoveSelector>

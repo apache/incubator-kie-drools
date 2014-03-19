@@ -7,10 +7,6 @@
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
     <scoreDrl>/org/optaplanner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
-    <!-- TODO remove this phreakEnabled stuff -->
-    <!--<kieBaseConfigurationProperties>-->
-      <!--<drools.phreakEnabled>true</drools.phreakEnabled>-->
-    <!--</kieBaseConfigurationProperties>-->
     <!--<assertionScoreDirectorFactory>-->
       <!--<scoreDrl>/org/optaplanner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>-->
     <!--</assertionScoreDirectorFactory>-->
@@ -27,9 +23,6 @@
   </termination>
   <constructionHeuristic>
     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-    <!--<forager>-->
-      <!--<pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>-->
-    <!--</forager>-->
   </constructionHeuristic>
   <localSearch>
     <unionMoveSelector>

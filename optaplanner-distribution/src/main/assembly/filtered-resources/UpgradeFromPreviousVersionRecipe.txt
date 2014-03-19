@@ -3984,3 +3984,42 @@ CH is Construction Heuristic, LS is Local Search, EH is Exhaustive Search.
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
   <greatDelugeWaterLevelUpperBoundRate>...</greatDelugeWaterLevelUpperBoundRate>
   <greatDelugeWaterRisingRate>...</greatDelugeWaterRisingRate>
+
+[RECOMMENDED] Specify an <initializingScoreTrend> in the <scoreDirectorFactory>,
+to increase performance of some algorithms (Construction Heuristics and Exhaustive Search).
+See the documentation section on InitializingScoreTrend when to use ANY, ONLY_UP or ONLY_DOWN.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+  <scoreDirectorFactory>
+    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+    <scoreDrl>.../cloudBalancingScoreRules.drl</scoreDrl>
+  </scoreDirectorFactory>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+  <scoreDirectorFactory>
+    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+    <scoreDrl>.../cloudBalancingScoreRules.drl</scoreDrl>
+    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+  </scoreDirectorFactory>
+
+[MAJOR] Replace <pickEarlyType> FIRST_NON_DETERIORATING_SCORE with <initializingScoreTrend> ONLY_DOWN.
+If the <initializingScoreTrend> is specified,
+the <constructionHeuristic> will automatically use the most appropriate <pickEarlyType>.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+  <scoreDirectorFactory>
+    ...
+  </scoreDirectorFactory>
+  ...
+  <constructionHeuristic>
+    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+    <forager>
+      <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+    </forager>
+  </constructionHeuristic>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+  <scoreDirectorFactory>
+    ...
+    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+  </scoreDirectorFactory>
+  ...
+  <constructionHeuristic>
+    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+  </constructionHeuristic>

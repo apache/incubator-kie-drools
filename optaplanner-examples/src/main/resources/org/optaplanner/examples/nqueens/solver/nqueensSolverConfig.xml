@@ -10,6 +10,7 @@
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensBasicIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <scoreDrl>/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
+    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
     <!--<assertionScoreDirectorFactory>-->
       <!--<simpleScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator</simpleScoreCalculatorClass>-->
     <!--</assertionScoreDirectorFactory>-->
@@ -20,9 +21,6 @@
   </termination>
   <constructionHeuristic>
     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-    <forager>
-      <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-    </forager>
   </constructionHeuristic>
   <localSearch>
     <changeMoveSelector>

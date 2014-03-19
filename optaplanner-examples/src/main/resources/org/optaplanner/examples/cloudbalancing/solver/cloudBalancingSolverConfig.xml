@@ -13,20 +13,18 @@
     <!--<simpleScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingMapBasedSimpleScoreCalculator</simpleScoreCalculatorClass>-->
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <scoreDrl>/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
+    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
     <!--<assertionScoreDirectorFactory>-->
       <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 
   <!-- Optimization algorithms configuration -->
-  <termination>
-    <secondsSpentLimit>120</secondsSpentLimit>
-  </termination>
+  <!--<termination>-->
+    <!--<secondsSpentLimit>120</secondsSpentLimit>-->
+  <!--</termination>-->
   <constructionHeuristic>
     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-    <forager>
-      <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-    </forager>
   </constructionHeuristic>
   <localSearch>
     <acceptor>

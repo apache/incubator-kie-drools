@@ -13,6 +13,7 @@
       <scoreDirectorFactory>
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>
         <scoreDrl>/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
+        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
       </scoreDirectorFactory>
     </solver>
   </inheritedSolverBenchmark>
@@ -22,9 +23,6 @@
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <forager>
-          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-        </forager>
       </constructionHeuristic>
       <localSearch>
         <termination>

@@ -18,6 +18,7 @@
       <scoreDirectorFactory>
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>
         <scoreDrl>/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
+        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
       </scoreDirectorFactory>
       <termination>
         <terminationCompositionStyle>OR</terminationCompositionStyle>
@@ -32,9 +33,6 @@
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
-        <forager>
-          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-        </forager>
       </constructionHeuristic>
     </solver>
   </solverBenchmark>
@@ -43,9 +41,6 @@
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <forager>
-          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-        </forager>
       </constructionHeuristic>
     </solver>
   </solverBenchmark>
@@ -54,9 +49,6 @@
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
-        <forager>
-          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-        </forager>
       </constructionHeuristic>
     </solver>
   </solverBenchmark>
@@ -65,9 +57,6 @@
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
-        <forager>
-          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-        </forager>
       </constructionHeuristic>
     </solver>
   </solverBenchmark>
@@ -76,9 +65,6 @@
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <forager>
-          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-        </forager>
       </constructionHeuristic>
       <localSearch>
         <changeMoveSelector>

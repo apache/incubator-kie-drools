@@ -32,7 +32,7 @@ global HardMediumSoftScoreHolder scoreHolder;
 
 rule "oneAssignmentPerDatePerTeam"
     when
-        TeamAssignment($t : team, $d : day, $leftId : id)
+        TeamAssignment(team != null, $t : team, $d : day, $leftId : id)
         TeamAssignment(team == $t, day == $d, id > $leftId)
     then
         scoreHolder.addHardConstraintMatch(kcontext, -1);
