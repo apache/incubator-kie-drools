@@ -121,4 +121,20 @@ public class MiscTest {
         // compilation fails on Java 6
         SessionPseudoClock clock = ksession.getSessionClock();
     }
+
+    @Test
+    public void testUsingNullConfiguration() {
+        String str =
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $i : Integer( ) from list\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(null, null);
+
+    }
 }
