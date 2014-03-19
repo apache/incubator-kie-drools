@@ -41,8 +41,13 @@ public class ConstructionHeuristicForagerConfig {
     // ************************************************************************
 
     public ConstructionHeuristicForager buildForager(HeuristicConfigPolicy configPolicy) {
-        ConstructionHeuristicPickEarlyType pickEarlyType_ = (this.pickEarlyType == null)
-                ? ConstructionHeuristicPickEarlyType.NEVER : this.pickEarlyType;
+        ConstructionHeuristicPickEarlyType pickEarlyType_;
+        if (this.pickEarlyType == null) {
+            pickEarlyType_ = configPolicy.getScoreDirectorFactory().getInitializingScoreTrend().isOnlyDown()
+                    ? ConstructionHeuristicPickEarlyType.FIRST_NON_DETERIORATING_SCORE : ConstructionHeuristicPickEarlyType.NEVER;
+        } else {
+            pickEarlyType_ = this.pickEarlyType;
+        }
         return new DefaultConstructionHeuristicForager(pickEarlyType_);
     }
 
