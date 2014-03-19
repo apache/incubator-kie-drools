@@ -984,6 +984,73 @@ end</programlisting>
       </section>
     </section>
 
+    <section xml:id="initializingScoreTrend">
+      <title>InitializingScoreTrend</title>
+
+      <para>The <literal>InitializingScoreTrend</literal> specifies how the Score will change as more and more variables
+      are initialized (while the already variables don't change). Some optimization algorithms (such Construction
+      Heuristics and Exhaustive Search) run faster if they have such information.</para>
+
+      <para>For for the Score (or each <link linkend="scoreLevel">score level</link> separately), specify a
+      trend:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><literal>ANY</literal> (default): Initializing an extra variable can change the score positively or
+          negatively. Gives no performance gain.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>ONLY_UP</literal> (rare): Initializing an extra variable can only change the score positively.
+          Implies that:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>There are only positive constraints</para>
+            </listitem>
+
+            <listitem>
+              <para>Initializing the next variable can unmatch a positive constraint matched by a previous initialized
+              variable.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para><literal>ONLY_DOWN</literal>: Initializing an extra variable can only change the score negatively.
+          Implies that:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>There are only negative constraints</para>
+            </listitem>
+
+            <listitem>
+              <para>Initializing the next variable can unmatch a negative constraint matched by a previous initialized
+              variable.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+
+      <para>Most use cases only have negative constraints. Many of those have an
+      <literal>InitializingScoreTrend</literal> that only goes down:</para>
+
+      <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
+    &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
+    &lt;scoreDrl&gt;.../cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;
+    &lt;initializingScoreTrend&gt;ONLY_DOWN&lt;/initializingScoreTrend&gt;
+  &lt;/scoreDirectorFactory&gt;</programlisting>
+
+      <para>Alternatively, you can also specify the trend for each score level separately:</para>
+
+      <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
+    &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
+    &lt;scoreDrl&gt;.../cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;
+    &lt;initializingScoreTrend&gt;ONLY_DOWN/ONLY_DOWN&lt;/initializingScoreTrend&gt;
+  &lt;/scoreDirectorFactory&gt;</programlisting>
+    </section>
+
     <section xml:id="invalidScoreDetection">
       <title>Invalid score detection</title>
 

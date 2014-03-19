@@ -231,6 +231,7 @@
     &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
     &lt;simpleScoreCalculatorClass&gt;org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
     &lt;!--&lt;scoreDrl&gt;/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;--&gt;
+    &lt;initializingScoreTrend&gt;ONLY_DOWN&lt;/initializingScoreTrend&gt;
   &lt;/scoreDirectorFactory&gt;
 
   &lt;!-- Optimization algorithms configuration --&gt;
@@ -239,9 +240,6 @@
   &lt;/termination&gt;
   &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;FIRST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
-    &lt;!--forager--&gt;
-      &lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt;
-    &lt;!--/forager--&gt;
   &lt;/constructionHeuristic&gt;
   &lt;localSearch&gt;
     &lt;acceptor&gt;
@@ -276,6 +274,7 @@
     &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
     &lt;simpleScoreCalculatorClass&gt;org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
     &lt;!--&lt;scoreDrl&gt;/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;--&gt;
+    &lt;initializingScoreTrend&gt;ONLY_DOWN&lt;/initializingScoreTrend&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
         </listitem>
 
@@ -290,9 +289,6 @@
   &lt;/termination&gt;
   &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;FIRST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
-    &lt;!--forager--&gt;
-      &lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt;
-    &lt;!--/forager--&gt;
   &lt;/constructionHeuristic&gt;
   &lt;localSearch&gt;
     &lt;acceptor&gt;
