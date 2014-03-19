@@ -46,7 +46,6 @@ public class TriggerRulesEventListener implements AgendaEventListener {
 
     @Override
     public void matchCreated(MatchCreatedEvent event) {
-        ksession.fireAllRules();
     }
 
     @Override
