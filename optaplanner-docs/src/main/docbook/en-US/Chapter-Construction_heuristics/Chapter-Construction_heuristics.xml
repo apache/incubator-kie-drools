@@ -46,31 +46,12 @@
 
       <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;FIRST_FIT&lt;/constructionHeuristicType&gt;
-    &lt;!-- Speedup that can be applied to most, but not all use cases: --&gt;
-    &lt;!--&lt;forager&gt;--&gt;
-      &lt;!--&lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt;--&gt;
-    &lt;!--&lt;/forager&gt;--&gt;
   &lt;/constructionHeuristic&gt;</programlisting>
 
       <note>
-        <para>The <literal>pickEarlyType</literal> of <literal>FIRST_NON_DETERIORATING_SCORE</literal> is a big speedup:
-        for an entity, it picks the first move for which the score does not deteriorate the last step score, ignoring
-        all subsequent moves. It should be applied when initializing a planning entity cannot improve the last step
-        score: it can only make the score lower or equal. So if:</para>
-
-        <itemizedlist>
-          <listitem>
-            <para>There are no positive constraints.</para>
-          </listitem>
-
-          <listitem>
-            <para>And there is no negative constraint that can stop being broken by adding a planning entity (except if
-            another negative constraint gets broken which outweighs the first negative constraint).</para>
-          </listitem>
-        </itemizedlist>
-
-        <para>If that is not the case, then it might still be good to apply it in some cases. Use the <link
-        linkend="benchmarkingAndTweaking">Benchmarker</link> to decide.</para>
+        <para>If the <link linkend="initializingScoreTrend">InitializingScoreTrend</link> is
+        <literal>ONLY_DOWN</literal>, this algorithm is faster: for an entity, it picks the first move for which the
+        score does not deteriorate the last step score, ignoring all subsequent moves.</para>
       </note>
 
       <para>For advanced configuration, see <link linkend="advancedGreedyFit">Advanced Greedy Fit</link>.</para>
@@ -108,11 +89,13 @@
 
       <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;FIRST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
-    &lt;!-- Speedup that can be applied to most, but not all use cases: --&gt;
-    &lt;!--&lt;forager&gt;--&gt;
-      &lt;!--&lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt;--&gt;
-    &lt;!--&lt;/forager&gt;--&gt;
   &lt;/constructionHeuristic&gt;</programlisting>
+
+      <note>
+        <para>If the <link linkend="initializingScoreTrend">InitializingScoreTrend</link> is
+        <literal>ONLY_DOWN</literal>, this algorithm is faster: for an entity, it picks the first move for which the
+        score does not deteriorate the last step score, ignoring all subsequent moves.</para>
+      </note>
 
       <para>For advanced configuration, see <link linkend="advancedGreedyFit">Advanced Greedy Fit</link>.</para>
     </section>
@@ -143,11 +126,13 @@
 
       <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;BEST_FIT&lt;/constructionHeuristicType&gt;
-    &lt;!-- Speedup that can be applied to most, but not all use cases: --&gt;
-    &lt;!--&lt;forager&gt;--&gt;
-      &lt;!--&lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt;--&gt;
-    &lt;!--&lt;/forager&gt;--&gt;
   &lt;/constructionHeuristic&gt;</programlisting>
+
+      <note>
+        <para>If the <link linkend="initializingScoreTrend">InitializingScoreTrend</link> is
+        <literal>ONLY_DOWN</literal>, this algorithm is faster: for an entity, it picks the first move for which the
+        score does not deteriorate the last step score, ignoring all subsequent moves.</para>
+      </note>
 
       <para>For advanced configuration, see <link linkend="advancedGreedyFit">Advanced Greedy Fit</link>.</para>
     </section>
@@ -178,11 +163,13 @@
 
       <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;BEST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
-    &lt;!-- Speedup that can be applied to most, but not all use cases: --&gt;
-    &lt;!--forager--&gt;
-      &lt;!-- &lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt; --&gt;
-    &lt;!--/forager--&gt;
   &lt;/constructionHeuristic&gt;</programlisting>
+
+      <note>
+        <para>If the <link linkend="initializingScoreTrend">InitializingScoreTrend</link> is
+        <literal>ONLY_DOWN</literal>, this algorithm is faster: for an entity, it picks the first move for which the
+        score does not deteriorate the last step score, ignoring all subsequent moves.</para>
+      </note>
 
       <para>For advanced configuration, see <link linkend="advancedGreedyFit">Advanced Greedy Fit</link>.</para>
     </section>
@@ -221,9 +208,6 @@
         &lt;/valueSelector&gt;
       &lt;/changeMoveSelector&gt;
     &lt;/queuedEntityPlacer&gt;
-    &lt;!--&lt;forager&gt;--&gt;
-      &lt;!--&lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt;--&gt;
-    &lt;!--&lt;/forager&gt;--&gt;
   &lt;/constructionHeuristic&gt;</programlisting>
 
       <para>Per step, the <literal>QueuedEntityPlacer</literal> selects 1 uninitialized entity from the
@@ -364,6 +348,46 @@
     &lt;/queuedEntityPlacer&gt;
     ...
   &lt;/constructionHeuristic&gt;</programlisting>
+    </section>
+
+    <section xml:id="constructionHeuristicsPickEarlyType">
+      <title>Pick early type</title>
+
+      <para>There are 2 pick early types for Construction Heuristics: </para>
+
+      <itemizedlist>
+        <listitem>
+          <para><literal>NEVER</literal>: Evaluate all the selected moves to initialize the variable(s). This is the
+          default if the <link linkend="initializingScoreTrend">InitializingScoreTrend</link> is not
+          <literal>ONLY_DOWN</literal>.</para>
+
+          <programlisting language="xml">  &lt;constructionHeuristic&gt;
+    ...
+    &lt;forager&gt;
+      &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
+    &lt;/forager&gt;
+  &lt;/constructionHeuristic&gt;</programlisting>
+        </listitem>
+
+        <listitem>
+          <para><literal>FIRST_NON_DETERIORATING_SCORE</literal>: Initialize the variable(s) with the first move that
+          doesn't deteriorate the score, ignore the remaining selected moves. This is the default if the <link
+          linkend="initializingScoreTrend">InitializingScoreTrend</link> is <literal>ONLY_DOWN</literal>.</para>
+
+          <programlisting language="xml">  &lt;constructionHeuristic&gt;
+    ...
+    &lt;forager&gt;
+      &lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt;
+    &lt;/forager&gt;
+  &lt;/constructionHeuristic&gt;</programlisting>
+        </listitem>
+      </itemizedlist>
+
+      <para>If there are only negative constraints, but the <link
+      linkend="initializingScoreTrend">InitializingScoreTrend</link> is strictly not <literal>ONLY_DOWN</literal>, it
+      can make sense to apply FIRST_NON_DETERIORATING_SCORE. Use the <link
+      linkend="benchmarkingAndTweaking">Benchmarker</link> to decide if the score quality loss is worth the time
+      gain.</para>
     </section>
   </section>
 

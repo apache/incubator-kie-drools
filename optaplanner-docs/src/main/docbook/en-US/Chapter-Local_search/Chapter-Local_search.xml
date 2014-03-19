@@ -221,7 +221,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
         <title>Pick early type</title>
 
         <para>A forager can pick a move early during a step, ignoring subsequent selected moves. There are 3 pick early
-        types:</para>
+        types for Local Search:</para>
 
         <itemizedlist>
           <listitem>
@@ -419,7 +419,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
     &lt;/acceptor&gt;</programlisting>
 
           <para>For non-trivial cases, it's usually useless because the <link linkend="searchSpaceSize">search space
-          size</link> makes it statistically almost impossible to reach the same solution twice. </para>
+          size</link> makes it statistically almost impossible to reach the same solution twice.</para>
         </listitem>
       </itemizedlist>
 
