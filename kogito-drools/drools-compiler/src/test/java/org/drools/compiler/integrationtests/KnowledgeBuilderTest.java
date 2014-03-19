@@ -122,7 +122,6 @@ public class KnowledgeBuilderTest {
         String rule = "package org.drools.compiler.test.rule\n" +
                       "import org.drools.compiler.testA.FactA\n" +
                       "import org.drools.compiler.testB.FactB\n" +
-                      "global java.util.List list\n" +
                       "rule R1 when\n" +
                       "   $fieldA : FactA( $fieldB : fieldB, bigint == 1 )\n" +
                       "   FactB( this == $fieldB, fieldA == $fieldA )\n" +
@@ -140,6 +139,7 @@ public class KnowledgeBuilderTest {
 
         String declarationB = "package org.drools.compiler.testB\n" +
                               "import org.drools.compiler.testA.FactA\n" +
+                              "global java.util.List list\n" +
                               "declare FactB\n" +
                               "    fieldA: FactA\n" +
                               "end\n";

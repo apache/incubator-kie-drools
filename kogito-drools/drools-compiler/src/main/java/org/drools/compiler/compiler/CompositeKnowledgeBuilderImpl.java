@@ -95,6 +95,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     private void buildPackages() {
         Collection<CompositePackageDescr> packages = buildPackageDescr();
         buildTypeDeclarations(packages);
+        buildOtherDeclarations(packages);
         buildRules(packages);
     }
 
@@ -258,11 +259,19 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
     }
 
-    private void buildRules(Collection<CompositePackageDescr> packages) {
+    private void buildOtherDeclarations(Collection<CompositePackageDescr> packages) {
         for (CompositePackageDescr packageDescr : packages) {
             pkgBuilder.setAssetFilter(packageDescr.getFilter());
             PackageRegistry pkgRegistry = pkgBuilder.getPackageRegistry(packageDescr.getNamespace());
             pkgBuilder.processOtherDeclarations(pkgRegistry, packageDescr);
+            pkgBuilder.setAssetFilter(null);
+        }
+    }
+
+    private void buildRules(Collection<CompositePackageDescr> packages) {
+        for (CompositePackageDescr packageDescr : packages) {
+            pkgBuilder.setAssetFilter(packageDescr.getFilter());
+            PackageRegistry pkgRegistry = pkgBuilder.getPackageRegistry(packageDescr.getNamespace());
             pkgBuilder.compileAllRules(packageDescr, pkgRegistry);
             pkgBuilder.setAssetFilter(null);
         }
