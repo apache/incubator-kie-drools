@@ -177,9 +177,8 @@ public class SolverConfig {
         ScoreDirectorFactory scoreDirectorFactory = scoreDirectorFactoryConfig_.buildScoreDirectorFactory(
                 environmentMode, solutionDescriptor);
         solver.setScoreDirectorFactory(scoreDirectorFactory);
-        ScoreDefinition scoreDefinition = scoreDirectorFactory.getScoreDefinition();
         HeuristicConfigPolicy configPolicy = new HeuristicConfigPolicy(
-                environmentMode, solutionDescriptor, scoreDefinition);
+                environmentMode, scoreDirectorFactory);
         TerminationConfig terminationConfig_ = terminationConfig == null ? new TerminationConfig()
                 : terminationConfig;
         Termination termination = terminationConfig_.buildTermination(configPolicy, basicPlumbingTermination);

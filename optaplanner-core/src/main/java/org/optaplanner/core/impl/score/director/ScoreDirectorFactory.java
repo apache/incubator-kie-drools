@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.director;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.optaplanner.core.impl.solution.Solution;
 
 /**
@@ -41,6 +42,11 @@ public interface ScoreDirectorFactory {
      * @return never null
      */
     ScoreDirector buildScoreDirector();
+
+    /**
+     * @return never null
+     */
+    InitializingScoreTrend getInitializingScoreTrend();
 
     /**
      * Asserts that if the {@link Score} is calculated for the parameter solution,

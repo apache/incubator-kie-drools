@@ -8,12 +8,13 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.EntityMimicRecorder;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 public class HeuristicConfigPolicy {
 
     private final EnvironmentMode environmentMode;
-    private final SolutionDescriptor solutionDescriptor;
-    private final ScoreDefinition scoreDefinition;
+    private final ScoreDirectorFactory scoreDirectorFactory;
 
     private boolean sortEntitiesByDecreasingDifficultyEnabled = false;
     private boolean sortValuesByIncreasingStrengthEnabled = false;
@@ -23,11 +24,9 @@ public class HeuristicConfigPolicy {
     private Map<String, EntityMimicRecorder> entityMimicRecorderMap
             = new HashMap<String, EntityMimicRecorder>();
 
-    public HeuristicConfigPolicy(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            ScoreDefinition scoreDefinition) {
+    public HeuristicConfigPolicy(EnvironmentMode environmentMode, ScoreDirectorFactory scoreDirectorFactory) {
         this.environmentMode = environmentMode;
-        this.solutionDescriptor = solutionDescriptor;
-        this.scoreDefinition = scoreDefinition;
+        this.scoreDirectorFactory = scoreDirectorFactory;
     }
 
     public EnvironmentMode getEnvironmentMode() {
@@ -35,11 +34,15 @@ public class HeuristicConfigPolicy {
     }
 
     public SolutionDescriptor getSolutionDescriptor() {
-        return solutionDescriptor;
+        return scoreDirectorFactory.getSolutionDescriptor();
     }
 
     public ScoreDefinition getScoreDefinition() {
-        return scoreDefinition;
+        return scoreDirectorFactory.getScoreDefinition();
+    }
+
+    public ScoreDirectorFactory getScoreDirectorFactory() {
+        return scoreDirectorFactory;
     }
 
     public boolean isSortEntitiesByDecreasingDifficultyEnabled() {
@@ -87,7 +90,7 @@ public class HeuristicConfigPolicy {
     // ************************************************************************
 
     public HeuristicConfigPolicy createPhaseConfigPolicy() {
-        return new HeuristicConfigPolicy(environmentMode, solutionDescriptor, scoreDefinition);
+        return new HeuristicConfigPolicy(environmentMode, scoreDirectorFactory);
     }
 
     // ************************************************************************

@@ -17,8 +17,12 @@
 package org.optaplanner.core.impl.score.definition;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
+import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -30,25 +34,10 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 public interface ScoreDefinition<S extends Score> {
 
     /**
-     * The perfect maximum {@link Score} is the {@link Score} of which there is no better in any problem instance.
-     * This doesn't mean that the current problem instance, or any problem instance for that matter,
-     * could ever attain that {@link Score}.
-     * </p>
-     * For example, most cases have a perfect maximum {@link Score} of zero, as most use cases only have negative
-     * constraints.
-     * @return null if not supported
+     *
+     * @return at least 1
      */
-    S getPerfectMaximumScore();
-
-    /**
-     * The perfect minimum {@link Score} is the {@link Score} of which there is no worse in any problem instance.
-     * This doesn't mean that the current problem instance, or any problem instance for that matter,
-     * could ever attain such a bad {@link Score}.
-     * </p>
-     * For example, most cases have a perfect minimum {@link Score} of negative infinity.
-     * @return null if not supported
-     */
-    S getPerfectMinimumScore();
+    int getLevelCount();
 
     /**
      * Returns the {@link Class} of the actual {@link Score} implementation
@@ -82,9 +71,30 @@ public interface ScoreDefinition<S extends Score> {
     double calculateTimeGradient(S startScore, S endScore, S score);
 
     /**
+     * Used by {@link DroolsScoreDirector}.
      * @param constraintMatchEnabled true if {@link ScoreHolder#isConstraintMatchEnabled()} should be true
      * @return never null
      */
     ScoreHolder buildScoreHolder(boolean constraintMatchEnabled);
+
+    /**
+     * Builds a {@link Score} which is equal or better than any other {@link Score} with more variables initialized
+     * (while the already variables don't change).
+     * @param initializingScoreTrend never null, with {@link InitializingScoreTrend#getLevelCount()}
+     * equal to {@link #getLevelCount()}.
+     * @param score never null
+     * @return never null
+     */
+    S buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, S score);
+
+    /**
+     * Builds a {@link Score} which is equal or worse than any other {@link Score} with more variables initialized
+     * (while the already variables don't change).
+     * @param initializingScoreTrend never null, with {@link InitializingScoreTrend#getLevelCount()}
+     * equal to {@link #getLevelCount()}.
+     * @param score never null
+     * @return never null
+     */
+    S buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, S score);
 
 }

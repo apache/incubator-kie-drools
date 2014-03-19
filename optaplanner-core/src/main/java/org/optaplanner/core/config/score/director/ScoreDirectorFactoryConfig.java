@@ -57,6 +57,8 @@ import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalc
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreDirectorFactory;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrendLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,6 +82,8 @@ public class ScoreDirectorFactoryConfig {
     protected List<String> scoreDrlList = null;
     @XStreamConverter(value = KeyAsElementMapConverter.class)
     protected Map<String, String> kieBaseConfigurationProperties = null;
+
+    protected String initializingScoreTrend = null;
 
     @XStreamAlias("assertionScoreDirectorFactory")
     protected ScoreDirectorFactoryConfig assertionScoreDirectorFactory = null;
@@ -156,6 +160,14 @@ public class ScoreDirectorFactoryConfig {
         this.kieBaseConfigurationProperties = kieBaseConfigurationProperties;
     }
 
+    public String getInitializingScoreTrend() {
+        return initializingScoreTrend;
+    }
+
+    public void setInitializingScoreTrend(String initializingScoreTrend) {
+        this.initializingScoreTrend = initializingScoreTrend;
+    }
+
     public ScoreDirectorFactoryConfig getAssertionScoreDirectorFactory() {
         return assertionScoreDirectorFactory;
     }
@@ -208,19 +220,29 @@ public class ScoreDirectorFactoryConfig {
                     assertionScoreDirectorFactory.buildScoreDirectorFactory(
                             EnvironmentMode.PRODUCTION, solutionDescriptor, scoreDefinition));
         }
+        scoreDirectorFactory.setInitializingScoreTrend(InitializingScoreTrend.parseTrend(
+                initializingScoreTrend == null ? InitializingScoreTrendLevel.ANY.name() : initializingScoreTrend,
+                scoreDefinition.getLevelCount()));
         return scoreDirectorFactory;
     }
 
     public ScoreDefinition buildScoreDefinition() {
-        if ((bendableHardLevelCount != null || bendableSoftLevelCount != null)
-                && scoreDefinitionType != ScoreDefinitionType.BENDABLE) {
+        if (scoreDefinitionType != ScoreDefinitionType.BENDABLE
+                && (bendableHardLevelCount != null || bendableSoftLevelCount != null)) {
             throw new IllegalArgumentException("With scoreDefinitionType (" + scoreDefinitionType
                     + ") there must be no bendableHardLevelCount (" + bendableHardLevelCount
                     + ") or bendableSoftLevelCount (" + bendableSoftLevelCount + ").");
         }
         if (scoreDefinitionClass != null) {
+            if (scoreDefinitionType != null || bendableHardLevelCount != null || bendableSoftLevelCount != null) {
+                throw new IllegalStateException("With scoreDefinitionClass (" + scoreDefinitionClass
+                        + ") there must be no scoreDefinitionType (" + scoreDefinitionType
+                        + ") or bendableHardLevelCount (" + bendableHardLevelCount
+                        + ") or bendableSoftLevelCount (" + bendableSoftLevelCount+ ").");
+            }
             return ConfigUtils.newInstance(this, "scoreDefinitionClass", scoreDefinitionClass);
-        } else if (scoreDefinitionType != null) {
+        }
+        if (scoreDefinitionType != null) {
             switch (scoreDefinitionType) {
                 case SIMPLE:
                     return new SimpleScoreDefinition();
@@ -351,23 +373,21 @@ public class ScoreDirectorFactoryConfig {
             bendableHardLevelCount = inheritedConfig.getBendableHardLevelCount();
             bendableSoftLevelCount = inheritedConfig.getBendableSoftLevelCount();
         }
-        if (simpleScoreCalculatorClass == null) {
-            simpleScoreCalculatorClass = inheritedConfig.getSimpleScoreCalculatorClass();
-        }
-        if (incrementalScoreCalculatorClass == null) {
-            incrementalScoreCalculatorClass = inheritedConfig.getIncrementalScoreCalculatorClass();
-        }
-        if (kieBase == null) {
-            kieBase = inheritedConfig.getKieBase();
-        }
+        simpleScoreCalculatorClass = ConfigUtils.inheritOverwritableProperty(
+                simpleScoreCalculatorClass, inheritedConfig.getSimpleScoreCalculatorClass());
+        incrementalScoreCalculatorClass = ConfigUtils.inheritOverwritableProperty(
+                incrementalScoreCalculatorClass, inheritedConfig.getIncrementalScoreCalculatorClass());
+        kieBase = ConfigUtils.inheritOverwritableProperty(
+                kieBase, inheritedConfig.getKieBase());
         scoreDrlList = ConfigUtils.inheritMergeableListProperty(
                 scoreDrlList, inheritedConfig.getScoreDrlList());
         kieBaseConfigurationProperties = ConfigUtils.inheritMergeableMapProperty(
                 kieBaseConfigurationProperties, inheritedConfig.getKieBaseConfigurationProperties());
+        initializingScoreTrend = ConfigUtils.inheritOverwritableProperty(
+                initializingScoreTrend, inheritedConfig.getInitializingScoreTrend());
 
-        if (assertionScoreDirectorFactory == null) {
-            assertionScoreDirectorFactory = inheritedConfig.getAssertionScoreDirectorFactory();
-        }
+        assertionScoreDirectorFactory = ConfigUtils.inheritOverwritableProperty(
+                assertionScoreDirectorFactory, inheritedConfig.getAssertionScoreDirectorFactory());
     }
 
     public static enum ScoreDefinitionType {

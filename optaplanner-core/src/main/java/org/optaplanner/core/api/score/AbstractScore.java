@@ -30,7 +30,7 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 public abstract class AbstractScore<S extends Score> implements Score<S>, Serializable {
 
     protected static String[] parseLevelStrings(String scoreString, int levelsSize) {
-        String[] scoreTokens = scoreString.split("\\/");
+        String[] scoreTokens = scoreString.split("/");
         if (scoreTokens.length != levelsSize) {
             throw new IllegalArgumentException("The scoreString (" + scoreString
                     + ") doesn't follow the correct pattern (" + buildScorePattern(levelsSize) + "):"
@@ -41,7 +41,7 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
     }
 
     protected static String[] parseLevelStrings(String scoreString, String... levelSuffixes) {
-        String[] scoreTokens = scoreString.split("\\/");
+        String[] scoreTokens = scoreString.split("/");
         if (scoreTokens.length != levelSuffixes.length) {
             throw new IllegalArgumentException("The scoreString (" + scoreString
                     + ") doesn't follow the correct pattern (" + buildScorePattern(levelSuffixes) + "):"

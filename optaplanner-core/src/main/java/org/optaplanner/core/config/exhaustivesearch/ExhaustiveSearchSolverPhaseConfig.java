@@ -18,7 +18,6 @@ package org.optaplanner.core.config.exhaustivesearch;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -40,7 +39,7 @@ import org.optaplanner.core.impl.exhaustivesearch.DefaultExhaustiveSearchSolverP
 import org.optaplanner.core.impl.exhaustivesearch.ExhaustiveSearchSolverPhase;
 import org.optaplanner.core.impl.exhaustivesearch.decider.ExhaustiveSearchDecider;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
-import org.optaplanner.core.impl.exhaustivesearch.node.bounder.FallingScoreBounder;
+import org.optaplanner.core.impl.exhaustivesearch.node.bounder.TrendBasedScoreBounder;
 import org.optaplanner.core.impl.exhaustivesearch.node.bounder.ScoreBounder;
 import org.optaplanner.core.impl.exhaustivesearch.node.comparator.BreadthFirstNodeComparator;
 import org.optaplanner.core.impl.exhaustivesearch.node.comparator.DepthFirstNodeComparator;
@@ -168,7 +167,7 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
                 sourceEntitySelector, mimicSelectorId);
         MoveSelector moveSelector = moveSelectorConfig_.buildMoveSelector(configPolicy,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
-        ScoreBounder scoreBounder = new FallingScoreBounder(configPolicy.getScoreDefinition()); // TODO make flexible
+        ScoreBounder scoreBounder = new TrendBasedScoreBounder(configPolicy.getScoreDirectorFactory()); // TODO make flexible
         ExhaustiveSearchDecider decider = new ExhaustiveSearchDecider(bestSolutionRecaller, termination,
                 manualEntityMimicRecorder, moveSelector, scoreBounder);
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();

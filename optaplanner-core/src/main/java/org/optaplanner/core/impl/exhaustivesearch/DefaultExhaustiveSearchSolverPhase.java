@@ -23,10 +23,11 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.exhaustivesearch.decider.ExhaustiveSearchDecider;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchLayer;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
-import org.optaplanner.core.impl.exhaustivesearch.node.comparator.DepthFirstNodeComparator;
+import org.optaplanner.core.impl.exhaustivesearch.node.bounder.ScoreBounder;
 import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchSolverPhaseScope;
 import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchStepScope;
 import org.optaplanner.core.impl.heuristic.move.Move;
@@ -84,12 +85,10 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
     // ************************************************************************
 
     public void solve(DefaultSolverScope solverScope) {
-        ExhaustiveSearchSolverPhaseScope phaseScope = new ExhaustiveSearchSolverPhaseScope(solverScope);
-        phaseStarted(phaseScope);
         SortedSet<ExhaustiveSearchNode> expandableNodeQueue = new TreeSet<ExhaustiveSearchNode>(nodeComparator);
+        ExhaustiveSearchSolverPhaseScope phaseScope = new ExhaustiveSearchSolverPhaseScope(solverScope);
         phaseScope.setExpandableNodeQueue(expandableNodeQueue);
-        fillLayerList(phaseScope);
-        initStartNode(phaseScope);
+        phaseStarted(phaseScope);
 
         while (!expandableNodeQueue.isEmpty() && !termination.isPhaseTerminated(phaseScope)) {
             ExhaustiveSearchStepScope stepScope = new ExhaustiveSearchStepScope(phaseScope);
@@ -103,6 +102,21 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
             phaseScope.setLastCompletedStepScope(stepScope);
         }
         phaseEnded(phaseScope);
+    }
+
+    @Override
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        super.solvingStarted(solverScope);
+        entitySelector.solvingStarted(solverScope);
+        decider.solvingStarted(solverScope);
+    }
+
+    public void phaseStarted(ExhaustiveSearchSolverPhaseScope phaseScope) {
+        super.phaseStarted(phaseScope);
+        entitySelector.phaseStarted(phaseScope);
+        decider.phaseStarted(phaseScope);
+        fillLayerList(phaseScope);
+        initStartNode(phaseScope);
     }
 
     private void fillLayerList(ExhaustiveSearchSolverPhaseScope phaseScope) {
@@ -135,9 +149,23 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
     private void initStartNode(ExhaustiveSearchSolverPhaseScope phaseScope) {
         ExhaustiveSearchLayer layer = phaseScope.getLayerList().get(0);
         ExhaustiveSearchNode startNode = new ExhaustiveSearchNode(layer, null, 0);
-        startNode.setOptimisticBound(phaseScope.getScoreDefinition().getPerfectMaximumScore());
+
+        ScoreDirector scoreDirector = phaseScope.getScoreDirector();
+        Score score = scoreDirector.calculateScore();
+        ScoreBounder scoreBounder = decider.getScoreBounder();
+        phaseScope.setBestPessimisticBound(scoreBounder.calculatePessimisticBound(
+                scoreDirector, score, startNode.getUninitializedVariableCount()));
+        startNode.setOptimisticBound(scoreBounder.calculateOptimisticBound(
+                scoreDirector, score, startNode.getUninitializedVariableCount()));
+
         phaseScope.getExpandableNodeQueue().add(startNode);
         phaseScope.getLastCompletedStepScope().setExpandingNode(startNode);
+    }
+
+    public void stepStarted(ExhaustiveSearchStepScope stepScope) {
+        super.stepStarted(stepScope);
+        // Skip entitySelector.stepStarted(stepScope)
+        decider.stepStarted(stepScope);
     }
 
     protected void restoreWorkingSolution(ExhaustiveSearchStepScope stepScope) {
@@ -173,25 +201,6 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
         if (assertExpectedWorkingSolutionScore) {
             phaseScope.assertExpectedWorkingScore(stepScope.getScore(), restoreMoveList);
         }
-    }
-
-    @Override
-    public void solvingStarted(DefaultSolverScope solverScope) {
-        super.solvingStarted(solverScope);
-        entitySelector.solvingStarted(solverScope);
-        decider.solvingStarted(solverScope);
-    }
-
-    public void phaseStarted(ExhaustiveSearchSolverPhaseScope phaseScope) {
-        super.phaseStarted(phaseScope);
-        entitySelector.phaseStarted(phaseScope);
-        decider.phaseStarted(phaseScope);
-    }
-
-    public void stepStarted(ExhaustiveSearchStepScope stepScope) {
-        super.stepStarted(stepScope);
-        // Skip entitySelector.stepStarted(stepScope)
-        decider.stepStarted(stepScope);
     }
 
     public void stepEnded(ExhaustiveSearchStepScope stepScope) {

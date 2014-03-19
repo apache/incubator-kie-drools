@@ -40,7 +40,6 @@ public class ExhaustiveSearchSolverPhaseScope extends AbstractSolverPhaseScope {
     public ExhaustiveSearchSolverPhaseScope(DefaultSolverScope solverScope) {
         super(solverScope);
         lastCompletedStepScope = new ExhaustiveSearchStepScope(this, -1);
-        bestPessimisticBound = solverScope.getScoreDefinition().getPerfectMinimumScore();
     }
 
     public List<ExhaustiveSearchLayer> getLayerList() {
@@ -61,6 +60,10 @@ public class ExhaustiveSearchSolverPhaseScope extends AbstractSolverPhaseScope {
 
     public Score getBestPessimisticBound() {
         return bestPessimisticBound;
+    }
+
+    public void setBestPessimisticBound(Score bestPessimisticBound) {
+        this.bestPessimisticBound = bestPessimisticBound;
     }
 
     public ExhaustiveSearchStepScope getLastCompletedStepScope() {

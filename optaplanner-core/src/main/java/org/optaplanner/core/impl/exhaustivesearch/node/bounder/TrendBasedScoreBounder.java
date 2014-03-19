@@ -19,18 +19,26 @@ package org.optaplanner.core.impl.exhaustivesearch.node.bounder;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrendLevel;
 
-public class FallingScoreBounder implements ScoreBounder {
+public class TrendBasedScoreBounder implements ScoreBounder {
 
-    private final ScoreDefinition scoreDefinition;
+    protected final ScoreDefinition scoreDefinition;
+    protected final InitializingScoreTrend initializingScoreTrend;
 
-    public FallingScoreBounder(ScoreDefinition scoreDefinition) {
-        this.scoreDefinition = scoreDefinition;
+    public TrendBasedScoreBounder(ScoreDirectorFactory scoreDirectorFactory) {
+        scoreDefinition = scoreDirectorFactory.getScoreDefinition();
+        initializingScoreTrend = scoreDirectorFactory.getInitializingScoreTrend();
     }
 
     @Override
     public Score calculateOptimisticBound(ScoreDirector scoreDirector, Score score, int uninitializedVariableCount) {
-        return score;
+        if (uninitializedVariableCount == 0) {
+            return score;
+        }
+        return scoreDefinition.buildOptimisticBound(initializingScoreTrend, score);
     }
 
     @Override
@@ -38,7 +46,7 @@ public class FallingScoreBounder implements ScoreBounder {
         if (uninitializedVariableCount == 0) {
             return score;
         }
-        return scoreDefinition.getPerfectMinimumScore();
+        return scoreDefinition.buildPessimisticBound(initializingScoreTrend, score);
     }
 
 }

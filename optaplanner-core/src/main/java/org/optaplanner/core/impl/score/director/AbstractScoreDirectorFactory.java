@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.director;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.optaplanner.core.impl.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,8 @@ public abstract class AbstractScoreDirectorFactory implements ScoreDirectorFacto
 
     protected SolutionDescriptor solutionDescriptor;
     protected ScoreDefinition scoreDefinition;
+
+    protected InitializingScoreTrend initializingScoreTrend;
 
     protected ScoreDirectorFactory assertionScoreDirectorFactory = null;
 
@@ -50,6 +53,14 @@ public abstract class AbstractScoreDirectorFactory implements ScoreDirectorFacto
 
     public void setScoreDefinition(ScoreDefinition scoreDefinition) {
         this.scoreDefinition = scoreDefinition;
+    }
+
+    public InitializingScoreTrend getInitializingScoreTrend() {
+        return initializingScoreTrend;
+    }
+
+    public void setInitializingScoreTrend(InitializingScoreTrend initializingScoreTrend) {
+        this.initializingScoreTrend = initializingScoreTrend;
     }
 
     public ScoreDirectorFactory getAssertionScoreDirectorFactory() {

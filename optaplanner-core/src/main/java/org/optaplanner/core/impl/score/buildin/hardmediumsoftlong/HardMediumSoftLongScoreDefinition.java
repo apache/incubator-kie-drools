@@ -16,19 +16,18 @@
 
 package org.optaplanner.core.impl.score.buildin.hardmediumsoftlong;
 
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreHolder;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrendLevel;
 
 public class HardMediumSoftLongScoreDefinition extends AbstractScoreDefinition<HardMediumSoftLongScore> {
 
     private double hardScoreTimeGradientWeight = 0.50; // TODO this is a guess
     private double mediumScoreTimeGradientWeight = 0.30; // TODO this is a guess
-
-    private HardMediumSoftLongScore perfectMaximumScore = HardMediumSoftLongScore.valueOf(0L, 0L, 0L);
-    private HardMediumSoftLongScore perfectMinimumScore = HardMediumSoftLongScore.valueOf(
-            Long.MIN_VALUE, Long.MIN_VALUE, Long.MIN_VALUE);
 
     public double getHardScoreTimeGradientWeight() {
         return hardScoreTimeGradientWeight;
@@ -64,27 +63,13 @@ public class HardMediumSoftLongScoreDefinition extends AbstractScoreDefinition<H
         }
     }
 
-    @Override
-    public HardMediumSoftLongScore getPerfectMaximumScore() {
-        return perfectMaximumScore;
-    }
-
-    public void setPerfectMaximumScore(HardMediumSoftLongScore perfectMaximumScore) {
-        this.perfectMaximumScore = perfectMaximumScore;
-    }
-
-    @Override
-    public HardMediumSoftLongScore getPerfectMinimumScore() {
-        return perfectMinimumScore;
-    }
-
-    public void setPerfectMinimumScore(HardMediumSoftLongScore perfectMinimumScore) {
-        this.perfectMinimumScore = perfectMinimumScore;
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    public int getLevelCount() {
+        return 3;
+    }
 
     public Class<HardMediumSoftLongScore> getScoreClass() {
         return HardMediumSoftLongScore.class;
@@ -136,8 +121,24 @@ public class HardMediumSoftLongScoreDefinition extends AbstractScoreDefinition<H
         return timeGradient;
     }
 
-    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+    public HardMediumSoftLongScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new HardMediumSoftLongScoreHolder(constraintMatchEnabled);
+    }
+
+    public HardMediumSoftLongScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, HardMediumSoftLongScore score) {
+        InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
+        return HardMediumSoftLongScore.valueOf(
+                trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getHardScore() : Long.MAX_VALUE,
+                trendLevels[1] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getMediumScore() : Long.MAX_VALUE,
+                trendLevels[2] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getSoftScore() : Long.MAX_VALUE);
+    }
+
+    public HardMediumSoftLongScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, HardMediumSoftLongScore score) {
+        InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
+        return HardMediumSoftLongScore.valueOf(
+                trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getHardScore() : Long.MIN_VALUE,
+                trendLevels[1] == InitializingScoreTrendLevel.ONLY_UP ? score.getMediumScore() : Long.MIN_VALUE,
+                trendLevels[2] == InitializingScoreTrendLevel.ONLY_UP ? score.getSoftScore() : Long.MIN_VALUE);
     }
 
 }

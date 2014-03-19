@@ -21,14 +21,12 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrendLevel;
 
 public class HardSoftScoreDefinition extends AbstractScoreDefinition<HardSoftScore> {
 
     private double hardScoreTimeGradientWeight = 0.75; // TODO this is a guess
-
-    private HardSoftScore perfectMaximumScore = HardSoftScore.valueOf(0, 0);
-    private HardSoftScore perfectMinimumScore = HardSoftScore.valueOf(
-            Integer.MIN_VALUE, Integer.MIN_VALUE);
 
     public double getHardScoreTimeGradientWeight() {
         return hardScoreTimeGradientWeight;
@@ -47,27 +45,13 @@ public class HardSoftScoreDefinition extends AbstractScoreDefinition<HardSoftSco
         }
     }
 
-    @Override
-    public HardSoftScore getPerfectMaximumScore() {
-        return perfectMaximumScore;
-    }
-
-    public void setPerfectMaximumScore(HardSoftScore perfectMaximumScore) {
-        this.perfectMaximumScore = perfectMaximumScore;
-    }
-
-    @Override
-    public HardSoftScore getPerfectMinimumScore() {
-        return perfectMinimumScore;
-    }
-
-    public void setPerfectMinimumScore(HardSoftScore perfectMinimumScore) {
-        this.perfectMinimumScore = perfectMinimumScore;
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    public int getLevelCount() {
+        return 2;
+    }
 
     public Class<HardSoftScore> getScoreClass() {
         return HardSoftScore.class;
@@ -107,8 +91,22 @@ public class HardSoftScoreDefinition extends AbstractScoreDefinition<HardSoftSco
         return timeGradient;
     }
 
-    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+    public HardSoftScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new HardSoftScoreHolder(constraintMatchEnabled);
+    }
+
+    public HardSoftScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, HardSoftScore score) {
+        InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
+        return HardSoftScore.valueOf(
+                trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getHardScore() : Integer.MAX_VALUE,
+                trendLevels[1] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getSoftScore() : Integer.MAX_VALUE);
+    }
+
+    public HardSoftScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, HardSoftScore score) {
+        InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
+        return HardSoftScore.valueOf(
+                trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getHardScore() : Integer.MIN_VALUE,
+                trendLevels[1] == InitializingScoreTrendLevel.ONLY_UP ? score.getSoftScore() : Integer.MIN_VALUE);
     }
 
 }

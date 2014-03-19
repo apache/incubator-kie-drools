@@ -17,37 +17,23 @@
 package org.optaplanner.core.impl.score.buildin.simple;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScoreHolder;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrendLevel;
 
 public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> {
-
-    private SimpleScore perfectMaximumScore = SimpleScore.valueOf(0);
-    private SimpleScore perfectMinimumScore = SimpleScore.valueOf(Integer.MIN_VALUE);
-
-    @Override
-    public SimpleScore getPerfectMaximumScore() {
-        return perfectMaximumScore;
-    }
-
-    public void setPerfectMaximumScore(SimpleScore perfectMaximumScore) {
-        this.perfectMaximumScore = perfectMaximumScore;
-    }
-
-    @Override
-    public SimpleScore getPerfectMinimumScore() {
-        return perfectMinimumScore;
-    }
-
-    public void setPerfectMinimumScore(SimpleScore perfectMinimumScore) {
-        this.perfectMinimumScore = perfectMinimumScore;
-    }
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    public int getLevelCount() {
+        return 1;
+    }
 
     public Class<SimpleScore> getScoreClass() {
         return SimpleScore.class;
@@ -68,8 +54,20 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
         return ((double) scoreDelta) / ((double) scoreTotal);
     }
 
-    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+    public SimpleScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new SimpleScoreHolder(constraintMatchEnabled);
+    }
+
+    public SimpleScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleScore score) {
+        InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
+        return SimpleScore.valueOf(
+                trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getScore() : Integer.MAX_VALUE);
+    }
+
+    public SimpleScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleScore score) {
+        InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
+        return SimpleScore.valueOf(
+                trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getScore() : Integer.MIN_VALUE);
     }
 
 }

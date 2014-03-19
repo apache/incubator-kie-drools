@@ -17,37 +17,23 @@
 package org.optaplanner.core.impl.score.buildin.simplelong;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScoreHolder;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrendLevel;
 
 public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLongScore> {
-
-    private SimpleLongScore perfectMaximumScore = SimpleLongScore.valueOf(0L);
-    private SimpleLongScore perfectMinimumScore = SimpleLongScore.valueOf(Long.MIN_VALUE);
-
-    @Override
-    public SimpleLongScore getPerfectMaximumScore() {
-        return perfectMaximumScore;
-    }
-
-    public void setPerfectMaximumScore(SimpleLongScore perfectMaximumScore) {
-        this.perfectMaximumScore = perfectMaximumScore;
-    }
-
-    @Override
-    public SimpleLongScore getPerfectMinimumScore() {
-        return perfectMinimumScore;
-    }
-
-    public void setPerfectMinimumScore(SimpleLongScore perfectMinimumScore) {
-        this.perfectMinimumScore = perfectMinimumScore;
-    }
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    public int getLevelCount() {
+        return 1;
+    }
 
     public Class<SimpleLongScore> getScoreClass() {
         return SimpleLongScore.class;
@@ -68,8 +54,20 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
         return ((double) scoreDelta) / ((double) scoreTotal);
     }
 
-    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+    public SimpleLongScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new SimpleLongScoreHolder(constraintMatchEnabled);
+    }
+
+    public SimpleLongScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleLongScore score) {
+        InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
+        return SimpleLongScore.valueOf(
+                trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getScore() : Long.MAX_VALUE);
+    }
+
+    public SimpleLongScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleLongScore score) {
+        InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
+        return SimpleLongScore.valueOf(
+                trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getScore() : Long.MIN_VALUE);
     }
 
 }

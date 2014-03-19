@@ -20,37 +20,23 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScoreHolder;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrendLevel;
 
 public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<SimpleBigDecimalScore> {
-
-    private SimpleBigDecimalScore perfectMaximumScore = SimpleBigDecimalScore.valueOf(BigDecimal.ZERO);
-    private SimpleBigDecimalScore perfectMinimumScore = null;
-
-    @Override
-    public SimpleBigDecimalScore getPerfectMaximumScore() {
-        return perfectMaximumScore;
-    }
-
-    public void setPerfectMaximumScore(SimpleBigDecimalScore perfectMaximumScore) {
-        this.perfectMaximumScore = perfectMaximumScore;
-    }
-
-    @Override
-    public SimpleBigDecimalScore getPerfectMinimumScore() {
-        return perfectMinimumScore;
-    }
-
-    public void setPerfectMinimumScore(SimpleBigDecimalScore perfectMinimumScore) {
-        this.perfectMinimumScore = perfectMinimumScore;
-    }
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    public int getLevelCount() {
+        return 1;
+    }
 
     public Class<SimpleBigDecimalScore> getScoreClass() {
         return SimpleBigDecimalScore.class;
@@ -71,8 +57,20 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
         return scoreDelta.doubleValue() / scoreTotal.doubleValue();
     }
 
-    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+    public SimpleBigDecimalScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new SimpleBigDecimalScoreHolder(constraintMatchEnabled);
+    }
+
+    public SimpleBigDecimalScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleBigDecimalScore score) {
+        // TODO https://issues.jboss.org/browse/PLANNER-232
+        throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +
+                " because a BigDecimal cannot represent infinity.");
+    }
+
+    public SimpleBigDecimalScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleBigDecimalScore score) {
+        // TODO https://issues.jboss.org/browse/PLANNER-232
+        throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +
+                " because a BigDecimal cannot represent infinity.");
     }
 
 }

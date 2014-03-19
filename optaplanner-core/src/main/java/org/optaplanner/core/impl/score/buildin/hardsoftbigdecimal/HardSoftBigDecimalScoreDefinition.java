@@ -21,18 +21,16 @@ import java.math.RoundingMode;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreHolder;
+import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 public class HardSoftBigDecimalScoreDefinition extends AbstractScoreDefinition<HardSoftBigDecimalScore> {
 
     private double hardScoreTimeGradientWeight = 0.75; // TODO this is a guess
 
-    private HardSoftBigDecimalScore perfectMaximumScore = HardSoftBigDecimalScore.valueOf(
-            BigDecimal.ZERO, BigDecimal.ZERO);
-    private HardSoftBigDecimalScore perfectMinimumScore = null;
-
-    public double getHardScoreTimeGradientWeight() {
+   public double getHardScoreTimeGradientWeight() {
         return hardScoreTimeGradientWeight;
     }
 
@@ -49,27 +47,13 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractScoreDefinition<H
         }
     }
 
-    @Override
-    public HardSoftBigDecimalScore getPerfectMaximumScore() {
-        return perfectMaximumScore;
-    }
-
-    public void setPerfectMaximumScore(HardSoftBigDecimalScore perfectMaximumScore) {
-        this.perfectMaximumScore = perfectMaximumScore;
-    }
-
-    @Override
-    public HardSoftBigDecimalScore getPerfectMinimumScore() {
-        return perfectMinimumScore;
-    }
-
-    public void setPerfectMinimumScore(HardSoftBigDecimalScore perfectMinimumScore) {
-        this.perfectMinimumScore = perfectMinimumScore;
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    public int getLevelCount() {
+        return 2;
+    }
 
     public Class<HardSoftBigDecimalScore> getScoreClass() {
         return HardSoftBigDecimalScore.class;
@@ -109,8 +93,20 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractScoreDefinition<H
         return timeGradient;
     }
 
-    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+    public HardSoftBigDecimalScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new HardSoftBigDecimalScoreHolder(constraintMatchEnabled);
+    }
+
+    public HardSoftBigDecimalScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, HardSoftBigDecimalScore score) {
+        // TODO https://issues.jboss.org/browse/PLANNER-232
+        throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +
+                " because a BigDecimal cannot represent infinity.");
+    }
+
+    public HardSoftBigDecimalScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, HardSoftBigDecimalScore score) {
+        // TODO https://issues.jboss.org/browse/PLANNER-232
+        throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +
+                " because a BigDecimal cannot represent infinity.");
     }
 
 }

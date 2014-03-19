@@ -17,37 +17,23 @@
 package org.optaplanner.core.impl.score.buildin.simpledouble;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
 import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScoreHolder;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrendLevel;
 
 public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleDoubleScore> {
-
-    private SimpleDoubleScore perfectMaximumScore = SimpleDoubleScore.valueOf(0.0);
-    private SimpleDoubleScore perfectMinimumScore = SimpleDoubleScore.valueOf(-Double.MAX_VALUE);
-
-    @Override
-    public SimpleDoubleScore getPerfectMaximumScore() {
-        return perfectMaximumScore;
-    }
-
-    public void setPerfectMaximumScore(SimpleDoubleScore perfectMaximumScore) {
-        this.perfectMaximumScore = perfectMaximumScore;
-    }
-
-    @Override
-    public SimpleDoubleScore getPerfectMinimumScore() {
-        return perfectMinimumScore;
-    }
-
-    public void setPerfectMinimumScore(SimpleDoubleScore perfectMinimumScore) {
-        this.perfectMinimumScore = perfectMinimumScore;
-    }
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    public int getLevelCount() {
+        return 1;
+    }
 
     public Class<SimpleDoubleScore> getScoreClass() {
         return SimpleDoubleScore.class;
@@ -68,8 +54,20 @@ public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleD
         return scoreDelta / scoreTotal;
     }
 
-    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+    public SimpleDoubleScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new SimpleDoubleScoreHolder(constraintMatchEnabled);
+    }
+
+    public SimpleDoubleScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleDoubleScore score) {
+        InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
+        return SimpleDoubleScore.valueOf(
+                trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getScore() : Double.POSITIVE_INFINITY);
+    }
+
+    public SimpleDoubleScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleDoubleScore score) {
+        InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
+        return SimpleDoubleScore.valueOf(
+                trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getScore() : Double.NEGATIVE_INFINITY);
     }
 
 }
