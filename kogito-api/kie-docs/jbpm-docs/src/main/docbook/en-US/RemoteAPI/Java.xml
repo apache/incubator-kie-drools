@@ -574,10 +574,10 @@ private static InitialContext getRemoteInitialContext(String jbossServerHostName
               </entry>
             </row>
             <row>
-              <entry><code>qosThresholdMillisecs</code></entry>
+              <entry><code>timeoutSeconds</code></entry>
               <entry><code>int</code></entry>
               <entry>
-                <para>This maximum number of milliseconds to wait when waiting for a response from
+                <para>This maximum number of seconds to wait when waiting for a response from
                   the server.</para>
               </entry>
             </row>
@@ -658,10 +658,10 @@ private static InitialContext getRemoteInitialContext(String jbossServerHostName
                 </entry>
               </row>
               <row>
-                <entry><code>qosThresholdMillisecs</code></entry>
+                <entry><code>timeoutSeconds</code></entry>
                 <entry><code>int</code></entry>
                 <entry>
-                  <para>This maximum number of milliseconds to wait when waiting for a response from
+                  <para>This maximum number of seconds to wait when waiting for a response from
                     the server.</para>
                 </entry>
               </row>
