@@ -177,9 +177,9 @@ public class DefaultSolver implements Solver {
         }
         int startingSolverCount = solverScope.getStartingSolverCount() + 1;
         solverScope.setStartingSolverCount(startingSolverCount);
-        logger.info("Solving {}: time spent ({}), score ({}), new best score ({}), random ({}).",
+        logger.info("Solving {}: time spent ({}), best score ({}), random ({}).",
                 (startingSolverCount == 1 ? "started" : "restarted"),
-                solverScope.calculateTimeMillisSpent(), solverScope.getStartingInitializedScore(),
+                solverScope.calculateTimeMillisSpent(),
                 solverScope.getBestScoreWithUninitializedPrefix(),
                 (randomFactory != null ? randomFactory : "not fixed"));
     }

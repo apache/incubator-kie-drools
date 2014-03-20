@@ -83,7 +83,7 @@
       <para>If we turn on <literal>debug</literal> logging for the category <literal>org.optaplanner</literal>, then
       those steps are shown into the log:</para>
 
-      <programlisting>INFO  Solving started: time spent (0), score (-6), new best score (-6), random (JDK with seed 0).
+      <programlisting>INFO  Solving started: time spent (0), best score (-6), random (JDK with seed 0).
 DEBUG     LS step (0), time spent (20), score (-3), new best score (-3), accepted/selected move count (12/12), picked move (col1@row0 =&gt; row3).
 DEBUG     LS step (1), time spent (31), score (-1), new best score (-1), accepted/selected move count (12/12), picked move (col0@row0 =&gt; row1).
 DEBUG     LS step (2), time spent (40), score (0), new best score (0), accepted/selected move count (12/12), picked move (col3@row0 =&gt; row2).
