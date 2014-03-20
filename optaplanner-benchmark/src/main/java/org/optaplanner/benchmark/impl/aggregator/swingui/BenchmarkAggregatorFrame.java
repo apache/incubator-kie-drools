@@ -399,8 +399,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
             setContentPane(mainPanel);
             mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-            confirmRenameButton.addActionListener(new AbstractAction() {
-
+            AbstractAction renamedAction = new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     String newBenchmarkResultName = benchmarkResultNameTextField.getText();
@@ -413,14 +412,16 @@ public class BenchmarkAggregatorFrame extends JFrame {
                             mixedCheckBox.setText(newBenchmarkResultName);
                             ((DefaultTreeModel) checkBoxTree.getModel()).nodeChanged(treeNode);
                         } else if (benchmarkResult instanceof SolverBenchmarkResult) {
-                            mixedCheckBox.setText(newBenchmarkResultName  + " (" + ((SolverBenchmarkResult) benchmarkResult).getRanking() + ")");
+                            mixedCheckBox.setText(newBenchmarkResultName + " (" + ((SolverBenchmarkResult) benchmarkResult).getRanking() + ")");
                             ((DefaultTreeModel) checkBoxTree.getModel()).nodeChanged(treeNode);
                             solverBenchmarkResultNameMapping.put((SolverBenchmarkResult) benchmarkResult, newBenchmarkResultName);
                         }
                         dispose();
                     }
                 }
-            });
+            };
+            benchmarkResultNameTextField.addActionListener(renamedAction);
+            confirmRenameButton.addActionListener(renamedAction);
         }
     }
 
