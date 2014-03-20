@@ -625,7 +625,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
         private void reloadBenchmarkResultStructures() {
             initPlannerBenchmarkResultList();
             solverBenchmarkResultNameMapping = new HashMap<SolverBenchmarkResult, String>();
-            resultCheckBoxMapping = new HashMap<SingleBenchmarkResult, DefaultMutableTreeNode>();
+            resultCheckBoxMapping = new LinkedHashMap<SingleBenchmarkResult, DefaultMutableTreeNode>();
             checkBoxTree.setSelectedSingleBenchmarkNodes(new HashSet<DefaultMutableTreeNode>());
             DefaultMutableTreeNode newCheckBoxRootNode = initBenchmarkHierarchy(true);
             DefaultTreeModel treeModel = new DefaultTreeModel(newCheckBoxRootNode);
