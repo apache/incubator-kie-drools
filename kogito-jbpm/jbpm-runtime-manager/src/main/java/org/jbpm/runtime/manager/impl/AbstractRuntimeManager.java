@@ -113,7 +113,7 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     		return;
     	}
         // register it if there is an active transaction as we assume then to be running in a managed environment e.g CMT       
-        JtaTransactionManager tm = new JtaTransactionManager(null, null, null);
+        TransactionManager tm = getTransactionManager();
         if (tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
                 && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
                 && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
