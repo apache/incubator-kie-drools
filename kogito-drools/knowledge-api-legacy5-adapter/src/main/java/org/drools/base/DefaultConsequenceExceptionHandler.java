@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package org.drools.core.base;
+package org.drools.base;
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.ConsequenceException;
-import org.drools.core.spi.ConsequenceExceptionHandler;
+import org.drools.impl.adapters.ActivationAdapter;
+import org.drools.impl.adapters.StatefulKnowledgeSessionAdapter;
+import org.drools.runtime.rule.ConsequenceException;
+import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
+import org.kie.api.runtime.rule.Match;
+import org.kie.api.runtime.rule.RuleRuntime;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class DefaultConsequenceExceptionHandler implements ConsequenceExceptionHandler, Externalizable {
 
@@ -34,11 +37,10 @@ public class DefaultConsequenceExceptionHandler implements ConsequenceExceptionH
     public void writeExternal(ObjectOutput out) throws IOException {
     }
 
-    public void handleException(Activation activation,
-                                WorkingMemory workingMemory,
-                                Exception exception) {
-        throw new ConsequenceException( exception,
-                                        activation.getRule() );
+    public void handleException(Match match, RuleRuntime workingMemory, Exception exception) {
+        throw new ConsequenceException( exception, 
+                new StatefulKnowledgeSessionAdapter( (StatefulKnowledgeSession) workingMemory ), 
+                new ActivationAdapter( match ) );
     }
 
 }

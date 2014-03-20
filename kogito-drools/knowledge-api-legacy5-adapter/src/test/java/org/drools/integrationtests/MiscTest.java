@@ -137,4 +137,28 @@ public class MiscTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(null, null);
 
     }
+    
+    @Test
+    public void testConsequenceException() {
+        String str =
+                "package foo.bar\n" +
+                "rule R\n" +
+                "when\n" +
+                "then\n" +
+                "    throw new RuntimeException(\"foo\");" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        try {
+            ksession.fireAllRules();
+        } catch( org.drools.runtime.rule.ConsequenceException e ) {
+            // this is correct, succeeds
+        } catch( Exception other) {
+            fail("Wrong exception raised = "+other.getClass().getCanonicalName());
+        }
+
+    }
+
 }
