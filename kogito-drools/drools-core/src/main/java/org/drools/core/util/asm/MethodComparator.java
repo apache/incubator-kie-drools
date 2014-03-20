@@ -24,6 +24,9 @@ import org.mvel2.asm.ClassReader;
 import org.mvel2.asm.ClassVisitor;
 import org.mvel2.asm.FieldVisitor;
 import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Opcodes;
+import org.mvel2.asm.util.Printer;
+import org.mvel2.asm.util.Textifier;
 import org.mvel2.asm.util.TraceMethodVisitor;
 
 /**
@@ -62,8 +65,7 @@ public class MethodComparator {
         final Tracer visit = new Tracer( methodName );
         classReader.accept( visit,
                             ClassReader.SKIP_DEBUG );
-        final TraceMethodVisitor trace = visit.getTrace();
-        return trace.getText();
+        return visit.getText();
     }
 
     /**
@@ -76,8 +78,7 @@ public class MethodComparator {
         final ClassReader classReader = new ClassReader( bytes );
         classReader.accept( visit,
                             ClassReader.SKIP_DEBUG );
-        final TraceMethodVisitor trace = visit.getTrace();
-        return trace.getText();
+        return visit.getText();
     }
 
     /**
@@ -100,13 +101,15 @@ public class MethodComparator {
     }
 
     public static class Tracer
-        implements
+        extends
         ClassVisitor {
 
         private TraceMethodVisitor trace;
         private String             methodName;
+        private Printer            printer;
 
         public Tracer(final String methodName) {
+            super(Opcodes.ASM5);
             this.methodName = methodName;
         }
 
@@ -150,7 +153,8 @@ public class MethodComparator {
                                          final String[] exceptions) {
 
             if ( this.methodName.equals( name ) ) {
-                this.trace = new TraceMethodVisitor();
+                this.printer = new Textifier();
+                this.trace = new TraceMethodVisitor(printer);
                 return this.trace;
             }
             return null;
@@ -165,15 +169,19 @@ public class MethodComparator {
                                 final String debug) {
         }
 
-        public TraceMethodVisitor getTrace() {
-            return this.trace;
+        public List<Object> getText() {
+            return this.printer.getText();
         }
 
     }
 
     static class DummyAnnotationVisitor
-        implements
+        extends
         AnnotationVisitor {
+
+        public DummyAnnotationVisitor() {
+            super(Opcodes.ASM5);
+        }
 
         public void visit(final String name,
                           final Object value) {

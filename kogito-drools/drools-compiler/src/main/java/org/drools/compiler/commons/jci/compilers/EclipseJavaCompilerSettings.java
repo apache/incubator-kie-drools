@@ -35,6 +35,7 @@ public final class EclipseJavaCompilerSettings extends JavaCompilerSettings {
     public static final String CompilerOptions_VERSION_1_5 = "1.5"; //$NON-NLS-1$
     public static final String CompilerOptions_VERSION_1_6 = "1.6"; //$NON-NLS-1$
     public static final String CompilerOptions_VERSION_1_7 = "1.7"; //$NON-NLS-1$
+    public static final String CompilerOptions_VERSION_1_8 = "1.8"; //$NON-NLS-1$
 
     public static final String CompilerOptions_GENERATE = "generate";//$NON-NLS-1$
     public static final String CompilerOptions_DO_NOT_GENERATE = "do not generate"; //$NON-NLS-1$
@@ -86,6 +87,7 @@ public final class EclipseJavaCompilerSettings extends JavaCompilerSettings {
         put("1.5", CompilerOptions_VERSION_1_5);
         put("1.6", CompilerOptions_VERSION_1_6);
         put("1.7", CompilerOptions_VERSION_1_7);
+        put("1.8", CompilerOptions_VERSION_1_8);
     }};
     
     private String toNativeVersion( final String pVersion ) {

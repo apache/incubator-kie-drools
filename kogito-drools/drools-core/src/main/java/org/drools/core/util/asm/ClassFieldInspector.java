@@ -383,7 +383,7 @@ public class ClassFieldInspector {
      * Using the ASM classfield extractor to pluck it out in the order they appear in the class file.
      */
     static class ClassFieldVisitor
-            implements
+            extends
             ClassVisitor {
 
         private Class< ? >          clazz;
@@ -393,6 +393,7 @@ public class ClassFieldInspector {
         ClassFieldVisitor(final Class< ? > cls,
                           final boolean includeFinalMethods,
                           final ClassFieldInspector inspector) {
+            super(Opcodes.ASM5);
             this.clazz = cls;
             this.includeFinalMethods = includeFinalMethods;
             this.inspector = inspector;
@@ -505,8 +506,12 @@ public class ClassFieldInspector {
      * It may also come in handy if we want to allow custom annotations for marking field numbers etc.
      */
     static class ClassFieldAnnotationVisitor
-            implements
+            extends
             AnnotationVisitor {
+
+        ClassFieldAnnotationVisitor() {
+            super(Opcodes.ASM5);
+        }
 
         public void visit( final String arg0,
                            final Object arg1 ) {

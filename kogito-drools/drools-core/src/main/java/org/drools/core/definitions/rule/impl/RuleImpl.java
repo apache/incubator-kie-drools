@@ -814,8 +814,7 @@ public class RuleImpl implements Externalizable,
 
         org.mvel2.asm.ClassReader classReader = new org.mvel2.asm.ClassReader( bos.toByteArray() );
         classReader.accept( visit, org.mvel2.asm.ClassReader.SKIP_DEBUG  );
-        org.mvel2.asm.util.TraceMethodVisitor trace = visit.getTrace();
-        return trace.getText();
+        return visit.getText();
     }
 
     public boolean isQuery() {

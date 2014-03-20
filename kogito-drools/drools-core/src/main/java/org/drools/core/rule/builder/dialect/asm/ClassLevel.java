@@ -5,6 +5,7 @@ import org.kie.internal.utils.ChainedProperties;
 import static org.mvel2.asm.Opcodes.V1_5;
 import static org.mvel2.asm.Opcodes.V1_6;
 import static org.mvel2.asm.Opcodes.V1_7;
+import static org.mvel2.asm.Opcodes.V1_8;
 
 public class ClassLevel {
     public static final String JAVA_LANG_LEVEL_PROPERTY = "drools.dialect.java.compiler.lnglevel";
@@ -46,6 +47,8 @@ public class ClassLevel {
             return V1_6;
         } else if ( level.startsWith( "1.7" ) ) {
             return V1_7;
+        } else if ( level.startsWith( "1.8" ) ) {
+            return V1_8;
         } else {
             return V1_7;
         }
