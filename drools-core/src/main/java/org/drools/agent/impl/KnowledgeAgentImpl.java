@@ -1263,16 +1263,18 @@ public class KnowledgeAgentImpl
                 this.listener.info( "KnowledgeAgent has started listening for ChangeSet notifications" );
             }
             while ( this.monitor ) {
-                Exception exception = null;
+                InterruptedException exception = null;
                 try {
                     kagent.applyChangeSet( this.queue.take() );
                 } catch ( InterruptedException e ) {
                     exception = e;
+                } catch ( Throwable t ) {
+                    this.listener.exception( new RuntimeException( "An error occurred trying to apply the ChangeSet",
+                                                                   t ) );
                 }
                 Thread.yield();
                 if ( this.monitor && exception != null ) {
-                    this.listener.exception( new RuntimeException(
-                                                                   "KnowledgeAgent ChangeSet notification thread has been interrupted, but shutdown was not scheduled",
+                    this.listener.exception( new RuntimeException( "KnowledgeAgent ChangeSet notification thread has been interrupted, but shutdown was not scheduled",
                                                                    exception ) );
                 }
             }
