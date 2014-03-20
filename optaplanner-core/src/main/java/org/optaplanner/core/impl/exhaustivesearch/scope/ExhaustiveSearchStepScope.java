@@ -64,6 +64,10 @@ public class ExhaustiveSearchStepScope extends AbstractStepScope {
         return expandingNode.getDepth();
     }
 
+    public long getBreadth() {
+        return expandingNode.getBreadth();
+    }
+
     @Override
     public boolean isBestSolutionCloningDelayed() {
         return true;

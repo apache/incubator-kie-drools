@@ -26,7 +26,6 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.ManualEntityMimicRecorder;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
@@ -111,8 +110,7 @@ public class ExhaustiveSearchDecider {
         int moveIndex = 0;
         ExhaustiveSearchLayer moveLayer = stepScope.getPhaseScope().getLayerList().get(expandingNode.getDepth() + 1);
         for (Move move : moveSelector) {
-            ExhaustiveSearchNode moveNode = new ExhaustiveSearchNode(moveLayer, expandingNode,
-                    moveLayer.assignIndexInLayer());
+            ExhaustiveSearchNode moveNode = new ExhaustiveSearchNode(moveLayer, expandingNode);
             moveIndex++;
             moveNode.setMove(move);
             // Do not filter out pointless moves, because the original value of the entity(s) is irrelevant.
@@ -137,8 +135,8 @@ public class ExhaustiveSearchDecider {
             ExhaustiveSearchSolverPhaseScope phaseScope = stepScope.getPhaseScope();
             phaseScope.assertExpectedUndoMoveScore(move, undoMove);
         }
-        logger.trace("        Move indexInLayer ({}), score ({}), move ({}).",
-                moveNode.getIndexInLayer(), moveNode.getScore(), moveNode.getMove());
+        logger.trace("        Move breadth ({}), score ({}), move ({}).",
+                moveNode.getBreadth(), moveNode.getScore(), moveNode.getMove());
     }
 
     private void processMove(ExhaustiveSearchStepScope stepScope, ExhaustiveSearchNode moveNode) {

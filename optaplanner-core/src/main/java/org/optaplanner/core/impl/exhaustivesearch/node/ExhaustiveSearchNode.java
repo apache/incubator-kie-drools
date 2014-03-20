@@ -24,7 +24,7 @@ public class ExhaustiveSearchNode {
 
     private final ExhaustiveSearchLayer layer;
     private final ExhaustiveSearchNode parent;
-    private final long indexInLayer;
+    private final long breadth;
 
     // The move to get from the parent to this node
     private Move move;
@@ -36,10 +36,10 @@ public class ExhaustiveSearchNode {
      */
     private Score optimisticBound;
 
-    public ExhaustiveSearchNode(ExhaustiveSearchLayer layer, ExhaustiveSearchNode parent, long indexInLayer) {
+    public ExhaustiveSearchNode(ExhaustiveSearchLayer layer, ExhaustiveSearchNode parent) {
         this.layer = layer;
         this.parent = parent;
-        this.indexInLayer = indexInLayer;
+        this.breadth = layer.assignBreadth();
     }
 
     public ExhaustiveSearchLayer getLayer() {
@@ -50,8 +50,8 @@ public class ExhaustiveSearchNode {
         return parent;
     }
 
-    public long getIndexInLayer() {
-        return indexInLayer;
+    public long getBreadth() {
+        return breadth;
     }
 
     public Move getMove() {
@@ -104,7 +104,7 @@ public class ExhaustiveSearchNode {
 
     @Override
     public String toString() {
-        return layer.getDepth() + "-" + indexInLayer;
+        return layer.getDepth() + "-" + breadth;
     }
 
 }

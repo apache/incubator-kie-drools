@@ -22,13 +22,13 @@ public class ExhaustiveSearchLayer {
     private final Object entity;
     private final int uninitializedVariableCount;
 
-    private long nextIndexInLayer;
+    private long nextBreadth;
 
     public ExhaustiveSearchLayer(int depth, Object entity, int uninitializedVariableCount) {
         this.depth = depth;
         this.entity = entity;
         this.uninitializedVariableCount = uninitializedVariableCount;
-        nextIndexInLayer = 0L;
+        nextBreadth = 0L;
     }
 
     public int getDepth() {
@@ -47,10 +47,10 @@ public class ExhaustiveSearchLayer {
     // Calculated methods
     // ************************************************************************
 
-    public long assignIndexInLayer() {
-        long assignIndexInLayer = nextIndexInLayer;
-        nextIndexInLayer++;
-        return assignIndexInLayer;
+    public long assignBreadth() {
+        long breadth = nextBreadth;
+        nextBreadth++;
+        return breadth;
     }
 
     @Override

@@ -48,25 +48,25 @@ public class DefaultExhaustiveSearchSolverPhaseTest {
         ExhaustiveSearchLayer layer2 = new ExhaustiveSearchLayer(2, mock(Object.class), 98);
         ExhaustiveSearchLayer layer3 = new ExhaustiveSearchLayer(3, mock(Object.class), 97);
         ExhaustiveSearchLayer layer4 = new ExhaustiveSearchLayer(4, mock(Object.class), 96);
-        ExhaustiveSearchNode node0 = new ExhaustiveSearchNode(layer0, null, 0);
+        ExhaustiveSearchNode node0 = new ExhaustiveSearchNode(layer0, null);
         node0.setMove(mock(Move.class));
         node0.setUndoMove(mock(Move.class));
-        ExhaustiveSearchNode node1 = new ExhaustiveSearchNode(layer1, node0, 0);
+        ExhaustiveSearchNode node1 = new ExhaustiveSearchNode(layer1, node0);
         node1.setMove(mock(Move.class));
         node1.setUndoMove(mock(Move.class));
-        ExhaustiveSearchNode node2A = new ExhaustiveSearchNode(layer2, node1, 0);
+        ExhaustiveSearchNode node2A = new ExhaustiveSearchNode(layer2, node1);
         node2A.setMove(mock(Move.class));
         node2A.setUndoMove(mock(Move.class));
-        ExhaustiveSearchNode node3A = new ExhaustiveSearchNode(layer3, node2A, 0); // oldNode
+        ExhaustiveSearchNode node3A = new ExhaustiveSearchNode(layer3, node2A); // oldNode
         node3A.setMove(mock(Move.class));
         node3A.setUndoMove(mock(Move.class));
-        ExhaustiveSearchNode node2B = new ExhaustiveSearchNode(layer2, node1, 1);
+        ExhaustiveSearchNode node2B = new ExhaustiveSearchNode(layer2, node1);
         node2B.setMove(mock(Move.class));
         node2B.setUndoMove(mock(Move.class));
-        ExhaustiveSearchNode node3B = new ExhaustiveSearchNode(layer3, node2B, 1);
+        ExhaustiveSearchNode node3B = new ExhaustiveSearchNode(layer3, node2B);
         node3B.setMove(mock(Move.class));
         node3B.setUndoMove(mock(Move.class));
-        ExhaustiveSearchNode node4B = new ExhaustiveSearchNode(layer4, node3B, 0); // newNode
+        ExhaustiveSearchNode node4B = new ExhaustiveSearchNode(layer4, node3B); // newNode
         node4B.setMove(mock(Move.class));
         node4B.setUndoMove(mock(Move.class));
         Score newScore = SimpleScore.valueOf(7);

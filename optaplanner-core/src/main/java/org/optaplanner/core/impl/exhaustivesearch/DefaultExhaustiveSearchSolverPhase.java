@@ -148,7 +148,7 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
 
     private void initStartNode(ExhaustiveSearchSolverPhaseScope phaseScope) {
         ExhaustiveSearchLayer layer = phaseScope.getLayerList().get(0);
-        ExhaustiveSearchNode startNode = new ExhaustiveSearchNode(layer, null, 0);
+        ExhaustiveSearchNode startNode = new ExhaustiveSearchNode(layer, null);
 
         ScoreDirector scoreDirector = phaseScope.getScoreDirector();
         Score score = scoreDirector.calculateScore();
@@ -210,9 +210,10 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
         if (logger.isDebugEnabled()) {
             ExhaustiveSearchSolverPhaseScope phaseScope = stepScope.getPhaseScope();
             long timeMillisSpent = phaseScope.calculateSolverTimeMillisSpent();
-            logger.debug("    ES step ({}), time spent ({}), depth ({}), {} best score ({}), selected move count ({}).",
+            logger.debug("    ES step ({}), time spent ({}), depth ({}), breadth ({}), {} best score ({}), selected move count ({}).",
                     stepScope.getStepIndex(), timeMillisSpent,
                     stepScope.getDepth(),
+                    stepScope.getBreadth(),
                     (stepScope.getBestScoreImproved() ? "new" : "   "),
                     phaseScope.getBestScoreWithUninitializedPrefix(),
                     stepScope.getSelectedMoveCount());

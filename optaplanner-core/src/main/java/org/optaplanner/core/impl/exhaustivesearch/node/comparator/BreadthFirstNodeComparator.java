@@ -49,12 +49,12 @@ public class BreadthFirstNodeComparator implements Comparator<ExhaustiveSearchNo
         } else if (optimisticBoundComparison > 0) {
             return 1;
         }
-        // Investigate lower index first (does not affect the churn on workingSolution)
-        long aIndex = a.getIndexInLayer();
-        long bIndex = b.getIndexInLayer();
-        if (aIndex < bIndex) {
+        // Investigate lower breath index first (does not affect the churn on workingSolution)
+        long aBreadth = a.getBreadth();
+        long bBreadth = b.getBreadth();
+        if (aBreadth < bBreadth) {
             return 1;
-        } else if (aIndex > bIndex) {
+        } else if (aBreadth > bBreadth) {
             return -1;
         } else {
             return 0;

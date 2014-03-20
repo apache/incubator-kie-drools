@@ -21,19 +21,12 @@ import java.util.Comparator;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 
 /**
- * Investigate the nodes with a better optimistic bound first, then deeper nodes.
+ * Investigate deeper nodes first, in order.
  */
-public class OptimisticBoundFirstNodeComparator implements Comparator<ExhaustiveSearchNode> {
+public class BruteForceNodeComparator implements Comparator<ExhaustiveSearchNode> {
 
     @Override
     public int compare(ExhaustiveSearchNode a, ExhaustiveSearchNode b) {
-        // Investigate better optimistic bound first
-        int optimisticBoundComparison = a.getOptimisticBound().compareTo(b.getOptimisticBound());
-        if (optimisticBoundComparison < 0) {
-            return -1;
-        } else if (optimisticBoundComparison > 0) {
-            return 1;
-        }
         // Investigate deeper first
         int aDepth = a.getDepth();
         int bDepth = b.getDepth();
@@ -42,13 +35,13 @@ public class OptimisticBoundFirstNodeComparator implements Comparator<Exhaustive
         } else if (aDepth > bDepth) {
             return 1;
         }
-        // Investigate higher breath index first (to reduce the churn on workingSolution)
+        // Investigate lower breath index first
         long aBreadth = a.getBreadth();
         long bBreadth = b.getBreadth();
         if (aBreadth < bBreadth) {
-            return -1;
-        } else if (aBreadth > bBreadth) {
             return 1;
+        } else if (aBreadth > bBreadth) {
+            return -1;
         } else {
             return 0;
         }

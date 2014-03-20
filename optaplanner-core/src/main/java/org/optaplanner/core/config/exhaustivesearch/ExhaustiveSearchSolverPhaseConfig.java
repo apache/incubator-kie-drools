@@ -42,6 +42,7 @@ import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 import org.optaplanner.core.impl.exhaustivesearch.node.bounder.TrendBasedScoreBounder;
 import org.optaplanner.core.impl.exhaustivesearch.node.bounder.ScoreBounder;
 import org.optaplanner.core.impl.exhaustivesearch.node.comparator.BreadthFirstNodeComparator;
+import org.optaplanner.core.impl.exhaustivesearch.node.comparator.BruteForceNodeComparator;
 import org.optaplanner.core.impl.exhaustivesearch.node.comparator.DepthFirstNodeComparator;
 import org.optaplanner.core.impl.exhaustivesearch.node.comparator.OptimisticBoundFirstNodeComparator;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
@@ -235,12 +236,15 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
     }
 
     public static enum ExhaustiveSearchType {
+        BRUTE_FORCE,
         BREADTH_FIRST_BRANCH_AND_BOUND,
         DEPTH_FIRST_BRANCH_AND_BOUND,
         OPTIMISTIC_BOUND_FIRST_BRANCH_AND_BOUND;
 
         public boolean isSortEntitiesByDecreasingDifficulty() {
             switch (this) {
+                case BRUTE_FORCE:
+                    return false;
                 case BREADTH_FIRST_BRANCH_AND_BOUND:
                 case DEPTH_FIRST_BRANCH_AND_BOUND:
                 case OPTIMISTIC_BOUND_FIRST_BRANCH_AND_BOUND:
@@ -253,6 +257,8 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
 
         public boolean isSortValuesByIncreasingStrength() {
             switch (this) {
+                case BRUTE_FORCE:
+                    return false;
                 case BREADTH_FIRST_BRANCH_AND_BOUND:
                 case DEPTH_FIRST_BRANCH_AND_BOUND:
                 case OPTIMISTIC_BOUND_FIRST_BRANCH_AND_BOUND:
@@ -265,6 +271,8 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
 
         public Comparator<ExhaustiveSearchNode> buildNodeComparator() {
             switch (this) {
+                case BRUTE_FORCE:
+                    return new BruteForceNodeComparator();
                 case BREADTH_FIRST_BRANCH_AND_BOUND:
                     return new BreadthFirstNodeComparator();
                 case DEPTH_FIRST_BRANCH_AND_BOUND:
