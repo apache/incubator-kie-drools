@@ -21,6 +21,7 @@ import java.util.Map.Entry;
 
 import org.drools.core.time.TimerService;
 import org.drools.persistence.OrderedTransactionSynchronization;
+import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionManagerHelper;
 import org.drools.persistence.TransactionSynchronization;
 import org.drools.persistence.jta.JtaTransactionManager;
@@ -31,6 +32,7 @@ import org.jbpm.runtime.manager.api.SchedulerProvider;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
@@ -186,7 +188,7 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     	if (hasEnvironmentEntry("IS_JTA_TRANSACTION", false)) {
     		return false;
     	}
-        JtaTransactionManager tm = new JtaTransactionManager(null, null, null);
+        TransactionManager tm = getTransactionManager();
         if (tm.getStatus() == JtaTransactionManager.STATUS_NO_TRANSACTION ||
                 tm.getStatus() == JtaTransactionManager.STATUS_ACTIVE) {
             return true;
@@ -200,5 +202,14 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     		return envEntry == null;
     	}
     	return value.equals(envEntry);
+    }
+    
+    protected TransactionManager getTransactionManager() {
+    	TransactionManager tm = (TransactionManager) environment.getEnvironment().get(EnvironmentName.TRANSACTION_MANAGER);
+    	if (tm == null) {
+    		tm = new JtaTransactionManager(null, null, null);
+    	}
+    	
+    	return tm;
     }
 }

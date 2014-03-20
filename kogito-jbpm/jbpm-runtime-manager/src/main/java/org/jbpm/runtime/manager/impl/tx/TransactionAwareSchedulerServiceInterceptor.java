@@ -23,6 +23,7 @@ import org.drools.persistence.TransactionManagerHelper;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.impl.DelegateSchedulerServiceInterceptor;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 
 /**
@@ -50,7 +51,7 @@ public class TransactionAwareSchedulerServiceInterceptor extends DelegateSchedul
     		super.internalSchedule(timerJobInstance);
     		return;
     	}
-        JtaTransactionManager tm = new JtaTransactionManager(null, null, null);
+        TransactionManager tm = getTransactionManager();
         if (tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
                 && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
                 && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
@@ -105,5 +106,14 @@ public class TransactionAwareSchedulerServiceInterceptor extends DelegateSchedul
     		return envEntry == null;
     	}
     	return value.equals(envEntry);
+    }
+    
+    protected TransactionManager getTransactionManager() {
+    	TransactionManager tm = (TransactionManager) environment.getEnvironment().get(EnvironmentName.TRANSACTION_MANAGER);
+    	if (tm == null) {
+    		tm = new JtaTransactionManager(null, null, null);
+    	}
+    	
+    	return tm;
     }
 }

@@ -24,6 +24,7 @@ import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.persistence.OrderedTransactionSynchronization;
+import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionManagerHelper;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.runtime.manager.impl.factory.CDITaskServiceFactory;
@@ -295,7 +296,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
                 	ksession.destroy();
                 	return null;
             	}
-                JtaTransactionManager tm = new JtaTransactionManager(null, null, null);
+                TransactionManager tm = getTransactionManager();
                 if (tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
                         && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
                         && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
