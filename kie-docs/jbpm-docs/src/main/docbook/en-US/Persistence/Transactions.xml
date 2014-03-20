@@ -95,14 +95,15 @@ Environment env = EnvironmentFactory.newEnvironment();
 env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
 env.set(EnvironmentName.TRANSACTION_MANAGER, new ContainerManagedTransactionManager());
 env.set(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, new JpaProcessPersistenceContextManager(env));
+env.set(EnvironmentName.TASK_PERSISTENCE_CONTEXT_MANAGER, new JPATaskPersistenceContextManager(env));
         </programlisting>
-        </listitem>
+      </listitem>
         <listitem>configure JPA provider (example hibernate and WebSphere)
         <programlisting>
 &lt;property name="hibernate.transaction.factory_class" value="org.hibernate.transaction.CMTTransactionFactory"/&gt;
-&lt;property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.WebSphereExtendedJTATransactionLookup"/&gt;
+&lt;property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.WebSphereJtaPlatform"/&gt;
         </programlisting>
-        </listitem>
+      </listitem>
         </itemizedlist>
         
         <para>With following configuration jBPM should run properly in CMT environment.</para>
