@@ -1,4 +1,4 @@
-create table Attachment (
+    create table Attachment (
         id bigint identity not null,
         accessType int,
         attachedAt datetime2,
@@ -22,6 +22,7 @@ create table Attachment (
         taskId bigint not null,
         taskName varchar(255),
         userId varchar(255),
+        OPTLOCK int,
         primary key (pk)
     );
 
@@ -302,6 +303,7 @@ create table Attachment (
         taskId bigint,
         type varchar(255),
         userId varchar(255),
+        OPTLOCK int,
         primary key (id)
     );
 

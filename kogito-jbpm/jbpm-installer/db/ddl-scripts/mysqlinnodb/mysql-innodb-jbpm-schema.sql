@@ -1,4 +1,4 @@
-create table Attachment (
+    create table Attachment (
         id bigint not null auto_increment,
         accessType integer,
         attachedAt datetime,
@@ -22,6 +22,7 @@ create table Attachment (
         taskId bigint not null,
         taskName varchar(255),
         userId varchar(255),
+        OPTLOCK integer,
         primary key (pk)
     ) ENGINE=InnoDB;
 
@@ -302,6 +303,7 @@ create table Attachment (
         taskId bigint,
         type varchar(255),
         userId varchar(255),
+        OPTLOCK integer,
         primary key (id)
     ) ENGINE=InnoDB;
 
