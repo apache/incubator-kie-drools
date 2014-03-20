@@ -158,7 +158,7 @@
 
         <tbody>
           <row>
-            <entry><emphasis role="bold">Exact algorithms</emphasis></entry>
+            <entry><emphasis role="bold">Exhaustive Search</emphasis></entry>
 
             <entry/>
 
@@ -172,7 +172,7 @@
           </row>
 
           <row>
-            <entry>  <link linkend="bruteForce">Brute force</link></entry>
+            <entry>  <link linkend="bruteForce">Brute Force</link></entry>
 
             <entry>0/5</entry>
 
@@ -186,7 +186,7 @@
           </row>
 
           <row>
-            <entry>  <link linkend="depthFirstSearch">Depth-first search</link></entry>
+            <entry>  <link linkend="depthFirstSearch">Depth-First Search</link></entry>
 
             <entry>0/5</entry>
 
@@ -326,7 +326,7 @@
           </row>
 
           <row>
-            <entry>    <link linkend="hillClimbing">Hill-Climbing</link></entry>
+            <entry>    <link linkend="hillClimbing">Hill Climbing</link></entry>
 
             <entry>5/5</entry>
 
