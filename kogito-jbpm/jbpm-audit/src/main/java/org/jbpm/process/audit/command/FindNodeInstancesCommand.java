@@ -30,7 +30,7 @@ import org.kie.internal.command.Context;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class FindNodeInstancesCommand extends AbstractHistoryLogCommand<List<NodeInstanceLog>> {
+public class FindNodeInstancesCommand extends AuditCommand<List<NodeInstanceLog>> {
 
     /** generated serial version UID */
     private static final long serialVersionUID = 5374910016873481604L;

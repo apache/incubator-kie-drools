@@ -24,11 +24,11 @@ import org.jbpm.process.audit.strategy.PersistenceStrategyType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.Context;
 
-public abstract class AbstractHistoryLogCommand<T> implements GenericCommand<T> {
+public abstract class AuditCommand<T> implements GenericCommand<T> {
 
     protected AuditLogService auditLogService;
     
-    public AbstractHistoryLogCommand() {
+    public AuditCommand() {
 	}
     
     protected void setLogEnvironment(Context cntxt) { 

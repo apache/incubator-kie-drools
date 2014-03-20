@@ -24,7 +24,7 @@ import org.kie.internal.command.Context;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class ClearHistoryLogsCommand extends AbstractHistoryLogCommand<Void> {
+public class ClearHistoryLogsCommand extends AuditCommand<Void> {
 
 	/** generated serial version UID */
     private static final long serialVersionUID = 9066179664390664420L;
