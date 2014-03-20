@@ -47,7 +47,7 @@ public class ClassLevel {
         } else if ( level.startsWith( "1.7" ) ) {
             return V1_7;
         } else {
-            return V1_6;
+            return V1_7;
         }
     }
 }
