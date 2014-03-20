@@ -137,7 +137,7 @@ public class ProcessInstanceInfo{
 
     public void updateLastReadDate() {
     	Date updateTo = new Date();
-    	if (lastReadDate == null || updateTo.after(lastReadDate)) {
+    	if (lastReadDate == null || lastReadDate.compareTo(updateTo) < 0) {
     		lastReadDate = updateTo;
     	} else {
     		lastReadDate = new Date(lastReadDate.getTime() + 1);
