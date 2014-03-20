@@ -28,8 +28,8 @@ package org.drools.compiler.commons.jci.compilers;
  */
 public class JavaCompilerSettings {
 
-    private String targetVersion = "1.4";
-    private String sourceVersion = "1.4";
+    private String targetVersion = "1.6";
+    private String sourceVersion = "1.6";
     private String sourceEncoding = "UTF-8";
     private boolean warnings = false;
     private boolean deprecations = false;
