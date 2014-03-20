@@ -1569,7 +1569,7 @@ public interface Standstill {
       <para>For example, set it to <literal>debug</literal> logging, to see when the phases end and how fast steps are
       taken:</para>
 
-      <programlisting>INFO  Solving started: time spent (3), score (-1), new best score (uninitialized/0), random (JDK with seed 0).
+      <programlisting>INFO  Solving started: time spent (3), score (null), new best score (uninitialized/0), random (JDK with seed 0).
 DEBUG     CH step (0), time spent (5), score (0), selected move count (1), picked move (col2@null =&gt; row0).
 DEBUG     CH step (1), time spent (7), score (0), selected move count (3), picked move (col1@null =&gt; row2).
 DEBUG     CH step (2), time spent (10), score (0), selected move count (4), picked move (col3@null =&gt; row3).

@@ -62,6 +62,8 @@ public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
         solverScope.getBestSolution().setScore(score);
         if (uninitializedVariableCount == 0) {
             solverScope.setStartingInitializedScore(score);
+        } else {
+            solverScope.setStartingInitializedScore(null);
         }
     }
 
@@ -123,8 +125,6 @@ public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
             if (!solverScope.isBestSolutionInitialized()) {
                 solverScope.setStartingInitializedScore(solution.getScore());
             }
-        } else {
-            solverScope.setStartingInitializedScore(null);
         }
         solverScope.setBestUninitializedVariableCount(uninitializedVariableCount);
         solverScope.setBestSolution(solution);
