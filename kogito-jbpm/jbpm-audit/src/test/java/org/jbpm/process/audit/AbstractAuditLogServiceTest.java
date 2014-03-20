@@ -38,6 +38,7 @@ import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.cdi.KSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
@@ -67,7 +68,28 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractAuditLogServiceTest.class);
+   
+    public static KnowledgeBase createKnowledgeBase() {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(new ClassPathResource("ruleflow.rf"), ResourceType.DRF);
+        kbuilder.add(new ClassPathResource("ruleflow2.rf"), ResourceType.DRF);
+        kbuilder.add(new ClassPathResource("ruleflow3.rf"), ResourceType.DRF);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        return kbase;
+    }
     
+    public static StatefulKnowledgeSession createKieSession(KieBase kbase, Environment env) { 
+        // create a new session
+        Properties properties = new Properties();
+        properties.put("drools.processInstanceManagerFactory", "org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory");
+        properties.put("drools.processSignalManagerFactory", "org.jbpm.persistence.processinstance.JPASignalManagerFactory");
+        KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
+        StatefulKnowledgeSession session = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, config, env);
+       
+        return session;
+    }
+
     public static void runTestLogger1(KieSession session, AuditLogService auditLogService) throws Exception {
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 

@@ -1,5 +1,6 @@
 package org.jbpm.process.audit.jms;
 
+import static org.jbpm.process.audit.AbstractAuditLogServiceTest.*;
 import static org.jbpm.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.*;
 
@@ -271,23 +272,9 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
         assertTrue(processInstances.isEmpty());
     }
     
-    private KnowledgeBase createKnowledgeBase() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ClassPathResource("ruleflow.rf"), ResourceType.DRF);
-        kbuilder.add(new ClassPathResource("ruleflow2.rf"), ResourceType.DRF);
-        kbuilder.add(new ClassPathResource("ruleflow3.rf"), ResourceType.DRF);
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        return kbase;
-    }
-    
     public StatefulKnowledgeSession createSession(KnowledgeBase kbase, Environment env) {
         
-        Properties properties = new Properties();
-        properties.put("drools.processInstanceManagerFactory", "org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory");
-        properties.put("drools.processSignalManagerFactory", "org.jbpm.persistence.processinstance.JPASignalManagerFactory");
-        KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
-        StatefulKnowledgeSession session = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, config, env);
+        StatefulKnowledgeSession session = createKieSession(kbase, env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
         return session;
     }

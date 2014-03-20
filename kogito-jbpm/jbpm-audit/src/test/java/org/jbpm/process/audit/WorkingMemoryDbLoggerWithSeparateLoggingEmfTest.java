@@ -16,6 +16,7 @@
 
 package org.jbpm.process.audit;
 
+import static org.jbpm.process.audit.AbstractAuditLogServiceTest.*;
 import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
 
 import java.util.Properties;
@@ -69,18 +70,11 @@ public class WorkingMemoryDbLoggerWithSeparateLoggingEmfTest extends AbstractWor
             RuleBase ruleBase = createKnowledgeBase();
             KieBase kbase = new KnowledgeBaseImpl(ruleBase);
             
-            Properties properties = new Properties();
-            properties.put("drools.processInstanceManagerFactory", "org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory");
-            properties.put("drools.processSignalManagerFactory", "org.jbpm.persistence.processinstance.JPASignalManagerFactory");
-
-            KieSessionConfiguration conf = (KieSessionConfiguration) new SessionConfiguration(properties);
             Environment env = createEnvironment(context);
-            ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, conf, env);
+            ksession = createKieSession(kbase, env);
             
             ksession.addEventListener(new JPAWorkingMemoryDbLogger(emf));
             ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
-            
-
         }
         return ksession.startProcess(processName);
     }

@@ -72,16 +72,7 @@ public class AuditLogServiceTest extends AbstractAuditLogServiceTest {
     private KieSession session;
     private AuditLogService auditLogService; 
 
-    private KnowledgeBase createKnowledgeBase() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ClassPathResource("ruleflow.rf"), ResourceType.DRF);
-        kbuilder.add(new ClassPathResource("ruleflow2.rf"), ResourceType.DRF);
-        kbuilder.add(new ClassPathResource("ruleflow3.rf"), ResourceType.DRF);
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        return kbase;
-    }
-    
+
     @Before
     public void setUp() throws Exception {
         context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
@@ -90,14 +81,13 @@ public class AuditLogServiceTest extends AbstractAuditLogServiceTest {
         KnowledgeBase kbase = createKnowledgeBase();
         // create a new session
         Environment env = createEnvironment(context);
-        Properties properties = new Properties();
-        properties.put("drools.processInstanceManagerFactory", "org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory");
-        properties.put("drools.processSignalManagerFactory", "org.jbpm.persistence.processinstance.JPASignalManagerFactory");
-        KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
-        session = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, config, env);
+        session = createKieSession(kbase, env);
+       
+        // working memory logger
         AbstractAuditLogger dblogger = AuditLoggerFactory.newInstance(Type.JPA, session, null);
         assertNotNull(dblogger);
         assertTrue(dblogger instanceof JPAWorkingMemoryDbLogger);
+        
         auditLogService = new JPAAuditLogService(env);
     }
 
