@@ -152,11 +152,13 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
 
         ScoreDirector scoreDirector = phaseScope.getScoreDirector();
         Score score = scoreDirector.calculateScore();
-        ScoreBounder scoreBounder = decider.getScoreBounder();
-        phaseScope.setBestPessimisticBound(scoreBounder.calculatePessimisticBound(
-                scoreDirector, score, startNode.getUninitializedVariableCount()));
-        startNode.setOptimisticBound(scoreBounder.calculateOptimisticBound(
-                scoreDirector, score, startNode.getUninitializedVariableCount()));
+        if (decider.isScoreBounderEnabled()) {
+            ScoreBounder scoreBounder = decider.getScoreBounder();
+            phaseScope.setBestPessimisticBound(scoreBounder.calculatePessimisticBound(
+                    scoreDirector, score, startNode.getUninitializedVariableCount()));
+            startNode.setOptimisticBound(scoreBounder.calculateOptimisticBound(
+                    scoreDirector, score, startNode.getUninitializedVariableCount()));
+        }
 
         phaseScope.getExpandableNodeQueue().add(startNode);
         phaseScope.getLastCompletedStepScope().setExpandingNode(startNode);

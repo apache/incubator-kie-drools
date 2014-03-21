@@ -40,17 +40,20 @@ public class ExhaustiveSearchDecider {
     protected final Termination termination;
     protected final ManualEntityMimicRecorder manualEntityMimicRecorder;
     protected final MoveSelector moveSelector;
+    protected final boolean scoreBounderEnabled;
     protected final ScoreBounder scoreBounder;
 
     protected boolean assertMoveScoreFromScratch = false;
     protected boolean assertExpectedUndoMoveScore = false;
 
     public ExhaustiveSearchDecider(BestSolutionRecaller bestSolutionRecaller, Termination termination,
-            ManualEntityMimicRecorder manualEntityMimicRecorder, MoveSelector moveSelector, ScoreBounder scoreBounder) {
+            ManualEntityMimicRecorder manualEntityMimicRecorder, MoveSelector moveSelector,
+            boolean scoreBounderEnabled, ScoreBounder scoreBounder) {
         this.bestSolutionRecaller = bestSolutionRecaller;
         this.termination = termination;
         this.manualEntityMimicRecorder = manualEntityMimicRecorder;
         this.moveSelector = moveSelector;
+        this.scoreBounderEnabled = scoreBounderEnabled;
         this.scoreBounder = scoreBounder;
     }
 
@@ -60,6 +63,10 @@ public class ExhaustiveSearchDecider {
 
     public MoveSelector getMoveSelector() {
         return moveSelector;
+    }
+
+    public boolean isScoreBounderEnabled() {
+        return scoreBounderEnabled;
     }
 
     public ScoreBounder getScoreBounder() {
@@ -141,26 +148,39 @@ public class ExhaustiveSearchDecider {
 
     private void processMove(ExhaustiveSearchStepScope stepScope, ExhaustiveSearchNode moveNode) {
         ExhaustiveSearchSolverPhaseScope phaseScope = stepScope.getPhaseScope();
-        Score score = phaseScope.calculateScore();
-        if (assertMoveScoreFromScratch) {
-            phaseScope.assertWorkingScoreFromScratch(score, moveNode.getMove());
-        }
-        moveNode.setScore(score);
         int uninitializedVariableCount = moveNode.getUninitializedVariableCount();
-        if (uninitializedVariableCount == 0) {
-            // There is no point in bounding a fully initialized score
-            phaseScope.registerPessimisticBound(score);
-            bestSolutionRecaller.processWorkingSolutionDuringMove(uninitializedVariableCount, score, stepScope);
-        } else {
-            Score optimisticBound = scoreBounder.calculateOptimisticBound(phaseScope.getScoreDirector(), score,
-                    uninitializedVariableCount);
-            moveNode.setOptimisticBound(optimisticBound);
-            if (optimisticBound.compareTo(phaseScope.getBestPessimisticBound()) > 0) {
-                // It's still worth investigating this node further (no need to prune it)
+        if (!scoreBounderEnabled) {
+            if (uninitializedVariableCount == 0) {
+                Score score = phaseScope.calculateScore();
+                moveNode.setScore(score);
+                if (assertMoveScoreFromScratch) {
+                    phaseScope.assertWorkingScoreFromScratch(score, moveNode.getMove());
+                }
+                bestSolutionRecaller.processWorkingSolutionDuringMove(uninitializedVariableCount, score, stepScope);
+            } else {
                 phaseScope.getExpandableNodeQueue().add(moveNode);
-                Score pessimisticBound = scoreBounder.calculatePessimisticBound(phaseScope.getScoreDirector(), score,
-                        uninitializedVariableCount);
-                phaseScope.registerPessimisticBound(pessimisticBound);
+            }
+        } else {
+            Score score = phaseScope.calculateScore();
+            moveNode.setScore(score);
+            if (assertMoveScoreFromScratch) {
+                phaseScope.assertWorkingScoreFromScratch(score, moveNode.getMove());
+            }
+            if (uninitializedVariableCount == 0) {
+                // There is no point in bounding a fully initialized score
+                phaseScope.registerPessimisticBound(score);
+                bestSolutionRecaller.processWorkingSolutionDuringMove(uninitializedVariableCount, score, stepScope);
+            } else {
+                Score optimisticBound = scoreBounder.calculateOptimisticBound(
+                        phaseScope.getScoreDirector(), score, uninitializedVariableCount);
+                moveNode.setOptimisticBound(optimisticBound);
+                if (optimisticBound.compareTo(phaseScope.getBestPessimisticBound()) > 0) {
+                    // It's still worth investigating this node further (no need to prune it)
+                    phaseScope.getExpandableNodeQueue().add(moveNode);
+                    Score pessimisticBound = scoreBounder.calculatePessimisticBound(
+                            phaseScope.getScoreDirector(), score, uninitializedVariableCount);
+                    phaseScope.registerPessimisticBound(pessimisticBound);
+                }
             }
         }
     }

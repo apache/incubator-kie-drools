@@ -93,7 +93,6 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-
     public ExhaustiveSearchSolverPhase buildSolverPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
@@ -111,7 +110,8 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
         EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(phaseConfigPolicy,
                 SelectionCacheType.PHASE, SelectionOrder.ORIGINAL);
         phase.setEntitySelector(entitySelector);
-        phase.setDecider(buildDecider(phaseConfigPolicy, entitySelector, bestSolutionRecaller, phase.getTermination()));
+        phase.setDecider(buildDecider(phaseConfigPolicy, entitySelector, bestSolutionRecaller, phase.getTermination(),
+                exhaustiveSearchType_.isScoreBounderEnabled()));
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             phase.setAssertWorkingSolutionScoreFromScratch(true);
@@ -160,7 +160,8 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
 
     private ExhaustiveSearchDecider buildDecider(HeuristicConfigPolicy configPolicy,
             EntitySelector sourceEntitySelector,
-            BestSolutionRecaller bestSolutionRecaller, Termination termination) {
+            BestSolutionRecaller bestSolutionRecaller, Termination termination,
+            boolean scoreBounderEnabled) {
         ManualEntityMimicRecorder manualEntityMimicRecorder = new ManualEntityMimicRecorder(sourceEntitySelector);
         String mimicSelectorId = sourceEntitySelector.getEntityDescriptor().getEntityClass().getName(); // TODO mimicSelectorId must be a field
         configPolicy.addEntityMimicRecorder(mimicSelectorId, manualEntityMimicRecorder);
@@ -168,9 +169,10 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
                 sourceEntitySelector, mimicSelectorId);
         MoveSelector moveSelector = moveSelectorConfig_.buildMoveSelector(configPolicy,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
-        ScoreBounder scoreBounder = new TrendBasedScoreBounder(configPolicy.getScoreDirectorFactory()); // TODO make flexible
+        ScoreBounder scoreBounder = scoreBounderEnabled
+                ? new TrendBasedScoreBounder(configPolicy.getScoreDirectorFactory()) : null;
         ExhaustiveSearchDecider decider = new ExhaustiveSearchDecider(bestSolutionRecaller, termination,
-                manualEntityMimicRecorder, moveSelector, scoreBounder);
+                manualEntityMimicRecorder, moveSelector, scoreBounderEnabled, scoreBounder);
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             decider.setAssertMoveScoreFromScratch(true);
@@ -284,6 +286,21 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
                             + this + ") is not implemented.");
             }
         }
+
+        public boolean isScoreBounderEnabled() {
+            switch (this) {
+                case BRUTE_FORCE:
+                    return false;
+                case BREADTH_FIRST_BRANCH_AND_BOUND:
+                case DEPTH_FIRST_BRANCH_AND_BOUND:
+                case OPTIMISTIC_BOUND_FIRST_BRANCH_AND_BOUND:
+                    return true;
+                default:
+                    throw new IllegalStateException("The exhaustiveSearchType ("
+                            + this + ") is not implemented.");
+            }
+        }
+
     }
 
 }
