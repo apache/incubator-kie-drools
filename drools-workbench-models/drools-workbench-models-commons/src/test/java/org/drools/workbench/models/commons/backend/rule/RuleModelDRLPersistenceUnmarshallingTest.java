@@ -4088,6 +4088,40 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       afv.getNature() );
     }
 
+    @Test
+    @Ignore()
+    public void testName() throws Exception {
+        String drl = "package org.mortgages;\n" +
+                "rule \"test\"\n" +
+                " dialect \"mvel\"\n" +
+                " when\n" +
+                "  Calculator( s : summer)\n" +
+                "  Applicant( $age : age)\n" +
+                " then\n" +
+                "  s.sum( $age, $age );\n" +
+                "end";
+
+//        addModelField( "org.test.Person",
+//                "field1",
+//                "java.lang.Integer",
+//                DataType.TYPE_NUMERIC_INTEGER );
+//
+//        when( dmo.getPackageName() ).thenReturn( "org.test");
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                new ArrayList<String>(),
+                dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 2,
+                m.lhs.length );
+
+        assertEquals( 1,
+                m.rhs.length );
+
+    }
+
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
         final String cleanExpected = expected.replaceAll( "\\s+",
