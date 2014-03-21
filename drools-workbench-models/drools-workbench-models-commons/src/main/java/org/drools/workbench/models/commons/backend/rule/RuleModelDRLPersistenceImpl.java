@@ -2405,10 +2405,13 @@ public class RuleModelDRLPersistenceImpl
                                        String dslLine ) {
         DSLSentence dslSentence = new DSLSentence();
         for ( String dslPattern : dslPatterns ) {
+            // Dollar breaks the matcher, need to escape them.
+            dslPattern=dslPattern.replace("$","\\$");
             //A DSL Pattern can contain Regex itself, for example "When the ages is less than {num:1?[0-9]?[0-9]}"
             String regex = dslPattern.replaceAll( "\\{.*?\\}", "(.*)" );
             Matcher matcher = Pattern.compile( regex ).matcher( dslLine );
             if ( matcher.matches() ) {
+                dslPattern=dslPattern.replace("\\$","$");
                 dslSentence.setDefinition( dslPattern );
                 for ( int i = 0; i < matcher.groupCount(); i++ ) {
                     dslSentence.getValues().get( i ).setValue( matcher.group( i + 1 ) );
