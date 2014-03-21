@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import java.util.Collections;
 
 import org.junit.Test;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.config.bruteforce.BruteForceSolverPhaseConfig;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchSolverPhaseConfig;
 import org.optaplanner.core.config.phase.SolverPhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -29,7 +28,7 @@ import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.nqueens.persistence.NQueensDao;
 
-public class NQueensBruteForceTest extends SolverPerformanceTest {
+public class NQueensBranchAndBoundTest extends SolverPerformanceTest {
 
     @Override
     protected String createSolverConfigResource() {
@@ -45,7 +44,8 @@ public class NQueensBruteForceTest extends SolverPerformanceTest {
     protected SolverFactory buildSolverFactory(String bestScoreLimitString, EnvironmentMode environmentMode) {
         SolverFactory solverFactory = super.buildSolverFactory(bestScoreLimitString, environmentMode);
         ExhaustiveSearchSolverPhaseConfig phaseConfig = new ExhaustiveSearchSolverPhaseConfig();
-        phaseConfig.setExhaustiveSearchType(ExhaustiveSearchSolverPhaseConfig.ExhaustiveSearchType.BRUTE_FORCE);
+        phaseConfig.setExhaustiveSearchType(
+                ExhaustiveSearchSolverPhaseConfig.ExhaustiveSearchType.DEPTH_FIRST_BRANCH_AND_BOUND);
         solverFactory.getSolverConfig().setSolverPhaseConfigList(
                 Collections.<SolverPhaseConfig>singletonList(phaseConfig)
         );
@@ -59,6 +59,11 @@ public class NQueensBruteForceTest extends SolverPerformanceTest {
     @Test(timeout = 600000)
     public void solveModel_4queens() {
         runSpeedTest(new File("data/nqueens/unsolved/4queens.xml"), "0", EnvironmentMode.REPRODUCIBLE);
+    }
+
+    @Test(timeout = 600000)
+    public void solveModel_8queens() {
+        runSpeedTest(new File("data/nqueens/unsolved/8queens.xml"), "0", EnvironmentMode.REPRODUCIBLE);
     }
 
 }
