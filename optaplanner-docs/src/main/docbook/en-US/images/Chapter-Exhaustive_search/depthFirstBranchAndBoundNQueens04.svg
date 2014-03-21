@@ -14,9 +14,9 @@
    inkscape:version="0.48.3.1 r9886"
    width="1200"
    height="900"
-   sodipodi:docname="backtrackingDepthFirstSearchNQueens04.svg"
+   sodipodi:docname="depthFirstBranchAndBoundNQueens04.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="backtrackingDepthFirstSearchNQueens04.png"
+   inkscape:export-filename="depthFirstBranchAndBoundNQueens04.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
    version="1.0">

@@ -554,7 +554,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
   </section>
 
   <section xml:id="stepCountingHillClimbing">
-    <title>Step counting hill climbing</title>
+    <title>Step Counting Hill Climbing</title>
 
     <section>
       <title>Algorithm description</title>
@@ -589,41 +589,6 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
       linkend="lateAcceptance">the Late Acceptance section</link>.</para>
 
       <para>Step Counting Hill Climbing should use a low <literal>acceptedCountLimit</literal>.</para>
-    </section>
-  </section>
-
-  <section xml:id="lateSimulatedAnnealing">
-    <title>Late Simulated Annealing (experimental)</title>
-
-    <section>
-      <title>Algorithm description</title>
-
-      <para>Late Simulated Annealing combines the best characteristics of Simulated Annealing and Late Acceptance. A
-      move is accepted if does not decrease the score, or if it leads to a score that is at least the late score, or -
-      failing those criteria - if it passes a random check. The chance that a decreasing move passes the random check
-      decreases relative to the size of the score decrement and the late score.</para>
-
-      <warning>
-        <para>Currently, the Late Simulated Annealing prototype is consistently inferior to Late Acceptance.</para>
-      </warning>
-    </section>
-
-    <section>
-      <title>Configuration</title>
-
-      <para>Late Simulated Annealing accepts any move that has a score which is higher than the best score of a number
-      of steps ago and has a chance to accept any move below that score too. That number of steps is the
-      <literal>lateSimulatedAnnealingSize</literal>.</para>
-
-      <programlisting language="xml">  &lt;localSearch&gt;
-    ...
-    &lt;acceptor&gt;
-      &lt;lateSimulatedAnnealingSize&gt;100&lt;/lateSimulatedAnnealingSize&gt;
-    &lt;/acceptor&gt;
-    &lt;forager&gt;
-      &lt;acceptedCountLimit&gt;1000&lt;/acceptedCountLimit&gt;
-    &lt;/forager&gt;
-  &lt;/localSearch&gt;</programlisting>
     </section>
   </section>
 

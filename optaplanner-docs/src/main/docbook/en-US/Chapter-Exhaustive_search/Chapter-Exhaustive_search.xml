@@ -24,23 +24,24 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Exhaustive_search/bruteForceNQueens04.png"></imagedata>
+          <imagedata fileref="images/Chapter-Exhaustive_search/bruteForceNQueens04.png"/>
         </imageobject>
       </mediaobject>
 
-      <para>Notice that it creates a search tree that explodes as the problem size increases. <emphasis
-      role="bold">Brute Force is mostly unusable for a real-world problem due to time limitations</emphasis>,
-      as proven by these scalability graphs from the <link linkend="benchmarkingAndTweaking">Benchmarker</link>:</para>
+      <para>Notice that it creates a search tree that explodes exponentially as the problem size increases. <emphasis
+      role="bold">Brute Force is mostly unusable for a real-world problem due to time limitations</emphasis>, as proven
+      by these scalability graphs from the <link linkend="benchmarkingAndTweaking">Benchmarker</link>, Brute Force hits
+      the wall:</para>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Exhaustive_search/bruteForceScalabilityNQueens.png"></imagedata>
+          <imagedata fileref="images/Chapter-Exhaustive_search/bruteForceScalabilityNQueens.png"/>
         </imageobject>
       </mediaobject>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Exhaustive_search/bruteForceScalabilityCloudBalance.png"></imagedata>
+          <imagedata fileref="images/Chapter-Exhaustive_search/bruteForceScalabilityCloudBalance.png"/>
         </imageobject>
       </mediaobject>
     </section>
@@ -48,45 +49,105 @@
     <section>
       <title>Configuration</title>
 
-      <para>Using the brute force algorithm is easy:</para>
+      <para>Using the Brute Force algorithm is easy:</para>
 
       <programlisting language="xml">&lt;solver&gt;
   ...
-  &lt;bruteForce&gt;
-  &lt;/bruteForce&gt;
+  &lt;exhaustiveSearch&gt;
+    &lt;exhaustiveSearchType&gt;BRUTE_FORCE&lt;/exhaustiveSearchType&gt;
+  &lt;/exhaustiveSearch&gt;
 &lt;/solver&gt;</programlisting>
     </section>
   </section>
 
-  <section xml:id="depthFirstSearch">
-    <title>Depth-first search</title>
+  <section xml:id="branchAndBound">
+    <title>Branch And Bound</title>
 
     <section>
       <title>Algorithm description</title>
 
-      <para>Depth-First Search is an improvement over Brute Force, as it regularly prunes away an entire subset of
-      solutions which cannot have a better solution than the best solution already found at that point. for example: at
-      index 15, it can prune away all unvisited solutions with queen A on row 0, because none will be better than the
-      solution of index 14 with a score of <literal>-1</literal>.</para>
+      <para>Branch And Bound also explores nodes in an exponential search tree, but it investigates more promising nodes
+      first and prunes away worthless nodes.</para>
+
+      <para>For each node, Branch And Bound calculates the optimistic bound: the best possible score to which that node
+      can lead to. If the optimistic bound of a node is lower or equal to the global pessimistic bound, then it prunes
+      away that node (including the entire branch of all its subnodes).</para>
+
+      <note>
+        <para>Academic papers use the term lower bound instead of optimistic bound (and the term upper bound instead of
+        pessimistic bound), because they minimize the score.</para>
+
+        <para>OptaPlanner maximizes the score (because it supports combining negative and positive constraints).
+        Therefore, for clarity, OptaPlanner uses different terms, as it would be confusing to use the term lower bound
+        for a bound which is always higher.</para>
+      </note>
+
+      <para>For example: at index 15, it can prune away all unvisited solutions with queen A on row 0, because none will
+      be better than the solution of index 14 with a score of <literal>-1</literal>.</para>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Exhaustive_search/backtrackingDepthFirstSearchNQueens04.png"></imagedata>
+          <imagedata fileref="images/Chapter-Exhaustive_search/depthFirstBranchAndBoundNQueens04.png"/>
         </imageobject>
       </mediaobject>
 
-      <para>Notice that it (much like Brute Force) creates a search tree that explodes as the problem size increases.
-      <emphasis role="bold">Depth-First Search is mostly unusable for a real-world NP-complete problem due to time
-      limitations.</emphasis></para>
-
-      <para>Technically, this Backtracking Depth-First Search with pruning is a form of <emphasis>Branch And
-      Bound</emphasis>, although Branch and Bound is often more flexible in its pruning.</para>
+      <para>Notice that Branch And Bound (much like Brute Force) creates a search tree that explodes exponentially as
+      the problem size increases. So it hits the same scalability wall, only a little bit later.</para>
     </section>
 
     <section>
       <title>Configuration</title>
 
-      <para>Depth-first search is not yet implemented. Patches welcome.</para>
+      <para>To configure Branch And Bound:</para>
+
+      <programlisting language="xml">&lt;solver&gt;
+  ...
+  &lt;exhaustiveSearch&gt;
+    &lt;exhaustiveSearchType&gt;BRANCH_AND_BOUND&lt;/exhaustiveSearchType&gt;
+  &lt;/exhaustiveSearch&gt;
+&lt;/solver&gt;</programlisting>
+
+      <important>
+        <para>For the pruning to work with the default <literal>ScoreBounder</literal>, the <link
+        linkend="initializingScoreTrend">InitializingScoreTrend</link> should be set. Especially an <link
+        linkend="initializingScoreTrend">InitializingScoreTrend</link> of <literal>ONLY_DOWN</literal> (or at least has
+        <literal>ONLY_DOWN</literal> in the leading score levels) prunes a lot.</para>
+      </important>
+
+      <para>Optionally, specify the <literal>nodeExplorationType</literal>:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><literal>DEPTH_FIRST</literal> (default): Explore deeper nodes first (and secondarily by a better
+          optimistic bound or score first). Deeper nodes (especially leaf nodes) often improve the pessimistic bound. A
+          better pessimistic bound allows pruning more nodes to reduce the search space.</para>
+
+          <programlisting language="xml">  &lt;exhaustiveSearch&gt;
+    &lt;exhaustiveSearchType&gt;BRANCH_AND_BOUND&lt;/exhaustiveSearchType&gt;
+    &lt;nodeExplorationType&gt;DEPTH_FIRST&lt;/nodeExplorationType&gt;
+  &lt;/exhaustiveSearch&gt;</programlisting>
+        </listitem>
+
+        <listitem>
+          <para><literal>BREADTH_FIRST</literal> (not recommended): Explore nodes layer by layer (and secondarily by a
+          better optimistic bound or score first). Scales terribly in memory (and usually in performance too).</para>
+
+          <programlisting language="xml">  &lt;exhaustiveSearch&gt;
+    &lt;exhaustiveSearchType&gt;BRANCH_AND_BOUND&lt;/exhaustiveSearchType&gt;
+    &lt;nodeExplorationType&gt;BREADTH_FIRST&lt;/nodeExplorationType&gt;
+  &lt;/exhaustiveSearch&gt;</programlisting>
+        </listitem>
+
+        <listitem>
+          <para><literal>OPTIMISTIC_BOUND_FIRST</literal>: Explore nodes with a better optimistic bound or score first
+          (and secondarily deeper nodes first).</para>
+
+          <programlisting language="xml">  &lt;exhaustiveSearch&gt;
+    &lt;exhaustiveSearchType&gt;BRANCH_AND_BOUND&lt;/exhaustiveSearchType&gt;
+    &lt;nodeExplorationType&gt;OPTIMISTIC_BOUND_FIRST&lt;/nodeExplorationType&gt;
+  &lt;/exhaustiveSearch&gt;</programlisting>
+        </listitem>
+      </itemizedlist>
     </section>
   </section>
 </chapter>

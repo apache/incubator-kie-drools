@@ -23,10 +23,10 @@
     <section>
       <title>Algorithm description</title>
 
-      <para>The <emphasis>First Fit</emphasis> algorithm cycles through all the planning entities (in default order),
-      initializing 1 planning entity at a time. It assigns the planning entity to the best available planning value,
-      taking the already initialized planning entities into account. It terminates when all planning entities have been
-      initialized. It never changes a planning entity after it has been assigned.</para>
+      <para>The First Fit algorithm cycles through all the planning entities (in default order), initializing 1 planning
+      entity at a time. It assigns the planning entity to the best available planning value, taking the already
+      initialized planning entities into account. It terminates when all planning entities have been initialized. It
+      never changes a planning entity after it has been assigned.</para>
 
       <mediaobject>
         <imageobject>
@@ -353,7 +353,7 @@
     <section xml:id="constructionHeuristicsPickEarlyType">
       <title>Pick early type</title>
 
-      <para>There are 2 pick early types for Construction Heuristics: </para>
+      <para>There are 2 pick early types for Construction Heuristics:</para>
 
       <itemizedlist>
         <listitem>

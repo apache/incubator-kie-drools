@@ -186,7 +186,7 @@
           </row>
 
           <row>
-            <entry>  <link linkend="depthFirstSearch">Depth-First Search</link></entry>
+            <entry>  <link linkend="branchAndBound">Branch And Bound</link></entry>
 
             <entry>0/5</entry>
 
@@ -194,7 +194,7 @@
 
             <entry>4/5</entry>
 
-            <entry>1/5</entry>
+            <entry>2/5</entry>
 
             <entry>No</entry>
           </row>
