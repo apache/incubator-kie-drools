@@ -3198,6 +3198,34 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       dslComplexVariableValue.getValue() );
     }
 
+
+    @Test
+    public void testDSL() {
+        String drl = "package org.mortgages;\n" +
+                "rule \"testdsl\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    There is a test rated applicant older than 111 years\n" +
+                "  then\n" +
+                "end";
+
+        String dslDefinition = "There is a {rating} rated applicant older than {age} years";
+        String dslFile = "[when]" + dslDefinition + "= Applicant( creditRating == \"{rating}\", age > {age} )";
+
+        when( dmo.getPackageName() ).thenReturn( "org.mortgages");
+
+        final RuleModel model = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL(drl,
+                new ArrayList<String>(),
+                dmo,
+                new String[]{dslFile});
+
+        assertEquals(1, model.lhs.length);
+        DSLSentence dslSentence = (DSLSentence)model.lhs[0];
+        assertEquals("test", dslSentence.getValues().get(0).getValue());
+        assertEquals("111", dslSentence.getValues().get(1).getValue());
+
+    }
+
     @Test
     public void testDSLExpansionLHS() {
         String drl = "rule \"rule1\"\n"
@@ -3911,6 +3939,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( DataType.TYPE_NUMERIC_INTEGER,
                       afv.getType() );
     }
+
 
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {

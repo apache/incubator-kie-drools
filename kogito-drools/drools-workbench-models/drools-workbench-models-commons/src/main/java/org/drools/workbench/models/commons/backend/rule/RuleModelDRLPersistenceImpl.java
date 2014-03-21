@@ -2406,12 +2406,12 @@ public class RuleModelDRLPersistenceImpl
         DSLSentence dslSentence = new DSLSentence();
         for ( String dslPattern : dslPatterns ) {
             //A DSL Pattern can contain Regex itself, for example "When the ages is less than {num:1?[0-9]?[0-9]}"
-            String regex = dslPattern.replaceAll( "\\{.*\\}", "(.*)" );
-            Matcher m = Pattern.compile( regex ).matcher( dslLine );
-            if ( m.matches() ) {
+            String regex = dslPattern.replaceAll( "\\{.*?\\}", "(.*)" );
+            Matcher matcher = Pattern.compile( regex ).matcher( dslLine );
+            if ( matcher.matches() ) {
                 dslSentence.setDefinition( dslPattern );
-                for ( int i = 0; i < m.groupCount(); i++ ) {
-                    dslSentence.getValues().get( i ).setValue( m.group( i + 1 ) );
+                for ( int i = 0; i < matcher.groupCount(); i++ ) {
+                    dslSentence.getValues().get( i ).setValue( matcher.group( i + 1 ) );
                 }
                 return dslSentence;
             }
