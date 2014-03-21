@@ -40,6 +40,7 @@ public class CDIHelper {
     }
 
     private static void wireListnersAndWIHs(BeanCreator beanCreator, KieSessionModel model, KieSession kSession) {
+        BeanCreator fallbackBeanCreator = new ReflectionBeanCreator();
         ClassLoader cl = ((InternalRuleBase)((InternalKnowledgeBase)kSession.getKieBase()).getRuleBase()).getRootClassLoader();
 
         for (ListenerModel listenerModel : model.getListenerModels()) {
@@ -47,7 +48,12 @@ public class CDIHelper {
             try {
                 listener = beanCreator.createBean(cl, listenerModel.getType(), listenerModel.getQualifierModel());
             } catch (Exception e) {
-                throw new RuntimeException("Cannot instance listener " + listenerModel.getType(), e);
+                try {
+                    listener = fallbackBeanCreator.createBean(cl, listenerModel.getType(), listenerModel.getQualifierModel());
+                } catch (Exception ex) {
+                    throw new RuntimeException("Cannot instance listener " + listenerModel.getType(), e);
+                }
+
             }
             switch(listenerModel.getKind()) {
                 case AGENDA_EVENT_LISTENER:
@@ -66,7 +72,11 @@ public class CDIHelper {
             try {
                 wih = beanCreator.createBean(cl, wihModel.getType(), wihModel.getQualifierModel());
             } catch (Exception e) {
-                throw new RuntimeException("Cannot instance WorkItemHandler " + wihModel.getType(), e);
+                try {
+                    wih = fallbackBeanCreator.createBean(cl, wihModel.getType(), wihModel.getQualifierModel() );
+                } catch (Exception ex) {
+                    throw new RuntimeException("Cannot instance WorkItemHandler " + wihModel.getType(), e);
+                }
             }
             kSession.getWorkItemManager().registerWorkItemHandler(wihModel.getName(), wih );
         }
