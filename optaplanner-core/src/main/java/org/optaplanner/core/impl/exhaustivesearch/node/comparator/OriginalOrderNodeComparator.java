@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 /**
  * Investigate deeper nodes first, in order.
  */
-public class BruteForceNodeComparator implements Comparator<ExhaustiveSearchNode> {
+public class OriginalOrderNodeComparator implements Comparator<ExhaustiveSearchNode> {
 
     @Override
     public int compare(ExhaustiveSearchNode a, ExhaustiveSearchNode b) {

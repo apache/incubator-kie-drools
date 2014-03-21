@@ -30,6 +30,7 @@ public abstract class AbstractNodeComparatorTest {
         ExhaustiveSearchNode node = mock(ExhaustiveSearchNode.class);
         when(node.getDepth()).thenReturn(depth);
         when(node.getOptimisticBound()).thenReturn(SimpleScore.valueOf(optimisticBoundString));
+        when(node.getScore()).thenReturn(SimpleScore.valueOf(optimisticBoundString));
         when(node.getBreadth()).thenReturn(breadth);
         return node;
     }

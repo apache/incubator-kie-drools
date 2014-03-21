@@ -22,7 +22,7 @@ public class OptimisticBoundFirstNodeComparatorTest extends AbstractNodeComparat
 
     @Test
     public void compare() {
-        OptimisticBoundFirstNodeComparator comparator = new OptimisticBoundFirstNodeComparator();
+        OptimisticBoundFirstNodeComparator comparator = new OptimisticBoundFirstNodeComparator(true);
         assertScoreCompareToOrder(comparator,
                 buildNode(1, -110, 5),
                 buildNode(1, -110, 7),

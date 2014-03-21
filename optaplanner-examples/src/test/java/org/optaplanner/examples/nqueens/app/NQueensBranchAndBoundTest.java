@@ -45,7 +45,7 @@ public class NQueensBranchAndBoundTest extends SolverPerformanceTest {
         SolverFactory solverFactory = super.buildSolverFactory(bestScoreLimitString, environmentMode);
         ExhaustiveSearchSolverPhaseConfig phaseConfig = new ExhaustiveSearchSolverPhaseConfig();
         phaseConfig.setExhaustiveSearchType(
-                ExhaustiveSearchSolverPhaseConfig.ExhaustiveSearchType.DEPTH_FIRST_BRANCH_AND_BOUND);
+                ExhaustiveSearchSolverPhaseConfig.ExhaustiveSearchType.BRANCH_AND_BOUND);
         solverFactory.getSolverConfig().setSolverPhaseConfigList(
                 Collections.<SolverPhaseConfig>singletonList(phaseConfig)
         );

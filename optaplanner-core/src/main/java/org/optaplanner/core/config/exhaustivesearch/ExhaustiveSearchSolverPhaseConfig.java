@@ -42,7 +42,7 @@ import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 import org.optaplanner.core.impl.exhaustivesearch.node.bounder.TrendBasedScoreBounder;
 import org.optaplanner.core.impl.exhaustivesearch.node.bounder.ScoreBounder;
 import org.optaplanner.core.impl.exhaustivesearch.node.comparator.BreadthFirstNodeComparator;
-import org.optaplanner.core.impl.exhaustivesearch.node.comparator.BruteForceNodeComparator;
+import org.optaplanner.core.impl.exhaustivesearch.node.comparator.OriginalOrderNodeComparator;
 import org.optaplanner.core.impl.exhaustivesearch.node.comparator.DepthFirstNodeComparator;
 import org.optaplanner.core.impl.exhaustivesearch.node.comparator.OptimisticBoundFirstNodeComparator;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
@@ -59,6 +59,7 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
     // and also because the input config file should match the output config file
 
     protected ExhaustiveSearchType exhaustiveSearchType = null;
+    protected NodeExplorationType nodeExplorationType = null;
 
     @XStreamAlias("entitySelector")
     protected EntitySelectorConfig entitySelectorConfig = null;
@@ -71,6 +72,14 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
 
     public void setExhaustiveSearchType(ExhaustiveSearchType exhaustiveSearchType) {
         this.exhaustiveSearchType = exhaustiveSearchType;
+    }
+
+    public NodeExplorationType getNodeExplorationType() {
+        return nodeExplorationType;
+    }
+
+    public void setNodeExplorationType(NodeExplorationType nodeExplorationType) {
+        this.nodeExplorationType = nodeExplorationType;
     }
 
     public EntitySelectorConfig getEntitySelectorConfig() {
@@ -98,20 +107,24 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         phaseConfigPolicy.setInitializedChainedValueFilterEnabled(true);
         ExhaustiveSearchType exhaustiveSearchType_ = exhaustiveSearchType == null
-                ? ExhaustiveSearchType.DEPTH_FIRST_BRANCH_AND_BOUND : exhaustiveSearchType;
+                ? ExhaustiveSearchType.BRANCH_AND_BOUND : exhaustiveSearchType;
         phaseConfigPolicy.setSortEntitiesByDecreasingDifficultyEnabled(
                 exhaustiveSearchType_.isSortEntitiesByDecreasingDifficulty());
         phaseConfigPolicy.setSortValuesByIncreasingStrengthEnabled(
                 exhaustiveSearchType_.isSortValuesByIncreasingStrength());
         DefaultExhaustiveSearchSolverPhase phase = new DefaultExhaustiveSearchSolverPhase();
         configureSolverPhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
-        phase.setNodeComparator(exhaustiveSearchType_.buildNodeComparator());
+        boolean scoreBounderEnabled = exhaustiveSearchType_.isScoreBounderEnabled();
+        NodeExplorationType nodeExplorationType_ = nodeExplorationType != null ? nodeExplorationType
+                : (exhaustiveSearchType_ == ExhaustiveSearchType.BRUTE_FORCE
+                ? NodeExplorationType.ORIGINAL_ORDER : NodeExplorationType.DEPTH_FIRST);
+        phase.setNodeComparator(nodeExplorationType_.buildNodeComparator(scoreBounderEnabled));
         EntitySelectorConfig entitySelectorConfig_ = buildEntitySelectorConfig(phaseConfigPolicy);
         EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(phaseConfigPolicy,
                 SelectionCacheType.PHASE, SelectionOrder.ORIGINAL);
         phase.setEntitySelector(entitySelector);
         phase.setDecider(buildDecider(phaseConfigPolicy, entitySelector, bestSolutionRecaller, phase.getTermination(),
-                exhaustiveSearchType_.isScoreBounderEnabled()));
+                scoreBounderEnabled));
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             phase.setAssertWorkingSolutionScoreFromScratch(true);
@@ -225,6 +238,8 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
         super.inherit(inheritedConfig);
         exhaustiveSearchType = ConfigUtils.inheritOverwritableProperty(exhaustiveSearchType,
                 inheritedConfig.getExhaustiveSearchType());
+        nodeExplorationType = ConfigUtils.inheritOverwritableProperty(nodeExplorationType,
+                inheritedConfig.getNodeExplorationType());
         if (entitySelectorConfig == null) {
             entitySelectorConfig = inheritedConfig.getEntitySelectorConfig();
         } else if (inheritedConfig.getEntitySelectorConfig() != null) {
@@ -239,17 +254,13 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
 
     public static enum ExhaustiveSearchType {
         BRUTE_FORCE,
-        BREADTH_FIRST_BRANCH_AND_BOUND,
-        DEPTH_FIRST_BRANCH_AND_BOUND,
-        OPTIMISTIC_BOUND_FIRST_BRANCH_AND_BOUND;
+        BRANCH_AND_BOUND;
 
         public boolean isSortEntitiesByDecreasingDifficulty() {
             switch (this) {
                 case BRUTE_FORCE:
                     return false;
-                case BREADTH_FIRST_BRANCH_AND_BOUND:
-                case DEPTH_FIRST_BRANCH_AND_BOUND:
-                case OPTIMISTIC_BOUND_FIRST_BRANCH_AND_BOUND:
+                case BRANCH_AND_BOUND:
                     return true;
                 default:
                     throw new IllegalStateException("The exhaustiveSearchType ("
@@ -261,26 +272,8 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
             switch (this) {
                 case BRUTE_FORCE:
                     return false;
-                case BREADTH_FIRST_BRANCH_AND_BOUND:
-                case DEPTH_FIRST_BRANCH_AND_BOUND:
-                case OPTIMISTIC_BOUND_FIRST_BRANCH_AND_BOUND:
+                case BRANCH_AND_BOUND:
                     return true;
-                default:
-                    throw new IllegalStateException("The exhaustiveSearchType ("
-                            + this + ") is not implemented.");
-            }
-        }
-
-        public Comparator<ExhaustiveSearchNode> buildNodeComparator() {
-            switch (this) {
-                case BRUTE_FORCE:
-                    return new BruteForceNodeComparator();
-                case BREADTH_FIRST_BRANCH_AND_BOUND:
-                    return new BreadthFirstNodeComparator();
-                case DEPTH_FIRST_BRANCH_AND_BOUND:
-                    return new DepthFirstNodeComparator();
-                case OPTIMISTIC_BOUND_FIRST_BRANCH_AND_BOUND:
-                    return new OptimisticBoundFirstNodeComparator();
                 default:
                     throw new IllegalStateException("The exhaustiveSearchType ("
                             + this + ") is not implemented.");
@@ -291,12 +284,34 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
             switch (this) {
                 case BRUTE_FORCE:
                     return false;
-                case BREADTH_FIRST_BRANCH_AND_BOUND:
-                case DEPTH_FIRST_BRANCH_AND_BOUND:
-                case OPTIMISTIC_BOUND_FIRST_BRANCH_AND_BOUND:
+                case BRANCH_AND_BOUND:
                     return true;
                 default:
                     throw new IllegalStateException("The exhaustiveSearchType ("
+                            + this + ") is not implemented.");
+            }
+        }
+
+    }
+
+    public static enum NodeExplorationType {
+        ORIGINAL_ORDER,
+        DEPTH_FIRST,
+        BREADTH_FIRST,
+        OPTIMISTIC_BOUND_FIRST;
+
+        public Comparator<ExhaustiveSearchNode> buildNodeComparator(boolean scoreBounderEnabled) {
+            switch (this) {
+                case ORIGINAL_ORDER:
+                    return new OriginalOrderNodeComparator();
+                case DEPTH_FIRST:
+                    return new DepthFirstNodeComparator(scoreBounderEnabled);
+                case BREADTH_FIRST:
+                    return new BreadthFirstNodeComparator(scoreBounderEnabled);
+                case OPTIMISTIC_BOUND_FIRST:
+                    return new OptimisticBoundFirstNodeComparator(scoreBounderEnabled);
+                default:
+                    throw new IllegalStateException("The nodeExplorationType ("
                             + this + ") is not implemented.");
             }
         }

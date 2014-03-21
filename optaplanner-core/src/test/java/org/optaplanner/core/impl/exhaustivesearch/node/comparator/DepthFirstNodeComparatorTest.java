@@ -30,7 +30,7 @@ public class DepthFirstNodeComparatorTest extends AbstractNodeComparatorTest {
 
     @Test
     public void compare() {
-        DepthFirstNodeComparator comparator = new DepthFirstNodeComparator();
+        DepthFirstNodeComparator comparator = new DepthFirstNodeComparator(true);
         assertScoreCompareToOrder(comparator,
                 buildNode(1, -110, 5),
                 buildNode(1, -110, 7),

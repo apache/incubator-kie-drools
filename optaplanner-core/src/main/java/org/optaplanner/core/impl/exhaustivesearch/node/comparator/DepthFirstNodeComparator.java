@@ -21,9 +21,15 @@ import java.util.Comparator;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 
 /**
- * Investigate deeper nodes first, then better optimistic bound.
+ * Investigate deeper nodes first.
  */
 public class DepthFirstNodeComparator implements Comparator<ExhaustiveSearchNode> {
+
+    private final boolean scoreBounderEnabled;
+
+    public DepthFirstNodeComparator(boolean scoreBounderEnabled) {
+        this.scoreBounderEnabled = scoreBounderEnabled;
+    }
 
     @Override
     public int compare(ExhaustiveSearchNode a, ExhaustiveSearchNode b) {
@@ -35,19 +41,21 @@ public class DepthFirstNodeComparator implements Comparator<ExhaustiveSearchNode
         } else if (aDepth > bDepth) {
             return 1;
         }
-        // Investigate better optimistic bound first
-        int optimisticBoundComparison = a.getOptimisticBound().compareTo(b.getOptimisticBound());
-        if (optimisticBoundComparison < 0) {
-            return -1;
-        } else if (optimisticBoundComparison > 0) {
-            return 1;
-        }
-        // Investigate better score first
-        int scoreComparison = a.getScore().compareTo(b.getScore());
-        if (scoreComparison < 0) {
-            return -1;
-        } else if (scoreComparison > 0) {
-            return 1;
+        if (scoreBounderEnabled) {
+            // Investigate better optimistic bound first
+            int optimisticBoundComparison = a.getOptimisticBound().compareTo(b.getOptimisticBound());
+            if (optimisticBoundComparison < 0) {
+                return -1;
+            } else if (optimisticBoundComparison > 0) {
+                return 1;
+            }
+            // Investigate better score first
+            int scoreComparison = a.getScore().compareTo(b.getScore());
+            if (scoreComparison < 0) {
+                return -1;
+            } else if (scoreComparison > 0) {
+                return 1;
+            }
         }
         // Investigate higher breath index first (to reduce the churn on workingSolution)
         long aBreadth = a.getBreadth();

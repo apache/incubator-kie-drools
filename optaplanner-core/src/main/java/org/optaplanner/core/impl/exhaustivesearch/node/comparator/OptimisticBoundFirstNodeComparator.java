@@ -25,6 +25,13 @@ import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
  */
 public class OptimisticBoundFirstNodeComparator implements Comparator<ExhaustiveSearchNode> {
 
+    public OptimisticBoundFirstNodeComparator(boolean scoreBounderEnabled) {
+        if (!scoreBounderEnabled) {
+            throw new IllegalArgumentException("This " + getClass().getSimpleName()
+                    + " only works if scoreBounderEnabled (" + scoreBounderEnabled + ") is true.");
+        }
+    }
+
     @Override
     public int compare(ExhaustiveSearchNode a, ExhaustiveSearchNode b) {
         // Investigate better optimistic bound first

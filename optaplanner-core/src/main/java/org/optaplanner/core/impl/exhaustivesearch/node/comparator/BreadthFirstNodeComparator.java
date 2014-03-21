@@ -24,13 +24,19 @@ import org.optaplanner.core.impl.exhaustivesearch.node.bounder.ScoreBounder;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
- * Investigate nodes layer by layer: investigate shallower nodes first, then better optimistic bound.
+ * Investigate nodes layer by layer: investigate shallower nodes first.
  * This results in horrible memory scalability.
  * <p/>
  * A typical {@link ScoreBounder}'s {@link ScoreBounder#calculateOptimisticBound(ScoreDirector, Score, int)}
  * will be weak, which results in horrible performance scalability too.
  */
 public class BreadthFirstNodeComparator implements Comparator<ExhaustiveSearchNode> {
+
+    private final boolean scoreBounderEnabled;
+
+    public BreadthFirstNodeComparator(boolean scoreBounderEnabled) {
+        this.scoreBounderEnabled = scoreBounderEnabled;
+    }
 
     @Override
     public int compare(ExhaustiveSearchNode a, ExhaustiveSearchNode b) {
@@ -42,19 +48,21 @@ public class BreadthFirstNodeComparator implements Comparator<ExhaustiveSearchNo
         } else if (aDepth > bDepth) {
             return -1;
         }
-        // Investigate better optimistic bound first
-        int optimisticBoundComparison = a.getOptimisticBound().compareTo(b.getOptimisticBound());
-        if (optimisticBoundComparison < 0) {
-            return -1;
-        } else if (optimisticBoundComparison > 0) {
-            return 1;
-        }
-        // Investigate better score first
-        int scoreComparison = a.getScore().compareTo(b.getScore());
-        if (scoreComparison < 0) {
-            return -1;
-        } else if (scoreComparison > 0) {
-            return 1;
+        if (scoreBounderEnabled) {
+            // Investigate better optimistic bound first
+            int optimisticBoundComparison = a.getOptimisticBound().compareTo(b.getOptimisticBound());
+            if (optimisticBoundComparison < 0) {
+                return -1;
+            } else if (optimisticBoundComparison > 0) {
+                return 1;
+            }
+            // Investigate better score first
+            int scoreComparison = a.getScore().compareTo(b.getScore());
+            if (scoreComparison < 0) {
+                return -1;
+            } else if (scoreComparison > 0) {
+                return 1;
+            }
         }
         // Investigate lower breath index first (does not affect the churn on workingSolution)
         long aBreadth = a.getBreadth();
