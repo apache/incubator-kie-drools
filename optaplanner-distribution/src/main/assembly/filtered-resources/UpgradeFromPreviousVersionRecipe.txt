@@ -4023,3 +4023,12 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
   <constructionHeuristic>
     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
   </constructionHeuristic>
+
+[MAJOR] The solver phase <bruteForce> has been replaced by <exhaustiveSearch>'s BRUTE_FORCE type.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+  <bruteForce/>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+  <exhaustiveSearch>
+    <exhaustiveSearchType>BRUTE_FORCE</exhaustiveSearchType>
+  </exhaustiveSearch>
+There is now a better alternative to Brute Force: Branch And Bound, see docs for more information.
