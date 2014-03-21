@@ -42,6 +42,13 @@ public class DepthFirstNodeComparator implements Comparator<ExhaustiveSearchNode
         } else if (optimisticBoundComparison > 0) {
             return 1;
         }
+        // Investigate better score first
+        int scoreComparison = a.getScore().compareTo(b.getScore());
+        if (scoreComparison < 0) {
+            return -1;
+        } else if (scoreComparison > 0) {
+            return 1;
+        }
         // Investigate higher breath index first (to reduce the churn on workingSolution)
         long aBreadth = a.getBreadth();
         long bBreadth = b.getBreadth();

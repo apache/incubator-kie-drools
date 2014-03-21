@@ -150,9 +150,10 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
         ExhaustiveSearchLayer layer = phaseScope.getLayerList().get(0);
         ExhaustiveSearchNode startNode = new ExhaustiveSearchNode(layer, null);
 
-        ScoreDirector scoreDirector = phaseScope.getScoreDirector();
-        Score score = scoreDirector.calculateScore();
         if (decider.isScoreBounderEnabled()) {
+            ScoreDirector scoreDirector = phaseScope.getScoreDirector();
+            Score score = scoreDirector.calculateScore();
+            startNode.setScore(score);
             ScoreBounder scoreBounder = decider.getScoreBounder();
             phaseScope.setBestPessimisticBound(scoreBounder.calculatePessimisticBound(
                     scoreDirector, score, startNode.getUninitializedVariableCount()));
