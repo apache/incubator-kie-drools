@@ -33,7 +33,7 @@
             <dc:title>Geoffrey De Smet</dc:title>
           </cc:Agent>
         </dc:creator>
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -62,7 +62,7 @@
      inkscape:zoom="1.2099383"
      inkscape:cx="685.7824"
      inkscape:cy="582.58257"
-     inkscape:window-x="0"
+     inkscape:window-x="1680"
      inkscape:window-y="27"
      inkscape:current-layer="svg2"
      inkscape:grid-points="true"
@@ -5433,8 +5433,8 @@
          x="-246.32422"
          y="261.43814"
          style="font-size:40px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-       id="flowPara3455">Backtracking depth-first search</flowPara><flowPara
-       id="flowPara4880">with pruning</flowPara></flowRoot>  <flowRoot
+       id="flowPara3455">Depth First</flowPara><flowPara
+       id="flowPara4880">Branch And Bound</flowPara></flowRoot>  <flowRoot
      xml:space="preserve"
      id="flowRoot6718-7"
      style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"

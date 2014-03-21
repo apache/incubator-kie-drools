@@ -20,7 +20,6 @@ import java.util.Collection;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
-import org.optaplanner.core.config.bruteforce.BruteForceSolverPhaseConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchSolverPhaseConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
@@ -37,7 +36,6 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XStreamInclude({
         CustomSolverPhaseConfig.class,
-        BruteForceSolverPhaseConfig.class,
         ExhaustiveSearchSolverPhaseConfig.class,
         ConstructionHeuristicSolverPhaseConfig.class,
         LocalSearchSolverPhaseConfig.class
