@@ -3227,6 +3227,34 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
+    public void testDSLDollar() {
+        String drl = "package org.mortgages;\n" +
+                "rule \"testdsl\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    Price is $111\n" +
+                "  then\n" +
+                "end";
+
+        String dslDefinition = "Price is ${p}";
+        String dslFile = "[when]" + dslDefinition + "= Item( price == \"{p}\" )";
+
+        when( dmo.getPackageName() ).thenReturn( "org.mortgages");
+
+        final RuleModel model = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL(drl,
+                new ArrayList<String>(),
+                dmo,
+                new String[]{dslFile});
+
+        assertEquals(1, model.lhs.length);
+        DSLSentence dslSentence = (DSLSentence)model.lhs[0];
+
+        assertEquals("Price is ${p}", dslSentence.getDefinition());
+        assertEquals("111", dslSentence.getValues().get(0).getValue());
+
+    }
+
+    @Test
     public void testDSLExpansionLHS() {
         String drl = "rule \"rule1\"\n"
                 + "when\n"
