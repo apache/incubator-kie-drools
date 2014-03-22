@@ -21,7 +21,6 @@ import java.util.Collections;
 
 import org.junit.Test;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.config.bruteforce.BruteForceSolverPhaseConfig;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchSolverPhaseConfig;
 import org.optaplanner.core.config.phase.SolverPhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
