@@ -90,8 +90,9 @@ public class ActionCallMethodBuilder {
                                                                    getAdjustedParameter( param,
                                                                                          dataType ),
                                                                    dataType );
-        actionFiled.setNature( inferFieldNature( param,
-                                                 boundParams ) );
+        actionFiled.setNature( inferFieldNature( boundParams,
+                                                 dataType,
+                                                 param ) );
         actionFiled.setField( methodName );
         return actionFiled;
     }
@@ -116,27 +117,27 @@ public class ActionCallMethodBuilder {
     }
 
     private MethodInfo getMethodInfo() {
-        String variableType = boundParams.get(variable);
-        if (variableType != null) {
-            List<MethodInfo> methods = getMethodInfosForType(model,
-                    dmo,
-                    variableType);
-            if (methods != null) {
+        String variableType = boundParams.get( variable );
+        if ( variableType != null ) {
+            List<MethodInfo> methods = getMethodInfosForType( model,
+                                                              dmo,
+                                                              variableType );
+            if ( methods != null ) {
 
-                ArrayList<MethodInfo> methodInfos = getMethodInfos(methodName, methods);
+                ArrayList<MethodInfo> methodInfos = getMethodInfos( methodName, methods );
 
-                if (methodInfos.size() > 1) {
+                if ( methodInfos.size() > 1 ) {
                     // Now if there were more than one method with the same name
                     // we need to start figuring out what is the correct one.
-                    for (MethodInfo methodInfo : methodInfos) {
-                        if (compareParameters(methodInfo.getParams())) {
+                    for ( MethodInfo methodInfo : methodInfos ) {
+                        if ( compareParameters( methodInfo.getParams() ) ) {
                             return methodInfo;
                         }
                     }
-                } else if (!methodInfos.isEmpty()){
+                } else if ( !methodInfos.isEmpty() ) {
                     // Not perfect, but works on most cases.
                     // There is no check if the parameter types match.
-                    return methodInfos.get(0);
+                    return methodInfos.get( 0 );
                 }
             }
         }
@@ -144,22 +145,23 @@ public class ActionCallMethodBuilder {
         return null;
     }
 
-    private ArrayList<MethodInfo> getMethodInfos(String methodName, List<MethodInfo> methods) {
+    private ArrayList<MethodInfo> getMethodInfos( String methodName,
+                                                  List<MethodInfo> methods ) {
         ArrayList<MethodInfo> result = new ArrayList<MethodInfo>();
-        for (MethodInfo method : methods) {
-            if (method.getName().equals(methodName)) {
-                result.add(method);
+        for ( MethodInfo method : methods ) {
+            if ( method.getName().equals( methodName ) ) {
+                result.add( method );
             }
         }
         return result;
     }
 
-    private boolean compareParameters(List<String> methodParams) {
-        if (methodParams.size() != parameters.length) {
+    private boolean compareParameters( List<String> methodParams ) {
+        if ( methodParams.size() != parameters.length ) {
             return false;
         } else {
-            for (int index = 0; index < methodParams.size(); index++) {
-                if (!methodParams.get(index).equals(boundParams.get(parameters[index]))) {
+            for ( int index = 0; index < methodParams.size(); index++ ) {
+                if ( !methodParams.get( index ).equals( boundParams.get( parameters[ index ] ) ) ) {
                     return false;
                 }
             }

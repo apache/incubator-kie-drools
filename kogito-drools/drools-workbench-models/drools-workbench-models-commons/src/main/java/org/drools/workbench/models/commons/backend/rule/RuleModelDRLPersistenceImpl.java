@@ -120,6 +120,7 @@ public class RuleModelDRLPersistenceImpl
         RuleModelPersistence {
 
     private static final String WORKITEM_PREFIX = "wi";
+    private static final String DATE_FORMAT = "drools.dateformat";
 
     private static final RuleModelPersistence INSTANCE = new RuleModelDRLPersistenceImpl();
 
@@ -2406,12 +2407,12 @@ public class RuleModelDRLPersistenceImpl
         DSLSentence dslSentence = new DSLSentence();
         for ( String dslPattern : dslPatterns ) {
             // Dollar breaks the matcher, need to escape them.
-            dslPattern=dslPattern.replace("$","\\$");
+            dslPattern = dslPattern.replace( "$", "\\$" );
             //A DSL Pattern can contain Regex itself, for example "When the ages is less than {num:1?[0-9]?[0-9]}"
             String regex = dslPattern.replaceAll( "\\{.*?\\}", "(.*)" );
             Matcher matcher = Pattern.compile( regex ).matcher( dslLine );
             if ( matcher.matches() ) {
-                dslPattern=dslPattern.replace("\\$","$");
+                dslPattern = dslPattern.replace( "\\$", "$" );
                 dslSentence.setDefinition( dslPattern );
                 for ( int i = 0; i < matcher.groupCount(); i++ ) {
                     dslSentence.getValues().get( i ).setValue( matcher.group( i + 1 ) );
@@ -2505,7 +2506,8 @@ public class RuleModelDRLPersistenceImpl
                                                        field,
                                                        value,
                                                        dataType,
-                                                       boundParams ) );
+                                                       boundParams,
+                                                       dmo ) );
             }
         }
     }
@@ -2514,7 +2516,8 @@ public class RuleModelDRLPersistenceImpl
                                               String field,
                                               String value,
                                               String dataType,
-                                              Map<String, String> boundParams ) {
+                                              Map<String, String> boundParams,
+                                              PackageDataModelOracle dmo ) {
         if ( value.contains( "wiWorkItem.getResult" ) ) {
             field = field.substring( 0, 1 ).toUpperCase() + field.substring( 1 );
             String wiParam = field.substring( "Results".length() );
@@ -2528,13 +2531,15 @@ public class RuleModelDRLPersistenceImpl
                 return new ActionWorkItemFieldValue( field, DataType.TYPE_NUMERIC_FLOAT, "WorkItem", wiParam, Float.class.getName() );
             }
         }
-        ActionFieldValue fieldValue = new ActionFieldValue( field, adjustParam( dataType, value, boundParams, isJavaDialect ), dataType );
-        fieldValue.setNature( FieldNatureType.TYPE_LITERAL );
-        if ( dataType == DataType.TYPE_COLLECTION || dataType == DataType.TYPE_NUMERIC ) {
-            fieldValue.setNature( FieldNatureType.TYPE_FORMULA );
-        } else if ( boundParams.containsKey( value ) ) {
-            fieldValue.setNature( FieldNatureType.TYPE_VARIABLE );
-        }
+        ActionFieldValue fieldValue = new ActionFieldValue( field,
+                                                            adjustParam( dataType,
+                                                                         value,
+                                                                         boundParams,
+                                                                         isJavaDialect ),
+                                                            dataType );
+        fieldValue.setNature( inferFieldNature( boundParams,
+                                                dataType,
+                                                value ) );
         return fieldValue;
     }
 
