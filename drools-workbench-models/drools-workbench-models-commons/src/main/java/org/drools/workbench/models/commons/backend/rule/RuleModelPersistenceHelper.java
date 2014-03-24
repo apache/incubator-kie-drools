@@ -1,8 +1,15 @@
 package org.drools.workbench.models.commons.backend.rule;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.NumberUtils;
+import org.apache.commons.lang.StringUtils;
+import org.drools.core.util.DateUtils;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.DataType;
@@ -23,21 +30,110 @@ class RuleModelPersistenceHelper {
         return s.substring( start + 1, end ).trim();
     }
 
-    static int inferFieldNature( String param,
-                                 Map<String, String> boundParams ) {
-        if ( param.startsWith( "sdf.parse" ) ) {
-            return FieldNatureType.TYPE_UNDEFINED;
+    static int inferFieldNature( final Map<String, String> boundParams,
+                                 final String dataType,
+                                 final String value ) {
+        int nature = ( StringUtils.isEmpty( value ) ? FieldNatureType.TYPE_UNDEFINED : FieldNatureType.TYPE_LITERAL );
+        if ( dataType == DataType.TYPE_COLLECTION ) {
+            nature = FieldNatureType.TYPE_FORMULA;
+
+        } else if ( boundParams.containsKey( value ) ) {
+            nature = FieldNatureType.TYPE_VARIABLE;
+
+        } else if ( DataType.TYPE_BOOLEAN.equals( dataType ) ) {
+            if ( !( Boolean.TRUE.equals( Boolean.parseBoolean( value ) ) || Boolean.FALSE.equals( Boolean.parseBoolean( value ) ) ) ) {
+                nature = FieldNatureType.TYPE_FORMULA;
+            } else {
+                nature = FieldNatureType.TYPE_LITERAL;
+            }
+
+        } else if ( DataType.TYPE_DATE.equals( dataType ) ) {
+            try {
+                nature = FieldNatureType.TYPE_LITERAL;
+                new SimpleDateFormat( DateUtils.getDateFormatMask() ).parse( value );
+            } catch ( ParseException e ) {
+                nature = FieldNatureType.TYPE_FORMULA;
+            }
+
+        } else if ( DataType.TYPE_STRING.equals( dataType ) ) {
+            if ( value.startsWith( "\"" ) ) {
+                nature = FieldNatureType.TYPE_LITERAL;
+            } else {
+                nature = FieldNatureType.TYPE_FORMULA;
+            }
+
+        } else if ( DataType.TYPE_NUMERIC.equals( dataType ) ) {
+            nature = FieldNatureType.TYPE_LITERAL;
+            if ( !NumberUtils.isNumber( value ) ) {
+                nature = FieldNatureType.TYPE_FORMULA;
+            }
+
+        } else if ( DataType.TYPE_NUMERIC_BIGDECIMAL.equals( dataType ) ) {
+            try {
+                nature = FieldNatureType.TYPE_LITERAL;
+                new BigDecimal( value );
+            } catch ( NumberFormatException e ) {
+                nature = FieldNatureType.TYPE_FORMULA;
+            }
+
+        } else if ( DataType.TYPE_NUMERIC_BIGINTEGER.equals( dataType ) ) {
+            try {
+                nature = FieldNatureType.TYPE_LITERAL;
+                new BigInteger( value );
+            } catch ( NumberFormatException e ) {
+                nature = FieldNatureType.TYPE_FORMULA;
+            }
+
+        } else if ( DataType.TYPE_NUMERIC_BYTE.equals( dataType ) ) {
+            try {
+                nature = FieldNatureType.TYPE_LITERAL;
+                new Byte( value );
+            } catch ( NumberFormatException e ) {
+                nature = FieldNatureType.TYPE_FORMULA;
+            }
+
+        } else if ( DataType.TYPE_NUMERIC_DOUBLE.equals( dataType ) ) {
+            try {
+                nature = FieldNatureType.TYPE_LITERAL;
+                new Double( value );
+            } catch ( NumberFormatException e ) {
+                nature = FieldNatureType.TYPE_FORMULA;
+            }
+
+        } else if ( DataType.TYPE_NUMERIC_FLOAT.equals( dataType ) ) {
+            try {
+                nature = FieldNatureType.TYPE_LITERAL;
+                new Float( value );
+            } catch ( NumberFormatException e ) {
+                nature = FieldNatureType.TYPE_FORMULA;
+            }
+
+        } else if ( DataType.TYPE_NUMERIC_INTEGER.equals( dataType ) ) {
+            try {
+                nature = FieldNatureType.TYPE_LITERAL;
+                new Integer( value );
+            } catch ( NumberFormatException e ) {
+                nature = FieldNatureType.TYPE_FORMULA;
+            }
+
+        } else if ( DataType.TYPE_NUMERIC_LONG.equals( dataType ) ) {
+            try {
+                nature = FieldNatureType.TYPE_LITERAL;
+                new Long( value );
+            } catch ( NumberFormatException e ) {
+                nature = FieldNatureType.TYPE_FORMULA;
+            }
+
+        } else if ( DataType.TYPE_NUMERIC_SHORT.equals( dataType ) ) {
+            try {
+                nature = FieldNatureType.TYPE_LITERAL;
+                new Short( value );
+            } catch ( NumberFormatException e ) {
+                nature = FieldNatureType.TYPE_FORMULA;
+            }
+
         }
-        if ( boundParams.keySet().contains( param ) ) {
-            return FieldNatureType.TYPE_VARIABLE;
-        }
-        if ( param.contains( "+" ) || param.contains( "-" ) || param.contains( "*" ) || param.contains( "/" ) ) {
-            return FieldNatureType.TYPE_FORMULA;
-        }
-        if ( param.startsWith( "\"" ) || Character.isDigit( param.charAt( 0 ) ) ) {
-            return FieldNatureType.TYPE_LITERAL;
-        }
-        return FieldNatureType.TYPE_UNDEFINED;
+        return nature;
     }
 
     static String inferDataType( ActionFieldList action,

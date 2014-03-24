@@ -22,10 +22,14 @@
       <artifactId>drools-compiler</artifactId>
     </dependency>
 
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-workbench-models-datamodel-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
     </dependency>
 
   </dependencies>
