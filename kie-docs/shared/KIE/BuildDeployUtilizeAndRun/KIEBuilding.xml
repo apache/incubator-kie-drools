@@ -510,7 +510,7 @@ kfs.write( "src/main/resources/myDrl.txt",
 
     <para>After this it is possible to create through the <code>KieServices</code> a new
     <code>KieContainer</code> for that <code>KieModule</code> using its <code>ReleaseId</code>. However,
-    since in this case the <code>KieFileSystem</code> don't contain any pom.xml file (it is possible to
+    since in this case the <code>KieFileSystem</code> doesn't contain any pom.xml file (it is possible to
     add one using the <code>KieFileSystem.writePomXML</code> method), Kie cannot determine the
     <code>ReleaseId</code> of the <code>KieModule</code> and assign to it a default one. This
     default <code>ReleaseId</code> can be obtained from the <code>KieRepository</code> and used
