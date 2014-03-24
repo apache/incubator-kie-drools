@@ -57,6 +57,7 @@ import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
@@ -2812,7 +2813,7 @@ public class RuleModelDRLPersistenceImpl
             }
             fieldConstraint.setFactType( factPattern.getFactType() );
 
-            ModelField field = findField( findFields( m, factPattern.getFactType() ),
+            ModelField field = findField( findFields( dmo, m, factPattern.getFactType() ),
                                           fieldConstraint.getFieldName() );
 
             if ( field != null && ( fieldConstraint.getFieldType() == null || fieldConstraint.getFieldType().trim().length() == 0 ) ) {
@@ -2862,8 +2863,9 @@ public class RuleModelDRLPersistenceImpl
                                                                    String operator,
                                                                    String value ) {
             SingleFieldConstraint con = new SingleFieldConstraint();
-            fieldName = setFieldBindingOnContraint( fieldName,
-                                                    con,
+            fieldName = setFieldBindingOnContraint( factPattern.getFactType(),
+                                                    fieldName,
+                    m, con,
                                                     boundParams );
             con.setFieldName( fieldName );
             setOperatorAndValueOnConstraint( m, operator, value, factPattern, con );
@@ -2877,7 +2879,9 @@ public class RuleModelDRLPersistenceImpl
                                                                                        String value ) {
             SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
 
-            fieldName = setFieldBindingOnContraint( fieldName,
+            fieldName = setFieldBindingOnContraint( factPattern.getFactType(),
+                                                    fieldName,
+                                                    m,
                                                     con,
                                                     boundParams );
             String classType = getFQFactType( m, factPattern.getFactType() );
@@ -2906,7 +2910,7 @@ public class RuleModelDRLPersistenceImpl
                 isBoundParam = true;
             }
 
-            ModelField[] typeFields = findFields( m, factType );
+            ModelField[] typeFields = findFields( dmo, m, factType );
 
             for ( int i = 0; i < splits.length - 1; i++ ) {
                 String expressionPart = normalizeExpressionPart( splits[ i ] );
@@ -2932,7 +2936,7 @@ public class RuleModelDRLPersistenceImpl
                                                                                    dmo ),
                                                                 getSimpleFactType( currentField.getType(),
                                                                                    dmo ) ) );
-                    typeFields = findFields( m, currentField.getClassName() );
+                    typeFields = findFields( dmo, m, currentField.getClassName() );
                 }
             }
             String expressionPart = normalizeExpressionPart( splits[ splits.length - 1 ] );
@@ -2992,11 +2996,6 @@ public class RuleModelDRLPersistenceImpl
             return null;
         }
 
-        private ModelField[] findFields( RuleModel m,
-                                         String type ) {
-            return RuleModelDRLPersistenceImpl.findFields( dmo, m, type );
-        }
-
         private ModelField findField( ModelField[] typeFields,
                                       String fieldName ) {
             if ( typeFields != null && fieldName != null ) {
@@ -3021,16 +3020,27 @@ public class RuleModelDRLPersistenceImpl
             return null;
         }
 
-        private String setFieldBindingOnContraint( String fieldName,
-                                                   SingleFieldConstraint con,
-                                                   Map<String, String> boundParams ) {
+        private String setFieldBindingOnContraint(
+                String factType,
+                String fieldName,
+                RuleModel model,
+                SingleFieldConstraint con,
+                Map<String, String> boundParams) {
             int colonPos = fieldName.indexOf( ':' );
             if ( colonPos > 0 ) {
                 String fieldBinding = fieldName.substring( 0, colonPos ).trim();
                 con.setFieldBinding( fieldBinding );
-                boundParams.put( fieldBinding,
-                                 fieldName );
                 fieldName = fieldName.substring( colonPos + 1 ).trim();
+
+                ModelField[] fields = findFields(dmo, model, factType);
+                if (fields != null) {
+                    for (ModelField field : fields) {
+                        if (field.getName().equals(fieldName)) {
+                            boundParams.put(fieldBinding, field.getType());
+                        }
+                    }
+                }
+
             }
             return fieldName;
         }
@@ -3196,22 +3206,4 @@ public class RuleModelDRLPersistenceImpl
         }
     }
 
-    private static ModelField[] findFields( PackageDataModelOracle dmo,
-                                            RuleModel m,
-                                            String type ) {
-        ModelField[] fields = dmo.getProjectModelFields().get( type );
-        if ( fields != null ) {
-            return fields;
-        }
-        for ( String i : m.getImports().getImportStrings() ) {
-            if ( i.endsWith( "." + type ) ) {
-                fields = dmo.getProjectModelFields().get( i );
-                if ( fields != null ) {
-                    return fields;
-                }
-            }
-        }
-
-        return dmo.getProjectModelFields().get( m.getPackageName() + "." + type );
-    }
 }
