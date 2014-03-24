@@ -3196,7 +3196,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       dslComplexVariableValue.getValue() );
     }
 
-
     @Test
     public void testDSL() {
         String drl = "package org.mortgages;\n" +
@@ -3210,17 +3209,17 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         String dslDefinition = "There is a {rating} rated applicant older than {age} years";
         String dslFile = "[when]" + dslDefinition + "= Applicant( creditRating == \"{rating}\", age > {age} )";
 
-        when( dmo.getPackageName() ).thenReturn( "org.mortgages");
+        when( dmo.getPackageName() ).thenReturn( "org.mortgages" );
 
-        final RuleModel model = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL(drl,
-                new ArrayList<String>(),
-                dmo,
-                new String[]{dslFile});
+        final RuleModel model = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl,
+                                                                                             new ArrayList<String>(),
+                                                                                             dmo,
+                                                                                             new String[]{ dslFile } );
 
-        assertEquals(1, model.lhs.length);
-        DSLSentence dslSentence = (DSLSentence)model.lhs[0];
-        assertEquals("test", dslSentence.getValues().get(0).getValue());
-        assertEquals("111", dslSentence.getValues().get(1).getValue());
+        assertEquals( 1, model.lhs.length );
+        DSLSentence dslSentence = (DSLSentence) model.lhs[ 0 ];
+        assertEquals( "test", dslSentence.getValues().get( 0 ).getValue() );
+        assertEquals( "111", dslSentence.getValues().get( 1 ).getValue() );
 
     }
 
@@ -3237,18 +3236,18 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         String dslDefinition = "Price is ${p}";
         String dslFile = "[when]" + dslDefinition + "= Item( price == \"{p}\" )";
 
-        when( dmo.getPackageName() ).thenReturn( "org.mortgages");
+        when( dmo.getPackageName() ).thenReturn( "org.mortgages" );
 
-        final RuleModel model = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL(drl,
-                new ArrayList<String>(),
-                dmo,
-                new String[]{dslFile});
+        final RuleModel model = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl,
+                                                                                             new ArrayList<String>(),
+                                                                                             dmo,
+                                                                                             new String[]{ dslFile } );
 
-        assertEquals(1, model.lhs.length);
-        DSLSentence dslSentence = (DSLSentence)model.lhs[0];
+        assertEquals( 1, model.lhs.length );
+        DSLSentence dslSentence = (DSLSentence) model.lhs[ 0 ];
 
-        assertEquals("Price is ${p}", dslSentence.getDefinition());
-        assertEquals("111", dslSentence.getValues().get(0).getValue());
+        assertEquals( "Price is ${p}", dslSentence.getDefinition() );
+        assertEquals( "111", dslSentence.getValues().get( 0 ).getValue() );
 
     }
 
@@ -3344,15 +3343,15 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         Map<String, List<MethodInfo>> methodInformation = new HashMap<String, List<MethodInfo>>();
         List<MethodInfo> mapMethodInformation = new ArrayList<MethodInfo>();
         mapMethodInformation.add( new MethodInfo( "indexOf",
-                                                   Arrays.asList( new String[]{ "String" } ),
-                                                   "int",
-                                                   null,
-                                                   "String" ) );
+                                                  Arrays.asList( new String[]{ "String" } ),
+                                                  "int",
+                                                  null,
+                                                  "String" ) );
         mapMethodInformation.add( new MethodInfo( "indexOf",
-                                                   Arrays.asList( new String[]{ "Integer" } ),
-                                                   "int",
-                                                   null,
-                                                   "String" ) );
+                                                  Arrays.asList( new String[]{ "Integer" } ),
+                                                  "int",
+                                                  null,
+                                                  "String" ) );
 
         methodInformation.put( "java.lang.String", mapMethodInformation );
 
@@ -3695,7 +3694,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "java.lang.Integer",
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        when( dmo.getPackageName() ).thenReturn( "org.test");
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
 
         final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
                                                                                  new ArrayList<String>(),
@@ -3772,7 +3771,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "java.lang.Integer",
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        when( dmo.getPackageName() ).thenReturn( "org.test");
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
 
         final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
                                                                                  new ArrayList<String>(),
@@ -3848,7 +3847,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "java.lang.Integer",
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        when( dmo.getPackageName() ).thenReturn( "org.test");
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
 
         final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
                                                                                  new ArrayList<String>(),
@@ -3924,7 +3923,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "java.lang.Integer",
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        when( dmo.getPackageName() ).thenReturn( "org.test");
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
 
         final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
                                                                                  new ArrayList<String>(),
@@ -3966,6 +3965,126 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       afv.getType() );
     }
 
+    @Test
+    public void testRHSUpdateFactWithFormula() {
+        //https://bugzilla.redhat.com/show_bug.cgi?id=1079253
+        String drl = "package org.mortgages;\n"
+                + "import org.test.ShoppingCart\n"
+                + "rule \"r1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "$sc : ShoppingCart( )\n"
+                + "then\n"
+                + "$sc.setCartItemPromoSavings( ($sc.cartItemPromoSavings == 0.0) ? 0.0 : $sc.cartItemPromoSavings * -1 );\n"
+                + "update( $sc );\n"
+                + "end\n";
+
+        addModelField( "org.test.ShoppingCart",
+                       "cartItemPromoSavings",
+                       "java.lang.Double",
+                       DataType.TYPE_NUMERIC_DOUBLE );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals( "ShoppingCart",
+                      fp.getFactType() );
+        assertEquals( "$sc",
+                      fp.getBoundName() );
+
+        assertEquals( 0,
+                      fp.getNumberOfConstraints() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+        IAction a = m.rhs[ 0 ];
+        assertTrue( a instanceof ActionUpdateField );
+
+        ActionUpdateField ap = (ActionUpdateField) a;
+        assertEquals( "$sc",
+                      ap.getVariable() );
+
+        assertEquals( 1,
+                      ap.getFieldValues().length );
+        ActionFieldValue afv = ap.getFieldValues()[ 0 ];
+        assertEquals( "cartItemPromoSavings",
+                      afv.getField() );
+        assertEquals( "($sc.cartItemPromoSavings == 0.0) ? 0.0 : $sc.cartItemPromoSavings * -1",
+                      afv.getValue() );
+        assertEquals( FieldNatureType.TYPE_FORMULA,
+                      afv.getNature() );
+    }
+
+    @Test
+    public void testRHSUpdateFactWithFormulaSamePackage() {
+        //https://bugzilla.redhat.com/show_bug.cgi?id=1079253
+        String drl = "package org.test;\n"
+                + "rule \"r1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "$sc : ShoppingCart( )\n"
+                + "then\n"
+                + "$sc.setCartItemPromoSavings( ($sc.cartItemPromoSavings == 0.0) ? 0.0 : $sc.cartItemPromoSavings * -1 );\n"
+                + "update( $sc );\n"
+                + "end\n";
+
+        addModelField( "org.test.ShoppingCart",
+                       "cartItemPromoSavings",
+                       "java.lang.Double",
+                       DataType.TYPE_NUMERIC_DOUBLE );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals( "ShoppingCart",
+                      fp.getFactType() );
+        assertEquals( "$sc",
+                      fp.getBoundName() );
+
+        assertEquals( 0,
+                      fp.getNumberOfConstraints() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+        IAction a = m.rhs[ 0 ];
+        assertTrue( a instanceof ActionUpdateField );
+
+        ActionUpdateField ap = (ActionUpdateField) a;
+        assertEquals( "$sc",
+                      ap.getVariable() );
+
+        assertEquals( 1,
+                      ap.getFieldValues().length );
+        ActionFieldValue afv = ap.getFieldValues()[ 0 ];
+        assertEquals( "cartItemPromoSavings",
+                      afv.getField() );
+        assertEquals( "($sc.cartItemPromoSavings == 0.0) ? 0.0 : $sc.cartItemPromoSavings * -1",
+                      afv.getValue() );
+        assertEquals( FieldNatureType.TYPE_FORMULA,
+                      afv.getNature() );
+    }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
