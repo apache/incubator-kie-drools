@@ -136,6 +136,26 @@ class RuleModelPersistenceHelper {
         return nature;
     }
 
+    static ModelField[] findFields(
+            PackageDataModelOracle dmo,
+            RuleModel m,
+            String type ) {
+        ModelField[] fields = dmo.getProjectModelFields().get( type );
+        if ( fields != null ) {
+            return fields;
+        }
+        for ( String i : m.getImports().getImportStrings() ) {
+            if ( i.endsWith( "." + type ) ) {
+                fields = dmo.getProjectModelFields().get( i );
+                if ( fields != null ) {
+                    return fields;
+                }
+            }
+        }
+
+        return dmo.getProjectModelFields().get( m.getPackageName() + "." + type );
+    }
+
     static String inferDataType( ActionFieldList action,
                                  String field,
                                  Map<String, String> boundParams,

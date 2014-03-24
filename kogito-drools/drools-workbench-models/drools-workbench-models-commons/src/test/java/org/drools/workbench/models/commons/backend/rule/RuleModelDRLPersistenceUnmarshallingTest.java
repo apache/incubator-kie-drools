@@ -63,11 +63,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class RuleModelDRLPersistenceUnmarshallingTest {
@@ -4089,7 +4085,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore()
     public void testName() throws Exception {
         String drl = "package org.mortgages;\n" +
                 "rule \"test\"\n" +
@@ -4101,12 +4096,31 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "  s.sum( $age, $age );\n" +
                 "end";
 
-//        addModelField( "org.test.Person",
-//                "field1",
-//                "java.lang.Integer",
-//                DataType.TYPE_NUMERIC_INTEGER );
-//
-//        when( dmo.getPackageName() ).thenReturn( "org.test");
+        addModelField(
+                "Calculator",
+                "summer",
+                "Summer",
+                "Summer" );
+
+        addModelField(
+                "Applicant",
+                "age",
+                "java.lang.Integer",
+                DataType.TYPE_NUMERIC_INTEGER );
+
+        HashMap<String, List<MethodInfo>> map = new HashMap<String, List<MethodInfo>>();
+        ArrayList<MethodInfo> methodInfos = new ArrayList<MethodInfo>();
+        ArrayList<String> params = new ArrayList<String>();
+        params.add("Integer");
+        params.add("Integer");
+        methodInfos.add(new MethodInfo("sum", params, "java.lang.Integer", null, "Summer"));
+        map.put("Calculator", methodInfos);
+
+        when(
+                dmo.getProjectMethodInformation()
+        ).thenReturn(
+                map
+        );
 
         final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
                 new ArrayList<String>(),
@@ -4119,6 +4133,21 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         assertEquals( 1,
                 m.rhs.length );
+
+        ActionCallMethod actionCallMethod = (ActionCallMethod) m.rhs[0];
+        assertEquals("sum", actionCallMethod.getMethodName());
+        assertEquals("s", actionCallMethod.getVariable());
+        assertEquals(2, actionCallMethod.getFieldValues().length);
+
+        assertEquals("sum", actionCallMethod.getFieldValue(0).getField());
+        assertEquals("$age", actionCallMethod.getFieldValue(0).getValue());
+        assertEquals(2, actionCallMethod.getFieldValue(0).getNature());
+        assertEquals("Integer", actionCallMethod.getFieldValue(0).getType());
+
+        assertEquals("sum", actionCallMethod.getFieldValue(1).getField());
+        assertEquals("$age", actionCallMethod.getFieldValue(1).getValue());
+        assertEquals(2, actionCallMethod.getFieldValue(1).getNature());
+        assertEquals("Integer", actionCallMethod.getFieldValue(1).getType());
 
     }
 
