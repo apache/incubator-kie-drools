@@ -248,7 +248,7 @@
         <para>You can also generate a signal from inside a process instance.  A script
         (in a script task or using on entry or on exit actions) can use</para>
         <programlisting>
-kcontext.getKnowledgeRuntime().signalEvent(eventType, data, kcontext.getProcessInstance().getId());
+kcontext.getKieRuntime().signalEvent(eventType, data, kcontext.getProcessInstance().getId());
         </programlisting>
 
         <para>A throwing signal event could also be used to model the signaling of an
