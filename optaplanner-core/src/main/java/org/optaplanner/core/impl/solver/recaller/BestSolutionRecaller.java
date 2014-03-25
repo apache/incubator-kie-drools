@@ -67,11 +67,7 @@ public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
         }
     }
 
-    @Override
-    public void stepEnded(AbstractStepScope stepScope) {
-        if (stepScope.isBestSolutionCloningDelayed()) {
-            return;
-        }
+    public void processWorkingSolutionDuringStep(AbstractStepScope stepScope) {
         AbstractSolverPhaseScope phaseScope = stepScope.getPhaseScope();
         int uninitializedVariableCount = stepScope.getUninitializedVariableCount();
         Score score = stepScope.getScore();
@@ -107,7 +103,7 @@ public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
             bestScoreImproved = uninitializedVariableCount < bestUninitializedVariableCount;
         }
         // The method processWorkingSolutionDuringMove() is called 0..* times
-        // bestScoreImproved is initialized on false before the first call here
+        // stepScope.getBestScoreImproved() is initialized on false before the first call here
         if (bestScoreImproved) {
             stepScope.setBestScoreImproved(bestScoreImproved);
         }
