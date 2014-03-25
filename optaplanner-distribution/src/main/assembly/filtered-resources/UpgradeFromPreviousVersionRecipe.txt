@@ -4032,3 +4032,7 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
     <exhaustiveSearchType>BRUTE_FORCE</exhaustiveSearchType>
   </exhaustiveSearch>
 There is now a better alternative to Brute Force: Branch And Bound, see docs for more information.
+
+[MAJOR] The ConstraintOccurrence classes (which were deprecated) have been removed.
+If you hadn't switch them to the ConstraintMatch system yet,
+scroll up to the section "From 6.0.0.Alpha9 to 6.0.0.Beta1" for instructions.

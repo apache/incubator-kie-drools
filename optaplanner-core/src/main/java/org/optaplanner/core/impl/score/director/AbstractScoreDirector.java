@@ -392,15 +392,8 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
             analysis.append("  The corrupted scoreDirector has no ConstraintMatch(s) in excess or missing."
                     + " That could be a bug in this class (").append(getClass()).append(").\n");
         }
-        appendLegacyConstraintOccurrences(analysis, this, uncorruptedScoreDirector);
         analysis.append("  Check your score constraints.");
         return analysis.toString();
-    }
-
-    @Deprecated // TODO remove in 6.1.0
-    protected void appendLegacyConstraintOccurrences(StringBuilder analysis,
-            ScoreDirector corruptedScoreDirector, ScoreDirector uncorruptedScoreDirector) {
-        // Do nothing unless overwritten
     }
 
     private Map<List<Object>, ConstraintMatch> createConstraintMatchMap(

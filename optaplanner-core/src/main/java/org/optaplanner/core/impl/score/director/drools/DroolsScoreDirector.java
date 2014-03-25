@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.kie.api.KieBase;
-import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.optaplanner.core.api.score.Score;
@@ -33,11 +32,6 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.score.constraint.ConstraintOccurrence;
-import org.optaplanner.core.impl.score.constraint.DoubleConstraintOccurrence;
-import org.optaplanner.core.impl.score.constraint.IntConstraintOccurrence;
-import org.optaplanner.core.impl.score.constraint.LongConstraintOccurrence;
-import org.optaplanner.core.impl.score.constraint.UnweightedConstraintOccurrence;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
@@ -226,69 +220,6 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         }
         kieSession.delete(factHandle);
         super.afterProblemFactRemoved(problemFact);
-    }
-
-    // ************************************************************************
-    // Assert methods
-    // ************************************************************************
-
-    @Deprecated // TODO remove in 6.1.0
-    @Override
-    protected void appendLegacyConstraintOccurrences(StringBuilder analysis,
-            ScoreDirector corruptedScoreDirector, ScoreDirector uncorruptedScoreDirector) {
-        if (!(uncorruptedScoreDirector instanceof DroolsScoreDirector)) {
-            return;
-        }
-        Set<ConstraintOccurrence> uncorruptedConstraintOccurrenceSet = new LinkedHashSet<ConstraintOccurrence>(
-                (Collection<ConstraintOccurrence>) ((DroolsScoreDirector) uncorruptedScoreDirector)
-                        .kieSession.getObjects(new ClassObjectFilter(ConstraintOccurrence.class)));
-        if (!uncorruptedConstraintOccurrenceSet.isEmpty()) {
-            Set<ConstraintOccurrence> corruptedConstraintOccurrenceSet = new LinkedHashSet<ConstraintOccurrence>(
-                    (Collection<ConstraintOccurrence>) ((DroolsScoreDirector) corruptedScoreDirector)
-                            .kieSession.getObjects(new ClassObjectFilter(ConstraintOccurrence.class)));
-            if (corruptedConstraintOccurrenceSet.isEmpty()) {
-                analysis.append("  Migration analysis: Corrupted ConstraintMatchTotals:\n");
-                for (ConstraintMatchTotal constraintMatchTotal : corruptedScoreDirector.getConstraintMatchTotals()) {
-                    analysis.append("    ").append(constraintMatchTotal).append("\n");
-                }
-            } else {
-                analysis.append("  Legacy analysis: Corrupted ConstraintOccurrence totals:\n");
-                appendLegacyTotals(analysis, corruptedConstraintOccurrenceSet);
-            }
-            analysis.append("  Legacy analysis: Uncorrupted ConstraintOccurrence totals:\n");
-            appendLegacyTotals(analysis, uncorruptedConstraintOccurrenceSet);
-        }
-    }
-
-    @Deprecated // TODO remove in 6.1.0
-    private void appendLegacyTotals(StringBuilder analysis, Set<ConstraintOccurrence> constraintOccurrenceSet) {
-        Map<List<Object>, Double> scoreTotalMap = new LinkedHashMap<List<Object>, Double>();
-        for (ConstraintOccurrence constraintOccurrence : constraintOccurrenceSet) {
-            List<Object> key = Arrays.<Object>asList(
-                    constraintOccurrence.getRuleId(), constraintOccurrence.getConstraintType());
-            Double scoreTotal = scoreTotalMap.get(key);
-            if (scoreTotal == null) {
-                scoreTotal = 0.0;
-            }
-            double occurrenceScore;
-            if (constraintOccurrence instanceof IntConstraintOccurrence) {
-                occurrenceScore = ((IntConstraintOccurrence) constraintOccurrence).getWeight();
-            } else if (constraintOccurrence instanceof DoubleConstraintOccurrence) {
-                occurrenceScore = ((DoubleConstraintOccurrence) constraintOccurrence).getWeight();
-            } else if (constraintOccurrence instanceof LongConstraintOccurrence) {
-                occurrenceScore = ((LongConstraintOccurrence) constraintOccurrence).getWeight();
-            } else if (constraintOccurrence instanceof UnweightedConstraintOccurrence) {
-                occurrenceScore = 1.0;
-            } else {
-                throw new IllegalStateException("Cannot determine occurrenceScore of ConstraintOccurrence class: "
-                        + constraintOccurrence.getClass());
-            }
-            scoreTotal += occurrenceScore;
-            scoreTotalMap.put(key, scoreTotal);
-        }
-        for (Map.Entry<List<Object>, Double> entry : scoreTotalMap.entrySet()) {
-            analysis.append("    ").append(entry.getKey()).append(" = ").append(entry.getValue()).append("\n");
-        }
     }
 
 }
