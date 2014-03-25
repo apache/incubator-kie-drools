@@ -149,7 +149,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     private void addDependencies(InternalKieModule kieModule, ArtifactResolver resolver, List<DependencyDescriptor> dependencies) {
         for (DependencyDescriptor dep : dependencies) {
             Artifact depArtifact = resolver.resolveArtifact(dep.getReleaseId());
-            if (isKJar(depArtifact.getFile())) {
+            if (depArtifact != null && isKJar(depArtifact.getFile())) {
                 ReleaseId depReleaseId = new DependencyDescriptor(depArtifact).getReleaseId();
                 ZipKieModule zipKieModule = createZipKieModule(depReleaseId, depArtifact.getFile());
                 if (zipKieModule != null) {

@@ -34,6 +34,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.kie.scanner.DependencyDescriptor.isRangedVersion;
@@ -43,7 +45,7 @@ public class MavenRepository {
     private static MavenRepository defaultMavenRepository;
 
     private final Aether aether;
-    private static final List<RemoteRepository> extraRepositories = new ArrayList<RemoteRepository>();
+    private static final Collection<RemoteRepository> extraRepositories = new HashSet<RemoteRepository>();
     
     private MavenRepository(Aether aether) {
         this.aether = aether;
@@ -100,13 +102,20 @@ public class MavenRepository {
     public static void addExtraRepository(RemoteRepository r) {
         extraRepositories.add(r);
     }
-    
-    public static List<RemoteRepository> getExtraRepositories() {
+
+    public static Collection<RemoteRepository> getExtraRepositories() {
         return extraRepositories;
     }
     
     public static void clearExtraRepositories() {
         extraRepositories.clear();
+    }
+
+    private Collection<RemoteRepository> getRemoteRepositoryForRequest() {
+        Collection<RemoteRepository> remoteRepos = new HashSet<RemoteRepository>();
+        remoteRepos.addAll(extraRepositories);
+        remoteRepos.addAll(aether.getRepositories());
+        return remoteRepos;
     }
 
     public static MavenRepository getMavenRepository(MavenProject mavenProject) {
@@ -118,10 +127,7 @@ public class MavenRepository {
         CollectRequest collectRequest = new CollectRequest();
         Dependency root = new Dependency( artifact, "" );
         collectRequest.setRoot( root );
-        for (RemoteRepository repo : aether.getRepositories()) {
-            collectRequest.addRepository(repo);
-        }
-        for (RemoteRepository repo : extraRepositories) {
+        for (RemoteRepository repo : getRemoteRepositoryForRequest()) {
             collectRequest.addRepository(repo);
         }
         CollectResult collectResult;
@@ -160,10 +166,7 @@ public class MavenRepository {
         Artifact artifact = new DefaultArtifact( artifactName );
         ArtifactRequest artifactRequest = new ArtifactRequest();
         artifactRequest.setArtifact( artifact );
-        for (RemoteRepository repo : aether.getRepositories()) {
-            artifactRequest.addRepository(repo);
-        }
-        for (RemoteRepository repo : extraRepositories) {
+        for (RemoteRepository repo : getRemoteRepositoryForRequest()) {
             artifactRequest.addRepository(repo);
         }
         try {
@@ -178,10 +181,7 @@ public class MavenRepository {
         Artifact artifact = new DefaultArtifact( artifactName );
         VersionRangeRequest versionRequest = new VersionRangeRequest();
         versionRequest.setArtifact(artifact);
-        for (RemoteRepository repo : aether.getRepositories()) {
-            versionRequest.addRepository(repo);
-        }
-        for (RemoteRepository repo : extraRepositories) {
+        for (RemoteRepository repo : getRemoteRepositoryForRequest()) {
             versionRequest.addRepository(repo);
         }
         VersionRangeResult artifactResult;

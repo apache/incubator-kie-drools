@@ -21,8 +21,8 @@ import org.sonatype.aether.util.DefaultRepositorySystemSession;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
 
 import static org.kie.scanner.embedder.MavenProjectLoader.loadMavenProject;
 
@@ -36,7 +36,7 @@ public class Aether {
 
     private final RepositorySystem system;
     private RepositorySystemSession session;
-    private final List<RemoteRepository> repositories;
+    private final Collection<RemoteRepository> repositories;
 
     private RemoteRepository localRepository;
 
@@ -63,12 +63,11 @@ public class Aether {
         repositories = initRepositories(mavenProject);
     }
 
-    private List<RemoteRepository> initRepositories(MavenProject mavenProject) {
-        List<RemoteRepository> reps = new ArrayList<RemoteRepository>();
+    private Collection<RemoteRepository> initRepositories(MavenProject mavenProject) {
+        Collection<RemoteRepository> reps = new HashSet<RemoteRepository>();
+        reps.add(newCentralRepository());
         if (mavenProject != null) {
             reps.addAll(mavenProject.getRemoteProjectRepositories());
-        } else {
-            reps.add(newCentralRepository());
         }
 
         RemoteRepository localRepo = newLocalRepository();
@@ -125,7 +124,7 @@ public class Aether {
         session = newRepositorySystemSession( system );
     }
 
-    public List<RemoteRepository> getRepositories() {
+    public Collection<RemoteRepository> getRepositories() {
         return repositories;
     }
 
