@@ -23,7 +23,6 @@ import java.util.Map;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.event.AuditEventBuilder;
-import org.jbpm.process.audit.event.DefaultAuditEventBuilderImpl;
 import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
@@ -56,7 +55,7 @@ import org.kie.internal.task.api.EventService;
  */
 public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFactory {
 
-    private AuditEventBuilder auditBuilder = new DefaultAuditEventBuilderImpl();
+    private AuditEventBuilder auditBuilder = new ManagedAuditEventBuilderImpl();
     
     @Override
     public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
@@ -72,11 +71,11 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
 
 
     @Override
-    public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
+    public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {    	
         List<ProcessEventListener> defaultListeners = new ArrayList<ProcessEventListener>();
         // register JPAWorkingMemoryDBLogger
         AbstractAuditLogger logger = AuditLoggerFactory.newJPAInstance(runtime.getKieSession().getEnvironment());
-        logger.setBuilder(getAuditBuilder());
+        logger.setBuilder(getAuditBuilder(runtime));
         defaultListeners.add(logger);
         // add any custom listeners
         defaultListeners.addAll(super.getProcessEventListeners(runtime));
@@ -142,6 +141,14 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
         return auditBuilder;
     }
 
+    public AuditEventBuilder getAuditBuilder(RuntimeEngine engine) {
+    	if (this.auditBuilder != null && this.auditBuilder instanceof ManagedAuditEventBuilderImpl) {
+    		String identifier = ((RuntimeEngineImpl)engine).getManager().getIdentifier();
+    		((ManagedAuditEventBuilderImpl) this.auditBuilder).setOwnerId(identifier);
+    	}
+    	
+    	return this.auditBuilder;
+    }
 
     public void setAuditBuilder(AuditEventBuilder auditBuilder) {
         this.auditBuilder = auditBuilder;

@@ -18,7 +18,11 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jbpm.process.audit.AuditLogService;
+import org.jbpm.process.audit.JPAAuditLogService;
+import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.audit.event.AuditEventBuilder;
+import org.jbpm.runtime.manager.impl.ManagedAuditEventBuilderImpl;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
@@ -38,6 +42,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
@@ -126,7 +131,7 @@ public class MultipleRuntimeManagerTest extends AbstractBaseTest {
                 .entityManagerFactory(emf)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
-                .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, (AuditEventBuilder)null))
+                .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, new ManagedAuditEventBuilderImpl()))
                 .get();
         
         RuntimeManager manager = managerFactory.newSingletonRuntimeManager(environment);
@@ -138,7 +143,7 @@ public class MultipleRuntimeManagerTest extends AbstractBaseTest {
                 .entityManagerFactory(emf)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
-                .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, (AuditEventBuilder)null))
+                .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, new ManagedAuditEventBuilderImpl()))
                 .get();
         
         manager = managerFactory.newPerRequestRuntimeManager(environment);
@@ -150,7 +155,7 @@ public class MultipleRuntimeManagerTest extends AbstractBaseTest {
                 .entityManagerFactory(emf)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
-                .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, (AuditEventBuilder)null))
+                .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, new ManagedAuditEventBuilderImpl()))
                 .get();
         
         manager = managerFactory.newPerProcessInstanceRuntimeManager(environment);
@@ -176,6 +181,15 @@ public class MultipleRuntimeManagerTest extends AbstractBaseTest {
         List<TaskSummary> tasks = runtime.getTaskService().getTasksOwnedByStatus("john", statuses, "en-UK");
         assertNotNull(tasks);
         assertEquals(1, tasks.size());
+        
+        AuditLogService logService = new JPAAuditLogService(((InternalRuntimeManager)manager).getEnvironment().getEnvironment());
+        
+        List<ProcessInstanceLog> logs = logService.findActiveProcessInstances("UserTask");
+        assertNotNull(logs);      
+        assertEquals(1, logs.size());
+        
+        String externalId = logs.get(0).getExternalId();
+        assertEquals(manager.getIdentifier(), externalId);	
         
         runtime.getTaskService().start(tasks.get(0).getId(), "john");
         

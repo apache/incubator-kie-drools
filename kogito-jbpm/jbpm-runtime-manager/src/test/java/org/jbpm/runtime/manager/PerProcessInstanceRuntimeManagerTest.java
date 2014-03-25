@@ -370,9 +370,14 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         assertNotNull(logs);
         assertEquals(1, logs.size());
         
+        String externalId = logs.get(0).getExternalId();
+        assertEquals(manager.getIdentifier(), externalId);
+        
         logs = logService.findProcessInstances("SubProcess");
         assertNotNull(logs);
         assertEquals(1, logs.size());
+        externalId = logs.get(0).getExternalId();
+        assertEquals(manager.getIdentifier(), externalId);
         
         logService.dispose();
     }

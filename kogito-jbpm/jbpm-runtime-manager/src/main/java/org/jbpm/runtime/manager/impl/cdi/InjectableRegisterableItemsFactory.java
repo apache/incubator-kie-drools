@@ -379,7 +379,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         } else {        
         	auditLogger = AuditLoggerFactory.newJPAInstance(engine.getKieSession().getEnvironment());
         }
-        auditLogger.setBuilder(getAuditBuilder());
+        auditLogger.setBuilder(getAuditBuilder(engine));
         
         return auditLogger;
     }
