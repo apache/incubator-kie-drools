@@ -131,7 +131,7 @@ public class ShiftAssignmentPillarPartSwapMoveFactory implements MoveListFactory
                                 pillarPartAssignmentSequence.getShiftAssignmentList(),
                                 otherEmployee));
                     }
-                    moveList.add(new CompositeMove(moveListByPillarPartDuo));
+                    moveList.add(CompositeMove.buildMove(moveListByPillarPartDuo));
                 }
             }
         }

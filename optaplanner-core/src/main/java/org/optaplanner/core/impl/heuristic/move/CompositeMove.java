@@ -34,6 +34,17 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  */
 public class CompositeMove implements Move {
 
+    public static Move buildMove(List<Move> moveList) {
+        int size = moveList.size();
+        if (size > 1) {
+            return new CompositeMove(moveList);
+        } else if (size == 1) {
+            return moveList.get(0);
+        } else {
+            return new NoChangeMove();
+        }
+    }
+
     protected final List<Move> moveList;
 
     /**

@@ -116,7 +116,7 @@ public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<
                         }
                         moveListByPillarPartDuo.add(new BedChangeMove(pillarPartBedDesignation, otherBed));
                     }
-                    moveList.add(new CompositeMove(moveListByPillarPartDuo));
+                    moveList.add(CompositeMove.buildMove(moveListByPillarPartDuo));
                 }
             }
         }

@@ -107,7 +107,7 @@ public class ShiftAssignmentSequenceSwitchLength3MoveFactory implements MoveList
                                         .subList(rightIndex, rightIndex + SWITCH_LENGTH)) {
                                     subMoveList.add(new EmployeeChangeMove(rightShiftAssignment, leftEmployee));
                                 }
-                                moveList.add(new CompositeMove(subMoveList));
+                                moveList.add(CompositeMove.buildMove(subMoveList));
                             }
                         }
                     }
