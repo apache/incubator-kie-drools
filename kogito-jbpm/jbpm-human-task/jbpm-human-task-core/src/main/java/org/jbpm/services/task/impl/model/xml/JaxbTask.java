@@ -37,7 +37,7 @@ import org.kie.internal.task.api.model.SubTasksStrategy;
 
 @XmlRootElement(name="task")
 @XmlAccessorType(XmlAccessType.FIELD)
-@JsonIgnoreProperties({"descriptions","names","subjects", "peopleAssignments"})
+@JsonIgnoreProperties({"archived", "descriptions","names","subjects", "peopleAssignments"})
 public class JaxbTask implements InternalTask {
 
     @XmlElement
@@ -74,8 +74,7 @@ public class JaxbTask implements InternalTask {
     @XmlElement(name="form-name")
     @XmlSchemaType(name="String")
     private String formName;
-
-    
+ 
     public JaxbTask() { 
         // Default constructor
     }
@@ -360,17 +359,13 @@ public class JaxbTask implements InternalTask {
     }
 
     @Override
-    public Boolean isArchived() {
-        return (Boolean) unsupported(Task.class);
-    }
-
-    @Override
     @JsonIgnore
     public Short getArchived() {
         return (Short) unsupported(Task.class);
     }
 
     @Override
+    @JsonIgnore
     public void setArchived(Boolean archived) {
         unsupported(Task.class);
     }

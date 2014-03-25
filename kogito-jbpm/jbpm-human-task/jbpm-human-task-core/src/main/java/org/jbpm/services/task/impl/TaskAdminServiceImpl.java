@@ -116,7 +116,7 @@ public class TaskAdminServiceImpl implements TaskAdminService {
             // Only remove archived tasks
             Task task = persistenceContext.findTask(taskId);
             Content content = persistenceContext.findContent(task.getTaskData().getDocumentContentId());
-            if (((InternalTask) task).isArchived()) {
+            if (isArchived(((InternalTask) task))) {
                 persistenceContext.remove(task);
                 if (content != null) {
                     persistenceContext.remove(content);
@@ -130,6 +130,14 @@ public class TaskAdminServiceImpl implements TaskAdminService {
         return removedTasks;
     }
 
+    private static boolean isArchived(InternalTask task) { 
+        Short archived = task.getArchived();
+        if (archived == null) {
+            return false;
+        }
+        return (archived == 1) ? Boolean.TRUE : Boolean.FALSE; 
+    }
+    
     public int removeAllTasks() {
         List<Task> tasks = persistenceContext.queryStringInTransaction("select t from TaskImpl t",
                 ClassUtil.<List<Task>>castClass(List.class));
