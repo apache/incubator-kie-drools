@@ -162,7 +162,7 @@ public class SplitInstance extends NodeInstanceImpl {
                 	for ( final Iterator<Connection> iterator = outgoing.iterator(); iterator.hasNext(); ) {
                         final Connection connection = (Connection) iterator.next();
                         ConstraintEvaluator constraint = (ConstraintEvaluator) split.getConstraint( connection );
-                        if ( constraint.isDefault() ) {
+                        if ( constraint != null && constraint.isDefault() || split.isDefault(connection)) {
                         	triggerConnection(connection);
                         	found = true;
                             break;

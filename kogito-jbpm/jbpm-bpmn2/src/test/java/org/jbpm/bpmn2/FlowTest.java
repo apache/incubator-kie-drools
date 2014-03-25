@@ -257,6 +257,17 @@ public class FlowTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance);
 
     }
+    
+    @Test
+    public void testInclusiveSplitDefaultConnection() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-InclusiveGatewayWithDefault.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("test", "c");
+        ProcessInstance processInstance = ksession.startProcess("InclusiveGatewayWithDefault", params);
+        assertProcessInstanceCompleted(processInstance);
+
+    }
 
     @Test
     public void testInclusiveSplitAndJoin() throws Exception {
