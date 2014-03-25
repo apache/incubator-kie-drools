@@ -24,10 +24,10 @@
         should be executed, the dialect used for coding the action (i.e., Java or MVEL),
         and the actual action code.  This code can access any variables and globals.
         There is also a predefined variable <code>kcontext</code> that references the
-        <code>ProcessContext</code> object (which can,
+        <ulink url="http://docs.jboss.org/jbpm/v6.0.1/javadocs/org/kie/api/runtime/process/ProcessContext.html"><code>ProcessContext</code></ulink> object (which can,
         for example, be used to access the current <code>ProcessInstance</code> or
         <code>NodeInstance</code>, and to get and set variables, or get access to the
-        ksession using <code>kcontext.getKnowledgeRuntime()</code>). When a Script Task
+        ksession using <code>kcontext.getKieRuntime()</code>). When a Script Task
         is reached in the process, it will execute the action and then continue with the
         next node.  It contains the following properties:</para>
         <itemizedlist>

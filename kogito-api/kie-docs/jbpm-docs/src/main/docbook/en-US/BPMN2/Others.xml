@@ -99,7 +99,7 @@ Map&lt;String, Object&gt; variables = ksession.execute(new GenericCommand&lt;Map
     globals button when specifying an action script in the Eclipse action property
     editor.  You can also set the value of a global from the outside using 
     <code>ksession.setGlobal(name, value)</code> or from inside process scripts using 
-    <code>kcontext.getKnowledgeRuntime().setGlobal(name,value);</code>.</para>
+    <code>kcontext.getKieRuntime().setGlobal(name,value);</code>.</para>
   </section>
     
   <section>
@@ -114,7 +114,8 @@ Map&lt;String, Object&gt; variables = ksession.execute(new GenericCommand&lt;Map
     <para>Actions have access to globals and the variables that are defined
     for the process and the predefined variable <code>kcontext</code>.  This
     variable is of type
-    <code>org.kie.api.runtime.process.ProcessContext</code> and can be used for
+    <ulink url="http://docs.jboss.org/jbpm/v6.0.1/javadocs/org/kie/api/runtime/process/ProcessContext.html">
+		<code>ProcessContext</code></ulink> and can be used for
     several tasks:</para>
       <itemizedlist>
         <listitem><para>Getting the current node instance (if applicable).  The node
