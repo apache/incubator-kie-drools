@@ -26,11 +26,11 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 /**
  * A Solution represents a problem and a possible solution of that problem.
- * A possible solution does not need to optimal or even feasible.
- * A Solution does not even have to be initialized with a possible solution.
+ * A possible solution does not need to be optimal or even feasible.
+ * A Solution's variables do not even have to be initialized.
  * <p/>
  * A Solution is mutable.
- * For scalability reasons, the same Solution instance will be continuously modified.
+ * For scalability reasons, the same Solution instance, called the working solution, is continuously modified.
  * It's cloned to recall the best solution.
  */
 public interface Solution<S extends Score> {
