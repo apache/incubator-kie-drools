@@ -70,7 +70,7 @@ public class CompositeMove implements Move {
         return true;
     }
 
-    public Move createUndoMove(ScoreDirector scoreDirector) {
+    public CompositeMove createUndoMove(ScoreDirector scoreDirector) {
         List<Move> undoMoveList = new ArrayList<Move>(moveList.size());
         for (Move move : moveList) {
             // Note: this undoMove creation doesn't have the effect yet of a previous move in the moveList
