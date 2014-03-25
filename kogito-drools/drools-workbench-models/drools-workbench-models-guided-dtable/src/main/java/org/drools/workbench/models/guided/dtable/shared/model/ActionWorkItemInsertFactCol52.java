@@ -41,32 +41,35 @@ public class ActionWorkItemInsertFactCol52 extends ActionInsertFactCol52 {
     public static final String FIELD_PARAMETER_CLASSNAME = "parameterClassName";
 
     @Override
-    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
-        if (otherColumn == null) return null;
+    public List<BaseColumnFieldDiff> diff( BaseColumn otherColumn ) {
+        if ( otherColumn == null ) {
+            return null;
+        }
 
-        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
-        ActionWorkItemSetFieldCol52 other = (ActionWorkItemSetFieldCol52) otherColumn;
+        List<BaseColumnFieldDiff> result = super.diff( otherColumn );
+        ActionWorkItemInsertFactCol52 other = (ActionWorkItemInsertFactCol52) otherColumn;
 
         // Field: workItemName.
         if ( !isEqualOrNull( this.getWorkItemName(),
-                other.getWorkItemName() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_WORK_ITEM_NAME, this.getWorkItemName(), other.getWorkItemName()));
+                             other.getWorkItemName() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_WORK_ITEM_NAME, this.getWorkItemName(), other.getWorkItemName() ) );
         }
 
         // Field: workItemResultParameterName.
         if ( !isEqualOrNull( this.getWorkItemResultParameterName(),
-                other.getWorkItemResultParameterName() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_WORK_ITEM_RESULT_PARAM_NAME, this.getWorkItemResultParameterName(), other.getWorkItemResultParameterName()));
+                             other.getWorkItemResultParameterName() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_WORK_ITEM_RESULT_PARAM_NAME, this.getWorkItemResultParameterName(), other.getWorkItemResultParameterName() ) );
         }
 
         // Field: parameterClassName.
         if ( !isEqualOrNull( this.getParameterClassName(),
-                other.getParameterClassName() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_PARAMETER_CLASSNAME, this.getParameterClassName(), other.getParameterClassName()));
+                             other.getParameterClassName() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_PARAMETER_CLASSNAME, this.getParameterClassName(), other.getParameterClassName() ) );
         }
 
         return result;
     }
+
     public String getWorkItemName() {
         return workItemName;
     }
