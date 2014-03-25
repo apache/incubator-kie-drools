@@ -74,6 +74,7 @@ public class ExecutorServiceFactory {
         // set executor on all instances that requires it
         ((ExecutorQueryServiceImpl) queryService).setCommandService(commandService);
         ((ExecutorImpl) executor).setCommandService(commandService);
+        ((ExecutorImpl) executor).setEmf(emf);
         ((ExecutorRequestAdminServiceImpl) adminService).setCommandService(commandService);
         ((ExecutorRunnable) runnable).setCommandService(commandService);
         
@@ -84,9 +85,7 @@ public class ExecutorServiceFactory {
         ((ExecutorServiceImpl)service).setAdminService(adminService);
         
         runnable.setClassCacheManager(classCacheManager);
-        runnable.setQueryService(queryService);
-
-        ((ExecutorImpl)executor).setExecutorRunnable(runnable);        
+        runnable.setQueryService(queryService);      
 
         return service;
     }

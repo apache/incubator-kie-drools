@@ -34,7 +34,7 @@ public class JpaPersistenceContext implements Context {
 			Map<String, Object> params, boolean singleResult, Class<T> clazz) {
 		check();
 		Query query = this.em.createNamedQuery(queryName);
-		return queryStringWithParameters(params, singleResult, LockModeType.NONE, clazz, query);
+		return queryStringWithParameters(params, singleResult, LockModeType.PESSIMISTIC_WRITE, clazz, query);
 	}
 
 	
@@ -69,7 +69,7 @@ public class JpaPersistenceContext implements Context {
 			Class<T> clazz) {
 		check();
 		Query query = this.em.createNamedQuery(queryName);
-		return queryStringWithParameters(params, singleResult, LockModeType.PESSIMISTIC_FORCE_INCREMENT, clazz, query);	
+		return queryStringWithParameters(params, singleResult, LockModeType.PESSIMISTIC_WRITE, clazz, query);	
 	}
 
 	
