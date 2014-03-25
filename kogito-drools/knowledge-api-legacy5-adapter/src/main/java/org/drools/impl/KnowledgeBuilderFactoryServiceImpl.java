@@ -34,7 +34,7 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
     }
 
     public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf) {
-        return new KnowledgeBuilderImpl( new PackageBuilder( (PackageBuilderConfiguration) ((KnowledgeBuilderConfigurationAdapter)conf).getDelegate() ) );
+        return new KnowledgeBuilderImpl( new PackageBuilder( conf == null ? null : (PackageBuilderConfiguration) ((KnowledgeBuilderConfigurationAdapter)conf).getDelegate() ) );
     }
 
     public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase) {
@@ -50,7 +50,7 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
         if ( kbase != null ) {
             return new KnowledgeBuilderImpl( new PackageBuilder( ((KnowledgeBaseImpl) kbase).ruleBase, (PackageBuilderConfiguration) conf ) );
         } else {
-            return new KnowledgeBuilderImpl(new PackageBuilder( (PackageBuilderConfiguration) ((KnowledgeBuilderConfigurationAdapter)conf).getDelegate() ) );
+            return new KnowledgeBuilderImpl(new PackageBuilder( conf == null ? null : (PackageBuilderConfiguration) ((KnowledgeBuilderConfigurationAdapter)conf).getDelegate() ) );
         }
     }
 
