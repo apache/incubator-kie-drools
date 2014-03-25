@@ -27,8 +27,11 @@ public interface InternalTask extends Task {
    
     void setId(long id);
 
-    Boolean isArchived();
+    // This property breaks JSON serialization
+    // Boolean isArchived();
 
+    Short getArchived();
+   
     void setArchived(Boolean archived);
     
     int getVersion();
@@ -59,8 +62,6 @@ public interface InternalTask extends Task {
 
     void setTaskType(String taskType);
 
-    Short getArchived();
-   
     SubTasksStrategy getSubTaskStrategy();
 
     void setSubTaskStrategy(SubTasksStrategy subTaskStrategy);
