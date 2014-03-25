@@ -112,7 +112,23 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
     }
 
     
-    protected void processResources(InternalKieModule module, Map<String, String> formsData, Collection<String> files,
+    
+    @Override
+	public void undeploy(DeploymentUnit unit) {
+    	if (!(unit instanceof KModuleDeploymentUnit)) {
+            throw new IllegalArgumentException("Invalid deployment unit provided - " + unit.getClass().getName());
+        }
+        KModuleDeploymentUnit kmoduleUnit = (KModuleDeploymentUnit) unit;
+		super.undeploy(unit);
+		
+		KieServices ks = KieServices.Factory.get();
+		ReleaseId releaseId = ks.newReleaseId(kmoduleUnit.getGroupId(), kmoduleUnit.getArtifactId(), kmoduleUnit.getVersion());
+		ks.getRepository().removeKieModule(releaseId);
+	}
+
+
+
+	protected void processResources(InternalKieModule module, Map<String, String> formsData, Collection<String> files,
     		KieContainer kieContainer, DeploymentUnit unit, DeployedUnitImpl deployedUnit, ReleaseId releaseId) {
         for (String fileName : files) {
             if(fileName.matches(".+bpmn[2]?$")) {
