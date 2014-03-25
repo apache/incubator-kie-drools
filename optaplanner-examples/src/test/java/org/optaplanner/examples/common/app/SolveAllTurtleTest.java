@@ -81,8 +81,7 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
                     assertionScoreDirectorFactoryConfig);
         }
         Solver solver = solverFactory.buildSolver();
-        solver.setPlanningProblem(planningProblem);
-        solver.solve();
+        solver.solve(planningProblem);
         Solution bestSolution = solver.getBestSolution();
         if (bestSolution == null) {
             // Solver didn't make it past initialization // TODO remove me once getBestSolution() never returns null

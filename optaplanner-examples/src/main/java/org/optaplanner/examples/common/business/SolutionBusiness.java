@@ -265,8 +265,7 @@ public class SolutionBusiness {
      * @return never null
      */
     public Solution solve(Solution planningProblem) {
-        solver.setPlanningProblem(planningProblem);
-        solver.solve();
+        solver.solve(planningProblem);
         return solver.getBestSolution();
     }
 

@@ -36,8 +36,7 @@ public class CloudBalancingHelloWorld {
         CloudBalance unsolvedCloudBalance = new CloudBalancingGenerator().createCloudBalance(400, 1200);
 
         // Solve the problem
-        solver.setPlanningProblem(unsolvedCloudBalance);
-        solver.solve();
+        solver.solve(unsolvedCloudBalance);
         CloudBalance solvedCloudBalance = (CloudBalance) solver.getBestSolution();
 
         // Display the result

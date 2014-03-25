@@ -159,8 +159,7 @@
         CloudBalance unsolvedCloudBalance = new CloudBalancingGenerator().createCloudBalance(400, 1200);
 
         // Solve the problem
-        solver.setPlanningProblem(unsolvedCloudBalance);
-        solver.solve();
+        solver.solve(unsolvedCloudBalance);
         CloudBalance solvedCloudBalance = (CloudBalance) solver.getBestSolution();
 
         // Display the result
@@ -194,8 +193,7 @@
         <listitem>
           <para>Solve the problem.</para>
 
-          <programlisting language="java">        solver.setPlanningProblem(unsolvedCloudBalance);
-        solver.solve();
+          <programlisting language="java">        solver.solve(unsolvedCloudBalance);
         CloudBalance solvedCloudBalance = (CloudBalance) solver.getBestSolution();</programlisting>
         </listitem>
 

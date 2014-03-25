@@ -76,8 +76,7 @@ public abstract class SolverPerformanceTest extends LoggingTest {
     private Solver solve(SolverFactory solverFactory, File unsolvedDataFile) {
         Solution planningProblem = solutionDao.readSolution(unsolvedDataFile);
         Solver solver = solverFactory.buildSolver();
-        solver.setPlanningProblem(planningProblem);
-        solver.solve();
+        solver.solve(planningProblem);
         return solver;
     }
 

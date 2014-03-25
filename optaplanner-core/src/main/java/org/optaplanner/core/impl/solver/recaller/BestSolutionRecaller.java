@@ -52,7 +52,7 @@ public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
 
     @Override
     public void solvingStarted(DefaultSolverScope solverScope) {
-        // Starting bestSolution is already set by Solver.setPlanningProblem()
+        // Starting bestSolution is already set by Solver.solve(Solution)
         int uninitializedVariableCount = solverScope.getScoreDirector().countWorkingSolutionUninitializedVariables();
         solverScope.setBestUninitializedVariableCount(uninitializedVariableCount);
         Score score = solverScope.calculateScore();

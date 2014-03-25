@@ -4036,3 +4036,13 @@ There is now a better alternative to Brute Force: Branch And Bound, see docs for
 [MAJOR] The ConstraintOccurrence classes (which were deprecated) have been removed.
 If you hadn't switch them to the ConstraintMatch system yet,
 scroll up to the section "From 6.0.0.Alpha9 to 6.0.0.Beta1" for instructions.
+
+[MAJOR] Solver interface: the methods setPlanningProblem(Solution) and solve() have been merged
+as the method solve(Solution).
+Before in *.java:
+        solver.setPlanningProblem(planningProblem);
+        solver.solve();
+After in *.java:
+        solver.solve(planningProblem);
+Note: you still need to use solver.getBestSolution() to retrieve the best solution.
+That is intentional due to real-time planning and to support pareto optimization in the future.

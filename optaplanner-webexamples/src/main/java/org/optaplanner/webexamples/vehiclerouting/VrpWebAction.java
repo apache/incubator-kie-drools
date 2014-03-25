@@ -49,9 +49,8 @@ public class VrpWebAction {
 
     public void solve(final HttpSession session) {
         final Solver solver = (Solver) session.getAttribute(VrpSessionAttributeName.SOLVER);
-        VehicleRoutingSolution unsolvedSolution = (VehicleRoutingSolution) session.getAttribute(VrpSessionAttributeName.SHOWN_SOLUTION);
+        final VehicleRoutingSolution unsolvedSolution = (VehicleRoutingSolution) session.getAttribute(VrpSessionAttributeName.SHOWN_SOLUTION);
 
-        solver.setPlanningProblem(unsolvedSolution);
         solver.addEventListener(new SolverEventListener() {
             public void bestSolutionChanged(BestSolutionChangedEvent event) {
                 VehicleRoutingSolution bestSolution = (VehicleRoutingSolution) event.getNewBestSolution();
@@ -60,7 +59,7 @@ public class VrpWebAction {
         });
         solvingExecutor.submit(new Runnable() {
             public void run() {
-                solver.solve();
+                solver.solve(unsolvedSolution);
             }
         });
     }

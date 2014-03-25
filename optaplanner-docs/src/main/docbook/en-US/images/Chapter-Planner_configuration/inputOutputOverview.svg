@@ -285,7 +285,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -1210,19 +1210,7 @@
            x="330"
            y="95.590172"
            style="font-size:12px;text-align:center;text-anchor:middle;fill:#4e9a06" /></flowRegion><flowPara
-         id="flowPara4718">setPlanningProblem()</flowPara></flowRoot>    <flowRoot
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#4e9a06;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       id="flowRoot4747"
-       xml:space="preserve"
-       transform="translate(20,914.95951)"><flowRegion
-         id="flowRegion4749"><rect
-           style="font-size:12px;text-align:center;text-anchor:middle;fill:#4e9a06"
-           y="87.402672"
-           x="330"
-           height="19.999998"
-           width="100"
-           id="rect4751" /></flowRegion><flowPara
-         id="flowPara4753">solve()</flowPara></flowRoot>    <flowRoot
+         id="flowPara3244">solve(problem)</flowPara></flowRoot>    <flowRoot
        transform="translate(110,893.14701)"
        xml:space="preserve"
        id="flowRoot4755"

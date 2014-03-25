@@ -804,8 +804,8 @@
 }</programlisting>
 
       <para>If you call the <literal>terminateEarly()</literal> method from another thread, the
-      <literal>Solver</literal> will terminate at its earliest convenience and the <literal>solve()</literal> method
-      will return in the original <literal>Solver</literal> thread.</para>
+      <literal>Solver</literal> will terminate at its earliest convenience and the <literal>solve(Solution)</literal>
+      method will return in the original <literal>Solver</literal> thread.</para>
     </section>
   </section>
 
