@@ -14,22 +14,22 @@
 
     <itemizedlist>
       <listitem>
-        <para>4 queens has <literal>256</literal> possible solutions (<literal>4 ^ 4</literal>) and 2 optimal
+        <para>4 queens has <literal>256</literal> possible solutions (<literal>4^4</literal>) and 2 optimal
         solutions.</para>
       </listitem>
 
       <listitem>
-        <para>5 queens has <literal>3125</literal> possible solutions (<literal>5 ^ 5</literal>) and 1 optimal
+        <para>5 queens has <literal>3125</literal> possible solutions (<literal>5^5</literal>) and 1 optimal
         solution.</para>
       </listitem>
 
       <listitem>
-        <para>8 queens has <literal>16777216</literal> possible solutions (<literal>8 ^ 8</literal>) and 92 optimal
+        <para>8 queens has <literal>16777216</literal> possible solutions (<literal>8^8</literal>) and 92 optimal
         solutions.</para>
       </listitem>
 
       <listitem>
-        <para>64 queens has more than <literal>10^115</literal> possible solutions (<literal>64 ^ 64</literal>).</para>
+        <para>64 queens has more than <literal>10^115</literal> possible solutions (<literal>64^64</literal>).</para>
       </listitem>
 
       <listitem>
@@ -48,12 +48,40 @@
       </imageobject>
     </mediaobject>
 
-    <para>An algorithm that checks every possible solution (even with pruning) can easily run for billions of years on a
-    single real-life planning problem. What we really want is to <emphasis role="bold">find the best solution in the
-    limited time at our disposal</emphasis>. Planning competitions (such as the International Timetabling Competition)
-    show that Local Search variations (<link linkend="tabuSearch">Tabu Search</link>, <link
-    linkend="simulatedAnnealing">Simulated Annealing</link>, <link linkend="lateAcceptance">Late Acceptance</link>, ...)
-    usually perform best for real-world problems given real-world time limitations.</para>
+    <para>Calculating the number of possible solutions depends on the design of the domain model:</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Optimization_algorithms/searchSpaceSizeCalculation.png"/>
+      </imageobject>
+    </mediaobject>
+
+    <note>
+      <para>This search space size calculation includes infeasible solutions (if they can be represented by the model),
+      because:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>The optimal solution might be infeasible.</para>
+        </listitem>
+
+        <listitem>
+          <para>There are many types of hard constraints which cannot be incorporated in the formula practically. For
+          example in Cloud Balancing, try incorporating the CPU capacity constraint in the formula.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Even in cases were adding some of the hard constraints in the formula is practical, for example Course
+      Scheduling, the resulting search space is still huge.</para>
+    </note>
+
+    <para>An algorithm that checks every possible solution (even with pruning such as in <link
+    linkend="branchAndBound">Branch And Bound</link>) can easily run for billions of years on a single real-life
+    planning problem. What we really want is to <emphasis role="bold">find the best solution in the limited time at our
+    disposal</emphasis>. Planning competitions (such as the International Timetabling Competition) show that Local
+    Search variations (<link linkend="tabuSearch">Tabu Search</link>, <link linkend="simulatedAnnealing">Simulated
+    Annealing</link>, <link linkend="lateAcceptance">Late Acceptance</link>, ...) usually perform best for real-world
+    problems given real-world time limitations.</para>
   </section>
 
   <section>
