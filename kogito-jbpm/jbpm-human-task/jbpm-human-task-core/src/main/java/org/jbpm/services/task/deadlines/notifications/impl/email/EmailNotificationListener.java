@@ -22,9 +22,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.activation.DataHandler;
 import javax.activation.MimetypesFileTypeMap;
@@ -101,8 +103,7 @@ public class EmailNotificationListener implements NotificationListener {
             Map<String, Object> variables = event.getContent();
 
 
-            Map<? extends Language, ? extends EmailNotificationHeader> headers = notification
-                    .getEmailHeaders();
+            Map<? extends Language, ? extends EmailNotificationHeader> headers = notification.getEmailHeaders();
 
             for (Iterator<Map.Entry<String, List<User>>> it = users.entrySet()
                     .iterator(); it.hasNext();) {
@@ -114,11 +115,16 @@ public class EmailNotificationListener implements NotificationListener {
                     EmailNotificationHeader header = headers.get(lang);
     
                     Message msg = new MimeMessage(mailSession);
-                    
+                    Set<String> toAddresses = new HashSet<String>();
                     for (User user : entry.getValue()) {
     
                         String emailAddress = userInfo.getEmailForEntity(user);
-                        msg.addRecipients( Message.RecipientType.TO, InternetAddress.parse( emailAddress, false));
+                        if (emailAddress != null && !toAddresses.contains(emailAddress)) {                        	
+                        	msg.addRecipients( Message.RecipientType.TO, InternetAddress.parse( emailAddress, false));
+                        	toAddresses.add(emailAddress);
+                        } else {
+                        	logger.warn("Email address not found for user {}", user.getId());
+                        }
                     }
                     
     
@@ -216,15 +222,17 @@ public class EmailNotificationListener implements NotificationListener {
     }
     
     protected void buildMapByLanguage(Map<String, List<User>> map, Group group) {
-        for (Iterator<OrganizationalEntity> it = userInfo
-                .getMembersForGroup(group); it.hasNext();) {
-            OrganizationalEntity entity = it.next();
-            if (entity instanceof Group) {
-                buildMapByLanguage(map, (Group) entity);
-            } else {
-                buildMapByLanguage(map, (User) entity);
-            }
-        }
+    	Iterator<OrganizationalEntity> it = userInfo.getMembersForGroup(group);
+    	if (it != null) {
+	    	while (it.hasNext()) {
+	            OrganizationalEntity entity = it.next();
+	            if (entity instanceof Group) {
+	                buildMapByLanguage(map, (Group) entity);
+	            } else {
+	                buildMapByLanguage(map, (User) entity);
+	            }
+	        }
+    	}
     }
 
     protected void buildMapByLanguage(Map<String, List<User>> map, User user) {
