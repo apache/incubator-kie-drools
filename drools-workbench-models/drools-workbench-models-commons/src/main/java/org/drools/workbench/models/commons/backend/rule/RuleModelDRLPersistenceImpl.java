@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.protobuf.DescriptorProtos;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.descr.AccumulateDescr;
@@ -57,7 +58,6 @@ import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
@@ -2703,16 +2703,6 @@ public class RuleModelDRLPersistenceImpl
         return splittedExpr;
     }
 
-    private static String getSimpleFactType( String className,
-                                             PackageDataModelOracle dmo ) {
-        for ( String type : dmo.getProjectModelFields().keySet() ) {
-            if ( type.equals( className ) ) {
-                return type.substring( type.lastIndexOf( "." ) + 1 );
-            }
-        }
-        return className;
-    }
-
     private interface Expr {
 
         FieldConstraint asFieldConstraint( RuleModel m,
@@ -2931,22 +2921,33 @@ public class RuleModelDRLPersistenceImpl
                 } else {
                     ModelField currentField = findField( typeFields,
                                                          expressionPart );
-                    expression.appendPart( new ExpressionField( expressionPart,
-                                                                getSimpleFactType( currentField.getClassName(),
-                                                                                   dmo ),
-                                                                getSimpleFactType( currentField.getType(),
-                                                                                   dmo ) ) );
-                    typeFields = findFields( dmo, m, currentField.getClassName() );
+                    expression.appendPart(new ExpressionField(expressionPart,
+                            getSimpleFactType(currentField.getClassName(),
+                                    dmo),
+                            getSimpleFactType(currentField.getType(),
+                                    dmo)));
+                    typeFields = findFields(dmo, m, currentField.getClassName());
+
                 }
             }
             String expressionPart = normalizeExpressionPart( splits[ splits.length - 1 ] );
             ModelField currentField = findField( typeFields,
                                                  expressionPart );
-            expression.appendPart( new ExpressionField( expressionPart,
-                                                        getSimpleFactType( currentField.getClassName(),
-                                                                           dmo ),
-                                                        getSimpleFactType( currentField.getType(),
-                                                                           dmo ) ) );
+            if (currentField == null) {
+                expression.appendPart(new ExpressionField(
+                        expressionPart,
+                        getSimpleFactType(currentField.getClassName(),
+                                dmo),
+                        getSimpleFactType(currentField.getType(),
+                                dmo)));
+            } else {
+
+                expression.appendPart(new ExpressionField(expressionPart,
+                        getSimpleFactType(currentField.getClassName(),
+                                dmo),
+                        getSimpleFactType(currentField.getType(),
+                                dmo)));
+            }
             return expression;
         }
 
@@ -2991,18 +2992,6 @@ public class RuleModelDRLPersistenceImpl
             for ( ModelField typeField : typeFields ) {
                 if ( typeField.getType().equals( DataType.TYPE_THIS ) ) {
                     return typeField;
-                }
-            }
-            return null;
-        }
-
-        private ModelField findField( ModelField[] typeFields,
-                                      String fieldName ) {
-            if ( typeFields != null && fieldName != null ) {
-                for ( ModelField typeField : typeFields ) {
-                    if ( typeField.getName().equals( fieldName ) ) {
-                        return typeField;
-                    }
                 }
             }
             return null;
