@@ -4151,42 +4151,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
     }
 
-    @Test
-    public void test() throws Exception {
-        String drl = "package org.test.testproject;\n" +
-                "import java.lang.Number;\n" +
-                "rule \"Test\"\n" +
-                "  dialect \"mvel\"\n" +
-                "  when\n" +
-                "   Fact( list.size() == 0 )\n" +
-                "  then\n" +
-                "end";
-
-        addModelField(
-                "Fact",
-                "list",
-                "List",
-                "List" );
-
-        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
-                new ArrayList<String>(),
-                dmo );
-
-        assertNotNull( m );
-
-        assertEquals(1, m.lhs.length);
-
-        FactPattern factPattern = (FactPattern) m.lhs[0];
-        assertEquals(1, factPattern.getConstraintList().getNumberOfConstraints());
-        SingleFieldConstraintEBLeftSide constraint = (SingleFieldConstraintEBLeftSide) factPattern.getConstraintList().getConstraint(0);
-        assertEquals("size", constraint.getFieldName());
-        assertEquals("int", constraint.getFieldType());
-        assertEquals("==", constraint.getOperator());
-        assertEquals("0", constraint.getValue());
-        assertEquals(1, constraint.getConstraintValueType());
-
-    }
-
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
         final String cleanExpected = expected.replaceAll( "\\s+",
