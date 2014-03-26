@@ -2799,5 +2799,381 @@
 
 
   </section>
+  
+  <section>
+	<title>REST summary</title>
+	<para>
+		The URL templates in the table below are relative the following URL: 
+		<itemizedlist>
+			<listitem>
+				<para>
+					<code>http://server:port/business-central/rest</code>
+				</para>
+			</listitem>
+		</itemizedlist>
+	</para>
+	
+	<table condition="BPMS" id="rest_api_calls">
+		<title>runtime REST calls</title>
+		<tgroup align="left" cols="3">
+			<colspec colname="c1" colwidth="62*"/>
+			<colspec colname="c2" colwidth="8*"/>
+			<colspec colname="c3" colwidth="30*"/>
+			<thead>
+				<row>
+					<entry>URL Template</entry>
+					<entry>Type</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row valign="top">
+					<entry>/runtime/{deploymentId}/process/{procDefID}/start</entry>
+					<entry>POST</entry>
+					<entry>start a process instance based on the Process definition (accepts query map parameters)</entry>
+				</row>
+				<row valign="top">
+					<entry>/runtime/{deploymentId}/process/instance/{procInstanceID}</entry>
+					<entry>GET</entry>
+					<entry>return a process instance details</entry>
+				</row>
+				<row valign="top">
+					<entry>/runtime/{deploymentId}/process/instance/{procInstanceID}/abort</entry>
+					<entry>POST</entry>
+					<entry>abort the process instance</entry>
+				</row>
+				<row valign="top">
+					<entry>/runtime/{deploymentId}/process/instance/{procInstanceID}/signal</entry>
+					<entry>POST</entry>
+					<entry>send a signal event to process instance (accepts query map parameters)</entry>
+				</row>
+				<row valign="top">
+					<entry>/runtime/{deploymentId}/process/instance/{procInstanceID}/variable/{varId}</entry>
+					<entry>GET</entry>
+					<entry>return a variable from a process instance</entry>
+				</row>
+				<row valign="top">
+					<entry>/runtime/{deploymentId}/signal/{signalCode}</entry>
+					<entry>POST</entry>
+					<entry>send a signal event to deployment</entry>
+				</row>
+				<row valign="top">
+					<entry>/runtime/{deploymentId}/workitem/{workItemID}/complete</entry>
+					<entry>POST</entry>
+					<entry>complete a work item (accepts query map parameters)</entry>
+				</row>
+				<row valign="top">
+					<entry>/runtime/{deploymentId}/workitem/{workItemID}/abort</entry>
+					<entry>POST</entry>
+					<entry>abort a work item</entry>
+				</row>
+				<row valign="top">
+					<entry>/runtime/{deploymentId}/withvars/process/{procDefinitionID}/start</entry>
+					<entry>POST</entry>
+					<entry>
+						<para>start a process instance and return the process instance with its variables</para>
+						<para>Note that even if a passed variable is not defined in the underlying process definition, 
+             it is created and initialized with the passed value.</para>
+					</entry>
+				</row>
+				<row valign="top">
+					<entry>/runtime/{deploymentId}/withvars/process/instance/{procInstanceID}/</entry>
+					<entry>GET</entry>
+					<entry>
+						<para>return a process instance with its variables</para>
+					</entry>
+				</row>
+				<row valign="top">
+					<entry>/runtime/{deploymentId}/withvars/process/instance/{procInstanceID}/signal</entry>
+					<entry>POST</entry>
+					<entry>
+						<para>send a signal event to the process instance (accepts query map parameters)</para>
+						<para>The following query parameters are accepted:<itemizedlist>
+            <listitem><para>The <code>signal</code> parameter specifies the name of the signal to be sent</para></listitem>
+            <listitem><para>The <code>event</code> parameter specifies the (optional) value of the signal to be sent</para></listitem>
+            </itemizedlist></para>
+					</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+
+	<table condition="BPMS" id="task_rest_api_calls">
+		<title>task REST calls</title>
+		<tgroup align="left" cols="3">
+			<colspec colname="c1" colwidth="62*"/>
+			<colspec colname="c2" colwidth="8*"/>
+			<colspec colname="c3" colwidth="30*"/>
+			<thead>
+				<row>
+					<entry>URL Template</entry>
+					<entry>Type</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row valign="top">
+					<entry>/task/query</entry>
+					<entry>GET</entry>
+					<entry>
+						<para>return a TaskSummary list</para>
+					</entry>
+				</row>
+				<row valign="top">
+					<entry>/task/content/{contentID}</entry>
+					<entry>GET</entry>
+					<entry>
+						<para>returns the content of a task</para>
+					</entry>
+				</row>
+				<row valign="top">
+					<entry>/task/{taskID}</entry>
+					<entry>GET</entry>
+					<entry>
+						<para>return the task</para>
+					</entry>
+				</row>
+				<row valign="top">
+					<entry>/task/{taskID}/activate</entry>
+					<entry>POST</entry>
+					<entry>
+						<para>activate the task</para>
+					</entry>
+				</row>
+				<row valign="top">
+					<entry>/task/{taskID}/claim</entry>
+					<entry>POST</entry>
+					<entry>
+						<para>claim the task</para>
+					</entry>
+				</row>
+				<row valign="top">
+					<entry>/task/{taskID}/claimnextavailable</entry>
+					<entry>POST</entry>
+					<entry>
+						<para>claim the next available task</para>
+					</entry>
+				</row>
+				<row valign="top">
+					<entry>/task/{taskID}/complete</entry>
+					<entry>POST</entry>
+					<entry>
+						<para>complete the task (accepts query map paramaters)</para>
+					</entry>
+				</row>
+				<row valign="top">
+					<entry>/task/{taskID}/delegate</entry>
+					<entry>POST</entry>
+					<entry>
+						<para>delegate the task</para>
+					</entry>
+				</row>
+				<row valign="top">
+					<entry>/task/{taskID}/exit</entry>
+					<entry>POST</entry>
+					<entry>
+						<para>exit the task</para>
+					</entry>
+				</row>
+				<row valign="top">
+					<entry>/task/{taskID}/fail</entry>
+					<entry>POST</entry>
+					<entry>
+						<para>fail the task</para>
+					</entry>
+				</row>
+				<row valign="top">
+					<entry>/task/{taskID}/forward</entry>
+					<entry>POST</entry>
+					<entry>
+						<para>forward the task</para>
+					</entry>
+				</row>
+				<row valign="top">
+					<entry>/task/{taskID}/nominate</entry>
+					<entry>POST</entry>
+					<entry>
+						<para>nominate the task</para>
+					</entry>
+				</row>
+				<row valign="top">
+					<entry>/task/{taskID}/release</entry>
+					<entry>POST</entry>
+					<entry>
+						<para>release the task</para>
+					</entry>
+				</row>
+				<row valign="top">
+					<entry>/task/{taskID}/resume</entry>
+					<entry>POST</entry>
+					<entry>
+						<para>resume the task (after suspending)</para>
+					</entry>
+				</row>
+				<row valign="top">
+					<entry>/task/{taskID}/skip</entry>
+					<entry>POST</entry>
+					<entry>
+						<para>skip the task</para>
+					</entry>
+				</row>
+				<row valign="top">
+					<entry>/task/{taskID}/start</entry>
+					<entry>POST</entry>
+					<entry>
+						<para>start the task</para>
+					</entry>
+				</row>
+				<row valign="top">
+					<entry>/task/{taskID}/stop</entry>
+					<entry>POST</entry>
+					<entry>
+						<para>stop the task</para>
+					</entry>
+				</row>
+				<row valign="top">
+					<entry>/task/{taskID}/suspend</entry>
+					<entry>POST</entry>
+					<entry>
+						<para>suspend the task</para>
+					</entry>
+				</row>
+				<row valign="top">
+					<entry>/task/{taskID}/content</entry>
+					<entry>GET</entry>
+					<entry>
+						<para>returns the content of a task</para>
+					</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+
+	<table condition="BPMS" id="history_api_calls">
+		<title>history REST calls</title>
+		<tgroup align="left" cols="3">
+			<colspec colname="c1" colwidth="62*"/>
+			<colspec colname="c2" colwidth="8*"/>
+			<colspec colname="c3" colwidth="30*"/>
+			<thead>
+				<row>
+					<entry>URL Template</entry>
+					<entry>Type</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row valign="top">
+					<entry>/history/clear/</entry>
+					<entry>POST</entry>
+					<entry>delete all process, node and history records</entry>
+				</row>
+				<row valign="top">
+					<entry>/history/instances</entry>
+					<entry>GET</entry>
+					<entry>return the list of all process instance history records</entry>
+				</row>
+				<row valign="top">
+					<entry>/history/instance/{procInstId}</entry>
+					<entry>GET</entry>
+					<entry>return a list of process instance history records for a process instance</entry>
+				</row>
+				<row valign="top">
+					<entry>/history/instance/{procInstId}/child</entry>
+					<entry>GET</entry>
+					<entry>return a list of process instance history records for the subprocesses of the process instance</entry>
+				</row>
+				<row valign="top">
+					<entry>/history/instance/{procInstId}/node</entry>
+					<entry>GET</entry>
+					<entry>return a list of node history records for a process instance</entry>
+				</row>
+				<row valign="top">
+					<entry>/history/instance/{procInstId}/node/{nodeId}</entry>
+					<entry>GET</entry>
+					<entry>return a list of node history records for a node in a process instance</entry>
+				</row>
+				<row valign="top">
+					<entry>/history/instance/{procInstId}/variable</entry>
+					<entry>GET</entry>
+					<entry>return a list of variable history records for a process instance</entry>
+				</row>
+				<row valign="top">
+					<entry>/history/instance/{procInstId}/variable/{variableId}</entry>
+					<entry>GET</entry>
+					<entry>return a list of variable history records for a variable in a process instance</entry>
+				</row>
+				<row valign="top">
+					<entry>/history/process/{procDefId}</entry>
+					<entry>GET</entry>
+					<entry>return a list of process instance history records for process instances using a given process definition</entry>
+				</row>
+				<row valign="top">
+					<entry>/history/variable/{varId}</entry>
+					<entry>GET</entry>
+					<entry>return a list of variable history records for a variable</entry>
+				</row>
+				<row valign="top">
+					<entry>/history/variable/{varId}/instances</entry>
+					<entry>GET</entry>
+					<entry>return a list of process instance history records for process instances that contain a variable with the given variable id</entry>
+				</row>
+				<row valign="top">
+					<entry>/history/variable/{varId}/value/{value}</entry>
+					<entry>GET</entry>
+					<entry>return a list of variable history records for variable(s) with the given variable id and given value</entry>
+				</row>
+				<row valign="top">
+					<entry>/history/variable/{varId}/value/{value}/instances</entry>
+					<entry>GET</entry>
+					<entry>return a list of process instance history records for process instances with the specified variable that
+          contains the specified variable value</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+
+	<table condition="BPMS" id="deployment_api_calls">
+		<title>deployment REST calls</title>
+		<tgroup align="left" cols="3">
+			<colspec colname="c1" colwidth="62*"/>
+			<colspec colname="c2" colwidth="8*"/>
+			<colspec colname="c3" colwidth="30*"/>
+			<thead>
+				<row>
+					<entry>URL Template</entry>
+					<entry>Type</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row valign="top">
+					<entry>/deployments</entry>
+					<entry>GET</entry>
+					<entry>return a list of (deployed) deployments</entry>
+				</row>
+				<row valign="top">
+					<entry>/deployment/{deploymentId}</entry>
+					<entry>GET</entry>
+					<entry>return the status and information about the deployment</entry>
+				</row>
+				<row valign="top">
+					<entry>/deployment/{deploymentId}/deploy</entry>
+					<entry>POST</entry>
+					<entry>
+            <para>submit a request to deploy a deployment</para>
+          </entry>
+				</row>
+				<row valign="top">
+					<entry>/deployment/{deploymentId}/undeploy</entry>
+					<entry>POST</entry>
+					<entry>
+            <para>submit a request to undeploy a deployment</para>
+          </entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+  </section>
 
 </section>
