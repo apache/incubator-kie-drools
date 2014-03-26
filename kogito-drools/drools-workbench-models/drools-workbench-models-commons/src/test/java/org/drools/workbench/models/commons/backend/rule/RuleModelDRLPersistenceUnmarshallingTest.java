@@ -101,8 +101,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
             existingModelFields.add( modelFields[ 0 ] );
             modelFields = existingModelFields.toArray( modelFields );
         }
-        packageModelFields.put( factName,
-                                modelFields );
+        packageModelFields.put(factName,
+                modelFields);
     }
 
     private void addJavaEnumDefinition( final String factName,
@@ -138,8 +138,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( "Applicant",
                       fp.getFactType() );
 
-        assertEquals( 0,
-                      fp.getNumberOfConstraints() );
+        assertEquals(0,
+                fp.getNumberOfConstraints());
     }
 
     @Test
@@ -533,8 +533,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       fp1.getFactType() );
         assertEquals( "$e",
                       fp1.getBoundName() );
-        assertEquals( 0,
-                      fp1.getNumberOfConstraints() );
+        assertEquals(0,
+                fp1.getNumberOfConstraints());
 
         IPattern p2 = m.lhs[ 1 ];
         assertTrue( p2 instanceof FactPattern );
@@ -558,11 +558,11 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( 3,
                       sfp.getParameters().size() );
         assertEquals( "1d",
-                      sfp.getParameter( "0" ) );
+                      sfp.getParameter("0") );
         assertEquals( "1",
-                      sfp.getParameter( "org.drools.workbench.models.commons.backend.rule.visibleParameterSet" ) );
+                      sfp.getParameter("org.drools.workbench.models.commons.backend.rule.visibleParameterSet") );
         assertEquals( "org.drools.workbench.models.commons.backend.rule.CEPOperatorParameterDRLBuilder",
-                      sfp.getParameter( "org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator" ) );
+                      sfp.getParameter("org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator") );
     }
 
     @Test
@@ -581,31 +581,31 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         FactPattern fp1 = new FactPattern();
         fp1.setFactType( "Event" );
-        fp1.setBoundName( "$e" );
+        fp1.setBoundName("$e");
 
         FactPattern fp2 = new FactPattern();
-        fp2.setFactType( "Event" );
+        fp2.setFactType("Event");
 
         SingleFieldConstraint sfp = new SingleFieldConstraint();
-        sfp.setFactType( "Event" );
+        sfp.setFactType("Event");
         sfp.setFieldName( "this" );
-        sfp.setOperator( "after" );
+        sfp.setOperator("after");
         sfp.setValue( "$e" );
-        sfp.setConstraintValueType( BaseSingleFieldConstraint.TYPE_VARIABLE );
-        sfp.getParameters().put( "0",
-                                 "1d" );
-        sfp.getParameters().put( "org.drools.workbench.models.commons.backend.rule.visibleParameterSet",
-                                 "1" );
+        sfp.setConstraintValueType(BaseSingleFieldConstraint.TYPE_VARIABLE);
+        sfp.getParameters().put("0",
+                "1d");
+        sfp.getParameters().put("org.drools.workbench.models.commons.backend.rule.visibleParameterSet",
+                "1");
         sfp.getParameters().put( "org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator",
                                  "org.drools.workbench.models.commons.backend.rule.CEPOperatorParameterDRLBuilder" );
 
-        fp2.addConstraint( sfp );
-        m.addLhsItem( fp1 );
-        m.addLhsItem( fp2 );
+        fp2.addConstraint(sfp);
+        m.addLhsItem(fp1);
+        m.addLhsItem(fp2);
 
         String actualDrl = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
-        assertEqualsIgnoreWhitespace( drl,
-                                      actualDrl );
+        assertEqualsIgnoreWhitespace(drl,
+                actualDrl);
     }
 
     @Test
@@ -629,30 +629,30 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       m.lhs.length );
 
         IPattern p1 = m.lhs[ 0 ];
-        assertTrue( p1 instanceof FactPattern );
+        assertTrue(p1 instanceof FactPattern);
         FactPattern fp1 = (FactPattern) p1;
-        assertEquals( "Event",
-                      fp1.getFactType() );
+        assertEquals("Event",
+                fp1.getFactType());
         assertEquals( "$e",
                       fp1.getBoundName() );
-        assertEquals( 0,
-                      fp1.getNumberOfConstraints() );
+        assertEquals(0,
+                fp1.getNumberOfConstraints());
 
         IPattern p2 = m.lhs[ 1 ];
-        assertTrue( p2 instanceof FactPattern );
+        assertTrue(p2 instanceof FactPattern);
         FactPattern fp2 = (FactPattern) p2;
-        assertEquals( "Event",
-                      fp2.getFactType() );
-        assertNull( fp2.getBoundName() );
-        assertEquals( 1,
-                      fp2.getNumberOfConstraints() );
+        assertEquals("Event",
+                fp2.getFactType());
+        assertNull(fp2.getBoundName());
+        assertEquals(1,
+                fp2.getNumberOfConstraints());
         SingleFieldConstraint sfp = (SingleFieldConstraint) fp2.getConstraint( 0 );
-        assertEquals( "Event",
-                      sfp.getFactType() );
-        assertEquals( "this",
-                      sfp.getFieldName() );
-        assertEquals( "after",
-                      sfp.getOperator() );
+        assertEquals("Event",
+                sfp.getFactType());
+        assertEquals("this",
+                sfp.getFieldName());
+        assertEquals("after",
+                sfp.getOperator());
         assertEquals( "$e",
                       sfp.getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_VARIABLE,
@@ -665,8 +665,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       sfp.getParameter( "1" ) );
         assertEquals( "2",
                       sfp.getParameter( "org.drools.workbench.models.commons.backend.rule.visibleParameterSet" ) );
-        assertEquals( "org.drools.workbench.models.commons.backend.rule.CEPOperatorParameterDRLBuilder",
-                      sfp.getParameter( "org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator" ) );
+        assertEquals("org.drools.workbench.models.commons.backend.rule.CEPOperatorParameterDRLBuilder",
+                sfp.getParameter("org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator"));
     }
 
     @Test
@@ -685,33 +685,33 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         FactPattern fp1 = new FactPattern();
         fp1.setFactType( "Event" );
-        fp1.setBoundName( "$e" );
+        fp1.setBoundName("$e");
 
         FactPattern fp2 = new FactPattern();
-        fp2.setFactType( "Event" );
+        fp2.setFactType("Event");
 
         SingleFieldConstraint sfp = new SingleFieldConstraint();
-        sfp.setFactType( "Event" );
+        sfp.setFactType("Event");
         sfp.setFieldName( "this" );
-        sfp.setOperator( "after" );
+        sfp.setOperator("after");
         sfp.setValue( "$e" );
-        sfp.setConstraintValueType( BaseSingleFieldConstraint.TYPE_VARIABLE );
-        sfp.getParameters().put( "0",
-                                 "1d" );
-        sfp.getParameters().put( "1",
-                                 "2d" );
+        sfp.setConstraintValueType(BaseSingleFieldConstraint.TYPE_VARIABLE);
+        sfp.getParameters().put("0",
+                "1d");
+        sfp.getParameters().put("1",
+                "2d");
         sfp.getParameters().put( "org.drools.workbench.models.commons.backend.rule.visibleParameterSet",
                                  "2" );
-        sfp.getParameters().put( "org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator",
-                                 "org.drools.workbench.models.commons.backend.rule.CEPOperatorParameterDRLBuilder" );
+        sfp.getParameters().put("org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator",
+                "org.drools.workbench.models.commons.backend.rule.CEPOperatorParameterDRLBuilder");
 
-        fp2.addConstraint( sfp );
-        m.addLhsItem( fp1 );
-        m.addLhsItem( fp2 );
+        fp2.addConstraint(sfp);
+        m.addLhsItem(fp1);
+        m.addLhsItem(fp2);
 
         String actualDrl = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
-        assertEqualsIgnoreWhitespace( drl,
-                                      actualDrl );
+        assertEqualsIgnoreWhitespace(drl,
+                actualDrl);
     }
 
     @Test
@@ -734,24 +734,24 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       m.lhs.length );
 
         IPattern p1 = m.lhs[ 0 ];
-        assertTrue( p1 instanceof FactPattern );
+        assertTrue(p1 instanceof FactPattern);
         FactPattern fp1 = (FactPattern) p1;
-        assertEquals( "Event",
-                      fp1.getFactType() );
+        assertEquals("Event",
+                fp1.getFactType());
         assertNull( fp1.getBoundName() );
-        assertEquals( 0,
-                      fp1.getNumberOfConstraints() );
+        assertEquals(0,
+                fp1.getNumberOfConstraints());
 
-        assertNotNull( fp1.getWindow() );
+        assertNotNull(fp1.getWindow());
         CEPWindow window = fp1.getWindow();
-        assertEquals( "over window:time",
-                      window.getOperator() );
-        assertEquals( 2,
-                      window.getParameters().size() );
-        assertEquals( "1d",
-                      window.getParameter( "1" ) );
-        assertEquals( "org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder",
-                      window.getParameter( "org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator" ) );
+        assertEquals("over window:time",
+                window.getOperator());
+        assertEquals(2,
+                window.getParameters().size());
+        assertEquals("1d",
+                window.getParameter("1"));
+        assertEquals("org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder",
+                window.getParameter("org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator"));
     }
 
     @Test
@@ -772,17 +772,17 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         CEPWindow window = new CEPWindow();
         window.setOperator( "over window:time" );
-        window.getParameters().put( "1",
-                                    "1d" );
-        window.getParameters().put( "org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator",
-                                    "org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder" );
-        fp1.setWindow( window );
+        window.getParameters().put("1",
+                "1d");
+        window.getParameters().put("org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator",
+                "org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder");
+        fp1.setWindow(window);
 
-        m.addLhsItem( fp1 );
+        m.addLhsItem(fp1);
 
-        String actualDrl = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
-        assertEqualsIgnoreWhitespace( drl,
-                                      actualDrl );
+        String actualDrl = RuleModelDRLPersistenceImpl.getInstance().marshal(m);
+        assertEqualsIgnoreWhitespace(drl,
+                actualDrl);
     }
 
     @Test
@@ -807,13 +807,13 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         IPattern p1 = m.lhs[ 0 ];
         assertTrue( p1 instanceof FactPattern );
         FactPattern fp1 = (FactPattern) p1;
-        assertEquals( "Event",
-                      fp1.getFactType() );
-        assertNull( fp1.getBoundName() );
-        assertEquals( 0,
-                      fp1.getNumberOfConstraints() );
+        assertEquals("Event",
+                fp1.getFactType());
+        assertNull(fp1.getBoundName());
+        assertEquals(0,
+                fp1.getNumberOfConstraints());
 
-        assertNotNull( fp1.getWindow() );
+        assertNotNull(fp1.getWindow());
         CEPWindow window = fp1.getWindow();
         assertEquals( "over window:length",
                       window.getOperator() );
@@ -821,8 +821,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       window.getParameters().size() );
         assertEquals( "10",
                       window.getParameter( "1" ) );
-        assertEquals( "org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder",
-                      window.getParameter( "org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator" ) );
+        assertEquals("org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder",
+                window.getParameter("org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator"));
     }
 
     @Test
@@ -843,17 +843,17 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         CEPWindow window = new CEPWindow();
         window.setOperator( "over window:length" );
-        window.getParameters().put( "1",
-                                    "10" );
-        window.getParameters().put( "org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator",
-                                    "org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder" );
-        fp1.setWindow( window );
+        window.getParameters().put("1",
+                "10");
+        window.getParameters().put("org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator",
+                "org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder");
+        fp1.setWindow(window);
 
-        m.addLhsItem( fp1 );
+        m.addLhsItem(fp1);
 
-        String actualDrl = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
-        assertEqualsIgnoreWhitespace( drl,
-                                      actualDrl );
+        String actualDrl = RuleModelDRLPersistenceImpl.getInstance().marshal(m);
+        assertEqualsIgnoreWhitespace(drl,
+                actualDrl);
     }
 
     @Test
@@ -871,7 +871,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( "rule1",
                       m.name );
 
-        assertEquals( "rule2", m.parentName );
+        assertEquals("rule2", m.parentName);
     }
 
     @Test
@@ -906,8 +906,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertNotNull( m );
         assertEquals( 1,
                       m.metadataList.length );
-        assertEquals( "author",
-                      m.metadataList[ 0 ].getAttributeName() );
+        assertEquals("author",
+                m.metadataList[0].getAttributeName());
         assertEquals( "Bob",
                       m.metadataList[ 0 ].getValue() );
 
@@ -949,7 +949,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         assertNotNull( m );
         assertEquals( 1, m.lhs.length );
-        assertTrue( m.lhs[ 0 ] instanceof FreeFormLine );
+        assertTrue(m.lhs[0] instanceof FreeFormLine);
         assertEquals( "eval( true )", ( (FreeFormLine) m.lhs[ 0 ] ).getText() );
     }
 
@@ -984,7 +984,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                                                            dmo );
         assertNotNull( m );
         assertEquals( 2, m.rhs.length );
-        assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
+        assertTrue(m.rhs[0] instanceof FreeFormLine);
         assertEquals( "int test = (int)(1-0.8);", ( (FreeFormLine) m.rhs[ 0 ] ).getText() );
         assertTrue( m.rhs[ 1 ] instanceof FreeFormLine );
         assertEquals( "System.out.println( \"Hello Mario!\" );", ( (FreeFormLine) m.rhs[ 1 ] ).getText() );
@@ -998,10 +998,10 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl,
-                                                                                   Collections.EMPTY_LIST,
-                                                                                   dmo );
-        assertNotNull( m );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL(drl,
+                Collections.EMPTY_LIST,
+                dmo);
+        assertNotNull(m);
         assertEquals( 1, m.lhs.length );
         assertTrue( m.lhs[ 0 ] instanceof FreeFormLine );
         assertEquals( "//A comment", ( (FreeFormLine) m.lhs[ 0 ] ).getText() );
@@ -1021,7 +1021,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                                                                    dmo );
         assertNotNull( m );
         assertEquals( 2, m.rhs.length );
-        assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
+        assertTrue(m.rhs[0] instanceof FreeFormLine);
         assertEquals( "int test = (int)(1-0.8);", ( (FreeFormLine) m.rhs[ 0 ] ).getText() );
         assertTrue( m.rhs[ 1 ] instanceof FreeFormLine );
         assertEquals( "System.out.println( \"Hello Mario!\" );", ( (FreeFormLine) m.rhs[ 1 ] ).getText() );
@@ -1036,10 +1036,10 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "double test = d.doubleValue();\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
-                                                                           Collections.EMPTY_LIST,
-                                                                           dmo );
-        assertNotNull( m );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                Collections.EMPTY_LIST,
+                dmo);
+        assertNotNull(m);
         assertEquals( 1, m.rhs.length );
         assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
         assertEquals( "double test = d.doubleValue();", ( (FreeFormLine) m.rhs[ 0 ] ).getText() );
@@ -1074,10 +1074,10 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
         assertTrue( m.rhs[ 1 ] instanceof FreeFormLine );
         assertTrue( m.rhs[ 2 ] instanceof FreeFormLine );
-        assertTrue( m.rhs[ 3 ] instanceof FreeFormLine );
-        assertTrue( m.rhs[ 4 ] instanceof FreeFormLine );
+        assertTrue(m.rhs[3] instanceof FreeFormLine);
+        assertTrue(m.rhs[4] instanceof FreeFormLine);
         assertTrue( m.rhs[ 5 ] instanceof ActionSetField );
-        assertTrue( m.rhs[ 6 ] instanceof FreeFormLine );
+        assertTrue(m.rhs[6] instanceof FreeFormLine);
     }
 
     @Test
@@ -1488,36 +1488,36 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         //LHS sub-patterns
         FactPattern fp1 = new FactPattern();
-        fp1.setFactType( "Person" );
+        fp1.setFactType("Person");
 
         SingleFieldConstraint cfp_sfp1 = new SingleFieldConstraint();
-        cfp_sfp1.setFactType( "Person" );
+        cfp_sfp1.setFactType("Person");
         cfp_sfp1.setFieldName( "age" );
-        cfp_sfp1.setOperator( "==" );
+        cfp_sfp1.setOperator("==");
         cfp_sfp1.setValue( "42" );
-        cfp_sfp1.setFieldType( DataType.TYPE_NUMERIC_INTEGER );
-        cfp_sfp1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        fp1.addConstraint( cfp_sfp1 );
+        cfp_sfp1.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
+        cfp_sfp1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        fp1.addConstraint(cfp_sfp1);
         cfp.addFactPattern( fp1 );
 
         FactPattern fp2 = new FactPattern();
-        fp2.setFactType( "Person" );
+        fp2.setFactType("Person");
 
         SingleFieldConstraint cfp_sfp2 = new SingleFieldConstraint();
-        cfp_sfp2.setFactType( "Person" );
-        cfp_sfp2.setFieldName( "age" );
+        cfp_sfp2.setFactType("Person");
+        cfp_sfp2.setFieldName("age");
         cfp_sfp2.setOperator( "==" );
-        cfp_sfp2.setValue( "43" );
+        cfp_sfp2.setValue("43");
         cfp_sfp2.setFieldType( DataType.TYPE_NUMERIC_INTEGER );
-        cfp_sfp2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        fp2.addConstraint( cfp_sfp2 );
+        cfp_sfp2.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        fp2.addConstraint(cfp_sfp2);
         cfp.addFactPattern( fp2 );
 
-        m.addLhsItem( cfp );
+        m.addLhsItem(cfp);
 
         String actualDrl = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
-        assertEqualsIgnoreWhitespace( drl,
-                                      actualDrl );
+        assertEqualsIgnoreWhitespace(drl,
+                actualDrl);
     }
 
     @Test
@@ -1628,49 +1628,49 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         //LHS sub-patterns
         FactPattern fp1 = new FactPattern();
-        fp1.setFactType( "Person" );
+        fp1.setFactType("Person");
 
         SingleFieldConstraint fp1_sfp1 = new SingleFieldConstraint();
-        fp1_sfp1.setFactType( "Person" );
+        fp1_sfp1.setFactType("Person");
         fp1_sfp1.setFieldName( "age" );
-        fp1_sfp1.setOperator( "==" );
+        fp1_sfp1.setOperator("==");
         fp1_sfp1.setValue( "42" );
-        fp1_sfp1.setFieldType( DataType.TYPE_NUMERIC_INTEGER );
-        fp1_sfp1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        fp1.addConstraint( fp1_sfp1 );
+        fp1_sfp1.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
+        fp1_sfp1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        fp1.addConstraint(fp1_sfp1);
 
         FactPattern fp2 = new FactPattern();
-        fp2.setFactType( "Person" );
+        fp2.setFactType("Person");
 
         CompositeFieldConstraint fp2_cfp = new CompositeFieldConstraint();
-        fp2_cfp.setCompositeJunctionType( CompositeFieldConstraint.COMPOSITE_TYPE_OR );
-        fp2.addConstraint( fp2_cfp );
+        fp2_cfp.setCompositeJunctionType(CompositeFieldConstraint.COMPOSITE_TYPE_OR);
+        fp2.addConstraint(fp2_cfp);
 
         SingleFieldConstraint fp2_sfp1 = new SingleFieldConstraint();
         fp2_sfp1.setFactType( "Person" );
-        fp2_sfp1.setFieldName( "age" );
+        fp2_sfp1.setFieldName("age");
         fp2_sfp1.setOperator( "==" );
-        fp2_sfp1.setValue( "43" );
-        fp2_sfp1.setFieldType( DataType.TYPE_NUMERIC_INTEGER );
+        fp2_sfp1.setValue("43");
+        fp2_sfp1.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
         fp2_sfp1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        fp2_cfp.addConstraint( fp2_sfp1 );
+        fp2_cfp.addConstraint(fp2_sfp1);
 
         SingleFieldConstraint fp2_sfp2 = new SingleFieldConstraint();
-        fp2_sfp2.setFactType( "Person" );
-        fp2_sfp2.setFieldName( "age" );
+        fp2_sfp2.setFactType("Person");
+        fp2_sfp2.setFieldName("age");
         fp2_sfp2.setOperator( "==" );
-        fp2_sfp2.setValue( "44" );
-        fp2_sfp2.setFieldType( DataType.TYPE_NUMERIC_INTEGER );
-        fp2_sfp2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        fp2_cfp.addConstraint( fp2_sfp2 );
+        fp2_sfp2.setValue("44");
+        fp2_sfp2.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
+        fp2_sfp2.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        fp2_cfp.addConstraint(fp2_sfp2);
 
-        cfp.addFactPattern( fp1 );
+        cfp.addFactPattern(fp1);
         cfp.addFactPattern( fp2 );
-        m.addLhsItem( cfp );
+        m.addLhsItem(cfp);
 
         String actualDrl = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
-        assertEqualsIgnoreWhitespace( drl,
-                                      actualDrl );
+        assertEqualsIgnoreWhitespace(drl,
+                actualDrl);
     }
 
     @Test
@@ -1698,8 +1698,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( "rule1",
                       m.name );
 
-        assertEquals( 1,
-                      m.lhs.length );
+        assertEquals(1,
+                m.lhs.length);
         IPattern p = m.lhs[ 0 ];
         assertTrue( p instanceof FactPattern );
 
@@ -1707,54 +1707,54 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( "ParentType",
                       fp.getFactType() );
 
-        assertEquals( 3,
-                      fp.getConstraintList().getConstraints().length );
+        assertEquals(3,
+                fp.getConstraintList().getConstraints().length);
 
-        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        assertTrue(fp.getConstraint(0) instanceof SingleFieldConstraint);
         SingleFieldConstraint sfp0 = (SingleFieldConstraint) fp.getConstraint( 0 );
-        assertEquals( "ParentType",
-                      sfp0.getFactType() );
-        assertEquals( "this",
-                      sfp0.getFieldName() );
-        assertEquals( DataType.TYPE_THIS,
-                      sfp0.getFieldType() );
-        assertEquals( "!= null",
-                      sfp0.getOperator() );
+        assertEquals("ParentType",
+                sfp0.getFactType());
+        assertEquals("this",
+                sfp0.getFieldName());
+        assertEquals(DataType.TYPE_THIS,
+                sfp0.getFieldType());
+        assertEquals("!= null",
+                sfp0.getOperator());
         assertNull( sfp0.getValue() );
-        assertEquals( BaseSingleFieldConstraint.TYPE_UNDEFINED,
-                      sfp0.getConstraintValueType() );
+        assertEquals(BaseSingleFieldConstraint.TYPE_UNDEFINED,
+                sfp0.getConstraintValueType());
         assertNull( sfp0.getParent() );
 
-        assertTrue( fp.getConstraint( 1 ) instanceof SingleFieldConstraint );
+        assertTrue(fp.getConstraint(1) instanceof SingleFieldConstraint);
         SingleFieldConstraint sfp1 = (SingleFieldConstraint) fp.getConstraint( 1 );
         assertEquals( "ParentType",
                       sfp1.getFactType() );
-        assertEquals( "parentChildField",
-                      sfp1.getFieldName() );
-        assertEquals( "ChildType",
-                      sfp1.getFieldType() );
-        assertEquals( "!= null",
-                      sfp1.getOperator() );
-        assertNull( sfp1.getValue() );
-        assertEquals( BaseSingleFieldConstraint.TYPE_UNDEFINED,
-                      sfp1.getConstraintValueType() );
-        assertSame( sfp0,
-                    sfp1.getParent() );
+        assertEquals("parentChildField",
+                sfp1.getFieldName());
+        assertEquals("ChildType",
+                sfp1.getFieldType());
+        assertEquals("!= null",
+                sfp1.getOperator());
+        assertNull(sfp1.getValue());
+        assertEquals(BaseSingleFieldConstraint.TYPE_UNDEFINED,
+                sfp1.getConstraintValueType());
+        assertSame(sfp0,
+                sfp1.getParent());
 
-        assertTrue( fp.getConstraint( 2 ) instanceof SingleFieldConstraint );
+        assertTrue(fp.getConstraint(2) instanceof SingleFieldConstraint);
         SingleFieldConstraint sfp2 = (SingleFieldConstraint) fp.getConstraint( 2 );
-        assertEquals( "childField",
-                      sfp2.getFieldName() );
-        assertEquals( "java.lang.String",
-                      sfp2.getFieldType() );
-        assertEquals( "==",
-                      sfp2.getOperator() );
-        assertEquals( "hello",
-                      sfp2.getValue() );
-        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
-                      sfp2.getConstraintValueType() );
-        assertSame( sfp1,
-                    sfp2.getParent() );
+        assertEquals("childField",
+                sfp2.getFieldName());
+        assertEquals("java.lang.String",
+                sfp2.getFieldType());
+        assertEquals("==",
+                sfp2.getOperator());
+        assertEquals("hello",
+                sfp2.getValue());
+        assertEquals(BaseSingleFieldConstraint.TYPE_LITERAL,
+                sfp2.getConstraintValueType());
+        assertSame(sfp1,
+                sfp2.getParent());
     }
 
     @Test
@@ -1772,40 +1772,40 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         //LHS Pattern
         FactPattern fp1 = new FactPattern();
-        fp1.setFactType( "ParentType" );
+        fp1.setFactType("ParentType");
 
         SingleFieldConstraint fp1_sfp1 = new SingleFieldConstraint();
-        fp1_sfp1.setFactType( "ParentType" );
+        fp1_sfp1.setFactType("ParentType");
         fp1_sfp1.setFieldName( "this" );
-        fp1_sfp1.setFieldType( DataType.TYPE_THIS );
-        fp1_sfp1.setOperator( "!= null" );
-        fp1_sfp1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_UNDEFINED );
+        fp1_sfp1.setFieldType(DataType.TYPE_THIS);
+        fp1_sfp1.setOperator("!= null");
+        fp1_sfp1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_UNDEFINED);
         fp1.addConstraint( fp1_sfp1 );
 
         SingleFieldConstraint fp1_sfp2 = new SingleFieldConstraint();
-        fp1_sfp2.setFactType( "ParentType" );
-        fp1_sfp2.setFieldName( "parentChildField" );
-        fp1_sfp2.setFieldType( "ChildType" );
-        fp1_sfp2.setOperator( "!= null" );
-        fp1_sfp2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_UNDEFINED );
-        fp1.addConstraint( fp1_sfp2 );
-        fp1_sfp2.setParent( fp1_sfp1 );
+        fp1_sfp2.setFactType("ParentType");
+        fp1_sfp2.setFieldName("parentChildField");
+        fp1_sfp2.setFieldType("ChildType");
+        fp1_sfp2.setOperator("!= null");
+        fp1_sfp2.setConstraintValueType(BaseSingleFieldConstraint.TYPE_UNDEFINED);
+        fp1.addConstraint(fp1_sfp2);
+        fp1_sfp2.setParent(fp1_sfp1);
 
         SingleFieldConstraint fp1_sfp3 = new SingleFieldConstraint();
-        fp1_sfp3.setFactType( "ChildType" );
-        fp1_sfp3.setFieldName( "childField" );
-        fp1_sfp3.setFieldType( DataType.TYPE_STRING );
-        fp1_sfp3.setOperator( "==" );
-        fp1_sfp3.setValue( "hello" );
-        fp1_sfp3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        fp1.addConstraint( fp1_sfp3 );
-        fp1_sfp3.setParent( fp1_sfp2 );
+        fp1_sfp3.setFactType("ChildType");
+        fp1_sfp3.setFieldName("childField");
+        fp1_sfp3.setFieldType(DataType.TYPE_STRING);
+        fp1_sfp3.setOperator("==");
+        fp1_sfp3.setValue("hello");
+        fp1_sfp3.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        fp1.addConstraint(fp1_sfp3);
+        fp1_sfp3.setParent(fp1_sfp2);
 
         m.addLhsItem( fp1 );
 
         String actualDrl = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
-        assertEqualsIgnoreWhitespace( drl,
-                                      actualDrl );
+        assertEqualsIgnoreWhitespace(drl,
+                actualDrl);
     }
 
     @Test
@@ -1833,54 +1833,54 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( "rule1",
                       m.name );
 
-        assertEquals( 1,
-                      m.lhs.length );
+        assertEquals(1,
+                m.lhs.length);
         IPattern p = m.lhs[ 0 ];
-        assertTrue( p instanceof FactPattern );
+        assertTrue(p instanceof FactPattern);
 
         FactPattern fp = (FactPattern) p;
-        assertEquals( "Person",
-                      fp.getFactType() );
+        assertEquals("Person",
+                fp.getFactType());
 
-        assertEquals( 1,
-                      fp.getConstraintList().getConstraints().length );
+        assertEquals(1,
+                fp.getConstraintList().getConstraints().length);
 
-        assertTrue( ( (FactPattern) m.lhs[ 0 ] ).getFieldConstraints()[ 0 ] instanceof SingleFieldConstraintEBLeftSide );
+        assertTrue(((FactPattern) m.lhs[0]).getFieldConstraints()[0] instanceof SingleFieldConstraintEBLeftSide);
 
         SingleFieldConstraintEBLeftSide ebLeftSide = (SingleFieldConstraintEBLeftSide) ( (FactPattern) m.lhs[ 0 ] ).getFieldConstraints()[ 0 ];
         assertEquals( "telephone",
                       ebLeftSide.getFieldName() );
-        assertEquals( "java.lang.Integer",
-                      ebLeftSide.getFieldType() );
-        assertEquals( ">",
-                      ebLeftSide.getOperator() );
-        assertEquals( "12345",
-                      ebLeftSide.getValue() );
+        assertEquals("java.lang.Integer",
+                ebLeftSide.getFieldType());
+        assertEquals(">",
+                ebLeftSide.getOperator());
+        assertEquals("12345",
+                ebLeftSide.getValue());
 
-        assertEquals( 3, ebLeftSide.getExpressionLeftSide().getParts().size() );
-        assertTrue( ebLeftSide.getExpressionLeftSide().getParts().get( 0 ) instanceof ExpressionUnboundFact );
+        assertEquals(3, ebLeftSide.getExpressionLeftSide().getParts().size());
+        assertTrue(ebLeftSide.getExpressionLeftSide().getParts().get(0) instanceof ExpressionUnboundFact);
         ExpressionUnboundFact expressionUnboundFact = ( (ExpressionUnboundFact) ebLeftSide.getExpressionLeftSide().getParts().get( 0 ) );
-        assertEquals( "Person",
-                      expressionUnboundFact.getName() );
+        assertEquals("Person",
+                expressionUnboundFact.getName());
         assertEquals( "Person",
                       expressionUnboundFact.getClassType() );
-        assertEquals( "Person",
-                      expressionUnboundFact.getGenericType() );
-        assertEquals( m.lhs[ 0 ],
-                      expressionUnboundFact.getFact() );
+        assertEquals("Person",
+                expressionUnboundFact.getGenericType());
+        assertEquals(m.lhs[0],
+                expressionUnboundFact.getFact());
 
-        assertEquals( null, expressionUnboundFact.getPrevious() );
-        assertEquals( ebLeftSide.getExpressionLeftSide().getParts().get( 1 ),
-                      expressionUnboundFact.getNext() );
+        assertEquals(null, expressionUnboundFact.getPrevious());
+        assertEquals(ebLeftSide.getExpressionLeftSide().getParts().get(1),
+                expressionUnboundFact.getNext());
 
-        assertTrue( ebLeftSide.getExpressionLeftSide().getParts().get( 1 ) instanceof ExpressionField );
+        assertTrue(ebLeftSide.getExpressionLeftSide().getParts().get(1) instanceof ExpressionField);
         ExpressionField expressionField1 = (ExpressionField) ebLeftSide.getExpressionLeftSide().getParts().get( 1 );
-        assertEquals( "contact",
-                      expressionField1.getName() );
-        assertEquals( "Contact",
-                      expressionField1.getClassType() );
-        assertEquals( "Contact",
-                      expressionField1.getGenericType() );
+        assertEquals("contact",
+                expressionField1.getName());
+        assertEquals("Contact",
+                expressionField1.getClassType());
+        assertEquals("Contact",
+                expressionField1.getGenericType());
 
         assertEquals( ebLeftSide.getExpressionLeftSide().getParts().get( 0 ),
                       expressionField1.getPrevious() );
@@ -1898,7 +1898,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         assertEquals( ebLeftSide.getExpressionLeftSide().getParts().get( 1 ),
                       expressionField2.getPrevious() );
-        assertNull( expressionField2.getNext() );
+        assertNull(expressionField2.getNext());
     }
 
     @Test
@@ -1924,7 +1924,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         assertNotNull( m );
         assertEquals( 1, m.lhs.length );
-        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
+        assertTrue(m.lhs[0] instanceof FactPattern);
         assertTrue( ( (FactPattern) m.lhs[ 0 ] ).getFieldConstraints()[ 0 ] instanceof SingleFieldConstraintEBLeftSide );
 
         SingleFieldConstraintEBLeftSide ebLeftSide = (SingleFieldConstraintEBLeftSide) ( (FactPattern) m.lhs[ 0 ] ).getFieldConstraints()[ 0 ];
@@ -1949,7 +1949,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( m.lhs[ 0 ],
                       expressionUnboundFact.getFact() );
 
-        assertNull( expressionUnboundFact.getPrevious() );
+        assertNull(expressionUnboundFact.getPrevious());
         assertEquals( ebLeftSide.getExpressionLeftSide().getParts().get( 1 ), expressionUnboundFact.getNext() );
 
         assertTrue( ebLeftSide.getExpressionLeftSide().getParts().get( 1 ) instanceof ExpressionField );
@@ -1992,38 +1992,38 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         //LHS Pattern
         FactPattern fp1 = new FactPattern();
-        fp1.setFactType( "ParentType" );
+        fp1.setFactType("ParentType");
 
         SingleFieldConstraint fp1_sfp1 = new SingleFieldConstraint();
         fp1_sfp1.setFactType( "ParentType" );
-        fp1_sfp1.setFieldName( "this" );
-        fp1_sfp1.setFieldType( DataType.TYPE_THIS );
-        fp1_sfp1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_UNDEFINED );
-        fp1.addConstraint( fp1_sfp1 );
+        fp1_sfp1.setFieldName("this");
+        fp1_sfp1.setFieldType(DataType.TYPE_THIS);
+        fp1_sfp1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_UNDEFINED);
+        fp1.addConstraint(fp1_sfp1);
 
         SingleFieldConstraint fp1_sfp2 = new SingleFieldConstraint();
-        fp1_sfp2.setFactType( "ParentType" );
+        fp1_sfp2.setFactType("ParentType");
         fp1_sfp2.setFieldName( "parentChildField" );
-        fp1_sfp2.setFieldType( "ChildType" );
-        fp1_sfp2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_UNDEFINED );
-        fp1.addConstraint( fp1_sfp2 );
-        fp1_sfp2.setParent( fp1_sfp1 );
+        fp1_sfp2.setFieldType("ChildType");
+        fp1_sfp2.setConstraintValueType(BaseSingleFieldConstraint.TYPE_UNDEFINED);
+        fp1.addConstraint(fp1_sfp2);
+        fp1_sfp2.setParent(fp1_sfp1);
 
         SingleFieldConstraint fp1_sfp3 = new SingleFieldConstraint();
-        fp1_sfp3.setFactType( "ChildType" );
-        fp1_sfp3.setFieldName( "childField" );
+        fp1_sfp3.setFactType("ChildType");
+        fp1_sfp3.setFieldName("childField");
         fp1_sfp3.setFieldType( DataType.TYPE_STRING );
-        fp1_sfp3.setOperator( "==" );
-        fp1_sfp3.setValue( "hello" );
-        fp1_sfp3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        fp1.addConstraint( fp1_sfp3 );
-        fp1_sfp3.setParent( fp1_sfp2 );
+        fp1_sfp3.setOperator("==");
+        fp1_sfp3.setValue("hello");
+        fp1_sfp3.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        fp1.addConstraint(fp1_sfp3);
+        fp1_sfp3.setParent(fp1_sfp2);
 
-        m.addLhsItem( fp1 );
+        m.addLhsItem(fp1);
 
         String actualDrl = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
-        assertEqualsIgnoreWhitespace( drl,
-                                      actualDrl );
+        assertEqualsIgnoreWhitespace(drl,
+                actualDrl);
     }
 
     @Test
@@ -2061,13 +2061,13 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "end\n";
 
         HashMap<String, String> globals = new HashMap<String, String>();
-        globals.put( "keke", "java.util.ArrayList" );
+        globals.put("keke", "java.util.ArrayList");
 
         when(
                 dmo.getPackageGlobals()
             ).thenReturn(
                 globals
-                        );
+        );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
                                                                            Collections.EMPTY_LIST,
@@ -2100,7 +2100,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         HashMap<String, String> globals = new HashMap<String, String>();
 
-        when( dmo.getPackageGlobals() ).thenReturn( globals );
+        when( dmo.getPackageGlobals() ).thenReturn(globals);
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
                                                                            Collections.EMPTY_LIST,
@@ -2150,15 +2150,15 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                                   "void",
                                                   "java.util.Map" ) );
 
-        methodInformation.put( "java.util.Map", mapMethodInformation );
+        methodInformation.put("java.util.Map", mapMethodInformation);
 
-        when( dmo.getProjectMethodInformation() ).thenReturn( methodInformation );
+        when( dmo.getProjectMethodInformation() ).thenReturn(methodInformation);
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
                                                                            Collections.EMPTY_LIST,
                                                                            dmo );
 
-        assertTrue( m.rhs[ 0 ] instanceof ActionCallMethod );
+        assertTrue(m.rhs[0] instanceof ActionCallMethod);
         ActionCallMethod mc = (ActionCallMethod) m.rhs[ 0 ];
         assertEquals( "put", mc.getMethodName() );
         assertEquals( "m", mc.getVariable() );
@@ -2324,11 +2324,11 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                                                            dmo );
 
         assertNotNull( m );
-        assertEquals( "rule1",
-                      m.name );
+        assertEquals("rule1",
+                m.name);
 
-        assertEquals( 1,
-                      m.lhs.length );
+        assertEquals(1,
+                m.lhs.length);
         IPattern p = m.lhs[ 0 ];
         assertTrue( p instanceof FactPattern );
 
@@ -2365,10 +2365,10 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "java.util.List",
                        "List" );
 
-        addModelField( "java.util.List",
-                       "size",
-                       "int",
-                       "Integer" );
+        addModelField("java.util.List",
+                "size",
+                "int",
+                "Integer");
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
                                                                            Collections.EMPTY_LIST,
@@ -2379,11 +2379,11 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         FactPattern factPattern = (FactPattern) m.lhs[ 0 ];
         assertEquals( 1,
                       factPattern.getConstraintList().getConstraints().length );
-        assertTrue( factPattern.getConstraintList().getConstraints()[ 0 ] instanceof SingleFieldConstraintEBLeftSide );
+        assertTrue(factPattern.getConstraintList().getConstraints()[0] instanceof SingleFieldConstraintEBLeftSide);
         SingleFieldConstraintEBLeftSide constraint = (SingleFieldConstraintEBLeftSide) factPattern.getConstraintList().getConstraints()[ 0 ];
         assertEquals( "size", constraint.getFieldName() );
-        assertEquals( "int", constraint.getFieldType() );
-        assertEquals( "0", constraint.getValue() );
+        assertEquals("int", constraint.getFieldType());
+        assertEquals("0", constraint.getValue());
         assertEquals( "==", constraint.getOperator() );
         assertEquals( 1, constraint.getConstraintValueType() );
     }
@@ -2409,7 +2409,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                                                            dmo );
         assertEquals( 1,
                       m.rhs.length );
-        assertTrue( m.rhs[ 0 ] instanceof ActionSetField );
+        assertTrue(m.rhs[0] instanceof ActionSetField);
         ActionSetField actionSetField = (ActionSetField) m.rhs[ 0 ];
 
         assertEquals( "c", actionSetField.getVariable() );
@@ -2626,7 +2626,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         assertEquals( 1, pattern2.getConstraintList().getNumberOfConstraints() );
 
-        assertTrue( pattern2.getConstraintList().getConstraint( 0 ) instanceof SingleFieldConstraint );
+        assertTrue(pattern2.getConstraintList().getConstraint(0) instanceof SingleFieldConstraint);
         SingleFieldConstraint constraint = (SingleFieldConstraint) pattern2.getConstraintList().getConstraint( 0 );
         assertEquals( "age", constraint.getFieldName() );
         assertEquals( "==", constraint.getOperator() );
@@ -2641,7 +2641,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( "this", expressionVariable.getGenericType() );
         assertEquals( constraint.getExpressionValue().getParts().get( 1 ), expressionVariable.getNext() );
 
-        assertTrue( constraint.getExpressionValue().getParts().get( 1 ) instanceof ExpressionField );
+        assertTrue(constraint.getExpressionValue().getParts().get(1) instanceof ExpressionField);
         ExpressionField expressionField = (ExpressionField) constraint.getExpressionValue().getParts().get( 1 );
         assertEquals( "age", expressionField.getName() );
         assertEquals( "java.lang.Integer", expressionField.getClassType() );
@@ -2675,7 +2675,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         FactPattern pattern = (FactPattern) m.lhs[ 0 ];
         assertEquals( 1,
                       pattern.getNumberOfConstraints() );
-        assertTrue( pattern.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        assertTrue(pattern.getConstraint(0) instanceof SingleFieldConstraint);
         SingleFieldConstraint constraint = (SingleFieldConstraint) pattern.getConstraint( 0 );
 
         assertEquals( "OuterClassWithEnums",
@@ -2692,8 +2692,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       constraint.getConstraintValueType() );
 
         final String drl2 = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
-        assertEqualsIgnoreWhitespace( drl,
-                                      drl2 );
+        assertEqualsIgnoreWhitespace(drl,
+                drl2);
     }
 
     @Test
@@ -3173,19 +3173,19 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         assertNotNull( m );
 
-        assertTrue( m.lhs[ 0 ] instanceof DSLSentence );
+        assertTrue(m.lhs[0] instanceof DSLSentence);
 
         DSLSentence dslSentence = (DSLSentence) m.lhs[ 0 ];
         assertEquals( dslDefinition,
                       dslSentence.getDefinition() );
-        assertEquals( 0,
-                      dslSentence.getValues().size() );
+        assertEquals(0,
+                dslSentence.getValues().size());
 
         DSLSentence dslSentence2 = (DSLSentence) m.lhs[ 1 ];
         assertEquals( dslDefinition2,
                       dslSentence2.getDefinition() );
-        assertEquals( 1,
-                      dslSentence2.getValues().size() );
+        assertEquals(1,
+                dslSentence2.getValues().size());
 
         assertTrue( dslSentence2.getValues().get( 0 ) instanceof DSLVariableValue );
 
@@ -3216,7 +3216,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         assertEquals( 1, model.lhs.length );
         DSLSentence dslSentence = (DSLSentence) model.lhs[ 0 ];
-        assertEquals( "test", dslSentence.getValues().get( 0 ).getValue() );
+        assertEquals("test", dslSentence.getValues().get(0).getValue());
         assertEquals( "111", dslSentence.getValues().get( 1 ).getValue() );
 
     }
@@ -3267,7 +3267,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         assertNotNull( m );
 
-        assertTrue( m.lhs[ 0 ] instanceof DSLSentence );
+        assertTrue(m.lhs[0] instanceof DSLSentence);
 
         DSLSentence dslSentence = (DSLSentence) m.lhs[ 0 ];
         assertEquals( dslDefinition,
@@ -3305,8 +3305,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         FactPattern pattern = (FactPattern) m.lhs[ 0 ];
         assertEquals( "Applicant",
                       pattern.getFactType() );
-        assertEquals( "$a",
-                      pattern.getBoundName() );
+        assertEquals("$a",
+                pattern.getBoundName());
 
         assertTrue( m.rhs[ 0 ] instanceof DSLSentence );
 
@@ -3410,10 +3410,10 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                                                                  new ArrayList<String>(),
                                                                                  dmo );
 
-        assertNotNull( m );
+        assertNotNull(m);
 
-        assertEquals( 1,
-                      m.lhs.length );
+        assertEquals(1,
+                m.lhs.length);
         IPattern p = m.lhs[ 0 ];
         assertTrue( p instanceof FactPattern );
 
@@ -3421,8 +3421,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( "Person",
                       fp.getFactType() );
 
-        assertEquals( 1,
-                      fp.getConstraintList().getConstraints().length );
+        assertEquals(1,
+                fp.getConstraintList().getConstraints().length);
         assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
 
         SingleFieldConstraint sfp = (SingleFieldConstraint) fp.getConstraint( 0 );
@@ -3488,8 +3488,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         assertNotNull( m );
 
-        assertEquals( 1,
-                      m.lhs.length );
+        assertEquals(1,
+                m.lhs.length);
         IPattern p = m.lhs[ 0 ];
         assertTrue( p instanceof FactPattern );
 
@@ -3499,7 +3499,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         assertEquals( 1,
                       fp.getConstraintList().getConstraints().length );
-        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        assertTrue(fp.getConstraint(0) instanceof SingleFieldConstraint);
 
         SingleFieldConstraint sfp = (SingleFieldConstraint) fp.getConstraint( 0 );
         assertEquals( "Person",
@@ -3561,7 +3561,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                                                                  new ArrayList<String>(),
                                                                                  dmo );
 
-        assertNotNull( m );
+        assertNotNull(m);
 
         assertEquals( 1,
                       m.lhs.length );
@@ -3571,12 +3571,12 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         FactPattern fp = (FactPattern) p;
         assertEquals( "Person",
                       fp.getFactType() );
-        assertEquals( "$p",
-                      fp.getBoundName() );
+        assertEquals("$p",
+                fp.getBoundName());
 
         assertEquals( 1,
                       fp.getConstraintList().getConstraints().length );
-        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        assertTrue(fp.getConstraint(0) instanceof SingleFieldConstraint);
 
         SingleFieldConstraint sfp = (SingleFieldConstraint) fp.getConstraint( 0 );
         assertEquals( "Person",
@@ -3589,8 +3589,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       sfp.getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
                       sfp.getConstraintValueType() );
-        assertEquals( "$f",
-                      sfp.getFieldBinding() );
+        assertEquals("$f",
+                sfp.getFieldBinding());
 
         assertEquals( 1,
                       m.rhs.length );
@@ -3638,8 +3638,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         assertNotNull( m );
 
-        assertEquals( 1,
-                      m.lhs.length );
+        assertEquals(1,
+                m.lhs.length);
         IPattern p = m.lhs[ 0 ];
         assertTrue( p instanceof FactPattern );
 
@@ -3769,7 +3769,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "java.lang.Integer",
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        when( dmo.getPackageName() ).thenReturn( "org.test" );
+        when( dmo.getPackageName() ).thenReturn("org.test");
 
         final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
                                                                                  new ArrayList<String>(),
@@ -3777,8 +3777,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         assertNotNull( m );
 
-        assertEquals( 1,
-                      m.lhs.length );
+        assertEquals(1,
+                m.lhs.length);
         IPattern p = m.lhs[ 0 ];
         assertTrue( p instanceof FactPattern );
 
@@ -3788,7 +3788,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         assertEquals( 1,
                       fp.getConstraintList().getConstraints().length );
-        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        assertTrue(fp.getConstraint(0) instanceof SingleFieldConstraint);
 
         SingleFieldConstraint sfp = (SingleFieldConstraint) fp.getConstraint( 0 );
         assertEquals( "Person",
@@ -3840,10 +3840,10 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "update( $p );\n"
                 + "end";
 
-        addModelField( "org.test.Person",
-                       "field1",
-                       "java.lang.Integer",
-                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField("org.test.Person",
+                "field1",
+                "java.lang.Integer",
+                DataType.TYPE_NUMERIC_INTEGER);
 
         when( dmo.getPackageName() ).thenReturn( "org.test" );
 
@@ -3851,7 +3851,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                                                                  new ArrayList<String>(),
                                                                                  dmo );
 
-        assertNotNull( m );
+        assertNotNull(m);
 
         assertEquals( 1,
                       m.lhs.length );
@@ -3861,12 +3861,12 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         FactPattern fp = (FactPattern) p;
         assertEquals( "Person",
                       fp.getFactType() );
-        assertEquals( "$p",
-                      fp.getBoundName() );
+        assertEquals("$p",
+                fp.getBoundName());
 
         assertEquals( 1,
                       fp.getConstraintList().getConstraints().length );
-        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        assertTrue(fp.getConstraint(0) instanceof SingleFieldConstraint);
 
         SingleFieldConstraint sfp = (SingleFieldConstraint) fp.getConstraint( 0 );
         assertEquals( "Person",
@@ -3879,8 +3879,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       sfp.getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
                       sfp.getConstraintValueType() );
-        assertEquals( "$f",
-                      sfp.getFieldBinding() );
+        assertEquals("$f",
+                sfp.getFieldBinding());
 
         assertEquals( 1,
                       m.rhs.length );
@@ -3921,7 +3921,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        "java.lang.Integer",
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        when( dmo.getPackageName() ).thenReturn( "org.test" );
+        when( dmo.getPackageName() ).thenReturn("org.test");
 
         final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
                                                                                  new ArrayList<String>(),
@@ -3929,8 +3929,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         assertNotNull( m );
 
-        assertEquals( 1,
-                      m.lhs.length );
+        assertEquals(1,
+                m.lhs.length);
         IPattern p = m.lhs[ 0 ];
         assertTrue( p instanceof FactPattern );
 
@@ -3977,10 +3977,10 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "update( $sc );\n"
                 + "end\n";
 
-        addModelField( "org.test.ShoppingCart",
-                       "cartItemPromoSavings",
-                       "java.lang.Double",
-                       DataType.TYPE_NUMERIC_DOUBLE );
+        addModelField("org.test.ShoppingCart",
+                "cartItemPromoSavings",
+                "java.lang.Double",
+                DataType.TYPE_NUMERIC_DOUBLE);
 
         when( dmo.getPackageName() ).thenReturn( "org.test" );
 
@@ -3988,7 +3988,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                                                                  new ArrayList<String>(),
                                                                                  dmo );
 
-        assertNotNull( m );
+        assertNotNull(m);
 
         assertEquals( 1,
                       m.lhs.length );
@@ -4004,10 +4004,10 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( 0,
                       fp.getNumberOfConstraints() );
 
-        assertEquals( 1,
-                      m.rhs.length );
+        assertEquals(1,
+                m.rhs.length);
         IAction a = m.rhs[ 0 ];
-        assertTrue( a instanceof ActionUpdateField );
+        assertTrue(a instanceof ActionUpdateField);
 
         ActionUpdateField ap = (ActionUpdateField) a;
         assertEquals( "$sc",
@@ -4085,7 +4085,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    public void testName() throws Exception {
+    public void testFunctionsWithVariableParameters() throws Exception {
         String drl = "package org.mortgages;\n" +
                 "rule \"test\"\n" +
                 " dialect \"mvel\"\n" +
@@ -4126,7 +4126,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 new ArrayList<String>(),
                 dmo );
 
-        assertNotNull( m );
+        assertNotNull(m);
 
         assertEquals( 2,
                 m.lhs.length );
@@ -4148,6 +4148,42 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals("$age", actionCallMethod.getFieldValue(1).getValue());
         assertEquals(2, actionCallMethod.getFieldValue(1).getNature());
         assertEquals("Integer", actionCallMethod.getFieldValue(1).getType());
+
+    }
+
+    @Test
+    public void test() throws Exception {
+        String drl = "package org.test.testproject;\n" +
+                "import java.lang.Number;\n" +
+                "rule \"Test\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "   Fact( list.size() == 0 )\n" +
+                "  then\n" +
+                "end";
+
+        addModelField(
+                "Fact",
+                "list",
+                "List",
+                "List" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                new ArrayList<String>(),
+                dmo );
+
+        assertNotNull( m );
+
+        assertEquals(1, m.lhs.length);
+
+        FactPattern factPattern = (FactPattern) m.lhs[0];
+        assertEquals(1, factPattern.getConstraintList().getNumberOfConstraints());
+        SingleFieldConstraintEBLeftSide constraint = (SingleFieldConstraintEBLeftSide) factPattern.getConstraintList().getConstraint(0);
+        assertEquals("size", constraint.getFieldName());
+        assertEquals("int", constraint.getFieldType());
+        assertEquals("==", constraint.getOperator());
+        assertEquals("0", constraint.getValue());
+        assertEquals(1, constraint.getConstraintValueType());
 
     }
 

@@ -30,109 +30,128 @@ class RuleModelPersistenceHelper {
         return s.substring( start + 1, end ).trim();
     }
 
+    static String getSimpleFactType( String className,
+            PackageDataModelOracle dmo ) {
+        for ( String type : dmo.getProjectModelFields().keySet() ) {
+            if ( type.equals( className ) ) {
+                return type.substring( type.lastIndexOf( "." ) + 1 );
+            }
+        }
+        return className;
+    }
+
     static int inferFieldNature( final Map<String, String> boundParams,
                                  final String dataType,
                                  final String value ) {
-        int nature = ( StringUtils.isEmpty( value ) ? FieldNatureType.TYPE_UNDEFINED : FieldNatureType.TYPE_LITERAL );
+
+        if ( boundParams.containsKey( value ) ) {
+            return FieldNatureType.TYPE_VARIABLE;
+        }
+
+        return inferFieldNature(dataType, value);
+    }
+
+    static int inferFieldNature( final String dataType,
+                                 final String value) {
+        int nature = ( StringUtils.isEmpty(value) ? FieldNatureType.TYPE_UNDEFINED : FieldNatureType.TYPE_LITERAL );
+
         if ( dataType == DataType.TYPE_COLLECTION ) {
-            nature = FieldNatureType.TYPE_FORMULA;
+            return FieldNatureType.TYPE_FORMULA;
 
-        } else if ( boundParams.containsKey( value ) ) {
-            nature = FieldNatureType.TYPE_VARIABLE;
-
-        } else if ( DataType.TYPE_BOOLEAN.equals( dataType ) ) {
+        } else if ( DataType.TYPE_BOOLEAN.equals(dataType) ) {
             if ( !( Boolean.TRUE.equals( Boolean.parseBoolean( value ) ) || Boolean.FALSE.equals( Boolean.parseBoolean( value ) ) ) ) {
-                nature = FieldNatureType.TYPE_FORMULA;
+                return FieldNatureType.TYPE_FORMULA;
             } else {
-                nature = FieldNatureType.TYPE_LITERAL;
+                return FieldNatureType.TYPE_LITERAL;
             }
 
         } else if ( DataType.TYPE_DATE.equals( dataType ) ) {
             try {
-                nature = FieldNatureType.TYPE_LITERAL;
                 new SimpleDateFormat( DateUtils.getDateFormatMask() ).parse( value );
+                return FieldNatureType.TYPE_LITERAL;
             } catch ( ParseException e ) {
-                nature = FieldNatureType.TYPE_FORMULA;
+                return FieldNatureType.TYPE_FORMULA;
             }
 
         } else if ( DataType.TYPE_STRING.equals( dataType ) ) {
             if ( value.startsWith( "\"" ) ) {
-                nature = FieldNatureType.TYPE_LITERAL;
+                return FieldNatureType.TYPE_LITERAL;
             } else {
-                nature = FieldNatureType.TYPE_FORMULA;
+                return FieldNatureType.TYPE_FORMULA;
             }
 
         } else if ( DataType.TYPE_NUMERIC.equals( dataType ) ) {
-            nature = FieldNatureType.TYPE_LITERAL;
-            if ( !NumberUtils.isNumber( value ) ) {
-                nature = FieldNatureType.TYPE_FORMULA;
+            if ( !NumberUtils.isNumber(value) ) {
+                return FieldNatureType.TYPE_FORMULA;
             }
+            return FieldNatureType.TYPE_LITERAL;
 
         } else if ( DataType.TYPE_NUMERIC_BIGDECIMAL.equals( dataType ) ) {
             try {
-                nature = FieldNatureType.TYPE_LITERAL;
                 new BigDecimal( value );
+                return FieldNatureType.TYPE_LITERAL;
             } catch ( NumberFormatException e ) {
-                nature = FieldNatureType.TYPE_FORMULA;
+                return FieldNatureType.TYPE_FORMULA;
             }
 
         } else if ( DataType.TYPE_NUMERIC_BIGINTEGER.equals( dataType ) ) {
             try {
-                nature = FieldNatureType.TYPE_LITERAL;
                 new BigInteger( value );
+                return FieldNatureType.TYPE_LITERAL;
             } catch ( NumberFormatException e ) {
-                nature = FieldNatureType.TYPE_FORMULA;
+                return FieldNatureType.TYPE_FORMULA;
             }
 
         } else if ( DataType.TYPE_NUMERIC_BYTE.equals( dataType ) ) {
             try {
-                nature = FieldNatureType.TYPE_LITERAL;
                 new Byte( value );
+                return FieldNatureType.TYPE_LITERAL;
             } catch ( NumberFormatException e ) {
-                nature = FieldNatureType.TYPE_FORMULA;
+                return FieldNatureType.TYPE_FORMULA;
             }
 
         } else if ( DataType.TYPE_NUMERIC_DOUBLE.equals( dataType ) ) {
             try {
-                nature = FieldNatureType.TYPE_LITERAL;
                 new Double( value );
+                return FieldNatureType.TYPE_LITERAL;
             } catch ( NumberFormatException e ) {
-                nature = FieldNatureType.TYPE_FORMULA;
+                return FieldNatureType.TYPE_FORMULA;
             }
 
         } else if ( DataType.TYPE_NUMERIC_FLOAT.equals( dataType ) ) {
             try {
-                nature = FieldNatureType.TYPE_LITERAL;
                 new Float( value );
+                return FieldNatureType.TYPE_LITERAL;
             } catch ( NumberFormatException e ) {
-                nature = FieldNatureType.TYPE_FORMULA;
+                return FieldNatureType.TYPE_FORMULA;
             }
 
         } else if ( DataType.TYPE_NUMERIC_INTEGER.equals( dataType ) ) {
             try {
-                nature = FieldNatureType.TYPE_LITERAL;
                 new Integer( value );
+                return FieldNatureType.TYPE_LITERAL;
             } catch ( NumberFormatException e ) {
-                nature = FieldNatureType.TYPE_FORMULA;
+                return FieldNatureType.TYPE_FORMULA;
             }
 
         } else if ( DataType.TYPE_NUMERIC_LONG.equals( dataType ) ) {
             try {
-                nature = FieldNatureType.TYPE_LITERAL;
                 new Long( value );
+                return FieldNatureType.TYPE_LITERAL;
             } catch ( NumberFormatException e ) {
-                nature = FieldNatureType.TYPE_FORMULA;
+                return FieldNatureType.TYPE_FORMULA;
             }
 
         } else if ( DataType.TYPE_NUMERIC_SHORT.equals( dataType ) ) {
             try {
-                nature = FieldNatureType.TYPE_LITERAL;
                 new Short( value );
+                return FieldNatureType.TYPE_LITERAL;
             } catch ( NumberFormatException e ) {
-                nature = FieldNatureType.TYPE_FORMULA;
+                return FieldNatureType.TYPE_FORMULA;
             }
 
         }
+
         return nature;
     }
 
@@ -154,6 +173,19 @@ class RuleModelPersistenceHelper {
         }
 
         return dmo.getProjectModelFields().get( m.getPackageName() + "." + type );
+    }
+
+    static ModelField findField(
+            ModelField[] typeFields,
+            String fieldName ) {
+        if ( typeFields != null && fieldName != null ) {
+            for ( ModelField typeField : typeFields ) {
+                if ( typeField.getName().equals( fieldName ) ) {
+                    return typeField;
+                }
+            }
+        }
+        return null;
     }
 
     static String inferDataType( ActionFieldList action,
