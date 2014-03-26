@@ -4,7 +4,6 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectConfiguration;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.builder.dialect.asm.ClassLevel;
 import org.slf4j.Logger;
@@ -85,7 +84,7 @@ public class JavaDialectConfiguration
     public void setJavaLanguageLevel(final String languageLevel) {
         if ( Arrays.binarySearch( LANGUAGE_LEVELS,
                                   languageLevel ) < 0 ) {
-            throw new RuntimeDroolsException( "value '" + languageLevel + "' is not a valid language level" );
+            throw new RuntimeException( "value '" + languageLevel + "' is not a valid language level" );
         }
         this.languageLevel = languageLevel;
     }
@@ -121,7 +120,7 @@ public class JavaDialectConfiguration
                 this.compiler = NATIVE;
                 break;
             default :
-                throw new RuntimeDroolsException( "value '" + compiler + "' is not a valid compiler" );
+                throw new RuntimeException( "value '" + compiler + "' is not a valid compiler" );
         }
     }
 

@@ -16,8 +16,7 @@
 
 package org.drools.core.common;
 
-import org.drools.core.FactException;
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
@@ -32,12 +31,12 @@ public interface InternalWorkingMemoryEntryPoint extends EntryPoint {
     InternalKnowledgeBase getKnowledgeBase();
     public void delete(final FactHandle factHandle,
                         final RuleImpl rule,
-                        final Activation activation) throws FactException;
-    public void update(org.kie.api.runtime.rule.FactHandle handle,
+                        final Activation activation);
+    public void update(FactHandle handle,
                        Object object,
                        long mask,
                        Class<?> modifiedClass,
-                       Activation activation) throws FactException;
+                       Activation activation);
 
     public EntryPointId getEntryPoint();
     public InternalWorkingMemory getInternalWorkingMemory();

@@ -29,7 +29,6 @@ import javax.rules.admin.RuleExecutionSetCreateException;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.core.IntegrationException;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.decisiontable.InputType;
@@ -228,7 +227,7 @@ public class LocalRuleExecutionSetProviderImpl
         try {
             return new RuleExecutionSetImpl( pkg,
                                              properties );
-        } catch ( final IntegrationException e ) {
+        } catch ( Exception e ) {
             throw new RuleExecutionSetCreateException( "Failed to create RuleExecutionSet",
                                                        e );
         }

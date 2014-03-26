@@ -1,6 +1,5 @@
 package org.drools.reteoo.common;
 
-import org.drools.core.FactException;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.DroolsQuery;
@@ -81,7 +80,7 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
     }
 
     public int fireAllRules(final AgendaFilter agendaFilter,
-                            int fireLimit) throws FactException {
+                            int fireLimit) {
         checkAlive();
         if ( this.firing.compareAndSet( false,
                                         true ) ) {

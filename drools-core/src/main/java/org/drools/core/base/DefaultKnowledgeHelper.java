@@ -16,8 +16,7 @@
 
 package org.drools.core.base;
 
-import org.drools.core.FactException;
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
@@ -38,7 +37,6 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.MapCore;
 import org.drools.core.factmodel.traits.CoreWrapper;
-import org.drools.core.factmodel.traits.Key;
 import org.drools.core.factmodel.traits.LogicalMapCore;
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
@@ -218,7 +216,7 @@ public class DefaultKnowledgeHelper
     }
 
     public FactHandle insert(final Object object,
-                       final boolean dynamic) throws FactException {
+                       final boolean dynamic) {
         FactHandle handle = this.workingMemory.insert( object,
                                                            null,
                                                            dynamic,
@@ -343,7 +341,7 @@ public class DefaultKnowledgeHelper
         handle = getFactHandleFromWM( object );
         
         if ( handle == null ) {
-            throw new FactException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
+            throw new RuntimeException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
         }
         return handle;
     }
@@ -352,7 +350,7 @@ public class DefaultKnowledgeHelper
         Object object = ((InternalFactHandle)handle).getObject();
         handle = getFactHandleFromWM( object );
         if ( handle == null ) {
-            throw new FactException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
+            throw new RuntimeException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
         }
         return handle;
     }

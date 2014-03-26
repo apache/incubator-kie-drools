@@ -918,7 +918,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                       temperatureList.size() );
 
         sensor1.setTemperature( 150 );
-        sensor1Handle =  getFactHandle( (org.drools.core.FactHandle) sensor1Handle, session );
+        sensor1Handle =  getFactHandle( sensor1Handle, session );
         session.update( sensor1Handle, sensor1 );
 
         session = getSerialisedStatefulKnowledgeSession( session,

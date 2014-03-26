@@ -16,7 +16,7 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalKnowledgeRuntime;
@@ -145,14 +145,14 @@ public class ReteooWorkingMemoryTest {
         ksession.insert( new Person( "tom", 100) );
 
         int i = 0;
-        for ( org.kie.api.runtime.rule.FactHandle fh : ksession.getFactHandles()) {
+        for ( FactHandle fh : ksession.getFactHandles()) {
             if ( i++ > 5 ) {
                 fail( "should not iterate for than 3 times" );
             }
         }
 
         i = 0;
-        for ( org.kie.api.runtime.rule.FactHandle fh : ksession.getFactHandles()) {
+        for ( FactHandle fh : ksession.getFactHandles()) {
             if ( i++ > 5 ) {
                 fail( "should not iterate for than 3 times" );
             }
@@ -186,7 +186,7 @@ public class ReteooWorkingMemoryTest {
 
         kBase.getRete().addObjectSink( epn );
         StatefulKnowledgeSession ksession = kBase.newStatefulKnowledgeSession();
-        org.kie.api.runtime.rule.FactHandle f1 = ksession.insert( "f1" );
+        FactHandle f1 = ksession.insert( "f1" );
         
         EntryPoint ep = ksession.getEntryPoint( "xxx" );
         try {

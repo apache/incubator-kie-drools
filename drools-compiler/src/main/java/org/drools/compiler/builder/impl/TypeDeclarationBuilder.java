@@ -17,7 +17,6 @@ import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ClassFieldAccessor;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.TypeResolver;
@@ -638,7 +637,7 @@ public class TypeDeclarationBuilder {
                 }
 
             } catch (ClassNotFoundException cnfe) {
-                throw new RuntimeDroolsException("Unable to resolve Type Declaration superclass '" + fullSuper + "'");
+                throw new RuntimeException("Unable to resolve Type Declaration superclass '" + fullSuper + "'");
             } catch (IOException e) {
 
             }

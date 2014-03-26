@@ -16,12 +16,10 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.RuntimeDroolsException;
-
 /**
  * Base exception for errors during <code>Rule</code> construction.
  */
-public class RuleConstructionException extends RuntimeDroolsException {
+public class RuleConstructionException extends RuntimeException {
     private static final long serialVersionUID = 510l;
 
     /**

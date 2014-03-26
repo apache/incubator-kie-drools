@@ -18,7 +18,7 @@ package org.drools.core.event;
 
 import java.util.Iterator;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.event.rule.impl.ObjectDeletedEventImpl;
 import org.drools.core.event.rule.impl.ObjectInsertedEventImpl;

@@ -16,10 +16,8 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.FactException;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.ShadowProxy;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
@@ -102,11 +100,9 @@ public class ReteTest extends DroolsTestCase {
 
     /**
      * Tests that interfaces and parent classes for an asserted  class are  cached, for  quick future iterations
-     *
-     * @throws org.drools.core.FactException
      */
     @Test
-    public void testCache() throws FactException {
+    public void testCache() {
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
@@ -458,7 +454,6 @@ public class ReteTest extends DroolsTestCase {
                           workingMemory);
 
         final Object[] results = (Object[]) sink1.getAsserted().get(0);
-        assertFalse(((DefaultFactHandle) results[0]).getObject() instanceof ShadowProxy);
     }
 
     public static class TestBuildContext extends BuildContext {

@@ -11,8 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
-import org.drools.core.FactException;
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -174,7 +173,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 
     public void removeLogicalDependencies(Activation activation,
                                           PropagationContext context,
-                                          RuleImpl rule) throws FactException {
+                                          RuleImpl rule) {
         // TODO Auto-generated method stub
         
     }
@@ -186,7 +185,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 
     public void delete(FactHandle factHandle,
                        RuleImpl rule,
-                        Activation activation) throws FactException {
+                        Activation activation) {
         // TODO Auto-generated method stub
         
     }
@@ -226,23 +225,23 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
-    public int fireAllRules() throws FactException {
+    public int fireAllRules() {
         // TODO Auto-generated method stub
         return 0;
     }
 
-    public int fireAllRules(AgendaFilter agendaFilter) throws FactException {
+    public int fireAllRules(AgendaFilter agendaFilter) {
         // TODO Auto-generated method stub
         return 0;
     }
 
-    public int fireAllRules(int fireLimit) throws FactException {
+    public int fireAllRules(int fireLimit) {
         // TODO Auto-generated method stub
         return 0;
     }
 
     public int fireAllRules(AgendaFilter agendaFilter,
-                            int fireLimit) throws FactException {
+                            int fireLimit) {
         // TODO Auto-generated method stub
         return 0;
     }
@@ -272,7 +271,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
-    public Object getObject(org.kie.api.runtime.rule.FactHandle handle) {
+    public Object getObject(FactHandle handle) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -419,13 +418,13 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
-    public FactHandle insert(Object object) throws FactException {
+    public FactHandle insert(Object object) {
         this.facts .add(object);
         return new MockFactHandle(object.hashCode());
     }
 
     public FactHandle insert(Object object,
-                             boolean dynamic) throws FactException {
+                             boolean dynamic) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -441,17 +440,17 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
-    public void retract(org.kie.api.runtime.rule.FactHandle handle) throws FactException {
+    public void retract(FactHandle handle) {
         // TODO Auto-generated method stub
         
     }
 
-    public void delete(org.kie.api.runtime.rule.FactHandle handle) throws FactException {
+    public void delete(FactHandle handle) {
         // TODO Auto-generated method stub
     }
 
-    public void update(org.kie.api.runtime.rule.FactHandle handle,
-                       Object object) throws FactException {
+    public void update(FactHandle handle,
+                       Object object) {
         // TODO Auto-generated method stub
         
     }
@@ -561,12 +560,12 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
-    public <T extends org.kie.api.runtime.rule.FactHandle> Collection<T> getFactHandles() {
+    public <T extends FactHandle> Collection<T> getFactHandles() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public <T extends org.kie.api.runtime.rule.FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
+    public <T extends FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
         // TODO Auto-generated method stub
         return null;
     }

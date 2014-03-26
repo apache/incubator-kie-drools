@@ -1,6 +1,5 @@
 package org.drools.compiler.rule.builder.dialect.java;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.TypeResolver;
 import org.drools.compiler.compiler.FunctionError;
 import org.drools.compiler.rule.builder.FunctionBuilder;
@@ -113,7 +112,7 @@ public class JavaFunctionBuilder
             functionDescr.setOffset( offset );
         } catch ( final IOException e ) {
             // won't ever happen, it's just reading over a string.
-            throw new RuntimeDroolsException( "Error determining start offset with function" );
+            throw new RuntimeException( "Error determining start offset with function" );
         }
 
         final String name = pkg.getName() + "." + StringUtils.ucFirst( functionDescr.getName() );

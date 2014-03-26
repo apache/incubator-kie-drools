@@ -24,7 +24,7 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;

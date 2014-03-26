@@ -74,10 +74,6 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
         this.duration = duration;
     }
 
-    /**
-     * @see org.drools.core.FactHandle
-     * 1: is used for EventFactHandle
-     */
     public String toExternalForm() {
         return  "5:" + super.getId() + ":" + getIdentityHashCode() + ":" + getObjectHashCode() + ":" + getRecency() + ":" + ( ((super.getEntryPoint() != null) ? super.getEntryPoint().getEntryPointId() : "null" ) + ":" + getObject() );
     }

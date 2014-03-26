@@ -733,8 +733,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         Father homer = new Father("homer", null, 20);
         Father bart = new Father("bart", null, 3);
 
-        org.kie.api.runtime.rule.FactHandle abrahamHandle = ksession.insert(abraham);
-        org.kie.api.runtime.rule.FactHandle bartHandle = ksession.insert(bart);
+        FactHandle abrahamHandle = ksession.insert(abraham);
+        FactHandle bartHandle = ksession.insert(bart);
         ksession.fireAllRules();
         assertEquals(0, ((TotalHolder) ksession.getGlobal("totalHolder")).getTotal());
 
@@ -753,7 +753,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals(100, ((TotalHolder) ksession.getGlobal("totalHolder")).getTotal());
 
-        org.kie.api.runtime.rule.FactHandle homerHandle = ksession.insert(homer);
+        FactHandle homerHandle = ksession.insert(homer);
         homer.setFather(abraham);
         ksession.update(homerHandle, homer);
         bart.setFather(homer);

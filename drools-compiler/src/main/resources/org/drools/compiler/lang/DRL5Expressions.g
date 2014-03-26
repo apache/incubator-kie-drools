@@ -14,7 +14,6 @@ options {
     import org.drools.compiler.lang.ParserHelper;
     import org.drools.compiler.lang.DroolsParserExceptionFactory;
     import org.drools.compiler.lang.Location;
-    import org.drools.core.CheckedDroolsException;
 
     import org.drools.compiler.lang.api.AnnotatedDescrBuilder;
 

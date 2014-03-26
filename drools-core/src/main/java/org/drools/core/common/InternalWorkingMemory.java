@@ -20,8 +20,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
-import org.drools.core.FactException;
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -95,7 +94,7 @@ public interface InternalWorkingMemory
 
     void delete(final FactHandle factHandle,
                        final RuleImpl rule,
-                       final Activation activation) throws FactException;
+                       final Activation activation);
 
     public Lock getLock();
 

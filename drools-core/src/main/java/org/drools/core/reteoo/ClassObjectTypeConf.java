@@ -16,10 +16,8 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.FactException;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.base.ShadowProxy;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
@@ -54,8 +52,6 @@ public class ClassObjectTypeConf
     private Class< ? >                 cls;
     private transient InternalKnowledgeBase kBase;
     private ObjectTypeNode[]           objectTypeNodes;
-
-    protected boolean                  shadowEnabled;
 
     private ObjectTypeNode             concreteObjectTypeNode;
     private EntryPointId                 entryPoint;
@@ -112,7 +108,6 @@ public class ClassObjectTypeConf
                                                                                objectType );
         }
 
-        defineShadowProxyData( clazz );
         this.supportsPropertyListeners = checkPropertyListenerSupport( clazz );
 
         Traitable ttbl = cls.getAnnotation( Traitable.class );
@@ -124,7 +119,6 @@ public class ClassObjectTypeConf
         kBase = (InternalKnowledgeBase) stream.readObject();
         cls = (Class<?>) stream.readObject();
         objectTypeNodes = (ObjectTypeNode[]) stream.readObject();
-        shadowEnabled = stream.readBoolean();
         concreteObjectTypeNode = (ObjectTypeNode) stream.readObject();
         entryPoint = (EntryPointId) stream.readObject();
         tmsEnabled = stream.readBoolean();
@@ -132,14 +126,12 @@ public class ClassObjectTypeConf
         supportsPropertyListeners = stream.readBoolean();
         isEvent = stream.readBoolean();
         isTrait = stream.readBoolean();
-        defineShadowProxyData( cls );
     }
 
     public void writeExternal(ObjectOutput stream) throws IOException {
         stream.writeObject( kBase );
         stream.writeObject( cls );
         stream.writeObject( objectTypeNodes );
-        stream.writeBoolean( shadowEnabled );
         stream.writeObject( concreteObjectTypeNode );
         stream.writeObject( entryPoint );
         stream.writeBoolean( tmsEnabled );
@@ -157,12 +149,6 @@ public class ClassObjectTypeConf
         return this.concreteObjectTypeNode;
     }
 
-    private void defineShadowProxyData(Class<?> clazz) {
-        if ( ShadowProxy.class.isAssignableFrom( cls ) ) {
-            this.shadowEnabled = true;
-        }
-    }
-    
     private boolean checkPropertyListenerSupport( Class<?> clazz ) {
         Method method = null;
         try {
@@ -192,17 +178,12 @@ public class ClassObjectTypeConf
 
     }
 
-    public boolean isShadowEnabled() {
-        return this.shadowEnabled;
-    }
-
     public boolean isTraitTMSEnabled() {
         return traitTmsEnabled;
     }
 
     public void resetCache() {
         this.objectTypeNodes = null;
-        defineShadowProxyData( cls );
     }
 
     public ObjectTypeNode[] getObjectTypeNodes() {
@@ -212,7 +193,7 @@ public class ClassObjectTypeConf
         return this.objectTypeNodes;
     }
 
-    private ObjectTypeNode[] getMatchingObjectTypes(final Class<?> clazz) throws FactException {
+    private ObjectTypeNode[] getMatchingObjectTypes(final Class<?> clazz) {
         final List<ObjectTypeNode> cache = new ArrayList<ObjectTypeNode>();
 
         for ( ObjectTypeNode node : kBase.getRete().getObjectTypeNodes( this.entryPoint ).values() ) {

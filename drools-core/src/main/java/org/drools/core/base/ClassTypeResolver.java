@@ -23,8 +23,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.RuntimeDroolsException;
-
 public class ClassTypeResolver
     implements
     TypeResolver {
@@ -60,7 +58,7 @@ public class ClassTypeResolver
         this.imports = imports;
 
         if ( classLoader == null ) {
-            throw new RuntimeDroolsException( "ClassTypeResolver cannot have a null parent ClassLoader" );
+            throw new RuntimeException( "ClassTypeResolver cannot have a null parent ClassLoader" );
         }
 
         this.classLoader = classLoader;

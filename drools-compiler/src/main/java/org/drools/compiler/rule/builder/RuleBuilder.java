@@ -30,7 +30,6 @@ import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELObjectExpressionBuilder;
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.base.mvel.MVELObjectExpression;
@@ -93,7 +92,7 @@ public class RuleBuilder {
 
             context.getRule().setLhs( ce );
         } else {
-            throw new RuntimeDroolsException( "BUG: builder not found for descriptor class " + ruleDescr.getLhs().getClass() );
+            throw new RuntimeException( "BUG: builder not found for descriptor class " + ruleDescr.getLhs().getClass() );
         }
 
         // build all the rule's attributes

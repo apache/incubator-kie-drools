@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.spi.FieldValue;
 
 public class DoubleFieldImpl
@@ -58,7 +57,7 @@ public class DoubleFieldImpl
     }
 
     public boolean getBooleanValue() {
-        throw new RuntimeDroolsException( "Conversion to boolean not supported for type double" );
+        throw new RuntimeException( "Conversion to boolean not supported for type double" );
     }
 
     public byte getByteValue() {

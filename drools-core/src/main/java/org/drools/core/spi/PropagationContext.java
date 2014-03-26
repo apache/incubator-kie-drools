@@ -19,7 +19,7 @@ package org.drools.core.spi;
 import java.io.Externalizable;
 import java.util.LinkedList;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.definitions.rule.impl.RuleImpl;

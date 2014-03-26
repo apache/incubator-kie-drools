@@ -160,7 +160,7 @@ public class Misc2Test extends CommonTestMethodBase {
         Address address = new Address();
 
         address.setSuburb("xyz");
-        org.kie.api.runtime.rule.FactHandle addressHandle = ksession.insert(address);
+        FactHandle addressHandle = ksession.insert(address);
 
         int rulesFired = ksession.fireAllRules();
 

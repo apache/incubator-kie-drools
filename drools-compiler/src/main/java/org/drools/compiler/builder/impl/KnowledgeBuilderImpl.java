@@ -50,8 +50,6 @@ import org.drools.compiler.rule.builder.RuleBuilder;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.dialect.DialectError;
 import org.drools.compiler.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl;
-import org.drools.core.PackageIntegrationException;
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.core.common.ProjectClassLoader;
@@ -1258,8 +1256,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 }
             }
         } catch (ClassNotFoundException e) {
-            throw new RuntimeDroolsException("unable to resolve Type Declaration class '" + lastType.getTypeName() +
-                                             "'");
+            throw new RuntimeException("unable to resolve Type Declaration class '" + lastType.getTypeName() + "'");
         }
 
         // now merge the new package into the existing one
@@ -1291,7 +1288,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                     final String type = entry.getValue();
                     lastType = type;
                     if (globals.containsKey(identifier) && !globals.get(identifier).equals(type)) {
-                        throw new PackageIntegrationException(pkg);
+                        throw new RuntimeException(pkg.getName() + " cannot be integrated");
                     } else {
                         pkg.addGlobal(identifier,
                                       this.rootClassLoader.loadClass(type));
@@ -1302,7 +1299,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 }
             }
         } catch (ClassNotFoundException e) {
-            throw new RuntimeDroolsException("Unable to resolve class '" + lastType + "'");
+            throw new RuntimeException("Unable to resolve class '" + lastType + "'");
         }
 
         // merge the type declarations
@@ -1505,14 +1502,14 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             Class< ? extends AccumulateFunction> clazz = (Class< ? extends AccumulateFunction>) pkgRegistry.getTypeResolver().resolveType(className);
             return clazz.newInstance();
         } catch ( ClassNotFoundException e ) {
-            throw new RuntimeDroolsException( "Error loading accumulate function for identifier " + identifier + ". Class " + className + " not found",
-                                              e );
+            throw new RuntimeException( "Error loading accumulate function for identifier " + identifier + ". Class " + className + " not found",
+                                        e );
         } catch ( InstantiationException e ) {
-            throw new RuntimeDroolsException( "Error loading accumulate function for identifier " + identifier + ". Instantiation failed for class " + className,
-                                              e );
+            throw new RuntimeException( "Error loading accumulate function for identifier " + identifier + ". Instantiation failed for class " + className,
+                                        e );
         } catch ( IllegalAccessException e ) {
-            throw new RuntimeDroolsException( "Error loading accumulate function for identifier " + identifier + ". Illegal access to class " + className,
-                                              e );
+            throw new RuntimeException( "Error loading accumulate function for identifier " + identifier + ". Illegal access to class " + className,
+                                        e );
         }
     }
 
@@ -1572,7 +1569,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
                 window.setPattern(pattern);
             } else {
-                throw new RuntimeDroolsException(
+                throw new RuntimeException(
                         "BUG: builder not found for descriptor class " + wd.getPattern().getClass());
             }
 

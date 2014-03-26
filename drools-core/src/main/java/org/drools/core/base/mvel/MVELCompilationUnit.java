@@ -16,8 +16,7 @@
 
 package org.drools.core.base.mvel;
 
-import org.drools.core.FactHandle;
-import org.drools.core.RuntimeDroolsException;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.base.ModifyInterceptor;
 import org.drools.core.common.InternalFactHandle;
@@ -231,7 +230,7 @@ public class MVELCompilationUnit
                                         cls );
             }
         } catch ( ClassNotFoundException e ) {
-            throw new RuntimeDroolsException( "Unable to resolve class '" + type + "' for identifier '" + identifier );
+            throw new RuntimeException( "Unable to resolve class '" + type + "' for identifier '" + identifier );
         }
 
         parserContext.setSourceFile( name );

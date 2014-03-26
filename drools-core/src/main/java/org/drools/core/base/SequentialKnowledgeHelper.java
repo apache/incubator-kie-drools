@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.definitions.rule.impl.RuleImpl;

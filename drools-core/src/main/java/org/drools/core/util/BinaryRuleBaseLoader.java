@@ -19,7 +19,6 @@ package org.drools.core.util;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.internal.KnowledgeBase;
@@ -113,9 +112,9 @@ public class BinaryRuleBaseLoader {
             }
 
         } catch ( IOException e ) {
-            throw new RuntimeDroolsException( e );
+            throw new RuntimeException( e );
         } catch ( ClassNotFoundException e ) {
-            throw new RuntimeDroolsException( e );
+            throw new RuntimeException( e );
         } finally {
             try {
                 in.close();
@@ -133,8 +132,7 @@ public class BinaryRuleBaseLoader {
         try {
             ((InternalKnowledgeBase)kBase).addPackage(pkg);
         } catch ( Exception e ) {
-            throw new RuntimeDroolsException( "Unable to add package to the rulebase.",
-                                              e );
+            throw new RuntimeException( "Unable to add package to the rulebase.", e );
         }
     }
 

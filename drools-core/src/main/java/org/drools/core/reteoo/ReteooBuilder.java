@@ -94,10 +94,6 @@ public class ReteooBuilder
      *
      * @param rule
      *            The rule to add.
-     *
-     * @throws org.drools.core.RuleIntegrationException
-     *             if an error prevents complete construction of the network for
-     *             the <code>Rule</code>.
      * @throws InvalidPatternException
      */
     public synchronized void addRule(final RuleImpl rule) throws InvalidPatternException {

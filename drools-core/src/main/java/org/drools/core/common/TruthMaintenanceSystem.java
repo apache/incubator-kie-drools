@@ -16,7 +16,6 @@
 
 package org.drools.core.common;
 
-import org.drools.core.FactException;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -87,7 +86,6 @@ public class TruthMaintenanceSystem {
      * @param context
      * @param rule
      * @param typeConf 
-     * @throws org.drools.core.FactException
      */
     public void readLogicalDependency(final InternalFactHandle handle,
                                       final Object object,
@@ -95,7 +93,7 @@ public class TruthMaintenanceSystem {
                                       final Activation activation,
                                       final PropagationContext context,
                                       final RuleImpl rule,
-                                      final ObjectTypeConf typeConf) throws FactException {
+                                      final ObjectTypeConf typeConf) {
         addLogicalDependency( handle, object, value, activation, context, rule, typeConf, true );
     }
 
@@ -105,7 +103,7 @@ public class TruthMaintenanceSystem {
                                      final Activation activation,
                                      final PropagationContext context,
                                      final RuleImpl rule,
-                                     final ObjectTypeConf typeConf) throws FactException {
+                                     final ObjectTypeConf typeConf) {
         addLogicalDependency( handle, object, value, activation, context, rule, typeConf, false );
     }
 
@@ -116,7 +114,7 @@ public class TruthMaintenanceSystem {
                                      final PropagationContext context,
                                      final RuleImpl rule,
                                      final ObjectTypeConf typeConf,
-                                     final boolean read) throws FactException {
+                                     final boolean read) {
         BeliefSet beliefSet = handle.getEqualityKey().getBeliefSet();
         if ( beliefSet == null ) {
             if ( context.getType() == PropagationContext.MODIFICATION ) {

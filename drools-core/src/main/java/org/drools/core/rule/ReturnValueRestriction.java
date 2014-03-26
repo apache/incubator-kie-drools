@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -237,7 +236,7 @@ public class ReturnValueRestriction
                                                                       workingMemory,
                                                                       ((ReturnValueContextEntry) context).dialectContext ) );
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( e );
+            throw new RuntimeException( e );
         }
     }
 
@@ -258,7 +257,7 @@ public class ReturnValueRestriction
                                             handle,
                                             value );
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( e );
+            throw new RuntimeException( e );
         }            
     }
 
@@ -277,7 +276,7 @@ public class ReturnValueRestriction
                                             handle,
                                             value );
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( e );
+            throw new RuntimeException( e );
         }
     }
 
@@ -296,7 +295,7 @@ public class ReturnValueRestriction
                                             ctx.handle,
                                             value );
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( e );
+            throw new RuntimeException( e );
         }
     }
 

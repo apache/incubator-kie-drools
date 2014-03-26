@@ -16,7 +16,7 @@
 
 package org.drools.reteoo.nodes;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;

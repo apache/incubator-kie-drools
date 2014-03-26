@@ -179,8 +179,6 @@ public class ServiceRegistryImpl
         addDefault( ResourceFactoryService.class,
                     "org.drools.impl.ResourceFactoryServiceImpl" );
         
-        addDefault(  SystemEventListenerService.class,
-                     "org.drools.core.impl.SystemEventListenerServiceImpl" );
         addDefault(  MarshallerProvider.class,
                      "org.drools.core.marshalling.impl.MarshallerProviderImpl");
         addDefault(  ExecutorProvider.class,

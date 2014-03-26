@@ -30,7 +30,7 @@ import javax.rules.RuleRuntime;
 import javax.rules.RuleSessionCreateException;
 import javax.rules.StatefulRuleSession;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.jsr94.rules.admin.RuleExecutionSetImpl;
@@ -335,7 +335,7 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
         checkRuleSessionValidity();
 
         List list = new ArrayList();
-        for ( org.kie.api.runtime.rule.FactHandle fh : this.session.getFactHandles( new ObjectFilterAdapter( filter ) ) ) {
+        for ( FactHandle fh : this.session.getFactHandles( new ObjectFilterAdapter( filter ) ) ) {
             list.add(((InternalFactHandle) fh).getObject());
         }
 

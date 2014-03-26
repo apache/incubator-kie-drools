@@ -84,7 +84,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         final Person bob = new Person( "Bob",
                                        "stilton" );
 
-        final org.kie.api.runtime.rule.FactHandle[] cheeseHandles = new org.kie.api.runtime.rule.FactHandle[cheese.length];
+        final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.insert( cheese[i] );
         }
@@ -219,7 +219,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         final Person bob = new Person( "Bob",
                                        "stilton" );
 
-        final org.kie.api.runtime.rule.FactHandle[] cheeseHandles = new org.kie.api.runtime.rule.FactHandle[cheese.length];
+        final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.insert( cheese[i] );
         }
@@ -285,7 +285,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         final Person bob = new Person( "Bob",
                                        "stilton" );
 
-        final org.kie.api.runtime.rule.FactHandle[] cheeseHandles = new org.kie.api.runtime.rule.FactHandle[cheese.length];
+        final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.insert( cheese[i] );
         }

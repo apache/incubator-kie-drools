@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.TupleStartEqualsConstraint;
 import org.drools.core.reteoo.ExistsNode;
@@ -179,12 +178,12 @@ public class GroupElementBuilder
         public void build(final BuildContext context,
                           final BuildUtils utils,
                           final RuleConditionElement rce) {
-            throw new RuntimeDroolsException( "BUG: Can't build a rete network with an inner OR group element" );
+            throw new RuntimeException( "BUG: Can't build a rete network with an inner OR group element" );
         }
 
         public boolean requiresLeftActivation(final BuildUtils utils,
                                               final RuleConditionElement rce) {
-            throw new RuntimeDroolsException( "BUG: Can't build a rete network with an inner OR group element" );
+            throw new RuntimeException( "BUG: Can't build a rete network with an inner OR group element" );
         }
     }
 

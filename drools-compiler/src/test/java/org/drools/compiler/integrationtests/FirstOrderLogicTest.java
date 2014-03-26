@@ -18,7 +18,7 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.FactA;
 import org.drools.compiler.FactB;
 import org.drools.compiler.FactC;
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.compiler.Message;
 import org.drools.compiler.Order;
 import org.drools.compiler.OrderItem;

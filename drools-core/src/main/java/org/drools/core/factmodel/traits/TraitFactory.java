@@ -16,7 +16,6 @@
 
 package org.drools.core.factmodel.traits;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ClassFieldAccessor;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -228,26 +227,26 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
                     if ( Thing.class.isAssignableFrom( trait ) ) {
                         tdef = buildClassDefinition( trait, null );
                     } else {
-                        throw new RuntimeDroolsException( "Unable to create definition for class " + trait +
-                                                          " : trait interfaces should extend " + Thing.class.getName() + " or be DECLARED as traits explicitly" );
+                        throw new RuntimeException( "Unable to create definition for class " + trait +
+                                                    " : trait interfaces should extend " + Thing.class.getName() + " or be DECLARED as traits explicitly" );
                     }
                 } catch ( IOException e ) {
-                    throw new RuntimeDroolsException( "Unable to create definition for class " + trait + " : " + e.getMessage() );
+                    throw new RuntimeException( "Unable to create definition for class " + trait + " : " + e.getMessage() );
                 }
                 kBase.getTraitRegistry().addTrait( tdef );
             } else {
-                throw new RuntimeDroolsException( "Unable to find Trait definition for class " + trait.getName() + ". It should have been DECLARED as a trait" );
+                throw new RuntimeException( "Unable to find Trait definition for class " + trait.getName() + ". It should have been DECLARED as a trait" );
             }        }
         if ( cdef == null ) {
             if ( core.getClass().getAnnotation( Traitable.class ) != null ) {
                 try {
                     cdef = buildClassDefinition( core.getClass(), core.getClass() );
                 } catch ( IOException e ) {
-                    throw new RuntimeDroolsException( "Unable to create definition for class " + coreKlass.getName() + " : " + e.getMessage() );
+                    throw new RuntimeException( "Unable to create definition for class " + coreKlass.getName() + " : " + e.getMessage() );
                 }
                 kBase.getTraitRegistry().addTraitable( cdef );
             } else {
-                throw new RuntimeDroolsException( "Unable to find Core class definition for class " + coreKlass.getName() + ". It should have been DECLARED as a trait" );
+                throw new RuntimeException( "Unable to find Core class definition for class " + coreKlass.getName() + ". It should have been DECLARED as a trait" );
             }
         }
 

@@ -16,8 +16,7 @@
 
 package org.drools.core.common;
 
-import org.drools.core.FactException;
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.spi.Activation;
 
@@ -29,20 +28,20 @@ public interface InternalWorkingMemoryActions
                        Object object,
                        long mask,
                        Class<?> modifiedClass,
-                       Activation activation) throws FactException;
+                       Activation activation);
 
     public void delete(FactHandle handle,
                        RuleImpl rule,
-                        Activation activation) throws FactException;
+                        Activation activation);
 
     FactHandle insert(Object object,
                                  Object value,
                                  boolean dynamic,
                                  boolean logical,
                                  RuleImpl rule,
-                                 Activation activation) throws FactException;
+                                 Activation activation);
 
     public FactHandle insertLogical(Object object,
-                                               boolean dynamic) throws FactException;
+                                               boolean dynamic);
 
 }

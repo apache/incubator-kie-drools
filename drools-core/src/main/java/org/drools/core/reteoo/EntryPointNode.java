@@ -17,7 +17,6 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.ShadowProxy;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -246,13 +245,6 @@ public class EntryPointNode extends ObjectSource
             log.trace( "Insert {}", handle.toString()  );
         }
 
-        // checks if shadow is enabled
-        if ( objectTypeConf.isShadowEnabled() ) {
-            // the user has implemented the ShadowProxy interface, let their implementation
-            // know it is safe to update the information the engine can see.
-            ((ShadowProxy) handle.getObject()).updateProxy();
-        }
-        
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
 
         for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
@@ -270,13 +262,6 @@ public class EntryPointNode extends ObjectSource
             log.trace( "Update {}", handle.toString()  );
         }
 
-        // checks if shadow is enabled
-        if ( objectTypeConf.isShadowEnabled() ) {
-            // the user has implemented the ShadowProxy interface, let their implementation
-            // know it is safe to update the information the engine can see.
-            ((ShadowProxy) handle.getObject()).updateProxy();
-        }
-        
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
         
         // make a reference to the previous tuples, then null then on the handle

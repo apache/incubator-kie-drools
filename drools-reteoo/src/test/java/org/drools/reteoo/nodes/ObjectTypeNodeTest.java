@@ -16,12 +16,10 @@
 
 package org.drools.reteoo.nodes;
 
-import org.drools.core.FactException;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PhreakPropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -47,11 +45,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @Ignore
 public class ObjectTypeNodeTest extends DroolsTestCase {
@@ -304,7 +298,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     }
 
     @Test
-    public void testUpdateSink() throws FactException {
+    public void testUpdateSink() {
         // Tests that when new child is added only the last added child is
         // updated
         // When the attachingNewNode flag is set

@@ -27,10 +27,8 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.drools.core.FactException;
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -137,7 +135,7 @@ public class NamedEntryPoint
     /**
      * @see org.drools.core.WorkingMemory
      */
-    public FactHandle insert(final Object object) throws FactException {
+    public FactHandle insert(final Object object) {
         return insert(object, /* Not-Dynamic */
                       null,
                       false,
@@ -147,7 +145,7 @@ public class NamedEntryPoint
     }
 
     public FactHandle insert(final Object object,
-                             final boolean dynamic) throws FactException {
+                             final boolean dynamic) {
         return insert(object,
                       null,
                       dynamic,
@@ -161,7 +159,7 @@ public class NamedEntryPoint
                              final boolean dynamic,
                              boolean logical,
                              final RuleImpl rule,
-                             final Activation activation) throws FactException {
+                             final Activation activation) {
         if ( object == null ) {
             // you cannot assert a null object
             return null;
@@ -386,8 +384,8 @@ public class NamedEntryPoint
         }        
     }
 
-    public void update(final org.kie.api.runtime.rule.FactHandle factHandle,
-                       final Object object) throws FactException {
+    public void update(final FactHandle factHandle,
+                       final Object object) {
         InternalFactHandle handle = (InternalFactHandle) factHandle;
         update( handle,
                 false,
@@ -397,11 +395,11 @@ public class NamedEntryPoint
                 null );
     }
     
-    public void update(final org.kie.api.runtime.rule.FactHandle factHandle,
+    public void update(final FactHandle factHandle,
                        final Object object,
                        final long mask,
                        final Class<?> modifiedClass,
-                       final Activation activation) throws FactException {
+                       final Activation activation) {
         InternalFactHandle handle = (InternalFactHandle) factHandle;
         update( handle,
                 false,
@@ -416,7 +414,7 @@ public class NamedEntryPoint
                                      final Object object,
                                      final long mask,
                                      final Class<?> modifiedClass,
-                                     final Activation activation) throws FactException {
+                                     final Activation activation) {
         try {
             this.lock.lock();
             this.kBase.readLock();
@@ -537,13 +535,13 @@ public class NamedEntryPoint
         return handle;
     }
 
-    public void retract(final org.kie.api.runtime.rule.FactHandle handle) throws FactException {
+    public void retract(final FactHandle handle) {
         delete( (FactHandle) handle,
                  null,
                  null );
     }
 
-    public void delete(final org.kie.api.runtime.rule.FactHandle handle) throws FactException {
+    public void delete(final FactHandle handle) {
         delete( (FactHandle) handle,
                  null,
                  null );
@@ -551,7 +549,7 @@ public class NamedEntryPoint
 
     public void delete(final FactHandle factHandle,
                        final RuleImpl rule,
-                       final Activation activation) throws FactException {
+                       final Activation activation) {
         if ( factHandle == null ) {
             throw new IllegalArgumentException( "FactHandle cannot be null " );
         }
@@ -720,16 +718,16 @@ public class NamedEntryPoint
             // stop processing JavaBean PropertyChangeEvents
             // on the retracted Object
         } catch ( final IllegalArgumentException e ) {
-            throw new RuntimeDroolsException( "Warning: The removePropertyChangeListener method on the class " + object.getClass() + " does not take a simple PropertyChangeListener argument so Drools will be unable to stop processing JavaBean"
-                                              + " PropertyChangeEvents on the retracted Object" );
+            throw new RuntimeException( "Warning: The removePropertyChangeListener method on the class " + object.getClass() + " does not take a simple PropertyChangeListener argument so Drools will be unable to stop processing JavaBean"
+                                        + " PropertyChangeEvents on the retracted Object" );
         } catch ( final IllegalAccessException e ) {
-            throw new RuntimeDroolsException( "Warning: The removePropertyChangeListener method on the class " + object.getClass() + " is not public so Drools will be unable to stop processing JavaBean PropertyChangeEvents on the retracted Object" );
+            throw new RuntimeException( "Warning: The removePropertyChangeListener method on the class " + object.getClass() + " is not public so Drools will be unable to stop processing JavaBean PropertyChangeEvents on the retracted Object" );
         } catch ( final InvocationTargetException e ) {
-            throw new RuntimeDroolsException( "Warning: The removePropertyChangeL istener method on the class " + object.getClass() + " threw an InvocationTargetException so Drools will be unable to stop processing JavaBean"
-                                              + " PropertyChangeEvents on the retracted Object: " + e.getMessage() );
+            throw new RuntimeException( "Warning: The removePropertyChangeL istener method on the class " + object.getClass() + " threw an InvocationTargetException so Drools will be unable to stop processing JavaBean"
+                                        + " PropertyChangeEvents on the retracted Object: " + e.getMessage() );
         } catch ( final SecurityException e ) {
-            throw new RuntimeDroolsException( "Warning: The SecurityManager controlling the class " + object.getClass() + " did not allow the lookup of a removePropertyChangeListener method so Drools will be unable to stop processing JavaBean"
-                                              + " PropertyChangeEvents on the retracted Object: " + e.getMessage() );
+            throw new RuntimeException( "Warning: The SecurityManager controlling the class " + object.getClass() + " did not allow the lookup of a removePropertyChangeListener method so Drools will be unable to stop processing JavaBean"
+                                        + " PropertyChangeEvents on the retracted Object: " + e.getMessage() );
         }
     }
 
@@ -761,19 +759,19 @@ public class NamedEntryPoint
         return this.objectStore.getHandleForObjectIdentity( object );
     }
 
-    public Object getObject(org.kie.api.runtime.rule.FactHandle factHandle) {
+    public Object getObject(FactHandle factHandle) {
         return this.objectStore.getObjectForHandle(factHandle);
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends org.kie.api.runtime.rule.FactHandle> Collection<T> getFactHandles() {
+    public <T extends FactHandle> Collection<T> getFactHandles() {
         return new ObjectStoreWrapper( this.objectStore,
                                        null,
                                        ObjectStoreWrapper.FACT_HANDLE );
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends org.kie.api.runtime.rule.FactHandle> Collection<T> getFactHandles(org.kie.api.runtime.ObjectFilter filter) {
+    public <T extends FactHandle> Collection<T> getFactHandles(org.kie.api.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( this.objectStore,
                                        filter,
                                        ObjectStoreWrapper.FACT_HANDLE );
@@ -854,17 +852,11 @@ public class NamedEntryPoint
     
     public void propertyChange(final PropertyChangeEvent event) {
         final Object object = event.getSource();
-
-        try {
-            FactHandle handle = getFactHandle( object );
-            if ( handle == null ) {
-                throw new FactException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
-            }
-            update( handle,
-                    object );
-        } catch ( final FactException e ) {
-            throw new RuntimeDroolsException( e.getMessage() );
+        FactHandle handle = getFactHandle( object );
+        if ( handle == null ) {
+            throw new RuntimeException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
         }
+        update( handle, object );
     }
 
     public void dispose() {

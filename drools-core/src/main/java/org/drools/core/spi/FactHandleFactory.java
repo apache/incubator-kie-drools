@@ -26,8 +26,6 @@ import org.kie.api.runtime.rule.EntryPoint;
 
 /**
  * Factory Interface to return new <code>FactHandle</code>s
- * 
- *  @see org.drools.core.FactHandle
  */
 public interface FactHandleFactory {
    /**

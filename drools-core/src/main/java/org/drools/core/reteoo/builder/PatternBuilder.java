@@ -21,7 +21,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.mvel.ActivationPropertyHandler;
@@ -203,7 +202,7 @@ public class PatternBuilder
                             constraint );
                 }
             } else {
-                throw new RuntimeDroolsException( "Unknown constraint type: " + constraint.getType() + ". This is a bug. Please contact development team." );
+                throw new RuntimeException( "Unknown constraint type: " + constraint.getType() + ". This is a bug. Please contact development team." );
             }
 
         }

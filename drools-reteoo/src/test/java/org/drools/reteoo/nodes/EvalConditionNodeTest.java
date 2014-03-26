@@ -16,7 +16,6 @@
 
 package org.drools.reteoo.nodes;
 
-import org.drools.core.FactException;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -100,11 +99,9 @@ public class EvalConditionNodeTest extends DroolsTestCase {
     /**
      * If a eval allows an incoming Object, then the Object MUST be
      * propagated. This tests that the memory is updated
-     * 
-     * @throws FactException
      */
     @Test
-    public void testAssertedAllowed() throws FactException {
+    public void testAssertedAllowed() {
         final MockEvalCondition eval = new MockEvalCondition( true );
 
         // Create a test node that always returns false 
@@ -146,7 +143,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
     }
 
     @Test
-    public void testAssertedAllowedThenRetract() throws FactException {
+    public void testAssertedAllowedThenRetract() {
         final MockEvalCondition eval = new MockEvalCondition( true );
 
         // Create a test node that always returns false 
@@ -207,7 +204,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
     }
 
     @Test
-    public void testAssertedNotAllowed() throws FactException {
+    public void testAssertedNotAllowed() {
         final MockEvalCondition eval = new MockEvalCondition( false );
 
         // Create a test node that always returns false 
@@ -256,11 +253,9 @@ public class EvalConditionNodeTest extends DroolsTestCase {
     /**
      * If a eval allows an incoming Object, then the Object MUST be
      * propagated. This tests that the memory is updated
-     * 
-     * @throws FactException
      */
     @Test
-    public void testDoRemove() throws FactException {
+    public void testDoRemove() {
         final MockEvalCondition eval = new MockEvalCondition( true );
 
         final EvalConditionNode parent = new EvalConditionNode( 1,

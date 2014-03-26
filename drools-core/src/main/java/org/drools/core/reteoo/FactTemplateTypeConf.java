@@ -16,7 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -97,14 +96,6 @@ public class FactTemplateTypeConf
             this.cache = new ObjectTypeNode[]{this.concreteObjectTypeNode};
         }
         return this.cache;
-    }
-
-    public Object getShadow(Object fact) throws RuntimeDroolsException {
-        return null;
-    }
-
-    public boolean isShadowEnabled() {
-        return false;
     }
 
     public boolean isAssignableFrom(Object object) {

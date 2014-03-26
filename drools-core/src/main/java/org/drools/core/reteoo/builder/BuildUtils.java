@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DefaultBetaConstraints;
@@ -123,7 +122,7 @@ public class BuildUtils {
             } else if ( (context.getObjectSource() != null) && NodeTypeEnums.isObjectSink( candidate ) ) {
                 node = context.getObjectSource().getSinkPropagator().getMatchingNode( candidate );
             } else {
-                throw new RuntimeDroolsException( "This is a bug on node sharing verification. Please report to development team." );
+                throw new RuntimeException( "This is a bug on node sharing verification. Please report to development team." );
             }
         }
 

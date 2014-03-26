@@ -16,7 +16,6 @@
 
 package org.drools.core.definitions.rule.impl;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
@@ -810,7 +809,7 @@ public class RuleImpl implements Externalizable,
                 bos.write(data, 0, byteCount);
             }
         } catch ( java.io.IOException e ) {
-            throw new RuntimeDroolsException("Unable getResourceAsStream for Class '" + ruleClassName+ "' ");
+            throw new RuntimeException("Unable getResourceAsStream for Class '" + ruleClassName+ "' ");
         }
 
         org.mvel2.asm.ClassReader classReader = new org.mvel2.asm.ClassReader( bos.toByteArray() );

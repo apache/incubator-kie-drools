@@ -1,7 +1,6 @@
 package org.drools.core.impl;
 
-import org.drools.core.FactException;
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.KnowledgeBaseEventManager;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
@@ -70,11 +69,11 @@ public interface InternalKnowledgeBase extends KnowledgeBase, KieBase, Knowledge
     void assertObject(FactHandle handle,
                       Object object,
                       PropagationContext context,
-                      InternalWorkingMemory workingMemory) throws FactException;
+                      InternalWorkingMemory workingMemory);
 
     void retractObject(FactHandle handle,
                        PropagationContext context,
-                       StatefulKnowledgeSessionImpl workingMemory) throws FactException;
+                       StatefulKnowledgeSessionImpl workingMemory);
 
     void disposeStatefulSession(StatefulKnowledgeSessionImpl statefulSession);
 

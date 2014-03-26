@@ -93,10 +93,6 @@ public class ReteooRuleBuilder implements RuleBuilder {
      *            The rulebase to add the rule to.
      *            
      * @return a List<BaseNode> of terminal nodes for the rule             
-     * 
-     * @throws org.drools.core.RuleIntegrationException
-     *             if an error prevents complete construction of the network for
-     *             the <code>Rule</code>.
      * @throws InvalidPatternException
      */
     public List<TerminalNode> addRule( final RuleImpl rule,

@@ -28,6 +28,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.time.SessionClock;
 
 /**
@@ -93,36 +94,24 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
 
     /**
      * Fire all items on the agenda until empty.
-     *
-     * @throws FactException
-     *             If a RuntimeException error occurs.
      */
-    int fireAllRules() throws FactException;
+    int fireAllRules();
 
     /**
      * Fire all items on the agenda until empty, using the given AgendaFiler
-     *
-     * @throws FactException
-     *             If a RuntimeException error occurs.
      */
-    int fireAllRules(AgendaFilter agendaFilter) throws FactException;
+    int fireAllRules(AgendaFilter agendaFilter);
 
     /**
      * Fire all items on the agenda until empty or at most 'fireLimit' rules have fired
-     *
-     * @throws FactException
-     *             If a RuntimeException error occurs.
      */
-    int fireAllRules( int fireLimit ) throws FactException;
+    int fireAllRules( int fireLimit );
 
     /**
      * Fire all items on the agenda using the given AgendaFiler
      * until empty or at most 'fireLimit' rules have fired
-     *
-     * @throws FactException
-     *             If a RuntimeException error occurs.
      */
-    int fireAllRules(final AgendaFilter agendaFilter, int fireLimit ) throws FactException;
+    int fireAllRules(final AgendaFilter agendaFilter, int fireLimit );
 
     /**
      * Retrieve the object associated with a <code>FactHandle</code>.
@@ -133,7 +122,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      *
      * @return The associated object.
      */
-    Object getObject(org.kie.api.runtime.rule.FactHandle handle);
+    Object getObject(FactHandle handle);
 
     /**
      * Retrieve the <code>FactHandle</code> associated with an Object.

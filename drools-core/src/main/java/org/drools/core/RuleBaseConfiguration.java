@@ -1192,8 +1192,8 @@ public class RuleBaseConfiguration
             try {
                 handler = (Class<? extends ConsequenceExceptionHandler>) Class.forName(consequenceExceptionHandler);
             } catch (ClassNotFoundException e) {
-                throw new RuntimeDroolsException("Unable to resolve ConsequenceExceptionHandler class: " + consequenceExceptionHandler,
-                                                 e);
+                throw new RuntimeException("Unable to resolve ConsequenceExceptionHandler class: " + consequenceExceptionHandler,
+                                           e);
             }
             return (T) ConsequenceExceptionHandlerOption.get(handler);
         } else if (EventProcessingOption.class.equals(option)) {

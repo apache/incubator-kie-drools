@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
 
@@ -89,7 +88,7 @@ public class Collect extends ConditionalElement
     }
 
     @SuppressWarnings("unchecked")
-    public Collection<Object> instantiateResultObject(InternalWorkingMemory wm) throws RuntimeDroolsException {
+    public Collection<Object> instantiateResultObject(InternalWorkingMemory wm) throws RuntimeException {
         try {
             // Collect can only be used with a Collection implementation, so
             // FactTemplateObject type is not allowed
@@ -102,17 +101,17 @@ public class Collect extends ConditionalElement
             }
             return this.cls.newInstance();
         } catch ( final ClassCastException cce ) {
-            throw new RuntimeDroolsException( "Collect CE requires a Collection implementation as return type",
-                                              cce );
+            throw new RuntimeException( "Collect CE requires a Collection implementation as return type",
+                                        cce );
         } catch ( final InstantiationException e ) {
-            throw new RuntimeDroolsException( "Collect CE requires a non-argument constructor for the return type",
-                                              e );
+            throw new RuntimeException( "Collect CE requires a non-argument constructor for the return type",
+                                        e );
         } catch ( final IllegalAccessException e ) {
-            throw new RuntimeDroolsException( "Collect CE requires an accessible constructor for the return type",
-                                              e );
+            throw new RuntimeException( "Collect CE requires an accessible constructor for the return type",
+                                        e );
         } catch ( final ClassNotFoundException e ) {
-            throw new RuntimeDroolsException( "Collect CE could not resolve return result class '" + ((ClassObjectType) this.resultPattern.getObjectType()).getClassName() + "'",
-                                              e );
+            throw new RuntimeException( "Collect CE could not resolve return result class '" + ((ClassObjectType) this.resultPattern.getObjectType()).getClassName() + "'",
+                                        e );
         }
     }
 

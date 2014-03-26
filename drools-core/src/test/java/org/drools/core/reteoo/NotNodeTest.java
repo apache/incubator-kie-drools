@@ -25,7 +25,6 @@ import static org.mockito.Mockito.when;
 
 import java.beans.IntrospectionException;
 
-import org.drools.core.FactException;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DefaultBetaConstraints;
@@ -113,7 +112,7 @@ public class NotNodeTest extends DroolsTestCase {
     }
 
 
-    public void testNotStandard() throws FactException {
+    public void testNotStandard() {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(true);
         when( constraint.isAllowedCachedRight( any( LeftTupleImpl.class ), any( ContextEntry.class ) )).thenReturn(true);
 
@@ -212,7 +211,7 @@ public class NotNodeTest extends DroolsTestCase {
     }
 
     @Test
-    public void testNotWithConstraints() throws FactException {
+    public void testNotWithConstraints() {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(false);
         when( constraint.isAllowedCachedRight( any( LeftTupleImpl.class ), any( ContextEntry.class ) )).thenReturn(false);
 
@@ -279,7 +278,7 @@ public class NotNodeTest extends DroolsTestCase {
      * Tests memory consistency after insert/update/retract calls
      *
      */
-    public void TestNotMemoryManagement() throws FactException {
+    public void TestNotMemoryManagement() {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(true);
         when( constraint.isAllowedCachedRight( any( LeftTupleImpl.class ), any( ContextEntry.class ) )).thenReturn(true);
 

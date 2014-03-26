@@ -16,6 +16,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
@@ -221,7 +222,7 @@ public class ExternalSheetListenerTest {
                 }
 
                 @Override
-                public org.kie.api.runtime.rule.FactHandle insert(Object fact) {
+                public FactHandle insert(Object fact) {
                     if (fact instanceof Row) {
                         assertedRows.put((Row) fact, currentRow);
                         currentRow = new ArrayList<StringCell>();

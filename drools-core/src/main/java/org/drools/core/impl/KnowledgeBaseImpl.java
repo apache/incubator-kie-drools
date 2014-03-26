@@ -16,11 +16,8 @@
 
 package org.drools.core.impl;
 
-import org.drools.core.FactException;
-import org.drools.core.FactHandle;
-import org.drools.core.PackageIntegrationException;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.common.DefaultFactHandle;
@@ -752,9 +749,6 @@ public class KnowledgeBaseImpl
 
         try {
             this.statefulSessions.remove(statefulSession);
-            for (Object listener : statefulSession.getRuleBaseUpdateListeners()) {
-                this.removeEventListener((KnowledgeBaseEventListener) listener);
-            }
         } finally {
             statefulSessionLock.unlock();
         }
@@ -943,7 +937,7 @@ public class KnowledgeBaseImpl
                         }
                     }
                 } catch (ClassNotFoundException e) {
-                    throw new RuntimeDroolsException( "unable to resolve Type Declaration class '" + lastType + "'", e );
+                    throw new RuntimeException( "unable to resolve Type Declaration class '" + lastType + "'", e );
                 }
             }
 
@@ -1047,8 +1041,7 @@ public class KnowledgeBaseImpl
              ! nullSafeEquals( existingDecl.getTypeName(),
                                newDecl.getTypeName() ) ) {
 
-            throw new RuntimeDroolsException( "Unable to merge Type Declaration for class '" + existingDecl.getTypeName() +
-                                              "'" );
+            throw new RuntimeException( "Unable to merge Type Declaration for class '" + existingDecl.getTypeName() + "'" );
 
         }
 
@@ -1136,7 +1129,7 @@ public class KnowledgeBaseImpl
                     newValue = rightVal;
                 } else {
                     if ( errorOnDiff ) {
-                        throw new RuntimeDroolsException( errorMsg + " '" + typeClass + "'" );
+                        throw new RuntimeException( errorMsg + " '" + typeClass + "'" );
                     } else {
                         // do nothing, just use the left value
                     }
@@ -1176,7 +1169,7 @@ public class KnowledgeBaseImpl
                     lastIdent = identifier;
                     lastType = type;
                     if (globals.containsKey( identifier ) && !globals.get( identifier ).equals( type )) {
-                        throw new PackageIntegrationException( pkg );
+                        throw new RuntimeException(pkg.getName() + " cannot be integrated");
                     } else {
                         pkg.addGlobal( identifier,
                                        this.rootClassLoader.loadClass( type ) );
@@ -1187,8 +1180,8 @@ public class KnowledgeBaseImpl
                 }
             }
         } catch (ClassNotFoundException e) {
-            throw new RuntimeDroolsException( "Unable to resolve class '" + lastType +
-                                              "' for global '" + lastIdent + "'" );
+            throw new RuntimeException( "Unable to resolve class '" + lastType +
+                                        "' for global '" + lastIdent + "'" );
         }
 
         // merge entry point declarations
@@ -1219,7 +1212,7 @@ public class KnowledgeBaseImpl
                      pkg.getWindowDeclarations().get( window.getName() ).equals( window ) ) {
                     pkg.addWindowDeclaration( window );
                 } else {
-                    throw new RuntimeDroolsException( "Unable to merge two conflicting window declarations for window named: "+window.getName() );
+                    throw new RuntimeException( "Unable to merge two conflicting window declarations for window named: "+window.getName() );
                 }
             }
         }
@@ -1296,14 +1289,11 @@ public class KnowledgeBaseImpl
      *            The fact.
      * @param workingMemory
      *            The working-memory.
-     *
-     * @throws org.drools.core.FactException
-     *             If an error occurs while performing the assertion.
      */
     public void assertObject(final FactHandle handle,
                              final Object object,
                              final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) throws FactException {
+                             final InternalWorkingMemory workingMemory) {
         getRete().assertObject( (DefaultFactHandle) handle,
                                 context,
                                 workingMemory );
@@ -1316,13 +1306,10 @@ public class KnowledgeBaseImpl
      *            The handle.
      * @param workingMemory
      *            The working-memory.
-     *
-     * @throws org.drools.core.FactException
-     *             If an error occurs while performing the retraction.
      */
     public void retractObject(final FactHandle handle,
                               final PropagationContext context,
-                              final StatefulKnowledgeSessionImpl workingMemory) throws FactException {
+                              final StatefulKnowledgeSessionImpl workingMemory) {
         getRete().retractObject( (InternalFactHandle) handle,
                                  context,
                                  workingMemory );
@@ -1374,9 +1361,6 @@ public class KnowledgeBaseImpl
 
                 if ( keepReference ) {
                     addStatefulSession(session);
-                    for (Object listener : session.getRuleBaseUpdateListeners()) {
-                        addEventListener((KnowledgeBaseEventListener) listener);
-                    }
                 }
 
                 bais.close();
@@ -1424,9 +1408,6 @@ public class KnowledgeBaseImpl
                                                                                                                    sessionConfig, environment );
             if ( sessionConfig.isKeepReference() ) {
                 addStatefulSession(session);
-                for (Object listener : session.getRuleBaseUpdateListeners()) {
-                    addEventListener((KnowledgeBaseEventListener) listener);
-                }
             }
 
             return session;

@@ -22,6 +22,7 @@ import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.Declaration;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResultsRow;
 
 public class QueryResultsRowImpl implements QueryResultsRow {
@@ -80,10 +81,7 @@ public class QueryResultsRowImpl implements QueryResultsRow {
 
     /** 
      * Return the Object for the given Declaration.
-     * @param identifier
-     * @return
-     *      The Object
-     */    
+     */
     public Object get(final Declaration declaration) {
         return declaration.getValue( (InternalWorkingMemory) workingMemory, getObject( getFactHandle( declaration ) ) );
     }
@@ -122,8 +120,6 @@ public class QueryResultsRowImpl implements QueryResultsRow {
     
     /**
      * Get the Object for the given FactHandle
-     * @param handle
-     * @return
      */
     private Object getObject(FactHandle factHandle) {
         return (( InternalFactHandle ) factHandle).getObject();

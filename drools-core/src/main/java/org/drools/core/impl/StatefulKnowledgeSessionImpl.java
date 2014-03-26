@@ -16,10 +16,8 @@
 
 package org.drools.core.impl;
 
-import org.drools.core.FactException;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.CalendarsImpl;
@@ -94,8 +92,6 @@ import org.drools.core.spi.AsyncExceptionHandler;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.RuleBaseUpdateListener;
-import org.drools.core.spi.RuleBaseUpdateListenerFactory;
 import org.drools.core.time.AcceptsTimerJobFactoryManager;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
@@ -492,13 +488,13 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return (Globals) this.getGlobalResolver();
     }
 
-    public <T extends org.kie.api.runtime.rule.FactHandle> Collection<T> getFactHandles() {
+    public <T extends FactHandle> Collection<T> getFactHandles() {
         return new ObjectStoreWrapper( getObjectStore(),
                                        null,
                                        ObjectStoreWrapper.FACT_HANDLE );
     }
 
-    public <T extends org.kie.api.runtime.rule.FactHandle> Collection<T> getFactHandles(org.kie.api.runtime.ObjectFilter filter) {
+    public <T extends FactHandle> Collection<T> getFactHandles(org.kie.api.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( getObjectStore(),
                                        filter,
                                        ObjectStoreWrapper.FACT_HANDLE );
@@ -912,27 +908,13 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         byte[] bytes = stream.toByteArray();
         out.writeInt( bytes.length );
-        out.write( bytes );
+        out.write(bytes);
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                                     ClassNotFoundException {
         bytes = new byte[ in.readInt() ];
         in.readFully( bytes );
-    }
-
-    public List getRuleBaseUpdateListeners() {
-        if ( this.ruleBaseListeners == null || this.ruleBaseListeners == Collections.EMPTY_LIST ) {
-            String listenerName = this.kBase.getConfiguration().getRuleBaseUpdateHandler();
-            if ( listenerName != null && listenerName.length() > 0 ) {
-                RuleBaseUpdateListener listener = RuleBaseUpdateListenerFactory.createListener(listenerName,
-                                                                                               this);
-                this.ruleBaseListeners = Collections.singletonList( listener );
-            } else {
-                this.ruleBaseListeners = Collections.EMPTY_LIST;
-            }
-        }
-        return this.ruleBaseListeners;
     }
 
     public static class GlobalsAdapter
@@ -1187,23 +1169,23 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.agenda.halt();
     }
 
-    public int fireAllRules() throws FactException {
+    public int fireAllRules() {
         return fireAllRules( null,
                              -1 );
     }
 
-    public int fireAllRules(int fireLimit) throws FactException {
+    public int fireAllRules(int fireLimit) {
         return fireAllRules( null,
                              fireLimit );
     }
 
-    public int fireAllRules(final AgendaFilter agendaFilter) throws FactException {
+    public int fireAllRules(final AgendaFilter agendaFilter) {
         return fireAllRules( agendaFilter,
                              -1 );
     }
 
     public int fireAllRules(final AgendaFilter agendaFilter,
-                            int fireLimit) throws FactException {
+                            int fireLimit) {
         checkAlive();
         if ( this.firing.compareAndSet( false,
                                         true ) ) {
@@ -1279,7 +1261,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      *            The <code>FactHandle</code> reference for the
      *            <code>Object</code> lookup
      */
-    public Object getObject(org.kie.api.runtime.rule.FactHandle handle) {
+    public Object getObject(FactHandle handle) {
         // the handle might have been disconnected, so reconnect if it has
         if ( ((InternalFactHandle)handle).isDisconnected() ) {
             handle = this.defaultEntryPoint.getObjectStore().reconnect( handle );
@@ -1294,14 +1276,14 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     /**
      * @see org.drools.core.WorkingMemory
      */
-    public org.drools.core.FactHandle getFactHandle(final Object object) {
+    public FactHandle getFactHandle(final Object object) {
         return this.defaultEntryPoint.getFactHandle( object );
     }
 
     /**
      * @see org.drools.core.WorkingMemory
      */
-    public org.drools.core.FactHandle getFactHandleByIdentity(final Object object) {
+    public FactHandle getFactHandleByIdentity(final Object object) {
         return getObjectStore().getHandleForObjectIdentity( object );
     }
 
@@ -1349,7 +1331,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     /**
      * @see org.drools.core.WorkingMemory
      */
-    public org.drools.core.FactHandle insert(final Object object) throws FactException {
+    public FactHandle insert(final Object object) {
         return insert( object, /* Not-Dynamic */
                        null,
                        false,
@@ -1361,7 +1343,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     /**
      * @see org.drools.core.WorkingMemory
      */
-    public org.drools.core.FactHandle insertLogical(final Object object) throws FactException {
+    public FactHandle insertLogical(final Object object) {
         return insert( object, // Not-Dynamic
                        null,
                        false,
@@ -1370,8 +1352,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                        null );
     }
 
-    public org.drools.core.FactHandle insert(final Object object,
-                                             final boolean dynamic) throws FactException {
+    public FactHandle insert(final Object object,
+                                             final boolean dynamic) {
         return insert( object,
                        null,
                        dynamic,
@@ -1380,8 +1362,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                        null );
     }
 
-    public org.drools.core.FactHandle insertLogical(final Object object,
-                                                    final boolean dynamic) throws FactException {
+    public FactHandle insertLogical(final Object object,
+                                                    final boolean dynamic) {
         checkAlive();
         return insert( object,
                        null,
@@ -1391,8 +1373,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                        null );
     }
 
-    public org.drools.core.FactHandle insertLogical(final Object object,
-                                                    final Object value) throws FactException {
+    public FactHandle insertLogical(final Object object,
+                                                    final Object value) {
         return insert( object,
                        value,
                        false,
@@ -1401,12 +1383,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                        null );
     }
 
-    public org.drools.core.FactHandle insert(final Object object,
+    public FactHandle insert(final Object object,
                                              final Object tmsValue,
                                              final boolean dynamic,
                                              boolean logical,
                                              final RuleImpl rule,
-                                             final Activation activation) throws FactException {
+                                             final Activation activation) {
         checkAlive();
         return this.defaultEntryPoint.insert( object,
                                               tmsValue,
@@ -1429,21 +1411,21 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                        null );
     }
 
-    public void retract(final org.kie.api.runtime.rule.FactHandle handle) throws FactException {
-        delete( (org.drools.core.FactHandle) handle,
+    public void retract(final FactHandle handle) {
+        delete( (FactHandle) handle,
                 null,
                 null );
     }
 
-    public void delete(final org.kie.api.runtime.rule.FactHandle handle) throws FactException {
-        delete( (org.drools.core.FactHandle) handle,
+    public void delete(final FactHandle handle) {
+        delete( handle,
                 null,
                 null );
     }
 
-    public void delete(final org.drools.core.FactHandle factHandle,
+    public void delete(final FactHandle factHandle,
                        final RuleImpl rule,
-                       final Activation activation) throws FactException {
+                       final Activation activation) {
         checkAlive();
         this.defaultEntryPoint.delete( factHandle,
                                        rule,
@@ -1454,26 +1436,13 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return ((InternalWorkingMemoryEntryPoint) this.defaultEntryPoint).getEntryPointNode();
     }
 
-    public void update(final org.kie.api.runtime.rule.FactHandle handle,
-                       final Object object) throws FactException {
-        update( (org.drools.core.FactHandle) handle,
+    public void update(final FactHandle handle,
+                       final Object object) {
+        update( handle,
                 object,
                 Long.MAX_VALUE,
                 Object.class,
                 null );
-    }
-
-    public void update(final org.kie.api.runtime.rule.FactHandle factHandle,
-                       final Object object,
-                       final long mask,
-                       Class<?> modifiedClass,
-                       final Activation activation) throws FactException {
-
-        update( (org.drools.core.FactHandle) factHandle,
-                object,
-                mask,
-                modifiedClass,
-                activation );
     }
 
     /**
@@ -1482,11 +1451,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      *
      * @see org.drools.core.WorkingMemory
      */
-    public void update(org.drools.core.FactHandle factHandle,
+    public void update(FactHandle factHandle,
                        final Object object,
                        final long mask,
                        Class<?> modifiedClass,
-                       final Activation activation) throws FactException {
+                       final Activation activation) {
         checkAlive();
         this.defaultEntryPoint.update( factHandle,
                                        object,
@@ -1508,8 +1477,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                             try {
                                 action.execute( (InternalWorkingMemory) this );
                             } catch ( Exception e ) {
-                                throw new RuntimeDroolsException( "Unexpected exception executing action " + action.toString(),
-                                                                  e );
+                                throw new RuntimeException( "Unexpected exception executing action " + action.toString(),
+                                                            e );
                             }
                         }
                     }
@@ -1968,7 +1937,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         Declaration[] declarations = ((RuleTerminalNode) tuple.getLeftTupleSink()).getDeclarations();
 
         for (int i = 0; i < declarations.length; i++) {
-            org.drools.core.FactHandle handle = tuple.get(declarations[i]);
+            FactHandle handle = tuple.get(declarations[i]);
             if (handle instanceof InternalFactHandle) {
                 result.put(declarations[i].getIdentifier(),
                            declarations[i].getValue(this,

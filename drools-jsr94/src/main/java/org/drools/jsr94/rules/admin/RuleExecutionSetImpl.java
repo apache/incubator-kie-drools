@@ -17,9 +17,7 @@
 package org.drools.jsr94.rules.admin;
 
 
-import org.drools.core.IntegrationException;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleIntegrationException;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -92,16 +90,9 @@ public class RuleExecutionSetImpl
      *        <code>RuleExecutionSet</code>.
      * @param properties A <code>Map</code> of user-defined and
      *        Drools-defined properties. May be <code>null</code>.
-     *
-     * @throws RuleIntegrationException if an error occurs integrating
-     *         a <code>Rule</code> or <code>Package</code>
-     *         into the <code>RuleBase</code>
-     * @throws IntegrationException if an error occurs integrating
-     *         a <code>Rule</code> or <code>Package</code>
-     *         into the <code>RuleBase</code>
      */
     RuleExecutionSetImpl(final InternalKnowledgePackage pkg,
-                         final Map properties) throws IntegrationException {
+                         final Map properties) {
         if ( null == properties ) {
             this.properties = new HashMap();
         } else {

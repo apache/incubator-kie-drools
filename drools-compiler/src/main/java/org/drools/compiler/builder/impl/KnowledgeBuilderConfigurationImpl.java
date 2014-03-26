@@ -16,14 +16,6 @@
 
 package org.drools.compiler.builder.impl;
 
-import java.io.File;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Set;
-
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DialectConfiguration;
@@ -31,7 +23,6 @@ import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.xml.RulesSemanticModule;
 import org.drools.compiler.rule.builder.DroolsCompilerComponentFactory;
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.core.common.ProjectClassLoader;
@@ -64,7 +55,13 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.builder.conf.SingleValueKnowledgeBuilderOption;
 import org.kie.internal.utils.ChainedProperties;
 
-import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
+import java.io.File;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * This class configures the package compiler.
@@ -351,8 +348,8 @@ public class KnowledgeBuilderConfigurationImpl
             addDialect( dialectName,
                         dialectConf );
         } catch ( Exception e ) {
-            throw new RuntimeDroolsException( "Unable to load dialect '" + dialectClass + ":" + dialectName + ":" + ((cls != null) ? cls.getName() : "null") + "'",
-                                              e );
+            throw new RuntimeException( "Unable to load dialect '" + dialectClass + ":" + dialectName + ":" + ((cls != null) ? cls.getName() : "null") + "'",
+                                        e );
         }
     }
 
@@ -544,11 +541,11 @@ public class KnowledgeBuilderConfigurationImpl
             this.accumulateFunctions.put( identifier,
                                           clazz.newInstance() );
         } catch ( InstantiationException e ) {
-            throw new RuntimeDroolsException( "Error loading accumulate function for identifier " + identifier + ". Instantiation failed for class " + clazz.getName(),
-                                              e );
+            throw new RuntimeException( "Error loading accumulate function for identifier " + identifier + ". Instantiation failed for class " + clazz.getName(),
+                                        e );
         } catch ( IllegalAccessException e ) {
-            throw new RuntimeDroolsException( "Error loading accumulate function for identifier " + identifier + ". Illegal access to class " + clazz.getName(),
-                                              e );
+            throw new RuntimeException( "Error loading accumulate function for identifier " + identifier + ". Illegal access to class " + clazz.getName(),
+                                        e );
         }
     }
 
@@ -563,14 +560,14 @@ public class KnowledgeBuilderConfigurationImpl
             Class< ? extends AccumulateFunction> clazz = (Class< ? extends AccumulateFunction>) getClassLoader().loadClass(className);
             return clazz.newInstance();
         } catch ( ClassNotFoundException e ) {
-            throw new RuntimeDroolsException( "Error loading accumulate function for identifier " + identifier + ". Class " + className + " not found",
-                                              e );
+            throw new RuntimeException( "Error loading accumulate function for identifier " + identifier + ". Class " + className + " not found",
+                                        e );
         } catch ( InstantiationException e ) {
-            throw new RuntimeDroolsException( "Error loading accumulate function for identifier " + identifier + ". Instantiation failed for class " + className,
-                                              e );
+            throw new RuntimeException( "Error loading accumulate function for identifier " + identifier + ". Instantiation failed for class " + className,
+                                        e );
         } catch ( IllegalAccessException e ) {
-            throw new RuntimeDroolsException( "Error loading accumulate function for identifier " + identifier + ". Illegal access to class " + className,
-                                              e );
+            throw new RuntimeException( "Error loading accumulate function for identifier " + identifier + ". Illegal access to class " + className,
+                                        e );
         }
     }
 
@@ -644,7 +641,7 @@ public class KnowledgeBuilderConfigurationImpl
 
     public void setDumpDir(File dumpDir) {
         if ( !dumpDir.isDirectory() || !dumpDir.canWrite() || !dumpDir.canRead() ) {
-            throw new RuntimeDroolsException( "Drools dump directory is not accessible: " + dumpDir.toString() );
+            throw new RuntimeException( "Drools dump directory is not accessible: " + dumpDir.toString() );
         }
         this.dumpDirectory = dumpDir;
     }

@@ -20,9 +20,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.FactException;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DefaultKnowledgeHelper;
@@ -604,7 +603,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
     }
 
     @Test
-    public void testMultipleLogicalRelationships() throws FactException {
+    public void testMultipleLogicalRelationships() {
         final RuleImpl rule1 = new RuleImpl( "test-rule1" );
         IdGenerator idGenerator = kBase.getReteooBuilder().getIdGenerator();
 

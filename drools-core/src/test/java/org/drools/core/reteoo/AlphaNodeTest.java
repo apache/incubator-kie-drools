@@ -16,7 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.FactException;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassFieldReader;
@@ -193,8 +192,7 @@ public class AlphaNodeTest extends DroolsTestCase {
     }
 
     @Test
-    public void testUpdateSinkWithoutMemory() throws FactException,
-                                             IntrospectionException {
+    public void testUpdateSinkWithoutMemory() throws IntrospectionException {
         // An AlphaNode should try and repropagate from its source
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         BuildContext buildContext = new BuildContext( kBase,

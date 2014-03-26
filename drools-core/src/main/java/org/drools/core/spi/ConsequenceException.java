@@ -16,7 +16,6 @@
 
 package org.drools.core.spi;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 
 /**
@@ -24,7 +23,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
  * 
  * @see Consequence
  */
-public class ConsequenceException extends RuntimeDroolsException {
+public class ConsequenceException extends RuntimeException {
     private static final long serialVersionUID = 510l;
     private RuleImpl          rule;
     private String            info;

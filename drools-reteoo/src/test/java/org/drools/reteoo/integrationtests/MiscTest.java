@@ -2166,8 +2166,6 @@ public class MiscTest extends CommonTestMethodBase {
         person.setStatus( "start" );
         ksession.insert( person );
 
-        // TODO ConsequenceException: org.drools.core.FactException: Update error: handle not found for object:
-        //        ksession    = SerializationHelper.serializeObject(ksession);
         ksession.fireAllRules();
 
         List<String> results = (List<String>) ksession.getGlobal( "list" );

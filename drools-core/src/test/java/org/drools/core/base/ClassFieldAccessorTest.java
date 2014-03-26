@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.util.asm.BeanInherit;
 import org.drools.core.util.asm.InterfaceChild;
 import org.drools.core.util.asm.TestAbstract;
@@ -145,12 +144,12 @@ public class ClassFieldAccessorTest {
             final ClassFieldReader ext = store.getReader( TestBean.class,
                                                           "xyz",
                                                           getClass().getClassLoader() );
-            fail( "A RuntimeDroolsException should have been raised" );
-        } catch ( RuntimeDroolsException e ) {
+            fail( "A RuntimeException should have been raised" );
+        } catch ( RuntimeException e ) {
             // everything is fine, since field does not exist
             // e.printStackTrace();
         } catch ( Exception e ) {
-            fail( "A RuntimeDroolsException should have been raised" );
+            fail( "A RuntimeException should have been raised" );
         }
 
     }

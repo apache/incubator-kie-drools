@@ -16,7 +16,7 @@
 
 package org.drools.core.event;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.event.*;
 import org.drools.core.spi.PropagationContext;
