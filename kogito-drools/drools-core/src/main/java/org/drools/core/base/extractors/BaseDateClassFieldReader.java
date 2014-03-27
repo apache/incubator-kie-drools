@@ -94,14 +94,6 @@ public abstract class BaseDateClassFieldReader extends BaseClassFieldReader {
         }
     }
 
-    public Class<?> getExtractToClass() {
-        return Date.class;
-    }
-
-    public String getExtractToClassName() {
-        return ClassUtils.canonicalName( Date.class );
-    }
-
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod( "getValue",
