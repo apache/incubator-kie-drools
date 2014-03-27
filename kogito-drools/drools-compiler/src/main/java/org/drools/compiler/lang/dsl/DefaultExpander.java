@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -128,13 +129,24 @@ public class DefaultExpander
                 this.consequence.add( entry );
             }
         }
+
+        // Move mappings with longest keys (i.e. more specific cases) first
+        Collections.sort(condition, DSLMappingEntryComparator.INSTANCE);
+        Collections.sort(consequence, DSLMappingEntryComparator.INSTANCE);
+
         if ( mapping.getOption( "result" ) ) showResult = true;
         if ( mapping.getOption( "steps" ) ) showSteps = true;
         if ( mapping.getOption( "keyword" ) ) showKeyword = true;
         if ( mapping.getOption( "when" ) ) showWhen = true;
         if ( mapping.getOption( "then" ) ) showThen = true;
         if ( mapping.getOption( "usage" ) ) showUsage = true;
+    }
 
+    private static class DSLMappingEntryComparator implements Comparator<DSLMappingEntry> {
+        private static final DSLMappingEntryComparator INSTANCE = new DSLMappingEntryComparator();
+        public int compare(DSLMappingEntry entry1, DSLMappingEntry entry2) {
+            return entry2.getMappingKey().length() - entry1.getMappingKey().length();
+        }
     }
 
     /**

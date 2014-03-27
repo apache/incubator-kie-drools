@@ -7,6 +7,9 @@ import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.dsl.DefaultExpanderResolver;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Results;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -333,5 +336,24 @@ public class DslTest extends CommonTestMethodBase {
         ksession.dispose();
 
         return list;
+    }
+
+    @Test
+    public void testGreedyDsl() {
+        // BZ-1078839
+        String dsl = "[when]There is a number with=i:Integer()\n"
+                     + "[when]There is a number with value of {value}=i:Integer(intValue() == {value})\n";
+
+        String dslr = "package org.test \n"
+                     + "rule 'sample rule' \n"
+                     + "when \n" + "  There is a number with value of 10\n"
+                     + "then \n" + "end \n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem()
+                              .write("src/main/resources/r1.dslr", dslr)
+                              .write("src/main/resources/r1.dsl", dsl);
+        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        assertEquals(0, results.getMessages().size());
     }
 }
