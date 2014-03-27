@@ -55,6 +55,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.Results;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
@@ -5601,5 +5602,29 @@ public class Misc2Test extends CommonTestMethodBase {
 
         int n = ksession.fireAllRules();
         assertEquals(1, n);
+    }
+
+    @Test
+    public void testExtendingDate() {
+        // BZ-1072629
+        String str = "import " + MyDate.class.getCanonicalName() + " \n"
+                     + "rule 'sample rule' \n"
+                     + "when \n" + "  $date: MyDate() \n"
+                     + "then \n" + "$date.setDescription(\"test\"); \n" + "end \n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        assertEquals(0, results.getMessages().size());
+    }
+
+    public static class MyDate extends Date {
+        private String description;
+        public String getDescription() {
+            return this.description;
+        }
+        public void setDescription(final String desc) {
+            this.description = desc;
+        }
     }
 }
