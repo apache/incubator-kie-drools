@@ -49,7 +49,7 @@ public class EventSubProcessNodeInstance extends CompositeContextNodeInstance {
     public void signalEvent(String type, Object event) {
         if (getNodeInstanceContainer().getNodeInstances().contains(this) || type.startsWith("Error-")) {
             StartNode startNode = getCompositeNode().findStartNode();
-            NodeInstance nodeInstance = getNodeInstance(startNode);
+            NodeInstance nodeInstance = getNodeInstance(startNode);  
             ((StartNodeInstance) nodeInstance).signalEvent(type, event);
         }
     }
@@ -61,7 +61,17 @@ public class EventSubProcessNodeInstance extends CompositeContextNodeInstance {
                 StartNode startNode = getCompositeNode().findStartNode();
                 triggerCompleted(true);
                 if (startNode.isInterrupting()) {
-                    ((NodeInstanceContainer) getNodeInstanceContainer()).setState( ProcessInstance.STATE_ABORTED);
+                	String faultName = getProcessInstance().getOutcome()==null?"":getProcessInstance().getOutcome();
+                	
+                	if (startNode.getMetaData("FaultCode") != null) {
+                		faultName = (String) startNode.getMetaData("FaultCode");
+                	}
+                	if (getNodeInstanceContainer() instanceof ProcessInstance) {
+                		((ProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED, faultName);
+                	} else {
+                		((NodeInstanceContainer) getNodeInstanceContainer()).setState( ProcessInstance.STATE_ABORTED);
+                	}
+                    
                 }                
             }            
         } else {

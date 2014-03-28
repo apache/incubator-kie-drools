@@ -22,22 +22,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
-import org.jbpm.bpmn2.handler.SendTaskHandler;
+import junit.framework.Assert;
+
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
 import org.jbpm.bpmn2.handler.SignallingTaskHandlerDecorator;
-import org.jbpm.bpmn2.objects.ExceptionService;
+import org.jbpm.bpmn2.objects.ExceptionOnPurposeHandler;
 import org.jbpm.bpmn2.objects.MyError;
-import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
-import org.joda.time.DateTime;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.After;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -47,16 +43,10 @@ import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
-import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.command.Context;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -295,5 +285,21 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
 
         StandaloneBPMNProcessTest.runTestSignallingExceptionServiceTask(ksession);
     }
+    
+    @Test
+    public void testEventSubProcessErrorWithScript() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-EventSubProcessErrorWithScript.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Request Handler", new SignallingTaskHandlerDecorator(ExceptionOnPurposeHandler.class, "Error-90277"));
+        ksession.getWorkItemManager().registerWorkItemHandler("Error Handler", new SystemOutWorkItemHandler());
+        
+        ProcessInstance processInstance = ksession.startProcess("com.sample.process");
+
+        assertProcessInstanceAborted(processInstance);        
+        assertEquals("90277", ((WorkflowProcessInstance) processInstance).getOutcome());
+
+    }
+    
+    
     
 }

@@ -140,6 +140,7 @@ public class StartEventHandler extends AbstractNodeHandler {
                     if (error == null) {
                         throw new IllegalArgumentException("Could not find error " + errorRef);
                     }
+                    startNode.setMetaData("FaultCode", error.getErrorCode());
                     addTriggerWithInMappings(startNode, "Error-" + error.getErrorCode());
                 }
             } else if ("escalationEventDefinition".equals(nodeName)) {
