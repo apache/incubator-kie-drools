@@ -95,8 +95,8 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                 schedule.setName(firstLine);
                 readTimeWindowedSolution();
             }
-            // TODO search space does not take different vehicles into account
-            BigInteger possibleSolutionSize = factorial(schedule.getLocationList().size() - 1);
+            BigInteger possibleSolutionSize
+                    = factorial(locationListSize + vehicleListSize - 1).divide(factorial(vehicleListSize - 1));
             logger.info("VehicleRoutingSolution {} has {} depots, {} vehicles and {} customers with a search space of {}.",
                     getInputId(),
                     schedule.getDepotList().size(),
@@ -362,6 +362,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             schedule.setLocationList(locationList);
             schedule.setDepotList(depotList);
             schedule.setCustomerList(customerList);
+            locationListSize = locationList.size();
         }
 
     }
