@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.workbench.models.datamodel.rule.ExpressionCollection;
+import org.drools.workbench.models.datamodel.rule.ExpressionMethod;
 import org.junit.Assert;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
@@ -4149,6 +4151,58 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals(2, actionCallMethod.getFieldValue(1).getNature());
         assertEquals("Integer", actionCallMethod.getFieldValue(1).getType());
 
+    }
+
+    @Test
+    public void testListSize() throws Exception {
+        String drl = "" +
+                "package org.mortgages;\n" +
+                "import java.lang.Number;\n" +
+                "rule \"Test\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    Person( addresses.size() == 0 )\n" +
+                "  then\n" +
+                "end\n";
+
+        addModelField(
+                "Person",
+                "addresses",
+                "java.util.List",
+                DataType.TYPE_COLLECTION );
+        addModelField(
+                "java.util.List",
+                "size",
+                "int",
+                DataType.TYPE_NUMERIC_INTEGER );
+
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("Person#addresses", "Address");
+        when(
+                dmo.getProjectFieldParametersType()
+        ).thenReturn(
+                map
+        );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                new ArrayList<String>(),
+                dmo );
+
+        assertEquals(1, m.lhs.length);
+        FactPattern pattern = (FactPattern) m.lhs[0];
+        assertEquals(1, pattern.getConstraintList().getConstraints().length);
+        SingleFieldConstraintEBLeftSide constraint = (SingleFieldConstraintEBLeftSide)pattern.getConstraint(0);
+        assertEquals("size",constraint.getFieldName());
+        assertEquals("int",constraint.getFieldType());
+        assertEquals("0",constraint.getValue());
+        assertEquals("==",constraint.getOperator());
+        assertEquals(1,constraint.getConstraintValueType());
+
+        assertTrue(constraint.getExpressionLeftSide().getParts().get(0) instanceof ExpressionUnboundFact);
+        assertTrue(constraint.getExpressionLeftSide().getParts().get(1) instanceof ExpressionCollection);
+        assertTrue(constraint.getExpressionLeftSide().getParts().get(2) instanceof ExpressionMethod);
+
+        assertEqualsIgnoreWhitespace(drl, RuleModelDRLPersistenceImpl.getInstance().marshal(m));
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
