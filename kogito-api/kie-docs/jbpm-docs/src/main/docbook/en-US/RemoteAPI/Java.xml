@@ -63,7 +63,7 @@
       </varlistentry>
       <varlistentry>
         <term><command>RemoteRuntimeEngineFactory.addExtraJaxbClasses(Collection&lt;Class&lt;?&gt;&gt;
-            extraJaxbClasses );</command></term>
+            extraJaxbClasses )</command></term>
         <listitem>
           <para>This method adds extra classes to the classpath available to the serialization
             mechanisms.</para>
@@ -128,31 +128,31 @@
                   </thead>
                   <tbody valign="top">
                     <row>
-                      <entry><code>deploymentId</code></entry>
-                      <entry><code>java.lang.String</code></entry>
+                      <entry><para><code>deploymentId</code></para></entry>
+                      <entry><para><code>java.lang.String</code></para></entry>
                       <entry>
                         <para>This is the name (id) of the deployment the <code>RuntimeEngine</code>
                           should interact with.</para>
                       </entry>
                     </row>
                     <row>
-                      <entry><code>baseUrl</code></entry>
-                      <entry><code>java.net.URL</code></entry>
+                      <entry><para><code>baseUrl</code></para></entry>
+                      <entry><para><code>java.net.URL</code></para></entry>
                       <entry>
                         <para>This is the URL of the deployed jbpm-console, kie-wb or BPMS instance.</para>
                         <para>For example: <code>http://127.0.0.1:8080/jbpm-console/</code></para>
                       </entry>
                     </row>
                     <row>
-                      <entry><code>username</code></entry>
-                      <entry><code>java.lang.String</code></entry>
+                      <entry><para><code>username</code></para></entry>
+                      <entry><para><code>java.lang.String</code></para></entry>
                       <entry>
                         <para>This is the user name needed to access the JMS queues.</para>
                       </entry>
                     </row>
                     <row>
-                      <entry><code>password</code></entry>
-                      <entry><code>java.lang.String</code></entry>
+                      <entry><para><code>password</code></para></entry>
+                      <entry><para><code>java.lang.String</code></para></entry>
                       <entry>
                         <para>This is the password needed to access the JMS queues.</para>
                       </entry>
@@ -177,38 +177,38 @@
                   </thead>
                   <tbody valign="top">
                     <row>
-                      <entry><code>deploymentId</code></entry>
-                      <entry><code>java.lang.String</code></entry>
+                      <entry><para><code>deploymentId</code></para></entry>
+                      <entry><para><code>java.lang.String</code></para></entry>
                       <entry>
                         <para>This is the name (id) of the deployment the <code>RuntimeEngine</code>
                           should interact with.</para>
                       </entry>
                     </row>
                     <row>
-                      <entry><code>baseUrl</code></entry>
-                      <entry><code>java.net.URL</code></entry>
+                      <entry><para><code>baseUrl</code></para></entry>
+                      <entry><para><code>java.net.URL</code></para></entry>
                       <entry>
                         <para>This is the URL of the deployed jbpm-console, kie-wb or BPMS instance.</para>
                         <para>For example: <code>http://127.0.0.1:8080/jbpm-console/</code></para>
                       </entry>
                     </row>
                     <row>
-                      <entry><code>username</code></entry>
-                      <entry><code>java.lang.String</code></entry>
+                      <entry><para><code>username</code></para></entry>
+                      <entry><para><code>java.lang.String</code></para></entry>
                       <entry>
                         <para>This is the user name needed to access the REST API.</para>
                       </entry>
                     </row>
                     <row>
-                      <entry><code>password</code></entry>
-                      <entry><code>java.lang.String</code></entry>
+                      <entry><para><code>password</code></para></entry>
+                      <entry><para><code>java.lang.String</code></para></entry>
                       <entry>
                         <para>This is the password needed to access the REST API.</para>
                       </entry>
                     </row>
                     <row>
-                      <entry><code>timeoutInSeconds</code></entry>
-                      <entry><code>int</code></entry>
+                      <entry><para><code>timeoutInSeconds</code></para></entry>
+                      <entry><para><code>int</code></para></entry>
                       <entry>
                         <para>This maximum number of seconds to wait when waiting for a response from the server.</para>
                       </entry>
@@ -233,38 +233,38 @@
                   </thead>
                   <tbody valign="top">
                     <row>
-                      <entry><code>deploymentId</code></entry>
-                      <entry><code>java.lang.String</code></entry>
+                      <entry><para><code>deploymentId</code></para></entry>
+                      <entry><para><code>java.lang.String</code></para></entry>
                       <entry>
                         <para>This is the name (id) of the deployment the <code>RuntimeEngine</code>
                           should interact with.</para>
                       </entry>
                     </row>
                     <row>
-                      <entry><code>baseUrl</code></entry>
-                      <entry><code>java.net.URL</code></entry>
+                      <entry><para><code>baseUrl</code></para></entry>
+                      <entry><para><code>java.net.URL</code></para></entry>
                       <entry>
                         <para>This is the URL of the deployed jbpm-console, kie-wb or BPMS instance.</para>
                         <para>For example: <code>http://127.0.0.1:8080/jbpm-console/</code></para>
                       </entry>
                     </row>
                     <row>
-                      <entry><code>username</code></entry>
-                      <entry><code>java.lang.String</code></entry>
+                      <entry><para><code>username</code></para></entry>
+                      <entry><para><code>java.lang.String</code></para></entry>
                       <entry>
                         <para>This is the user name needed to access the REST API.</para>
                       </entry>
                     </row>
                     <row>
-                      <entry><code>password</code></entry>
-                      <entry><code>java.lang.String</code></entry>
+                      <entry><para><code>password</code></para></entry>
+                      <entry><para><code>java.lang.String</code></para></entry>
                       <entry>
                         <para>This is the password needed to access the REST API.</para>
                       </entry>
                     </row>
                     <row>
-                      <entry><code>useFormBasedAuth</code></entry>
-                      <entry><code>boolean</code></entry>
+                      <entry><para><code>useFormBasedAuth</code></para></entry>
+                      <entry><para><code>boolean</code></para></entry>
                       <entry>
                         <para>Whether or not to use form-based authentication when making a REST call. Form-based authentication will be necessary on tomcat instances.</para>
                       </entry>
@@ -341,38 +341,38 @@
           </thead>
           <tbody valign="top">
             <row>
-              <entry><code>deploymentId</code></entry>
-              <entry><code>java.lang.String</code></entry>
+              <entry><para><code>deploymentId</code></para></entry>
+              <entry><para><code>java.lang.String</code></para></entry>
               <entry>
                 <para>This is the name (id) of the deployment the <code>RuntimeEngine</code>
                   should interact with.</para>
               </entry>
             </row>
             <row>
-              <entry><code>baseUrl</code></entry>
-              <entry><code>java.net.URL</code></entry>
+              <entry><para><code>baseUrl</code></para></entry>
+              <entry><para><code>java.net.URL</code></para></entry>
               <entry>
                 <para>This is the URL of the deployed jbpm-console, kie-wb or BPMS instance.</para>
                 <para>For example: <code>http://127.0.0.1:8080/jbpm-console/</code></para>
               </entry>
             </row>
             <row>
-              <entry><code>username</code></entry>
-              <entry><code>java.lang.String</code></entry>
+              <entry><para><code>username</code></para></entry>
+              <entry><para><code>java.lang.String</code></para></entry>
               <entry>
                 <para>This is the user name needed to access the REST API.</para>
               </entry>
             </row>
             <row>
-              <entry><code>password</code></entry>
-              <entry><code>java.lang.String</code></entry>
+              <entry><para><code>password</code></para></entry>
+              <entry><para><code>java.lang.String</code></para></entry>
               <entry>
                 <para>This is the password needed to access the REST API.</para>
               </entry>
             </row>
             <row>
-              <entry><code>timeoutInSeconds</code></entry>
-              <entry><code>int</code></entry>
+              <entry><para><code>timeoutInSeconds</code></para></entry>
+              <entry><para><code>int</code></para></entry>
               <entry>
                 <para>This maximum number of seconds to wait when waiting for a response from the server.</para>
               </entry>
@@ -412,9 +412,10 @@
         <para>Configuration using only the URL of the server where the jBPM Console or Kie Workbench
         instance is running, is the most straightforward. However, this is only possible when the
         jBPM console or KIE Workbench instance is running on Wildfly or JBoss AS, or JBoss EAP. </para>
-        
-        <para> The following table describes the parameters used when using an
-          <code>InitialContext</code> to configure a <code>RemoteJmsRuntimeEngineFactory</code>
+      </formalpara>
+      
+      <para> The following table describes the parameters used when using an
+        <code>InitialContext</code> to configure a <code>RemoteJmsRuntimeEngineFactory</code>
         instance: <table frame="all">
           <title>RemoteJmsRuntimeFactory constructor arguments</title>
           <tgroup cols="3" align="left" rowsep="1" colsep="1">
@@ -427,31 +428,31 @@
             </thead>
             <tbody valign="top">
               <row>
-                <entry><code>deploymentId</code></entry>
-                <entry><code>java.lang.String</code></entry>
+                <entry><para><code>deploymentId</code></para></entry>
+                <entry><para><code>java.lang.String</code></para></entry>
                 <entry>
                   <para>This is the name (id) of the deployment the <code>RuntimeEngine</code>
                     should interact with.</para>
                 </entry>
               </row>
               <row>
-                <entry><code>serverURL</code></entry>
-                <entry><code>java.net.URL</code></entry>
+                <entry><para><code>serverURL</code></para></entry>
+                <entry><para><code>java.net.URL</code></para></entry>
                 <entry>
                   <para>This is the URL of the (JBoss) server instance..</para>
                 </entry>
               </row>
               <row>
-                <entry><code>username</code></entry>
-                <entry><code>java.lang.String</code></entry>
+                <entry><para><code>username</code></para></entry>
+                <entry><para><code>java.lang.String</code></para></entry>
                 <entry>
                   <para>This is the user name needed to access the JMS queues and JNDI
                     InitialContext instance. </para>
                 </entry>
               </row>
               <row>
-                <entry><code>password</code></entry>
-                <entry><code>java.lang.String</code></entry>
+                <entry><para><code>password</code></para></entry>
+                <entry><para><code>java.lang.String</code></para></entry>
                 <entry>
                   <para>This is the password needed to access the JMS queues and JNDI InitialContext
                     instance. </para>
@@ -459,8 +460,8 @@
               </row>
             </tbody>
           </tgroup>
-        </table></para>
-      </formalpara>
+        </table>
+      </para>
       
       <formalpara>
         <title>Configuration using an <code>InitialContext</code> instance</title>
@@ -543,16 +544,16 @@ private static InitialContext getRemoteInitialContext(String jbossServerHostName
           </thead>
           <tbody valign="top">
             <row>
-              <entry><code>deploymentId</code></entry>
-              <entry><code>java.lang.String</code></entry>
+              <entry><para><code>deploymentId</code></para></entry>
+              <entry><para><code>java.lang.String</code></para></entry>
               <entry>
                 <para>This is the name (id) of the deployment the <code>RuntimeEngine</code> should
                   interact with.</para>
               </entry>
             </row>
             <row>
-              <entry><code>initialContext</code></entry>
-              <entry><code>javax.naming.InitialContext</code></entry>
+              <entry><para><code>initialContext</code></para></entry>
+              <entry><para><code>javax.naming.InitialContext</code></para></entry>
               <entry>
                 <para>This is a remote <code>InitialContext</code> instance from which the
                     (<code>javax.jms</code>) <code>ConnectionFactory</code> and <code>Queue</code>
@@ -560,22 +561,22 @@ private static InitialContext getRemoteInitialContext(String jbossServerHostName
               </entry>
             </row>
             <row>
-              <entry><code>username</code></entry>
-              <entry><code>java.lang.String</code></entry>
+              <entry><para><code>username</code></para></entry>
+              <entry><para><code>java.lang.String</code></para></entry>
               <entry>
                 <para>This is the user name needed to access the JMS queues.</para>
               </entry>
             </row>
             <row>
-              <entry><code>password</code></entry>
-              <entry><code>java.lang.String</code></entry>
+              <entry><para><code>password</code></para></entry>
+              <entry><para><code>java.lang.String</code></para></entry>
               <entry>
                 <para>This is the password needed to access the JMS queues.</para>
               </entry>
             </row>
             <row>
-              <entry><code>timeoutSeconds</code></entry>
-              <entry><code>int</code></entry>
+              <entry><para><code>timeoutSeconds</code></para></entry>
+              <entry><para><code>int</code></para></entry>
               <entry>
                 <para>This maximum number of seconds to wait when waiting for a response from
                   the server.</para>
@@ -602,64 +603,64 @@ private static InitialContext getRemoteInitialContext(String jbossServerHostName
             </thead>
             <tbody valign="top">
               <row>
-                <entry><code>deploymentId</code></entry>
-                <entry><code>java.lang.String</code></entry>
+                <entry><para><code>deploymentId</code></para></entry>
+                <entry><para><code>java.lang.String</code></para></entry>
                 <entry>
                   <para>This is the name (id) of the deployment the <code>RuntimeEngine</code>
                     should interact with.</para>
                 </entry>
               </row>
               <row>
-                <entry><code>connectionFactory</code></entry>
-                <entry><code>javax.jms.ConnectionFactory</code></entry>
+                <entry><para><code>connectionFactory</code></para></entry>
+                <entry><para><code>javax.jms.ConnectionFactory</code></para></entry>
                 <entry>
                   <para>This is a <code>ConnectionFactory</code> instance used to connect to the
                       <code>ksessionQueue</code> or <code>taskQueue</code>.</para>
                 </entry>
               </row>
               <row>
-                <entry><code>ksessionQueue</code></entry>
-                <entry><code>javax.jms.Queue</code></entry>
+                <entry><para><code>ksessionQueue</code></para></entry>
+                <entry><para><code>javax.jms.Queue</code></para></entry>
                 <entry>
                   <para>This is an instance of the <code>Queue</code> for requests relating to the
                     process instance.</para>
                 </entry>
               </row>
               <row>
-                <entry><code>taskQueue</code></entry>
-                <entry><code>javax.jms.Queue</code></entry>
+                <entry><para><code>taskQueue</code></para></entry>
+                <entry><para><code>javax.jms.Queue</code></para></entry>
                 <entry>
                   <para>This is an instance of the <code>Queue</code> for requests relating to task
                     service usage.</para>
                 </entry>
               </row>
               <row>
-                <entry><code>responseQueue</code></entry>
-                <entry><code>javax.jms.Queue</code></entry>
+                <entry><para><code>responseQueue</code></para></entry>
+                <entry><para><code>javax.jms.Queue</code></para></entry>
                 <entry>
                   <para>This is an instance of the <code>Queue</code> used to receive
                     responses.</para>
                 </entry>
               </row>
               <row>
-                <entry><code>username</code></entry>
-                <entry><code>java.lang.String</code></entry>
+                <entry><para><code>username</code></para></entry>
+                <entry><para><code>java.lang.String</code></para></entry>
                 <entry>
                   <para>This is the user name needed to access the JMS queues (in your application
                     server configuration).</para>
                 </entry>
               </row>
               <row>
-                <entry><code>password</code></entry>
-                <entry><code>java.lang.String</code></entry>
+                <entry><para><code>password</code></para></entry>
+                <entry><para><code>java.lang.String</code></para></entry>
                 <entry>
                   <para>This is the password needed to access the JMS queues (in your application
                     server configuration).</para>
                 </entry>
               </row>
               <row>
-                <entry><code>timeoutSeconds</code></entry>
-                <entry><code>int</code></entry>
+                <entry><para><code>timeoutSeconds</code></para></entry>
+                <entry><para><code>int</code></para></entry>
                 <entry>
                   <para>This maximum number of seconds to wait when waiting for a response from
                     the server.</para>
@@ -672,6 +673,437 @@ private static InitialContext getRemoteInitialContext(String jbossServerHostName
       </formalpara>
     </section>
 
+  <section xml:id="remote.java.api.supported">
+    <title>Supported methods</title>
+    
+    <para>As mentioned above, the Remote Java API provides client-like instances of the <code>RuntimeEngine</code>, <code>KieSession</code>,
+      <code>TaskService</code> and <code>AuditLogService</code> interfaces.</para>
+    
+    <para>This means that while many of the methods in those interfaces are available, some are not. The following tables lists the methods
+      which are available. Methods not listed in the below, will throw an <code>UnsupportedOperationException</code> explaining that the 
+      called method is not available.
+    
+    <table frame="all">
+      <title>Available process-related <code>KieSession</code> methods</title>
+      <tgroup cols="3" align="left" rowsep="1" colsep="1">
+        <thead valign="top">
+          <row>
+            <entry>Returns</entry>
+            <entry>Method signature</entry>
+            <entry>Description</entry>
+          </row>
+        </thead>
+        <tbody valign="top">
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry><literallayout><code>abortProcessInstance(long processInstanceId)</code></literallayout></entry>
+            <entry><para>Abort the process instance</para></entry>
+          </row>
+          <row>
+            <entry><para><code>ProcessInstance</code></para></entry>
+            <entry><para><code>getProcessInstance(long processInstanceId)</code></para></entry>
+            <entry><para>Return the process instance</para></entry>
+          </row>
+          <row>
+            <entry><para><code>ProcessInstance</code></para></entry>
+            <entry>
+              <literallayout><code>getProcessInstance(long processInstanceId,</code>
+  <code>boolean readOnly)</code></literallayout>
+            </entry>
+            <entry><para>Return the process instance</para></entry>
+          </row>
+          <row>
+            <entry><para><code>List&lt;ProcessInstance&gt;</code></para></entry>
+            <entry><para><code>getProcessInstances()</code></para></entry>
+            <entry><para>Return all (active) process instances</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry><para><code>signalEvent(String signal, Object event)</code></para></entry>
+            <entry><para>Signal all (active) process instances</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry>
+              <literallayout><code>signalEvent(String signal, Object event,</code>
+  <code>long processInstanceId)</code></literallayout>
+            </entry>
+            <entry><para>Signal the process instance</para></entry>
+          </row>
+          <row>
+            <entry><para><code>ProcessInstance</code></para></entry>
+            <entry>
+              <literallayout><code>startProcess(String processId,</code>
+  <code>CorrelationKey correlationKey,</code>
+  <code>Map&lt;String, Object&gt; parameters)</code></literallayout>
+            </entry>
+            <entry><para>Start a new process and return the process instance (if the process instance has not immediately completed)</para></entry>
+          </row>
+          <row>
+            <entry><para><code>ProcessInstance</code></para></entry>
+            <entry>
+              <literallayout><code>startProcess(String processId,</code>
+  <code>Map&lt;String, Object&gt; parameters);</code></literallayout>
+            </entry>
+            <entry><para>Start a new process and return the process instance (if the process instance has not immediately completed)</para></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+
+    <table frame="all">
+      <title>Available rules-related <code>KieSession</code> methods</title>
+      <tgroup cols="3" align="left" rowsep="1" colsep="1">
+        <thead valign="top">
+          <row>
+            <entry>Returns</entry>
+            <entry>Method signature</entry>
+            <entry>Description</entry>
+          </row>
+        </thead>
+        <tbody valign="top">
+          <row>
+            <entry><para><code>Long</code></para></entry>
+            <entry><para><code>getFactCount()</code></para></entry>
+            <entry><para>Return the total fact count</para></entry>
+          </row>
+          <row>
+            <entry><para><code>Object</code></para></entry>
+            <entry><para><code>getGlobal(String identifier)</code></para></entry>
+            <entry><para>Return a global fact</para></entry>
+          </row>
+          <row>
+            <entry><para><code>Integer</code></para></entry>
+            <entry><para><code>getId()</code></para></entry>
+            <entry><para>Return the id of the <code>KieSession</code></para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry><para><code>setGlobal(String identifier, Object value)</code></para></entry>
+            <entry><para>Set a global fact</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry><para><code>fireAllRules()</code></para></entry>
+            <entry><para>Fire all rules</para></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+
+    <table frame="all">
+      <title>Available <code>WorkItemManager</code> methods</title>
+      <tgroup cols="3" align="left" rowsep="1" colsep="1">
+        <thead valign="top">
+          <row>
+            <entry>Returns</entry>
+            <entry>Method signature</entry>
+            <entry>Description</entry>
+          </row>
+        </thead>
+        <tbody valign="top">
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry><para><code>abortWorkItem(long workItemId)</code></para></entry>
+            <entry><para>Abort the work item</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry><para><code>completeWorkItem(long workItemId, Map&lt;String, Object&gt; results)</code></para></entry>
+            <entry><para>Complete the work item</para></entry>
+          </row>
+          <row>
+            <entry><para><code>WorkItem</code></para></entry>
+            <entry><para><code>getWorkItem(long workItemId)</code></para></entry>
+            <entry><para>Return the work item</para></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+   
+    <table frame="all">
+      <title>Available task operation <code>TaskService</code> methods</title>
+      <tgroup cols="3" align="left" rowsep="1" colsep="1">
+        <thead valign="top">
+          <row>
+            <entry>Returns </entry>
+            <entry>Method signature</entry>
+            <entry>Description</entry>
+          </row>
+        </thead>
+        <tbody valign="top">
+          <row>
+            <entry><para><code>Long</code></para></entry>
+            <entry><para><code>addTask(Task task, Map&lt;String, Object&gt; params)</code></para></entry>
+            <entry><para>Add a new task</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry><para><code>activate(long taskId, String userId)</code></para></entry>
+            <entry><para>Activate a task</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry><para><code>claim(long taskId, String userId)</code></para></entry>
+            <entry><para>Claim a task</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry><para><code>claim(long taskId, String userId, List&lt;String&gt; groupIds)</code></para></entry>
+            <entry><para>Claim a task</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry><para><code>claimNextAvailable(String userId, String language)</code></para></entry>
+            <entry><para>Claim the next available task for a user</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry>
+              <literallayout><code>claimNextAvailable(String userId, List&lt;String&gt; groupIds,</code>
+  <code>String language)</code></literallayout>
+            </entry>
+            <entry><para>Claim the next available task for a user</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry>
+              <literallayout><code>complete(long taskId, String userId,</code>
+  <code>Map&lt;String, Object&gt; data)</code></literallayout>
+            </entry>
+            <entry><para>Complete a task</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry><para><code>delegate(long taskId, String userId, String targetUserId)</code></para></entry>
+            <entry><para>Delegate a task</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry><para><code>exit(long taskId, String userId)</code></para></entry>
+            <entry><para>Exit a task</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry>
+              <literallayout><code>fail(long taskId, String userId, Map&lt;String,</code>
+  <code>Object&gt; faultData)</code></literallayout></entry>
+            <entry><para>Fail a task</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry><para><code>forward(long taskId, String userId, String targetEntityId)</code></para></entry>
+            <entry><para>Forward a task</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry>
+              <literallayout><code>nominate(long taskId, String userId,</code>
+  <code>List&lt;OrganizationalEntity&gt; potentialOwners)</code></literallayout>
+            </entry>
+            <entry><para>Nominate a task</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry><para><code>release(long taskId, String userId)</code></para></entry>
+            <entry><para>Release a task</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry><para><code>remove(long taskId, String userId)</code></para></entry>
+            <entry><para>Remove a task</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry><para><code>resume(long taskId, String userId)</code></para></entry>
+            <entry><para>Resume a task</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry><para><code>skip(long taskId, String userId)</code></para></entry>
+            <entry><para>Skip a task</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry><para><code>start(long taskId, String userId)</code></para></entry>
+            <entry><para>Start a task</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry><para><code>stop(long taskId, String userId)</code></para></entry>
+            <entry><para>Stop a task</para></entry>
+          </row>
+          <row>
+            <entry><para><code>void</code></para></entry>
+            <entry><para><code>suspend(long taskId, String userId)</code></para></entry>
+            <entry><para>Suspend a task</para></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+   
+    <table frame="all">
+      <title>Available task retrieval and query <code>TaskService</code> methods</title>
+      <tgroup cols="2" align="left" rowsep="1" colsep="1">
+          <colspec colnum="1" colname="c1" colwidth="1*"></colspec>
+          <colspec colnum="2" colname="c2" colwidth="3*"></colspec>
+        <thead valign="top">
+          <row>
+            <entry>Returns </entry>
+            <entry>Method signature</entry>
+          </row>
+        </thead>
+        <tbody valign="top">
+          <row>
+            <entry><para><code>Task</code></para></entry>
+            <entry><para><code>getTaskByWorkItemId(long workItemId)</code></para></entry>
+          </row>
+          <row>
+            <entry><para><code>Task</code></para></entry>
+            <entry><para><code>getTaskById(long taskId)</code></para></entry>
+          </row>
+          <row>
+            <entry><para><code>List&lt;TaskSummary&gt;</code></para></entry>
+            <entry>
+              <literallayout><code>getTasksAssignedAsBusinessAdministrator(String userId,</code>
+  <code>String language)</code></literallayout>
+            </entry>
+          </row>
+          <row>
+            <entry><para><code>List&lt;TaskSummary&gt;</code></para></entry>
+            <entry>
+              <para><code>getTasksAssignedAsPotentialOwner(String userId, String language)</code>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry><para><code>List&lt;TaskSummary&gt;</code></para></entry>
+            <entry>
+              <literallayout><code>getTasksAssignedAsPotentialOwnerByStatus(String userId,</code>
+  <code>List&lt;Status&gt;gt; status, String language)</code></literallayout>
+            </entry>
+          </row>
+          <row>
+            <entry><para><code>List&lt;TaskSummary&gt;</code></para></entry>
+            <entry><para><code>getTasksOwned(String userId, String language)</code></para></entry>
+          </row>
+          <row>
+            <entry><para><code>List&lt;TaskSummary&gt;</code></para></entry>
+            <entry>
+              <literallayout><code>getTasksOwnedByStatus(String userId, List&lt;Status&gt; status,</code>
+  <code>String language)</code></literallayout>
+            </entry>
+          </row>
+          <row>
+            <entry><para><code>List&lt;TaskSummary&gt;</code></para></entry>
+            <entry>
+              <literallayout><code>getTasksByStatusByProcessInstanceId(long processInstanceId,</code>
+  <code>List&lt;Status&gt; status, String language)</code></literallayout>
+            </entry>
+          </row>
+          <row>
+            <entry><para><code>List&lt;TaskSummary&gt;</code></para></entry>
+            <entry><para><code>getTasksByProcessInstanceId(long processInstanceId)</code></para></entry>
+          </row>
+          <row>
+            <entry><para><code>List&lt;TaskSummary&gt;</code></para></entry>
+            <entry>
+              <literallayout><code>getTasksByVariousFields(List&lt;Long&gt; workItemIds, List&lt;Long&gt; taskIds,</code>
+  <code>List&lt;Long&gt; procInstIds, List&lt;String&gt; busAdmins, </code>
+  <code>List&lt;String&gt; potOwners, List&lt;String&gt; taskOwners, List&lt;Status&gt; status,</code> 
+  <code>boolean union)</code></literallayout>
+            </entry>
+          </row>
+          <row>
+            <entry><para><code>List&lt;TaskSummary&gt;</code></para></entry>
+            <entry><para><code>getTasksByVariousFields(Map &lt;String, List&lt;?&gt;&gt; parameters, boolean union)</code></para></entry>
+          </row>
+          <row>
+            <entry><para><code>Content</code></para></entry>
+            <entry><para><code>getContentById(long contentId)</code></para></entry>
+          </row>
+          <row>
+            <entry><para><code>Attachment</code></para></entry>
+            <entry><para><code>getAttachmentById(long attachId)</code></para></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+    
+      <table frame="all">
+        <title>Available <code>AuditLogService</code> methods</title>
+        <tgroup cols="2" align="left" rowsep="1" colsep="1">
+          <colspec colnum="1" colname="c1" colwidth="1*"></colspec>
+          <colspec colnum="2" colname="c2" colwidth="3.55*"></colspec>
+          <thead valign="top">
+            <row>
+              <entry>Returns </entry>
+              <entry>Method signature</entry>
+            </row>
+          </thead>
+          <tbody valign="top">
+            <row>
+              <entry><para><code>List&lt;ProcessInstanceLog&gt;</code></para></entry>
+              <entry><para><code>findProcessInstances()</code></para></entry>
+            </row>
+            <row>
+              <entry><para><code>List&lt;ProcessInstanceLog&gt;</code></para></entry>
+              <entry><para><code>findProcessInstances(String processId)</code></para></entry>
+            </row>
+            <row>
+              <entry><para><code>List&lt;ProcessInstanceLog&gt;</code></para></entry>
+              <entry><para><code>findActiveProcessInstances(String processId)</code></para></entry>
+            </row>
+            <row>
+              <entry><para>ProcessInstanceLog</para></entry>
+              <entry><para><code>findProcessInstance(long processInstanceId)</code></para></entry>
+            </row>
+            <row>
+              <entry><para>List&lt;ProcessInstanceLog&gt;</para></entry>
+              <entry><para><code>findSubProcessInstances(long processInstanceId)</code></para></entry>
+            </row>
+            <row>
+              <entry><para>List&lt;NodeInstanceLog&gt;</para></entry>
+              <entry><para><code>findNodeInstances(long processInstanceId)</code></para></entry>
+            </row>
+            <row>
+              <entry><para>List&lt;NodeInstanceLog&gt;</para></entry>
+              <entry><para><code>findNodeInstances(long processInstanceId, String nodeId)</code></para></entry>
+            </row>
+            <row>
+              <entry><para>List&lt;VariableInstanceLog&gt;</para></entry>
+              <entry><para><code>findVariableInstances(long processInstanceId)</code></para></entry>
+            </row>
+            <row>
+              <entry><para>List&lt;VariableInstanceLog&gt;</para></entry>
+              <entry>
+                <literallayout><code>findVariableInstances(long processInstanceId,</code>
+  <code>String variableId)</code></literallayout>
+              </entry>
+            </row>
+            <row>
+              <entry><para>List&lt;VariableInstanceLog&gt;</para></entry>
+              <entry>
+                <literallayout><code>findVariableInstancesByName(String variableId,</code>
+  <code>boolean onlyActiveProcesses)</code></literallayout>
+              </entry>
+            </row>
+            <row>
+              <entry><para>List&lt;VariableInstanceLog&gt;</para></entry>
+              <entry><literallayout><code>findVariableInstancesByNameAndValue(String variableId,</code>
+  <code>String value, boolean onlyActiveProcesses)</code></literallayout></entry>
+            </row>
+            <row>
+              <entry><para>void</para></entry>
+              <entry><para><code>clear()</code></para></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+      
+    </para>
+    
+  </section>
   <!--section>
     <title>REST helper classe</title>
     
