@@ -109,11 +109,11 @@ public class TransactionAwareSchedulerServiceInterceptor extends DelegateSchedul
     }
     
     protected TransactionManager getTransactionManager() {
-    	TransactionManager tm = (TransactionManager) environment.getEnvironment().get(EnvironmentName.TRANSACTION_MANAGER);
-    	if (tm == null) {
-    		tm = new JtaTransactionManager(null, null, null);
+    	Object txm = environment.getEnvironment().get(EnvironmentName.TRANSACTION_MANAGER);
+    	if (txm != null && txm instanceof TransactionManager) {
+    		return (TransactionManager) txm;
     	}
     	
-    	return tm;
+    	return new JtaTransactionManager(null, null, null);
     }
 }

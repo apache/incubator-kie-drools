@@ -23,6 +23,7 @@ import org.drools.core.command.CommandService;
 import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.persistence.OrderedTransactionSynchronization;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionManagerHelper;
@@ -37,10 +38,12 @@ import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.internal.runtime.KnowledgeContext;
 import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.Mapper;
 import org.kie.internal.runtime.manager.SessionFactory;
@@ -317,9 +320,9 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         
         @Override
         public Void execute(org.kie.internal.command.Context context) {
-
+        	
             if (manager.hasEnvironmentEntry("IS_JTA_TRANSACTION", false)) {
-            	initialKsession.destroy();
+            	((KnowledgeCommandContext) context).getKieSession().destroy();
             	return null;
         	}
             TransactionManager tm = (TransactionManager) initialKsession.getEnvironment().get(EnvironmentName.TRANSACTION_MANAGER);
