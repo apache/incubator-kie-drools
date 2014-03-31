@@ -22,13 +22,13 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-multiproject</artifactId>
-    <version>6.1.0-SNAPSHOT</version>
+    <version>6.1.0.Beta2</version>
   </parent>
 
 
   <artifactId>drools-pmml</artifactId>
   <groupId>org.drools</groupId>
-  <version>6.1.0-SNAPSHOT</version>
+  <version>6.1.0.Beta2</version>
 
   <name>Drools :: PMML - Compiler </name>
   <description>Support for PMML-Encoded Predictive Models</description>
@@ -97,13 +97,6 @@
           <clearOutputDir>false</clearOutputDir>
           <arguments>-no-header</arguments>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-maven-plugin</artifactId>
-        <version>${drools.version}</version>
-        <extensions>true</extensions>
       </plugin>
 
     </plugins>
