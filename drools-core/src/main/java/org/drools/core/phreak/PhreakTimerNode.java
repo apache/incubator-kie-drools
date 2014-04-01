@@ -116,12 +116,15 @@ public class PhreakTimerNode {
         for ( LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            DefaultJobHandle jobHandle = (DefaultJobHandle) leftTuple.getObject();
             LeftTupleList leftTuples = tm.getInsertOrUpdateLeftTuples();
-            synchronized ( leftTuples ) {
-                // the job removal and memory check is done within a sync block, incase it is executing a trigger at the
-                // same time we are procesing an update
-                timerService.removeJob(jobHandle);
+            DefaultJobHandle jobHandle = (DefaultJobHandle) leftTuple.getObject();
+            if ( jobHandle != null ) {
+                // jobHandle can be null, if the time fired straight away, and never ended up scheduling a job
+                synchronized ( leftTuples ) {
+                    // the job removal and memory check is done within a sync block, incase it is executing a trigger at the
+                    // same time we are procesing an update
+                    timerService.removeJob(jobHandle);
+                }
             }
             scheduleLeftTuple( timerNode, tm, pmem, sink, wm, timer, timerService, timestamp, calendarNames, calendars, leftTuple, trgLeftTuples, stagedLeftTuples );
 
