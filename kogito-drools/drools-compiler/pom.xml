@@ -250,6 +250,7 @@
               org.codehaus.janino.*;resolution:=optional,
               org.eclipse.jdt.*;resolution:=optional,
               org.osgi.*;resolution:=optional,
+              org.kie.spring*;resolution:=optional,
               *
             </Import-Package>
             <Export-Package>
