@@ -4772,9 +4772,6 @@ public class CepEspTest extends CommonTestMethodBase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
         final KieSession ksession = kbase.newKieSession();
         EntryPoint synthEP =  ksession.getEntryPoint("synth");
 
@@ -4801,7 +4798,7 @@ public class CepEspTest extends CommonTestMethodBase {
    }
 
 
-    public class SynthEvent {
+    public static class SynthEvent {
         private final long id;
         private final Date timestamp;
 
@@ -4816,6 +4813,92 @@ public class CepEspTest extends CommonTestMethodBase {
 
         public Date getTimestamp() {
             return timestamp;
+        }
+    }
+
+    @Test
+    public void testExpiredEventModification() {
+        // BZ-1082990
+        String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
+                     "import java.util.Date\n" +
+                     "\n" +
+                     "declare OtherFact\n" +
+                     "    @role( event )\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare SimpleEvent\n" +
+                     "    @role( event )\n" +
+                     "    @expires( 1h )\n" +
+                     "    @timestamp( dateEvt )\n" +
+                     "end\n" +
+                     "\n" +
+                     "\n" +
+                     "rule R no-loop\n" +
+                     "    when\n" +
+                     "        $e : SimpleEvent()\n" +
+                     "        not OtherFact( this after[1ms, 1h] $e )\n" +
+                     "    then\n" +
+                     "        modify($e) {setCode(\"code2\")};\n" +
+                     "    end\n " +
+                     "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        final KieSession ksession = kbase.newKieSession(sessionConfig, null);
+        PseudoClockScheduler clock = ksession.getSessionClock();
+        clock.setStartupTime(System.currentTimeMillis());
+
+        SimpleEvent event = new SimpleEvent("code1");
+        event.setDateEvt(System.currentTimeMillis() - (2 * 60 * 60 * 1000));
+        ksession.insert(event);
+        ksession.fireAllRules();
+    }
+
+    public static class SimpleEvent {
+        private String code;
+        private Long dateEvt;
+
+
+        public SimpleEvent(final String aCode) {
+            this.code = aCode;
+            this.dateEvt = System.currentTimeMillis();
+        }
+
+        public SimpleEvent(final String aCode, final Long dateEvt) {
+            this.code = aCode;
+            this.dateEvt = dateEvt;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public void setCode(final String code) {
+            this.code = code;
+        }
+
+        public Long getDateEvt() {
+            return dateEvt;
+        }
+
+        public void setDateEvt(Long dateEvt) {
+            this.dateEvt = dateEvt;
+        }
+
+        @Override
+        public String toString() {
+            return getClass().getSimpleName() + " (code=" + code + ")";
         }
     }
 }
