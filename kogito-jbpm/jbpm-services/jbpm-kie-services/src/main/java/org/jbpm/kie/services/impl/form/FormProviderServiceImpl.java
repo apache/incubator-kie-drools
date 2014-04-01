@@ -31,8 +31,6 @@ import org.drools.core.util.StringUtils;
 import org.jbpm.kie.services.api.FormProviderService;
 import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
-import org.jbpm.kie.services.impl.form.model.InputData;
-import org.jbpm.kie.services.impl.form.model.OutputData;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
@@ -185,29 +183,6 @@ public class FormProviderServiceImpl implements FormProviderService {
         return "";
     }
 
-    protected Map<String, InputData> toInputDataMap(Map<String, String> inputs) {
-        Map<String, InputData> retval = new HashMap<String, InputData>();
-        if (inputs != null) {
-            for (String key : inputs.keySet()) {
-                InputData in = new InputData();
-                in.setName(key);
-                retval.put(key, in);
-            }
-        }
-        return retval;
-    }
-
-    protected Map<String, OutputData> toOutputDataMap(Map<String, String> outputs) {
-        Map<String, OutputData> retval = new HashMap<String, OutputData>();
-        if (outputs != null) {
-            for (String key : outputs.keySet()) {
-                OutputData out = new OutputData();
-                out.setName(key);
-                retval.put(key, out);
-            }
-        }
-        return retval;
-    }
     
     protected ContentMarshallerContext getMarshallerContext(String deploymentId, String processId) {
         DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deploymentId);
