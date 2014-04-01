@@ -1,8 +1,5 @@
 package org.drools.core.reteoo;
 
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.InternalAgenda;
@@ -10,8 +7,9 @@ import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NetworkNode;
+import org.drools.core.common.TupleEntryQueue;
+import org.drools.core.common.TupleEntryQueueImpl;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.phreak.TupleEntry;
 import org.drools.core.rule.Rule;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.AtomicBitwiseLong;
@@ -28,7 +26,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     private volatile RuleAgendaItem    agendaItem;
     private          SegmentMemory[]   segmentMemories;
     private          SegmentMemory     segmentMemory;
-    protected        Queue             queue;
+    protected TupleEntryQueue queue;
 
     public PathMemory(NetworkNode networkNode) {
         this.networkNode = networkNode;
@@ -36,10 +34,10 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     public void initQueue() {
-        this.queue = new ConcurrentLinkedQueue();
+        this.queue = new TupleEntryQueueImpl();
     }
 
-    public Queue<TupleEntry> getTupleQueue() {
+    public TupleEntryQueue getTupleQueue() {
         return queue;
     }
 
@@ -131,7 +129,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
                                                                        agendaItem.getTerminalNode() ) ) {
                 return;
             }
-            
+
             if (!agendaItem.isQueued() && !agendaItem.isBlocked()) {
                 if ( log.isTraceEnabled() ) {
                     log.trace("Queue RuleAgendaItem {}", agendaItem);

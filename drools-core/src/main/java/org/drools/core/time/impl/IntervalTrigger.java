@@ -35,6 +35,7 @@ public class IntervalTrigger
     private int       repeatCount;
     private Date      nextFireTime;
     private Date      lastFireTime;
+    private Date      createdTime;
     private long      delay;
     private long      period;
     private String[]  calendarNames;
@@ -53,8 +54,23 @@ public class IntervalTrigger
                            long period,
                            String[] calendarNames,
                            Calendars calendars) {
+        this(timestamp, startTime, endTime, repeatLimit, delay, period, calendarNames, calendars, null, null);
+    }
+
+    public IntervalTrigger(long timestamp,
+                           Date startTime,
+                           Date endTime,
+                           int repeatLimit,
+                           long delay,
+                           long period,
+                           String[] calendarNames,
+                           Calendars calendars,
+                           Date createdTime,
+                           Date lastFireTime) {
         this.delay = delay;
         this.period = period;
+        this.createdTime = createdTime == null ? new Date(timestamp) : createdTime;
+        this.lastFireTime = lastFireTime;
 
         if ( startTime == null ) {
             this.nextFireTime = new Date( timestamp + delay );
@@ -132,8 +148,6 @@ public class IntervalTrigger
      * Get the time at which the <code>CronTrigger</code> should quit
      * repeating - even if repeastCount isn't yet satisfied.
      * </p>
-     * 
-     * @see #getFinalFireTime()
      */
     public Date getEndTime() {
         return this.endTime;
@@ -150,6 +164,10 @@ public class IntervalTrigger
 
     public Date getLastFireTime() {
         return lastFireTime;
+    }
+
+    public Date getCreatedTime() {
+        return createdTime;
     }
 
     private void setFirstFireTime(long timestamp) {
@@ -182,7 +200,7 @@ public class IntervalTrigger
         return nextFireTime;
     }
 
-    public Date nextFireTime() {
+    public synchronized Date nextFireTime() {
         if ( this.nextFireTime == null ) {
             return null;
         }

@@ -26,6 +26,7 @@ import org.drools.compiler.Pet;
 import org.drools.core.base.UndefinedCalendarExcption;
 import org.drools.core.common.TimedRuleExecution;
 import org.drools.core.time.SessionPseudoClock;
+import org.junit.Ignore;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.runtime.conf.TimedRuleExectionOption;
 import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
@@ -115,7 +116,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         str += "import org.drools.compiler.Alarm\n";
         str += "global java.util.List list;";
         str += "rule \"COMPTEUR\"\n";
-        str += "  timer 50\n";
+        str += "  timer (int: 50s)\n";
         str += "  when\n";
         str += "    $alarm : Alarm( number < 5 )\n";
         str += "  then\n";
@@ -140,7 +141,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         for ( int i = 0; i < 6; i++ ) {
-            timeService.advanceTime( 55, TimeUnit.MILLISECONDS );
+            timeService.advanceTime( 55, TimeUnit.SECONDS );
             ksession.fireAllRules();
         }
 
@@ -1027,7 +1028,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
             timeService.advanceTime( oneDay, TimeUnit.SECONDS );
             ksession.fireAllRules();
-            assertEquals( 3, list.size() );
+            assertEquals( 4, list.size() );
         } finally {
             Locale.setDefault( defaultLoc );
         }
@@ -1398,14 +1399,17 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         assertEquals( fact1, list.get( 2 ) );
         list.clear();
 
+        // the activation state of the rule is not changed so the timer isn't reset
+        // since the timer alredy fired it will only use only the period that now will be set to 2000
         fact1.setField2( 300 );
         fact1.setField4( 2000 );
         ksession.update(  fh, fact1 );
+        ksession.fireAllRules();
 
         // 100 has passed of the 1000, from the previous schedule
-        // so that should be deducted from the 300 delay above, meaning
-        //  we only need to increment another 250
-        timeService.advanceTime( 250, TimeUnit.MILLISECONDS );
+        // so that should be deducted from the 2000 period above, meaning
+        //  we only need to increment another 1950
+        timeService.advanceTime( 1950, TimeUnit.MILLISECONDS );
         ksession.fireAllRules();
         assertEquals( 1, list.size() );
         assertEquals( fact1, list.get( 0 ) );
@@ -1669,7 +1673,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         ksession.fireAllRules();
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 10000) @Ignore("the listener callback holds some locks so blocking in it is not safe")
     public void testRaceConditionWithTimedRuleExectionOption() throws Exception {
         // BZ-1073880
         String str = "package org.simple \n" +

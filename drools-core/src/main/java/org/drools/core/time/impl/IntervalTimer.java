@@ -129,15 +129,22 @@ public class    IntervalTimer extends BaseTimer
         Declaration[] startDeclarations = declrs[0];
         Declaration[] endDeclarations = declrs[1];
 
+        Date lastFireTime = null;
+        Date createdTime = null;
+        long newDelay = delay;
+
         if ( jh != null ) {
             IntervalTrigger preTrig = (IntervalTrigger) jh.getTimerJobInstance().getTrigger();
-            if (preTrig.getLastFireTime() != null) {
-                timeSinceLastFire = timestamp - preTrig.getLastFireTime().getTime();
+            lastFireTime = preTrig.getLastFireTime();
+            createdTime = preTrig.getCreatedTime();
+            if (lastFireTime != null) {
+                // it is already fired calculate the new delay using the period instead of the delay
+                newDelay = period - timestamp + lastFireTime.getTime();
+            } else {
+                newDelay = delay - timestamp + createdTime.getTime();
             }
         }
 
-        // if it is already fired calculate the new delay using the period instead of the delay
-        long newDelay = timeSinceLastFire > 0 ? period - timeSinceLastFire : delay;
         if (newDelay < 0) {
             newDelay = 0;
         }
@@ -149,7 +156,9 @@ public class    IntervalTimer extends BaseTimer
                                     newDelay,
                                     this.period,
                                     calendarNames,
-                                    calendars );
+                                    calendars,
+                                    createdTime,
+                                    lastFireTime );
     }
 
     public Trigger createTrigger(long timestamp,

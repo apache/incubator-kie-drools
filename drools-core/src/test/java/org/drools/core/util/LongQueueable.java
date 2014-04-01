@@ -23,7 +23,7 @@ public class LongQueueable extends BaseQueueable
     Comparable {
     private final Long value;
 
-    public LongQueueable(Queue queue,
+    public LongQueueable(BinaryHeapQueue queue,
                          final long value) {
         super( queue );
         this.value = new Long( value );

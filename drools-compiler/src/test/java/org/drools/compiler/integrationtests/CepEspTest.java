@@ -4698,7 +4698,7 @@ public class CepEspTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }
         KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        baseConfig.setOption( EventProcessingOption.STREAM );
+        baseConfig.setOption(EventProcessingOption.STREAM);
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
@@ -4725,6 +4725,97 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
+    @Test @Ignore("Cannot reproduce with pseudoclock and takes too long with system clock")
+    public void testTimedRuleWithAccumulate() {
+        // BZ-1083103
+        String drl = "import " + SynthEvent.class.getCanonicalName() + "\n" +
+                     "import java.util.Date\n" +
+                     "\n" +
+                     "declare SynthEvent\n" +
+                     "    @role( event )\n" +
+                     "    @timestamp( timestamp )\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare EventCounter\n" +
+                     "      @role( event )\n" +
+                     "      @timestamp( timestamp )\n" +
+                     "      id          : long\n" +
+                     "      key         : String\n" +
+                     "      timestamp   : Date\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Create counter\"\n" +
+                     "when\n" +
+                     "$e : SynthEvent() from entry-point \"synth\"\n" +
+                     "then\n" +
+                     "    entryPoints[\"counters\"].insert(new EventCounter( $e.getId(), \"event\", $e.getTimestamp() ) );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Count epm\"\n" +
+                     "timer ( cron: 0/10 * * * * ? )\n" +
+                     //"timer ( int: 2s 1s )\n" +
+                     "when\n" +
+                     "    Number( $count : intValue ) from accumulate(\n" +
+                     "       EventCounter( key == \"event\" ) over window:time( 60s ) from entry-point \"counters\", count(1) )\n" +
+                     "then\n" +
+                     "    System.out.println(\"[\" + new Date() + \"] epm = \" + $count );\n" +
+                     "end\n " +
+                     "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        final KieSession ksession = kbase.newKieSession();
+        EntryPoint synthEP =  ksession.getEntryPoint("synth");
+
+        new Thread(){
+            public void run() {
+                System.out.println("[" + new Date() + "] start!");
+                ksession.fireUntilHalt();
+            };
+        }.start();
+
+        long counter = 0;
+        while(true) {
+            counter++;
+            synthEP.insert(new SynthEvent(counter));
+            try {
+                Thread.sleep(20L);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            if ((counter % 1000) == 0) {
+                System.out.println("Total events: " + counter);
+            }
+        } 
+   }
 
 
+    public class SynthEvent {
+        private final long id;
+        private final Date timestamp;
+
+        public SynthEvent(long id) {
+            this.id = id;
+            timestamp = new Date();
+        }
+
+        public long getId() {
+            return id;
+        }
+
+        public Date getTimestamp() {
+            return timestamp;
+        }
+    }
 }
