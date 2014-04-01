@@ -143,7 +143,9 @@ public class DeadlineImpl implements org.kie.internal.task.api.model.Deadline {
         result = prime * result + CollectionUtils.hashCode(documentation);
         result = prime * result + CollectionUtils.hashCode(escalations);
         result = prime * result + (isEscalated() ? 1231 : 1237);
-        result = prime * result + (int) (id ^ (id >>> 32));
+        if (id != null) {
+        	result = prime * result + (int) (id ^ (id >>> 32));
+        }
         return result;
     }
 
