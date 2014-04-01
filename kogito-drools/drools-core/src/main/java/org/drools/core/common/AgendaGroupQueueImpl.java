@@ -29,7 +29,6 @@ import org.drools.core.util.BinaryHeapQueue;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,18 +39,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * for requested salience values.
  *
  * @see PriorityQueue
- * @see ActivationQueue
  */
 public class AgendaGroupQueueImpl
         implements
         InternalAgendaGroup,
         InternalRuleFlowGroup {
     private static final long serialVersionUID = 510l;
-    private          String             name;
+    private final    String             name;
     /**
      * Items in the agenda.
      */
-    private          BinaryHeapQueue    priorityQueue;
+    private final    BinaryHeapQueue    priorityQueue;
     private volatile boolean            active;
     private          PropagationContext autoFocusActivator;
     private          long               activatedForRecency;
@@ -62,15 +60,6 @@ public class AgendaGroupQueueImpl
     private Map<Long, String>     nodeInstances  = new ConcurrentHashMap<Long, String>();
 
     private volatile              boolean hasRuleFlowLister;
-
-    /**
-     * Construct an <code>AgendaGroup</code> with the given name.
-     *
-     * @param name The <AgendaGroup> name.
-     */
-    public AgendaGroupQueueImpl() {
-
-    }
 
     public AgendaGroupQueueImpl(final String name,
                                 final InternalRuleBase ruleBase) {
@@ -119,7 +108,6 @@ public class AgendaGroupQueueImpl
 
     public void clear() {
         this.priorityQueue.clear();
-//        this.active = false;
     }
 
     public Activation[] getAndClear() {
@@ -138,10 +126,6 @@ public class AgendaGroupQueueImpl
     }
 
     public Activation remove() {
-//        Activation act = this.priorityQueue.dequeue();
-//        if ( this.priorityQueue.isEmpty() && autoDeactivate ) {
-//            setActive( false );
-//        }
         return (Activation) this.priorityQueue.dequeue();
     }
 
@@ -230,7 +214,7 @@ public class AgendaGroupQueueImpl
     }
 
     public void remove(final Activation activation) {
-        this.priorityQueue.dequeue(activation.getQueueIndex());
+        this.priorityQueue.dequeue(activation);
     }
 
     public long getActivatedForRecency() {

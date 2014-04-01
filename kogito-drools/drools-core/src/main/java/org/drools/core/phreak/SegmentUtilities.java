@@ -4,6 +4,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
+import org.drools.core.common.TupleEntryQueue;
 import org.drools.core.common.SynchronizedLeftTupleSets;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
@@ -44,10 +45,6 @@ import org.drools.core.rule.Rule;
 import org.drools.core.rule.constraint.QueryNameConstraint;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
 
 public class SegmentUtilities {
 
@@ -105,7 +102,7 @@ public class SegmentUtilities {
             if ( tupleSource.isStreamMode() && smem.getTupleQueue() == null ) {
                 // need to make sure there is one Queue, for the rule, when a stream mode node is found.
 
-                Queue<TupleEntry> queue = initAndGetTupleQueue(tupleSource, wm);
+                TupleEntryQueue queue = initAndGetTupleQueue(tupleSource, wm);
                 smem.setTupleQueue( queue );
             }
             if (NodeTypeEnums.isBetaNode(tupleSource)) {
@@ -467,7 +464,7 @@ public class SegmentUtilities {
         }
     }
 
-    public static Queue<TupleEntry> initAndGetTupleQueue(NetworkNode node, InternalWorkingMemory wm) {
+    public static TupleEntryQueue initAndGetTupleQueue(NetworkNode node, InternalWorkingMemory wm) {
         // get's or initializes the queue, if it does not exist. It recurse to the outer most PathMemory
         // and then trickle the Queue back up to the inner PathMememories
         LeftTupleSink sink = null;
@@ -481,7 +478,7 @@ public class SegmentUtilities {
             sink = (LeftTupleSink)node;
         }
 
-        Queue<TupleEntry> queue = null;
+        TupleEntryQueue queue = null;
         if (NodeTypeEnums.RightInputAdaterNode == sink.getType()) {
             RightInputAdapterNode rian = (RightInputAdapterNode) sink;
             RiaNodeMemory riaMem =  (RiaNodeMemory) wm.getNodeMemory((MemoryFactory)sink);

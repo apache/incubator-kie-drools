@@ -121,12 +121,7 @@ public class PhreakTimerNode {
             synchronized ( leftTuples ) {
                 // the job removal and memory check is done within a sync block, incase it is executing a trigger at the
                 // same time we are procesing an update
-                timerService.removeJob( jobHandle );
-
-                if ( leftTuple.getMemory() != null ) {
-                    // a previous timer has requested an eval, so remove, we don't want it processed twice
-                    leftTuples.remove( leftTuple );
-                }
+                timerService.removeJob(jobHandle);
             }
             scheduleLeftTuple( timerNode, tm, pmem, sink, wm, timer, timerService, timestamp, calendarNames, calendars, leftTuple, trgLeftTuples, stagedLeftTuples );
 
@@ -286,8 +281,9 @@ public class PhreakTimerNode {
             if ( log.isTraceEnabled() ) {
                 log.trace( "Timer Fire Now {}", leftTuple );
             }
+
             LeftTuple childLeftTuple = doPropagateChildLeftTuple( sink, trgLeftTuples, stagedLeftTuples, leftTuple, tm );
-            if (childLeftTuple.getStagedType() == LeftTuple.INSERT) {
+            if (childLeftTuple.getStagedType() != LeftTuple.NONE) {
                 // Flag the newly created childLeftTuple to avoid a reevaluation in case it gets
                 // rescheduled before the end of this doNode loop
                 childLeftTuple.setObject(Boolean.TRUE);
@@ -405,8 +401,7 @@ public class PhreakTimerNode {
 
             timerJobCtx.getTimerNodeMemory().setNodeDirtyWithoutNotify();
 
-            pmem.queueRuleAgendaItem( timerJobCtx.getWorkingMemory() );
-
+            pmem.queueRuleAgendaItem(timerJobCtx.getWorkingMemory());
             final TimedRuleExecutionFilter filter = timerJobCtx.getWorkingMemory().getSessionConfiguration().getTimedRuleExecutionFilter();
             if (filter != null) {
                 ExecutorHolder.executor.execute( new Runnable() {

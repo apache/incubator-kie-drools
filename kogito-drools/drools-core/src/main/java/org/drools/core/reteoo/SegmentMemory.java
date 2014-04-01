@@ -6,9 +6,9 @@ import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
+import org.drools.core.common.TupleEntryQueue;
 import org.drools.core.common.SynchronizedLeftTupleSets;
 import org.drools.core.phreak.SegmentUtilities;
-import org.drools.core.phreak.TupleEntry;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.util.AtomicBitwiseLong;
@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 
 import static org.drools.core.phreak.SegmentUtilities.getQuerySegmentMemory;
 
@@ -41,13 +40,13 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     private          boolean            active;
     private          SegmentMemory      previous;
     private          SegmentMemory      next;
-    private          Queue<TupleEntry>  queue;
+    private TupleEntryQueue queue;
 
     public SegmentMemory(NetworkNode rootNode) {
         this(rootNode, null);
     }
 
-    public SegmentMemory(NetworkNode rootNode, Queue<TupleEntry> queue) {
+    public SegmentMemory(NetworkNode rootNode, TupleEntryQueue queue) {
         this.rootNode = rootNode;
         this.linkedNodeMask = new AtomicBitwiseLong();
         this.dirtyNodeMask = new AtomicBitwiseLong();
@@ -57,11 +56,11 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         this.queue = queue;
     }
 
-    public Queue<TupleEntry> getTupleQueue() {
+    public TupleEntryQueue getTupleQueue() {
         return queue;
     }
 
-    public void setTupleQueue(Queue<TupleEntry> queue) {
+    public void setTupleQueue(TupleEntryQueue queue) {
         this.queue = queue;
     }
 
@@ -370,7 +369,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
             if ( hasQueue && smem.getTupleQueue() == null ) {
                 // need to make sure there is one Queue, for the rule, when a stream mode node is found.
-                Queue<TupleEntry> queue = SegmentUtilities.initAndGetTupleQueue(smem.getTipNode(), wm);
+                TupleEntryQueue queue = SegmentUtilities.initAndGetTupleQueue(smem.getTipNode(), wm);
                 smem.setTupleQueue( queue );
             }
 

@@ -931,6 +931,7 @@ public class DefaultAgenda
                     }   else {
                         item = (RuleAgendaItem) group.peek();
                     }
+
                     if (item != null) {
                         localFireCount = item.getRuleExecutor().evaluateNetworkAndFire(this.workingMemory, filter,
                                                                                        fireCount, fireLimit);

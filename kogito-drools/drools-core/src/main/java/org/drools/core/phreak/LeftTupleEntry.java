@@ -12,6 +12,8 @@ public class LeftTupleEntry implements TupleEntry {
     private final Memory             nodeMemory;
     private final int                propagationType;
 
+    private TupleEntry next;
+
     public LeftTupleEntry(LeftTuple lt, PropagationContext pctx, Memory nodeMemory, int propagationType) {
         this.lt = lt;
         this.pctx = pctx;
@@ -47,5 +49,13 @@ public class LeftTupleEntry implements TupleEntry {
                ", pctx=" + PhreakPropagationContext.intEnumToString(pctx) +
                ", nodeMemory=" + nodeMemory +
                '}';
+    }
+
+    public TupleEntry getNext() {
+        return next;
+    }
+
+    public void setNext(TupleEntry next) {
+        this.next = next;
     }
 }

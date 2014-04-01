@@ -130,8 +130,9 @@ public class JDKTimerService
 
     public boolean removeJob(JobHandle jobHandle) {
         jobHandle.setCancel(true);
-        jobFactoryManager.removeTimerJobInstance(((JDKJobHandle) jobHandle).getTimerJobInstance());
-        return this.scheduler.remove((Runnable) ((JDKJobHandle) jobHandle).getFuture());
+        JDKJobHandle jdkJobHandle = (JDKJobHandle) jobHandle;
+        jobFactoryManager.removeTimerJobInstance(jdkJobHandle.getTimerJobInstance());
+        return this.scheduler.remove((Runnable) jdkJobHandle.getFuture());
     }
 
     public static class JDKJobHandle extends DefaultJobHandle

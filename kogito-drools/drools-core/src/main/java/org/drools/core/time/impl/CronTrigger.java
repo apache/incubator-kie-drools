@@ -82,7 +82,7 @@ public class CronTrigger
         setTimeZone( TimeZone.getDefault() );
 
         // Set the first FireTime, this is sensitive to StartTime
-        this.nextFireTime = new Date( timestamp - 1000l );
+        this.nextFireTime = new Date( timestamp );
         setFirstFireTimeAfter();
 
         this.calendarNames = calendarNames;
@@ -293,7 +293,7 @@ public class CronTrigger
         return this.nextFireTime;
     }
 
-    public Date nextFireTime() {
+    public synchronized Date nextFireTime() {
         if ( this.nextFireTime == null ) {
             return null;
         }        

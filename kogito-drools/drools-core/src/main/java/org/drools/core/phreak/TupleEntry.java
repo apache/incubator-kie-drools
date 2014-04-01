@@ -17,4 +17,7 @@ public interface TupleEntry {
     Memory getNodeMemory();
 
     int getPropagationType();
+
+    TupleEntry getNext();
+    void setNext(TupleEntry next);
 }

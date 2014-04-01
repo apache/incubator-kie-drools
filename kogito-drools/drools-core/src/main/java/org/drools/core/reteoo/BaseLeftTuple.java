@@ -761,7 +761,9 @@ public class BaseLeftTuple
         stagedType = LeftTuple.NONE;
         stagedNext = null;
         stagedPrevious = null;
-        
+        if (object == Boolean.TRUE) {
+            object = null;
+        }
     }
 
     public LeftTuple getPeer() {
