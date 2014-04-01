@@ -79,8 +79,10 @@ import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.ConnectiveConstraint;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
+import org.drools.workbench.models.datamodel.rule.ExpressionCollection;
 import org.drools.workbench.models.datamodel.rule.ExpressionField;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
+import org.drools.workbench.models.datamodel.rule.ExpressionMethod;
 import org.drools.workbench.models.datamodel.rule.ExpressionPart;
 import org.drools.workbench.models.datamodel.rule.ExpressionUnboundFact;
 import org.drools.workbench.models.datamodel.rule.ExpressionVariable;
@@ -2910,8 +2912,8 @@ public class RuleModelDRLPersistenceImpl
                                                                                    dmo ),
                                                                 DataType.TYPE_THIS ) );
                 } else if ( isBoundParam ) {
-                    ModelField currentFact = findFact( dmo.getProjectModelFields(),
-                                                       factType );
+                    ModelField currentFact = findFact(dmo.getProjectModelFields(),
+                            factType);
                     expression.appendPart( new ExpressionVariable( expressionPart,
                                                                    getSimpleFactType( currentFact.getClassName(),
                                                                                       dmo ),
@@ -2919,35 +2921,57 @@ public class RuleModelDRLPersistenceImpl
                                                                                       dmo ) ) );
                     isBoundParam = false;
                 } else {
-                    ModelField currentField = findField( typeFields,
-                                                         expressionPart );
-                    expression.appendPart(new ExpressionField(expressionPart,
-                            getSimpleFactType(currentField.getClassName(),
-                                    dmo),
-                            getSimpleFactType(currentField.getType(),
-                                    dmo)));
-                    typeFields = findFields(dmo, m, currentField.getClassName());
+                    ModelField currentField = findField(typeFields,
+                            expressionPart);
 
+                    if ("Collection".equals(currentField.getType())) {
+                        expression.appendPart(
+                                new ExpressionCollection(
+                                        expressionPart,
+                                        getSimpleFactType(currentField.getClassName(),
+                                                dmo),
+                                        getSimpleFactType(currentField.getType(),
+                                                dmo),
+                                        dmo.getProjectFieldParametersType().get(factType + "#" + expressionPart)
+                                )
+                        );
+                    } else {
+                        expression.appendPart(
+                                new ExpressionField(
+                                        expressionPart,
+                                        getSimpleFactType(currentField.getClassName(),
+                                                dmo),
+                                        getSimpleFactType(currentField.getType(),
+                                                dmo)
+                                )
+                        );
+                    }
+
+                    typeFields = findFields(dmo, m, currentField.getClassName());
                 }
             }
             String expressionPart = normalizeExpressionPart( splits[ splits.length - 1 ] );
             ModelField currentField = findField( typeFields,
                                                  expressionPart );
-            if (currentField == null) {
-                expression.appendPart(new ExpressionField(
-                        expressionPart,
-                        getSimpleFactType(currentField.getClassName(),
-                                dmo),
-                        getSimpleFactType(currentField.getType(),
-                                dmo)));
-            } else {
 
-                expression.appendPart(new ExpressionField(expressionPart,
-                        getSimpleFactType(currentField.getClassName(),
-                                dmo),
-                        getSimpleFactType(currentField.getType(),
-                                dmo)));
+            if (fieldName.endsWith(")")) {
+                expression.appendPart(
+                        new ExpressionMethod(
+                                expressionPart,
+                                getSimpleFactType(currentField.getClassName(),
+                                        dmo),
+                                getSimpleFactType(currentField.getType(),
+                                        dmo)));
+            } else {
+                expression.appendPart(
+                        new ExpressionField(
+                                expressionPart,
+                                getSimpleFactType(currentField.getClassName(),
+                                        dmo),
+                                getSimpleFactType(currentField.getType(),
+                                        dmo)));
             }
+
             return expression;
         }
 
