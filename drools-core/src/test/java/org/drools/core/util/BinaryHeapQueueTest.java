@@ -184,7 +184,7 @@ public class BinaryHeapQueueTest {
         }
 
         public void remove(Item agendaItem) {
-            this.queue.dequeue( agendaItem.getQueueIndex() );
+            this.queue.dequeue( agendaItem );
         }
 
         public Activation[] getQueue() {

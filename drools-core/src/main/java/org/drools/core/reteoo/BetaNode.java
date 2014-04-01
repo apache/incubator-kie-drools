@@ -293,20 +293,19 @@ public abstract class BetaNode extends LeftTupleSource
 
         boolean stagedInsertWasEmpty = false;
         if ( streamMode ) {
-            stagedInsertWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
             int propagationType = pctx.getType() == PropagationContext.MODIFICATION ? PropagationContext.INSERTION : pctx.getType();
-            memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, pctx, memory, propagationType));
+            stagedInsertWasEmpty = memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, pctx, memory, propagationType));
             if ( log.isTraceEnabled() ) {
                 log.trace( "JoinNode insert queue={} size={} pctx={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), PhreakPropagationContext.intEnumToString(pctx), rightTuple );
             }
         }  else {
-            stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert( rightTuple );
+            stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert(rightTuple);
         }
         if ( log.isTraceEnabled() ) {
             log.trace("BetaNode insert={} stagedInsertWasEmpty={}",  memory.getStagedRightTuples().insertSize(), stagedInsertWasEmpty );
         }
         if ( memory.getAndIncCounter() == 0 ) {
-            memory.linkNode( wm );
+            memory.linkNode(wm);
         } else if ( stagedInsertWasEmpty ) {
             memory.setNodeDirty( wm );
         }

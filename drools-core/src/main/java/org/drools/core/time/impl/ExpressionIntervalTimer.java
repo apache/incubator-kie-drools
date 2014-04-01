@@ -140,15 +140,24 @@ public class ExpressionIntervalTimer  extends BaseTimer
         Declaration[] startDeclarations = declrs[2];
         Declaration[] endDeclarations = declrs[3];
 
+        Date lastFireTime = null;
+        Date createdTime = null;
+        long newDelay = 0;
+
         if ( jh != null ) {
             IntervalTrigger preTrig = (IntervalTrigger) jh.getTimerJobInstance().getTrigger();
-            if (preTrig.getLastFireTime() != null) {
-                timeSinceLastFire = timestamp - preTrig.getLastFireTime().getTime();
+            lastFireTime = preTrig.getLastFireTime();
+            createdTime = preTrig.getCreatedTime();
+            if (lastFireTime != null) {
+                // it is already fired calculate the new delay using the period instead of the delay
+                newDelay = evalTimeExpression(this.period, leftTuple, delayDeclarations, wm) - timestamp + lastFireTime.getTime();
+            } else {
+                newDelay = evalTimeExpression(this.delay, leftTuple, delayDeclarations, wm) - timestamp + createdTime.getTime();
             }
+        } else {
+            newDelay = evalTimeExpression(this.delay, leftTuple, delayDeclarations, wm);
         }
 
-
-        long newDelay = (delay != null ? evalTimeExpression(this.delay, leftTuple, delayDeclarations, wm) : 0) - timeSinceLastFire;
         if (newDelay < 0) {
             newDelay = 0;
         }
@@ -160,7 +169,9 @@ public class ExpressionIntervalTimer  extends BaseTimer
                                    newDelay,
                                    period != null ? evalTimeExpression(this.period, leftTuple, periodDeclarations, wm) : 0,
                                    calendarNames,
-                                   calendars);
+                                   calendars,
+                                   createdTime,
+                                   lastFireTime);
     }
 
     public Trigger createTrigger(long timestamp,

@@ -36,10 +36,10 @@ import org.drools.core.spi.PropagationContext;
 public class BaseQueueable
         implements
         Activation {
-    private Queue queue;
+    private BinaryHeapQueue queue;
     private int   index;
     
-    public BaseQueueable(Queue queue) {
+    public BaseQueueable(BinaryHeapQueue queue) {
         this.queue = queue;
     }
 
