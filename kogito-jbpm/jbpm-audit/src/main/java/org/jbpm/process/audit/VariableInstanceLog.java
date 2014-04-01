@@ -35,6 +35,7 @@ import org.jbpm.process.audit.event.AuditEvent;
 public class VariableInstanceLog implements Serializable, AuditEvent {
     
 	private static final long serialVersionUID = 510l;
+	private final int VARIABLE_LOG_LENGTH = Integer.parseInt(System.getProperty("org.jbpm.var.log.length", "255"));
 	
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="variableInstanceLogIdSeq")
@@ -113,8 +114,8 @@ public class VariableInstanceLog implements Serializable, AuditEvent {
 	}
 
 	public void setValue(String value) {
-		if (value != null && value.length() > 255) {
-			value = value.substring(0, 255);
+		if (value != null && value.length() > VARIABLE_LOG_LENGTH) {
+			value = value.substring(0, VARIABLE_LOG_LENGTH);
 		}
 		this.value = value;
 	}
@@ -124,8 +125,8 @@ public class VariableInstanceLog implements Serializable, AuditEvent {
     }
 
     public void setOldValue(String oldValue) {
-        if (oldValue != null && oldValue.length() > 255) {
-            oldValue = oldValue.substring(0, 255);
+        if (oldValue != null && oldValue.length() > VARIABLE_LOG_LENGTH) {
+            oldValue = oldValue.substring(0, VARIABLE_LOG_LENGTH);
         }
         this.oldValue = oldValue;
     }
