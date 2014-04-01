@@ -66,6 +66,56 @@ public class RestWorkItemHandlerTest {
     }
     
     @Test
+    public void testGETOperationWithCustomTimeout() {
+        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter( "Url", serverURL);
+        workItem.setParameter( "Method", "GET" );
+        workItem.setParameter( "ConnectTimeout", "30000" );
+        workItem.setParameter( "ReadTimeout", "25000" );
+        
+        
+        WorkItemManager manager = new TestWorkItemManager(workItem);
+        handler.executeWorkItem(workItem, manager);
+        
+        String result = (String) workItem.getResult("Result");
+        assertNotNull("result cannot be null", result);
+        assertEquals("Hello from REST", result);
+        int responseCode = (Integer) workItem.getResult("Status");
+        assertNotNull(responseCode);
+        assertEquals(200, responseCode);
+        String responseMsg = (String) workItem.getResult("StatusMsg");
+        assertNotNull(responseMsg);
+        assertEquals("request to endpoint " + workItem.getParameter("Url") +" successfully completed OK", responseMsg);
+    }
+    
+    @Test
+    public void testGETOperationWithInvalidTimeout() {
+        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter( "Url", serverURL);
+        workItem.setParameter( "Method", "GET" );
+        workItem.setParameter( "ConnectTimeout", "" );
+        workItem.setParameter( "ReadTimeout", "" );
+        
+        
+        WorkItemManager manager = new TestWorkItemManager(workItem);
+        handler.executeWorkItem(workItem, manager);
+        
+        String result = (String) workItem.getResult("Result");
+        assertNotNull("result cannot be null", result);
+        assertEquals("Hello from REST", result);
+        int responseCode = (Integer) workItem.getResult("Status");
+        assertNotNull(responseCode);
+        assertEquals(200, responseCode);
+        String responseMsg = (String) workItem.getResult("StatusMsg");
+        assertNotNull(responseMsg);
+        assertEquals("request to endpoint " + workItem.getParameter("Url") +" successfully completed OK", responseMsg);
+    }
+    
+    @Test
     public void testGETOperationWithQueryParam() {
         RESTWorkItemHandler handler = new RESTWorkItemHandler();
         

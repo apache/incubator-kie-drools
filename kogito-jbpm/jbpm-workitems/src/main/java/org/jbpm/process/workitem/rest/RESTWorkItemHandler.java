@@ -115,9 +115,9 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         Map<String,Object> params = workItem.getParameters();
 
         // optional timeout config parameters, defaulted to 60 seconds
-        Integer connectTimeout = (Integer) params.get("ConnectTimeout");
+        Integer connectTimeout = getParamAsInt(params.get("ConnectTimeout"));
         if (connectTimeout==null) connectTimeout = 60000;
-        Integer readTimeout = (Integer) params.get("ReadTimeout");
+        Integer readTimeout = getParamAsInt(params.get("ReadTimeout"));
         if (readTimeout==null) readTimeout = 60000;
 
         HttpClient httpclient = new HttpClient();
@@ -161,6 +161,19 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
     		theMethod.releaseConnection();
     	}
     }
+	
+	protected Integer getParamAsInt(Object param) {
+		if (param == null) {
+			return null;
+		}
+		if (param instanceof String && !((String) param).isEmpty()) {
+			return Integer.parseInt((String) param);
+		} if (param instanceof Number) {
+			return ((Number) param).intValue();
+		}
+		
+		return null;
+	}
     
 	protected void setBody(HttpMethod theMethod, Map<String, Object> params) {
         if (params.containsKey("Content")) {
