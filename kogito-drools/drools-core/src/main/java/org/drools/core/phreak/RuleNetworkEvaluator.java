@@ -354,7 +354,7 @@ public class RuleNetworkEvaluator {
                         break;
                     }
                     case NodeTypeEnums.TimerConditionNode: {
-                        pTimerNode.doNode( (TimerNode) node, (TimerNodeMemory) nodeMem, pmem, sink, wm, srcTuples, trgTuples, stagedLeftTuples);
+                        pTimerNode.doNode( (TimerNode) node, (TimerNodeMemory) nodeMem, pmem, smem, sink, wm, srcTuples, trgTuples, stagedLeftTuples);
                         break;
                     }
                     case NodeTypeEnums.ConditionalBranchNode: {

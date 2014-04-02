@@ -3,6 +3,7 @@ package org.drools.core.phreak;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
@@ -51,6 +52,7 @@ public class PhreakTimerNode {
     public void doNode(TimerNode timerNode,
                        TimerNodeMemory tm,
                        PathMemory pmem,
+                       SegmentMemory smem,
                        LeftTupleSink sink,
                        InternalWorkingMemory wm,
                        LeftTupleSets srcLeftTuples,
@@ -62,11 +64,11 @@ public class PhreakTimerNode {
         }
 
         if ( srcLeftTuples.getUpdateFirst() != null ) {
-            doLeftUpdates( timerNode, tm, pmem, sink, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples );
+            doLeftUpdates( timerNode, tm, pmem, smem, sink, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples );
         }
 
         if ( srcLeftTuples.getInsertFirst() != null ) {
-            doLeftInserts( timerNode, tm, pmem, sink, wm, srcLeftTuples, trgLeftTuples );
+            doLeftInserts( timerNode, tm, pmem, smem, sink, wm, srcLeftTuples, trgLeftTuples );
         }
 
         doPropagateChildLeftTuples( timerNode, tm, sink, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples );
@@ -77,6 +79,7 @@ public class PhreakTimerNode {
     public void doLeftInserts(TimerNode timerNode,
                               TimerNodeMemory tm,
                               PathMemory pmem,
+                              SegmentMemory smem,
                               LeftTupleSink sink,
                               InternalWorkingMemory wm,
                               LeftTupleSets srcLeftTuples,
@@ -90,7 +93,7 @@ public class PhreakTimerNode {
         for ( LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            scheduleLeftTuple( timerNode, tm, pmem, sink, wm, timer, timerService, timestamp, calendarNames, calendars, leftTuple, trgLeftTuples, null );
+            scheduleLeftTuple( timerNode, tm, pmem, smem, sink, wm, timer, timerService, timestamp, calendarNames, calendars, leftTuple, trgLeftTuples, null );
 
             leftTuple.clearStaged();
             leftTuple = next;
@@ -100,6 +103,7 @@ public class PhreakTimerNode {
     public void doLeftUpdates(TimerNode timerNode,
                               TimerNodeMemory tm,
                               PathMemory pmem,
+                              SegmentMemory smem,
                               LeftTupleSink sink,
                               InternalWorkingMemory wm,
                               LeftTupleSets srcLeftTuples,
@@ -126,7 +130,7 @@ public class PhreakTimerNode {
                     timerService.removeJob(jobHandle);
                 }
             }
-            scheduleLeftTuple( timerNode, tm, pmem, sink, wm, timer, timerService, timestamp, calendarNames, calendars, leftTuple, trgLeftTuples, stagedLeftTuples );
+            scheduleLeftTuple( timerNode, tm, pmem, smem, sink, wm, timer, timerService, timestamp, calendarNames, calendars, leftTuple, trgLeftTuples, stagedLeftTuples );
 
             leftTuple.clearStaged();
             leftTuple = next;
@@ -214,6 +218,7 @@ public class PhreakTimerNode {
     private void scheduleLeftTuple(final TimerNode timerNode,
                                    final TimerNodeMemory tm,
                                    final PathMemory pmem,
+                                   final SegmentMemory smem,
                                    final LeftTupleSink sink,
                                    final InternalWorkingMemory wm,
                                    final Timer timer,
@@ -228,13 +233,13 @@ public class PhreakTimerNode {
             final Trigger trigger = createTrigger( timerNode, wm, timer, timestamp, calendarNames, calendars, leftTuple );
 
             // regular propagation
-            scheduleTimer( timerNode, tm, pmem, sink, wm, timerService, timestamp, leftTuple, trgLeftTuples, stagedLeftTuples, trigger );
+            scheduleTimer( timerNode, tm, pmem, smem, sink, wm, timerService, timestamp, leftTuple, trgLeftTuples, stagedLeftTuples, trigger );
         } else {
             // de-serializing, so we need to correlate timers before scheduling them
             Scheduler scheduler = new Scheduler() {
                 @Override
                 public void schedule( Trigger t ) {
-                    scheduleTimer( timerNode, tm, pmem, sink, wm, timerService, timestamp, leftTuple, trgLeftTuples, stagedLeftTuples, t );
+                    scheduleTimer( timerNode, tm, pmem, smem, sink, wm, timerService, timestamp, leftTuple, trgLeftTuples, stagedLeftTuples, t );
                 }
                 @Override
                 public Trigger getTrigger() {
@@ -267,6 +272,7 @@ public class PhreakTimerNode {
     private void scheduleTimer(TimerNode timerNode,
                                TimerNodeMemory tm,
                                PathMemory pmem,
+                               SegmentMemory smem,
                                LeftTupleSink sink,
                                InternalWorkingMemory wm,
                                TimerService timerService,
@@ -303,7 +309,7 @@ public class PhreakTimerNode {
         if ( trigger.hasNextFireTime() != null ) {
             // can be null, if the system timestamp has surpassed when this was suppose to fire
             TimerNodeJob job = new TimerNodeJob();
-            TimerNodeJobContext jobCtx = new TimerNodeJobContext( timerNode.getId(), trigger, leftTuple, tm, sink, pmem, wm );
+            TimerNodeJobContext jobCtx = new TimerNodeJobContext( timerNode.getId(), trigger, leftTuple, tm, sink, smem.getPathMemories(), wm );
 
             DefaultJobHandle jobHandle = (DefaultJobHandle) timerService.scheduleJob( job, jobCtx, trigger );
             leftTuple.setObject( jobHandle );
@@ -380,9 +386,6 @@ public class PhreakTimerNode {
             final TimerNodeJobContext timerJobCtx = (TimerNodeJobContext) ctx;
             Trigger trigger = timerJobCtx.getTrigger();
 
-            final PathMemory pmem = timerJobCtx.getPathMemory();
-            pmem.doLinkRule( timerJobCtx.getWorkingMemory() );
-
             LeftTupleList leftTuples = timerJobCtx.getTimerNodeMemory().getInsertOrUpdateLeftTuples();
             LeftTuple lt = timerJobCtx.getLeftTuple();
 
@@ -404,20 +407,24 @@ public class PhreakTimerNode {
 
             timerJobCtx.getTimerNodeMemory().setNodeDirtyWithoutNotify();
 
-            pmem.queueRuleAgendaItem(timerJobCtx.getWorkingMemory());
-            final TimedRuleExecutionFilter filter = timerJobCtx.getWorkingMemory().getSessionConfiguration().getTimedRuleExecutionFilter();
-            if (filter != null) {
-                ExecutorHolder.executor.execute( new Runnable() {
-                    @Override
-                    public void run() {
-                        if (filter.accept(  new Rule[] { pmem.getRule() } )) {
-                            new Executor(pmem,
-                                         timerJobCtx.getWorkingMemory(),
-                                         timerJobCtx.getSink(),
-                                         timerJobCtx.getTimerNodeMemory()).evauateAndFireRule();
+            for (final PathMemory pmem : timerJobCtx.getPathMemories()) {
+                pmem.doLinkRule( timerJobCtx.getWorkingMemory() );
+
+                pmem.queueRuleAgendaItem(timerJobCtx.getWorkingMemory());
+                final TimedRuleExecutionFilter filter = timerJobCtx.getWorkingMemory().getSessionConfiguration().getTimedRuleExecutionFilter();
+                if (filter != null) {
+                    ExecutorHolder.executor.execute( new Runnable() {
+                        @Override
+                        public void run() {
+                            if (filter.accept(  new Rule[] { pmem.getRule() } )) {
+                                new Executor(pmem,
+                                             timerJobCtx.getWorkingMemory(),
+                                             timerJobCtx.getSink(),
+                                             timerJobCtx.getTimerNodeMemory()).evauateAndFireRule();
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         }
     }
@@ -480,29 +487,29 @@ public class PhreakTimerNode {
     public static class TimerNodeJobContext
             implements
             JobContext {
-        private JobHandle             jobHandle;
-        private Trigger               trigger;
+        private       JobHandle             jobHandle;
+        private final Trigger               trigger;
 
-        private LeftTuple             leftTuple;
-        private int                   timerNodeId;
-        private TimerNodeMemory       tm;
+        private final LeftTuple             leftTuple;
+        private final int                   timerNodeId;
+        private final TimerNodeMemory       tm;
 
-        private LeftTupleSink         sink;
-        private PathMemory            pmem;
-        private InternalWorkingMemory wm;
+        private final LeftTupleSink         sink;
+        private final List<PathMemory>      pmems;
+        private final InternalWorkingMemory wm;
 
         public TimerNodeJobContext(int timerNodeId,
                                    Trigger trigger,
                                    LeftTuple leftTuple,
                                    TimerNodeMemory tm,
                                    LeftTupleSink sink,
-                                   PathMemory pmem,
+                                   List<PathMemory> pmems,
                                    InternalWorkingMemory wm) {
             this.timerNodeId = timerNodeId;
             this.trigger = trigger;
             this.leftTuple = leftTuple;
             this.sink = sink;
-            this.pmem = pmem;
+            this.pmems = pmems;
             this.tm = tm;
             this.wm = wm;
         }
@@ -527,8 +534,8 @@ public class PhreakTimerNode {
             return tm;
         }
 
-        public PathMemory getPathMemory() {
-            return pmem;
+        public List<PathMemory> getPathMemories() {
+            return pmems;
         }
 
         public InternalWorkingMemory getWorkingMemory() {
