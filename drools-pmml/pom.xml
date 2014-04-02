@@ -99,13 +99,6 @@
         </configuration>
       </plugin>
 
-      <plugin>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-maven-plugin</artifactId>
-        <version>${drools.version}</version>
-        <extensions>true</extensions>
-      </plugin>
-
     </plugins>
 
   </build>
