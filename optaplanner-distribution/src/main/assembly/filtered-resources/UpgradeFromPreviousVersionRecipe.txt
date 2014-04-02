@@ -4046,3 +4046,7 @@ After in *.java:
         solver.solve(planningProblem);
 Note: you still need to use solver.getBestSolution() to retrieve the best solution.
 That is intentional due to real-time planning and to support pareto optimization in the future.
+
+
+From 6.1.0.Beta2 to 6.1.0.Beta3
+-------------------------------
