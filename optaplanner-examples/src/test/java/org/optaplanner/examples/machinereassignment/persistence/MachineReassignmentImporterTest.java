@@ -18,6 +18,7 @@ package org.optaplanner.examples.machinereassignment.persistence;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.junit.Ignore;
 import org.junit.runners.Parameterized;
@@ -33,7 +34,15 @@ public class MachineReassignmentImporterTest extends SolutionImporterTest {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getInputFilesAsParameters() {
-        return getInputFilesAsParameters(new MachineReassignmentImporter());
+        Collection<Object[]> inputFilesAsParameters = getInputFilesAsParameters(new MachineReassignmentImporter());
+        for (Iterator<Object[]> it = inputFilesAsParameters.iterator(); it.hasNext(); ) {
+            Object[] inputFilesAsParameter = it.next();
+            // The dataset B10 requires more than 1GB heap space on JDK 6 to load (not on JDK 7)
+            if (((File) inputFilesAsParameter[0]).getName().equals("model_b_10.txt")) {
+                it.remove();
+            }
+        }
+        return inputFilesAsParameters;
     }
 
     public MachineReassignmentImporterTest(File solutionFile) {
