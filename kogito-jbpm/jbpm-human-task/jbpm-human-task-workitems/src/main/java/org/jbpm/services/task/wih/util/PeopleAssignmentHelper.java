@@ -36,13 +36,13 @@ import org.kie.internal.task.api.model.InternalTaskData;
  * A class responsible for assigning the various ownerships (actors, groups, business 
  * administrators, and task stakeholders) from a <code>WorkItem</code> to a <code>Task</code>. 
  * This class consolidates common code for reuse across multiple <code>WorkItemHandler</code>s.
- *
  */
 public class PeopleAssignmentHelper {
 
 	public static final String ACTOR_ID = "ActorId";
 	public static final String GROUP_ID = "GroupId";
 	public static final String BUSINESSADMINISTRATOR_ID = "BusinessAdministratorId";
+    public static final String BUSINESSADMINISTRATOR_GROUP_ID = "BusinessAdministratorGroupId";
 	public static final String TASKSTAKEHOLDER_ID = "TaskStakeholderId";
     public static final String EXCLUDED_OWNER_ID = "ExcludedOwnerId";
     public static final String RECIPIENT_ID = "RecipientId";
@@ -99,8 +99,9 @@ public class PeopleAssignmentHelper {
 	}
 
 	protected void assignBusinessAdministrators(WorkItem workItem, PeopleAssignments peopleAssignments) {
-		
+        String businessAdminGroupIds = (String) workItem.getParameter(BUSINESSADMINISTRATOR_GROUP_ID);
 		String businessAdministratorIds = (String) workItem.getParameter(BUSINESSADMINISTRATOR_ID);
+		
         List<OrganizationalEntity> businessAdministrators = peopleAssignments.getBusinessAdministrators();
         if (!hasAdminAssigned(businessAdministrators)) {
             User administrator = TaskModelProvider.getFactory().newUser();
@@ -110,8 +111,9 @@ public class PeopleAssignmentHelper {
         	((InternalOrganizationalEntity) adminGroup).setId("Administrators");        
             businessAdministrators.add(adminGroup);
         }
-        processPeopleAssignments(businessAdministratorIds, businessAdministrators, true);
         
+        processPeopleAssignments(businessAdministratorIds, businessAdministrators, true);
+        processPeopleAssignments(businessAdminGroupIds, businessAdministrators, false);
 	}
 	
 	protected void assignTaskStakeholders(WorkItem workItem, InternalPeopleAssignments peopleAssignments) {

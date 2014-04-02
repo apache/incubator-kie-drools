@@ -241,6 +241,32 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
         assertTrue(organizationalEntity3 instanceof User);              
         assertEquals(businessAdministratorId, organizationalEntity3.getId());
 	}
+
+    @Test
+    public void testAssignBusinessAdministratorGroups() {
+    
+        String businessAdministratorGroupId = "Super users";
+        
+        Task task = TaskModelProvider.getFactory().newTask();
+        PeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
+        
+        WorkItem workItem = new WorkItemImpl();     
+        workItem.setParameter(PeopleAssignmentHelper.BUSINESSADMINISTRATOR_GROUP_ID, businessAdministratorGroupId);
+
+        peopleAssignmentHelper.assignBusinessAdministrators(workItem, peopleAssignments);
+        assertEquals(3, peopleAssignments.getBusinessAdministrators().size());
+        OrganizationalEntity organizationalEntity1 = peopleAssignments.getBusinessAdministrators().get(0);
+        assertTrue(organizationalEntity1 instanceof User);
+        assertEquals("Administrator", organizationalEntity1.getId());
+
+        OrganizationalEntity organizationalEntity2 = peopleAssignments.getBusinessAdministrators().get(1);        
+        assertTrue(organizationalEntity2 instanceof Group);              
+        assertEquals("Administrators", organizationalEntity2.getId());
+
+        OrganizationalEntity organizationalEntity3 = peopleAssignments.getBusinessAdministrators().get(2);      
+        assertTrue(organizationalEntity3 instanceof Group);              
+        assertEquals(businessAdministratorGroupId, organizationalEntity3.getId());
+    }
 	
 	@Test
 	public void testAssignTaskstakeholders() {
@@ -318,6 +344,7 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 		String actorId = "espiegelberg";
 		String taskStakeholderId = "drmary";
 		String businessAdministratorId = "drbug";
+        String businessAdministratorGroupId = "Super users";
         String excludedOwnerId = "john";
         String recipientId = "mary";
 		
@@ -325,6 +352,7 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 		workItem.setParameter(PeopleAssignmentHelper.ACTOR_ID, actorId);
 		workItem.setParameter(PeopleAssignmentHelper.TASKSTAKEHOLDER_ID, taskStakeholderId);
 		workItem.setParameter(PeopleAssignmentHelper.BUSINESSADMINISTRATOR_ID, businessAdministratorId);
+        workItem.setParameter(PeopleAssignmentHelper.BUSINESSADMINISTRATOR_GROUP_ID, businessAdministratorGroupId);
         workItem.setParameter(PeopleAssignmentHelper.EXCLUDED_OWNER_ID, excludedOwnerId);
         workItem.setParameter(PeopleAssignmentHelper.RECIPIENT_ID, recipientId);
 		
@@ -335,11 +363,12 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 		assertEquals(actorId, potentialOwners.get(0).getId());
 		
 		List<OrganizationalEntity> businessAdministrators = task.getPeopleAssignments().getBusinessAdministrators();
-		assertEquals(3, businessAdministrators.size());
+		assertEquals(4, businessAdministrators.size());
 		assertEquals("Administrator", businessAdministrators.get(0).getId());
 		// Admin group
 		assertEquals("Administrators", businessAdministrators.get(1).getId());
 		assertEquals(businessAdministratorId, businessAdministrators.get(2).getId());
+        assertEquals(businessAdministratorGroupId, businessAdministrators.get(3).getId());
 		
 		
 		List<OrganizationalEntity> taskStakehoders = ((InternalPeopleAssignments) task.getPeopleAssignments()).getTaskStakeholders();
@@ -370,6 +399,7 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
         String actorId = "espiegelberg,john";
         String taskStakeholderId = "drmary,krisv";
         String businessAdministratorId = "drbug,peter";
+        String businessAdministratorGroupId = "Super users,Flow administrators";
         String excludedOwnerId = "john,poul";
         String recipientId = "mary,steve";
 
@@ -377,6 +407,7 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
         workItem.setParameter(PeopleAssignmentHelper.ACTOR_ID, actorId);
         workItem.setParameter(PeopleAssignmentHelper.TASKSTAKEHOLDER_ID, taskStakeholderId);
         workItem.setParameter(PeopleAssignmentHelper.BUSINESSADMINISTRATOR_ID, businessAdministratorId);
+        workItem.setParameter(PeopleAssignmentHelper.BUSINESSADMINISTRATOR_GROUP_ID, businessAdministratorGroupId);
         workItem.setParameter(PeopleAssignmentHelper.EXCLUDED_OWNER_ID, excludedOwnerId);
         workItem.setParameter(PeopleAssignmentHelper.RECIPIENT_ID, recipientId);
 
@@ -388,12 +419,14 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
         assertEquals("john", potentialOwners.get(1).getId());
 
         List<OrganizationalEntity> businessAdministrators = task.getPeopleAssignments().getBusinessAdministrators();
-        assertEquals(4, businessAdministrators.size());
+        assertEquals(6, businessAdministrators.size());
         assertEquals("Administrator", businessAdministrators.get(0).getId());
         //Admin group
         assertEquals("Administrators", businessAdministrators.get(1).getId());
         assertEquals("drbug", businessAdministrators.get(2).getId());
         assertEquals("peter", businessAdministrators.get(3).getId());
+        assertEquals("Super users", businessAdministrators.get(4).getId());
+        assertEquals("Flow administrators", businessAdministrators.get(5).getId());
         
         
         List<OrganizationalEntity> taskStakehoders = ((InternalPeopleAssignments) task.getPeopleAssignments()).getTaskStakeholders();

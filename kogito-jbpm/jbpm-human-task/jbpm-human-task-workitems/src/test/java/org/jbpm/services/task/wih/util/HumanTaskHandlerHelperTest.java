@@ -149,7 +149,7 @@ public class HumanTaskHandlerHelperTest extends AbstractBaseTest {
 		
 	}
 	
-	@Test
+	@Test //JBPM-4291
 	public void testSetDeadlinesNotCompletedReassignWithGroups() {
 		
 		WorkItem workItem = new WorkItemImpl();
