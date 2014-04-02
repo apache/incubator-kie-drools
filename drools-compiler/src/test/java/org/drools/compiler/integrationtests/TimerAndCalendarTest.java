@@ -1781,4 +1781,45 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         ksession.destroy();
     }
 
+    @Test
+    public void testSharedTimers() throws Exception {
+        // DROOLS-451
+        String str = "package org.simple \n" +
+                     "global java.util.List list \n" +
+                     "rule R1\n" +
+                     "  timer (int:30s 10s) " +
+                     "when \n" +
+                     "  $i: Integer()\n" +
+                     "then \n" +
+                     "  System.out.println(\"1\");\n" +
+                     "  list.add(\"1\"); \n" +
+                     "end  \n" +
+                     "rule R2\n" +
+                     "  timer (int:30s 10s) " +
+                     "when \n" +
+                     "  $i: Integer()\n" +
+                     "then \n" +
+                     "  System.out.println(\"2\");\n" +
+                     "  list.add(\"2\"); \n" +
+                     "end  \n";
+
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption(ClockTypeOption.get("pseudo"));
+        conf.setOption(TimedRuleExectionOption.YES);
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = createKnowledgeSession(kbase, conf);
+
+        List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        SessionClock clock = ksession.getSessionClock();
+        SessionPseudoClock pseudoClock = (SessionPseudoClock) clock;
+
+        ksession.insert(1);
+        ksession.fireAllRules();
+        pseudoClock.advanceTime(35, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+        assertEquals(2, list.size());
+    }
 }
