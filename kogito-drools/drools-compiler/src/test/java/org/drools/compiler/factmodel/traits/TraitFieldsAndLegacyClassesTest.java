@@ -69,7 +69,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   map.put( \"parent\", ParentTrait.class );\n"+
                      "   insert(p);\n"+
                      "   insert(map);\n"+
-                     "   System.out.println(\"Initialized : \"+p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -80,8 +79,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   $map : HashMap([parent] != null)\n"+
                      "then\n" +
                      "   Object p = don ( $p , (Class) $map.get(\"parent\") );\n"+
-                     "   System.out.println(\"donned : \"+p);\n" +
-                     "   System.out.println(\">>>>>>\"+$map.get(\"parent\"));\n" +
                      "   list.add(\"correct\");\n"+
                      "end\n"+
                      "\n"+
@@ -146,7 +143,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   Child c = new Child();\n"+
                      "   Parent p = new Parent(\"parent\",c);\n"+
                      "   insert(c);insert(p);\n"+
-                     "   System.out.println(\"Initialized : \"+p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -156,7 +152,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "    $p : Parent( name == \"parent\" )\n" +
                      "then\n" +
                      "   ParentTrait p = don ( $p , ParentTrait.class );\n"+
-                     "   System.out.println(\"donned : \"+p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -165,7 +160,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "    $c : Child( gender == \"male\" )\n" +
                      "then\n" +
                      "   ChildTrait c = don ( $c , ChildTrait.class );\n"+
-                     "   System.out.println(\"donned : \"+c);\n" +
                      "end\n"+
                      "\n"+
 
@@ -174,7 +168,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "    $p : ParentTrait( $c : child isA ChildTrait.class )\n" +
                      "then\n" +
                      "   //shed ( $p , ParentTrait.class );\n"+
-                     "   System.out.println(\"ParentTrait( child isA ChildTrait.class ) \"+$c);\n" +
                      "   list.add(\"correct\");\n"+
                      "end\n"+
                      "\n"+
@@ -235,7 +228,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   Child c = new Child();\n"+
                      "   Parent p = new Parent(\"parent\", null);\n"+    //<<<<<
                      "   insert(c);insert(p);\n"+
-                     "   System.out.println(\"Initialized : \"+p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -244,7 +236,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   $p : Parent( name == \"parent\" )\n" +
                      "then\n" +
                      "   ParentTrait p = don ( $p , ParentTrait.class );\n"+
-                     "   System.out.println(\"donned : \"+p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -253,7 +244,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   $c : Child( gender == \"male\" )\n" +
                      "then\n" +
                      "   ChildTrait c = don ( $c , ChildTrait.class );\n"+
-                     "   System.out.println(\"donned : \"+c);\n" +
                      "end\n"+
                      "\n"+
 
@@ -268,7 +258,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   modify ( $p ) { \n" +
                      "       setChild($c);\n"+
                      "   }\n"+
-                     "   System.out.println(\"child assigned to the parent : \"+$p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -277,7 +266,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "    $p : ParentTrait( child isA ChildTrait.class )\n" +
                      "then\n" +
                      "   //shed ( $p , ParentTrait.class );\n"+
-                     "   System.out.println(\"::ParentTrait( child isA ChildTrait.class ) \");\n" +
                      "   list.add(\"correct\");\n"+
                      "end\n"+
                      "\n"+
@@ -338,7 +326,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   Child c = new Child();\n"+
                      "   Parent p = new Parent(\"parent\", null);\n"+
                      "   insert(c);insert(p);\n"+
-                     "   System.out.println(\"Initialized : \"+p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -347,7 +334,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   $p : Parent( name == \"parent\" )\n" +
                      "then\n" +
                      "   ParentTrait p = don ( $p , ParentTrait.class );\n"+
-                     "   System.out.println(\"donned : \"+p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -356,7 +342,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   $c : Child( gender == \"male\" )\n" +
                      "then\n" +
                      "   ChildTrait c = don ( $c , ChildTrait.class );\n"+
-                     "   System.out.println(\"donned : \"+c);\n" +
                      "end\n"+
                      "\n"+
 
@@ -369,7 +354,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "then\n" +
                      "   $p.setChild((Child)$c.getCore());\n"+     //<<<<<
                      "   update($p);\n"+
-                     "   System.out.println(\"child assigned to the parent : \"+$p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -378,7 +362,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "    $p : ParentTrait( child isA ChildTrait.class )\n" +
                      "then\n" +
                      "   //shed ( $p , ParentTrait.class );\n"+
-                     "   System.out.println(\"::ParentTrait( child isA ChildTrait.class ) \");\n" +
                      "   list.add(\"correct\");\n"+
                      "end\n"+
                      "\n"+
@@ -437,7 +420,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   Child c = new Child();\n"+
                      "   Parent p = new Parent(\"parent\", c);\n"+   //<<<<<
                      "   insert(c);insert(p);\n"+
-                     "   System.out.println(\"Initialized : \"+p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -450,7 +432,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      // this modify is necessary to tell the engine that the Parent's Child has gained a type
                      // if enabled, "logical" mode traits render this unnecessary
                      "   modify ( $p ) {}; \n"+
-                     "   System.out.println(\"donned : \"+c);\n" +
                      "end\n"+
                      "\n"+
 
@@ -458,7 +439,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "when\n" +
                      "    $p : Parent( child isA ChildTrait.class ) \n" +    //<<<<<
                      "then\n" +
-                     "   System.out.println(\"::Parent( child isA ChildTrait.class ) \");\n" +
                      "   list.add(\"correct\");\n"+
                      "end\n"+
                      "\n"+
@@ -525,7 +505,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   Child c = new Child();\n"+
                      "   Parent p = new Parent(\"parent\", c);\n"+
                      "   insert(c);insert(p);\n"+
-                     "   System.out.println(\"Initialized : \"+p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -535,7 +514,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   $p : Parent( name == \"parent\" )\n" +
                      "then\n" +
                      "   ParentTrait p = don ( $p , ParentTrait.class );\n"+
-                     "   System.out.println(\"donned : \"+p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -545,7 +523,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "when\n" +
                      "    $p : ParentTrait( $c : child isA ChildTrait.class ) \n" +     //<<<<<
                      "then\n" +
-                     "   System.out.println(\"::ParentTrait( child isA ChildTrait.class ) \"+$c);\n" +
                      "   list.add(\"correct\");\n"+
                      "end\n"+
                      "\n"+
@@ -611,7 +588,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   Child c = new Child();\n"+
                      "   Parent p = new Parent(\"parent\", c);\n"+
                      "   insert(c);insert(p);\n"+
-                     "   System.out.println(\"Initialized : \"+p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -621,8 +597,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   $p : Parent( name == \"parent\" )\n" +
                      "then\n" +
                      "   ParentTrait p = don ( $p , ParentTrait.class );\n"+
-                     "   System.out.println(\"donned : \"+p);\n" +
-                     "   System.out.println(\"original: \"+$p);\n" +
                      "end\n"+
                      "\n" +
                      "" +
@@ -630,32 +604,14 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "when \n" +
                      "  $p : Parent( child isA ChildTrait ) \n" +
                      "then \n" +
-                     "  System.out.println( 10000000 ); \n" +
                      "   list.add(\"correct2\");\n"+
                      "end \n"+
-
-
-
-//                     "rule \"trait and assign the child\" \n" +
-//                     "\n" +
-//                     "when\n" +
-//                     "   $c : Child( gender == \"male\" )\n" +
-//                     "   $p : Parent( this isA ParentTrait )\n" +       //<<<<<
-//                     "then\n" +
-//                     "   ChildTrait c = don ( $c , ChildTrait.class );\n"+
-//                     "   modify($p){\n"+
-//                     "       setChild((Child)c.getCore());}\n"+
-//                     "   System.out.println(\"donned : \"+c);\n" +
-//                     "end\n"+
-//                     "\n"+
-
                      "rule \"test parent and child traits\" \n" +
                      "\n" +
                      "when\n" +
                      "    $p : ParentTrait( child isA ChildTrait.class )\n" +
                      "then\n" +
                      "   //shed ( $p , ParentTrait.class );\n"+
-                     "   System.out.println(\"::ParentTrait( child isA ChildTrait.class ) \");\n" +
                      "   list.add(\"correct\");\n"+
                      "end\n"+
                      "\n"+
@@ -673,9 +629,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
 
         knowledgeSession.fireAllRules();
 
-        for ( Object o : knowledgeSession.getObjects() ) {
-            System.out.print( o );
-        }
         assertTrue(list.contains("correct"));
         assertTrue(list.contains("correct2"));
         assertEquals( 2, list.size() );
@@ -727,7 +680,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   Child c = new Child();\n"+
                      "   Parent p = new Parent( \"parent\", c );\n"+
                      "   insert(c); insert(p);\n"+
-                     "   System.out.println(\"Initialized : \"+p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -737,23 +689,8 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   $p : Parent( name == \"parent\" )\n" +
                      "then\n" +
                      "   ParentTrait p = don ( $p , ParentTrait.class );\n"+
-                     "   System.out.println(\"donned : \"+p);\n" +
                      "end\n"+
                      "\n"+
-
-//                     "rule \"trait and assign the child\" \n" +
-//                     "\n" +
-//                     "when\n" +
-//                     "   $c : Child( gender == \"male\" )\n" +
-//                     "   $p : Parent( this isA ParentTrait )\n" +
-//                     "then\n" +
-//                     "   ChildTrait c =  don ( $c , ChildTrait.class );\n"+   //<<<<<<
-//                     "   modify($p){\n"+
-//                     "       setChild((Child)c.getCore());}\n"+
-//                     "   System.out.println(\"donned : \"+c);\n" +
-//                     "end\n"+
-//                     "\n"+
-
                      "rule \"test parent and child traits\" \n" +
                      "\n" +
                      "when\n" +
@@ -774,10 +711,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
         knowledgeSession.setGlobal("list", list);
 
         knowledgeSession.fireAllRules();
-
-        for ( Object o : knowledgeSession.getObjects() ) {
-            System.out.println( o );
-        }
 
         assertTrue(list.contains("correct"));
         assertEquals( 1, list.size() );
@@ -831,7 +764,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   Child c = new Child();\n"+
                      "   Parent p = new Parent(\"parent\", c);\n"+
                      "   insert(c);insert(p);\n"+
-                     "   System.out.println(\"Initialized : \"+p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -841,7 +773,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   $p : Parent( name == \"parent\" )\n" +
                      "then\n" +
                      "   ParentTrait p = don ( $p , ParentTrait.class );\n"+
-                     "   System.out.println(\"donned : \"+p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -851,7 +782,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "    $p : ParentTrait( child isA ChildTrait.class )\n" +
                      "then\n" +
                      "   //shed ( $p , ParentTrait.class );\n"+
-                     "   System.out.println(\"::ParentTrait( child isA ChildTrait.class ) \");\n" +
                      "   list.add(\"correct\");\n"+
                      "end\n"+
                      "\n"+
@@ -913,7 +843,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   Child c = new Child();\n"+
                      "   Parent p = new Parent(\"parent\", c);\n"+
                      "   insert(c);insert(p);\n"+
-                     "   System.out.println(\"Initialized : \"+p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -923,7 +852,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   $p : Parent( name == \"parent\" )\n" +
                      "then\n" +
                      "   ParentTrait p = don ( $p , ParentTrait.class );\n"+
-                     "   System.out.println(\"donned : \"+p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -936,7 +864,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   ChildTrait c =  don ( $c , ChildTrait.class );\n"+   //<<<<<<
                      "   modify($p){\n"+
                      "       setChild((Child)c.getCore());}\n"+
-                     "   System.out.println(\"donned : \"+c);\n" +
                      "end\n"+
                      "\n"+
 
@@ -946,7 +873,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "    $p : ParentTrait( child isA ChildTrait.class, child.gender == \"male\" )\n" +    //<<<<<
                      "then\n" +
                      "   //shed ( $p , ParentTrait.class );\n"+
-                     "   System.out.println(\"::ParentTrait( child isA ChildTrait.class ) \");\n" +
                      "   list.add(\"correct\");\n"+
                      "end\n"+
                      "\n"+
@@ -1009,7 +935,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   Child c = new Child();\n"+
                      "   Parent p = new Parent(\"parent\", c);\n"+
                      "   insert(c);insert(p);\n"+
-                     "   System.out.println(\"Initialized : \"+p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -1019,7 +944,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   $p : Parent( name == \"parent\" )\n" +
                      "then\n" +
                      "   ParentTrait p = don ( $p , ParentTrait.class );\n"+
-                     "   System.out.println(\"donned : \"+p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -1032,7 +956,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   ChildTrait c =  don ( $c , ChildTrait.class );\n"+   //<<<<<<
                      "   modify($p){\n"+
                      "       setChild((Child)c.getCore());}\n"+
-                     "   System.out.println(\"donned : \"+c);\n" +
                      "end\n"+
                      "\n"+
 
@@ -1042,7 +965,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   $c : Child( $gender := gender)\n"+
                      "   $p : ParentTrait( $age, $c; )\n" +    //<<<<<
                      "then\n" +
-                     "   System.out.println(\"::ParentTrait(  $age, $gender; ) \"+$age+\" \"+$gender);\n" +
                      "   list.add(\"correct\");\n"+
                      "end\n"+
                      "\n"+
@@ -1116,7 +1038,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   Parent p = new Parent(\"parent\", c);\n"+
                      "   insert(c);insert(p);\n"+
                      "   insert(c2);\n"+
-                     "   System.out.println(\"Initialized : \"+p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -1126,7 +1047,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   $p : Parent( name == \"parent\" )\n" +
                      "then\n" +
                      "   FatherTrait p = don ( $p , FatherTrait.class );\n"+
-                     "   System.out.println(\"F donned : \"+p);\n" +
                      "end\n"+
                      "\n"+
 
@@ -1136,7 +1056,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   $p : Parent( name == \"parent\" )\n" +
                      "then\n" +
                      "   ParentTrait c =  don ( $p , ParentTrait.class );\n"+   //<<<<<<
-                     "   System.out.println(\"P donned : \"+c);\n" +
                      "end\n"+
                      "\n"+
 
@@ -1147,7 +1066,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "   $p : Parent( child == $c )\n" +
                      "then\n" +
                      "   GrandParentTrait c =  don ( $p , GrandParentTrait.class );\n"+   //<<<<<<
-                     "   System.out.println(\"G donned : \"+c);\n" +
                      "   modify(c){\n"+
                      "       setGrandChild( $c );}\n"+
                      "end\n"+
@@ -1158,7 +1076,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "when\n" +
                      "   $p : FatherTrait( this isA ParentTrait, this isA GrandParentTrait )\n" +    //<<<<<
                      "then\n" +
-                     "   System.out.println(\"::FatherTrait( this isA ParentTrait, this isA GrandParentTrait ) \");\n" +
                      "   list.add(\"correct\");\n"+
                      "end\n"+
                      "\n"+
@@ -1235,7 +1152,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "then\n" +
                      "    Person p = new Person(\"1234\",\"IR\",true,true);\n" +
                      "    insert( p );\n" +
-                     "    System.out.println(\"init\");\n" +
                      "    list.add(\"initialized\");\n" +
                      "\n" +
                      "end\n" +
@@ -1249,11 +1165,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "    modify( st ){\n" +
                      "        setStudyingCountry( \"US\" );\n" +
                      "    }\n" +
-                     "    System.out.println(\"student\");\n" +
                      "    list.add(\"student\");\n" +
                      "then[pobIsIR]\n" +
                      "    don( $p , IRCitizen.class );\n" +
-                     "    System.out.println(\"IR citizen\");\n" +
                      "    list.add(\"IR citizen\");\n" +
                      "end\n" +
                      "\n" +
@@ -1263,7 +1177,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "    $s : Student( studyingCountry == \"US\" )\n" +
                      "then\n" +
                      "    don( $s , USCitizen.class );\n" +
-                     "    System.out.println(\"US citizen\");\n" +
                      "    list.add(\"US citizen\");\n" +
                      "end\n" +
                      "\n" +
@@ -1276,7 +1189,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "    modify( wr ){\n" +
                      "        setWorkingCountry( $sc );\n" +
                      "    }\n" +
-                     "    System.out.println(\"worker\");\n" +
                      "    list.add(\"worker\");\n" +
                      "end\n" +
                      "\n" +
@@ -1287,13 +1199,11 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "    USCitizen( )\n" +
                      "    IRCitizen( $pob := pob )\n" +
                      "then\n" +
-                     "    System.out.println(\"::You are working in US as student worker.\");\n" +
                      "    list.add(\"You are working in US as student worker\");\n" +
                      "    StudentWorker sw = (StudentWorker) don( $w, StudentWorker.class );\n" +
                      "    modify(sw){\n" +
                      "        setUniName( \"ASU\" );\n" +
                      "    }\n" +
-                     "    System.out.println(\"student worker \" + sw);\n" +
                      "end\n" +
                      "\n" +
                      "rule \"position args 2\"\n" +
@@ -1302,7 +1212,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "    $sw : StudentWorker( $pob , $sc; )\n" +
                      "    IRCitizen( $pob := pob )\n" +
                      "then\n" +
-                     "    System.out.println(\"::You are studying and working at ASU.\" + $sw );\n" +
                      "    list.add(\"You are studying and working at ASU\");\n" +
                      "end\n";
 
@@ -1314,8 +1223,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
         kSession.setGlobal("list", list);
 
         kSession.fireAllRules();
-
-        System.out.println( list );
 
         assertTrue(list.contains("initialized"));
         assertTrue(list.contains("student"));
