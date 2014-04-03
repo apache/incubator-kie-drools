@@ -86,7 +86,7 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
                 ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
                 changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
                 if (configPolicy.isSortValuesByIncreasingStrengthEnabled()) {
-                    if (variableDescriptor.getValueRangeDescriptor().isEntityIndependent()) {
+                    if (variableDescriptor.getValueRangeEntityIndependent()) {
                         changeValueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
                     } else {
                         changeValueSelectorConfig.setCacheType(SelectionCacheType.STEP);
