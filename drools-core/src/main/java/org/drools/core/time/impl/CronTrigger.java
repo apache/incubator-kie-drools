@@ -297,7 +297,7 @@ public class CronTrigger
         if ( this.nextFireTime == null ) {
             return null;
         }        
-        Date date = this.nextFireTime;
+        Date date = new Date( this.nextFireTime.getTime() - 1000L );
         this.nextFireTime = getTimeAfter( this.nextFireTime );
         updateToNextIncludeDate();
         if ( this.endTime != null && this.nextFireTime.after( this.endTime ) ) {
