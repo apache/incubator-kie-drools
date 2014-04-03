@@ -189,7 +189,7 @@ public class TerminationConfig implements Cloneable {
     public Termination buildTermination(HeuristicConfigPolicy configPolicy) {
         List<Termination> terminationList = new ArrayList<Termination>();
         if (terminationClass != null) {
-            Termination termination  = ConfigUtils.newInstance(this, "terminationClass", terminationClass);
+            Termination termination = ConfigUtils.newInstance(this, "terminationClass", terminationClass);
             terminationList.add(termination);
         }
         Long timeMillisSpentLimit = calculateTimeMillisSpentLimit();
