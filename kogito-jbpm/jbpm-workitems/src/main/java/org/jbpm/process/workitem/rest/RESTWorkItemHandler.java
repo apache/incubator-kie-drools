@@ -206,11 +206,14 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         	throw new IllegalArgumentException("Could not find password");
         }
         if (type == AuthenticationType.BASIC) {
+        	
         	httpclient.getState().setCredentials(
     			new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, AuthScope.ANY_REALM),
     			new UsernamePasswordCredentials(u, p)
+    			
         	);
         	method.setDoAuthentication(true);
+        	httpclient.getParams().setAuthenticationPreemptive(true);
         } else if (type == AuthenticationType.FORM_BASED) {
         	String authUrlStr = (String) params.get("AuthUrl");
         	if (authUrlStr == null) {

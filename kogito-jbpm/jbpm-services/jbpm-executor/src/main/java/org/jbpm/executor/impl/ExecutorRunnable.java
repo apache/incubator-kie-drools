@@ -21,7 +21,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.input.ClassLoaderObjectInputStream;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -50,6 +52,7 @@ public class ExecutorRunnable implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(ExecutorRunnable.class);
 
+    private Map<String, Object> contextData = new HashMap<String, Object>();
    
     private ExecutorQueryService queryService;
    
@@ -99,6 +102,12 @@ public class ExecutorRunnable implements Runnable {
                             }
                         }
                     }
+                    for (Map.Entry<String, Object> entry : contextData.entrySet()) {
+                    	ctx.setData(entry.getKey(), entry.getValue());
+                    }
+                    // add class loader so internally classes can be created with valid (kjar) deployment
+                    ctx.setData("ClassLoader", cl);
+                    
                     callbacks = classCacheManager.buildCommandCallback(ctx, cl);                
                     
                     Command cmd = classCacheManager.findCommand(request.getCommandName(), cl);
@@ -174,6 +183,10 @@ public class ExecutorRunnable implements Runnable {
         }
         
         return cl;
+    }
+    
+    public void addContextData(String name, Object data) {
+    	this.contextData.put(name, data);
     }
 
 }

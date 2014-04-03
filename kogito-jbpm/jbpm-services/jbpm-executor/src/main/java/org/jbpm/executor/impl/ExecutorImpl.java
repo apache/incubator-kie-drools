@@ -29,6 +29,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 
@@ -259,6 +261,13 @@ public class ExecutorImpl implements Executor {
         ((ExecutorRunnable) runnable).setCommandService(cmdService);
         runnable.setClassCacheManager(classCacheManager);
         runnable.setQueryService(queryService);
+        
+        try {
+			Object beanManager = InitialContext.doLookup("java:comp/BeanManager");
+			runnable.addContextData("BeanManager", beanManager);
+		} catch (NamingException e) {
+			logger.warn("No CDI BeanManager found in JNDI");
+		}
         
         return runnable;
     }
