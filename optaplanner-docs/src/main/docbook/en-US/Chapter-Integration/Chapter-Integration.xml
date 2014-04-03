@@ -30,6 +30,12 @@
         Camel or RESTEasy.</para>
       </listitem>
     </itemizedlist>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Integration/integrationOverview.png"/>
+      </imageobject>
+    </mediaobject>
   </section>
 
   <section xml:id="integrationWithPersistentStorage">
