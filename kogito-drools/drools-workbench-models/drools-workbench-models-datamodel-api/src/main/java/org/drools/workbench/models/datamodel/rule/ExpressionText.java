@@ -23,18 +23,26 @@ public class ExpressionText extends ExpressionPart {
     public ExpressionText() {
     }
 
-    public ExpressionText( String name,
-                           String classType,
-                           String genericType ) {
-        super( name, classType, genericType );
+    public ExpressionText( final String name,
+                           final String classType,
+                           final String genericType ) {
+        super( name,
+               classType,
+               genericType );
     }
 
-    public ExpressionText( String name ) {
-        super( name, "java.lang.String", DataType.TYPE_STRING );
+    public ExpressionText( final String name ) {
+        super( name,
+               "java.lang.String",
+               DataType.TYPE_STRING );
+    }
+
+    public void setName( final String name ) {
+        this.name = name;
     }
 
     @Override
-    public void accept( ExpressionVisitor visitor ) {
+    public void accept( final ExpressionVisitor visitor ) {
         visitor.visit( this );
     }
 
