@@ -263,7 +263,7 @@ public class GenuineVariableDescriptor {
         return valueRangeDescriptor;
     }
 
-    public boolean getValueRangeEntityIndependent() {
+    public boolean isValueRangeEntityIndependent() {
         return valueRangeDescriptor.isEntityIndependent();
     }
 

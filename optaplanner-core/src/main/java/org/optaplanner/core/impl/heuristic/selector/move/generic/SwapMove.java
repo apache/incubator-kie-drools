@@ -62,7 +62,7 @@ public class SwapMove implements Move {
             Object leftValue = variableDescriptor.getValue(leftEntity);
             Object rightValue = variableDescriptor.getValue(rightEntity);
             if (!ObjectUtils.equals(leftValue, rightValue)) {
-                if (variableDescriptor.getValueRangeEntityIndependent()) {
+                if (variableDescriptor.isValueRangeEntityIndependent()) {
                     return true;
                 } else {
                     movable = true;
