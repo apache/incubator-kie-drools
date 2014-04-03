@@ -23,10 +23,10 @@ public abstract class ExpressionPart
 
     private ExpressionPart prev;
     private ExpressionPart next;
-    private String         name;
-    private String         classType;
-    private String         genericType;
-    private String         parametricType;
+    protected String name;
+    private String classType;
+    private String genericType;
+    private String parametricType;
 
     public ExpressionPart() {
     }

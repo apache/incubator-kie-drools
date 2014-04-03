@@ -180,6 +180,9 @@ public class ExpressionFormLine
         }
 
         public void visit( ExpressionVariable part ) {
+            if ( !first ) {
+                str.append( '.' );
+            }
             str.append( part.getName() );
             moveNext( part );
         }
@@ -190,6 +193,9 @@ public class ExpressionFormLine
         }
 
         public void visit( ExpressionGlobalVariable part ) {
+            if ( !first ) {
+                str.append( '.' );
+            }
             str.append( part.getName() );
             moveNext( part );
         }
@@ -208,6 +214,9 @@ public class ExpressionFormLine
         }
 
         public void visit( ExpressionText part ) {
+            if ( !first ) {
+                str.append( '.' );
+            }
             str.append( part.getName() );
             moveNext( part );
         }
