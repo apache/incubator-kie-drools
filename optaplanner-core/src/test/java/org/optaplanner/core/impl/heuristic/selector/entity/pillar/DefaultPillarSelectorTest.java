@@ -34,7 +34,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
-public class SameValuePillarSelectorTest {
+public class DefaultPillarSelectorTest {
 
     @Test
     public void original() {
@@ -62,7 +62,7 @@ public class SameValuePillarSelectorTest {
             });
         }
 
-        SameValuePillarSelector pillarSelector = new SameValuePillarSelector(
+        DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
                 entitySelector, Arrays.asList(variableDescriptor), false);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
@@ -116,7 +116,7 @@ public class SameValuePillarSelectorTest {
         GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
                 entitySelector.getEntityDescriptor(), "value");
 
-        SameValuePillarSelector pillarSelector = new SameValuePillarSelector(
+        DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
                 entitySelector, Arrays.asList(variableDescriptor), false);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);

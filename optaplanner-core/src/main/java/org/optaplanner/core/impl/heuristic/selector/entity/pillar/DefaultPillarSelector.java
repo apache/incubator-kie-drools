@@ -35,9 +35,9 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
- * This is the common {@link PillarSelector} implementation.
+ * @see PillarSelector
  */
-public class SameValuePillarSelector extends AbstractSelector
+public class DefaultPillarSelector extends AbstractSelector
         implements PillarSelector, SelectionCacheLifecycleListener {
 
     protected static final SelectionCacheType CACHE_TYPE = SelectionCacheType.STEP;
@@ -48,7 +48,7 @@ public class SameValuePillarSelector extends AbstractSelector
 
     protected List<List<Object>> cachedPillarList = null;
 
-    public SameValuePillarSelector(EntitySelector entitySelector,
+    public DefaultPillarSelector(EntitySelector entitySelector,
             Collection<GenuineVariableDescriptor> variableDescriptors, boolean randomSelection) {
         this.entitySelector = entitySelector;
         this.variableDescriptors = variableDescriptors;

@@ -27,7 +27,7 @@ public class ChainedMoveUtils {
 
     public static void doChainedChange(ScoreDirector scoreDirector, Object entity,
             GenuineVariableDescriptor variableDescriptor, Object toPlanningValue) {
-        Object oldPlanningValue = variableDescriptor.getValue(entity);
+        Object oldValue = variableDescriptor.getValue(entity);
         Object oldTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, entity);
         // If chaining == true then toPlanningValue == null guarantees an uninitialized entity
         Object newTrailingEntity = toPlanningValue == null ? null
@@ -46,7 +46,7 @@ public class ChainedMoveUtils {
 
         // Close the old chain
         if (oldTrailingEntity != null) {
-            variableDescriptor.setValue(oldTrailingEntity, oldPlanningValue);
+            variableDescriptor.setValue(oldTrailingEntity, oldValue);
         }
         // Change the entity
         variableDescriptor.setValue(entity, toPlanningValue);
@@ -72,7 +72,7 @@ public class ChainedMoveUtils {
             GenuineVariableDescriptor variableDescriptor, Object toPlanningValue) {
         Object firstEntity = subChain.getFirstEntity();
         Object lastEntity = subChain.getLastEntity();
-        Object oldFirstPlanningValue = variableDescriptor.getValue(firstEntity);
+        Object oldFirstValue = variableDescriptor.getValue(firstEntity);
 
         Object oldTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, lastEntity);
         Object newTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, toPlanningValue);
@@ -90,7 +90,7 @@ public class ChainedMoveUtils {
 
         // Close the old chain
         if (oldTrailingEntity != null) {
-            variableDescriptor.setValue(oldTrailingEntity, oldFirstPlanningValue);
+            variableDescriptor.setValue(oldTrailingEntity, oldFirstValue);
         }
         // Change the entity
         variableDescriptor.setValue(firstEntity, toPlanningValue);
@@ -115,7 +115,7 @@ public class ChainedMoveUtils {
             GenuineVariableDescriptor variableDescriptor, Object toPlanningValue) {
         Object firstEntity = subChain.getFirstEntity();
         Object lastEntity = subChain.getLastEntity();
-        Object oldFirstPlanningValue = variableDescriptor.getValue(firstEntity);
+        Object oldFirstValue = variableDescriptor.getValue(firstEntity);
 
         Object oldTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, lastEntity);
         Object newTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, toPlanningValue);
@@ -140,7 +140,7 @@ public class ChainedMoveUtils {
 
         // Close the old chain
         if (oldTrailingEntity != null) {
-            variableDescriptor.setValue(oldTrailingEntity, oldFirstPlanningValue);
+            variableDescriptor.setValue(oldTrailingEntity, oldFirstValue);
         }
         // Change the entity
         Object nextEntity = toPlanningValue;
