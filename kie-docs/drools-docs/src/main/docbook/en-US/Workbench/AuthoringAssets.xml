@@ -18,5 +18,6 @@
   <xi:include href="DSLEditor.xml" />
   <xi:include href="EnumerationEditor.xml" />
      <xi:include href="DRLEditor.xml" />
+	 <xi:include href="DeployingFromWorkbench.xml" />
      
 </chapter>
