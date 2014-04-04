@@ -20,15 +20,19 @@ import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
-import org.drools.core.time.SelfRemovalJobContext;
 import org.drools.core.time.Trigger;
 import org.drools.core.time.impl.DefaultJobHandle;
+import org.drools.persistence.TransactionManager;
 import org.drools.persistence.jpa.JDKCallableJobCommand;
 import org.drools.persistence.jpa.JpaTimerJobInstance;
+import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.process.core.timer.impl.GlobalTimerService.DisposableCommandService;
-import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Extension to the regular <code>JpaTimerJobInstance</code> that makes use of
@@ -40,6 +44,8 @@ import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
  *
  */
 public class GlobalJpaTimerJobInstance extends JpaTimerJobInstance {
+	
+	private static final Logger logger = LoggerFactory.getLogger(GlobalJpaTimerJobInstance.class);
 
     private static final long serialVersionUID = -5383556604449217342L;
     private String timerServiceId;
@@ -69,20 +75,42 @@ public class GlobalJpaTimerJobInstance extends JpaTimerJobInstance {
             throw e;
         } finally {
             if (commandService != null && commandService instanceof DisposableCommandService) {
-                ((DisposableCommandService) commandService).dispose();
+            	if (allowedToDispose(((DisposableCommandService) commandService).getEnvironment())) {
+            		logger.debug("Allowed to dispose command service from global timer job instance");
+            		((DisposableCommandService) commandService).dispose();
+            	}
             }
         }
     }
-
-    private Integer getSessionIdFromContext() {
-    	JobContext context = getJobContext();
-    	if (getJobContext() instanceof SelfRemovalJobContext) {
-    		context = ((SelfRemovalJobContext) getJobContext()).getJobContext();
-        } 
-    	if (context instanceof ProcessJobContext) {
-    		return ((ProcessJobContext) context).getSessionId();
-    	} else {
-    		return -1;
+    
+    protected boolean allowedToDispose(Environment environment) {
+    	if (hasEnvironmentEntry(environment, "IS_JTA_TRANSACTION", false)) {
+    		return true;
     	}
+    	TransactionManager transactionManager = null;
+    	Object txm = environment.get(EnvironmentName.TRANSACTION_MANAGER);
+    	if (txm != null && txm instanceof TransactionManager) {
+    		transactionManager = (TransactionManager) txm;
+    	} else {    	
+    		transactionManager = new JtaTransactionManager(null, null, null);
+    	}
+    	int status = transactionManager.getStatus();
+
+    	if (status != JtaTransactionManager.STATUS_NO_TRANSACTION
+                && status != JtaTransactionManager.STATUS_ROLLEDBACK
+                && status != JtaTransactionManager.STATUS_COMMITTED) {
+    		return false;
+    	}
+    	
+    	return true;
     }
+    
+    protected boolean hasEnvironmentEntry(Environment environment, String name, Object value) {
+    	Object envEntry = environment.get(name);
+    	if (value == null) {
+    		return envEntry == null;
+    	}
+    	return value.equals(envEntry);
+    }
+
 }

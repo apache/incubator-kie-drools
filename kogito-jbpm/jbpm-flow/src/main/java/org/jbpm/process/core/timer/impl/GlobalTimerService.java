@@ -40,6 +40,7 @@ import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.NamedJobContext;
 import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
 import org.kie.api.command.Command;
+import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.internal.command.Context;
@@ -294,6 +295,11 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
         
         public void dispose() {
             manager.disposeRuntimeEngine(runtime);
+        }
+        
+        public Environment getEnvironment() {
+        	
+        	return runtime.getKieSession().getEnvironment();
         }
         
     }
