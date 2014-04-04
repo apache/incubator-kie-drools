@@ -541,11 +541,6 @@ public abstract class JbpmJUnitTestCase extends AbstractBaseTest {
             }
         }
 
-        public synchronized void finalize() throws Throwable {
-            stop();
-            super.finalize();
-        }
-
         public void stop() {
             if (server != null) {
                 server.stop();

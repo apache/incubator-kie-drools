@@ -322,10 +322,6 @@ public class JPAAuditLogService implements AuditLogService {
     public void dispose() {
         persistenceStrategy.dispose();
     }
-    
-    protected void finalize() throws Throwable {
-        persistenceStrategy.dispose();
-    }
 
     private EntityManager getEntityManager() {
         return persistenceStrategy.getEntityManager();
