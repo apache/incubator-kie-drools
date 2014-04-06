@@ -54,8 +54,9 @@ public class TaskContentServiceImpl implements TaskContentService {
         Content outputContent = persistenceContext.findContent(outputContentId);
         
         long contentId = -1;
-        if (outputContent == null) {
-            ContentData outputContentData = ContentMarshallerHelper.marshal(params, null);
+        if (outputContent == null) { 
+            ContentMarshallerContext context = getMarshallerContext(task);
+            ContentData outputContentData = ContentMarshallerHelper.marshal(params, context.getEnvironment());
             Content content = TaskModelProvider.getFactory().newContent();
             ((InternalContent) content).setContent(outputContentData.getContent());
             persistenceContext.persistContent(content);

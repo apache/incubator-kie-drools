@@ -76,7 +76,6 @@ public class FormProviderServiceImpl implements FormProviderService {
         }
     }
 
-
     @Override
     public String getFormDisplayProcess(String deploymentId, String processId) {
         ProcessAssetDesc processDesc = dataService.getProcessesByDeploymentIdProcessId(deploymentId, processId);
@@ -93,7 +92,9 @@ public class FormProviderServiceImpl implements FormProviderService {
 
         for (FormProvider provider : providers) {
             String template = provider.render(processDesc.getName(), processDesc, renderContext);
-            if (!StringUtils.isEmpty(template)) return template;
+            if (!StringUtils.isEmpty(template)) {
+                return template;
+            }
         }
 
         logger.warn("Unable to find form to render for process '{}'", processDesc.getName());
@@ -105,7 +106,7 @@ public class FormProviderServiceImpl implements FormProviderService {
     public String getFormDisplayTask(long taskId) {
         Task task = taskService.getTaskById(taskId);
         if (task == null) {
-        	return "";
+            return "";
         }
         String name = task.getNames().get(0).getText();
         ProcessAssetDesc processDesc = dataService.getProcessesByDeploymentIdProcessId(task.getTaskData().getDeploymentId(), task.getTaskData().getProcessId());
@@ -152,7 +153,7 @@ public class FormProviderServiceImpl implements FormProviderService {
 
             Object value = ((Map<String, Object>) output).get(key);
             if (value == null) {
-                // WM value = "";
+                value = "";
             }
             finalOutput.put(key, value);
         }
@@ -160,30 +161,36 @@ public class FormProviderServiceImpl implements FormProviderService {
 
         // merge template with process variables        
         renderContext.put("task", task);
-        renderContext.put("outputs", finalOutput);
         renderContext.put("marshallerContext", marshallerContext);
 
         // add all inputs as direct entries
         if (input instanceof Map) {
             renderContext.put("inputs", input);
-            for (Map.Entry<String, Object> inputVar : ((Map<String, Object>)input).entrySet()) {
+            for (Map.Entry<String, Object> inputVar : ((Map<String, Object>) input).entrySet()) {
                 renderContext.put(inputVar.getKey(), inputVar.getValue());
             }
         } else {
             renderContext.put("input", input);
         }
 
+        // add all outputs as direct entries
+        renderContext.put("outputs", finalOutput);
+        for (Map.Entry<String, Object> outputVar : ((Map<String, Object>) finalOutput).entrySet()) {
+            renderContext.put(outputVar.getKey(), outputVar.getValue());
+        }
+
         // find form
         for (FormProvider provider : providers) {
             String template = provider.render(name, task, processDesc, renderContext);
-            if (!StringUtils.isEmpty(template)) return template;
+            if (!StringUtils.isEmpty(template)) {
+                return template;
+            }
         }
 
         logger.warn("Unable to find form to render for task '{}' on process '{}'", name, processDesc.getName());
         return "";
     }
 
-    
     protected ContentMarshallerContext getMarshallerContext(String deploymentId, String processId) {
         DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deploymentId);
         if (deployedUnit == null) {
@@ -192,13 +199,13 @@ public class FormProviderServiceImpl implements FormProviderService {
         InternalRuntimeManager manager = (InternalRuntimeManager) deployedUnit.getRuntimeManager();
         return new ContentMarshallerContext(manager.getEnvironment().getEnvironment(), manager.getEnvironment().getClassLoader());
     }
-    
+
     protected ContentMarshallerContext getMarshallerContext(Task task) {
-                
+
         if (task == null) {
             return new ContentMarshallerContext();
         }
-        
+
         return TaskContentRegistry.get().getMarshallerContext(task);
     }
 }
