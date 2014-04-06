@@ -91,15 +91,6 @@ public class ConstructionHeuristicStepScope extends AbstractStepScope {
     // ************************************************************************
 
     @Override
-    public boolean isBestSolutionCloningDelayed() {
-        return true;
-    }
-
-    /**
-     * Should not be called because {@link #isBestSolutionCloningDelayed} returns true
-     * @return throws exception
-     */
-    @Override
     public int getUninitializedVariableCount() {
         throw new UnsupportedOperationException();
     }

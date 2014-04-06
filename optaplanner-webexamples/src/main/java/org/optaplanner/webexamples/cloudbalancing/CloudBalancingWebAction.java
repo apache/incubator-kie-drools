@@ -49,9 +49,8 @@ public class CloudBalancingWebAction {
 
     public void solve(final HttpSession session) {
         final Solver solver = (Solver) session.getAttribute(CloudBalancingSessionAttributeName.SOLVER);
-        CloudBalance unsolvedSolution = (CloudBalance) session.getAttribute(CloudBalancingSessionAttributeName.SHOWN_SOLUTION);
+        final CloudBalance unsolvedSolution = (CloudBalance) session.getAttribute(CloudBalancingSessionAttributeName.SHOWN_SOLUTION);
 
-        solver.setPlanningProblem(unsolvedSolution);
         solver.addEventListener(new SolverEventListener() {
             public void bestSolutionChanged(BestSolutionChangedEvent event) {
                 CloudBalance bestSolution = (CloudBalance) event.getNewBestSolution();
@@ -60,7 +59,7 @@ public class CloudBalancingWebAction {
         });
         solvingExecutor.submit(new Runnable() {
             public void run() {
-                solver.solve();
+                solver.solve(unsolvedSolution);
             }
         });
     }

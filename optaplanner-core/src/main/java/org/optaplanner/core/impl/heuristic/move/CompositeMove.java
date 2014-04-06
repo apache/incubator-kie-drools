@@ -34,6 +34,17 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  */
 public class CompositeMove implements Move {
 
+    public static Move buildMove(List<Move> moveList) {
+        int size = moveList.size();
+        if (size > 1) {
+            return new CompositeMove(moveList);
+        } else if (size == 1) {
+            return moveList.get(0);
+        } else {
+            return new NoChangeMove();
+        }
+    }
+
     protected final List<Move> moveList;
 
     /**
@@ -59,7 +70,7 @@ public class CompositeMove implements Move {
         return true;
     }
 
-    public Move createUndoMove(ScoreDirector scoreDirector) {
+    public CompositeMove createUndoMove(ScoreDirector scoreDirector) {
         List<Move> undoMoveList = new ArrayList<Move>(moveList.size());
         for (Move move : moveList) {
             // Note: this undoMove creation doesn't have the effect yet of a previous move in the moveList

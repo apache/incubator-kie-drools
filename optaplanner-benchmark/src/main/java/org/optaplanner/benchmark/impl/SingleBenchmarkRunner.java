@@ -75,8 +75,7 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
             singleStatistic.open(solver);
         }
 
-        solver.setPlanningProblem(inputSolution);
-        solver.solve();
+        solver.solve(inputSolution);
         long timeMillisSpent = solver.getTimeMillisSpent();
         Solution outputSolution = solver.getBestSolution();
 

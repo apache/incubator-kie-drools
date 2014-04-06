@@ -32,7 +32,7 @@ public class SwapMoveSelectorTest {
 
     @Test
     public void originalLeftEqualsRight() {
-        EntitySelector entitySelector  = SelectorTestUtils.mockEntitySelector(TestdataEntity.buildEntityDescriptor(),
+        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.buildEntityDescriptor(),
                 new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
 
         SwapMoveSelector moveSelector = new SwapMoveSelector(entitySelector, entitySelector,
@@ -149,10 +149,10 @@ public class SwapMoveSelectorTest {
     public void originalLeftUnequalsRight() {
         EntityDescriptor entityDescriptor = TestdataEntity.buildEntityDescriptor();
 
-        EntitySelector leftEntitySelector  = SelectorTestUtils.mockEntitySelector(entityDescriptor,
+        EntitySelector leftEntitySelector = SelectorTestUtils.mockEntitySelector(entityDescriptor,
                 new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
 
-        EntitySelector rightEntitySelector  = SelectorTestUtils.mockEntitySelector(entityDescriptor,
+        EntitySelector rightEntitySelector = SelectorTestUtils.mockEntitySelector(entityDescriptor,
                 new TestdataEntity("x"), new TestdataEntity("y"), new TestdataEntity("z"));
 
         SwapMoveSelector moveSelector = new SwapMoveSelector(leftEntitySelector, rightEntitySelector,

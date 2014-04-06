@@ -223,8 +223,7 @@ public class ProblemBenchmarkResult {
             solverBenchmarkResult.getSolverConfig().setTerminationConfig(tmpTerminationConfig);
 
             Solver solver = solverBenchmarkResult.getSolverConfig().buildSolver();
-            solver.setPlanningProblem(readPlanningProblem());
-            solver.solve();
+            solver.solve(readPlanningProblem());
 
             solverBenchmarkResult.getSolverConfig().setTerminationConfig(originalTerminationConfig);
             long timeSpent = System.currentTimeMillis() - startingTimeMillis;

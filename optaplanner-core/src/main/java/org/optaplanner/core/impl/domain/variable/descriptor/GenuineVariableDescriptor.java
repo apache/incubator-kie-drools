@@ -263,6 +263,10 @@ public class GenuineVariableDescriptor {
         return valueRangeDescriptor;
     }
 
+    public boolean isValueRangeEntityIndependent() {
+        return valueRangeDescriptor.isEntityIndependent();
+    }
+
     public List<VariableListener> buildVariableListenerList() {
         List<VariableListener> variableListenerList = new ArrayList<VariableListener>(
                 shadowVariableDescriptorList.size() + nonMappedByVariableListeners.size());

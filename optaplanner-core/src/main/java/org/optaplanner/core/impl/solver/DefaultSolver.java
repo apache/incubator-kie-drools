@@ -96,10 +96,6 @@ public class DefaultSolver implements Solver {
         this.solverPhaseList = solverPhaseList;
     }
 
-    public void setPlanningProblem(Solution planningProblem) {
-        solverScope.setBestSolution(planningProblem);
-    }
-
     public Solution getBestSolution() {
         return solverScope.getBestSolution();
     }
@@ -143,7 +139,12 @@ public class DefaultSolver implements Solver {
         return problemFactChangeQueue.isEmpty();
     }
 
-    public final void solve() {
+    public final void solve(Solution planningProblem) {
+        if (planningProblem == null) {
+            throw new IllegalArgumentException("The planningProblem (" + planningProblem
+                    + ") must not be null.");
+        }
+        solverScope.setBestSolution(planningProblem);
         outerSolvingStarted(solverScope);
         boolean restartSolver = true;
         while (restartSolver) {
@@ -161,10 +162,6 @@ public class DefaultSolver implements Solver {
         solverScope.setStartingSystemTimeMillis(System.currentTimeMillis());
         solverScope.setEndingSystemTimeMillis(null);
         solverScope.setStartingSolverCount(0);
-        if (solverScope.getBestSolution() == null) {
-            throw new IllegalStateException("The planningProblem must not be null." +
-                    " Use Solver.setPlanningProblem(Solution).");
-        }
     }
 
     public void solvingStarted(DefaultSolverScope solverScope) {

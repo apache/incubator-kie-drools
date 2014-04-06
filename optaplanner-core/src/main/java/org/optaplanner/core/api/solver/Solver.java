@@ -35,11 +35,6 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 public interface Solver {
 
     /**
-     * @param planningProblem never null
-     */
-    void setPlanningProblem(Solution planningProblem);
-
-    /**
      * @return never null, but it can return the original, uninitialized {@link Solution} with a {@link Score} null.
      */
     Solution getBestSolution();
@@ -54,20 +49,21 @@ public interface Solver {
      * It can take minutes, even hours or days before this method returns,
      * depending on the termination configuration.
      * To terminate a {@link Solver} early, call {@link #terminateEarly()}.
+     * @param planningProblem never null, usually its planning variables are uninitialized
      * @see #terminateEarly()
      */
-    void solve();
+    void solve(Solution planningProblem);
 
     /**
      * This method is thread-safe.
-     * @return true if the {@link #solve()} method is still running.
+     * @return true if the {@link #solve(Solution)} method is still running.
      */
     boolean isSolving();
 
     /**
      * Notifies the solver that it should stop at its earliest convenience.
      * This method returns immediately, but it takes an undetermined time
-     * for the {@link #solve()} to actually return.
+     * for the {@link #solve(Solution)} to actually return.
      * <p/>
      * This method is thread-safe.
      * @return true if successful

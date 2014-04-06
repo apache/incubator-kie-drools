@@ -24,9 +24,12 @@ import java.util.List;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.optaplanner.core.api.domain.valuerange.ValueRange;
+import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.solution.Solution;
 
 public class SwapMove implements Move {
 
@@ -54,14 +57,29 @@ public class SwapMove implements Move {
     // ************************************************************************
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
+        boolean movable = false;
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
             Object leftValue = variableDescriptor.getValue(leftEntity);
             Object rightValue = variableDescriptor.getValue(rightEntity);
             if (!ObjectUtils.equals(leftValue, rightValue)) {
-                return true;
+                if (variableDescriptor.isValueRangeEntityIndependent()) {
+                    return true;
+                } else {
+                    movable = true;
+                    ValueRangeDescriptor valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
+                    Solution workingSolution = scoreDirector.getWorkingSolution();
+                    ValueRange rightValueRange = valueRangeDescriptor.extractValueRange(workingSolution, rightEntity);
+                    if (!rightValueRange.contains(leftValue)) {
+                        return false;
+                    }
+                    ValueRange leftValueRange = valueRangeDescriptor.extractValueRange(workingSolution, leftEntity);
+                    if (!leftValueRange.contains(rightValue)) {
+                        return false;
+                    }
+                }
             }
         }
-        return false;
+        return movable;
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {

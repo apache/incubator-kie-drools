@@ -213,7 +213,7 @@ public class ValueSelectorConfig extends SelectorConfig {
     }
 
     protected boolean isBaseInherentlyCached(GenuineVariableDescriptor variableDescriptor) {
-        return variableDescriptor.getValueRangeDescriptor().isEntityIndependent();
+        return variableDescriptor.isValueRangeEntityIndependent();
     }
 
     private ValueSelector buildBaseValueSelector(
@@ -333,7 +333,7 @@ public class ValueSelectorConfig extends SelectorConfig {
                         + ") or a sorterWeightFactoryClass (" + sorterWeightFactoryClass
                         + ") or a sorterClass (" + sorterClass + ").");
             }
-            if (!valueSelector.getVariableDescriptor().getValueRangeDescriptor().isEntityIndependent()
+            if (!valueSelector.getVariableDescriptor().isValueRangeEntityIndependent()
                     && resolvedCacheType == SelectionCacheType.STEP) {
                 valueSelector = new EntityDependentSortingValueSelector(valueSelector,
                         resolvedCacheType, sorter);

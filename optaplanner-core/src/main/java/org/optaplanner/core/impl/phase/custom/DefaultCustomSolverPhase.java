@@ -23,6 +23,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.phase.AbstractSolverPhase;
 import org.optaplanner.core.impl.phase.custom.scope.CustomSolverPhaseScope;
 import org.optaplanner.core.impl.phase.custom.scope.CustomStepScope;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
@@ -56,12 +57,7 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
         while (!termination.isPhaseTerminated(phaseScope) && commandIterator.hasNext()) {
             CustomSolverPhaseCommand customSolverPhaseCommand = commandIterator.next();
             stepStarted(stepScope);
-            customSolverPhaseCommand.changeWorkingSolution(solverScope.getScoreDirector());
-            int uninitializedVariableCount = solverScope.getSolutionDescriptor()
-                    .countUninitializedVariables(stepScope.getWorkingSolution());
-            stepScope.setUninitializedVariableCount(uninitializedVariableCount);
-            Score score = phaseScope.calculateScore();
-            stepScope.setScore(score);
+            doStep(stepScope, customSolverPhaseCommand);
             stepEnded(stepScope);
             phaseScope.setLastCompletedStepScope(stepScope);
             stepScope = new CustomStepScope(phaseScope);
@@ -75,6 +71,17 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
 
     public void stepStarted(CustomStepScope stepScope) {
         super.stepStarted(stepScope);
+    }
+
+    private void doStep(CustomStepScope stepScope, CustomSolverPhaseCommand customSolverPhaseCommand) {
+        ScoreDirector scoreDirector = stepScope.getScoreDirector();
+        customSolverPhaseCommand.changeWorkingSolution(scoreDirector);
+        int uninitializedVariableCount = scoreDirector.getSolutionDescriptor()
+                .countUninitializedVariables(stepScope.getWorkingSolution());
+        stepScope.setUninitializedVariableCount(uninitializedVariableCount);
+        Score score = scoreDirector.calculateScore();
+        stepScope.setScore(score);
+        bestSolutionRecaller.processWorkingSolutionDuringStep(stepScope);
     }
 
     public void stepEnded(CustomStepScope stepScope) {

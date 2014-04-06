@@ -4032,3 +4032,31 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
     <exhaustiveSearchType>BRUTE_FORCE</exhaustiveSearchType>
   </exhaustiveSearch>
 There is now a better alternative to Brute Force: Branch And Bound, see docs for more information.
+
+[MAJOR] The ConstraintOccurrence classes (which were deprecated) have been removed.
+If you hadn't switch them to the ConstraintMatch system yet,
+scroll up to the section "From 6.0.0.Alpha9 to 6.0.0.Beta1" for instructions.
+
+[MAJOR] Solver interface: the methods setPlanningProblem(Solution) and solve() have been merged
+as the method solve(Solution).
+Before in *.java:
+        solver.setPlanningProblem(planningProblem);
+        solver.solve();
+After in *.java:
+        solver.solve(planningProblem);
+Note: you still need to use solver.getBestSolution() to retrieve the best solution.
+That is intentional due to real-time planning and to support pareto optimization in the future.
+
+
+From 6.1.0.Beta2 to 6.1.0.Beta3
+-------------------------------
+
+[MINOR] If you have a @ValueRangeProvider on an entity class (instead of the Solution class),
+then it's now safe to use the <swapMoveSelector> as is.
+It's no longer needed to filter out swaps which could put a value in an entity's variable that's not in its value range.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <swapMoveSelector>
+        <filterClass>...ValidSwapsOnlySwapMoveFilter</filterClass>
+      </swapMoveSelector>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <swapMoveSelector/>

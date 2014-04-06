@@ -45,11 +45,6 @@ public class LocalSearchStepScope extends AbstractStepScope {
     }
 
     @Override
-    public boolean isBestSolutionCloningDelayed() {
-        return false;
-    }
-
-    @Override
     public int getUninitializedVariableCount() {
         return 0;
     }

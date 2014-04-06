@@ -25,12 +25,11 @@
 
       <listitem>
         <para><emphasis role="bold">Load a problem data set</emphasis> from your data layer, for example a 4 Queens
-        instance. Set it as the planning problem on the <literal>Solver</literal> with
-        <literal>Solver.setPlanningProblem(...)</literal>.</para>
+        instance. That is the planning problem.</para>
       </listitem>
 
       <listitem>
-        <para><emphasis role="bold">Solve it</emphasis> with <literal>Solver.solve()</literal>.</para>
+        <para><emphasis role="bold">Solve it</emphasis> with <literal>Solver.solve(planningProblem)</literal>.</para>
       </listitem>
 
       <listitem>
@@ -1334,10 +1333,8 @@ public interface Standstill {
       <para>A <literal>Solver</literal> implementation will solve your planning problem.</para>
 
       <programlisting language="java">public interface Solver {
-
-    void setPlanningProblem(Solution planningProblem);
     
-    void solve();
+    void solve(Solution planningProblem);
 
     Solution getBestSolution();
 
@@ -1368,8 +1365,7 @@ public interface Standstill {
 
       <para>Just set the planning problem, solve it and extract the best solution:</para>
 
-      <programlisting language="java">    solver.setPlanningProblem(planningProblem);
-    solver.solve();
+      <programlisting language="java">    solver.solve(planningProblem);
     Solution bestSolution = solver.getBestSolution();</programlisting>
 
       <para>For example in n queens, the method <literal>getBestSolution()</literal> will return an
@@ -1386,23 +1382,23 @@ public interface Standstill {
         </mediaobject>
       </figure>
 
-      <para>The <literal>solve()</literal> method can take a long time (depending on the problem size and the solver
+      <para>The <literal>solve(Solution)</literal> method can take a long time (depending on the problem size and the solver
       configuration). The <literal>Solver</literal> will remember (actually clone) the best solution it encounters
       during its solving. Depending on a number factors (including problem size, how much time the
       <literal>Solver</literal> has, the solver configuration, ...), that best solution will be a feasible or even an
       optimal solution.</para>
 
       <note>
-        <para>The <literal>Solution</literal> instance given to the method <literal>setPlanningProblem()</literal> will
+        <para>The <literal>Solution</literal> instance given to the method <literal>solve(Solution)</literal> will
         be changed by the <literal>Solver</literal>, but it do not mistake it for the best solution.</para>
 
         <para>The <literal>Solution</literal> instance returned by the method <literal>getBestSolution()</literal> will
-        most likely be a clone of the instance given to the method <literal>setPlanningProblem()</literal>, which means
+        most likely be a clone of the instance given to the method <literal>solve(Solution)</literal>, which means
         it's a different instance.</para>
       </note>
 
       <note>
-        <para>The <literal>Solution</literal> instance given to the method <literal>setPlanningProblem()</literal> does
+        <para>The <literal>Solution</literal> instance given to the method <literal>solve(Solution)</literal> does
         not need to be uninitialized. It can be partially or fully initialized, which is likely to be the case in <link
         linkend="repeatedPlanning">repeated planning</link>.</para>
       </note>

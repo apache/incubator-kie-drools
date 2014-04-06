@@ -38,7 +38,7 @@ public class DefaultSolverScope {
     protected ScoreDirector scoreDirector;
     protected Random workingRandom;
 
-    protected Score startingInitializedScore; // TODO after initialization => ambiguous with setPlanningProblem
+    protected Score startingInitializedScore; // TODO after initialization => ambiguous with solve()'s planningProblem
 
     protected Solution bestSolution;
     protected int bestUninitializedVariableCount; // TODO remove me by folding me into bestSolution.getScore()

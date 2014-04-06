@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.solution.Solution;
 
 /**
  * Delivered when the best {@link Solution} changes during solving.
- * Delivered in the solver thread (which is the thread that calls {@link Solver#solve()}.
+ * Delivered in the solver thread (which is the thread that calls {@link Solver#solve(Solution)}.
  */
 public class BestSolutionChangedEvent extends EventObject {
 

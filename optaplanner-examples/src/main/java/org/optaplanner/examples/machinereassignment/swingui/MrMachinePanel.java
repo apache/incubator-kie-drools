@@ -124,7 +124,7 @@ public class MrMachinePanel extends JPanel {
         resourceFieldMap = new LinkedHashMap<MrResource, JTextField>(resourceList.size());
         for (MrResource resource : resourceList) {
             long maximumCapacity = machine == null ? 0L : machine.getMachineCapacity(resource).getMaximumCapacity();
-            JTextField resourceField  = new JTextField("0 / " + maximumCapacity);
+            JTextField resourceField = new JTextField("0 / " + maximumCapacity);
             resourceFieldMap.put(resource, resourceField);
             resourceField.setEditable(false);
             resourceField.setEnabled(false);

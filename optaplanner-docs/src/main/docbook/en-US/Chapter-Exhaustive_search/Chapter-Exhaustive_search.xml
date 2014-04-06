@@ -28,22 +28,14 @@
         </imageobject>
       </mediaobject>
 
-      <para>Notice that it creates a search tree that explodes exponentially as the problem size increases. <emphasis
-      role="bold">Brute Force is mostly unusable for a real-world problem due to time limitations</emphasis>, as proven
-      by these scalability graphs from the <link linkend="benchmarkingAndTweaking">Benchmarker</link>, Brute Force hits
-      the wall:</para>
+      <para>Notice that it creates a search tree that explodes exponentially as the problem size increases, so it hits a
+      scalability wall.</para>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Exhaustive_search/bruteForceScalabilityNQueens.png"/>
-        </imageobject>
-      </mediaobject>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Exhaustive_search/bruteForceScalabilityCloudBalance.png"/>
-        </imageobject>
-      </mediaobject>
+      <important>
+        <para><emphasis role="bold">Brute Force is mostly unusable for a real-world problem due to time
+        limitations</emphasis>, as shown in <link linkend="scalabilityOfExhaustiveSearch">scalability of Exhaustive
+        Search</link>.</para>
+      </important>
     </section>
 
     <section>
@@ -93,6 +85,12 @@
 
       <para>Notice that Branch And Bound (much like Brute Force) creates a search tree that explodes exponentially as
       the problem size increases. So it hits the same scalability wall, only a little bit later.</para>
+
+      <important>
+        <para><emphasis role="bold">Brute Force is mostly unusable for a real-world problem due to time
+        limitations</emphasis>, as shown in <link linkend="scalabilityOfExhaustiveSearch">scalability of Exhaustive
+        Search</link>.</para>
+      </important>
     </section>
 
     <section>
@@ -149,5 +147,49 @@
         </listitem>
       </itemizedlist>
     </section>
+  </section>
+
+  <section xml:id="scalabilityOfExhaustiveSearch">
+    <title>Scalability of Exhaustive Search</title>
+
+    <para>Exhaustive Search variants suffer from 2 big scalability issues:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>They scale terribly memory wise.</para>
+      </listitem>
+
+      <listitem>
+        <para>They scale horribly performance wise.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>As shown in these time spent graphs from the <link linkend="benchmarkingAndTweaking">Benchmarker</link>, Brute
+    Force and Branch And Bound both hit a performance scalability wall. For example, on N queens it hits wall at a few
+    dozen queens:</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Exhaustive_search/exhaustiveSearchScalabilityNQueens.png"/>
+      </imageobject>
+    </mediaobject>
+
+    <para>In most use cases, such as Cloud Balancing, the wall appears out of thin air:</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Exhaustive_search/exhaustiveSearchScalabilityCloudBalance.png"/>
+      </imageobject>
+    </mediaobject>
+
+    <para><emphasis role="bold">Exhaustive Search hits this wall on small datasets already, so in production these
+    optimizations algorithms are mostly useless.</emphasis> Use Construction Heuristics with Local Search instead: those
+    can handle thousands of queens/computers easily.</para>
+
+    <note>
+      <para>Throwing hardware at these scalability issues has no noticeable impact. Newer and more hardware are just a
+      drop in the ocean. Moore's law cannot win against the onslaught of a few more planning entities in the
+      dataset.</para>
+    </note>
   </section>
 </chapter>

@@ -212,7 +212,7 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
                 ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
                 changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
                 if (configPolicy.isSortValuesByIncreasingStrengthEnabled()) {
-                    if (variableDescriptor.getValueRangeDescriptor().isEntityIndependent()) {
+                    if (variableDescriptor.isValueRangeEntityIndependent()) {
                         changeValueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
                     } else {
                         changeValueSelectorConfig.setCacheType(SelectionCacheType.STEP);

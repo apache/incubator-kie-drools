@@ -37,8 +37,7 @@ public class NQueensHelloWorld {
         NQueens unsolved8Queens = new NQueensGenerator().createNQueens(8);
 
         // Solve the problem
-        solver.setPlanningProblem(unsolved8Queens);
-        solver.solve();
+        solver.solve(unsolved8Queens);
         NQueens solved8Queens = (NQueens) solver.getBestSolution();
 
         // Display the result

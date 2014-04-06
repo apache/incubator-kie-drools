@@ -102,6 +102,7 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
         if (assertExpectedStepScore) {
             phaseScope.assertExpectedWorkingScore(stepScope.getScore(), nextStep);
         }
+        bestSolutionRecaller.processWorkingSolutionDuringStep(stepScope);
     }
 
     @Override
