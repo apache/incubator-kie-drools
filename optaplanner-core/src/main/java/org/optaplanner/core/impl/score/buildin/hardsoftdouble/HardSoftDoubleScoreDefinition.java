@@ -22,11 +22,12 @@ import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore
 import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScoreHolder;
 import org.optaplanner.core.api.score.constraint.primdouble.DoubleConstraintMatch;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
+import org.optaplanner.core.impl.score.definition.AbstractFeasibilityScoreDefinition;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrendLevel;
 
-public class HardSoftDoubleScoreDefinition extends AbstractScoreDefinition<HardSoftDoubleScore> {
+public class HardSoftDoubleScoreDefinition extends AbstractFeasibilityScoreDefinition<HardSoftDoubleScore> {
 
     private double hardScoreTimeGradientWeight = 0.75; // TODO this is a guess
 
@@ -109,6 +110,14 @@ public class HardSoftDoubleScoreDefinition extends AbstractScoreDefinition<HardS
         return HardSoftDoubleScore.valueOf(
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getHardScore() : Double.NEGATIVE_INFINITY,
                 trendLevels[1] == InitializingScoreTrendLevel.ONLY_UP ? score.getSoftScore() : Double.NEGATIVE_INFINITY);
+    }
+
+    public double calculateFeasibilityTimeGradient(HardSoftDoubleScore startScore, HardSoftDoubleScore score) {
+        if (score.getHardScore() <= startScore.getHardScore()) {
+            return 0.0;
+        }
+        double timeGradient = (startScore.getHardScore() - score.getHardScore()) / startScore.getHardScore();
+        return Math.min(timeGradient, 1.0);
     }
 
 }

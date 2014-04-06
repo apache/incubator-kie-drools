@@ -23,10 +23,11 @@ import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDeci
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreHolder;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
+import org.optaplanner.core.impl.score.definition.AbstractFeasibilityScoreDefinition;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-public class HardSoftBigDecimalScoreDefinition extends AbstractScoreDefinition<HardSoftBigDecimalScore> {
+public class HardSoftBigDecimalScoreDefinition extends AbstractFeasibilityScoreDefinition<HardSoftBigDecimalScore> {
 
     private double hardScoreTimeGradientWeight = 0.75; // TODO this is a guess
 
@@ -107,6 +108,14 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractScoreDefinition<H
         // TODO https://issues.jboss.org/browse/PLANNER-232
         throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +
                 " because a BigDecimal cannot represent infinity.");
+    }
+
+    public double calculateFeasibilityTimeGradient(HardSoftBigDecimalScore startScore, HardSoftBigDecimalScore score) {
+        if (score.getHardScore().compareTo(startScore.getHardScore()) <= 0) {
+            return 0.0;
+        }
+        double timeGradient = (startScore.getHardScore().subtract(score.getHardScore())).divide(startScore.getHardScore()).doubleValue();
+        return Math.min(timeGradient, 1.0);
     }
 
 }

@@ -23,11 +23,12 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScoreHolder;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
+import org.optaplanner.core.impl.score.definition.AbstractFeasibilityScoreDefinition;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrendLevel;
 
-public class BendableScoreDefinition extends AbstractScoreDefinition<BendableScore> {
+public class BendableScoreDefinition extends AbstractFeasibilityScoreDefinition<BendableScore> {
 
     private final int hardLevelCount;
     private final int softLevelCount;
@@ -167,6 +168,60 @@ public class BendableScoreDefinition extends AbstractScoreDefinition<BendableSco
                     ? score.getSoftScore(i) : Integer.MIN_VALUE;
         }
         return BendableScore.valueOf(hardScores, softScores);
+    }
+
+    // TODO refactor duplication
+    public double calculateFeasibilityTimeGradient(BendableScore startScore, BendableScore score) {
+        if (compareBendableScoresHardLevelsOnly(score, startScore) <= 0) {
+            return 0.0;
+        }
+        double timeGradient = 0.0;
+        double remainingTimeGradient = 1.0;
+        int levelCount = hardLevelCount;
+        for (int i = 0; i < levelCount; i++) {
+            double levelTimeGradientWeight;
+            if (i != (levelCount - 1)) {
+                levelTimeGradientWeight = remainingTimeGradient * recursiveTimeGradientWeight;
+                remainingTimeGradient -= levelTimeGradientWeight;
+            } else {
+                levelTimeGradientWeight = remainingTimeGradient;
+            }
+            int startScoreLevel = startScore.getHardScore(i);
+            int endScoreLevel = 0;
+            int scoreLevel = score.getHardScore(i);
+            if (scoreLevel >= endScoreLevel) {
+                timeGradient += levelTimeGradientWeight;
+            } else {
+                if (scoreLevel <= startScoreLevel) {
+                    // No change: timeGradient += 0.0
+                } else {
+                    int levelTotal = endScoreLevel - startScoreLevel;
+                    int levelDelta = scoreLevel - startScoreLevel;
+                    double levelTimeGradient = (double) levelDelta / (double) levelTotal;
+                    timeGradient += levelTimeGradient * levelTimeGradientWeight;
+                }
+            }
+
+        }
+        if (timeGradient > 1.0) {
+            // Rounding error due to calculating with doubles
+            timeGradient = 1.0;
+        }
+        return timeGradient;
+    }
+
+    private int compareBendableScoresHardLevelsOnly(BendableScore score1, BendableScore score2) {
+        score1.validateCompatible(score2);
+        for (int i = 0; i < score1.getHardLevelCount(); i++) {
+            if (score1.getHardScore(i) != score2.getHardScore(i)) {
+                if (score1.getHardScore(i) < score2.getHardScore(i)) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
+        }
+        return 0;
     }
 
 }
