@@ -1,6 +1,7 @@
-package org.drools.workbench.models.guided.scorecard.backend;
+package org.drools.workbench.models.guided.scorecard.backend.base;
 
 import org.drools.compiler.kie.builder.impl.FormatConverter;
+import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardConverter;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

@@ -1,12 +1,11 @@
-package org.drools.workbench.models.guided.scorecard.backend;
+package org.drools.workbench.models.guided.scorecard.backend.test1;
 
 import java.util.List;
 
-import org.drools.workbench.models.datamodel.imports.Import;
+import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardXMLPersistence;
 import org.drools.workbench.models.guided.scorecard.shared.Attribute;
 import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -17,7 +16,7 @@ import org.kie.internal.builder.InternalKieBuilder;
 
 import static org.junit.Assert.*;
 
-public class GuidedScoreCardIntegrationTest {
+public class GuidedScoreCardIntegrationJavaClassesOnClassPathTest {
 
     @Test
     public void testEmptyScoreCardCompilation() throws Exception {
@@ -97,21 +96,19 @@ public class GuidedScoreCardIntegrationTest {
         final ScoreCardModel model = new ScoreCardModel();
         model.setName( "test" );
 
-        model.setPackageName( "org.drools.workbench.models.guided.scorecard.backend" );
-        model.getImports().addImport( new Import( "org.drools.workbench.models.guided.scorecard.backend.Applicant" ) );
-        model.getImports().addImport( new Import( "org.drools.workbench.models.guided.scorecard.backend.ApplicantAttribute" ) );
+        model.setPackageName( "org.drools.workbench.models.guided.scorecard.backend.test1" );
         model.setReasonCodesAlgorithm( "none" );
         model.setBaselineScore( 0.0 );
         model.setInitialScore( 0.0 );
 
-        model.setFactName( "org.drools.workbench.models.guided.scorecard.backend.Applicant" );
+        model.setFactName( "org.drools.workbench.models.guided.scorecard.backend.test1.Applicant" );
         model.setFieldName( "score" );
         model.setUseReasonCodes( false );
         model.setReasonCodeField( "" );
 
         final Characteristic c = new Characteristic();
         c.setName( "c1" );
-        c.setFact( "org.drools.workbench.models.guided.scorecard.backend.ApplicantAttribute" );
+        c.setFact( "org.drools.workbench.models.guided.scorecard.backend.test1.ApplicantAttribute" );
         c.setDataType( "int" );
         c.setField( "attribute" );
         c.setBaselineScore( 0.0 );
