@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.models.guided.scorecard.backend;
+package org.drools.workbench.models.guided.scorecard.backend.test1;
 
-public class Applicant {
+public class ApplicantAttribute {
 
-    private double score;
+    private int attribute;
 
-    public double getScore() {
-        return score;
+    public int getAttribute() {
+        return attribute;
     }
 
-    public void setScore( double score ) {
-        this.score = score;
+    public void setAttribute( int attribute ) {
+        this.attribute = attribute;
     }
 
 }

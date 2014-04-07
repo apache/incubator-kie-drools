@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.models.guided.scorecard.backend;
+package org.drools.workbench.models.guided.scorecard.backend.base;
 
 import org.dmg.pmml.pmml_4_1.descr.PMML;
 import org.dmg.pmml.pmml_4_1.descr.Scorecard;
@@ -23,6 +23,7 @@ import org.drools.scorecards.StringUtil;
 import org.drools.scorecards.pmml.ScorecardPMMLGenerator;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
 import org.drools.workbench.models.datamodel.imports.Import;
+import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardDRLPersistence;
 import org.drools.workbench.models.guided.scorecard.shared.Attribute;
 import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
@@ -157,19 +158,19 @@ public class GuidedScoreCardDRLPersistenceTest {
         model.setName( "test" );
 
         model.setPackageName( "org.drools.workbench.models.guided.scorecard.backend" );
-        model.getImports().addImport( new Import( "org.drools.workbench.models.guided.scorecard.backend.Applicant" ) );
+        model.getImports().addImport( new Import( "org.drools.workbench.models.guided.scorecard.backend.test1.Applicant" ) );
         model.setReasonCodesAlgorithm( "none" );
         model.setBaselineScore( 0.0 );
         model.setInitialScore( 0.0 );
 
-        model.setFactName( "org.drools.workbench.models.guided.scorecard.backend.Applicant" );
+        model.setFactName( "org.drools.workbench.models.guided.scorecard.backend.test1.Applicant" );
         model.setFieldName( "score" );
         model.setUseReasonCodes( false );
         model.setReasonCodeField( "" );
 
         final Characteristic c = new Characteristic();
         c.setName( "c1" );
-        c.setFact( "org.drools.workbench.models.guided.scorecard.backend.Applicant" );
+        c.setFact( "org.drools.workbench.models.guided.scorecard.backend.test1.Applicant" );
         c.setDataType( "Double" );
         c.setField( "age" );
         c.setBaselineScore( 0.0 );
