@@ -55,6 +55,21 @@ public class JAASUserGroupCallbackImpl extends AbstractUserGroupInfo implements 
 	protected static final String DEFAULT_PROPERTIES_NAME = "classpath:/jbpm.usergroup.callback.properties";
 	
 	private ServiceLoader<UserGroupAdapter> ugAdapterServiceLoader = ServiceLoader.load(UserGroupAdapter.class);
+
+	private static final ThreadLocal<UserGroupAdapter> externalUserGroupAdapterLocal = new ThreadLocal<UserGroupAdapter>();
+
+	public static void addExternalUserGroupAdapter(UserGroupAdapter externalUserGroupAdapter) { 
+	    if( externalUserGroupAdapterLocal.get() != null ) { 
+	        UserGroupAdapter adapter = externalUserGroupAdapterLocal.get();
+	        throw new IllegalStateException("The external UserGroupAdapter has already been set! "
+	                + "(" + adapter.getClass().getName() + ")");
+	    }
+	    externalUserGroupAdapterLocal.set(externalUserGroupAdapter);
+	}
+	
+	public static void clearExternalUserGroupAdapter() { 
+	    externalUserGroupAdapterLocal.set(null);
+	}
 	
 	private String rolePrincipleName = null;
 
@@ -93,8 +108,7 @@ public class JAASUserGroupCallbackImpl extends AbstractUserGroupInfo implements 
 		return true;
 	}
 
-	public List<String> getGroupsForUser(String userId, List<String> groupIds,
-			List<String> allExistingGroupIds) {
+	public List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds) {
 		List<String> roles = new ArrayList<String>();
         try {
             Subject subject = getSubjectFromContainer();
@@ -103,6 +117,7 @@ public class JAASUserGroupCallbackImpl extends AbstractUserGroupInfo implements 
                 Set<Principal> principals = subject.getPrincipals();
     
                 if (principals != null) {
+				    logger.debug("Adding roles from JAAS subject");
                     roles = new ArrayList<String>();
                     for (Principal principal : principals) {
                         if (principal instanceof Group  && rolePrincipleName.equalsIgnoreCase(principal.getName())) {
@@ -111,29 +126,37 @@ public class JAASUserGroupCallbackImpl extends AbstractUserGroupInfo implements 
                             while (groups.hasMoreElements()) {
                                 Principal groupPrincipal = (Principal) groups.nextElement();
                                 roles.add(groupPrincipal.getName());
-                               
                             }
                             break;
-    
                         }
-    
                     }
                 }
+                
             } else {
 				// use adapters
 				for (UserGroupAdapter adapter : ugAdapterServiceLoader) {
+				    logger.debug("Adding roles from UserGroupAdapter service ({})", adapter.getClass().getSimpleName());
 					List<String> userRoles = adapter.getGroupsForUser(userId);
 					if (userRoles != null) {
 						roles.addAll(userRoles);
 					}
 				}
 			}
+        
+            UserGroupAdapter adapter = externalUserGroupAdapterLocal.get();
+            if( adapter != null ) { 
+                logger.debug("Adding roles from external UserGroupAdapter ({})", adapter.getClass().getSimpleName());
+                List<String> userRoles = adapter.getGroupsForUser(userId);
+                if (userRoles != null) {
+                    roles.addAll(userRoles);
+                }
+            }
         } catch (Exception e) {
-            logger.error("Error when getting user roles, userid:" + userId, e);
+            logger.error("Error when getting user roles for userid:" + userId, e);
         }
         return roles;
 	}
-	
+
 	protected Subject getSubjectFromContainer() {
          try {
              return (Subject) PolicyContext.getContext( "javax.security.auth.Subject.container" );

@@ -103,7 +103,7 @@ public class ComparePair {
                 if (skip) {
                     continue;
                 }
-                if (!(origField instanceof Enum) && origField.getClass().getPackage().getName().startsWith("org.")) {
+                if (origField != null && !(origField instanceof Enum) && origField.getClass().getPackage().getName().startsWith("org.")) {
                     ComparePair newComPair = new ComparePair(origField, copyField, getInterface(origField));
                     newComPair.addNullFields(this.nullFields);
                     cantCompare.add(newComPair);
@@ -184,11 +184,8 @@ public class ComparePair {
                 assertFalse(failMsg + "!", nullFound);
 
                 if (copyFieldVal != origFieldVal) {
-                    if (copyFieldVal == null) {
-                        fail(failMsg + " in copy!");
-                    } else if (origFieldVal == null) {
-                        fail(failMsg + "in original!");
-                    }
+                    assertNotNull(failMsg + "in copy!", copyFieldVal);
+                    assertNotNull(failMsg + "in original!", origFieldVal);
                     if (origFieldVal.getClass().getPackage().getName().startsWith("java.")) {
                         assertEquals(origClass.getSimpleName() + "." + field.getName(), origFieldVal, copyFieldVal);
                     } else {

@@ -169,7 +169,7 @@ public abstract class HumanTaskServicesBaseTest {
             // unmarshal
             Unmarshaller unmarshaller = JAXBContext.newInstance(JaxbContent.class).createUnmarshaller();
             ByteArrayInputStream inputStream = new ByteArrayInputStream(stringWriter.toString().getBytes());
-             xmlCopy = (JaxbContent) unmarshaller.unmarshal(inputStream);
+            xmlCopy = (JaxbContent) unmarshaller.unmarshal(inputStream);
 
             for(Field field : JaxbContent.class.getDeclaredFields()) { 
                 field.setAccessible(true);
@@ -187,6 +187,7 @@ public abstract class HumanTaskServicesBaseTest {
         }
         
         Object orig = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        assertNotNull( "Round tripped JaxbContent is null!", xmlCopy );
         Object roundTrip = ContentMarshallerHelper.unmarshall(xmlCopy.getContent(), null);
         Assert.assertEquals(orig, roundTrip);
     }
