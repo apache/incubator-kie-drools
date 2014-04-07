@@ -27,6 +27,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.jbpm.process.audit.event.AuditEvent;
 import org.slf4j.Logger;
@@ -39,6 +40,7 @@ public class VariableInstanceLog implements Serializable, AuditEvent {
 	private static final Logger logger = LoggerFactory.getLogger(VariableInstanceLog.class);
 	
 	private static final long serialVersionUID = 510l;
+	@Transient
 	private final int VARIABLE_LOG_LENGTH = Integer.parseInt(System.getProperty("org.jbpm.var.log.length", "255"));
 	
     @Id
