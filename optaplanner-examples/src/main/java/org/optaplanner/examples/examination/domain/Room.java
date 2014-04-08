@@ -42,12 +42,12 @@ public class Room extends AbstractPersistable {
     }
 
     public String getLabel() {
-        return "Room " + id;
+        return Long.toString(id);
     }
 
     @Override
     public String toString() {
-        return id + " {C" + capacity + "}";
+        return Long.toString(id);
     }
 
 }

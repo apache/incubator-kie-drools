@@ -38,7 +38,7 @@ import org.optaplanner.persistence.xstream.XStreamScoreConverter;
 @PlanningSolution()
 @XStreamAlias("Examination")
 public class Examination extends AbstractPersistable
-        implements Solution<HardSoftScore>, PlanningCloneable<Examination> {
+        implements Solution<HardSoftScore> {
 
     private InstitutionParametrization institutionParametrization;
 
@@ -158,7 +158,6 @@ public class Examination extends AbstractPersistable
                 if (leftTopic.getId() < rightTopic.getId()) {
                     int studentSize = 0;
                     for (Student student : leftTopic.getStudentList()) {
-                        // TODO performance can be improved hashing leftTopicStudentList?
                         if (rightTopic.getStudentList().contains(student)) {
                             studentSize++;
                         }
@@ -170,29 +169,6 @@ public class Examination extends AbstractPersistable
             }
         }
         return topicConflictList;
-    }
-
-    /**
-     * Clone will only deep copy the {@link #examList}.
-     */
-    public Examination planningClone() {
-        Examination clone = new Examination();
-        clone.id = id;
-        clone.institutionParametrization = institutionParametrization;
-        clone.studentList = studentList;
-        clone.topicList = topicList;
-        clone.periodList = periodList;
-        clone.roomList = roomList;
-        clone.periodPenaltyList = periodPenaltyList;
-        clone.roomPenaltyList = roomPenaltyList;
-        List<Exam> clonedExamList = new ArrayList<Exam>(examList.size());
-        for (Exam exam : examList) {
-            Exam clonedExam = exam.planningClone();
-            clonedExamList.add(clonedExam);
-        }
-        clone.examList = clonedExamList;
-        clone.score = score;
-        return clone;
     }
 
 }

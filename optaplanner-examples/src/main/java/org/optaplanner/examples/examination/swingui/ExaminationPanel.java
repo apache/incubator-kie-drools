@@ -21,12 +21,9 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -42,6 +39,7 @@ import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.examination.domain.Exam;
 import org.optaplanner.examples.examination.domain.Examination;
+import org.optaplanner.examples.examination.domain.FollowingExam;
 import org.optaplanner.examples.examination.domain.Period;
 import org.optaplanner.examples.examination.domain.Room;
 
@@ -106,8 +104,8 @@ public class ExaminationPanel extends SolutionPanel {
     private void fillCells(Examination examination) {
         roomsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Time")));
         fillRoomCells(examination);
-        fillDayCells(examination);
-        fillLectureCells(examination);
+        fillPeriodCells(examination);
+        fillExamCells(examination);
     }
 
     private void fillRoomCells(Examination examination) {
@@ -119,7 +117,7 @@ public class ExaminationPanel extends SolutionPanel {
                 createHeaderPanel(new JLabel("Unassigned", SwingConstants.CENTER)));
     }
 
-    private void fillDayCells(Examination examination) {
+    private void fillPeriodCells(Examination examination) {
         for (Period period : examination.getPeriodList()) {
             roomsPanel.addRowHeader(HEADER_COLUMN, period,
                     createHeaderPanel(new JLabel(period.getLabel())));
@@ -128,7 +126,7 @@ public class ExaminationPanel extends SolutionPanel {
                 createHeaderPanel(new JLabel("Unassigned")));
     }
 
-    private void fillLectureCells(Examination examination) {
+    private void fillExamCells(Examination examination) {
         TangoColorFactory tangoColorFactory = new TangoColorFactory();
         for (Exam exam : examination.getExamList()) {
             Color examColor = tangoColorFactory.pickColor(exam);
@@ -150,6 +148,9 @@ public class ExaminationPanel extends SolutionPanel {
         JButton button = new JButton(new ExamAction(exam));
         button.setMargin(new Insets(0, 0, 0, 0));
         button.setBackground(color);
+        if (exam instanceof FollowingExam) {
+            button.setForeground(TangoColorFactory.ALUMINIUM_5);
+        }
         return button;
     }
 

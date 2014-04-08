@@ -73,7 +73,7 @@ public class Topic extends AbstractPersistable {
     }
 
     public String toString() {
-        return id + " {D" + duration + "|S" + getStudentSize() + "}";
+        return Long.toString(id);
     }
 
 }
