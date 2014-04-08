@@ -2,17 +2,18 @@ package org.jbpm.services.task.identity;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 import java.util.Properties;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.internal.task.api.UserGroupCallback;
-//Ignore it as it relies on external LDAP server
-@Ignore
+import org.kie.api.task.UserGroupCallback;
+//Ignore most of the tests as they rely on external LDAP server
 public class LDAPUserGroupCallbackImplTest {
 
+	@Ignore
     @Test
     public void testUserExists() {
         Properties properties = new Properties();
@@ -29,6 +30,7 @@ public class LDAPUserGroupCallbackImplTest {
         assertTrue(userExists);
     }
     
+	@Ignore
     @Test
     public void testGroupExists() {
         Properties properties = new Properties();
@@ -45,6 +47,7 @@ public class LDAPUserGroupCallbackImplTest {
         assertTrue(userExists);
     }
     
+	@Ignore
     @Test
     public void testUserGroup() {
         Properties properties = new Properties();
@@ -61,6 +64,7 @@ public class LDAPUserGroupCallbackImplTest {
         assertEquals(3, userGroups.size());
     }
     
+	@Ignore
     @Test
     public void testDefaultPropsUserExists() {
         
@@ -70,6 +74,7 @@ public class LDAPUserGroupCallbackImplTest {
         assertTrue(userExists);
     }
     
+	@Ignore
     @Test(expected=IllegalArgumentException.class)
     public void testValidationErrorUserExists() {
         
@@ -79,6 +84,7 @@ public class LDAPUserGroupCallbackImplTest {
         assertTrue(userExists);
     }
     
+	@Ignore
     @Test(expected=IllegalArgumentException.class)
     public void testValidationErrorGroupExists() {
         
@@ -88,6 +94,7 @@ public class LDAPUserGroupCallbackImplTest {
         assertTrue(userExists);
     }
     
+	@Ignore
     @Test(expected=IllegalArgumentException.class)
     public void testValidationErrorUserGroup() {
         Properties properties = new Properties();
@@ -96,5 +103,22 @@ public class LDAPUserGroupCallbackImplTest {
         
         List<String> userGroups = ldapUserGroupCallback.getGroupsForUser("john", null, null);
         assertEquals(1, userGroups.size());
+    }
+	
+	@Test
+	public void testCreateCallbackFromProperties() {
+        
+        UserGroupCallback ldapUserGroupCallback = new LDAPUserGroupCallbackImpl(true);
+        
+        assertNotNull(ldapUserGroupCallback);
+    }
+	
+	@Test
+	public void testCreateCallbackFromCustomProperties() {
+		System.setProperty("jbpm.usergroup.callback.properties", "/jbpm.usergroup.callback.properties");
+        UserGroupCallback ldapUserGroupCallback = new LDAPUserGroupCallbackImpl(true);
+        
+        assertNotNull(ldapUserGroupCallback);
+        System.clearProperty("jbpm.usergroup.callback.properties");
     }
 }

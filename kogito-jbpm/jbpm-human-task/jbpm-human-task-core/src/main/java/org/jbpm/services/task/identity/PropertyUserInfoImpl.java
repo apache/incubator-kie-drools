@@ -14,18 +14,16 @@ import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.UserInfo;
 import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 
-public class PropertyUserInfoImpl implements UserInfo {
+public class PropertyUserInfoImpl extends AbstractUserGroupInfo implements UserInfo {
     
     protected Map<String, Map<String, Object>> registry = new HashMap<String, Map<String,Object>>();
 
     //no no-arg constructor to prevent cdi from auto deploy
     public PropertyUserInfoImpl(boolean activate) {
         try {
-        Properties registryProps = new Properties();
-        // BZ-1037445: Obtain the properties file from the webapp classload (current thread classloader).
-        // If not, when deploying the app into EAP static modules will fail.
-        registryProps.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("/userinfo.properties"));
-        buildRegistry(registryProps);
+        	String propertiesLocation = System.getProperty("jbpm.user.info.properties");
+	        Properties registryProps = readProperties(propertiesLocation, "classpath:/userinfo.properties");
+	        buildRegistry(registryProps);
         } catch (Exception e) {
             throw new IllegalStateException("Problem loading userinfo properties", e);
         }

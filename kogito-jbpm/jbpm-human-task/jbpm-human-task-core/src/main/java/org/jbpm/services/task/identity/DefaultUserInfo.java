@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class DefaultUserInfo implements UserInfo {
+public class DefaultUserInfo extends AbstractUserGroupInfo implements UserInfo {
     
 	private static final Logger logger = LoggerFactory.getLogger(DefaultUserInfo.class);
     protected Map<String, Map<String, Object>> registry = new HashMap<String, Map<String,Object>>();

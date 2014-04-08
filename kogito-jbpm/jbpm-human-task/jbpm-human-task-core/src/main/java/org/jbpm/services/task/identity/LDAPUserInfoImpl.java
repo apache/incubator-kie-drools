@@ -39,11 +39,11 @@ import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LDAPUserInfoImpl implements UserInfo {
+public class LDAPUserInfoImpl extends AbstractUserGroupInfo implements UserInfo {
     
     private static final Logger logger = LoggerFactory.getLogger(LDAPUserInfoImpl.class);
     
-    protected static final String DEFAULT_PROPERTIES_NAME = "/jbpm.user.info.properties";
+    protected static final String DEFAULT_PROPERTIES_NAME = "classpath:/jbpm.user.info.properties";
     
     public static final String BIND_USER = "ldap.bind.user";
     public static final String BIND_PWD = "ldap.bind.pwd";
@@ -73,21 +73,7 @@ public class LDAPUserInfoImpl implements UserInfo {
     public LDAPUserInfoImpl(boolean activate) {
         String propertiesLocation = System.getProperty("jbpm.user.info.properties");
         
-        if (propertiesLocation == null) {
-            propertiesLocation = DEFAULT_PROPERTIES_NAME;
-        }
-        logger.debug("Callback properties will be loaded from {}", propertiesLocation);
-        InputStream in = this.getClass().getResourceAsStream(propertiesLocation);
-        if (in != null) {
-            config = new Properties();
-            try {
-                config.load(in);
-            } catch (IOException e) {
-                e.printStackTrace();
-                config = null;
-            }
-        }
-        
+        config = readProperties(propertiesLocation, DEFAULT_PROPERTIES_NAME);
         validate();
     }
     

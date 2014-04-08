@@ -15,8 +15,6 @@
  */
 package org.jbpm.services.task.identity;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.security.Principal;
 import java.security.acl.Group;
 import java.util.ArrayList;
@@ -30,7 +28,7 @@ import javax.security.auth.Subject;
 import javax.security.jacc.PolicyContext;
 
 import org.jbpm.services.task.identity.adapter.UserGroupAdapter;
-import org.kie.internal.task.api.UserGroupCallback;
+import org.kie.api.task.UserGroupCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,11 +48,11 @@ import org.slf4j.LoggerFactory;
  * 
  *
  */
-public class JAASUserGroupCallbackImpl implements UserGroupCallback {
+public class JAASUserGroupCallbackImpl extends AbstractUserGroupInfo implements UserGroupCallback {
 	
 	private static final Logger logger = LoggerFactory.getLogger(JAASUserGroupCallbackImpl.class);
 	
-	protected static final String DEFAULT_PROPERTIES_NAME = "/jbpm.usergroup.callback.properties";
+	protected static final String DEFAULT_PROPERTIES_NAME = "classpath:/jbpm.usergroup.callback.properties";
 	
 	private ServiceLoader<UserGroupAdapter> ugAdapterServiceLoader = ServiceLoader.load(UserGroupAdapter.class);
 	
@@ -67,23 +65,11 @@ public class JAASUserGroupCallbackImpl implements UserGroupCallback {
 		
 		String propertiesLocation = System.getProperty("jbpm.usergroup.callback.properties");
         
-        if (propertiesLocation == null) {
-            propertiesLocation = DEFAULT_PROPERTIES_NAME;
-        }
- 
-        InputStream in = this.getClass().getResourceAsStream(propertiesLocation);
-        if (in != null) {
-            Properties config = new Properties();
-            try {
-                config.load(in);
-                
-                this.rolePrincipleName = config.getProperty("jaas.role.principle.name");
-            } catch (IOException e) {
-                logger.error("Error when loading properties for JAAS user group callback", e);
-                config = null;
-            }
-        }
-	}
+		Properties config = readProperties(propertiesLocation, DEFAULT_PROPERTIES_NAME);
+		if (config != null) {
+			this.rolePrincipleName = config.getProperty("jaas.role.principle.name");
+		}
+ 	}
 	
 	public JAASUserGroupCallbackImpl(String rolesPrincipleName) {
 		this.rolePrincipleName = rolesPrincipleName;

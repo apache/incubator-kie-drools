@@ -17,8 +17,6 @@
 package org.jbpm.services.task.identity;
 
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -31,7 +29,7 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
 
-import org.kie.internal.task.api.UserGroupCallback;
+import org.kie.api.task.UserGroupCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,11 +56,11 @@ import org.slf4j.LoggerFactory;
  *  <li></li>
  * </ul>
  */
-public class LDAPUserGroupCallbackImpl implements UserGroupCallback {
+public class LDAPUserGroupCallbackImpl extends AbstractUserGroupInfo implements UserGroupCallback {
     
     private static final Logger logger = LoggerFactory.getLogger(LDAPUserGroupCallbackImpl.class);
     
-    protected static final String DEFAULT_PROPERTIES_NAME = "/jbpm.usergroup.callback.properties";
+    protected static final String DEFAULT_PROPERTIES_NAME = "classpath:/jbpm.usergroup.callback.properties";
     
     public static final String BIND_USER = "ldap.bind.user";
     public static final String BIND_PWD = "ldap.bind.pwd";
@@ -85,21 +83,7 @@ public class LDAPUserGroupCallbackImpl implements UserGroupCallback {
     public LDAPUserGroupCallbackImpl(boolean activate) {
         String propertiesLocation = System.getProperty("jbpm.usergroup.callback.properties");
         
-        if (propertiesLocation == null) {
-            propertiesLocation = DEFAULT_PROPERTIES_NAME;
-        }
-        logger.debug("Callback properties will be loaded from {}", propertiesLocation);
-        InputStream in = this.getClass().getResourceAsStream(propertiesLocation);
-        if (in != null) {
-            config = new Properties();
-            try {
-                config.load(in);
-            } catch (IOException e) {
-                e.printStackTrace();
-                config = null;
-            }
-        }
-       
+        config = readProperties(propertiesLocation, DEFAULT_PROPERTIES_NAME);       
         validate();
     }
     
