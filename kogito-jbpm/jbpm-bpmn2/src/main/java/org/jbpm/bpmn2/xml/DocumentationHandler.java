@@ -58,7 +58,7 @@ public class DocumentationHandler extends BaseAbstractHandler implements Handler
 		if (parent instanceof NodeImpl) {
 	        String text = ((Text)element.getChildNodes().item( 0 )).getWholeText();
 	        if (text != null) {
-	            text.trim();
+	            text = text.trim();
 	            if ("".equals(text)) {
 	                text = null;
 	            }
