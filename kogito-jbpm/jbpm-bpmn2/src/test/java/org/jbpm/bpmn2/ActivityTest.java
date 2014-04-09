@@ -1342,4 +1342,10 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         // then check child process executed nodes - is there better way to get child process id than simply increment?
         assertNodeTriggered(processInstance.getId() + 1, "StartProcess", "Task 1", "End");
     }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testInvalidServiceTask() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-InvalidServiceProcess.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+    }
 }

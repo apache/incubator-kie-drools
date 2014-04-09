@@ -62,6 +62,10 @@ public class InterfaceHandler extends BaseAbstractHandler implements Handler {
 		String id = attrs.getValue("id");
 		String name = attrs.getValue("name");
 		String implRef = attrs.getValue("implementationRef");
+		
+		if (name == null || name.isEmpty()) {
+			throw new IllegalArgumentException("Interface name is required attribute");
+		}
 
 		ProcessBuildData buildData = (ProcessBuildData) parser.getData();
 		List<Interface> interfaces = (List<Interface>) buildData.getMetaData("Interfaces");

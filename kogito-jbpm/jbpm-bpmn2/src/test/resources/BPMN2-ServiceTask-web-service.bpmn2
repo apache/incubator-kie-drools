@@ -8,7 +8,7 @@
   <bpmn2:itemDefinition id="_sItem2" structureRef="java.lang.String"/>
   <bpmn2:itemDefinition id="_2_InMessageType" structureRef="java.lang.String"/>
   <bpmn2:message id="_2_InMessage" itemRef="_2_InMessageType" name="_2_InMessage"/>
-  <bpmn2:interface id="_2_ServiceInterface" implementationRef="SimpleService">
+  <bpmn2:interface id="_2_ServiceInterface" name="justaname" implementationRef="SimpleService">
     <bpmn2:operation id="_2_ServiceOperation" implementationRef="hello" name="hello">
       <bpmn2:inMessageRef>_2_InMessage</bpmn2:inMessageRef>
     </bpmn2:operation>
