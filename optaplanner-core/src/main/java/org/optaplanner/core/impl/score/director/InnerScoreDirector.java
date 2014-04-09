@@ -126,7 +126,7 @@ public interface InnerScoreDirector extends ScoreDirector {
      * @param workingScore never null
      * @param completedAction sometimes null, when assertion fails then the completedAction's {@link Object#toString()}
      * is included* in the exception message
-     * @see ScoreDirectorFactory#assertScoreFromScratch(Solution)
+     * @see InnerScoreDirectorFactory#assertScoreFromScratch(Solution)
      */
     void assertWorkingScoreFromScratch(Score workingScore, Object completedAction);
 
