@@ -17,10 +17,7 @@
 package org.optaplanner.examples.examination.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.examples.examination.domain.solver.ExamDifficultyWeightFactory;
 
-@PlanningEntity(difficultyWeightFactoryClass = ExamDifficultyWeightFactory.class)
 @XStreamAlias("FollowingExam")
 public class FollowingExam extends Exam {
 

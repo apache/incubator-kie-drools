@@ -86,6 +86,7 @@ public class ExamDifficultyWeightFactory implements SelectionSorterWeightFactory
             return new CompareToBuilder()
                     .append(studentSizeTotal, other.studentSizeTotal)
                     .append(maximumDuration, other.maximumDuration)
+                    .append(exam instanceof LeadingExam, other.exam instanceof LeadingExam)
                     .append(exam.getId(), other.exam.getId())
                     .toComparison();
         }

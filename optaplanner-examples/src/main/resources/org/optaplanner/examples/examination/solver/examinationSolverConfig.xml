@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-  <environmentMode>FAST_ASSERT</environmentMode>
+  <!--<environmentMode>FAST_ASSERT</environmentMode>-->
   <solutionClass>org.optaplanner.examples.examination.domain.Examination</solutionClass>
   <planningEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</planningEntityClass>
-  <planningEntityClass>org.optaplanner.examples.examination.domain.FollowingExam</planningEntityClass>
   <planningEntityClass>org.optaplanner.examples.examination.domain.Exam</planningEntityClass>
 
   <scoreDirectorFactory>
@@ -24,26 +23,7 @@
   <constructionHeuristic>
     <queuedEntityPlacer>
       <entitySelector id="placerEntitySelector">
-        <entityClass>org.optaplanner.examples.examination.domain.FollowingExam</entityClass>
-        <cacheType>PHASE</cacheType>
-        <selectionOrder>SORTED</selectionOrder>
-        <sorterManner>DECREASING_DIFFICULTY</sorterManner>
-      </entitySelector>
-      <changeMoveSelector>
-        <entitySelector mimicSelectorRef="placerEntitySelector"/>
-        <valueSelector>
-          <variableName>room</variableName>
-          <cacheType>PHASE</cacheType>
-          <selectionOrder>SORTED</selectionOrder>
-          <sorterManner>INCREASING_STRENGTH</sorterManner>
-        </valueSelector>
-      </changeMoveSelector>
-    </queuedEntityPlacer>
-  </constructionHeuristic>
-  <constructionHeuristic>
-    <queuedEntityPlacer>
-      <entitySelector id="placerEntitySelector">
-        <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
+        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
         <cacheType>PHASE</cacheType>
         <selectionOrder>SORTED</selectionOrder>
         <sorterManner>DECREASING_DIFFICULTY</sorterManner>
@@ -52,6 +32,7 @@
         <changeMoveSelector>
           <entitySelector mimicSelectorRef="placerEntitySelector"/>
           <valueSelector>
+            <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
             <variableName>period</variableName>
             <cacheType>PHASE</cacheType>
             <!--<selectionOrder>SORTED</selectionOrder>-->
@@ -72,22 +53,23 @@
   </constructionHeuristic>
   <localSearch>
     <unionMoveSelector>
-      <changeMoveSelector>
-        <entitySelector>
-          <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-        </entitySelector>
-        <valueSelector>
-          <variableName>room</variableName>
-        </valueSelector>
-      </changeMoveSelector>
-      <changeMoveSelector>
-        <entitySelector>
-          <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
-        </entitySelector>
-        <valueSelector>
-          <variableName>period</variableName>
-        </valueSelector>
-      </changeMoveSelector>
+      <cartesianProductMoveSelector>
+        <changeMoveSelector>
+          <entitySelector id="cartesianProductEntitySelector">
+            <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
+          </entitySelector>
+          <valueSelector>
+            <variableName>room</variableName>
+          </valueSelector>
+        </changeMoveSelector>
+        <changeMoveSelector>
+          <entitySelector mimicSelectorRef="cartesianProductEntitySelector"/>
+          <valueSelector>
+            <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
+            <variableName>period</variableName>
+          </valueSelector>
+        </changeMoveSelector>
+      </cartesianProductMoveSelector>
       <swapMoveSelector>
         <entitySelector>
           <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
