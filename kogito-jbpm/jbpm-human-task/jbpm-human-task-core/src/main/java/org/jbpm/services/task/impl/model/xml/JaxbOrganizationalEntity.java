@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -81,23 +82,31 @@ public class JaxbOrganizationalEntity implements OrganizationalEntity {
     }
     
     public static List<JaxbOrganizationalEntity> convertListFromInterfaceToJaxbImpl(List<OrganizationalEntity> jaxbList) { 
-        List<JaxbOrganizationalEntity> jaxbOrgEntList = new ArrayList<JaxbOrganizationalEntity>(jaxbList.size());
+        List<JaxbOrganizationalEntity> jaxbOrgEntList;
         if( jaxbList != null ) { 
+            jaxbOrgEntList = new ArrayList<JaxbOrganizationalEntity>(jaxbList.size());
             for( OrganizationalEntity jaxb : jaxbList ) { 
                 jaxbOrgEntList.add(new JaxbOrganizationalEntity(jaxb));
             }
+        } else { 
+            // it would be nice to use Collections.EMPTY_LIST here, but there's a possibility the list is being modified after this call
+            jaxbOrgEntList = new ArrayList<JaxbOrganizationalEntity>();
         }
         return jaxbOrgEntList;
     }
     
     public static List<OrganizationalEntity> convertListFromJaxbImplToInterface(List<JaxbOrganizationalEntity> jaxbList) { 
-        List<OrganizationalEntity> list = new ArrayList<OrganizationalEntity>(jaxbList.size());
-        if( jaxbList != null ) { 
+        List<OrganizationalEntity> orgEntList;
+        if( jaxbList != null ) {  
+            orgEntList = new ArrayList<OrganizationalEntity>(jaxbList.size());
             for( JaxbOrganizationalEntity jaxb : jaxbList ) { 
-                list.add(jaxb.createImplInstance());
+                orgEntList.add(jaxb.createImplInstance());
             }
+        } else { 
+            // it would be nice to use Collections.EMPTY_LIST here, but there's a possibility the list is being modified after this call
+            orgEntList = new ArrayList<OrganizationalEntity>();
         }
-        return list;
+        return orgEntList;
     }
     
     private OrganizationalEntity createImplInstance() { 
