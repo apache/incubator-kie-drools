@@ -2,6 +2,8 @@ package org.jbpm.test.util;
 
 import org.jbpm.process.instance.impl.util.LoggingPrintStream;
 import org.jbpm.runtime.manager.concurrent.SessionTest;
+import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -25,6 +27,11 @@ public abstract class AbstractBaseTest {
             logger.info("Finished {}", description);
         };
     };
+    
+    @After
+    public void cleanup() {
+    	EntityManagerFactoryManager.get().clear();
+    }
     
     @BeforeClass
     public static void configure() { 

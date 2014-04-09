@@ -1,6 +1,7 @@
 package org.jbpm.test.util;
 
 import java.util.List;
+import java.util.Map;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.test.KModuleDeploymentServiceTest;
@@ -66,7 +67,11 @@ public abstract class AbstractBaseTest {
         return pom;
     }
    
-   protected InternalKieModule createKieJar(KieServices ks, ReleaseId releaseId, List<String> resources ) {
+    protected InternalKieModule createKieJar(KieServices ks, ReleaseId releaseId, List<String> resources) {
+    	return createKieJar(ks, releaseId, resources, null);
+    }
+    
+   protected InternalKieModule createKieJar(KieServices ks, ReleaseId releaseId, List<String> resources, Map<String, String> extraResources ) {
      
         
         KieFileSystem kfs = createKieFileSystemWithKProject(ks);
@@ -75,6 +80,11 @@ public abstract class AbstractBaseTest {
         
         for (String resource : resources) {
             kfs.write("src/main/resources/KBase-test/" + resource, ResourceFactory.newClassPathResource(resource));
+        }
+        if (extraResources != null) {
+	        for (Map.Entry<String, String> entry : extraResources.entrySet()) {
+				kfs.write(entry.getKey(), ResourceFactory.newByteArrayResource(entry.getValue().getBytes()));
+			}
         }
         
         kfs.write("src/main/resources/forms/DefaultProcess.ftl", ResourceFactory.newClassPathResource("repo/globals/forms/DefaultProcess.ftl"));
@@ -105,6 +115,11 @@ public abstract class AbstractBaseTest {
                 .setType(KieSessionModel.KieSessionType.STATEFUL)
                 .setClockType( ClockTypeOption.get("realtime") )
                 .newWorkItemHandlerModel("Log", "new org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler()");
+        
+        kieBaseModel1.newKieSessionModel("ksession-test2").setDefault(false)
+        .setType(KieSessionModel.KieSessionType.STATEFUL)
+        .setClockType( ClockTypeOption.get("realtime") );
+        
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.writeKModuleXML(kproj.toXML());
         return kfs;

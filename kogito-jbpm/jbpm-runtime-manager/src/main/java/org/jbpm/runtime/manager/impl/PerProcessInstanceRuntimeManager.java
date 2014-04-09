@@ -38,12 +38,10 @@ import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.EnvironmentName;
-import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.KnowledgeContext;
 import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.Mapper;
 import org.kie.internal.runtime.manager.SessionFactory;
@@ -92,6 +90,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     	if (isClosed()) {
     		throw new IllegalStateException("Runtime manager " + identifier + " is already closed");
     	}
+    	checkPermission();
         Object contextId = context.getContextId();
         KieSession ksession = null;
         Integer ksessionId = null;

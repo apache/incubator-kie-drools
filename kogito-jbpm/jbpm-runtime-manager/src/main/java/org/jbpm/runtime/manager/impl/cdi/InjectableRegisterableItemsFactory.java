@@ -59,6 +59,8 @@ import org.kie.internal.executor.api.ExecutorService;
 import org.kie.internal.runtime.manager.EventListenerProducer;
 import org.kie.internal.runtime.manager.GlobalProducer;
 import org.kie.internal.runtime.manager.WorkItemHandlerProducer;
+import org.kie.internal.runtime.conf.AuditMode;
+import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -166,7 +168,8 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
             // do nothing as work item handler is considered optional
             logger.warn("Exception while evalutating work item handler prodcuers {}", e.getMessage());
         }
-        
+        // add handlers from descriptor
+        handler.putAll(getWorkItemHandlersFromDescriptor(runtime));
         return handler;
     }
     
@@ -178,7 +181,10 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         if(auditlogger != null) {
             defaultListeners.add(auditlogger);
         } else if (getAuditBuilder() != null) {
-        	defaultListeners.add(getAuditLoggerInstance(runtime));
+        	AbstractAuditLogger aLogger = getAuditLoggerInstance(runtime);
+        	if (aLogger != null) {
+        		defaultListeners.add(aLogger);
+        	}
         }
         try {
             for (EventListenerProducer<ProcessEventListener> producer : processListenerProducer) {
@@ -187,6 +193,8 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         } catch (Exception e) {
             logger.warn("Exception while evaluating ProcessEventListener producers {}", e.getMessage());
         }
+        // add listeners from descriptor
+        defaultListeners.addAll(getEventListenerFromDescriptor(runtime, ProcessEventListener.class)); 
         return defaultListeners;
     }
     
@@ -200,13 +208,13 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         } catch (Exception e) {
             logger.warn("Exception while evaluating WorkingMemoryEventListener producers {}", e.getMessage());
         }
-        
+        // add listeners from descriptor
+        defaultListeners.addAll(getEventListenerFromDescriptor(runtime, RuleRuntimeEventListener.class));
         return defaultListeners;
     }      
 
     @Override
-    public List<AgendaEventListener> getAgendaEventListeners(
-            RuntimeEngine runtime) {
+    public List<AgendaEventListener> getAgendaEventListeners(RuntimeEngine runtime) {
         List<AgendaEventListener> defaultListeners = new ArrayList<AgendaEventListener>();
         defaultListeners.add(new TriggerRulesEventListener(runtime.getKieSession()));
         try {
@@ -216,9 +224,19 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         } catch (Exception e) {
             logger.warn("Exception while evaluating WorkingMemoryEventListener producers {}", e.getMessage());
         }
-        
+        // add listeners from descriptor
+        defaultListeners.addAll(getEventListenerFromDescriptor(runtime, AgendaEventListener.class)); 
         return defaultListeners;
-    }        
+    }   
+    
+    
+    @Override
+    public List<TaskLifeCycleEventListener> getTaskListeners() {
+        List<TaskLifeCycleEventListener> defaultListeners = new ArrayList<TaskLifeCycleEventListener>();
+        // add listeners from descriptor
+        defaultListeners.addAll(getTaskListenersFromDescriptor());
+        return defaultListeners;
+    }  
     
     @Override
 	public Map<String, Object> getGlobals(RuntimeEngine runtime) {    	
@@ -243,6 +261,9 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
             // do nothing as work item handler is considered optional
             logger.warn("Exception while evalutating globals prodcuers {}", e.getMessage());
         }
+        
+	    // add globals from descriptor
+	    globals.putAll(getGlobalsFromDescriptor(runtime));
         
         return globals;
 	}
@@ -344,16 +365,6 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         this.ksessionName = ksessionName;
     }
 
-    protected Map<String, Object> getParametersMap(RuntimeEngine runtime) {
-        RuntimeManager manager = ((RuntimeEngineImpl)runtime).getManager();
-        Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("ksession", runtime.getKieSession());
-        parameters.put("taskService", runtime.getTaskService());
-        parameters.put("runtimeManager", manager);
-        
-        return parameters;
-    }
-
     /**
      * Provides  AuditLogger implementation, JPA or JMS.
      * JPA is the default one and JMS requires to have configuration file (.properties)
@@ -365,21 +376,24 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
      * </ul> 
      * @return instance of the audit logger
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected AbstractAuditLogger getAuditLoggerInstance(RuntimeEngine engine) {
-        AbstractAuditLogger auditLogger = null;
-        if ("true".equals(System.getProperty("jbpm.audit.jms.enabled"))) {
+    	DeploymentDescriptor descriptor = getRuntimeManager().getDeploymentDescriptor();
+    	AbstractAuditLogger auditLogger = null;
+        if ("true".equals(System.getProperty("jbpm.audit.jms.enabled")) || descriptor.getAuditMode() == AuditMode.JMS) {
             try {
                 Properties properties = new Properties();
-                properties.load(this.getClass().getResourceAsStream("/jbpm.audit.jms.properties"));
+                properties.load(getRuntimeManager().getEnvironment().getClassLoader().getResourceAsStream("/jbpm.audit.jms.properties"));
                 
                 auditLogger =  AuditLoggerFactory.newJMSInstance((Map)properties);
             } catch (IOException e) {
                 logger.error("Unable to load jms audit properties from {}", "/jbpm.audit.jms.properties", e);
             }
-        } else {        
+            auditLogger.setBuilder(getAuditBuilder(engine));
+        } else if (descriptor.getAuditMode() == AuditMode.JPA){        
         	auditLogger = AuditLoggerFactory.newJPAInstance(engine.getKieSession().getEnvironment());
-        }
-        auditLogger.setBuilder(getAuditBuilder(engine));
+        	auditLogger.setBuilder(getAuditBuilder(engine));
+        }        
         
         return auditLogger;
     }

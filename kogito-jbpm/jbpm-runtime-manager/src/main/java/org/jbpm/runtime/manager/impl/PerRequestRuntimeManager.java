@@ -57,6 +57,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     	if (isClosed()) {
     		throw new IllegalStateException("Runtime manager " + identifier + " is already closed");
     	}
+    	checkPermission();
         if (local.get() != null) {
             return local.get();
         }

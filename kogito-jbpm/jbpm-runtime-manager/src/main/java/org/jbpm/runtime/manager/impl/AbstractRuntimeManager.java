@@ -29,6 +29,7 @@ import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.runtime.manager.api.SchedulerProvider;
+import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManager;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
@@ -37,8 +38,11 @@ import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.internal.runtime.conf.DeploymentDescriptor;
+import org.kie.internal.runtime.manager.InternalRegisterableItemsFactory;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
+import org.kie.internal.runtime.manager.SecurityManager;
 import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.InternalTaskService;
 
@@ -59,10 +63,13 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
 
     protected RuntimeManagerRegistry registry = RuntimeManagerRegistry.get();
     protected RuntimeEnvironment environment;
-    
-    protected String identifier;
+    protected DeploymentDescriptor deploymentDescriptor;
+
+	protected String identifier;
     
     protected boolean closed = false;
+    
+    protected SecurityManager securityManager = null;
     
     public AbstractRuntimeManager(RuntimeEnvironment environment, String identifier) {
         this.environment = environment;
@@ -70,10 +77,18 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
         if (registry.isRegistered(identifier)) {
             throw new IllegalStateException("RuntimeManager with id " + identifier + " is already active");
         }
-        
+        internalSetDeploymentDescriptor();
+        ((InternalRegisterableItemsFactory)environment.getRegisterableItemsFactory()).setRuntimeManager(this);        
     }
     
-    public abstract void init();
+    private void internalSetDeploymentDescriptor() {
+    	this.deploymentDescriptor = (DeploymentDescriptor) ((SimpleRuntimeEnvironment)environment).getEnvironmentTemplate().get("KieDeploymentDescriptor");
+    	if (this.deploymentDescriptor == null) {
+    		this.deploymentDescriptor = new DeploymentDescriptorManager().getDefaultDescriptor();
+    	}
+	}
+
+	public abstract void init();
     
     protected void registerItems(RuntimeEngine runtime) {
         RegisterableItemsFactory factory = environment.getRegisterableItemsFactory();
@@ -211,5 +226,29 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     	}
     	
     	return new JtaTransactionManager(null, null, null);
+    }
+    
+    @Override
+    public DeploymentDescriptor getDeploymentDescriptor() {
+		return deploymentDescriptor;
+	}
+
+    @Override
+	public void setDeploymentDescriptor(DeploymentDescriptor deploymentDescriptor) {
+		this.deploymentDescriptor = deploymentDescriptor;
+	}
+    
+    @Override
+    public void setSecurityManager(SecurityManager securityManager) {
+    	if (this.securityManager != null) {
+    		throw new IllegalStateException("Security Manager for " + this.identifier + " manager is already set");
+    	}
+    	this.securityManager = securityManager;    
+    }
+    
+    protected void checkPermission() {
+    	if (this.securityManager != null) {
+    		this.securityManager.checkPermission();
+    	}
     }
 }

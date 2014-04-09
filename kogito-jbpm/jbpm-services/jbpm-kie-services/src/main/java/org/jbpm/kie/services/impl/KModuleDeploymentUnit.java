@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import org.drools.core.util.StringUtils;
 import org.kie.internal.deployment.DeploymentUnit;
+import org.kie.internal.runtime.conf.DeploymentDescriptor;
+import org.kie.internal.runtime.conf.MergeMode;
 
 public class KModuleDeploymentUnit implements DeploymentUnit, Serializable {
 
@@ -16,7 +18,10 @@ public class KModuleDeploymentUnit implements DeploymentUnit, Serializable {
     private String ksessionName;
 
     private RuntimeStrategy strategy = RuntimeStrategy.SINGLETON;
-
+    private MergeMode mergeMode = MergeMode.MERGE_COLLECTIONS;
+    
+    private DeploymentDescriptor deploymentDescriptor;
+    private boolean deployed = false;
     
     public KModuleDeploymentUnit(String groupId, String artifactId, String version) {
         this.groupId = groupId;
@@ -106,5 +111,29 @@ public class KModuleDeploymentUnit implements DeploymentUnit, Serializable {
     public String toString() {
         return getIdentifier() + " [strategy=" + strategy + "]";
     }
+
+	public MergeMode getMergeMode() {
+		return mergeMode;
+	}
+
+	public void setMergeMode(MergeMode mergeMode) {
+		this.mergeMode = mergeMode;
+	}
+
+	public DeploymentDescriptor getDeploymentDescriptor() {
+		return deploymentDescriptor;
+	}
+
+	public void setDeploymentDescriptor(DeploymentDescriptor deploymentDescriptor) {
+		this.deploymentDescriptor = deploymentDescriptor;
+	}
+
+	public boolean isDeployed() {
+		return deployed;
+	}
+
+	public void setDeployed(boolean deployed) {
+		this.deployed = deployed;
+	}
 
 }

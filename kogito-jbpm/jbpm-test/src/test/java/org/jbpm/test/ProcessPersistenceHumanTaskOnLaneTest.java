@@ -58,11 +58,11 @@ public class ProcessPersistenceHumanTaskOnLaneTest extends JbpmJUnitBaseTestCase
 
         // simulating a system restart
         logger.debug("Reloading the environemnt to simulate system restart once again");
-        disposeRuntimeManager();
-        createRuntimeManager("HumanTaskOnLane.bpmn2");
-        runtimeEngine = getRuntimeEngine();
-        ksession = runtimeEngine.getKieSession();
-        taskService = runtimeEngine.getTaskService();
+//        disposeRuntimeManager();
+//        createRuntimeManager("HumanTaskOnLane.bpmn2");
+//        runtimeEngine = getRuntimeEngine();
+//        ksession = runtimeEngine.getKieSession();
+//        taskService = runtimeEngine.getTaskService();
         
         
         List<Status> reservedOnly = new ArrayList<Status>();

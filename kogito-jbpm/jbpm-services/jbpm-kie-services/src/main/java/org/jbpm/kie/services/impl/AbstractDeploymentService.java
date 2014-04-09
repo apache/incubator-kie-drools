@@ -20,6 +20,7 @@ import org.jbpm.kie.services.impl.event.Deploy;
 import org.jbpm.kie.services.impl.event.DeploymentEvent;
 import org.jbpm.kie.services.impl.event.Undeploy;
 import org.jbpm.kie.services.impl.model.ProcessInstanceDesc;
+import org.jbpm.kie.services.impl.security.IdentityRolesSecurityManager;
 import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
@@ -29,13 +30,11 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.deployment.DeployedUnit;
 import org.kie.internal.deployment.DeploymentService;
 import org.kie.internal.deployment.DeploymentUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kie.internal.runtime.conf.DeploymentDescriptor;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
 
 public abstract class AbstractDeploymentService implements DeploymentService {
     
-    private static Logger logger = LoggerFactory.getLogger(AbstractDeploymentService.class);
-
     @Inject
     private BeanManager beanManager; 
     @Inject
@@ -45,6 +44,8 @@ public abstract class AbstractDeploymentService implements DeploymentService {
     @Inject
     @PersistenceUnit(unitName = "org.jbpm.domain")
     private EntityManagerFactory emf;
+    @Inject
+    private IdentityProvider identityProvider;
     @Inject
     @Deploy
     protected Event<DeploymentEvent> deploymentEvent;
@@ -97,6 +98,10 @@ public abstract class AbstractDeploymentService implements DeploymentService {
                         throw new IllegalArgumentException("Invalid strategy " + unit.getStrategy());
                 }            
                 deployedUnit.setRuntimeManager(manager);
+                DeploymentDescriptor descriptor = ((InternalRuntimeManager)manager).getDeploymentDescriptor();
+                if (descriptor.getRequiredRoles() != null && !descriptor.getRequiredRoles().isEmpty()) {
+                	((InternalRuntimeManager)manager).setSecurityManager(new IdentityRolesSecurityManager(identityProvider, descriptor.getRequiredRoles()));
+                }
             } catch (Exception e) {
                 deploymentsMap.remove(unit.getIdentifier());
                 throw new RuntimeException(e);

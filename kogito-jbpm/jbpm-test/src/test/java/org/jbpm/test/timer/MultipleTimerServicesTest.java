@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.EntityManagerFactory;
 
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
+import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,9 +77,10 @@ public class MultipleTimerServicesTest extends TimerBaseTest {
         }
         
         emf = ((SimpleRuntimeEnvironment) environmentM2).getEmf();
-        if (emf != null) {
+        if (emf != null && emf.isOpen()) {
             emf.close();
         }
+        
     }
     
     

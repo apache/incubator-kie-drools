@@ -88,7 +88,7 @@ public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
     @After
     public void teardown() {
     	if (manager != null) {
-    		manager.close();
+    		manager.close();    		
     	}
         pds.close();
     }

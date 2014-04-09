@@ -48,12 +48,25 @@ public class EmailWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 		setConnection(host, port, userName, password);
 	}
 	
+	public EmailWorkItemHandler(String host, String port, String userName, String password, String startTls) {
+		setConnection(host, port, userName, password, startTls);
+	}
+	
 	public void setConnection(String host, String port, String userName, String password) {
 		connection = new Connection();
 		connection.setHost(host);
 		connection.setPort(port);
 		connection.setUserName(userName);
 		connection.setPassword(password);
+	}
+	
+	public void setConnection(String host, String port, String userName, String password, String startTls) {
+		connection = new Connection();
+		connection.setHost(host);
+		connection.setPort(port);
+		connection.setUserName(userName);
+		connection.setPassword(password);
+		connection.setStartTls(Boolean.parseBoolean(startTls));
 	}
 	
 	public Connection getConnection() {

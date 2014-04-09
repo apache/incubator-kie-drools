@@ -30,6 +30,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
+import org.jbpm.kie.services.api.IdentityProvider;
 import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.impl.event.Deploy;
 import org.jbpm.kie.services.impl.event.DeploymentEvent;
@@ -51,6 +52,9 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
     
     @Inject 
     private TransactionalCommandService commandService;
+    
+    @Inject
+    private IdentityProvider identityProvider;
 
     public void setCommandService(TransactionalCommandService commandService) {
         this.commandService = commandService;
@@ -67,21 +71,21 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
     
     public void removeOnUnDeploy(@Observes@Undeploy DeploymentEvent event) {
         Collection<ProcessAssetDesc> outputCollection = new HashSet<ProcessAssetDesc>();
-        CollectionUtils.select(availableProcesses, new ByDeploymentIdPredicate(event.getDeploymentId()), outputCollection);
+        CollectionUtils.select(availableProcesses, new UnsecureByDeploymentIdPredicate(event.getDeploymentId()), outputCollection);
         
         availableProcesses.removeAll(outputCollection);
     }
 
     public Collection<ProcessAssetDesc> getProcessesByDeploymentId(String deploymentId) {
         Collection<ProcessAssetDesc> outputCollection = new HashSet<ProcessAssetDesc>();
-        CollectionUtils.select(availableProcesses, new ByDeploymentIdPredicate(deploymentId), outputCollection);
+        CollectionUtils.select(availableProcesses, new ByDeploymentIdPredicate(deploymentId, identityProvider.getRoles()), outputCollection);
         
         return Collections.unmodifiableCollection(outputCollection);
     }
     
     public ProcessAssetDesc getProcessesByDeploymentIdProcessId(String deploymentId, String processId) {
         Collection<ProcessAssetDesc> outputCollection = new HashSet<ProcessAssetDesc>();
-        CollectionUtils.select(availableProcesses, new ByDeploymentIdProcessIdPredicate(deploymentId, processId), outputCollection);
+        CollectionUtils.select(availableProcesses, new ByDeploymentIdProcessIdPredicate(deploymentId, processId, identityProvider.getRoles()), outputCollection);
         
         if (!outputCollection.isEmpty()) {
             return outputCollection.iterator().next();
@@ -91,14 +95,14 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
     
     public Collection<ProcessAssetDesc> getProcessesByFilter(String filter) {
         Collection<ProcessAssetDesc> outputCollection = new HashSet<ProcessAssetDesc>();
-        CollectionUtils.select(availableProcesses, new RegExPredicate("^.*"+filter+".*$"), outputCollection);
+        CollectionUtils.select(availableProcesses, new RegExPredicate("^.*"+filter+".*$", identityProvider.getRoles()), outputCollection);
         return Collections.unmodifiableCollection(outputCollection);
     }
 
     public ProcessAssetDesc getProcessById(String processId){
         
         Collection<ProcessAssetDesc> outputCollection = new HashSet<ProcessAssetDesc>();
-        CollectionUtils.select(availableProcesses, new ByProcessIdPredicate(processId), outputCollection);
+        CollectionUtils.select(availableProcesses, new ByProcessIdPredicate(processId, identityProvider.getRoles()), outputCollection);
         if (!outputCollection.isEmpty()) {
             return outputCollection.iterator().next();
         }
@@ -106,7 +110,9 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
     }
     
     public Collection<ProcessAssetDesc> getProcesses() {
-        return Collections.unmodifiableCollection(availableProcesses);
+    	Collection<ProcessAssetDesc> outputCollection = new HashSet<ProcessAssetDesc>();
+    	CollectionUtils.select(availableProcesses, new SecurePredicate(identityProvider.getRoles()), outputCollection);
+        return Collections.unmodifiableCollection(outputCollection);
     }
 
     @Override
@@ -304,10 +310,11 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         return variablesState;
     }
 
-    private class RegExPredicate implements Predicate {
+    private class RegExPredicate extends SecurePredicate {
         private String pattern;
         
-        private RegExPredicate(String pattern) {
+        private RegExPredicate(String pattern, List<String> roles) {
+        	super(roles);
             this.pattern = pattern;
         }
         
@@ -315,7 +322,10 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         public boolean evaluate(Object object) {
             if (object instanceof ProcessAssetDesc) {
                 ProcessAssetDesc pDesc = (ProcessAssetDesc) object;
-                
+                boolean hasAccess = super.evaluate(object);
+                if (!hasAccess) {
+                	return false;
+                }
                 if (pDesc.getId().matches(pattern) 
                         || pDesc.getName().matches(pattern)) {
                     return true;
@@ -326,10 +336,11 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         
     }
     
-    private class ByDeploymentIdPredicate implements Predicate {
+    private class ByDeploymentIdPredicate extends SecurePredicate {
         private String deploymentId;
         
-        private ByDeploymentIdPredicate(String deploymentId) {
+        private ByDeploymentIdPredicate(String deploymentId, List<String> roles) {
+        	super(roles);
             this.deploymentId = deploymentId;
         }
         
@@ -337,7 +348,10 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         public boolean evaluate(Object object) {
             if (object instanceof ProcessAssetDesc) {
                 ProcessAssetDesc pDesc = (ProcessAssetDesc) object;
-                
+                boolean hasAccess = super.evaluate(object);
+                if (!hasAccess) {
+                	return false;
+                }
                 if (pDesc.getDeploymentId().equals(deploymentId)) {
                     return true;
                 }
@@ -347,10 +361,11 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         
     }
     
-    private class ByProcessIdPredicate implements Predicate {
+    private class ByProcessIdPredicate extends SecurePredicate {
         private String processId;
         
-        private ByProcessIdPredicate(String processId) {
+        private ByProcessIdPredicate(String processId, List<String> roles) {
+        	super(roles);
             this.processId = processId;
         }
         
@@ -358,7 +373,10 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         public boolean evaluate(Object object) {
             if (object instanceof ProcessAssetDesc) {
                 ProcessAssetDesc pDesc = (ProcessAssetDesc) object;
-                
+                boolean hasAccess = super.evaluate(object);
+                if (!hasAccess) {
+                	return false;
+                }
                 if (pDesc.getId().equals(processId)) {
                     return true;
                 }
@@ -368,12 +386,13 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         
     }
     
-    private class ByDeploymentIdProcessIdPredicate implements Predicate {
+    private class ByDeploymentIdProcessIdPredicate extends SecurePredicate {
         private String processId;
         private String depoymentId;
         
-        private ByDeploymentIdProcessIdPredicate(String depoymentId, String processId) {
-            this.depoymentId = depoymentId;
+        private ByDeploymentIdProcessIdPredicate(String depoymentId, String processId, List<String> roles) {
+            super(roles);
+        	this.depoymentId = depoymentId;
             this.processId = processId;
         }
         
@@ -381,8 +400,48 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         public boolean evaluate(Object object) {
             if (object instanceof ProcessAssetDesc) {
                 ProcessAssetDesc pDesc = (ProcessAssetDesc) object;
-                
+                boolean hasAccess = super.evaluate(object);
+                if (!hasAccess) {
+                	return false;
+                }
                 if (pDesc.getId().equals(processId) && pDesc.getDeploymentId().equals(depoymentId)) {
+                    return true;
+                }
+            }
+            return false;
+        }        
+    }
+    
+    private class SecurePredicate implements Predicate {
+    	private List<String> roles;
+    	
+    	private SecurePredicate(List<String> roles) {
+    		this.roles = roles;
+    	}
+    	
+    	public boolean evaluate(Object object) {
+    		ProcessAssetDesc pDesc = (ProcessAssetDesc) object;
+    		if (this.roles == null || this.roles.isEmpty() || pDesc.getRoles() == null || pDesc.getRoles().isEmpty()) {
+    			return true;
+    		}
+    		
+    		
+    		return CollectionUtils.containsAny(roles, pDesc.getRoles());
+    	}
+    }
+    
+    private class UnsecureByDeploymentIdPredicate implements Predicate {
+        private String deploymentId;
+        
+        private UnsecureByDeploymentIdPredicate(String deploymentId) {
+            this.deploymentId = deploymentId;
+        }
+        
+        @Override
+        public boolean evaluate(Object object) {
+            if (object instanceof ProcessAssetDesc) {
+                ProcessAssetDesc pDesc = (ProcessAssetDesc) object;                
+                if (pDesc.getDeploymentId().equals(deploymentId)) {
                     return true;
                 }
             }

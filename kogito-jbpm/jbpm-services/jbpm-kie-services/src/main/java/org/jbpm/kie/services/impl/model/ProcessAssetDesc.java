@@ -16,7 +16,9 @@
 package org.jbpm.kie.services.impl.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.kie.internal.deployment.DeployedAsset;
@@ -39,8 +41,9 @@ public class ProcessAssetDesc implements Serializable, DeployedAsset {
     private String deploymentId;
     private String encodedProcessSource;
     private Map<String, String> forms = new HashMap<String, String>();
+    private List<String> roles = new ArrayList<String>();
 
-    public ProcessAssetDesc() {
+	public ProcessAssetDesc() {
     }
 
     
@@ -191,6 +194,15 @@ public class ProcessAssetDesc implements Serializable, DeployedAsset {
     public void addForm(String id, String formContent) {
         this.forms.put(id, formContent);
     }
+
+	public List<String> getRoles() {
+		return roles;
+	}
+
+
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
+	}
     
 
 }

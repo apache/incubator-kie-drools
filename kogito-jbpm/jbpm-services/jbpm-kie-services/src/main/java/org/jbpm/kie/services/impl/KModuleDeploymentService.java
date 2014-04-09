@@ -5,17 +5,22 @@ import static org.kie.scanner.MavenRepository.getMavenRepository;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
+import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.codec.binary.Base64;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.core.util.StringUtils;
 import org.jbpm.kie.services.api.IdentityProvider;
 import org.jbpm.kie.services.api.Kjar;
@@ -23,13 +28,27 @@ import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
+import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManager;
+import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorMerger;
+import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
+import org.kie.internal.deployment.DeployedAsset;
+import org.kie.internal.deployment.DeployedUnit;
 import org.kie.internal.deployment.DeploymentUnit;
+import org.kie.internal.runtime.conf.DeploymentDescriptor;
+import org.kie.internal.runtime.conf.MergeMode;
+import org.kie.internal.runtime.conf.NamedObjectModel;
+import org.kie.internal.runtime.conf.ObjectModel;
+import org.kie.internal.runtime.conf.ObjectModelResolver;
+import org.kie.internal.runtime.conf.ObjectModelResolverProvider;
+import org.kie.internal.runtime.conf.PersistenceMode;
 import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +67,14 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
     private IdentityProvider identityProvider;
     @Inject
     private BPMN2DataService bpmn2Service;
-
+    
+    private DeploymentDescriptorMerger merger = new DeploymentDescriptorMerger();
+ 
+    @PostConstruct
+    public void onInit() {
+    	EntityManagerFactoryManager.get().addEntityManagerFactory("org.jbpm.domain", getEmf());
+    }
+    
     @Override
     public void deploy(DeploymentUnit unit) {
         super.deploy(unit);
@@ -100,8 +126,8 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 
         AuditEventBuilder auditLoggerBuilder = setupAuditLogger(identityProvider, unit.getIdentifier());
 
-        RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
-                .entityManagerFactory(getEmf())
+        RuntimeEnvironmentBuilder builder = boostrapRuntimeEnvironmentBuilder(
+        		kmoduleUnit, deployedUnit, kieContainer, kmoduleUnit.getMergeMode())
                 .knowledgeBase(kbase)
                 .classLoader(kieContainer.getClassLoader());
         if (beanManager != null) {
@@ -109,6 +135,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                     kmoduleUnit.getKsessionName()));
         }
         commonDeploy(unit, deployedUnit, builder.get());
+        kmoduleUnit.setDeployed(true);
     }
 
     
@@ -126,7 +153,84 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 		ks.getRepository().removeKieModule(releaseId);
 	}
 
+    protected RuntimeEnvironmentBuilder boostrapRuntimeEnvironmentBuilder(KModuleDeploymentUnit deploymentUnit,
+    		DeployedUnit deployedUnit, KieContainer kieContainer, MergeMode mode) {
+    	DeploymentDescriptor descriptor = deploymentUnit.getDeploymentDescriptor();
+    	if (descriptor == null) {
+	    	DeploymentDescriptorManager descriptorManager = new DeploymentDescriptorManager("org.jbpm.domain");
+	    	List<DeploymentDescriptor> descriptorHierarchy = descriptorManager.getDeploymentDescriptorHierarchy(kieContainer);
+	    	
+			descriptor = merger.merge(descriptorHierarchy, mode);
+			deploymentUnit.setDeploymentDescriptor(descriptor);
+    	} else if (descriptor != null && !deploymentUnit.isDeployed()) {
+    		DeploymentDescriptorManager descriptorManager = new DeploymentDescriptorManager("org.jbpm.domain");
+	    	List<DeploymentDescriptor> descriptorHierarchy = descriptorManager.getDeploymentDescriptorHierarchy(kieContainer);
+	    	
+	    	descriptorHierarchy.add(0, descriptor);
+	    	descriptor = merger.merge(descriptorHierarchy, mode);
+			deploymentUnit.setDeploymentDescriptor(descriptor);
+    	}
+    	
+		// first set on unit the strategy
+		deploymentUnit.setStrategy(descriptor.getRuntimeStrategy());
+		
+		// setting up runtime environment via builder
+		RuntimeEnvironmentBuilder builder = null;
+		if (descriptor.getPersistenceMode() == PersistenceMode.NONE) {
+			builder = RuntimeEnvironmentBuilder.Factory.get().newDefaultInMemoryBuilder();
+		} else {
+			builder = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder();
+		}
+		// populate various properties of the builder
+		EntityManagerFactory emf = EntityManagerFactoryManager.get().getOrCreate(descriptor.getPersistenceUnit());
+		builder.entityManagerFactory(emf);
+		
+		Map<String, Object> contaxtParams = new HashMap<String, Object>();
+		contaxtParams.put("entityManagerFactory", emf);
+		// process object models that are globally configured (environment entries, session configuration)
+		for (NamedObjectModel model : descriptor.getEnvironmentEntries()) {
+			Object entry = getInstanceFromModel(model, kieContainer, contaxtParams);
+			builder.addEnvironmentEntry(model.getName(), entry);
+		}
+		
+		for (NamedObjectModel model : descriptor.getConfiguration()) {
+			Object entry = getInstanceFromModel(model, kieContainer, contaxtParams);
+			builder.addConfiguration(model.getName(), (String) entry);
+		}
+		ObjectMarshallingStrategy[] mStrategies = new ObjectMarshallingStrategy[descriptor.getMarshallingStrategies().size() + 1];
+		int index = 0;
+		for (ObjectModel model : descriptor.getMarshallingStrategies()) {
+			Object strategy = getInstanceFromModel(model, kieContainer, contaxtParams);
+			mStrategies[index] = (ObjectMarshallingStrategy)strategy;
+			index++;
+		}
+		// lastly add the main default strategy
+		mStrategies[index] = new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT);
+		builder.addEnvironmentEntry(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, mStrategies);
+		
+		builder.addEnvironmentEntry("KieDeploymentDescriptor", descriptor);
+		
+		// populate all assets with roles for this deployment unit
+		if (descriptor.getRequiredRoles() != null && !descriptor.getRequiredRoles().isEmpty()) {
+			for (DeployedAsset desc : deployedUnit.getDeployedAssets()) {
+				if (desc instanceof ProcessAssetDesc) {
+					((ProcessAssetDesc) desc).setRoles(descriptor.getRequiredRoles());
+				}
+			}
+		}
+    		
+    	return builder;
+    }
 
+    
+    protected Object getInstanceFromModel(ObjectModel model, KieContainer kieContainer, Map<String, Object> contaxtParams) {
+    	ObjectModelResolver resolver = ObjectModelResolverProvider.get(model.getResolver());
+		if (resolver == null) {
+			logger.warn("Unable to find ObjectModelResolver for {}", model.getResolver());
+		}
+		
+		return resolver.getInstance(model, kieContainer.getClassLoader(), contaxtParams);
+    }
 
 	protected void processResources(InternalKieModule module, Map<String, String> formsData, Collection<String> files,
     		KieContainer kieContainer, DeploymentUnit unit, DeployedUnitImpl deployedUnit, ReleaseId releaseId) {

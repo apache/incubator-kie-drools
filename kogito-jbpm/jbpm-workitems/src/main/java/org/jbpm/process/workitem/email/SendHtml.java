@@ -38,8 +38,12 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 public class SendHtml {
+	
+	private static final String MAIL_JNDI_KEY = System.getProperty("org.kie.mail.session", "mail/jbpmMailSession");
     
     public static void sendHtml(Email email) {
         sendHtml(email, email.getConnection());
@@ -169,31 +173,36 @@ public class SendHtml {
     
     
     private static Session getSession(Connection connection) {
-        String username = connection.getUserName();
-        String password = connection.getPassword();
-
-        Properties properties = new Properties();
-        properties.setProperty("mail.smtp.host", connection.getHost());
-        properties.setProperty("mail.smtp.port", connection.getPort());
 
         Session session = null;
-        if( username != null ) { 
-            properties.setProperty("mail.smtp.submitter", username);
-            if( password != null) {
-                Authenticator authenticator = new Authenticator(username, password);
-                properties.setProperty("mail.smtp.auth", "true");
-                session = Session.getInstance(properties, authenticator);
-            }
-            else { 
-                session = Session.getInstance(properties);
-            }
-        }
-        else { 
-            session = Session.getInstance(properties);
-        }
-        
-        if( connection.getStartTls() != null && connection.getStartTls() ) { 
-            properties.put("mail.smtp.starttls.enable","true");
+        try {
+        	session = InitialContext.doLookup(MAIL_JNDI_KEY);
+        } catch (NamingException e1) {
+            String username = connection.getUserName();
+            String password = connection.getPassword();
+
+            Properties properties = new Properties();
+            properties.setProperty("mail.smtp.host", connection.getHost());
+            properties.setProperty("mail.smtp.port", connection.getPort());
+	        
+	        if( connection.getStartTls() != null && connection.getStartTls() ) { 
+	            properties.put("mail.smtp.starttls.enable","true");
+	        }     
+	        if( username != null ) { 
+	            properties.setProperty("mail.smtp.submitter", username);
+	            if( password != null) {
+	                Authenticator authenticator = new Authenticator(username, password);
+	                properties.setProperty("mail.smtp.auth", "true");
+	                session = Session.getInstance(properties, authenticator);
+	            }
+	            else { 
+	                session = Session.getInstance(properties);
+	            }
+	        }
+	        else { 
+	            session = Session.getInstance(properties);
+	        }
+
         }
        
         return session;

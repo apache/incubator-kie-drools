@@ -38,6 +38,7 @@ import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
+import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
@@ -196,7 +197,9 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
         if (setupDataSource) {
             if (emf != null) {
                 emf.close();
-                emf = null;
+                emf = null;                
+               	EntityManagerFactoryManager.get().clear();
+                
             }
             if (ds != null) {
                 ds.close();

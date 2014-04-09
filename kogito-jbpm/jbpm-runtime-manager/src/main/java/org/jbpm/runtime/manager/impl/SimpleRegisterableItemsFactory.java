@@ -28,11 +28,12 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.api.task.TaskService;
+import org.kie.internal.runtime.manager.InternalRegisterableItemsFactory;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
 
 
 /**
@@ -52,7 +53,7 @@ import org.kie.api.task.TaskService;
  *  <li>addWorkingMemoryListener</li>
  * </ul>
  */
-public class SimpleRegisterableItemsFactory implements RegisterableItemsFactory {
+public class SimpleRegisterableItemsFactory implements InternalRegisterableItemsFactory {
 
     private Map<String, Class<? extends WorkItemHandler>> workItemHandlersClasses = new ConcurrentHashMap<String, Class<? extends WorkItemHandler>>();
     private List<Class<? extends ProcessEventListener>> processListeners = new CopyOnWriteArrayList<Class<? extends ProcessEventListener>>();
@@ -61,7 +62,19 @@ public class SimpleRegisterableItemsFactory implements RegisterableItemsFactory 
     private List<Class<? extends TaskLifeCycleEventListener>> taskListeners = new CopyOnWriteArrayList<Class<? extends TaskLifeCycleEventListener>>();
     private Map<String, Object> globals = new ConcurrentHashMap<String, Object>();
     
+    protected InternalRuntimeManager runtimeManager; 
+    
     @Override
+    public InternalRuntimeManager getRuntimeManager() {
+		return runtimeManager;
+	}
+
+    @Override
+	public void setRuntimeManager(InternalRuntimeManager runtimeManager) {
+		this.runtimeManager = runtimeManager;
+	}
+
+	@Override
     public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
         Map<String, WorkItemHandler> handlers = new HashMap<String, WorkItemHandler>();
         for (Entry<String, Class<? extends WorkItemHandler>> entry : workItemHandlersClasses.entrySet()) {

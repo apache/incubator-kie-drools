@@ -107,6 +107,7 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
     	if (isClosed()) {
     		throw new IllegalStateException("Runtime manager " + identifier + " is already closed");
     	}
+    	checkPermission();
         // always return the same instance
         return this.singleton;
     }
