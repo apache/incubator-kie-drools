@@ -50,10 +50,11 @@
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
     </dependency>
+
     <dependency>
-      <groupId>javax.security</groupId>
-      <artifactId>jacc</artifactId>
-      <version>1.0</version>
+      <groupId>javax.security.jacc</groupId>
+      <artifactId>javax.security.jacc-api</artifactId>
+      <version>${version.javax.security.jacc}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -139,7 +140,6 @@
     <dependency>
       <groupId>org.reflections</groupId>
       <artifactId>reflections</artifactId>
-      <version>0.9.9-RC1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
