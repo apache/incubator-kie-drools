@@ -4065,3 +4065,11 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
 ScoreDirector now only has methods which might make the public API in a future version.
 InnerScoreDirector extends ScoreDirector and it holds all methods which will never be made part of the public API.
 Similarly, ScoreDirectorFactory has been split up in ScoreDirectorFactory and InnerScoreDirectorFactory.
+
+[MINOR] If you're doing programmatic configuration (instead of by XML),
+Config methods that accepted a property wrapped in a singleton list (due to XStream limitations),
+now no longer need the property wrapped in a list.
+Before in *.java:
+  localSearchSolverPhaseConfig.setMoveSelectorConfigList(Collections.singletonList(moveSelectorConfig));
+After in *.java:
+  localSearchSolverPhaseConfig.setMoveSelectorConfig(moveSelectorConfig);

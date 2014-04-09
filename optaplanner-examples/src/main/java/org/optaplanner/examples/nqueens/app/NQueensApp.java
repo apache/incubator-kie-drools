@@ -102,8 +102,7 @@ public class NQueensApp extends CommonApp {
         LocalSearchSolverPhaseConfig localSearchSolverPhaseConfig = new LocalSearchSolverPhaseConfig();
         ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
         changeMoveSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
-        localSearchSolverPhaseConfig.setMoveSelectorConfigList(
-                Arrays.<MoveSelectorConfig>asList(changeMoveSelectorConfig));
+        localSearchSolverPhaseConfig.setMoveSelectorConfig(changeMoveSelectorConfig);
         AcceptorConfig acceptorConfig = new AcceptorConfig();
         acceptorConfig.setEntityTabuSize(5);
         localSearchSolverPhaseConfig.setAcceptorConfig(acceptorConfig);

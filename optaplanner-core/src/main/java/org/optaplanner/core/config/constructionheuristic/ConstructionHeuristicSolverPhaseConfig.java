@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.config.constructionheuristic;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -58,12 +59,12 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         this.constructionHeuristicType = constructionHeuristicType;
     }
 
-    public List<EntityPlacerConfig> getEntityPlacerConfigList() {
-        return entityPlacerConfigList;
+    public EntityPlacerConfig getEntityPlacerConfig() {
+        return entityPlacerConfigList == null ? null : entityPlacerConfigList.get(0);
     }
 
-    public void setEntityPlacerConfigList(List<EntityPlacerConfig> entityPlacerConfigList) {
-        this.entityPlacerConfigList = entityPlacerConfigList;
+    public void setEntityPlacerConfig(EntityPlacerConfig entityPlacerConfig) {
+        this.entityPlacerConfigList = Collections.singletonList(entityPlacerConfig);
     }
 
     public ConstructionHeuristicForagerConfig getForagerConfig() {
@@ -136,8 +137,8 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         super.inherit(inheritedConfig);
         constructionHeuristicType = ConfigUtils.inheritOverwritableProperty(constructionHeuristicType,
                 inheritedConfig.getConstructionHeuristicType());
-        entityPlacerConfigList = ConfigUtils.inheritMergeableListProperty(
-                entityPlacerConfigList, inheritedConfig.getEntityPlacerConfigList());
+        setEntityPlacerConfig(ConfigUtils.inheritOverwritableProperty(
+                getEntityPlacerConfig(), inheritedConfig.getEntityPlacerConfig()));
         if (foragerConfig == null) {
             foragerConfig = inheritedConfig.getForagerConfig();
         } else if (inheritedConfig.getForagerConfig() != null) {
