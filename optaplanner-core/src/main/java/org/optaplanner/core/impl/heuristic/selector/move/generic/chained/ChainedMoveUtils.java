@@ -21,17 +21,20 @@ import java.util.ListIterator;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class ChainedMoveUtils {
 
     public static void doChainedChange(ScoreDirector scoreDirector, Object entity,
             GenuineVariableDescriptor variableDescriptor, Object toPlanningValue) {
+        // TODO HACK Avoid downcast
+        InnerScoreDirector innerScoreDirector = (InnerScoreDirector) scoreDirector;
         Object oldValue = variableDescriptor.getValue(entity);
-        Object oldTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, entity);
+        Object oldTrailingEntity = innerScoreDirector.getTrailingEntity(variableDescriptor, entity);
         // If chaining == true then toPlanningValue == null guarantees an uninitialized entity
         Object newTrailingEntity = toPlanningValue == null ? null
-                : scoreDirector.getTrailingEntity(variableDescriptor, toPlanningValue);
+                : innerScoreDirector.getTrailingEntity(variableDescriptor, toPlanningValue);
 
         // Close the old chain
         if (oldTrailingEntity != null) {
@@ -70,12 +73,14 @@ public class ChainedMoveUtils {
 
     public static void doSubChainChange(ScoreDirector scoreDirector, SubChain subChain,
             GenuineVariableDescriptor variableDescriptor, Object toPlanningValue) {
+        // TODO HACK Avoid downcast
+        InnerScoreDirector innerScoreDirector = (InnerScoreDirector) scoreDirector;
         Object firstEntity = subChain.getFirstEntity();
         Object lastEntity = subChain.getLastEntity();
         Object oldFirstValue = variableDescriptor.getValue(firstEntity);
 
-        Object oldTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, lastEntity);
-        Object newTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, toPlanningValue);
+        Object oldTrailingEntity = innerScoreDirector.getTrailingEntity(variableDescriptor, lastEntity);
+        Object newTrailingEntity = innerScoreDirector.getTrailingEntity(variableDescriptor, toPlanningValue);
 
         // Close the old chain
         if (oldTrailingEntity != null) {
@@ -113,12 +118,14 @@ public class ChainedMoveUtils {
 
     public static void doReverseSubChainChange(ScoreDirector scoreDirector, SubChain subChain,
             GenuineVariableDescriptor variableDescriptor, Object toPlanningValue) {
+        // TODO HACK Avoid downcast
+        InnerScoreDirector innerScoreDirector = (InnerScoreDirector) scoreDirector;
         Object firstEntity = subChain.getFirstEntity();
         Object lastEntity = subChain.getLastEntity();
         Object oldFirstValue = variableDescriptor.getValue(firstEntity);
 
-        Object oldTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, lastEntity);
-        Object newTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, toPlanningValue);
+        Object oldTrailingEntity = innerScoreDirector.getTrailingEntity(variableDescriptor, lastEntity);
+        Object newTrailingEntity = innerScoreDirector.getTrailingEntity(variableDescriptor, toPlanningValue);
         boolean unmovedReverse = firstEntity == newTrailingEntity;
         List<Object> entityList = subChain.getEntityList();
 

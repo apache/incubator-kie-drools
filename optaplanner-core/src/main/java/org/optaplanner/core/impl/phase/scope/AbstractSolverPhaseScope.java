@@ -24,6 +24,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -99,7 +100,7 @@ public abstract class AbstractSolverPhaseScope {
         return now - startingSystemTimeMillis;
     }
 
-    public ScoreDirector getScoreDirector() {
+    public InnerScoreDirector getScoreDirector() {
         return solverScope.getScoreDirector();
     }
 

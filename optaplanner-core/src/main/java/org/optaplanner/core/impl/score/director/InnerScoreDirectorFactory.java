@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,32 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.optaplanner.core.impl.solution.Solution;
 
-/**
- * Builds a {@link ScoreDirector}.
- */
-public interface ScoreDirectorFactory {
+public interface InnerScoreDirectorFactory extends ScoreDirectorFactory {
 
     /**
-     * Creates a new {@link ScoreDirector} instance.
      * @return never null
      */
-    ScoreDirector buildScoreDirector();
+    SolutionDescriptor getSolutionDescriptor();
+
+    /**
+     * @return never null
+     */
+    ScoreDefinition getScoreDefinition();
+
+    @Override
+    InnerScoreDirector buildScoreDirector();
+
+    /**
+     * @return never null
+     */
+    InitializingScoreTrend getInitializingScoreTrend();
+
+    /**
+     * Asserts that if the {@link Score} is calculated for the parameter solution,
+     * it would be equal to the {@link Solution#getScore()} of that parameter.
+     * @param solution never null
+     * @see InnerScoreDirector#assertWorkingScoreFromScratch(Score, Object)
+     */
+    void assertScoreFromScratch(Solution solution);
 
 }

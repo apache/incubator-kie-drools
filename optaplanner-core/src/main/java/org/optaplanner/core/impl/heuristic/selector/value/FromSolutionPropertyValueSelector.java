@@ -25,6 +25,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
@@ -69,7 +70,7 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
     @Override
     public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
-        ScoreDirector scoreDirector = phaseScope.getScoreDirector();
+        InnerScoreDirector scoreDirector = phaseScope.getScoreDirector();
         cachedValueRange = (ValueRange<Object>)
                 valueRangeDescriptor.extractValueRange(scoreDirector.getWorkingSolution());
         if (valueRangeMightContainEntity) {
@@ -82,7 +83,7 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
     public void stepStarted(AbstractStepScope stepScope) {
         super.stepStarted(stepScope);
         if (valueRangeMightContainEntity) {
-            ScoreDirector scoreDirector = stepScope.getScoreDirector();
+            InnerScoreDirector scoreDirector = stepScope.getScoreDirector();
             if (scoreDirector.isWorkingEntityListDirty(cachedEntityListRevision)) {
                 if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
                     cachedEntityListIsDirty = true;

@@ -24,6 +24,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
@@ -36,7 +37,7 @@ public class SubChainReversingSwapMoveTest {
     public void noTrailing() {
         EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         GenuineVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
@@ -82,7 +83,7 @@ public class SubChainReversingSwapMoveTest {
     public void noTrailingInPlace() {
         EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         GenuineVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
@@ -123,7 +124,7 @@ public class SubChainReversingSwapMoveTest {
     public void oldAndNewTrailing() {
         EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         GenuineVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
@@ -173,7 +174,7 @@ public class SubChainReversingSwapMoveTest {
     public void oldAndNewTrailingInPlace() {
         EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         GenuineVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
@@ -216,7 +217,7 @@ public class SubChainReversingSwapMoveTest {
     public void oldAndNewTrailingInPlaceOppositeParameterOrder() {
         EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         GenuineVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);

@@ -28,6 +28,8 @@ import org.optaplanner.core.impl.domain.solution.mutation.MutationCounter;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solution.Solution;
 
 public class BestSolutionMutationSingleStatistic extends SingleStatistic<BestSolutionMutationStatisticPoint> {
@@ -56,7 +58,8 @@ public class BestSolutionMutationSingleStatistic extends SingleStatistic<BestSol
     // ************************************************************************
 
     public void open(Solver solver) {
-        SolutionDescriptor solutionDescriptor = solver.getScoreDirectorFactory().getSolutionDescriptor();
+        InnerScoreDirectorFactory scoreDirectorFactory = (InnerScoreDirectorFactory) solver.getScoreDirectorFactory();
+        SolutionDescriptor solutionDescriptor = scoreDirectorFactory.getSolutionDescriptor();
         listener.setMutationCounter(new MutationCounter(solutionDescriptor));
         solver.addEventListener(listener);
     }

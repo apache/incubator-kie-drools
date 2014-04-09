@@ -51,6 +51,7 @@ import org.optaplanner.core.impl.score.buildin.simpledouble.SimpleDoubleScoreDef
 import org.optaplanner.core.impl.score.buildin.simplelong.SimpleLongScoreDefinition;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
@@ -180,13 +181,13 @@ public class ScoreDirectorFactoryConfig {
     // Builder methods
     // ************************************************************************
 
-    public ScoreDirectorFactory buildScoreDirectorFactory(EnvironmentMode environmentMode,
+    public InnerScoreDirectorFactory buildScoreDirectorFactory(EnvironmentMode environmentMode,
             SolutionDescriptor solutionDescriptor) {
         ScoreDefinition scoreDefinition = buildScoreDefinition();
         return buildScoreDirectorFactory(environmentMode, solutionDescriptor, scoreDefinition);
     }
 
-    protected ScoreDirectorFactory buildScoreDirectorFactory(EnvironmentMode environmentMode,
+    protected InnerScoreDirectorFactory buildScoreDirectorFactory(EnvironmentMode environmentMode,
             SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition) {
         AbstractScoreDirectorFactory scoreDirectorFactory;
         // TODO this should fail-fast if multiple scoreDirectorFactory's are configured or if none are configured

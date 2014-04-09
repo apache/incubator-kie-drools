@@ -5,6 +5,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
@@ -17,7 +18,7 @@ public class ChainedChangeMoveTest {
     public void noTrailing() {
         EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         GenuineVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
@@ -47,10 +48,10 @@ public class ChainedChangeMoveTest {
 
     @Test
     public void oldAndNewTrailing() {
-
         EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         GenuineVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
+
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
         TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);

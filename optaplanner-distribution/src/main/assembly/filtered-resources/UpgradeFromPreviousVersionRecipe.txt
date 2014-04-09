@@ -4060,3 +4060,8 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
       </swapMoveSelector>
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <swapMoveSelector/>
+
+[MINOR] The interface ScoreDirector has been split up in ScoreDirector and InnerScoreDirector.
+ScoreDirector now only has methods which might make the public API in a future version.
+InnerScoreDirector extends ScoreDirector and it holds all methods which will never be made part of the public API.
+Similarly, ScoreDirectorFactory has been split up in ScoreDirectorFactory and InnerScoreDirectorFactory.

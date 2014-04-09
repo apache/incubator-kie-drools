@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * @see ScoreDirector
  */
 public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFactory>
-        implements ScoreDirector, Cloneable {
+        implements InnerScoreDirector, Cloneable {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -311,12 +311,12 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void assertWorkingScoreFromScratch(Score workingScore, Object completedAction) {
-        ScoreDirectorFactory assertionScoreDirectorFactory
+        InnerScoreDirectorFactory assertionScoreDirectorFactory
                 = scoreDirectorFactory.getAssertionScoreDirectorFactory();
         if (assertionScoreDirectorFactory == null) {
             assertionScoreDirectorFactory = scoreDirectorFactory;
         }
-        ScoreDirector uncorruptedScoreDirector = assertionScoreDirectorFactory.buildScoreDirector();
+        InnerScoreDirector uncorruptedScoreDirector = assertionScoreDirectorFactory.buildScoreDirector();
         uncorruptedScoreDirector.setWorkingSolution(workingSolution);
         Score uncorruptedScore = uncorruptedScoreDirector.calculateScore();
         if (!workingScore.equals(uncorruptedScore)) {

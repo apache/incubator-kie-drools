@@ -29,6 +29,7 @@ import org.optaplanner.core.config.solver.random.RandomType;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -174,7 +175,7 @@ public class SolverConfig {
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_
                 = scoreDirectorFactoryConfig == null ? new ScoreDirectorFactoryConfig()
                 : scoreDirectorFactoryConfig;
-        ScoreDirectorFactory scoreDirectorFactory = scoreDirectorFactoryConfig_.buildScoreDirectorFactory(
+        InnerScoreDirectorFactory scoreDirectorFactory = scoreDirectorFactoryConfig_.buildScoreDirectorFactory(
                 environmentMode, solutionDescriptor);
         solver.setScoreDirectorFactory(scoreDirectorFactory);
         HeuristicConfigPolicy configPolicy = new HeuristicConfigPolicy(

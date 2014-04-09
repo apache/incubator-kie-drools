@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
@@ -43,6 +44,17 @@ public interface ScoreDirector {
      * @return never null
      */
     Solution getWorkingSolution();
+
+    /**
+     * The {@link Solution workingSolution} must never be the same instance as the {@link Solution bestSolution},
+     * it should be a (un)changed clone.
+     * <p/>
+     * Only call this method on a separate {@link ScoreDirector} instance,
+     * build by {@link Solver#getScoreDirectorFactory()},
+     * not on the one used inside the {@link Solver} itself.
+     * @param workingSolution never null
+     */
+    void setWorkingSolution(Solution workingSolution);
 
     /**
      * Calculates the {@link Score} and updates the {@link Solution workingSolution} accordingly.
@@ -91,121 +103,5 @@ public interface ScoreDirector {
      * Needs to be called after use because some implementations needs to clean up their resources.
      */
     void dispose();
-
-
-    // ************************************************************************
-    // TODO extract these methods to non-public interface
-    // ************************************************************************
-
-    /**
-     * @return used to check {@link #isWorkingEntityListDirty(long)} later on
-     */
-    long getWorkingEntityListRevision();
-
-    /**
-     * @param expectedWorkingEntityListRevision an
-     * @return true if the entityList might have a different set of instances now
-     */
-    boolean isWorkingEntityListDirty(long expectedWorkingEntityListRevision);
-
-    /**
-     * @return never null
-     */
-    ScoreDirectorFactory getScoreDirectorFactory();
-
-    /**
-     * @return never null
-     */
-    SolutionDescriptor getSolutionDescriptor();
-
-    /**
-     * @return never null
-     */
-    ScoreDefinition getScoreDefinition();
-
-    /**
-     * The {@link Solution workingSolution} must never be the same instance as the {@link Solution bestSolution},
-     * it should be a (un)changed clone.
-     * @param workingSolution never null
-     */
-    void setWorkingSolution(Solution workingSolution);
-
-    Solution cloneWorkingSolution();
-
-    /**
-     * @return >= 0
-     */
-    int getWorkingEntityCount();
-
-    /**
-     * @return never null: an empty list if there are none
-     */
-    List<Object> getWorkingEntityList();
-
-    /**
-     * @return >= 0
-     */
-    int getWorkingValueCount();
-
-    int countWorkingSolutionUninitializedVariables();
-
-    /**
-     * @return true if the {@link Solution workingSolution} is initialized
-     */
-    boolean isWorkingSolutionInitialized();
-
-    /**
-     * @return at least 0L
-     */
-    long getCalculateCount();
-
-    /**
-     * Clones this {@link ScoreDirector} and its {@link Solution workingSolution}.
-     * Use {@link #getWorkingSolution()} to retrieve the {@link Solution workingSolution} of that clone.
-     * <p/>
-     * This is heavy method, because it usually breaks incremental score calculation. Use it sparingly.
-     * Therefore it's best to clone lazily by delaying the clone call as long as possible.
-     * @return never null
-     */
-    ScoreDirector clone();
-
-    /**
-     * @param chainedVariableDescriptor never null, must be {@link GenuineVariableDescriptor#isChained()} true
-     * and known to the {@link SolutionDescriptor}
-     * @param planningValue sometimes null
-     * @return never null
-     */
-    Object getTrailingEntity(GenuineVariableDescriptor chainedVariableDescriptor, Object planningValue);
-
-    /**
-     * Do not waste performance by propagating changes to step (or higher) mechanisms.
-     * @param allChangesWillBeUndoneBeforeStepEnds true if all changes will be undone
-     */
-    void setAllChangesWillBeUndoneBeforeStepEnds(boolean allChangesWillBeUndoneBeforeStepEnds);
-
-    /**
-     * Asserts that if the {@link Score} is calculated for the current {@link Solution workingSolution}
-     * in the current {@link ScoreDirector} (with possibly incremental calculation residue),
-     * it is equal to the parameter {@link Score expectedWorkingScore}.
-     * <p/>
-     * Used to assert that skipping {@link #calculateScore()} (when the score is otherwise determined) is correct,
-     * @param expectedWorkingScore never null
-     * @param completedAction sometimes null, when assertion fails then the completedAction's {@link Object#toString()}
-     * is included in the exception message
-     */
-    void assertExpectedWorkingScore(Score expectedWorkingScore, Object completedAction);
-
-    /**
-     * Asserts that if the {@link Score} is calculated for the current {@link Solution workingSolution}
-     * in a fresh {@link ScoreDirector} (with no incremental calculation residue),
-     * it is equal to the parameter {@link Score workingScore}.
-     * <p/>
-     * Furthermore, if the assert fails, a score corruption analysis might be included in the exception message.
-     * @param workingScore never null
-     * @param completedAction sometimes null, when assertion fails then the completedAction's {@link Object#toString()}
-     * is included* in the exception message
-     * @see ScoreDirectorFactory#assertScoreFromScratch(Solution)
-     */
-    void assertWorkingScoreFromScratch(Score workingScore, Object completedAction);
 
 }

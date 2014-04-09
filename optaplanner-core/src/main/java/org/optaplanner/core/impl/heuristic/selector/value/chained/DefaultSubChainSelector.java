@@ -30,6 +30,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecyc
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
@@ -94,7 +95,7 @@ public class DefaultSubChainSelector extends AbstractSelector
     // ************************************************************************
 
     public void constructCache(DefaultSolverScope solverScope) {
-        ScoreDirector scoreDirector = solverScope.getScoreDirector();
+        InnerScoreDirector scoreDirector = solverScope.getScoreDirector();
         GenuineVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
         Class<?> entityClass = variableDescriptor.getEntityDescriptor().getEntityClass();
         long valueSize = valueSelector.getSize();

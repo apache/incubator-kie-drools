@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.solver.event.SolverEventSupport;
@@ -46,7 +47,7 @@ public class DefaultSolver implements Solver {
 
     protected SolverEventSupport solverEventSupport = new SolverEventSupport(this);
 
-    protected ScoreDirectorFactory scoreDirectorFactory;
+    protected InnerScoreDirectorFactory scoreDirectorFactory;
     protected RandomFactory randomFactory;
 
     protected BasicPlumbingTermination basicPlumbingTermination;
@@ -67,11 +68,11 @@ public class DefaultSolver implements Solver {
         this.randomFactory = randomFactory;
     }
 
-    public ScoreDirectorFactory getScoreDirectorFactory() {
+    public InnerScoreDirectorFactory getScoreDirectorFactory() {
         return scoreDirectorFactory;
     }
 
-    public void setScoreDirectorFactory(ScoreDirectorFactory scoreDirectorFactory) {
+    public void setScoreDirectorFactory(InnerScoreDirectorFactory scoreDirectorFactory) {
         this.scoreDirectorFactory = scoreDirectorFactory;
     }
 

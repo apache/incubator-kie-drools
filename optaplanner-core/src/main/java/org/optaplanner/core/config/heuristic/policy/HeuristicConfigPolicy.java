@@ -8,13 +8,14 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.EntityMimicRecorder;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 public class HeuristicConfigPolicy {
 
     private final EnvironmentMode environmentMode;
-    private final ScoreDirectorFactory scoreDirectorFactory;
+    private final InnerScoreDirectorFactory scoreDirectorFactory;
 
     private boolean sortEntitiesByDecreasingDifficultyEnabled = false;
     private boolean sortValuesByIncreasingStrengthEnabled = false;
@@ -24,7 +25,7 @@ public class HeuristicConfigPolicy {
     private Map<String, EntityMimicRecorder> entityMimicRecorderMap
             = new HashMap<String, EntityMimicRecorder>();
 
-    public HeuristicConfigPolicy(EnvironmentMode environmentMode, ScoreDirectorFactory scoreDirectorFactory) {
+    public HeuristicConfigPolicy(EnvironmentMode environmentMode, InnerScoreDirectorFactory scoreDirectorFactory) {
         this.environmentMode = environmentMode;
         this.scoreDirectorFactory = scoreDirectorFactory;
     }
@@ -41,7 +42,7 @@ public class HeuristicConfigPolicy {
         return scoreDirectorFactory.getScoreDefinition();
     }
 
-    public ScoreDirectorFactory getScoreDirectorFactory() {
+    public InnerScoreDirectorFactory getScoreDirectorFactory() {
         return scoreDirectorFactory;
     }
 
