@@ -116,5 +116,7 @@ public interface KieCommands {
     Command<FactHandle> fromExternalFactHandleCommand(String factHandleExternalForm);
 
     Command<FactHandle> fromExternalFactHandleCommand(String factHandleExternalForm, boolean disconnected);
+
+    Command newAgendaGroupSetFocus(String name);
 }
 
