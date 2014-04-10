@@ -25,6 +25,12 @@ public class AgendaGroupSetFocusCommand implements GenericCommand<Void> {
 
     private String name;
 
+    public AgendaGroupSetFocusCommand() { }
+
+    public AgendaGroupSetFocusCommand(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
