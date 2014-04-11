@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.config;
+package org.optaplanner.benchmark.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,25 +30,17 @@ import freemarker.template.TemplateException;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
+import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 
-public class FreemarkerXmlPlannerBenchmarkFactory implements PlannerBenchmarkFactory {
+/**
+ * @see PlannerBenchmarkFactory
+ */
+public class FreemarkerXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
 
-    private XmlPlannerBenchmarkFactory xmlPlannerBenchmarkFactory;
+    private final XStreamXmlPlannerBenchmarkFactory xmlPlannerBenchmarkFactory;
 
     public FreemarkerXmlPlannerBenchmarkFactory() {
-        xmlPlannerBenchmarkFactory = new XmlPlannerBenchmarkFactory();
-    }
-
-    /**
-     * @param templateResource never null, a classpath resource, as defined by {@link Class#getResource(String)}
-     */
-    public FreemarkerXmlPlannerBenchmarkFactory(String templateResource) {
-        this();
-        configure(templateResource);
-    }
-
-    public XmlPlannerBenchmarkFactory getXmlPlannerBenchmarkFactory() {
-        return xmlPlannerBenchmarkFactory;
+        xmlPlannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory();
     }
 
     // ************************************************************************
@@ -60,12 +52,12 @@ public class FreemarkerXmlPlannerBenchmarkFactory implements PlannerBenchmarkFac
      * @return this
      */
     public FreemarkerXmlPlannerBenchmarkFactory configure(String templateResource) {
-        return this.configure(templateResource, null);
+        return configure(templateResource, null);
     }
 
     /**
      * @param templateResource a classpath resource, as defined by {@link Class#getResource(String)}
-     * @param model for Freemarker
+     * @param model sometimes null
      * @return this
      */
     public FreemarkerXmlPlannerBenchmarkFactory configure(String templateResource, Object model) {
@@ -73,11 +65,11 @@ public class FreemarkerXmlPlannerBenchmarkFactory implements PlannerBenchmarkFac
         if (templateIn == null) {
             throw new IllegalArgumentException("Could not find templateResource (" + templateResource + ").");
         }
-        return this.configure(templateIn, model);
+        return configure(templateIn, model);
     }
 
     public FreemarkerXmlPlannerBenchmarkFactory configure(InputStream templateIn) {
-        return this.configure(templateIn, null);
+        return configure(templateIn, null);
     }
 
     public FreemarkerXmlPlannerBenchmarkFactory configure(InputStream templateIn, Object model) {
@@ -94,7 +86,7 @@ public class FreemarkerXmlPlannerBenchmarkFactory implements PlannerBenchmarkFac
     }
 
     public FreemarkerXmlPlannerBenchmarkFactory configure(Reader templateReader) {
-        return this.configure(templateReader, null);
+        return configure(templateReader, null);
     }
 
     public FreemarkerXmlPlannerBenchmarkFactory configure(Reader templateReader, Object model) {
@@ -115,11 +107,11 @@ public class FreemarkerXmlPlannerBenchmarkFactory implements PlannerBenchmarkFac
         } catch (IOException e) {
             throw new IllegalStateException("Can not read template (" + templateFilename + ") from templateReader.", e);
         }
-        return this.configure(template, model);
+        return configure(template, model);
     }
 
     public FreemarkerXmlPlannerBenchmarkFactory configure(Template template) {
-        return this.configure(template, null);
+        return configure(template, null);
     }
 
     public FreemarkerXmlPlannerBenchmarkFactory configure(Template template, Object model) {

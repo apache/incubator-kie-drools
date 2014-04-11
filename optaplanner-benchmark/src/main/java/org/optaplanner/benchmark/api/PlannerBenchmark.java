@@ -16,8 +16,18 @@
 
 package org.optaplanner.benchmark.api;
 
+import org.optaplanner.core.api.solver.SolverFactory;
+
+/**
+ *
+ * <p/>
+ * Build by a {@link PlannerBenchmarkFactory}.
+ */
 public interface PlannerBenchmark {
 
+    /**
+     * Run all the single benchmarks and create a report.
+     */
     void benchmark();
 
 }

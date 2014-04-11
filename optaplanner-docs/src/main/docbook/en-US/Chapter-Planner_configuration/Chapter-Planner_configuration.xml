@@ -51,10 +51,10 @@
     <section>
       <title>Solver configuration by XML file</title>
 
-      <para>You can build a <literal>Solver</literal> instance with the <literal>XmlSolverFactory</literal>. Configure
-      it with a solver configuration XML file:</para>
+      <para>Build a <literal>Solver</literal> instance with the <literal>SolverFactory</literal>. Configure it with a
+      solver configuration XML file, located in the classpath:</para>
 
-      <programlisting language="java">       XmlSolverFactory solverFactory = new XmlSolverFactory(
+      <programlisting language="java">       SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                "/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
        Solver solver = solverFactory.buildSolver();</programlisting>
 
@@ -100,7 +100,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>We'll explain these various parts of a configuration later in this manual.</para>
+      <para>These various parts of a configuration are explained further in this manual.</para>
 
       <para><emphasis role="bold">OptaPlanner makes it relatively easy to switch optimization algorithm(s) just by
       changing the configuration.</emphasis> There's even a <literal>Benchmark</literal> utility which allows you to
@@ -144,7 +144,7 @@
       <literal>SolverConfig</literal> class with <literal>getSolverConfig()</literal> to configure the dynamic value at
       runtime:</para>
 
-      <programlisting language="java">        SolverFactory solverFactory = new XmlSolverFactory(
+      <programlisting language="java">        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                 "/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
 
         SolverConfig solverConfig = solverFactory.getSolverConfig();
@@ -927,8 +927,8 @@ public interface Standstill {
         <para>As the customers for a vehicle change, the arrival time is automatically adjusted. For more information,
         see the <link linkend="vehicleRoutingDomainModel">vehicle routing domain model</link>.</para>
 
-        <para>To use custom <literal>VariableListener</literal>, implement the interface and annotate it on the
-        genuine planning variable(s) that trigger changes in the shadow variable(s):</para>
+        <para>To use custom <literal>VariableListener</literal>, implement the interface and annotate it on the genuine
+        planning variable(s) that trigger changes in the shadow variable(s):</para>
 
         <programlisting language="java">    @PlanningVariable(..., variableListenerClasses = {VehicleUpdatingVariableListener.class, ArrivalTimeUpdatingVariableListener.class})
     public Standstill getPreviousStandstill() {
@@ -968,8 +968,8 @@ public interface Standstill {
         variables.</para>
 
         <warning>
-          <para>A <literal>VariableListener</literal> can only change shadow variables. It must never change a genuine planning
-          variable or a problem fact.</para>
+          <para>A <literal>VariableListener</literal> can only change shadow variables. It must never change a genuine
+          planning variable or a problem fact.</para>
         </warning>
 
         <warning>
@@ -1382,24 +1382,24 @@ public interface Standstill {
         </mediaobject>
       </figure>
 
-      <para>The <literal>solve(Solution)</literal> method can take a long time (depending on the problem size and the solver
-      configuration). The <literal>Solver</literal> will remember (actually clone) the best solution it encounters
-      during its solving. Depending on a number factors (including problem size, how much time the
+      <para>The <literal>solve(Solution)</literal> method can take a long time (depending on the problem size and the
+      solver configuration). The <literal>Solver</literal> will remember (actually clone) the best solution it
+      encounters during its solving. Depending on a number factors (including problem size, how much time the
       <literal>Solver</literal> has, the solver configuration, ...), that best solution will be a feasible or even an
       optimal solution.</para>
 
       <note>
-        <para>The <literal>Solution</literal> instance given to the method <literal>solve(Solution)</literal> will
-        be changed by the <literal>Solver</literal>, but it do not mistake it for the best solution.</para>
+        <para>The <literal>Solution</literal> instance given to the method <literal>solve(Solution)</literal> will be
+        changed by the <literal>Solver</literal>, but it do not mistake it for the best solution.</para>
 
         <para>The <literal>Solution</literal> instance returned by the method <literal>getBestSolution()</literal> will
-        most likely be a clone of the instance given to the method <literal>solve(Solution)</literal>, which means
-        it's a different instance.</para>
+        most likely be a clone of the instance given to the method <literal>solve(Solution)</literal>, which means it's
+        a different instance.</para>
       </note>
 
       <note>
-        <para>The <literal>Solution</literal> instance given to the method <literal>solve(Solution)</literal> does
-        not need to be uninitialized. It can be partially or fully initialized, which is likely to be the case in <link
+        <para>The <literal>Solution</literal> instance given to the method <literal>solve(Solution)</literal> does not
+        need to be uninitialized. It can be partially or fully initialized, which is likely to be the case in <link
         linkend="repeatedPlanning">repeated planning</link>.</para>
       </note>
     </section>

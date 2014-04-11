@@ -17,7 +17,7 @@
 package org.optaplanner.examples.tsp.app;
 
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.config.solver.XmlSolverFactory;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
@@ -42,13 +42,13 @@ public class TspApp extends CommonApp {
         super("Traveling salesman",
                 "Official competition name: TSP - Traveling salesman problem\n\n" +
                         "Determine the order in which to visit all cities.\n\n" +
-                        "Find the shortest route to visit all cities.",
+                        "Find the *shortest route to visit all cities.",
                 TspPanel.LOGO_PATH);
     }
 
     @Override
     protected Solver createSolver() {
-        XmlSolverFactory solverFactory = new XmlSolverFactory(SOLVER_CONFIG);
+        SolverFactory solverFactory = SolverFactory.createFromXmlResource(SOLVER_CONFIG);
         return solverFactory.buildSolver();
     }
 

@@ -22,8 +22,6 @@ import java.util.Map;
 
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
-import org.optaplanner.benchmark.config.FreemarkerXmlPlannerBenchmarkFactory;
-import org.optaplanner.benchmark.config.XmlPlannerBenchmarkFactory;
 import org.optaplanner.benchmark.impl.aggregator.swingui.BenchmarkAggregatorFrame;
 
 public abstract class CommonBenchmarkApp extends LoggingMain {
@@ -62,9 +60,9 @@ public abstract class CommonBenchmarkApp extends LoggingMain {
         }
         PlannerBenchmarkFactory plannerBenchmarkFactory;
         if (!argOption.isTemplate()) {
-            plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory(argOption.getBenchmarkConfig());
+            plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(argOption.getBenchmarkConfig());
         } else {
-            plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory(argOption.getBenchmarkConfig());
+            plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(argOption.getBenchmarkConfig());
         }
         if (!aggregator) {
             PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();

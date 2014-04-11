@@ -3714,6 +3714,11 @@ Instead it has getConstraintPackage(), getConstraintName() and getScoreLevel().
 From 6.0.0.Final to 6.1.0.Beta1
 -------------------------------
 
+[README] As promised, starting from OptaPlanner 6.1.0.Final, there will be a public API,
+which will be backwards compatible in later versions (such as 6.2, 6.3, etc).
+The public API are all classes in the package org.optaplanner.core.api (or subpackages thereof).
+For more information, see the documentation.
+
 [MINOR] Simulated Annealing now uses the time gradient of the current step instead of the time gradient of the last step.
 The impact of this change is negligible.
 
@@ -4073,3 +4078,34 @@ Before in *.java:
   localSearchSolverPhaseConfig.setMoveSelectorConfigList(Collections.singletonList(moveSelectorConfig));
 After in *.java:
   localSearchSolverPhaseConfig.setMoveSelectorConfig(moveSelectorConfig);
+
+[MAJOR] The class XmlSolverFactory (which was not part of the public API) has been removed
+and replaced by static methods on SolverFactory (which are part of the public API).
+Before in *.java:
+    SolverFactory solverFactory = new XmlSolverFactory("...solverConfig.xml");
+After in *.java:
+    SolverFactory solverFactory = SolverFactory.createFromXmlResource("...solverConfig.xml");
+Before in *.java:
+    SolverFactory solverFactory = new XmlSolverFactory().configure(inputStream);
+After in *.java:
+    SolverFactory solverFactory = SolverFactory.createFromXmlInputStream(inputStream);
+Before in *.java:
+    SolverFactory solverFactory = new XmlSolverFactory().configure(reader);
+After in *.java:
+    SolverFactory solverFactory = SolverFactory.createFromXmlReader(reader);
+Note: If you used the method addXstreamAnnotations(), take a look at the non-public API class XStreamXmlSolverFactory.
+
+[MAJOR] Benchmarker: The class XmlPlannerBenchmarkFactory has been removed
+and replaced by static methods on PlannerBenchmarkFactory.
+Before in *.java:
+    PlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory(...);
+After in *.java:
+    PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(...);
+Note: If you used the method addXstreamAnnotations(), take a look at the non-public API class XStreamXmlPlannerBenchmarkFactory.
+
+[MAJOR] Benchmarker: The class FreemarkerXmlPlannerBenchmarkFactory has been removed
+and replaced by static methods on PlannerBenchmarkFactory.
+Before in *.java:
+    PlannerBenchmarkFactory plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory(...);
+After in *.java:
+    PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(...);

@@ -51,10 +51,10 @@
     <section>
       <title>Building and running a <literal>PlannerBenchmark</literal></title>
 
-      <para>You can build a <literal>PlannerBenchmark</literal> instance with the
-      <literal>XmlPlannerBenchmarkFactory</literal>. Configure it with a benchmark configuration xml file:</para>
+      <para>Build a <literal>PlannerBenchmark</literal> instance with a <literal>PlannerBenchmarkFactory</literal>.
+      Configure it with a benchmark configuration XML file, located in the classpath:</para>
 
-      <programlisting language="java">        PlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory(
+      <programlisting language="java">        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
                 "/org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml");
         PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark();
         plannerBenchmark.benchmark();</programlisting>
@@ -785,9 +785,9 @@
 &lt;/#list&gt;
 &lt;/plannerBenchmark&gt;</programlisting>
 
-      <para>And build it with the class <literal>FreemarkerXmlPlannerBenchmarkFactory</literal>:</para>
+      <para>And build it with the class <literal>PlannerBenchmarkFactory</literal>:</para>
 
-      <programlisting language="java">        PlannerBenchmarkFactory plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory(
+      <programlisting language="java">        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(
                 "/org/optaplanner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfigTemplate.xml.ftl");
         PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark();</programlisting>
     </section>
@@ -825,7 +825,7 @@
       <literal>BenchmarkAggregatorFrame</literal> to display the GUI:</para>
 
       <programlisting language="java">    public static void main(String[] args) {
-        PlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory(
+        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
                 "/org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml");
         BenchmarkAggregatorFrame.createAndDisplay(plannerBenchmarkFactory);
     }</programlisting>

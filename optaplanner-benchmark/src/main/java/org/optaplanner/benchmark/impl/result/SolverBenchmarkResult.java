@@ -33,8 +33,8 @@ import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.impl.score.ScoreUtils;
+import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
 
 /**
  * Represents 1 {@link Solver} configuration benchmarked on multiple problem instances (data sets).
@@ -230,7 +230,7 @@ public class SolverBenchmarkResult {
 
     public String getSolverConfigAsHtmlEscapedXml() {
         // TODO reuse a single XStream instance for the entire report
-        XStream xStream = XmlSolverFactory.buildXstream();
+        XStream xStream = XStreamXmlSolverFactory.buildXStream();
         xStream.setMode(XStream.NO_REFERENCES);
         String xml = xStream.toXML(solverConfig);
         return StringEscapeUtils.escapeHtml(xml);

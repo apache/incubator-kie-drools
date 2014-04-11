@@ -27,7 +27,6 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import com.thoughtworks.xstream.XStream;
@@ -36,7 +35,7 @@ import com.thoughtworks.xstream.converters.ConversionException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.core.config.solver.XmlSolverFactory;
+import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +48,7 @@ public class BenchmarkResultIO {
     private final XStream xStream;
 
     public BenchmarkResultIO() {
-        xStream = XmlSolverFactory.buildXstream();
+        xStream = XStreamXmlSolverFactory.buildXStream();
         xStream.processAnnotations(PlannerBenchmarkResult.class);
     }
 

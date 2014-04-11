@@ -17,7 +17,7 @@
 package org.optaplanner.examples.vehiclerouting.app;
 
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.config.solver.XmlSolverFactory;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
@@ -49,7 +49,7 @@ public class VehicleRoutingApp extends CommonApp {
 
     @Override
     protected Solver createSolver() {
-        XmlSolverFactory solverFactory = new XmlSolverFactory(SOLVER_CONFIG);
+        SolverFactory solverFactory = SolverFactory.createFromXmlResource(SOLVER_CONFIG);
         return solverFactory.buildSolver();
     }
 

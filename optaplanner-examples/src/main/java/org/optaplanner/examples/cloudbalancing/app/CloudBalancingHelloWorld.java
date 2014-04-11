@@ -18,7 +18,6 @@ package org.optaplanner.examples.cloudbalancing.app;
 
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
@@ -28,7 +27,7 @@ public class CloudBalancingHelloWorld {
 
     public static void main(String[] args) {
         // Build the Solver
-        SolverFactory solverFactory = new XmlSolverFactory(
+        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                 "/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
 

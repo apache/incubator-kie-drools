@@ -21,7 +21,6 @@ import java.util.concurrent.Executors;
 import javax.servlet.http.HttpSession;
 
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.api.solver.Solver;
 
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
@@ -37,7 +36,7 @@ public class CloudBalancingWebAction {
     public void setup(HttpSession session) {
         terminateEarly(session);
 
-        SolverFactory solverFactory = new XmlSolverFactory(
+        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                 "/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
         session.setAttribute(CloudBalancingSessionAttributeName.SOLVER, solver);

@@ -151,7 +151,7 @@
 
     public static void main(String[] args) {
         // Build the Solver
-        SolverFactory solverFactory = new XmlSolverFactory(
+        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                 "/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
 
@@ -176,9 +176,10 @@
 
       <itemizedlist>
         <listitem>
-          <para>Build the <literal>Solver</literal> based on a solver configuration (in this case an XML file).</para>
+          <para>Build the <literal>Solver</literal> based on a solver configuration (in this case an XML file from the
+          classpath).</para>
 
-          <programlisting language="java">        SolverFactory solverFactory = new XmlSolverFactory(
+          <programlisting language="java">        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                 "/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();</programlisting>
         </listitem>

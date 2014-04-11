@@ -23,10 +23,8 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 
@@ -67,7 +65,7 @@ public abstract class SolverPerformanceTest extends LoggingTest {
     }
 
     protected SolverFactory buildSolverFactory(String bestScoreLimitString, EnvironmentMode environmentMode) {
-        SolverFactory solverFactory = new XmlSolverFactory(createSolverConfigResource());
+        SolverFactory solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
         solverFactory.getSolverConfig().setEnvironmentMode(environmentMode);
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setBestScoreLimit(bestScoreLimitString);
