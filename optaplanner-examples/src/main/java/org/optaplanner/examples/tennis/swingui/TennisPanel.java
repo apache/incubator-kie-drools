@@ -112,7 +112,7 @@ public class TennisPanel extends SolutionPanel {
         fillDayCells(tennisSolution);
         fillTeamCells(tennisSolution);
         fillUnavailabilityPenaltyCells(tennisSolution);
-        fillLectureCells(tennisSolution);
+        fillTeamAssignmentCells(tennisSolution);
         fillConfrontationCells(tennisSolution);
     }
 
@@ -166,8 +166,11 @@ public class TennisPanel extends SolutionPanel {
         }
     }
 
-    private void fillLectureCells(TennisSolution tennisSolution) {
+    private void fillTeamAssignmentCells(TennisSolution tennisSolution) {
         TangoColorFactory tangoColorFactory = new TangoColorFactory();
+        for (Team team : tennisSolution.getTeamList()) {
+            tangoColorFactory.pickColor(team);
+        }
         for (TeamAssignment teamAssignment : tennisSolution.getTeamAssignmentList()) {
             Team team = teamAssignment.getTeam();
             Color teamColor = team == null ? TangoColorFactory.SCARLET_1 : tangoColorFactory.pickColor(team);
