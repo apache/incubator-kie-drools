@@ -19,8 +19,8 @@
       </listitem>
 
       <listitem>
-        <para><emphasis role="bold">Configure a <literal>Solver</literal></emphasis>, for example a first fit and tabu
-        search solver for any <literal>NQueens</literal> instance.</para>
+        <para><emphasis role="bold">Configure a <literal>Solver</literal></emphasis>, for example a First Fit and Tabu
+        Search solver for any <literal>NQueens</literal> instance.</para>
       </listitem>
 
       <listitem>
@@ -119,45 +119,25 @@
     <section>
       <title>Solver configuration by Java API</title>
 
-      <para>As an alternative to the XML file, a solver configuration can also be configured with the
-      <literal>SolverConfig</literal> API:</para>
-
-      <programlisting language="java">        SolverConfig solverConfig = new SolverConfig();
-
-        solverConfig.setSolutionClass(NQueens.class);
-        solverConfig.setPlanningEntityClassList(Collections.&lt;Class&lt;?&gt;&gt;singletonList(Queen.class));
-
-        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
-        scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDirectorFactoryConfig.ScoreDefinitionType.SIMPLE);
-        scoreDirectorFactoryConfig.setScoreDrlList(
-                Arrays.asList("/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl"));
-        solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
-
-        TerminationConfig terminationConfig = new TerminationConfig();
-        // ...
-        solverConfig.setTerminationConfig(terminationConfig);
-        List&lt;SolverPhaseConfig&gt; solverPhaseConfigList = new ArrayList&lt;SolverPhaseConfig&gt;();
-        ConstructionHeuristicSolverPhaseConfig constructionHeuristicSolverPhaseConfig
-                = new ConstructionHeuristicSolverPhaseConfig();
-        // ...
-        solverPhaseConfigList.add(constructionHeuristicSolverPhaseConfig);
-        LocalSearchSolverPhaseConfig localSearchSolverPhaseConfig = new LocalSearchSolverPhaseConfig();
-        // ...
-        solverPhaseConfigList.add(localSearchSolverPhaseConfig);
-        solverConfig.setSolverPhaseConfigList(solverPhaseConfigList);
-        Solver solver = solverConfig.buildSolver();</programlisting>
-
-      <para><emphasis role="bold">It is highly recommended to configure by XML file instead of this API.</emphasis> To
-      dynamically configure a value at runtime, use the XML file as a template and extract the
-      <literal>SolverConfig</literal> class with <literal>getSolverConfig()</literal> to configure the dynamic value at
-      runtime:</para>
+      <para>A solver configuration can also be configured with the <literal>SolverConfig</literal> API. This especially
+      useful to change some values dynamically at runtime, for example to change the running time based on user input,
+      before building the <literal>Solver</literal>:</para>
 
       <programlisting language="java">        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                 "/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
 
         SolverConfig solverConfig = solverFactory.getSolverConfig();
-        solverConfig.getTerminationConfig().setMinutesSpentLimit(userInput);
-        Solver solver = solverConfig.buildSolver();</programlisting>
+        TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
+        terminationConfig.setMinutesSpentLimit(userInput);
+
+        Solver solver = solverFactory.buildSolver();</programlisting>
+
+      <para>Every element in the solver configuration XML is available as a <literal>*Config</literal> class or a
+      property on a <literal>*Config</literal> class in the package namespace
+      <literal>org.optaplanner.core.config</literal>. These <literal>*Config</literal> classes are the Java
+      representation of the XML format and they also provide the user-friendly way to assemble the runtime components
+      (of the package namespace <literal>org.optaplanner.core.impl</literal>) into an efficient
+      <literal>Solver</literal>.</para>
     </section>
   </section>
 
