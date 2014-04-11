@@ -28,8 +28,11 @@ import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
+import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -168,6 +171,86 @@ public class RuleModelDRLPersistenceUnmarshallingI18NTest {
         assertEquals( FieldNatureType.TYPE_LITERAL,
                       afv.getNature() );
 
+    }
+
+    @Test
+    public void testI18N_US_BoundField() {
+        final String drl = "package org.test;\n" +
+                "rule \"r1\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "Applicant( $a : age )" +
+                "then\n" +
+                "end";
+
+        addModelField( "Applicant",
+                       "age",
+                       "java.lang.Integer",
+                       DataType.TYPE_NUMERIC_INTEGER );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
+        final FactPattern fp = (FactPattern) m.lhs[ 0 ];
+        assertEquals( "Applicant",
+                      fp.getFactType() );
+        assertEquals( 1,
+                      fp.getNumberOfConstraints() );
+
+        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        final SingleFieldConstraint sfc = (SingleFieldConstraint) fp.getConstraint( 0 );
+        assertEquals( "age",
+                      sfc.getFieldName() );
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      sfc.getFieldType() );
+        assertEquals( "$a",
+                      sfc.getFieldBinding() );
+    }
+
+    @Test
+    public void testI18N_JP_BoundField() {
+        final String drl = "package org.test;\n" +
+                "rule \"r1\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "Applicant( 製品番号 : age )" +
+                "then\n" +
+                "end";
+
+        addModelField( "Applicant",
+                       "age",
+                       "java.lang.Integer",
+                       DataType.TYPE_NUMERIC_INTEGER );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
+        final FactPattern fp = (FactPattern) m.lhs[ 0 ];
+        assertEquals( "Applicant",
+                      fp.getFactType() );
+        assertEquals( 1,
+                      fp.getNumberOfConstraints() );
+
+        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        final SingleFieldConstraint sfc = (SingleFieldConstraint) fp.getConstraint( 0 );
+        assertEquals( "age",
+                      sfc.getFieldName() );
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      sfc.getFieldType() );
+        assertEquals( "製品番号",
+                      sfc.getFieldBinding() );
     }
 
 }
