@@ -36,6 +36,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
 import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.examples.common.swingui.CommonIcons;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
@@ -54,14 +55,11 @@ public class CurriculumCoursePanel extends SolutionPanel {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/curriculumcourse/swingui/curriculumCourseLogo.png";
 
-    private final ImageIcon lockedIcon;
-
     private final TimeTablePanel<Room, Period> roomsPanel;
     private final TimeTablePanel<Teacher, Period> teachersPanel;
     private final TimeTablePanel<Curriculum, Period> curriculaPanel;
 
     public CurriculumCoursePanel() {
-        lockedIcon = new ImageIcon(getClass().getResource("locked.png"));
         setLayout(new BorderLayout());
         JTabbedPane tabbedPane = new JTabbedPane();
         roomsPanel = new TimeTablePanel<Room, Period>();
@@ -228,7 +226,7 @@ public class CurriculumCoursePanel extends SolutionPanel {
         button.setMargin(new Insets(0, 0, 0, 0));
         button.setBackground(color);
         if (lecture.isLocked()) {
-            button.setIcon(lockedIcon);
+            button.setIcon(CommonIcons.LOCKED_ICON);
         }
         return button;
     }
