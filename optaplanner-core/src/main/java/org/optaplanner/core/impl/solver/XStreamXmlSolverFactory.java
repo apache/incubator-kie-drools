@@ -40,6 +40,8 @@ public class XStreamXmlSolverFactory extends SolverFactory {
     public static XStream buildXStream() {
         XStream xStream = new XStream();
         xStream.setMode(XStream.ID_REFERENCES);
+        xStream.aliasSystemAttribute("xStreamId", "id");
+        xStream.aliasSystemAttribute("xStreamRef", "reference");
         xStream.processAnnotations(SolverConfig.class);
         return xStream;
     }
