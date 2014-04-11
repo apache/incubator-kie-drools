@@ -52,7 +52,7 @@
       <title>Building and running a <literal>PlannerBenchmark</literal></title>
 
       <para>Build a <literal>PlannerBenchmark</literal> instance with a <literal>PlannerBenchmarkFactory</literal>.
-      Configure it with a benchmark configuration XML file, located in the classpath:</para>
+      Configure it with a benchmark configuration XML file, provided as a classpath resource:</para>
 
       <programlisting language="java">        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
                 "/org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml");

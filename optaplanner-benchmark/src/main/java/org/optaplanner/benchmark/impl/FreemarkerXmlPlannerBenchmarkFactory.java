@@ -16,6 +16,9 @@
 
 package org.optaplanner.benchmark.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -66,6 +69,23 @@ public class FreemarkerXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactor
             throw new IllegalArgumentException("Could not find templateResource (" + templateResource + ").");
         }
         return configure(templateIn, model);
+    }
+
+    public FreemarkerXmlPlannerBenchmarkFactory configure(File templateFile) {
+
+        try {
+            return configure(new FileInputStream(templateFile));
+        } catch (FileNotFoundException e) {
+            throw new IllegalArgumentException("The templateFile (" + templateFile + ") was not found.", e);
+        }
+    }
+
+    public FreemarkerXmlPlannerBenchmarkFactory configure(File templateFile, Object model) {
+        try {
+            return configure(new FileInputStream(templateFile), model);
+        } catch (FileNotFoundException e) {
+            throw new IllegalArgumentException("The templateFile (" + templateFile + ") was not found.", e);
+        }
     }
 
     public FreemarkerXmlPlannerBenchmarkFactory configure(InputStream templateIn) {

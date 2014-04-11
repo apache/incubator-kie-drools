@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.api.solver;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 
@@ -40,6 +41,16 @@ public abstract class SolverFactory {
     public static SolverFactory createFromXmlResource(String solverConfigResource) {
         XStreamXmlSolverFactory solverFactory = new XStreamXmlSolverFactory();
         solverFactory.configure(solverConfigResource);
+        return solverFactory;
+    }
+
+    /**
+     * @param solverConfigFile never null
+     * @return never null
+     */
+    public static SolverFactory createFromXmlFile(File solverConfigFile) {
+        XStreamXmlSolverFactory solverFactory = new XStreamXmlSolverFactory();
+        solverFactory.configure(solverConfigFile);
         return solverFactory;
     }
 

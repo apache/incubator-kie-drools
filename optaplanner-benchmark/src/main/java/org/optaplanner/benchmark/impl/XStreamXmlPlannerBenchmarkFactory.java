@@ -16,6 +16,9 @@
 
 package org.optaplanner.benchmark.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -65,6 +68,15 @@ public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
         } catch (ConversionException e) {
             throw new IllegalArgumentException("Unmarshalling of benchmarkConfigResource (" + benchmarkConfigResource
                     + ") fails.", e);
+        }
+    }
+
+    public XStreamXmlPlannerBenchmarkFactory configure(File benchmarkConfigFile) {
+        try {
+            return configure(new FileInputStream(benchmarkConfigFile));
+        } catch (FileNotFoundException e) {
+            throw new IllegalArgumentException("The benchmarkConfigFile (" + benchmarkConfigFile
+                    + ") was not found.", e);
         }
     }
 

@@ -16,6 +16,7 @@
 
 package org.optaplanner.benchmark.api;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 
@@ -41,6 +42,16 @@ public abstract class PlannerBenchmarkFactory {
     public static PlannerBenchmarkFactory createFromXmlResource(String benchmarkConfigResource) {
         XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory();
         plannerBenchmarkFactory.configure(benchmarkConfigResource);
+        return plannerBenchmarkFactory;
+    }
+
+    /**
+     * @param benchmarkConfigFile never null
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromXmlFile(File benchmarkConfigFile) {
+        XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory();
+        plannerBenchmarkFactory.configure(benchmarkConfigFile);
         return plannerBenchmarkFactory;
     }
 
@@ -84,6 +95,25 @@ public abstract class PlannerBenchmarkFactory {
     public static PlannerBenchmarkFactory createFromFreemarkerXmlResource(String templateResource, Object model) {
         FreemarkerXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory();
         plannerBenchmarkFactory.configure(templateResource, model);
+        return plannerBenchmarkFactory;
+    }
+
+    /**
+     * @param templateFile never null
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromFreemarkerXmlFile(File templateFile) {
+        return createFromFreemarkerXmlFile(templateFile, null);
+    }
+
+    /**
+     * @param templateFile never null
+     * @param model sometimes null
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromFreemarkerXmlFile(File templateFile, Object model) {
+        FreemarkerXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory();
+        plannerBenchmarkFactory.configure(templateFile, model);
         return plannerBenchmarkFactory;
     }
 

@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.solver;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -56,6 +59,10 @@ public class XStreamXmlSolverFactory extends SolverFactory {
     // Worker methods
     // ************************************************************************
 
+    /**
+     * @param solverConfigResource a classpath resource, as defined by {@link Class#getResource(String)}
+     * @return this
+     */
     public XStreamXmlSolverFactory configure(String solverConfigResource) {
         InputStream in = getClass().getResourceAsStream(solverConfigResource);
         if (in == null) {
@@ -67,6 +74,14 @@ public class XStreamXmlSolverFactory extends SolverFactory {
         } catch (ConversionException e) {
             throw new IllegalArgumentException("Unmarshalling of solverConfigResource (" + solverConfigResource
                     + ") fails.", e);
+        }
+    }
+
+    public XStreamXmlSolverFactory configure(File solverConfigFile) {
+        try {
+            return configure(new FileInputStream(solverConfigFile));
+        } catch (FileNotFoundException e) {
+            throw new IllegalArgumentException("The solverConfigFile (" + solverConfigFile + ") was not found.", e);
         }
     }
 
