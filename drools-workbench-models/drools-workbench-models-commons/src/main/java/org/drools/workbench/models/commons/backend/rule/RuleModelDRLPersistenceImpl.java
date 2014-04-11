@@ -2599,6 +2599,8 @@ public class RuleModelDRLPersistenceImpl
             String field = methodName.substring( 3 );
             if ( Character.isUpperCase( field.charAt( 0 ) ) ) {
                 return field.substring( 0, 1 ).toLowerCase() + field.substring( 1 );
+            } else {
+                return field;
             }
         }
         return null;
