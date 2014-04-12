@@ -94,46 +94,7 @@ public class BendableScoreDefinition extends AbstractFeasibilityScoreDefinition<
 
     public double calculateTimeGradient(BendableScore startScore, BendableScore endScore,
             BendableScore score) {
-        startScore.validateCompatible(score);
-        score.validateCompatible(endScore);
-        if (score.compareTo(endScore) > 0) {
-            return 1.0;
-        } else if (score.compareTo(startScore) < 0) {
-            return 0.0;
-        }
-        double timeGradient = 0.0;
-        double remainingTimeGradient = 1.0;
-        int levelCount = hardLevelCount + softLevelCount;
-        for (int i = 0; i < levelCount; i++) {
-            double levelTimeGradientWeight;
-            if (i != (levelCount - 1)) {
-                levelTimeGradientWeight = remainingTimeGradient * recursiveTimeGradientWeight;
-                remainingTimeGradient -= levelTimeGradientWeight;
-            } else {
-                levelTimeGradientWeight = remainingTimeGradient;
-            }
-            int startScoreLevel = (i < hardLevelCount) ? startScore.getHardScore(i) : startScore.getSoftScore(i - hardLevelCount);
-            int endScoreLevel = (i < hardLevelCount) ? endScore.getHardScore(i) : endScore.getSoftScore(i - hardLevelCount);
-            int scoreLevel = (i < hardLevelCount) ? score.getHardScore(i) : score.getSoftScore(i - hardLevelCount);
-            if (scoreLevel >= endScoreLevel) {
-                timeGradient += levelTimeGradientWeight;
-            } else {
-                if (scoreLevel <= startScoreLevel) {
-                    // No change: timeGradient += 0.0
-                } else {
-                    int levelTotal = endScoreLevel - startScoreLevel;
-                    int levelDelta = scoreLevel - startScoreLevel;
-                    double levelTimeGradient = (double) levelDelta / (double) levelTotal;
-                    timeGradient += levelTimeGradient * levelTimeGradientWeight;
-                }
-            }
-
-        }
-        if (timeGradient > 1.0) {
-            // Rounding error due to calculating with doubles
-            timeGradient = 1.0;
-        }
-        return timeGradient;
+        return calculateTimeGradient(startScore, endScore, score, false);
     }
 
     public BendableScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
@@ -170,14 +131,28 @@ public class BendableScoreDefinition extends AbstractFeasibilityScoreDefinition<
         return BendableScore.valueOf(hardScores, softScores);
     }
 
-    // TODO refactor duplication
     public double calculateFeasibilityTimeGradient(BendableScore startScore, BendableScore score) {
-        if (compareBendableScoresHardLevelsOnly(score, startScore) <= 0) {
-            return 0.0;
+        return calculateTimeGradient(startScore, null, score, true);
+    }
+
+    private double calculateTimeGradient(BendableScore startScore, BendableScore endScore,
+            BendableScore score, boolean feasibilityScore) {
+        if (feasibilityScore) {
+            if (compareBendableScoresHardLevelsOnly(score, startScore) <= 0) {
+                return 0.0;
+            }
+        } else {
+            startScore.validateCompatible(score);
+            score.validateCompatible(endScore);
+            if (score.compareTo(endScore) > 0) {
+                return 1.0;
+            } else if (score.compareTo(startScore) < 0) {
+                return 0.0;
+            }
         }
         double timeGradient = 0.0;
         double remainingTimeGradient = 1.0;
-        int levelCount = hardLevelCount;
+        int levelCount = feasibilityScore ? hardLevelCount : hardLevelCount + softLevelCount;
         for (int i = 0; i < levelCount; i++) {
             double levelTimeGradientWeight;
             if (i != (levelCount - 1)) {
@@ -186,9 +161,9 @@ public class BendableScoreDefinition extends AbstractFeasibilityScoreDefinition<
             } else {
                 levelTimeGradientWeight = remainingTimeGradient;
             }
-            int startScoreLevel = startScore.getHardScore(i);
-            int endScoreLevel = 0;
-            int scoreLevel = score.getHardScore(i);
+            int startScoreLevel = (i < hardLevelCount) ? startScore.getHardScore(i) : startScore.getSoftScore(i - hardLevelCount);
+            int endScoreLevel = feasibilityScore ? 0 : (i < hardLevelCount) ? endScore.getHardScore(i) : endScore.getSoftScore(i - hardLevelCount);
+            int scoreLevel = (i < hardLevelCount) ? score.getHardScore(i) : score.getSoftScore(i - hardLevelCount);
             if (scoreLevel >= endScoreLevel) {
                 timeGradient += levelTimeGradientWeight;
             } else {
