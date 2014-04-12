@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 
 @Retention(value = RetentionPolicy.RUNTIME)
 @Target(value = ElementType.TYPE)
-public @interface TypeSafe {
+public @interface Timestamp {
 
-    boolean value() default true;
+    String value();
 }
