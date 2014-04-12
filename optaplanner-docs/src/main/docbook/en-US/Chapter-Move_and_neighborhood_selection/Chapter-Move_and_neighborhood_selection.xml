@@ -483,6 +483,18 @@
 
     <para>The <literal>variableName</literal> property is only required if it cannot be deduced automatically because
     there are multiple variables (for the related entity class).</para>
+
+    <para>In exotic Construction Heuristic configurations, the <literal>entityClass</literal> from the
+    <literal>EntitySelector</literal> sometimes needs to be downcasted, which can be done with the property
+    <literal>downcastEntityClass</literal>:</para>
+
+    <programlisting language="xml">      &lt;valueSelector&gt;
+        &lt;downcastEntityClass&gt;...LeadingExam&lt;/downcastEntityClass&gt;
+        &lt;variableName&gt;period&lt;/variableName&gt;
+      &lt;/valueSelector&gt;</programlisting>
+
+    <para>If a selected entity cannot be downcasted, the <literal>ValueSelector</literal> is empty for that
+    entity.</para>
   </section>
 
   <section xml:id="generalSelectorFeatures">

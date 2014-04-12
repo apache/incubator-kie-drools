@@ -36,11 +36,13 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
+import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.FromEntityPropertyValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.FromSolutionPropertyValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.CachingValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.DowncastingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.EntityDependentSortingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.InitializedValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ProbabilityValueSelector;
@@ -52,6 +54,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.decorator.SortingValue
 @XStreamAlias("valueSelector")
 public class ValueSelectorConfig extends SelectorConfig {
 
+    protected Class<?> downcastEntityClass = null;
     protected String variableName = null;
 
     protected SelectionCacheType cacheType = null;
@@ -68,6 +71,14 @@ public class ValueSelectorConfig extends SelectorConfig {
     protected Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass = null;
 
     protected Long selectedCountLimit = null;
+
+    public Class<?> getDowncastEntityClass() {
+        return downcastEntityClass;
+    }
+
+    public void setDowncastEntityClass(Class<?> downcastEntityClass) {
+        this.downcastEntityClass = downcastEntityClass;
+    }
 
     public String getVariableName() {
         return variableName;
@@ -166,6 +177,15 @@ public class ValueSelectorConfig extends SelectorConfig {
     public ValueSelector buildValueSelector(HeuristicConfigPolicy configPolicy,
             EntityDescriptor entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
+        if (downcastEntityClass != null) {
+            Class<?> parentEntityClass = entityDescriptor.getEntityClass();
+            if (!parentEntityClass.isAssignableFrom(downcastEntityClass)) {
+                throw new IllegalStateException("The downcastEntityClass (" + downcastEntityClass
+                        + ") is not a subclass of the parentEntityClass (" + parentEntityClass
+                        + ") configured by the " + EntitySelector.class.getSimpleName() + ".");
+            }
+            entityDescriptor = configPolicy.getSolutionDescriptor().getEntityDescriptorStrict(downcastEntityClass);
+        }
         GenuineVariableDescriptor variableDescriptor = deduceVariableDescriptor(entityDescriptor, variableName);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
@@ -190,6 +210,7 @@ public class ValueSelectorConfig extends SelectorConfig {
         valueSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applySelectedLimit(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyReinitializeVariableFiltering(configPolicy, valueSelector);
+        valueSelector = applyDowncasting(configPolicy, valueSelector);
         return valueSelector;
     }
 
@@ -445,11 +466,18 @@ public class ValueSelectorConfig extends SelectorConfig {
         return valueSelector;
     }
 
+    private ValueSelector applyDowncasting(HeuristicConfigPolicy configPolicy, ValueSelector valueSelector) {
+        if (downcastEntityClass != null) {
+            valueSelector = new DowncastingValueSelector(valueSelector, downcastEntityClass);
+        }
+        return valueSelector;
+    }
+
     public void inherit(ValueSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        if (variableName == null) {
-            variableName = inheritedConfig.getVariableName();
-        }
+        downcastEntityClass = ConfigUtils.inheritOverwritableProperty(downcastEntityClass,
+                inheritedConfig.getDowncastEntityClass());
+        variableName = ConfigUtils.inheritOverwritableProperty(variableName, inheritedConfig.getVariableName());
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         sorterManner = ConfigUtils.inheritOverwritableProperty(

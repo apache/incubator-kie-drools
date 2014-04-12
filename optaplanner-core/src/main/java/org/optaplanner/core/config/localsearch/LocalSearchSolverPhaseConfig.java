@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.localsearch;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -56,12 +57,12 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
     @XStreamAlias("forager")
     private ForagerConfig foragerConfig = null;
 
-    public List<MoveSelectorConfig> getMoveSelectorConfigList() {
-        return moveSelectorConfigList;
+    public MoveSelectorConfig getMoveSelectorConfig() {
+        return moveSelectorConfigList == null ? null : moveSelectorConfigList.get(0);
     }
 
-    public void setMoveSelectorConfigList(List<MoveSelectorConfig> moveSelectorConfigList) {
-        this.moveSelectorConfigList = moveSelectorConfigList;
+    public void setMoveSelectorConfig(MoveSelectorConfig moveSelectorConfig) {
+        this.moveSelectorConfigList = Collections.singletonList(moveSelectorConfig);
     }
 
     public AcceptorConfig getAcceptorConfig() {
@@ -156,8 +157,8 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
 
     public void inherit(LocalSearchSolverPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        moveSelectorConfigList = ConfigUtils.inheritMergeableListProperty(moveSelectorConfigList,
-                inheritedConfig.getMoveSelectorConfigList());
+        setMoveSelectorConfig(ConfigUtils.inheritOverwritableProperty(
+                getMoveSelectorConfig(), inheritedConfig.getMoveSelectorConfig()));
         if (acceptorConfig == null) {
             acceptorConfig = inheritedConfig.getAcceptorConfig();
         } else if (inheritedConfig.getAcceptorConfig() != null) {

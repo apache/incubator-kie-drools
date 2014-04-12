@@ -32,6 +32,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
@@ -196,7 +197,7 @@ public class SelectorTestUtils {
         return moveSelector;
     }
 
-    public static void mockMethodGetTrailingEntity(ScoreDirector scoreDirector,
+    public static void mockMethodGetTrailingEntity(InnerScoreDirector scoreDirector,
             GenuineVariableDescriptor variableDescriptor, final TestdataChainedEntity[] allEntities) {
         when(scoreDirector.getTrailingEntity(eq(variableDescriptor), anyObject())).thenAnswer(new Answer<Object>() {
             public Object answer(InvocationOnMock invocation) throws Throwable {

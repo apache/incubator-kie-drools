@@ -23,6 +23,7 @@ import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
 import org.slf4j.Logger;
@@ -35,7 +36,7 @@ public class DefaultSolverScope {
     protected Long startingSystemTimeMillis;
     protected int startingSolverCount;
     protected Long endingSystemTimeMillis;
-    protected ScoreDirector scoreDirector;
+    protected InnerScoreDirector scoreDirector;
     protected Random workingRandom;
 
     protected Score startingInitializedScore; // TODO after initialization => ambiguous with solve()'s planningProblem
@@ -70,11 +71,11 @@ public class DefaultSolverScope {
         this.endingSystemTimeMillis = endingSystemTimeMillis;
     }
 
-    public ScoreDirector getScoreDirector() {
+    public InnerScoreDirector getScoreDirector() {
         return scoreDirector;
     }
 
-    public void setScoreDirector(ScoreDirector scoreDirector) {
+    public void setScoreDirector(InnerScoreDirector scoreDirector) {
         // TODO remove HACK to fix memory leak of https://issues.jboss.org/browse/PLANNER-19
         if (this.scoreDirector != null) {
             this.scoreDirector.dispose();

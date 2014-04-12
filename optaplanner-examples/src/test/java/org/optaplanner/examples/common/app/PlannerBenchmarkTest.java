@@ -26,7 +26,6 @@ import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
-import org.optaplanner.benchmark.config.XmlPlannerBenchmarkFactory;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 
 /**
@@ -56,7 +55,7 @@ public abstract class PlannerBenchmarkTest extends LoggingTest {
     
     protected PlannerBenchmarkFactory buildPlannerBenchmarkFactory(File unsolvedDataFile) {
         String benchmarkConfigResource = createBenchmarkConfigResource();
-        PlannerBenchmarkFactory benchmarkFactory = new XmlPlannerBenchmarkFactory(benchmarkConfigResource);
+        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(benchmarkConfigResource);
         PlannerBenchmarkConfig plannerBenchmarkConfig = benchmarkFactory.getPlannerBenchmarkConfig();
         String path = plannerBenchmarkConfig.getBenchmarkDirectory().getPath();
         String prefix = "local/data/";

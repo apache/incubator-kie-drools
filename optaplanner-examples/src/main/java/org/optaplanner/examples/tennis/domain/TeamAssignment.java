@@ -20,13 +20,16 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.curriculumcourse.domain.solver.MovableLectureSelectionFilter;
+import org.optaplanner.examples.tennis.domain.solver.MovableTeamAssignmentSelectionFilter;
 
-@PlanningEntity
+@PlanningEntity(movableEntitySelectionFilter = MovableTeamAssignmentSelectionFilter.class)
 @XStreamAlias("TennisTeamAssignment")
 public class TeamAssignment extends AbstractPersistable {
 
     private Day day;
     private int indexInDay;
+    private boolean locked;
 
     // planning variable
     private Team team;
@@ -54,6 +57,17 @@ public class TeamAssignment extends AbstractPersistable {
 
     public void setIndexInDay(int indexInDay) {
         this.indexInDay = indexInDay;
+    }
+    /**
+     * @return true if immovable planning entity
+     * @see MovableTeamAssignmentSelectionFilter
+     */
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 
     @PlanningVariable(valueRangeProviderRefs = {"teamRange"})

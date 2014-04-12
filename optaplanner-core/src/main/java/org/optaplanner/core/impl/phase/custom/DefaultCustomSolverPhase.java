@@ -23,6 +23,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.phase.AbstractSolverPhase;
 import org.optaplanner.core.impl.phase.custom.scope.CustomSolverPhaseScope;
 import org.optaplanner.core.impl.phase.custom.scope.CustomStepScope;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -74,7 +75,7 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
     }
 
     private void doStep(CustomStepScope stepScope, CustomSolverPhaseCommand customSolverPhaseCommand) {
-        ScoreDirector scoreDirector = stepScope.getScoreDirector();
+        InnerScoreDirector scoreDirector = stepScope.getScoreDirector();
         customSolverPhaseCommand.changeWorkingSolution(scoreDirector);
         int uninitializedVariableCount = scoreDirector.getSolutionDescriptor()
                 .countUninitializedVariables(stepScope.getWorkingSolution());

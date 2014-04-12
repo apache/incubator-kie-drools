@@ -26,8 +26,8 @@ import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfi
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.pillar.DefaultPillarSelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
-import org.optaplanner.core.impl.heuristic.selector.entity.pillar.SameValuePillarSelector;
 
 @XStreamAlias("pillarSelector")
 public class PillarSelectorConfig extends SelectorConfig {
@@ -75,14 +75,14 @@ public class PillarSelectorConfig extends SelectorConfig {
                     + ") must not be higher than " + SelectionCacheType.STEP
                     + " because the pillars change every step.");
         }
-        // EntitySelector uses SelectionOrder.ORIGINAL because a SameValuePillarSelector STEP caches the values
+        // EntitySelector uses SelectionOrder.ORIGINAL because a DefaultPillarSelector STEP caches the values
         EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
                 : entitySelectorConfig;
         EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(configPolicy,
                 minimumCacheType, SelectionOrder.ORIGINAL);
         Collection<GenuineVariableDescriptor> variableDescriptors = entitySelector.getEntityDescriptor()
                 .getVariableDescriptors();
-        return new SameValuePillarSelector(entitySelector, variableDescriptors,
+        return new DefaultPillarSelector(entitySelector, variableDescriptors,
                 inheritedSelectionOrder.toRandomSelectionBoolean());
     }
 

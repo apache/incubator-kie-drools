@@ -118,8 +118,8 @@ rule "roomPenaltyExclusive"
             roomPenaltyType == RoomPenaltyType.ROOM_EXCLUSIVE,
             $topic : topic
         )
-        $leftExam : Exam(topic == $topic, $room : room, room != null)
-        $rightExam : Exam(room == $room, topic != $topic, $otherTopic : topic)
+        $leftExam : Exam(topic == $topic, $room : room, room != null, $period : period, period != null)
+        $rightExam : Exam(room == $room, period == $period, topic != $topic, $otherTopic : topic)
     then
         scoreHolder.addHardConstraintMatch(kcontext,
                 - ($topic.getStudentSize() + $otherTopic.getStudentSize()));

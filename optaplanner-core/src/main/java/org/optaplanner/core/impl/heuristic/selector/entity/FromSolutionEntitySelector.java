@@ -25,6 +25,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRandomIterator;
 import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
@@ -65,7 +66,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     @Override
     public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
-        ScoreDirector scoreDirector = phaseScope.getScoreDirector();
+        InnerScoreDirector scoreDirector = phaseScope.getScoreDirector();
         cachedEntityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
         cachedEntityListRevision = scoreDirector.getWorkingEntityListRevision();
         cachedEntityListIsDirty = false;
@@ -74,7 +75,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     @Override
     public void stepStarted(AbstractStepScope stepScope) {
         super.stepStarted(stepScope);
-        ScoreDirector scoreDirector = stepScope.getScoreDirector();
+        InnerScoreDirector scoreDirector = stepScope.getScoreDirector();
         if (scoreDirector.isWorkingEntityListDirty(cachedEntityListRevision)) {
             if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
                 cachedEntityListIsDirty = true;

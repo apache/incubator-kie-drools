@@ -18,21 +18,28 @@ package org.optaplanner.examples.tennis.swingui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
 import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.examples.common.swingui.CommonIcons;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
@@ -69,6 +76,10 @@ public class TennisPanel extends SolutionPanel {
     @Override
     public boolean isRefreshScreenDuringSolving() {
         return true;
+    }
+
+    private TennisSolution getTennisSolution() {
+        return (TennisSolution) solutionBusiness.getSolution();
     }
 
     public void resetPanel(Solution solution) {
@@ -112,7 +123,7 @@ public class TennisPanel extends SolutionPanel {
         fillDayCells(tennisSolution);
         fillTeamCells(tennisSolution);
         fillUnavailabilityPenaltyCells(tennisSolution);
-        fillLectureCells(tennisSolution);
+        fillTeamAssignmentCells(tennisSolution);
         fillConfrontationCells(tennisSolution);
     }
 
@@ -166,8 +177,11 @@ public class TennisPanel extends SolutionPanel {
         }
     }
 
-    private void fillLectureCells(TennisSolution tennisSolution) {
+    private void fillTeamAssignmentCells(TennisSolution tennisSolution) {
         TangoColorFactory tangoColorFactory = new TangoColorFactory();
+        for (Team team : tennisSolution.getTeamList()) {
+            tangoColorFactory.pickColor(team);
+        }
         for (TeamAssignment teamAssignment : tennisSolution.getTeamAssignmentList()) {
             Team team = teamAssignment.getTeam();
             Color teamColor = team == null ? TangoColorFactory.SCARLET_1 : tangoColorFactory.pickColor(team);
@@ -226,10 +240,54 @@ public class TennisPanel extends SolutionPanel {
     }
 
     private JButton createButton(TeamAssignment teamAssignment, Color color) {
-        JButton button = new JButton("Play");
+        JButton button = new JButton(new TeamAssignmentAction(teamAssignment));
         button.setMargin(new Insets(0, 0, 0, 0));
         button.setBackground(color);
+        if (teamAssignment.isLocked()) {
+            button.setIcon(CommonIcons.LOCKED_ICON);
+        }
         return button;
+    }
+
+    private class TeamAssignmentAction extends AbstractAction {
+
+        private TeamAssignment teamAssignment;
+
+        public TeamAssignmentAction(TeamAssignment teamAssignment) {
+            super("Play");
+            this.teamAssignment = teamAssignment;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            JPanel listFieldsPanel = new JPanel(new GridLayout(2, 2));
+            listFieldsPanel.add(new JLabel("Team:"));
+            List<Team> teamList = getTennisSolution().getTeamList();
+            JComboBox teamListField = new JComboBox(teamList.toArray());
+            teamListField.setSelectedItem(teamAssignment.getTeam());
+            listFieldsPanel.add(teamListField);
+            listFieldsPanel.add(new JLabel("Locked:"));
+            JCheckBox lockedField = new JCheckBox("immovable during planning");
+            lockedField.setSelected(teamAssignment.isLocked());
+            listFieldsPanel.add(lockedField);
+            int result = JOptionPane.showConfirmDialog(TennisPanel.this.getRootPane(), listFieldsPanel,
+                    "Select team", JOptionPane.OK_CANCEL_OPTION);
+            if (result == JOptionPane.OK_OPTION) {
+                Team toTeam = (Team) teamListField.getSelectedItem();
+                if (teamAssignment.getTeam() != toTeam) {
+                    solutionBusiness.doChangeMove(teamAssignment, "team", toTeam);
+                }
+                boolean toLocked = lockedField.isSelected();
+                if (teamAssignment.isLocked() != toLocked) {
+                    if (solutionBusiness.isSolving()) {
+                        logger.error("Not doing user change because the solver is solving.");
+                        return;
+                    }
+                    teamAssignment.setLocked(toLocked);
+                }
+                solverAndPersistenceFrame.resetScreen();
+            }
+        }
+
     }
 
 }

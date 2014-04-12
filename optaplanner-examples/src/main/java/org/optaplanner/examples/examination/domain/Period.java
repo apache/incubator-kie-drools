@@ -83,7 +83,7 @@ public class Period extends AbstractPersistable {
 
     @Override
     public String toString() {
-        return id + " {D" + duration + "}";
+        return startDateTimeString;
     }
 
 }

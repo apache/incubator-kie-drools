@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * Abstract superclass for {@link ScoreDirectorFactory}.
  * @see ScoreDirectorFactory
  */
-public abstract class AbstractScoreDirectorFactory implements ScoreDirectorFactory {
+public abstract class AbstractScoreDirectorFactory implements InnerScoreDirectorFactory {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -37,7 +37,7 @@ public abstract class AbstractScoreDirectorFactory implements ScoreDirectorFacto
 
     protected InitializingScoreTrend initializingScoreTrend;
 
-    protected ScoreDirectorFactory assertionScoreDirectorFactory = null;
+    protected InnerScoreDirectorFactory assertionScoreDirectorFactory = null;
 
     public SolutionDescriptor getSolutionDescriptor() {
         return solutionDescriptor;
@@ -63,11 +63,11 @@ public abstract class AbstractScoreDirectorFactory implements ScoreDirectorFacto
         this.initializingScoreTrend = initializingScoreTrend;
     }
 
-    public ScoreDirectorFactory getAssertionScoreDirectorFactory() {
+    public InnerScoreDirectorFactory getAssertionScoreDirectorFactory() {
         return assertionScoreDirectorFactory;
     }
 
-    public void setAssertionScoreDirectorFactory(ScoreDirectorFactory assertionScoreDirectorFactory) {
+    public void setAssertionScoreDirectorFactory(InnerScoreDirectorFactory assertionScoreDirectorFactory) {
         this.assertionScoreDirectorFactory = assertionScoreDirectorFactory;
     }
 
@@ -78,7 +78,7 @@ public abstract class AbstractScoreDirectorFactory implements ScoreDirectorFacto
     public void assertScoreFromScratch(Solution solution) {
         // Get the score before uncorruptedScoreDirector.calculateScore() modifies it
         Score score = solution.getScore();
-        ScoreDirector uncorruptedScoreDirector = buildScoreDirector();
+        InnerScoreDirector uncorruptedScoreDirector = buildScoreDirector();
         uncorruptedScoreDirector.setWorkingSolution(solution);
         Score uncorruptedScore = uncorruptedScoreDirector.calculateScore();
         uncorruptedScoreDirector.dispose();

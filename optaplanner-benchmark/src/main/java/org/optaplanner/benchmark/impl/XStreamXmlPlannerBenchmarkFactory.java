@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.config;
+package org.optaplanner.benchmark.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -26,39 +29,35 @@ import com.thoughtworks.xstream.converters.ConversionException;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
-import org.optaplanner.core.config.solver.XmlSolverFactory;
+import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
+import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
 
-public class XmlPlannerBenchmarkFactory implements PlannerBenchmarkFactory {
+/**
+ * @see PlannerBenchmarkFactory
+ */
+public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
 
     private XStream xStream;
     private PlannerBenchmarkConfig plannerBenchmarkConfig = null;
 
-    public XmlPlannerBenchmarkFactory() {
-        xStream = XmlSolverFactory.buildXstream();
+    public XStreamXmlPlannerBenchmarkFactory() {
+        xStream = XStreamXmlSolverFactory.buildXStream();
         xStream.processAnnotations(PlannerBenchmarkConfig.class);
-    }
-
-    /**
-     * @param benchmarkConfigResource never null, a classpath resource, as defined by {@link Class#getResource(String)}
-     */
-    public XmlPlannerBenchmarkFactory(String benchmarkConfigResource) {
-        this();
-        configure(benchmarkConfigResource);
     }
 
     // ************************************************************************
     // Configure methods
     // ************************************************************************
 
-    public void addXstreamAnnotations(Class... xstreamAnnotations) {
-        xStream.processAnnotations(xstreamAnnotations);
+    public void addXStreamAnnotations(Class... xStreamAnnotations) {
+        xStream.processAnnotations(xStreamAnnotations);
     }
 
     /**
      * @param benchmarkConfigResource a classpath resource, as defined by {@link Class#getResource(String)}
      * @return this
      */
-    public XmlPlannerBenchmarkFactory configure(String benchmarkConfigResource) {
+    public XStreamXmlPlannerBenchmarkFactory configure(String benchmarkConfigResource) {
         InputStream in = getClass().getResourceAsStream(benchmarkConfigResource);
         if (in == null) {
             throw new IllegalArgumentException("The benchmarkConfigResource (" + benchmarkConfigResource
@@ -72,7 +71,16 @@ public class XmlPlannerBenchmarkFactory implements PlannerBenchmarkFactory {
         }
     }
 
-    public XmlPlannerBenchmarkFactory configure(InputStream in) {
+    public XStreamXmlPlannerBenchmarkFactory configure(File benchmarkConfigFile) {
+        try {
+            return configure(new FileInputStream(benchmarkConfigFile));
+        } catch (FileNotFoundException e) {
+            throw new IllegalArgumentException("The benchmarkConfigFile (" + benchmarkConfigFile
+                    + ") was not found.", e);
+        }
+    }
+
+    public XStreamXmlPlannerBenchmarkFactory configure(InputStream in) {
         Reader reader = null;
         try {
             reader = new InputStreamReader(in, "UTF-8");
@@ -85,7 +93,7 @@ public class XmlPlannerBenchmarkFactory implements PlannerBenchmarkFactory {
         }
     }
 
-    public XmlPlannerBenchmarkFactory configure(Reader reader) {
+    public XStreamXmlPlannerBenchmarkFactory configure(Reader reader) {
         plannerBenchmarkConfig = (PlannerBenchmarkConfig) xStream.fromXML(reader);
         return this;
     }

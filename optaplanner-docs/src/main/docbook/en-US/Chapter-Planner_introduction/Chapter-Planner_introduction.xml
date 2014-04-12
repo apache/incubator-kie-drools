@@ -398,11 +398,57 @@ $ mvn exec:exec
   <section xml:id="statusOfOptaPlanner">
     <title>Status of OptaPlanner</title>
 
-    <para>OptaPlanner is production ready. The API is almost stable but backward incompatible changes can occur. With
-    the recipe called <link
-    xlink:href="https://github.com/droolsjbpm/optaplanner/blob/master/optaplanner-distribution/src/main/assembly/filtered-resources/UpgradeFromPreviousVersionRecipe.txt"><filename>UpgradeFromPreviousVersionRecipe.txt</filename></link>
-    you can easily upgrade to a newer version and quickly deal with any backwards incompatible changes. That recipe file
-    is included in every release.</para>
+    <para>OptaPlanner is:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><emphasis role="bold">Stable</emphasis>: Heavily tested with unit, integration and stress tests.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">Reliable</emphasis>: Used in production across the world.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">Scalable</emphasis>: One of the examples handles 50 000 variables with 5 000
+        variables each, multiple constraint types and billions of possible constraint matches.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">Documented</emphasis>: See this detailed manual or one of the many examples.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>OptaPlanner has a public API:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><emphasis role="bold">Public API</emphasis>: All classes in the package namespace <emphasis
+        role="bold">org.optaplanner.core.api</emphasis> are 100% backwards compatible in future releases.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">Impl classes</emphasis>: All classes in the package namespace <emphasis
+        role="bold">org.optaplanner.core.impl</emphasis> are not backwards compatible: they might change in future
+        releases. The recipe called <link
+        xlink:href="https://github.com/droolsjbpm/optaplanner/blob/master/optaplanner-distribution/src/main/assembly/filtered-resources/UpgradeFromPreviousVersionRecipe.txt"><filename>UpgradeFromPreviousVersionRecipe.txt</filename></link>
+        describes every such change and on how to quickly deal with it when upgrading to a newer version. That recipe
+        file is included in every release zip.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">XML configuration</emphasis>: The XML solver configuration is backwards compatible
+        for all elements, except for elements that require the use of non public API classes. The XML solver
+        configuration is defined by the classes in the package namespace <emphasis
+        role="bold">org.optaplanner.core.config</emphasis>.</para>
+      </listitem>
+    </itemizedlist>
+
+    <note>
+      <para>This documentation covers some impl classes too. Those documented impl classes are reliable and safe to use
+      (unless explicitly marked as experimental in this documentation), but we're just entirely comfortable yet to write
+      their signatures in stone.</para>
+    </note>
   </section>
 
   <section xml:id="compatibility">
@@ -432,7 +478,7 @@ $ mvn exec:exec
     <para>Pull requests are very welcome and get priority treatment! By open sourcing your improvements, you 'll benefit
     from our peer review and from our improvements made upon your improvements.</para>
 
-    <para>Check <link xlink:href="http://blog.athico.com/search/label/planner">our blog</link>, Google+ (<link
+    <para>Check <link xlink:href="http://www.optaplanner.org/blog/">our blog</link>, Google+ (<link
     xlink:href="https://plus.google.com/+OptaPlannerOrg">OptaPlanner</link>, <link
     xlink:href="https://plus.google.com/+GeoffreyDeSmet">Geoffrey De Smet</link>) and twitter (<link
     xlink:href="http://twitter.com/geoffreydesmet">Geoffrey De Smet</link>) for news and articles. If OptaPlanner helps

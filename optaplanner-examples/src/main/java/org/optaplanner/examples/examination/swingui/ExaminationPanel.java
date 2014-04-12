@@ -21,12 +21,9 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -34,6 +31,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import org.optaplanner.core.impl.solution.Solution;
@@ -42,6 +40,7 @@ import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.examination.domain.Exam;
 import org.optaplanner.examples.examination.domain.Examination;
+import org.optaplanner.examples.examination.domain.FollowingExam;
 import org.optaplanner.examples.examination.domain.Period;
 import org.optaplanner.examples.examination.domain.Room;
 
@@ -104,40 +103,45 @@ public class ExaminationPanel extends SolutionPanel {
     }
 
     private void fillCells(Examination examination) {
-        roomsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Time")));
+        roomsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Time"), null));
         fillRoomCells(examination);
-        fillDayCells(examination);
-        fillLectureCells(examination);
+        fillPeriodCells(examination);
+        fillExamCells(examination);
     }
 
     private void fillRoomCells(Examination examination) {
         for (Room room : examination.getRoomList()) {
             roomsPanel.addColumnHeader(room, HEADER_ROW,
-                    createHeaderPanel(new JLabel(room.getLabel(), SwingConstants.CENTER)));
+                    createHeaderPanel(new JLabel(room.getLabel(), SwingConstants.CENTER),
+                            "Capacity: " + room.getCapacity()));
         }
         roomsPanel.addColumnHeader(null, HEADER_ROW,
-                createHeaderPanel(new JLabel("Unassigned", SwingConstants.CENTER)));
+                createHeaderPanel(new JLabel("Unassigned", SwingConstants.CENTER), null));
     }
 
-    private void fillDayCells(Examination examination) {
+    private void fillPeriodCells(Examination examination) {
         for (Period period : examination.getPeriodList()) {
             roomsPanel.addRowHeader(HEADER_COLUMN, period,
-                    createHeaderPanel(new JLabel(period.getLabel())));
+                    createHeaderPanel(new JLabel(period.getLabel()), "Duration: " + period.getDuration()));
         }
         roomsPanel.addRowHeader(HEADER_COLUMN, null,
-                createHeaderPanel(new JLabel("Unassigned")));
+                createHeaderPanel(new JLabel("Unassigned"), null));
     }
 
-    private void fillLectureCells(Examination examination) {
+    private void fillExamCells(Examination examination) {
         TangoColorFactory tangoColorFactory = new TangoColorFactory();
         for (Exam exam : examination.getExamList()) {
             Color examColor = tangoColorFactory.pickColor(exam);
             roomsPanel.addCell(exam.getRoom(), exam.getPeriod(),
-                    createButton(exam, examColor));
+                    createButton(exam, examColor,
+                            "Student size: " + exam.getTopicStudentSize() + " - Duration: " + exam.getTopicDuration()));
         }
     }
 
-    private JPanel createHeaderPanel(JLabel label) {
+    private JPanel createHeaderPanel(JLabel label, String toolTipText) {
+        if (toolTipText != null) {
+            label.setToolTipText(toolTipText);
+        }
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.add(label, BorderLayout.NORTH);
         headerPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -146,10 +150,16 @@ public class ExaminationPanel extends SolutionPanel {
         return headerPanel;
     }
 
-    private JButton createButton(Exam exam, Color color) {
+    private JButton createButton(Exam exam, Color color, String toolTipText) {
         JButton button = new JButton(new ExamAction(exam));
+        if (toolTipText != null) {
+            button.setToolTipText(toolTipText);
+        }
         button.setMargin(new Insets(0, 0, 0, 0));
         button.setBackground(color);
+        if (exam instanceof FollowingExam) {
+            button.setForeground(TangoColorFactory.ALUMINIUM_5);
+        }
         return button;
     }
 

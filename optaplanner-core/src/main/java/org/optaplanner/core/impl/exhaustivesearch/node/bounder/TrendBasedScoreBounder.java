@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.exhaustivesearch.node.bounder;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
@@ -28,7 +29,7 @@ public class TrendBasedScoreBounder implements ScoreBounder {
     protected final ScoreDefinition scoreDefinition;
     protected final InitializingScoreTrend initializingScoreTrend;
 
-    public TrendBasedScoreBounder(ScoreDirectorFactory scoreDirectorFactory) {
+    public TrendBasedScoreBounder(InnerScoreDirectorFactory scoreDirectorFactory) {
         scoreDefinition = scoreDirectorFactory.getScoreDefinition();
         initializingScoreTrend = scoreDirectorFactory.getInitializingScoreTrend();
     }

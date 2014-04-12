@@ -16,21 +16,160 @@
 
 package org.optaplanner.benchmark.api;
 
-import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
+import java.io.File;
+import java.io.InputStream;
+import java.io.Reader;
 
-public interface PlannerBenchmarkFactory {
+import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
+import org.optaplanner.benchmark.impl.FreemarkerXmlPlannerBenchmarkFactory;
+import org.optaplanner.benchmark.impl.XStreamXmlPlannerBenchmarkFactory;
+
+/**
+ * Builds {@link PlannerBenchmark} instances.
+ * <p/>
+ * Supports tweaking the configuration programmatically before a {@link PlannerBenchmark} instance is build.
+ */
+public abstract class PlannerBenchmarkFactory {
+
+    // ************************************************************************
+    // Static creation methods
+    // ************************************************************************
+
+    /**
+     * @param benchmarkConfigResource never null, a classpath resource, as defined by {@link Class#getResource(String)}
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromXmlResource(String benchmarkConfigResource) {
+        XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory();
+        plannerBenchmarkFactory.configure(benchmarkConfigResource);
+        return plannerBenchmarkFactory;
+    }
+
+    /**
+     * @param benchmarkConfigFile never null
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromXmlFile(File benchmarkConfigFile) {
+        XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory();
+        plannerBenchmarkFactory.configure(benchmarkConfigFile);
+        return plannerBenchmarkFactory;
+    }
+
+    /**
+     * @param in never null, gets closed
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromXmlInputStream(InputStream in) {
+        XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory();
+        plannerBenchmarkFactory.configure(in);
+        return plannerBenchmarkFactory;
+    }
+
+    /**
+     * @param reader never null, gets closed
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromXmlReader(Reader reader) {
+        XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory();
+        plannerBenchmarkFactory.configure(reader);
+        return plannerBenchmarkFactory;
+    }
+
+    // ************************************************************************
+    // Static creation methods with Freemarker
+    // ************************************************************************
+
+    /**
+     * @param templateResource never null, a classpath resource, as defined by {@link Class#getResource(String)}
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromFreemarkerXmlResource(String templateResource) {
+        return createFromFreemarkerXmlResource(templateResource, null);
+    }
+
+    /**
+     * @param templateResource never null, a classpath resource, as defined by {@link Class#getResource(String)}
+     * @param model sometimes null
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromFreemarkerXmlResource(String templateResource, Object model) {
+        FreemarkerXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory();
+        plannerBenchmarkFactory.configure(templateResource, model);
+        return plannerBenchmarkFactory;
+    }
+
+    /**
+     * @param templateFile never null
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromFreemarkerXmlFile(File templateFile) {
+        return createFromFreemarkerXmlFile(templateFile, null);
+    }
+
+    /**
+     * @param templateFile never null
+     * @param model sometimes null
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromFreemarkerXmlFile(File templateFile, Object model) {
+        FreemarkerXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory();
+        plannerBenchmarkFactory.configure(templateFile, model);
+        return plannerBenchmarkFactory;
+    }
+
+    /**
+     * @param templateIn never null, gets closed
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromFreemarkerXmlInputStream(InputStream templateIn) {
+        return createFromFreemarkerXmlInputStream(templateIn, null);
+    }
+
+    /**
+     * @param templateIn never null, gets closed
+     * @param model sometimes null
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromFreemarkerXmlInputStream(InputStream templateIn, Object model) {
+        FreemarkerXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory();
+        plannerBenchmarkFactory.configure(templateIn, model);
+        return plannerBenchmarkFactory;
+    }
+
+    /**
+     * @param templateReader never null, gets closed
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromFreemarkerXmlReader(Reader templateReader) {
+        return createFromFreemarkerXmlReader(templateReader, null);
+    }
+
+    /**
+     * @param templateReader never null, gets closed
+     * @param model sometimes null
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromFreemarkerXmlReader(Reader templateReader, Object model) {
+        FreemarkerXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory();
+        plannerBenchmarkFactory.configure(templateReader, model);
+        return plannerBenchmarkFactory;
+    }
+
+    // ************************************************************************
+    // Interface methods
+    // ************************************************************************
 
     /**
      * Allows you to problematically change the {@link PlannerBenchmarkConfig} at runtime before building
      * the {@link PlannerBenchmark}.
      * @return never null
-     * @throws IllegalStateException if no benchmarkConfig was configured yet
      */
-    PlannerBenchmarkConfig getPlannerBenchmarkConfig();
+    public abstract PlannerBenchmarkConfig getPlannerBenchmarkConfig();
 
     /**
+     * Creates a new {@link PlannerBenchmark} instance.
      * @return never null
      */
-    PlannerBenchmark buildPlannerBenchmark();
+    public abstract PlannerBenchmark buildPlannerBenchmark();
 
 }

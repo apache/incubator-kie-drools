@@ -52,13 +52,13 @@ public class ChangeMove implements Move {
     // ************************************************************************
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
-        Object oldPlanningValue = variableDescriptor.getValue(entity);
-        return !ObjectUtils.equals(oldPlanningValue, toPlanningValue);
+        Object oldValue = variableDescriptor.getValue(entity);
+        return !ObjectUtils.equals(oldValue, toPlanningValue);
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        Object oldPlanningValue = variableDescriptor.getValue(entity);
-        return new ChangeMove(entity, variableDescriptor, oldPlanningValue);
+        Object oldValue = variableDescriptor.getValue(entity);
+        return new ChangeMove(entity, variableDescriptor, oldValue);
     }
 
     public void doMove(ScoreDirector scoreDirector) {

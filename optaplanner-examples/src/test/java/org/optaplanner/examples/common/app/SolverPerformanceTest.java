@@ -23,8 +23,8 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 
@@ -65,7 +65,7 @@ public abstract class SolverPerformanceTest extends LoggingTest {
     }
 
     protected SolverFactory buildSolverFactory(String bestScoreLimitString, EnvironmentMode environmentMode) {
-        SolverFactory solverFactory = new XmlSolverFactory(createSolverConfigResource());
+        SolverFactory solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
         solverFactory.getSolverConfig().setEnvironmentMode(environmentMode);
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setBestScoreLimit(bestScoreLimitString);
@@ -84,7 +84,8 @@ public abstract class SolverPerformanceTest extends LoggingTest {
         Solution bestSolution = solver.getBestSolution();
         assertNotNull(bestSolution);
         Score bestScore = bestSolution.getScore();
-        Score bestScoreLimit = solver.getScoreDirectorFactory().getScoreDefinition().parseScore(bestScoreLimitString);
+        InnerScoreDirectorFactory scoreDirectorFactory = (InnerScoreDirectorFactory) solver.getScoreDirectorFactory();
+        Score bestScoreLimit = scoreDirectorFactory.getScoreDefinition().parseScore(bestScoreLimitString);
         assertTrue("The bestScore (" + bestScore + ") must be at least bestScoreLimit (" + bestScoreLimit + ").",
                 bestScore.compareTo(bestScoreLimit) >= 0);
     }

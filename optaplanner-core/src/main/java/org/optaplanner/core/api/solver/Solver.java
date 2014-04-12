@@ -28,9 +28,11 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
- * A Solver solves planning problems.
+ * A Solver solves a planning problem.
  * <p/>
  * Most methods are not thread-safe and should be called from the same thread.
+ * <p/>
+ * Build by a {@link SolverFactory}.
  */
 public interface Solver {
 

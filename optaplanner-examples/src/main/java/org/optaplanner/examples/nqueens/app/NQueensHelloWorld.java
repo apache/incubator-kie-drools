@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.persistence.NQueensGenerator;
@@ -29,7 +28,7 @@ public class NQueensHelloWorld {
 
     public static void main(String[] args) {
         // Build the Solver
-        SolverFactory solverFactory = new XmlSolverFactory(
+        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                 "/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
 

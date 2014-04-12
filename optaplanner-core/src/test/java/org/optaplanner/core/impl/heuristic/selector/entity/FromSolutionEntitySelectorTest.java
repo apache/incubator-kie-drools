@@ -25,6 +25,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -56,7 +57,7 @@ public class FromSolutionEntitySelectorTest {
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
         when(entityDescriptor.extractEntities(workingSolution)).thenReturn(entityList);
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getWorkingSolution()).thenReturn(workingSolution);
         when(scoreDirector.getWorkingEntityListRevision()).thenReturn(7L);
         when(scoreDirector.isWorkingEntityListDirty(7L)).thenReturn(false);
@@ -125,7 +126,7 @@ public class FromSolutionEntitySelectorTest {
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
         when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object>asList(
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getWorkingSolution()).thenReturn(workingSolution);
         when(scoreDirector.getWorkingEntityListRevision()).thenReturn(7L);
         when(scoreDirector.isWorkingEntityListDirty(7L)).thenReturn(false);
@@ -221,7 +222,7 @@ public class FromSolutionEntitySelectorTest {
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
         when(entityDescriptor.extractEntities(workingSolution)).thenReturn(entityList);
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getWorkingSolution()).thenReturn(workingSolution);
         when(scoreDirector.getWorkingEntityListRevision()).thenReturn(7L);
         when(scoreDirector.isWorkingEntityListDirty(7L)).thenReturn(false);
@@ -294,7 +295,7 @@ public class FromSolutionEntitySelectorTest {
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
         when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object>asList(
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getWorkingSolution()).thenReturn(workingSolution);
         when(scoreDirector.getWorkingEntityListRevision()).thenReturn(7L);
         when(scoreDirector.isWorkingEntityListDirty(7L)).thenReturn(false);

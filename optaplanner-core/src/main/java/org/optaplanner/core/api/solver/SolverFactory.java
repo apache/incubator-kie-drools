@@ -16,26 +16,78 @@
 
 package org.optaplanner.core.api.solver;
 
+import java.io.File;
+import java.io.InputStream;
+import java.io.Reader;
+
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.config.solver.XmlSolverFactory;
+import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
 
 /**
- * Builds a {@link Solver}.
- * @see XmlSolverFactory
+ * Builds {@link Solver} instances.
+ * <p/>
+ * Supports tweaking the configuration programmatically before a {@link Solver} instance is build.
  */
-public interface SolverFactory {
+public abstract class SolverFactory {
+
+    // ************************************************************************
+    // Static creation methods
+    // ************************************************************************
+
+    /**
+     * @param solverConfigResource never null, a classpath resource, as defined by {@link Class#getResource(String)}
+     * @return never null
+     */
+    public static SolverFactory createFromXmlResource(String solverConfigResource) {
+        XStreamXmlSolverFactory solverFactory = new XStreamXmlSolverFactory();
+        solverFactory.configure(solverConfigResource);
+        return solverFactory;
+    }
+
+    /**
+     * @param solverConfigFile never null
+     * @return never null
+     */
+    public static SolverFactory createFromXmlFile(File solverConfigFile) {
+        XStreamXmlSolverFactory solverFactory = new XStreamXmlSolverFactory();
+        solverFactory.configure(solverConfigFile);
+        return solverFactory;
+    }
+
+    /**
+     * @param in never null, gets closed
+     * @return never null
+     */
+    public static SolverFactory createFromXmlInputStream(InputStream in) {
+        XStreamXmlSolverFactory solverFactory = new XStreamXmlSolverFactory();
+        solverFactory.configure(in);
+        return solverFactory;
+    }
+
+    /**
+     * @param reader never null, gets closed
+     * @return never null
+     */
+    public static SolverFactory createFromXmlReader(Reader reader) {
+        XStreamXmlSolverFactory solverFactory = new XStreamXmlSolverFactory();
+        solverFactory.configure(reader);
+        return solverFactory;
+    }
+
+    // ************************************************************************
+    // Interface methods
+    // ************************************************************************
 
     /**
      * Allows you to problematically change the {@link SolverConfig} at runtime before building the {@link Solver}.
      * @return never null
-     * @throws IllegalStateException if no solverConfig was configured yet
      */
-    SolverConfig getSolverConfig();
+    public abstract SolverConfig getSolverConfig();
 
     /**
      * Creates a new {@link Solver} instance.
      * @return never null
      */
-    Solver buildSolver();
+    public abstract Solver buildSolver();
 
 }

@@ -28,32 +28,9 @@ import org.optaplanner.core.impl.solution.Solution;
 public interface ScoreDirectorFactory {
 
     /**
-     * @return never null
-     */
-    SolutionDescriptor getSolutionDescriptor();
-
-    /**
-     * @return never null
-     */
-    ScoreDefinition getScoreDefinition();
-
-    /**
      * Creates a new {@link ScoreDirector} instance.
      * @return never null
      */
     ScoreDirector buildScoreDirector();
-
-    /**
-     * @return never null
-     */
-    InitializingScoreTrend getInitializingScoreTrend();
-
-    /**
-     * Asserts that if the {@link Score} is calculated for the parameter solution,
-     * it would be equal to the {@link Solution#getScore()} of that parameter.
-     * @param solution never null
-     * @see ScoreDirector#assertWorkingScoreFromScratch(Score, Object)
-     */
-    void assertScoreFromScratch(Solution solution);
 
 }

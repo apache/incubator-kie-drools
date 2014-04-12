@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.phase.scope;
 import java.util.Random;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
 
@@ -75,7 +76,7 @@ public abstract class AbstractStepScope {
     // Calculated methods
     // ************************************************************************
 
-    public ScoreDirector getScoreDirector() {
+    public InnerScoreDirector getScoreDirector() {
         return getPhaseScope().getScoreDirector();
     }
 

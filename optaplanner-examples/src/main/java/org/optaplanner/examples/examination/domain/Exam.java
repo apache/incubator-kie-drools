@@ -16,29 +16,24 @@
 
 package org.optaplanner.examples.examination.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.solution.cloner.PlanningCloneable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.examination.domain.solver.ExamBefore;
-import org.optaplanner.examples.examination.domain.solver.ExamCoincidence;
+import org.optaplanner.examples.examination.domain.solver.ExamDifficultyWeightFactory;
+import org.optaplanner.examples.examination.domain.solver.RoomStrengthWeightFactory;
 
-@PlanningEntity
-@XStreamAlias("Exam")
-public class Exam extends AbstractPersistable implements PlanningCloneable<Exam> {
+@PlanningEntity(difficultyWeightFactoryClass = ExamDifficultyWeightFactory.class)
+@XStreamInclude({
+        LeadingExam.class,
+        FollowingExam.class
+})
+public abstract class Exam extends AbstractPersistable {
 
-    private Topic topic;
-
-    // Calculated during initialization, not used for score calculation, used for move creation.
-    private ExamCoincidence examCoincidence = null;
-    private ExamBefore examBefore = null;
+    protected Topic topic;
 
     // Planning variables: changes during planning, between score calculations.
-    private Period period;
-    private Room room;
+    protected Room room;
 
     public Topic getTopic() {
         return topic;
@@ -48,32 +43,8 @@ public class Exam extends AbstractPersistable implements PlanningCloneable<Exam>
         this.topic = topic;
     }
 
-    public ExamCoincidence getExamCoincidence() {
-        return examCoincidence;
-    }
-
-    public void setExamCoincidence(ExamCoincidence examCoincidence) {
-        this.examCoincidence = examCoincidence;
-    }
-
-    public ExamBefore getExamBefore() {
-        return examBefore;
-    }
-
-    public void setExamBefore(ExamBefore examBefore) {
-        this.examBefore = examBefore;
-    }
-
-    @PlanningVariable(valueRangeProviderRefs = {"periodRange"})
-    public Period getPeriod() {
-        return period;
-    }
-
-    public void setPeriod(Period period) {
-        this.period = period;
-    }
-
-    @PlanningVariable(valueRangeProviderRefs = {"roomRange"})
+    @PlanningVariable(valueRangeProviderRefs = {"roomRange"},
+            strengthWeightFactoryClass = RoomStrengthWeightFactory.class)
     public Room getRoom() {
         return room;
     }
@@ -86,10 +57,7 @@ public class Exam extends AbstractPersistable implements PlanningCloneable<Exam>
     // Complex methods
     // ************************************************************************
 
-    public boolean isCoincidenceLeader() {
-        return examCoincidence == null
-                || examCoincidence.getFirstExam() == this;
-    }
+    public abstract Period getPeriod();
 
     public int getTopicDuration() {
         return getTopic().getDuration();
@@ -100,6 +68,7 @@ public class Exam extends AbstractPersistable implements PlanningCloneable<Exam>
     }
 
     public int getDayIndex() {
+        Period period = getPeriod();
         if (period == null) {
             return Integer.MIN_VALUE;
         }
@@ -107,6 +76,7 @@ public class Exam extends AbstractPersistable implements PlanningCloneable<Exam>
     }
 
     public int getPeriodIndex() {
+        Period period = getPeriod();
         if (period == null) {
             return Integer.MIN_VALUE;
         }
@@ -114,6 +84,7 @@ public class Exam extends AbstractPersistable implements PlanningCloneable<Exam>
     }
 
     public int getPeriodDuration() {
+        Period period = getPeriod();
         if (period == null) {
             return Integer.MIN_VALUE;
         }
@@ -125,20 +96,11 @@ public class Exam extends AbstractPersistable implements PlanningCloneable<Exam>
     }
 
     public boolean isPeriodFrontLoadLast() {
+        Period period = getPeriod();
         if (period == null) {
             return false;
         }
         return period.isFrontLoadLast();
-    }
-
-    public Exam planningClone() {
-        Exam clone = new Exam();
-        clone.id = id;
-        clone.topic = topic;
-        clone.period = period;
-        clone.room = room;
-        // TODO FIXME examCoincidence and examBefore should be deep cloned
-        return clone;
     }
 
     public String getLabel() {
@@ -147,7 +109,7 @@ public class Exam extends AbstractPersistable implements PlanningCloneable<Exam>
 
     @Override
     public String toString() {
-        return topic + " @ " + period + " + " + room;
+        return topic + " @ " + getPeriod() + " + " + room;
     }
 
 }

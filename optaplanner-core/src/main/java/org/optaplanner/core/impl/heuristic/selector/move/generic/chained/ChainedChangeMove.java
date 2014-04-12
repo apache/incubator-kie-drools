@@ -40,8 +40,8 @@ public class ChainedChangeMove extends ChangeMove {
 
     @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        Object oldPlanningValue = variableDescriptor.getValue(entity);
-        return new ChainedChangeMove(entity, variableDescriptor, oldPlanningValue);
+        Object oldValue = variableDescriptor.getValue(entity);
+        return new ChainedChangeMove(entity, variableDescriptor, oldValue);
     }
 
     @Override

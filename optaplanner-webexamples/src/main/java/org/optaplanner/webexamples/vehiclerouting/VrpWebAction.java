@@ -23,7 +23,6 @@ import javax.servlet.http.HttpSession;
 
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
@@ -36,7 +35,7 @@ public class VrpWebAction {
     public void setup(HttpSession session) {
         terminateEarly(session);
 
-        SolverFactory solverFactory = new XmlSolverFactory(
+        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                 "/org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
         session.setAttribute(VrpSessionAttributeName.SOLVER, solver);

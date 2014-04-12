@@ -28,6 +28,7 @@ import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
@@ -44,7 +45,7 @@ public class DefaultSubChainSelectorTest {
         GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
                 TestdataChainedEntity.class, "chainedObject");
         when(variableDescriptor.isChained()).thenReturn(true);
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
@@ -132,7 +133,7 @@ public class DefaultSubChainSelectorTest {
         GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
                 TestdataChainedEntity.class, "chainedObject");
         when(variableDescriptor.isChained()).thenReturn(true);
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
@@ -198,7 +199,7 @@ public class DefaultSubChainSelectorTest {
         GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
                 TestdataChainedEntity.class, "chainedObject");
         when(variableDescriptor.isChained()).thenReturn(true);
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
@@ -249,7 +250,7 @@ public class DefaultSubChainSelectorTest {
         GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
                 TestdataChainedEntity.class, "chainedObject");
         when(variableDescriptor.isChained()).thenReturn(true);
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
@@ -299,7 +300,7 @@ public class DefaultSubChainSelectorTest {
         GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
                 TestdataChainedEntity.class, "chainedObject");
         when(variableDescriptor.isChained()).thenReturn(true);
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
@@ -356,7 +357,7 @@ public class DefaultSubChainSelectorTest {
         GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
                 TestdataChainedEntity.class, "chainedObject");
         when(variableDescriptor.isChained()).thenReturn(true);
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
@@ -408,7 +409,7 @@ public class DefaultSubChainSelectorTest {
         GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
                 TestdataChainedEntity.class, "chainedObject");
         when(variableDescriptor.isChained()).thenReturn(true);
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);

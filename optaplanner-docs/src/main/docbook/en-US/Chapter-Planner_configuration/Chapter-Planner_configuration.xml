@@ -19,8 +19,8 @@
       </listitem>
 
       <listitem>
-        <para><emphasis role="bold">Configure a <literal>Solver</literal></emphasis>, for example a first fit and tabu
-        search solver for any <literal>NQueens</literal> instance.</para>
+        <para><emphasis role="bold">Configure a <literal>Solver</literal></emphasis>, for example a First Fit and Tabu
+        Search solver for any <literal>NQueens</literal> instance.</para>
       </listitem>
 
       <listitem>
@@ -51,12 +51,20 @@
     <section>
       <title>Solver configuration by XML file</title>
 
-      <para>You can build a <literal>Solver</literal> instance with the <literal>XmlSolverFactory</literal>. Configure
-      it with a solver configuration XML file:</para>
+      <para>Build a <literal>Solver</literal> instance with the <literal>SolverFactory</literal>. Configure it with a
+      solver configuration XML file, provided as a classpath resource:</para>
 
-      <programlisting language="java">       XmlSolverFactory solverFactory = new XmlSolverFactory(
+      <programlisting language="java">       SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                "/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
        Solver solver = solverFactory.buildSolver();</programlisting>
+
+      <para>In a typical project (following the Maven directory structure), that solverConfig XML file would be located
+      at
+      <literal>$PROJECT_DIR/src/main/resources/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml</literal>.
+      Alternatively, a <literal>SolverFactory</literal> can be created from a <literal>File</literal>, an
+      <literal>InputStream</literal> or a <literal>Reader</literal> with methods such as
+      <literal>SolverFactory.createFromXmlFile()</literal>. However, for portability reasons, a classpath resource is
+      recommended.</para>
 
       <para>A solver configuration file looks something like this:</para>
 
@@ -100,7 +108,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>We'll explain these various parts of a configuration later in this manual.</para>
+      <para>These various parts of a configuration are explained further in this manual.</para>
 
       <para><emphasis role="bold">OptaPlanner makes it relatively easy to switch optimization algorithm(s) just by
       changing the configuration.</emphasis> There's even a <literal>Benchmark</literal> utility which allows you to
@@ -111,45 +119,25 @@
     <section>
       <title>Solver configuration by Java API</title>
 
-      <para>As an alternative to the XML file, a solver configuration can also be configured with the
-      <literal>SolverConfig</literal> API:</para>
+      <para>A solver configuration can also be configured with the <literal>SolverConfig</literal> API. This especially
+      useful to change some values dynamically at runtime, for example to change the running time based on user input,
+      before building the <literal>Solver</literal>:</para>
 
-      <programlisting language="java">        SolverConfig solverConfig = new SolverConfig();
-
-        solverConfig.setSolutionClass(NQueens.class);
-        solverConfig.setPlanningEntityClassList(Collections.&lt;Class&lt;?&gt;&gt;singletonList(Queen.class));
-
-        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
-        scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDirectorFactoryConfig.ScoreDefinitionType.SIMPLE);
-        scoreDirectorFactoryConfig.setScoreDrlList(
-                Arrays.asList("/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl"));
-        solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
-
-        TerminationConfig terminationConfig = new TerminationConfig();
-        // ...
-        solverConfig.setTerminationConfig(terminationConfig);
-        List&lt;SolverPhaseConfig&gt; solverPhaseConfigList = new ArrayList&lt;SolverPhaseConfig&gt;();
-        ConstructionHeuristicSolverPhaseConfig constructionHeuristicSolverPhaseConfig
-                = new ConstructionHeuristicSolverPhaseConfig();
-        // ...
-        solverPhaseConfigList.add(constructionHeuristicSolverPhaseConfig);
-        LocalSearchSolverPhaseConfig localSearchSolverPhaseConfig = new LocalSearchSolverPhaseConfig();
-        // ...
-        solverPhaseConfigList.add(localSearchSolverPhaseConfig);
-        solverConfig.setSolverPhaseConfigList(solverPhaseConfigList);
-        Solver solver = solverConfig.buildSolver();</programlisting>
-
-      <para><emphasis role="bold">It is highly recommended to configure by XML file instead of this API.</emphasis> To
-      dynamically configure a value at runtime, use the XML file as a template and extract the
-      <literal>SolverConfig</literal> class with <literal>getSolverConfig()</literal> to configure the dynamic value at
-      runtime:</para>
-
-      <programlisting language="java">        SolverFactory solverFactory = new XmlSolverFactory(
+      <programlisting language="java">        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                 "/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
 
         SolverConfig solverConfig = solverFactory.getSolverConfig();
-        solverConfig.getTerminationConfig().setMinutesSpentLimit(userInput);
-        Solver solver = solverConfig.buildSolver();</programlisting>
+        TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
+        terminationConfig.setMinutesSpentLimit(userInput);
+
+        Solver solver = solverFactory.buildSolver();</programlisting>
+
+      <para>Every element in the solver configuration XML is available as a <literal>*Config</literal> class or a
+      property on a <literal>*Config</literal> class in the package namespace
+      <literal>org.optaplanner.core.config</literal>. These <literal>*Config</literal> classes are the Java
+      representation of the XML format and they also provide the user-friendly way to assemble the runtime components
+      (of the package namespace <literal>org.optaplanner.core.impl</literal>) into an efficient
+      <literal>Solver</literal>.</para>
     </section>
   </section>
 
@@ -927,8 +915,8 @@ public interface Standstill {
         <para>As the customers for a vehicle change, the arrival time is automatically adjusted. For more information,
         see the <link linkend="vehicleRoutingDomainModel">vehicle routing domain model</link>.</para>
 
-        <para>To use custom <literal>VariableListener</literal>, implement the interface and annotate it on the
-        genuine planning variable(s) that trigger changes in the shadow variable(s):</para>
+        <para>To use custom <literal>VariableListener</literal>, implement the interface and annotate it on the genuine
+        planning variable(s) that trigger changes in the shadow variable(s):</para>
 
         <programlisting language="java">    @PlanningVariable(..., variableListenerClasses = {VehicleUpdatingVariableListener.class, ArrivalTimeUpdatingVariableListener.class})
     public Standstill getPreviousStandstill() {
@@ -968,8 +956,8 @@ public interface Standstill {
         variables.</para>
 
         <warning>
-          <para>A <literal>VariableListener</literal> can only change shadow variables. It must never change a genuine planning
-          variable or a problem fact.</para>
+          <para>A <literal>VariableListener</literal> can only change shadow variables. It must never change a genuine
+          planning variable or a problem fact.</para>
         </warning>
 
         <warning>
@@ -1382,24 +1370,24 @@ public interface Standstill {
         </mediaobject>
       </figure>
 
-      <para>The <literal>solve(Solution)</literal> method can take a long time (depending on the problem size and the solver
-      configuration). The <literal>Solver</literal> will remember (actually clone) the best solution it encounters
-      during its solving. Depending on a number factors (including problem size, how much time the
+      <para>The <literal>solve(Solution)</literal> method can take a long time (depending on the problem size and the
+      solver configuration). The <literal>Solver</literal> will remember (actually clone) the best solution it
+      encounters during its solving. Depending on a number factors (including problem size, how much time the
       <literal>Solver</literal> has, the solver configuration, ...), that best solution will be a feasible or even an
       optimal solution.</para>
 
       <note>
-        <para>The <literal>Solution</literal> instance given to the method <literal>solve(Solution)</literal> will
-        be changed by the <literal>Solver</literal>, but it do not mistake it for the best solution.</para>
+        <para>The <literal>Solution</literal> instance given to the method <literal>solve(Solution)</literal> will be
+        changed by the <literal>Solver</literal>, but it do not mistake it for the best solution.</para>
 
         <para>The <literal>Solution</literal> instance returned by the method <literal>getBestSolution()</literal> will
-        most likely be a clone of the instance given to the method <literal>solve(Solution)</literal>, which means
-        it's a different instance.</para>
+        most likely be a clone of the instance given to the method <literal>solve(Solution)</literal>, which means it's
+        a different instance.</para>
       </note>
 
       <note>
-        <para>The <literal>Solution</literal> instance given to the method <literal>solve(Solution)</literal> does
-        not need to be uninitialized. It can be partially or fully initialized, which is likely to be the case in <link
+        <para>The <literal>Solution</literal> instance given to the method <literal>solve(Solution)</literal> does not
+        need to be uninitialized. It can be partially or fully initialized, which is likely to be the case in <link
         linkend="repeatedPlanning">repeated planning</link>.</para>
       </note>
     </section>

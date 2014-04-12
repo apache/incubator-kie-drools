@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.config.solver;
+package org.optaplanner.core.impl.solver;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -26,16 +29,19 @@ import com.thoughtworks.xstream.converters.ConversionException;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.solver.SolverConfig;
 
 /**
- * XML based configuration that builds a {@link Solver}.
+ * XML based configuration that builds a {@link Solver} with {@link XStream}.
  * @see SolverFactory
  */
-public class XmlSolverFactory implements SolverFactory {
+public class XStreamXmlSolverFactory extends SolverFactory {
 
-    public static XStream buildXstream() {
+    public static XStream buildXStream() {
         XStream xStream = new XStream();
         xStream.setMode(XStream.ID_REFERENCES);
+        xStream.aliasSystemAttribute("xStreamId", "id");
+        xStream.aliasSystemAttribute("xStreamRef", "reference");
         xStream.processAnnotations(SolverConfig.class);
         return xStream;
     }
@@ -43,27 +49,23 @@ public class XmlSolverFactory implements SolverFactory {
     private XStream xStream;
     private SolverConfig solverConfig = null;
 
-    public XmlSolverFactory() {
-        xStream = buildXstream();
+    public XStreamXmlSolverFactory() {
+        xStream = buildXStream();
     }
 
-    /**
-     * @param solverConfigResource never null, a classpath resource, as defined by {@link Class#getResource(String)}
-     */
-    public XmlSolverFactory(String solverConfigResource) {
-        this();
-        configure(solverConfigResource);
-    }
-
-    public void addXstreamAnnotations(Class... xstreamAnnotations) {
-        xStream.processAnnotations(xstreamAnnotations);
+    public void addXStreamAnnotations(Class... xStreamAnnotations) {
+        xStream.processAnnotations(xStreamAnnotations);
     }
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
-    public XmlSolverFactory configure(String solverConfigResource) {
+    /**
+     * @param solverConfigResource a classpath resource, as defined by {@link Class#getResource(String)}
+     * @return this
+     */
+    public XStreamXmlSolverFactory configure(String solverConfigResource) {
         InputStream in = getClass().getResourceAsStream(solverConfigResource);
         if (in == null) {
             throw new IllegalArgumentException("The solverConfigResource (" + solverConfigResource
@@ -77,7 +79,15 @@ public class XmlSolverFactory implements SolverFactory {
         }
     }
 
-    public XmlSolverFactory configure(InputStream in) {
+    public XStreamXmlSolverFactory configure(File solverConfigFile) {
+        try {
+            return configure(new FileInputStream(solverConfigFile));
+        } catch (FileNotFoundException e) {
+            throw new IllegalArgumentException("The solverConfigFile (" + solverConfigFile + ") was not found.", e);
+        }
+    }
+
+    public XStreamXmlSolverFactory configure(InputStream in) {
         Reader reader = null;
         try {
             reader = new InputStreamReader(in, "UTF-8");
@@ -90,7 +100,7 @@ public class XmlSolverFactory implements SolverFactory {
         }
     }
 
-    public XmlSolverFactory configure(Reader reader) {
+    public XStreamXmlSolverFactory configure(Reader reader) {
         solverConfig = (SolverConfig) xStream.fromXML(reader);
         return this;
     }
