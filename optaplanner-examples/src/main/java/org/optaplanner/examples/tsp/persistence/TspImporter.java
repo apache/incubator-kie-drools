@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.tsp.domain.City;
@@ -66,10 +67,15 @@ public class TspImporter extends AbstractTxtSolutionImporter {
         public Solution readSolution() throws IOException {
             travelingSalesmanTour = new TravelingSalesmanTour();
             travelingSalesmanTour.setId(0L);
-            readHeaders();
-            readCityList();
-            readConstantLine("EOF");
-            createVisitList();
+            String firstLine = readStringValue();
+            if (firstLine.trim().startsWith("NAME :")) {
+                travelingSalesmanTour.setName(removePrefixSuffixFromLine(firstLine, "NAME :", ""));
+                readTspLibFormat();
+            } else {
+                travelingSalesmanTour.setName(FilenameUtils.getBaseName(inputFile.getName()));
+                cityListSize = Integer.parseInt(firstLine.trim());
+                readCourseraFormat();
+            }
             BigInteger possibleSolutionSize = factorial(travelingSalesmanTour.getCityList().size() - 1);
             logger.info("TravelingSalesmanTour {} has {} cities with a search space of {}.",
                     getInputId(),
@@ -78,8 +84,14 @@ public class TspImporter extends AbstractTxtSolutionImporter {
             return travelingSalesmanTour;
         }
 
-        private void readHeaders() throws IOException {
-            travelingSalesmanTour.setName(readStringValue("NAME :"));
+        private void readTspLibFormat() throws IOException {
+            readTspLibHeaders();
+            readTspLibCityList();
+            readConstantLine("EOF");
+            createVisitList();
+        }
+
+        private void readTspLibHeaders() throws IOException {
             readUntilConstantLine("TYPE : TSP");
             cityListSize = readIntegerValue("DIMENSION :");
             String edgeWeightType = readStringValue("EDGE_WEIGHT_TYPE :");
@@ -89,7 +101,7 @@ public class TspImporter extends AbstractTxtSolutionImporter {
             }
         }
 
-        private void readCityList() throws IOException {
+        private void readTspLibCityList() throws IOException {
             readConstantLine("NODE_COORD_SECTION");
             List<City> cityList = new ArrayList<City>(cityListSize);
             for (int i = 0; i < cityListSize; i++) {
@@ -102,6 +114,27 @@ public class TspImporter extends AbstractTxtSolutionImporter {
                 if (lineTokens.length >= 4) {
                     city.setName(lineTokens[3]);
                 }
+                cityList.add(city);
+            }
+            travelingSalesmanTour.setCityList(cityList);
+        }
+
+        private void readCourseraFormat() throws IOException {
+            readCourseraCityList();
+            createVisitList();
+        }
+
+        private void readCourseraCityList() throws IOException {
+            List<City> cityList = new ArrayList<City>(cityListSize);
+            long id = 0;
+            for (int i = 0; i < cityListSize; i++) {
+                String line = bufferedReader.readLine();
+                String[] lineTokens = splitBySpace(line, 2);
+                City city = new City();
+                city.setId(id);
+                id++;
+                city.setLatitude(Double.parseDouble(lineTokens[0]));
+                city.setLongitude(Double.parseDouble(lineTokens[1]));
                 cityList.add(city);
             }
             travelingSalesmanTour.setCityList(cityList);
