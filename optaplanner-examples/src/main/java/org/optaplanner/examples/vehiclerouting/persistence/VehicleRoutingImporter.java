@@ -80,7 +80,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                 schedule = new VehicleRoutingSolution();
                 schedule.setId(0L);
                 schedule.setName(removePrefixSuffixFromLine(firstLine, "NAME :", ""));
-                readBasicSolution();
+                readBasicFormat();
             } else if (splitBySpace(firstLine).length == 3) {
                 schedule = new VehicleRoutingSolution();
                 schedule.setId(0L);
@@ -88,12 +88,12 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                 locationListSize = Integer.parseInt(tokens[0]);
                 vehicleListSize = Integer.parseInt(tokens[1]);
                 capacity = Integer.parseInt(tokens[2]);
-                readAlternativeBasicSolution();
+                readCourseraFormat();
             } else {
                 schedule = new TimeWindowedVehicleRoutingSolution();
                 schedule.setId(0L);
                 schedule.setName(firstLine);
-                readTimeWindowedSolution();
+                readTimeWindowedFormat();
             }
             BigInteger possibleSolutionSize
                     = factorial(locationListSize + vehicleListSize - 1).divide(factorial(vehicleListSize - 1));
@@ -110,7 +110,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         // CVRP normal format. See http://neo.lcc.uma.es/vrp/
         // ************************************************************************
 
-        public void readBasicSolution() throws IOException {
+        public void readBasicFormat() throws IOException {
             readBasicHeaders();
             readBasicLocationList();
             readBasicCustomerList();
@@ -231,10 +231,10 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         }
 
         // ************************************************************************
-        // CVRP alternative format. See https://class.coursera.org/optimization-001/
+        // CVRP coursera format. See https://class.coursera.org/optimization-001/
         // ************************************************************************
 
-        public void readAlternativeBasicSolution() throws IOException {
+        public void readCourseraFormat() throws IOException {
             List<Location> locationList = new ArrayList<Location>(locationListSize);
             depotList = new ArrayList<Depot>(1);
             List<Customer> customerList = new ArrayList<Customer>(locationListSize);
@@ -278,7 +278,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         // CVRPTW normal format. See http://neo.lcc.uma.es/vrp/
         // ************************************************************************
 
-        public void readTimeWindowedSolution() throws IOException {
+        public void readTimeWindowedFormat() throws IOException {
             readTimeWindowedHeaders();
             readTimeWindowedDepotAndCustomers();
             createVehicleList();

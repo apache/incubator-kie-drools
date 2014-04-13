@@ -84,6 +84,10 @@ public class TspImporter extends AbstractTxtSolutionImporter {
             return travelingSalesmanTour;
         }
 
+        // ************************************************************************
+        // TSP TSPLIB format. See http://www.math.uwaterloo.ca/tsp/
+        // ************************************************************************
+
         private void readTspLibFormat() throws IOException {
             readTspLibHeaders();
             readTspLibCityList();
@@ -119,27 +123,6 @@ public class TspImporter extends AbstractTxtSolutionImporter {
             travelingSalesmanTour.setCityList(cityList);
         }
 
-        private void readCourseraFormat() throws IOException {
-            readCourseraCityList();
-            createVisitList();
-        }
-
-        private void readCourseraCityList() throws IOException {
-            List<City> cityList = new ArrayList<City>(cityListSize);
-            long id = 0;
-            for (int i = 0; i < cityListSize; i++) {
-                String line = bufferedReader.readLine();
-                String[] lineTokens = splitBySpace(line, 2);
-                City city = new City();
-                city.setId(id);
-                id++;
-                city.setLatitude(Double.parseDouble(lineTokens[0]));
-                city.setLongitude(Double.parseDouble(lineTokens[1]));
-                cityList.add(city);
-            }
-            travelingSalesmanTour.setCityList(cityList);
-        }
-
         private void createVisitList() {
             List<City> cityList = travelingSalesmanTour.getCityList();
             int domicileListSize = 1;
@@ -163,6 +146,27 @@ public class TspImporter extends AbstractTxtSolutionImporter {
             }
             travelingSalesmanTour.setDomicileList(domicileList);
             travelingSalesmanTour.setVisitList(visitList);
+        }
+
+        // ************************************************************************
+        // TSP coursera format. See https://class.coursera.org/optimization-001/
+        // ************************************************************************
+
+        private void readCourseraFormat() throws IOException {
+            List<City> cityList = new ArrayList<City>(cityListSize);
+            long id = 0;
+            for (int i = 0; i < cityListSize; i++) {
+                String line = bufferedReader.readLine();
+                String[] lineTokens = splitBySpace(line, 2);
+                City city = new City();
+                city.setId(id);
+                id++;
+                city.setLatitude(Double.parseDouble(lineTokens[0]));
+                city.setLongitude(Double.parseDouble(lineTokens[1]));
+                cityList.add(city);
+            }
+            travelingSalesmanTour.setCityList(cityList);
+            createVisitList();
         }
 
     }
