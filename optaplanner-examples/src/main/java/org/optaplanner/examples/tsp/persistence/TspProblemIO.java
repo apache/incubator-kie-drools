@@ -26,6 +26,7 @@ public class TspProblemIO implements ProblemIO {
     public static final String FILE_EXTENSION = "tsp";
 
     private TspImporter importer = new TspImporter();
+    private TspExporter exporter = new TspExporter();
 
     public String getFileExtension() {
         return FILE_EXTENSION;
@@ -36,7 +37,7 @@ public class TspProblemIO implements ProblemIO {
     }
 
     public void write(Solution solution, File outputSolutionFile) {
-        throw new UnsupportedOperationException();
+        exporter.writeSolution(solution, outputSolutionFile);
     }
 
 }
