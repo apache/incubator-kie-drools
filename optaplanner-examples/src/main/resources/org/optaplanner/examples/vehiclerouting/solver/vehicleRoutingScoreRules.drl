@@ -54,7 +54,7 @@ end
 
 rule "distanceToPreviousStandstill"
     when
-        $customer : Customer(previousStandstill != null, $distanceToPreviousStandstill : milliDistanceToPreviousStandstill)
+        $customer : Customer(previousStandstill != null, $distanceToPreviousStandstill : distanceToPreviousStandstill)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $distanceToPreviousStandstill);
 end
@@ -65,7 +65,7 @@ rule "distanceFromLastCustomerToDepot"
         not Customer(previousStandstill == $customer)
     then
         Vehicle vehicle = $customer.getVehicle();
-        scoreHolder.addSoftConstraintMatch(kcontext, - $customer.getMilliDistanceTo(vehicle));
+        scoreHolder.addSoftConstraintMatch(kcontext, - $customer.getDistanceTo(vehicle));
 end
 
 
@@ -75,9 +75,9 @@ end
 
 rule "arrivalAfterDueTime"
     when
-        TimeWindowedCustomer(milliDueTime < milliArrivalTime, $milliDueTime : milliDueTime, $milliArrivalTime : milliArrivalTime)
+        TimeWindowedCustomer(dueTime < arrivalTime, $dueTime : dueTime, $arrivalTime : arrivalTime)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, $milliDueTime - $milliArrivalTime.intValue());
+        scoreHolder.addHardConstraintMatch(kcontext, $dueTime - $arrivalTime.intValue());
 end
 
 // Score constraint arrivalAfterDueTimeAtDepot is a build-in hard constraint in VehicleRoutingImporter

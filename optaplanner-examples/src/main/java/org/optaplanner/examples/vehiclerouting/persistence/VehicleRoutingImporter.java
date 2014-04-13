@@ -124,7 +124,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             locationListSize = readIntegerValue("DIMENSION :");
             String edgeWeightType = readStringValue("EDGE_WEIGHT_TYPE :");
             if (!edgeWeightType.equalsIgnoreCase("EUC_2D")) {
-                // Only Euclidean distance is implemented in Location.getMilliDistance(Location)
+                // Only Euclidean distance is implemented in Location.getDistance(Location)
                 throw new IllegalArgumentException("The edgeWeightType (" + edgeWeightType + ") is not supported.");
             }
             capacity = readIntegerValue("CAPACITY :");
@@ -315,9 +315,9 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                 location.setLongitude(Double.parseDouble(lineTokens[2]));
                 locationList.add(location);
                 int demand = Integer.parseInt(lineTokens[3]);
-                int milliReadyTime = Integer.parseInt(lineTokens[4]) * 1000;
-                int milliDueTime = Integer.parseInt(lineTokens[5]) * 1000;
-                int milliServiceDuration = Integer.parseInt(lineTokens[6]) * 1000;
+                int readyTime = Integer.parseInt(lineTokens[4]) * 1000;
+                int dueTime = Integer.parseInt(lineTokens[5]) * 1000;
+                int serviceDuration = Integer.parseInt(lineTokens[6]) * 1000;
                 if (first) {
                     depot = new TimeWindowedDepot();
                     depot.setId(id);
@@ -326,11 +326,11 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                         throw new IllegalArgumentException("The depot with id (" + id
                                 + ") has a demand (" + demand + ").");
                     }
-                    depot.setMilliReadyTime(milliReadyTime);
-                    depot.setMilliDueTime(milliDueTime);
-                    if (milliServiceDuration != 0) {
+                    depot.setReadyTime(readyTime);
+                    depot.setDueTime(dueTime);
+                    if (serviceDuration != 0) {
                         throw new IllegalArgumentException("The depot with id (" + id
-                                + ") has a milliServiceDuration (" + milliServiceDuration + ").");
+                                + ") has a serviceDuration (" + serviceDuration + ").");
                     }
                     depotList.add(depot);
                     first = false;
@@ -339,18 +339,18 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                     customer.setId(id);
                     customer.setLocation(location);
                     customer.setDemand(demand);
-                    customer.setMilliReadyTime(milliReadyTime);
+                    customer.setReadyTime(readyTime);
                     // Score constraint arrivalAfterDueTimeAtDepot is a build-in hard constraint in VehicleRoutingImporter
-                    int maximumMilliDueTime = depot.getMilliDueTime()
-                            - milliServiceDuration - location.getMilliDistance(depot.getLocation());
-                    if (milliDueTime > maximumMilliDueTime) {
-                        logger.warn("The customer ({})'s milliDueTime ({}) was automatically reduced" +
-                                " to maximumMilliDueTime ({}) because of the depot's milliDueTime ({}).",
-                                customer, milliDueTime, maximumMilliDueTime, depot.getMilliDueTime());
-                        milliDueTime = maximumMilliDueTime;
+                    int maximumDueTime = depot.getDueTime()
+                            - serviceDuration - location.getDistance(depot.getLocation());
+                    if (dueTime > maximumDueTime) {
+                        logger.warn("The customer ({})'s dueTime ({}) was automatically reduced" +
+                                " to maximumDueTime ({}) because of the depot's dueTime ({}).",
+                                customer, dueTime, maximumDueTime, depot.getDueTime());
+                        dueTime = maximumDueTime;
                     }
-                    customer.setMilliDueTime(milliDueTime);
-                    customer.setMilliServiceDuration(milliServiceDuration);
+                    customer.setDueTime(dueTime);
+                    customer.setServiceDuration(serviceDuration);
                     // Notice that we leave the PlanningVariable properties on null
                     // Do not add a customer that has no demand
                     if (demand != 0) {

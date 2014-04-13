@@ -40,29 +40,29 @@ public class ArrivalTimeUpdatingVariableListener implements VariableListener<Cus
 
     protected void updateVehicle(ScoreDirector scoreDirector, TimeWindowedCustomer sourceCustomer) {
         Standstill previousStandstill = sourceCustomer.getPreviousStandstill();
-        Integer milliDepartureTime = (previousStandstill instanceof TimeWindowedCustomer)
+        Integer departureTime = (previousStandstill instanceof TimeWindowedCustomer)
                 ? ((TimeWindowedCustomer) previousStandstill).getDepartureTime() : null;
         TimeWindowedCustomer shadowCustomer = sourceCustomer;
-        Integer milliArrivalTime = calculateMilliArrivalTime(shadowCustomer, milliDepartureTime);
-        while (shadowCustomer != null && ObjectUtils.notEqual(shadowCustomer.getMilliArrivalTime(), milliArrivalTime)) {
-            scoreDirector.beforeVariableChanged(shadowCustomer, "milliArrivalTime");
-            shadowCustomer.setMilliArrivalTime(milliArrivalTime);
-            scoreDirector.afterVariableChanged(shadowCustomer, "milliArrivalTime");
-            milliDepartureTime = shadowCustomer.getDepartureTime();
+        Integer arrivalTime = calculateArrivalTime(shadowCustomer, departureTime);
+        while (shadowCustomer != null && ObjectUtils.notEqual(shadowCustomer.getArrivalTime(), arrivalTime)) {
+            scoreDirector.beforeVariableChanged(shadowCustomer, "arrivalTime");
+            shadowCustomer.setArrivalTime(arrivalTime);
+            scoreDirector.afterVariableChanged(shadowCustomer, "arrivalTime");
+            departureTime = shadowCustomer.getDepartureTime();
             shadowCustomer = shadowCustomer.getNextCustomer();
-            milliArrivalTime = calculateMilliArrivalTime(shadowCustomer, milliDepartureTime);
+            arrivalTime = calculateArrivalTime(shadowCustomer, departureTime);
         }
     }
 
-    private Integer calculateMilliArrivalTime(TimeWindowedCustomer customer, Integer previousMilliDepartureTime) {
+    private Integer calculateArrivalTime(TimeWindowedCustomer customer, Integer previousDepartureTime) {
         if (customer == null) {
             return null;
         }
-        if (previousMilliDepartureTime == null) {
+        if (previousDepartureTime == null) {
             // PreviousStandstill is the Vehicle, so we leave from the Depot at the best suitable time
-            return Math.max(customer.getMilliReadyTime(), customer.getMilliDistanceToPreviousStandstill());
+            return Math.max(customer.getReadyTime(), customer.getDistanceToPreviousStandstill());
         }
-        return previousMilliDepartureTime + customer.getMilliDistanceToPreviousStandstill();
+        return previousDepartureTime + customer.getDistanceToPreviousStandstill();
     }
 
 }

@@ -23,68 +23,79 @@ import org.optaplanner.examples.vehiclerouting.domain.Customer;
 public class TimeWindowedCustomer extends Customer {
 
     // Times are multiplied by 1000 to avoid floating point arithmetic rounding errors
-    private int milliReadyTime;
-    private int milliDueTime;
-    private int milliServiceDuration;
+    private int readyTime;
+    private int dueTime;
+    private int serviceDuration;
 
     // Shadow variable
-    private Integer milliArrivalTime;
+    private Integer arrivalTime;
 
-    public int getMilliReadyTime() {
-        return milliReadyTime;
+    /**
+     * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors
+     */
+    public int getReadyTime() {
+        return readyTime;
     }
 
-    public void setMilliReadyTime(int milliReadyTime) {
-        this.milliReadyTime = milliReadyTime;
+    public void setReadyTime(int readyTime) {
+        this.readyTime = readyTime;
     }
 
-    public int getMilliDueTime() {
-        return milliDueTime;
+    /**
+     * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors
+     */
+    public int getDueTime() {
+        return dueTime;
     }
 
-    public void setMilliDueTime(int milliDueTime) {
-        this.milliDueTime = milliDueTime;
+    public void setDueTime(int dueTime) {
+        this.dueTime = dueTime;
     }
 
-    public int getMilliServiceDuration() {
-        return milliServiceDuration;
+    /**
+     * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors
+     */
+    public int getServiceDuration() {
+        return serviceDuration;
     }
 
-    public void setMilliServiceDuration(int milliServiceDuration) {
-        this.milliServiceDuration = milliServiceDuration;
+    public void setServiceDuration(int serviceDuration) {
+        this.serviceDuration = serviceDuration;
     }
 
-    public Integer getMilliArrivalTime() {
-        return milliArrivalTime;
+    /**
+     * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors
+     */
+    public Integer getArrivalTime() {
+        return arrivalTime;
     }
 
-    public void setMilliArrivalTime(Integer milliArrivalTime) {
-        this.milliArrivalTime = milliArrivalTime;
+    public void setArrivalTime(Integer arrivalTime) {
+        this.arrivalTime = arrivalTime;
     }
 
     // ************************************************************************
     // Complex methods
     // ************************************************************************
 
-    public String getTimeWindowLabel() {
-        return milliReadyTime + "-" + milliDueTime;
-    }
-
+    /**
+     * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors
+     */
     public Integer getDepartureTime() {
-        if (milliArrivalTime == null) {
+        if (arrivalTime == null) {
             return null;
         }
-        return Math.max(milliArrivalTime, milliReadyTime) + milliServiceDuration;
+        return Math.max(arrivalTime, readyTime) + serviceDuration;
     }
 
     public boolean isArrivalBeforeReadyTime() {
-        return milliArrivalTime != null
-                && milliArrivalTime < milliReadyTime;
+        return arrivalTime != null
+                && arrivalTime < readyTime;
     }
 
     public boolean isArrivalAfterDueTime() {
-        return milliArrivalTime != null
-                && milliDueTime < milliArrivalTime;
+        return arrivalTime != null
+                && dueTime < arrivalTime;
     }
 
     @Override

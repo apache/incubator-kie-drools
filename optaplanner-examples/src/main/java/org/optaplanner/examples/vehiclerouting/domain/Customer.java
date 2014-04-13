@@ -18,8 +18,6 @@ package org.optaplanner.examples.vehiclerouting.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -95,19 +93,19 @@ public class Customer extends AbstractPersistable implements Standstill {
     /**
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public int getMilliDistanceToPreviousStandstill() {
+    public int getDistanceToPreviousStandstill() {
         if (previousStandstill == null) {
             return 0;
         }
-        return getMilliDistanceTo(previousStandstill);
+        return getDistanceTo(previousStandstill);
     }
 
     /**
      * @param standstill never null
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public int getMilliDistanceTo(Standstill standstill) {
-        return location.getMilliDistance(standstill.getLocation());
+    public int getDistanceTo(Standstill standstill) {
+        return location.getDistance(standstill.getLocation());
     }
 
     @Override

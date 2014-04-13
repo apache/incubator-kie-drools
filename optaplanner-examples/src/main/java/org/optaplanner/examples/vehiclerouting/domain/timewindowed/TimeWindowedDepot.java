@@ -7,31 +7,33 @@ import org.optaplanner.examples.vehiclerouting.domain.Depot;
 public class TimeWindowedDepot extends Depot {
 
     // Times are multiplied by 1000 to avoid floating point arithmetic rounding errors
-    private int milliReadyTime;
-    private int milliDueTime;
+    private int readyTime;
+    private int dueTime;
 
-    public int getMilliReadyTime() {
-        return milliReadyTime;
+    /**
+     * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors
+     */
+    public int getReadyTime() {
+        return readyTime;
     }
 
-    public void setMilliReadyTime(int milliReadyTime) {
-        this.milliReadyTime = milliReadyTime;
+    public void setReadyTime(int readyTime) {
+        this.readyTime = readyTime;
     }
 
-    public int getMilliDueTime() {
-        return milliDueTime;
+    /**
+     * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors
+     */
+    public int getDueTime() {
+        return dueTime;
     }
 
-    public void setMilliDueTime(int milliDueTime) {
-        this.milliDueTime = milliDueTime;
+    public void setDueTime(int dueTime) {
+        this.dueTime = dueTime;
     }
 
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    public String getTimeWindowLabel() {
-        return milliReadyTime + "-" + milliDueTime;
-    }
 
 }

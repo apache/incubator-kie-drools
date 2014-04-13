@@ -112,11 +112,11 @@ public class VehicleRoutingPanel extends SolutionPanel {
                 if (schedule instanceof TimeWindowedVehicleRoutingSolution) {
                     TimeWindowedCustomer newTimeWindowedCustomer = new TimeWindowedCustomer();
                     TimeWindowedDepot timeWindowedDepot = (TimeWindowedDepot) schedule.getDepotList().get(0);
-                    int windowTime = (timeWindowedDepot.getMilliDueTime() - timeWindowedDepot.getMilliReadyTime()) / 4;
+                    int windowTime = (timeWindowedDepot.getDueTime() - timeWindowedDepot.getReadyTime()) / 4;
                     int readyTime = demandRandom.nextInt(windowTime * 3);
-                    newTimeWindowedCustomer.setMilliReadyTime(readyTime);
-                    newTimeWindowedCustomer.setMilliDueTime(readyTime + windowTime);
-                    newTimeWindowedCustomer.setMilliServiceDuration(Math.min(10000, windowTime / 2));
+                    newTimeWindowedCustomer.setReadyTime(readyTime);
+                    newTimeWindowedCustomer.setDueTime(readyTime + windowTime);
+                    newTimeWindowedCustomer.setServiceDuration(Math.min(10000, windowTime / 2));
                     newCustomer = newTimeWindowedCustomer;
                 } else {
                     newCustomer = new Customer();

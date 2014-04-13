@@ -106,10 +106,10 @@ public class VehicleRoutingSchedulePainter {
                 int circleY = y + 5;
                 g.drawOval(circleX, circleY, TIME_WINDOW_DIAMETER, TIME_WINDOW_DIAMETER);
                 g.fillArc(circleX, circleY, TIME_WINDOW_DIAMETER, TIME_WINDOW_DIAMETER,
-                        90 - calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getMilliReadyTime()),
-                        calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getMilliReadyTime())
-                                - calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getMilliDueTime()));
-                if (timeWindowedCustomer.getMilliArrivalTime() != null) {
+                        90 - calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getReadyTime()),
+                        calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getReadyTime())
+                                - calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getDueTime()));
+                if (timeWindowedCustomer.getArrivalTime() != null) {
                     if (timeWindowedCustomer.isArrivalAfterDueTime()) {
                         g.setColor(TangoColorFactory.SCARLET_2);
                     } else if (timeWindowedCustomer.isArrivalBeforeReadyTime()) {
@@ -119,7 +119,7 @@ public class VehicleRoutingSchedulePainter {
                     }
                     g.setStroke(TangoColorFactory.THICK_STROKE);
                     int circleCenterY = y + 5 + TIME_WINDOW_DIAMETER / 2;
-                    int angle = calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getMilliArrivalTime());
+                    int angle = calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getArrivalTime());
                     g.drawLine(x, circleCenterY,
                             x + (int) (Math.sin(Math.toRadians(angle)) * (TIME_WINDOW_DIAMETER / 2 + 3)),
                             circleCenterY - (int) (Math.cos(Math.toRadians(angle)) * (TIME_WINDOW_DIAMETER / 2 + 3)));
@@ -153,7 +153,7 @@ public class VehicleRoutingSchedulePainter {
                     int y = translator.translateLatitudeToY(location.getLatitude());
                     g.drawLine(previousX, previousY, x, y);
                     // Determine where to draw the vehicle info
-                    int distance = customer.getMilliDistanceToPreviousStandstill();
+                    int distance = customer.getDistanceToPreviousStandstill();
                     if (customer.getPreviousStandstill() instanceof Customer) {
                         if (longestNonDepotDistance < distance) {
                             longestNonDepotDistance = distance;
@@ -235,7 +235,7 @@ public class VehicleRoutingSchedulePainter {
         int maximumTimeWindowTime = 0;
         for (Depot depot : schedule.getDepotList()) {
             if (depot instanceof TimeWindowedDepot) {
-                int timeWindowTime = ((TimeWindowedDepot) depot).getMilliDueTime();
+                int timeWindowTime = ((TimeWindowedDepot) depot).getDueTime();
                 if (timeWindowTime > maximumTimeWindowTime) {
                     maximumTimeWindowTime = timeWindowTime;
                 }
@@ -243,7 +243,7 @@ public class VehicleRoutingSchedulePainter {
         }
         for (Customer customer : schedule.getCustomerList()) {
             if (customer instanceof TimeWindowedCustomer) {
-                int timeWindowTime = ((TimeWindowedCustomer) customer).getMilliDueTime();
+                int timeWindowTime = ((TimeWindowedCustomer) customer).getDueTime();
                 if (timeWindowTime > maximumTimeWindowTime) {
                     maximumTimeWindowTime = timeWindowTime;
                 }

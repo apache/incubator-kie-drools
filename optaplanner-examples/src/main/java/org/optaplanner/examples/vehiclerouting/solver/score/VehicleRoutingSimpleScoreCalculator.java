@@ -47,18 +47,18 @@ public class VehicleRoutingSimpleScoreCalculator implements SimpleScoreCalculato
                 Vehicle vehicle = customer.getVehicle();
                 vehicleDemandMap.put(vehicle, vehicleDemandMap.get(vehicle) + customer.getDemand());
                 // Score constraint distanceToPreviousStandstill
-                softScore -= customer.getMilliDistanceToPreviousStandstill();
+                softScore -= customer.getDistanceToPreviousStandstill();
                 if (customer.getNextCustomer() == null) {
                     // Score constraint distanceFromLastCustomerToDepot
-                    softScore -= vehicle.getLocation().getMilliDistance(customer.getLocation());
+                    softScore -= vehicle.getLocation().getDistance(customer.getLocation());
                 }
                 if (timeWindowed) {
                     TimeWindowedCustomer timeWindowedCustomer = (TimeWindowedCustomer) customer;
-                    int milliDueTime = timeWindowedCustomer.getMilliDueTime();
-                    Integer milliArrivalTime = timeWindowedCustomer.getMilliArrivalTime();
-                    if (milliDueTime < milliArrivalTime) {
+                    int dueTime = timeWindowedCustomer.getDueTime();
+                    Integer arrivalTime = timeWindowedCustomer.getArrivalTime();
+                    if (dueTime < arrivalTime) {
                         // Score constraint arrivalAfterDueTime
-                        hardScore -= (milliArrivalTime - milliDueTime);
+                        hardScore -= (arrivalTime - dueTime);
                     }
                 }
             }
