@@ -18,17 +18,22 @@ package org.optaplanner.examples.tsp.swingui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 import org.optaplanner.examples.tsp.domain.City;
@@ -38,7 +43,9 @@ import org.optaplanner.examples.tsp.domain.Visit;
 
 public class TspWorldPanel extends JPanel {
 
-    private static final int TEXT_SIZE = 8;
+    private static final int TEXT_SIZE = 12;
+    private static final int CITY_NAME_TEXT_SIZE = 8;
+    private static final NumberFormat NUMBER_FORMAT = new DecimalFormat("#,##0.00");
 
     private final TspPanel tspPanel;
 
@@ -89,7 +96,7 @@ public class TspWorldPanel extends JPanel {
         if (tourName.startsWith("europe")) {
             g.drawImage(europaBackground.getImage(), 0, 0, translator.getImageWidth(), translator.getImageHeight(), this);
         }
-        g.setFont(g.getFont().deriveFont((float) TEXT_SIZE));
+        g.setFont(g.getFont().deriveFont((float) CITY_NAME_TEXT_SIZE));
         g.setColor(TangoColorFactory.PLUM_2);
         for (Visit visit : travelingSalesmanTour.getVisitList()) {
             City city = visit.getCity();
@@ -140,13 +147,26 @@ public class TspWorldPanel extends JPanel {
         // Legend
         g.setColor(TangoColorFactory.ALUMINIUM_4);
         g.fillRect(5, (int) height - 20, 5, 5);
-        g.drawString("Domicile", 15, (int) height - 15);
+        g.drawString("Domicile", 15, (int) height - 10 - TEXT_SIZE);
         g.setColor(TangoColorFactory.PLUM_2);
         g.fillRect(6, (int) height - 9, 3, 3);
         g.drawString("Visit", 15, (int) height - 5);
         g.setColor(TangoColorFactory.ALUMINIUM_5);
+        String citiesSizeString = travelingSalesmanTour.getCityList().size() + " cities";
+        g.drawString(citiesSizeString,
+                ((int) width - g.getFontMetrics().stringWidth(citiesSizeString)) / 2, (int) height - 5);
         String clickString = "Click anywhere in the map to add a visit.";
-        g.drawString(clickString, (int) width - 5 - g.getFontMetrics().stringWidth(clickString),(int) height - 5);
+        g.drawString(clickString, (int) width - 5 - g.getFontMetrics().stringWidth(clickString), (int) height - 5);
+        // Show soft score
+        g.setColor(TangoColorFactory.ORANGE_3);
+        SimpleScore score = travelingSalesmanTour.getScore();
+        if (score != null) {
+            double fuel = ((double) - score.getScore()) / 1000.0;
+            String fuelString = NUMBER_FORMAT.format(fuel) + " fuel";
+            g.setFont(g.getFont().deriveFont(Font.BOLD, (float) TEXT_SIZE * 2));
+            g.drawString(fuelString,
+                    (int) width - g.getFontMetrics().stringWidth(fuelString) - 10, (int) height - 10 - TEXT_SIZE);
+        }
         repaint();
     }
 

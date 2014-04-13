@@ -57,7 +57,7 @@ public class City extends AbstractPersistable {
     /**
      * The distance is not in miles or km, but in the TSPLIB's unit of measurement.
      * @param city never null
-     * @return a positive number
+     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
     public int getDistance(City city) {
         // Implementation specified by TSPLIB http://www2.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
@@ -66,7 +66,7 @@ public class City extends AbstractPersistable {
         double longitudeDifference = city.longitude - longitude;
         double distance = Math.sqrt(
                 (latitudeDifference * latitudeDifference) + (longitudeDifference * longitudeDifference));
-        return (int) (distance + 0.5);
+        return (int) (distance * 1000.0 + 0.5);
     }
 
     @Override

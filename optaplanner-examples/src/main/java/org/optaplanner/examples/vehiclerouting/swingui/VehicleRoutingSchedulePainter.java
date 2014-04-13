@@ -212,20 +212,22 @@ public class VehicleRoutingSchedulePainter {
         String customersSizeString = schedule.getCustomerList().size() + " customers";
         g.drawString(customersSizeString,
                 ((int) width - g.getFontMetrics().stringWidth(customersSizeString)) / 2, (int) height - 5);
+        String clickString = "Click anywhere in the map to add a customer.";
+        g.drawString(clickString, (int) width - 5 - g.getFontMetrics().stringWidth(clickString), (int) height - 5);
         // Show soft score
-        g.setColor(TangoColorFactory.SCARLET_2);
+        g.setColor(TangoColorFactory.ORANGE_3);
         HardSoftScore score = schedule.getScore();
         if (score != null) {
-            String totalDistanceString;
+            String fuelString;
             if (!score.isFeasible()) {
-                totalDistanceString = "Not feasible";
+                fuelString = "Not feasible";
             } else {
                 double fuel = ((double) - score.getSoftScore()) / 1000.0;
-                totalDistanceString = NUMBER_FORMAT.format(fuel) + " fuel";
+                fuelString = NUMBER_FORMAT.format(fuel) + " fuel";
             }
-            g.setFont( g.getFont().deriveFont(Font.BOLD, (float) TEXT_SIZE * 2));
-            g.drawString(totalDistanceString,
-                    (int) width - g.getFontMetrics().stringWidth(totalDistanceString) - 10, (int) height - 10);
+            g.setFont(g.getFont().deriveFont(Font.BOLD, (float) TEXT_SIZE * 2));
+            g.drawString(fuelString,
+                    (int) width - g.getFontMetrics().stringWidth(fuelString) - 10, (int) height - 10 - TEXT_SIZE);
         }
     }
 
