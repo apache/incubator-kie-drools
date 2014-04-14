@@ -254,8 +254,8 @@ $ runExamples.bat</programlisting>
       </mediaobject>
 
       <note>
-        <para>Planner itself has no GUI dependencies. It runs just as well on a server or a mobile JVM as it does on the
-        desktop.</para>
+        <para>OptaPlanner itself has no GUI dependencies. It runs just as well on a server or a mobile JVM as it does on
+        the desktop.</para>
       </note>
     </section>
 
@@ -371,27 +371,54 @@ $ runExamples.bat</programlisting>
     <section xml:id="buildFromSource">
       <title>Build OptaPlanner from source</title>
 
-      <para>You can also easily build OptaPlanner from source yourself.</para>
+      <para>It's easy to build OptaPlanner from source:</para>
 
-      <para><link xlink:href="http://help.github.com/set-up-git-redirect">Set up Git</link> and clone
-      <literal>optaplanner</literal> from GitHub (or alternatively, download <link
-      xlink:href="https://github.com/droolsjbpm/optaplanner/zipball/master">the zipball</link>):</para>
+      <orderedlist>
+        <listitem>
+          <para><link xlink:href="http://help.github.com/set-up-git-redirect">Set up Git</link> and clone
+          <literal>optaplanner</literal> from GitHub (or alternatively, download <link
+          xlink:href="https://github.com/droolsjbpm/optaplanner/zipball/master">the zipball</link>):</para>
 
-      <programlisting>$ git clone git@github.com:droolsjbpm/optaplanner.git optaplanner
+          <programlisting>$ git clone git@github.com:droolsjbpm/optaplanner.git optaplanner
 ...</programlisting>
 
-      <para>Then do a <link xlink:href="http://maven.apache.org/">Maven 3</link> build:</para>
+          <note>
+            <para>If you don't have a GitHub account or your local Git installation isn't configured with it, use this
+            command instead, to avoid an authentication issue:</para>
 
-      <programlisting>$ cd optaplanner
+            <programlisting>$ git clone https://github.com/droolsjbpm/optaplanner.git optaplanner
+...</programlisting>
+          </note>
+        </listitem>
+
+        <listitem>
+          <para>Build it with <link xlink:href="http://maven.apache.org/">Maven</link>:</para>
+
+          <programlisting>$ cd optaplanner
 $ mvn clean install -DskipTests
 ...</programlisting>
 
-      <para>After that, you can run any example directly from the command line, just run this command and pick an
-      example:</para>
+          <note>
+            <para>The first time, Maven might take a lot time, because it needs to download jars.</para>
+          </note>
+        </listitem>
 
-      <programlisting>$ cd optaplanner-examples
+        <listitem>
+          <para>Run the examples:</para>
+
+          <programlisting>$ cd optaplanner-examples
 $ mvn exec:exec
 ...</programlisting>
+        </listitem>
+
+        <listitem>
+          <para>Edit the sources in your favorite IDE.</para>
+        </listitem>
+
+        <listitem>
+          <para>Optional: use a Java profiler.</para>
+        </listitem>
+      </orderedlist>
     </section>
   </section>
 
