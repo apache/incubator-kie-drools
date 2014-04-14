@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.config.score.director;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -81,6 +84,8 @@ public class ScoreDirectorFactoryConfig {
     protected KieBase kieBase = null;
     @XStreamImplicit(itemFieldName = "scoreDrl")
     protected List<String> scoreDrlList = null;
+    @XStreamImplicit(itemFieldName = "scoreDrlFile")
+    protected List<File> scoreDrlFileList = null;
     @XStreamConverter(value = KeyAsElementMapConverter.class)
     protected Map<String, String> kieBaseConfigurationProperties = null;
 
@@ -151,6 +156,14 @@ public class ScoreDirectorFactoryConfig {
 
     public void setScoreDrlList(List<String> scoreDrlList) {
         this.scoreDrlList = scoreDrlList;
+    }
+
+    public List<File> getScoreDrlFileList() {
+        return scoreDrlFileList;
+    }
+
+    public void setScoreDrlFileList(List<File> scoreDrlFileList) {
+        this.scoreDrlFileList = scoreDrlFileList;
     }
 
     public Map<String, String> getKieBaseConfigurationProperties() {
@@ -307,9 +320,9 @@ public class ScoreDirectorFactoryConfig {
 
     private KieBase buildKieBase() {
         if (kieBase != null) {
-            if (!ConfigUtils.isEmptyCollection(scoreDrlList)) {
+            if (!ConfigUtils.isEmptyCollection(scoreDrlList) || !ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
                 throw new IllegalArgumentException("If kieBase is not null, the scoreDrlList (" + scoreDrlList
-                        + ") must be empty.");
+                        + ") and the scoreDrlFileList (" + scoreDrlFileList + ") must be empty.");
             }
             if (kieBaseConfigurationProperties != null) {
                 throw new IllegalArgumentException("If kieBase is not null, the kieBaseConfigurationProperties ("
@@ -317,37 +330,57 @@ public class ScoreDirectorFactoryConfig {
             }
             return kieBase;
         } else {
-            if (ConfigUtils.isEmptyCollection(scoreDrlList)) {
-                throw new IllegalArgumentException("The scoreDrlList (" + scoreDrlList + ") cannot be empty.");
+            if (ConfigUtils.isEmptyCollection(scoreDrlList) && ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
+                throw new IllegalArgumentException("The scoreDrlList (" + scoreDrlList
+                        + ") and the scoreDrlFileList (" + scoreDrlFileList + ") cannot both be empty.");
+            }
+            if (!ConfigUtils.isEmptyCollection(scoreDrlList) && !ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
+                throw new IllegalArgumentException("The scoreDrlList (" + scoreDrlList
+                        + ") and the scoreDrlFileList (" + scoreDrlFileList + ") cannot both be non empty.");
             }
             KieServices kieServices = KieServices.Factory.get();
             KieResources kieResources = kieServices.getResources();
             KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
-            for (String scoreDrl : scoreDrlList) {
-                InputStream scoreDrlIn = getClass().getResourceAsStream(scoreDrl);
-                if (scoreDrlIn == null) {
-                    throw new IllegalArgumentException("The scoreDrl (" + scoreDrl
-                            + ") does not exist as a classpath resource."
-                            + "Note that nor a file, nor a URL, nor a webapp resource are a valid classpath resource.");
+            if (!ConfigUtils.isEmptyCollection(scoreDrlList)) {
+                for (String scoreDrl : scoreDrlList) {
+                    InputStream scoreDrlIn = getClass().getResourceAsStream(scoreDrl);
+                    if (scoreDrlIn == null) {
+                        throw new IllegalArgumentException("The scoreDrl (" + scoreDrl
+                                + ") does not exist as a classpath resource."
+                                + "Note that nor a file, nor a URL, nor a webapp resource are a valid classpath resource.");
+                    }
+                    String path = "src/main/resources/optaplanner-kie-namespace/" + scoreDrl;
+                    kieFileSystem.write(path, kieResources.newInputStreamResource(scoreDrlIn, "UTF-8"));
+                    // TODO use getResource() and newClassPathResource() instead
+                    // URL scoreDrlURL = getClass().getResource(scoreDrl);
+                    // if (scoreDrlURL == null) {
+                    //     throw new IllegalArgumentException("The scoreDrl (" + scoreDrl
+                    //             + ") does not exist as a classpath resource.");
+                    // }
+                    // kieFileSystem.write(kieResources.newClassPathResource(scoreDrl, "UTF-8"));
                 }
-                String path = "src/main/resources/optaplanner-kie-namespace/" + scoreDrl;
-                kieFileSystem.write(path, kieResources.newInputStreamResource(scoreDrlIn, "UTF-8"));
-                // TODO use getResource() and newClassPathResource() instead
-                // URL scoreDrlURL = getClass().getResource(scoreDrl);
-                // if (scoreDrlURL == null) {
-                //     throw new IllegalArgumentException("The scoreDrl (" + scoreDrl
-                //             + ") does not exist as a classpath resource.");
-                // }
-                // kieFileSystem.write(kieResources.newClassPathResource(scoreDrl, "UTF-8"));
+            }
+            if (!ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
+                for (File scoreDrlFile : scoreDrlFileList) {
+                    InputStream scoreDrlIn = null;
+                    try {
+                        scoreDrlIn = new FileInputStream(scoreDrlFile);
+                    } catch (FileNotFoundException e) {
+                        throw new IllegalArgumentException("The scoreDrlFile (" + scoreDrlFile
+                                + ") does not exist.", e);
+                    }
+                    String path = "src/main/resources/optaplanner-kie-namespace/" + scoreDrlFile.getName();
+                    kieFileSystem.write(path, kieResources.newInputStreamResource(scoreDrlIn, "UTF-8"));
+                }
             }
             KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
             kieBuilder.buildAll();
             Results results = kieBuilder.getResults();
             if (results.hasMessages(Message.Level.ERROR)) {
-                throw new IllegalStateException("There are errors in the scoreDrl's:\n"
+                throw new IllegalStateException("There are errors in a score DRL:\n"
                         + results.toString());
             } else if (results.hasMessages(Message.Level.WARNING)) {
-                logger.warn("There are warning in the scoreDrl's:\n"
+                logger.warn("There are warning in a score DRL:\n"
                         + results.toString());
             }
             KieContainer kieContainer = kieServices.newKieContainer(kieBuilder.getKieModule().getReleaseId());
@@ -382,6 +415,8 @@ public class ScoreDirectorFactoryConfig {
                 kieBase, inheritedConfig.getKieBase());
         scoreDrlList = ConfigUtils.inheritMergeableListProperty(
                 scoreDrlList, inheritedConfig.getScoreDrlList());
+        scoreDrlFileList = ConfigUtils.inheritMergeableListProperty(
+                scoreDrlFileList, inheritedConfig.getScoreDrlFileList());
         kieBaseConfigurationProperties = ConfigUtils.inheritMergeableMapProperty(
                 kieBaseConfigurationProperties, inheritedConfig.getKieBaseConfigurationProperties());
         initializingScoreTrend = ConfigUtils.inheritOverwritableProperty(

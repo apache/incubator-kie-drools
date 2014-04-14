@@ -815,7 +815,8 @@
           <title>A scoreDrl resource on the classpath</title>
 
           <para>This is the easy way: the score rule live in a DRL file which is provided as a classpath resource. Just
-          add the score rules DRL file in the solver configuration:</para>
+          add the score rules DRL file in the solver configuration as a <literal>&lt;scoreDrl&gt;</literal>
+          element:</para>
 
           <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
@@ -829,7 +830,7 @@
           <note>
             <para>The <literal>&lt;scoreDrl&gt;</literal> element expects a classpath resource, as defined by
             <literal>Class.getResource(String)</literal>, it does not accept a <literal>File</literal>, nor an URL, nor
-            a webapp resource.</para>
+            a webapp resource. See below to use a <literal>File</literal> instead.</para>
           </note>
 
           <para>Add multiple <literal>&lt;scoreDrl&gt;</literal> elements if the score rules are split across multiple
@@ -845,6 +846,27 @@
       &lt;drools.equalityBehavior&gt;...&lt;/drools.equalityBehavior&gt;
     &lt;/kieBaseConfigurationProperties&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
+        </section>
+
+        <section xml:id="droolsScoreCalculationScoreDrlFile">
+          <title>A scoreDrlFile</title>
+
+          <para>To use <literal>File</literal> on the local file system, instead of a classpath resource, add the score
+          rules DRL file in the solver configuration as a <literal>&lt;scoreDrlFile&gt;</literal> element:</para>
+
+          <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
+    &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
+    &lt;scoreDrlFile&gt;/home/ge0ffrey/tmp/nQueensScoreRules.drl&lt;/scoreDrlFile&gt;
+  &lt;/scoreDirectorFactory&gt;</programlisting>
+
+          <warning>
+            <para>For portability reasons, a classpath resource is recommended over a File. An application build on one
+            computer, but used on another computer, might not find the file on the same location. Worse, if they use a
+            different Operating System, it's hard to choose a portable file path.</para>
+          </warning>
+
+          <para>Add multiple <literal>&lt;scoreDrlFile&gt;</literal> elements if the score rules are split across
+          multiple DRL files.</para>
         </section>
 
         <section xml:id="droolsScoreCalculationKieBase">
