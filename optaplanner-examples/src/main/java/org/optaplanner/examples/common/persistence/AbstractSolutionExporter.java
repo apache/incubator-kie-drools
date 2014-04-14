@@ -44,7 +44,7 @@ public abstract class AbstractSolutionExporter extends LoggingMain {
         return DEFAULT_INPUT_FILE_SUFFIX;
     }
 
-    protected abstract String getOutputFileSuffix();
+    public abstract String getOutputFileSuffix();
 
     public void convertAll() {
         File inputDir = getInputDir();

@@ -36,7 +36,7 @@ public class MachineReassignmentExporter extends AbstractTxtSolutionExporter {
     }
 
     @Override
-    protected String getOutputFileSuffix() {
+    public String getOutputFileSuffix() {
         return MachineReassignmentProblemIO.FILE_EXTENSION;
     }
 

@@ -141,6 +141,10 @@ public class SolutionBusiness {
         return exportDataDir;
     }
 
+    public String getExportFileSuffix() {
+        return exporter.getOutputFileSuffix();
+    }
+
     public void setSolver(Solver solver) {
         this.solver = solver;
         ScoreDirectorFactory scoreDirectorFactory = solver.getScoreDirectorFactory();

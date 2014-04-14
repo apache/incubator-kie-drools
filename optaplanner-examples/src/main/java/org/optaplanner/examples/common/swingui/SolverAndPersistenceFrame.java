@@ -410,7 +410,7 @@ public class SolverAndPersistenceFrame extends JFrame {
                 }
 
                 public String getDescription() {
-                    return "Import files (*" + solutionBusiness.getImportFileSuffix() + ")";
+                    return "Import files (*." + solutionBusiness.getImportFileSuffix() + ")";
                 }
             });
             fileChooser.setDialogTitle(NAME);
@@ -438,15 +438,18 @@ public class SolverAndPersistenceFrame extends JFrame {
 
         public void actionPerformed(ActionEvent e) {
             JFileChooser fileChooser = new JFileChooser(solutionBusiness.getExportDataDir());
-//            fileChooser.setFileFilter(new FileFilter() {
-//                public boolean accept(File file) {
-//                    return file.isDirectory() || file.getName().endsWith(".xml"); // TODO Not all export files are xml
-//                }
-//                public String getDescription() {
-//                    return "Export files";
-//                }
-//            });
+            fileChooser.setFileFilter(new FileFilter() {
+                public boolean accept(File file) {
+                    return file.isDirectory() || file.getName().endsWith("." + solutionBusiness.getExportFileSuffix());
+                }
+                public String getDescription() {
+                    return "Export files (*." + solutionBusiness.getExportFileSuffix() + ")";
+                }
+            });
             fileChooser.setDialogTitle(NAME);
+            fileChooser.setSelectedFile(new File(solutionBusiness.getExportDataDir(),
+                    FilenameUtils.getBaseName(solutionBusiness.getSolutionFileName())
+                            + "." + solutionBusiness.getExportFileSuffix()));
             int approved = fileChooser.showSaveDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));

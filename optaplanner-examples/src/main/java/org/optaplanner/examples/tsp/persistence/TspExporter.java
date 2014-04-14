@@ -38,7 +38,7 @@ public class TspExporter extends AbstractTxtSolutionExporter {
     }
 
     @Override
-    protected String getOutputFileSuffix() {
+    public String getOutputFileSuffix() {
         return OUTPUT_FILE_SUFFIX;
     }
 
