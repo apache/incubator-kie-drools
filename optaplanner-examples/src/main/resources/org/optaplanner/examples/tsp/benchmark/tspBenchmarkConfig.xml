@@ -24,7 +24,7 @@
       <planningEntityClass>org.optaplanner.examples.tsp.domain.Visit</planningEntityClass>
 
       <scoreDirectorFactory>
-        <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+        <scoreDefinitionType>SIMPLE_LONG</scoreDefinitionType>
         <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.tsp.solver.score.TspIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
         <scoreDrl>/org/optaplanner/examples/tsp/solver/tspScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>

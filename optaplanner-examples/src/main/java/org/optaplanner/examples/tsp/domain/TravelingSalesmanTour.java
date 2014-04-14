@@ -23,19 +23,18 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
+import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
+import org.optaplanner.core.impl.score.buildin.simplelong.SimpleLongScoreDefinition;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.XStreamScoreConverter;
 
 @PlanningSolution
 @XStreamAlias("TravelingSalesmanTour")
-public class TravelingSalesmanTour extends AbstractPersistable implements Solution<SimpleScore> {
+public class TravelingSalesmanTour extends AbstractPersistable implements Solution<SimpleLongScore> {
 
     private String name;
     private List<City> cityList;
@@ -43,8 +42,8 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
 
     private List<Visit> visitList;
 
-    @XStreamConverter(value = XStreamScoreConverter.class, types = {SimpleScoreDefinition.class})
-    private SimpleScore score;
+    @XStreamConverter(value = XStreamScoreConverter.class, types = {SimpleLongScoreDefinition.class})
+    private SimpleLongScore score;
 
     public String getName() {
         return name;
@@ -81,11 +80,11 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         this.visitList = visitList;
     }
 
-    public SimpleScore getScore() {
+    public SimpleLongScore getScore() {
         return score;
     }
 
-    public void setScore(SimpleScore score) {
+    public void setScore(SimpleLongScore score) {
         this.score = score;
     }
 

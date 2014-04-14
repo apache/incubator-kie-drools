@@ -32,8 +32,7 @@ import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 import org.optaplanner.examples.tsp.domain.City;
@@ -159,7 +158,7 @@ public class TspWorldPanel extends JPanel {
         g.drawString(clickString, (int) width - 5 - g.getFontMetrics().stringWidth(clickString), (int) height - 5);
         // Show soft score
         g.setColor(TangoColorFactory.ORANGE_3);
-        SimpleScore score = travelingSalesmanTour.getScore();
+        SimpleLongScore score = travelingSalesmanTour.getScore();
         if (score != null) {
             double fuel = ((double) - score.getScore()) / 1000.0;
             String fuelString = NUMBER_FORMAT.format(fuel) + " fuel";
