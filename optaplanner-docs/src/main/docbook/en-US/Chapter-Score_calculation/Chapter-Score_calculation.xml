@@ -410,7 +410,7 @@
         </listitem>
 
         <listitem>
-          <para><emphasis role="bold">Drools score calculation</emphasis>: implement score rules</para>
+          <para><emphasis role="bold">Drools score calculation</emphasis> (recommended): implement score rules</para>
         </listitem>
       </itemizedlist>
 
@@ -814,25 +814,26 @@
         <section xml:id="droolsScoreCalculationScoreDrl">
           <title>A scoreDrl resource on the classpath</title>
 
-          <para>This is the easy way: the score rule live in a DRL file which is a resource on the classpath. Just add
-          your score rules <filename>*.drl</filename> file in the solver configuration:</para>
+          <para>This is the easy way: the score rule live in a DRL file which is provided as a classpath resource. Just
+          add the score rules DRL file in the solver configuration:</para>
 
           <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
     &lt;scoreDrl&gt;/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
-          <para>You can add multiple <literal>&lt;scoreDrl&gt;</literal> elements if needed, but normally 1 file
-          suffices to define all your score rules.</para>
+          <para>In a typical project (following the Maven directory structure), that DRL file would be located at
+          <literal>$PROJECT_DIR/src/main/resources/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</literal>
+          (even for a war project).</para>
 
           <note>
             <para>The <literal>&lt;scoreDrl&gt;</literal> element expects a classpath resource, as defined by
             <literal>Class.getResource(String)</literal>, it does not accept a <literal>File</literal>, nor an URL, nor
             a webapp resource.</para>
-
-            <para>In a maven build, classpath resource are located under <literal>src/main/resources</literal> by
-            default (even for a war).</para>
           </note>
+
+          <para>Add multiple <literal>&lt;scoreDrl&gt;</literal> elements if the score rules are split across multiple
+          DRL files.</para>
 
           <para>Optionally, you can also set drools configuration properties but beware of backwards compatibility
           issues:</para>
@@ -849,8 +850,8 @@
         <section xml:id="droolsScoreCalculationKieBase">
           <title>A KieBase (possibly defined by Drools Workbench)</title>
 
-          <para>If you prefer to build the <literal>KieBase</literal> yourself or if you're combining Planner with KIE
-          Workbench (formerly known as Guvnor), you can set the <literal>KieBase</literal> on the
+          <para>If you prefer to build the <literal>KieBase</literal> yourself or if you're combining OptaPlanner with
+          KIE Workbench (formerly known as Guvnor), you can set the <literal>KieBase</literal> on the
           <literal>SolverFactory</literal> before building the <literal>Solver</literal>:</para>
 
           <programlisting language="java">    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig.setKieBase(kieBase);</programlisting>

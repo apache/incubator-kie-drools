@@ -52,7 +52,8 @@
       <title>Solver configuration by XML file</title>
 
       <para>Build a <literal>Solver</literal> instance with the <literal>SolverFactory</literal>. Configure it with a
-      solver configuration XML file, provided as a classpath resource:</para>
+      solver configuration XML file, provided as a classpath resource (as definied by
+      <literal>Class.getResource()</literal>):</para>
 
       <programlisting language="java">       SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                "/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
