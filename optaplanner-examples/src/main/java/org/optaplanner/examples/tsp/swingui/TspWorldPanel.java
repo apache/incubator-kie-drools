@@ -106,14 +106,13 @@ public class TspWorldPanel extends JPanel {
             }
         }
         g.setColor(TangoColorFactory.ALUMINIUM_4);
-        for (Domicile domicile : travelingSalesmanTour.getDomicileList()) {
-            City city = domicile.getCity();
-            int x = translator.translateLongitudeToX(city.getLongitude());
-            int y = translator.translateLatitudeToY(city.getLatitude());
-            g.fillRect(x - 2, y - 2, 5, 5);
-            if (city.getName() != null) {
-                g.drawString(city.getName(), x + 3, y - 3);
-            }
+        Domicile domicile = travelingSalesmanTour.getDomicile();
+        City domicileCity = domicile.getCity();
+        int domicileX = translator.translateLongitudeToX(domicileCity.getLongitude());
+        int domicileY = translator.translateLatitudeToY(domicileCity.getLatitude());
+        g.fillRect(domicileX - 2, domicileY - 2, 5, 5);
+        if (domicileCity.getName() != null) {
+            g.drawString(domicileCity.getName(), domicileX + 3, domicileY - 3);
         }
         Set<Visit> needsBackToDomicileLineSet = new HashSet<Visit>(travelingSalesmanTour.getVisitList());
         for (Visit trailingVisit : travelingSalesmanTour.getVisitList()) {
@@ -133,11 +132,6 @@ public class TspWorldPanel extends JPanel {
                 g.drawLine(previousX, previousY, x, y);
                 // Back to domicile line
                 if (needsBackToDomicileLineSet.contains(visit)) {
-                    // TODO support more than 1 domicile
-                    Domicile domicile = travelingSalesmanTour.getDomicileList().get(0);
-                    City domicileCity = domicile.getCity();
-                    int domicileX = translator.translateLongitudeToX(domicileCity.getLongitude());
-                    int domicileY = translator.translateLatitudeToY(domicileCity.getLatitude());
                     g.drawLine(x, y,domicileX, domicileY);
                 }
             }

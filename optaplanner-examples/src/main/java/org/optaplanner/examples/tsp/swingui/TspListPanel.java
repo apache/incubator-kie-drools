@@ -60,10 +60,8 @@ public class TspListPanel extends JPanel implements Scrollable {
         headerLabel.setBackground(HEADER_COLOR);
         headerLabel.setOpaque(true);
         add(headerLabel);
-        for (Domicile domicile : travelingSalesmanTour.getDomicileList()) {
-            JLabel domicileLabel = new JLabel(domicile.getCity().getSafeName());
-            add(domicileLabel);
-        }
+        Domicile domicile = travelingSalesmanTour.getDomicile();
+        add(new JLabel(domicile.getCity().getSafeName()));
         if (travelingSalesmanTour.getVisitList().size() > 1000) {
             JLabel tooBigLabel = new JLabel("The dataset is too big to show.");
             add(tooBigLabel);
@@ -104,9 +102,7 @@ public class TspListPanel extends JPanel implements Scrollable {
             for (Standstill previousStandstill : travelingSalesmanTour.getVisitList()) {
                 previousStandstillListField.addItem(previousStandstill);
             }
-            for (Standstill previousStandstill : travelingSalesmanTour.getDomicileList()) {
-                previousStandstillListField.addItem(previousStandstill);
-            }
+            previousStandstillListField.addItem(travelingSalesmanTour.getDomicile());
             previousStandstillListField.setSelectedItem(visit.getPreviousStandstill());
             int result = JOptionPane.showConfirmDialog(TspListPanel.this.getRootPane(), previousStandstillListField,
                     "Visit " + visit.getCity().getSafeName() + " after", JOptionPane.OK_CANCEL_OPTION);

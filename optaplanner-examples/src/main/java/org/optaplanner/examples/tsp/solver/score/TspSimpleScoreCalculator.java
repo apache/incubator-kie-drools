@@ -42,12 +42,7 @@ public class TspSimpleScoreCalculator implements SimpleScoreCalculator<Traveling
                 }
             }
         }
-        // TODO support more than 1 domicile
-        if (tour.getDomicileList().size() != 1) {
-            throw new UnsupportedOperationException(
-                    "The domicileList (" + tour.getDomicileList() + ") should be a singleton.");
-        }
-        Domicile domicile = tour.getDomicileList().get(0);
+        Domicile domicile = tour.getDomicile();
         for (Visit tailVisit : tailVisitSet) {
             if (tailVisit.getPreviousStandstill() != null) {
                 score -= domicile.getCity().getDistance(tailVisit.getCity());

@@ -59,11 +59,7 @@ public class TspExporter extends AbstractTxtSolutionExporter {
             bufferedWriter.write("TYPE : TOUR\n");
             bufferedWriter.write("DIMENSION : " + tour.getCityList().size() + "\n");
             bufferedWriter.write("TOUR_SECTION\n");
-            if (tour.getDomicileList().size() != 1) {
-                throw new UnsupportedOperationException(
-                        "The domicileList (" + tour.getDomicileList() + ") should be a singleton.");
-            }
-            Standstill standstill = tour.getDomicileList().get(0);
+            Standstill standstill = tour.getDomicile();
             while (standstill != null) {
                 bufferedWriter.write(standstill.getCity().getId() + "\n");
                 standstill = findNextVisit(standstill);

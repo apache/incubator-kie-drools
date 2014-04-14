@@ -30,11 +30,7 @@ public class TspIncrementalScoreCalculator extends AbstractIncrementalScoreCalcu
     private long score;
 
     public void resetWorkingSolution(TravelingSalesmanTour tour) {
-        if (tour.getDomicileList().size() != 1) {
-            throw new UnsupportedOperationException(
-                    "The domicileList (" + tour.getDomicileList() + ") should be a singleton.");
-        }
-        domicile = tour.getDomicileList().get(0);
+        domicile = tour.getDomicile();
         score = 0L;
         for (Visit visit : tour.getVisitList()) {
             insert(visit);

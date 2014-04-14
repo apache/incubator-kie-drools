@@ -18,6 +18,7 @@ package org.optaplanner.examples.tsp.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
 
     private String name;
     private List<City> cityList;
-    private List<Domicile> domicileList;
+    private Domicile domicile;
 
     private List<Visit> visitList;
 
@@ -61,13 +62,12 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         this.cityList = cityList;
     }
 
-    @ValueRangeProvider(id = "domicileRange")
-    public List<Domicile> getDomicileList() {
-        return domicileList;
+    public Domicile getDomicile() {
+        return domicile;
     }
 
-    public void setDomicileList(List<Domicile> domicileList) {
-        this.domicileList = domicileList;
+    public void setDomicile(Domicile domicile) {
+        this.domicile = domicile;
     }
 
     @PlanningEntityCollectionProperty
@@ -92,10 +92,15 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
     // Complex methods
     // ************************************************************************
 
+    @ValueRangeProvider(id = "domicileRange")
+    public List<Domicile> getDomicileRange() {
+        return Collections.singletonList(domicile);
+    }
+
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(cityList);
-        facts.addAll(domicileList);
+        facts.add(domicile);
         // Do not add the planning entity's (visitList) because that will be done automatically
         return facts;
     }

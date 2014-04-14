@@ -26,11 +26,7 @@ import org.optaplanner.examples.tsp.domain.Visit;
 public class DomicileDistanceVisitDifficultyWeightFactory implements SelectionSorterWeightFactory<TravelingSalesmanTour, Visit> {
 
     public Comparable createSorterWeight(TravelingSalesmanTour tour, Visit visit) {
-        if (tour.getDomicileList().size() != 1) {
-            throw new UnsupportedOperationException(
-                    "The domicileList (" + tour.getDomicileList() + ") should be a singleton.");
-        }
-        Domicile domicile = tour.getDomicileList().get(0);
+        Domicile domicile = tour.getDomicile();
         long domicileDistance = visit.getDistanceTo(domicile);
         return new DomicileDistanceVisitDifficultyWeight(visit, domicileDistance);
     }

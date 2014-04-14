@@ -125,16 +125,14 @@ public class TspImporter extends AbstractTxtSolutionImporter {
 
         private void createVisitList() {
             List<City> cityList = travelingSalesmanTour.getCityList();
-            int domicileListSize = 1;
-            List<Domicile> domicileList = new ArrayList<Domicile>(domicileListSize);
-            List<Visit> visitList = new ArrayList<Visit>(cityList.size() - domicileListSize);
+            List<Visit> visitList = new ArrayList<Visit>(cityList.size() - 1);
             int count = 0;
             for (City city : cityList) {
-                if (count < domicileListSize) {
+                if (count < 1) {
                     Domicile domicile = new Domicile();
                     domicile.setId(city.getId());
                     domicile.setCity(city);
-                    domicileList.add(domicile);
+                    travelingSalesmanTour.setDomicile(domicile);
                 } else {
                     Visit visit = new Visit();
                     visit.setId(city.getId());
@@ -144,7 +142,6 @@ public class TspImporter extends AbstractTxtSolutionImporter {
                 }
                 count++;
             }
-            travelingSalesmanTour.setDomicileList(domicileList);
             travelingSalesmanTour.setVisitList(visitList);
         }
 
