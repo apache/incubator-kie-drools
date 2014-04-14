@@ -75,8 +75,7 @@ public class TspWorldPanel extends JPanel {
                 }
             }
         });
-        europaBackground = new ImageIcon(getClass().getResource(
-                "/org/optaplanner/examples/tsp/swingui/europaBackground.png"));
+        europaBackground = new ImageIcon(getClass().getResource("europaBackground.png"));
     }
 
     public void resetPanel(TravelingSalesmanTour travelingSalesmanTour) {
