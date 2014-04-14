@@ -144,7 +144,7 @@ public class TspWorldPanel extends JPanel {
         }
         // Legend
         g.setColor(TangoColorFactory.ALUMINIUM_4);
-        g.fillRect(5, (int) height - 20, 5, 5);
+        g.fillRect(5, (int) height - 15 - TEXT_SIZE, 5, 5);
         g.drawString("Domicile", 15, (int) height - 10 - TEXT_SIZE);
         g.setColor(TangoColorFactory.PLUM_2);
         g.fillRect(6, (int) height - 9, 3, 3);

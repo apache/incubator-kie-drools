@@ -17,14 +17,12 @@
 package org.optaplanner.examples.tsp.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.tsp.domain.solver.LatitudeVisitDifficultyComparator;
+import org.optaplanner.examples.tsp.domain.solver.DomicileDistanceVisitDifficultyWeightFactory;
 
-@PlanningEntity(difficultyComparatorClass = LatitudeVisitDifficultyComparator.class)
+@PlanningEntity(difficultyWeightFactoryClass = DomicileDistanceVisitDifficultyWeightFactory.class)
 @XStreamAlias("Visit")
 public class Visit extends AbstractPersistable implements Standstill {
 
