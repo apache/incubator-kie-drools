@@ -6,10 +6,16 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.optaplanner.examples.tsp.domain.TravelingSalesmanTour</xstreamAnnotatedClass>
-      <inputSolutionFile>data/tsp/unsolved/dj38.xml</inputSolutionFile>
-      <inputSolutionFile>data/tsp/unsolved/europe40.xml</inputSolutionFile>
-      <inputSolutionFile>data/tsp/unsolved/lu980.xml</inputSolutionFile>
+      <problemIOClass>org.optaplanner.examples.tsp.persistence.TspProblemIO</problemIOClass>
+      <inputSolutionFile>data/tsp/import/dj38.tsp</inputSolutionFile>
+      <inputSolutionFile>data/tsp/import/europe40.tsp</inputSolutionFile>
+      <inputSolutionFile>data/tsp/import/lu980.tsp</inputSolutionFile>
+      <!--<inputSolutionFile>data/tsp/import/coursera/assignment1.tsp</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/tsp/import/coursera/assignment2.tsp</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/tsp/import/coursera/assignment3.tsp</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/tsp/import/coursera/assignment4.tsp</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/tsp/import/coursera/assignment5.tsp</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/tsp/import/coursera/assignment6.tsp</inputSolutionFile>-->
       <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
 
@@ -19,6 +25,7 @@
 
       <scoreDirectorFactory>
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+        <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.tsp.solver.score.TspIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
         <scoreDrl>/org/optaplanner/examples/tsp/solver/tspScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
 
@@ -29,21 +36,18 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>tabuSearch</name>
+    <name>Tabu Search</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
-          <changeMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector>
             <cacheType>PHASE</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-          </changeMoveSelector>
-          <!--<swapMoveSelector>-->
-            <!--<cacheType>PHASE</cacheType>-->
-            <!--<selectionOrder>SHUFFLED</selectionOrder>-->
-          <!--</swapMoveSelector>-->
+          </swapMoveSelector>
           <subChainChangeMoveSelector>
             <subChainSelector>
               <maximumSubChainSize>40</maximumSubChainSize>
@@ -59,6 +63,38 @@
         </unionMoveSelector>
         <acceptor>
           <entityTabuSize>5</entityTabuSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>5000</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Tabu Search 2</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <!--<swapMoveSelector/>-->
+          <subChainChangeMoveSelector>
+            <subChainSelector>
+              <maximumSubChainSize>50</maximumSubChainSize>
+            </subChainSelector>
+            <selectReversingMoveToo>true</selectReversingMoveToo>
+          </subChainChangeMoveSelector>
+          <!--<subChainSwapMoveSelector>-->
+            <!--<subChainSelector>-->
+              <!--<maximumSubChainSize>50</maximumSubChainSize>-->
+            <!--</subChainSelector>-->
+            <!--<selectReversingMoveToo>true</selectReversingMoveToo>-->
+          <!--</subChainSwapMoveSelector>-->
+        </unionMoveSelector>
+        <acceptor>
+          <entityTabuSize>11</entityTabuSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>5000</acceptedCountLimit>
