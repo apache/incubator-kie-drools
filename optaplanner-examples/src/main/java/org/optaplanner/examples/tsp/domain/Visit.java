@@ -21,8 +21,9 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.tsp.domain.solver.DomicileDistanceVisitDifficultyWeightFactory;
+import org.optaplanner.examples.tsp.domain.solver.LatitudeVisitDifficultyComparator;
 
-@PlanningEntity(difficultyWeightFactoryClass = DomicileDistanceVisitDifficultyWeightFactory.class)
+@PlanningEntity(difficultyComparatorClass = LatitudeVisitDifficultyComparator.class)
 @XStreamAlias("Visit")
 public class Visit extends AbstractPersistable implements Standstill {
 
