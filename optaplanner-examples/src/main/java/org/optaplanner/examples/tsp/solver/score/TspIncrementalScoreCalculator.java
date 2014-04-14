@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.tsp.solver.score;
 
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
@@ -27,7 +27,7 @@ public class TspIncrementalScoreCalculator extends AbstractIncrementalScoreCalcu
 
     private Domicile domicile;
 
-    private int score;
+    private long score;
 
     public void resetWorkingSolution(TravelingSalesmanTour tour) {
         if (tour.getDomicileList().size() != 1) {
@@ -35,7 +35,7 @@ public class TspIncrementalScoreCalculator extends AbstractIncrementalScoreCalcu
                     "The domicileList (" + tour.getDomicileList() + ") should be a singleton.");
         }
         domicile = tour.getDomicileList().get(0);
-        score = 0;
+        score = 0L;
         for (Visit visit : tour.getVisitList()) {
             insert(visit);
         }
@@ -85,8 +85,8 @@ public class TspIncrementalScoreCalculator extends AbstractIncrementalScoreCalcu
         }
     }
 
-    public SimpleScore calculateScore() {
-        return SimpleScore.valueOf(score);
+    public SimpleLongScore calculateScore() {
+        return SimpleLongScore.valueOf(score);
     }
 
 }

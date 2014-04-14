@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
@@ -29,10 +29,10 @@ import org.optaplanner.examples.tsp.domain.Visit;
 
 public class TspSimpleScoreCalculator implements SimpleScoreCalculator<TravelingSalesmanTour> {
 
-    public SimpleScore calculateScore(TravelingSalesmanTour tour) {
+    public SimpleLongScore calculateScore(TravelingSalesmanTour tour) {
         List<Visit> visitList = tour.getVisitList();
         Set<Visit> tailVisitSet = new HashSet<Visit>(visitList);
-        int score = 0;
+        long score = 0L;
         for (Visit visit : visitList) {
             Standstill previousStandstill = visit.getPreviousStandstill();
             if (previousStandstill != null) {
@@ -53,7 +53,7 @@ public class TspSimpleScoreCalculator implements SimpleScoreCalculator<Traveling
                 score -= domicile.getCity().getDistance(tailVisit.getCity());
             }
         }
-        return SimpleScore.valueOf(score);
+        return SimpleLongScore.valueOf(score);
     }
 
 }
