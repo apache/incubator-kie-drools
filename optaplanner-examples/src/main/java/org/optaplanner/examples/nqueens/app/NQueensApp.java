@@ -86,7 +86,7 @@ public class NQueensApp extends CommonApp {
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDirectorFactoryConfig.ScoreDefinitionType.SIMPLE);
         scoreDirectorFactoryConfig.setScoreDrlList(
-                Arrays.asList("/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl"));
+                Arrays.asList("org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl"));
         solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
 
         TerminationConfig terminationConfig = new TerminationConfig();

@@ -6,7 +6,7 @@
 
   <scoreDirectorFactory>
     <scoreDefinitionType>SIMPLE</scoreDefinitionType>
-    <scoreDrl>/org/optaplanner/examples/manners2009/solver/manners2009ScoreRules.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/manners2009/solver/manners2009ScoreRules.drl</scoreDrl>
   </scoreDirectorFactory>
 
   <termination>

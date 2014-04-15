@@ -28,7 +28,7 @@
       <planningEntityClass>org.optaplanner.examples.pas.domain.BedDesignation</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_MEDIUM_SOFT</scoreDefinitionType>
-        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleScoreRules.drl</scoreDrl>
+        <scoreDrl>org/optaplanner/examples/pas/solver/patientAdmissionScheduleScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
         <secondsSpentLimit>300</secondsSpentLimit>

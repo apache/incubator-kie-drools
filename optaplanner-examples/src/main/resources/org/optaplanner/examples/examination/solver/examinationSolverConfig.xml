@@ -7,7 +7,7 @@
 
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
-    <scoreDrl>/org/optaplanner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>s
   </scoreDirectorFactory>
 

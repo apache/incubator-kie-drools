@@ -820,7 +820,7 @@
 
           <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
-    &lt;scoreDrl&gt;/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
+    &lt;scoreDrl&gt;org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
           <para>In a typical project (following the Maven directory structure), that DRL file would be located at
@@ -829,8 +829,8 @@
 
           <note>
             <para>The <literal>&lt;scoreDrl&gt;</literal> element expects a classpath resource, as defined by
-            <literal>Class.getResource(String)</literal>, it does not accept a <literal>File</literal>, nor an URL, nor
-            a webapp resource. See below to use a <literal>File</literal> instead.</para>
+            <literal>ClassLoader.getResource(String)</literal>, it does not accept a <literal>File</literal>, nor an
+            URL, nor a webapp resource. See below to use a <literal>File</literal> instead.</para>
           </note>
 
           <para>Add multiple <literal>&lt;scoreDrl&gt;</literal> elements if the score rules are split across multiple
@@ -841,7 +841,7 @@
 
           <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     ...
-    &lt;scoreDrl&gt;/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
+    &lt;scoreDrl&gt;org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
     &lt;kieBaseConfigurationProperties&gt;
       &lt;drools.equalityBehavior&gt;...&lt;/drools.equalityBehavior&gt;
     &lt;/kieBaseConfigurationProperties&gt;
@@ -1092,7 +1092,7 @@ end</programlisting>
   ...
   &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
-    &lt;scoreDrl&gt;/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
+    &lt;scoreDrl&gt;org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
     &lt;assertionScoreDirectorFactory&gt;
       &lt;simpleScoreCalculatorClass&gt;org.optaplanner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
     &lt;/assertionScoreDirectorFactory&gt;

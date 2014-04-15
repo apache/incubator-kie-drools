@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -343,25 +344,27 @@ public class ScoreDirectorFactoryConfig {
             KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
             if (!ConfigUtils.isEmptyCollection(scoreDrlList)) {
                 for (String scoreDrl : scoreDrlList) {
-                    InputStream scoreDrlIn = getClass().getResourceAsStream(scoreDrl);
-                    if (scoreDrlIn == null) {
-                        throw new IllegalArgumentException("The scoreDrl (" + scoreDrl
-                                + ") does not exist as a classpath resource."
-                                + "Note that nor a file, nor a URL, nor a webapp resource are a valid classpath resource.");
+                    if (scoreDrl == null) {
+                        throw new IllegalArgumentException("The scoreDrl (" + scoreDrl + ") cannot be null.");
                     }
-                    String path = "src/main/resources/optaplanner-kie-namespace/" + scoreDrl;
-                    kieFileSystem.write(path, kieResources.newInputStreamResource(scoreDrlIn, "UTF-8"));
-                    // TODO use getResource() and newClassPathResource() instead
-                    // URL scoreDrlURL = getClass().getResource(scoreDrl);
-                    // if (scoreDrlURL == null) {
-                    //     throw new IllegalArgumentException("The scoreDrl (" + scoreDrl
-                    //             + ") does not exist as a classpath resource.");
-                    // }
-                    // kieFileSystem.write(kieResources.newClassPathResource(scoreDrl, "UTF-8"));
+                    URL scoreDrlURL = getClass().getClassLoader().getResource(scoreDrl);
+                    if (scoreDrlURL == null) {
+                        String errorMessage = "The scoreDrl (" + scoreDrl + ") does not exist as a classpath resource.";
+                        if (scoreDrl.startsWith("/")) {
+                            errorMessage += "\nAs from 6.1, a classpath resource should not start with a slash (/)."
+                                    + " A scoreDrl now adheres to ClassLoader.getResource(String)."
+                                    + " Remove the leading slash from the scoreDrl if you're upgrading from 6.0.";
+                        }
+                        throw new IllegalArgumentException(errorMessage);
+                    }
+                    kieFileSystem.write(kieResources.newClassPathResource(scoreDrl, "UTF-8"));
                 }
             }
             if (!ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
                 for (File scoreDrlFile : scoreDrlFileList) {
+                    if (scoreDrlFile == null) {
+                        throw new IllegalArgumentException("The scoreDrlFile (" + scoreDrlFile + ") cannot be null.");
+                    }
                     InputStream scoreDrlIn = null;
                     try {
                         scoreDrlIn = new FileInputStream(scoreDrlFile);

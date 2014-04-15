@@ -3717,12 +3717,13 @@ From 6.0.0.Final to 6.1.0.Beta1
 [README] As promised, starting from OptaPlanner 6.1.0.Final, there will be a public API,
 which will be backwards compatible in later versions (such as 6.2, 6.3, etc).
 The public API are all classes in the package org.optaplanner.core.api (or subpackages thereof).
-For more information, see the documentation.
+For more information, see the documentation, chapter "Status of OptaPlanner".
+Bear with us: this should be the last time we require you to do a large number of migrations during upgrading.
 
-[MINOR] Simulated Annealing now uses the time gradient of the current step instead of the time gradient of the last step.
+[IMPL_DETAIL] Simulated Annealing now uses the time gradient of the current step instead of the time gradient of the last step.
 The impact of this change is negligible.
 
-[MINOR] On AbstractScore, the methods parseLevelStrings(...) and buildScorePattern(...) have been changed from public to protected.
+[IMPL_DETAIL] On AbstractScore, the methods parseLevelStrings(...) and buildScorePattern(...) have been changed from public to protected.
 It's highly unlikely that this affects your code.
 
 [RECOMMENDED] If you have @ValueRangeProvider that returns a collection of numbers (for example List<Integer> or List<BigDecimal>),
@@ -4103,7 +4104,7 @@ After in *.java:
     PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(...);
 Note: If you used the method addXstreamAnnotations(), take a look at the non-public API class XStreamXmlPlannerBenchmarkFactory.
 
-[MAJOR] Benchmarker: The class FreemarkerXmlPlannerBenchmarkFactory has been removed
+[MINOR] Benchmarker: The class FreemarkerXmlPlannerBenchmarkFactory has been removed
 and replaced by static methods on PlannerBenchmarkFactory.
 Before in *.java:
     PlannerBenchmarkFactory plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory(...);
@@ -4122,3 +4123,14 @@ After in *BenchmarkConfig.xml:
       <xStreamAnnotatedClass>org.optaplanner.examples.nqueens.domain.NQueens</xStreamAnnotatedClass>
       ...
     </problemBenchmarks>
+
+[README] All classpath resources must lose their leading slash,
+because OptaPlanner now expects them to adhere to ClassLoader.getResource(String) instead of Class.getResource(String).
+
+[MAJOR] All elements <scoreDrl> must lose their leading slash,
+because it now adheres to ClassLoader.getResource(String) instead of Class.getResource(String).
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <scoreDrl>/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
+

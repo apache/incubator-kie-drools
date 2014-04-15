@@ -26,7 +26,7 @@
       <scoreDirectorFactory>
         <scoreDefinitionType>SIMPLE_LONG</scoreDefinitionType>
         <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.tsp.solver.score.TspIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
-        <scoreDrl>/org/optaplanner/examples/tsp/solver/tspScoreRules.drl</scoreDrl>
+        <scoreDrl>org/optaplanner/examples/tsp/solver/tspScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
 
       <termination>

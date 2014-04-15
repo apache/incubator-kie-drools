@@ -78,7 +78,7 @@
   &lt;!-- Define the score function --&gt;
   &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
-    &lt;scoreDrl&gt;/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
+    &lt;scoreDrl&gt;org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
   &lt;/scoreDirectorFactory&gt;
 
   &lt;!-- Configure the optimization algorithm(s) --&gt;
