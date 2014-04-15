@@ -36,7 +36,7 @@ public class VrpWebAction {
         terminateEarly(session);
 
         SolverFactory solverFactory = SolverFactory.createFromXmlResource(
-                "/org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingSolverConfig.xml");
+                "org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
         session.setAttribute(VrpSessionAttributeName.SOLVER, solver);
 

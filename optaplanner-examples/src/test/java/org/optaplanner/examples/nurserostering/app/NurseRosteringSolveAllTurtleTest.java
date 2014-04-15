@@ -37,7 +37,7 @@ public class NurseRosteringSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleT
 
     @Override
     protected String createSolverConfigResource() {
-        return "/org/optaplanner/examples/nurserostering/solver/nurseRosteringSolverConfig.xml";
+        return "org/optaplanner/examples/nurserostering/solver/nurseRosteringSolverConfig.xml";
     }
 
     @Override

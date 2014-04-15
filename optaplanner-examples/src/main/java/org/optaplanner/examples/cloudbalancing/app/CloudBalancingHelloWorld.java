@@ -28,7 +28,7 @@ public class CloudBalancingHelloWorld {
     public static void main(String[] args) {
         // Build the Solver
         SolverFactory solverFactory = SolverFactory.createFromXmlResource(
-                "/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
+                "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
 
         // Load a problem with 400 computers and 1200 processes

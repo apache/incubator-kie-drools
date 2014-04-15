@@ -31,7 +31,7 @@ import org.optaplanner.examples.pas.swingui.PatientAdmissionSchedulePanel;
 public class PatientAdmissionScheduleApp extends CommonApp {
 
     public static final String SOLVER_CONFIG
-            = "/org/optaplanner/examples/pas/solver/patientAdmissionScheduleSolverConfig.xml";
+            = "org/optaplanner/examples/pas/solver/patientAdmissionScheduleSolverConfig.xml";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();

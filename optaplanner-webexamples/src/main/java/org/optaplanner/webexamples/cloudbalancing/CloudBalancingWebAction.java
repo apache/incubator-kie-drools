@@ -37,7 +37,7 @@ public class CloudBalancingWebAction {
         terminateEarly(session);
 
         SolverFactory solverFactory = SolverFactory.createFromXmlResource(
-                "/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
+                "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
         session.setAttribute(CloudBalancingSessionAttributeName.SOLVER, solver);
 

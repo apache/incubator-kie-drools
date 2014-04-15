@@ -35,7 +35,8 @@ public abstract class SolverFactory {
     // ************************************************************************
 
     /**
-     * @param solverConfigResource never null, a classpath resource, as defined by {@link Class#getResource(String)}
+     * @param solverConfigResource never null, a classpath resource
+     * as defined by {@link ClassLoader#getResource(String)}
      * @return never null
      */
     public static SolverFactory createFromXmlResource(String solverConfigResource) {

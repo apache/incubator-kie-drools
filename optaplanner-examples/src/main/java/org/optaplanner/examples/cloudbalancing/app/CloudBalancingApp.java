@@ -27,7 +27,7 @@ import org.optaplanner.examples.common.swingui.SolutionPanel;
 public class CloudBalancingApp extends CommonApp {
 
     public static final String SOLVER_CONFIG
-            = "/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml";
+            = "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();

@@ -55,7 +55,7 @@
       Configure it with a benchmark configuration XML file, provided as a classpath resource:</para>
 
       <programlisting language="java">        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
-                "/org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml");
+                "org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml");
         PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark();
         plannerBenchmark.benchmark();</programlisting>
 
@@ -788,7 +788,7 @@
       <para>And build it with the class <literal>PlannerBenchmarkFactory</literal>:</para>
 
       <programlisting language="java">        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(
-                "/org/optaplanner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfigTemplate.xml.ftl");
+                "org/optaplanner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfigTemplate.xml.ftl");
         PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark();</programlisting>
     </section>
 
@@ -826,7 +826,7 @@
 
       <programlisting language="java">    public static void main(String[] args) {
         PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
-                "/org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml");
+                "org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml");
         BenchmarkAggregatorFrame.createAndDisplay(plannerBenchmarkFactory);
     }</programlisting>
 

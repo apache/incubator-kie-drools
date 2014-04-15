@@ -27,13 +27,13 @@ public class MachineReassignmentBenchmarkApp extends CommonBenchmarkApp {
     public MachineReassignmentBenchmarkApp() {
         super(
                 new ArgOption("default",
-                        "/org/optaplanner/examples/machinereassignment/benchmark/machineReassignmentBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/machinereassignment/benchmark/machineReassignmentBenchmarkConfig.xml"),
                 new ArgOption("stepLimit",
-                        "/org/optaplanner/examples/machinereassignment/benchmark/machineReassignmentStepLimitBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/machinereassignment/benchmark/machineReassignmentStepLimitBenchmarkConfig.xml"),
                 new ArgOption("scoreDirector",
-                        "/org/optaplanner/examples/machinereassignment/benchmark/machineReassignmentScoreDirectorBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/machinereassignment/benchmark/machineReassignmentScoreDirectorBenchmarkConfig.xml"),
                 new ArgOption("template",
-                        "/org/optaplanner/examples/machinereassignment/benchmark/machineReassignmentBenchmarkConfigTemplate.xml.ftl", true)
+                        "org/optaplanner/examples/machinereassignment/benchmark/machineReassignmentBenchmarkConfigTemplate.xml.ftl", true)
         );
     }
 

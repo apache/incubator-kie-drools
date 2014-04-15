@@ -37,7 +37,7 @@ public class CurriculumCourseSolveAllTurtleTest extends UnsolvedDirSolveAllTurtl
 
     @Override
     protected String createSolverConfigResource() {
-        return "/org/optaplanner/examples/curriculumcourse/solver/curriculumCourseSolverConfig.xml";
+        return "org/optaplanner/examples/curriculumcourse/solver/curriculumCourseSolverConfig.xml";
     }
 
     @Override

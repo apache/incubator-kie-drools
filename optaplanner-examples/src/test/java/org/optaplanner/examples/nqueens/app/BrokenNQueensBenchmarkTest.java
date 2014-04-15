@@ -29,7 +29,7 @@ public class BrokenNQueensBenchmarkTest extends PlannerBenchmarkTest {
 
     @Override
     protected String createBenchmarkConfigResource() {
-        return "/org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml";
+        return "org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml";
     }
 
     @Override

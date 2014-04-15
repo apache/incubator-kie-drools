@@ -29,7 +29,7 @@ import org.optaplanner.examples.manners2009.swingui.Manners2009Panel;
 public class Manners2009App extends CommonApp {
 
     public static final String SOLVER_CONFIG
-            = "/org/optaplanner/examples/manners2009/solver/manners2009SolverConfig.xml";
+            = "org/optaplanner/examples/manners2009/solver/manners2009SolverConfig.xml";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();

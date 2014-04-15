@@ -27,11 +27,11 @@ public class NQueensBenchmarkApp extends CommonBenchmarkApp {
     public NQueensBenchmarkApp() {
         super(
                 new ArgOption("default",
-                        "/org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml"),
                 new ArgOption("stepLimit",
-                        "/org/optaplanner/examples/nqueens/benchmark/nqueensStepLimitBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/nqueens/benchmark/nqueensStepLimitBenchmarkConfig.xml"),
                 new ArgOption("scoreDirector",
-                        "/org/optaplanner/examples/nqueens/benchmark/nqueensScoreDirectorBenchmarkConfig.xml")
+                        "org/optaplanner/examples/nqueens/benchmark/nqueensScoreDirectorBenchmarkConfig.xml")
         );
     }
 

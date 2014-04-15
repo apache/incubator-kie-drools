@@ -31,7 +31,7 @@ import org.optaplanner.examples.machinereassignment.swingui.MachineReassignmentP
 public class MachineReassignmentApp extends CommonApp {
 
     public static final String SOLVER_CONFIG
-            = "/org/optaplanner/examples/machinereassignment/solver/machineReassignmentSolverConfig.xml";
+            = "org/optaplanner/examples/machinereassignment/solver/machineReassignmentSolverConfig.xml";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();

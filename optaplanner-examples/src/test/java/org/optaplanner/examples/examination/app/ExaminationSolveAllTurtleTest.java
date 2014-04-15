@@ -37,7 +37,7 @@ public class ExaminationSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest
 
     @Override
     protected String createSolverConfigResource() {
-        return "/org/optaplanner/examples/examination/solver/examinationSolverConfig.xml";
+        return "org/optaplanner/examples/examination/solver/examinationSolverConfig.xml";
     }
 
     @Override

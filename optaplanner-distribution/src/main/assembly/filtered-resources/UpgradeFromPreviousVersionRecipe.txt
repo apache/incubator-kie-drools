@@ -4127,10 +4127,33 @@ After in *BenchmarkConfig.xml:
 [README] All classpath resources must lose their leading slash,
 because OptaPlanner now expects them to adhere to ClassLoader.getResource(String) instead of Class.getResource(String).
 
-[MAJOR] All elements <scoreDrl> must lose their leading slash,
-because it now adheres to ClassLoader.getResource(String) instead of Class.getResource(String).
+[MAJOR] The SolverFactory.createFromXmlResource(String) parameter must lose its leading slash.
+Before in *.java:
+    ... = SolverFactory.createFromXmlResource(
+            "/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
+After in *.java:
+    ... = SolverFactory.createFromXmlResource(
+            "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
+
+[MAJOR] All elements <scoreDrl> must lose their leading slash.
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
     <scoreDrl>/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
     <scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
+
+[MAJOR] The PlannerBenchmarkFactory.createFromXmlResource(String) parameter must lose its leading slash.
+Before in *.java:
+    ... = PlannerBenchmarkFactory.createFromXmlResource(
+            "/org/optaplanner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfig.xml");
+After in *.java:
+    ... = PlannerBenchmarkFactory.createFromXmlResource(
+            "org/optaplanner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfig.xml");
+
+[MAJOR] The PlannerBenchmarkFactory.createFromFreemarkerXmlResource(String) parameter must lose its leading slash.
+Before in *.java:
+    ... = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(
+            "/org/optaplanner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfigTemplate.xml.ftl");
+After in *.java:
+    ... = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(
+            "org/optaplanner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfigTemplate.xml.ftl");
 

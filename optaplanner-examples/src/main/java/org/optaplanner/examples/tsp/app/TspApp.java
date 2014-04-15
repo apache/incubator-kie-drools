@@ -31,7 +31,7 @@ import org.optaplanner.examples.tsp.swingui.TspPanel;
 public class TspApp extends CommonApp {
 
     public static final String SOLVER_CONFIG
-            = "/org/optaplanner/examples/tsp/solver/tspSolverConfig.xml";
+            = "org/optaplanner/examples/tsp/solver/tspSolverConfig.xml";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();

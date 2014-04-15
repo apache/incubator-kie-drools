@@ -42,7 +42,7 @@ public class VehicleRoutingSolveAllTurtleTest extends ImportDirSolveAllTurtleTes
 
     @Override
     protected String createSolverConfigResource() {
-        return "/org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingSolverConfig.xml";
+        return "org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingSolverConfig.xml";
     }
 
     @Override

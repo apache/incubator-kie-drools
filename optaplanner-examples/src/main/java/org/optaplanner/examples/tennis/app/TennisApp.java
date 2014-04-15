@@ -27,7 +27,7 @@ import org.optaplanner.examples.tennis.swingui.TennisPanel;
 public class TennisApp extends CommonApp {
 
     public static final String SOLVER_CONFIG
-            = "/org/optaplanner/examples/tennis/solver/tennisSolverConfig.xml";
+            = "org/optaplanner/examples/tennis/solver/tennisSolverConfig.xml";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();

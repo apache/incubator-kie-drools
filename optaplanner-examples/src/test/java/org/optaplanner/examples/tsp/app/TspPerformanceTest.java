@@ -28,7 +28,7 @@ public class TspPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected String createSolverConfigResource() {
-        return "/org/optaplanner/examples/tsp/solver/tspSolverConfig.xml";
+        return "org/optaplanner/examples/tsp/solver/tspSolverConfig.xml";
     }
 
     @Override

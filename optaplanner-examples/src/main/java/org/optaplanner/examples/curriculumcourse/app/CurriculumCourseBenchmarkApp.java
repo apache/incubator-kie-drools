@@ -27,11 +27,11 @@ public class CurriculumCourseBenchmarkApp extends CommonBenchmarkApp {
     public CurriculumCourseBenchmarkApp() {
         super(
                 new ArgOption("default",
-                        "/org/optaplanner/examples/curriculumcourse/benchmark/curriculumCourseBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/curriculumcourse/benchmark/curriculumCourseBenchmarkConfig.xml"),
                 new ArgOption("stepLimit",
-                        "/org/optaplanner/examples/curriculumcourse/benchmark/curriculumCourseStepLimitBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/curriculumcourse/benchmark/curriculumCourseStepLimitBenchmarkConfig.xml"),
                 new ArgOption("template",
-                        "/org/optaplanner/examples/curriculumcourse/benchmark/curriculumCourseBenchmarkConfigTemplate.xml.ftl", true)
+                        "org/optaplanner/examples/curriculumcourse/benchmark/curriculumCourseBenchmarkConfigTemplate.xml.ftl", true)
         );
     }
 

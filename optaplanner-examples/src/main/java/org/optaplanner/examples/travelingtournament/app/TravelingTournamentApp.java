@@ -31,7 +31,7 @@ import org.optaplanner.examples.travelingtournament.swingui.TravelingTournamentP
 public class TravelingTournamentApp extends CommonApp {
 
     public static final String SOLVER_CONFIG
-            = "/org/optaplanner/examples/travelingtournament/solver/travelingTournamentSolverConfig.xml";
+            = "org/optaplanner/examples/travelingtournament/solver/travelingTournamentSolverConfig.xml";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();

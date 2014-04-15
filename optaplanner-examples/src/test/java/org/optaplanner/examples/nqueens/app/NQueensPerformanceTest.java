@@ -28,7 +28,7 @@ public class NQueensPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected String createSolverConfigResource() {
-        return "/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml";
+        return "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml";
     }
 
     @Override

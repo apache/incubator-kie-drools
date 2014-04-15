@@ -62,14 +62,21 @@ public class XStreamXmlSolverFactory extends SolverFactory {
     // ************************************************************************
 
     /**
-     * @param solverConfigResource a classpath resource, as defined by {@link Class#getResource(String)}
+     * @param solverConfigResource never null, a classpath resource
+     * as defined by {@link ClassLoader#getResource(String)}
      * @return this
      */
     public XStreamXmlSolverFactory configure(String solverConfigResource) {
-        InputStream in = getClass().getResourceAsStream(solverConfigResource);
+        InputStream in = getClass().getClassLoader().getResourceAsStream(solverConfigResource);
         if (in == null) {
-            throw new IllegalArgumentException("The solverConfigResource (" + solverConfigResource
-                    + ") does not exist in the classpath.");
+            String errorMessage = "The solverConfigResource (" + solverConfigResource
+                    + ") does not exist in the classpath.";
+            if (solverConfigResource.startsWith("/")) {
+                errorMessage += "\nAs from 6.1, a classpath resource should not start with a slash (/)."
+                        + " A solverConfigResource now adheres to ClassLoader.getResource(String)."
+                        + " Remove the leading slash from the solverConfigResource if you're upgrading from 6.0.";
+            }
+            throw new IllegalArgumentException(errorMessage);
         }
         try {
             return configure(in);

@@ -31,7 +31,7 @@ import org.optaplanner.examples.nurserostering.swingui.NurseRosteringPanel;
 public class NurseRosteringApp extends CommonApp {
 
     public static final String SOLVER_CONFIG
-            = "/org/optaplanner/examples/nurserostering/solver/nurseRosteringSolverConfig.xml";
+            = "org/optaplanner/examples/nurserostering/solver/nurseRosteringSolverConfig.xml";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();

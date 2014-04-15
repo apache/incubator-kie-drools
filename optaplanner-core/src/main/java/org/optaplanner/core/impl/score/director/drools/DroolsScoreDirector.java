@@ -182,7 +182,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     }
 
 
-        // ************************************************************************
+    // ************************************************************************
     // Problem fact add/change/remove methods
     // ************************************************************************
 

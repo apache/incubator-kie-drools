@@ -29,7 +29,7 @@ import org.optaplanner.examples.vehiclerouting.swingui.VehicleRoutingPanel;
 public class VehicleRoutingApp extends CommonApp {
 
     public static final String SOLVER_CONFIG
-            = "/org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingSolverConfig.xml";
+            = "org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingSolverConfig.xml";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();

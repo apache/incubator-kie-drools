@@ -31,7 +31,7 @@ import org.optaplanner.examples.curriculumcourse.swingui.CurriculumCoursePanel;
 public class CurriculumCourseApp extends CommonApp {
 
     public static final String SOLVER_CONFIG
-            = "/org/optaplanner/examples/curriculumcourse/solver/curriculumCourseSolverConfig.xml";
+            = "org/optaplanner/examples/curriculumcourse/solver/curriculumCourseSolverConfig.xml";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();

@@ -43,7 +43,7 @@ import org.optaplanner.examples.nqueens.swingui.NQueensPanel;
 public class NQueensApp extends CommonApp {
 
     public static final String SOLVER_CONFIG
-            = "/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml";
+            = "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();

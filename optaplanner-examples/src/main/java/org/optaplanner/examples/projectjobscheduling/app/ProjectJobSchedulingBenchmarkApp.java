@@ -27,7 +27,7 @@ public class ProjectJobSchedulingBenchmarkApp extends CommonBenchmarkApp {
     public ProjectJobSchedulingBenchmarkApp() {
         super(
                 new ArgOption("template",
-                        "/org/optaplanner/examples/projectjobscheduling/benchmark/projectJobSchedulingBenchmarkConfigTemplate.xml.ftl", true)
+                        "org/optaplanner/examples/projectjobscheduling/benchmark/projectJobSchedulingBenchmarkConfigTemplate.xml.ftl", true)
         );
     }
 

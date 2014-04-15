@@ -36,7 +36,8 @@ public abstract class PlannerBenchmarkFactory {
     // ************************************************************************
 
     /**
-     * @param benchmarkConfigResource never null, a classpath resource, as defined by {@link Class#getResource(String)}
+     * @param benchmarkConfigResource never null, a classpath resource
+     * as defined by {@link ClassLoader#getResource(String)}
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromXmlResource(String benchmarkConfigResource) {
@@ -80,7 +81,7 @@ public abstract class PlannerBenchmarkFactory {
     // ************************************************************************
 
     /**
-     * @param templateResource never null, a classpath resource, as defined by {@link Class#getResource(String)}
+     * @param templateResource never null, a classpath resource as defined by {@link ClassLoader#getResource(String)}
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromFreemarkerXmlResource(String templateResource) {
@@ -88,7 +89,7 @@ public abstract class PlannerBenchmarkFactory {
     }
 
     /**
-     * @param templateResource never null, a classpath resource, as defined by {@link Class#getResource(String)}
+     * @param templateResource never null, a classpath resource as defined by {@link ClassLoader#getResource(String)}
      * @param model sometimes null
      * @return never null
      */

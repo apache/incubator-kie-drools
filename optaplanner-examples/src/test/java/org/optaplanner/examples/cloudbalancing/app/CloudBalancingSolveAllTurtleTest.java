@@ -39,7 +39,7 @@ public class CloudBalancingSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleT
 
     @Override
     protected String createSolverConfigResource() {
-        return "/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml";
+        return "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml";
     }
 
     @Override

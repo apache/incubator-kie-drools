@@ -36,7 +36,7 @@ import org.optaplanner.examples.examination.swingui.ExaminationPanel;
 public class ExaminationApp extends CommonApp {
 
     public static final String SOLVER_CONFIG
-            = "/org/optaplanner/examples/examination/solver/examinationSolverConfig.xml";
+            = "org/optaplanner/examples/examination/solver/examinationSolverConfig.xml";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();

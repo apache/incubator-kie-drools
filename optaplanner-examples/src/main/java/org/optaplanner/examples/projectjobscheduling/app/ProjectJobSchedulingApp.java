@@ -29,7 +29,7 @@ import org.optaplanner.examples.projectjobscheduling.swingui.ProjectJobSchedulin
 public class ProjectJobSchedulingApp extends CommonApp {
 
     public static final String SOLVER_CONFIG
-            = "/org/optaplanner/examples/projectjobscheduling/solver/projectJobSchedulingSolverConfig.xml";
+            = "org/optaplanner/examples/projectjobscheduling/solver/projectJobSchedulingSolverConfig.xml";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();

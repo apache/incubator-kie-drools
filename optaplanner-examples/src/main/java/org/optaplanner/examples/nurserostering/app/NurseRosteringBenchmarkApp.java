@@ -27,13 +27,13 @@ public class NurseRosteringBenchmarkApp extends CommonBenchmarkApp {
     public NurseRosteringBenchmarkApp() {
         super(
                 new ArgOption("sprint",
-                        "/org/optaplanner/examples/nurserostering/benchmark/nurseRosteringSprintBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/nurserostering/benchmark/nurseRosteringSprintBenchmarkConfig.xml"),
                 new ArgOption("medium",
-                        "/org/optaplanner/examples/nurserostering/benchmark/nurseRosteringMediumBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/nurserostering/benchmark/nurseRosteringMediumBenchmarkConfig.xml"),
                 new ArgOption("long",
-                        "/org/optaplanner/examples/nurserostering/benchmark/nurseRosteringLongBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/nurserostering/benchmark/nurseRosteringLongBenchmarkConfig.xml"),
                 new ArgOption("stepLimit",
-                        "/org/optaplanner/examples/nurserostering/benchmark/nurseRosteringStepLimitBenchmarkConfig.xml")
+                        "org/optaplanner/examples/nurserostering/benchmark/nurseRosteringStepLimitBenchmarkConfig.xml")
         );
     }
 
