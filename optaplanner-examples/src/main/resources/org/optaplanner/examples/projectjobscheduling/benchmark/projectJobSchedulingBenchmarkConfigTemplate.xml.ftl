@@ -6,7 +6,7 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.optaplanner.examples.projectjobscheduling.domain.Schedule</xstreamAnnotatedClass>
+      <xStreamAnnotatedClass>org.optaplanner.examples.projectjobscheduling.domain.Schedule</xStreamAnnotatedClass>
       <inputSolutionFile>data/projectjobscheduling/unsolved/A-1.xml</inputSolutionFile>
       <inputSolutionFile>data/projectjobscheduling/unsolved/A-2.xml</inputSolutionFile>
       <inputSolutionFile>data/projectjobscheduling/unsolved/A-3.xml</inputSolutionFile>

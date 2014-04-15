@@ -4109,3 +4109,16 @@ Before in *.java:
     PlannerBenchmarkFactory plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory(...);
 After in *.java:
     PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(...);
+
+[MAJOR] Benchmarker configuration: the element <xstreamAnnotatedClass> has been renamed to <xStreamAnnotatedClass>.
+Before in *BenchmarkConfig.xml:
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.optaplanner.examples.nqueens.domain.NQueens</xstreamAnnotatedClass>
+      ...
+    </problemBenchmarks>
+</plannerBenchmark>
+After in *BenchmarkConfig.xml:
+    <problemBenchmarks>
+      <xStreamAnnotatedClass>org.optaplanner.examples.nqueens.domain.NQueens</xStreamAnnotatedClass>
+      ...
+    </problemBenchmarks>

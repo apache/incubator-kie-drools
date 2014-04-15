@@ -27,9 +27,9 @@ public abstract class XStreamSolutionDao extends AbstractSolutionDao {
 
     protected XStreamProblemIO xStreamProblemIO;
 
-    public XStreamSolutionDao(String dirName, Class... xstreamAnnotations) {
+    public XStreamSolutionDao(String dirName, Class... xStreamAnnotations) {
         super(dirName);
-        xStreamProblemIO = new XStreamProblemIO(xstreamAnnotations);
+        xStreamProblemIO = new XStreamProblemIO(xStreamAnnotations);
     }
 
     public String getFileExtension() {

@@ -29,7 +29,6 @@ import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.solution.ProblemIO;
 import org.optaplanner.persistence.xstream.XStreamProblemIO;
@@ -38,8 +37,8 @@ import org.optaplanner.persistence.xstream.XStreamProblemIO;
 public class ProblemBenchmarksConfig {
 
     private Class<ProblemIO> problemIOClass = null;
-    @XStreamImplicit(itemFieldName = "xstreamAnnotatedClass")
-    private List<Class> xstreamAnnotatedClassList = null;
+    @XStreamImplicit(itemFieldName = "xStreamAnnotatedClass")
+    private List<Class> xStreamAnnotatedClassList = null;
     private Boolean writeOutputSolutionEnabled = null;
 
     @XStreamImplicit(itemFieldName = "inputSolutionFile")
@@ -56,12 +55,12 @@ public class ProblemBenchmarksConfig {
         this.problemIOClass = problemIOClass;
     }
 
-    public List<Class> getXstreamAnnotatedClassList() {
-        return xstreamAnnotatedClassList;
+    public List<Class> getXStreamAnnotatedClassList() {
+        return xStreamAnnotatedClassList;
     }
 
-    public void setXstreamAnnotatedClassList(List<Class> xstreamAnnotatedClassList) {
-        this.xstreamAnnotatedClassList = xstreamAnnotatedClassList;
+    public void setXStreamAnnotatedClassList(List<Class> xStreamAnnotatedClassList) {
+        this.xStreamAnnotatedClassList = xStreamAnnotatedClassList;
     }
 
     public Boolean getWriteOutputSolutionEnabled() {
@@ -128,20 +127,20 @@ public class ProblemBenchmarksConfig {
     }
 
     private ProblemIO buildProblemIO() {
-        if (problemIOClass != null && xstreamAnnotatedClassList != null) {
+        if (problemIOClass != null && xStreamAnnotatedClassList != null) {
             throw new IllegalArgumentException("Cannot use problemIOClass (" + problemIOClass
-                    + ") and xstreamAnnotatedClassList (" + xstreamAnnotatedClassList + ") together.");
+                    + ") and xStreamAnnotatedClassList (" + xStreamAnnotatedClassList + ") together.");
         }
         if (problemIOClass != null) {
             return ConfigUtils.newInstance(this, "problemIOClass", problemIOClass);
         } else {
-            Class[] xstreamAnnotatedClasses;
-            if (xstreamAnnotatedClassList != null) {
-                xstreamAnnotatedClasses = xstreamAnnotatedClassList.toArray(new Class[xstreamAnnotatedClassList.size()]);
+            Class[] xStreamAnnotatedClasses;
+            if (xStreamAnnotatedClassList != null) {
+                xStreamAnnotatedClasses = xStreamAnnotatedClassList.toArray(new Class[xStreamAnnotatedClassList.size()]);
             } else {
-                xstreamAnnotatedClasses = new Class[0];
+                xStreamAnnotatedClasses = new Class[0];
             }
-            return new XStreamProblemIO(xstreamAnnotatedClasses);
+            return new XStreamProblemIO(xStreamAnnotatedClasses);
         }
     }
 
@@ -177,8 +176,8 @@ public class ProblemBenchmarksConfig {
     public void inherit(ProblemBenchmarksConfig inheritedConfig) {
         problemIOClass = ConfigUtils.inheritOverwritableProperty(problemIOClass,
                 inheritedConfig.getProblemIOClass());
-        xstreamAnnotatedClassList = ConfigUtils.inheritMergeableListProperty(xstreamAnnotatedClassList,
-                inheritedConfig.getXstreamAnnotatedClassList());
+        xStreamAnnotatedClassList = ConfigUtils.inheritMergeableListProperty(xStreamAnnotatedClassList,
+                inheritedConfig.getXStreamAnnotatedClassList());
         writeOutputSolutionEnabled = ConfigUtils.inheritOverwritableProperty(writeOutputSolutionEnabled,
                 inheritedConfig.getWriteOutputSolutionEnabled());
         inputSolutionFileList = ConfigUtils.inheritMergeableListProperty(inputSolutionFileList,

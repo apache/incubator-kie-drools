@@ -40,9 +40,9 @@ public class XStreamProblemIO implements ProblemIO {
         xStream.setMode(XStream.ID_REFERENCES);
     }
 
-    public XStreamProblemIO(Class... xstreamAnnotatedClasses) {
+    public XStreamProblemIO(Class... xStreamAnnotatedClasses) {
         this();
-        xStream.processAnnotations(xstreamAnnotatedClasses);
+        xStream.processAnnotations(xStreamAnnotatedClasses);
     }
 
     public String getFileExtension() {

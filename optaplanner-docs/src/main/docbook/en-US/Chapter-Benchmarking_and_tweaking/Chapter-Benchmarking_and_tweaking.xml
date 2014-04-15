@@ -69,7 +69,7 @@
 
   &lt;inheritedSolverBenchmark&gt;
     &lt;problemBenchmarks&gt;
-      &lt;xstreamAnnotatedClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/xstreamAnnotatedClass&gt;
+      &lt;xStreamAnnotatedClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/xStreamAnnotatedClass&gt;
       &lt;inputSolutionFile&gt;data/nqueens/unsolved/32queens.xml&lt;/inputSolutionFile&gt;
       &lt;inputSolutionFile&gt;data/nqueens/unsolved/64queens.xml&lt;/inputSolutionFile&gt;
       &lt;problemStatisticType&gt;BEST_SCORE&lt;/problemStatisticType&gt;
@@ -215,7 +215,7 @@
         XStream annotations:</para>
 
         <programlisting language="xml">    &lt;problemBenchmarks&gt;
-      &lt;xstreamAnnotatedClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/xstreamAnnotatedClass&gt;
+      &lt;xStreamAnnotatedClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/xStreamAnnotatedClass&gt;
       &lt;inputSolutionFile&gt;data/nqueens/unsolved/32queens.xml&lt;/inputSolutionFile&gt;
       ...
     &lt;/problemBenchmarks&gt;</programlisting>

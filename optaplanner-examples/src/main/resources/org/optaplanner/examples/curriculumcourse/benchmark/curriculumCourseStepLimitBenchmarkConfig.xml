@@ -4,7 +4,7 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</xstreamAnnotatedClass>
+      <xStreamAnnotatedClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</xStreamAnnotatedClass>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp01_initialized.xml</inputSolutionFile>
     </problemBenchmarks>
 

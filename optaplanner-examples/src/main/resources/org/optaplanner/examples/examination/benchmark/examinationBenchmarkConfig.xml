@@ -6,7 +6,7 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.optaplanner.examples.examination.domain.Examination</xstreamAnnotatedClass>
+      <xStreamAnnotatedClass>org.optaplanner.examples.examination.domain.Examination</xStreamAnnotatedClass>
       <inputSolutionFile>data/examination/unsolved/exam_comp_set1.xml</inputSolutionFile>
       <inputSolutionFile>data/examination/unsolved/exam_comp_set2.xml</inputSolutionFile>
       <inputSolutionFile>data/examination/unsolved/exam_comp_set3.xml</inputSolutionFile>

@@ -19,7 +19,7 @@
   <solverBenchmark>
     <name>Cloud Balancing Late Acceptance ${randomType}</name>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</xstreamAnnotatedClass>
+      <xStreamAnnotatedClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</xStreamAnnotatedClass>
       <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.xml</inputSolutionFile>
       <inputSolutionFile>data/cloudbalancing/unsolved/800computers-2400processes.xml</inputSolutionFile>
     </problemBenchmarks>
@@ -84,7 +84,7 @@
   <solverBenchmark>
     <name>Course Scheduling Late Acceptance ${randomType}</name>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</xstreamAnnotatedClass>
+      <xStreamAnnotatedClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</xStreamAnnotatedClass>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp07.xml</inputSolutionFile>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp08.xml</inputSolutionFile>
     </problemBenchmarks>
@@ -127,7 +127,7 @@
   <solverBenchmark>
     <name>Examination Tabu Search ${randomType}</name>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.optaplanner.examples.examination.domain.Examination</xstreamAnnotatedClass>
+      <xStreamAnnotatedClass>org.optaplanner.examples.examination.domain.Examination</xStreamAnnotatedClass>
       <inputSolutionFile>data/examination/unsolved/exam_comp_set2.xml</inputSolutionFile>
       <inputSolutionFile>data/examination/unsolved/exam_comp_set3.xml</inputSolutionFile>
     </problemBenchmarks>
@@ -169,7 +169,7 @@
   <solverBenchmark>
     <name>Nurse Rostering Tabu Search ${randomType}</name>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</xstreamAnnotatedClass>
+      <xStreamAnnotatedClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</xStreamAnnotatedClass>
       <inputSolutionFile>data/nurserostering/unsolved/medium01.xml</inputSolutionFile>
       <inputSolutionFile>data/nurserostering/unsolved/medium_hint01.xml</inputSolutionFile>
     </problemBenchmarks>
@@ -211,7 +211,7 @@
   <solverBenchmark>
     <name>TravelingTournament Tabu Search ${randomType}</name>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</xstreamAnnotatedClass>
+      <xStreamAnnotatedClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</xStreamAnnotatedClass>
       <inputSolutionFile>data/travelingtournament/unsolved/1-nl14.xml</inputSolutionFile>
     </problemBenchmarks>
     <solver>

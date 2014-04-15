@@ -4,7 +4,7 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</xstreamAnnotatedClass>
+      <xStreamAnnotatedClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</xStreamAnnotatedClass>
       <inputSolutionFile>data/nurserostering/unsolved/medium_late01_initialized.xml</inputSolutionFile>
     </problemBenchmarks>
 
