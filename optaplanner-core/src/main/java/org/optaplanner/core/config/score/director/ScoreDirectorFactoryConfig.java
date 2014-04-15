@@ -365,15 +365,13 @@ public class ScoreDirectorFactoryConfig {
                     if (scoreDrlFile == null) {
                         throw new IllegalArgumentException("The scoreDrlFile (" + scoreDrlFile + ") cannot be null.");
                     }
-                    InputStream scoreDrlIn = null;
-                    try {
-                        scoreDrlIn = new FileInputStream(scoreDrlFile);
-                    } catch (FileNotFoundException e) {
+                    if (!scoreDrlFile.exists()) {
                         throw new IllegalArgumentException("The scoreDrlFile (" + scoreDrlFile
-                                + ") does not exist.", e);
+                                + ") does not exist.");
                     }
-                    String path = "src/main/resources/optaplanner-kie-namespace/" + scoreDrlFile.getName();
-                    kieFileSystem.write(path, kieResources.newInputStreamResource(scoreDrlIn, "UTF-8"));
+                    // TODO use UTF-8 encoding
+                    kieFileSystem.write(kieResources.newFileSystemResource(scoreDrlFile));
+                    // kieFileSystem.write(kieResources.newFileSystemResource(scoreDrlFile, "UTF-8"));
                 }
             }
             KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
