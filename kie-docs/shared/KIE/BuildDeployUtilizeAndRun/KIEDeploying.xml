@@ -163,23 +163,23 @@ kScanner.start( 10000L );</programlisting>
     
   </section>
   <section>
-    <title>Settings.xml and Remote Repository Ssetup</title>
+    <title>Settings.xml and Remote Repository Setup</title>
     <para>The maven settings.xml is used to configure Maven execution. Detailed instructions can be found at the Maven
       website:</para>
     <para><link xlink:href="http://maven.apache.org/settings.html">http://maven.apache.org/settings.html</link></para>
-    <para> The settings.xml file can be located in 3 locations, the actual settings used is a merge of those 3
+    <para>The settings.xml file can be located in 3 locations, the actual settings used is a merge of those 3
       locations.</para>
     <itemizedlist>
-        <listitem>
-        <para>The Maven install: $M2_HOME/conf/settings.xml</para>
+      <listitem>
+        <para>The Maven install: <literal>$M2_HOME/conf/settings.xml</literal></para>
       </listitem>
       <listitem>
-        <para>A user's install: ${user.home}/.m2/settings.xml</para>
+        <para>A user's install: <literal>${user.home}/.m2/settings.xml</literal></para>
       </listitem>
       <listitem>
-        <para>Folder location specified by the system propert kie.maven.settings.custom</para>
+        <para>Folder location specified by the system property <literal>kie.maven.settings.custom</literal></para>
       </listitem>
-      </itemizedlist>
+    </itemizedlist>
     <para>The settings.xml is used to specify the location of remote repositories. It is important that you activate the
       profile that specifies the remote repository, typically this can be done using "activeByDefault":</para>
     <programlisting language="XML">&lt;profiles&gt;
