@@ -18,6 +18,7 @@ package org.kie.internal.runtime.manager;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.internal.runtime.conf.DeploymentDescriptor;
 
 /**
  * Extension to stable API of RuntimeManager that provides additional capabilities
@@ -45,4 +46,10 @@ public interface InternalRuntimeManager extends RuntimeManager {
      * @return true if runtime manager is closed (close method was invoked on it) otherwise false
      */
     boolean isClosed();
+    
+    DeploymentDescriptor getDeploymentDescriptor();
+    
+    void setDeploymentDescriptor(DeploymentDescriptor descriptor);
+    
+    void setSecurityManager(SecurityManager securityManager);
 }

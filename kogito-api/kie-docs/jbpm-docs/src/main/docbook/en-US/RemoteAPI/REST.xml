@@ -1729,7 +1729,7 @@
  
        <para>There are 2 operations that can be used to modify the status of a deployment: <itemizedlist>
          <listitem><para><code>/deployments/<emphasis>{deploymentId}</emphasis>/deploy</code></para></listitem>
-         <listitem><para><code>/deployments/<emphasis>{deploymentId}</emphasis>/undeploydeploy</code></para></listitem>
+         <listitem><para><code>/deployments/<emphasis>{deploymentId}</emphasis>/undeploy</code></para></listitem>
        </itemizedlist>
          These <code>POST</code> deployment calls are both <emphasis>asynchronous</emphasis>, which 
          means that the information returned by the <code>POST</code> request does not reflect the 
@@ -1752,268 +1752,156 @@
        </important>
        
     </section>
+    <section/>
 
-    <section>
-      <title>Additional deployment call details</title>
-      <para>
-        In addition to the asynchronous nature of the
-        <code>POST</code>
-        deploy and undeploy
-        calls described above, the following information is also important to know:
-        <itemizedlist>
-          <listitem>
-            <para>The deploy and undeploy operations can fail if one of the following is
-              true:
-            </para>
-            <orderedlist>
-              <listitem>
-                <para>An identical job has already been submitted to the queue and has not yet
-                  completed.
-                </para>
-              </listitem>
-              <listitem>
-                <para>The amount of (deploy/undeploy) jobs submitted but not yet processed exceeds
-                  the deploy/undeploy job queue
-                  size.
-                </para>
-              </listitem>
-            </orderedlist>
-          </listitem>
-        </itemizedlist>
-      </para>
-      <section>
-        <title>The deploy/undeploy job queue</title>
-        <para>Requests for the deployment or undeployment of deployment units are added as they are received
-          to a single queue and
-          processed in a serial fashion.
-        </para>
-        <para>The reason for this is that the increased complexity necessary to manage and
-          safeguard concurrent deploy and undeploy
-          operation requests possibly involving the same
-          deployment unit is far more costly than the benefit of having these requests
-          complete
-          safely in a concurrent environment, especially given that deploy and undeploy requests
-          will be far less utilized
-          than parts of the remote API involving actions on the deployment
-          units themselves.
-        </para>
-        <para>The size of this queue can be determined at startup by the parameter described below.
-          Otherwise, the deployment job
-          queue size defaults to 100.
-        </para>
-        <para>
-          The following system properties can be specified in order to change the size of the
-          deploy/undeploy job queue:
-          <table frame="all">
-            <title>System properties that influence REST deployment call behavior</title>
-            <tgroup cols="2" align="left" rowsep="1" colsep="1">
-              <thead valign="top">
-                <row>
-                  <entry>Parameter name</entry>
-                  <entry>Description</entry>
-                </row>
-              </thead>
-              <tbody valign="top">
-                <row>
-                  <entry>
-                    <code>org.kie.remote.rest.deployment.job.queue.size</code>
-                  </entry>
-                  <entry>
-                    <para>Specifies the size of the deploy/undeploy job queue. Must be
-                      numerical.
-                    </para>
-                  </entry>
-                </row>
-              </tbody>
-            </tgroup>
-          </table>
-        </para>
-      </section>
-    </section>
-
-    <section>
-      <title>Deployment call details</title>
-
-      <variablelist>
-        <varlistentry>
-          <term>
-            [GET]
-            <command>/deployment/</command>
-          </term>
-          <listitem>
-            <itemizedlist>
-              <listitem>
-                <para>
-                  Returns a list of all the available deployed instances in a
-                  <code>JaxbDeploymentUnitList</code>
-                  instance
-                </para>
-              </listitem>
-            </itemizedlist>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term>
-            [GET]
-            <command>
-              /deployment/
-              <emphasis>{deploymentId}</emphasis>
-            </command>
-          </term>
-          <listitem>
-            <itemizedlist>
-              <listitem>
-                <para>
-                  Returns a
-                  <code>JaxbDeploymentUnit</code>
-                  instance containing th e information (including the
-                  configuration) of the deployment unit.
-                </para>
-                <itemizedlist>
+  </section>
+  <section>
+    <title>Deployment call details</title>
+    <variablelist>
+      <varlistentry>
+        <term> [GET] <command>/deployment/</command>
+        </term>
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para> Returns a list of all the available deployed instances in a
+                  <code>JaxbDeploymentUnitList</code> instance </para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term> [GET] <command> /deployment/ <emphasis>{deploymentId}</emphasis>
+          </command>
+        </term>
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para> Returns a <code>JaxbDeploymentUnit</code> instance containing th e information
+                (including the configuration) of the deployment unit. </para>
+              <itemizedlist>
+                <listitem>
+                  <para> This operation will fail when the URL uses a
+                      <emphasis>deployementId</emphasis> that refers to a deployment unit that does
+                    not exist or for which the deployment has not yet been completed. </para>
+                </listitem>
+                <listitem>
+                  <para>This operation may succeed for deployment units for which an undeploy
+                    operation request has not yet completed. </para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term> [POST] <command> /deployment/ <emphasis>{deploymentId}</emphasis> /deploy </command>
+        </term>
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para> Deploys the deployment unit referenced by the <emphasis>deploymentId</emphasis>
+              </para>
+            </listitem>
+            <listitem>
+              <para> Returns a <code>JaxbDeploymentJobResult</code> instance with the status of the
+                  <emphasis>request</emphasis>
+              </para>
+            </listitem>
+            <listitem>
+              <para> Takes a <code>strategy</code> query parameter: <itemizedlist>
                   <listitem>
-                    <para>
-                      This operation will fail when the URL uses a
-                      <emphasis>deployementId</emphasis>
-                      that refers to a
-                      deployment unit that does not exist or for which the deployment has not yet been completed.
+                    <para>This parameter describes the runtime strategy used for the
+                      deployment.</para>
+                  </listitem>
+                  <listitem>
+                    <para> This parameter takes the following (case- <emphasis>in</emphasis>
+                      sensitive) values: <itemizedlist>
+                        <listitem>
+                          <para>
+                            <code>SINGLETON</code>
+                          </para>
+                        </listitem>
+                        <listitem>
+                          <para>
+                            <code>PER_REQUEST</code>
+                          </para>
+                        </listitem>
+                        <listitem>
+                          <para>
+                            <code>PER_PROCESS_INSTANCE</code>
+                          </para>
+                        </listitem>
+                      </itemizedlist>
                     </para>
                   </listitem>
                   <listitem>
-                    <para>This operation may succeed for deployment units for which an undeploy operation request has not
-                      yet completed.
-                    </para>
+                    <para> The default runtime strategy used for a deployment is
+                        <code>SINGLETON</code> . </para>
                   </listitem>
                 </itemizedlist>
-              </listitem>
-            </itemizedlist>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term>
-            [POST]
-            <command>
-              /deployment/
-              <emphasis>{deploymentId}</emphasis>
-              /deploy
-            </command>
-          </term>
-          <listitem>
-            <itemizedlist>
-              <listitem>
-                <para>
-                  Deploys the deployment unit referenced by the
+              </para>
+            </listitem>
+            <listitem>
+              <para> The deploy operation is an <emphasis>asynchronous</emphasis> operation. The
+                status of the deployment can be retrieved using the <code>GET</code> calls described
+                above. </para>
+            </listitem>
+            <listitem>
+              <para>The request can fail for the reasons described </para>
+            </listitem>
+            <listitem>
+              <para>It is possible to post a deployment descriptor (or a fragment of it) while
+                submitting deploy request. That allows to override other deployment descriptors in
+                the hierarchy. To do so the content type of the request must be set to <emphasis
+                  role="italic">application/xml</emphasis> and the request body should be a a valid
+                deployment descriptor content.</para>
+              <para>For example to change the audit logging mode from default JPA to JMS submit
+                following partial deployment descriptor:</para>
+              <programlisting>&lt;deployment-descriptor xsi:schemaLocation="http://www.jboss.org/jbpm deployment-descriptor.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    &lt;audit-mode>JMS&lt;/audit-mode>
+&lt;/deployment-descriptor></programlisting>
+              <para>Since deployment descriptors can be merged differently, there is a possibility
+                to provide the merge mode as part of deploy request by adding query
+                parameter:</para>
+              <para>
+                <itemizedlist>
+                  <listitem>
+                    <para><emphasis role="italic">mergemode</emphasis> where values should be one of
+                      the following - KEEP_ALL, OVERRIDE_ALL, OVERRIDE_EMPTY,
+                      MERGE_COLLECTIONS</para>
+                  </listitem>
+                </itemizedlist>
+              </para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term> [POST] <command> /deployment/ <emphasis>{deploymentId}</emphasis> /undeploy
+          </command>
+        </term>
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para> Undeploys the deployment unit referenced by the
                   <emphasis>deploymentId</emphasis>
-                </para>
-              </listitem>
-              <listitem>
-                <para>
-                  Returns a
-                  <code>JaxbDeploymentJobResult</code>
-                  instance with the status of the
+              </para>
+            </listitem>
+            <listitem>
+              <para> Returns a <code>JaxbDeploymentJobResult</code> instance with the status of the
                   <emphasis>request</emphasis>
-                </para>
-              </listitem>
-              <listitem>
-                <para>
-                  Takes a
-                  <code>strategy</code>
-                  query parameter:
-                  <itemizedlist>
-                    <listitem>
-                      <para>This parameter describes the runtime strategy used for the deployment.</para>
-                    </listitem>
-                    <listitem>
-                      <para>
-                        This parameter takes the following (case-
-                        <emphasis>in</emphasis>
-                        sensitive) values:
-                        <itemizedlist>
-                          <listitem>
-                            <para>
-                              <code>SINGLETON</code>
-                            </para>
-                          </listitem>
-                          <listitem>
-                            <para>
-                              <code>PER_REQUEST</code>
-                            </para>
-                          </listitem>
-                          <listitem>
-                            <para>
-                              <code>PER_PROCESS_INSTANCE</code>
-                            </para>
-                          </listitem>
-                        </itemizedlist>
-                      </para>
-                    </listitem>
-                    <listitem>
-                      <para>
-                        The default runtime strategy used for a deployment is
-                        <code>SINGLETON</code>
-                        .
-                      </para>
-                    </listitem>
-                  </itemizedlist>
-                </para>
-              </listitem>
-              <listitem>
-                <para>
-                  The deploy operation is an
-                  <emphasis>asynchronous</emphasis>
-                  operation. The status of the deployment can be retrieved
-                  using the
-                  <code>GET</code>
-                  calls described above.
-                </para>
-              </listitem>
-              <listitem>
-                <para>The request can fail for the reasons described </para>
-              </listitem>
-            </itemizedlist>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term>
-            [POST]
-            <command>
-              /deployment/
-              <emphasis>{deploymentId}</emphasis>
-              /undeploy
-            </command>
-          </term>
-          <listitem>
-            <itemizedlist>
-              <listitem>
-                <para>
-                  Undeploys the deployment unit referenced by the
-                  <emphasis>deploymentId</emphasis>
-                </para>
-              </listitem>
-              <listitem>
-                <para>
-                  Returns a
-                  <code>JaxbDeploymentJobResult</code>
-                  instance with the status of the
-                  <emphasis>request</emphasis>
-                </para>
-              </listitem>
-              <listitem>
-                <para>
-                  The undeploy operation is an
-                  <emphasis>asynchronous</emphasis>
-                  operation. The status of the deployment can be retrieved
-                  using the
-                  <code>GET</code>
-                  calls described above.
-                </para>
-              </listitem>
-            </itemizedlist>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-
-    </section>
-
+              </para>
+            </listitem>
+            <listitem>
+              <para> The undeploy operation is an <emphasis>asynchronous</emphasis> operation. The
+                status of the deployment can be retrieved using the <code>GET</code> calls described
+                above. </para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+    </variablelist>
   </section>
 
   <section xml:id="remote.rest.execute">
