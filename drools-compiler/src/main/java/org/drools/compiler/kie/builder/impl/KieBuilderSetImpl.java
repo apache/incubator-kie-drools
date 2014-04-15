@@ -170,42 +170,47 @@ public class KieBuilderSetImpl implements KieBuilderSet {
 
         @Override
         public URL getURL() throws IOException {
-            throw new UnsupportedOperationException("KieBuilderSetImpl.DummyResource.getURL -> TODO");
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public boolean hasURL() {
-            throw new UnsupportedOperationException("KieBuilderSetImpl.DummyResource.hasURL -> TODO");
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public boolean isDirectory() {
-            throw new UnsupportedOperationException("KieBuilderSetImpl.DummyResource.isDirectory -> TODO");
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public Collection<Resource> listResources() {
-            throw new UnsupportedOperationException("KieBuilderSetImpl.DummyResource.listResources -> TODO");
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public long getLastModified() {
-            throw new UnsupportedOperationException("KieBuilderSetImpl.DummyResource.getLastModified -> TODO");
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public long getLastRead() {
-            throw new UnsupportedOperationException("KieBuilderSetImpl.DummyResource.getLastRead -> TODO");
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getEncoding() {
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public InputStream getInputStream() throws IOException {
-            throw new UnsupportedOperationException("KieBuilderSetImpl.DummyResource.getInputStream -> TODO");
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public Reader getReader() throws IOException {
-            throw new UnsupportedOperationException("KieBuilderSetImpl.DummyResource.getReader -> TODO");
+            throw new UnsupportedOperationException();
         }
     }
 }

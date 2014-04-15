@@ -58,7 +58,11 @@ public class DescrResource extends BaseResource implements InternalResource, Ext
         super.writeExternal( out );
         out.writeObject( descr );
     }
-    
+
+    public String getEncoding() {
+        return null;
+    }
+
     public URL getURL() throws IOException {
         throw new FileNotFoundException( "descr cannot be resolved to URL");
     }
