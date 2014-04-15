@@ -243,12 +243,10 @@
       <longitude>19039.307</longitude>
     </City>
   </cityList>
-  <domicileList id="43">
-    <Domicile id="44">
-      <id>1</id>
-      <city reference="3"/>
-    </Domicile>
-  </domicileList>
+  <domicile id="44">
+    <id>1</id>
+    <city reference="3"/>
+  </domicile>
   <visitList id="45">
     <Visit id="46">
       <id>2</id>
