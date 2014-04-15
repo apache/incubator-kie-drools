@@ -47,6 +47,7 @@ import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.DSLVariableValue;
 import org.drools.workbench.models.datamodel.rule.ExpressionField;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
+import org.drools.workbench.models.datamodel.rule.ExpressionMethod;
 import org.drools.workbench.models.datamodel.rule.ExpressionText;
 import org.drools.workbench.models.datamodel.rule.ExpressionUnboundFact;
 import org.drools.workbench.models.datamodel.rule.ExpressionVariable;
@@ -4236,6 +4237,78 @@ public class RuleModelDRLPersistenceTest {
                 + "Person fact0 = new Person();\n"
                 + "fact0.setField1( $f );\n"
                 + "insert( fact0 );\n"
+                + "end";
+
+        checkMarshallUnmarshall( expected,
+                                 m );
+    }
+
+    @Test
+    public void testLHSFormula() {
+        //https://bugzilla.redhat.com/show_bug.cgi?id=1087690
+        RuleModel m = new RuleModel();
+        m.name = "test";
+
+        FactPattern p = new FactPattern( "Number" );
+        m.addLhsItem( p );
+
+        SingleFieldConstraint con1 = new SingleFieldConstraint();
+        con1.setValue( "true" );
+        con1.setConstraintValueType( SingleFieldConstraint.TYPE_PREDICATE );
+        p.addConstraint( con1 );
+
+        SingleFieldConstraintEBLeftSide con2 = new SingleFieldConstraintEBLeftSide();
+        con2.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con2.getExpressionLeftSide().appendPart( new ExpressionMethod( "intValue",
+                                                                       "int",
+                                                                       DataType.TYPE_NUMERIC_INTEGER ) );
+        con2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        con2.setOperator( "==" );
+        con2.setValue( "0" );
+        p.addConstraint( con2 );
+
+        String expected = "rule \"test\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "Number( eval( true ), intValue() == 0 )\n"
+                + "then\n"
+                + "end";
+
+        checkMarshallUnmarshall( expected,
+                                 m );
+    }
+
+    @Test
+    public void testLHSReturnType() {
+        //https://bugzilla.redhat.com/show_bug.cgi?id=1087690
+        RuleModel m = new RuleModel();
+        m.name = "test";
+
+        FactPattern p = new FactPattern( "Number" );
+        m.addLhsItem( p );
+
+        SingleFieldConstraint con1 = new SingleFieldConstraint();
+        con1.setFieldType( DataType.TYPE_NUMERIC_INTEGER );
+        con1.setFieldName( "this" );
+        con1.setOperator( "!= null" );
+        con1.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con1 );
+
+        SingleFieldConstraintEBLeftSide con2 = new SingleFieldConstraintEBLeftSide();
+        con2.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con2.getExpressionLeftSide().appendPart( new ExpressionMethod( "intValue",
+                                                                       "int",
+                                                                       DataType.TYPE_NUMERIC_INTEGER ) );
+        con2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        con2.setOperator( "==" );
+        con2.setValue( "0" );
+        p.addConstraint( con2 );
+
+        String expected = "rule \"test\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "Number( this != null, intValue() == 0 )\n"
+                + "then\n"
                 + "end";
 
         checkMarshallUnmarshall( expected,
