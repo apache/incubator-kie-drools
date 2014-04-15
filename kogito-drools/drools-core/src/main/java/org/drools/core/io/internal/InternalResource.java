@@ -64,4 +64,6 @@ public interface InternalResource extends Resource {
     void addCategory( String category );
 
     byte[] getBytes();
+
+    String getEncoding();
 }

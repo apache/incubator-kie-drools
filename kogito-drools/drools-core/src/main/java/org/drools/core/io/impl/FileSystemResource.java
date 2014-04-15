@@ -41,6 +41,7 @@ import org.kie.api.io.ResourceType;
 public class FileSystemResource  extends BaseResource implements InternalResource, Externalizable {
     private File file;
     private long lastRead = -1;
+    private String encoding;
 
     public FileSystemResource() {
         
@@ -65,16 +66,10 @@ public class FileSystemResource  extends BaseResource implements InternalResourc
         setSourcePath( file.getName() );
         setResourceType( ResourceType.determineResourceType( getSourcePath() ) );
     }
-    
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( this.file );
-    }
 
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        super.readExternal( in );
-        this.file = (File) in.readObject();
+    public FileSystemResource(File file, String encoding) {
+        this(file);
+        this.encoding = encoding;
     }
 
     /**
@@ -95,7 +90,29 @@ public class FileSystemResource  extends BaseResource implements InternalResourc
         setSourcePath( path );
         setResourceType( ResourceType.determineResourceType( getSourcePath() ) );
     }
-    
+
+    public FileSystemResource(String path, String encoding) {
+        this(path);
+        this.encoding = encoding;
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal( out );
+        out.writeObject(this.file);
+        out.writeObject(this.encoding);
+    }
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
+        super.readExternal( in );
+        this.file = (File) in.readObject();
+        this.encoding = (String) in.readObject();
+    }
+
+    public String getEncoding() {
+        return this.encoding;
+    }
+
     /**
      * This implementation opens a FileInputStream for the underlying file.
      * @see java.io.FileInputStream
@@ -104,9 +121,8 @@ public class FileSystemResource  extends BaseResource implements InternalResourc
         this.lastRead = getLastModified();
         return new FileInputStream(this.file);
     }
-    
-    public Reader getReader() throws IOException {
-        return new InputStreamReader( getInputStream() );
+     public Reader getReader() throws IOException {
+        return encoding != null ? new InputStreamReader( getInputStream(), encoding ) : new InputStreamReader( getInputStream() );
     }
     
     public File getFile() {

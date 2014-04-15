@@ -66,6 +66,7 @@ public class UrlResource extends BaseResource
     private String              basicAuthentication      = "disabled";
     private String              username                 = "";
     private String              password                 = "";
+    private String              encoding;
 
     private static final String DROOLS_RESOURCE_URLTIMEOUT = "drools.resource.urltimeout";
     private static final int DEFAULT_TIMEOUT = 10000; // 10 seconds
@@ -82,6 +83,11 @@ public class UrlResource extends BaseResource
         setResourceType(ResourceType.determineResourceType(this.url.getPath()));
     }
 
+    public UrlResource(URL url, String encoding) {
+        this(url);
+        this.encoding = encoding;
+    }
+
     public UrlResource(String path) {
         try {
             this.url = getCleanedUrl(new URL(path),
@@ -94,13 +100,26 @@ public class UrlResource extends BaseResource
         }
     }
 
+    public UrlResource(String path, String encoding) {
+        this(path);
+        this.encoding = encoding;
+    }
+
     public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal( out );
         out.writeObject(this.url);
+        out.writeObject(this.encoding);
     }
 
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {
+        super.readExternal( in );
         this.url = (URL) in.readObject();
+        this.encoding = (String) in.readObject();
+    }
+
+    public String getEncoding() {
+        return this.encoding;
     }
 
     public String getBasicAuthentication() {
@@ -240,7 +259,7 @@ public class UrlResource extends BaseResource
     }
 
     public Reader getReader() throws IOException {
-        return new InputStreamReader(getInputStream());
+        return encoding != null ? new InputStreamReader( getInputStream(), encoding ) : new InputStreamReader( getInputStream() );
     }
 
     /**
