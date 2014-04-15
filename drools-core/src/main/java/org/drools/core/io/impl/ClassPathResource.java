@@ -126,12 +126,16 @@ public class ClassPathResource extends BaseResource
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal( out );
         out.writeObject( this.path );
+        out.writeObject( this.encoding );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
+        super.readExternal( in );
         this.path = (String) in.readObject();
+        this.encoding = (String) in.readObject();
     }
 
     /**

@@ -26,9 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.core.io.impl.ClassPathResource;
-import org.drools.core.io.impl.InputStreamResource;
-import org.drools.core.io.impl.ReaderResource;
 import org.drools.compiler.lang.DRLLexer;
 import org.drools.compiler.lang.DRLParser;
 import org.drools.compiler.lang.DroolsSentence;
@@ -37,6 +34,7 @@ import org.drools.compiler.lang.ExpanderException;
 import org.drools.compiler.lang.Location;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.dsl.DefaultExpanderResolver;
+import org.drools.core.io.internal.InternalResource;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.api.io.Resource;
 
@@ -150,16 +148,7 @@ public class DrlParser {
                               final Resource resource) throws DroolsParserException, IOException {
         this.resource = resource;
         InputStream is = resource.getInputStream();
-        String encoding = null;
-        if (resource instanceof ClassPathResource) {
-            encoding = ((ClassPathResource) resource).getEncoding();
-        }
-        if (resource instanceof ReaderResource) {
-            encoding = ((ReaderResource) resource).getEncoding();
-        }
-        if (resource instanceof InputStreamResource) {
-            encoding = ((InputStreamResource) resource).getEncoding();
-        }
+        String encoding = resource instanceof InternalResource ? ((InternalResource) resource).getEncoding() : null;
 
         lexer = buildLexer(is, encoding, languageLevel);
         DRLParser parser = buildParser(lexer, languageLevel);
