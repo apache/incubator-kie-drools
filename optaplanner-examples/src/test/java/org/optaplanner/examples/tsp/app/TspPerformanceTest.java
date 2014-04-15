@@ -43,13 +43,13 @@ public class TspPerformanceTest extends SolverPerformanceTest {
     @Test(timeout = 600000)
     public void solveModel_a2_1() {
         File unsolvedDataFile = new File("data/tsp/unsolved/europe40.xml");
-        runSpeedTest(unsolvedDataFile, "-217957");
+        runSpeedTest(unsolvedDataFile, "-217957000");
     }
 
     @Test(timeout = 600000)
     public void solveModel_a2_1FastAssert() {
         File unsolvedDataFile = new File("data/tsp/unsolved/europe40.xml");
-        runSpeedTest(unsolvedDataFile, "-219637", EnvironmentMode.FAST_ASSERT);
+        runSpeedTest(unsolvedDataFile, "-219637000", EnvironmentMode.FAST_ASSERT);
     }
 
 }
