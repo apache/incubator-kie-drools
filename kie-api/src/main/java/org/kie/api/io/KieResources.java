@@ -31,13 +31,28 @@ public interface KieResources extends Service {
 
     Resource newUrlResource(URL url);
 
+    Resource newUrlResource(URL url,
+                            String encoding);
+
     Resource newUrlResource(String path);
+
+    Resource newUrlResource(String path,
+                            String encoding);
 
     Resource newFileSystemResource(File file);
 
+    Resource newFileSystemResource(File file,
+                                   String encoding);
+
     Resource newFileSystemResource(String fileName);
 
+    Resource newFileSystemResource(String fileName,
+                                   String encoding);
+
     Resource newByteArrayResource(byte[] bytes);
+
+    Resource newByteArrayResource(byte[] bytes,
+                                  String encoding);
 
     Resource newInputStreamResource(InputStream stream);
 
