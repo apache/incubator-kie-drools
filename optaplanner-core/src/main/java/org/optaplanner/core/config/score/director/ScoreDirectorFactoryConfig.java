@@ -369,9 +369,7 @@ public class ScoreDirectorFactoryConfig {
                         throw new IllegalArgumentException("The scoreDrlFile (" + scoreDrlFile
                                 + ") does not exist.");
                     }
-                    // TODO use UTF-8 encoding
-                    kieFileSystem.write(kieResources.newFileSystemResource(scoreDrlFile));
-                    // kieFileSystem.write(kieResources.newFileSystemResource(scoreDrlFile, "UTF-8"));
+                    kieFileSystem.write(kieResources.newFileSystemResource(scoreDrlFile, "UTF-8"));
                 }
             }
             KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
