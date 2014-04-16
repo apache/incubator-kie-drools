@@ -1,6 +1,7 @@
 package org.kie.scanner;
 
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.settings.Mirror;
 import org.apache.maven.settings.Profile;
 import org.apache.maven.settings.Repository;
 import org.apache.maven.settings.RepositoryPolicy;
@@ -45,77 +46,94 @@ public class MavenRepository {
     private static MavenRepository defaultMavenRepository;
 
     private final Aether aether;
-    private static final Collection<RemoteRepository> extraRepositories = new HashSet<RemoteRepository>();
-    
+    private final Collection<RemoteRepository> extraRepositories;
+    private final Collection<RemoteRepository> remoteRepositoriesForRequest;
+
     private MavenRepository(Aether aether) {
         this.aether = aether;
+        Settings settings = MavenSettings.getSettings();
+        extraRepositories = initExtraRepositories(settings);
+        remoteRepositoriesForRequest = initRemoteRepositoriesForRequest(settings);
     }
 
     public static synchronized MavenRepository getMavenRepository() {
         if (defaultMavenRepository == null) {
             Aether defaultAether = Aether.getAether();
             defaultMavenRepository = new MavenRepository(defaultAether);
-            initSettings();
         }
         return defaultMavenRepository;
     }
 
-    private static void initSettings() {
-        Settings settings = MavenSettings.getSettings();
+    private Collection<RemoteRepository> initExtraRepositories(Settings settings) {
+        Collection<RemoteRepository> extraRepositories = new HashSet<RemoteRepository>();
         for (Profile profile : settings.getProfiles()) {
             if (isProfileActive(settings, profile)) {
                 for (Repository repository : profile.getRepositories()) {
-                    addExtraRepository( toRemoteRepository(settings, repository) );
+                    extraRepositories.add( toRemoteRepository(settings, repository) );
                 }
                 for (Repository repository : profile.getPluginRepositories()) {
-                    addExtraRepository( toRemoteRepository(settings, repository) );
+                    extraRepositories.add( toRemoteRepository(settings, repository) );
                 }
             }
         }
+        return extraRepositories;
     }
 
-    private static boolean isProfileActive(Settings settings, Profile profile) {
+    private Collection<RemoteRepository> initRemoteRepositoriesForRequest(Settings settings) {
+        Collection<RemoteRepository> remoteRepos = new HashSet<RemoteRepository>();
+        for (RemoteRepository repo : extraRepositories) {
+            remoteRepos.add( resolveMirroredRepo(settings, repo) );
+        }
+        for (RemoteRepository repo : aether.getRepositories()) {
+            remoteRepos.add( resolveMirroredRepo(settings, repo) );
+        }
+        return remoteRepos;
+    }
+
+    private RemoteRepository resolveMirroredRepo(Settings settings, RemoteRepository repo) {
+        for (Mirror mirror : settings.getMirrors()) {
+            if (isMirror(repo.getId(), mirror.getMirrorOf())) {
+                return setRemoteRepositoryAuthentication(settings,
+                                                         new RemoteRepository(mirror.getId(), mirror.getLayout(), mirror.getUrl()),
+                                                         mirror.getId());
+            }
+        }
+        return repo;
+    }
+
+    private boolean isMirror(String repoId, String mirrorOf)  {
+        return mirrorOf.equals("*") ||
+               ( mirrorOf.startsWith("*") && !mirrorOf.contains("!" + repoId) ) ||
+               ( !mirrorOf.startsWith("*") && mirrorOf.contains(repoId) );
+    }
+
+    private boolean isProfileActive(Settings settings, Profile profile) {
         return settings.getActiveProfiles().contains(profile.getId()) ||
                (profile.getActivation() != null && profile.getActivation().isActiveByDefault());
     }
 
-    private static RemoteRepository toRemoteRepository(Settings settings, Repository repository) {
-        RemoteRepository remote = new RemoteRepository( repository.getId(), repository.getLayout(), repository.getUrl() );
+    private RemoteRepository toRemoteRepository(Settings settings, Repository repository) {
+        RemoteRepository remote = new RemoteRepository(repository.getId(), repository.getLayout(), repository.getUrl());
         setPolicy(remote, repository.getSnapshots(), true);
         setPolicy(remote, repository.getReleases(), false);
-        Server server = settings.getServer( repository.getId() );
+        return setRemoteRepositoryAuthentication(settings, remote, repository.getId());
+    }
+
+    private RemoteRepository setRemoteRepositoryAuthentication(Settings settings, RemoteRepository remote, String repoId) {
+        Server server = settings.getServer( repoId );
         if (server != null) {
             remote.setAuthentication( new Authentication(server.getUsername(), server.getPassword()) );
         }
         return remote;
     }
 
-    private static void setPolicy(RemoteRepository remote, RepositoryPolicy policy, boolean snapshot) {
+    private void setPolicy(RemoteRepository remote, RepositoryPolicy policy, boolean snapshot) {
         if (policy != null) {
             remote.setPolicy(snapshot,
                              new org.sonatype.aether.repository.RepositoryPolicy(policy.isEnabled(),
                                                                                  policy.getUpdatePolicy(),
                                                                                  policy.getChecksumPolicy()));
         }
-    }
-
-    public static void addExtraRepository(RemoteRepository r) {
-        extraRepositories.add(r);
-    }
-
-    public static Collection<RemoteRepository> getExtraRepositories() {
-        return extraRepositories;
-    }
-    
-    public static void clearExtraRepositories() {
-        extraRepositories.clear();
-    }
-
-    private Collection<RemoteRepository> getRemoteRepositoryForRequest() {
-        Collection<RemoteRepository> remoteRepos = new HashSet<RemoteRepository>();
-        remoteRepos.addAll(extraRepositories);
-        remoteRepos.addAll(aether.getRepositories());
-        return remoteRepos;
     }
 
     public static MavenRepository getMavenRepository(MavenProject mavenProject) {
@@ -127,7 +145,7 @@ public class MavenRepository {
         CollectRequest collectRequest = new CollectRequest();
         Dependency root = new Dependency( artifact, "" );
         collectRequest.setRoot( root );
-        for (RemoteRepository repo : getRemoteRepositoryForRequest()) {
+        for (RemoteRepository repo : remoteRepositoriesForRequest) {
             collectRequest.addRepository(repo);
         }
         CollectResult collectResult;
@@ -166,7 +184,7 @@ public class MavenRepository {
         Artifact artifact = new DefaultArtifact( artifactName );
         ArtifactRequest artifactRequest = new ArtifactRequest();
         artifactRequest.setArtifact( artifact );
-        for (RemoteRepository repo : getRemoteRepositoryForRequest()) {
+        for (RemoteRepository repo : remoteRepositoriesForRequest) {
             artifactRequest.addRepository(repo);
         }
         try {
@@ -181,10 +199,9 @@ public class MavenRepository {
         Artifact artifact = new DefaultArtifact( artifactName );
         VersionRangeRequest versionRequest = new VersionRangeRequest();
         versionRequest.setArtifact(artifact);
-        for (RemoteRepository repo : getRemoteRepositoryForRequest()) {
+        for (RemoteRepository repo : remoteRepositoriesForRequest) {
             versionRequest.addRepository(repo);
         }
-        VersionRangeResult artifactResult;
         try {
             VersionRangeResult versionRangeResult = aether.getSystem().resolveVersionRange(aether.getSession(), versionRequest);
             return versionRangeResult.getHighestVersion();
