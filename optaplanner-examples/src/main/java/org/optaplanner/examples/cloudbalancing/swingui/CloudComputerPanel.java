@@ -30,15 +30,22 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
+import org.optaplanner.examples.common.swingui.CommonIcons;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
+import org.optaplanner.examples.curriculumcourse.domain.Lecture;
+import org.optaplanner.examples.curriculumcourse.domain.Period;
+import org.optaplanner.examples.curriculumcourse.domain.Room;
 
 public class CloudComputerPanel extends JPanel {
 
@@ -331,7 +338,7 @@ public class CloudComputerPanel extends JPanel {
                 JTextField networkBandwidthField = new JTextField(process.getRequiredNetworkBandwidth() + " GB");
                 networkBandwidthField.setEditable(false);
                 assignmentsPanel.add(networkBandwidthField);
-                assignmentsPanel.add(new JLabel(""));
+                assignmentsPanel.add(cloudBalancingPanel.createButton(process));
 
                 colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_1.length;
             }

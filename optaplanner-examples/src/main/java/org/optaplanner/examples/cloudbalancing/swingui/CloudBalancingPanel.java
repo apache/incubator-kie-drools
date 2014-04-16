@@ -17,6 +17,7 @@
 package org.optaplanner.examples.cloudbalancing.swingui;
 
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -28,6 +29,7 @@ import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -41,6 +43,8 @@ import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.curriculumcourse.domain.Period;
+import org.optaplanner.examples.curriculumcourse.domain.Room;
 
 public class CloudBalancingPanel extends SolutionPanel {
 
@@ -219,24 +223,35 @@ public class CloudBalancingPanel extends SolutionPanel {
         updatePanel(solutionBusiness.getSolution());
     }
 
+    public JButton createButton(CloudProcess process) {
+        JButton button = new JButton(new CloudProcessAction(process));
+        button.setMargin(new Insets(0, 0, 0, 0));
+        return button;
+    }
+
     private class CloudProcessAction extends AbstractAction {
 
         private CloudProcess process;
 
         public CloudProcessAction(CloudProcess process) {
-            super("=>");
+            super(process.getLabel());
             this.process = process;
         }
 
         public void actionPerformed(ActionEvent e) {
-            List<CloudComputer> computerList = getCloudBalance().getComputerList();
-            JComboBox computerListField = new JComboBox(computerList.toArray());
+            JPanel listFieldsPanel = new JPanel(new GridLayout(1, 2));
+            listFieldsPanel.add(new JLabel("Computer:"));
+            List<CloudComputer> periodList = getCloudBalance().getComputerList();
+            JComboBox computerListField = new JComboBox(periodList.toArray());
             computerListField.setSelectedItem(process.getComputer());
-            int result = JOptionPane.showConfirmDialog(CloudBalancingPanel.this.getRootPane(), computerListField,
+            listFieldsPanel.add(computerListField);
+            int result = JOptionPane.showConfirmDialog(CloudBalancingPanel.this.getRootPane(), listFieldsPanel,
                     "Select computer", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 CloudComputer toComputer = (CloudComputer) computerListField.getSelectedItem();
-                solutionBusiness.doChangeMove(process, "computer", toComputer);
+                if (process.getComputer() != toComputer) {
+                    solutionBusiness.doChangeMove(process, "computer", toComputer);
+                }
                 solverAndPersistenceFrame.resetScreen();
             }
         }
