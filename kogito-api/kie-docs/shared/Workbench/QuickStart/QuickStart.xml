@@ -309,20 +309,11 @@
     <para>Click "Build and Deploy" to build the project and deploy it to the
     Workbench's Maven Artifact Repository.</para>
 
-    <para>When you select Build &amp; Deploy the workbench will deploy to any
-    repositories defined in your maven settings.xml file that apply to the
-    asset. </para>
-
-    <para>The workbench will respect SNAPSHOT and RELEASE repository
-    configuration in the settings.xml. If your maven configuration doesn't
-    include the snapshot and release configuration then the asset will be
-    deployed to every repository in every active profile. The workbench will
-    also deploy to any repositories defined in the Dependency Management
-    section of the pom in your workbench project. You can edit the pom.xml
-    file associated with your workbench project under the Repository View of
-    the project explorer. Details on dependency management in maven can be
-    found here :
-    http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html</para>
+    <para>When you select Build &amp; Deploy the workbench will deploy to any repositories defined
+      in the Dependency Management section of the pom in your workbench project. You can edit the
+      pom.xml file associated with your workbench project under the Repository View of the project
+      explorer. Details on dependency management in maven can be found here :
+      http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html</para>
 
     <para>If there are errors during the build process they will be reported
     in the "Problems Panel".</para>
