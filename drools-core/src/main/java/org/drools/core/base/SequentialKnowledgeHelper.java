@@ -21,16 +21,15 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.WorkingMemory;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryActions;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Tuple;
@@ -46,7 +45,7 @@ public class SequentialKnowledgeHelper
 
     private static final long                  serialVersionUID = 510l;
 
-    private Rule                               rule;
+    private RuleImpl                           rule;
     private GroupElement                       subrule;
     private Activation                         activation;
     private Tuple                              tuple;
@@ -73,7 +72,7 @@ public class SequentialKnowledgeHelper
     }
     
 
-    public Rule getRule() {
+    public RuleImpl getRule() {
         return this.rule;
     }
 
@@ -103,7 +102,7 @@ public class SequentialKnowledgeHelper
     }
     
     public KnowledgeRuntime getKnowledgeRuntime() {
-        return new StatefulKnowledgeSessionImpl( (AbstractWorkingMemory) this.workingMemory );
+        return (StatefulKnowledgeSessionImpl) this.workingMemory;
      }
 
     public KieRuntime getKieRuntime() {
@@ -144,15 +143,11 @@ public class SequentialKnowledgeHelper
     }
 
     public EntryPoint getEntryPoint(String id) {
-        return this.workingMemory.getEntryPoints().get( id );
+        return ((StatefulKnowledgeSessionImpl) this.workingMemory).getEntryPoint( id );
     }
 
     public Channel getChannel(String id) {
         return this.workingMemory.getChannels().get( id );
-    }
-
-    public Map<String, EntryPoint> getEntryPoints() {
-        return Collections.unmodifiableMap( this.workingMemory.getEntryPoints() );
     }
 
     public Map<String, Channel> getChannels() {

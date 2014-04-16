@@ -16,9 +16,7 @@
 
 package org.drools.compiler.lang;
 
-import org.drools.core.RuntimeDroolsException;
-
-public class ParseException extends RuntimeDroolsException {
+public class ParseException extends RuntimeException {
 
     private static final long serialVersionUID = 510l;
 

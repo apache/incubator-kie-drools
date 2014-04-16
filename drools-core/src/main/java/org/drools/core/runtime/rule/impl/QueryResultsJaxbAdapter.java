@@ -16,19 +16,21 @@
 
 package org.drools.core.runtime.rule.impl;
 
+import org.drools.core.QueryResultsImpl;
+
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 
-public class QueryResultsJaxbAdapter extends XmlAdapter<NativeQueryResults, FlatQueryResults>{
+public class QueryResultsJaxbAdapter extends XmlAdapter<QueryResultsImpl, FlatQueryResults>{
 
     @Override
-    public NativeQueryResults marshal(FlatQueryResults v) throws Exception {
+    public QueryResultsImpl marshal(FlatQueryResults v) throws Exception {
         return null;
     }
 
     @Override
-    public FlatQueryResults unmarshal(NativeQueryResults v) throws Exception {
-        return new FlatQueryResults(((NativeQueryResults)v).getResults());
+    public FlatQueryResults unmarshal(QueryResultsImpl v) throws Exception {
+        return new FlatQueryResults(v);
     }
 
 

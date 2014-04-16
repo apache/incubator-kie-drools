@@ -1,6 +1,6 @@
 package org.drools.compiler.lang.descr;
 
-import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.kie.api.io.Resource;
 
 import java.util.ArrayList;
@@ -111,7 +111,7 @@ public class CompositePackageDescr extends PackageDescr {
         return filter;
     }
     
-    public void addFilter( PackageBuilder.AssetFilter f ) {
+    public void addFilter( KnowledgeBuilderImpl.AssetFilter f ) {
         if( f != null ) {
             if( filter == null ) {
                 this.filter = new CompositeAssetFilter();
@@ -120,12 +120,12 @@ public class CompositePackageDescr extends PackageDescr {
         }
     }
     
-    public static class CompositeAssetFilter implements PackageBuilder.AssetFilter {
-        public List<PackageBuilder.AssetFilter> filters = new ArrayList<PackageBuilder.AssetFilter>();
+    public static class CompositeAssetFilter implements KnowledgeBuilderImpl.AssetFilter {
+        public List<KnowledgeBuilderImpl.AssetFilter> filters = new ArrayList<KnowledgeBuilderImpl.AssetFilter>();
 
         @Override
         public Action accept(String pkgName, String assetName) {
-            for( PackageBuilder.AssetFilter filter : filters ) {
+            for( KnowledgeBuilderImpl.AssetFilter filter : filters ) {
                 Action result = filter.accept(pkgName, assetName);
                 if( !Action.DO_NOTHING.equals( result ) ) {
                     return result;

@@ -22,12 +22,12 @@ import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.FieldFactory;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.test.model.Cheese;
-import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.core.rule.MvelConstraintTestUtil;
-import org.drools.core.rule.Package;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.Rule;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.FieldValue;
@@ -70,7 +70,7 @@ public class KnowledgeBaseEventSupportTest {
     private KnowledgeBase        kbase;
     private TestRuleBaseListener listener1;
     private TestRuleBaseListener listener2;
-    private KnowledgePackageImp  pkg;
+    private InternalKnowledgePackage pkg;
 
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
@@ -83,7 +83,7 @@ public class KnowledgeBaseEventSupportTest {
         kbase.addEventListener( listener1 );
         kbase.addEventListener( listener2 );
 
-        final Rule rule1 = new Rule( "test1" );
+        final RuleImpl rule1 = new RuleImpl( "test1" );
         final ClassObjectType cheeseObjectType = new ClassObjectType( Cheese.class );
         final Pattern pattern = new Pattern( 0,
                                              cheeseObjectType );
@@ -124,7 +124,7 @@ public class KnowledgeBaseEventSupportTest {
             }
         } );
 
-        final Rule rule2 = new Rule( "test2" );
+        final RuleImpl rule2 = new RuleImpl( "test2" );
         final ClassObjectType cheeseObjectType2 = new ClassObjectType( Cheese.class );
         final Pattern pattern2 = new Pattern( 0,
                                               cheeseObjectType2 );
@@ -157,9 +157,9 @@ public class KnowledgeBaseEventSupportTest {
             }
         } );
 
-        pkg = new KnowledgePackageImp( new Package( "org.drools.test1" ) );
-        pkg.pkg.addRule( rule1 );
-        pkg.pkg.addRule( rule2 );
+        pkg = new KnowledgePackageImpl( "org.drools.test1" );
+        pkg.addRule( rule1 );
+        pkg.addRule( rule2 );
     }
 
     @Test

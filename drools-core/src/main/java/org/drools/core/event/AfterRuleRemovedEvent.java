@@ -16,18 +16,18 @@
 
 package org.drools.core.event;
 
-import org.drools.core.RuleBase;
-import org.drools.core.rule.Package;
-import org.drools.core.rule.Rule;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
 
-public class AfterRuleRemovedEvent extends RuleBaseEvent {
+public class AfterRuleRemovedEvent extends KnowledgeBaseEvent {
 
     private static final long serialVersionUID = 510l;
 
-    public AfterRuleRemovedEvent(final RuleBase ruleBase,
-                                 final Package pkg,
-                                 final Rule rule) {
-        super( ruleBase,
+    public AfterRuleRemovedEvent(final InternalKnowledgeBase kBase,
+                                 final InternalKnowledgePackage pkg,
+                                 final RuleImpl rule) {
+        super( kBase,
                pkg,
                rule );
     }

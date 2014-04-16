@@ -12,7 +12,6 @@ import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 
@@ -137,7 +136,7 @@ public class BeliefSystemLogicalCallback
         } else  {
             if ( fullyRetract ) {
                 ((NamedEntryPoint) handle.getEntryPoint()).delete( this.handle,
-                                                                   (Rule) context.getRuleOrigin(),
+                                                                   context.getRuleOrigin(),
                                                                    this.activation );
             } else {
                 final ObjectTypeConf typeConf = nep.getObjectTypeConfigurationRegistry().getObjectTypeConf( nep.getEntryPoint(),

@@ -25,9 +25,10 @@ import org.drools.core.base.FieldFactory;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.core.base.evaluators.Operator;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MvelConstraintTestUtil;
-import org.drools.core.rule.Package;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
@@ -41,13 +42,13 @@ import java.util.List;
 
 public class ReteTesterHelper {
 
-    private Package                 pkg;
+    private InternalKnowledgePackage pkg;
     private ClassFieldAccessorStore store;
     private EvaluatorRegistry       registry = new EvaluatorRegistry();
     private final ClassTypeResolver typeResolver;
 
     public ReteTesterHelper() {
-        this.pkg = new Package( "org.drools.examples.manners" );
+        this.pkg = new KnowledgePackageImpl( "org.drools.examples.manners" );
         this.pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         this.store = this.pkg.getClassFieldAccessorStore();
         this.store.setEagerWire( true );
@@ -55,7 +56,7 @@ public class ReteTesterHelper {
                                                    getClass().getClassLoader() );
     }
 
-    public Package getPkg() {
+    public InternalKnowledgePackage getPkg() {
         return pkg;
     }
 

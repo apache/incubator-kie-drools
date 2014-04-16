@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.RuntimeDroolsException;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
@@ -430,8 +429,8 @@ public class ClassFieldInspector {
                         }
                     }
                 } catch ( final Exception e ) {
-                    throw new RuntimeDroolsException( "Error getting field access method: " + name + ": " + e.getMessage(),
-                                                      e );
+                    throw new RuntimeException( "Error getting field access method: " + name + ": " + e.getMessage(),
+                                                e );
                 }
             }
             return null;

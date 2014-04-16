@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.EventFactHandle;
@@ -271,7 +270,7 @@ public class CoincidesEvaluatorDefinition
                                 final InternalReadAccessor extractor,
                                 final InternalFactHandle object1,
                                 final FieldValue object2) {
-            throw new RuntimeDroolsException( "The 'coincides' operator can only be used to compare one event to another, and never to compare to literal constraints." );
+            throw new RuntimeException( "The 'coincides' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -404,7 +403,7 @@ public class CoincidesEvaluatorDefinition
             } else {
                 for ( Long param : parameters ) {
                     if ( param.longValue() < 0 ) {
-                        throw new RuntimeDroolsException( "[Coincides Evaluator]: negative values not allowed for temporal distance thresholds: '" + paramText + "'" );
+                        throw new RuntimeException( "[Coincides Evaluator]: negative values not allowed for temporal distance thresholds: '" + paramText + "'" );
                     }
                 }
                 if ( parameters.length == 1 ) {
@@ -416,7 +415,7 @@ public class CoincidesEvaluatorDefinition
                     this.startDev = parameters[0].longValue();
                     this.endDev = parameters[1].longValue();
                 } else {
-                    throw new RuntimeDroolsException( "[Coincides Evaluator]: Not possible to have more than 2 parameters: '" + paramText + "'" );
+                    throw new RuntimeException( "[Coincides Evaluator]: Not possible to have more than 2 parameters: '" + paramText + "'" );
                 }
             }
         }

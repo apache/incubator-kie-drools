@@ -2,7 +2,7 @@ package org.drools.compiler.beliefsystem.abductive;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.BeliefSystemType;
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.abductive.Abducible;

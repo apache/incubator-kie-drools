@@ -3,8 +3,8 @@ package org.drools.compiler.rule.builder.dialect.mvel;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.DeclarationScopeResolver;
 
 public class InstrumentedDeclarationScopeResolver extends DeclarationScopeResolver {
@@ -19,12 +19,12 @@ public class InstrumentedDeclarationScopeResolver extends DeclarationScopeResolv
     }
 
     @Override
-    public Map getDeclarations( Rule rule ) {
+    public Map getDeclarations( RuleImpl rule ) {
         return this.declarations;
     }
     
     @Override
-    public Declaration getDeclaration( Rule rule, String name) {
+    public Declaration getDeclaration( RuleImpl rule, String name) {
         return ( Declaration ) this.declarations.get( name );
     }
 }

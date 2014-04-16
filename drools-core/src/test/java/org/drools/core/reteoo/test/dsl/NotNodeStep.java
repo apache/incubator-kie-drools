@@ -114,23 +114,23 @@ public class NotNodeStep
                     break;
                 case 1:
                   constraints = new SingleBetaConstraints( list.get(0),
-                                                           buildContext.getRuleBase().getConfiguration() );                    
+                                                           buildContext.getKnowledgeBase().getConfiguration() );
                   break;
                 case 2:
                     constraints = new DoubleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[2] ),
-                                                             buildContext.getRuleBase().getConfiguration() );                    
+                                                             buildContext.getKnowledgeBase().getConfiguration() );
                     break;                    
                 case 3:
                     constraints = new TripleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[2] ),
-                                                             buildContext.getRuleBase().getConfiguration() );                    
+                                                             buildContext.getKnowledgeBase().getConfiguration() );
                     break;                    
                 case 4:
                     constraints = new QuadroupleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[2] ),
-                                                                 buildContext.getRuleBase().getConfiguration() );                    
+                                                                 buildContext.getKnowledgeBase().getConfiguration() );
                     break;                                        
                 default:
                     constraints = new DefaultBetaConstraints( list.toArray( new BetaNodeFieldConstraint[2] ),
-                                                              buildContext.getRuleBase().getConfiguration() );                    
+                                                              buildContext.getKnowledgeBase().getConfiguration() );
                     break;                                        
                         
             }

@@ -17,9 +17,7 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.ShadowProxy;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.PropagationContextFactory;
@@ -92,7 +90,7 @@ public class EntryPointNode extends ObjectSource
                           final BuildContext context) {
         this( id,
               context.getPartitionId(),
-              context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
+              context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
               objectSource,
               context.getCurrentEntryPoint() ); // irrelevant for this node, since it overrides sink management
     }
@@ -247,13 +245,6 @@ public class EntryPointNode extends ObjectSource
             log.trace( "Insert {}", handle.toString()  );
         }
 
-        // checks if shadow is enabled
-        if ( objectTypeConf.isShadowEnabled() ) {
-            // the user has implemented the ShadowProxy interface, let their implementation
-            // know it is safe to update the information the engine can see.
-            ((ShadowProxy) handle.getObject()).updateProxy();
-        }
-        
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
 
         for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
@@ -271,13 +262,6 @@ public class EntryPointNode extends ObjectSource
             log.trace( "Update {}", handle.toString()  );
         }
 
-        // checks if shadow is enabled
-        if ( objectTypeConf.isShadowEnabled() ) {
-            // the user has implemented the ShadowProxy interface, let their implementation
-            // know it is safe to update the information the engine can see.
-            ((ShadowProxy) handle.getObject()).updateProxy();
-        }
-        
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
         
         // make a reference to the previous tuples, then null then on the handle
@@ -423,7 +407,7 @@ public class EntryPointNode extends ObjectSource
         if (context == null ) {
             return;
         }
-        if ( context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
+        if ( context.getKnowledgeBase().getConfiguration().isPhreakEnabled() ) {
             for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
                 workingMemory.updateEntryPointsCache();
             }
@@ -432,7 +416,7 @@ public class EntryPointNode extends ObjectSource
 
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             workingMemory.updateEntryPointsCache();
-            PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
+            PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
             final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
             this.source.updateSink( this,
                                     propagationContext,

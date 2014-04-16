@@ -16,9 +16,7 @@
 
 package org.drools.compiler.reteoo;
 
-import org.drools.core.FactException;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
@@ -93,7 +91,7 @@ public class MockLeftTupleSink extends LeftTupleSource
     
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) throws FactException {
+                           final InternalWorkingMemory workingMemory) {
         // TODO Auto-generated method stub
 
     }
@@ -106,12 +104,6 @@ public class MockLeftTupleSink extends LeftTupleSource
     public void attach(BuildContext buildContext) {
         // TODO Auto-generated method stub
 
-    }
-
-    public List getPropagatedTuples(final AbstractWorkingMemory workingMemory,
-                                    final LeftTupleSink sink) {
-        // TODO Auto-generated method stub
-        return Collections.EMPTY_LIST;
     }
 
     /**

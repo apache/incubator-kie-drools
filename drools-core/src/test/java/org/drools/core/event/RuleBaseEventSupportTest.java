@@ -16,25 +16,26 @@
 
 package org.drools.core.event;
 
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.FieldFactory;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.rule.MvelConstraintTestUtil;
-import org.drools.core.rule.Package;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.Rule;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.KnowledgeHelper;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.internal.KnowledgeBaseFactory;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -44,23 +45,23 @@ import static org.junit.Assert.assertEquals;
 
 public class RuleBaseEventSupportTest {
 
-    private RuleBase ruleBase;
+    private InternalKnowledgeBase kBase;
     private TestRuleBaseListener listener1;
     private TestRuleBaseListener listener2;
-    private Package              pkg;
+    private InternalKnowledgePackage pkg;
 
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
     @Before
     public void setUp() throws Exception {
-        ruleBase = RuleBaseFactory.newRuleBase();
+        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         listener1 = new TestRuleBaseListener( "(listener-1) " );
         listener2 = new TestRuleBaseListener( "(listener-2) " );
-        ruleBase.addEventListener( listener1 );
-        ruleBase.addEventListener( listener2 );
+        kBase.addEventListener( listener1 );
+        kBase.addEventListener( listener2 );
 
-        final Rule rule1 = new Rule( "test1" );
+        final RuleImpl rule1 = new RuleImpl( "test1" );
         final ClassObjectType cheeseObjectType = new ClassObjectType( Cheese.class );
         final Pattern pattern = new Pattern( 0,
                                              cheeseObjectType );
@@ -101,7 +102,7 @@ public class RuleBaseEventSupportTest {
             }
         } );
 
-        final Rule rule2 = new Rule( "test2" );
+        final RuleImpl rule2 = new RuleImpl( "test2" );
         final ClassObjectType cheeseObjectType2 = new ClassObjectType( Cheese.class );
         final Pattern pattern2 = new Pattern( 0,
                                               cheeseObjectType2 );
@@ -134,7 +135,7 @@ public class RuleBaseEventSupportTest {
             }
         } );
 
-        pkg = new Package( "org.drools.test1" );
+        pkg = new KnowledgePackageImpl( "org.drools.test1" );
         pkg.addRule( rule1 );
         pkg.addRule( rule2 );
 
@@ -159,7 +160,7 @@ public class RuleBaseEventSupportTest {
         assertEquals( 0,
                       listener2.getAfterRuleAdded() );
 
-        this.ruleBase.addPackage( pkg );
+        this.kBase.addPackage( pkg );
 
         assertEquals( 1,
                       listener1.getBeforePackageAdded() );
@@ -181,7 +182,7 @@ public class RuleBaseEventSupportTest {
 
     @Test
     public void testRemovePackageEvents() throws Exception {
-        this.ruleBase.addPackage( pkg );
+        this.kBase.addPackage( pkg );
 
         assertEquals( 0,
                       listener1.getBeforePackageRemoved() );
@@ -201,7 +202,7 @@ public class RuleBaseEventSupportTest {
         assertEquals( 0,
                       listener2.getAfterRuleRemoved() );
 
-        this.ruleBase.removePackage( "org.drools.test1" );
+        this.kBase.removeKiePackage( "org.drools.test1" );
 
         assertEquals( 1,
                       listener1.getBeforePackageRemoved() );
@@ -224,7 +225,7 @@ public class RuleBaseEventSupportTest {
 
     public static class TestRuleBaseListener
         implements
-        RuleBaseEventListener {
+        KnowledgeBaseEventListener {
         private String id;
         private int    beforePackageAdded   = 0;
         private int    afterPackageAdded    = 0;

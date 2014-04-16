@@ -1,14 +1,14 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.util.BitMaskUtil;
-import org.drools.core.util.ClassUtils;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
+import org.drools.core.util.BitMaskUtil;
+import org.drools.core.util.ClassUtils;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class PropertySpecificUtil {
     }
 
     public static boolean isPropertyReactive(BuildContext context, Class<?> objectClass) {
-        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration( objectClass );
+        TypeDeclaration typeDeclaration = context.getKnowledgeBase().getTypeDeclaration( objectClass );
         return typeDeclaration != null && typeDeclaration.isPropertyReactive();
     }
 
@@ -57,18 +57,18 @@ public class PropertySpecificUtil {
     }
 
     public static List<String> getSettableProperties(InternalWorkingMemory workingMemory, ObjectTypeNode objectTypeNode) {
-        return getSettableProperties((InternalRuleBase)workingMemory.getRuleBase(), objectTypeNode);
+        return getSettableProperties(workingMemory.getKnowledgeBase(), objectTypeNode);
     }
 
-    public static List<String> getSettableProperties(InternalRuleBase ruleBase, ObjectTypeNode objectTypeNode) {
-        return getSettableProperties(ruleBase, getNodeClass(objectTypeNode));
+    public static List<String> getSettableProperties(InternalKnowledgeBase kBase, ObjectTypeNode objectTypeNode) {
+        return getSettableProperties(kBase, getNodeClass(objectTypeNode));
     }
 
-    public static List<String> getSettableProperties(InternalRuleBase ruleBase, Class<?> nodeClass) {
+    public static List<String> getSettableProperties(InternalKnowledgeBase kBase, Class<?> nodeClass) {
         if (nodeClass == null) {
             return null;
         }
-        TypeDeclaration typeDeclaration = ruleBase.getTypeDeclaration(nodeClass);
+        TypeDeclaration typeDeclaration = kBase.getTypeDeclaration(nodeClass);
         if (typeDeclaration == null) {
             return ClassUtils.getSettableProperties(nodeClass);
         }

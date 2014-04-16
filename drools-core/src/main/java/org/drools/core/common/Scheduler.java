@@ -18,7 +18,6 @@ package org.drools.core.common;
 
 import java.io.IOException;
 
-import org.drools.core.Agenda;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.PersisterEnums;
@@ -40,6 +39,7 @@ import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
 import org.drools.core.time.Trigger;
+import org.kie.api.runtime.rule.Agenda;
 
 /**
  * Scheduler for rules requiring truth duration.

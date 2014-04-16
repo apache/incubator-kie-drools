@@ -29,7 +29,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.WorkingMemory;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.EvalExpression;
@@ -121,8 +120,8 @@ public class EvalCondition extends ConditionalElement
                                              workingMemory,
                                              context );
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( this.getEvalExpression() + " : " + e,
-                                              e );
+            throw new RuntimeException( this.getEvalExpression() + " : " + e,
+                                        e );
         }
     }
 

@@ -1,48 +1,47 @@
 package org.drools.reteoo.common;
 
-import org.drools.core.FactException;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
-import org.drools.core.event.WorkingMemoryEventSupport;
+import org.drools.core.event.RuleRuntimeEventSupport;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.LIANodePropagation;
-import org.drools.core.spi.AgendaFilter;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.rule.AgendaFilter;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class ReteWorkingMemory extends AbstractWorkingMemory {
+public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
 
     private List<LIANodePropagation> liaPropagations;
 
     public ReteWorkingMemory() {
     }
 
-    public ReteWorkingMemory(int id, InternalRuleBase ruleBase) {
-        super(id, ruleBase);
+    public ReteWorkingMemory(int id, InternalKnowledgeBase kBase) {
+        super(id, kBase);
     }
 
-    public ReteWorkingMemory(int id, InternalRuleBase ruleBase, boolean initInitFactHandle, SessionConfiguration config, Environment environment) {
-        super(id, ruleBase, initInitFactHandle, config, environment);
+    public ReteWorkingMemory(int id, InternalKnowledgeBase kBase, boolean initInitFactHandle, SessionConfiguration config, Environment environment) {
+        super(id, kBase, initInitFactHandle, config, environment);
     }
 
-    public ReteWorkingMemory(int id, InternalRuleBase ruleBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {
-        super(id, ruleBase, handleFactory, initialFactHandle, propagationContext, config, agenda, environment);
+    public ReteWorkingMemory(int id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {
+        super(id, kBase, handleFactory, initialFactHandle, propagationContext, config, agenda, environment);
     }
 
-    public ReteWorkingMemory(int id, InternalRuleBase ruleBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, Environment environment, WorkingMemoryEventSupport workingMemoryEventSupport, AgendaEventSupport agendaEventSupport, RuleEventListenerSupport ruleEventListenerSupport, InternalAgenda agenda) {
-        super(id, ruleBase, handleFactory, false, propagationContext, config, environment, workingMemoryEventSupport, agendaEventSupport, ruleEventListenerSupport, agenda);
+    public ReteWorkingMemory(int id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, Environment environment, RuleRuntimeEventSupport workingMemoryEventSupport, AgendaEventSupport agendaEventSupport, RuleEventListenerSupport ruleEventListenerSupport, InternalAgenda agenda) {
+        super(id, kBase, handleFactory, false, propagationContext, config, environment, workingMemoryEventSupport, agendaEventSupport, ruleEventListenerSupport, agenda);
     }
 
 
@@ -69,7 +68,7 @@ public class ReteWorkingMemory extends AbstractWorkingMemory {
             synchronized ( syncLock ) {
                 if ( initialFactHandle == null ) {
                     // double check, inside of sync point incase some other thread beat us to it.
-                    initInitialFact(ruleBase, null);
+                    initInitialFact(kBase, null);
                 }
             }
         }
@@ -81,14 +80,15 @@ public class ReteWorkingMemory extends AbstractWorkingMemory {
     }
 
     public int fireAllRules(final AgendaFilter agendaFilter,
-                            int fireLimit) throws FactException {
+                            int fireLimit) {
+        checkAlive();
         if ( this.firing.compareAndSet( false,
                                         true ) ) {
             initInitialFact();
 
             try {
                 startOperation();
-                ruleBase.readLock();
+                kBase.readLock();
 
                 // If we're already firing a rule, then it'll pick up the firing for any other assertObject(..) that get
                 // nested inside, avoiding concurrent-modification exceptions, depending on code paths of the actions.
@@ -106,7 +106,7 @@ public class ReteWorkingMemory extends AbstractWorkingMemory {
                                                       fireLimit );
                 return fireCount;
             } finally {
-                ruleBase.readUnlock();
+                kBase.readUnlock();
                 endOperation();
                 this.firing.set( false );
             }
@@ -118,7 +118,7 @@ public class ReteWorkingMemory extends AbstractWorkingMemory {
 
         try {
             startOperation();
-            this.ruleBase.readLock();
+            this.kBase.readLock();
             this.lock.lock();
 
             final PropagationContext pCtx = pctxFactory.createPropagationContext(getNextPropagationIdCounter(), PropagationContext.INSERTION,
@@ -134,7 +134,7 @@ public class ReteWorkingMemory extends AbstractWorkingMemory {
 
         } finally {
             this.lock.unlock();
-            this.ruleBase.readUnlock();
+            this.kBase.readUnlock();
             endOperation();
         }
     }
@@ -142,7 +142,7 @@ public class ReteWorkingMemory extends AbstractWorkingMemory {
     protected BaseNode[] evalQuery(String queryName, DroolsQuery queryObject, InternalFactHandle handle, PropagationContext pCtx) {
         initInitialFact();
 
-        BaseNode[] tnodes = ( BaseNode[] ) ruleBase.getReteooBuilder().getTerminalNodes(queryName);
+        BaseNode[] tnodes = ( BaseNode[] ) kBase.getReteooBuilder().getTerminalNodes(queryName);
         // no need to call retract, as no leftmemory used.
         getEntryPointNode().assertQuery( handle,
                                          pCtx,

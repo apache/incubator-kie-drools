@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNull;
 
 import java.io.StringReader;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
@@ -49,7 +48,7 @@ public class DrlParserTest {
             expander.addDSLMapping( file.getMapping() );
             resolver.addExpander("*", expander);
         } else {
-            throw new RuntimeDroolsException( "Error parsing and loading DSL file." + file.getErrors() );
+            throw new RuntimeException( "Error parsing and loading DSL file." + file.getErrors() );
         }
 
         DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);

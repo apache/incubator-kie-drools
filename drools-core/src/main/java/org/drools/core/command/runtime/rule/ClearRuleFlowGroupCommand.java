@@ -36,7 +36,7 @@ public class ClearRuleFlowGroupCommand implements GenericCommand<Void> {
 
     public Void execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-        ((StatefulKnowledgeSessionImpl)ksession).session.getAgenda().getRuleFlowGroup( this.name ).clear();
+        ((StatefulKnowledgeSessionImpl)ksession).getAgenda().getRuleFlowGroup( this.name ).clear();
         return null;
     }
 

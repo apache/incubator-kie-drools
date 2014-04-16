@@ -1,10 +1,14 @@
 package org.drools.template.jdbc;
 
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.WorkingMemory;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.io.InputStream;
 import java.io.StringReader;
@@ -13,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 
 /**
@@ -53,49 +58,27 @@ public class ResultSetGeneratorTest {
 
         sta.close();
 
-        // test that our rules can execute.
-        final RuleBase rb = buildRuleBase(drl);
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        assertFalse(kbuilder.hasErrors());
 
-        WorkingMemory wm = rb.newStatefulSession();
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
 
         //now create some test data
-        wm.insert(new Cheese("stilton",
-                             42));
-        wm.insert(new Person("michael",
-                             "stilton",
-                             42));
-        final List<String> list = new ArrayList<String>();
-        wm.setGlobal("list",
-                     list);
+        kSession.insert(new Cheese("stilton", 42));
+        kSession.insert(new Person("michael", "stilton", 42));
+        List<String> list = new ArrayList<String>();
+        kSession.setGlobal("list", list);
 
-        wm.fireAllRules();
+        kSession.fireAllRules();
 
         assertEquals(1, list.size());
 
     }
 
-    /**
-     * Build the rule base from the generated DRL.
-     * Same method from SimpleRuleTemplateExample.
-     *
-     * @param drls variable length of Drools rules as strings
-     * @return RuleBase built from the rules
-     * @throws Exception Add Exception handling to a real implementation.
-     */
-    private RuleBase buildRuleBase(String... drls) throws Exception {
-        //now we build the rule package and rulebase, as if they are normal rules
-        PackageBuilder builder = new PackageBuilder();
-        for (String drl : drls) {
-            builder.addPackageFromDrl(new StringReader(drl));
-        }
-
-        //add the package to a rulebase (deploy the rule package).
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage(builder.getPackage());
-        return ruleBase;
-    }
-
-    /**
+     /**
      * simple getter method looks up our template as a Resource
      *
      * @return the template as an InputStream

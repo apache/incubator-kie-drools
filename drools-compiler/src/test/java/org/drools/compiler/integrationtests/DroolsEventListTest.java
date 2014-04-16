@@ -5,6 +5,7 @@ import java.util.Comparator;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Test;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -54,12 +55,12 @@ public class DroolsEventListTest extends CommonTestMethodBase {
         Cheese cheddar3 = new Cheese( "cheddar",
                                       3 );
 
-        org.kie.api.runtime.rule.FactHandle s1Fh = ksession.insert( stilton1 );
-        org.kie.api.runtime.rule.FactHandle s2Fh = ksession.insert( stilton2 );
-        org.kie.api.runtime.rule.FactHandle s3Fh = ksession.insert( stilton3 );
-        org.kie.api.runtime.rule.FactHandle c1Fh = ksession.insert( cheddar1 );
-        org.kie.api.runtime.rule.FactHandle c2Fh = ksession.insert( cheddar2 );
-        org.kie.api.runtime.rule.FactHandle c3Fh = ksession.insert( cheddar3 );
+        FactHandle s1Fh = ksession.insert( stilton1 );
+        FactHandle s2Fh = ksession.insert( stilton2 );
+        FactHandle s3Fh = ksession.insert( stilton3 );
+        FactHandle c1Fh = ksession.insert( cheddar1 );
+        FactHandle c2Fh = ksession.insert( cheddar2 );
+        FactHandle c3Fh = ksession.insert( cheddar3 );
                       
         DroolsEventList list = new DroolsEventList();
         // Open the LiveQuery

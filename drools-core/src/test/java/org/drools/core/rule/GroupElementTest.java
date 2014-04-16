@@ -16,7 +16,6 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.RuntimeDroolsException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -175,7 +174,7 @@ public class GroupElementTest {
                                      null );
         try {
             not.addChild( pattern1 );
-        } catch ( final RuntimeDroolsException rde ) {
+        } catch ( final RuntimeException rde ) {
             fail( "Adding a single child is not supposed to throw Exception for NOT GE: " + rde.getMessage() );
         }
 
@@ -184,7 +183,7 @@ public class GroupElementTest {
         try {
             not.addChild( pattern2 );
             fail( "Adding a second child into a NOT GE should throw Exception" );
-        } catch ( final RuntimeDroolsException rde ) {
+        } catch ( final RuntimeException rde ) {
             // everything is fine
         }
     }

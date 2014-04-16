@@ -19,21 +19,21 @@ package org.drools.core.base;
 import java.util.List;
 
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
 
 public interface InternalViewChangedEventListener {
-    public void rowAdded(Rule rule, 
+    public void rowAdded(RuleImpl rule,
                          LeftTuple tuple,
                          PropagationContext context,
                          InternalWorkingMemory workingMemory);
 
-    public void rowRemoved(Rule rule, LeftTuple tuple,
+    public void rowRemoved(RuleImpl rule, LeftTuple tuple,
                            PropagationContext context,
                            InternalWorkingMemory workingMemory);
 
-    public void rowUpdated(Rule rule,
+    public void rowUpdated(RuleImpl rule,
                            LeftTuple leftTuple,
                            PropagationContext context,
                            InternalWorkingMemory workingMemory);

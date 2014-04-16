@@ -16,22 +16,10 @@
 
 package org.drools.core.marshalling.impl;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-
+import com.google.protobuf.ByteString;
 import org.drools.core.InitialFact;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.ActivationIterator;
 import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.AgendaItem;
@@ -41,7 +29,6 @@ import org.drools.core.common.EqualityKey;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.LeftTupleIterator;
@@ -54,6 +41,8 @@ import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.core.marshalling.impl.ProtobufMessages.ObjectTypeConfiguration;
 import org.drools.core.marshalling.impl.ProtobufMessages.ProcessData.Builder;
@@ -75,7 +64,6 @@ import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.RuleFlowGroup;
@@ -94,7 +82,16 @@ import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.rule.EntryPoint;
 
-import com.google.protobuf.ByteString;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An output marshaller that uses ProtoBuf as the marshalling framework
@@ -126,17 +123,17 @@ public class ProtobufOutputMarshaller {
     }
 
     private static ProtobufMessages.KnowledgeSession serializeSession(MarshallerWriteContext context) throws IOException {
-        AbstractWorkingMemory wm = (AbstractWorkingMemory) context.wm;
+        StatefulKnowledgeSessionImpl wm = (StatefulKnowledgeSessionImpl) context.wm;
 
         try {
             wm.getLock().lock();
-            for (WorkingMemoryEntryPoint ep : wm.getEntryPoints().values()) {
+            for (WorkingMemoryEntryPoint ep : wm.getWorkingMemoryEntryPoints().values()) {
                 if (ep instanceof NamedEntryPoint) {
                     ((NamedEntryPoint)ep).lock();
                 }
             }
 
-            wm.getAgenda().unstageActivations();
+            ((InternalAgenda)wm.getAgenda()).unstageActivations();
 
             evaluateRuleActivations( wm );
 
@@ -164,7 +161,7 @@ public class ProtobufOutputMarshaller {
 
             writeNodeMemories( context, _ruleData );
 
-            for ( EntryPoint wmep : wm.getEntryPoints().values() ) {
+            for ( EntryPoint wmep : wm.getWorkingMemoryEntryPoints().values() ) {
                 org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint.Builder _epb = ProtobufMessages.EntryPoint.newBuilder();
                 _epb.setEntryPointId( wmep.getEntryPointId() );
 
@@ -218,7 +215,7 @@ public class ProtobufOutputMarshaller {
 
             return _session.build();
         } finally {
-            for (WorkingMemoryEntryPoint ep : wm.getEntryPoints().values()) {
+            for (WorkingMemoryEntryPoint ep : wm.getWorkingMemoryEntryPoints().values()) {
                 if (ep instanceof NamedEntryPoint) {
                     ((NamedEntryPoint)ep).unlock();
                 }
@@ -252,7 +249,7 @@ public class ProtobufOutputMarshaller {
     	}
 	}
 
-	private static void evaluateRuleActivations(AbstractWorkingMemory wm) {
+	private static void evaluateRuleActivations(StatefulKnowledgeSessionImpl wm) {
         // ET: NOTE: initially we were only resolving partially evaluated rules
         // but some tests fail because of that. Have to resolve all rule agenda items
         // in order to fix the tests
@@ -268,7 +265,7 @@ public class ProtobufOutputMarshaller {
         // need to evaluate all lazy partially evaluated activations before serializing
         boolean dirty = true;
         while ( dirty) {
-            for ( Activation activation : wm.getAgenda().getActivations() ) {
+            for ( Activation activation : ((InternalAgenda)wm.getAgenda()).getActivations() ) {
                 if ( activation.isRuleAgendaItem() /*&& evaluated.contains( activation.getRule().getPackageName()+"."+activation.getRule().getName() )*/ ) {
                     // evaluate it
                     ((RuleAgendaItem)activation).getRuleExecutor().reEvaluateNetwork( wm, null, false );
@@ -276,9 +273,9 @@ public class ProtobufOutputMarshaller {
                 }
             }
             dirty = false;
-            if ( ((InternalRuleBase)wm.getRuleBase()).getConfiguration().isPhreakEnabled() ) {
+            if ( wm.getKnowledgeBase().getConfiguration().isPhreakEnabled() ) {
                 // network evaluation with phreak and TMS may make previous processed rules dirty again, so need to reprocess until all is flushed.
-                for ( Activation activation : wm.getAgenda().getActivations() ) {
+                for ( Activation activation : ((InternalAgenda)wm.getAgenda()).getActivations() ) {
                     if ( activation.isRuleAgendaItem() && ((RuleAgendaItem)activation).getRuleExecutor().isDirty() ) {
                         dirty = true;
                         break;
@@ -571,7 +568,7 @@ public class ProtobufOutputMarshaller {
     public static void writeActionQueue(MarshallerWriteContext context,
                                         ProtobufMessages.RuleData.Builder _session) throws IOException {
 
-        AbstractWorkingMemory wm = (AbstractWorkingMemory) context.wm;
+        StatefulKnowledgeSessionImpl wm = (StatefulKnowledgeSessionImpl) context.wm;
         if ( !wm.getActionQueue().isEmpty() ) {
             ProtobufMessages.ActionQueue.Builder _queue = ProtobufMessages.ActionQueue.newBuilder();
 
@@ -815,7 +812,7 @@ public class ProtobufOutputMarshaller {
                                                               AgendaItem agendaItem) {
         ProtobufMessages.Activation.Builder _activation = ProtobufMessages.Activation.newBuilder();
 
-        Rule rule = agendaItem.getRule();
+        RuleImpl rule = agendaItem.getRule();
         _activation.setPackageName( rule.getPackage() );
         _activation.setRuleName( rule.getName() );
         _activation.setTuple( writeTuple( agendaItem.getTuple() ) );

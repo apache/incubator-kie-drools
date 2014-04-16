@@ -21,21 +21,19 @@ import java.util.List;
 
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.event.AgendaEventSupport;
-import org.drools.core.event.WorkingMemoryEventSupport;
+import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
 
 public class SharedWorkingMemoryContext {
-    protected InternalRuleBase                  ruleBase;
-
     protected FactHandleFactory                 handleFactory;
 
     /** Global values which are associated with this memory. */
     protected GlobalResolver                    globalResolver;
 
     /** The eventSupport */
-    protected WorkingMemoryEventSupport         workingMemoryEventSupport;
+    protected RuleRuntimeEventSupport workingMemoryEventSupport;
 
     protected AgendaEventSupport                agendaEventSupport;
 
@@ -50,7 +48,7 @@ public class SharedWorkingMemoryContext {
 
         this.globalResolver = new MapGlobalResolver();
 
-        this.workingMemoryEventSupport = new WorkingMemoryEventSupport();
+        this.workingMemoryEventSupport = new RuleRuntimeEventSupport();
         this.agendaEventSupport = new AgendaEventSupport();
         this.__ruleBaseEventListeners = new LinkedList();
     }
@@ -71,7 +69,7 @@ public class SharedWorkingMemoryContext {
         return globalResolver;
     }
 
-    public WorkingMemoryEventSupport getWorkingMemoryEventSupport() {
+    public RuleRuntimeEventSupport getWorkingMemoryEventSupport() {
         return workingMemoryEventSupport;
     }
 

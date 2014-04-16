@@ -86,7 +86,7 @@ public class InsertObjectCommand
             factHandle = ksession.getEntryPoint( this.entryPoint ).insert( object );
         }
         
-        ReteooWorkingMemoryInterface session = ((StatefulKnowledgeSessionImpl)ksession).session;
+        ReteooWorkingMemoryInterface session = ((ReteooWorkingMemoryInterface)ksession);
 
         if ( outIdentifier != null ) {
             if ( this.returnObject ) {

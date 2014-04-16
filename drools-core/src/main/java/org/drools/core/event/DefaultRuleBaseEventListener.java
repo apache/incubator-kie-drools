@@ -23,7 +23,7 @@ import java.io.ObjectOutput;
 
 public class DefaultRuleBaseEventListener
     implements
-    RuleBaseEventListener {
+    KnowledgeBaseEventListener {
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
     }

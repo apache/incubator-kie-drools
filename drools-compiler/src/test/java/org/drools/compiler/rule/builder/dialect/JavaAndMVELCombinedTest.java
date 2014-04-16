@@ -1,17 +1,12 @@
 package org.drools.compiler.rule.builder.dialect;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
-
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
+import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.rule.Package;
+import org.kie.api.KieBase;
 
-public class JavaAndMVELCombinedTest {
+public class JavaAndMVELCombinedTest extends CommonTestMethodBase {
 
     private final static String FN1 = "mveljavarules.drl";
     private final static String FN2 = "mvelonly.drl";
@@ -64,19 +59,7 @@ public class JavaAndMVELCombinedTest {
 
     private void readDRL(String fn) {
         try {
-            Reader source = new InputStreamReader( JavaAndMVELCombinedTest.class.getResourceAsStream( fn ) );
-
-            PackageBuilder builder = new PackageBuilder();
-            builder.addPackageFromDrl( source );
-            assertEquals( 0,
-                                 builder.getErrors().getErrors().length );
-
-            Package pkg = builder.getPackage();
-            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-            ruleBase.addPackage( pkg );
-
-            assertEquals( 2,
-                                 pkg.getRules().length );
+            KieBase kieBase = loadKnowledgeBase(fn);
         } catch ( Throwable t ) {
             throw new RuntimeException(t);
         }

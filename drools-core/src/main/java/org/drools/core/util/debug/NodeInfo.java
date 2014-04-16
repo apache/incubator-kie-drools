@@ -21,7 +21,7 @@ import java.util.Set;
 
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.rule.Rule;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 
 public interface NodeInfo {
 
@@ -41,7 +41,7 @@ public interface NodeInfo {
      * Returns the set of rules this node belongs to
      * @return
      */
-    public Set<Rule> getRules();
+    public Set<RuleImpl> getRules();
 
     /**
      * Returns the actual node

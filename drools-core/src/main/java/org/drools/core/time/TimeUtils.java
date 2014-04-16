@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.mvel.MVELObjectExpression;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.LeftTuple;
@@ -130,7 +129,7 @@ public class TimeUtils {
                 // negative infinity
                 result = Long.MIN_VALUE;
             } else {
-                throw new RuntimeDroolsException( "Error parsing time string: [ " + time + " ]" );
+                throw new RuntimeException( "Error parsing time string: [ " + time + " ]" );
             }
         }
         return result;

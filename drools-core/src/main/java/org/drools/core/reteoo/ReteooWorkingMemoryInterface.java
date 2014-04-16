@@ -4,14 +4,15 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Queue;
 
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.WorkingMemoryAction;
-import org.drools.core.spi.AgendaFilter;
 import org.kie.api.event.process.ProcessEventManager;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -25,7 +26,7 @@ public interface ReteooWorkingMemoryInterface extends InternalWorkingMemoryActio
                                              EventSupport,
                                              ProcessEventManager {
 
-    Collection<? extends EntryPoint> getWorkingMemoryEntryPoints();
+    Map<String, WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints();
 
     void fireUntilHalt();
 

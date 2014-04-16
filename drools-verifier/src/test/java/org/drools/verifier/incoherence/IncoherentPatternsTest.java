@@ -16,7 +16,6 @@
 
 package org.drools.verifier.incoherence;
 
-import org.drools.core.StatelessSession;
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.components.VerifierRule;
@@ -26,6 +25,7 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -39,9 +39,7 @@ public class IncoherentPatternsTest extends TestBaseOld {
 
     @Test
     public void testIncoherentPatternsInSubRule() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Patterns.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Incoherent Patterns in rule possibility"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("PatternsTest.drl"),
@@ -50,13 +48,16 @@ public class IncoherentPatternsTest extends TestBaseOld {
         session.setGlobal("result",
                           result);
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Incoherent Patterns in rule possibility"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.WARNING).iterator();
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 VerifierRule rule = (VerifierRule) ((VerifierMessage) o).getFaulty();
                 rulesThatHadErrors.add(rule.getName());
@@ -76,9 +77,7 @@ public class IncoherentPatternsTest extends TestBaseOld {
 
     @Test
     public void testIncoherentPatternsInSubRuleVariables() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Patterns.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Incoherent Patterns in rule possibility, variables"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("PatternsTest.drl"),
@@ -87,13 +86,16 @@ public class IncoherentPatternsTest extends TestBaseOld {
         session.setGlobal("result",
                           result);
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Incoherent Patterns in rule possibility, variables"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.WARNING).iterator();
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 VerifierRule rule = (VerifierRule) ((VerifierMessage) o).getFaulty();
                 rulesThatHadErrors.add(rule.getName());
@@ -114,9 +116,7 @@ public class IncoherentPatternsTest extends TestBaseOld {
 
     @Test
     public void testIncoherentPatternsInSubRuleRangesLess() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Patterns.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Incoherent Patterns in rule possibility, ranges when not conflicts with lesser value"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("PatternsTest.drl"),
@@ -125,13 +125,16 @@ public class IncoherentPatternsTest extends TestBaseOld {
         session.setGlobal("result",
                           result);
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Incoherent Patterns in rule possibility, ranges when not conflicts with lesser value"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.WARNING).iterator();
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 VerifierRule rule = (VerifierRule) ((VerifierMessage) o).getFaulty();
                 rulesThatHadErrors.add(rule.getName());
@@ -150,9 +153,7 @@ public class IncoherentPatternsTest extends TestBaseOld {
 
     @Test
     public void testIncoherentPatternsInSubRuleRangesGreater() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Patterns.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Incoherent Patterns in rule possibility, ranges when not conflicts with greater value"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("PatternsTest.drl"),
@@ -161,13 +162,16 @@ public class IncoherentPatternsTest extends TestBaseOld {
         session.setGlobal("result",
                           result);
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Incoherent Patterns in rule possibility, ranges when not conflicts with greater value"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.WARNING).iterator();
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 VerifierRule rule = (VerifierRule) ((VerifierMessage) o).getFaulty();
                 rulesThatHadErrors.add(rule.getName());
@@ -186,9 +190,7 @@ public class IncoherentPatternsTest extends TestBaseOld {
 
     @Test
     public void testIncoherentPatternsInSubRuleRangesEqualOrUnequal() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Patterns.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Incoherent Patterns in rule possibility, ranges when not conflicts with equal or unequal value"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("PatternsTest.drl"),
@@ -197,13 +199,16 @@ public class IncoherentPatternsTest extends TestBaseOld {
         session.setGlobal("result",
                           result);
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Incoherent Patterns in rule possibility, ranges when not conflicts with equal or unequal value"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.WARNING).iterator();
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 VerifierRule rule = (VerifierRule) ((VerifierMessage) o).getFaulty();
                 rulesThatHadErrors.add(rule.getName());
@@ -222,9 +227,7 @@ public class IncoherentPatternsTest extends TestBaseOld {
 
     @Test
     public void testIncoherentPatternsInSubRuleRangesEqualOrUnequalVariables() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Patterns.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Incoherent Patterns in rule possibility, ranges when not conflicts with equal or unequal variables"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("PatternsTest.drl"),
@@ -233,13 +236,16 @@ public class IncoherentPatternsTest extends TestBaseOld {
         session.setGlobal("result",
                           result);
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Incoherent Patterns in rule possibility, ranges when not conflicts with equal or unequal variables"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.WARNING).iterator();
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 VerifierRule rule = (VerifierRule) ((VerifierMessage) o).getFaulty();
                 rulesThatHadErrors.add(rule.getName());
@@ -257,9 +263,7 @@ public class IncoherentPatternsTest extends TestBaseOld {
 
     @Test
     public void testIncoherentPatternsInSubRuleRangesEqualValue() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Patterns.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Incoherent Patterns in rule possibility, ranges when not conflicts with equal value"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("PatternsTest.drl"),
@@ -268,13 +272,16 @@ public class IncoherentPatternsTest extends TestBaseOld {
         session.setGlobal("result",
                           result);
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Incoherent Patterns in rule possibility, ranges when not conflicts with equal value"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.WARNING).iterator();
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 VerifierRule rule = (VerifierRule) ((VerifierMessage) o).getFaulty();
                 rulesThatHadErrors.add(rule.getName());
@@ -292,9 +299,7 @@ public class IncoherentPatternsTest extends TestBaseOld {
 
     @Test
     public void testIncoherentPatternsInSubRuleRangesEqualVariable() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Patterns.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Incoherent Patterns in rule possibility, ranges when not conflicts with equal variable"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("PatternsTest.drl"),
@@ -303,13 +308,16 @@ public class IncoherentPatternsTest extends TestBaseOld {
         session.setGlobal("result",
                           result);
 
-        session.executeWithResults(testData);
+        for (Object o : testData) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Incoherent Patterns in rule possibility, ranges when not conflicts with equal variable"));
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.WARNING).iterator();
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 VerifierRule rule = (VerifierRule) ((VerifierMessage) o).getFaulty();
                 rulesThatHadErrors.add(rule.getName());

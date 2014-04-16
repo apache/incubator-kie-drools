@@ -16,17 +16,16 @@
 
 package org.drools.core.spi;
 
-import org.drools.core.RuntimeDroolsException;
-import org.drools.core.rule.Rule;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 
 /**
  * Indicates an error during a <code>Consequence</code> invocation.
  * 
  * @see Consequence
  */
-public class ConsequenceException extends RuntimeDroolsException {
+public class ConsequenceException extends RuntimeException {
     private static final long serialVersionUID = 510l;
-    private Rule              rule;
+    private RuleImpl          rule;
     private String            info;
 
     // ------------------------------------------------------------
@@ -54,7 +53,7 @@ public class ConsequenceException extends RuntimeDroolsException {
         super( rootCause );
     }
 
-    public ConsequenceException(final Rule rule) {
+    public ConsequenceException(RuleImpl rule) {
         this.rule = rule;
     }
 
@@ -62,11 +61,9 @@ public class ConsequenceException extends RuntimeDroolsException {
      * Construct with a message. Keep this from old ConsequenceException for
      * backward compatability
      * 
-     * @param rootCause
-     *            The root cause of this exception.
      */
     public ConsequenceException(final String message,
-                                final Rule rule) {
+                                final RuleImpl rule) {
         super( message );
         this.rule = rule;
     }
@@ -79,13 +76,13 @@ public class ConsequenceException extends RuntimeDroolsException {
      *            The root cause of this exception.
      */
     public ConsequenceException(final Throwable rootCause,
-                                final Rule rule) {
+                                final RuleImpl rule) {
         super( rootCause );
         this.rule = rule;
     }
 
     public ConsequenceException(final String message,
-                                final Rule rule,
+                                final RuleImpl rule,
                                 final String info) {
         super( message );
         this.rule = rule;
@@ -99,14 +96,14 @@ public class ConsequenceException extends RuntimeDroolsException {
      *            The root cause of this exception.
      */
     public ConsequenceException(final Throwable rootCause,
-                                final Rule rule,
+                                final RuleImpl rule,
                                 final String info) {
         super( rootCause );
         this.rule = rule;
         this.info = info;
     }
 
-    public Rule getRule() {
+    public RuleImpl getRule() {
         return this.rule;
     }
 

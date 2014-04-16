@@ -9,7 +9,7 @@ import org.drools.core.beliefsystem.abductive.Abductive;
 import org.drools.core.rule.AbductiveQuery;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.Query;
+import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.constraint.QueryNameConstraint;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
@@ -38,7 +38,7 @@ public class QueryBuilder implements EngineElementBuilder {
         
         InternalReadAccessor arrayExtractor = PatternBuilder.getFieldReadAccessor( context, queryDescr, argsObjectType, "elements", null, true );
 
-        Query query = ((Query) context.getRule());
+        QueryImpl query = ((QueryImpl) context.getRule());
 
         String[] params;
         String[] types;

@@ -34,7 +34,7 @@ public class WindowReferenceBuilder
                       BuildUtils utils,
                       RuleConditionElement rce) {
         final WindowReference window = (WindowReference) rce;
-        final WindowNode node = context.getRuleBase().getReteooBuilder().getWindowNode( window.getName() );
+        final WindowNode node = context.getKnowledgeBase().getReteooBuilder().getWindowNode( window.getName() );
         
         context.setObjectSource( node );
         context.setCurrentEntryPoint( node.getEntryPoint() );

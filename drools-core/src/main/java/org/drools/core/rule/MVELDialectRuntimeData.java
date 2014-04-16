@@ -33,6 +33,8 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.drools.core.base.mvel.MVELCompileable;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.spi.Wireable;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.integration.VariableResolver;
@@ -212,8 +214,8 @@ public class MVELDialectRuntimeData
         return this.functionFactory;
     }
 
-    public void removeRule(Package pkg,
-                           Rule rule) {
+    public void removeRule(KnowledgePackageImpl pkg,
+                           RuleImpl rule) {
     }
 
     public void addFunction(org.mvel2.ast.Function function) {
@@ -221,7 +223,7 @@ public class MVELDialectRuntimeData
     }
 
     // TODO: FIXME: make it consistent with above
-    public void removeFunction(Package pkg,
+    public void removeFunction(KnowledgePackageImpl pkg,
                                org.drools.core.rule.Function function) {
         this.functionFactory.removeFunction( function.getName() );
 

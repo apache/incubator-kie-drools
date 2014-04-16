@@ -1,7 +1,7 @@
 package org.drools.compiler.phreak;
 
-import org.drools.core.FactHandle;import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.InternalFactHandle;import org.drools.core.common.InternalRuleBase;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NodeMemories;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -12,7 +12,6 @@ import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
@@ -35,9 +34,7 @@ import java.util.List;
 import static org.junit.Assert.assertNotNull;
 import static junit.framework.TestCase.assertNotSame;
 import static junit.framework.TestCase.assertSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 public class RemoveRuleTest {
 
@@ -47,7 +44,7 @@ public class RemoveRuleTest {
         kconf.setOption( RuleEngineOption.PHREAK );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
         wm.insert(new A(1));
         wm.insert(new B(1));
@@ -105,7 +102,7 @@ public class RemoveRuleTest {
         kconf.setOption( RuleEngineOption.PHREAK );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
         wm.insert(new A(1));
         wm.insert(new A(2));
@@ -155,7 +152,7 @@ public class RemoveRuleTest {
     public void testPopulatedRuleMidwayShare() throws Exception {
         KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B() C(1;) D() E()\n");
 
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -218,7 +215,7 @@ public class RemoveRuleTest {
     public void testPopulatedRuleWithEvals() throws Exception {
         KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   a:A() B() eval(1==1) eval(1==1) C(1;) \n");
 
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -283,7 +280,7 @@ public class RemoveRuleTest {
     @Test
     public void testPopulatedSharedLiaNode() throws Exception {
         KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B(1;) C() D() E()\n");
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -357,7 +354,7 @@ public class RemoveRuleTest {
     @Test
     public void testPopulatedSharedLiaNodeNoBeta() throws Exception {
         KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A()\n");
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -391,7 +388,7 @@ public class RemoveRuleTest {
     @Test
     public void testPopulatedSharedToRtn() throws Exception {
         KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B() C() D() E()\n");
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -453,7 +450,7 @@ public class RemoveRuleTest {
     @Test
          public void testPopulatedMultipleSharesRemoveFirst() throws Exception {
         KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) D() E()\n" );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -499,7 +496,7 @@ public class RemoveRuleTest {
     @Test
     public void testPopulatedMultipleSharesRemoveMid() throws Exception {
         KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) D() E()\n" );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -545,7 +542,7 @@ public class RemoveRuleTest {
     @Test
     public void testPopulatedMultipleSharesRemoveLast() throws Exception {
         KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) D() E()\n" );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -595,7 +592,7 @@ public class RemoveRuleTest {
         kbase1.addKnowledgePackages( buildKnowledgePackage("r3", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;)\n") );
         kbase1.addKnowledgePackages( buildKnowledgePackage("r4", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) \n") );
 
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -640,7 +637,7 @@ public class RemoveRuleTest {
     }
 
     private RuleTerminalNode getRtn(String ruleName, KnowledgeBase kbase) {
-        return ( RuleTerminalNode ) ((ReteooRuleBase)((KnowledgeBaseImpl) kbase).ruleBase).getReteooBuilder().getTerminalNodes(ruleName)[0];
+        return ( RuleTerminalNode ) ((KnowledgeBaseImpl) kbase).getReteooBuilder().getTerminalNodes(ruleName)[0];
     }
 
     private KnowledgeBase buildKnowledgeBase(String ruleName, String rule) {
@@ -703,7 +700,7 @@ public class RemoveRuleTest {
     }
 
     public ObjectTypeNode getObjectTypeNode(KnowledgeBase kbase, Class<?> nodeClass) {
-        List<ObjectTypeNode> nodes = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete().getObjectTypeNodes();
+        List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
         for ( ObjectTypeNode n : nodes ) {
             if ( ((ClassObjectType)n.getObjectType()).getClassType() == nodeClass ) {
                 return n;

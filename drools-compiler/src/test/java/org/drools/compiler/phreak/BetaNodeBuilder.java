@@ -72,7 +72,7 @@ public class BetaNodeBuilder {
     public BetaNode build() {
         NodeFactory nFactory = buildContext.getComponentFactory().getNodeFactoryService();
         EntryPointNode epn = nFactory.buildEntryPointNode(buildContext.getNextId(),
-                                                          buildContext.getRuleBase().getRete(),
+                                                          buildContext.getKnowledgeBase().getRete(),
                                                           buildContext);
         epn.attach(buildContext);
 
@@ -110,7 +110,7 @@ public class BetaNodeBuilder {
                 betaConstraints = new SingleBetaConstraints(reteTesterHelper.getBoundVariableConstraint(rightType,
                                                                                                         constraintFieldName,
                                                                                                         declr,
-                                                                                                        constraintOperator), buildContext.getRuleBase().getConfiguration());
+                                                                                                        constraintOperator), buildContext.getKnowledgeBase().getConfiguration());
             } catch (IntrospectionException e) {
                 throw new RuntimeException(e);
             }

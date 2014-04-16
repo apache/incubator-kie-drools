@@ -16,13 +16,15 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.definitions.rule.impl.RuleImpl;
+
 /**
  * Indicates an error regarding the semantic validity of a rule.
  */
 public class InvalidRuleException extends RuleConstructionException {
     private static final long serialVersionUID = 510l;
     /** The invalid rule. */
-    private Rule              rule;
+    private RuleImpl              rule;
 
     /**
      * @see java.lang.Exception#Exception()
@@ -30,7 +32,7 @@ public class InvalidRuleException extends RuleConstructionException {
      * @param rule
      *            The invalid <code>Rule</code>.
      */
-    public InvalidRuleException(final Rule rule) {
+    public InvalidRuleException(final RuleImpl rule) {
         super();
         this.rule = rule;
     }
@@ -42,7 +44,7 @@ public class InvalidRuleException extends RuleConstructionException {
      * @param rule
      */
     public InvalidRuleException(final String message,
-                                final Rule rule) {
+                                final RuleImpl rule) {
         super( message );
         this.rule = rule;
     }
@@ -54,7 +56,7 @@ public class InvalidRuleException extends RuleConstructionException {
      * @param rule
      */
     public InvalidRuleException(final String message,
-                                final Rule rule,
+                                final RuleImpl rule,
                                 final Throwable cause) {
         super( message,
                cause );
@@ -66,7 +68,7 @@ public class InvalidRuleException extends RuleConstructionException {
      * 
      * @return The invalid <code>Rule</code>.
      */
-    public Rule getRule() {
+    public RuleImpl getRule() {
         return this.rule;
     }
 }

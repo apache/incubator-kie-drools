@@ -69,7 +69,7 @@ public class QueryRiaFixerNode extends LeftTupleSource
                              final BuildContext context) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
+               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation() );
         setLeftTupleSource(tupleSource);
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
@@ -106,7 +106,7 @@ public class QueryRiaFixerNode extends LeftTupleSource
 
     public void attach( BuildContext context ) {
         this.leftInput.addTupleSink( this, context );
-        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
+        if (context == null || context.getKnowledgeBase().getConfiguration().isPhreakEnabled() ) {
             return;
         }
 

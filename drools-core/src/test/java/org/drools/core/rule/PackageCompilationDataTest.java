@@ -23,12 +23,13 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.security.CodeSource;
 
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.common.InternalRuleBase;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.WorkingMemory;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.Tuple;
@@ -60,16 +61,16 @@ public class PackageCompilationDataTest {
     @Test
     public void testCodeSourceUrl() throws Exception {
         final String className = TestEvalExpression.class.getName();
-        
-        ReteooRuleBase rb = new ReteooRuleBase( "xxx", null );
-        
-        Package pkg = new Package( "org.drools" );
+
+        KnowledgeBaseImpl kBase = new KnowledgeBaseImpl( "xxx", null );
+
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.drools" );
         pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         JavaDialectRuntimeData data = new JavaDialectRuntimeData();
-        data.onAdd( pkg.getDialectRuntimeRegistry(), rb.getRootClassLoader()  );
-        pkg.getDialectRuntimeRegistry().setDialectData( "java", data );
+        data.onAdd(pkg.getDialectRuntimeRegistry(), kBase.getRootClassLoader());
+        pkg.getDialectRuntimeRegistry().setDialectData("java", data);
         
-        rb.addPackage( pkg );
+        kBase.addPackage(pkg);
         
         final JavaDialectRuntimeData pcData = ( JavaDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( "java" );
         
@@ -83,10 +84,10 @@ public class PackageCompilationDataTest {
             is.close();
         }
         
-        pcData.onAdd( pkg.getDialectRuntimeRegistry(), rb.getRootClassLoader() );
+        pcData.onAdd(pkg.getDialectRuntimeRegistry(), kBase.getRootClassLoader());
         pcData.onBeforeExecute();
         
-        Class cls = ((InternalRuleBase)rb).getRootClassLoader().loadClass( "org.drools.core.rule.PackageCompilationDataTest$TestEvalExpression" );
+        Class cls = kBase.getRootClassLoader().loadClass( "org.drools.core.rule.PackageCompilationDataTest$TestEvalExpression" );
         
         final CodeSource codeSource = invoker.getEvalExpression().getClass().getProtectionDomain().getCodeSource();
         assertNotNull(codeSource.getLocation());

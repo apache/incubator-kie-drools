@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.core.base.TypeResolver;
-import org.drools.core.runtime.rule.impl.InternalAgenda;
-import org.drools.core.runtime.rule.impl.RuleFlowGroupImpl;
+import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.workbench.models.testscenarios.backend.executors.MethodExecutor;
 import org.drools.workbench.models.testscenarios.backend.verifiers.FactVerifier;
@@ -72,7 +72,7 @@ public class TestScenarioKSessionWrapper {
 
     public void activateRuleFlowGroup( String activateRuleFlowGroupName ) {
         // mark does not want to make the following methods public, so for now we have to downcast
-        ( (RuleFlowGroupImpl) ksession.getAgenda().getRuleFlowGroup( activateRuleFlowGroupName ) ).setAutoDeactivate( false );
+        ((InternalAgendaGroup)ksession.getAgenda().getRuleFlowGroup( activateRuleFlowGroupName )).setAutoDeactivate( false );
         // same for the following method
         ( (InternalAgenda) ksession.getAgenda() ).activateRuleFlowGroup( activateRuleFlowGroupName );
     }

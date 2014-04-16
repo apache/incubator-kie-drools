@@ -20,8 +20,10 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
+import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.spi.PropagationContext;
 import org.kie.api.event.rule.ObjectInsertedEvent;
 
 public class ObjectInsertedEventImpl extends RuleRuntimeEventImpl
@@ -30,12 +32,15 @@ public class ObjectInsertedEventImpl extends RuleRuntimeEventImpl
     private FactHandle  factHandle;
     private Object      object;
 
-    public ObjectInsertedEventImpl(org.drools.core.event.ObjectInsertedEvent event) {
-        super( ((InternalWorkingMemory) event.getWorkingMemory() ).getKnowledgeRuntime(), event.getPropagationContext() );
-        factHandle = event.getFactHandle();
-        object = event.getObject();
+    public ObjectInsertedEventImpl(final WorkingMemory workingMemory,
+                               final PropagationContext propagationContext,
+                               final FactHandle handle,
+                               final Object object) {
+        super( ((InternalWorkingMemory) workingMemory ).getKnowledgeRuntime(), propagationContext );
+        this.factHandle = handle;
+        this.object = object;
     }
-    
+
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( factHandle );

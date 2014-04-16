@@ -16,7 +16,7 @@
 
 package org.drools.template.parser;
 
-import org.drools.core.StatefulSession;
+import org.kie.api.runtime.KieSession;
 
 import java.util.Map;
 
@@ -32,7 +32,7 @@ public interface Cell {
 
     public void addValue(Map<String, Object> vars);
 
-    public void insert(StatefulSession session);
+    public void insert(KieSession session);
 
     public void setIndex(int i);
 

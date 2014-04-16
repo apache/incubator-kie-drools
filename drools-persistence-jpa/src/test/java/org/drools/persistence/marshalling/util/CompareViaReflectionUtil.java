@@ -41,8 +41,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.common.AbstractWorkingMemory;
-import org.drools.core.reteoo.ReteooRuleBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.process.instance.impl.WorkItemImpl;
@@ -95,16 +94,16 @@ public class CompareViaReflectionUtil {
     private static HashSet<Field> doNotCompareFieldsMap = new HashSet<Field>();
     static {
         try {
-            doNotCompareFieldsMap.add(AbstractWorkingMemory.class.getDeclaredField("id"));
+            doNotCompareFieldsMap.add(StatefulKnowledgeSessionImpl.class.getDeclaredField("id"));
             doNotCompareFieldsMap.add(KnowledgeBaseImpl.class.getDeclaredField("mappedKnowledgeBaseListeners"));
-            doNotCompareFieldsMap.add(ReteooRuleBase.class.getDeclaredField("id"));
-            doNotCompareFieldsMap.add(ReteooRuleBase.class.getDeclaredField("workingMemoryCounter"));
+            doNotCompareFieldsMap.add(KnowledgeBaseImpl.class.getDeclaredField("id"));
+            doNotCompareFieldsMap.add(KnowledgeBaseImpl.class.getDeclaredField("workingMemoryCounter"));
             doNotCompareFieldsMap.add(WorkItemImpl.class.getDeclaredField("id"));
             doNotCompareFieldsMap.add(WorkItemImpl.class.getDeclaredField("processInstanceId"));
             doNotCompareFieldsMap.add(ClassFieldAccessorCache.class.getDeclaredField("classLoader"));
-            doNotCompareFieldsMap.add(AbstractWorkingMemory.class.getDeclaredField("globalResolver"));
+            doNotCompareFieldsMap.add(StatefulKnowledgeSessionImpl.class.getDeclaredField("globalResolver"));
             doNotCompareFieldsMap.add(JDKTimerService.class.getDeclaredField("scheduler"));
-            doNotCompareFieldsMap.add(ReteooRuleBase.class.getDeclaredField("classFieldAccessorCache"));
+            doNotCompareFieldsMap.add(KnowledgeBaseImpl.class.getDeclaredField("classFieldAccessorCache"));
         } catch (Exception e) {
             logger.error(e.getClass().getSimpleName() + ": " + e.getMessage());
             // do nothing
@@ -616,8 +615,6 @@ public class CompareViaReflectionUtil {
      * <p/>
      * This method retrieves the appropriate method for the given object (so that we can later retrieve
      * the list/array/set that this Object is based on).
-     * @param objA The object that we want to retrieve this method for.
-     * @return The requested Method.
      */
     private static Method [] getMethodToRetrieveCollection(Class<?> objClass) { 
         Method [] methods = new Method[2];

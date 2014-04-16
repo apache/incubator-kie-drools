@@ -17,6 +17,7 @@
 package org.drools.workbench.models.guided.scorecard.backend;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.dmg.pmml.pmml_4_1.descr.Attribute;
@@ -30,7 +31,6 @@ import org.dmg.pmml.pmml_4_1.descr.MiningSchema;
 import org.dmg.pmml.pmml_4_1.descr.Output;
 import org.dmg.pmml.pmml_4_1.descr.PMML;
 import org.dmg.pmml.pmml_4_1.descr.Scorecard;
-import org.drools.core.util.ArrayUtils;
 import org.drools.pmml.pmml_4_1.extensions.PMMLExtensionNames;
 import org.drools.scorecards.ScorecardCompiler;
 import org.drools.scorecards.parser.xls.XLSKeywords;
@@ -41,6 +41,9 @@ import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 
 public class GuidedScoreCardDRLPersistence {
+
+    private static final List<String> NUMERIC_OPERATORS = Arrays.asList("=", ">", "<", ">=", "<=");
+
 
     public static String marshal( final ScoreCardModel model ) {
         final PMML pmml = createPMMLDocument( model );
@@ -141,7 +144,6 @@ public class GuidedScoreCardDRLPersistence {
             extension.setValue( characteristic.getFact() );
             miningField.getExtensions().add( extension );
 
-            final String[] numericOperators = new String[]{ "=", ">", "<", ">=", "<=" };
             for ( final org.drools.workbench.models.guided.scorecard.shared.Attribute attribute : characteristic.getAttributes() ) {
                 final Attribute _attribute = new Attribute();
                 _characteristic.getAttributes().add( _attribute );
@@ -168,7 +170,7 @@ public class GuidedScoreCardDRLPersistence {
                         predicateResolver = attribute.getValue() + ",";
                     }
                 } else {
-                    if ( ArrayUtils.contains( numericOperators, operator ) ) {
+                    if ( NUMERIC_OPERATORS.contains( operator ) ) {
                         predicateResolver = operator + " " + attribute.getValue();
                     } else {
                         predicateResolver = attribute.getValue().replace( ",", "-" );

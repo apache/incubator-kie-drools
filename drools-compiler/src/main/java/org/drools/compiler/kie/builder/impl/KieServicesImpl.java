@@ -40,8 +40,6 @@ import static org.drools.compiler.compiler.io.memory.MemoryFileSystem.readFromJa
 import static org.drools.core.common.ProjectClassLoader.findParentClassLoader;
 
 public class KieServicesImpl implements InternalKieServices {
-    private ResourceFactoryService resourceFactory;
-    
     private volatile KieContainer classpathKContainer;
 
     private volatile ClassLoader classpathClassLoader;
@@ -49,13 +47,6 @@ public class KieServicesImpl implements InternalKieServices {
     private final Object lock = new Object();
 
     private WeakReference<KieServicesEventListerner> listener;
-
-    public ResourceFactoryService getResourceFactory() {
-        if ( resourceFactory == null ) {
-            this.resourceFactory = new ResourceFactoryServiceImpl();
-        }
-        return resourceFactory;
-    }
 
     public KieRepository getRepository() {
         return KieRepositoryImpl.INSTANCE;

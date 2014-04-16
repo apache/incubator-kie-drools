@@ -17,35 +17,37 @@
 package org.drools.core.common;
 
 
+import org.drools.core.impl.InternalKnowledgeBase;
+
 /**
  * An interface for node memories implementation
  */
 public interface NodeMemories {
 
-    public Memory getNodeMemory(MemoryFactory node, InternalWorkingMemory wm);
+    Memory getNodeMemory(MemoryFactory node, InternalWorkingMemory wm);
 
-    public void clearNodeMemory( MemoryFactory node );
+    void clearNodeMemory( MemoryFactory node );
 
-    public void setRuleBaseReference(InternalRuleBase ruleBase);
-    
-    public void clear();
-    
+    void setKnowledgeBaseReference( InternalKnowledgeBase kBase );
+
+    void clear();
+
     /**
      * Peeks at the content of the node memory for the given
      * node ID. This method has no side effects, so if the
-     * given memory slot for the given node ID is null, it 
+     * given memory slot for the given node ID is null, it
      * will return null.
-     * 
+     *
      * @param nodeId
      * @return
      */
-    public Memory peekNodeMemory( int nodeId );
-    
+    Memory peekNodeMemory( int nodeId );
+
     /**
      * Returns the number of positions in this memory
-     * 
+     *
      * @return
      */
-    public int length();
+    int length();
 
 }

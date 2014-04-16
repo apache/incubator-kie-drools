@@ -16,7 +16,6 @@
 
 package org.drools.core.base;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.evaluators.AfterEvaluatorDefinition;
 import org.drools.core.base.evaluators.BeforeEvaluatorDefinition;
 import org.drools.core.base.evaluators.CoincidesEvaluatorDefinition;
@@ -1032,13 +1031,13 @@ public class TemporalEvaluatorFactoryTest {
                                                     final Object[] row,
                                                     final Evaluator evaluator) {
         final FieldValue value = FieldFactory.getInstance().getFieldValue( row[2] );
-        RuntimeDroolsException exc = null;
+        RuntimeException exc = null;
         try {
             evaluator.evaluate( null,
                                 extractor,
                                 ( EventFactHandle ) row[0],
                                 value );
-        } catch ( RuntimeDroolsException e ) {
+        } catch ( RuntimeException e ) {
             exc = e;
         }
         assertNotNull( exc );
