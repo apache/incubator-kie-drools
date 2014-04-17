@@ -380,6 +380,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.agenda = agenda;
         }
         this.agenda.setWorkingMemory(this);
+        
+        this.processRuntime = createProcessRuntime();
 
         if ( initInitFactHandle ) {
             initInitialFact(kBase, null);
