@@ -32,25 +32,6 @@ import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.event.AfterFunctionRemovedEvent;
-import org.drools.core.event.AfterPackageAddedEvent;
-import org.drools.core.event.AfterPackageRemovedEvent;
-import org.drools.core.event.AfterProcessAddedEvent;
-import org.drools.core.event.AfterProcessRemovedEvent;
-import org.drools.core.event.AfterRuleAddedEvent;
-import org.drools.core.event.AfterRuleBaseLockedEvent;
-import org.drools.core.event.AfterRuleBaseUnlockedEvent;
-import org.drools.core.event.AfterRuleRemovedEvent;
-import org.drools.core.event.BeforeFunctionRemovedEvent;
-import org.drools.core.event.BeforePackageAddedEvent;
-import org.drools.core.event.BeforePackageRemovedEvent;
-import org.drools.core.event.BeforeProcessAddedEvent;
-import org.drools.core.event.BeforeProcessRemovedEvent;
-import org.drools.core.event.BeforeRuleAddedEvent;
-import org.drools.core.event.BeforeRuleBaseLockedEvent;
-import org.drools.core.event.BeforeRuleBaseUnlockedEvent;
-import org.drools.core.event.BeforeRuleRemovedEvent;
-import org.drools.core.event.KnowledgeBaseEventListener;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
@@ -58,6 +39,25 @@ import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.spi.Activation;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
+import org.kie.api.event.kiebase.AfterFunctionRemovedEvent;
+import org.kie.api.event.kiebase.AfterKieBaseLockedEvent;
+import org.kie.api.event.kiebase.AfterKieBaseUnlockedEvent;
+import org.kie.api.event.kiebase.AfterKiePackageAddedEvent;
+import org.kie.api.event.kiebase.AfterKiePackageRemovedEvent;
+import org.kie.api.event.kiebase.AfterProcessAddedEvent;
+import org.kie.api.event.kiebase.AfterProcessRemovedEvent;
+import org.kie.api.event.kiebase.AfterRuleAddedEvent;
+import org.kie.api.event.kiebase.AfterRuleRemovedEvent;
+import org.kie.api.event.kiebase.BeforeFunctionRemovedEvent;
+import org.kie.api.event.kiebase.BeforeKieBaseLockedEvent;
+import org.kie.api.event.kiebase.BeforeKieBaseUnlockedEvent;
+import org.kie.api.event.kiebase.BeforeKiePackageAddedEvent;
+import org.kie.api.event.kiebase.BeforeKiePackageRemovedEvent;
+import org.kie.api.event.kiebase.BeforeProcessAddedEvent;
+import org.kie.api.event.kiebase.BeforeProcessRemovedEvent;
+import org.kie.api.event.kiebase.BeforeRuleAddedEvent;
+import org.kie.api.event.kiebase.BeforeRuleRemovedEvent;
+import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
@@ -106,7 +106,7 @@ public abstract class WorkingMemoryLogger
     RuleRuntimeEventListener,
     AgendaEventListener,
     ProcessEventListener,
-    KnowledgeBaseEventListener {
+    KieBaseEventListener {
 
     private List<ILogEventFilter>    filters = new ArrayList<ILogEventFilter>();
 
@@ -127,7 +127,7 @@ public abstract class WorkingMemoryLogger
         if (processRuntime != null) {
             processRuntime.addEventListener( this );
         }
-        workingMemory.addEventListener( (KnowledgeBaseEventListener) this );
+        workingMemory.addEventListener( (KieBaseEventListener) this );
     }
     
     public WorkingMemoryLogger(final KnowledgeRuntimeEventManager session) {
@@ -137,7 +137,7 @@ public abstract class WorkingMemoryLogger
             WorkingMemoryEventManager eventManager = statefulSession;
             eventManager.addEventListener( (RuleRuntimeEventListener) this );
             eventManager.addEventListener( (AgendaEventListener) this );
-            eventManager.addEventListener( (KnowledgeBaseEventListener) this );
+            eventManager.addEventListener( (KieBaseEventListener) this );
             InternalProcessRuntime processRuntime = ((StatefulKnowledgeSessionImpl) session).getProcessRuntime();
             if (processRuntime != null) {
                 processRuntime.addEventListener( this );
@@ -147,7 +147,7 @@ public abstract class WorkingMemoryLogger
             isPhreak = statelessSession.getKnowledgeBase().getConfiguration().isPhreakEnabled();
             statelessSession.addEventListener((RuleRuntimeEventListener) this);
             statelessSession.addEventListener( (AgendaEventListener) this );
-            statelessSession.getKnowledgeBase().addEventListener( this );
+            statelessSession.getKnowledgeBase().addEventListener( (KieBaseEventListener) this );
         } else if (session instanceof CommandBasedStatefulKnowledgeSession) {
             StatefulKnowledgeSessionImpl statefulSession =
                     ((StatefulKnowledgeSessionImpl)((KnowledgeCommandContext)((CommandBasedStatefulKnowledgeSession) session).getCommandService().getContext()).getKieSession());
@@ -156,7 +156,7 @@ public abstract class WorkingMemoryLogger
             eventManager.addEventListener( (RuleRuntimeEventListener) this );
             eventManager.addEventListener( (AgendaEventListener) this );
             InternalProcessRuntime processRuntime = eventManager.getProcessRuntime();
-            eventManager.addEventListener( (KnowledgeBaseEventListener) this );
+            eventManager.addEventListener( (KieBaseEventListener) this );
             if (processRuntime != null) {
                 processRuntime.addEventListener( this );
             }
@@ -555,101 +555,81 @@ public abstract class WorkingMemoryLogger
             event.getNewValue() == null ? "null" : event.getNewValue().toString()) );
     }
 
-    public void afterPackageAdded(AfterPackageAddedEvent event) {
+    public void afterKiePackageAdded(AfterKiePackageAddedEvent event) {
         filterLogEvent( new RuleBaseLogEvent( LogEvent.AFTER_PACKAGE_ADDED,
-                                              event.getPackage().getName(),
+                                              event.getKiePackage().getName(),
                                               null ) );
     }
 
-    public void afterPackageRemoved(AfterPackageRemovedEvent event) {
+    public void afterKiePackageRemoved(AfterKiePackageRemovedEvent event) {
         filterLogEvent( new RuleBaseLogEvent( LogEvent.AFTER_PACKAGE_REMOVED,
-                                              event.getPackage().getName(),
+                                              event.getKiePackage().getName(),
                                               null ) );
+    }
+
+    public void beforeKieBaseLocked(BeforeKieBaseLockedEvent event) {
+    }
+
+    public void afterKieBaseLocked(AfterKieBaseLockedEvent event) {
+    }
+
+    public void beforeKieBaseUnlocked(BeforeKieBaseUnlockedEvent event) {
+    }
+
+    public void afterKieBaseUnlocked(AfterKieBaseUnlockedEvent event) {
     }
 
     public void afterRuleAdded(AfterRuleAddedEvent event) {
         filterLogEvent( new RuleBaseLogEvent( LogEvent.AFTER_RULE_ADDED,
-                                              event.getPackage().getName(),
+                                              event.getRule().getPackageName(),
                                               event.getRule().getName() ) );
     }
 
     public void afterRuleRemoved(AfterRuleRemovedEvent event) {
         filterLogEvent( new RuleBaseLogEvent( LogEvent.AFTER_RULE_REMOVED,
-                                              event.getPackage().getName(),
+                                              event.getRule().getPackageName(),
                                               event.getRule().getName() ) );
     }
 
-    public void beforePackageAdded(BeforePackageAddedEvent event) {
+    public void beforeFunctionRemoved(BeforeFunctionRemovedEvent event) {
+    }
+
+    public void beforeKiePackageAdded(BeforeKiePackageAddedEvent event) {
         filterLogEvent( new RuleBaseLogEvent( LogEvent.BEFORE_PACKAGE_ADDED,
-                                              event.getPackage().getName(),
+                                              event.getKiePackage().getName(),
                                               null ) );
     }
 
-    public void beforePackageRemoved(BeforePackageRemovedEvent event) {
+    public void beforeKiePackageRemoved(BeforeKiePackageRemovedEvent event) {
         filterLogEvent( new RuleBaseLogEvent( LogEvent.BEFORE_PACKAGE_REMOVED,
-                                              event.getPackage().getName(),
+                                              event.getKiePackage().getName(),
                                               null ) );
     }
 
     public void beforeRuleAdded(BeforeRuleAddedEvent event) {
         filterLogEvent( new RuleBaseLogEvent( LogEvent.BEFORE_RULE_ADDED,
-                                              event.getPackage().getName(),
+                                              event.getRule().getPackageName(),
                                               event.getRule().getName() ) );
     }
 
     public void beforeRuleRemoved(BeforeRuleRemovedEvent event) {
         filterLogEvent( new RuleBaseLogEvent( LogEvent.BEFORE_RULE_REMOVED,
-                                              event.getPackage().getName(),
+                                              event.getRule().getPackageName(),
                                               event.getRule().getName() ) );
     }
     
     public void afterFunctionRemoved(AfterFunctionRemovedEvent event) {
-        // TODO Auto-generated method stub
-        
     }
 
-    public void afterRuleBaseLocked(AfterRuleBaseLockedEvent event) {
-        // TODO Auto-generated method stub
-        
+    public void beforeProcessAdded(BeforeProcessAddedEvent event) {
     }
 
-    public void afterRuleBaseUnlocked(AfterRuleBaseUnlockedEvent event) {
-        // TODO Auto-generated method stub
-        
+    public void afterProcessAdded(AfterProcessAddedEvent event) {
     }
 
-    public void beforeFunctionRemoved(BeforeFunctionRemovedEvent event) {
-        // TODO Auto-generated method stub
-        
+    public void beforeProcessRemoved(BeforeProcessRemovedEvent event) {
     }
 
-    public void beforeRuleBaseLocked(BeforeRuleBaseLockedEvent event) {
-        // TODO Auto-generated method stub
-        
+    public void afterProcessRemoved(AfterProcessRemovedEvent event) {
     }
-
-    public void beforeRuleBaseUnlocked(BeforeRuleBaseUnlockedEvent event) {
-        // TODO Auto-generated method stub
-        
-    }
-
-	public void beforeProcessAdded(BeforeProcessAddedEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void afterProcessAdded(AfterProcessAddedEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void beforeProcessRemoved(BeforeProcessRemovedEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void afterProcessRemoved(AfterProcessRemovedEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
 }

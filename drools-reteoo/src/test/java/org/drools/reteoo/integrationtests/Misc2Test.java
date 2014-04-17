@@ -329,9 +329,9 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBaseEventListener listener = new DefaultKieBaseEventListener();
         kbase.addEventListener(listener);
         kbase.addEventListener(listener);
-        assertEquals(1, ((InternalKnowledgeBase) kbase).getRuleBaseEventListeners().size());
+        assertEquals(1, ((InternalKnowledgeBase) kbase).getKieBaseEventListeners().size());
         kbase.removeEventListener(listener);
-        assertEquals(0, ((InternalKnowledgeBase) kbase).getRuleBaseEventListeners().size());
+        assertEquals(0, ((InternalKnowledgeBase) kbase).getKieBaseEventListeners().size());
     }
 
     @Test

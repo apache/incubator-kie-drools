@@ -19,6 +19,7 @@ package org.drools.core;
 import java.util.Collection;
 import java.util.List;
 
+import org.kie.api.event.kiebase.KieBaseEventManager;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 
@@ -27,7 +28,7 @@ import org.kie.api.event.rule.RuleRuntimeEventListener;
  */
 public interface WorkingMemoryEventManager
     extends
-    KnowledgeBaseEventManager {
+    KieBaseEventManager {
     /**
      * Add an event listener.
      * 

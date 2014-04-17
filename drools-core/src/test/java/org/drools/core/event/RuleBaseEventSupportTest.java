@@ -35,6 +35,25 @@ import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.KnowledgeHelper;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.event.kiebase.AfterFunctionRemovedEvent;
+import org.kie.api.event.kiebase.AfterKieBaseLockedEvent;
+import org.kie.api.event.kiebase.AfterKieBaseUnlockedEvent;
+import org.kie.api.event.kiebase.AfterKiePackageAddedEvent;
+import org.kie.api.event.kiebase.AfterKiePackageRemovedEvent;
+import org.kie.api.event.kiebase.AfterProcessAddedEvent;
+import org.kie.api.event.kiebase.AfterProcessRemovedEvent;
+import org.kie.api.event.kiebase.AfterRuleAddedEvent;
+import org.kie.api.event.kiebase.AfterRuleRemovedEvent;
+import org.kie.api.event.kiebase.BeforeFunctionRemovedEvent;
+import org.kie.api.event.kiebase.BeforeKieBaseLockedEvent;
+import org.kie.api.event.kiebase.BeforeKieBaseUnlockedEvent;
+import org.kie.api.event.kiebase.BeforeKiePackageAddedEvent;
+import org.kie.api.event.kiebase.BeforeKiePackageRemovedEvent;
+import org.kie.api.event.kiebase.BeforeProcessAddedEvent;
+import org.kie.api.event.kiebase.BeforeProcessRemovedEvent;
+import org.kie.api.event.kiebase.BeforeRuleAddedEvent;
+import org.kie.api.event.kiebase.BeforeRuleRemovedEvent;
+import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.internal.KnowledgeBaseFactory;
 
 import java.io.IOException;
@@ -225,7 +244,7 @@ public class RuleBaseEventSupportTest {
 
     public static class TestRuleBaseListener
         implements
-        KnowledgeBaseEventListener {
+        KieBaseEventListener {
         private String id;
         private int    beforePackageAdded   = 0;
         private int    afterPackageAdded    = 0;
@@ -269,12 +288,12 @@ public class RuleBaseEventSupportTest {
             out.writeInt( afterRuleRemoved );
         }
 
-        public void afterPackageAdded(AfterPackageAddedEvent event) {
+        public void afterKiePackageAdded(AfterKiePackageAddedEvent event) {
             //            System.out.println( this.id + event );
             this.afterPackageAdded++;
         }
 
-        public void beforePackageAdded(BeforePackageAddedEvent event) {
+        public void beforeKiePackageAdded(BeforeKiePackageAddedEvent event) {
             //            System.out.println( this.id + event );
             this.beforePackageAdded++;
         }
@@ -291,12 +310,12 @@ public class RuleBaseEventSupportTest {
             return id;
         }
 
-        public void afterPackageRemoved(AfterPackageRemovedEvent event) {
+        public void afterKiePackageRemoved(AfterKiePackageRemovedEvent event) {
             //            System.out.println( this.id + event );
             this.afterPackageRemoved++;
         }
 
-        public void beforePackageRemoved(BeforePackageRemovedEvent event) {
+        public void beforeKiePackageRemoved(BeforeKiePackageRemovedEvent event) {
             //            System.out.println( this.id + event );
             this.beforePackageRemoved++;
         }
@@ -350,12 +369,12 @@ public class RuleBaseEventSupportTest {
 
         }
 
-        public void afterRuleBaseLocked(AfterRuleBaseLockedEvent event) {
+        public void afterKieBaseLocked(AfterKieBaseLockedEvent event) {
             // TODO Auto-generated method stub
 
         }
 
-        public void afterRuleBaseUnlocked(AfterRuleBaseUnlockedEvent event) {
+        public void afterKieBaseUnlocked(AfterKieBaseUnlockedEvent event) {
             // TODO Auto-generated method stub
 
         }
@@ -365,12 +384,12 @@ public class RuleBaseEventSupportTest {
 
         }
 
-        public void beforeRuleBaseLocked(BeforeRuleBaseLockedEvent event) {
+        public void beforeKieBaseLocked(BeforeKieBaseLockedEvent event) {
             // TODO Auto-generated method stub
 
         }
 
-        public void beforeRuleBaseUnlocked(BeforeRuleBaseUnlockedEvent event) {
+        public void beforeKieBaseUnlocked(BeforeKieBaseUnlockedEvent event) {
             // TODO Auto-generated method stub
 
         }

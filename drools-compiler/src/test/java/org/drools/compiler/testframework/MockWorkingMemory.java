@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
+import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.SessionConfiguration;
@@ -27,7 +28,6 @@ import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AgendaEventSupport;
-import org.drools.core.event.KnowledgeBaseEventListener;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.process.instance.WorkItemManager;
@@ -403,21 +403,6 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
-    public void addEventListener(KnowledgeBaseEventListener listener) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    public List<KnowledgeBaseEventListener> getRuleBaseEventListeners() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public void removeEventListener(KnowledgeBaseEventListener listener) {
-        // TODO Auto-generated method stub
-        
-    }
-
     public FactHandle insert(Object object) {
         this.facts .add(object);
         return new MockFactHandle(object.hashCode());
@@ -605,6 +590,16 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 
     public NodeMemories getNodeMemories() {
         // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void addEventListener(KieBaseEventListener listener) {
+    }
+
+    public void removeEventListener(KieBaseEventListener listener) {
+    }
+
+    public Collection<KieBaseEventListener> getKieBaseEventListeners() {
         return null;
     }
 }

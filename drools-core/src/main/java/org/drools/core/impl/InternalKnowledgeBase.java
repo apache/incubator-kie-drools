@@ -1,7 +1,6 @@
 package org.drools.core.impl;
 
 import org.kie.api.runtime.rule.FactHandle;
-import org.drools.core.KnowledgeBaseEventManager;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.common.InternalWorkingMemory;
@@ -26,7 +25,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-public interface InternalKnowledgeBase extends KnowledgeBase, KieBase, KnowledgeBaseEventManager {
+public interface InternalKnowledgeBase extends KnowledgeBase {
 
     String getId();
 

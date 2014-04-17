@@ -54,7 +54,6 @@ import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AgendaEventSupport;
-import org.drools.core.event.KnowledgeBaseEventListener;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.management.DroolsManagementAgent;
@@ -100,6 +99,7 @@ import org.drools.core.type.DateFormatsImpl;
 import org.drools.core.util.index.LeftTupleList;
 import org.kie.api.command.Command;
 import org.kie.api.event.KieRuntimeEventManager;
+import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessEventManager;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -192,7 +192,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     protected AgendaEventSupport agendaEventSupport;
 
-    protected List __ruleBaseEventListeners;
+    protected List<KieBaseEventListener> kieBaseEventListeners;
 
     /** The <code>RuleBase</code> with which this memory is associated. */
     protected transient InternalKnowledgeBase kBase;
@@ -359,7 +359,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.ruleRuntimeEventSupport = workingMemoryEventSupport;
         this.agendaEventSupport = agendaEventSupport;
         this.ruleEventListenerSupport = ruleEventListenerSupport;
-        this.__ruleBaseEventListeners = new LinkedList();
+        this.kieBaseEventListeners = new LinkedList();
         this.lock = new ReentrantLock();
 
         timerService = TimerServiceFactory.getTimerService(this.config);
@@ -444,8 +444,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
         this.ruleRuntimeEventSupport.reset();
         this.agendaEventSupport.reset();
-        for (Iterator it = this.__ruleBaseEventListeners.iterator(); it.hasNext(); ) {
-            this.kBase.removeEventListener((KnowledgeBaseEventListener) it.next());
+        for (KieBaseEventListener listener : kieBaseEventListeners) {
+            this.kBase.removeEventListener(listener);
         }
         if (processRuntime != null) {
             this.processRuntime.dispose();
@@ -1037,18 +1037,18 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.agendaEventSupport.removeEventListener(listener);
     }
 
-    public void addEventListener(KnowledgeBaseEventListener listener) {
+    public void addEventListener(KieBaseEventListener listener) {
         this.kBase.addEventListener(listener);
-        this.__ruleBaseEventListeners.add(listener);
+        this.kieBaseEventListeners.add(listener);
     }
 
-    public List getRuleBaseEventListeners() {
-        return Collections.unmodifiableList(this.__ruleBaseEventListeners);
+    public Collection<KieBaseEventListener> getKieBaseEventListeners() {
+        return Collections.unmodifiableCollection( kieBaseEventListeners );
     }
 
-    public void removeEventListener(KnowledgeBaseEventListener listener) {
+    public void removeEventListener(KieBaseEventListener listener) {
         this.kBase.removeEventListener( listener );
-        this.__ruleBaseEventListeners.remove(listener);
+        this.kieBaseEventListeners.remove(listener);
     }
 
     ///RuleEventListenerSupport
