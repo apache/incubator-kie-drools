@@ -188,7 +188,7 @@ ProcessInstance processInstance = ksession.startProcess("com.sample.MyProcess");
       </para></listitem>
     </orderedlist>
 
-    <para>The <code>KnowledgeRuntimeLoggerFactory</code> lets you add a logger to
+    <para>The <code>KieServices</code> lets you add a <code>KieRuntimeLogger</code> to
     your session, as shown below.  When creating a console logger, the knowledge session
     for which the logger needs to be created must be passed as an argument. The file
     logger also requires the name of the log file to be created, and the threaded file
@@ -196,7 +196,10 @@ ProcessInstance processInstance = ksession.startProcess("com.sample.MyProcess");
     You should always close the logger at the end of your application.</para>
 
 <programlisting language="java">
-  KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger( ksession, "test" );
+  import org.kie.api.KieServices;
+  import org.kie.api.logger.KieRuntimeLogger;
+  ...
+  KieRuntimeLogger logger = KieServices.Factory.get().getLoggers().newFileLogger(ksession, "test");
   // add invocations to the process engine here,
   // e.g. ksession.startProcess(processId);
   ...
