@@ -1506,7 +1506,7 @@ public class CepEspTest extends CommonTestMethodBase {
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
         StatefulKnowledgeSessionImpl session = (StatefulKnowledgeSessionImpl)createKnowledgeSession(kbase, conf);
 
-        SessionPseudoClock clock = (SessionPseudoClock) session.<SessionClock>getSessionClock();
+        SessionPseudoClock clock = (SessionPseudoClock) session.getSessionClock();
 
         final List results = new ArrayList();
 
