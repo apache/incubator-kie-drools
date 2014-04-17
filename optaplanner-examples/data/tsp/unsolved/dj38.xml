@@ -193,158 +193,156 @@
       <longitude>42973.3333</longitude>
     </City>
   </cityList>
-  <domicileList id="41">
-    <Domicile id="42">
-      <id>1</id>
-      <city reference="3"/>
-    </Domicile>
-  </domicileList>
-  <visitList id="43">
-    <Visit id="44">
+  <domicile id="41">
+    <id>1</id>
+    <city reference="3"/>
+  </domicile>
+  <visitList id="42">
+    <Visit id="43">
       <id>2</id>
       <city reference="4"/>
     </Visit>
-    <Visit id="45">
+    <Visit id="44">
       <id>3</id>
       <city reference="5"/>
     </Visit>
-    <Visit id="46">
+    <Visit id="45">
       <id>4</id>
       <city reference="6"/>
     </Visit>
-    <Visit id="47">
+    <Visit id="46">
       <id>5</id>
       <city reference="7"/>
     </Visit>
-    <Visit id="48">
+    <Visit id="47">
       <id>6</id>
       <city reference="8"/>
     </Visit>
-    <Visit id="49">
+    <Visit id="48">
       <id>7</id>
       <city reference="9"/>
     </Visit>
-    <Visit id="50">
+    <Visit id="49">
       <id>8</id>
       <city reference="10"/>
     </Visit>
-    <Visit id="51">
+    <Visit id="50">
       <id>9</id>
       <city reference="11"/>
     </Visit>
-    <Visit id="52">
+    <Visit id="51">
       <id>10</id>
       <city reference="12"/>
     </Visit>
-    <Visit id="53">
+    <Visit id="52">
       <id>11</id>
       <city reference="13"/>
     </Visit>
-    <Visit id="54">
+    <Visit id="53">
       <id>12</id>
       <city reference="14"/>
     </Visit>
-    <Visit id="55">
+    <Visit id="54">
       <id>13</id>
       <city reference="15"/>
     </Visit>
-    <Visit id="56">
+    <Visit id="55">
       <id>14</id>
       <city reference="16"/>
     </Visit>
-    <Visit id="57">
+    <Visit id="56">
       <id>15</id>
       <city reference="17"/>
     </Visit>
-    <Visit id="58">
+    <Visit id="57">
       <id>16</id>
       <city reference="18"/>
     </Visit>
-    <Visit id="59">
+    <Visit id="58">
       <id>17</id>
       <city reference="19"/>
     </Visit>
-    <Visit id="60">
+    <Visit id="59">
       <id>18</id>
       <city reference="20"/>
     </Visit>
-    <Visit id="61">
+    <Visit id="60">
       <id>19</id>
       <city reference="21"/>
     </Visit>
-    <Visit id="62">
+    <Visit id="61">
       <id>20</id>
       <city reference="22"/>
     </Visit>
-    <Visit id="63">
+    <Visit id="62">
       <id>21</id>
       <city reference="23"/>
     </Visit>
-    <Visit id="64">
+    <Visit id="63">
       <id>22</id>
       <city reference="24"/>
     </Visit>
-    <Visit id="65">
+    <Visit id="64">
       <id>23</id>
       <city reference="25"/>
     </Visit>
-    <Visit id="66">
+    <Visit id="65">
       <id>24</id>
       <city reference="26"/>
     </Visit>
-    <Visit id="67">
+    <Visit id="66">
       <id>25</id>
       <city reference="27"/>
     </Visit>
-    <Visit id="68">
+    <Visit id="67">
       <id>26</id>
       <city reference="28"/>
     </Visit>
-    <Visit id="69">
+    <Visit id="68">
       <id>27</id>
       <city reference="29"/>
     </Visit>
-    <Visit id="70">
+    <Visit id="69">
       <id>28</id>
       <city reference="30"/>
     </Visit>
-    <Visit id="71">
+    <Visit id="70">
       <id>29</id>
       <city reference="31"/>
     </Visit>
-    <Visit id="72">
+    <Visit id="71">
       <id>30</id>
       <city reference="32"/>
     </Visit>
-    <Visit id="73">
+    <Visit id="72">
       <id>31</id>
       <city reference="33"/>
     </Visit>
-    <Visit id="74">
+    <Visit id="73">
       <id>32</id>
       <city reference="34"/>
     </Visit>
-    <Visit id="75">
+    <Visit id="74">
       <id>33</id>
       <city reference="35"/>
     </Visit>
-    <Visit id="76">
+    <Visit id="75">
       <id>34</id>
       <city reference="36"/>
     </Visit>
-    <Visit id="77">
+    <Visit id="76">
       <id>35</id>
       <city reference="37"/>
     </Visit>
-    <Visit id="78">
+    <Visit id="77">
       <id>36</id>
       <city reference="38"/>
     </Visit>
-    <Visit id="79">
+    <Visit id="78">
       <id>37</id>
       <city reference="39"/>
     </Visit>
-    <Visit id="80">
+    <Visit id="79">
       <id>38</id>
       <city reference="40"/>
     </Visit>
