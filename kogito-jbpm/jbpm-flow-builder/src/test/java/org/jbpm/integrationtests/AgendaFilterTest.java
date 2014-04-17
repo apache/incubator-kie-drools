@@ -7,14 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.DebugProcessEventListener;
-import org.drools.core.rule.Rule;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
 import org.kie.api.command.Command;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.KnowledgeBase;
@@ -22,6 +23,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
@@ -105,9 +107,7 @@ public class AgendaFilterTest extends AbstractBaseTest {
             fail( kbuilder.getErrors().toString() );
         }
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = createKieSession(kbuilder.getKnowledgePackages().toArray(new KnowledgePackage[0]));
 
         // go !
         Message message = new Message();
@@ -152,7 +152,7 @@ public class AgendaFilterTest extends AbstractBaseTest {
         private Integer currentSalience = null;
 
         public boolean accept(Match activation) {
-            Rule rule = (Rule)activation.getRule();
+            RuleImpl rule = (RuleImpl)activation.getRule();
 
             if (currentSalience == null){
                 currentSalience = rule.getSalience() != null ? Integer.valueOf(rule.getSalience().toString()) : 0;

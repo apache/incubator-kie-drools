@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.WorkItemHandlerNotFoundException;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.process.core.ParameterDefinition;
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
@@ -16,7 +15,6 @@ import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.core.process.core.datatype.impl.type.StringDataType;
 import org.drools.core.process.core.impl.ParameterDefinitionImpl;
 import org.drools.core.process.core.impl.WorkImpl;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.test.Person;
@@ -29,10 +27,8 @@ import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class WorkItemTest extends AbstractBaseTest {
 
@@ -42,9 +38,7 @@ public class WorkItemTest extends AbstractBaseTest {
         String workName = "Unnexistent Task";
         RuleFlowProcess process = getWorkItemProcess( processId,
                                                       workName );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess( process );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = createKieSession(process); 
 
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put( "UserName",
@@ -69,10 +63,8 @@ public class WorkItemTest extends AbstractBaseTest {
         String workName = "Unnexistent Task";
         RuleFlowProcess process = getWorkItemProcess( processId,
                                                       workName );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess( process );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
+        KieSession ksession = createKieSession(process); 
+        
         ksession.getWorkItemManager().registerWorkItemHandler( workName,
                                                                new DoNothingWorkItemHandler() );
 

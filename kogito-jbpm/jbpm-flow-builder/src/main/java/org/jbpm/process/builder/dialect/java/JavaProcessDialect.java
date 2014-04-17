@@ -35,10 +35,12 @@ public class JavaProcessDialect implements ProcessDialect {
 
 		// The compilation result is for the entire rule, so difficult to
 		// associate with any descr
-		javaDialect.addClassCompileTask(context.getPkg().getName() + "."
-				+ processDescr.getClassName(), processDescr, processClass,
-				null, new ProcessErrorHandler(processDescr, process,
-						"Process Compilation error"));
+		javaDialect.addClassCompileTask(
+		        context.getPkg().getName() + "." + processDescr.getClassName(), 
+		        processDescr, 
+		        processClass,
+				null, 
+				new ProcessErrorHandler(processDescr, process, "Process Compilation error"));
 
 		JavaDialectRuntimeData data = (JavaDialectRuntimeData) context.getPkg()
 			.getDialectRuntimeRegistry().getDialectData(javaDialect.getId());
@@ -65,7 +67,7 @@ public class JavaProcessDialect implements ProcessDialect {
 		}
 
 		// setup the line mappins for this rule
-		// @TODO must setup mappings
+		// TODO @TODO must setup mappings
 		// final String name = this.pkg.getName() + "." + StringUtils.ucFirst(
 		// ruleDescr.getClassName() );
 		// final LineMappings mapping = new LineMappings( name );

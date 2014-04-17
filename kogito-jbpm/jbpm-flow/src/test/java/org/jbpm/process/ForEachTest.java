@@ -23,10 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.process.core.datatype.impl.type.ListDataType;
 import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.test.Person;
@@ -41,10 +39,8 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,9 +109,7 @@ public class ForEachTest extends AbstractBaseTest {
             Node.CONNECTION_DEFAULT_TYPE);
         forEachNode.setVariable("child", personDataType);
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = createKieSession(process);
         
         Map<String, Object> parameters = new HashMap<String, Object>();
         List<Person> persons = new ArrayList<Person>();

@@ -1,20 +1,13 @@
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.drools.compiler.compiler.DroolsError;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.WorkingMemory;
-import org.drools.core.rule.Package;
 import org.jbpm.integrationtests.test.Person;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
@@ -22,6 +15,7 @@ import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +25,6 @@ public class ProcessMilestoneTest extends AbstractBaseTest {
     
     @Test
     public void testMilestone() {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -60,13 +53,10 @@ public class ProcessMilestoneTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
         
-        ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.drools.milestone");
+        ProcessInstance processInstance = ( ProcessInstance ) workingMemory.startProcess("org.drools.milestone");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         workingMemory.insert(new Person("Jane Doe", 20));
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
@@ -77,7 +67,6 @@ public class ProcessMilestoneTest extends AbstractBaseTest {
     
     @Test
     public void testMilestoneWithProcessInstanceConstraint() {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -113,13 +102,11 @@ public class ProcessMilestoneTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
         for (DroolsError error: builder.getErrors().getErrors()) {
         	logger.error(error.toString());
         }
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
         
         Person john = new Person("John Doe", 20);
         Person jane = new Person("Jane Doe", 20);

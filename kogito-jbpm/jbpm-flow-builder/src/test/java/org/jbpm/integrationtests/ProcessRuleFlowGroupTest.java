@@ -1,28 +1,21 @@
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.Reader;
 import java.io.StringReader;
 
-import junit.framework.TestCase;
-
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.WorkingMemory;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.rule.Package;
 import org.jbpm.integrationtests.test.Person;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class ProcessRuleFlowGroupTest extends AbstractBaseTest {
     
     @Test
     public void testRuleSetProcessContext() throws Exception {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -60,10 +53,9 @@ public class ProcessRuleFlowGroupTest extends AbstractBaseTest {
             "end");
         builder.addRuleFlow(source);
         builder.addPackageFromDrl(source2);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        
         Person person = new Person();
         person.setAge(30);
         workingMemory.insert(person);

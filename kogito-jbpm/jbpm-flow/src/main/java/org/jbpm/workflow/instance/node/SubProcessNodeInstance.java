@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
@@ -152,7 +151,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
             logger.error("Could not find process {}", processId);
             logger.error("Aborting process");
         	((ProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED);
-        	throw new RuntimeDroolsException("Could not find process " + processId);
+        	throw new RuntimeException("Could not find process " + processId);
         } else {
             KnowledgeRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
             RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get("RuntimeManager");

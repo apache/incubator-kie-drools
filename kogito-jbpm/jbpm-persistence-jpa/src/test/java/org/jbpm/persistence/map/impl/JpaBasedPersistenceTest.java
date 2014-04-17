@@ -17,9 +17,9 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
@@ -62,7 +62,7 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
     }
     
     @Override
-    protected StatefulKnowledgeSession createSession(KnowledgeBase kbase) {
+    protected StatefulKnowledgeSession createSession(KieBase kbase) {
         Environment env = createEnvironment(context);
         if( this.useLocking ) { 
             env.set(USE_PESSIMISTIC_LOCKING, true);
@@ -72,7 +72,7 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
 
     @Override
     protected StatefulKnowledgeSession disposeAndReloadSession(StatefulKnowledgeSession ksession, int ksessionId,
-                                                               KnowledgeBase kbase) {
+                                                               KieBase kbase) {
         ksession.dispose();
         return JPAKnowledgeService.loadStatefulKnowledgeSession( ksessionId, kbase, null, createEnvironment(context) );
     }

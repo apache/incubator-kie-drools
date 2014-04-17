@@ -16,15 +16,10 @@
 
 package org.jbpm.process;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.impl.WorkImpl;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.test.util.AbstractBaseTest;
@@ -39,13 +34,11 @@ import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,21 +83,18 @@ public class SubProcessTest extends AbstractBaseTest  {
             endNode, Node.CONNECTION_DEFAULT_TYPE
         );
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
-        
-        process = new RuleFlowProcess();
-        process.setId("org.drools.core.process.subprocess");
-        process.setName("SubProcess");
+        RuleFlowProcess subprocess = new RuleFlowProcess();
+        subprocess.setId("org.drools.core.process.subprocess");
+        subprocess.setName("SubProcess");
         
         startNode = new StartNode();
         startNode.setName("Start");
         startNode.setId(1);
-        process.addNode(startNode);
+        subprocess.addNode(startNode);
         endNode = new EndNode();
         endNode.setName("EndNode");
         endNode.setId(2);
-        process.addNode(endNode);
+        subprocess.addNode(endNode);
         ActionNode actionNode = new ActionNode();
         actionNode.setName("Action");
         DroolsAction action = new DroolsConsequenceAction("java", null);
@@ -116,7 +106,7 @@ public class SubProcessTest extends AbstractBaseTest  {
         });
         actionNode.setAction(action);
         actionNode.setId(3);
-        process.addNode(actionNode);
+        subprocess.addNode(actionNode);
         new ConnectionImpl(
             startNode, Node.CONNECTION_DEFAULT_TYPE,
             actionNode, Node.CONNECTION_DEFAULT_TYPE
@@ -126,9 +116,8 @@ public class SubProcessTest extends AbstractBaseTest  {
             endNode, Node.CONNECTION_DEFAULT_TYPE
         );
         
-        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        KieSession ksession = createKieSession(process, subprocess); 
         
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.startProcess("org.drools.core.process.process");
         assertTrue(executed);
         assertEquals(0, ksession.getProcessInstances().size());
@@ -162,28 +151,25 @@ public class SubProcessTest extends AbstractBaseTest  {
             endNode, Node.CONNECTION_DEFAULT_TYPE
         );
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
-        
-        process = new RuleFlowProcess();
-        process.setId("org.drools.core.process.subprocess");
-        process.setName("SubProcess");
+        RuleFlowProcess subProcess = new RuleFlowProcess();
+        subProcess.setId("org.drools.core.process.subprocess");
+        subProcess.setName("SubProcess");
         
         startNode = new StartNode();
         startNode.setName("Start");
         startNode.setId(1);
-        process.addNode(startNode);
+        subProcess.addNode(startNode);
         endNode = new EndNode();
         endNode.setName("EndNode");
         endNode.setId(2);
-        process.addNode(endNode);
+        subProcess.addNode(endNode);
         WorkItemNode workItemNode = new WorkItemNode();
         workItemNode.setName("WorkItem");
         Work work = new WorkImpl();
         work.setName("MyWork");
         workItemNode.setWork(work);
         workItemNode.setId(4);
-        process.addNode(workItemNode);
+        subProcess.addNode(workItemNode);
         new ConnectionImpl(
             startNode, Node.CONNECTION_DEFAULT_TYPE,
             workItemNode, Node.CONNECTION_DEFAULT_TYPE
@@ -193,9 +179,9 @@ public class SubProcessTest extends AbstractBaseTest  {
             endNode, Node.CONNECTION_DEFAULT_TYPE
         );
         
-        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = createKieSession(process, subProcess);
+        
         ksession.getWorkItemManager().registerWorkItemHandler("MyWork", new WorkItemHandler() {
 			public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
 			    logger.info("Executing work item");
@@ -236,10 +222,8 @@ public class SubProcessTest extends AbstractBaseTest  {
         process.addNode( subProcessNode );
         process.addNode( endNode );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        KieSession ksession = createKieSession(process);
         
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         try{
             ksession.startProcess("org.drools.core.process.process");
             fail("should throw exception");

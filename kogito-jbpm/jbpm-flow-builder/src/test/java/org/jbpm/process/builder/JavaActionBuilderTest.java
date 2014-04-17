@@ -4,18 +4,18 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.rule.Package;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.spi.ProcessContext;
 import org.jbpm.process.builder.dialect.ProcessDialect;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
@@ -26,17 +26,20 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.junit.Test;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class JavaActionBuilderTest extends AbstractBaseTest {
 
     @Test
     public void testSimpleAction() throws Exception {
-        final Package pkg = new Package( "pkg1" );
+        final InternalKnowledgePackage pkg = new KnowledgePackageImpl( "pkg1" );
 
         ActionDescr actionDescr = new ActionDescr();
         actionDescr.setText( "list.add( \"hello world\" );" );       
 
-        PackageBuilder pkgBuilder = new PackageBuilder( pkg );
+        KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl( pkg );
         DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
         JavaDialect javaDialect = ( JavaDialect ) dialectRegistry.getDialect( "java" );
 
@@ -64,9 +67,9 @@ public class JavaActionBuilderTest extends AbstractBaseTest {
         javaDialect.compileAll();            
         assertEquals( 0, javaDialect.getResults().size() );
 
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkgBuilder.getPackage() );
-        final WorkingMemory wm = ruleBase.newStatefulSession();
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( (Collection) Arrays.asList(pkgBuilder.getPackage()) );
+        final StatefulKnowledgeSession wm = kbase.newStatefulKnowledgeSession();
 
         List<String> list = new ArrayList<String>();
         wm.setGlobal( "list", list );        

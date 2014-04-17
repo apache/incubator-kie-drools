@@ -1,25 +1,20 @@
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.drools.compiler.compiler.DroolsError;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatefulSession;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.rule.Package;
 import org.jbpm.integrationtests.test.Message;
 import org.jbpm.integrationtests.test.Person;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +24,6 @@ public class ProcessStartTest extends AbstractBaseTest {
     
     @Test
 	public void testStartConstraintTrigger() throws Exception {
-		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -85,10 +79,8 @@ public class ProcessStartTest extends AbstractBaseTest {
 			fail("Could not build process");
 		}
 		
-		Package pkg = builder.getPackage();
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		ruleBase.addPackage( pkg );
-		StatefulSession session = ruleBase.newStatefulSession();
+        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        
 		List<Message> myList = new ArrayList<Message>();
 		session.setGlobal("myList", myList);
 
@@ -105,7 +97,6 @@ public class ProcessStartTest extends AbstractBaseTest {
 	
     @Test
 	public void testStartEventTrigger() throws Exception {
-		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -160,10 +151,8 @@ public class ProcessStartTest extends AbstractBaseTest {
 			fail("Could not build process");
 		}
 		
-		Package pkg = builder.getPackage();
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		ruleBase.addPackage( pkg );
-		StatefulSession session = ruleBase.newStatefulSession();
+        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        
 		List<Message> myList = new ArrayList<Message>();
 		session.setGlobal("myList", myList);
 

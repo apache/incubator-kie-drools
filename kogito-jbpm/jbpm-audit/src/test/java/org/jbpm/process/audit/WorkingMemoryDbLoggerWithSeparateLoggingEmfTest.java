@@ -16,16 +16,12 @@
 
 package org.jbpm.process.audit;
 
-import static org.jbpm.process.audit.AbstractAuditLogServiceTest.*;
 import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
-
-import java.util.Properties;
+import static org.jbpm.process.audit.AbstractAuditLogServiceTest.createKieSession;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.drools.core.RuleBase;
-import org.drools.core.SessionConfiguration;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
@@ -33,9 +29,7 @@ import org.junit.Before;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 
 /**
  * This class tests the following classes: 
@@ -67,8 +61,7 @@ public class WorkingMemoryDbLoggerWithSeparateLoggingEmfTest extends AbstractWor
     @Override
     public ProcessInstance startProcess(String processName) {
         if( ksession == null ) { 
-            RuleBase ruleBase = createKnowledgeBase();
-            KieBase kbase = new KnowledgeBaseImpl(ruleBase);
+            KieBase kbase = createKnowledgeBase();
             
             Environment env = createEnvironment(context);
             ksession = createKieSession(kbase, env);

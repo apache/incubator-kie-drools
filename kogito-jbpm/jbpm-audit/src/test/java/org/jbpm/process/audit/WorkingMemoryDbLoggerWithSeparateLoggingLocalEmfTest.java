@@ -23,7 +23,6 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.drools.core.RuleBase;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.jbpm.process.audit.strategy.PersistenceStrategyType;
@@ -69,8 +68,7 @@ public class WorkingMemoryDbLoggerWithSeparateLoggingLocalEmfTest extends Abstra
     @Override
     public ProcessInstance startProcess(String processName) {
         if( ksession == null ) { 
-            RuleBase ruleBase = createKnowledgeBase();
-            KieBase kbase = new KnowledgeBaseImpl(ruleBase);
+            KieBase kbase = createKnowledgeBase();
             
             Properties properties = new Properties();
             properties.put("drools.processInstanceManagerFactory", "org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory");

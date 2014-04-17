@@ -18,13 +18,13 @@ package org.jbpm.process.instance.impl;
 
 import java.io.Serializable;
 
-import org.kie.api.definition.process.Connection;
-import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.drools.core.runtime.rule.impl.InternalAgenda;
+import org.drools.core.common.InternalAgenda;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.instance.NodeInstance;
+import org.kie.api.definition.process.Connection;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 
 /**
  * Default implementation of a constraint.

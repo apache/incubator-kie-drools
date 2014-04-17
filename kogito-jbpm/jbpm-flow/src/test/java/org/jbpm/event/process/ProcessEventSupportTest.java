@@ -21,8 +21,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.definitions.impl.KnowledgePackageImp;
-import org.drools.core.rule.Package;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.instance.impl.Action;
@@ -63,7 +63,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         // create a simple package with one process to test the events
-        final Package pkg = new Package( "org.drools.test" );
+        final InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.drools.test" );
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.core.process.event");
         process.setName("Event Process");
@@ -100,7 +100,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         
         pkg.addProcess(process);
         List<KnowledgePackage> pkgs = new ArrayList<KnowledgePackage>();
-        pkgs.add( new KnowledgePackageImp( pkg ) );
+        pkgs.add( pkg );
         kbase.addKnowledgePackages( pkgs );
         
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
@@ -176,7 +176,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         // create a simple package with one process to test the events
-        final Package pkg = new Package( "org.drools.test" );
+        final InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.drools.test" );
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.core.process.event");
         process.setName("Event Process");
@@ -228,7 +228,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         
         pkg.addProcess(process);
         List<KnowledgePackage> pkgs = new ArrayList<KnowledgePackage>();
-        pkgs.add( new KnowledgePackageImp( pkg ) );
+        pkgs.add( pkg );
         kbase.addKnowledgePackages( pkgs );
         
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
@@ -314,7 +314,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         // create a simple package with one process to test the events
-        final Package pkg = new Package( "org.drools.test" );
+        final InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.drools.test" );
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.core.process.event");
         process.setName("Event Process");
@@ -352,7 +352,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         
         pkg.addProcess(process);
         List<KnowledgePackage> pkgs = new ArrayList<KnowledgePackage>();
-        pkgs.add( new KnowledgePackageImp( pkg ) );
+        pkgs.add( pkg );
         kbase.addKnowledgePackages( pkgs );
         
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
@@ -426,7 +426,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         // create a simple package with one process to test the events
-        final Package pkg = new Package( "org.drools.test" );
+        final InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.drools.test" );
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.core.process.event");
         process.setName("Event Process");
@@ -468,7 +468,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         
         pkg.addProcess(process);
         List<KnowledgePackage> pkgs = new ArrayList<KnowledgePackage>();
-        pkgs.add( new KnowledgePackageImp( pkg ) );
+        pkgs.add( pkg );
         kbase.addKnowledgePackages( pkgs );
         
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();

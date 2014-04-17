@@ -49,6 +49,7 @@ import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
+import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
@@ -351,56 +352,10 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 "BPMN2-RuleTask3.drl");
         ksession = createKnowledgeSession(kbase);
 
-        final org.drools.core.event.AgendaEventListener agendaEventListener = new org.drools.core.event.AgendaEventListener() {
-            public void activationCreated(ActivationCreatedEvent event,
-                    WorkingMemory workingMemory) {
-                ksession.fireAllRules();
-            }
-
-            public void activationCancelled(ActivationCancelledEvent event,
-                    WorkingMemory workingMemory) {
-            }
-
-            public void beforeActivationFired(BeforeActivationFiredEvent event,
-                    WorkingMemory workingMemory) {
-            }
-
-            public void afterActivationFired(AfterActivationFiredEvent event,
-                    WorkingMemory workingMemory) {
-            }
-
-            public void agendaGroupPopped(AgendaGroupPoppedEvent event,
-                    WorkingMemory workingMemory) {
-            }
-
-            public void agendaGroupPushed(AgendaGroupPushedEvent event,
-                    WorkingMemory workingMemory) {
-            }
-
-            public void beforeRuleFlowGroupActivated(
-                    RuleFlowGroupActivatedEvent event,
-                    WorkingMemory workingMemory) {
-            }
-
-            public void afterRuleFlowGroupActivated(
-                    RuleFlowGroupActivatedEvent event,
-                    WorkingMemory workingMemory) {
-                workingMemory.fireAllRules();
-            }
-
-            public void beforeRuleFlowGroupDeactivated(
-                    RuleFlowGroupDeactivatedEvent event,
-                    WorkingMemory workingMemory) {
-            }
-
-            public void afterRuleFlowGroupDeactivated(
-                    RuleFlowGroupDeactivatedEvent event,
-                    WorkingMemory workingMemory) {
-            }
-        };
-        ((StatefulKnowledgeSessionImpl) ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession)
-                .getCommandService().getContext()).getKieSession()).session
-                .addEventListener(agendaEventListener);
+        ((KnowledgeCommandContext) 
+                ((CommandBasedStatefulKnowledgeSession) ksession)
+                .getCommandService().getContext())
+        .getKieSession().addEventListener(new TriggerRulesEventListener(ksession));
         ksession.addEventListener(new DebugAgendaEventListener());
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "SomeString");

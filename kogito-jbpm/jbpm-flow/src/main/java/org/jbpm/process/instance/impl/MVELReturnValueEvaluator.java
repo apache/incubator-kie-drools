@@ -25,7 +25,7 @@ import java.io.Serializable;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.definitions.impl.KnowledgePackageImp;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.drools.core.rule.MVELDialectRuntimeData;
@@ -88,10 +88,10 @@ public class MVELReturnValueEvaluator
 
         InternalWorkingMemory internalWorkingMemory = null;
         if( context.getKieRuntime() instanceof StatefulKnowledgeSessionImpl ) {
-            internalWorkingMemory = ((StatefulKnowledgeSessionImpl) context.getKieRuntime()).session;
+            internalWorkingMemory = ((StatefulKnowledgeSessionImpl) context.getKieRuntime()).getInternalWorkingMemory();
         } else if( context.getKieRuntime() instanceof StatelessKnowledgeSession) {
             StatefulKnowledgeSession statefulKnowledgeSession = ((StatelessKnowledgeSessionImpl) context.getKieRuntime()).newWorkingMemory();
-            internalWorkingMemory = ((StatefulKnowledgeSessionImpl) statefulKnowledgeSession).session;
+            internalWorkingMemory = ((StatefulKnowledgeSessionImpl) statefulKnowledgeSession).getInternalWorkingMemory();
         }
         
         VariableResolverFactory factory 
@@ -106,8 +106,8 @@ public class MVELReturnValueEvaluator
 
         // do we have any functions for this namespace?
         KiePackage pkg = context.getKieRuntime().getKieBase().getKiePackage("MAIN");
-        if ( pkg != null && pkg instanceof KnowledgePackageImp) {
-            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) ((KnowledgePackageImp) pkg).pkg.getDialectRuntimeRegistry().getDialectData( id );
+        if ( pkg != null && pkg instanceof KnowledgePackageImpl) {
+            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) ((KnowledgePackageImpl) pkg).getDialectRuntimeRegistry().getDialectData( id );
             factory.setNextFactory( data.getFunctionFactory() );
         }
 

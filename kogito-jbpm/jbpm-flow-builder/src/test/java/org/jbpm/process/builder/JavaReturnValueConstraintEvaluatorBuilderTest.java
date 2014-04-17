@@ -1,21 +1,19 @@
 package org.jbpm.process.builder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.ReturnValueDescr;
 import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.definitions.impl.KnowledgePackageImp;
-import org.drools.core.rule.Package;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
 import org.jbpm.process.builder.dialect.java.JavaReturnValueEvaluatorBuilder;
 import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
@@ -33,7 +31,7 @@ public class JavaReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseT
 
     @Test
     public void testSimpleReturnValueConstraintEvaluator() throws Exception {
-        final Package pkg = new Package( "pkg1" );
+        final InternalKnowledgePackage pkg = new KnowledgePackageImpl( "pkg1" );
 
         ProcessDescr processDescr = new ProcessDescr();
         processDescr.setClassName( "Process1" );
@@ -46,7 +44,7 @@ public class JavaReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseT
         ReturnValueDescr descr = new ReturnValueDescr();
         descr.setText( "return value;" );
 
-        PackageBuilder pkgBuilder = new PackageBuilder( pkg );
+        KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl( pkg );
         DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
         JavaDialect javaDialect = (JavaDialect) dialectRegistry.getDialect( "java" );
 
@@ -73,7 +71,7 @@ public class JavaReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseT
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         List<KnowledgePackage> packages = new ArrayList<KnowledgePackage>();
-        packages.add( new KnowledgePackageImp(pkgBuilder.getPackage()) );
+        packages.add( pkgBuilder.getPackage() );
         kbase.addKnowledgePackages( packages );
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 

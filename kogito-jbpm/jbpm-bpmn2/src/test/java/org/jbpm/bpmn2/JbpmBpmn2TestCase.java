@@ -15,10 +15,7 @@ limitations under the License.*/
 
 package org.jbpm.bpmn2;
 
-import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
-import static org.kie.api.runtime.EnvironmentName.OBJECT_MARSHALLING_STRATEGIES;
-import static org.kie.api.runtime.EnvironmentName.TRANSACTION_MANAGER;
-import static org.kie.api.runtime.EnvironmentName.USE_PESSIMISTIC_LOCKING;
+import static org.kie.api.runtime.EnvironmentName.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,7 +36,7 @@ import javax.persistence.Persistence;
 import javax.transaction.Status;
 import javax.transaction.Transaction;
 
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.audit.WorkingMemoryInMemoryLogger;
 import org.drools.core.audit.event.LogEvent;
@@ -311,14 +308,14 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
     // Important to test this since persistence relies on this
     protected List<Resource> buildAndDumpBPMN2Process(String process) throws SAXException, IOException { 
         KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        ((PackageBuilderConfiguration) conf).initSemanticModules();
-        ((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNSemanticModule());
-        ((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNDISemanticModule());
+        ((KnowledgeBuilderConfigurationImpl) conf).initSemanticModules();
+        ((KnowledgeBuilderConfigurationImpl) conf).addSemanticModule(new BPMNSemanticModule());
+        ((KnowledgeBuilderConfigurationImpl) conf).addSemanticModule(new BPMNDISemanticModule());
         
         Resource classpathResource = ResourceFactory.newClassPathResource(process);
         // Dump and reread
         XmlProcessReader processReader 
-            = new XmlProcessReader(((PackageBuilderConfiguration) conf).getSemanticModules(), getClass().getClassLoader());
+            = new XmlProcessReader(((KnowledgeBuilderConfigurationImpl) conf).getSemanticModules(), getClass().getClassLoader());
         List<Process> processes = processReader.read(this.getClass().getResourceAsStream("/" + process));
         List<Resource> resources = new ArrayList<Resource>();
         for (Process p : processes) {

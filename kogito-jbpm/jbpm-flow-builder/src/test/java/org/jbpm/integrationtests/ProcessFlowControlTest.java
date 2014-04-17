@@ -1,53 +1,42 @@
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.compiler.PackageBuilder.PackageMergeException;
-import org.drools.core.FactHandle;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatefulSession;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl.PackageMergeException;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.event.ActivationCancelledEvent;
-import org.drools.core.event.AgendaEventListener;
 import org.drools.core.event.DefaultAgendaEventListener;
-import org.drools.core.rule.Package;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ProcessFlowControlTest extends AbstractBaseTest {
     
     private static final Logger logger = LoggerFactory.getLogger(ProcessFlowControlTest.class);
-    
-    protected RuleBase getRuleBase() throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            null );
-    }
-
-    protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
+  
+    protected KieBase getRuleBase(final KieBaseConfiguration config) throws Exception {
+        return KnowledgeBaseFactory.newKnowledgeBase( config );
     }
 
     @Test
     public void testRuleFlowConstraintDialects() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "test_ConstraintDialects.rfm" ) ) );
 
         logger.error( builder.getErrors().toString() );
@@ -55,11 +44,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         assertEquals( 0,
                       builder.getErrors().getErrors().length );
 
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-
-        StatefulSession session = ruleBase.newStatefulSession();
+        StatefulKnowledgeSession session = createKieSession(true, builder.getPackage());
         List<Integer> inList = new ArrayList<Integer>();
         List<Integer> outList = new ArrayList<Integer>();
         session.setGlobal( "inList",
@@ -134,15 +119,11 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
 
     @Test
     public void testRuleFlow() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
-        final Package pkg = builder.getPackage();
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
 
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        StatefulKnowledgeSession workingMemory = createKieSession(true, builder.getPackage());
+        
         final List<String> list = new ArrayList<String>();
         workingMemory.setGlobal( "list",
                                  list );
@@ -169,19 +150,15 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
 
     @Test
     public void testRuleFlowUpgrade() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
         // Set the system property so that automatic conversion can happen
         System.setProperty( "drools.ruleflow.port",
                             "true" );
 
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow40.rfm" ) ) );
-        final Package pkg = builder.getPackage();
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        
+        StatefulKnowledgeSession workingMemory = createKieSession(true, builder.getPackage());
+        
         final List<String> list = new ArrayList<String>();
         workingMemory.setGlobal( "list",
                                  list );
@@ -211,24 +188,19 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
 
     @Test
     public void testRuleFlowClear() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ruleflowClear.drl" ) ) );
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "test_ruleflowClear.rfm" ) ) );
-        final Package pkg = builder.getPackage();
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        
+        StatefulKnowledgeSession workingMemory = createKieSession(true, builder.getPackage());
+        
         final List<String> list = new ArrayList<String>();
         workingMemory.setGlobal( "list",
                                  list );
 
         final List<Match> activations = new ArrayList<Match>();
         AgendaEventListener listener = new DefaultAgendaEventListener() {
-            public void activationCancelled(ActivationCancelledEvent event,
-                                            WorkingMemory workingMemory) {
-                activations.add( event.getActivation() );
+            public void matchCancelled(MatchCancelledEvent event) { 
+                activations.add( event.getMatch() );
             }
         };
 
@@ -253,7 +225,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         assertEquals( 0,
                       activations.size() );
 
-        workingMemory.getAgenda().clearAndCancelRuleFlowGroup( "flowgroup-1" );
+        ((InternalAgenda) workingMemory.getAgenda()).clearAndCancelRuleFlowGroup( "flowgroup-1" );
 
         // Check the AgendaGroup and RuleFlowGroup  are now empty
         assertEquals( 0,
@@ -268,16 +240,10 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
 
     @Test
     public void testRuleFlowInPackage() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
-        final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        final StatefulKnowledgeSession workingMemory = createKieSession(true, builder.getPackage());
         final List<String> list = new ArrayList<String>();
         workingMemory.setGlobal( "list",
                                  list );
@@ -306,7 +272,6 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
     @Test
     public void testLoadingRuleFlowInPackage1() throws Exception {
         // adding ruleflow before adding package
-        final PackageBuilder builder = new PackageBuilder();
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
         builder.getPackage();
@@ -315,7 +280,6 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
     @Test
     public void testLoadingRuleFlowInPackage2() throws Exception {
         // only adding ruleflow
-        final PackageBuilder builder = new PackageBuilder();
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
         builder.getPackage();
     }
@@ -323,7 +287,6 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
     @Test
     public void testLoadingRuleFlowInPackage3() throws Exception {
         // only adding ruleflow without any generated rules
-        final PackageBuilder builder = new PackageBuilder();
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "empty_ruleflow.rfm" ) ) );
         builder.getPackage();
     }
@@ -332,7 +295,6 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
     @Ignore
     public void FIXME_testLoadingRuleFlowInPackage4() throws Exception {
         // adding ruleflows of different package
-        final PackageBuilder builder = new PackageBuilder();
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "empty_ruleflow.rfm" ) ) );
         try {
             builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
@@ -346,7 +308,6 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
     @Ignore
     public void FIXME_testLoadingRuleFlowInPackage5() throws Exception {
         // adding ruleflow of different package than rules
-        final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
         try {
             builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "empty_ruleflow.rfm" ) ) );
@@ -360,7 +321,6 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
     @Ignore
     public void FIXME_testLoadingRuleFlowInPackage6() throws Exception {
         // adding rules of different package than ruleflow
-        final PackageBuilder builder = new PackageBuilder();
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "empty_ruleflow.rfm" ) ) );
         try {
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
@@ -372,14 +332,10 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
 
     @Test
     public void testRuleFlowActionDialects() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "test_ActionDialects.rfm" ) ) );
 
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-
-        StatefulSession session = ruleBase.newStatefulSession();
+        final StatefulKnowledgeSession session = createKieSession(true, builder.getPackage());
+        
         List<String> list = new ArrayList<String>();
         session.setGlobal( "list",
                            list );
@@ -397,7 +353,6 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
     @Test
     public void testLoadingRuleFlowInPackage7() throws Exception {
         // loading a ruleflow with errors
-        final PackageBuilder builder = new PackageBuilder();
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "error_ruleflow.rfm" ) ) );
         assertEquals( 1,
                       builder.getErrors().getErrors().length );

@@ -75,7 +75,7 @@ public class MVELActionBuilder
             Map<String, Class<?>> variables = new HashMap<String,Class<?>>();
             
             context.setTypesafe( false ); // we can't know all the types ahead of time with processes, but we don't need return types, so it's ok
-            BoundIdentifiers boundIdentifiers = new BoundIdentifiers(variables, context.getPackageBuilder().getGlobals());
+            BoundIdentifiers boundIdentifiers = new BoundIdentifiers(variables, context.getKnowledgeBuilder().getGlobals());
             MVELAnalysisResult analysis = ( MVELAnalysisResult ) dialect.analyzeBlock( context,
                                                                                        actionDescr,
                                                                                        dialect.getInterceptors(),

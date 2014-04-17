@@ -48,7 +48,7 @@ public class JavaActionBuilder extends AbstractJavaProcessBuilder
         JavaDialect dialect = (JavaDialect) context.getDialect( "java" );
         
         Map<String, Class<?>> variables = new HashMap<String,Class<?>>();
-        BoundIdentifiers boundIdentifiers = new BoundIdentifiers(variables, context.getPackageBuilder().getGlobals());
+        BoundIdentifiers boundIdentifiers = new BoundIdentifiers(variables, context.getKnowledgeBuilder().getGlobals());
         AnalysisResult analysis = dialect.analyzeBlock( context,
                                                         actionDescr,
                                                         actionDescr.getText(),

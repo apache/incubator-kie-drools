@@ -1,31 +1,23 @@
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.WorkingMemory;
-import org.drools.core.rule.Package;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class ProcessHumanTaskTest extends AbstractBaseTest {
-    
+   
     @Test
     public void testHumanTask() {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -66,10 +58,9 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        
+        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        
         TestWorkItemHandler handler = new TestWorkItemHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         ProcessInstance processInstance = ( ProcessInstance )
@@ -83,7 +74,6 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
     
     @Test
     public void testSwimlane() {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -145,10 +135,9 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        
+        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        
         TestWorkItemHandler handler = new TestWorkItemHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         ProcessInstance processInstance = ( ProcessInstance )
@@ -171,7 +160,6 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
 
     @Test
     public void testHumanTaskCancel() {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -212,10 +200,9 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        
+        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        
         TestWorkItemHandler handler = new TestWorkItemHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         ProcessInstance processInstance = ( ProcessInstance )
@@ -229,7 +216,6 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
     
     @Test
     public void testHumanTaskCancel2() {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -273,10 +259,9 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        
+        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        
         TestWorkItemHandler handler = new TestWorkItemHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         ProcessInstance processInstance = ( ProcessInstance )

@@ -1,30 +1,22 @@
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.Reader;
 import java.io.StringReader;
 
-import junit.framework.TestCase;
-
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatefulSession;
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.rule.Package;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 
 public class ProcessEventTest extends AbstractBaseTest {
-    
+  
     @Test
     public void testInternalNodeSignalEvent() {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -64,12 +56,9 @@ public class ProcessEventTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        StatefulSession session = ruleBase.newStatefulSession();
-        ProcessInstance processInstance =
-            session.startProcess("org.drools.core.event");
+        KieSession session = createKieSession(builder.getPackage());
+        
+        ProcessInstance processInstance = session.startProcess("org.drools.core.event");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals("MyValue", ((VariableScopeInstance) 
     		((org.jbpm.process.instance.ProcessInstance) processInstance).getContextInstance(
@@ -78,7 +67,6 @@ public class ProcessEventTest extends AbstractBaseTest {
     
     @Test
     public void testProcessInstanceSignalEvent() throws Exception {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -114,14 +102,11 @@ public class ProcessEventTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        StatefulSession session = ruleBase.newStatefulSession();
+        KieSession session = createKieSession(builder.getPackage());
         ProcessInstance processInstance = session.startProcess("org.drools.core.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         
-        session = SerializationHelper.getSerialisedStatefulSession(session);
+        session = JbpmSerializationHelper.getSerialisedStatefulKnowledgeSession(session);
         processInstance = session.getProcessInstance(processInstance.getId());
         processInstance.signalEvent("MyEvent", "MyValue");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
@@ -132,7 +117,6 @@ public class ProcessEventTest extends AbstractBaseTest {
     
     @Test
     public void testExternalEventCorrelation() throws Exception {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -168,17 +152,15 @@ public class ProcessEventTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        StatefulSession session = ruleBase.newStatefulSession();
+        KieSession session = createKieSession(builder.getPackage());
+                
         ProcessInstance processInstance = session.startProcess("org.drools.core.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals("SomeText", ((VariableScopeInstance) 
     		((org.jbpm.process.instance.ProcessInstance) processInstance).getContextInstance(
 				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
         
-        session = SerializationHelper.getSerialisedStatefulSession(session);
+        session = JbpmSerializationHelper.getSerialisedStatefulKnowledgeSession(session);
         processInstance = session.getProcessInstance(processInstance.getId());
         ((InternalWorkingMemory) session).getProcessRuntime().signalEvent("MyEvent", "MyValue");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
@@ -189,7 +171,6 @@ public class ProcessEventTest extends AbstractBaseTest {
 
     @Test
     public void testInternalEventCorrelation() throws Exception {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -225,17 +206,15 @@ public class ProcessEventTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        StatefulSession session = ruleBase.newStatefulSession();
+        KieSession session = createKieSession(builder.getPackage());
+        
         ProcessInstance processInstance = session.startProcess("org.drools.core.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals("SomeText", ((VariableScopeInstance) 
     		((org.jbpm.process.instance.ProcessInstance) processInstance).getContextInstance(
 				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
 
-        session = SerializationHelper.getSerialisedStatefulSession(session);
+        session = JbpmSerializationHelper.getSerialisedStatefulKnowledgeSession(session);
         processInstance = session.getProcessInstance(processInstance.getId());
         ((InternalWorkingMemory) session).getProcessRuntime().signalEvent("MyEvent", "MyValue");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
@@ -243,7 +222,6 @@ public class ProcessEventTest extends AbstractBaseTest {
     
     @Test
     public void testInternalNodeSignalCompositeEvent() {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -295,12 +273,10 @@ public class ProcessEventTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KieSession ksession = createKieSession(builder.getPackage());
+        
         ProcessInstance processInstance =
-            workingMemory.startProcess("org.drools.core.event");
+            ksession.startProcess("org.drools.core.event");
         assertEquals("Process did not complete!", ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals("MyValue", ((VariableScopeInstance)
     		((org.jbpm.process.instance.ProcessInstance) processInstance).getContextInstance(
@@ -309,7 +285,6 @@ public class ProcessEventTest extends AbstractBaseTest {
     
     @Test
     public void testProcessInstanceSignalCompositeEvent() throws Exception {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -357,14 +332,12 @@ public class ProcessEventTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        StatefulSession session = ruleBase.newStatefulSession();
+        KieSession session = createKieSession(builder.getPackage());
+        
         ProcessInstance processInstance = session.startProcess("org.drools.core.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
-
-        session = SerializationHelper.getSerialisedStatefulSession(session);
+        
+        session = JbpmSerializationHelper.getSerialisedStatefulKnowledgeSession(session);
         processInstance = session.getProcessInstance(processInstance.getId());
         processInstance.signalEvent("MyEvent", "MyValue");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
@@ -375,7 +348,6 @@ public class ProcessEventTest extends AbstractBaseTest {
     
     @Test
     public void testExternalCompositeEventCorrelation() throws Exception {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -423,14 +395,12 @@ public class ProcessEventTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        StatefulSession session = ruleBase.newStatefulSession();
+        KieSession session = createKieSession(builder.getPackage());
+        
         ProcessInstance processInstance = session.startProcess("org.drools.core.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
 
-        session = SerializationHelper.getSerialisedStatefulSession(session);
+        session = JbpmSerializationHelper.getSerialisedStatefulKnowledgeSession(session);
         processInstance = session.getProcessInstance(processInstance.getId());
         ((InternalWorkingMemory) session).getProcessRuntime().signalEvent("MyEvent", "MyValue");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
@@ -441,7 +411,6 @@ public class ProcessEventTest extends AbstractBaseTest {
     
     @Test
     public void testInternalCompositeEventCorrelation() throws Exception {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -489,14 +458,11 @@ public class ProcessEventTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        StatefulSession session = ruleBase.newStatefulSession();
+        KieSession session = createKieSession(builder.getPackage());
         ProcessInstance processInstance = session.startProcess("org.drools.core.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
 
-        session = SerializationHelper.getSerialisedStatefulSession(session);
+        session = JbpmSerializationHelper.getSerialisedStatefulKnowledgeSession(session);
         processInstance = session.getProcessInstance(processInstance.getId());
         ((InternalWorkingMemory) session).getProcessRuntime().signalEvent("MyEvent", "MyValue");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());

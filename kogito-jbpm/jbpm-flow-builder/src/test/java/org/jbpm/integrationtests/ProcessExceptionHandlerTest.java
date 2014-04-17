@@ -1,34 +1,29 @@
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.drools.compiler.compiler.DroolsError;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderErrors;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.WorkingMemory;
-import org.drools.core.rule.Package;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ProcessExceptionHandlerTest extends AbstractBaseTest {
     
     private static final Logger logger = LoggerFactory.getLogger(ProcessExceptionHandlerTest.class);
-    
+   
     @Test
     public void testFaultWithoutHandler() {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -50,7 +45,7 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
+        InternalKnowledgePackage pkg = builder.getPackage();
         PackageBuilderErrors errors = builder.getErrors();
         if (errors != null && !errors.isEmpty()) {
 	        for (DroolsError error: errors.getErrors()) {
@@ -58,17 +53,14 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
 	        }
 	        fail("Package could not be compiled");
         }
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.drools.exception");
+        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        
+        ProcessInstance processInstance = ( ProcessInstance ) session.startProcess("org.drools.exception");
         assertEquals(ProcessInstance.STATE_ABORTED, processInstance.getState());
     }
     
     @Test
     public void testProcessExceptionHandlerAction() {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -107,14 +99,11 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        
         List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list", list);
-        ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.drools.exception");
+        session.setGlobal("list", list);
+        ProcessInstance processInstance = ( ProcessInstance ) session.startProcess("org.drools.exception");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(1, list.size());
         assertEquals("SomeValue", list.get(0));
@@ -122,7 +111,6 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
     
     @Test
     public void testProcessExceptionHandlerTriggerNode() {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -152,18 +140,13 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.drools.exception");
+        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        ProcessInstance processInstance = ( ProcessInstance ) session.startProcess("org.drools.exception");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
     @Test
     public void testCompositeNodeExceptionHandlerTriggerNode() {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -226,14 +209,11 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
             "</process>");
 
 		builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        
         List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list", list);
-        ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.drools.exception");
+        session.setGlobal("list", list);
+        ProcessInstance processInstance = ( ProcessInstance ) session.startProcess("org.drools.exception");
         assertEquals(1, list.size());
         assertEquals("SomeValue", list.get(0));
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
@@ -241,7 +221,6 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
     
     @Test
     public void testNestedExceptionHandler() {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -304,14 +283,11 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
             "</process>");
 
 		builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        
         List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list", list);
-        ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.drools.exception");
+        session.setGlobal("list", list);
+        ProcessInstance processInstance = ( ProcessInstance ) session.startProcess("org.drools.exception");
         assertEquals(1, list.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
     }

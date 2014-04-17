@@ -6,20 +6,18 @@ import static org.junit.Assert.fail;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.compiler.compiler.DroolsError;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.ClockType;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.StatefulSession;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.rule.Package;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.time.SessionPseudoClock;
 import org.jbpm.integrationtests.test.Message;
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -28,6 +26,9 @@ import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,6 @@ public class ProcessTimerTest extends AbstractBaseTest {
 
     @Test
 	public void testSimpleProcess() throws Exception {
-		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -85,10 +85,8 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			fail("Could not build process");
 		}
 		
-		Package pkg = builder.getPackage();
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		ruleBase.addPackage( pkg );
-		final StatefulSession session = ruleBase.newStatefulSession();
+        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        
 		List<Message> myList = new ArrayList<Message>();
 		session.setGlobal("myList", myList);
 		
@@ -120,7 +118,6 @@ public class ProcessTimerTest extends AbstractBaseTest {
 	
     @Test
 	public void testVariableSimpleProcess() throws Exception {
-		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -175,11 +172,9 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			}
 			fail("Could not build process");
 		}
-		
-		Package pkg = builder.getPackage();
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		ruleBase.addPackage( pkg );
-		final StatefulSession session = ruleBase.newStatefulSession();
+
+        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        
 		List<Message> myList = new ArrayList<Message>();
 		session.setGlobal("myList", myList);
 		
@@ -214,7 +209,6 @@ public class ProcessTimerTest extends AbstractBaseTest {
 	
     @Test
 	public void testIncorrectTimerNode() throws Exception {
-		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -246,7 +240,6 @@ public class ProcessTimerTest extends AbstractBaseTest {
 
     @Test
 	public void testOnEntryTimerExecuted() throws Exception {
-		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -280,11 +273,9 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			"\n" +
 			"</process>");
 		builder.addRuleFlow(source);
-		
-		Package pkg = builder.getPackage();
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		ruleBase.addPackage( pkg );
-		final StatefulSession session = ruleBase.newStatefulSession();
+
+        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        
 		List<String> myList = new ArrayList<String>();
 		session.setGlobal("myList", myList);
 		
@@ -306,7 +297,6 @@ public class ProcessTimerTest extends AbstractBaseTest {
 
     @Test
 	public void testOnEntryTimerVariableExecuted() throws Exception {
-		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -345,11 +335,9 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			"\n" +
 			"</process>");
 		builder.addRuleFlow(source);
-		
-		Package pkg = builder.getPackage();
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		ruleBase.addPackage( pkg );
-		final StatefulSession session = ruleBase.newStatefulSession();
+
+        final StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+
 		List<String> myList = new ArrayList<String>();
 		session.setGlobal("myList", myList);
 		
@@ -379,7 +367,6 @@ public class ProcessTimerTest extends AbstractBaseTest {
 
     @Test
 	public void testOnEntryTimerWorkItemExecuted() throws Exception {
-		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -414,11 +401,9 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			"\n" +
 			"</process>");
 		builder.addRuleFlow(source);
-		
-		Package pkg = builder.getPackage();
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		ruleBase.addPackage( pkg );
-		final StatefulSession session = ruleBase.newStatefulSession();
+
+        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        
 		List<String> myList = new ArrayList<String>();
 		session.setGlobal("myList", myList);
 		session.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
@@ -441,7 +426,6 @@ public class ProcessTimerTest extends AbstractBaseTest {
 
     @Test
 	public void testIncorrectOnEntryTimer() throws Exception {
-		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -484,7 +468,6 @@ public class ProcessTimerTest extends AbstractBaseTest {
 
     @Test
 	public void testOnEntryTimerExecutedMultipleTimes() throws Exception {
-		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -518,11 +501,9 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			"\n" +
 			"</process>");
 		builder.addRuleFlow(source);
-		
-		Package pkg = builder.getPackage();
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		ruleBase.addPackage( pkg );
-		final StatefulSession session = ruleBase.newStatefulSession();
+
+        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        
 		List<String> myList = new ArrayList<String>();
 		session.setGlobal("myList", myList);
 		
@@ -545,7 +526,6 @@ public class ProcessTimerTest extends AbstractBaseTest {
 	
     @Test
 	public void testMultipleTimers() throws Exception {
-		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -582,15 +562,20 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			"\n" +
 			"</process>");
 		builder.addRuleFlow(source);
-		
-		Package pkg = builder.getPackage();
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		ruleBase.addPackage( pkg );
-		
-		SessionConfiguration conf = new SessionConfiguration();
-        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );  
+	
         
-		final StatefulSession session = ruleBase.newStatefulSession(conf, null);
+		final StatefulKnowledgeSession session;
+		{ 
+		    InternalKnowledgePackage pkg = builder.getPackage();
+		    KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		    kbase.addKnowledgePackages((Collection) Arrays.asList(builder.getPackages()));
+		    
+		    SessionConfiguration conf = new SessionConfiguration();
+		    conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );  
+        
+		    session = kbase.newStatefulKnowledgeSession(conf, null);
+		}
+		
         SessionPseudoClock clock = ( SessionPseudoClock) session.getSessionClock();
         clock.advanceTime( 300,
                            TimeUnit.MILLISECONDS ); 
@@ -618,7 +603,6 @@ public class ProcessTimerTest extends AbstractBaseTest {
 	
     @Test
 	public void testOnEntryTimerCancelled() throws Exception {
-		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -652,11 +636,9 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			"\n" +
 			"</process>");
 		builder.addRuleFlow(source);
-		
-		Package pkg = builder.getPackage();
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		ruleBase.addPackage( pkg );
-		final StatefulSession session = ruleBase.newStatefulSession();
+
+        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        
 		List<String> myList = new ArrayList<String>();
 		session.setGlobal("myList", myList);
 		

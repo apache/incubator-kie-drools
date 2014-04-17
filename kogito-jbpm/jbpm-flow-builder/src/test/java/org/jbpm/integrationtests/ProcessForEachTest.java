@@ -1,6 +1,6 @@
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -9,25 +9,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.WorkingMemory;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.rule.Package;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class ProcessForEachTest extends AbstractBaseTest {
-    
+  
     @Test
     public void testForEach() {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -71,10 +64,9 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "  </connections>\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        
+        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        
         List<String> myList = new ArrayList<String>();
         workingMemory.setGlobal("myList", myList);
         List<String> collection = new ArrayList<String>();
@@ -91,7 +83,6 @@ public class ProcessForEachTest extends AbstractBaseTest {
     
     @Test
     public void testForEachLargeList() {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -137,11 +128,10 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "  </connections>\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
+        
+        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        
         final List<String> myList = new ArrayList<String>();
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Log", new WorkItemHandler() {
 			public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
 				String message = (String) workItem.getParameter("Message");
@@ -165,7 +155,6 @@ public class ProcessForEachTest extends AbstractBaseTest {
     
     @Test
     public void testForEachEmptyList() {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -209,10 +198,9 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "  </connections>\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        
+        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        
         List<String> myList = new ArrayList<String>();
         workingMemory.setGlobal("myList", myList);
         List<String> collection = new ArrayList<String>();
@@ -225,7 +213,6 @@ public class ProcessForEachTest extends AbstractBaseTest {
     
     @Test
     public void testForEachNullList() {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -269,10 +256,9 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "  </connections>\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        
+        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        
         List<String> myList = new ArrayList<String>();
         workingMemory.setGlobal("myList", myList);
         ProcessInstance processInstance = ( ProcessInstance )
@@ -282,7 +268,6 @@ public class ProcessForEachTest extends AbstractBaseTest {
     
     @Test
     public void testForEachCancel() {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -352,10 +337,9 @@ public class ProcessForEachTest extends AbstractBaseTest {
 			"\n" +
 			"</process>");
 		builder.addRuleFlow(source);
-		Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+		
+        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        
         List<String> collection = new ArrayList<String>();
         collection.add("one");
         collection.add("two");
@@ -372,7 +356,6 @@ public class ProcessForEachTest extends AbstractBaseTest {
     
     @Test
     public void testForEachCancelIndependent() {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -442,10 +425,9 @@ public class ProcessForEachTest extends AbstractBaseTest {
 			"\n" +
 			"</process>");
 		builder.addRuleFlow(source);
-		Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        
+        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        
         List<String> collection = new ArrayList<String>();
         collection.add("one");
         collection.add("two");
@@ -462,7 +444,6 @@ public class ProcessForEachTest extends AbstractBaseTest {
     
     @Test
     public void testForEachWithEventNode() {
-        PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -518,10 +499,9 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "  </connections>\n" +
             "</process>");
         builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        
+        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        
         List<String> myList = new ArrayList<String>();
         workingMemory.setGlobal("myList", myList);
         List<String> collection = new ArrayList<String>();

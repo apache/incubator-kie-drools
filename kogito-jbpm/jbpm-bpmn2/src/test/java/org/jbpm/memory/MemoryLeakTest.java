@@ -9,10 +9,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-import org.drools.core.RuleBase;
-import org.drools.core.event.RuleBaseEventSupport;
+import org.drools.core.event.KieBaseEventSupport;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
@@ -72,8 +70,7 @@ public class MemoryLeakTest {
             createKnowledgeSessionStartProcessEtc(kbase);
         }
         
-        RuleBase ruleBase = ((KnowledgeBaseImpl) kbase).getRuleBase();
-        RuleBaseEventSupport eventSupport = (RuleBaseEventSupport) getValueOfField("eventSupport", ReteooRuleBase.class, ruleBase);
+        KieBaseEventSupport eventSupport = (KieBaseEventSupport) getValueOfField("eventSupport", KnowledgeBaseImpl.class, kbase);
         assertEquals( "Event listeners should have been detached", 0, eventSupport.getEventListeners().size());
     }
     

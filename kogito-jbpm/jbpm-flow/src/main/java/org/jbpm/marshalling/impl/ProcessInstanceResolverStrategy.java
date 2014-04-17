@@ -16,8 +16,12 @@
  */
 package org.jbpm.marshalling.impl;
 
-import org.drools.core.common.AbstractWorkingMemory;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.PersisterHelper;
@@ -28,10 +32,6 @@ import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.kie.api.definition.process.Process;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.process.ProcessInstance;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 /**
  * When using this strategy, knowledge session de/marshalling process will make sure that
@@ -97,11 +97,11 @@ public class ProcessInstanceResolverStrategy
         ProcessInstanceManager pim = null;
         if ( streamContext instanceof MarshallerWriteContext ) {
             MarshallerWriteContext context = (MarshallerWriteContext) streamContext;
-            pim = ((ProcessRuntimeImpl) ((AbstractWorkingMemory) context.wm).getProcessRuntime()).getProcessInstanceManager();
+            pim = ((ProcessRuntimeImpl) ((InternalWorkingMemory) context.wm).getProcessRuntime()).getProcessInstanceManager();
         }
         else if ( streamContext instanceof MarshallerReaderContext ) {
             MarshallerReaderContext context = (MarshallerReaderContext) streamContext;
-            pim = ((ProcessRuntimeImpl) ((AbstractWorkingMemory) context.wm).getProcessRuntime()).getProcessInstanceManager();
+            pim = ((ProcessRuntimeImpl) ((InternalWorkingMemory) context.wm).getProcessRuntime()).getProcessInstanceManager();
         }
         else {
             throw new UnsupportedOperationException( "Unable to retrieve " + ProcessInstanceManager.class.getSimpleName() + " from "
@@ -151,11 +151,11 @@ public class ProcessInstanceResolverStrategy
         InternalKnowledgeRuntime kruntime = null;
         if ( streamContext instanceof MarshallerWriteContext ) {
             MarshallerWriteContext context = (MarshallerWriteContext) streamContext;
-            kruntime = ((AbstractWorkingMemory) context.wm).getKnowledgeRuntime();
+            kruntime = ((InternalWorkingMemory) context.wm).getKnowledgeRuntime();
         }
         else if ( streamContext instanceof MarshallerReaderContext ) {
             MarshallerReaderContext context = (MarshallerReaderContext) streamContext;
-            kruntime = ((AbstractWorkingMemory) context.wm).getKnowledgeRuntime();
+            kruntime = ((InternalWorkingMemory) context.wm).getKnowledgeRuntime();
         }
         else {
             throw new UnsupportedOperationException( "Unable to retrieve " + ProcessInstanceManager.class.getSimpleName() + " from "

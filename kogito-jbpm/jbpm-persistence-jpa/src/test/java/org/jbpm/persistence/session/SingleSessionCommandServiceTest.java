@@ -1,12 +1,7 @@
 package org.jbpm.persistence.session;
 
-import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
-import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
-import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
-import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,18 +13,15 @@ import java.util.Properties;
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.TimerJobFactoryType;
 import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.core.command.runtime.process.GetProcessInstanceCommand;
 import org.drools.core.command.runtime.process.StartProcessCommand;
-import org.drools.core.definitions.impl.KnowledgePackageImp;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.impl.WorkImpl;
-import org.drools.core.rule.Package;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.JpaJDKTimerService;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
@@ -53,7 +45,6 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
 import org.junit.After;
 import org.junit.Test;
-import org.junit.experimental.theories.ParametersSuppliedBy;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -404,12 +395,12 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
                             end,
                             Node.CONNECTION_DEFAULT_TYPE );
 
-        PackageBuilder packageBuilder = new PackageBuilder();
+        KnowledgeBuilderImpl packageBuilder = new KnowledgeBuilderImpl();
         ProcessBuilderImpl processBuilder = new ProcessBuilderImpl( packageBuilder );
         processBuilder.buildProcess( process,
                                      null );
         List<KnowledgePackage> list = new ArrayList<KnowledgePackage>();
-        list.add( new KnowledgePackageImp( packageBuilder.getPackage() ) );
+        list.addAll( packageBuilder.getKnowledgePackages() );
         return list;
     }
 
@@ -430,9 +421,9 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
                                 JpaJDKTimerService.class.getName() );
         SessionConfiguration config = new SessionConfiguration( properties );
 
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        Package pkg = getProcessSubProcess();
-        ruleBase.addPackage( pkg );
+        KnowledgeBase ruleBase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgePackage pkg = getProcessSubProcess();
+        ruleBase.addKnowledgePackages( (Collection) Arrays.asList(pkg) );
 
         SingleSessionCommandService service = new SingleSessionCommandService( ruleBase,
                                                                                config,
@@ -494,7 +485,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         service.dispose();
     }
 
-	private Package getProcessSubProcess() {
+	private InternalKnowledgePackage getProcessSubProcess() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId( "org.drools.test.TestProcess" );
         process.setName( "TestProcess" );
@@ -541,7 +532,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
                             end,
                             Node.CONNECTION_DEFAULT_TYPE );
 
-        PackageBuilder packageBuilder = new PackageBuilder();
+        KnowledgeBuilderImpl packageBuilder = new KnowledgeBuilderImpl();
         ProcessBuilderImpl processBuilder = new ProcessBuilderImpl( packageBuilder );
         processBuilder.buildProcess( process,
                                      null );
@@ -696,12 +687,12 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
                             end,
                             Node.CONNECTION_DEFAULT_TYPE );
 
-        PackageBuilder packageBuilder = new PackageBuilder();
+        KnowledgeBuilderImpl packageBuilder = new KnowledgeBuilderImpl();
         ProcessBuilderImpl processBuilder = new ProcessBuilderImpl( packageBuilder );
         processBuilder.buildProcess( process,
                                      null );
         List<KnowledgePackage> list = new ArrayList<KnowledgePackage>();
-        list.add( new KnowledgePackageImp( packageBuilder.getPackage() ) );
+        list.add( packageBuilder.getPackage() );
         return list;
     }
 
@@ -788,12 +779,12 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
                             end,
                             Node.CONNECTION_DEFAULT_TYPE );
 
-        PackageBuilder packageBuilder = new PackageBuilder();
+        KnowledgeBuilderImpl packageBuilder = new KnowledgeBuilderImpl();
         ProcessBuilderImpl processBuilder = new ProcessBuilderImpl( packageBuilder );
         processBuilder.buildProcess( process,
                                      null );
         List<KnowledgePackage> list = new ArrayList<KnowledgePackage>();
-        list.add( new KnowledgePackageImp( packageBuilder.getPackage() ) );
+        list.add( packageBuilder.getPackage() );
         return list;
     }
 

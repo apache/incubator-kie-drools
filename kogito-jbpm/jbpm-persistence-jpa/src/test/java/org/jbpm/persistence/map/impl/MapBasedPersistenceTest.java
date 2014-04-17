@@ -5,19 +5,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.map.EnvironmentBuilder;
-import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.EnvironmentName;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.jbpm.persistence.ProcessStorage;
 import org.jbpm.persistence.ProcessStorageEnvironmentBuilder;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
 import org.junit.Before;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.persistence.jpa.JPAKnowledgeService;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class MapBasedPersistenceTest extends MapPersistenceTest {
     
@@ -29,7 +29,7 @@ public class MapBasedPersistenceTest extends MapPersistenceTest {
     }
     
     @Override
-    protected StatefulKnowledgeSession createSession(KnowledgeBase kbase) {
+    protected StatefulKnowledgeSession createSession(KieBase kbase) {
         
         EnvironmentBuilder envBuilder = new ProcessStorageEnvironmentBuilder( storage );
         Environment env = KnowledgeBaseFactory.newEnvironment();
@@ -45,7 +45,7 @@ public class MapBasedPersistenceTest extends MapPersistenceTest {
     
     @Override
     protected StatefulKnowledgeSession disposeAndReloadSession(StatefulKnowledgeSession ksession, int ksessionId,
-                                                             KnowledgeBase kbase) {
+                                                             KieBase kbase) {
         ksession.dispose();
         EnvironmentBuilder envBuilder = new ProcessStorageEnvironmentBuilder( storage );
         Environment env = KnowledgeBaseFactory.newEnvironment();

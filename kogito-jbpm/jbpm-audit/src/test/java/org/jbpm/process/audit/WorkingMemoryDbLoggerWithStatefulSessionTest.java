@@ -20,11 +20,11 @@ import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
 
 import java.util.Properties;
 
-import org.drools.core.RuleBase;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.StatefulSession;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 /**
  * This class tests the following classes:
@@ -34,19 +34,19 @@ import org.kie.api.runtime.process.ProcessInstance;
  */
 public class WorkingMemoryDbLoggerWithStatefulSessionTest extends AbstractWorkingMemoryDbLoggerTest {
 
-    private StatefulSession session = null;
+    private StatefulKnowledgeSession session = null;
 
     @Override
     public ProcessInstance startProcess(String processId) {
         if (session == null) {
             // load the process
-            RuleBase ruleBase = createKnowledgeBase();
+            KnowledgeBase kbase = createKnowledgeBase();
             // create a new session
             Properties properties = new Properties();
             properties.put("drools.processInstanceManagerFactory", "org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory");
             properties.put("drools.processSignalManagerFactory", "org.jbpm.process.instance.event.DefaultSignalManagerFactory");
             SessionConfiguration config = new SessionConfiguration(properties);
-            session = ruleBase.newStatefulSession(config, createEnvironment(context));
+            session = kbase.newStatefulKnowledgeSession(config, createEnvironment(context));
             
             new JPAWorkingMemoryDbLogger(session);
             session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());

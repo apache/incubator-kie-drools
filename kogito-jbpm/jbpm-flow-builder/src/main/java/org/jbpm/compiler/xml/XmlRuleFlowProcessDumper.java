@@ -3,7 +3,7 @@ package org.jbpm.compiler.xml;
 import java.io.StringReader;
 import java.util.List;
 
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.core.xml.SemanticModules;
 import org.jbpm.process.core.impl.XmlProcessDumper;
 import org.kie.api.definition.process.Process;
@@ -28,7 +28,7 @@ public class XmlRuleFlowProcessDumper extends XmlWorkflowProcessDumper implement
 
 	@Override
 	public Process readProcess(String processXml) {
-		PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
+		KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
         SemanticModules modules = configuration.getSemanticModules();
         modules.addSemanticModule(new ProcessSemanticModule());
         XmlProcessReader xmlReader = new XmlProcessReader( modules, Thread.currentThread().getContextClassLoader() );

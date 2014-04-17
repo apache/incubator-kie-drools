@@ -8,19 +8,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.RuleBase;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.WorkingMemoryAction;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.ProcessEventSupport;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
-import org.drools.core.rule.Rule;
 import org.drools.core.time.AcceptsTimerJobFactoryManager;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.time.impl.CronExpression;
@@ -58,7 +55,6 @@ import org.kie.internal.utils.CompositeClassLoader;
 
 public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	
-	private AbstractWorkingMemory workingMemory;
 	private InternalKnowledgeRuntime kruntime;
 	
 	private ProcessInstanceManager processInstanceManager;
@@ -97,10 +93,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         }
     }
 
-    
-	
-	public ProcessRuntimeImpl(AbstractWorkingMemory workingMemory) {
-		this.workingMemory = workingMemory;
+	public ProcessRuntimeImpl(InternalWorkingMemory workingMemory) {
 		AcceptsTimerJobFactoryManager jfm = ( AcceptsTimerJobFactoryManager ) workingMemory.getTimerService();
 		if ( jfm.getTimerJobFactoryManager() instanceof DefaultTimerJobFactoryManager ) {
 		    jfm.setTimerJobFactoryManager( new TrackableTimeJobFactoryManager() );
@@ -150,9 +143,9 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	}
 	
 	private ClassLoader getRootClassLoader() {
-		RuleBase ruleBase = ((InternalKnowledgeBase) kruntime.getKieBase()).getRuleBase();
-		if (ruleBase != null) {
-			return ((InternalRuleBase) ((InternalKnowledgeBase) kruntime.getKieBase()).getRuleBase()).getRootClassLoader();
+		KieBase kbase = ((InternalKnowledgeBase) kruntime.getKieBase());
+		if (kbase != null) {
+			return ((InternalKnowledgeBase) kbase).getRootClassLoader();
 		}
 		CompositeClassLoader result = new CompositeClassLoader();
 		result.addClassLoader(Thread.currentThread().getContextClassLoader());
@@ -398,7 +391,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
     private void initProcessActivationListener() {
     	kruntime.addEventListener(new DefaultAgendaEventListener() {
 			public void matchCreated(MatchCreatedEvent event) {
-                String ruleFlowGroup = ((Rule) event.getMatch().getRule()).getRuleFlowGroup();
+                String ruleFlowGroup = ((RuleImpl) event.getMatch().getRule()).getRuleFlowGroup();
                 if ( "DROOLS_SYSTEM".equals( ruleFlowGroup ) ) {
                     // new activations of the rule associate with a state node
                     // signal process instances of that state node
@@ -463,7 +456,6 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
             kruntime.getKieBase().removeEventListener(knowledgeBaseListener);
             kruntime = null;
         }
-        workingMemory = null;
 	}
 
 	public void clearProcessInstances() {

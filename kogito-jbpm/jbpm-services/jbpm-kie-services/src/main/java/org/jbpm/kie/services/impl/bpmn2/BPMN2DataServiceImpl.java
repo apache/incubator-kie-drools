@@ -23,10 +23,10 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.compiler.BPMN2ProcessProvider;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
@@ -34,6 +34,7 @@ import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
@@ -72,8 +73,9 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
     public void init() {
         provider = new BPMN2ProcessProvider() {
             @Override
-            public void configurePackageBuilder(PackageBuilder packageBuilder) {
-                PackageBuilderConfiguration conf = packageBuilder.getPackageBuilderConfiguration();
+            public void configurePackageBuilder(KnowledgeBuilder packageBuilder) {
+                KnowledgeBuilderConfigurationImpl conf 
+                    = (KnowledgeBuilderConfigurationImpl) ((KnowledgeBuilderImpl) packageBuilder).getBuilderConfiguration();
                 if (conf.getSemanticModules().getSemanticModule("http://www.jboss.org/bpmn2-data-services") == null) {
                     conf.addSemanticModule(module);
                 }
@@ -187,7 +189,7 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
 
         KnowledgeBuilder kbuilder = null;
         if (classLoader != null) {
-            PackageBuilderConfiguration pconf = new PackageBuilderConfiguration(classLoader);
+            KnowledgeBuilderConfigurationImpl pconf = new KnowledgeBuilderConfigurationImpl(classLoader);
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(pconf);
         } else {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

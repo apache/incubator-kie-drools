@@ -7,15 +7,15 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.ReturnValueDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.definitions.impl.KnowledgePackageImp;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.core.rule.Package;
 import org.jbpm.process.builder.dialect.mvel.MVELReturnValueEvaluatorBuilder;
 import org.jbpm.process.instance.impl.MVELReturnValueEvaluator;
 import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
@@ -32,12 +32,12 @@ public class MVELReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseT
 
     @Test
     public void testSimpleReturnValueConstraintEvaluator() throws Exception {
-        final Package pkg = new Package( "pkg1" );
+        final InternalKnowledgePackage pkg = new KnowledgePackageImpl( "pkg1" );
 
         ReturnValueDescr descr = new ReturnValueDescr();
         descr.setText( "return value" );
 
-        PackageBuilder pkgBuilder = new PackageBuilder( pkg );
+        KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl( pkg );
         DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
         MVELDialect mvelDialect = (MVELDialect) dialectRegistry.getDialect( "mvel" );
 
@@ -61,7 +61,7 @@ public class MVELReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseT
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         List<KnowledgePackage> packages = new ArrayList<KnowledgePackage>();
-        packages.add( new KnowledgePackageImp(pkgBuilder.getPackage()) );
+        packages.add( pkgBuilder.getPackage() );
         kbase.addKnowledgePackages( packages );
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 

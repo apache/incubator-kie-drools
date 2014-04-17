@@ -1,9 +1,6 @@
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -17,7 +14,6 @@ import org.drools.core.io.impl.ReaderResource;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.integrationtests.test.Message;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ObjectFilter;

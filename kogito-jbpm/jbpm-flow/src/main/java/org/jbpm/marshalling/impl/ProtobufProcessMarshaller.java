@@ -265,7 +265,7 @@ public class ProtobufProcessMarshaller
         Object value = strategy.unmarshal( context.strategyContexts.get( strategy ),
                                            context,
                                            _variable.getValue().toByteArray(), 
-                                           (context.ruleBase == null)?null:context.ruleBase.getRootClassLoader() );
+                                           (context.kBase == null)?null:context.kBase.getRootClassLoader() );
         return value;
     }
 

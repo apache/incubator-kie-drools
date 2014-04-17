@@ -15,20 +15,17 @@
  */
 package org.jbpm.compiler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.core.rule.Package;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.util.DroolsStreamUtils;
 import org.jbpm.process.core.Context;
 import org.jbpm.test.util.AbstractBaseTest;
@@ -41,15 +38,13 @@ public class PackageBuilderTest extends AbstractBaseTest {
 
     @Test
     public void testRuleFlow() throws Exception {
-        PackageBuilder builder = new PackageBuilder();
-
         InputStream in = this.getClass().getResourceAsStream( "/org/jbpm/integrationtests/ruleflow.rfm" );
         assertNotNull( in );
 
         builder.addPackage( new PackageDescr( "com.sample" ) );
 
         builder.addRuleFlow( new InputStreamReader( in ) );
-        Package pkg = builder.getPackage();
+        InternalKnowledgePackage pkg = builder.getPackage();
         assertNotNull( pkg );
 
         Map<String, Process> flows = pkg.getRuleFlows();
@@ -63,7 +58,7 @@ public class PackageBuilderTest extends AbstractBaseTest {
         assertTrue( p instanceof WorkflowProcessImpl );
 
         //now serialization
-        Package pkg2 = (Package) DroolsStreamUtils.streamIn( DroolsStreamUtils.streamOut( pkg ) );
+        InternalKnowledgePackage pkg2 = (InternalKnowledgePackage) DroolsStreamUtils.streamIn( DroolsStreamUtils.streamOut( pkg ) );
         assertNotNull( pkg2 );
 
         flows = pkg2.getRuleFlows();
@@ -77,7 +72,6 @@ public class PackageBuilderTest extends AbstractBaseTest {
 
     @Test
     public void testRuleFlowUpgrade() throws Exception {
-        PackageBuilder builder = new PackageBuilder();
         // Set the system property so that automatic conversion can happen
         System.setProperty( "drools.ruleflow.port",
                             "true" );
@@ -88,7 +82,7 @@ public class PackageBuilderTest extends AbstractBaseTest {
         builder.addPackage( new PackageDescr( "com.sample" ) );
 
         builder.addRuleFlow( new InputStreamReader( in ) );
-        Package pkg = builder.getPackage();
+        InternalKnowledgePackage pkg = builder.getPackage();
         assertNotNull( pkg );
 
         Map<String, Process> flows = pkg.getRuleFlows();
@@ -102,7 +96,7 @@ public class PackageBuilderTest extends AbstractBaseTest {
         assertTrue( p instanceof WorkflowProcessImpl );
 
         //now serialization
-        Package pkg2 = (Package) DroolsStreamUtils.streamIn( DroolsStreamUtils.streamOut( pkg ) );
+        InternalKnowledgePackage pkg2 = (InternalKnowledgePackage) DroolsStreamUtils.streamIn( DroolsStreamUtils.streamOut( pkg ) );
         assertNotNull( pkg2 );
 
         flows = pkg2.getRuleFlows();
@@ -119,7 +113,7 @@ public class PackageBuilderTest extends AbstractBaseTest {
 
     @Test
     public void testPackageRuleFlows() throws Exception {
-        Package pkg = new Package( "boo" );
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "boo" );
         Process rf = new MockRuleFlow( "1" );
         pkg.addProcess( rf );
         assertTrue( pkg.getRuleFlows().containsKey( "1" ) );

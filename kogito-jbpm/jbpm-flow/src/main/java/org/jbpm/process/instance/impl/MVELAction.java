@@ -84,10 +84,10 @@ public class MVELAction
 
         InternalWorkingMemory internalWorkingMemory = null;
         if( context.getKieRuntime() instanceof StatefulKnowledgeSessionImpl ) {
-            internalWorkingMemory = ((StatefulKnowledgeSessionImpl) context.getKieRuntime()).session;
+            internalWorkingMemory = ((StatefulKnowledgeSessionImpl) context.getKieRuntime()).getInternalWorkingMemory();
         } else if( context.getKieRuntime() instanceof StatelessKnowledgeSessionImpl ) {
             StatefulKnowledgeSession statefulKnowledgeSession = ((StatelessKnowledgeSessionImpl) context.getKieRuntime()).newWorkingMemory();
-            internalWorkingMemory = ((StatefulKnowledgeSessionImpl) statefulKnowledgeSession).session;
+            internalWorkingMemory = ((StatefulKnowledgeSessionImpl) statefulKnowledgeSession).getInternalWorkingMemory();
         } 
         
         VariableResolverFactory factory 

@@ -18,22 +18,24 @@ package org.jbpm.process.audit;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Arrays;
+import java.util.Collection;
 
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatefulSession;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.rule.Package;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.jbpm.process.instance.impl.demo.UIWorkItemHandler;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class ProcessInstanceExecutor {
     
     public static final void main(String[] args) {
         try {
             //load the process
-            RuleBase ruleBase = createKnowledgeBase();
+            KnowledgeBase kbase = createKnowledgeBase();
             // create a new session
-            StatefulSession session = ruleBase.newStatefulSession();
+            StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
             new JPAWorkingMemoryDbLogger(session);
             UIWorkItemHandler uiHandler = new UIWorkItemHandler();
             session.getWorkItemManager().registerWorkItemHandler("Human Task", uiHandler);
@@ -47,9 +49,9 @@ public class ProcessInstanceExecutor {
     /**
      * Creates the knowledge base by loading the process definition.
      */
-    private static RuleBase createKnowledgeBase() throws Exception {
+    private static KnowledgeBase createKnowledgeBase() throws Exception {
         // create a builder
-        PackageBuilder builder = new PackageBuilder();
+        KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         // load the process
         Reader source = new InputStreamReader(
             ProcessInstanceExecutor.class.getResourceAsStream("/ruleflow.rf"));
@@ -58,9 +60,9 @@ public class ProcessInstanceExecutor {
             ProcessInstanceExecutor.class.getResourceAsStream("/ruleflow2.rf"));
         builder.addProcessFromXml(source);
        // create the knowledge base 
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage(pkg);
+        InternalKnowledgePackage pkg = builder.getPackage();
+        KnowledgeBase ruleBase = KnowledgeBaseFactory.newKnowledgeBase();
+        ruleBase.addKnowledgePackages((Collection) Arrays.asList(pkg));
         return ruleBase;
     }
     

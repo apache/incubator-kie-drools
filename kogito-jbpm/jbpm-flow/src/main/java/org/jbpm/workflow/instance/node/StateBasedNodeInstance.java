@@ -24,11 +24,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.core.RuntimeDroolsException;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.Declaration;
-import org.drools.core.runtime.rule.impl.InternalAgenda;
 import org.drools.core.spi.Activation;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.util.MVELSafeHelper;
@@ -139,7 +138,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
                 long[] repeatValues = null;
                 try {
                     repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
-                } catch (RuntimeDroolsException e) {
+                } catch (RuntimeException e) {
                     // cannot parse delay, trying to interpret it
                     s = resolveVariable(timer.getDelay());
                     repeatValues = DateTimeUtils.parseRepeatableDateTime(s);
@@ -164,7 +163,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 
             try {
                 duration = DateTimeUtils.parseDuration(timer.getDelay());
-            } catch (RuntimeDroolsException e) {
+            } catch (RuntimeException e) {
                 // cannot parse delay, trying to interpret it
                 s = resolveVariable(timer.getDelay());
                 duration = DateTimeUtils.parseDuration(s);
@@ -175,7 +174,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
         case Timer.TIME_DATE:
             try {
                 duration = DateTimeUtils.parseDateAsDuration(timer.getDate());
-            } catch (RuntimeDroolsException e) {
+            } catch (RuntimeException e) {
                 // cannot parse delay, trying to interpret it
                 s = resolveVariable(timer.getDate());
                 duration = DateTimeUtils.parseDateAsDuration(s);
@@ -193,7 +192,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     private long resolveValue(String s) {
     	try {
     		return TimeUtils.parseTimeString(s);
-    	} catch (RuntimeDroolsException e) {
+    	} catch (RuntimeException e) {
     		s = resolveVariable(s);
             return TimeUtils.parseTimeString(s);
     	}
@@ -333,7 +332,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
             if ("processInstance".equals(declaration.getIdentifier())
             		|| "org.kie.api.runtime.process.WorkflowProcessInstance".equals(declaration.getTypeName())) {
                 Object value = declaration.getValue(
-                    ((StatefulKnowledgeSessionImpl) getProcessInstance().getKnowledgeRuntime()).session,
+                    ((StatefulKnowledgeSessionImpl) getProcessInstance().getKnowledgeRuntime()).getInternalWorkingMemory(),
                     ((InternalFactHandle) activation.getTuple().get(declaration)).getObject());
                 if (value instanceof ProcessInstance) {
                     return ((ProcessInstance) value).getId() == getProcessInstance().getId();

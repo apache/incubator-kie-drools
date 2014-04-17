@@ -16,28 +16,19 @@
 
 package org.jbpm.process.audit;
 
-import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
-import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
-import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
-import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
+import static org.junit.Assert.*;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.SessionConfiguration;
-import org.drools.core.StatefulSession;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.rule.Package;
-import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
@@ -45,8 +36,8 @@ import org.junit.Test;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.process.ProcessRuntime;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,9 +75,9 @@ public abstract class AbstractWorkingMemoryDbLoggerTest extends AbstractBaseTest
         logService.dispose();
     }
    
-    protected static RuleBase createKnowledgeBase() {
+    protected static KnowledgeBase createKnowledgeBase() {
         // create a builder
-        PackageBuilder builder = new PackageBuilder();
+        KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         // load the process
         Reader source = new InputStreamReader(AbstractWorkingMemoryDbLoggerTest.class.getResourceAsStream("/ruleflow.rf"));
         builder.addProcessFromXml(source);
@@ -95,10 +86,9 @@ public abstract class AbstractWorkingMemoryDbLoggerTest extends AbstractBaseTest
         source = new InputStreamReader(AbstractWorkingMemoryDbLoggerTest.class.getResourceAsStream("/ruleflow3.rf"));
         builder.addProcessFromXml(source);
         // create the knowledge base 
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage(pkg);
-        return ruleBase;
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages((Collection) Arrays.asList(builder.getPackage()));
+        return kbase;
     }
 
     public abstract ProcessInstance startProcess(String processName);

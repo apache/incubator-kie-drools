@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.common.EndOperationListener;
@@ -164,7 +163,7 @@ public class StatefulProcessSession extends AbstractRuntime implements StatefulK
                     try {
                         action.execute(this);
                     } catch (Exception e) {
-                        throw new RuntimeDroolsException( "Unexpected exception executing action " + action.toString(), e );
+                        throw new RuntimeException( "Unexpected exception executing action " + action.toString(), e );
                     }
                 }
             }

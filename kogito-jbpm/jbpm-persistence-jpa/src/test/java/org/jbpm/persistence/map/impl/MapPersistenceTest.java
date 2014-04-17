@@ -1,17 +1,15 @@
 package org.jbpm.persistence.map.impl;
 
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.process.instance.WorkItemHandler;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
@@ -21,9 +19,7 @@ public abstract class MapPersistenceTest extends AbstractBaseTest {
     public void startProcessInPersistentEnvironment() {
         String processId = "minimalProcess";
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase())
-                .addProcess( ProcessCreatorForHelp.newShortestProcess( processId ) );
+        KieBase kbase = createKieBase(ProcessCreatorForHelp.newShortestProcess( processId ) );
         
         StatefulKnowledgeSession crmPersistentSession = createSession(kbase);
 
@@ -37,10 +33,7 @@ public abstract class MapPersistenceTest extends AbstractBaseTest {
         String processId = "minimalProcess";
         String workName = "MyWork";
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase())
-                .addProcess( ProcessCreatorForHelp.newProcessWithOneWork( processId,
-                                                                          workName ) );
+        KieBase kbase = createKieBase(ProcessCreatorForHelp.newProcessWithOneWork( processId, workName ));
 
         StatefulKnowledgeSession ksession = createSession(kbase);
         int ksessionId = ksession.getId();
@@ -71,8 +64,7 @@ public abstract class MapPersistenceTest extends AbstractBaseTest {
         RuleFlowProcess process = ProcessCreatorForHelp.newSimpleEventProcess( processId,
                                                          eventType );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess( process );
+        KieBase kbase = createKieBase(process);
         
         StatefulKnowledgeSession crmPersistentSession = createSession(kbase);
 
@@ -95,10 +87,7 @@ public abstract class MapPersistenceTest extends AbstractBaseTest {
         String processId = "minimalProcess";
         String workName = "MyWork";
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase())
-                .addProcess( ProcessCreatorForHelp.newProcessWithOneWork( processId,
-                                                                          workName ) );
+        KieBase kbase = createKieBase(ProcessCreatorForHelp.newProcessWithOneWork( processId, workName ) );
 
         StatefulKnowledgeSession ksession1 = createSession(kbase);
         int ksession1Id = ksession1.getId();
@@ -139,8 +128,8 @@ public abstract class MapPersistenceTest extends AbstractBaseTest {
     
     @Test
     public void multipleKSessionDifferentIdTest() {
-        KnowledgeBase kbase1 = KnowledgeBaseFactory.newKnowledgeBase();
-        KnowledgeBase kbase2 = KnowledgeBaseFactory.newKnowledgeBase();
+        KieBase kbase1 = KnowledgeBaseFactory.newKnowledgeBase();
+        KieBase kbase2 = KnowledgeBaseFactory.newKnowledgeBase();
 
         StatefulKnowledgeSession ksession1 = createSession(kbase1);
         StatefulKnowledgeSession ksession2 = createSession(kbase2);
@@ -159,11 +148,8 @@ public abstract class MapPersistenceTest extends AbstractBaseTest {
         RuleFlowProcess process2 = ProcessCreatorForHelp.newSimpleEventProcess( processId,
                                                                                eventType );
 
-        KnowledgeBase kbase1 = KnowledgeBaseFactory.newKnowledgeBase();
-        KnowledgeBase kbase2 = KnowledgeBaseFactory.newKnowledgeBase();
-
-        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase1).getRuleBase()).addProcess( process1 );
-        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase2).getRuleBase()).addProcess( process2 );
+        KieBase kbase1 = createKieBase(process1);
+        KieBase kbase2 = createKieBase(process2);
 
         StatefulKnowledgeSession ksession1 = createSession(kbase1);
         StatefulKnowledgeSession ksession2 = createSession(kbase2);
@@ -183,15 +169,8 @@ public abstract class MapPersistenceTest extends AbstractBaseTest {
         String processId = "minimalProcess";
         String workName = "MyWork";
 
-        KnowledgeBase kbase1 = KnowledgeBaseFactory.newKnowledgeBase();
-        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase1).getRuleBase())
-                .addProcess( ProcessCreatorForHelp.newProcessWithOneWork( processId,
-                                                                          workName ) );
-
-        KnowledgeBase kbase2 = KnowledgeBaseFactory.newKnowledgeBase();
-        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase2).getRuleBase())
-                .addProcess( ProcessCreatorForHelp.newProcessWithOneWork( processId,
-                                                                          workName ) );
+        KieBase kbase1 = createKieBase(ProcessCreatorForHelp.newProcessWithOneWork( processId, workName ) );
+        KieBase kbase2 = createKieBase(ProcessCreatorForHelp.newProcessWithOneWork( processId, workName ) );
 
         StatefulKnowledgeSession ksession1 = createSession(kbase1);
         StatefulKnowledgeSession ksession2 = createSession(kbase2);
@@ -218,10 +197,7 @@ public abstract class MapPersistenceTest extends AbstractBaseTest {
         int knowledgeSessionsCountBeforeTest = getKnowledgeSessionsCount(); 
         int processInstancesBeforeTest = getProcessInstancesCount();
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase())
-                .addProcess( ProcessCreatorForHelp.newProcessWithOneWork( processId,
-                                                                          workName ) );
+        KieBase kbase = createKieBase(ProcessCreatorForHelp.newProcessWithOneWork( processId, workName ) );
 
         StatefulKnowledgeSession crmPersistentSession = createSession( kbase );
         ChrashingWorkItemHandler handler = new ChrashingWorkItemHandler();
@@ -248,12 +224,9 @@ public abstract class MapPersistenceTest extends AbstractBaseTest {
         int knowledgeSessionsCountBeforeTest = getKnowledgeSessionsCount(); 
         int processInstancesBeforeTest = getProcessInstancesCount();
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase())
-                .addProcess( ProcessCreatorForHelp.newProcessWithOneWork(subProcessId, workName));
-
-        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase())
-        .addProcess( ProcessCreatorForHelp.newProcessWithOneSubProcess(processId, subProcessId));
+        KieBase kbase = createKieBase(
+                ProcessCreatorForHelp.newProcessWithOneWork(subProcessId, workName),
+                ProcessCreatorForHelp.newProcessWithOneSubProcess(processId, subProcessId));
 
         StatefulKnowledgeSession ksession = createSession(kbase);
 
@@ -271,11 +244,11 @@ public abstract class MapPersistenceTest extends AbstractBaseTest {
     }
 
 
-    protected abstract StatefulKnowledgeSession createSession(KnowledgeBase kbase);
+    protected abstract StatefulKnowledgeSession createSession(KieBase kbase);
     
     protected abstract StatefulKnowledgeSession disposeAndReloadSession(StatefulKnowledgeSession crmPersistentSession,
                                                                         int ksessionId,
-                                                                        KnowledgeBase kbase);
+                                                                        KieBase kbase);
 
     protected abstract int getProcessInstancesCount();
 

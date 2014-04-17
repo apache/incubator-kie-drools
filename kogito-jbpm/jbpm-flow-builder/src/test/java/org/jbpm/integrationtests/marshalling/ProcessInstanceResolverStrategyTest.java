@@ -10,7 +10,6 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -82,13 +81,14 @@ public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
         // Test strategy.write
         org.kie.api.marshalling.MarshallingConfiguration marshallingConfig = new MarshallingConfigurationImpl(strategies, true, true);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        MarshallerWriteContext writerContext = new MarshallerWriteContext(baos,
-                                                                    (InternalRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase(),
-													                (InternalWorkingMemory) ((StatefulKnowledgeSessionImpl) ksession).session,
-													                RuleBaseNodes.getNodeMap((InternalRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()),
-													                marshallingConfig.getObjectMarshallingStrategyStore(), 
-													                marshallingConfig.isMarshallProcessInstances(),
-													                marshallingConfig.isMarshallWorkItems(), ksession.getEnvironment());
+        MarshallerWriteContext writerContext 
+            = new MarshallerWriteContext(baos,
+                                         ((InternalKnowledgeBase) kbase),
+										 (InternalWorkingMemory) ((StatefulKnowledgeSessionImpl) ksession),
+										 RuleBaseNodes.getNodeMap(((InternalKnowledgeBase) kbase)),
+										 marshallingConfig.getObjectMarshallingStrategyStore(), 
+										 marshallingConfig.isMarshallProcessInstances(),
+										 marshallingConfig.isMarshallWorkItems(), ksession.getEnvironment());
 
         strategy.write(writerContext, processInstance);
         baos.close();
@@ -112,8 +112,8 @@ public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
         // Test strategy.read
         bais = new ByteArrayInputStream(bytes);
         MarshallerReaderContext readerContext = new MarshallerReaderContext(bais,
-                                                                            (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase,
-                                                                            RuleBaseNodes.getNodeMap( (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase ),
+                                                                            ((KnowledgeBaseImpl) kbase),
+                                                                            RuleBaseNodes.getNodeMap( ((KnowledgeBaseImpl) kbase)),
                                                                             marshallingConfig.getObjectMarshallingStrategyStore(),
                                                                             ProtobufMarshaller.TIMER_READERS,
                                                                             marshallingConfig.isMarshallProcessInstances(),

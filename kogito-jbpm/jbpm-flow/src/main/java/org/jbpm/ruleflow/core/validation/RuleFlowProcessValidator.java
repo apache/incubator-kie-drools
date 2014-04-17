@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-
-import org.drools.core.RuntimeDroolsException;
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.datatype.DataType;
 import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
@@ -607,7 +605,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
 	    	        default:
 	    	            break;
 	    	        }
-	    		} catch (RuntimeDroolsException e) {
+	    		} catch (RuntimeException e) {
 	    			errors.add(new ProcessValidationErrorImpl(process,
 	                    "Could not parse delay '" + timer.getDelay() + "' of node '" + node.getName() + "': " + e.getMessage()));
 	    		}
@@ -617,7 +615,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
     		if (!timer.getPeriod().contains("#{")) {
 	    		try {
 	    			TimeUtils.parseTimeString(timer.getPeriod());
-	    		} catch (RuntimeDroolsException e) {
+	    		} catch (RuntimeException e) {
 	    			errors.add(new ProcessValidationErrorImpl(process,
 	                    "Could not parse period '" + timer.getPeriod() + "' of node '" + node.getName() + "': " + e.getMessage()));
 	    		}

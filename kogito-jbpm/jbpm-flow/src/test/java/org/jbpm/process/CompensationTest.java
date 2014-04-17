@@ -26,9 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
-import org.drools.core.reteoo.ReteooRuleBase;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.CompensationHandler;
 import org.jbpm.process.core.context.exception.CompensationScope;
@@ -58,9 +56,6 @@ import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +63,7 @@ public class CompensationTest extends AbstractBaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(CompensationTest.class);
 
-    StatefulKnowledgeSession ksession; 
+    private KieSession ksession; 
     
     @After
     public void cleanUp() { 
@@ -106,15 +101,6 @@ public class CompensationTest extends AbstractBaseTest {
         handler.setNode(node);
         scope.setExceptionHandler(compensationHandlerId, handler);
     }
-
-    private StatefulKnowledgeSession createKieSession(RuleFlowProcess process) {
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-        return ksession;
-    }
-
 
     private Node findNode(RuleFlowProcess process, String nodeName) { 
         Node found = null;

@@ -6,16 +6,11 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.drools.compiler.compiler.DroolsError;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatefulSession;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +25,6 @@ public class ProcessMultiThreadTest extends AbstractBaseTest {
             boolean success = true;
             final Thread[] t = new Thread[THREAD_COUNT];
             
-            final PackageBuilder builder = new PackageBuilder();
             builder.addProcessFromXml(new InputStreamReader( getClass().getResourceAsStream( "test_ProcessMultithreadEvent.rf" ) ) );
             if (builder.getErrors().getErrors().length > 0) {
             	for (DroolsError error: builder.getErrors().getErrors()) {
@@ -38,11 +32,10 @@ public class ProcessMultiThreadTest extends AbstractBaseTest {
             	}
             	fail("Could not parse process");
             }
-            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-            ruleBase.addPackage( builder.getPackage() );
-            ruleBase = SerializationHelper.serializeObject(ruleBase);
-            StatefulSession session = ruleBase.newStatefulSession();
-            session = SerializationHelper.getSerialisedStatefulSession(session);
+
+            StatefulKnowledgeSession session = createKieSession(true, builder.getPackage());
+            
+            session = JbpmSerializationHelper.getSerialisedStatefulKnowledgeSession(session);
             List<String> list = new ArrayList<String>();
             session.setGlobal("list", list);
             ProcessInstance processInstance = session.startProcess("org.drools.integrationtests.multithread");
