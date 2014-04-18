@@ -60,7 +60,7 @@ public class SwingUncaughtExceptionHandler implements Thread.UncaughtExceptionHa
         JPanel contentPanel = new JPanel(new BorderLayout(5, 5));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         contentPanel.add(new JLabel("An uncaught exception has occurred: "), BorderLayout.NORTH);
-        JTextArea stackTraceTextArea = new JTextArea(10, 80);
+        JTextArea stackTraceTextArea = new JTextArea(30, 80);
         stackTraceTextArea.setEditable(false);
         stackTraceTextArea.append("Exception in thread \"" + t.getName() + "\" " + e.getClass().getName()
                 + ": " + e.getMessage() + "\n");
@@ -70,8 +70,8 @@ public class SwingUncaughtExceptionHandler implements Thread.UncaughtExceptionHa
         Throwable parentException = e;
         Throwable cause = e.getCause();
         while (cause != null && cause != parentException) {
-            stackTraceTextArea.append("Caused by: " + "\" " + e.getClass().getName()
-                    + ": " + e.getMessage() + "\n");
+            stackTraceTextArea.append("Caused by: " + "\" " + cause.getClass().getName()
+                    + ": " + cause.getMessage() + "\n");
             for (StackTraceElement stackTraceElement : e.getStackTrace()) {
                 stackTraceTextArea.append("    at " + stackTraceElement.toString() + "\n");
             }
