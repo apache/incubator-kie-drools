@@ -49,12 +49,12 @@ rule "twoSameJobTypePerTable"
         $jobType : JobType()
         $table : Table()
         not (
-            SeatDesignation(guestJobType == $jobType, seatTable == $table, $firstJob : guestJob)
-            and SeatDesignation(guestJobType == $jobType, seatTable == $table, $secondJob : guestJob)
-            and (eval($jobType == JobType.SOCIALITE) or eval($jobType == JobType.TEACHER) or eval($firstJob != $secondJob))
+            SeatDesignation(guestJobType == $jobType, seatTable == $table, $leftId : id, $firstJob : guestJob)
+            and SeatDesignation(guestJobType == $jobType, seatTable == $table, id > $leftId,
+                    differentKindIfNeeded($firstJob))
         )
     then
-        scoreHolder.addConstraintMatch(kcontext, - 1);
+        scoreHolder.addConstraintMatch(kcontext, -1);
 end
 
 // This is to avoid score traps. The score function should for example give an incentive
@@ -66,7 +66,7 @@ rule "atLeastOneJobTypePerTableScoreGuider"
         $jobType : JobType()
         not SeatDesignation(guestJobType == $jobType, seatTable == $table)
     then
-        scoreHolder.addConstraintMatch(kcontext, - 1);
+        scoreHolder.addConstraintMatch(kcontext, -1);
 end
 
 
@@ -83,5 +83,5 @@ rule "leftHasHobbyInCommon"
             and HobbyPractician(guest == $rightGuest, hobby == $leftHobby)
         )
     then
-        scoreHolder.addConstraintMatch(kcontext, - 1);
+        scoreHolder.addConstraintMatch(kcontext, -1);
 end

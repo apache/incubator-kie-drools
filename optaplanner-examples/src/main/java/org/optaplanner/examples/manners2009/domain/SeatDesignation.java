@@ -71,4 +71,9 @@ public class SeatDesignation extends AbstractPersistable {
         return guest + " @ " + seat;
     }
 
+    public boolean differentKindIfNeeded(Job otherGuestJob) {
+        JobType jobType = guest.getJob().getJobType();
+        return jobType == JobType.SOCIALITE || jobType == JobType.TEACHER || guest.getJob() != otherGuestJob;
+    }
+
 }
