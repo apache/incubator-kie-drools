@@ -42,4 +42,8 @@ public enum Hobby {
         return code;
     }
 
+    public String getLabel() {
+        return code;
+    }
+
 }

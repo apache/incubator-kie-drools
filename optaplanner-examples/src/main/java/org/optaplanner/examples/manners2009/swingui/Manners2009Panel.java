@@ -17,13 +17,16 @@
 package org.optaplanner.examples.manners2009.swingui;
 
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -34,6 +37,7 @@ import javax.swing.SwingConstants;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
+import org.optaplanner.examples.manners2009.domain.Hobby;
 import org.optaplanner.examples.manners2009.domain.HobbyPractician;
 import org.optaplanner.examples.manners2009.domain.Manners2009;
 import org.optaplanner.examples.manners2009.domain.Seat;
@@ -43,10 +47,36 @@ import org.optaplanner.examples.manners2009.domain.Table;
 public class Manners2009Panel extends SolutionPanel {
 
     private GridLayout gridLayout;
+    private Map<Hobby, ImageIcon> hobbyImageIconMap;
 
     public Manners2009Panel() {
         gridLayout = new GridLayout(0, 1);
         setLayout(gridLayout);
+        Hobby[] hobbies = Hobby.values();
+        hobbyImageIconMap = new HashMap<Hobby, ImageIcon>(hobbies.length);
+        for (Hobby hobby : hobbies) {
+            String imageIconFilename;
+            switch (hobby) {
+                case TENNIS:
+                    imageIconFilename = "hobbyTennis.png";
+                    break;
+                case GOLF:
+                    imageIconFilename = "hobbyGolf.png";
+                    break;
+                case MOTORCYCLES:
+                    imageIconFilename = "hobbyMotorcycles.png";
+                    break;
+                case CHESS:
+                    imageIconFilename = "hobbyChess.png";
+                    break;
+                case POKER:
+                    imageIconFilename = "hobbyPoker.png";
+                    break;
+                default:
+                    throw new IllegalArgumentException("The hobby (" + hobby + ") is not supported.");
+            }
+            hobbyImageIconMap.put(hobby, new ImageIcon(getClass().getResource(imageIconFilename)));
+        }
     }
 
     @Override
@@ -122,14 +152,15 @@ public class Manners2009Panel extends SolutionPanel {
             JButton button = new JButton(new SeatDesignationAction(seatDesignation));
             add(button);
             add(new JLabel(seatDesignation.getGuest().getJob().getJobType().getCode() + ": " + seatDesignation.getGuest().getJob().getName(), SwingConstants.CENTER));
-            StringBuilder hobbyString = new StringBuilder();
+            JPanel hobbyPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            hobbyPanel.setOpaque(false);
             for (HobbyPractician hobbyPractician : seatDesignation.getGuest().getHobbyPracticianList()) {
-                if (hobbyString.length() > 0) {
-                    hobbyString.append(", ");
-                }
-                hobbyString.append(hobbyPractician.getHobby().toString());
+                Hobby hobby = hobbyPractician.getHobby();
+                JLabel hobbyLabel = new JLabel(hobbyImageIconMap.get(hobby));
+                hobbyLabel.setToolTipText(hobby.getLabel());
+                hobbyPanel.add(hobbyLabel);
             }
-            add(new JLabel(hobbyString.toString(), SwingConstants.CENTER));
+            add(hobbyPanel);
         }
 
     }
