@@ -59,6 +59,11 @@ public class SeatDesignation extends AbstractPersistable {
         return getGuest().getJob().getJobType();
     }
 
+    public boolean differentKindIfNeeded(Job otherGuestJob) {
+        JobType jobType = guest.getJob().getJobType();
+        return jobType == JobType.SOCIALITE || jobType == JobType.TEACHER || guest.getJob() != otherGuestJob;
+    }
+
     public Table getSeatTable() {
         if (seat == null) {
             return  null;
@@ -66,14 +71,16 @@ public class SeatDesignation extends AbstractPersistable {
         return seat.getTable();
     }
 
+    public boolean isRightOf(SeatDesignation leftSeatDesignation) {
+        if (seat == null || leftSeatDesignation.seat == null) {
+            return false;
+        }
+        return seat.getRightSeat() == leftSeatDesignation.seat;
+    }
+
     @Override
     public String toString() {
         return guest + " @ " + seat;
-    }
-
-    public boolean differentKindIfNeeded(Job otherGuestJob) {
-        JobType jobType = guest.getJob().getJobType();
-        return jobType == JobType.SOCIALITE || jobType == JobType.TEACHER || guest.getJob() != otherGuestJob;
     }
 
 }

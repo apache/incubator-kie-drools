@@ -49,6 +49,11 @@ public class Manners2009Panel extends SolutionPanel {
         setLayout(gridLayout);
     }
 
+    @Override
+    public boolean isRefreshScreenDuringSolving() {
+        return true;
+    }
+
     private Manners2009 getManners2009() {
         return (Manners2009) solutionBusiness.getSolution();
     }

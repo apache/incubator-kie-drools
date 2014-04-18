@@ -74,10 +74,8 @@ end
 // (so also the same or another hobby with his/her right neighbour)
 rule "leftHasHobbyInCommon"
     when
-        $leftSeat : Seat()
-        $rightSeat : Seat(leftSeat == $leftSeat)
-        $leftDesignation : SeatDesignation($leftGuest : guest, seat == $leftSeat)
-        $rightDesignation : SeatDesignation($rightGuest : guest, seat == $rightSeat)
+        $leftDesignation : SeatDesignation($leftGuest : guest)
+        $rightDesignation : SeatDesignation(isRightOf($leftDesignation), $rightGuest : guest)
         not (
             HobbyPractician(guest == $leftGuest, $leftHobby : hobby)
             and HobbyPractician(guest == $rightGuest, hobby == $leftHobby)
