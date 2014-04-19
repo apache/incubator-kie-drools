@@ -155,7 +155,7 @@ public class Manners2009Panel extends SolutionPanel {
     private class SeatPanel extends JPanel {
 
         public SeatPanel(Seat seat) {
-            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+            setLayout(new BorderLayout(5, 0));
             setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(Color.DARK_GRAY),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
@@ -168,19 +168,22 @@ public class Manners2009Panel extends SolutionPanel {
         public void setSeatDesignation(SeatDesignation seatDesignation) {
             removeAll();
             if (seatDesignation.getGuest() == null) {
-                add(new JLabel("Empty seat"));
+                add(new JLabel("Empty seat"), BorderLayout.CENTER);
                 return;
             }
             JButton button = new JButton(new SeatDesignationAction(seatDesignation));
-            button.setAlignmentX(CENTER_ALIGNMENT);
             button.setMargin(new Insets(0, 0, 0, 0));
-            add(button);
-            JLabel jobTypeLabel = new JLabel(seatDesignation.getGuest().getJob().getJobType().getCode(), SwingConstants.CENTER);
-            jobTypeLabel.setAlignmentX(CENTER_ALIGNMENT);
-            add(jobTypeLabel);
-            JLabel jobLabel = new JLabel(seatDesignation.getGuest().getJob().getName(), SwingConstants.CENTER);
-            jobLabel.setAlignmentX(CENTER_ALIGNMENT);
-            add(jobLabel);
+            Seat seat = seatDesignation.getSeat();
+            if (seat != null) {
+                button.setToolTipText("Guest " + seatDesignation.getGuest().getCode()
+                        + " @ " + "Seat " + seat.getSeatIndexInTable());
+            }
+            add(button, BorderLayout.WEST);
+            JPanel textPanel = new JPanel(new GridLayout(0, 1));
+            textPanel.setOpaque(false);
+            textPanel.add(new JLabel(seatDesignation.getGuest().getJob().getJobType().getCode()));
+            textPanel.add(new JLabel(seatDesignation.getGuest().getJob().getName()));
+            add(textPanel, BorderLayout.CENTER);
             JPanel hobbyPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             hobbyPanel.setOpaque(false);
             hobbyPanel.setAlignmentX(CENTER_ALIGNMENT);
@@ -190,7 +193,7 @@ public class Manners2009Panel extends SolutionPanel {
                 hobbyLabel.setToolTipText(hobby.getLabel());
                 hobbyPanel.add(hobbyLabel);
             }
-            add(hobbyPanel);
+            add(hobbyPanel, BorderLayout.SOUTH);
         }
 
     }
@@ -210,12 +213,6 @@ public class Manners2009Panel extends SolutionPanel {
 
         public SeatDesignationAction(SeatDesignation seatDesignation) {
             super(null, determineGuestIcon(seatDesignation));
-            Seat seat = seatDesignation.getSeat();
-            if (seat != null) {
-                Guest guest = seatDesignation.getGuest();
-                setToolTipText((guest == null ? "" : "Guest " + guest.getCode() + " @ ")
-                                + "Seat " + seat.getSeatIndexInTable());
-            }
             this.seatDesignation = seatDesignation;
         }
 
