@@ -16,16 +16,19 @@
 
 package org.optaplanner.examples.manners2009.swingui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -37,6 +40,8 @@ import javax.swing.SwingConstants;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
+import org.optaplanner.examples.manners2009.domain.Gender;
+import org.optaplanner.examples.manners2009.domain.Guest;
 import org.optaplanner.examples.manners2009.domain.Hobby;
 import org.optaplanner.examples.manners2009.domain.HobbyPractician;
 import org.optaplanner.examples.manners2009.domain.Manners2009;
@@ -46,8 +51,12 @@ import org.optaplanner.examples.manners2009.domain.Table;
 
 public class Manners2009Panel extends SolutionPanel {
 
+    public static final int MALE_FEMALE_ICON_VARIATION = 5;
+
     private GridLayout gridLayout;
     private Map<Hobby, ImageIcon> hobbyImageIconMap;
+    private List<ImageIcon> maleImageIconList;
+    private List<ImageIcon> femaleImageIconList;
 
     public Manners2009Panel() {
         gridLayout = new GridLayout(0, 1);
@@ -76,6 +85,12 @@ public class Manners2009Panel extends SolutionPanel {
                     throw new IllegalArgumentException("The hobby (" + hobby + ") is not supported.");
             }
             hobbyImageIconMap.put(hobby, new ImageIcon(getClass().getResource(imageIconFilename)));
+        }
+        maleImageIconList = new ArrayList<ImageIcon>(MALE_FEMALE_ICON_VARIATION);
+        femaleImageIconList = new ArrayList<ImageIcon>(MALE_FEMALE_ICON_VARIATION);
+        for (int i = 0; i < MALE_FEMALE_ICON_VARIATION; i++) {
+             maleImageIconList.add(new ImageIcon(getClass().getResource("guestMale" + i + ".png")));
+             femaleImageIconList.add(new ImageIcon(getClass().getResource("guestFemale" + i + ".png")));
         }
     }
 
@@ -133,27 +148,42 @@ public class Manners2009Panel extends SolutionPanel {
         for (SeatDesignation seatDesignation : manners2009.getSeatDesignationList()) {
             SeatPanel seatPanel = seatPanelMap.get(seatDesignation.getSeat());
             seatPanel.setBackground(tangoColorFactory.pickColor(seatDesignation.getGuestJobType()));
-            seatPanel.addSeatDesignation(seatDesignation);
+            seatPanel.setSeatDesignation(seatDesignation);
         }
     }
 
     private class SeatPanel extends JPanel {
 
         public SeatPanel(Seat seat) {
-            super(new GridLayout(0, 1));
+            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
             setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(Color.DARK_GRAY),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-            String seatLabelText = seat == null ? "Unassigned" : "Seat " + seat.getSeatIndexInTable();
-            add(new JLabel(seatLabelText, SwingConstants.CENTER));
+            SeatDesignation dummySeatDesignation = new SeatDesignation();
+            dummySeatDesignation.setGuest(null);
+            dummySeatDesignation.setSeat(seat);
+            setSeatDesignation(dummySeatDesignation);
         }
 
-        public void addSeatDesignation(SeatDesignation seatDesignation) {
+        public void setSeatDesignation(SeatDesignation seatDesignation) {
+            removeAll();
+            if (seatDesignation.getGuest() == null) {
+                add(new JLabel("Empty seat"));
+                return;
+            }
             JButton button = new JButton(new SeatDesignationAction(seatDesignation));
+            button.setAlignmentX(CENTER_ALIGNMENT);
+            button.setMargin(new Insets(0, 0, 0, 0));
             add(button);
-            add(new JLabel(seatDesignation.getGuest().getJob().getJobType().getCode() + ": " + seatDesignation.getGuest().getJob().getName(), SwingConstants.CENTER));
+            JLabel jobTypeLabel = new JLabel(seatDesignation.getGuest().getJob().getJobType().getCode(), SwingConstants.CENTER);
+            jobTypeLabel.setAlignmentX(CENTER_ALIGNMENT);
+            add(jobTypeLabel);
+            JLabel jobLabel = new JLabel(seatDesignation.getGuest().getJob().getName(), SwingConstants.CENTER);
+            jobLabel.setAlignmentX(CENTER_ALIGNMENT);
+            add(jobLabel);
             JPanel hobbyPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             hobbyPanel.setOpaque(false);
+            hobbyPanel.setAlignmentX(CENTER_ALIGNMENT);
             for (HobbyPractician hobbyPractician : seatDesignation.getGuest().getHobbyPracticianList()) {
                 Hobby hobby = hobbyPractician.getHobby();
                 JLabel hobbyLabel = new JLabel(hobbyImageIconMap.get(hobby));
@@ -165,12 +195,27 @@ public class Manners2009Panel extends SolutionPanel {
 
     }
 
+    private ImageIcon determineGuestIcon(SeatDesignation seatDesignation) {
+        Guest guest = seatDesignation.getGuest();
+        if (guest == null) {
+            return null;
+        }
+        List<ImageIcon> imageIconList = guest.getGender() == Gender.MALE ? maleImageIconList : femaleImageIconList;
+        return imageIconList.get(guest.getId().intValue() % imageIconList.size());
+    }
+
     private class SeatDesignationAction extends AbstractAction {
 
         private SeatDesignation seatDesignation;
 
         public SeatDesignationAction(SeatDesignation seatDesignation) {
-            super(seatDesignation.getGuest().getCode() + "(" + seatDesignation.getGuest().getGender().getCode() + ")");
+            super(null, determineGuestIcon(seatDesignation));
+            Seat seat = seatDesignation.getSeat();
+            if (seat != null) {
+                Guest guest = seatDesignation.getGuest();
+                setToolTipText((guest == null ? "" : "Guest " + guest.getCode() + " @ ")
+                                + "Seat " + seat.getSeatIndexInTable());
+            }
             this.seatDesignation = seatDesignation;
         }
 
