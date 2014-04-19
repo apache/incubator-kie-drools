@@ -117,7 +117,7 @@
           </row>
 
           <row>
-            <entry><link linkend="manners2009">Manners 2009</link></entry>
+            <entry><link linkend="dinnerParty">Dinner party</link></entry>
 
             <entry><itemizedlist>
                 <listitem>
@@ -657,13 +657,13 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
       </section>
     </section>
 
-    <section xml:id="manners2009">
-      <title>Manners 2009</title>
+    <section xml:id="dinnerParty">
+      <title>Dinner Party</title>
 
       <section>
         <title>Problem statement</title>
 
-        <para>In Manners 2009, miss Manners is throwing a party again.</para>
+        <para>Miss Manners is throwing another dinner party.</para>
 
         <itemizedlist>
           <listitem>
@@ -679,16 +679,17 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
           </listitem>
 
           <listitem>
-            <para>Also, this time there should be 2 politicians, 2 doctors, 2 socialites, 2 sports stars, 2 teachers and
-            2 programmers at each table.</para>
+            <para>At every table, there should be 2 politicians, 2 doctors, 2 socialites, 2 coaches, 2 teachers and
+            2 programmers.</para>
           </listitem>
 
           <listitem>
-            <para>And the 2 politicians, 2 doctors, 2 sports stars and 2 programmers shouldn't be the same kind.</para>
+            <para>And the 2 politicians, 2 doctors, 2 coaches and 2 programmers shouldn't be the same kind at a
+            table.</para>
           </listitem>
         </itemizedlist>
 
-        <para>Drools Expert also has the normal miss Manners examples (which is much smaller) and employs a brute force
+        <para>Drools Expert also has the normal Miss Manners example (which is much smaller) and employs an exhaustive
         heuristic to solve it. OptaPlanner's implementation is far more scalable because it uses heuristics to find the
         best solution and Drools Expert to calculate the score of each solution.</para>
       </section>
@@ -696,8 +697,7 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
       <section>
         <title>Problem size</title>
 
-        <programlisting>geoffrey1              has 18 jobs, 144 guests, 288 hobby practicians, 12 tables and 144 seats with a search space of 10^310.
-james1WithGenderChange has 18 jobs, 144 guests, 432 hobby practicians, 12 tables and 144 seats with a search space of 10^310.</programlisting>
+        <programlisting>wedding01 has 18 jobs, 144 guests, 288 hobby practicians, 12 tables and 144 seats with a search space of 10^310.</programlisting>
       </section>
     </section>
 
