@@ -167,7 +167,8 @@ public class Manners2009Panel extends SolutionPanel {
 
         public void setSeatDesignation(SeatDesignation seatDesignation) {
             removeAll();
-            if (seatDesignation.getGuest() == null) {
+            Guest guest = seatDesignation.getGuest();
+            if (guest == null) {
                 add(new JLabel("Empty seat"), BorderLayout.CENTER);
                 return;
             }
@@ -175,19 +176,26 @@ public class Manners2009Panel extends SolutionPanel {
             button.setMargin(new Insets(0, 0, 0, 0));
             Seat seat = seatDesignation.getSeat();
             if (seat != null) {
-                button.setToolTipText("Guest " + seatDesignation.getGuest().getCode()
+                button.setToolTipText("Guest " + guest.getCode()
                         + " @ " + "Seat " + seat.getSeatIndexInTable());
             }
             add(button, BorderLayout.WEST);
-            JPanel textPanel = new JPanel(new GridLayout(0, 1));
-            textPanel.setOpaque(false);
-            textPanel.add(new JLabel(seatDesignation.getGuest().getJob().getJobType().getCode()));
-            textPanel.add(new JLabel(seatDesignation.getGuest().getJob().getName()));
-            add(textPanel, BorderLayout.CENTER);
+            JPanel infoPanel = new JPanel(new GridLayout(0, 1));
+            infoPanel.setOpaque(false);
+            infoPanel.add(new JLabel(guest.getName()));
+            JPanel jobPanel = new JPanel();
+            jobPanel.setLayout(new BoxLayout(jobPanel, BoxLayout.Y_AXIS));
+            jobPanel.setOpaque(false);
+            jobPanel.add(new JLabel(guest.getJob().getJobType().getCode()));
+            JLabel jobLabel = new JLabel("  " + guest.getJob().getName());
+            jobLabel.setFont(jobLabel.getFont().deriveFont(jobLabel.getFont().getSize() - 2.0F));
+            jobPanel.add(jobLabel);
+            infoPanel.add(jobPanel);
+            add(infoPanel, BorderLayout.CENTER);
             JPanel hobbyPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             hobbyPanel.setOpaque(false);
             hobbyPanel.setAlignmentX(CENTER_ALIGNMENT);
-            for (HobbyPractician hobbyPractician : seatDesignation.getGuest().getHobbyPracticianList()) {
+            for (HobbyPractician hobbyPractician : guest.getHobbyPracticianList()) {
                 Hobby hobby = hobbyPractician.getHobby();
                 JLabel hobbyLabel = new JLabel(hobbyImageIconMap.get(hobby));
                 hobbyLabel.setToolTipText(hobby.getLabel());

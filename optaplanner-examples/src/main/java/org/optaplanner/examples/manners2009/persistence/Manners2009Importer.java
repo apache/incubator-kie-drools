@@ -113,8 +113,8 @@ public class Manners2009Importer extends AbstractTxtSolutionImporter {
 
         private void readJobListGuestListAndHobbyPracticianList(Manners2009 manners2009)
                 throws IOException {
-            readConstantLine("Num,Profession,SubProf,Gender,Spt1,Spt2,Spt3");
-            readConstantLine("-------------------------------------------");
+            readConstantLine("Code,Name,JobType,Job,Gender,Hobby1,Hobby2,Hobby3");
+            readConstantLine("-------------------------------------------------");
             int guestSize = manners2009.getSeatList().size();
 
             List<Guest> guestList = new ArrayList<Guest>(guestSize);
@@ -125,15 +125,11 @@ public class Manners2009Importer extends AbstractTxtSolutionImporter {
             for (int i = 0; i < guestSize; i++) {
                 Guest guest = new Guest();
                 guest.setId((long) i);
-                String line = bufferedReader.readLine();
-                String[] lineTokens = line.split("\\,");
-                if (lineTokens.length < 5) {
-                    throw new IllegalArgumentException("Read line (" + line
-                            + ") is expected to contain at least 5 tokens.");
-                }
-                guest.setCode(lineTokens[0].trim());
-                JobType jobType = JobType.valueOfCode(lineTokens[1].trim());
-                String jobName = lineTokens[2].trim();
+                String[] lineTokens = splitByCommaAndTrim(bufferedReader.readLine(), 6, null);
+                guest.setCode(lineTokens[0]);
+                guest.setName(lineTokens[1]);
+                JobType jobType = JobType.valueOfCode(lineTokens[2]);
+                String jobName = lineTokens[3];
                 String jobMapKey = jobType + "/" + jobName;
                 Job job = jobMap.get(jobMapKey);
                 if (job == null) {
@@ -145,14 +141,14 @@ public class Manners2009Importer extends AbstractTxtSolutionImporter {
                     jobMap.put(jobMapKey, job);
                 }
                 guest.setJob(job);
-                guest.setGender(Gender.valueOfCode(lineTokens[3].trim()));
-                List<HobbyPractician> hobbyPracticianOfGuestList = new ArrayList<HobbyPractician>(lineTokens.length - 4);
-                for (int j = 4; j < lineTokens.length; j++) {
+                guest.setGender(Gender.valueOfCode(lineTokens[4]));
+                List<HobbyPractician> hobbyPracticianOfGuestList = new ArrayList<HobbyPractician>(lineTokens.length - 5);
+                for (int j = 5; j < lineTokens.length; j++) {
                     HobbyPractician hobbyPractician = new HobbyPractician();
                     hobbyPractician.setId((long) hobbyPracticianJobId);
                     hobbyPracticianJobId++;
                     hobbyPractician.setGuest(guest);
-                    hobbyPractician.setHobby(Hobby.valueOfCode(lineTokens[j].trim()));
+                    hobbyPractician.setHobby(Hobby.valueOfCode(lineTokens[j]));
                     hobbyPracticianOfGuestList.add(hobbyPractician);
                     hobbyPracticianList.add(hobbyPractician);
                 }

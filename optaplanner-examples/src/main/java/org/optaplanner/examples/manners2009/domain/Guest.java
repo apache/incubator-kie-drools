@@ -25,6 +25,7 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 public class Guest extends AbstractPersistable {
 
     private String code;
+    private String name;
     private Job job;
     private Gender gender;
 
@@ -36,6 +37,14 @@ public class Guest extends AbstractPersistable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Job getJob() {

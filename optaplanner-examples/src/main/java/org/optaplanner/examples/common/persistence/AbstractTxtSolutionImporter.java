@@ -264,6 +264,14 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
             return splitBy(line, ";", "a semicolon (;)", numberOfTokens, false, true);
         }
 
+        public String[] splitByCommaAndTrim(String line, int numberOfTokens) {
+            return splitBy(line, "\\,", "a comma (,)", numberOfTokens, true, false);
+        }
+
+        public String[] splitByCommaAndTrim(String line, Integer minimumNumberOfTokens, Integer maximumNumberOfTokens) {
+            return splitBy(line, "\\,", "a comma (,)", minimumNumberOfTokens, maximumNumberOfTokens, true, false);
+        }
+
         public String[] splitBy(String line, String tokenRegex, String tokenName,
                 Integer numberOfTokens, boolean trim, boolean removeQuotes) {
             return splitBy(line, tokenRegex, tokenName, numberOfTokens, numberOfTokens, trim, removeQuotes);

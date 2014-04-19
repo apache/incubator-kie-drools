@@ -20,9 +20,9 @@ public enum JobType {
     POLITICIAN("Politician"),
     SOCIALITE("Socialite"),
     DOCTOR("Doctor"),
-    SPORTS_STAR("Sports"),
+    COACH("Coach"),
     TEACHER("Teacher"),
-    PROGRAMMER("Programmer");
+    DEVELOPER("Developer");
 
     public static JobType valueOfCode(String code) {
         for (JobType jobType : values()) {
