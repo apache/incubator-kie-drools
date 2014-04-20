@@ -40,7 +40,7 @@ public class DinnerPartyApp extends CommonApp {
         super("Dinner party",
                 "Decide the seating at a big fancy dinner party with round tables.\n" +
                         "Assign guests to seats at tables.",
-                null);
+                DinnerPartyPanel.LOGO_PATH);
     }
 
     @Override

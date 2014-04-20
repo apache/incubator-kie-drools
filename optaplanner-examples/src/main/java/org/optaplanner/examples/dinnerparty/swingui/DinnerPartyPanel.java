@@ -50,6 +50,7 @@ import org.optaplanner.examples.dinnerparty.domain.Table;
 
 public class DinnerPartyPanel extends SolutionPanel {
 
+    public static final String LOGO_PATH = "/org/optaplanner/examples/dinnerparty/swingui/dinnerPartyLogo.png";
     public static final int MALE_FEMALE_ICON_VARIATION = 5;
 
     private GridLayout gridLayout;
