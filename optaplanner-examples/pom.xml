@@ -85,6 +85,10 @@
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-benchmark</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-decisiontables</artifactId>
+    </dependency>
     <!-- External dependencies -->
     <!-- Common utils -->
     <dependency>
