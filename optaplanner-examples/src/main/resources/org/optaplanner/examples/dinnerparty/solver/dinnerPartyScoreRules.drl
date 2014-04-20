@@ -54,9 +54,8 @@ rule "twoSameJobTypePerTable"
                     differentKindIfNeeded($firstJob))
         )
     then
-        scoreHolder.addConstraintMatch(kcontext, -1);
+        scoreHolder.addConstraintMatch(kcontext, -100);
 end
-
 // This is to avoid score traps. The score function should for example give an incentive
 // to put it 1 doctor at a table without doctors even though 2 doctors are needed.
 // This extra rule can be avoided by weighting the broken constraint of the other rule
@@ -66,7 +65,7 @@ rule "atLeastOneJobTypePerTableScoreGuider"
         $jobType : JobType()
         not SeatDesignation(guestJobType == $jobType, seatTable == $table)
     then
-        scoreHolder.addConstraintMatch(kcontext, -1);
+        scoreHolder.addConstraintMatch(kcontext, -100);
 end
 
 
@@ -81,5 +80,5 @@ rule "leftHasHobbyInCommon"
             and HobbyPractician(guest == $rightGuest, hobby == $leftHobby)
         )
     then
-        scoreHolder.addConstraintMatch(kcontext, -1);
+        scoreHolder.addConstraintMatch(kcontext, -100);
 end

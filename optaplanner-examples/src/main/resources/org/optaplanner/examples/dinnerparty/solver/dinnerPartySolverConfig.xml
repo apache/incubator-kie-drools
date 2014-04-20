@@ -7,12 +7,13 @@
   <scoreDirectorFactory>
     <scoreDefinitionType>SIMPLE</scoreDefinitionType>
     <scoreDrl>org/optaplanner/examples/dinnerparty/solver/dinnerPartyScoreRules.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/dinnerparty/solver/dinnerPartyExtraScoreRules.xls</scoreDrl>
   </scoreDirectorFactory>
 
   <termination>
     <!--<terminationCompositionStyle>OR</terminationCompositionStyle>-->
     <!--<minutesSpentLimit>1</minutesSpentLimit>-->
-    <bestScoreLimit>0</bestScoreLimit>
+    <bestScoreLimit>20</bestScoreLimit>
   </termination>
   <customSolverPhase>
     <customSolverPhaseCommandClass>org.optaplanner.examples.dinnerparty.solver.solution.initializer.DinnerPartySolutionInitializer</customSolverPhaseCommandClass>

@@ -49,6 +49,14 @@ public class SeatDesignation extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    public String getGuestName() {
+        return getGuest().getName();
+    }
+
+    public Gender getGuestGender() {
+        return getGuest().getGender();
+    }
+
     public Job getGuestJob() {
         return getGuest().getJob();
     }
@@ -74,6 +82,13 @@ public class SeatDesignation extends AbstractPersistable {
             return false;
         }
         return seat.getRightSeat() == leftSeatDesignation.seat;
+    }
+
+    public boolean isNeighborOf(SeatDesignation otherSeatDesignation) {
+        if (seat == null || otherSeatDesignation.seat == null) {
+            return false;
+        }
+        return seat.getLeftSeat() == otherSeatDesignation.seat || seat.getRightSeat() == otherSeatDesignation.seat;
     }
 
     @Override
