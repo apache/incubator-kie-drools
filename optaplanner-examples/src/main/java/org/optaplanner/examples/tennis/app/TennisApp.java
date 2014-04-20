@@ -39,7 +39,7 @@ public class TennisApp extends CommonApp {
                 "Assign available spots to teams.\n\n" +
                         "Each team must play an almost equal number of times.\n" +
                         "Each team must play against each other team an almost equal number of times.",
-                null);
+                TennisPanel.LOGO_PATH);
     }
 
     @Override
