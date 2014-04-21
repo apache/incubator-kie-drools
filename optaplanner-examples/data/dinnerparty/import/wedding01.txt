@@ -92,8 +92,8 @@ Code,Name,JobType,Job,Gender,Hobby1,Hobby2,Hobby3
 88,Wyatt,Teacher,Science,M,1
 89,Mila,Teacher,French,F,5,3
 90,Elizabeth,Teacher,French,F,2,5,3
-91,Lillian,Teacher,French,M,1
-92,Kylie,Teacher,French,M,1,4
+91,Alex,Teacher,French,M,1
+92,Aaron,Teacher,French,M,1,4
 93,Audrey,Teacher,History,F,1,5,3
 94,Lucy,Teacher,History,F,1
 95,Christian,Teacher,History,M,4,1
