@@ -395,12 +395,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
             final JTextField benchmarkResultNameTextField = new JTextField(benchmarkResultTextFieldText == null ? benchmarkResult.toString()
                     : benchmarkResultTextFieldText, 30);
             mainPanel.add(benchmarkResultNameTextField, BorderLayout.WEST);
-            JButton confirmRenameButton = new JButton("Rename");
-            mainPanel.add(confirmRenameButton, BorderLayout.EAST);
-            setContentPane(mainPanel);
-            mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-            AbstractAction renamedAction = new AbstractAction() {
+            AbstractAction renamedAction = new AbstractAction("Rename") {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     String newBenchmarkResultName = benchmarkResultNameTextField.getText();
@@ -423,7 +418,10 @@ public class BenchmarkAggregatorFrame extends JFrame {
                 }
             };
             benchmarkResultNameTextField.addActionListener(renamedAction);
-            confirmRenameButton.addActionListener(renamedAction);
+            JButton confirmRenameButton = new JButton(renamedAction);
+            mainPanel.add(confirmRenameButton, BorderLayout.EAST);
+            mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            setContentPane(mainPanel);
         }
     }
 
