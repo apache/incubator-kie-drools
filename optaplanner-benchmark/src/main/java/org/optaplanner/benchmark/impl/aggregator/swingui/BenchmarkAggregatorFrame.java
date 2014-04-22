@@ -242,9 +242,9 @@ public class BenchmarkAggregatorFrame extends JFrame {
 
     private class GenerateReportAction extends AbstractAction {
 
-        private JFrame parentFrame;
+        private final BenchmarkAggregatorFrame parentFrame;
 
-        public GenerateReportAction(JFrame parentFrame) {
+        public GenerateReportAction(BenchmarkAggregatorFrame parentFrame) {
             super("Generate report");
             this.parentFrame = parentFrame;
         }
@@ -262,7 +262,8 @@ public class BenchmarkAggregatorFrame extends JFrame {
                 }
             }
             if (singleBenchmarkResultList.isEmpty()) {
-                JOptionPane.showMessageDialog(parentFrame, "No single benchmarks have been selected.", "Warning", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(parentFrame, "No single benchmarks have been selected.",
+                        "Warning", JOptionPane.WARNING_MESSAGE);
                 parentFrame.setEnabled(true);
             } else {
                 generateProgressBar.setIndeterminate(true);
@@ -404,7 +405,8 @@ public class BenchmarkAggregatorFrame extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     String newBenchmarkResultName = benchmarkResultNameTextField.getText();
                     if (StringUtils.isEmpty(newBenchmarkResultName)) {
-                        JOptionPane.showMessageDialog(BenchmarkAggregatorFrame.this, "New benchmark's name cannot be empty.",
+                        JOptionPane.showMessageDialog(BenchmarkAggregatorFrame.this,
+                                "New benchmark's name cannot be empty.",
                                 "Warning", JOptionPane.WARNING_MESSAGE);
                     } else {
                         if (benchmarkResult instanceof PlannerBenchmarkResult) {
@@ -506,10 +508,10 @@ public class BenchmarkAggregatorFrame extends JFrame {
 
     private class GenerateReportWorker extends SwingWorker<File, Void> {
 
-        private JFrame parentFrame;
+        private final BenchmarkAggregatorFrame parentFrame;
         private List<SingleBenchmarkResult> singleBenchmarkResultList;
 
-        public GenerateReportWorker(JFrame parentFrame, List<SingleBenchmarkResult> singleBenchmarkResultList) {
+        public GenerateReportWorker(BenchmarkAggregatorFrame parentFrame, List<SingleBenchmarkResult> singleBenchmarkResultList) {
             this.parentFrame = parentFrame;
             this.singleBenchmarkResultList = singleBenchmarkResultList;
         }
@@ -525,12 +527,12 @@ public class BenchmarkAggregatorFrame extends JFrame {
                 File htmlOverviewFile = get();
                 ReportFinishedDialog dialog = new ReportFinishedDialog(parentFrame, htmlOverviewFile);
                 dialog.pack();
-                dialog.setLocationRelativeTo(BenchmarkAggregatorFrame.this);
+                dialog.setLocationRelativeTo(parentFrame);
                 dialog.setVisible(true);
             } catch (InterruptedException e) {
-                throw new IllegalStateException(e);
+                throw new IllegalStateException("The report generation failed.", e);
             } catch (ExecutionException e) {
-                throw new IllegalStateException(e);
+                throw new IllegalStateException("The report generation failed.", e.getCause());
             } finally {
                 detailTextArea.setText(null);
                 generateProgressBar.setIndeterminate(false);
@@ -543,19 +545,19 @@ public class BenchmarkAggregatorFrame extends JFrame {
 
     private class ReportFinishedDialog extends JDialog {
 
-        private final JFrame parentFrame;
+        private final BenchmarkAggregatorFrame parentFrame;
         private final File reportFile;
 
         private JCheckBox exitCheckBox;
 
-        public ReportFinishedDialog(JFrame parentFrame, File reportFile) {
+        public ReportFinishedDialog(BenchmarkAggregatorFrame parentFrame, File reportFile) {
             super(parentFrame, "Report generation finished");
             this.parentFrame = parentFrame;
             this.reportFile = reportFile;
             addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
-                    refreshParentFrame();
+                    refresh();
                 }
             });
 
@@ -600,23 +602,29 @@ public class BenchmarkAggregatorFrame extends JFrame {
             return buttonPanel;
         }
 
-        private void openReportFile(File file, Desktop.Action action) {
+        private void openReportFile(File reportFile, Desktop.Action action) {
             Desktop desktop = Desktop.getDesktop();
-            try {
-                switch (action) {
-                    case OPEN:
-                        if (desktop.isSupported(Desktop.Action.OPEN)) {
-                            desktop.open(file);
+            switch (action) {
+                case OPEN:
+                    if (desktop.isSupported(Desktop.Action.OPEN)) {
+                        try {
+                            desktop.open(reportFile);
+                        } catch (IOException e) {
+                            throw new IllegalStateException("Failed showing reportFile (" + reportFile
+                                    + ") in file explorer.", e);
                         }
-                        break;
-                    case BROWSE:
-                        if (desktop.isSupported(Desktop.Action.BROWSE)) {
-                            desktop.browse(file.toURI());
+                    }
+                    break;
+                case BROWSE:
+                    if (desktop.isSupported(Desktop.Action.BROWSE)) {
+                        try {
+                            desktop.browse(reportFile.toURI());
+                        } catch (IOException e) {
+                            throw new IllegalStateException("Failed showing reportFile (" + reportFile
+                                    + ") in browser.", e);
                         }
-                        break;
-                }
-            } catch (IOException e) {
-                throw new IllegalStateException(e);
+                    }
+                    break;
             }
         }
 
@@ -626,22 +634,22 @@ public class BenchmarkAggregatorFrame extends JFrame {
                 parentFrame.dispose();
             } else {
                 dispose();
-                refreshParentFrame();
+                parentFrame.refresh();
             }
         }
 
-        private void refreshParentFrame() {
-            initPlannerBenchmarkResultList();
-            solverBenchmarkResultNameMapping = new HashMap<SolverBenchmarkResult, String>();
-            resultCheckBoxMapping = new LinkedHashMap<SingleBenchmarkResult, DefaultMutableTreeNode>();
-            checkBoxTree.setSelectedSingleBenchmarkNodes(new HashSet<DefaultMutableTreeNode>());
-            DefaultMutableTreeNode newCheckBoxRootNode = initBenchmarkHierarchy(true);
-            DefaultTreeModel treeModel = new DefaultTreeModel(newCheckBoxRootNode);
-            checkBoxTree.setModel(treeModel);
-            treeModel.nodeStructureChanged(newCheckBoxRootNode);
-            parentFrame.setEnabled(true);
-        }
+    }
 
+    private void refresh() {
+        initPlannerBenchmarkResultList();
+        solverBenchmarkResultNameMapping = new HashMap<SolverBenchmarkResult, String>();
+        resultCheckBoxMapping = new LinkedHashMap<SingleBenchmarkResult, DefaultMutableTreeNode>();
+        checkBoxTree.setSelectedSingleBenchmarkNodes(new HashSet<DefaultMutableTreeNode>());
+        DefaultMutableTreeNode newCheckBoxRootNode = initBenchmarkHierarchy(true);
+        DefaultTreeModel treeModel = new DefaultTreeModel(newCheckBoxRootNode);
+        checkBoxTree.setModel(treeModel);
+        treeModel.nodeStructureChanged(newCheckBoxRootNode);
+        setEnabled(true);
     }
 
 }
