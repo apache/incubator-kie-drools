@@ -20,32 +20,28 @@
     <table>
       <title>Examples overview</title>
 
-      <tgroup cols="6">
+      <tgroup cols="5">
         <colspec align="left" colnum="1" colwidth="2*"/>
 
-        <colspec align="left" colnum="2" colwidth="2*"/>
+        <colspec align="left" colnum="2" colwidth="1*"/>
 
         <colspec align="left" colnum="3" colwidth="1*"/>
 
         <colspec align="left" colnum="4" colwidth="1*"/>
 
-        <colspec align="left" colnum="5" colwidth="1*"/>
-
-        <colspec align="left" colnum="6" colwidth="2*"/>
+        <colspec align="left" colnum="5" colwidth="2*"/>
 
         <thead>
           <row>
-            <entry>Example</entry>
+            <entry>SpeExample</entry>
 
             <entry>Domain</entry>
 
-            <entry>Entity size</entry>
-
-            <entry>Value size</entry>
-
-            <entry>Search space</entry>
+            <entry>Size</entry>
 
             <entry>Competition?</entry>
+
+            <entry>Special features used</entry>
           </row>
         </thead>
 
@@ -63,13 +59,23 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>&lt;= <literal>256</literal></entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Entity &lt;= <literal>256</literal></para>
+                </listitem>
 
-            <entry>&lt;= <literal>256</literal></entry>
+                <listitem>
+                  <para>Value &lt;= 256</para>
+                </listitem>
 
-            <entry>&lt;= <literal>10^616</literal></entry>
+                <listitem>
+                  <para>Search space &lt;= <literal>10^616</literal></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry>Pointless</entry>
+
+            <entry>None</entry>
           </row>
 
           <row>
@@ -85,13 +91,27 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>&lt;= <literal>2400</literal></entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Entity &lt;= <literal>2400</literal></para>
+                </listitem>
 
-            <entry>&lt;= <literal>800</literal></entry>
+                <listitem>
+                  <para>Value &lt;= 800</para>
+                </listitem>
 
-            <entry>&lt;= <literal>10^6967</literal></entry>
+                <listitem>
+                  <para>Search space &lt;= <literal>10^6967</literal></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry>No</entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para><link linkend="realTimePlanning">Real-time planning</link></para>
+                </listitem>
+              </itemizedlist></entry>
           </row>
 
           <row>
@@ -107,13 +127,27 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>&lt;= <literal>980</literal></entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Entity &lt;= <literal>980</literal></para>
+                </listitem>
 
-            <entry>&lt;= <literal>980</literal></entry>
+                <listitem>
+                  <para>Value &lt;= 980</para>
+                </listitem>
 
-            <entry>&lt;= <literal>10^2927</literal></entry>
+                <listitem>
+                  <para>Search space &lt;= <literal>10^2927</literal></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry>Unrealistic</entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para><link linkend="realTimePlanning">Real-time planning</link></para>
+                </listitem>
+              </itemizedlist></entry>
           </row>
 
           <row>
@@ -129,13 +163,27 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>&lt;= <literal>144</literal></entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Entity &lt;= <literal>144</literal></para>
+                </listitem>
 
-            <entry>&lt;= <literal>144</literal></entry>
+                <listitem>
+                  <para>Value &lt;= 72</para>
+                </listitem>
 
-            <entry>&lt;= <literal>10^310</literal></entry>
+                <listitem>
+                  <para>Search space &lt;= <literal>10^310</literal></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry>Unrealistic</entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Decision Table spreadsheet for score constraints</para>
+                </listitem>
+              </itemizedlist></entry>
           </row>
 
           <row>
@@ -151,13 +199,31 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>&lt;= <literal>72</literal></entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Entity &lt;= <literal>72</literal></para>
+                </listitem>
 
-            <entry>&lt;= <literal>7</literal></entry>
+                <listitem>
+                  <para>Value &lt;= 7</para>
+                </listitem>
 
-            <entry>&lt;= <literal>10^60</literal></entry>
+                <listitem>
+                  <para>Search space &lt;= <literal>10^60</literal></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry>Unrealistic</entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para><link linkend="fairnessScoreConstraints">Fairness score constraints</link></para>
+                </listitem>
+
+                <listitem>
+                  <para><link linkend="immovablePlanningEntities">Immovable entities</link></para>
+                </listitem>
+              </itemizedlist></entry>
           </row>
 
           <row>
@@ -173,13 +239,27 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>&lt;= <literal>434</literal></entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Entity &lt;= <literal>434</literal></para>
+                </listitem>
 
-            <entry>&lt;= 25 and &lt;= <literal>20</literal></entry>
+                <listitem>
+                  <para>Value &lt;= 25 and &lt;= <literal>20</literal></para>
+                </listitem>
 
-            <entry>&lt;= <literal>10^1171</literal></entry>
+                <listitem>
+                  <para>Search space &lt;= <literal>10^1171</literal></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry>Realistic</entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para><link linkend="immovablePlanningEntities">Immovable entities</link></para>
+                </listitem>
+              </itemizedlist></entry>
           </row>
 
           <row>
@@ -195,13 +275,27 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>&lt;= <literal>50000</literal></entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Entity &lt;= <literal>50000</literal></para>
+                </listitem>
 
-            <entry>&lt;= <literal>5000</literal></entry>
+                <listitem>
+                  <para>Value &lt;= 5000</para>
+                </listitem>
 
-            <entry>&lt;= <literal>10^184948</literal></entry>
+                <listitem>
+                  <para>Search space &lt;= <literal>10^184948</literal></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry>Nearly realistic</entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para><link linkend="realTimePlanning">Real-time planning</link></para>
+                </listitem>
+              </itemizedlist></entry>
           </row>
 
           <row>
@@ -225,31 +319,67 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>&lt;= <literal>134</literal></entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Entity &lt;= <literal>134</literal></para>
+                </listitem>
 
-            <entry>&lt;= <literal>141</literal></entry>
+                <listitem>
+                  <para>Value &lt;= 141</para>
+                </listitem>
 
-            <entry>&lt;= <literal>10^285</literal></entry>
+                <listitem>
+                  <para>Search space &lt;= <literal>10^285</literal></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry>Unrealistic</entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para><link linkend="variableListener">VariableListener</link></para>
+                </listitem>
+
+                <listitem>
+                  <para><link linkend="realTimePlanning">Real-time planning</link></para>
+                </listitem>
+              </itemizedlist></entry>
           </row>
 
           <row>
             <entry><link linkend="vehicleRouting">Vehicle routing</link> with time windows</entry>
 
-            <entry><para>Extra on Vehicle Routing:</para><itemizedlist>
+            <entry><para>Extra on Vehicle routing:</para><itemizedlist>
                 <listitem>
                   <para>1 shadow variable</para>
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>&lt;= <literal>1000</literal></entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Entity &lt;= <literal>1000</literal></para>
+                </listitem>
 
-            <entry>&lt;= <literal>1250</literal></entry>
+                <listitem>
+                  <para>Value &lt;= 1250</para>
+                </listitem>
 
-            <entry>&lt;= <literal>10^3000</literal></entry>
+                <listitem>
+                  <para>Search space &lt;= <literal>10^3000</literal></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry>Unrealistic</entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para><link linkend="variableListener">VariableListener</link></para>
+                </listitem>
+
+                <listitem>
+                  <para><link linkend="realTimePlanning">Real-time planning</link></para>
+                </listitem>
+              </itemizedlist></entry>
           </row>
 
           <row>
@@ -269,13 +399,31 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>&lt;= <literal>640</literal></entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Entity &lt;= <literal>640</literal></para>
+                </listitem>
 
-            <entry>&lt;= ? and &lt;= <literal>?</literal></entry>
+                <listitem>
+                  <para>Value &lt;= ? and &lt;= <literal>?</literal></para>
+                </listitem>
 
-            <entry>&lt;= ?</entry>
+                <listitem>
+                  <para>Search space &lt;= <literal>?</literal></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry>Nearly realistic</entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para><link linkend="bendableScore">Bendable score</link></para>
+                </listitem>
+
+                <listitem>
+                  <para><link linkend="variableListener">VariableListener</link></para>
+                </listitem>
+              </itemizedlist></entry>
           </row>
 
           <row>
@@ -291,13 +439,27 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>&lt;= <literal>2750</literal></entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Entity &lt;= <literal>2750</literal></para>
+                </listitem>
 
-            <entry>&lt;= <literal>471</literal></entry>
+                <listitem>
+                  <para>Value &lt;= 471</para>
+                </listitem>
 
-            <entry>&lt;= <literal>10^6851</literal></entry>
+                <listitem>
+                  <para>Search space &lt;= <literal>10^6851</literal></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry>Nearly realistic</entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Overconstrained planning</para>
+                </listitem>
+              </itemizedlist></entry>
           </row>
 
           <row>
@@ -305,7 +467,7 @@
 
             <entry><itemizedlist>
                 <listitem>
-                  <para>1 entity class</para>
+                  <para>2 entity classes (same hierarchy)</para>
                 </listitem>
 
                 <listitem>
@@ -313,13 +475,27 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>&lt;= <literal>1096</literal></entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Entity &lt;= <literal>1096</literal></para>
+                </listitem>
 
-            <entry>&lt;= 80 and &lt;= <literal>49</literal></entry>
+                <listitem>
+                  <para>Value &lt;= 80 and &lt;= <literal>49</literal></para>
+                </listitem>
 
-            <entry>&lt;= <literal>10^3374</literal></entry>
+                <listitem>
+                  <para>Search space &lt;= <literal>10^3374</literal></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry>Realistic</entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para><link linkend="variableListener">VariableListener</link></para>
+                </listitem>
+              </itemizedlist></entry>
           </row>
 
           <row>
@@ -335,13 +511,31 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>&lt;= <literal>752</literal></entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Entity &lt;= <literal>752</literal></para>
+                </listitem>
 
-            <entry>&lt;= <literal>50</literal></entry>
+                <listitem>
+                  <para>Value &lt;= 50</para>
+                </listitem>
 
-            <entry>&lt;= <literal>10^1277</literal></entry>
+                <listitem>
+                  <para>Search space &lt;= <literal>10^1277</literal></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry>Realistic</entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para><link linkend="continuousPlanning">Continuous planning</link></para>
+                </listitem>
+
+                <listitem>
+                  <para><link linkend="realTimePlanning">Real-time planning</link></para>
+                </listitem>
+              </itemizedlist></entry>
           </row>
 
           <row>
@@ -357,13 +551,23 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>&lt;= <literal>1560</literal></entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Entity &lt;= <literal>1560</literal></para>
+                </listitem>
 
-            <entry>&lt;= <literal>78</literal></entry>
+                <listitem>
+                  <para>Value &lt;= 78</para>
+                </listitem>
 
-            <entry>&lt;= <literal>10^2951</literal></entry>
+                <listitem>
+                  <para>Search space &lt;= <literal>10^2951</literal></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry>Unrealistic</entry>
+
+            <entry>None</entry>
           </row>
         </tbody>
       </tgroup>
@@ -658,7 +862,7 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
     </section>
 
     <section xml:id="dinnerParty">
-      <title>Dinner Party</title>
+      <title>Dinner party</title>
 
       <section>
         <title>Problem statement</title>
@@ -679,8 +883,8 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
           </listitem>
 
           <listitem>
-            <para>At every table, there should be 2 politicians, 2 doctors, 2 socialites, 2 coaches, 2 teachers and
-            2 programmers.</para>
+            <para>At every table, there should be 2 politicians, 2 doctors, 2 socialites, 2 coaches, 2 teachers and 2
+            programmers.</para>
           </listitem>
 
           <listitem>
