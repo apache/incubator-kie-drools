@@ -789,6 +789,14 @@ public class BaseLeftTuple
         return entry;
     }
 
+    public LeftTuple skipEmptyHandles() {
+        LeftTuple entry = this;
+        while ( entry != null && entry.getLastHandle() == null ) {
+            entry = entry.getParent();
+        }
+        return entry;
+    }
+
     /* (non-Javadoc)
      * @see org.kie.reteoo.LeftTuple#toObjectArray()
      */

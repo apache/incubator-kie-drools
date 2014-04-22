@@ -5570,4 +5570,42 @@ public class Misc2Test extends CommonTestMethodBase {
             this.description = desc;
         }
     }
+
+    @Test
+    public void testEvalInSubnetwork() {
+        // DROOLS-460
+        String str = "global java.util.List list;\n" +
+                     "\n" +
+                     "declare StatusEvent\n" +
+                     "@role(event)\n" +
+                     "timestamp : int\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R when\n" +
+                     "$i : Integer()\n" +
+                     "eval(true)\n" +
+                     "exists(\n" +
+                     "Integer(intValue > $i.intValue)\n" +
+                     "and eval(true)\n" +
+                     ")\n" +
+                     "then\n" +
+                     "list.add($i.intValue());\n" +
+                     "end";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        ks.newKieBuilder( kfs ).buildAll();
+        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(0);
+        ksession.fireAllRules();
+        ksession.insert(1);
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals(0, (int)list.get(0));
+    }
 }
