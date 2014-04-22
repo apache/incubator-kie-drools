@@ -125,6 +125,8 @@ public interface LeftTuple
      */
     LeftTuple getSubTuple(final int elements);
 
+    LeftTuple skipEmptyHandles();
+
     Object[] toObjectArray();
 
     LeftTuple getParent();

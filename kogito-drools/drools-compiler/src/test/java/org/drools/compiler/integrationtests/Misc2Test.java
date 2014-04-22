@@ -16,7 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import org.junit.Assert;
 import org.drools.compiler.Address;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
@@ -35,20 +34,21 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.RightTupleSets;
 import org.drools.core.conflict.SalienceConflictResolver;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.Rete;
-import org.drools.core.util.FileManager;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.Rete;
+import org.drools.core.util.FileManager;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -58,16 +58,23 @@ import org.kie.api.builder.Results;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.Position;
+import org.kie.api.definition.type.PropertyReactive;
+import org.kie.api.event.kiebase.DefaultKieBaseEventListener;
+import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.io.ResourceType;
+import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -79,17 +86,9 @@ import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.api.definition.type.Modifies;
-import org.kie.api.definition.type.PropertyReactive;
-import org.kie.api.event.kiebase.DefaultKieBaseEventListener;
-import org.kie.api.event.kiebase.KieBaseEventListener;
-import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
-import org.kie.api.marshalling.Marshaller;
-import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,7 +113,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Run all the tests with the ReteOO engine implementation
@@ -5625,5 +5623,43 @@ public class Misc2Test extends CommonTestMethodBase {
         public void setDescription(final String desc) {
             this.description = desc;
         }
+    }
+
+    @Test
+    public void testEvalInSubnetwork() {
+        // DROOLS-460
+        String str = "global java.util.List list;\n" +
+                     "\n" +
+                     "declare StatusEvent\n" +
+                     "@role(event)\n" +
+                     "timestamp : int\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R when\n" +
+                     "$i : Integer()\n" +
+                     "eval(true)\n" +
+                     "exists(\n" +
+                     "Integer(intValue > $i.intValue)\n" +
+                     "and eval(true)\n" +
+                     ")\n" +
+                     "then\n" +
+                     "list.add($i.intValue());\n" +
+                     "end";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        ks.newKieBuilder( kfs ).buildAll();
+        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(0);
+        ksession.fireAllRules();
+        ksession.insert(1);
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals(0, (int)list.get(0));
     }
 }

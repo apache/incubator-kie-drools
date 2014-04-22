@@ -1,6 +1,5 @@
 package org.drools.core.common;
 
-import org.drools.core.phreak.RightTupleEntry;
 import org.drools.core.phreak.TupleEntry;
 
 public class TupleEntryQueueImpl implements TupleEntryQueue {
@@ -11,11 +10,6 @@ public class TupleEntryQueueImpl implements TupleEntryQueue {
     private TupleEntry tail;
 
     public synchronized boolean add(TupleEntry entry) {
-/*
-if (entry.toString().contains("SynthEvent")) {
-new RuntimeException("" + size).printStackTrace();
-}
-*/
         if (head == null) {
             head = entry;
             tail = entry;
