@@ -93,7 +93,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                         statusMatched = true;
                         // next find out if the user can execute this doOperation
                         if (!isAllowed(command, task, user, groupIds)) {
-                            String errorMessage = "User '" + user + "' does not have permissions to execution operation '" + operation + "' on task id " + task.getId();
+                            String errorMessage = "User '" + user + "' does not have permissions to execute operation '" + operation + "' on task id " + task.getId();
 
                             throw new PermissionDeniedException(errorMessage);
                         }
@@ -112,7 +112,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
 
                         // next find out if the user can execute this doOperation
                         if (!isAllowed(command, task, user, groupIds)) {
-                            String errorMessage = "User '" + user + "' does not have permissions to execution operation '" + operation + "' on task id " + task.getId();
+                            String errorMessage = "User '" + user + "' does not have permissions to execute operation '" + operation + "' on task id " + task.getId();
                             throw new PermissionDeniedException(errorMessage);
                         }
 
@@ -124,7 +124,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
             }
         }
         if (!statusMatched) {
-            String errorMessage = "User '" + user + "' was unable to execution operation '" + operation + "' on task id " + task.getId() + " due to a no 'current status' match";
+            String errorMessage = "User '" + user + "' was unable to execute operation '" + operation + "' on task id " + task.getId() + " due to a no 'current status' match";
             throw new PermissionDeniedException(errorMessage);
         }
     }
