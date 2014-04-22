@@ -401,7 +401,7 @@
 
       <itemizedlist>
         <listitem>
-          <para><emphasis role="bold">Simple Java score calculation</emphasis>: implement a single Java method</para>
+          <para><emphasis role="bold">Easy Java score calculation</emphasis>: implement a single Java method</para>
         </listitem>
 
         <listitem>
@@ -414,7 +414,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>Every score calculation type can use any Score definition. For example, simple Java score calculation can
+      <para>Every score calculation type can use any Score definition. For example, easy Java score calculation can
       output a <literal>HardSoftScore</literal>.</para>
 
       <para>All score calculation types are Object Orientated and can reuse existing Java code.</para>
@@ -432,10 +432,10 @@
       </important>
     </section>
 
-    <section xml:id="simpleJavaScoreCalculation">
-      <title>Simple Java score calculation</title>
+    <section xml:id="easyJavaScoreCalculation">
+      <title>Easy Java score calculation</title>
 
-      <para>A simple way to implement your score calculation in Java.</para>
+      <para>An easy way to implement your score calculation in Java.</para>
 
       <itemizedlist>
         <listitem>
@@ -470,9 +470,9 @@
         </listitem>
       </itemizedlist>
 
-      <para>Just implement one method of the interface <literal>SimpleScoreCalculator</literal>:</para>
+      <para>Just implement one method of the interface <literal>EasyScoreCalculator</literal>:</para>
 
-      <programlisting language="java">public interface SimpleScoreCalculator&lt;Sol extends Solution&gt; {
+      <programlisting language="java">public interface EasyScoreCalculator&lt;Sol extends Solution&gt; {
 
     Score calculateScore(Sol solution);
    
@@ -480,7 +480,7 @@
 
       <para>For example in n queens:</para>
 
-      <programlisting language="java">public class NQueensSimpleScoreCalculator implements SimpleScoreCalculator&lt;NQueens&gt; {
+      <programlisting language="java">public class NQueensEasyScoreCalculator implements EasyScoreCalculator&lt;NQueens&gt; {
 
     public SimpleScore calculateScore(NQueens nQueens) {
         int n = nQueens.getN();
@@ -513,13 +513,13 @@
 
       <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
-    &lt;simpleScoreCalculatorClass&gt;org.optaplanner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
+    &lt;easyScoreCalculatorClass&gt;org.optaplanner.examples.nqueens.solver.score.NQueensEasyScoreCalculator&lt;/easyScoreCalculatorClass&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
-      <para>Alternatively, build a <literal>SimpleScoreCalculator</literal> instance at runtime and set it with the
+      <para>Alternatively, build a <literal>EasyScoreCalculator</literal> instance at runtime and set it with the
       programmatic API:</para>
 
-      <programlisting language="java">    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig.setSimpleScoreCalculator(simpleScoreCalculator);</programlisting>
+      <programlisting language="java">    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig.setEasyScoreCalculator(easyScoreCalculator);</programlisting>
     </section>
 
     <section xml:id="incrementalJavaScoreCalculation">
@@ -1084,7 +1084,7 @@ end</programlisting>
       verify that your score calculator implements your score constraints as your business actually desires.</para>
 
       <para>A piece of incremental score calculator code can be difficult to write and to review. Assert its correctness
-      by using a different implementation (for example a <literal>SimpleScoreCalculator</literal>) to do the assertions
+      by using a different implementation (for example a <literal>EasyScoreCalculator</literal>) to do the assertions
       triggered by the <literal>environmentMode</literal>. Just configure the different implementation as a
       <literal>assertionScoreDirectorFactory</literal>:</para>
 
@@ -1094,12 +1094,12 @@ end</programlisting>
     &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
     &lt;scoreDrl&gt;org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
     &lt;assertionScoreDirectorFactory&gt;
-      &lt;simpleScoreCalculatorClass&gt;org.optaplanner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
+      &lt;easyScoreCalculatorClass&gt;org.optaplanner.examples.nqueens.solver.score.NQueensEasyScoreCalculator&lt;/easyScoreCalculatorClass&gt;
     &lt;/assertionScoreDirectorFactory&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
       <para>This way, the <literal>scoreDrl</literal> will be validated by the
-      <literal>SimpleScoreCalculator</literal>.</para>
+      <literal>EasyScoreCalculator</literal>.</para>
     </section>
   </section>
 
@@ -1121,7 +1121,7 @@ end</programlisting>
       second</emphasis>. This is a good measurement of Score calculation performance, despite that it is affected by non
       score calculation execution time. It depends on the problem scale of the problem dataset. Normally, even for high
       scale problems, it is higher than <literal>1000</literal>, except when you're using
-      <literal>SimpleScoreCalculator</literal>.</para>
+      <literal>EasyScoreCalculator</literal>.</para>
 
       <important>
         <para>When improving your score calculation, focus on maximizing the average calculation count per second,
@@ -1167,7 +1167,7 @@ end</programlisting>
       <title>Avoid calling remote services during score calculation</title>
 
       <para>Do not call remote services in your score calculation (except if you're bridging
-      <literal>SimpleScoreCalculator</literal> to a legacy system). The network latency will kill your score calculation
+      <literal>EasyScoreCalculator</literal> to a legacy system). The network latency will kill your score calculation
       performance. Cache the results of those remote services if possible.</para>
 
       <para>If some parts of a constraint can be calculated once, when the <literal>Solver</literal> starts, and never

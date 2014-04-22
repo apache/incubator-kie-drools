@@ -17,9 +17,6 @@
 package org.optaplanner.core.config.score.director;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +34,6 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.io.KieResources;
 import org.kie.api.runtime.KieContainer;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.config.util.KeyAsElementMapConverter;
@@ -56,12 +52,11 @@ import org.optaplanner.core.impl.score.buildin.simplelong.SimpleLongScoreDefinit
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
-import org.optaplanner.core.impl.score.director.simple.SimpleScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
+import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrendLevel;
 import org.slf4j.Logger;
@@ -77,7 +72,7 @@ public class ScoreDirectorFactoryConfig {
     protected Integer bendableHardLevelCount = null;
     protected Integer bendableSoftLevelCount = null;
 
-    protected Class<? extends SimpleScoreCalculator> simpleScoreCalculatorClass = null;
+    protected Class<? extends EasyScoreCalculator> easyScoreCalculatorClass = null;
 
     protected Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass = null;
 
@@ -127,12 +122,12 @@ public class ScoreDirectorFactoryConfig {
         this.bendableSoftLevelCount = bendableSoftLevelCount;
     }
 
-    public Class<? extends SimpleScoreCalculator> getSimpleScoreCalculatorClass() {
-        return simpleScoreCalculatorClass;
+    public Class<? extends EasyScoreCalculator> getEasyScoreCalculatorClass() {
+        return easyScoreCalculatorClass;
     }
 
-    public void setSimpleScoreCalculatorClass(Class<? extends SimpleScoreCalculator> simpleScoreCalculatorClass) {
-        this.simpleScoreCalculatorClass = simpleScoreCalculatorClass;
+    public void setEasyScoreCalculatorClass(Class<? extends EasyScoreCalculator> easyScoreCalculatorClass) {
+        this.easyScoreCalculatorClass = easyScoreCalculatorClass;
     }
 
     public Class<? extends IncrementalScoreCalculator> getIncrementalScoreCalculatorClass() {
@@ -205,7 +200,7 @@ public class ScoreDirectorFactoryConfig {
             SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition) {
         AbstractScoreDirectorFactory scoreDirectorFactory;
         // TODO this should fail-fast if multiple scoreDirectorFactory's are configured or if none are configured
-        scoreDirectorFactory = buildSimpleScoreDirectorFactory();
+        scoreDirectorFactory = buildEasyScoreDirectorFactory();
         if (scoreDirectorFactory == null) {
             scoreDirectorFactory = buildIncrementalScoreDirectorFactory();
         }
@@ -295,11 +290,11 @@ public class ScoreDirectorFactoryConfig {
         }
     }
 
-    private AbstractScoreDirectorFactory buildSimpleScoreDirectorFactory() {
-        if (simpleScoreCalculatorClass != null) {
-            SimpleScoreCalculator simpleScoreCalculator = ConfigUtils.newInstance(this,
-                    "simpleScoreCalculatorClass", simpleScoreCalculatorClass);
-            return new SimpleScoreDirectorFactory(simpleScoreCalculator);
+    private AbstractScoreDirectorFactory buildEasyScoreDirectorFactory() {
+        if (easyScoreCalculatorClass != null) {
+            EasyScoreCalculator easyScoreCalculator = ConfigUtils.newInstance(this,
+                    "easyScoreCalculatorClass", easyScoreCalculatorClass);
+            return new EasyScoreDirectorFactory(easyScoreCalculator);
         } else {
             return null;
         }
@@ -404,8 +399,8 @@ public class ScoreDirectorFactoryConfig {
             bendableHardLevelCount = inheritedConfig.getBendableHardLevelCount();
             bendableSoftLevelCount = inheritedConfig.getBendableSoftLevelCount();
         }
-        simpleScoreCalculatorClass = ConfigUtils.inheritOverwritableProperty(
-                simpleScoreCalculatorClass, inheritedConfig.getSimpleScoreCalculatorClass());
+        easyScoreCalculatorClass = ConfigUtils.inheritOverwritableProperty(
+                easyScoreCalculatorClass, inheritedConfig.getEasyScoreCalculatorClass());
         incrementalScoreCalculatorClass = ConfigUtils.inheritOverwritableProperty(
                 incrementalScoreCalculatorClass, inheritedConfig.getIncrementalScoreCalculatorClass());
         kieBase = ConfigUtils.inheritOverwritableProperty(

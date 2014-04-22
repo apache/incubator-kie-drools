@@ -17,16 +17,16 @@
 package org.optaplanner.examples.cloudbalancing.solver.score;
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
+import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 
-public class CloudBalancingSimpleScoreCalculator implements SimpleScoreCalculator<CloudBalance> {
+public class CloudBalancingEasyScoreCalculator implements EasyScoreCalculator<CloudBalance> {
 
     /**
      * A very simple implementation. The double loop can easily be removed by using Maps as shown in
-     * {@link CloudBalancingMapBasedSimpleScoreCalculator#calculateScore(CloudBalance)}.
+     * {@link CloudBalancingMapBasedEasyScoreCalculator#calculateScore(CloudBalance)}.
      */
     public HardSoftScore calculateScore(CloudBalance cloudBalance) {
         int hardScore = 0;

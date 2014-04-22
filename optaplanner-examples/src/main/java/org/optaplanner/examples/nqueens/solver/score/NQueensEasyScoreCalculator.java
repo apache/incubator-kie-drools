@@ -19,11 +19,11 @@ package org.optaplanner.examples.nqueens.solver.score;
 import java.util.List;
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
+import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 
-public class NQueensSimpleScoreCalculator implements SimpleScoreCalculator<NQueens> {
+public class NQueensEasyScoreCalculator implements EasyScoreCalculator<NQueens> {
 
     public SimpleScore calculateScore(NQueens nQueens) {
         int n = nQueens.getN();

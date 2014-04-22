@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.director.simple;
+package org.optaplanner.core.impl.score.director.easy;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
@@ -22,18 +22,18 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
 
 /**
- * Simple java implementation of {@link ScoreDirector}, which recalculates the {@link Score}
+ * Easy java implementation of {@link ScoreDirector}, which recalculates the {@link Score}
  * of the {@link Solution} workingSolution every time. This is non-incremental calculation, which is slow.
  * @see ScoreDirector
  */
-public class SimpleScoreDirector extends AbstractScoreDirector<SimpleScoreDirectorFactory> {
+public class EasyScoreDirector extends AbstractScoreDirector<EasyScoreDirectorFactory> {
 
-    private final SimpleScoreCalculator simpleScoreCalculator;
+    private final EasyScoreCalculator easyScoreCalculator;
 
-    public SimpleScoreDirector(SimpleScoreDirectorFactory scoreDirectorFactory,
-            SimpleScoreCalculator simpleScoreCalculator) {
+    public EasyScoreDirector(EasyScoreDirectorFactory scoreDirectorFactory,
+            EasyScoreCalculator easyScoreCalculator) {
         super(scoreDirectorFactory);
-        this.simpleScoreCalculator = simpleScoreCalculator;
+        this.easyScoreCalculator = easyScoreCalculator;
     }
 
     // ************************************************************************
@@ -41,7 +41,7 @@ public class SimpleScoreDirector extends AbstractScoreDirector<SimpleScoreDirect
     // ************************************************************************
 
     public Score calculateScore() {
-        Score score = simpleScoreCalculator.calculateScore(workingSolution);
+        Score score = easyScoreCalculator.calculateScore(workingSolution);
         setCalculatedScore(score);
         return score;
     }

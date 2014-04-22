@@ -20,11 +20,11 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
+import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.tsp.persistence.TspDao;
-import org.optaplanner.examples.tsp.solver.score.TspSimpleScoreCalculator;
+import org.optaplanner.examples.tsp.solver.score.TspEasyScoreCalculator;
 
 public class TspSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest {
 
@@ -43,8 +43,8 @@ public class TspSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest {
     }
 
     @Override
-    protected Class<? extends SimpleScoreCalculator> overwritingSimpleScoreCalculatorClass() {
-        return TspSimpleScoreCalculator.class;
+    protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass() {
+        return TspEasyScoreCalculator.class;
     }
 
     @Override

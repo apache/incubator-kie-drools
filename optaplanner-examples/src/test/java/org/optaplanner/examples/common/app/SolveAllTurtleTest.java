@@ -28,7 +28,7 @@ import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
+import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.solution.Solution;
 
 import static org.junit.Assume.*;
@@ -72,10 +72,10 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
         SolverConfig solverConfig = solverFactory.getSolverConfig();
         solverConfig.getTerminationConfig().setMinutesSpentLimit(maximumMinutesSpent);
         solverConfig.setEnvironmentMode(environmentMode);
-        Class<? extends SimpleScoreCalculator> simpleScoreCalculatorClass = overwritingSimpleScoreCalculatorClass();
-        if (simpleScoreCalculatorClass != null && environmentMode.isAsserted()) {
+        Class<? extends EasyScoreCalculator> easyScoreCalculatorClass = overwritingEasyScoreCalculatorClass();
+        if (easyScoreCalculatorClass != null && environmentMode.isAsserted()) {
             ScoreDirectorFactoryConfig assertionScoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
-            assertionScoreDirectorFactoryConfig.setSimpleScoreCalculatorClass(simpleScoreCalculatorClass);
+            assertionScoreDirectorFactoryConfig.setEasyScoreCalculatorClass(easyScoreCalculatorClass);
             solverConfig.getScoreDirectorFactoryConfig().setAssertionScoreDirectorFactory(
                     assertionScoreDirectorFactoryConfig);
         }
@@ -89,7 +89,7 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
         return bestSolution;
     }
 
-    protected Class<? extends SimpleScoreCalculator>  overwritingSimpleScoreCalculatorClass()  {
+    protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass()  {
         return null;
     }
 

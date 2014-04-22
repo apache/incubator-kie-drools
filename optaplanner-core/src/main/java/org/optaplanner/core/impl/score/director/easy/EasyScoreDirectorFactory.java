@@ -14,34 +14,34 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.director.simple;
+package org.optaplanner.core.impl.score.director.easy;
 
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 
 /**
- * Simple implementation of {@link ScoreDirectorFactory}.
- * @see SimpleScoreDirector
+ * Easy implementation of {@link ScoreDirectorFactory}.
+ * @see EasyScoreDirector
  * @see ScoreDirectorFactory
  */
-public class SimpleScoreDirectorFactory extends AbstractScoreDirectorFactory {
+public class EasyScoreDirectorFactory extends AbstractScoreDirectorFactory {
 
-    private final SimpleScoreCalculator simpleScoreCalculator;
+    private final EasyScoreCalculator easyScoreCalculator;
 
-    public SimpleScoreDirectorFactory(SimpleScoreCalculator simpleScoreCalculator) {
-        this.simpleScoreCalculator = simpleScoreCalculator;
+    public EasyScoreDirectorFactory(EasyScoreCalculator easyScoreCalculator) {
+        this.easyScoreCalculator = easyScoreCalculator;
     }
 
-    public SimpleScoreCalculator getSimpleScoreCalculator() {
-        return simpleScoreCalculator;
+    public EasyScoreCalculator getEasyScoreCalculator() {
+        return easyScoreCalculator;
     }
 
     // ************************************************************************
     // Complex methods
     // ************************************************************************
 
-    public SimpleScoreDirector buildScoreDirector() {
-        return new SimpleScoreDirector(this, simpleScoreCalculator);
+    public EasyScoreDirector buildScoreDirector() {
+        return new EasyScoreDirector(this, easyScoreCalculator);
     }
 
 }

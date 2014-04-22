@@ -20,14 +20,11 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
+import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.examples.common.app.ImportDirSolveAllTurtleTest;
-import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingDao;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporter;
-import org.optaplanner.examples.vehiclerouting.solver.score.VehicleRoutingSimpleScoreCalculator;
+import org.optaplanner.examples.vehiclerouting.solver.score.VehicleRoutingEasyScoreCalculator;
 
 public class VehicleRoutingSolveAllTurtleTest extends ImportDirSolveAllTurtleTest {
 
@@ -51,8 +48,8 @@ public class VehicleRoutingSolveAllTurtleTest extends ImportDirSolveAllTurtleTes
     }
 
     @Override
-    protected Class<? extends SimpleScoreCalculator> overwritingSimpleScoreCalculatorClass() {
-        return VehicleRoutingSimpleScoreCalculator.class;
+    protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass() {
+        return VehicleRoutingEasyScoreCalculator.class;
     }
 
 }

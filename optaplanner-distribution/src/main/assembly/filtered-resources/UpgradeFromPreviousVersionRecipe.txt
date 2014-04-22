@@ -4157,3 +4157,23 @@ After in *.java:
     ... = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(
             "org/optaplanner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfigTemplate.xml.ftl");
 
+[MAJOR] The interface SimpleScoreCalculator has been renamed to EasyScoreCalculator
+to avoid confusion with SimpleScore and SimpleScore: it can return other Score types too.
+The package name has changed too.
+Before in *.java:
+    import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
+
+    public class CloudBalancingEasyScoreCalculator implements SimpleScoreCalculator<CloudBalance> {
+        ...
+    }
+After in *.java:
+    import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
+
+    public class CloudBalancingEasyScoreCalculator implements EasyScoreCalculator<CloudBalance> {
+        ...
+    }
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <simpleScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingEasyScoreCalculator<simpleScoreCalculatorClass>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingEasyScoreCalculator<easyScoreCalculatorClass>
+

@@ -6,7 +6,7 @@
 
   <scoreDirectorFactory>
     <scoreDefinitionType>SIMPLE_LONG</scoreDefinitionType>
-    <!--<simpleScoreCalculatorClass>org.optaplanner.examples.tsp.solver.score.TspSimpleScoreCalculator</simpleScoreCalculatorClass>-->
+    <!--<easyScoreCalculatorClass>org.optaplanner.examples.tsp.solver.score.TspEasyScoreCalculator</easyScoreCalculatorClass>-->
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.tsp.solver.score.TspIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <scoreDrl>org/optaplanner/examples/tsp/solver/tspScoreRules.drl</scoreDrl>
     <!--<assertionScoreDirectorFactory>-->

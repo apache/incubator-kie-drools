@@ -17,12 +17,12 @@
 package org.optaplanner.core.impl.score.director.incremental;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
+import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.solution.Solution;
 
 /**
  * Used for incremental java {@link Score} calculation.
- * This is much faster than {@link SimpleScoreCalculator} but requires much more code to implement too.
+ * This is much faster than {@link EasyScoreCalculator} but requires much more code to implement too.
  * <p/>
  * Any implementation is naturally stateful.
  * @param <Sol>

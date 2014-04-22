@@ -256,7 +256,7 @@
      gridtolerance="10"
      inkscape:window-width="1680"
      inkscape:window-height="991"
-     inkscape:window-x="0"
+     inkscape:window-x="1680"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
      inkscape:snap-grids="true"
@@ -667,7 +667,7 @@
            x="187.33453"
            y="145.23555"
            style="font-size:13.27781487px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-         id="flowPara3455">SimpleScoreCalculator</flowPara></flowRoot>    <rect
+         id="flowPara3455">EasyScoreCalculator</flowPara></flowRoot>    <rect
        ry="5"
        rx="4.9999986"
        y="892.86218"

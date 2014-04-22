@@ -7,11 +7,11 @@
 
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
-    <!--<simpleScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.solver.score.VehicleRoutingSimpleScoreCalculator</simpleScoreCalculatorClass>-->
+    <!--<easyScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.solver.score.VehicleRoutingEasyScoreCalculator</easyScoreCalculatorClass>-->
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.solver.score.VehicleRoutingIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <scoreDrl>org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingScoreRules.drl</scoreDrl>
     <!--<assertionScoreDirectorFactory>-->
-      <!--<simpleScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.solver.score.VehicleRoutingSimpleScoreCalculator</simpleScoreCalculatorClass>-->
+      <!--<easyScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.solver.score.VehicleRoutingEasyScoreCalculator</easyScoreCalculatorClass>-->
     <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 

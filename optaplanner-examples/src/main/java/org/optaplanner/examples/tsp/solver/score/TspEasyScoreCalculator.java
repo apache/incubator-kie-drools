@@ -21,13 +21,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
-import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
+import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.domain.Visit;
 
-public class TspSimpleScoreCalculator implements SimpleScoreCalculator<TravelingSalesmanTour> {
+public class TspEasyScoreCalculator implements EasyScoreCalculator<TravelingSalesmanTour> {
 
     public SimpleLongScore calculateScore(TravelingSalesmanTour tour) {
         List<Visit> visitList = tour.getVisitList();

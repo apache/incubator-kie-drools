@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.director.simple;
+package org.optaplanner.core.impl.score.director.easy;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.solution.Solution;
 
 /**
- * Used for simple java {@link Score} calculation. This is non-incremental calculation, which is slow.
+ * Used for easy java {@link Score} calculation. This is non-incremental calculation, which is slow.
  * <p/>
- * Any implementation must be stateless.
+ * An implementation must be stateless.
  * @param <Sol>
- * @see SimpleScoreDirector
+ * @see EasyScoreDirector
  */
-public interface SimpleScoreCalculator<Sol extends Solution> {
+public interface EasyScoreCalculator<Sol extends Solution> {
 
     /**
      * @param solution never null
