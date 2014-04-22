@@ -16,14 +16,14 @@
 
 package org.drools.core.common;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.BetaNodeFieldConstraint;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 /**
  * Checks if one tuple is the start subtuple of other tuple.
@@ -96,7 +96,7 @@ public class TupleStartEqualsConstraint
 
     public boolean isAllowedCachedRight(final LeftTuple tuple,
                                         final ContextEntry context) {
-        return tuple.equals( ((TupleStartEqualsConstraintContextEntry) context).right.getSubTuple( tuple.size() ) );
+        return tuple.skipEmptyHandles().equals( ((TupleStartEqualsConstraintContextEntry) context).right.getSubTuple( tuple.size() ) );
     }
 
     public String toString() {
