@@ -570,62 +570,48 @@ public class BenchmarkAggregatorFrame extends JFrame {
         }
 
         private JPanel createButtonPanel() {
+            final Desktop desktop = Desktop.getDesktop();
             JPanel buttonPanel = new JPanel(new GridLayout(1, 3, 10, 10));
-            JButton openBrowserButton = new JButton("Show in browser");
-            openBrowserButton.addActionListener(new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    openReportFile(reportFile.getAbsoluteFile(), Desktop.Action.BROWSE);
-                    finishDialog();
-                }
-            });
-            buttonPanel.add(openBrowserButton);
 
-            JButton openFileButton = new JButton("Show in files");
-            openFileButton.addActionListener(new AbstractAction() {
+            AbstractAction openBrowserAction = new AbstractAction("Show in browser") {
                 @Override
-                public void actionPerformed(ActionEvent e) {
-                    openReportFile(reportFile.getParentFile(), Desktop.Action.OPEN);
+                public void actionPerformed(ActionEvent event) {
+                    try {
+                        desktop.browse(reportFile.getAbsoluteFile().toURI());
+                    } catch (IOException e) {
+                        throw new IllegalStateException("Failed showing reportFile (" + reportFile
+                                + ") in browser.", e);
+                    }
                     finishDialog();
                 }
-            });
-            buttonPanel.add(openFileButton);
+            };
+            openBrowserAction.setEnabled(desktop.isSupported(Desktop.Action.BROWSE));
+            buttonPanel.add(new JButton(openBrowserAction));
 
-            JButton closeButton = new JButton("Ok");
-            closeButton.addActionListener(new AbstractAction() {
+            AbstractAction openFileAction = new AbstractAction("Show in files") {
+                @Override
+                public void actionPerformed(ActionEvent event) {
+                    try {
+                        desktop.open(reportFile.getParentFile());
+                    } catch (IOException e) {
+                        throw new IllegalStateException("Failed showing reportFile (" + reportFile
+                                + ") in file explorer.", e);
+                    }
+                    finishDialog();
+                }
+            };
+            openBrowserAction.setEnabled(desktop.isSupported(Desktop.Action.OPEN));
+            buttonPanel.add(new JButton(openFileAction));
+
+            AbstractAction closeAction = new AbstractAction("Ok") {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     finishDialog();
                 }
-            });
-            buttonPanel.add(closeButton);
+            };
+            buttonPanel.add(new JButton(closeAction));
+
             return buttonPanel;
-        }
-
-        private void openReportFile(File reportFile, Desktop.Action action) {
-            Desktop desktop = Desktop.getDesktop();
-            switch (action) {
-                case OPEN:
-                    if (desktop.isSupported(Desktop.Action.OPEN)) {
-                        try {
-                            desktop.open(reportFile);
-                        } catch (IOException e) {
-                            throw new IllegalStateException("Failed showing reportFile (" + reportFile
-                                    + ") in file explorer.", e);
-                        }
-                    }
-                    break;
-                case BROWSE:
-                    if (desktop.isSupported(Desktop.Action.BROWSE)) {
-                        try {
-                            desktop.browse(reportFile.toURI());
-                        } catch (IOException e) {
-                            throw new IllegalStateException("Failed showing reportFile (" + reportFile
-                                    + ") in browser.", e);
-                        }
-                    }
-                    break;
-            }
         }
 
         private void finishDialog() {
