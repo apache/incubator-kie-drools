@@ -24,7 +24,6 @@ import org.optaplanner.core.impl.solution.Solution;
  */
 public interface FeasibilityScore<S extends FeasibilityScore> extends Score<S> {
 
-
     /**
      * A {@link Solution} is feasible if it has no broken hard constraints.
      * @return true if the hard score(s) is 0 or higher

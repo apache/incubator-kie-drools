@@ -25,6 +25,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.score.definition.FeasibilityScoreDefinition;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.termination.AbstractCompositeTermination;
 import org.optaplanner.core.impl.solver.termination.AndCompositeTermination;
 import org.optaplanner.core.impl.solver.termination.BestScoreTermination;
@@ -53,11 +54,10 @@ public class TerminationConfig implements Cloneable {
     private Long unimprovedHoursSpentLimit = null;
 
     private String bestScoreLimit = null;
+    private Boolean bestScoreFeasible = null;
 
     private Integer stepCountLimit = null;
     private Integer unimprovedStepCountLimit = null;
-
-    private Boolean bestScoreFeasible = null;
 
     @XStreamImplicit(itemFieldName = "termination")
     private List<TerminationConfig> terminationConfigList = null;
@@ -150,6 +150,14 @@ public class TerminationConfig implements Cloneable {
         this.bestScoreLimit = bestScoreLimit;
     }
 
+    public Boolean getBestScoreFeasible() {
+        return bestScoreFeasible;
+    }
+
+    public void setBestScoreFeasible(Boolean bestScoreFeasible) {
+        this.bestScoreFeasible = bestScoreFeasible;
+    }
+
     public Integer getStepCountLimit() {
         return stepCountLimit;
     }
@@ -164,14 +172,6 @@ public class TerminationConfig implements Cloneable {
 
     public void setUnimprovedStepCountLimit(Integer unimprovedStepCountLimit) {
         this.unimprovedStepCountLimit = unimprovedStepCountLimit;
-    }
-
-    public Boolean getBestScoreFeasible() {
-        return bestScoreFeasible;
-    }
-
-    public void setBestScoreFeasible(Boolean bestScoreFeasible) {
-        this.bestScoreFeasible = bestScoreFeasible;
     }
 
     public List<TerminationConfig> getTerminationConfigList() {
@@ -216,21 +216,25 @@ public class TerminationConfig implements Cloneable {
             Score bestScoreLimit_ = configPolicy.getScoreDefinition().parseScore(bestScoreLimit);
             terminationList.add(new BestScoreTermination(bestScoreLimit_));
         }
+        if (bestScoreFeasible != null) {
+            ScoreDefinition scoreDefinition = configPolicy.getScoreDefinition();
+            if (!FeasibilityScoreDefinition.class.isInstance(scoreDefinition)) {
+                throw new IllegalStateException("The termination bestScoreFeasible (" + bestScoreFeasible
+                        + ") is not compatible with a scoreDefinitionClass (" + scoreDefinition.getClass()
+                        + ") which does not implement the interface "
+                        + FeasibilityScoreDefinition.class.getSimpleName() + ".");
+            }
+            if (!bestScoreFeasible) {
+                throw new IllegalArgumentException("The termination bestScoreFeasible (" + bestScoreFeasible
+                        + ") cannot be false.");
+            }
+            terminationList.add(new BestScoreFeasibleTermination());
+        }
         if (stepCountLimit != null) {
             terminationList.add(new StepCountTermination(stepCountLimit));
         }
         if (unimprovedStepCountLimit != null) {
             terminationList.add(new UnimprovedStepCountTermination(unimprovedStepCountLimit));
-        }
-        if (bestScoreFeasible != null) {
-            Class scoreDefinitionClass = configPolicy.getScoreDefinition().getClass();
-            if (!FeasibilityScoreDefinition.class.isAssignableFrom(scoreDefinitionClass)) {
-                throw new IllegalStateException("BestScoreFeasible termination is not compatible with supplied score definition class."
-                        + " Expected (" + FeasibilityScoreDefinition.class.getName() + "), was (" + scoreDefinitionClass.getName() + ").");
-            }
-            if (bestScoreFeasible) {
-                terminationList.add(new BestScoreFeasibleTermination());
-            }
         }
         if (!ConfigUtils.isEmptyCollection(terminationConfigList)) {
             for (TerminationConfig terminationConfig : terminationConfigList) {
@@ -333,12 +337,12 @@ public class TerminationConfig implements Cloneable {
                 inheritedConfig.getUnimprovedHoursSpentLimit());
         bestScoreLimit = ConfigUtils.inheritOverwritableProperty(bestScoreLimit,
                 inheritedConfig.getBestScoreLimit());
+        bestScoreFeasible = ConfigUtils.inheritOverwritableProperty(bestScoreFeasible,
+                inheritedConfig.getBestScoreFeasible());
         stepCountLimit = ConfigUtils.inheritOverwritableProperty(stepCountLimit,
                 inheritedConfig.getStepCountLimit());
         unimprovedStepCountLimit = ConfigUtils.inheritOverwritableProperty(unimprovedStepCountLimit,
                 inheritedConfig.getUnimprovedStepCountLimit());
-        bestScoreFeasible = ConfigUtils.inheritOverwritableProperty(bestScoreFeasible,
-                inheritedConfig.getBestScoreFeasible());
         terminationConfigList = ConfigUtils.inheritMergeableListProperty(
                 terminationConfigList, inheritedConfig.getTerminationConfigList());
     }

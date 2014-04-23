@@ -753,7 +753,22 @@
     &lt;bestScoreLimit&gt;0hard/-5000soft&lt;/bestScoreLimit&gt;
   &lt;/termination&gt;</programlisting>
 
-      <para>You can use this <literal>Termination</literal> to terminate once it reaches a feasible solution.</para>
+      <para>To terminate once a feasible solution has been reached, this <literal>Termination</literal> isn't practicle
+      because it requires a <literal>bestScoreLimit</literal> such as <literal>0hard/-2147483648soft</literal>. Instead,
+      use the next termination.</para>
+    </section>
+
+    <section xml:id="bestScoreFeasibleTermination">
+      <title>BestScoreFeasibleTermination</title>
+
+      <para>Terminates when a certain score is feasible. Requires that the <literal>Score</literal> implementation
+      implements <literal>FeasibilityScore</literal>.</para>
+
+      <programlisting language="xml">  &lt;termination&gt;
+    &lt;bestScoreFeasible&gt;true&lt;/bestScoreFeasible&gt;
+  &lt;/termination&gt;</programlisting>
+
+      <para>This <literal>Termination</literal> is usually combined with other terminations.</para>
     </section>
 
     <section xml:id="stepCountTermination">
