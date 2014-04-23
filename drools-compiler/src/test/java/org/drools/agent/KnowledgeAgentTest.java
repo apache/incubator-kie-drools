@@ -1,16 +1,7 @@
 package org.drools.agent;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.net.URL;
-import java.util.*;
-
 import org.codehaus.janino.Java;
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.StockTick;
 import org.drools.agent.impl.KnowledgeAgentImpl;
@@ -22,36 +13,43 @@ import org.drools.command.runtime.rule.InsertObjectCommand;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
-import org.drools.conf.EventProcessingOption;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgeDefinition;
 import org.drools.definition.KnowledgePackage;
-import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.definitions.rule.impl.RuleImpl;
+import org.drools.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
 import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
+import org.drools.event.rule.DefaultKnowledgeAgentEventListener;
 import org.drools.io.Resource;
-import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ChangeSetImpl;
 import org.drools.io.impl.ReaderResource;
 import org.drools.io.impl.UrlResource;
-import org.drools.io.internal.InternalResource;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
-
 import org.hamcrest.CoreMatchers;
-import org.hamcrest.core.Is;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -156,7 +154,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeAgent kagent = this.createKAgent( kbase );
 
-        applyChangeSet( kagent, ResourceFactory.newUrlResource( fxm2.toURI().toURL() ) );
+        applyChangeSet(kagent, ResourceFactory.newUrlResource(fxm2.toURI().toURL()));
 
         StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
@@ -365,20 +363,20 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        KnowledgeAgent kagent = this.createKAgent( kbase, false );
+        KnowledgeAgent kagent = this.createKAgent(kbase, false);
 
         applyChangeSet( kagent, ResourceFactory.newByteArrayResource( xml.getBytes() ) );
 
         StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
-        ksession.setGlobal( "list",
-                            list );
+        ksession.setGlobal("list",
+                           list);
         ksession.fireAllRules();
         ksession.dispose();
 
-        assertEquals( 2,
-                      list.size() );
-        assertTrue( list.contains( "rule1" ) );
+        assertEquals(2,
+                     list.size());
+        assertTrue(list.contains("rule1"));
         assertTrue( list.contains( "rule2" ) );
 
         list.clear();
@@ -392,12 +390,12 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         xml += "    </remove> ";
         xml += "</change-set>";
 
-        applyChangeSet( kagent, xml );
+        applyChangeSet(kagent, xml);
 
         ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
         list = new ArrayList<String>();
-        ksession.setGlobal( "list",
-                            list );
+        ksession.setGlobal("list",
+                           list);
         ksession.fireAllRules();
         ksession.dispose();
 
@@ -464,11 +462,11 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
     @Test
     public void testModifyFile() throws IOException,
                                 InterruptedException {
-        File f1 = fileManager.write( "rule1.drl",
-                                     createDefaultRule( "rule1" ) );
+        File f1 = fileManager.write("rule1.drl",
+                                    createDefaultRule("rule1"));
 
-        File f2 = fileManager.write( "rule2.drl",
-                                     createDefaultRule( "rule2" ) );
+        File f2 = fileManager.write("rule2.drl",
+                                    createDefaultRule("rule2"));
 
         String xml = "";
         xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
@@ -499,19 +497,19 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         assertEquals( 2,
                       list.size() );
         assertTrue( list.contains( "rule1" ) );
-        assertTrue( list.contains( "rule2" ) );
+        assertTrue(list.contains("rule2"));
 
         list.clear();
 
-        fileManager.write( "rule1.drl",
-                           createDefaultRule( "rule3" ) );
+        fileManager.write("rule1.drl",
+                          createDefaultRule("rule3"));
 
-        scan( kagent );
+        scan(kagent);
 
         ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
         list = new ArrayList<String>();
-        ksession.setGlobal( "list",
-                            list );
+        ksession.setGlobal("list",
+                           list);
         ksession.fireAllRules();
         ksession.dispose();
 
@@ -543,9 +541,9 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
                + f1.getParentFile().toURI().toURL() + "' type='DRL' />";
         xml += "    </add> ";
         xml += "</change-set>";
-        File fxml = fileManager.write( "changeset",
-                                       "changeset.xml",
-                                       xml );
+        File fxml = fileManager.write("changeset",
+                                      "changeset.xml",
+                                      xml);
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
@@ -555,33 +553,33 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
-        ksession.setGlobal( "list",
-                            list );
+        ksession.setGlobal("list",
+                           list);
         ksession.fireAllRules();
         ksession.dispose();
 
-        assertEquals( 2,
-                      list.size() );
+        assertEquals(2,
+                     list.size());
         assertTrue( list.contains( "rule1" ) );
-        assertTrue( list.contains( "rule2" ) );
+        assertTrue(list.contains("rule2"));
 
         list.clear();
 
-        fileManager.write( "rule3.drl",
-                           createDefaultRule( "rule3" ) );
+        fileManager.write("rule3.drl",
+                          createDefaultRule("rule3"));
         fileManager.deleteFile( f1 );
 
         scan( kagent );
 
         ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
         list = new ArrayList<String>();
-        ksession.setGlobal( "list",
-                            list );
+        ksession.setGlobal("list",
+                           list);
         ksession.fireAllRules();
         ksession.dispose();
 
-        assertEquals( 2,
-                      list.size() );
+        assertEquals(2,
+                     list.size());
         assertTrue( list.contains( "rule2" ) );
         assertTrue( list.contains( "rule3" ) );
 
@@ -612,9 +610,9 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
                + "/test' type='DRL' />";
         xml += "    </add> ";
         xml += "</change-set>";
-        File fxml = fileManager.write( "changeset",
-                                       "changeset.xml",
-                                       xml );
+        File fxml = fileManager.write("changeset",
+                                      "changeset.xml",
+                                      xml);
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         KnowledgeAgent kagent = this.createKAgent( kbase );
@@ -623,21 +621,21 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
-        ksession.setGlobal( "list",
-                            list );
+        ksession.setGlobal("list",
+                           list);
         ksession.fireAllRules();
         ksession.dispose();
 
-        assertEquals( 2,
-                      list.size() );
+        assertEquals(2,
+                     list.size());
         assertTrue( list.contains( "rule1" ) );
-        assertTrue( list.contains( "rule2" ) );
+        assertTrue(list.contains("rule2"));
 
         list.clear();
 
-        fileManager.write( "test",
-                           "rule1.drl",
-                           createDefaultRule( "rule3" ) );
+        fileManager.write("test",
+                          "rule1.drl",
+                          createDefaultRule("rule3"));
 
         scan( kagent );
 
@@ -1067,4 +1065,150 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         UrlResource.CACHE_DIR = null; // make sure subsequent tests will not be affected
     }
+
+    @Test
+    public void testServerRestartWithCache() throws Exception {
+        // BZ1081848 / BZ1027221
+        File cacheDir = new File("target/test-tmp/cache");
+        cacheDir.mkdirs();
+        UrlResource.CACHE_DIR = cacheDir;
+
+        String rule1 = this.createDefaultRule( "rule1" );
+
+        String rule2 = this.createDefaultRule( "rule2" );
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( rule1.getBytes() ),
+                      ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource( rule2.getBytes() ),
+                      ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgePackage pkg = (KnowledgePackage) kbuilder.getKnowledgePackages().iterator().next();
+        writePackage( pkg,
+                      fileManager.newFile( "pkg1.pkg" ) );
+
+        String xml = "";
+        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+        xml += " xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+        xml += " xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
+        xml += " <add> ";
+        xml += " <resource source='http://localhost:" + this.getPort() + "/pkg1.pkg' type='PKG' />";
+        xml += " </add> ";
+        xml += "</change-set>";
+        File fxml = fileManager.write( "changeset.xml",
+                                       xml );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        KnowledgeAgent kagent = this.createKAgent( kbase );
+
+        applyChangeSet( kagent, ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
+
+        StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list",
+                            list );
+        ksession.fireAllRules();
+        ksession.dispose();
+
+        assertEquals( 2,
+                      list.size() );
+        assertTrue( list.contains( "rule1" ) );
+        assertTrue( list.contains( "rule2" ) );
+
+        //----- Server Stop -----
+        this.server.stop();
+
+        UpdateAssertListener assertListener = new UpdateAssertListener();
+        kagent.addEventListener(assertListener);
+
+        this.scanner.scan(); // This doesn't cause update because lastRead == lastModified
+
+        Thread.sleep(1000);
+        if (assertListener.updated) {
+            fail("kbase should not be updated");
+        }
+
+        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        list = new ArrayList<String>();
+        ksession.setGlobal( "list",
+                            list );
+        ksession.fireAllRules();
+        ksession.dispose();
+
+        assertEquals( 2,
+                      list.size() );
+
+        assertTrue( list.contains( "rule1" ) );
+        assertTrue( list.contains( "rule2" ) );
+
+        //----- Client Restart
+        kagent.dispose();
+
+        kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        kagent = this.createKAgent( kbase );
+
+        applyChangeSet( kagent, ResourceFactory.newUrlResource( fxml.toURI().toURL() ) ); // It's okay to update kbase once
+
+        assertListener = new UpdateAssertListener();
+        kagent.addEventListener(assertListener);
+
+        this.scanner.scan(); // This doesn't cause update because lastRead >= lastModified
+
+        Thread.sleep(1000);
+        if (assertListener.updated) {
+            fail("kbase should not be updated");
+        }
+
+        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        list = new ArrayList<String>();
+        ksession.setGlobal( "list",
+                            list );
+        ksession.fireAllRules();
+        ksession.dispose();
+
+        assertEquals( 2,
+                      list.size() );
+        assertTrue( list.contains( "rule1" ) );
+        assertTrue( list.contains( "rule2" ) );
+
+        //----- Server Start -----
+        this.server.start();
+
+        this.scanner.scan(); // This doesn't cause update because lastRead >= lastModified
+
+        Thread.sleep(1000);
+        if (assertListener.updated) {
+            fail("kbase should not be updated");
+        }
+
+        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        list = new ArrayList<String>();
+        ksession.setGlobal( "list",
+                            list );
+        ksession.fireAllRules();
+        ksession.dispose();
+
+        assertEquals( 2,
+                      list.size() );
+
+        assertTrue( list.contains( "rule1" ) );
+        assertTrue( list.contains( "rule2" ) );
+        kagent.dispose();
+
+        UrlResource.CACHE_DIR = null; // make sure subsequent tests will not be affected
+    }
+
+    private static class UpdateAssertListener extends DefaultKnowledgeAgentEventListener {
+
+        public boolean updated = false;
+
+        @Override
+        public void knowledgeBaseUpdated(KnowledgeBaseUpdatedEvent event) {
+            updated = true;
+        }
+    };
 }

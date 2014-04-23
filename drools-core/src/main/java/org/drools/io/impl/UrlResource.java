@@ -137,7 +137,11 @@ public class UrlResource extends BaseResource
             long lastMod  = grabLastMod();
             if (lastMod == 0) {
                 //we will try the cache...
-                if (cacheFileExists()) return fromCache();
+                if (cacheFileExists()) {
+                    lastMod = getCacheFile().lastModified();
+                    this.lastRead = lastMod;
+                    return fromCache();
+                }
             }
             if (lastMod > 0 && lastMod > lastRead) {
                 if (CACHE_DIR != null && (url.getProtocol().equals("http") || url.getProtocol().equals("https"))) {
@@ -153,6 +157,7 @@ public class UrlResource extends BaseResource
             return grabStream();
         } catch (IOException e) {
             if (cacheFileExists()) {
+                this.lastRead = getCacheFile().lastModified();
                 return fromCache();
             } else {
                 throw e;
