@@ -24,7 +24,25 @@ import static org.junit.Assert.*;
 public class BendableScoreDefinitionTest {
 
     @Test
-    public void testCalculateTimeGradient() {
+    public void getLevelCount() {
+        assertEquals(2, new BendableScoreDefinition(1, 1).getLevelCount());
+        assertEquals(7, new BendableScoreDefinition(3, 4).getLevelCount());
+        assertEquals(7, new BendableScoreDefinition(4, 3).getLevelCount());
+        assertEquals(5, new BendableScoreDefinition(0, 5).getLevelCount());
+        assertEquals(5, new BendableScoreDefinition(5, 0).getLevelCount());
+    }
+
+    @Test
+    public void getFeasibleLevelCount() {
+        assertEquals(1, new BendableScoreDefinition(1, 1).getFeasibleLevelCount());
+        assertEquals(3, new BendableScoreDefinition(3, 4).getFeasibleLevelCount());
+        assertEquals(4, new BendableScoreDefinition(4, 3).getFeasibleLevelCount());
+        assertEquals(0, new BendableScoreDefinition(0, 5).getFeasibleLevelCount());
+        assertEquals(5, new BendableScoreDefinition(5, 0).getFeasibleLevelCount());
+    }
+
+    @Test
+    public void calculateTimeGradient() {
         BendableScoreDefinition scoreDefinition = new BendableScoreDefinition(1, 1);
         scoreDefinition.setRecursiveTimeGradientWeight(0.75);
 

@@ -69,8 +69,14 @@ public class BendableScoreDefinition extends AbstractFeasibilityScoreDefinition<
     // Worker methods
     // ************************************************************************
 
+    @Override
     public int getLevelCount() {
         return hardLevelCount + softLevelCount;
+    }
+
+    @Override
+    public int getFeasibleLevelCount() {
+        return hardLevelCount;
     }
 
     public Class<BendableScore> getScoreClass() {

@@ -16,8 +16,16 @@
 package org.optaplanner.core.impl.score.definition;
 
 import org.optaplanner.core.api.score.FeasibilityScore;
+import org.optaplanner.core.api.score.Score;
 
 public interface FeasibilityScoreDefinition<S extends FeasibilityScore> extends ScoreDefinition<S> {
+
+    /**
+     * Returns the number of levels of {@link Score#toLevelNumbers()}.
+     * that are used to determine {@link FeasibilityScore#isFeasible()}.
+     * @return at least 0, at most {@link #getLevelCount()}
+     */
+    int getFeasibleLevelCount();
 
     /**
      * Calculates time gradient for feasible score. For further details, 

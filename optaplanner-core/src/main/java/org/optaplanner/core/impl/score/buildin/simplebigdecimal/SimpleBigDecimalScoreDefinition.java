@@ -34,6 +34,7 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
     // Worker methods
     // ************************************************************************
 
+    @Override
     public int getLevelCount() {
         return 1;
     }

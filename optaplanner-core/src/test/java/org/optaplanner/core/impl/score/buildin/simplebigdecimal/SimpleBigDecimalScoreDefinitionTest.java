@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 public class SimpleBigDecimalScoreDefinitionTest {
 
     @Test
-    public void testCalculateTimeGradient() {
+    public void calculateTimeGradient() {
         SimpleBigDecimalScoreDefinition scoreDefinition = new SimpleBigDecimalScoreDefinition();
 
         assertEquals(0.0, scoreDefinition.calculateTimeGradient(

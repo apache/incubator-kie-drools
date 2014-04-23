@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 public class HardSoftBigDecimalScoreDefinitionTest {
 
     @Test
-    public void testCalculateTimeGradient() {
+    public void calculateTimeGradient() {
         HardSoftBigDecimalScoreDefinition scoreDefinition = new HardSoftBigDecimalScoreDefinition();
 
         // hard == soft

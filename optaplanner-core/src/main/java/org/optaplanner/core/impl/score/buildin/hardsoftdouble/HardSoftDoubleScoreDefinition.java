@@ -52,8 +52,14 @@ public class HardSoftDoubleScoreDefinition extends AbstractFeasibilityScoreDefin
     // Worker methods
     // ************************************************************************
 
+    @Override
     public int getLevelCount() {
         return 2;
+    }
+
+    @Override
+    public int getFeasibleLevelCount() {
+        return 1;
     }
 
     public Class<HardSoftDoubleScore> getScoreClass() {

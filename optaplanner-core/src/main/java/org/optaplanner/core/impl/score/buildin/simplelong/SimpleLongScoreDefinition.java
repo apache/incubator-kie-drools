@@ -31,6 +31,7 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
     // Worker methods
     // ************************************************************************
 
+    @Override
     public int getLevelCount() {
         return 1;
     }

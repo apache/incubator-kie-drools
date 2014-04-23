@@ -69,8 +69,14 @@ public class HardMediumSoftScoreDefinition extends AbstractFeasibilityScoreDefin
     // Worker methods
     // ************************************************************************
 
+    @Override
     public int getLevelCount() {
         return 3;
+    }
+
+    @Override
+    public int getFeasibleLevelCount() {
+        return 1;
     }
 
     public Class<HardMediumSoftScore> getScoreClass() {

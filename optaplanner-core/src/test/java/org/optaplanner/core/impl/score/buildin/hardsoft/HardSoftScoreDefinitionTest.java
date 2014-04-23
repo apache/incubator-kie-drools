@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
 public class HardSoftScoreDefinitionTest {
 
     @Test
-    public void testCalculateTimeGradient() {
+    public void calculateTimeGradient() {
         HardSoftScoreDefinition scoreDefinition = new HardSoftScoreDefinition();
         scoreDefinition.setHardScoreTimeGradientWeight(0.75);
 

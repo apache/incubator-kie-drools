@@ -52,8 +52,14 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractFeasibilityScoreD
     // Worker methods
     // ************************************************************************
 
+    @Override
     public int getLevelCount() {
         return 2;
+    }
+
+    @Override
+    public int getFeasibleLevelCount() {
+        return 1;
     }
 
     public Class<HardSoftBigDecimalScore> getScoreClass() {

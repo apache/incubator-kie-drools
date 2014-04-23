@@ -24,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 public class SimpleScoreDefinitionTest {
 
     @Test
-    public void testCalculateTimeGradient() {
+    public void calculateTimeGradient() {
         SimpleScoreDefinition scoreDefinition = new SimpleScoreDefinition();
 
         assertEquals(0.0, scoreDefinition.calculateTimeGradient(

@@ -31,6 +31,7 @@ public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleD
     // Worker methods
     // ************************************************************************
 
+    @Override
     public int getLevelCount() {
         return 1;
     }

@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 public interface ScoreDefinition<S extends Score> {
 
     /**
-     *
+     * Returns the length of {@link Score#toLevelNumbers()} for every {@link Score} of this definition.
      * @return at least 1
      */
     int getLevelCount();
