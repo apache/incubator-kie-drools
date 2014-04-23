@@ -97,40 +97,6 @@ public class BendableScoreDefinition extends AbstractFeasibilityScoreDefinition<
         return calculateTimeGradient(startScore, endScore, score, false);
     }
 
-    public BendableScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
-        return new BendableScoreHolder(constraintMatchEnabled, hardLevelCount, softLevelCount);
-    }
-
-    public BendableScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, BendableScore score) {
-        InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
-        int[] hardScores = new int[hardLevelCount];
-        for (int i = 0; i < hardLevelCount; i++) {
-            hardScores[i] = (trendLevels[i] == InitializingScoreTrendLevel.ONLY_DOWN)
-                    ? score.getHardScore(i) : Integer.MAX_VALUE;
-        }
-        int[] softScores = new int[softLevelCount];
-        for (int i = 0; i < softLevelCount; i++) {
-            softScores[i] = (trendLevels[hardLevelCount + i] == InitializingScoreTrendLevel.ONLY_DOWN)
-                    ? score.getSoftScore(i) : Integer.MAX_VALUE;
-        }
-        return BendableScore.valueOf(hardScores, softScores);
-    }
-
-    public BendableScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, BendableScore score) {
-        InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
-        int[] hardScores = new int[hardLevelCount];
-        for (int i = 0; i < hardLevelCount; i++) {
-            hardScores[i] = (trendLevels[i] == InitializingScoreTrendLevel.ONLY_UP)
-                    ? score.getHardScore(i) : Integer.MIN_VALUE;
-        }
-        int[] softScores = new int[softLevelCount];
-        for (int i = 0; i < softLevelCount; i++) {
-            softScores[i] = (trendLevels[hardLevelCount + i] == InitializingScoreTrendLevel.ONLY_UP)
-                    ? score.getSoftScore(i) : Integer.MIN_VALUE;
-        }
-        return BendableScore.valueOf(hardScores, softScores);
-    }
-
     public double calculateFeasibilityTimeGradient(BendableScore startScore, BendableScore score) {
         return calculateTimeGradient(startScore, null, score, true);
     }
@@ -197,6 +163,40 @@ public class BendableScoreDefinition extends AbstractFeasibilityScoreDefinition<
             }
         }
         return 0;
+    }
+
+    public BendableScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+        return new BendableScoreHolder(constraintMatchEnabled, hardLevelCount, softLevelCount);
+    }
+
+    public BendableScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, BendableScore score) {
+        InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
+        int[] hardScores = new int[hardLevelCount];
+        for (int i = 0; i < hardLevelCount; i++) {
+            hardScores[i] = (trendLevels[i] == InitializingScoreTrendLevel.ONLY_DOWN)
+                    ? score.getHardScore(i) : Integer.MAX_VALUE;
+        }
+        int[] softScores = new int[softLevelCount];
+        for (int i = 0; i < softLevelCount; i++) {
+            softScores[i] = (trendLevels[hardLevelCount + i] == InitializingScoreTrendLevel.ONLY_DOWN)
+                    ? score.getSoftScore(i) : Integer.MAX_VALUE;
+        }
+        return BendableScore.valueOf(hardScores, softScores);
+    }
+
+    public BendableScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, BendableScore score) {
+        InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
+        int[] hardScores = new int[hardLevelCount];
+        for (int i = 0; i < hardLevelCount; i++) {
+            hardScores[i] = (trendLevels[i] == InitializingScoreTrendLevel.ONLY_UP)
+                    ? score.getHardScore(i) : Integer.MIN_VALUE;
+        }
+        int[] softScores = new int[softLevelCount];
+        for (int i = 0; i < softLevelCount; i++) {
+            softScores[i] = (trendLevels[hardLevelCount + i] == InitializingScoreTrendLevel.ONLY_UP)
+                    ? score.getSoftScore(i) : Integer.MIN_VALUE;
+        }
+        return BendableScore.valueOf(hardScores, softScores);
     }
 
 }

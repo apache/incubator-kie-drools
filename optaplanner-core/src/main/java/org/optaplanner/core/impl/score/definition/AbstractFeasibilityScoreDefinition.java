@@ -16,12 +16,14 @@
 package org.optaplanner.core.impl.score.definition;
 
 import org.optaplanner.core.api.score.FeasibilityScore;
+import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 
 /**
  * Abstract superclass for {@link FeasibilityScoreDefinition}.
  * @see FeasibilityScoreDefinition
  * @see HardSoftScoreDefinition
  */
-public abstract class AbstractFeasibilityScoreDefinition<S extends FeasibilityScore<S>> extends AbstractScoreDefinition<S> implements FeasibilityScoreDefinition<S> {
+public abstract class AbstractFeasibilityScoreDefinition<S extends FeasibilityScore<S>>
+        extends AbstractScoreDefinition<S> implements FeasibilityScoreDefinition<S> {
 
 }
