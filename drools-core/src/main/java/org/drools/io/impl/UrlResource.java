@@ -16,8 +16,16 @@
 
 package org.drools.io.impl;
 
+import org.drools.core.util.StringUtils;
+import org.drools.io.Resource;
+import org.drools.io.internal.InternalResource;
+import org.drools.util.codec.Base64;
+
 import java.io.Externalizable;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,9 +33,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.io.FileOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileInputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -36,11 +41,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import org.drools.core.util.StringUtils;
-import org.drools.io.Resource;
-import org.drools.io.internal.InternalResource;
-import org.drools.util.codec.Base64;
 
 
 
@@ -142,10 +142,11 @@ public class UrlResource extends BaseResource
             if (lastMod > 0 && lastMod > lastRead) {
                 if (CACHE_DIR != null && (url.getProtocol().equals("http") || url.getProtocol().equals("https"))) {
                     //lets grab a copy and cache it in case we need it in future...
-                    cacheStream();
-                    lastMod = getCacheFile().lastModified();
-                    this.lastRead = lastMod;
-                    return fromCache();
+                    if (cacheStream()) {
+                        lastMod = getCacheFile().lastModified();
+                        this.lastRead = lastMod;
+                        return fromCache();
+                    }
                 }
             }
             this.lastRead = lastMod;
@@ -187,37 +188,49 @@ public class UrlResource extends BaseResource
     /**
      * Save a copy in the local cache - in case remote source is not available in future.
      */
-    private void cacheStream() {
+    private boolean cacheStream() {
+        FileOutputStream fout = null;
+        InputStream in = null;
+        File fi = null;
         try {
-            File fi = getTemproralCacheFile();
+            fi = getTemproralCacheFile();
             if (fi.exists()) fi.delete();
-            FileOutputStream fout = new FileOutputStream(fi);
-            InputStream in = grabStream();
+            fout = new FileOutputStream(fi);
+            in = grabStream();
             byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
             int n;
             while (-1 != (n = in.read(buffer))) {
                 fout.write(buffer, 0, n);
             }
             fout.flush();
-            fout.close();
-            in.close();
-
-            File cacheFile = getCacheFile();
-            boolean result = fi.renameTo(cacheFile);
-            if (!result) {
-                // BZ1075293 Windows fails to rename when a target file exists
-                if (cacheFile.exists()) {
-                    cacheFile.delete();
-                }
-                boolean result2 = fi.renameTo(cacheFile);
-                if (!result2) {
-                    throw new RuntimeException("Failed to rename a tmp file to a cache file. " +
-                            "Possible cause is missing stream close: cacheFile = " + cacheFile.getAbsolutePath());
+        } catch (Exception e) {
+            return false;
+        } finally {
+            if (fout != null) {
+                try {
+                    fout.close();
+                } catch (IOException e) {
+                    // ignore
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
         }
+
+        File cacheFile = getCacheFile();
+        if (!fi.renameTo(cacheFile)) {
+            // BZ1075293 Windows fails to rename when a target file exists
+            if (cacheFile.exists()) {
+                cacheFile.delete();
+            }
+            return fi.renameTo(cacheFile);
+        }
+        return true;
     }
 
     private URLConnection openURLConnection(URL url) throws IOException {
