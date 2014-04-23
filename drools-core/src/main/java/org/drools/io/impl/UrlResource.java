@@ -187,25 +187,41 @@ public class UrlResource extends BaseResource
     /**
      * Save a copy in the local cache - in case remote source is not available in future.
      */
-    private void cacheStream() {
+    private void cacheStream() throws IOException {
+        FileOutputStream fout = null;
+        InputStream in = null;
         try {
             File fi = getTemproralCacheFile();
             if (fi.exists()) fi.delete();
-            FileOutputStream fout = new FileOutputStream(fi);
-            InputStream in = grabStream();
+            fout = new FileOutputStream(fi);
+            in = grabStream();
             byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
             int n;
             while (-1 != (n = in.read(buffer))) {
                 fout.write(buffer, 0, n);
             }
             fout.flush();
-            fout.close();
-            in.close();
 
             File cacheFile = getCacheFile();
             fi.renameTo(cacheFile);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace(); // will use cache but STDERR just in case
+            throw e;
+        } finally {
+            if (fout != null) {
+                try {
+                    fout.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
         }
     }
 
