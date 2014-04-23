@@ -9549,4 +9549,35 @@ public class MiscTest extends CommonTestMethodBase {
 
 		KnowledgeBase kbase = loadKnowledgeBaseFromString(sb.toString());
 	}
+
+    @Test
+    public void testDateCoercionWithOr() {
+        // DROOLS-296
+        String drl = "import java.util.Date\n" +
+                     "global java.util.List list\n" +
+                     "declare DateContainer\n" +
+                     " date: Date\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule Init when\n" +
+                     "then\n" +
+                     " insert(new DateContainer(new Date(0)));" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Test rule\"\n" +
+                     "when\n" +
+                     " $container: DateContainer( date >= \"15-Oct-2013\" || date <= \"01-Oct-2013\" )\n" +
+                     "then\n" +
+                     " list.add(\"working\");\n" +
+                     "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertEquals("working", list.get(0));
+    }
 }

@@ -16,19 +16,6 @@
 
 package org.drools.rule.builder;
 
-import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.RecognitionException;
 import org.drools.base.ClassObjectType;
@@ -51,6 +38,7 @@ import org.drools.compiler.DrlExprParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageRegistry;
 import org.drools.core.util.ClassUtils;
+import org.drools.core.util.DateUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
@@ -63,6 +51,7 @@ import org.drools.lang.descr.AtomicExprDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.BehaviorDescr;
 import org.drools.lang.descr.BindingDescr;
+import org.drools.lang.descr.ConnectiveType;
 import org.drools.lang.descr.ConstraintConnectiveDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
@@ -110,6 +99,19 @@ import org.mvel2.ParserContext;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.util.PropertyTools;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+
+import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
 
 /**
  * A builder for patterns
@@ -350,7 +352,7 @@ public class PatternBuilder
 
     /**
      * Process all constraints and bindings on this pattern
-     * 
+     *
      * @param context
      * @param patternDescr
      * @param pattern
@@ -549,10 +551,102 @@ public class PatternBuilder
                 createAndBuildPredicate( context,
                                          pattern,
                                          d,
-                                         expr,
+                                         rewriteOrExpressions(context, pattern, d, expr),
                                          aliases );
             }
         }
+    }
+
+    private String rewriteOrExpressions(RuleBuildContext context, Pattern pattern, BaseDescr d, String expr) {
+        if (!(d instanceof ConstraintConnectiveDescr) || ((ConstraintConnectiveDescr) d).getConnective() != ConnectiveType.OR) {
+            return expr;
+        }
+        List<BaseDescr> subDescrs = ((ConstraintConnectiveDescr) d).getDescrs();
+        for (BaseDescr subDescr : subDescrs) {
+            if (!(subDescr instanceof RelationalExprDescr && isSimpleExpr( (RelationalExprDescr)subDescr ))) {
+                return expr;
+            }
+        }
+        String[] subExprs = expr.split("\\Q||\\E");
+        if (subExprs.length != subDescrs.size()) {
+            return expr;
+        }
+
+        int i = 0;
+        StringBuilder sb = new StringBuilder();
+        for (BaseDescr subDescr : subDescrs) {
+            RelationalExprDescr relDescr = (RelationalExprDescr)subDescr;
+            String[] values = new String[2];
+            findExpressionValues(relDescr, values);
+            String normalizedExpr;
+
+            if (!getExprBindings(context, pattern, values[1]).isConstant()) {
+                normalizedExpr = subExprs[i++];
+            } else {
+                InternalReadAccessor extractor = getFieldReadAccessor( context, relDescr, pattern.getObjectType(), values[0], null, true );
+                if (extractor == null) {
+                    normalizedExpr = subExprs[i++];
+                } else {
+                    ValueType vtype = extractor.getValueType();
+                    LiteralRestrictionDescr restrictionDescr = new LiteralRestrictionDescr( relDescr.getOperator(),
+                                                                                            relDescr.isNegated(),
+                                                                                            relDescr.getParameters(),
+                                                                                            values[1],
+                                                                                            LiteralRestrictionDescr.TYPE_STRING );
+                    normalizedExpr = normalizeMVELLiteralExpression( vtype,
+                                                                     context,
+                                                                     subExprs[i++],
+                                                                     values[0],
+                                                                     relDescr.getOperator(),
+                                                                     values[1],
+                                                                     restrictionDescr );
+                }
+            }
+
+            sb.append(normalizedExpr);
+            if (i < subExprs.length) {
+                sb.append(" || ");
+            }
+        }
+
+        return sb.toString();
+    }
+
+    private String normalizeMVELLiteralExpression( ValueType vtype,
+                                                   RuleBuildContext context,
+                                                   String expr,
+                                                   String leftValue,
+                                                   String operator,
+                                                   String rightValue,
+                                                   LiteralRestrictionDescr restrictionDescr ) {
+        if (vtype == ValueType.DATE_TYPE) {
+            Date date = DateUtils.parseDate((String)getFieldValue(context, vtype, restrictionDescr), context.getPackageBuilder().getDateFormats());
+            return leftValue + " " + operator + (date != null ? " new java.util.Date(" + date.getTime() + ")" : " null");
+        }
+        if (operator.equals("str")) {
+            String method = restrictionDescr.getParameterText();
+            if (method.equals("length")) {
+                return leftValue + ".length()" + (restrictionDescr.isNegated() ? " != " : " == ") + rightValue;
+            }
+            return (restrictionDescr.isNegated() ? "!" : "") + leftValue + "." + method + "(" + rightValue + ")";
+        }
+
+        // resolve ambiguity between mvel's "empty" keyword and constraints like: List(empty == ...)
+        if (expr.startsWith("empty") && (operator.equals("==") || operator.equals("!=")) && !Character.isJavaIdentifierPart(expr.charAt(5))) {
+            expr = "isEmpty()" + expr.substring(5);
+        }
+
+        return expr;
+    }
+
+    private Object getFieldValue(RuleBuildContext context,
+                                 ValueType vtype,
+                                 LiteralRestrictionDescr literalRestrictionDescr) {
+        String value = literalRestrictionDescr.getText().trim();
+        MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
+        ParserConfiguration pconf = data.getParserConfiguration();
+        ParserContext pctx = new ParserContext( pconf );
+        return MVEL.executeExpression( MVEL.compileExpression( value, pctx ) );
     }
 
     @SuppressWarnings("unchecked")
@@ -562,38 +656,11 @@ public class PatternBuilder
                                             final RelationalExprDescr relDescr,
                                             final String expr,
                                             final Map<String, OperatorDescr> aliases ) {
-        String value1 = null;
-        String value2 = null;
-        boolean usesThisRef = false;
-        if ( relDescr.getRight() instanceof AtomicExprDescr ) {
-            AtomicExprDescr rdescr = ((AtomicExprDescr) relDescr.getRight());
-            value2 = rdescr.getExpression().trim();
-            usesThisRef = "this".equals( value2 ) || value2.startsWith( "this." );
-        } else {
-            BindingDescr rdescr = ((BindingDescr) relDescr.getRight());
-            value2 = rdescr.getExpression().trim();
-            usesThisRef = "this".equals( value2 ) || value2.startsWith( "this." );
-        }
-        if ( relDescr.getLeft() instanceof AtomicExprDescr ) {
-            AtomicExprDescr ldescr = (AtomicExprDescr) relDescr.getLeft();
-            value1 = ldescr.getExpression();
-            usesThisRef = usesThisRef || "this".equals( value1 ) || value1.startsWith( "this." );
-        } else {
-            value1 = ((BindingDescr) relDescr.getLeft()).getExpression();
-            usesThisRef = usesThisRef || "this".equals( value1 ) || value1.startsWith( "this." );
-        }
+        String[] values = new String[2];
+        boolean usesThisRef = findExpressionValues(relDescr, values);
 
-        ExprBindings value1Expr = new ExprBindings();
-        setInputs( context,
-                   value1Expr,
-                   (pattern.getObjectType() instanceof ClassObjectType) ? ((ClassObjectType) pattern.getObjectType()).getClassType() : FactTemplate.class,
-                   value1 );
-
-        ExprBindings value2Expr = new ExprBindings();
-        setInputs( context,
-                   value2Expr,
-                   (pattern.getObjectType() instanceof ClassObjectType) ? ((ClassObjectType) pattern.getObjectType()).getClassType() : FactTemplate.class,
-                   value2 );
+        ExprBindings value1Expr = getExprBindings(context, pattern, values[0]);
+        ExprBindings value2Expr = getExprBindings(context, pattern, values[1]);
 
         boolean succeeded = false;
         if ( (!usesThisRef) && value1Expr.isConstant() ) {
@@ -609,8 +676,8 @@ public class PatternBuilder
                                          pattern,
                                          relDescr,
                                          aliases,
-                                         value1,
-                                         value2,
+                                         values[0],
+                                         values[1],
                                          value2Expr );
         }
 
@@ -622,6 +689,37 @@ public class PatternBuilder
                                      expr,
                                      aliases );
         }
+    }
+
+    private ExprBindings getExprBindings(RuleBuildContext context, Pattern pattern, String value) {
+        ExprBindings value1Expr = new ExprBindings();
+        setInputs( context,
+                   value1Expr,
+                   (pattern.getObjectType() instanceof ClassObjectType) ? ((ClassObjectType) pattern.getObjectType()).getClassType() : FactTemplate.class,
+                   value);
+        return value1Expr;
+    }
+
+    private boolean findExpressionValues(RelationalExprDescr relDescr, String[] values) {
+        boolean usesThisRef = false;
+        if ( relDescr.getRight() instanceof AtomicExprDescr ) {
+            AtomicExprDescr rdescr = ((AtomicExprDescr) relDescr.getRight());
+            values[1] = rdescr.getExpression().trim();
+            usesThisRef = "this".equals( values[1] ) || values[1].startsWith( "this." );
+        } else {
+            BindingDescr rdescr = ((BindingDescr) relDescr.getRight());
+            values[1] = rdescr.getExpression().trim();
+            usesThisRef = "this".equals( values[1] ) || values[1].startsWith( "this." );
+        }
+        if ( relDescr.getLeft() instanceof AtomicExprDescr ) {
+            AtomicExprDescr ldescr = (AtomicExprDescr) relDescr.getLeft();
+            values[0] = ldescr.getExpression();
+            usesThisRef = usesThisRef || "this".equals( values[0] ) || values[0].startsWith( "this." );
+        } else {
+            values[0] = ((BindingDescr) relDescr.getLeft()).getExpression();
+            usesThisRef = usesThisRef || "this".equals( values[0] ) || values[0].startsWith( "this." );
+        }
+        return usesThisRef;
     }
 
     private boolean buildConstraint( final RuleBuildContext context,
@@ -656,7 +754,7 @@ public class PatternBuilder
         String operator = relDescr.getOperator().trim();
 
         Restriction restriction = null;
-        // is it a constant? 
+        // is it a constant?
         if ( value2Expr.isConstant() ) {
             restriction = buildLiteralRestriction( context,
                                                    extractor,
@@ -903,7 +1001,7 @@ public class PatternBuilder
         if ( !pctx.getInputs().isEmpty() ) {
             for ( String v : pctx.getInputs().keySet() ) {
                 // in the following if, we need to check that the expr actually contains a reference
-                // to an "empty" property, or the if will evaluate to true even if it doesn't 
+                // to an "empty" property, or the if will evaluate to true even if it doesn't
                 if ( "this".equals( v ) || (PropertyTools.getFieldOrAccessor( thisClass,
                                                                                v ) != null && expr.matches( "(^|.*\\W)empty($|\\W.*)" )) ) {
                     descrBranch.getFieldAccessors().add( v );
@@ -1172,7 +1270,7 @@ public class PatternBuilder
                                                                identifier,
                                                                pattern );
             // the name may not be a local field, such as enums
-            // maybe should have a safer way to detect this, as other issues may cause null too 
+            // maybe should have a safer way to detect this, as other issues may cause null too
             // that we would need to know about
             if ( declaration != null ) {
                 factDeclarations.add( declaration );
@@ -1412,7 +1510,7 @@ public class PatternBuilder
         InternalReadAccessor reader = null;
 
         if ( ValueType.FACTTEMPLATE_TYPE.equals( objectType.getValueType() ) ) {
-            //@todo use accessor cache            
+            //@todo use accessor cache
             final FactTemplate factTemplate = ((FactTemplateObjectType) objectType).getFactTemplate();
             reader = new FactTemplateFieldExtractor( factTemplate,
                                                      factTemplate.getFieldTemplateIndex( fieldName ) );
