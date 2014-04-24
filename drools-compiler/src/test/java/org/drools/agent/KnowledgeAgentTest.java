@@ -1240,5 +1240,62 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
     }
 
+    @Test
+    public void testRegisteredResourcesLeak() throws Exception {
+        // BZ-1067841
+        
+        // Create the test directory
+        File testDirectory = fileManager.newFile( "test" );
+        testDirectory.mkdir();
+
+        File f1 = fileManager.write( "test",
+                                     "rule1.drl",
+                                     createDefaultRule( "rule1" ) );
+
+        File f2 = fileManager.write( "test",
+                                     "rule2.drl",
+                                     createDefaultRule( "rule2" ) );
+
+        String xml = "";
+        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
+        xml += "    <add> ";
+        xml += "        <resource source='file:"
+               + fileManager.getRootDirectory().getAbsolutePath()
+               + "/test' type='DRL' />";
+        xml += "    </add> ";
+        xml += "</change-set>";
+        File fxml = fileManager.write( "changeset",
+                                       "changeset.xml",
+                                       xml );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        KnowledgeAgent kagent = this.createKAgent( kbase );
+
+        applyChangeSet( kagent, ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
+        
+        Rule r1 = (Rule) kagent.getKnowledgeBase().getRule( "org.drools.test", "rule1" );
+        Rule r2 = (Rule) kagent.getKnowledgeBase().getRule( "org.drools.test", "rule2" );
+        Map<Resource, Set<KnowledgeDefinition>> defMap = ((KnowledgeAgentImpl) kagent).getRegisteredResources();
+        Set<KnowledgeDefinition> defs1 = defMap.get( r1.getResource() );
+        assertTrue(defs1.iterator().next() == r1);
+        Set<KnowledgeDefinition> defs2 = defMap.get( r2.getResource() );
+        assertTrue(defs2.iterator().next() == r2);
+
+        fileManager.write( "test",
+                           "rule1.drl",
+                           createDefaultRule( "rule3" ) );
+
+        scan( kagent );
+
+        Rule r2_new = (Rule) kagent.getKnowledgeBase().getRule( "org.drools.test", "rule2" );
+        Rule r3 = (Rule) kagent.getKnowledgeBase().getRule( "org.drools.test", "rule3" );
+        Map<Resource, Set<KnowledgeDefinition>> defMap_new = ((KnowledgeAgentImpl) kagent).getRegisteredResources();
+        Set<KnowledgeDefinition> defs2_new = defMap_new.get( r2_new.getResource() );
+        assertTrue(defs2_new.iterator().next() == r2_new); // If they are not the same object, it's leaking
+        Set<KnowledgeDefinition> defs3 = defMap_new.get( r3.getResource() );
+        assertTrue(defs3.iterator().next() == r3);
+    }
 
 }
