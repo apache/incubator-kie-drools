@@ -16,12 +16,21 @@
 
 package org.drools.compiler.builder.impl;
 
+import java.io.File;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.Set;
+
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DialectConfiguration;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.xml.RulesSemanticModule;
+import org.drools.compiler.kie.builder.impl.AbstractKieModule.CompilationCache;
 import org.drools.compiler.rule.builder.DroolsCompilerComponentFactory;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
@@ -54,14 +63,6 @@ import org.kie.internal.builder.conf.ProcessStringEscapesOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.builder.conf.SingleValueKnowledgeBuilderOption;
 import org.kie.internal.utils.ChainedProperties;
-
-import java.io.File;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Set;
 
 /**
  * This class configures the package compiler.
@@ -130,7 +131,7 @@ public class KnowledgeBuilderConfigurationImpl
 
     private LanguageLevelOption               languageLevel           = DrlParser.DEFAULT_LANGUAGE_LEVEL;
 
-    private Map<String, Map<String, byte[]>>  compilationCache               = null;
+    private CompilationCache                  compilationCache        = null;
 
     public boolean isAllowMultipleNamespaces() {
         return allowMultipleNamespaces;
@@ -149,8 +150,8 @@ public class KnowledgeBuilderConfigurationImpl
      * @param classLoaders
      */
     public KnowledgeBuilderConfigurationImpl(ClassLoader... classLoaders) {
-        init( null,
-              classLoaders );
+        init(null,
+                classLoaders);
     }
 
     /**
@@ -158,8 +159,8 @@ public class KnowledgeBuilderConfigurationImpl
      * @param properties
      */
     public KnowledgeBuilderConfigurationImpl(Properties properties) {
-        init( properties,
-              (ClassLoader[]) null );
+        init(properties,
+                (ClassLoader[]) null);
     }
 
     /**
@@ -168,51 +169,51 @@ public class KnowledgeBuilderConfigurationImpl
      * @param properties
      */
     public KnowledgeBuilderConfigurationImpl(Properties properties,
-                                             ClassLoader... classLoaders) {
-        init( properties,
-              classLoaders );
+            ClassLoader... classLoaders) {
+        init(properties,
+                classLoaders);
     }
 
     public KnowledgeBuilderConfigurationImpl() {
-        init( null,
-              (ClassLoader[]) null );
+        init(null,
+                (ClassLoader[]) null);
     }
 
     private void init(Properties properties,
-                      ClassLoader... classLoaders) {
+            ClassLoader... classLoaders) {
         if (classLoaders != null && classLoaders.length > 1) {
             throw new RuntimeException("Multiple classloaders are no longer supported");
         }
-        setClassLoader( classLoaders == null || classLoaders.length == 0 ? null : classLoaders[0] );
-        init( properties );
+        setClassLoader(classLoaders == null || classLoaders.length == 0 ? null : classLoaders[0]);
+        init(properties);
     }
 
     private void init(Properties properties) {
 
-        this.chainedProperties = new ChainedProperties( "packagebuilder.conf",
-                                                        getClassLoader(),
-                                                        true );
+        this.chainedProperties = new ChainedProperties("packagebuilder.conf",
+                getClassLoader(),
+                true);
 
         if (chainedProperties.getProperty("drools.dialect.java", null) == null) {
             // if it couldn't find a conf for java dialect using the project class loader
             // it means it could not load the conf file at all (very likely it is running in
             // an osgi environement) so try with the class loader of this class
-            this.chainedProperties = new ChainedProperties( "packagebuilder.conf",
-                                                            getClass().getClassLoader(),
-                                                            true );
+            this.chainedProperties = new ChainedProperties("packagebuilder.conf",
+                    getClass().getClassLoader(),
+                    true);
 
             if (this.classLoader instanceof ProjectClassLoader) {
                 ((ProjectClassLoader) classLoader).setDroolsClassLoader(getClass().getClassLoader());
             }
         }
 
-        if ( properties != null ) {
-            this.chainedProperties.addProperties( properties );
+        if (properties != null) {
+            this.chainedProperties.addProperties(properties);
         }
 
-        setProperty( ClassLoaderCacheOption.PROPERTY_NAME,
-                     this.chainedProperties.getProperty( ClassLoaderCacheOption.PROPERTY_NAME,
-                                                         "true" ) );
+        setProperty(ClassLoaderCacheOption.PROPERTY_NAME,
+                this.chainedProperties.getProperty(ClassLoaderCacheOption.PROPERTY_NAME,
+                        "true"));
 
         this.dialectConfigurations = new HashMap<String, DialectConfiguration>();
 
@@ -226,13 +227,13 @@ public class KnowledgeBuilderConfigurationImpl
 
         buildSeverityMap();
 
-        setProperty( ProcessStringEscapesOption.PROPERTY_NAME,
-                     this.chainedProperties.getProperty( ProcessStringEscapesOption.PROPERTY_NAME,
-                                                         "true" ) );
+        setProperty(ProcessStringEscapesOption.PROPERTY_NAME,
+                this.chainedProperties.getProperty(ProcessStringEscapesOption.PROPERTY_NAME,
+                        "true"));
 
-        setProperty( DefaultPackageNameOption.PROPERTY_NAME,
-                     this.chainedProperties.getProperty( DefaultPackageNameOption.PROPERTY_NAME,
-                                                         "defaultpkg" ) );
+        setProperty(DefaultPackageNameOption.PROPERTY_NAME,
+                this.chainedProperties.getProperty(DefaultPackageNameOption.PROPERTY_NAME,
+                        "defaultpkg"));
 
         this.componentFactory = new DroolsCompilerComponentFactory();
 
@@ -242,77 +243,77 @@ public class KnowledgeBuilderConfigurationImpl
     private void buildSeverityMap() {
         this.severityMap = new HashMap<String, ResultSeverity>();
         Map<String, String> temp = new HashMap<String, String>();
-        this.chainedProperties.mapStartsWith( temp,
-                                              KBuilderSeverityOption.PROPERTY_NAME,
-                                              true );
+        this.chainedProperties.mapStartsWith(temp,
+                KBuilderSeverityOption.PROPERTY_NAME,
+                true);
 
         int index = KBuilderSeverityOption.PROPERTY_NAME.length();
-        for ( Map.Entry<String, String> entry : temp.entrySet() ) {
-            String identifier = entry.getKey().trim().substring( index );
-            this.severityMap.put( identifier,
-                                  KBuilderSeverityOption.get( identifier, entry.getValue() ).getSeverity() );
+        for (Map.Entry<String, String> entry : temp.entrySet()) {
+            String identifier = entry.getKey().trim().substring(index);
+            this.severityMap.put(identifier,
+                    KBuilderSeverityOption.get(identifier, entry.getValue()).getSeverity());
         }
     }
 
     public void setProperty(String name,
-                            String value) {
+            String value) {
         name = name.trim();
-        if ( StringUtils.isEmpty( name ) ) {
+        if (StringUtils.isEmpty(name)) {
             return;
         }
 
-        if ( name.equals( DefaultDialectOption.PROPERTY_NAME ) ) {
-            setDefaultDialect( value );
-        } else if ( name.startsWith( AccumulateFunctionOption.PROPERTY_NAME ) ) {
-            addAccumulateFunction( name.substring( AccumulateFunctionOption.PROPERTY_NAME.length() ),
-                                   value );
-        } else if ( name.startsWith( EvaluatorOption.PROPERTY_NAME ) ) {
-            this.evaluatorRegistry.addEvaluatorDefinition( value );
-        } else if ( name.equals( DumpDirOption.PROPERTY_NAME ) ) {
-            buildDumpDirectory( value );
-        } else if ( name.equals( DefaultPackageNameOption.PROPERTY_NAME ) ) {
-            setDefaultPackageName( value );
-        } else if ( name.equals( ProcessStringEscapesOption.PROPERTY_NAME ) ) {
-            setProcessStringEscapes( Boolean.parseBoolean( value ) );
-        } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
-            setClassLoaderCacheEnabled( Boolean.parseBoolean( value ) );
-        } else if ( name.startsWith( KBuilderSeverityOption.PROPERTY_NAME ) ) {
-            String key = name.substring( name.lastIndexOf( '.' ) + 1 );
-            this.severityMap.put( key, KBuilderSeverityOption.get( key, value ).getSeverity() );
-        } else if ( name.equals( LanguageLevelOption.PROPERTY_NAME ) ) {
-            setLanguageLevel( LanguageLevelOption.valueOf( value ) );
+        if (name.equals(DefaultDialectOption.PROPERTY_NAME)) {
+            setDefaultDialect(value);
+        } else if (name.startsWith(AccumulateFunctionOption.PROPERTY_NAME)) {
+            addAccumulateFunction(name.substring(AccumulateFunctionOption.PROPERTY_NAME.length()),
+                    value);
+        } else if (name.startsWith(EvaluatorOption.PROPERTY_NAME)) {
+            this.evaluatorRegistry.addEvaluatorDefinition(value);
+        } else if (name.equals(DumpDirOption.PROPERTY_NAME)) {
+            buildDumpDirectory(value);
+        } else if (name.equals(DefaultPackageNameOption.PROPERTY_NAME)) {
+            setDefaultPackageName(value);
+        } else if (name.equals(ProcessStringEscapesOption.PROPERTY_NAME)) {
+            setProcessStringEscapes(Boolean.parseBoolean(value));
+        } else if (name.equals(ClassLoaderCacheOption.PROPERTY_NAME)) {
+            setClassLoaderCacheEnabled(Boolean.parseBoolean(value));
+        } else if (name.startsWith(KBuilderSeverityOption.PROPERTY_NAME)) {
+            String key = name.substring(name.lastIndexOf('.') + 1);
+            this.severityMap.put(key, KBuilderSeverityOption.get(key, value).getSeverity());
+        } else if (name.equals(LanguageLevelOption.PROPERTY_NAME)) {
+            setLanguageLevel(LanguageLevelOption.valueOf(value));
         }
     }
 
     public String getProperty(String name) {
         name = name.trim();
-        if ( StringUtils.isEmpty( name ) ) {
+        if (StringUtils.isEmpty(name)) {
             return null;
         }
 
-        if ( name.equals( DefaultDialectOption.PROPERTY_NAME ) ) {
+        if (name.equals(DefaultDialectOption.PROPERTY_NAME)) {
             return getDefaultDialect();
-        } else if ( name.equals( DefaultPackageNameOption.PROPERTY_NAME ) ) {
+        } else if (name.equals(DefaultPackageNameOption.PROPERTY_NAME)) {
             return getDefaultPackageName();
-        } else if ( name.startsWith( AccumulateFunctionOption.PROPERTY_NAME ) ) {
+        } else if (name.startsWith(AccumulateFunctionOption.PROPERTY_NAME)) {
             int index = AccumulateFunctionOption.PROPERTY_NAME.length();
-            AccumulateFunction function = this.accumulateFunctions.get( name.substring( index ) );
+            AccumulateFunction function = this.accumulateFunctions.get(name.substring(index));
             return function != null ? function.getClass().getName() : null;
-        } else if ( name.startsWith( EvaluatorOption.PROPERTY_NAME ) ) {
-            String key = name.substring( name.lastIndexOf( '.' ) + 1 );
-            EvaluatorDefinition evalDef = this.evaluatorRegistry.getEvaluatorDefinition( key );
+        } else if (name.startsWith(EvaluatorOption.PROPERTY_NAME)) {
+            String key = name.substring(name.lastIndexOf('.') + 1);
+            EvaluatorDefinition evalDef = this.evaluatorRegistry.getEvaluatorDefinition(key);
             return evalDef != null ? evalDef.getClass().getName() : null;
-        } else if ( name.equals( DumpDirOption.PROPERTY_NAME ) ) {
+        } else if (name.equals(DumpDirOption.PROPERTY_NAME)) {
             return this.dumpDirectory != null ? this.dumpDirectory.toString() : null;
-        } else if ( name.equals( ProcessStringEscapesOption.PROPERTY_NAME ) ) {
-            return String.valueOf( isProcessStringEscapes() );
-        } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
-            return String.valueOf( isClassLoaderCacheEnabled() );
-        } else if ( name.startsWith( KBuilderSeverityOption.PROPERTY_NAME ) ) {
-            String key = name.substring( name.lastIndexOf( '.' ) + 1 );
-            ResultSeverity severity = this.severityMap.get( key );
+        } else if (name.equals(ProcessStringEscapesOption.PROPERTY_NAME)) {
+            return String.valueOf(isProcessStringEscapes());
+        } else if (name.equals(ClassLoaderCacheOption.PROPERTY_NAME)) {
+            return String.valueOf(isClassLoaderCacheEnabled());
+        } else if (name.startsWith(KBuilderSeverityOption.PROPERTY_NAME)) {
+            String key = name.substring(name.lastIndexOf('.') + 1);
+            ResultSeverity severity = this.severityMap.get(key);
             return severity.toString();
-        } else if ( name.equals( LanguageLevelOption.PROPERTY_NAME ) ) {
+        } else if (name.equals(LanguageLevelOption.PROPERTY_NAME)) {
             return "" + getLanguageLevel();
         }
         return null;
@@ -325,48 +326,48 @@ public class KnowledgeBuilderConfigurationImpl
     private void buildDialectConfigurationMap() {
         //DialectRegistry registry = new DialectRegistry();
         Map<String, String> dialectProperties = new HashMap<String, String>();
-        this.chainedProperties.mapStartsWith( dialectProperties,
-                                              "drools.dialect",
-                                              false );
-        setDefaultDialect( (String) dialectProperties.remove( DefaultDialectOption.PROPERTY_NAME ) );
+        this.chainedProperties.mapStartsWith(dialectProperties,
+                "drools.dialect",
+                false);
+        setDefaultDialect((String) dialectProperties.remove(DefaultDialectOption.PROPERTY_NAME));
 
-        for ( Map.Entry<String, String> entry : dialectProperties.entrySet() ) {
+        for (Map.Entry<String, String> entry : dialectProperties.entrySet()) {
             String str = entry.getKey();
-            String dialectName = str.substring( str.lastIndexOf( "." ) + 1 );
+            String dialectName = str.substring(str.lastIndexOf(".") + 1);
             String dialectClass = entry.getValue();
-            addDialect( dialectName, dialectClass );
+            addDialect(dialectName, dialectClass);
         }
     }
 
     public void addDialect(String dialectName,
-                           String dialectClass) {
+            String dialectClass) {
         Class<?> cls = null;
         try {
             cls = getClassLoader().loadClass(dialectClass);
             DialectConfiguration dialectConf = (DialectConfiguration) cls.newInstance();
-            dialectConf.init( this );
-            addDialect( dialectName,
-                        dialectConf );
-        } catch ( Exception e ) {
-            throw new RuntimeException( "Unable to load dialect '" + dialectClass + ":" + dialectName + ":" + ((cls != null) ? cls.getName() : "null") + "'",
-                                        e );
+            dialectConf.init(this);
+            addDialect(dialectName,
+                    dialectConf);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to load dialect '" + dialectClass + ":" + dialectName + ":" + ((cls != null) ? cls.getName() : "null") + "'",
+                    e);
         }
     }
 
     public void addDialect(String dialectName,
-                           DialectConfiguration dialectConf) {
-        dialectConfigurations.put( dialectName,
-                                   dialectConf );
+            DialectConfiguration dialectConf) {
+        dialectConfigurations.put(dialectName,
+                dialectConf);
     }
 
     public DialectCompiletimeRegistry buildDialectRegistry(ClassLoader rootClassLoader,
-                                                           KnowledgeBuilderConfigurationImpl pkgConf,
-                                                           PackageRegistry pkgRegistry,
-                                                           InternalKnowledgePackage pkg) {
+            KnowledgeBuilderConfigurationImpl pkgConf,
+            PackageRegistry pkgRegistry,
+            InternalKnowledgePackage pkg) {
         DialectCompiletimeRegistry registry = new DialectCompiletimeRegistry();
-        for ( DialectConfiguration conf : this.dialectConfigurations.values() ) {
-            Dialect dialect = conf.newDialect( rootClassLoader, pkgConf, pkgRegistry, pkg );
-            registry.addDialect( dialect.getId(), dialect );
+        for (DialectConfiguration conf : this.dialectConfigurations.values()) {
+            Dialect dialect = conf.newDialect(rootClassLoader, pkgConf, pkgRegistry, pkg);
+            registry.addDialect(dialect.getId(), dialect);
         }
         return registry;
     }
@@ -376,17 +377,17 @@ public class KnowledgeBuilderConfigurationImpl
     }
 
     public void setDefaultDialect(String defaultDialect) {
-        this.defaultDialect = DefaultDialectOption.get( defaultDialect );
+        this.defaultDialect = DefaultDialectOption.get(defaultDialect);
     }
 
     public DialectConfiguration getDialectConfiguration(String name) {
-        return this.dialectConfigurations.get( name );
+        return this.dialectConfigurations.get(name);
     }
 
     public void setDialectConfiguration(String name,
-                                        DialectConfiguration configuration) {
-        this.dialectConfigurations.put( name,
-                                        configuration );
+            DialectConfiguration configuration) {
+        this.dialectConfigurations.put(name,
+                configuration);
     }
 
     public ClassLoader getClassLoader() {
@@ -395,20 +396,20 @@ public class KnowledgeBuilderConfigurationImpl
 
     /** Use this to override the classLoader that will be used for the rules. */
     private void setClassLoader(ClassLoader classLoader) {
-        this.classLoader = ProjectClassLoader.getClassLoader( classLoader,
-                                                              getClass(),
-                                                              isClassLoaderCacheEnabled() );
+        this.classLoader = ProjectClassLoader.getClassLoader(classLoader,
+                getClass(),
+                isClassLoaderCacheEnabled());
     }
 
     public void addSemanticModule(SemanticModule module) {
-        if ( this.semanticModules == null ) {
+        if (this.semanticModules == null) {
             initSemanticModules();
         }
-        this.semanticModules.addSemanticModule( module );
+        this.semanticModules.addSemanticModule(module);
     }
 
     public SemanticModules getSemanticModules() {
-        if ( this.semanticModules == null ) {
+        if (this.semanticModules == null) {
             initSemanticModules();
         }
         return this.semanticModules;
@@ -417,99 +418,99 @@ public class KnowledgeBuilderConfigurationImpl
     public void initSemanticModules() {
         this.semanticModules = new SemanticModules();
 
-        RulesSemanticModule ruleModule = new RulesSemanticModule( "http://ddefault" );
+        RulesSemanticModule ruleModule = new RulesSemanticModule("http://ddefault");
 
-        this.semanticModules.addSemanticModule( new WrapperSemanticModule( "http://drools.org/drools-5.0", ruleModule ) );
-        this.semanticModules.addSemanticModule( new WrapperSemanticModule( "http://drools.org/drools-5.2", ruleModule ) );
-        this.semanticModules.addSemanticModule( new ChangeSetSemanticModule() );
+        this.semanticModules.addSemanticModule(new WrapperSemanticModule("http://drools.org/drools-5.0", ruleModule));
+        this.semanticModules.addSemanticModule(new WrapperSemanticModule("http://drools.org/drools-5.2", ruleModule));
+        this.semanticModules.addSemanticModule(new ChangeSetSemanticModule());
 
         // split on each space
-        String locations[] = this.chainedProperties.getProperty( "semanticModules",
-                                                                 "" ).split( "\\s" );
+        String locations[] = this.chainedProperties.getProperty("semanticModules",
+                "").split("\\s");
 
         // load each SemanticModule
-        for ( String moduleLocation : locations ) {
+        for (String moduleLocation : locations) {
             // trim leading/trailing spaces and quotes
             moduleLocation = moduleLocation.trim();
-            if ( moduleLocation.startsWith( "\"" ) ) {
-                moduleLocation = moduleLocation.substring( 1 );
+            if (moduleLocation.startsWith("\"")) {
+                moduleLocation = moduleLocation.substring(1);
             }
-            if ( moduleLocation.endsWith( "\"" ) ) {
-                moduleLocation = moduleLocation.substring( 0,
-                                                           moduleLocation.length() - 1 );
+            if (moduleLocation.endsWith("\"")) {
+                moduleLocation = moduleLocation.substring(0,
+                        moduleLocation.length() - 1);
             }
-            if ( !moduleLocation.equals( "" ) ) {
-                loadSemanticModule( moduleLocation );
+            if (!moduleLocation.equals("")) {
+                loadSemanticModule(moduleLocation);
             }
         }
     }
 
     public void loadSemanticModule(String moduleLocation) {
-        URL url = ConfFileUtils.getURL( moduleLocation,
-                                        getClassLoader(),
-                                        getClass() );
-        if ( url == null ) {
-            throw new IllegalArgumentException( moduleLocation + " is specified but cannot be found.'" );
+        URL url = ConfFileUtils.getURL(moduleLocation,
+                getClassLoader(),
+                getClass());
+        if (url == null) {
+            throw new IllegalArgumentException(moduleLocation + " is specified but cannot be found.'");
         }
 
-        Properties properties = ConfFileUtils.getProperties( url );
-        if ( properties == null ) {
-            throw new IllegalArgumentException( moduleLocation + " is specified but cannot be found.'" );
+        Properties properties = ConfFileUtils.getProperties(url);
+        if (properties == null) {
+            throw new IllegalArgumentException(moduleLocation + " is specified but cannot be found.'");
         }
 
-        loadSemanticModule( properties );
+        loadSemanticModule(properties);
     }
 
     public void loadSemanticModule(Properties properties) {
-        String uri = properties.getProperty( "uri",
-                                             null );
-        if ( uri == null || uri.trim().equals( "" ) ) {
-            throw new RuntimeException( "Semantic Module URI property must not be empty" );
+        String uri = properties.getProperty("uri",
+                null);
+        if (uri == null || uri.trim().equals("")) {
+            throw new RuntimeException("Semantic Module URI property must not be empty");
         }
 
-        DefaultSemanticModule module = new DefaultSemanticModule( uri );
+        DefaultSemanticModule module = new DefaultSemanticModule(uri);
 
-        for ( Entry<Object, Object> entry : properties.entrySet() ) {
+        for (Entry<Object, Object> entry : properties.entrySet()) {
             String elementName = (String) entry.getKey();
 
             //uri is processed above, so skip
-            if ( "uri".equals( elementName ) ) {
+            if ("uri".equals(elementName)) {
                 continue;
             }
 
-            if ( elementName == null || elementName.trim().equals( "" ) ) {
-                throw new RuntimeException( "Element name must be specified for Semantic Module handler" );
+            if (elementName == null || elementName.trim().equals("")) {
+                throw new RuntimeException("Element name must be specified for Semantic Module handler");
             }
             String handlerName = (String) entry.getValue();
-            if ( handlerName == null || handlerName.trim().equals( "" ) ) {
-                throw new RuntimeException( "Handler name must be specified for Semantic Module" );
+            if (handlerName == null || handlerName.trim().equals("")) {
+                throw new RuntimeException("Handler name must be specified for Semantic Module");
             }
 
-            Handler handler = (Handler) ClassUtils.instantiateObject( handlerName,
-                                                                      getClassLoader() );
+            Handler handler = (Handler) ClassUtils.instantiateObject(handlerName,
+                    getClassLoader());
 
-            if ( handler == null ) {
-                throw new RuntimeException( "Unable to load Semantic Module handler '" + elementName + ":" + handlerName + "'" );
+            if (handler == null) {
+                throw new RuntimeException("Unable to load Semantic Module handler '" + elementName + ":" + handlerName + "'");
             } else {
-                module.addHandler( elementName,
-                                   handler );
+                module.addHandler(elementName,
+                        handler);
             }
         }
-        this.semanticModules.addSemanticModule( module );
+        this.semanticModules.addSemanticModule(module);
     }
 
     private void buildAccumulateFunctionsMap() {
         this.accumulateFunctions = new HashMap<String, AccumulateFunction>();
         Map<String, String> temp = new HashMap<String, String>();
-        this.chainedProperties.mapStartsWith( temp,
-                                              AccumulateFunctionOption.PROPERTY_NAME,
-                                              true );
+        this.chainedProperties.mapStartsWith(temp,
+                AccumulateFunctionOption.PROPERTY_NAME,
+                true);
         int index = AccumulateFunctionOption.PROPERTY_NAME.length();
-        for ( Map.Entry<String, String> entry : temp.entrySet() ) {
-            String identifier = entry.getKey().trim().substring( index );
-            this.accumulateFunctions.put( identifier,
-                                          loadAccumulateFunction( identifier,
-                                                                  entry.getValue() ) );
+        for (Map.Entry<String, String> entry : temp.entrySet()) {
+            String identifier = entry.getKey().trim().substring(index);
+            this.accumulateFunctions.put(identifier,
+                    loadAccumulateFunction(identifier,
+                            entry.getValue()));
         }
     }
 
@@ -521,72 +522,72 @@ public class KnowledgeBuilderConfigurationImpl
      */
     public Map<String, String> getAccumulateFunctionsMap() {
         Map<String, String> result = new HashMap<String, String>();
-        for ( Map.Entry<String, AccumulateFunction> entry : this.accumulateFunctions.entrySet() ) {
-            result.put( entry.getKey(),
-                        entry.getValue().getClass().getName() );
+        for (Map.Entry<String, AccumulateFunction> entry : this.accumulateFunctions.entrySet()) {
+            result.put(entry.getKey(),
+                    entry.getValue().getClass().getName());
         }
         return result;
     }
 
     public void addAccumulateFunction(String identifier,
-                                      String className) {
-        this.accumulateFunctions.put( identifier,
-                                      loadAccumulateFunction( identifier,
-                                                              className ) );
+            String className) {
+        this.accumulateFunctions.put(identifier,
+                loadAccumulateFunction(identifier,
+                        className));
     }
 
     public void addAccumulateFunction(String identifier,
-                                      Class< ? extends AccumulateFunction> clazz) {
+            Class<? extends AccumulateFunction> clazz) {
         try {
-            this.accumulateFunctions.put( identifier,
-                                          clazz.newInstance() );
-        } catch ( InstantiationException e ) {
-            throw new RuntimeException( "Error loading accumulate function for identifier " + identifier + ". Instantiation failed for class " + clazz.getName(),
-                                        e );
-        } catch ( IllegalAccessException e ) {
-            throw new RuntimeException( "Error loading accumulate function for identifier " + identifier + ". Illegal access to class " + clazz.getName(),
-                                        e );
+            this.accumulateFunctions.put(identifier,
+                    clazz.newInstance());
+        } catch (InstantiationException e) {
+            throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Instantiation failed for class " + clazz.getName(),
+                    e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Illegal access to class " + clazz.getName(),
+                    e);
         }
     }
 
     public AccumulateFunction getAccumulateFunction(String identifier) {
-        return this.accumulateFunctions.get( identifier );
+        return this.accumulateFunctions.get(identifier);
     }
 
     @SuppressWarnings("unchecked")
     private AccumulateFunction loadAccumulateFunction(String identifier,
-                                                      String className) {
+            String className) {
         try {
-            Class< ? extends AccumulateFunction> clazz = (Class< ? extends AccumulateFunction>) getClassLoader().loadClass(className);
+            Class<? extends AccumulateFunction> clazz = (Class<? extends AccumulateFunction>) getClassLoader().loadClass(className);
             return clazz.newInstance();
-        } catch ( ClassNotFoundException e ) {
-            throw new RuntimeException( "Error loading accumulate function for identifier " + identifier + ". Class " + className + " not found",
-                                        e );
-        } catch ( InstantiationException e ) {
-            throw new RuntimeException( "Error loading accumulate function for identifier " + identifier + ". Instantiation failed for class " + className,
-                                        e );
-        } catch ( IllegalAccessException e ) {
-            throw new RuntimeException( "Error loading accumulate function for identifier " + identifier + ". Illegal access to class " + className,
-                                        e );
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Class " + className + " not found",
+                    e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Instantiation failed for class " + className,
+                    e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Illegal access to class " + className,
+                    e);
         }
     }
 
     private void buildEvaluatorRegistry() {
-        this.evaluatorRegistry = new EvaluatorRegistry( getClassLoader() );
+        this.evaluatorRegistry = new EvaluatorRegistry(getClassLoader());
         Map<String, String> temp = new HashMap<String, String>();
-        this.chainedProperties.mapStartsWith( temp,
-                                              EvaluatorOption.PROPERTY_NAME,
-                                              true );
-        for ( Entry<String, String> e: temp.entrySet()) {
-        	String key = e.getKey();
-        	// filtering out unused properties, to avoid failing when an old packagebuilder.conf
-        	// file is present on the classpath that did define these (for example when parsing
-        	// a rule in Eclipse plugin using old runtime)
-        	if ("drools.evaluator.equality".equals(key)
-        			|| ("drools.evaluator.comparable".equals(key))) {
-        		continue;
-        	}
-            this.evaluatorRegistry.addEvaluatorDefinition( e.getValue() );
+        this.chainedProperties.mapStartsWith(temp,
+                EvaluatorOption.PROPERTY_NAME,
+                true);
+        for (Entry<String, String> e : temp.entrySet()) {
+            String key = e.getKey();
+            // filtering out unused properties, to avoid failing when an old packagebuilder.conf
+            // file is present on the classpath that did define these (for example when parsing
+            // a rule in Eclipse plugin using old runtime)
+            if ("drools.evaluator.equality".equals(key)
+                    || ("drools.evaluator.comparable".equals(key))) {
+                continue;
+            }
+            this.evaluatorRegistry.addEvaluatorDefinition(e.getValue());
         }
     }
 
@@ -609,7 +610,7 @@ public class KnowledgeBuilderConfigurationImpl
      *                  The class must implement the EvaluatorDefinition interface.
      */
     public void addEvaluatorDefinition(String className) {
-        this.evaluatorRegistry.addEvaluatorDefinition( className );
+        this.evaluatorRegistry.addEvaluatorDefinition(className);
     }
 
     /**
@@ -620,18 +621,18 @@ public class KnowledgeBuilderConfigurationImpl
      * @param def the evaluator definition to be added.
      */
     public void addEvaluatorDefinition(EvaluatorDefinition def) {
-        this.evaluatorRegistry.addEvaluatorDefinition( def );
+        this.evaluatorRegistry.addEvaluatorDefinition(def);
     }
 
     private void buildDumpDirectory() {
-        String dumpStr = this.chainedProperties.getProperty( DumpDirOption.PROPERTY_NAME,
-                                                             null );
-        buildDumpDirectory( dumpStr );
+        String dumpStr = this.chainedProperties.getProperty(DumpDirOption.PROPERTY_NAME,
+                null);
+        buildDumpDirectory(dumpStr);
     }
 
     private void buildDumpDirectory(String dumpStr) {
-        if ( dumpStr != null ) {
-            setDumpDir( new File( dumpStr ) );
+        if (dumpStr != null) {
+            setDumpDir(new File(dumpStr));
         }
     }
 
@@ -640,8 +641,8 @@ public class KnowledgeBuilderConfigurationImpl
     }
 
     public void setDumpDir(File dumpDir) {
-        if ( !dumpDir.isDirectory() || !dumpDir.canWrite() || !dumpDir.canRead() ) {
-            throw new RuntimeException( "Drools dump directory is not accessible: " + dumpDir.toString() );
+        if (!dumpDir.isDirectory() || !dumpDir.canWrite() || !dumpDir.canRead()) {
+            throw new RuntimeException("Drools dump directory is not accessible: " + dumpDir.toString());
         }
         this.dumpDirectory = dumpDir;
     }
@@ -698,19 +699,19 @@ public class KnowledgeBuilderConfigurationImpl
 
     @SuppressWarnings("unchecked")
     public <T extends SingleValueKnowledgeBuilderOption> T getOption(Class<T> option) {
-        if ( DefaultDialectOption.class.equals( option ) ) {
+        if (DefaultDialectOption.class.equals(option)) {
             return (T) this.defaultDialect;
-        } else if ( DumpDirOption.class.equals( option ) ) {
-            return (T) DumpDirOption.get( this.dumpDirectory );
-        } else if ( ProcessStringEscapesOption.class.equals( option ) ) {
+        } else if (DumpDirOption.class.equals(option)) {
+            return (T) DumpDirOption.get(this.dumpDirectory);
+        } else if (ProcessStringEscapesOption.class.equals(option)) {
             return (T) (this.processStringEscapes ? ProcessStringEscapesOption.YES : ProcessStringEscapesOption.NO);
-        } else if ( DefaultPackageNameOption.class.equals( option ) ) {
-            return (T) DefaultPackageNameOption.get( this.defaultPackageName );
-        } else if ( ClassLoaderCacheOption.class.equals( option ) ) {
+        } else if (DefaultPackageNameOption.class.equals(option)) {
+            return (T) DefaultPackageNameOption.get(this.defaultPackageName);
+        } else if (ClassLoaderCacheOption.class.equals(option)) {
             return (T) (this.classLoaderCache ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
-        } else if ( PropertySpecificOption.class.equals( option ) ) {
+        } else if (PropertySpecificOption.class.equals(option)) {
             return (T) propertySpecificOption;
-        } else if ( LanguageLevelOption.class.equals( option ) ) {
+        } else if (LanguageLevelOption.class.equals(option)) {
             return (T) languageLevel;
         }
         return null;
@@ -718,63 +719,63 @@ public class KnowledgeBuilderConfigurationImpl
 
     @SuppressWarnings("unchecked")
     public <T extends MultiValueKnowledgeBuilderOption> T getOption(Class<T> option,
-                                                                    String key) {
-        if ( AccumulateFunctionOption.class.equals( option ) ) {
-            return (T) AccumulateFunctionOption.get( key,
-                                                     this.accumulateFunctions.get( key ) );
-        } else if ( EvaluatorOption.class.equals( option ) ) {
-            return (T) EvaluatorOption.get( key,
-                                            this.evaluatorRegistry.getEvaluatorDefinition( key ) );
-        } else if ( KBuilderSeverityOption.class.equals( option ) ) {
+            String key) {
+        if (AccumulateFunctionOption.class.equals(option)) {
+            return (T) AccumulateFunctionOption.get(key,
+                    this.accumulateFunctions.get(key));
+        } else if (EvaluatorOption.class.equals(option)) {
+            return (T) EvaluatorOption.get(key,
+                    this.evaluatorRegistry.getEvaluatorDefinition(key));
+        } else if (KBuilderSeverityOption.class.equals(option)) {
 
-            return (T) KBuilderSeverityOption.get( key,
-                                                   this.severityMap.get( key ) );
+            return (T) KBuilderSeverityOption.get(key,
+                    this.severityMap.get(key));
         }
         return null;
     }
 
     public <T extends MultiValueKnowledgeBuilderOption> Set<String> getOptionKeys(
-                                                                                  Class<T> option) {
-        if ( AccumulateFunctionOption.class.equals( option ) ) {
+            Class<T> option) {
+        if (AccumulateFunctionOption.class.equals(option)) {
             return this.accumulateFunctions.keySet();
-        } else if ( EvaluatorOption.class.equals( option ) ) {
+        } else if (EvaluatorOption.class.equals(option)) {
             return this.evaluatorRegistry.keySet();
-        } else if ( KBuilderSeverityOption.class.equals( option ) ) {
+        } else if (KBuilderSeverityOption.class.equals(option)) {
             return this.severityMap.keySet();
         }
         return null;
     }
 
     public <T extends KnowledgeBuilderOption> void setOption(T option) {
-        if ( option instanceof DefaultDialectOption ) {
+        if (option instanceof DefaultDialectOption) {
             this.defaultDialect = (DefaultDialectOption) option;
-        } else if ( option instanceof AccumulateFunctionOption ) {
-            this.accumulateFunctions.put( ((AccumulateFunctionOption) option).getName(),
-                                          ((AccumulateFunctionOption) option).getFunction() );
-        } else if ( option instanceof DumpDirOption ) {
+        } else if (option instanceof AccumulateFunctionOption) {
+            this.accumulateFunctions.put(((AccumulateFunctionOption) option).getName(),
+                    ((AccumulateFunctionOption) option).getFunction());
+        } else if (option instanceof DumpDirOption) {
             this.dumpDirectory = ((DumpDirOption) option).getDirectory();
-        } else if ( option instanceof EvaluatorOption ) {
-            this.evaluatorRegistry.addEvaluatorDefinition( (EvaluatorDefinition) ((EvaluatorOption) option).getEvaluatorDefinition() );
-        } else if ( option instanceof ProcessStringEscapesOption ) {
+        } else if (option instanceof EvaluatorOption) {
+            this.evaluatorRegistry.addEvaluatorDefinition((EvaluatorDefinition) ((EvaluatorOption) option).getEvaluatorDefinition());
+        } else if (option instanceof ProcessStringEscapesOption) {
             this.processStringEscapes = ((ProcessStringEscapesOption) option).isProcessStringEscapes();
-        } else if ( option instanceof DefaultPackageNameOption ) {
-            setDefaultPackageName( ((DefaultPackageNameOption) option).getPackageName() );
-        } else if ( option instanceof ClassLoaderCacheOption ) {
-            setClassLoaderCacheEnabled( ((ClassLoaderCacheOption) option).isClassLoaderCacheEnabled() );
-        } else if ( option instanceof KBuilderSeverityOption ) {
-            this.severityMap.put( ((KBuilderSeverityOption) option).getName(), ((KBuilderSeverityOption) option).getSeverity() );
-        } else if ( option instanceof PropertySpecificOption ) {
+        } else if (option instanceof DefaultPackageNameOption) {
+            setDefaultPackageName(((DefaultPackageNameOption) option).getPackageName());
+        } else if (option instanceof ClassLoaderCacheOption) {
+            setClassLoaderCacheEnabled(((ClassLoaderCacheOption) option).isClassLoaderCacheEnabled());
+        } else if (option instanceof KBuilderSeverityOption) {
+            this.severityMap.put(((KBuilderSeverityOption) option).getName(), ((KBuilderSeverityOption) option).getSeverity());
+        } else if (option instanceof PropertySpecificOption) {
             propertySpecificOption = (PropertySpecificOption) option;
-        } else if ( option instanceof LanguageLevelOption ) {
+        } else if (option instanceof LanguageLevelOption) {
             this.languageLevel = ((LanguageLevelOption) option);
         }
     }
 
-    public Map<String, Map<String, byte[]>> getCompilationCache() {
+    public CompilationCache getCompilationCache() {
         return compilationCache;
     }
 
-    public void setCompilationCache(Map<String, Map<String, byte[]>> cache) {
+    public void setCompilationCache(CompilationCache cache) {
         this.compilationCache = cache;
     }
 

@@ -16,6 +16,7 @@ import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.compiler.kie.builder.impl.AbstractKieModule.CompilationCacheEntry;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -621,20 +622,22 @@ public class JavaDialect
         boolean found = false;
         if( pkgConf.isPreCompiled() ) {
             // recover bytecode from cache 
-            Map<String, byte[]> cache = pkgConf.getCompilationCache().get( ID );
+            Map<String, List<CompilationCacheEntry>> cache = pkgConf.getCompilationCache().getCacheForDialect( ID );
             if( cache != null ) {
                 String resourceName = className.replace( ".java", ".class" );
-                byte[] bytecode = cache.get( resourceName );
-                if( bytecode != null ) {
-//                    System.out.println("Found in cache = "+className);
-                    this.packageStoreWrapper.write( resourceName, bytecode );
+                List<CompilationCacheEntry> bytecodes = cache.get( resourceName );
+                if( bytecodes != null ) {
+                    for( CompilationCacheEntry entry : bytecodes ) {
+                        //System.out.println("Found in cache = "+entry.className);
+                        this.packageStoreWrapper.write( entry.className, entry.bytecode );
+                    }
                     found = true;
                 }
             }
         }
         if( ! found ) {
             // compile as usual
-//            System.out.println("compiling = "+className);
+            //System.out.println("compiling = "+className);
             this.generatedClassList.add( className );
         }
     }

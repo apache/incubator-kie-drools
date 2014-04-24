@@ -5,10 +5,13 @@ import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -65,8 +68,8 @@ public abstract class AbstractKieModule
 
     private Map<ReleaseId, InternalKieModule> kieDependencies;
 
-    // this is a { KBASE_NAME -> DIALECT -> ( RESOURCE, BYTECODE ) } cache
-    protected Map<String, Map<String, Map<String, byte[]>>> compilationCache = new HashMap<String, Map<String, Map<String, byte[]>>>();
+    // Map< KBaseName, CompilationCache>
+    protected Map<String, CompilationCache> compilationCache = new HashMap<String, CompilationCache>();
 
     private Map<String, TypeMetaInfo> typesMetaInfo;
 
@@ -317,8 +320,9 @@ public abstract class AbstractKieModule
         return conf;
     }
 
-    protected Map<String, Map<String, byte[]>> getCompilationCache(String kbaseName) {
-        Map<String, Map<String, byte[]>> cache = compilationCache.get(kbaseName);
+    protected CompilationCache getCompilationCache(String kbaseName) {
+        // Map< DIALECT, Map< RESOURCE, List<BYTECODE> > >
+        CompilationCache cache = compilationCache.get(kbaseName);
         if (cache == null) {
             byte[] fileContents = getBytes(KieBuilderImpl.getCompilationCachePath(releaseId, kbaseName));
             if (fileContents != null) {
@@ -327,12 +331,10 @@ public abstract class AbstractKieModule
                     Header _header = KieModuleCacheHelper.readFromStreamWithHeaderPreloaded(new ByteArrayInputStream(fileContents), registry);
                     KModuleCache _cache = KModuleCache.parseFrom(_header.getPayload());
 
-                    cache = new HashMap<String, Map<String, byte[]>>();
+                    cache = new CompilationCache();
                     for (CompilationData _data : _cache.getCompilationDataList()) {
-                        Map<String, byte[]> bytecode = new HashMap<String, byte[]>();
-                        cache.put(_data.getDialect(), bytecode);
                         for (CompDataEntry _entry : _data.getEntryList()) {
-                            bytecode.put(_entry.getId(), _entry.getData().toByteArray());
+                            cache.addEntry(_data.getDialect(), _entry.getId(),  _entry.getData().toByteArray());
                         }
                     }
                     compilationCache.put(kbaseName, cache);
@@ -395,6 +397,45 @@ public abstract class AbstractKieModule
             return true;
         }
         return false;
+    }
+    
+    public static class CompilationCache implements Serializable {
+        private static final long serialVersionUID = 3812243055974412935L;
+        // this is a { DIALECT -> ( RESOURCE, List<CompilationEntry> ) } cache
+        protected final Map<String, Map<String, List<CompilationCacheEntry>>> compilationCache = new HashMap<String, Map<String, List<CompilationCacheEntry>>>();
+
+        public void addEntry(String dialect, String className, byte[] bytecode) {
+            Map<String, List<CompilationCacheEntry>> resourceEntries = compilationCache.get(dialect);
+            if( resourceEntries == null ) {
+                resourceEntries = new HashMap<String, List<CompilationCacheEntry>>();
+                compilationCache.put(dialect, resourceEntries);
+            }
+                    
+            String key = className.contains("$") ? className.substring(0, className.indexOf('$') ) + ".class" : className; 
+            List<CompilationCacheEntry> bytes = resourceEntries.get(key);
+            if( bytes == null ) {
+                bytes = new ArrayList<CompilationCacheEntry>();
+                resourceEntries.put(key, bytes);
+            }
+            //System.out.println(String.format("Adding to in-memory cache: %s %s", key, className ));
+            bytes.add(new CompilationCacheEntry(className, bytecode));
+        }
+
+        public Map<String, List<CompilationCacheEntry>> getCacheForDialect(String dialect) {
+            return compilationCache.get(dialect);
+        }
+        
+    }
+    
+    public static class CompilationCacheEntry implements Serializable {
+        private static final long serialVersionUID = 1423987159014688588L;
+        public final String className;
+        public final byte[] bytecode;
+        
+        public CompilationCacheEntry( String className, byte[] bytecode) {
+            this.className = className;
+            this.bytecode = bytecode;
+        }
     }
     
 }
