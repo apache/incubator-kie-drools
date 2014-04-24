@@ -24,22 +24,8 @@ import static org.junit.Assert.assertEquals;
 public class SimpleScoreDefinitionTest {
 
     @Test
-    public void calculateTimeGradient() {
-        SimpleScoreDefinition scoreDefinition = new SimpleScoreDefinition();
-
-        assertEquals(0.0, scoreDefinition.calculateTimeGradient(
-                SimpleScore.valueOf(0), SimpleScore.valueOf(10), SimpleScore.valueOf(0)), 0.0);
-        assertEquals(0.6, scoreDefinition.calculateTimeGradient(
-                SimpleScore.valueOf(0), SimpleScore.valueOf(10), SimpleScore.valueOf(6)), 0.0);
-        assertEquals(1.0, scoreDefinition.calculateTimeGradient(
-                SimpleScore.valueOf(0), SimpleScore.valueOf(10), SimpleScore.valueOf(10)), 0.0);
-        assertEquals(1.0, scoreDefinition.calculateTimeGradient(
-                SimpleScore.valueOf(0), SimpleScore.valueOf(10), SimpleScore.valueOf(11)), 0.0);
-
-        assertEquals(0.25, scoreDefinition.calculateTimeGradient(
-                SimpleScore.valueOf(-10), SimpleScore.valueOf(30), SimpleScore.valueOf(0)), 0.0);
-        assertEquals(0.33333, scoreDefinition.calculateTimeGradient(
-                SimpleScore.valueOf(10), SimpleScore.valueOf(40), SimpleScore.valueOf(20)), 0.00001);
+    public void getLevelCount() {
+        assertEquals(1, new SimpleScoreDefinition().getLevelCount());
     }
 
 }

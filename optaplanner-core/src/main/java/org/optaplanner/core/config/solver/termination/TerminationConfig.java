@@ -214,7 +214,12 @@ public class TerminationConfig implements Cloneable {
         }
         if (bestScoreLimit != null) {
             Score bestScoreLimit_ = configPolicy.getScoreDefinition().parseScore(bestScoreLimit);
-            terminationList.add(new BestScoreTermination(bestScoreLimit_));
+            ScoreDefinition scoreDefinition = configPolicy.getScoreDefinition();
+            double[] timeGradientWeightNumbers = new double[scoreDefinition.getLevelCount() - 1];
+            for (int i = 0; i < timeGradientWeightNumbers.length; i++) {
+                timeGradientWeightNumbers[i] = 0.50; // Number pulled out of thin air
+            }
+            terminationList.add(new BestScoreTermination(bestScoreLimit_, timeGradientWeightNumbers));
         }
         if (bestScoreFeasible != null) {
             ScoreDefinition scoreDefinition = configPolicy.getScoreDefinition();

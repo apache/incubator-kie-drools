@@ -26,35 +26,13 @@ import static org.junit.Assert.assertEquals;
 public class HardSoftBigDecimalScoreDefinitionTest {
 
     @Test
-    public void calculateTimeGradient() {
-        HardSoftBigDecimalScoreDefinition scoreDefinition = new HardSoftBigDecimalScoreDefinition();
-
-        // hard == soft
-        assertEquals(0.0, scoreDefinition.calculateTimeGradient(
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("0.00"), new BigDecimal("0.00")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("10.00"), new BigDecimal("10.00")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("0.00"), new BigDecimal("0.00"))), 0.0);
-        assertEquals(0.6, scoreDefinition.calculateTimeGradient(
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("0.00"), new BigDecimal("0.00")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("10.00"), new BigDecimal("10.00")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("6.00"), new BigDecimal("6.00"))), 0.0);
-        assertEquals(1.0, scoreDefinition.calculateTimeGradient(
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("0.00"), new BigDecimal("0.00")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("10.00"), new BigDecimal("10.00")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("10.00"), new BigDecimal("10.00"))), 0.0);
-        assertEquals(1.0, scoreDefinition.calculateTimeGradient(
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("0.00"), new BigDecimal("0.00")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("10.00"), new BigDecimal("10.00")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("11.00"), new BigDecimal("11.00"))), 0.0);
-        assertEquals(0.25, scoreDefinition.calculateTimeGradient(
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("-10.00"), new BigDecimal("-10.00")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("30.00"), new BigDecimal("30.00")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("0.00"), new BigDecimal("0.00"))), 0.0);
-        assertEquals(0.33333, scoreDefinition.calculateTimeGradient(
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("10.00"), new BigDecimal("10.00")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("40.00"), new BigDecimal("40.00")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("20.00"), new BigDecimal("20.00"))), 0.00001);
-
-        // TODO hard != soft
+    public void getLevelCount() {
+        assertEquals(2, new HardSoftBigDecimalScoreDefinition().getLevelCount());
     }
+
+    @Test
+    public void getFeasibleLevelCount() {
+        assertEquals(1, new HardSoftBigDecimalScoreDefinition().getFeasibleLevelCount());
+    }
+
 }

@@ -26,27 +26,8 @@ import static org.junit.Assert.assertEquals;
 public class SimpleBigDecimalScoreDefinitionTest {
 
     @Test
-    public void calculateTimeGradient() {
-        SimpleBigDecimalScoreDefinition scoreDefinition = new SimpleBigDecimalScoreDefinition();
-
-        assertEquals(0.0, scoreDefinition.calculateTimeGradient(
-                SimpleBigDecimalScore.valueOf(new BigDecimal("0.00")), SimpleBigDecimalScore.valueOf(new BigDecimal("10.00")),
-                SimpleBigDecimalScore.valueOf(new BigDecimal("0.00"))), 0.0);
-        assertEquals(0.6, scoreDefinition.calculateTimeGradient(
-                SimpleBigDecimalScore.valueOf(new BigDecimal("0.00")), SimpleBigDecimalScore.valueOf(new BigDecimal("10.00")),
-                SimpleBigDecimalScore.valueOf(new BigDecimal("6.00"))), 0.0);
-        assertEquals(1.0, scoreDefinition.calculateTimeGradient(
-                SimpleBigDecimalScore.valueOf(new BigDecimal("0.00")), SimpleBigDecimalScore.valueOf(new BigDecimal("10.00")),
-                SimpleBigDecimalScore.valueOf(new BigDecimal("10.00"))), 0.0);
-        assertEquals(1.0, scoreDefinition.calculateTimeGradient(
-                SimpleBigDecimalScore.valueOf(new BigDecimal("0.00")), SimpleBigDecimalScore.valueOf(new BigDecimal("10.00")),
-                SimpleBigDecimalScore.valueOf(new BigDecimal("11.00"))), 0.0);
-        assertEquals(0.25, scoreDefinition.calculateTimeGradient(
-                SimpleBigDecimalScore.valueOf(new BigDecimal("-10.00")), SimpleBigDecimalScore.valueOf(new BigDecimal("30.00")),
-                SimpleBigDecimalScore.valueOf(new BigDecimal("0.00"))), 0.0);
-        assertEquals(0.33333, scoreDefinition.calculateTimeGradient(
-                SimpleBigDecimalScore.valueOf(new BigDecimal("10.00")), SimpleBigDecimalScore.valueOf(new BigDecimal("40.00")),
-                SimpleBigDecimalScore.valueOf(new BigDecimal("20.00"))), 0.00001);
+    public void getLevelCount() {
+        assertEquals(1, new SimpleBigDecimalScoreDefinition().getLevelCount());
     }
 
 }
