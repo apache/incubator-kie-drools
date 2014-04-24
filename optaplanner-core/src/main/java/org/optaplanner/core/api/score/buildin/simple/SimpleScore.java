@@ -79,6 +79,10 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
         return new SimpleScore((int) Math.floor(Math.pow(score, exponent)));
     }
 
+    public SimpleScore negate() {
+        return new SimpleScore(-score);
+    }
+
     public Number[] toLevelNumbers() {
         return new Number[]{score};
     }

@@ -77,6 +77,14 @@ public class SimpleDoubleScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void negate() {
+        assertEquals(SimpleDoubleScore.valueOf(-1.5),
+                SimpleDoubleScore.valueOf(1.5).negate());
+        assertEquals(SimpleDoubleScore.valueOf(1.5),
+                SimpleDoubleScore.valueOf(-1.5).negate());
+    }
+
+    @Test
     public void equalsAndHashCode() {
         assertScoresEqualsAndHashCode(
                 SimpleDoubleScore.valueOf(-10.0),

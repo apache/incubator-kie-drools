@@ -77,6 +77,14 @@ public class SimpleScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void negate() {
+        assertEquals(SimpleScore.valueOf(-5),
+                SimpleScore.valueOf(5).negate());
+        assertEquals(SimpleScore.valueOf(5),
+                SimpleScore.valueOf(-5).negate());
+    }
+
+    @Test
     public void equalsAndHashCode() {
         assertScoresEqualsAndHashCode(
                 SimpleScore.valueOf(-10),

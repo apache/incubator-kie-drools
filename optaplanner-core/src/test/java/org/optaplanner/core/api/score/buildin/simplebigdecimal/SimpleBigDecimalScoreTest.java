@@ -78,6 +78,14 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void negate() {
+        assertEquals(SimpleBigDecimalScore.valueOf(new BigDecimal("-5.0")),
+                SimpleBigDecimalScore.valueOf(new BigDecimal("5.0")).negate());
+        assertEquals(SimpleBigDecimalScore.valueOf(new BigDecimal("5.0")),
+                SimpleBigDecimalScore.valueOf(new BigDecimal("-5.0")).negate());
+    }
+
+    @Test
     public void equalsAndHashCode() {
         assertScoresEqualsAndHashCode(
                 SimpleBigDecimalScore.valueOf(new BigDecimal("-10")),

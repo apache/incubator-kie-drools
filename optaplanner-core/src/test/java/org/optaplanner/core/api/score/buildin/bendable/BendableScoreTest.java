@@ -92,6 +92,14 @@ public class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void negateHSS() {
+        assertEquals(scoreDefinitionHSS.createScore(-3, 4, -5),
+                scoreDefinitionHSS.createScore(3, -4, 5).negate());
+        assertEquals(scoreDefinitionHSS.createScore(3, -4, 5),
+                scoreDefinitionHSS.createScore(-3, 4, -5).negate());
+    }
+
+    @Test
     public void equalsAndHashCodeHSS() {
         assertScoresEqualsAndHashCode(
                 scoreDefinitionHSS.createScore(-10, -20, -30),
@@ -175,6 +183,14 @@ public class BendableScoreTest extends AbstractScoreTest {
                 scoreDefinitionHHSSS.createScore(3, -4, 5, 0, 0).power(2.0));
         assertEquals(scoreDefinitionHHSSS.createScore(3, 4, 5, 0, 0),
                 scoreDefinitionHHSSS.createScore(9, 16, 25, 0, 0).power(0.5));
+    }
+
+    @Test
+    public void negateHHSSS() {
+        assertEquals(scoreDefinitionHHSSS.createScore(-3, 4, -5, 0, 0),
+                scoreDefinitionHHSSS.createScore(3, -4, 5, 0, 0).negate());
+        assertEquals(scoreDefinitionHHSSS.createScore(3, -4, 5, 0, 0),
+                scoreDefinitionHHSSS.createScore(-3, 4, -5, 0, 0).negate());
     }
 
     @Test

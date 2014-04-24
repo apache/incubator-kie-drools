@@ -116,6 +116,10 @@ public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore
                 Math.pow(softScore, exponent));
     }
 
+    public HardSoftDoubleScore negate() {
+        return new HardSoftDoubleScore(-hardScore, -softScore);
+    }
+
     public Number[] toLevelNumbers() {
         return new Number[]{hardScore, softScore};
     }

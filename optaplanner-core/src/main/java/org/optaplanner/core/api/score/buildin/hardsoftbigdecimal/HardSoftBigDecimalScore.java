@@ -131,6 +131,10 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
                 softScore.pow(exponentBigDecimal.intValue()).setScale(softScore.scale()));
     }
 
+    public HardSoftBigDecimalScore negate() {
+        return new HardSoftBigDecimalScore(hardScore.negate(), softScore.negate());
+    }
+
     public Number[] toLevelNumbers() {
         return new Number[]{hardScore.doubleValue(), softScore.doubleValue()};
     }

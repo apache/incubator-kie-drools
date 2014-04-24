@@ -4177,3 +4177,4 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
     <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingEasyScoreCalculator<easyScoreCalculatorClass>
 
+[MINOR] If you have a custom ScoreDefinition: the Score interface has an extra method negate().

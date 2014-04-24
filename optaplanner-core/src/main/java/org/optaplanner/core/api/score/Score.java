@@ -80,6 +80,12 @@ public interface Score<S extends Score> extends Comparable<S> {
     S power(double exponent);
 
     /**
+     * Returns a Score whose value is (- this).
+     * @return - this
+     */
+    S negate();
+
+    /**
      * Returns an array of numbers representing the Score. Each number represents 1 score level.
      * A greater score level uses a lower array index than a lesser score level.
      * <p/>

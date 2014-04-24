@@ -143,6 +143,10 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
                 (int) Math.floor(Math.pow(softScore, exponent)));
     }
 
+    public HardMediumSoftScore negate() {
+        return new HardMediumSoftScore(-hardScore, -mediumScore, -softScore);
+    }
+
     public Number[] toLevelNumbers() {
         return new Number[]{hardScore, mediumScore, softScore};
     }

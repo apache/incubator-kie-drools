@@ -88,6 +88,14 @@ public class HardSoftScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void negate() {
+        assertEquals(HardSoftScore.valueOf(4, -5),
+                HardSoftScore.valueOf(-4, 5).negate());
+        assertEquals(HardSoftScore.valueOf(-4, 5),
+                HardSoftScore.valueOf(4, -5).negate());
+    }
+
+    @Test
     public void equalsAndHashCode() {
         assertScoresEqualsAndHashCode(
                 HardSoftScore.valueOf(-10, -20),

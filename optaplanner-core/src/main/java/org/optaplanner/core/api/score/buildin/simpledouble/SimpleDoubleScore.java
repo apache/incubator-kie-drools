@@ -84,6 +84,10 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
         return new SimpleDoubleScore(Math.pow(score, exponent));
     }
 
+    public SimpleDoubleScore negate() {
+        return new SimpleDoubleScore(-score);
+    }
+
     public Number[] toLevelNumbers() {
         return new Number[]{score};
     }

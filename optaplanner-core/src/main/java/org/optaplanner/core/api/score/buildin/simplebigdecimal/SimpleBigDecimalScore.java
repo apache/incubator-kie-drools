@@ -99,6 +99,10 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
                 score.pow(exponentBigDecimal.intValue()).setScale(score.scale()));
     }
 
+    public SimpleBigDecimalScore negate() {
+        return new SimpleBigDecimalScore(score.negate());
+    }
+
     public Number[] toLevelNumbers() {
         return new Number[]{score.doubleValue()};
     }
