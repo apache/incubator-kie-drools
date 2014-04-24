@@ -47,17 +47,6 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
         return SimpleBigDecimalScore.parseScore(scoreString);
     }
 
-    public double calculateTimeGradient(SimpleBigDecimalScore startScore, SimpleBigDecimalScore endScore, SimpleBigDecimalScore score) {
-        if (score.getScore().compareTo(endScore.getScore()) >= 0) {
-            return 1.0;
-        } else if (startScore.getScore().compareTo(score.getScore()) >= 0) {
-            return 0.0;
-        }
-        BigDecimal scoreTotal = endScore.getScore().subtract(startScore.getScore());
-        BigDecimal scoreDelta = score.getScore().subtract(startScore.getScore());
-        return scoreDelta.doubleValue() / scoreTotal.doubleValue();
-    }
-
     public SimpleBigDecimalScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new SimpleBigDecimalScoreHolder(constraintMatchEnabled);
     }

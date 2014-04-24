@@ -31,7 +31,7 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractFeasibilityScoreD
 
     private double hardScoreTimeGradientWeight = 0.75; // TODO this is a guess
 
-   public double getHardScoreTimeGradientWeight() {
+    public double getHardScoreTimeGradientWeight() {
         return hardScoreTimeGradientWeight;
     }
 
@@ -70,36 +70,6 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractFeasibilityScoreD
         return HardSoftBigDecimalScore.parseScore(scoreString);
     }
 
-    public double calculateTimeGradient(HardSoftBigDecimalScore startScore, HardSoftBigDecimalScore endScore,
-            HardSoftBigDecimalScore score) {
-        if (score.compareTo(endScore) > 0) {
-            return 1.0;
-        } else if (score.compareTo(startScore) < 0) {
-            return 0.0;
-        }
-        double timeGradient = 0.0;
-        double softScoreTimeGradientWeight = 1.0 - hardScoreTimeGradientWeight;
-        if (startScore.getHardScore().compareTo(endScore.getHardScore()) == 0) {
-            timeGradient += hardScoreTimeGradientWeight;
-        } else {
-            BigDecimal hardScoreTotal = endScore.getHardScore().subtract(startScore.getHardScore());
-            BigDecimal hardScoreDelta = score.getHardScore().subtract(startScore.getHardScore());
-            double hardTimeGradient = hardScoreDelta.doubleValue() / hardScoreTotal.doubleValue();
-            timeGradient += hardTimeGradient * hardScoreTimeGradientWeight;
-        }
-        if (score.getSoftScore().compareTo(endScore.getSoftScore()) >= 0) {
-            timeGradient += softScoreTimeGradientWeight;
-        } else if (score.getSoftScore().compareTo(startScore.getSoftScore()) <= 0) {
-            // No change: timeGradient += 0.0
-        } else {
-            BigDecimal softScoreTotal = endScore.getSoftScore().subtract(startScore.getSoftScore());
-            BigDecimal softScoreDelta = score.getSoftScore().subtract(startScore.getSoftScore());
-            double softTimeGradient = softScoreDelta.doubleValue() / softScoreTotal.doubleValue();
-            timeGradient += softTimeGradient * softScoreTimeGradientWeight;
-        }
-        return timeGradient;
-    }
-
     public HardSoftBigDecimalScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new HardSoftBigDecimalScoreHolder(constraintMatchEnabled);
     }
@@ -114,14 +84,6 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractFeasibilityScoreD
         // TODO https://issues.jboss.org/browse/PLANNER-232
         throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +
                 " because a BigDecimal cannot represent infinity.");
-    }
-
-    public double calculateFeasibilityTimeGradient(HardSoftBigDecimalScore startScore, HardSoftBigDecimalScore score) {
-        if (score.getHardScore().compareTo(startScore.getHardScore()) <= 0) {
-            return 0.0;
-        }
-        double timeGradient = (startScore.getHardScore().subtract(score.getHardScore())).divide(startScore.getHardScore()).doubleValue();
-        return Math.min(timeGradient, 1.0);
     }
 
 }

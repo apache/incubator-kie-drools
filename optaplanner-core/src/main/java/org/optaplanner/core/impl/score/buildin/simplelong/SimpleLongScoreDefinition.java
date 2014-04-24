@@ -44,17 +44,6 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
         return SimpleLongScore.parseScore(scoreString);
     }
 
-    public double calculateTimeGradient(SimpleLongScore startScore, SimpleLongScore endScore, SimpleLongScore score) {
-        if (score.getScore() >= endScore.getScore()) {
-            return 1.0;
-        } else if (startScore.getScore() >= score.getScore()) {
-            return 0.0;
-        }
-        long scoreTotal = endScore.getScore() - startScore.getScore();
-        long scoreDelta = score.getScore() - startScore.getScore();
-        return ((double) scoreDelta) / ((double) scoreTotal);
-    }
-
     public SimpleLongScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new SimpleLongScoreHolder(constraintMatchEnabled);
     }

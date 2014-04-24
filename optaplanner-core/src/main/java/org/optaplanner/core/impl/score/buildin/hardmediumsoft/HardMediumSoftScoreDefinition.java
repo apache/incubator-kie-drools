@@ -87,48 +87,6 @@ public class HardMediumSoftScoreDefinition extends AbstractFeasibilityScoreDefin
         return HardMediumSoftScore.parseScore(scoreString);
     }
 
-    public double calculateTimeGradient(HardMediumSoftScore startScore, HardMediumSoftScore endScore,
-            HardMediumSoftScore score) {
-        if (score.compareTo(endScore) > 0) {
-            return 1.0;
-        } else if (score.compareTo(startScore) < 0) {
-            return 0.0;
-        }
-        double timeGradient = 0.0;
-        double softScoreTimeGradientWeight = 1.0 - hardScoreTimeGradientWeight - mediumScoreTimeGradientWeight;
-        if (startScore.getHardScore() == endScore.getHardScore()) {
-            timeGradient += hardScoreTimeGradientWeight;
-        } else {
-            int hardScoreTotal = endScore.getHardScore() - startScore.getHardScore();
-            int hardScoreDelta = score.getHardScore() - startScore.getHardScore();
-            double hardTimeGradient = (double) hardScoreDelta / (double) hardScoreTotal;
-            timeGradient += hardTimeGradient * hardScoreTimeGradientWeight;
-        }
-
-        if (score.getMediumScore() >= endScore.getMediumScore()) {
-            timeGradient += mediumScoreTimeGradientWeight;
-        } else if (score.getMediumScore() <= startScore.getMediumScore()) {
-            // No change: timeGradient += 0.0
-        } else {
-            int mediumScoreTotal = endScore.getMediumScore() - startScore.getMediumScore();
-            int mediumScoreDelta = score.getMediumScore() - startScore.getMediumScore();
-            double mediumTimeGradient = (double) mediumScoreDelta / (double) mediumScoreTotal;
-            timeGradient += mediumTimeGradient * mediumScoreTimeGradientWeight;
-        }
-
-        if (score.getSoftScore() >= endScore.getSoftScore()) {
-            timeGradient += softScoreTimeGradientWeight;
-        } else if (score.getSoftScore() <= startScore.getSoftScore()) {
-            // No change: timeGradient += 0.0
-        } else {
-            int softScoreTotal = endScore.getSoftScore() - startScore.getSoftScore();
-            int softScoreDelta = score.getSoftScore() - startScore.getSoftScore();
-            double softTimeGradient = (double) softScoreDelta / (double) softScoreTotal;
-            timeGradient += softTimeGradient * softScoreTimeGradientWeight;
-        }
-        return timeGradient;
-    }
-
     public HardMediumSoftScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new HardMediumSoftScoreHolder(constraintMatchEnabled);
     }
@@ -147,14 +105,6 @@ public class HardMediumSoftScoreDefinition extends AbstractFeasibilityScoreDefin
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getHardScore() : Integer.MIN_VALUE,
                 trendLevels[1] == InitializingScoreTrendLevel.ONLY_UP ? score.getMediumScore() : Integer.MIN_VALUE,
                 trendLevels[2] == InitializingScoreTrendLevel.ONLY_UP ? score.getSoftScore() : Integer.MIN_VALUE);
-    }
-
-    public double calculateFeasibilityTimeGradient(HardMediumSoftScore startScore, HardMediumSoftScore score) {
-        if (score.getHardScore() <= startScore.getHardScore()) {
-            return 0.0;
-        }
-        double timeGradient = (startScore.getHardScore() - score.getHardScore()) / (double) startScore.getHardScore();
-        return Math.min(timeGradient, 1.0);
     }
 
 }

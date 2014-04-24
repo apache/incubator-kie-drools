@@ -44,17 +44,6 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
         return SimpleScore.parseScore(scoreString);
     }
 
-    public double calculateTimeGradient(SimpleScore startScore, SimpleScore endScore, SimpleScore score) {
-        if (score.getScore() >= endScore.getScore()) {
-            return 1.0;
-        } else if (startScore.getScore() >= score.getScore()) {
-            return 0.0;
-        }
-        int scoreTotal = endScore.getScore() - startScore.getScore();
-        int scoreDelta = score.getScore() - startScore.getScore();
-        return ((double) scoreDelta) / ((double) scoreTotal);
-    }
-
     public SimpleScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new SimpleScoreHolder(constraintMatchEnabled);
     }

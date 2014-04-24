@@ -27,12 +27,4 @@ public interface FeasibilityScoreDefinition<S extends FeasibilityScore> extends 
      */
     int getFeasibleLevelCount();
 
-    /**
-     * Calculates time gradient for feasible score. For further details, 
-     * see explanation in {@link Termination#calculateSolverTimeGradient(DefaultSolverScope)}.
-     * @param startScore never null
-     * @return time gradient between 0.0 and 1.0
-     */
-    double calculateFeasibilityTimeGradient(S startScore, S score);
-
 }

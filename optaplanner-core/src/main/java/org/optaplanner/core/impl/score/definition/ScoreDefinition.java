@@ -62,15 +62,6 @@ public interface ScoreDefinition<S extends Score> {
     S parseScore(String scoreString);
 
     /**
-     * See explanation in {@link Termination#calculateSolverTimeGradient(DefaultSolverScope)}.
-     * @param startScore never null
-     * @param endScore never null
-     * @param score never null
-     * @return between 0.0 and 1.0
-     */
-    double calculateTimeGradient(S startScore, S endScore, S score);
-
-    /**
      * Used by {@link DroolsScoreDirector}.
      * @param constraintMatchEnabled true if {@link ScoreHolder#isConstraintMatchEnabled()} should be true
      * @return never null
