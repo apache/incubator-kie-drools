@@ -139,6 +139,43 @@ public class KieCompilationCacheTest extends CommonTestMethodBase {
         assertEquals(1, ksession.fireAllRules());
     }
 
+    @Test
+    public void testCacheWigAccumulate() throws Exception {
+        String drl1 = "package org.drools.compiler.integrationtests\n" +
+                "rule R11 when\n" +
+                "   Number() from accumulate(String(), \n" +
+                "              init(int x = 0;)," +
+                "              action(x++;)," +
+                "              reverse(x--;)," +
+                "              result(x))\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "cache-accumulate", "1.0-SNAPSHOT");
+
+        KieFileSystem kfs = ks.newKieFileSystem()
+                .generateAndWritePomXML(releaseId)
+                .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl1)
+                .writeKModuleXML(createKieProjectWithPackagesAnd2KieBases(ks).toXML());
+        ks.newKieBuilder( kfs ).buildAll();
+        
+        InternalKieModule kieModule = (InternalKieModule) ks.getRepository().getKieModule( releaseId );
+        byte[] jar = kieModule.getBytes();
+        
+        MemoryFileSystem mfs = MemoryFileSystem.readFromJar( jar );
+        File file = mfs.getFile( KieBuilderImpl.getCompilationCachePath( releaseId, "KBase1") );
+        assertNotNull( file );
+
+        Resource jarRes = ks.getResources().newByteArrayResource( jar );
+        KieModule km = ks.getRepository().addKieModule( jarRes );
+        
+        KieSession ksession = ks.newKieContainer( km.getReleaseId() ).newKieSession("KSession1");
+        ksession.insert(new String("Hello World"));
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
     private KieModuleModel createKieProjectWithPackagesAnd2KieBases(KieServices ks) {
         KieModuleModel kproj = ks.newKieModuleModel();
 
