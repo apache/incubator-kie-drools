@@ -219,11 +219,11 @@ public class TerminationConfig implements Cloneable {
             for (int i = 0; i < timeGradientWeightNumbers.length; i++) {
                 timeGradientWeightNumbers[i] = 0.50; // Number pulled out of thin air
             }
-            terminationList.add(new BestScoreTermination(bestScoreLimit_, timeGradientWeightNumbers));
+            terminationList.add(new BestScoreTermination(scoreDefinition, bestScoreLimit_, timeGradientWeightNumbers));
         }
         if (bestScoreFeasible != null) {
             ScoreDefinition scoreDefinition = configPolicy.getScoreDefinition();
-            if (!FeasibilityScoreDefinition.class.isInstance(scoreDefinition)) {
+            if (!(scoreDefinition instanceof FeasibilityScoreDefinition)) {
                 throw new IllegalStateException("The termination bestScoreFeasible (" + bestScoreFeasible
                         + ") is not compatible with a scoreDefinitionClass (" + scoreDefinition.getClass()
                         + ") which does not implement the interface "
@@ -233,7 +233,14 @@ public class TerminationConfig implements Cloneable {
                 throw new IllegalArgumentException("The termination bestScoreFeasible (" + bestScoreFeasible
                         + ") cannot be false.");
             }
-            terminationList.add(new BestScoreFeasibleTermination());
+            FeasibilityScoreDefinition feasibilityScoreDefinition = (FeasibilityScoreDefinition) scoreDefinition;
+            double[] timeGradientWeightFeasibleNumbers
+                    = new double[feasibilityScoreDefinition.getFeasibleLevelCount() - 1];
+            for (int i = 0; i < timeGradientWeightFeasibleNumbers.length; i++) {
+                timeGradientWeightFeasibleNumbers[i] = 0.50; // Number pulled out of thin air
+            }
+            terminationList.add(new BestScoreFeasibleTermination(feasibilityScoreDefinition,
+                    timeGradientWeightFeasibleNumbers));
         }
         if (stepCountLimit != null) {
             terminationList.add(new StepCountTermination(stepCountLimit));

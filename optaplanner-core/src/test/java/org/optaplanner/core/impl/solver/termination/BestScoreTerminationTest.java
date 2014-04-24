@@ -26,6 +26,8 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
+import org.optaplanner.core.impl.score.definition.FeasibilityScoreDefinition;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 import static org.junit.Assert.*;
@@ -35,7 +37,9 @@ public class BestScoreTerminationTest {
 
     @Test
     public void solveTermination() {
-        Termination termination = new BestScoreTermination(SimpleScore.valueOf(-1000), new double[]{});
+        ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
+        when(scoreDefinition.getLevelCount()).thenReturn(1);
+        Termination termination = new BestScoreTermination(scoreDefinition, SimpleScore.valueOf(-1000), new double[]{});
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         when(solverScope.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
         when(solverScope.isBestSolutionInitialized()).thenReturn(true);
@@ -63,7 +67,9 @@ public class BestScoreTerminationTest {
 
     @Test
     public void phaseTermination() {
-        Termination termination = new BestScoreTermination(SimpleScore.valueOf(-1000), new double[]{});
+        ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
+        when(scoreDefinition.getLevelCount()).thenReturn(1);
+        Termination termination = new BestScoreTermination(scoreDefinition, SimpleScore.valueOf(-1000), new double[]{});
         AbstractSolverPhaseScope phaseScope = mock(AbstractSolverPhaseScope.class);
         when(phaseScope.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
         when(phaseScope.isBestSolutionInitialized()).thenReturn(true);
@@ -91,7 +97,9 @@ public class BestScoreTerminationTest {
 
     @Test
     public void calculateTimeGradientSimpleScore() {
-        BestScoreTermination termination = new BestScoreTermination(
+        ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
+        when(scoreDefinition.getLevelCount()).thenReturn(1);
+        BestScoreTermination termination = new BestScoreTermination(scoreDefinition,
                 SimpleScore.valueOf(10), new double[]{});
 
         assertEquals(0.0, termination.calculateTimeGradient(
@@ -111,7 +119,9 @@ public class BestScoreTerminationTest {
 
     @Test
     public void calculateTimeGradientSimpleBigDecimalScore() {
-        BestScoreTermination termination = new BestScoreTermination(
+        ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
+        when(scoreDefinition.getLevelCount()).thenReturn(1);
+        BestScoreTermination termination = new BestScoreTermination(scoreDefinition,
                 SimpleBigDecimalScore.valueOf(new BigDecimal("10.00")), new double[]{});
 
         assertEquals(0.0, termination.calculateTimeGradient(
@@ -136,7 +146,9 @@ public class BestScoreTerminationTest {
 
     @Test
     public void calculateTimeGradientHardSoftScore() {
-        BestScoreTermination termination = new BestScoreTermination(
+        ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
+        when(scoreDefinition.getLevelCount()).thenReturn(2);
+        BestScoreTermination termination = new BestScoreTermination(scoreDefinition,
                 HardSoftScore.valueOf(-10, -300), new double[]{0.75});
 
         // Normal cases
@@ -197,7 +209,9 @@ public class BestScoreTerminationTest {
 
     @Test
     public void calculateTimeGradientHardSoftBigDecimalScore() {
-        BestScoreTermination termination = new BestScoreTermination(
+        ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
+        when(scoreDefinition.getLevelCount()).thenReturn(2);
+        BestScoreTermination termination = new BestScoreTermination(scoreDefinition,
                 HardSoftBigDecimalScore.valueOf(new BigDecimal("10.00"), new BigDecimal("10.00")), new double[]{0.75});
 
         // hard == soft
@@ -228,8 +242,10 @@ public class BestScoreTerminationTest {
     }
 
     @Test
-    public void calculateTimeGradientBendableScore() {
-        BestScoreTermination termination = new BestScoreTermination(
+    public void calculateTimeGradientBendableScoreHS() {
+        ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
+        when(scoreDefinition.getLevelCount()).thenReturn(2);
+        BestScoreTermination termination = new BestScoreTermination(scoreDefinition,
                 BendableScore.valueOf(new int[]{-10}, new int[]{-300}), new double[]{0.75});
 
         // Normal cases
@@ -286,6 +302,22 @@ public class BestScoreTerminationTest {
         assertEquals((0.6 * 0.75) + 0.25, termination.calculateTimeGradient(
                 BendableScore.valueOf(new int[]{-20}, new int[]{-300}), BendableScore.valueOf(new int[]{-10}, new int[]{-300}),
                 BendableScore.valueOf(new int[]{-14}, new int[]{-0})), 0.0);
+    }
+
+    @Test
+    public void calculateTimeGradientBendableScoreHHSSS() {
+        ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
+        when(scoreDefinition.getLevelCount()).thenReturn(5);
+        BestScoreTermination termination = new BestScoreTermination(scoreDefinition,
+                BendableScore.valueOf(new int[]{0, 0}, new int[]{0, 0, -10}),
+                new double[]{0.75, 0.75, 0.75, 0.75});
+
+        // Normal cases
+        // Smack in the middle
+        assertEquals(0.6 * 0.75 + 0.6 * 0.25 * 0.75, termination.calculateTimeGradient(
+                BendableScore.valueOf(new int[]{-10, -100}, new int[]{-50, -60, -70}),
+                BendableScore.valueOf(new int[]{0, 0}, new int[]{0, 0, -10}),
+                BendableScore.valueOf(new int[]{-4, -40}, new int[]{-50, -60, -70})), 0.0);
     }
 
 }

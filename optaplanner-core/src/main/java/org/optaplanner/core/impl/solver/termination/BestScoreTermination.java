@@ -20,20 +20,30 @@ import java.util.Arrays;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.score.ScoreUtils;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class BestScoreTermination extends AbstractTermination {
 
+    private final int levelCount;
     private final Score bestScoreLimit;
     private final double[] timeGradientWeightNumbers;
 
-    public BestScoreTermination(Score bestScoreLimit, double[] timeGradientWeightNumbers) {
+    public BestScoreTermination(ScoreDefinition scoreDefinition, Score bestScoreLimit, double[] timeGradientWeightNumbers) {
+        levelCount = scoreDefinition.getLevelCount();
         this.bestScoreLimit = bestScoreLimit;
         if (bestScoreLimit == null) {
             throw new IllegalArgumentException("The bestScoreLimit (" + bestScoreLimit
                     + ") cannot be null.");
         }
         this.timeGradientWeightNumbers = timeGradientWeightNumbers;
+        if (timeGradientWeightNumbers.length != levelCount - 1) {
+            throw new IllegalStateException(
+                    "The timeGradientWeightNumbers (" + Arrays.toString(timeGradientWeightNumbers)
+                            + ")'s length (" + timeGradientWeightNumbers.length
+                            + ") is not 1 less than the levelCount (" + scoreDefinition.getLevelCount() + ").");
+        }
     }
 
     // ************************************************************************
@@ -77,54 +87,8 @@ public class BestScoreTermination extends AbstractTermination {
             throw new IllegalStateException("The startScore (" + startScore + "), endScore (" + endScore
                     + ") and score (" + score + ") don't have the same level count.");
         }
-        int levelCount = scoreDiffNumbers.length;
-        if (timeGradientWeightNumbers.length != levelCount - 1) {
-            throw new IllegalStateException(
-                    "The timeGradientWeightNumbers (" + Arrays.toString(timeGradientWeightNumbers)
-                    + ")'s length (" + timeGradientWeightNumbers.length
-                    + ") is not 1 less than the levelCount (" + levelCount
-                    + ") of the startScore (" + startScore + "), endScore (" + endScore
-                    + ") and score (" + score + ").");
-        }
-
-        double timeGradient = 0.0;
-        double remainingTimeGradient = 1.0;
-        for (int i = 0; i < levelCount; i++) {
-            double levelTimeGradientWeight;
-            if (i != (levelCount - 1)) {
-                levelTimeGradientWeight = remainingTimeGradient * timeGradientWeightNumbers[i];
-                remainingTimeGradient -= levelTimeGradientWeight;
-            } else {
-                levelTimeGradientWeight = remainingTimeGradient;
-                remainingTimeGradient = 0.0;
-            }
-            double totalDiffLevel = totalDiffNumbers[i].doubleValue();
-            double scoreDiffLevel = scoreDiffNumbers[i].doubleValue();
-            if (scoreDiffLevel == totalDiffLevel) {
-                // Max out this level
-                timeGradient += levelTimeGradientWeight;
-            } else if (scoreDiffLevel > totalDiffLevel) {
-                // Max out this level and all softer levels too
-                timeGradient += levelTimeGradientWeight + remainingTimeGradient;
-                break;
-            } else if (scoreDiffLevel == 0.0) {
-                // Ignore this level
-                // timeGradient += 0.0
-            } else if (scoreDiffLevel < 0.0) {
-                // Ignore this level and all softer levels too
-                // timeGradient += 0.0
-                break;
-            } else {
-                double levelTimeGradient = (double) scoreDiffLevel / (double) totalDiffLevel;
-                timeGradient += levelTimeGradient * levelTimeGradientWeight;
-            }
-
-        }
-        if (timeGradient > 1.0) {
-            // Rounding error due to calculating with doubles
-            timeGradient = 1.0;
-        }
-        return timeGradient;
+        return ScoreUtils.calculateTimeGradient(totalDiffNumbers, scoreDiffNumbers, timeGradientWeightNumbers,
+                levelCount);
     }
 
 }

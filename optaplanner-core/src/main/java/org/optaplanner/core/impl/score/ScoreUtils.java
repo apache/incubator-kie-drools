@@ -29,6 +29,56 @@ public class ScoreUtils {
         return levelDoubles;
     }
 
+    /**
+     *
+     * @param totalDiffNumbers never null
+     * @param scoreDiffNumbers never null
+     * @param timeGradientWeightNumbers never null
+     * @param levelDepth The number of levels of the diffNumbers that are included
+     * @return 0.0 <= value <= 1.0
+     */
+    public static double calculateTimeGradient(Number[] totalDiffNumbers, Number[] scoreDiffNumbers,
+            double[] timeGradientWeightNumbers, int levelDepth) {
+        double timeGradient = 0.0;
+        double remainingTimeGradient = 1.0;
+        for (int i = 0; i < levelDepth; i++) {
+            double levelTimeGradientWeight;
+            if (i != (levelDepth - 1)) {
+                levelTimeGradientWeight = remainingTimeGradient * timeGradientWeightNumbers[i];
+                remainingTimeGradient -= levelTimeGradientWeight;
+            } else {
+                levelTimeGradientWeight = remainingTimeGradient;
+                remainingTimeGradient = 0.0;
+            }
+            double totalDiffLevel = totalDiffNumbers[i].doubleValue();
+            double scoreDiffLevel = scoreDiffNumbers[i].doubleValue();
+            if (scoreDiffLevel == totalDiffLevel) {
+                // Max out this level
+                timeGradient += levelTimeGradientWeight;
+            } else if (scoreDiffLevel > totalDiffLevel) {
+                // Max out this level and all softer levels too
+                timeGradient += levelTimeGradientWeight + remainingTimeGradient;
+                break;
+            } else if (scoreDiffLevel == 0.0) {
+                // Ignore this level
+                // timeGradient += 0.0
+            } else if (scoreDiffLevel < 0.0) {
+                // Ignore this level and all softer levels too
+                // timeGradient += 0.0
+                break;
+            } else {
+                double levelTimeGradient = (double) scoreDiffLevel / (double) totalDiffLevel;
+                timeGradient += levelTimeGradient * levelTimeGradientWeight;
+            }
+
+        }
+        if (timeGradient > 1.0) {
+            // Rounding error due to calculating with doubles
+            timeGradient = 1.0;
+        }
+        return timeGradient;
+    }
+
     private ScoreUtils() {
     }
 
