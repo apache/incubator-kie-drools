@@ -13,7 +13,8 @@
     <mapping-file>META-INF/Executor-orm.xml</mapping-file>
     <mapping-file>META-INF/Servicesorm.xml</mapping-file>
     <mapping-file>META-INF/TaskAuditorm.xml</mapping-file>
-    
+
+    <!-- task service -->
     <class>org.jbpm.services.task.impl.model.AttachmentImpl</class>
     <class>org.jbpm.services.task.impl.model.ContentImpl</class>
     <class>org.jbpm.services.task.impl.model.BooleanExpressionImpl</class>
@@ -36,12 +37,19 @@
     <class>org.jbpm.services.task.impl.model.UserImpl</class>
     <class>org.jbpm.executor.entities.ErrorInfo</class>
     <class>org.jbpm.executor.entities.RequestInfo</class>
-    
-    <!--BAM for task service -->
-    <class>org.jbpm.services.task.impl.model.BAMTaskSummaryImpl</class>
     <!-- Event Classes -->
-    <class>org.jbpm.services.task.audit.TaskEventImpl</class>
-    
+    <class>org.jbpm.services.task.audit.impl.model.TaskEventImpl</class>
+     
+    <!-- Task Audit Classes --> 
+    <class>org.jbpm.services.task.audit.impl.model.AbstractAuditTaskImpl</class>
+    <class>org.jbpm.services.task.audit.impl.model.UserAuditTaskImpl</class>
+    <class>org.jbpm.services.task.audit.impl.model.GroupAuditTaskImpl</class>
+    <class>org.jbpm.services.task.audit.impl.model.HistoryAuditTaskImpl</class>
+      
+    <!--BAM for task service -->
+    <class>org.jbpm.services.task.audit.impl.model.BAMTaskSummaryImpl</class>
+
+    <!-- engine -->
     <class>org.drools.persistence.info.SessionInfo</class>
     <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
     <class>org.drools.persistence.info.WorkItemInfo</class>
@@ -49,7 +57,7 @@
     <class>org.jbpm.persistence.correlation.CorrelationPropertyInfo</class>
     <!-- manager -->
     <class>org.jbpm.runtime.manager.impl.jpa.ContextMappingInfo</class>
-    
+
     <!-- bam -->
     <class>org.jbpm.process.audit.ProcessInstanceLog</class>
     <class>org.jbpm.process.audit.NodeInstanceLog</class>
