@@ -59,7 +59,7 @@
     <class>org.jbpm.services.task.audit.impl.model.AbstractAuditTaskImpl</class>
     <class>org.jbpm.services.task.audit.impl.model.UserAuditTaskImpl</class>
     <class>org.jbpm.services.task.audit.impl.model.GroupAuditTaskImpl</class>
-    
+    <class>org.jbpm.services.task.audit.impl.model.HistoryAuditTaskImpl</class>
     
     <properties>
       <property name="hibernate.max_fetch_depth" value="3"/>
