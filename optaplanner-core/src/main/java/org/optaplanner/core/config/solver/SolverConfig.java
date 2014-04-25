@@ -53,6 +53,7 @@ public class SolverConfig {
     // and also because the input config file should match the output config file
 
     protected EnvironmentMode environmentMode = null;
+    protected Boolean daemon = null;
     protected RandomType randomType = null;
     protected Long randomSeed = null;
     protected Class<? extends RandomFactory> randomFactoryClass = null;
@@ -76,6 +77,14 @@ public class SolverConfig {
 
     public void setEnvironmentMode(EnvironmentMode environmentMode) {
         this.environmentMode = environmentMode;
+    }
+
+    public Boolean getDaemon() {
+        return daemon;
+    }
+
+    public void setDaemon(Boolean daemon) {
+        this.daemon = daemon;
     }
 
     public RandomType getRandomType() {
@@ -233,6 +242,7 @@ public class SolverConfig {
 
     public void inherit(SolverConfig inheritedConfig) {
         environmentMode = ConfigUtils.inheritOverwritableProperty(environmentMode, inheritedConfig.getEnvironmentMode());
+        daemon = ConfigUtils.inheritOverwritableProperty(daemon, inheritedConfig.getDaemon());
         randomType = ConfigUtils.inheritOverwritableProperty(randomType, inheritedConfig.getRandomType());
         randomSeed = ConfigUtils.inheritOverwritableProperty(randomSeed, inheritedConfig.getRandomSeed());
         randomFactoryClass = ConfigUtils.inheritOverwritableProperty(
