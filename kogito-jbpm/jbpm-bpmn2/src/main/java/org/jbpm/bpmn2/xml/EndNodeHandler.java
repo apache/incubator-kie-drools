@@ -43,6 +43,7 @@ public class EndNodeHandler extends AbstractNodeHandler {
 		writeNode("endEvent", endNode, xmlDump, metaDataType);
 		if (endNode.isTerminate()) {
     		xmlDump.append(">" + EOL);
+    		writeExtensionElements(endNode, xmlDump);
             xmlDump.append("        <terminateEventDefinition " + (endNode.getScope() == EndNode.PROCESS_SCOPE ? "tns:scope=\"process\"" : "") + "/>" + EOL);
     		endNode("endEvent", xmlDump);
 		} else {
@@ -53,6 +54,7 @@ public class EndNodeHandler extends AbstractNodeHandler {
 		            String s = action.getConsequence();
 		            if (s.startsWith("org.drools.core.process.instance.impl.WorkItemImpl workItem = new org.drools.core.process.instance.impl.WorkItemImpl();")) {
 		                xmlDump.append(">" + EOL);
+		                writeExtensionElements(endNode, xmlDump);
                         String variable = (String) endNode.getMetaData("MappingVariable");
                         if (variable != null) {
                             xmlDump.append(
@@ -69,6 +71,7 @@ public class EndNodeHandler extends AbstractNodeHandler {
                         endNode("endEvent", xmlDump);
 		            } else if (s.startsWith(RUNTIME_SIGNAL_EVENT)) {
                         xmlDump.append(">" + EOL);
+                        writeExtensionElements(endNode, xmlDump);
 		                s = s.substring(44);
 		                String type = s.substring(0, s.indexOf("\""));
 		                s = s.substring(s.indexOf(",") + 2);
@@ -89,7 +92,8 @@ public class EndNodeHandler extends AbstractNodeHandler {
 		                endNode("endEvent", xmlDump);
 		            } else if (s.startsWith(PROCESS_INSTANCE_SIGNAL_EVENT)) {
 		            	xmlDump.append(">" + EOL);
-		            	int begin =(PROCESS_INSTANCE_SIGNAL_EVENT + "Compensation\", ").length()-2; 
+		                writeExtensionElements(endNode, xmlDump);
+		                int begin =(PROCESS_INSTANCE_SIGNAL_EVENT + "Compensation\", ").length()-2; 
 		            	int end = s.length() - 3;
 		            	String compensationEvent = s.substring(begin, end);
 		            	String activityRef = "";

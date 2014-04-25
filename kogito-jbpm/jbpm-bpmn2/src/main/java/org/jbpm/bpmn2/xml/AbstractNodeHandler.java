@@ -41,23 +41,16 @@ import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.bpmn2.core.Lane;
 import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.compiler.xml.ProcessBuildData;
-import org.jbpm.process.core.ContextContainer;
-import org.jbpm.process.core.context.exception.CompensationHandler;
-import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
-import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
-import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.EndNode;
-import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.ForEachNode;
-import org.jbpm.workflow.core.node.WorkItemNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -262,13 +255,34 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
 		return new DroolsConsequenceAction("mvel", "");
     }
     
-    protected void writeScripts(ExtendedNodeImpl node, final StringBuilder xmlDump) {
-    	if (node.containsActions()) {
+    protected void writeMetaData(final Node node, final StringBuilder xmlDump) {
+    	XmlBPMNProcessDumper.writeMetaData(getMetaData(node), xmlDump);
+    }
+    
+    protected Map<String, Object> getMetaData(Node node) {
+    	return XmlBPMNProcessDumper.getMetaData(node.getMetaData());
+    }
+    
+    protected void writeExtensionElements(Node node, final StringBuilder xmlDump) {
+    	if (containsExtensionElements(node)) {
     		xmlDump.append("      <extensionElements>" + EOL);
-    		writeScripts("onEntry", node.getActions("onEntry"), xmlDump);
-    		writeScripts("onExit", node.getActions("onExit"), xmlDump);
+    		if (node instanceof ExtendedNodeImpl) {
+    			writeScripts("onEntry", ((ExtendedNodeImpl) node).getActions("onEntry"), xmlDump);
+    			writeScripts("onExit", ((ExtendedNodeImpl) node).getActions("onExit"), xmlDump);
+    		}
+    		writeMetaData(node, xmlDump);
     		xmlDump.append("      </extensionElements>" + EOL);
     	}
+    }
+    
+    protected boolean containsExtensionElements(Node node) {
+    	if (!getMetaData(node).isEmpty()) {
+    		return true;
+    	}
+    	if (node instanceof ExtendedNodeImpl && ((ExtendedNodeImpl) node).containsActions()) {
+    		return true;
+    	}
+    	return false;
     }
     
     protected void writeScripts(final String type, List<DroolsAction> actions, final StringBuilder xmlDump) {

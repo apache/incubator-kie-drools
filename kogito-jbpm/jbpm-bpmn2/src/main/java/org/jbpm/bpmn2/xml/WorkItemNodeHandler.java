@@ -40,7 +40,7 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
 		if ("Manual Task".equals(type)) {
 		    writeNode("manualTask", workItemNode, xmlDump, metaDataType);
 		    xmlDump.append(">" + EOL);
-			writeScripts(workItemNode, xmlDump);
+			writeExtensionElements(workItemNode, xmlDump);
 	        endNode("manualTask", xmlDump);
 	        return;
 		} 
@@ -52,7 +52,7 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
             }
             xmlDump.append("operationRef=\"" + 
                 XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_ServiceOperation\" implementation=\""+impl+"\" >" + EOL);
-    		writeScripts(workItemNode, xmlDump);
+    		writeExtensionElements(workItemNode, xmlDump);
     		xmlDump.append(
                 "      <ioSpecification>" + EOL +
                 "        <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_param\" name=\"Parameter\" />" + EOL +
@@ -87,7 +87,7 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
             writeNode("sendTask", workItemNode, xmlDump, metaDataType);
             xmlDump.append("messageRef=\"" + 
                 XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_Message\" implementation=\"Other\" >" + EOL);
-    		writeScripts(workItemNode, xmlDump);
+    		writeExtensionElements(workItemNode, xmlDump);
     		xmlDump.append(
                 "      <ioSpecification>" + EOL +
                 "        <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_param\" name=\"Message\" />" + EOL +
@@ -112,7 +112,7 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
             String messageId = (String) workItemNode.getWork().getParameter("MessageId");
             xmlDump.append("messageRef=\"" + 
                 messageId + "\" implementation=\"Other\" >" + EOL);
-    		writeScripts(workItemNode, xmlDump);
+    		writeExtensionElements(workItemNode, xmlDump);
     		xmlDump.append(
                 "      <ioSpecification>" + EOL +
                 "        <dataOutput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_result\" name=\"Message\" />" + EOL +
@@ -138,7 +138,7 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
             xmlDump.append("isForCompensation=\"true\" ");
         }	
 		xmlDump.append("tns:taskName=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\" >" + EOL);
-		writeScripts(workItemNode, xmlDump);
+		writeExtensionElements(workItemNode, xmlDump);
 		writeIO(workItemNode, xmlDump);
 		endNode("task", xmlDump);
 	}

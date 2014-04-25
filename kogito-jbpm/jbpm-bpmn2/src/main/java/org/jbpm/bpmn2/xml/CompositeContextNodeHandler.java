@@ -53,7 +53,7 @@ public class CompositeContextNodeHandler extends AbstractCompositeNodeHandler {
             xmlDump.append("isForCompensation=\"true\" ");
         }
 		xmlDump.append(">" + EOL);
-		writeScripts(compositeNode, xmlDump);
+		writeExtensionElements(compositeNode, xmlDump);
         // variables
 		VariableScope variableScope = (VariableScope) 
             compositeNode.getDefaultContext(VariableScope.VARIABLE_SCOPE);

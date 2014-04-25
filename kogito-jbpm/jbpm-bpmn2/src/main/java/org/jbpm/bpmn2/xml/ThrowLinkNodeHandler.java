@@ -24,7 +24,8 @@ public class ThrowLinkNodeHandler extends AbstractNodeHandler {
 
 		writeNode("intermediateThrowEvent", linkNode, xmlDump, metaDataType);
 		xmlDump.append(">" + EOL);
-
+		writeExtensionElements(node, xmlDump);
+		
 		String name = (String) node.getMetaData().get(
 				IntermediateThrowEventHandler.LINK_NAME);
 

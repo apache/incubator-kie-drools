@@ -41,6 +41,7 @@ public class ForEachNodeHandler extends AbstractCompositeNodeHandler {
     	ForEachNode forEachNode = (ForEachNode) node;
     	writeNode("subProcess", forEachNode, xmlDump, metaDataType);
 		xmlDump.append(" >" + EOL);
+		writeExtensionElements(node, xmlDump);
 		// ioSpecification and dataInputAssociation 
         xmlDump.append(
             "      <ioSpecification>" + EOL);

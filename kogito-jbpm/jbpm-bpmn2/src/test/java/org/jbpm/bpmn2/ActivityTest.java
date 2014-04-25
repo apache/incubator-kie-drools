@@ -25,18 +25,8 @@ import java.util.Map;
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.core.event.ActivationCancelledEvent;
-import org.drools.core.event.ActivationCreatedEvent;
-import org.drools.core.event.AfterActivationFiredEvent;
-import org.drools.core.event.AgendaGroupPoppedEvent;
-import org.drools.core.event.AgendaGroupPushedEvent;
-import org.drools.core.event.BeforeActivationFiredEvent;
-import org.drools.core.event.RuleFlowGroupActivatedEvent;
-import org.drools.core.event.RuleFlowGroupDeactivatedEvent;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
@@ -47,6 +37,7 @@ import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
+import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
 import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
@@ -148,6 +139,69 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("Minimal");
         assertProcessInstanceCompleted(processInstance);
+    }
+
+    @Test
+    public void testMinimalProcessMetaData() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-MinimalProcessMetaData.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        final List<String> list1 = new ArrayList<String>();
+        final List<String> list2 = new ArrayList<String>();
+        final List<String> list3 = new ArrayList<String>();
+        final List<String> list4 = new ArrayList<String>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+			public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+				System.out.println("before node");
+				Map<String, Object> metaData = event.getNodeInstance().getNode().getMetaData();
+				for (Map.Entry<String, Object> entry: metaData.entrySet()) {
+					System.out.println(entry.getKey() + " " + entry.getValue());
+				}
+				String customTag = (String) metaData.get("customTag");
+				if (customTag != null) {
+					list1.add(customTag);
+				}
+				String customTag2 = (String) metaData.get("customTag2");
+				if (customTag2 != null) {
+					list2.add(customTag2);
+				}
+			}
+			public void afterVariableChanged(ProcessVariableChangedEvent event) {
+				System.out.println("after variable");
+				VariableScope variableScope = (VariableScope)
+					((org.jbpm.process.core.impl.ProcessImpl) event.getProcessInstance().getProcess())
+						.resolveContext(VariableScope.VARIABLE_SCOPE, event.getVariableId());
+	        	if (variableScope == null) {
+	        		return;
+	        	}
+	        	Map<String, Object> metaData = variableScope.findVariable(event.getVariableId()).getMetaData();
+	        	for (Map.Entry<String, Object> entry: metaData.entrySet()) {
+					System.out.println(entry.getKey() + " " + entry.getValue());
+				}
+				String customTag = (String) metaData.get("customTagVar");
+				if (customTag != null) {
+					list3.add(customTag);
+				}
+			}
+			public void afterProcessStarted(ProcessStartedEvent event) {
+				System.out.println("after process");
+	        	Map<String, Object> metaData = event.getProcessInstance().getProcess().getMetaData();
+	        	for (Map.Entry<String, Object> entry: metaData.entrySet()) {
+					System.out.println(entry.getKey() + " " + entry.getValue());
+				}
+				String customTag = (String) metaData.get("customTagProcess");
+				if (customTag != null) {
+					list4.add(customTag);
+				}
+			}
+		});
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "krisv");
+        ProcessInstance processInstance = ksession.startProcess("Minimal", params);
+        assertProcessInstanceCompleted(processInstance);
+        assertEquals(3, list1.size());
+        assertEquals(2, list2.size());
+        assertEquals(1, list3.size());
+        assertEquals(1, list4.size());
     }
 
     @Test

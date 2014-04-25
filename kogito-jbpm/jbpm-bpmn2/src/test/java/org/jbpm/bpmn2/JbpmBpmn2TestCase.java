@@ -15,7 +15,10 @@ limitations under the License.*/
 
 package org.jbpm.bpmn2;
 
-import static org.kie.api.runtime.EnvironmentName.*;
+import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.kie.api.runtime.EnvironmentName.OBJECT_MARSHALLING_STRATEGIES;
+import static org.kie.api.runtime.EnvironmentName.TRANSACTION_MANAGER;
+import static org.kie.api.runtime.EnvironmentName.USE_PESSIMISTIC_LOCKING;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,6 +53,7 @@ import org.h2.tools.Server;
 import org.jbpm.bpmn2.test.RequireLocking;
 import org.jbpm.bpmn2.test.RequirePersistence;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
+import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.compiler.xml.XmlProcessReader;
@@ -311,6 +315,7 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
         ((KnowledgeBuilderConfigurationImpl) conf).initSemanticModules();
         ((KnowledgeBuilderConfigurationImpl) conf).addSemanticModule(new BPMNSemanticModule());
         ((KnowledgeBuilderConfigurationImpl) conf).addSemanticModule(new BPMNDISemanticModule());
+        ((KnowledgeBuilderConfigurationImpl) conf).addSemanticModule(new BPMNExtensionsSemanticModule());
         
         Resource classpathResource = ResourceFactory.newClassPathResource(process);
         // Dump and reread

@@ -33,21 +33,24 @@ public class JoinHandler extends AbstractNodeHandler {
 
 	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 		Join join = (Join) node;
+		String type = null;
 		switch (join.getType()) {
 			case Join.TYPE_AND:
-				writeNode("parallelGateway", node, xmlDump, metaDataType);
+				type = "parallelGateway";
 				break;
 			case Join.TYPE_XOR:
-				writeNode("exclusiveGateway", node, xmlDump, metaDataType);
+				type = "exclusiveGateway";
 				break;
 			case Join.TYPE_OR:
-                writeNode("inclusiveGateway", node, xmlDump, metaDataType);
+                type = "inclusiveGateway";
                 break;
 			default:
-				writeNode("complexGateway", node, xmlDump, metaDataType);
+				type = "complexGateway";
 		}
-		xmlDump.append("gatewayDirection=\"Converging\" ");
-		endNode(xmlDump);
+		writeNode(type, node, xmlDump, metaDataType);
+		xmlDump.append("gatewayDirection=\"Converging\" >" + EOL);
+        writeExtensionElements(join, xmlDump);
+		endNode(type, xmlDump);
 	}
 
 }

@@ -27,6 +27,8 @@ public class BPMNExtensionsSemanticModule extends DefaultSemanticModule {
 		
 		addHandler("import", new ImportHandler());
 		addHandler("global", new GlobalHandler());
+		addHandler("metaData", new MetaDataHandler());
+		addHandler("metaValue", new MetaValueHandler());
 	}
 
 }

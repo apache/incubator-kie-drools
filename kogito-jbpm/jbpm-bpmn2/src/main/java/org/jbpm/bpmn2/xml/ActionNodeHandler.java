@@ -46,6 +46,7 @@ public class ActionNodeHandler extends AbstractNodeHandler {
 		    if (s.startsWith("org.drools.core.process.instance.impl.WorkItemImpl workItem = new org.drools.core.process.instance.impl.WorkItemImpl();")) {
                 writeNode("intermediateThrowEvent", actionNode, xmlDump, metaDataType);
                 xmlDump.append(">" + EOL);
+        		writeExtensionElements(actionNode, xmlDump);
                 String variable = (String) actionNode.getMetaData("MappingVariable");
                 if (variable != null) {
                     xmlDump.append(
@@ -63,6 +64,7 @@ public class ActionNodeHandler extends AbstractNodeHandler {
             } else if (s.startsWith(RUNTIME_SIGNAL_EVENT)) { 
                 writeNode("intermediateThrowEvent", actionNode, xmlDump, metaDataType);
                 xmlDump.append(">" + EOL);
+        		writeExtensionElements(actionNode, xmlDump);
                 s = s.substring(44);
                 String type = s.substring(0, s.indexOf("\""));
                 s = s.substring(s.indexOf(",") + 2);
@@ -84,6 +86,7 @@ public class ActionNodeHandler extends AbstractNodeHandler {
             } else if (s.startsWith(PROCESS_INSTANCE_SIGNAL_EVENT)) { 
                 writeNode("intermediateThrowEvent", actionNode, xmlDump, metaDataType);
                 xmlDump.append(">" + EOL);
+        		writeExtensionElements(actionNode, xmlDump);
                 s = s.substring(43);
                 assert "Compensation".equals(s.substring(0, s.indexOf("\""))) 
                     : "Type is not \"Compensation\" but \"" + s.substring(0, s.indexOf("\"")) + "\"";
@@ -101,13 +104,16 @@ public class ActionNodeHandler extends AbstractNodeHandler {
             } else if (s.startsWith("org.drools.core.process.instance.context.exception.ExceptionScopeInstance scopeInstance = (org.drools.core.process.instance.context.exception.ExceptionScopeInstance) ((org.drools.workflow.instance.NodeInstance) kcontext.getNodeInstance()).resolveContextInstance(org.drools.core.process.core.context.exception.ExceptionScope.EXCEPTION_SCOPE, \"")) {
                 writeNode("intermediateThrowEvent", actionNode, xmlDump, metaDataType);
                 xmlDump.append(">" + EOL);
+        		writeExtensionElements(actionNode, xmlDump);
                 s = s.substring(327);
                 String type = s.substring(0, s.indexOf("\""));
                 xmlDump.append("      <escalationEventDefinition escalationRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\"/>" + EOL);
                 endNode("intermediateThrowEvent", xmlDump);
             } else if ("IntermediateThrowEvent-None".equals(actionNode.getMetaData("NodeType"))) {
             	writeNode("intermediateThrowEvent", actionNode, xmlDump, metaDataType);
-                endNode(xmlDump);
+                xmlDump.append(">" + EOL);
+        		writeExtensionElements(actionNode, xmlDump);
+                endNode("intermediateThrowEvent", xmlDump);
             } else {
                 writeNode("scriptTask", actionNode, xmlDump, metaDataType);
                 if (JavaDialect.ID.equals(action.getDialect())) {
@@ -117,17 +123,18 @@ public class ActionNodeHandler extends AbstractNodeHandler {
                 if( isForCompensationObj != null && (Boolean) isForCompensationObj ) { 
                     xmlDump.append("isForCompensation=\"true\" ");
                 }
+                xmlDump.append(">" + EOL);
+        		writeExtensionElements(actionNode, xmlDump);
                 if (action.getConsequence() != null) {
-                    xmlDump.append(">" + EOL + 
-                        "      <script>" + XmlDumper.replaceIllegalChars(action.getConsequence()) + "</script>" + EOL);
-                    endNode("scriptTask", xmlDump);
-                } else {
-                    endNode(xmlDump);
-                }
+                	xmlDump.append("      <script>" + XmlDumper.replaceIllegalChars(action.getConsequence()) + "</script>" + EOL);
+                }                    
+                endNode("scriptTask", xmlDump);
             }
 		} else {
 		    writeNode("scriptTask", actionNode, xmlDump, metaDataType);
-	        endNode(xmlDump);
+		    xmlDump.append(">" + EOL);
+    		writeExtensionElements(actionNode, xmlDump);
+	        endNode("scriptTask", xmlDump);
 		}
 	}
 

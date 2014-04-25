@@ -74,7 +74,7 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
 		if (ruleSetNode.getRuleFlowGroup() != null) {
 			xmlDump.append("g:ruleFlowGroup=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(ruleSetNode.getRuleFlowGroup()) + "\" >" + EOL);
 		}
-		writeScripts(ruleSetNode, xmlDump);
+		writeExtensionElements(ruleSetNode, xmlDump);
 		writeIO(ruleSetNode, xmlDump);
 		endNode("businessRuleTask", xmlDump);
 	}

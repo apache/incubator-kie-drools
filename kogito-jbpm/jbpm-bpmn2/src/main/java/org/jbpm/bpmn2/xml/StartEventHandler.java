@@ -229,11 +229,11 @@ public class StartEventHandler extends AbstractNodeHandler {
 		} else { 
 		    xmlDump.append("false");
 		}
-		xmlDump.append("\"" );
+		xmlDump.append("\">" + EOL);
+		writeExtensionElements(startNode, xmlDump);
 		
 		List<Trigger> triggers = startNode.getTriggers();
 		if (triggers != null) {
-		    xmlDump.append(">" + EOL);
 		    if (triggers.size() > 1) {
 		        throw new IllegalArgumentException("Multiple start triggers not supported");
 		    }
@@ -304,10 +304,7 @@ public class StartEventHandler extends AbstractNodeHandler {
 	            }
 	            xmlDump.append("      </timerEventDefinition>" + EOL);
 		    }
-		    
-		    endNode("startEvent", xmlDump);
 		} else if (startNode.getTimer() != null) {
-            xmlDump.append(">" + EOL);
             Timer timer = startNode.getTimer(); 
             xmlDump.append("      <timerEventDefinition>" + EOL);
             if (timer != null && (timer.getDelay() != null || timer.getDate() != null)) {
@@ -325,10 +322,8 @@ public class StartEventHandler extends AbstractNodeHandler {
                 }
             }
             xmlDump.append("      </timerEventDefinition>" + EOL);
-            endNode("startEvent", xmlDump);
-        } else {
-		    endNode(xmlDump);
-		}
+        }
+    	endNode("startEvent", xmlDump);
 	}
     
     protected void handleTimerNode(final Node node, final Element element,

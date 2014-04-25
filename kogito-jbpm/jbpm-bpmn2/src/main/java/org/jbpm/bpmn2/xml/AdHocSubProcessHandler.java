@@ -76,6 +76,7 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
 			xmlDump.append(" cancelRemainingInstances=\"false\"");
 		}
 		xmlDump.append(" ordering=\"Parallel\" >" + EOL);
+		writeExtensionElements(dynamicNode, xmlDump);
 		// nodes
 		List<Node> subNodes = getSubNodes(dynamicNode);
 		XmlBPMNProcessDumper.INSTANCE.visitNodes(subNodes, xmlDump, metaDataType);

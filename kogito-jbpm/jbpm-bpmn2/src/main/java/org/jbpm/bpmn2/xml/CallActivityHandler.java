@@ -160,7 +160,7 @@ public class CallActivityHandler extends AbstractNodeHandler {
 			xmlDump.append("tns:independent=\"false\" ");
 		}
 		xmlDump.append(">" + EOL);
-		writeScripts(subProcessNode, xmlDump);
+		writeExtensionElements(subProcessNode, xmlDump);
 		writeIO(subProcessNode, xmlDump);
 		endNode("callActivity", xmlDump);
 	}

@@ -23,6 +23,7 @@ public class CatchLinkNodeHandler extends AbstractNodeHandler implements
 		CatchLinkNode linkNode = (CatchLinkNode) node;
 		writeNode("intermediateCatchEvent", linkNode, xmlDump, metaDataType);
 		xmlDump.append(">" + EOL);
+        writeExtensionElements(linkNode, xmlDump);
 
 		String name = (String) node.getMetaData().get(
 				IntermediateCatchEventHandler.LINK_NAME);

@@ -37,6 +37,7 @@ public class TimerNodeHandler extends AbstractNodeHandler {
 	    TimerNode timerNode = (TimerNode) node;
 		writeNode("intermediateCatchEvent", timerNode, xmlDump, metaDataType);
 		xmlDump.append(">" + EOL);
+		writeExtensionElements(node, xmlDump);
 		xmlDump.append("      <timerEventDefinition>" + EOL);
 		Timer timer = timerNode.getTimer(); 
 		if (timer != null && (timer.getDelay() != null || timer.getDate() != null)) {

@@ -17,12 +17,18 @@
 package org.jbpm.bpmn2.xml;
 
 import java.io.StringReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
+import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.core.xml.Handler;
 import org.drools.core.xml.SemanticModule;
 import org.drools.core.xml.SemanticModules;
@@ -304,9 +310,10 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
     }
     
     protected void visitHeader(WorkflowProcess process, StringBuilder xmlDump, int metaDataType) {
+        Map<String, Object> metaData = getMetaData(process.getMetaData());
     	List<String> imports = ((org.jbpm.process.core.Process) process).getImports();
     	Map<String, String> globals = ((org.jbpm.process.core.Process) process).getGlobals();
-    	if ((imports != null && !imports.isEmpty()) || (globals != null && globals.size() > 0)) {
+    	if ((imports != null && !imports.isEmpty()) || (globals != null && globals.size() > 0) || !metaData.isEmpty()) {
     		xmlDump.append("    <extensionElements>" + EOL);
     		if (imports != null) {
 	    		for (String s: imports) {
@@ -318,6 +325,7 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
 	    			xmlDump.append("     <tns:global identifier=\"" + global.getKey() + "\" type=\"" + global.getValue() + "\" />" + EOL);
 	    		}
     		}
+    		writeMetaData(getMetaData(process.getMetaData()), xmlDump);
     		xmlDump.append("    </extensionElements>" + EOL);
     	}
     	// TODO: function imports
@@ -340,7 +348,16 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
                     	xmlDump.append("itemSubjectRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute((String) variable.getMetaData("ItemSubjectRef")) + "\"" );
                     }
                     // TODO: value?
-                    xmlDump.append("/>" + EOL);
+                    Map<String, Object> metaData = getMetaData(variable.getMetaData());
+                    if (metaData.isEmpty()) {
+                    	xmlDump.append("/>" + EOL);
+                    } else {
+                    	xmlDump.append(">" + EOL
+                    			+ "      <extensionElements>" + EOL);
+                    	writeMetaData(metaData, xmlDump);
+                		xmlDump.append("      </extensionElements>" + EOL
+                				+ "    </property>" + EOL);
+                    }
                 }
             }
             for (Variable variable: variables) {
@@ -350,11 +367,42 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
                         xmlDump.append("itemSubjectRef=\"_" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(variable.getName()) + "\"" );
                     }
                     // TODO: value?
-                    xmlDump.append("/>" + EOL);
+                    Map<String, Object> metaData = getMetaData(variable.getMetaData());
+                    if (metaData.isEmpty()) {
+                    	xmlDump.append("/>" + EOL);
+                    } else {
+                    	xmlDump.append(">" + EOL
+                    			+ "      <extensionElements>" + EOL);
+                    	writeMetaData(metaData, xmlDump);
+                		xmlDump.append("      </extensionElements>" + EOL
+                				+ "    </property>" + EOL);
+                    }
                 }
             }
             xmlDump.append(EOL);
     	}
+    }
+    
+    public static Map<String, Object> getMetaData(Map<String, Object> input) {
+    	Map<String, Object> metaData = new HashMap<String, Object>();
+        for (Map.Entry<String, Object> entry: input.entrySet()) {
+        	String name = entry.getKey();
+        	if (entry.getKey().startsWith("custom") 
+        			&& entry.getValue() instanceof String) {
+        		metaData.put(name, entry.getValue());
+        	}
+        }
+        return metaData;
+    }
+    
+    public static void writeMetaData(Map<String, Object> metaData, final StringBuilder xmlDump) {
+        if (!metaData.isEmpty()) {
+            for (Map.Entry<String, Object> entry: metaData.entrySet()) {
+	    		xmlDump.append("        <tns:metaData name=\"" + entry.getKey() + "\">" + EOL);
+	    		xmlDump.append("          <tns:metaValue>" + entry.getValue() + "</tns:metaValue>" + EOL);
+	    		xmlDump.append("        </tns:metaData>" + EOL);
+            }
+        }
     }
     
     protected void visitInterfaces(Node[] nodes, StringBuilder xmlDump) {

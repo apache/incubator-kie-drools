@@ -42,6 +42,7 @@ public class FaultNodeHandler extends AbstractNodeHandler {
         FaultNode faultNode = (FaultNode) node;
 		writeNode("endEvent", faultNode, xmlDump, metaDataType);
 		xmlDump.append(">" + EOL);
+        writeExtensionElements(node, xmlDump);
         if (faultNode.getFaultVariable() != null) {
             xmlDump.append("      <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(faultNode) + "_Input\" name=\"error\" />" + EOL);
             xmlDump.append("      <dataInputAssociation>" + EOL);

@@ -45,6 +45,7 @@ public class EventNodeHandler extends AbstractNodeHandler {
 		if (attachedTo == null) {
     		writeNode("intermediateCatchEvent", eventNode, xmlDump, metaDataType);
     		xmlDump.append(">" + EOL);
+            writeExtensionElements(eventNode, xmlDump);
     		if (eventNode.getVariableName() != null) {
     			xmlDump.append("      <dataOutput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(eventNode) + "_Output\" name=\"event\" />" + EOL);
     			xmlDump.append("      <dataOutputAssociation>" + EOL);
