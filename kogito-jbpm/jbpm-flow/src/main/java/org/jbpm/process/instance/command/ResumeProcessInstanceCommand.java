@@ -1,0 +1,65 @@
+/*
+ * Copyright 2010 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.jbpm.process.instance.command;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+
+import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.command.Context;
+
+@XmlAccessorType(XmlAccessType.NONE)
+public class ResumeProcessInstanceCommand implements GenericCommand<Object> {
+
+    private static final long serialVersionUID = 6L;
+	
+    @XmlAttribute
+    private Long processInstanceId;
+
+    public Long getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(Long processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    public Object execute(Context context) {
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        if (processInstanceId == null) {
+            return null;
+        }
+        ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
+        if ( processInstance == null ) {
+            throw new IllegalArgumentException( "Could not find process instance for id " + processInstanceId );
+        }
+        if ( processInstance.getState() != ProcessInstance.STATE_SUSPENDED ) {
+        	throw new IllegalArgumentException( "Process instance with id " + processInstanceId + " in state " + processInstance.getState());
+        }
+        ((org.jbpm.process.instance.ProcessInstance) processInstance).setState( ProcessInstance.STATE_ACTIVE );
+        return null;
+    }
+
+    public String toString() {
+        return "session.abortProcessInstance(" + processInstanceId + ");";
+    }
+
+}
