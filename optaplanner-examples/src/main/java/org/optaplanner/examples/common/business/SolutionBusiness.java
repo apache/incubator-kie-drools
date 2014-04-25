@@ -186,9 +186,9 @@ public class SolutionBusiness {
     }
 
     public void registerForBestSolutionChanges(final SolverAndPersistenceFrame solverAndPersistenceFrame) {
-        solver.addEventListener(new SolverEventListener() {
+        solver.addEventListener(new SolverEventListener<Solution>() {
             // Not called on the event thread
-            public void bestSolutionChanged(BestSolutionChangedEvent event) {
+            public void bestSolutionChanged(BestSolutionChangedEvent<Solution> event) {
                 // Avoid ConcurrentModificationException when there is an unprocessed ProblemFactChange
                 // because the paint method uses the same problem facts instances as the Solver's workingSolution
                 // unlike the planning entities of the bestSolution which are cloned from the Solver's workingSolution

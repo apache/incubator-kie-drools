@@ -852,11 +852,11 @@
     </section>
   </section>
 
-  <section>
+  <section xml:id="SolverEventListener">
     <title>SolverEventListener</title>
 
     <para>Each time a new best solution is found, the <literal>Solver</literal> fires a
-    <literal>BestSolutionChangedEvent</literal>.</para>
+    <literal>BestSolutionChangedEvent</literal>, in the solver's thread.</para>
 
     <para>To listen to such events, add a <literal>SolverEventListener</literal> to the
     <literal>Solver</literal>:</para>
@@ -865,10 +865,28 @@
 
     // ...
 
-    void addEventListener(SolverEventListener eventListener);
-    void removeEventListener(SolverEventListener eventListener);
+    void addEventListener(SolverEventListener&lt;? extends Solution&gt; eventListener);
+    void removeEventListener(SolverEventListener&lt;? extends Solution&gt; eventListener);
 
 }</programlisting>
+
+    <para>The <literal>BestSolutionChangedEvent</literal>'s <literal>newBestSolution</literal> might not be initialized
+    or feasible. Use the methods on <literal>BestSolutionChangedEvent</literal> to detect such cases:</para>
+
+    <programlisting language="java">    solver.addEventListener(new SolverEventListener&lt;CloudBalance&gt;() {
+        public void bestSolutionChanged(BestSolutionChangedEvent&lt;CloudBalance&gt; event) {
+            // Ignore invalid solutions
+            if (event.isNewBestSolutionInitialized()
+                    &amp;&amp; event.getNewBestSolution().getScore().isFeasible()) {
+                ...
+            }
+        }
+    });</programlisting>
+
+    <warning>
+      <para>The <literal>bestSolutionChanged()</literal> method is called in the solver's thread, as part of
+      <literal>Solver.solve()</literal>. So it should return quickly to avoid slowing down the solving.</para>
+    </warning>
   </section>
 
   <section>

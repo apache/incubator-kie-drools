@@ -68,7 +68,7 @@ public class BestSolutionMutationSingleStatistic extends SingleStatistic<BestSol
         solver.removeEventListener(listener);
     }
 
-    private class BestSolutionMutationSingleStatisticListener implements SolverEventListener {
+    private class BestSolutionMutationSingleStatisticListener implements SolverEventListener<Solution> {
 
         private MutationCounter mutationCounter;
 
@@ -82,7 +82,7 @@ public class BestSolutionMutationSingleStatistic extends SingleStatistic<BestSol
             this.mutationCounter = mutationCounter;
         }
 
-        public void bestSolutionChanged(BestSolutionChangedEvent event) {
+        public void bestSolutionChanged(BestSolutionChangedEvent<Solution> event) {
             int mutationCount;
             Solution newBestSolution = event.getNewBestSolution();
             if (oldBestSolution == null) {

@@ -220,9 +220,19 @@ public class ShiftAssignment {
     <para>Each configured phase <literal>Termination</literal> resets, but each solver Termination (including
     <literal>terminateEarly</literal>) does not reset. Normally however, you won't configure any
     <literal>Termination</literal>, just call <literal>Solver.terminateEarly()</literal> when the results are needed.
-    Alternatively, you can subscribe to the <literal>BestSolutionChangedEvent</literal>. A
+    Alternatively, you can subscribe to the <literal><link
+    linkend="SolverEventListener">BestSolutionChangedEvent</link></literal>. A
     <literal>BestSolutionChangedEvent</literal> doesn't guarantee that every <literal>ProblemFactChange</literal> has
-    been processed already, so check <literal>Solver.isEveryProblemFactChangeProcessed()</literal> and ignore any
-    <literal>BestSolutionChangedEvent</literal> fired while that method returns <literal>false</literal>.</para>
+    been processed already, nor that the solution is initialized and feasible. To ignore
+    <literal>BestSolutionChangedEvent</literal>s with such invalid solutions, do this:</para>
+
+    <programlisting language="java">        public void bestSolutionChanged(BestSolutionChangedEvent&lt;CloudBalance&gt; event) {
+            // Ignore invalid solutions
+            if (event.isEveryProblemFactChangeProcessed()
+                    &amp;&amp; event.isNewBestSolutionInitialized()
+                    &amp;&amp; event.getNewBestSolution().getScore().isFeasible()) {
+                ...
+            }
+        }</programlisting>
   </section>
 </chapter>

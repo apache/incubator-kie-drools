@@ -16,10 +16,14 @@
 
 package org.optaplanner.core.api.score;
 
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.solution.Solution;
 
 /**
  * A {@link Score} that supports {@link #isFeasible()}.
+ * Most {@link Score} implementations implement this interface (including {@link HardSoftScore},
+ * except for {@link SimpleScore} variants.
  * @see Score
  */
 public interface FeasibilityScore<S extends FeasibilityScore> extends Score<S> {

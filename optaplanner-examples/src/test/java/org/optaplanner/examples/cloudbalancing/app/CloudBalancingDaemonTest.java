@@ -42,7 +42,7 @@ public class CloudBalancingDaemonTest {
 
     private Queue<CloudProcess> notYetAddedProcessQueue = new LinkedList<CloudProcess>();
 
-    @Test(timeout = 600000) @Ignore("The daemon functionality is still under development")
+    @Test(timeout = 600000)
     public void daemon() { // In main thread
         Solver solver = buildSolver();
         CloudBalance cloudBalance = buildPlanningProblem();
@@ -74,7 +74,7 @@ public class CloudBalancingDaemonTest {
         }
     }
 
-    private class SolverThread extends Thread implements SolverEventListener {
+    private class SolverThread extends Thread implements SolverEventListener<CloudBalance> {
 
         private final Solver solver;
         private final CloudBalance cloudBalance;
@@ -91,8 +91,9 @@ public class CloudBalancingDaemonTest {
         }
 
         @Override
-        public void bestSolutionChanged(BestSolutionChangedEvent event) { // In solver thread
-            if (solver.isEveryProblemFactChangeProcessed()) {
+        public void bestSolutionChanged(BestSolutionChangedEvent<CloudBalance> event) { // In solver thread
+            if (event.isEveryProblemFactChangeProcessed() && event.isNewBestSolutionInitialized()
+                    && event.getNewBestSolution().getScore().isFeasible()) {
                 phaser.arrive();
             }
         }

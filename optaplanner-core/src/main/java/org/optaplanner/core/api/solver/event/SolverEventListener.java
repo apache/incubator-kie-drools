@@ -23,21 +23,23 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 
-public interface SolverEventListener extends EventListener {
+public interface SolverEventListener<SolutionG extends Solution> extends EventListener {
 
     /**
      * Called once every time when a better {@link Solution} is found.
+     * The {@link Solution} is guaranteed to be initialized.
      * Early in the solving process it's usually called more frequently than later on.
      * <p/>
      * Called from the solver thread.
      * <b>Should return fast, because it steals time from the {@link Solver}.</b>
      * <p/>
+     * In real-time planning
      * If {@link Solver#addProblemFactChange(ProblemFactChange)} has been called once or more,
      * all {@link ProblemFactChange}s in the queue will be processed and this method is called only once.
      * In that case, the former best {@link Solution} is considered stale,
      * so it doesn't matter whether the new {@link Score} is better than that or not.
      * @param event never null
      */
-    void bestSolutionChanged(BestSolutionChangedEvent event);
+    void bestSolutionChanged(BestSolutionChangedEvent<SolutionG> event);
 
 }

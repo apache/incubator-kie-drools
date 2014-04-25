@@ -4182,3 +4182,31 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
 [MINOR] If you combine Simulated Annealing with <bestScoreLimit>:
 The timeGradient (used only by Simulated Annealing) calculation has changed for BestScoreTermination.
 On average, this should be for the better.
+
+[MINOR] BestSolutionChangedEvent and SolverEventListener now have a generic parameter which you can optionally use.
+Before in *.java:
+    solver.addEventListener(new SolverEventListener() {
+        public void bestSolutionChanged(BestSolutionChangedEvent event) {
+            CloudBalance solution = (CloudBalance) event.getNewBestSolution();
+        }
+    });
+After in *.java:
+    solver.addEventListener(new SolverEventListener<CloudBalance>() {
+        public void bestSolutionChanged(BestSolutionChangedEvent<CloudBalance> event) {
+            CloudBalance solution = event.getNewBestSolution();
+        }
+    });
+
+[MINOR] BestSolutionChangedEvent now has the methods isNewBestSolutionInitialized() and isEveryProblemFactChangeProcessed().
+In real-time planning, if you're only interested in processing valid solutions, you'll want to filter and check those.
+Note: in 6.0, filtering BestSolutionChangedEvents for only valid solutions was cumbersome.
+Note: often you're interested in invalid, uninitialized solutions too, to show to the user you've processed his problem fact changes.
+After in *.java:
+        public void bestSolutionChanged(BestSolutionChangedEvent<CloudBalance> event) {
+            // Ignore invalid solutions
+            if (event.isEveryProblemFactChangeProcessed()
+                    && event.isNewBestSolutionInitialized()
+                    && event.getNewBestSolution().getScore().isFeasible()) {
+                ...
+            }
+        }

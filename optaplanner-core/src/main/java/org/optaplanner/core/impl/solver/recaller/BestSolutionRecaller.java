@@ -126,7 +126,7 @@ public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
         solverScope.setBestSolution(solution);
         solverScope.setBestScore(solution.getScore());
         solverScope.setBestSolutionTimeMillis(System.currentTimeMillis());
-        solverEventSupport.fireBestSolutionChanged(solution);
+        solverEventSupport.fireBestSolutionChanged(solution, uninitializedVariableCount);
     }
 
 }

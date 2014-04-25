@@ -35,11 +35,11 @@ public class SolverEventSupport extends AbstractEventSupport<SolverEventListener
         this.solver = solver;
     }
 
-    public void fireBestSolutionChanged(Solution newBestSolution) {
+    public void fireBestSolutionChanged(Solution newBestSolution, int newUninitializedVariableCount) {
         final Iterator<SolverEventListener> it = getEventListenersIterator();
         if (it.hasNext()) {
             final BestSolutionChangedEvent event = new BestSolutionChangedEvent(solver,
-                    solver.getSolverScope().calculateTimeMillisSpent(), newBestSolution);
+                    solver.getSolverScope().calculateTimeMillisSpent(), newBestSolution, newUninitializedVariableCount);
             do {
                 it.next().bestSolutionChanged(event);
             } while (it.hasNext());

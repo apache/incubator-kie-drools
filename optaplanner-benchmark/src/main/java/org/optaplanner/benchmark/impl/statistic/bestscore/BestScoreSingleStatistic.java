@@ -26,6 +26,7 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.solution.Solution;
 
 public class BestScoreSingleStatistic extends SingleStatistic<BestScoreStatisticPoint> {
 
@@ -61,9 +62,9 @@ public class BestScoreSingleStatistic extends SingleStatistic<BestScoreStatistic
         solver.removeEventListener(listener);
     }
 
-    private class BestScoreSingleStatisticListener implements SolverEventListener {
+    private class BestScoreSingleStatisticListener implements SolverEventListener<Solution> {
 
-        public void bestSolutionChanged(BestSolutionChangedEvent event) {
+        public void bestSolutionChanged(BestSolutionChangedEvent<Solution> event) {
             pointList.add(new BestScoreStatisticPoint(
                     event.getTimeMillisSpent(), event.getNewBestSolution().getScore()));
         }
