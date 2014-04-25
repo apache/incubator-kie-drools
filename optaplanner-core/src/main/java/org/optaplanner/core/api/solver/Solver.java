@@ -29,8 +29,12 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * A Solver solves a planning problem.
+ * Clients usually call {@link #solve(Solution)} and then {@link #getBestSolution()}.
  * <p/>
- * Most methods are not thread-safe and should be called from the same thread.
+ * These methods are not thread-safe and should be called from the same thread,
+ * except for the methods that are explicitly marked as thread-safe.
+ * Note that despite that {@link #solve(Solution)} is not thread-safe for clients of this class,
+ * that method is free to do multi-threading inside itself.
  * <p/>
  * Build by a {@link SolverFactory}.
  */
