@@ -55,10 +55,10 @@ public class TspImporter extends AbstractTxtSolutionImporter {
     }
 
     public TxtInputBuilder createTxtInputBuilder() {
-        return new TravelingSalesmanTourInputBuilder();
+        return new TspInputBuilder();
     }
 
-    public static class TravelingSalesmanTourInputBuilder extends TxtInputBuilder {
+    public static class TspInputBuilder extends TxtInputBuilder {
 
         private TravelingSalesmanTour travelingSalesmanTour;
 
