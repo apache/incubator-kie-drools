@@ -31,6 +31,8 @@ import org.jbpm.services.task.audit.commands.GetAllUserAuditTasksByStatusByDueDa
 import org.jbpm.services.task.audit.commands.GetAllUserAuditTasksByStatusCommand;
 import org.jbpm.services.task.audit.commands.GetAllUserAuditTasksCommand;
 import org.jbpm.services.task.audit.commands.GetAuditEventsCommand;
+import org.jbpm.services.task.audit.commands.GetGroupAuditTaskByIdCommand;
+import org.jbpm.services.task.audit.commands.GetUserAuditTaskByIdCommand;
 import org.jbpm.services.task.audit.impl.model.api.GroupAuditTask;
 import org.jbpm.services.task.audit.impl.model.api.HistoryAuditTask;
 import org.jbpm.services.task.audit.impl.model.api.UserAuditTask;
@@ -130,6 +132,16 @@ public class TaskAuditServiceImpl implements TaskAuditService {
     @Override
     public void setTaskService(TaskService taskService) {
         this.taskService = (InternalTaskService) taskService;
+    }
+
+    @Override
+    public UserAuditTask getUserAuditTaskById(long taskId) {
+        return taskService.execute(new GetUserAuditTaskByIdCommand( taskId ));
+    }
+
+    @Override
+    public GroupAuditTask getGroupAuditTaskById(long taskId) {
+        return taskService.execute(new GetGroupAuditTaskByIdCommand( taskId ));
     }
     
 }

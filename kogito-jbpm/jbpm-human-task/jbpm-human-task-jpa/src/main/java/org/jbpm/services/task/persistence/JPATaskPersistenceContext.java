@@ -1,14 +1,13 @@
 package org.jbpm.services.task.persistence;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
 import javax.persistence.Query;
-
 import org.drools.core.util.StringUtils;
 import org.jbpm.services.task.impl.model.AttachmentImpl;
 import org.jbpm.services.task.impl.model.CommentImpl;
@@ -18,6 +17,7 @@ import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.OrganizationalEntityImpl;
 import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
+import org.jbpm.services.task.utils.CollectionUtils;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.Content;
@@ -344,6 +344,14 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		return queryStringWithParameters(params, false, LockModeType.NONE, clazz, query);
 	}
 
+        @Override
+	public <T> T queryWithParametersInTransaction(String queryName, boolean singleResult,
+			Map<String, Object> params, Class<T> clazz) {
+		check();
+		Query query = this.em.createNamedQuery(queryName);
+		return queryStringWithParameters(params, singleResult, LockModeType.NONE, clazz, query);
+	}
+        
 	@Override
 	public <T> T queryAndLockWithParametersInTransaction(String queryName,
 			Map<String, Object> params, boolean singleResult, Class<T> clazz) {
@@ -375,6 +383,15 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		Query query = this.em.createQuery(queryString);
 				
 		return queryStringWithParameters(params, false, LockModeType.NONE, clazz, query);
+	}
+        
+        @Override
+	public <T> T queryStringWithParametersInTransaction(String queryString, boolean singleResult,
+			Map<String, Object> params, Class<T> clazz) {
+		check();
+		Query query = this.em.createQuery(queryString);
+				
+		return queryStringWithParameters(params, singleResult, LockModeType.NONE, clazz, query);
 	}
 
 	
@@ -470,7 +487,8 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 			}
 		}
 		if (singleResult) {
-			return (T) query.getSingleResult();
+                    List results = query.getResultList();
+                    return (T) ((results.isEmpty() )? null : results.get(0));
 		}
 		return (T) query.getResultList();
 	}

@@ -33,6 +33,7 @@ public interface TaskAuditService {
     
     List<TaskEvent> getAllTaskEvents(long taskId, int offset, int count);
     
+    UserAuditTask getUserAuditTaskById(long taskId);
     List<UserAuditTask> getAllUserAuditTasksAdmin(int offset, int count);
     List<UserAuditTask> getAllUserAuditTasks(String userId, int offset, int count);
     List<UserAuditTask> getAllUserAuditTasksByStatus(String userId, List<String> statuses, int offset, int count);
@@ -40,7 +41,7 @@ public interface TaskAuditService {
     List<UserAuditTask> getAllUserAuditTasksByStatusByDueDate(String userId, List<String> statuses, Date dueDate, int offset, int count);
     List<UserAuditTask> getAllUserAuditTasksByStatusByDueDateOptional(String userId, List<String> statuses, Date dueDate, int offset, int count);
     
-    
+    GroupAuditTask getGroupAuditTaskById(long taskId);
     List<GroupAuditTask> getAllGroupAuditTasksAdmin(int offset, int count);
     List<GroupAuditTask> getAllGroupAuditTasks(String groupIds, int offset, int count);
     List<GroupAuditTask> getAllGroupAuditTasksByStatus(String groupIds, List<String> statuses, int offset, int count);

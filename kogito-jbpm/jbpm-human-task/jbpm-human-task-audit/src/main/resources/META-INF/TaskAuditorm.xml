@@ -31,6 +31,18 @@
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
+     <named-query name="getUserAuditTaskById">
+        <query>
+            select u from UserAuditTaskImpl u where u.taskId = :taskId  
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    <named-query name="getGroupAuditTaskById">
+        <query>
+            select g from GroupAuditTaskImpl g where g.taskId = :taskId   
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
     <named-query name="getAllUserAuditTasksByStatus">
         <query>
             select u from UserAuditTaskImpl u where TYPE(u) = org.jbpm.services.task.audit.impl.model.UserAuditTaskImpl and u.actualOwner = :userId and u.status in :statuses  order by u.taskId DESC  

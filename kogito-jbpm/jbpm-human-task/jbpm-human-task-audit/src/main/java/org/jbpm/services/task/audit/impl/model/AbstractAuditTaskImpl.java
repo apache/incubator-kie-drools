@@ -21,9 +21,12 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 
 /**
@@ -32,10 +35,16 @@ import javax.persistence.Temporal;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@SequenceGenerator(name="auditIdSeq", sequenceName="AUDIT_ID_SEQ", allocationSize=1)
 public abstract class AbstractAuditTaskImpl implements Serializable, AuditTask {
+    
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="auditIdSeq")
+    private long id;
+    
     @Column(name = "TASK_ID")
     private long taskId;
+    
     private String status;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date activationTime;

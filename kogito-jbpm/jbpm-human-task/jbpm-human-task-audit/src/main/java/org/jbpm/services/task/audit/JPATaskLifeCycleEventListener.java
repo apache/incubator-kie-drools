@@ -5,6 +5,7 @@
 package org.jbpm.services.task.audit;
 
 import java.util.Date;
+import java.util.List;
 import org.jbpm.services.task.audit.impl.model.GroupAuditTaskImpl;
 import org.jbpm.services.task.audit.impl.model.HistoryAuditTaskImpl;
 import org.jbpm.services.task.audit.impl.model.TaskEventImpl;
@@ -12,6 +13,7 @@ import org.jbpm.services.task.audit.impl.model.UserAuditTaskImpl;
 import org.jbpm.services.task.audit.impl.model.api.GroupAuditTask;
 import org.jbpm.services.task.audit.impl.model.api.UserAuditTask;
 import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
+import org.jbpm.services.task.utils.ClassUtil;
 import org.kie.api.task.TaskEvent;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
@@ -35,7 +37,9 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
             userId = ti.getTaskData().getActualOwner().getId();
         }
         persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.STARTED, userId, new Date()));
-        UserAuditTask task = persistenceContext.find(UserAuditTaskImpl.class, ti.getId());
+        UserAuditTask task = persistenceContext.queryWithParametersInTransaction("getUserAuditTaskById", true,
+				persistenceContext.addParametersToMap("taskId", ti.getId()),
+				ClassUtil.<UserAuditTask>castClass(UserAuditTask.class));
         if (task != null) {
             task.setStatus(ti.getTaskData().getStatus().name());
             persistenceContext.persist(task);
@@ -52,7 +56,9 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
             userId = ti.getTaskData().getActualOwner().getId();
         }
         persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.ACTIVATED, userId, new Date()));
-        UserAuditTask task = persistenceContext.find(UserAuditTaskImpl.class, ti.getId());
+        UserAuditTask task = persistenceContext.queryWithParametersInTransaction("getUserAuditTaskById", true,
+				persistenceContext.addParametersToMap("taskId", ti.getId()),
+				ClassUtil.<UserAuditTask>castClass(UserAuditTask.class));
         task.setStatus(ti.getTaskData().getStatus().name());
         persistenceContext.persist(task);
     }
@@ -66,7 +72,9 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
             userId = ti.getTaskData().getActualOwner().getId();
         }
         persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.CLAIMED, userId, new Date()));
-        GroupAuditTaskImpl task = persistenceContext.find(GroupAuditTaskImpl.class, ti.getId());
+        GroupAuditTask task = persistenceContext.queryWithParametersInTransaction("getGroupAuditTaskById", true,
+				persistenceContext.addParametersToMap("taskId", ti.getId()),
+				ClassUtil.<GroupAuditTask>castClass(GroupAuditTask.class));
         if (task != null) {
             persistenceContext.remove(task);
         }
@@ -88,7 +96,9 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
             userId = ti.getTaskData().getActualOwner().getId();
         }
         persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.SKIPPED, userId, new Date()));
-        UserAuditTask task = persistenceContext.find(UserAuditTaskImpl.class, ti.getId());
+        UserAuditTask task = persistenceContext.queryWithParametersInTransaction("getUserAuditTaskById", true,
+				persistenceContext.addParametersToMap("taskId", ti.getId()),
+				ClassUtil.<UserAuditTask>castClass(UserAuditTask.class));
         if (task != null) {
             persistenceContext.remove(task);
             HistoryAuditTaskImpl historyAuditTaskImpl = new HistoryAuditTaskImpl(task.getActualOwner(), task.getTaskId(), ti.getTaskData().getStatus().name(),
@@ -100,7 +110,9 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
                                                                                 task.getParentId());
             persistenceContext.persist(historyAuditTaskImpl);
         }else{
-            GroupAuditTask groupTask = persistenceContext.find(GroupAuditTaskImpl.class, ti.getId());
+            GroupAuditTask groupTask = persistenceContext.queryWithParametersInTransaction("getGroupAuditTaskById", true, 
+				persistenceContext.addParametersToMap("taskId", ti.getId()),
+				ClassUtil.<GroupAuditTask>castClass(GroupAuditTask.class));
             if (groupTask != null) {
                  persistenceContext.remove(groupTask);
                  HistoryAuditTaskImpl historyAuditTaskImpl = new HistoryAuditTaskImpl(groupTask.getPotentialOwners(), groupTask.getTaskId(), ti.getTaskData().getStatus().name(),
@@ -126,7 +138,9 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
             userId = ti.getTaskData().getActualOwner().getId();
         }
         persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.STOPPED, userId, new Date()));
-        UserAuditTask task = persistenceContext.find(UserAuditTaskImpl.class, ti.getId());
+        UserAuditTask task = persistenceContext.queryWithParametersInTransaction("getUserAuditTaskById", true, 
+				persistenceContext.addParametersToMap("taskId", ti.getId()),
+				ClassUtil.<UserAuditTask>castClass(UserAuditTask.class));
         if (task != null) {
             persistenceContext.remove(task);
             HistoryAuditTaskImpl historyAuditTaskImpl = new HistoryAuditTaskImpl(task.getActualOwner(), task.getTaskId(), ti.getTaskData().getStatus().name(),
@@ -138,7 +152,9 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
                                                                                 task.getParentId());
             persistenceContext.persist(historyAuditTaskImpl);
         }else{
-            GroupAuditTask groupTask = persistenceContext.find(GroupAuditTaskImpl.class, ti.getId());
+            GroupAuditTask groupTask = persistenceContext.queryWithParametersInTransaction("getGroupAuditTaskById", true,
+				persistenceContext.addParametersToMap("taskId", ti.getId()),
+				ClassUtil.<GroupAuditTask>castClass(GroupAuditTask.class));
             if (groupTask != null) {
                  persistenceContext.remove(groupTask);
                  HistoryAuditTaskImpl historyAuditTaskImpl = new HistoryAuditTaskImpl(groupTask.getPotentialOwners(), groupTask.getTaskId(), ti.getTaskData().getStatus().name(),
@@ -163,7 +179,9 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
             userId = ti.getTaskData().getActualOwner().getId();
         }
         persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.COMPLETED, userId, new Date()));
-        UserAuditTask task = persistenceContext.find(UserAuditTaskImpl.class, ti.getId());
+        UserAuditTask task = persistenceContext.queryWithParametersInTransaction("getUserAuditTaskById", true,
+				persistenceContext.addParametersToMap("taskId", ti.getId()),
+				ClassUtil.<UserAuditTask>castClass(UserAuditTask.class));
         if (task != null) {
             persistenceContext.remove(task);
             HistoryAuditTaskImpl historyAuditTaskImpl = new HistoryAuditTaskImpl(task.getActualOwner(), task.getTaskId(), ti.getTaskData().getStatus().name(),
@@ -186,7 +204,9 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
             userId = ti.getTaskData().getActualOwner().getId();
         }
         persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.FAILED, userId, new Date()));
-        UserAuditTask task = persistenceContext.find(UserAuditTaskImpl.class, ti.getId());
+        UserAuditTask task = persistenceContext.queryWithParametersInTransaction("getUserAuditTaskById", true,
+				persistenceContext.addParametersToMap("taskId", ti.getId()),
+				ClassUtil.<UserAuditTask>castClass(UserAuditTask.class));
         if (task != null) {
             persistenceContext.remove(task);
             HistoryAuditTaskImpl historyAuditTaskImpl = new HistoryAuditTaskImpl(task.getActualOwner(), task.getTaskId(), ti.getTaskData().getStatus().name(),
@@ -198,7 +218,9 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
                                                                                 task.getParentId());
             persistenceContext.persist(historyAuditTaskImpl);
         }else{
-            GroupAuditTask groupTask = persistenceContext.find(GroupAuditTaskImpl.class, ti.getId());
+            GroupAuditTask groupTask = persistenceContext.queryWithParametersInTransaction("getGroupAuditTaskById", true, 
+				persistenceContext.addParametersToMap("taskId", ti.getId()),
+				ClassUtil.<GroupAuditTask>castClass(GroupAuditTask.class));
             if (groupTask != null) {
                  persistenceContext.remove(groupTask);
                  HistoryAuditTaskImpl historyAuditTaskImpl = new HistoryAuditTaskImpl(groupTask.getPotentialOwners(), groupTask.getTaskId(), ti.getTaskData().getStatus().name(),
@@ -253,7 +275,9 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
             userId = ti.getTaskData().getActualOwner().getId();
         }
         persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.EXITED, userId, new Date()));
-        UserAuditTask task = persistenceContext.find(UserAuditTaskImpl.class, ti.getId());
+        UserAuditTask task = persistenceContext.queryWithParametersInTransaction("getUserAuditTaskById", true,
+				persistenceContext.addParametersToMap("taskId", ti.getId()),
+				ClassUtil.<UserAuditTask>castClass(UserAuditTask.class));
         if (task != null) {
             persistenceContext.remove(task);
             HistoryAuditTaskImpl historyAuditTaskImpl = new HistoryAuditTaskImpl(task.getActualOwner(), task.getTaskId(), ti.getTaskData().getStatus().name(),
@@ -265,7 +289,9 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
                                                                                 task.getParentId());
             persistenceContext.persist(historyAuditTaskImpl);
         }else{
-            GroupAuditTask groupTask = persistenceContext.find(GroupAuditTaskImpl.class, ti.getId());
+            GroupAuditTask groupTask = persistenceContext.queryWithParametersInTransaction("getGroupAuditTaskById", true,
+				persistenceContext.addParametersToMap("taskId", ti.getId()),
+				ClassUtil.<GroupAuditTask>castClass(GroupAuditTask.class));
             if (groupTask != null) {
                  persistenceContext.remove(groupTask);
                  HistoryAuditTaskImpl historyAuditTaskImpl = new HistoryAuditTaskImpl(groupTask.getPotentialOwners(), groupTask.getTaskId(), ti.getTaskData().getStatus().name(),
@@ -290,7 +316,9 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
             userId = ti.getTaskData().getActualOwner().getId();
         }
         persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.RELEASED, userId, new Date()));
-        UserAuditTask task = persistenceContext.find(UserAuditTaskImpl.class, ti.getId());
+        UserAuditTask task = persistenceContext.queryWithParametersInTransaction("getUserAuditTaskById", true, 
+				persistenceContext.addParametersToMap("taskId", ti.getId()),
+				ClassUtil.<UserAuditTask>castClass(UserAuditTask.class));
         if (task != null) {
             persistenceContext.remove(task);
         }
@@ -318,7 +346,9 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
             userId = ti.getTaskData().getActualOwner().getId();
         }
         persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.RESUMED, userId, new Date()));
-        UserAuditTask task = persistenceContext.find(UserAuditTaskImpl.class, ti.getId());
+        UserAuditTask task = persistenceContext.queryWithParametersInTransaction("getUserAuditTaskById", true,
+				persistenceContext.addParametersToMap("taskId", ti.getId()),
+				ClassUtil.<UserAuditTask>castClass(UserAuditTask.class));
         task.setStatus(ti.getTaskData().getStatus().name());
         persistenceContext.persist(task);
     }
@@ -332,7 +362,9 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
             userId = ti.getTaskData().getActualOwner().getId();
         }
         persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.SUSPENDED, userId, new Date()));
-        UserAuditTask task = persistenceContext.find(UserAuditTaskImpl.class, ti.getId());
+        UserAuditTask task = persistenceContext.queryWithParametersInTransaction("getUserAuditTaskById", true,
+				persistenceContext.addParametersToMap("taskId", ti.getId()),
+				ClassUtil.<UserAuditTask>castClass(UserAuditTask.class));
         task.setStatus(ti.getTaskData().getStatus().name());
         persistenceContext.persist(task);
     }
@@ -346,7 +378,9 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
             userId = ti.getTaskData().getActualOwner().getId();
         }
         persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.FORWARDED, userId, new Date()));
-        UserAuditTask task = persistenceContext.find(UserAuditTaskImpl.class, ti.getId());
+        UserAuditTask task = persistenceContext.queryWithParametersInTransaction("getUserAuditTaskById", true,
+				persistenceContext.addParametersToMap("taskId", ti.getId()),
+				ClassUtil.<UserAuditTask>castClass(UserAuditTask.class));
         task.setStatus(ti.getTaskData().getStatus().name());
         persistenceContext.persist(task);
     }
@@ -360,7 +394,9 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
             userId = ti.getTaskData().getActualOwner().getId();
         }
         persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.DELEGATED, userId, new Date()));
-        UserAuditTask task = persistenceContext.find(UserAuditTaskImpl.class, ti.getId());
+        UserAuditTask task = persistenceContext.queryWithParametersInTransaction("getUserAuditTaskById", true,
+				persistenceContext.addParametersToMap("taskId", ti.getId()),
+				ClassUtil.<UserAuditTask>castClass(UserAuditTask.class));
         if (task != null) {
             persistenceContext.remove(task);
         }
