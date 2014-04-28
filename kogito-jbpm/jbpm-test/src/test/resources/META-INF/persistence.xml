@@ -32,8 +32,6 @@
         <class>org.jbpm.services.task.impl.model.BooleanExpressionImpl</class>
         <class>org.jbpm.services.task.impl.model.CommentImpl</class>
         <class>org.jbpm.services.task.impl.model.DeadlineImpl</class>
-        <class>org.jbpm.services.task.impl.model.CommentImpl</class>
-        <class>org.jbpm.services.task.impl.model.DeadlineImpl</class>
         <class>org.jbpm.services.task.impl.model.DelegationImpl</class>
         <class>org.jbpm.services.task.impl.model.EscalationImpl</class>
         <class>org.jbpm.services.task.impl.model.GroupImpl</class>
@@ -107,8 +105,6 @@
         <class>org.jbpm.services.task.impl.model.AttachmentImpl</class>
         <class>org.jbpm.services.task.impl.model.ContentImpl</class>
         <class>org.jbpm.services.task.impl.model.BooleanExpressionImpl</class>
-        <class>org.jbpm.services.task.impl.model.CommentImpl</class>
-        <class>org.jbpm.services.task.impl.model.DeadlineImpl</class>
         <class>org.jbpm.services.task.impl.model.CommentImpl</class>
         <class>org.jbpm.services.task.impl.model.DeadlineImpl</class>
         <class>org.jbpm.services.task.impl.model.DelegationImpl</class>
