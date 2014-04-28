@@ -9,6 +9,7 @@ import org.jbpm.services.task.audit.impl.model.GroupAuditTaskImpl;
 import org.jbpm.services.task.audit.impl.model.HistoryAuditTaskImpl;
 import org.jbpm.services.task.audit.impl.model.TaskEventImpl;
 import org.jbpm.services.task.audit.impl.model.UserAuditTaskImpl;
+import org.jbpm.services.task.audit.impl.model.api.GroupAuditTask;
 import org.jbpm.services.task.audit.impl.model.api.UserAuditTask;
 import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.kie.api.task.TaskEvent;
@@ -88,8 +89,32 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         }
         persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.SKIPPED, userId, new Date()));
         UserAuditTask task = persistenceContext.find(UserAuditTaskImpl.class, ti.getId());
-        task.setStatus(ti.getTaskData().getStatus().name());
-        persistenceContext.persist(task);
+        if (task != null) {
+            persistenceContext.remove(task);
+            HistoryAuditTaskImpl historyAuditTaskImpl = new HistoryAuditTaskImpl(task.getActualOwner(), task.getTaskId(), ti.getTaskData().getStatus().name(),
+                                                                                task.getActivationTime(), task.getName(),
+                                                                                task.getDescription(), task.getPriority(),
+                                                                                task.getCreatedBy(), task.getCreatedOn(), 
+                                                                                task.getDueDate(), task.getProcessInstanceId(), 
+                                                                                task.getProcessId(), task.getProcessSessionId(),
+                                                                                task.getParentId());
+            persistenceContext.persist(historyAuditTaskImpl);
+        }else{
+            GroupAuditTask groupTask = persistenceContext.find(GroupAuditTaskImpl.class, ti.getId());
+            if (groupTask != null) {
+                 persistenceContext.remove(groupTask);
+                 HistoryAuditTaskImpl historyAuditTaskImpl = new HistoryAuditTaskImpl(groupTask.getPotentialOwners(), groupTask.getTaskId(), ti.getTaskData().getStatus().name(),
+                                                                                groupTask.getActivationTime(), groupTask.getName(),
+                                                                                groupTask.getDescription(), groupTask.getPriority(),
+                                                                                groupTask.getCreatedBy(), groupTask.getCreatedOn(), 
+                                                                                groupTask.getDueDate(), groupTask.getProcessInstanceId(), 
+                                                                                groupTask.getProcessId(), groupTask.getProcessSessionId(),
+                                                                                groupTask.getParentId());
+                persistenceContext.persist(historyAuditTaskImpl);
+            }
+            
+        }
+        
     }
 
     @Override
@@ -102,8 +127,31 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         }
         persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.STOPPED, userId, new Date()));
         UserAuditTask task = persistenceContext.find(UserAuditTaskImpl.class, ti.getId());
-        task.setStatus(ti.getTaskData().getStatus().name());
-        persistenceContext.persist(task);
+        if (task != null) {
+            persistenceContext.remove(task);
+            HistoryAuditTaskImpl historyAuditTaskImpl = new HistoryAuditTaskImpl(task.getActualOwner(), task.getTaskId(), ti.getTaskData().getStatus().name(),
+                                                                                task.getActivationTime(), task.getName(),
+                                                                                task.getDescription(), task.getPriority(),
+                                                                                task.getCreatedBy(), task.getCreatedOn(), 
+                                                                                task.getDueDate(), task.getProcessInstanceId(), 
+                                                                                task.getProcessId(), task.getProcessSessionId(),
+                                                                                task.getParentId());
+            persistenceContext.persist(historyAuditTaskImpl);
+        }else{
+            GroupAuditTask groupTask = persistenceContext.find(GroupAuditTaskImpl.class, ti.getId());
+            if (groupTask != null) {
+                 persistenceContext.remove(groupTask);
+                 HistoryAuditTaskImpl historyAuditTaskImpl = new HistoryAuditTaskImpl(groupTask.getPotentialOwners(), groupTask.getTaskId(), ti.getTaskData().getStatus().name(),
+                                                                                groupTask.getActivationTime(), groupTask.getName(),
+                                                                                groupTask.getDescription(), groupTask.getPriority(),
+                                                                                groupTask.getCreatedBy(), groupTask.getCreatedOn(), 
+                                                                                groupTask.getDueDate(), groupTask.getProcessInstanceId(), 
+                                                                                groupTask.getProcessId(), groupTask.getProcessSessionId(),
+                                                                                groupTask.getParentId());
+                persistenceContext.persist(historyAuditTaskImpl);
+            }
+            
+        }
     }
 
     @Override
@@ -139,8 +187,31 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         }
         persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.FAILED, userId, new Date()));
         UserAuditTask task = persistenceContext.find(UserAuditTaskImpl.class, ti.getId());
-        task.setStatus(ti.getTaskData().getStatus().name());
-        persistenceContext.persist(task);
+        if (task != null) {
+            persistenceContext.remove(task);
+            HistoryAuditTaskImpl historyAuditTaskImpl = new HistoryAuditTaskImpl(task.getActualOwner(), task.getTaskId(), ti.getTaskData().getStatus().name(),
+                                                                                task.getActivationTime(), task.getName(),
+                                                                                task.getDescription(), task.getPriority(),
+                                                                                task.getCreatedBy(), task.getCreatedOn(), 
+                                                                                task.getDueDate(), task.getProcessInstanceId(), 
+                                                                                task.getProcessId(), task.getProcessSessionId(),
+                                                                                task.getParentId());
+            persistenceContext.persist(historyAuditTaskImpl);
+        }else{
+            GroupAuditTask groupTask = persistenceContext.find(GroupAuditTaskImpl.class, ti.getId());
+            if (groupTask != null) {
+                 persistenceContext.remove(groupTask);
+                 HistoryAuditTaskImpl historyAuditTaskImpl = new HistoryAuditTaskImpl(groupTask.getPotentialOwners(), groupTask.getTaskId(), ti.getTaskData().getStatus().name(),
+                                                                                groupTask.getActivationTime(), groupTask.getName(),
+                                                                                groupTask.getDescription(), groupTask.getPriority(),
+                                                                                groupTask.getCreatedBy(), groupTask.getCreatedOn(), 
+                                                                                groupTask.getDueDate(), groupTask.getProcessInstanceId(), 
+                                                                                groupTask.getProcessId(), groupTask.getProcessSessionId(),
+                                                                                groupTask.getParentId());
+                persistenceContext.persist(historyAuditTaskImpl);
+            }
+            
+        }
     }
 
     @Override
@@ -183,8 +254,31 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         }
         persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.EXITED, userId, new Date()));
         UserAuditTask task = persistenceContext.find(UserAuditTaskImpl.class, ti.getId());
-        task.setStatus(ti.getTaskData().getStatus().name());
-        persistenceContext.persist(task);
+        if (task != null) {
+            persistenceContext.remove(task);
+            HistoryAuditTaskImpl historyAuditTaskImpl = new HistoryAuditTaskImpl(task.getActualOwner(), task.getTaskId(), ti.getTaskData().getStatus().name(),
+                                                                                task.getActivationTime(), task.getName(),
+                                                                                task.getDescription(), task.getPriority(),
+                                                                                task.getCreatedBy(), task.getCreatedOn(), 
+                                                                                task.getDueDate(), task.getProcessInstanceId(), 
+                                                                                task.getProcessId(), task.getProcessSessionId(),
+                                                                                task.getParentId());
+            persistenceContext.persist(historyAuditTaskImpl);
+        }else{
+            GroupAuditTask groupTask = persistenceContext.find(GroupAuditTaskImpl.class, ti.getId());
+            if (groupTask != null) {
+                 persistenceContext.remove(groupTask);
+                 HistoryAuditTaskImpl historyAuditTaskImpl = new HistoryAuditTaskImpl(groupTask.getPotentialOwners(), groupTask.getTaskId(), ti.getTaskData().getStatus().name(),
+                                                                                groupTask.getActivationTime(), groupTask.getName(),
+                                                                                groupTask.getDescription(), groupTask.getPriority(),
+                                                                                groupTask.getCreatedBy(), groupTask.getCreatedOn(), 
+                                                                                groupTask.getDueDate(), groupTask.getProcessInstanceId(), 
+                                                                                groupTask.getProcessId(), groupTask.getProcessSessionId(),
+                                                                                groupTask.getParentId());
+                persistenceContext.persist(historyAuditTaskImpl);
+            }
+            
+        }
     }
 
     @Override
