@@ -64,8 +64,8 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         // Wait until those AddProcessChanges are processed
         waitForNextStage();
 
-        // Give the solver thread some time to solve
-        Thread.sleep(500);
+        // Give the solver thread some time to solve, terminate and get into the daemon waiting state
+        Thread.sleep(1000);
         while (!notYetAddedProcessQueue.isEmpty()) {
             CloudProcess process = notYetAddedProcessQueue.poll();
             solver.addProblemFactChange(new AddProcessChange(process));
@@ -131,7 +131,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
                 "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
         solverFactory.getSolverConfig().setDaemon(true);
         TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setMillisecondsSpentLimit(600000L);
+        terminationConfig.setMillisecondsSpentLimit(800L);
         solverFactory.getSolverConfig().setTerminationConfig(terminationConfig);
         return solverFactory.buildSolver();
     }
