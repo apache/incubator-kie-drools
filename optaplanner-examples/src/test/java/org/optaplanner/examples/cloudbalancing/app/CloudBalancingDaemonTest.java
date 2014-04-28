@@ -18,9 +18,8 @@ package org.optaplanner.examples.cloudbalancing.app;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.Phaser;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Ignore;
@@ -35,35 +34,44 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingGenerator;
+import org.optaplanner.examples.common.app.LoggingTest;
 
-public class CloudBalancingDaemonTest {
+public class CloudBalancingDaemonTest extends LoggingTest {
 
-    private Phaser phaser = new Phaser(2);
+    private Object stageLock = new Object();
+    private AtomicInteger stageNumber = new AtomicInteger(0);
+    private CountDownLatch stage1Latch = new CountDownLatch(1);
+    private CountDownLatch stage2Latch = new CountDownLatch(1);
+    private CountDownLatch stage3Latch = new CountDownLatch(1);
 
     private Queue<CloudProcess> notYetAddedProcessQueue = new LinkedList<CloudProcess>();
 
-    @Test(timeout = 600000)
-    public void daemon() { // In main thread
+    @Test(timeout = 600000) @Ignore("Daemon functionality not yet implemented.")
+    public void daemon() throws InterruptedException { // In main thread
         Solver solver = buildSolver();
         CloudBalance cloudBalance = buildPlanningProblem();
         SolverThread solverThread = new SolverThread(solver, cloudBalance);
         solverThread.start();
         // Wait for the Solver to boot
-        phaser.arriveAndAwaitAdvance();
+        waitForNextStage();
 
+        // Give the solver thread a chance to terminate and get into the daemon waiting state
+        Thread.sleep(500);
         for (int i = 0; i < 8; i++) {
             CloudProcess process = notYetAddedProcessQueue.poll();
             solver.addProblemFactChange(new AddProcessChange(process));
         }
         // Wait until those AddProcessChanges are processed
-        phaser.arriveAndAwaitAdvance();
+        waitForNextStage();
 
+        // Give the solver thread some time to solve
+        Thread.sleep(500);
         while (!notYetAddedProcessQueue.isEmpty()) {
             CloudProcess process = notYetAddedProcessQueue.poll();
             solver.addProblemFactChange(new AddProcessChange(process));
         }
         // Wait until those AddProcessChanges are processed
-        phaser.arriveAndAwaitAdvance();
+        waitForNextStage();
 
         solver.terminateEarly();
         try {
@@ -71,6 +79,47 @@ public class CloudBalancingDaemonTest {
             solverThread.join();
         } catch (InterruptedException e) {
             throw new IllegalStateException("SolverThread did not die.", e);
+        }
+    }
+
+    private void waitForNextStage() throws InterruptedException {
+        CountDownLatch latch;
+        synchronized (stageLock) {
+            switch (stageNumber.get()) {
+                case 0:
+                    latch = stage1Latch;
+                    break;
+                case 1:
+                    latch = stage2Latch;
+                    break;
+                case 2:
+                    latch = stage3Latch;
+                    break;
+                default:
+                    throw new IllegalStateException("Unsupported phaseNumber (" + stageNumber.get() + ").");
+            }
+        }
+        latch.await();
+        int stage;
+        synchronized (stageLock) {
+            stage = stageNumber.incrementAndGet();
+        }
+        logger.info("==== New testing stage ({}) started. ====", stage);
+    }
+
+    private void nextStage() {
+        synchronized (stageLock) {
+            switch (stageNumber.get()) {
+                case 0:
+                    stage1Latch.countDown();
+                    break;
+                case 1:
+                    stage2Latch.countDown();
+                    break;
+                case 2:
+                    stage3Latch.countDown();
+                    break;
+            }
         }
     }
 
@@ -94,7 +143,7 @@ public class CloudBalancingDaemonTest {
         public void bestSolutionChanged(BestSolutionChangedEvent<CloudBalance> event) { // In solver thread
             if (event.isEveryProblemFactChangeProcessed() && event.isNewBestSolutionInitialized()
                     && event.getNewBestSolution().getScore().isFeasible()) {
-                phaser.arrive();
+                nextStage();
             }
         }
 
@@ -123,7 +172,7 @@ public class CloudBalancingDaemonTest {
                 "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
         solverFactory.getSolverConfig().setDaemon(true);
         TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setMillisecondsSpentLimit(1500L);
+        terminationConfig.setMillisecondsSpentLimit(600000L);
         solverFactory.getSolverConfig().setTerminationConfig(terminationConfig);
         return solverFactory.buildSolver();
     }
