@@ -83,6 +83,8 @@ public interface TaskPersistenceContext {
 	 */
 	
 	<T> T queryWithParametersInTransaction(String queryName, Map<String, Object> params, Class<T> clazz);
+        
+        <T> T queryWithParametersInTransaction(String queryName, boolean singleResult, Map<String, Object> params, Class<T> clazz);
     
 	<T> T queryAndLockWithParametersInTransaction(String queryName, Map<String, Object> params, boolean singleResult, Class<T> clazz);
     
@@ -90,6 +92,8 @@ public interface TaskPersistenceContext {
     
 	<T> T queryStringInTransaction(String queryString, Class<T> clazz );
    
+        <T> T queryStringWithParametersInTransaction(String queryString, boolean singleResult, Map<String, Object> params, Class<T> clazz );
+        
 	<T> T queryStringWithParametersInTransaction(String queryString,  Map<String, Object> params, Class<T> clazz );
     
 	<T> T queryAndLockStringWithParametersInTransaction(String queryName, Map<String, Object> params, boolean singleResult, Class<T> clazz);
