@@ -82,47 +82,6 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         }
     }
 
-    private void waitForNextStage() throws InterruptedException {
-        CountDownLatch latch;
-        synchronized (stageLock) {
-            switch (stageNumber.get()) {
-                case 0:
-                    latch = stage1Latch;
-                    break;
-                case 1:
-                    latch = stage2Latch;
-                    break;
-                case 2:
-                    latch = stage3Latch;
-                    break;
-                default:
-                    throw new IllegalStateException("Unsupported phaseNumber (" + stageNumber.get() + ").");
-            }
-        }
-        latch.await();
-        int stage;
-        synchronized (stageLock) {
-            stage = stageNumber.incrementAndGet();
-        }
-        logger.info("==== New testing stage ({}) started. ====", stage);
-    }
-
-    private void nextStage() {
-        synchronized (stageLock) {
-            switch (stageNumber.get()) {
-                case 0:
-                    stage1Latch.countDown();
-                    break;
-                case 1:
-                    stage2Latch.countDown();
-                    break;
-                case 2:
-                    stage3Latch.countDown();
-                    break;
-            }
-        }
-    }
-
     private class SolverThread extends Thread implements SolverEventListener<CloudBalance> {
 
         private final Solver solver;
@@ -182,6 +141,48 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         notYetAddedProcessQueue.addAll(cloudBalance.getProcessList());
         cloudBalance.setProcessList(new ArrayList<CloudProcess>(notYetAddedProcessQueue.size()));
         return cloudBalance;
+    }
+
+    private void waitForNextStage() throws InterruptedException {
+        CountDownLatch latch;
+        synchronized (stageLock) {
+            switch (stageNumber.get()) {
+                case 0:
+                    latch = stage1Latch;
+                    break;
+                case 1:
+                    latch = stage2Latch;
+                    break;
+                case 2:
+                    latch = stage3Latch;
+                    break;
+                default:
+                    throw new IllegalStateException("Unsupported phaseNumber (" + stageNumber.get() + ").");
+            }
+        }
+        latch.await();
+        // TODO Unlikely race condition: all bestSolutionChanged() could be processed before stageNumber is incremented
+        int stage;
+        synchronized (stageLock) {
+            stage = stageNumber.incrementAndGet();
+        }
+        logger.info("==== New testing stage ({}) started. ====", stage);
+    }
+
+    private void nextStage() {
+        synchronized (stageLock) {
+            switch (stageNumber.get()) {
+                case 0:
+                    stage1Latch.countDown();
+                    break;
+                case 1:
+                    stage2Latch.countDown();
+                    break;
+                case 2:
+                    stage3Latch.countDown();
+                    break;
+            }
+        }
     }
 
 }
