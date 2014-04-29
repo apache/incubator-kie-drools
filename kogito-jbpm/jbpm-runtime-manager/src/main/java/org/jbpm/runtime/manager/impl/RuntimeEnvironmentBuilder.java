@@ -189,7 +189,7 @@ public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFacto
         }
         InternalKieModule module = (InternalKieModule) ((KieContainerImpl)kieContainer).getKieModuleForKBase(kbaseName);
         if (module == null) {
-            throw new IllegalStateException("Cannot find kbase with name " + kbaseName);
+            throw new IllegalStateException("Cannot find kbase, either it does not exist or there are multiple default kbases in kmodule.xml");
         }
         KieBase kbase = kieContainer.getKieBase(kbaseName);
 

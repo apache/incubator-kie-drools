@@ -76,7 +76,7 @@ public class KModuleRegisterableItemsFactory extends DefaultRegisterableItemsFac
         }
         
         if (ksessionModel == null) {
-            throw new IllegalStateException("Cannot find ksession with name " + ksessionName);
+            throw new IllegalStateException("Cannot find ksession, either it does not exist or there are multiple default ksession in kmodule.xml");
         }
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("ksession", runtime.getKieSession());

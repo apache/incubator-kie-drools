@@ -148,7 +148,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
             }
             
             if (ksessionModel == null) {
-                throw new IllegalStateException("Cannot find ksession with name " + ksessionName);
+                throw new IllegalStateException("Cannot find ksession, either it does not exist or there are multiple default ksession in kmodule.xml");
             }
             try {
 
