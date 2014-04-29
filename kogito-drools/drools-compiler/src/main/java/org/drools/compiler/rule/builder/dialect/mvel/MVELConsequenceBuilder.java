@@ -212,6 +212,7 @@ public class MVELConsequenceBuilder
         int brace = 0;
         int sqre = 0;
         int crly = 0;
+        int skippedNewLines = 0;
         boolean inString = false;
         char lastNonWhite = ';';
         for ( int i = 0; i < cs.length; i++ ) {
@@ -289,13 +290,21 @@ public class MVELConsequenceBuilder
                         result.append( ';' );
                         lastNonWhite = ';';
                     }
+                    for (int j = 0; j < skippedNewLines; j++) {
+                        result.append("\n");
+                    }
+                    skippedNewLines = 0;
                 } else {
+                    skippedNewLines++;
                     continue;
                 }
             } else if ( !Character.isWhitespace( c ) ) {
                 lastNonWhite = c;
             }
             result.append( c );
+        }
+        for (int i = 0; i < skippedNewLines; i++) {
+            result.append("\n");
         }
         return result.toString();
     }
