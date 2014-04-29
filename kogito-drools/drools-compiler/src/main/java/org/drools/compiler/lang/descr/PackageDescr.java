@@ -16,6 +16,10 @@
 
 package org.drools.compiler.lang.descr;
 
+import org.drools.core.rule.Namespaceable;
+import org.kie.api.io.Resource;
+import org.kie.internal.definition.KnowledgeDescr;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -26,10 +30,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import org.drools.core.rule.Namespaceable;
-import org.kie.internal.definition.KnowledgeDescr;
-import org.kie.api.io.Resource;
 
 public class PackageDescr extends BaseDescr
         implements
@@ -199,6 +199,11 @@ public class PackageDescr extends BaseDescr
         if (this.rules == Collections.EMPTY_LIST) {
             this.rules = new ArrayList<RuleDescr>(1);
         }
+        rule.setLoadOrder(rules.size());
+        this.rules.add(rule);
+    }
+
+    public void afterRuleAdded(RuleDescr rule) {
         for (final AttributeDescr at : attributes) {
             // check if rule overrides the attribute
             if (!rule.getAttributes().containsKey(at.getName())) {
@@ -206,8 +211,6 @@ public class PackageDescr extends BaseDescr
                 rule.addAttribute(at);
             }
         }
-        rule.setLoadOrder(rules.size());
-        this.rules.add(rule);
     }
 
     public List<RuleDescr> getRules() {

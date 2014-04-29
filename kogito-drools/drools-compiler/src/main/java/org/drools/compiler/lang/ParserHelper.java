@@ -801,6 +801,12 @@ public class ParserHelper {
                    NamedConsequenceDescrBuilder.class.isAssignableFrom( clazz )) ) {
                 popParaphrases();
             }
+
+            if (RuleDescrBuilder.class.isAssignableFrom(clazz)) {
+                RuleDescrBuilder ruleDescrBuilder = (RuleDescrBuilder)builder;
+                ruleDescrBuilder.end().getDescr().afterRuleAdded(ruleDescrBuilder.getDescr());
+            }
+
             setEnd( builder );
             return (T) builder;
         }

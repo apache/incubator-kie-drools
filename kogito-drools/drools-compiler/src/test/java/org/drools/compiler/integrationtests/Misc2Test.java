@@ -5662,4 +5662,15 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(1, list.size());
         assertEquals(0, (int)list.get(0));
     }
+
+    @Test
+    public void testRedeclaringRuleAttribute() {
+        // BZ-1092084
+        String str = "rule R salience 10 salience 100 when then end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        assertEquals(1, results.getMessages().size());
+    }
 }

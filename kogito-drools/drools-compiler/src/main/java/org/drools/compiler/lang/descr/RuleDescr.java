@@ -16,12 +16,16 @@
 
 package org.drools.compiler.lang.descr;
 
+import org.drools.core.rule.Dialectable;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.*;
-
-import org.drools.core.rule.Dialectable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RuleDescr extends AnnotatedBaseDescr
     implements
@@ -139,7 +143,11 @@ public class RuleDescr extends AnnotatedBaseDescr
 
     public void addAttribute(final AttributeDescr attribute) {
         if ( attribute != null ) {
-            this.attributes.put( attribute.getName(), attribute );
+            if (attributes.containsKey(attribute.getName())) {
+                addError("Duplicate attribute definition: " + attribute.getName());
+            } else {
+                this.attributes.put( attribute.getName(), attribute );
+            }
         }
     }
 
@@ -165,13 +173,17 @@ public class RuleDescr extends AnnotatedBaseDescr
 
     public void addNamedConsequences(String name, Object consequence) {
         if ( namedConsequence.containsKey(name) ) {
-            if (errors == null) {
-                errors = new ArrayList<String>();
-            }
-            errors.add("Duplicate consequence name: " + name);
+            addError("Duplicate consequence name: " + name);
         } else {
             namedConsequence.put(name, consequence);
         }
+    }
+
+    private void addError(String message) {
+        if (errors == null) {
+            errors = new ArrayList<String>();
+        }
+        errors.add(message);
     }
 
     public void setConsequenceLocation(final int line,

@@ -1,5 +1,10 @@
 package org.drools.compiler.lang.descr;
 
+import org.drools.compiler.Person;
+import org.drools.compiler.lang.api.DescrFactory;
+import org.drools.compiler.lang.api.PackageDescrBuilder;
+import org.junit.Test;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -10,13 +15,6 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.Person;
-import org.drools.compiler.lang.api.DescrFactory;
-import org.drools.compiler.lang.api.PackageDescrBuilder;
-import org.drools.compiler.lang.descr.AttributeDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
-import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class PackageDescrTest {
@@ -39,7 +37,8 @@ public class PackageDescrTest {
         List pkgAts = desc.getAttributes();
         assertEquals("bar", ((AttributeDescr)pkgAts.get( 0 )).getValue());
         assertEquals("default", ((AttributeDescr)pkgAts.get( 1 )).getValue());
-        
+
+        desc.afterRuleAdded( rule );
         
         Map<String, AttributeDescr> ruleAts = rule.getAttributes();
         assertEquals("overridden", ((AttributeDescr)ruleAts.get( "foo" )).getValue());
