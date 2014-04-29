@@ -16,41 +16,84 @@
 
 package org.optaplanner.core.impl.solver;
 
+import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.AbstractTermination;
 
+/**
+ * Concurrency notes:
+ * Condition predicate on ({@link #problemFactChangeQueue} is not empty or {@link #terminatedEarly} is true)
+ */
 public class BasicPlumbingTermination extends AbstractTermination {
 
-    protected AtomicBoolean terminatedEarly = new AtomicBoolean(false);
+    protected final boolean daemon;
+    protected boolean terminatedEarly = false;
     protected BlockingQueue<ProblemFactChange> problemFactChangeQueue = new LinkedBlockingQueue<ProblemFactChange>();
+
+    public BasicPlumbingTermination(boolean daemon) {
+        this.daemon = daemon;
+    }
 
     // ************************************************************************
     // Plumbing worker methods
     // ************************************************************************
     
-    public void resetTerminateEarly() {
-        terminatedEarly.set(false);
+    public synchronized void resetTerminateEarly() {
+        terminatedEarly = false;
     }
 
-    public boolean terminateEarly() {
-        boolean terminationEarlySuccessful = !terminatedEarly.getAndSet(true);
+    /**
+     * Concurrency note: unblocks {@link #waitForRestartSolverDecision()}
+     * @return true if successful
+     */
+    public synchronized boolean terminateEarly() {
+        boolean terminationEarlySuccessful = !terminatedEarly;
         if (terminationEarlySuccessful) {
             logger.info("Terminating solver early.");
         }
+        terminatedEarly = true;
+        notifyAll();
         return terminationEarlySuccessful;
     }
 
-    public boolean isTerminateEarly() {
-        return terminatedEarly.get();
+    public synchronized boolean isTerminateEarly() {
+        return terminatedEarly;
     }
 
-    public boolean addProblemFactChange(ProblemFactChange problemFactChange) {
-        return problemFactChangeQueue.add(problemFactChange);
+    /**
+     * If this returns true, then the problemFactChangeQueue is definitely not empty.
+     * <p/>
+     * Concurrency note: Blocks until {@link #problemFactChangeQueue} is not empty or {@link #terminatedEarly} is true.
+     * @return true if the solver needs to be restarted
+     */
+    public synchronized boolean waitForRestartSolverDecision() {
+        if (!daemon) {
+            return !problemFactChangeQueue.isEmpty() && !terminatedEarly;
+        } else {
+            while (problemFactChangeQueue.isEmpty() && !terminatedEarly) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    throw new IllegalStateException("Solver thread interrupted during wait.", e);
+                }
+            }
+            return !terminatedEarly;
+        }
+    }
+
+    /**
+     * Concurrency note: unblocks {@link #waitForRestartSolverDecision()}
+     * @param problemFactChange never null
+     * @return as specified by {@link Collection#add}
+     */
+    public synchronized boolean addProblemFactChange(ProblemFactChange problemFactChange) {
+        boolean added = problemFactChangeQueue.add(problemFactChange);
+        notifyAll();
+        return added;
     }
 
     public BlockingQueue<ProblemFactChange> getProblemFactChangeQueue() {
@@ -61,8 +104,8 @@ public class BasicPlumbingTermination extends AbstractTermination {
     // Termination worker methods
     // ************************************************************************
 
-    public boolean isSolverTerminated(DefaultSolverScope solverScope) {
-        return terminatedEarly.get() || !problemFactChangeQueue.isEmpty();
+    public synchronized boolean isSolverTerminated(DefaultSolverScope solverScope) {
+        return terminatedEarly || !problemFactChangeQueue.isEmpty();
     }
 
     public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {

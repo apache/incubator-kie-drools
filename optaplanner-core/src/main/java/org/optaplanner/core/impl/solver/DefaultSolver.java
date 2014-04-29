@@ -29,7 +29,6 @@ import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.solver.event.SolverEventSupport;
 import org.optaplanner.core.impl.phase.SolverPhase;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -84,6 +83,10 @@ public class DefaultSolver implements Solver {
         this.termination = termination;
     }
 
+    public BestSolutionRecaller getBestSolutionRecaller() {
+        return bestSolutionRecaller;
+    }
+
     public void setBestSolutionRecaller(BestSolutionRecaller bestSolutionRecaller) {
         this.bestSolutionRecaller = bestSolutionRecaller;
         this.bestSolutionRecaller.setSolverEventSupport(solverEventSupport);
@@ -97,6 +100,14 @@ public class DefaultSolver implements Solver {
         this.solverPhaseList = solverPhaseList;
     }
 
+    public DefaultSolverScope getSolverScope() {
+        return solverScope;
+    }
+
+    // ************************************************************************
+    // Complex getters
+    // ************************************************************************
+
     public Solution getBestSolution() {
         return solverScope.getBestSolution();
     }
@@ -108,14 +119,6 @@ public class DefaultSolver implements Solver {
         }
         return endingSystemTimeMillis - solverScope.getStartingSystemTimeMillis();
     }
-
-    public DefaultSolverScope getSolverScope() {
-        return solverScope;
-    }
-
-    // ************************************************************************
-    // Worker methods
-    // ************************************************************************
 
     public boolean isSolving() {
         return solving.get();
@@ -139,6 +142,10 @@ public class DefaultSolver implements Solver {
         // TODO bug: the last ProblemFactChange might already been polled, but not processed yet
         return problemFactChangeQueue.isEmpty();
     }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
 
     public final void solve(Solution planningProblem) {
         if (planningProblem == null) {
@@ -217,29 +224,31 @@ public class DefaultSolver implements Solver {
     }
 
     private boolean checkProblemFactChanges() {
-        BlockingQueue<ProblemFactChange> problemFactChangeQueue
-                = basicPlumbingTermination.getProblemFactChangeQueue();
-        if (problemFactChangeQueue.isEmpty()) {
+        boolean restartSolver = basicPlumbingTermination.waitForRestartSolverDecision();
+        if (!restartSolver) {
             return false;
+        } else {
+            BlockingQueue<ProblemFactChange> problemFactChangeQueue
+                    = basicPlumbingTermination.getProblemFactChangeQueue();
+            solverScope.setWorkingSolutionFromBestSolution();
+            Score score = null;
+            int stepIndex = 0;
+            ProblemFactChange problemFactChange = problemFactChangeQueue.poll();
+            while (problemFactChange != null) {
+                score = doProblemFactChange(problemFactChange, stepIndex);
+                stepIndex++;
+                problemFactChange = problemFactChangeQueue.poll();
+            }
+            Solution newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
+            // TODO BestSolutionRecaller.solverStarted() already calls countUninitializedVariables()
+            int newBestUninitializedVariableCount = solverScope.getSolutionDescriptor()
+                    .countUninitializedVariables(newBestSolution);
+            bestSolutionRecaller.updateBestSolution(solverScope,
+                    newBestSolution, newBestUninitializedVariableCount);
+            logger.info("Real-time problem fact changes done: step total ({}), new {} best score ({}).",
+                    stepIndex, (newBestUninitializedVariableCount <= 0 ? "initialized" : "uninitialized"), score);
+            return true;
         }
-        solverScope.setWorkingSolutionFromBestSolution();
-        Score score = null;
-        int stepIndex = 0;
-        ProblemFactChange problemFactChange = problemFactChangeQueue.poll();
-        while (problemFactChange != null) {
-            score = doProblemFactChange(problemFactChange, stepIndex);
-            stepIndex++;
-            problemFactChange = problemFactChangeQueue.poll();
-        }
-        Solution newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
-        // TODO BestSolutionRecaller.solverStarted() already calls countUninitializedVariables()
-        int newBestUninitializedVariableCount = solverScope.getSolutionDescriptor()
-                .countUninitializedVariables(newBestSolution);
-        bestSolutionRecaller.updateBestSolution(solverScope,
-                newBestSolution, newBestUninitializedVariableCount);
-        logger.info("Real-time problem fact changes done: step total ({}), new {} best score ({}).",
-                stepIndex, (newBestUninitializedVariableCount <= 0 ? "initialized" : "uninitialized"), score);
-        return true;
     }
 
     private Score doProblemFactChange(ProblemFactChange problemFactChange, int stepIndex) {

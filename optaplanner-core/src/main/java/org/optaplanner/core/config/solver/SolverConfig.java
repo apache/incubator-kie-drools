@@ -157,7 +157,8 @@ public class SolverConfig {
 
     public Solver buildSolver() {
         DefaultSolver solver = new DefaultSolver();
-        BasicPlumbingTermination basicPlumbingTermination = new BasicPlumbingTermination();
+        boolean daemon_ = daemon == null ? false : daemon;
+        BasicPlumbingTermination basicPlumbingTermination = new BasicPlumbingTermination(daemon_);
         solver.setBasicPlumbingTermination(basicPlumbingTermination);
         EnvironmentMode environmentMode = this.environmentMode == null ? EnvironmentMode.REPRODUCIBLE
                 : this.environmentMode;
