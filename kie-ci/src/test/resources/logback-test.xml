@@ -9,7 +9,8 @@
     </encoder>
   </appender>
 
-  <logger name="org.kie.api.builder" level="debug"/>
+  <!-- change to debug to see test output -->
+  <logger name="org.kie.api.builder" level="info"/>
 
   <root level="info">
     <appender-ref ref="consoleAppender" />
