@@ -7,6 +7,7 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 public class ExecutorProviderImpl implements ExecutorProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(ExecutorProviderImpl.class);
+    private static final AtomicInteger threadCount = new AtomicInteger();
     private static final java.util.concurrent.ExecutorService executor;
 
     static {
@@ -25,6 +27,7 @@ public class ExecutorProviderImpl implements ExecutorProvider {
                 new ThreadFactory() {
                     public Thread newThread(Runnable r) {
                         Thread t = new Thread(r);
+                        t.setName("drools-" + threadCount.incrementAndGet());
                         t.setDaemon(true);
                         return t;
                     }
