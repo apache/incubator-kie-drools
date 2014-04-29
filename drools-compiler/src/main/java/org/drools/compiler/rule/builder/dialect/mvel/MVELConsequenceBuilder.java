@@ -280,11 +280,17 @@ public class MVELConsequenceBuilder
                 default :
                     break;
             }
-            if ( brace == 0 && sqre == 0 && crly == 0 && ( c == '\n' || c == '\r' ) ){
-                // line break 
-                if ( lastNonWhite != ';' ) {
-                    result.append( ';' );
-                    lastNonWhite = ';';
+
+            if ( c == '\n' || c == '\r' ) {
+                // line break
+                if ( brace == 0 && sqre == 0 && crly == 0 &&
+                     lastNonWhite != '.' && lookAhead(cs, i+1) != '.' ) {
+                    if ( lastNonWhite != ';' ) {
+                        result.append( ';' );
+                        lastNonWhite = ';';
+                    }
+                } else {
+                    continue;
                 }
             } else if ( !Character.isWhitespace( c ) ) {
                 lastNonWhite = c;
@@ -292,6 +298,15 @@ public class MVELConsequenceBuilder
             result.append( c );
         }
         return result.toString();
+    }
+
+    private static char lookAhead(char[] cs, int pos) {
+        for (int i = pos; i < cs.length; i++) {
+            if ( !Character.isWhitespace( cs[i] ) ) {
+                return cs[i];
+            }
+        }
+        return ' ';
     }
 
     private static int processLineComment(char[] cs,

@@ -5652,4 +5652,22 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(1, list.size());
         assertEquals(0, (int)list.get(0));
     }
+
+    @Test
+    public void testMultilineStatement() {
+        // BZ-1092502
+        String str = "rule \"test\"\n" +
+                     "dialect \"mvel\"\n" +
+                     "when\n" +
+                     "then\n" +
+                     "System\n" +
+                     ".out\n" +
+                     ".println(\"hello\");\n" +
+                     "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        assertEquals(0, results.getMessages().size());
+    }
 }
