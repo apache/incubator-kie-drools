@@ -109,7 +109,6 @@ public class KieModuleDeploymentHelperTest {
         }
         assertEquals("Num files in kjar", numFiles, jarFiles.size());
         assertEquals("Num dirs in kjar", numDirs, jarDirs.size());
-        System.out.println( "------------------------------------");
     }
 
     @Test
