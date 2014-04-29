@@ -44,19 +44,20 @@ public class BestScoreFeasibleTermination extends AbstractTermination {
 
     @Override
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
-        FeasibilityScore bestScore = (FeasibilityScore) solverScope.getBestScore();
-        return bestScore.isFeasible();
+        return isTerminated(solverScope.isBestSolutionInitialized(), solverScope.getBestScore());
     }
 
     @Override
     public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
-        FeasibilityScore bestScore = (FeasibilityScore) phaseScope.getBestScore();
-        return bestScore.isFeasible();
+        return isTerminated(phaseScope.isBestSolutionInitialized(), phaseScope.getBestScore());
+    }
+
+    protected boolean isTerminated(boolean bestSolutionInitialized, Score bestScore) {
+        return bestSolutionInitialized && ((FeasibilityScore) bestScore).isFeasible();
     }
 
     @Override
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
-        FeasibilityScoreDefinition scoreDefinition = (FeasibilityScoreDefinition) solverScope.getScoreDefinition();
         return calculateFeasibilityTimeGradient(
                 (FeasibilityScore) solverScope.getStartingInitializedScore(), (FeasibilityScore) solverScope.getBestScore());
     }
