@@ -21,8 +21,8 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jbpm.shared.services.cdi.BootOnLoad;
 import org.kie.internal.executor.api.ExecutorService;
+import org.kie.internal.runtime.cdi.BootOnLoad;
 
 @BootOnLoad
 @ApplicationScoped

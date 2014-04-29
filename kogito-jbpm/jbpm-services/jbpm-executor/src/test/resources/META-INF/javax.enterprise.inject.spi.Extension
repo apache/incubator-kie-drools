@@ -1,1 +1,2 @@
-org.jbpm.shared.services.cdi.BootOnLoadExtension
+org.kie.internal.runtime.cdi.ActivateExtension
+org.kie.internal.runtime.cdi.BootOnLoadExtension

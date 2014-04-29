@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package org.jbpm.executor.impl;
+package org.jbpm.executor.impl.jpa;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
 import javax.persistence.NoResultException;
 
+import org.drools.core.command.CommandService;
 import org.drools.core.command.impl.GenericCommand;
-import org.jbpm.shared.services.impl.JpaPersistenceContext;
-import org.jbpm.shared.services.impl.TransactionalCommandService;
-import org.jbpm.shared.services.impl.commands.FindObjectCommand;
-import org.jbpm.shared.services.impl.commands.QueryNameCommand;
 import org.kie.internal.command.Context;
 import org.kie.internal.executor.api.ErrorInfo;
 import org.kie.internal.executor.api.ExecutorQueryService;
@@ -38,17 +34,18 @@ import org.kie.internal.executor.api.STATUS;
 
 /**
  * Default implementation of <code>ExecutorQueryService</code> that is backed with JPA
- *
+ * IMPORTANT: please keep all classes from package org.jbpm.shared.services.impl as FQCN
+ * inside method body to avoid exception logged by CDI when used with in memory mode
  */
 public class ExecutorQueryServiceImpl implements ExecutorQueryService {
 
-    @Inject
-    private TransactionalCommandService commandService;
+    
+    private CommandService commandService;
    
-    public ExecutorQueryServiceImpl() {
+    public ExecutorQueryServiceImpl(boolean active) {
     }
 
-    public void setCommandService(TransactionalCommandService commandService) {
+    public void setCommandService(CommandService commandService) {
         this.commandService = commandService;
     }
 
@@ -60,7 +57,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     public List<RequestInfo> getPendingRequests() {
     	Map<String, Object> params = new HashMap<String, Object>();
     	params.put("now", new Date());
-        return commandService.execute(new QueryNameCommand<List<RequestInfo>>("PendingRequests", params));
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("PendingRequests", params));
     }
 
     /**
@@ -71,7 +68,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     public List<RequestInfo> getPendingRequestById(Long id) {
     	Map<String, Object> params = new HashMap<String, Object>();
     	params.put("id", id);
-        return commandService.execute(new QueryNameCommand<List<RequestInfo>>("PendingRequestById", params));
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("PendingRequestById", params));
     }
 
     /**
@@ -79,7 +76,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
      */
     @Override
     public RequestInfo getRequestById(Long id) {
-    	return commandService.execute(new FindObjectCommand<org.jbpm.executor.entities.RequestInfo>(id, org.jbpm.executor.entities.RequestInfo.class));
+    	return commandService.execute(new org.jbpm.shared.services.impl.commands.FindObjectCommand<org.jbpm.executor.entities.RequestInfo>(id, org.jbpm.executor.entities.RequestInfo.class));
     }
 
     /**
@@ -88,7 +85,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     
     @Override
     public List<RequestInfo> getRunningRequests() {
-        return commandService.execute(new QueryNameCommand<List<RequestInfo>>("RunningRequests"));
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("RunningRequests"));
     }
 
     /**
@@ -97,7 +94,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     
     @Override
     public List<RequestInfo> getQueuedRequests() {
-        return commandService.execute(new QueryNameCommand<List<RequestInfo>>("QueuedRequests"));
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("QueuedRequests"));
     }
 
     /**
@@ -108,7 +105,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     public List<RequestInfo> getFutureQueuedRequests() {
     	Map<String, Object> params = new HashMap<String, Object>();
     	params.put("now", new Date());
-        return commandService.execute(new QueryNameCommand<List<RequestInfo>>("FutureQueuedRequests", params));
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("FutureQueuedRequests", params));
     }
 
     /**
@@ -117,7 +114,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     
     @Override
     public List<RequestInfo> getCompletedRequests() {
-        return commandService.execute(new QueryNameCommand<List<RequestInfo>>("CompletedRequests"));
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("CompletedRequests"));
     }
 
     /**
@@ -126,7 +123,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     
     @Override
     public List<RequestInfo> getInErrorRequests() {
-        return commandService.execute(new QueryNameCommand<List<RequestInfo>>("InErrorRequests"));
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("InErrorRequests"));
     }
 
     /**
@@ -135,7 +132,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     
     @Override
     public List<RequestInfo> getCancelledRequests() {
-        return commandService.execute(new QueryNameCommand<List<RequestInfo>>("CancelledRequests"));
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("CancelledRequests"));
     }
 
     /**
@@ -144,7 +141,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     
     @Override
     public List<ErrorInfo> getAllErrors() {
-    	return commandService.execute(new QueryNameCommand<List<ErrorInfo>>("GetAllErrors"));
+    	return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<ErrorInfo>>("GetAllErrors"));
     }
 
     /**
@@ -155,7 +152,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     public List<ErrorInfo> getErrorsByRequestId(Long requestId) {
     	Map<String, Object> params = new HashMap<String, Object>();
     	params.put("id", requestId);
-    	return commandService.execute(new QueryNameCommand<List<ErrorInfo>>("GetErrorsByRequestId", params));
+    	return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<ErrorInfo>>("GetErrorsByRequestId", params));
     }
 
     /**
@@ -164,7 +161,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     
     @Override
     public List<RequestInfo> getAllRequests() {
-    	return commandService.execute(new QueryNameCommand<List<RequestInfo>>("GetAllRequests"));
+    	return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("GetAllRequests"));
     }
 
     /**
@@ -175,7 +172,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     public List<RequestInfo> getRequestsByStatus(List<STATUS> statuses) {
     	Map<String, Object> params = new HashMap<String, Object>();
     	params.put("statuses", statuses);
-    	return commandService.execute(new QueryNameCommand<List<RequestInfo>>("GetRequestsByStatus",params));
+    	return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("GetRequestsByStatus",params));
     }
 
     /**
@@ -186,7 +183,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     public List<RequestInfo> getRequestByBusinessKey(String businessKey) {
     	Map<String, Object> params = new HashMap<String, Object>();
     	params.put("businessKey", businessKey);
-        return commandService.execute(new QueryNameCommand<List<RequestInfo>>("GetRequestsByBusinessKey", params));
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("GetRequestsByBusinessKey", params));
     }
 
     /**
@@ -213,7 +210,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
 	    	params.put("maxResults", 1);
 	    	RequestInfo request = null;
 	    	try {
-				JpaPersistenceContext ctx = (JpaPersistenceContext) context;
+	    		org.jbpm.shared.services.impl.JpaPersistenceContext ctx = (org.jbpm.shared.services.impl.JpaPersistenceContext) context;
 				request = ctx.queryAndLockWithParametersInTransaction("PendingRequestsForProcessing",params, true, RequestInfo.class);
 				
 				if (request != null) {

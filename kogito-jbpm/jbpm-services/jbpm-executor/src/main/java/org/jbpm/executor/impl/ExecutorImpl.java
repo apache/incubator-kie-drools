@@ -21,28 +21,16 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
-
-import org.drools.core.command.impl.GenericCommand;
 import org.jbpm.executor.entities.RequestInfo;
-import org.jbpm.shared.services.impl.JpaPersistenceContext;
-import org.jbpm.shared.services.impl.TransactionalCommandService;
-import org.jbpm.shared.services.impl.commands.PersistObjectCommand;
-import org.kie.internal.command.Context;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.Executor;
-import org.kie.internal.executor.api.ExecutorQueryService;
+import org.kie.internal.executor.api.ExecutorStoreService;
 import org.kie.internal.executor.api.STATUS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,10 +51,9 @@ public class ExecutorImpl implements Executor {
 
     private static final Logger logger = LoggerFactory.getLogger(ExecutorImpl.class);
     
-    private EntityManagerFactory emf;
-    private TransactionalCommandService commandService;
-    
-    private List<ScheduledFuture<?>> handle = new ArrayList<ScheduledFuture<?>>();
+    private ExecutorStoreService executorStoreService;
+
+	private List<ScheduledFuture<?>> handle = new ArrayList<ScheduledFuture<?>>();
     private int threadPoolSize = Integer.parseInt(System.getProperty("org.kie.executor.pool.size", "1"));
     private int retries = Integer.parseInt(System.getProperty("org.kie.executor.retry.count", "3"));
     private int interval = Integer.parseInt(System.getProperty("org.kie.executor.interval", "3"));
@@ -75,15 +62,10 @@ public class ExecutorImpl implements Executor {
 
     public ExecutorImpl() {
     }
-
-   
-    public void setCommandService(TransactionalCommandService commandService) {
-        this.commandService = commandService;
-    }
-
-    public void setEmf(EntityManagerFactory emf) {
- 	   this.emf = emf;
-    }
+    
+    public void setExecutorStoreService(ExecutorStoreService executorStoreService) {
+		this.executorStoreService = executorStoreService;
+	}
 
     /**
      * {@inheritDoc}
@@ -138,7 +120,7 @@ public class ExecutorImpl implements Executor {
     
             scheduler = Executors.newScheduledThreadPool(threadPoolSize);
             for (int i = 0; i < threadPoolSize; i++) {
-            	handle.add(scheduler.scheduleAtFixedRate(buildRunable(), 2, interval, timeunit));
+            	handle.add(scheduler.scheduleAtFixedRate(executorStoreService.buildExecutorRunnable(), 2, interval, timeunit));
             }
         }
     }
@@ -199,8 +181,8 @@ public class ExecutorImpl implements Executor {
                 requestInfo.setRequestData(null);
             }
         }
-
-        commandService.execute(new PersistObjectCommand(requestInfo));
+        
+        executorStoreService.persistRequest(requestInfo);
 
         logger.debug("Scheduling request for Command: {} - requestId: {} with {} retries", commandId, requestInfo.getId(), requestInfo.getRetries());
         return requestInfo.getId();
@@ -212,64 +194,12 @@ public class ExecutorImpl implements Executor {
     public void cancelRequest(Long requestId) {
         logger.debug("Before - Cancelling Request with Id: {}", requestId);
 
-        commandService.execute(new LockAndCancelRequestInfoCommand(requestId));
+        executorStoreService.removeRequest(requestId);
 
         logger.debug("After - Cancelling Request with Id: {}", requestId);
     }
 
-    private class LockAndCancelRequestInfoCommand implements GenericCommand<RequestInfo> {
-
-		private static final long serialVersionUID = 8670412133363766161L;
-
-		private Long requestId;
-		
-		LockAndCancelRequestInfoCommand(Long requestId) {
-			this.requestId = requestId;
-		}
-		
-		@Override
-		public RequestInfo execute(Context context) {
-			Map<String, Object> params = new HashMap<String, Object>();
-	    	params.put("id", requestId);
-	    	params.put("firstResult", 0);
-	    	params.put("maxResults", 1);
-	    	RequestInfo request = null;
-	    	try {
-				JpaPersistenceContext ctx = (JpaPersistenceContext) context;
-				request = ctx.queryAndLockWithParametersInTransaction("PendingRequestById",params, true, RequestInfo.class);
-				
-				if (request != null) {
-	                request.setStatus(STATUS.CANCELLED);
-	                ctx.merge(request);
-	            }
-	    	} catch (NoResultException e) {
-	    		
-	    	}
-			return request;
-		}
-    	
-    }
     
-    private ExecutorRunnable buildRunable() {
-    	ClassCacheManager classCacheManager = new ClassCacheManager();
-    	ExecutorQueryService queryService = new ExecutorQueryServiceImpl();    	    	
-        ExecutorRunnable runnable = new ExecutorRunnable();
-        
-        TransactionalCommandService cmdService = new TransactionalCommandService(emf);
-        
-        ((ExecutorQueryServiceImpl) queryService).setCommandService(cmdService);       
-        ((ExecutorRunnable) runnable).setCommandService(cmdService);
-        runnable.setClassCacheManager(classCacheManager);
-        runnable.setQueryService(queryService);
-        
-        try {
-			Object beanManager = InitialContext.doLookup("java:comp/BeanManager");
-			runnable.addContextData("BeanManager", beanManager);
-		} catch (NamingException e) {
-			logger.warn("No CDI BeanManager found in JNDI");
-		}
-        
-        return runnable;
-    }
+
 
 }

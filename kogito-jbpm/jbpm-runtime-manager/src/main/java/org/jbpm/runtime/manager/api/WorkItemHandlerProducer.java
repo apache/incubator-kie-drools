@@ -15,36 +15,10 @@
  */
 package org.jbpm.runtime.manager.api;
 
-import java.util.Map;
-
-import org.kie.api.runtime.process.WorkItemHandler;
 
 /**
- * Allows to provide custom implementations to deliver WorkItem name and WorkItemHandler instance pairs
- * for the runtime.
- * <br/>
- * It will be invoked by RegisterableItemsFactory implementation (especially InjectableRegisterableItemsFactory 
- * in CDI world) for every KieSession. Recommendation is to always produce new instances to avoid unexpected 
- * results. 
- *
+ * @deprecated use org.kie.internal.runtime.manager.WorkItemHandlerProducer
  */
-public interface WorkItemHandlerProducer {
+public interface WorkItemHandlerProducer extends org.kie.internal.runtime.manager.WorkItemHandlerProducer {
 
-    /**
-     * Returns map of (key = work item name, value work item handler instance) of work items 
-     * to be registered on KieSession
-     * <br/>
-     * Parameters that might be given are as follows:
-     * <ul>
-     *  <li>ksession</li>
-     *  <li>taskService</li>
-     *  <li>runtimeManager</li>
-     * </ul>
-     * 
-     * @param identifier - identifier of the owner - usually RuntimeManager that allows the producer to filter out
-     * and provide valid instances for given owner
-     * @param params - owner might provide some parameters, usually KieSession, TaskService, RuntimeManager instances
-     * @return map of work item handler instances (recommendation is to always return new instances when this method is invoked)
-     */
-    Map<String, WorkItemHandler> getWorkItemHandlers(String identifier, Map<String, Object> params);
 }

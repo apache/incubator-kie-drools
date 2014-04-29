@@ -13,27 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jbpm.executor;
 
-package org.jbpm.executor.impl;
+import org.junit.After;
+import org.junit.Before;
 
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
 
-import org.jbpm.executor.ExecutorServiceFactory;
-import org.kie.internal.executor.api.ExecutorService;
+public class InMemorySimpleExecutorTest extends BasicExecutorBaseTest{
+    
+    
+    @Before
+    public void setUp() {
 
-public class ExecutorServiceProducer {
-
-	@Inject
-	@PersistenceUnit(unitName = "org.jbpm.domain")
-    private EntityManagerFactory emf;
-	
-	@Produces
-	public ExecutorService produceExecutorService() {
-		ExecutorService service = ExecutorServiceFactory.newExecutorService(emf);
-		return service;
-	}
-
+        executorService = ExecutorServiceFactory.newExecutorService();
+        
+        executorService.init();
+        super.setUp();
+    }
+    
+    @After
+    public void tearDown() {
+        super.tearDown();
+        executorService.destroy();
+    }
+   
+    
 }

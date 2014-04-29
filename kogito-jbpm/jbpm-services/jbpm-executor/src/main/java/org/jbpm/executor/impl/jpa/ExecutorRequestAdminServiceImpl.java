@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 
-package org.jbpm.executor.impl;
+package org.jbpm.executor.impl.jpa;
 
 import java.util.List;
 
+import org.drools.core.command.CommandService;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
-import org.jbpm.shared.services.impl.TransactionalCommandService;
-import org.jbpm.shared.services.impl.commands.QueryStringCommand;
-import org.jbpm.shared.services.impl.commands.RemoveObjectCommand;
 import org.kie.internal.executor.api.ExecutorAdminService;
 
 /**
  * Default implementation of <code>ExecutorAdminService</code> backed with JPA
- *
+ * IMPORTANT: please keep all classes from package org.jbpm.shared.services.impl as FQCN
+ * inside method body to avoid exception logged by CDI when used with in memory mode
  */
 public class ExecutorRequestAdminServiceImpl implements ExecutorAdminService {
 
     
-    private TransactionalCommandService commandService;
+    private CommandService commandService;
    
     public ExecutorRequestAdminServiceImpl() {
     }
 
-    public void setCommandService(TransactionalCommandService commandService) {
+    public void setCommandService(CommandService commandService) {
         this.commandService = commandService;
     }
 
@@ -47,9 +46,9 @@ public class ExecutorRequestAdminServiceImpl implements ExecutorAdminService {
     public int clearAllRequests() {
         
         List<RequestInfo> requests = 
-        		commandService.execute(new QueryStringCommand<List<RequestInfo>>("select r from RequestInfo r"));
+        		commandService.execute(new org.jbpm.shared.services.impl.commands.QueryStringCommand<List<RequestInfo>>("select r from RequestInfo r"));
         
-        commandService.execute(new RemoveObjectCommand(requests.toArray()));
+        commandService.execute(new org.jbpm.shared.services.impl.commands.RemoveObjectCommand(requests.toArray()));
 
         return requests.size();
     }
@@ -59,9 +58,9 @@ public class ExecutorRequestAdminServiceImpl implements ExecutorAdminService {
      */
     public int clearAllErrors() {
         List<ErrorInfo> errors = 
-        		commandService.execute(new QueryStringCommand<List<ErrorInfo>>("select e from ErrorInfo e"));
+        		commandService.execute(new org.jbpm.shared.services.impl.commands.QueryStringCommand<List<ErrorInfo>>("select e from ErrorInfo e"));
 
-        commandService.execute(new RemoveObjectCommand(errors.toArray()));
+        commandService.execute(new org.jbpm.shared.services.impl.commands.RemoveObjectCommand(errors.toArray()));
 
         return errors.size();
     }

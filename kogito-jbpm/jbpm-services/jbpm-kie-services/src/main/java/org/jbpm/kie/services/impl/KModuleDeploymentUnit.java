@@ -1,11 +1,15 @@
 package org.jbpm.kie.services.impl;
 
+import java.io.Serializable;
+
 import org.drools.core.util.StringUtils;
 import org.kie.internal.deployment.DeploymentUnit;
 
-public class KModuleDeploymentUnit implements DeploymentUnit {
+public class KModuleDeploymentUnit implements DeploymentUnit, Serializable {
 
-    private String artifactId;
+	private static final long serialVersionUID = 1L;
+	
+	private String artifactId;
     private String groupId;
     private String version;
     private String kbaseName;

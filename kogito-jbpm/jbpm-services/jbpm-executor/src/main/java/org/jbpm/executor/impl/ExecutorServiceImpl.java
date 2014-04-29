@@ -181,11 +181,11 @@ public class ExecutorServiceImpl implements ExecutorService {
     }
 
     public RequestInfo getRequestById(Long requestId) {
-            return queryService.getRequestById(requestId);
+    	return queryService.getRequestById(requestId);
     }
 
     public List<ErrorInfo> getErrorsByRequestId(Long requestId) {
-            return queryService.getErrorsByRequestId(requestId);
+    	return queryService.getErrorsByRequestId(requestId);
     }
 
     @Override

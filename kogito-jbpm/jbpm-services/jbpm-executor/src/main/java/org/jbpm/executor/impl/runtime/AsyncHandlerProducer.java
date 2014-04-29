@@ -23,15 +23,17 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.jbpm.executor.commands.PrintOutCommand;
 import org.jbpm.executor.impl.wih.AsyncWorkItemHandler;
-import org.jbpm.runtime.manager.api.WorkItemHandlerProducer;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.executor.api.ExecutorService;
+import org.kie.internal.runtime.cdi.Activate;
+import org.kie.internal.runtime.manager.WorkItemHandlerProducer;
 
 /**
  * Dedicated <code>WorkItemHandlerProducer</code> to register <code>AsyncWorkItemHandler</code>
  * in CDI environment when using deployment services (jbpm-kie-services).
  *
  */
+@Activate(whenAvailable="org.jbpm.runtime.manager.impl.RuntimeManagerFactoryImpl")
 @ApplicationScoped
 public class AsyncHandlerProducer implements WorkItemHandlerProducer {
 
