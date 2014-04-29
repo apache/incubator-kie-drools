@@ -1,8 +1,10 @@
 package org.drools.concurrent;
 
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -22,8 +24,10 @@ public class ExecutorProviderImpl implements ExecutorProvider {
         // Don't saturate the CPUs with the JIT
         int poolSize = Math.max(Runtime.getRuntime().availableProcessors() / 2, 1);
         poolSize = getExecutorParameter("drools.executor.poolSize", poolSize);
-        executor = new ThreadPoolExecutor(0, poolSize, 60L, TimeUnit.SECONDS,
-                new SynchronousQueue<Runnable>(),
+        int queueSize = getExecutorParameter("drools.executor.queueSize", 1000);
+        BlockingQueue<Runnable> workQueue =
+                queueSize > 0 ? new LinkedBlockingQueue<Runnable>(queueSize) : new SynchronousQueue<Runnable>();
+        executor = new ThreadPoolExecutor(0, poolSize, 60L, TimeUnit.SECONDS, workQueue,
                 new ThreadFactory() {
                     public Thread newThread(Runnable r) {
                         Thread t = new Thread(r);
