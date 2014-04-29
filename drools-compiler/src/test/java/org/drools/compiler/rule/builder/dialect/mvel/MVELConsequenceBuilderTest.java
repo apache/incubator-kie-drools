@@ -210,19 +210,19 @@ public class MVELConsequenceBuilderTest {
                       MVELConsequenceBuilder.delimitExpressions( simpleEx ) );
 
         String ex = "foo (\n bar \n)\nbar;\nyeah;\nman\nbaby";
-        assertEquals( "foo (\n bar \n);\nbar;\nyeah;\nman;\nbaby",
+        assertEquals( "foo ( bar );\nbar;\nyeah;\nman;\nbaby",
                       MVELConsequenceBuilder.delimitExpressions( ex ) );
 
         ex = "foo {\n bar \n}\nbar;   \nyeah;\nman\nbaby";
-        assertEquals( "foo {\n bar \n};\nbar;   \nyeah;\nman;\nbaby",
+        assertEquals( "foo { bar };\nbar;   \nyeah;\nman;\nbaby",
                       MVELConsequenceBuilder.delimitExpressions( ex ) );
 
         ex = "foo [\n bar \n]\nbar;  x\nyeah();\nman[42]\nbaby;ca chiga;\nend";
-        assertEquals( "foo [\n bar \n];\nbar;  x;\nyeah();\nman[42];\nbaby;ca chiga;\nend",
+        assertEquals( "foo [ bar ];\nbar;  x;\nyeah();\nman[42];\nbaby;ca chiga;\nend",
                       MVELConsequenceBuilder.delimitExpressions( ex ) );
 
         ex = "   \n\nfoo [\n bar \n]\n\n\nbar;  x\n  \nyeah();\nman[42]\nbaby;ca chiga;\nend";
-        assertEquals( "   \n\nfoo [\n bar \n];\n\n\nbar;  x;\n  \nyeah();\nman[42];\nbaby;ca chiga;\nend",
+        assertEquals( "   \n\nfoo [ bar ];\n\n\nbar;  x;\n  \nyeah();\nman[42];\nbaby;ca chiga;\nend",
                       MVELConsequenceBuilder.delimitExpressions( ex ) );
 
         ex = "   retract(f1) // some comment\n   retract(f2)\nend";
