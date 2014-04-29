@@ -52,7 +52,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         CloudBalance cloudBalance = buildPlanningProblem();
         SolverThread solverThread = new SolverThread(solver, cloudBalance);
         solverThread.start();
-        // Wait for the Solver to boot
+        // Wait for the solver thread to start up
         waitForNextStage();
 
         // Give the solver thread a chance to terminate and get into the daemon waiting state
@@ -95,6 +95,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         @Override
         public void run() { // In solver thread
             solver.addEventListener(this);
+            nextStage(); // For an empty entity list, there is no bestSolutionChanged() event currently
             solver.solve(cloudBalance);
         }
 
@@ -102,6 +103,8 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         public void bestSolutionChanged(BestSolutionChangedEvent<CloudBalance> event) { // In solver thread
             if (event.isEveryProblemFactChangeProcessed() && event.isNewBestSolutionInitialized()
                     && event.getNewBestSolution().getScore().isFeasible()) {
+                // TODO bestSolutionChanged() is not the most reliable way to control this test's execution:
+                // With another termination, a Solver can terminate before a feasible best solution event is fired
                 nextStage();
             }
         }
@@ -131,7 +134,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
                 "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
         solverFactory.getSolverConfig().setDaemon(true);
         TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setMillisecondsSpentLimit(800L);
+        terminationConfig.setBestScoreFeasible(true);
         solverFactory.getSolverConfig().setTerminationConfig(terminationConfig);
         return solverFactory.buildSolver();
     }
