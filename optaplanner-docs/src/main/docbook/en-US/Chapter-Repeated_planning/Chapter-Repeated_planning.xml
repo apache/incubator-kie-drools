@@ -119,7 +119,7 @@ public class ShiftAssignment {
     <title>Real-time planning (event based planning)</title>
 
     <para>To do real-time planning, first combine backup planning and continuous planning with short planning windows to
-    lower the burden of real-time planning.</para>
+    lower the burden of real-time planning. As time passes, the problem itself changes:</para>
 
     <mediaobject>
       <imageobject>
@@ -127,13 +127,22 @@ public class ShiftAssignment {
       </imageobject>
     </mediaobject>
 
-    <para>While the <literal>Solver</literal> is solving, an outside event might want to change one of the problem
-    facts, for example an airplane is delayed and needs the runway at a later time. Do not change the problem fact
-    instances used by the <literal>Solver</literal> while it is solving, as that will corrupt it. Instead, add a
-    <literal>ProblemFactChange</literal> to the <literal>Solver</literal> which it will execute in the solver thread as
-    soon as possible.</para>
+    <para>In the example above, 3 customers are added at different times (<literal>07:56</literal>,
+    <literal>08:02</literal> and <literal>08:45</literal>), after the original customer set finished solving at
+    <literal>07:55</literal> and in some cases after the vehicles already left. OptaPlanner can handle such scenario's
+    with <literal>ProblemFactChange</literal> (in combination with <link linkend="immovablePlanningEntities">immovable
+    planning entities</link>).</para>
 
-    <programlisting language="java">public interface Solver {
+    <section xml:id="problemFactChange">
+      <title><literal>ProblemFactChange</literal></title>
+
+      <para>While the <literal>Solver</literal> is solving, an outside event might want to change one of the problem
+      facts, for example an airplane is delayed and needs the runway at a later time. Do not change the problem fact
+      instances used by the <literal>Solver</literal> while it is solving (from another thread or even in the same
+      thread), as that will corrupt it. Instead, add a <literal>ProblemFactChange</literal> to the
+      <literal>Solver</literal> which it will execute in the solver thread as soon as possible.</para>
+
+      <programlisting language="java">public interface Solver {
 
     ...
 
@@ -145,15 +154,15 @@ public class ShiftAssignment {
 
 }</programlisting>
 
-    <programlisting language="java">public interface ProblemFactChange {
+      <programlisting language="java">public interface ProblemFactChange {
 
     void doChange(ScoreDirector scoreDirector);
 
 }</programlisting>
 
-    <para>Here's an example:</para>
+      <para>Here's an example:</para>
 
-    <programlisting language="java">    public void deleteComputer(final CloudComputer computer) {
+      <programlisting language="java">    public void deleteComputer(final CloudComputer computer) {
         solver.addProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
                 CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
@@ -182,51 +191,113 @@ public class ShiftAssignment {
         });
     }</programlisting>
 
-    <warning>
-      <para>Any change on the problem facts or planning entities in a <literal>ProblemFactChange</literal> must be told
-      to the <literal>ScoreDirector</literal>.</para>
-    </warning>
+      <warning>
+        <para>Any change on the problem facts or planning entities in a <literal>ProblemFactChange</literal> must be
+        told to the <literal>ScoreDirector</literal>.</para>
+      </warning>
 
-    <warning>
-      <para>Any change on the problem facts or planning entities in a <literal>ProblemFactChange</literal> must be done
-      on the instances of the <literal>Solution</literal> of <literal>scoreDirector.getWorkingSolution()</literal>. Note
-      that these are not the same entity instances as in the bestSolution (or therefore your user interface): they are
-      clones.</para>
-    </warning>
+      <important>
+        <para>To write a <literal>ProblemFactChange</literal> correctly, it's important to understand the behaviour of
+        <link linkend="cloningASolution">a planning clone</link>:</para>
 
-    <important>
-      <para>A <literal>BestSolutionChangedEvent</literal>'s <literal>bestSolution</literal> is <link
-      linkend="cloningASolution">a planning clone</link> of the <literal>workingSolution</literal>. <emphasis>Therefore
-      the <literal>workingSolution</literal> and the <literal>bestSolution</literal> share the same problem fact
-      instances and the same problem fact list instances. </emphasis></para>
+        <itemizedlist>
+          <listitem>
+            <para>Any change in a <literal>ProblemFactChange</literal> must be done on the <literal>Solution</literal>
+            instance of <literal>scoreDirector.getWorkingSolution()</literal>. The <literal>workingSolution</literal> is
+            <link linkend="cloningASolution">a planning clone</link> of the
+            <literal>BestSolutionChangedEvent</literal>'s <literal>bestSolution</literal>. So the
+            <literal>workingSolution</literal> in the <literal>Solver</literal> is never the same instance as the
+            <literal>Solution</literal> in the rest of your application.</para>
+          </listitem>
 
-      <para>Any problem fact or problem fact list changed by a <literal>ProblemFactChange</literal> must be problem
-      cloned first (which can imply rerouting references in other problem facts and planning entities). Otherwise, if
-      the workingSolution and bestSolution are used in different threads (for example a solver thread and a GUI event
-      thread), a race condition can occur.</para>
-    </important>
+          <listitem>
+            <para>A planning clone also clones the planning entities and planning entity collections. So any change on
+            the planning entities must happen on the instances hold by
+            <literal>scoreDirector.getWorkingSolution()</literal>.</para>
+          </listitem>
 
-    <note>
-      <para>Many types of changes can leave a planning entity uninitialized, resulting in a partially initialized
-      solution. That's fine, as long as the first solver phase can handle it. All construction heuristics solver phases
-      can handle that, so it's recommended to configure such a <literal>SolverPhase</literal> as the first phase.</para>
-    </note>
+          <listitem>
+            <para>A planning clone does not clone the problem facts, nor the problem fact collections.
+            <emphasis>Therefore the <literal>workingSolution</literal> and the <literal>bestSolution</literal> share the
+            same problem fact instances and the same problem fact list instances.</emphasis></para>
 
-    <para>In essence, the <literal>Solver</literal> stops, runs the <literal>ProblemFactChange</literal> and <emphasis
-    role="bold">restarts</emphasis>. Each <literal>SolverPhase</literal> runs again. This implies the construction
-    heuristic runs again, but because little or no planning variables are uninitialized (unless you have a <link
-    linkend="nullablePlanningVariable">nullable planning variable</link>), this doesn't take long.</para>
+            <para>Any problem fact or problem fact list changed by a <literal>ProblemFactChange</literal> must be
+            problem cloned first (which can imply rerouting references in other problem facts and planning entities).
+            Otherwise, if the <literal>workingSolution</literal> and <literal>bestSolution</literal> are used in
+            different threads (for example a solver thread and a GUI event thread), a race condition can occur.</para>
+          </listitem>
+        </itemizedlist>
+      </important>
 
-    <para>Each configured phase <literal>Termination</literal> resets, but each solver Termination (including
-    <literal>terminateEarly</literal>) does not reset. Normally however, you won't configure any
-    <literal>Termination</literal>, just call <literal>Solver.terminateEarly()</literal> when the results are needed.
-    Alternatively, you can subscribe to the <literal><link
-    linkend="SolverEventListener">BestSolutionChangedEvent</link></literal>. A
-    <literal>BestSolutionChangedEvent</literal> doesn't guarantee that every <literal>ProblemFactChange</literal> has
-    been processed already, nor that the solution is initialized and feasible. To ignore
-    <literal>BestSolutionChangedEvent</literal>s with such invalid solutions, do this:</para>
+      <note>
+        <para>Many types of changes can leave a planning entity uninitialized, resulting in a partially initialized
+        solution. That's fine, as long as the first solver phase can handle it. All construction heuristics solver
+        phases can handle that, so it's recommended to configure such a <literal>SolverPhase</literal> as the first
+        phase.</para>
+      </note>
 
-    <programlisting language="java">        public void bestSolutionChanged(BestSolutionChangedEvent&lt;CloudBalance&gt; event) {
+      <para>In essence, the <literal>Solver</literal> stops, runs the <literal>ProblemFactChange</literal> and <emphasis
+      role="bold">restarts</emphasis>. Each <literal>SolverPhase</literal> runs again. This implies the construction
+      heuristic runs again, but because little or no planning variables are uninitialized (unless you have a <link
+      linkend="nullablePlanningVariable">nullable planning variable</link>), this doesn't take long.</para>
+
+      <para>Each configured phase <literal>Termination</literal> resets, but each solver Termination (including
+      <literal>terminateEarly</literal>) does not reset. Normally however, you won't configure any
+      <literal>Termination</literal>, just call <literal>Solver.terminateEarly()</literal> when the results are needed.
+      Alternatively, use the daemon mode in combation with <literal><link
+      linkend="SolverEventListener">BestSolutionChangedEvent</link></literal> as described below.</para>
+    </section>
+
+    <section xml:id="daemon">
+      <title>Daemon: <literal>solve()</literal> does not return</title>
+
+      <para>In real-time planning, it's often useful to have a solver thread wait when it runs out of work, and
+      immediately solve a problem once problem fact changes are added. Putting the Solver in daemon mode has these
+      effects:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>If the <literal>Solver</literal>'s <literal>Termination</literal> terminates, it does not return from
+          <literal>solve()</literal> but waits instead (freeing up CPU).</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Except for terminateEarly(), which does make it return from <literal>solve()</literal>, freeing up
+              system resources (and allowing the application to shutdown gracefully).</para>
+            </listitem>
+
+            <listitem>
+              <para>If a <literal>Solver</literal> starts with an empty planning entity collection, it goes to the
+              waiting state immediately.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>If a <literal>ProblemFactChange</literal> is added, it's processed and the <literal>Solver</literal>
+          runs again.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>To configure the daemon mode:</para>
+
+      <programlisting language="xml">&lt;solver&gt;
+  &lt;daemon&gt;true&lt;/daemon&gt;
+  ...
+&lt;/solver&gt;</programlisting>
+
+      <warning>
+        <para>Don't forget to call <literal>Solver.terminateEarly()</literal> when your application needs to shutdown to
+        avoid killing the solver thread unnaturally.</para>
+      </warning>
+
+      <para>Subscribe to the <literal><link linkend="SolverEventListener">BestSolutionChangedEvent</link></literal> to
+      process new best solutions found by the solver thread. A <literal>BestSolutionChangedEvent</literal> doesn't
+      guarantee that every <literal>ProblemFactChange</literal> has been processed already, nor that the solution is
+      initialized and feasible. To ignore <literal>BestSolutionChangedEvent</literal>s with such invalid solutions, do
+      this:</para>
+
+      <programlisting language="java">        public void bestSolutionChanged(BestSolutionChangedEvent&lt;CloudBalance&gt; event) {
             // Ignore invalid solutions
             if (event.isEveryProblemFactChangeProcessed()
                     &amp;&amp; event.isNewBestSolutionInitialized()
@@ -234,5 +305,6 @@ public class ShiftAssignment {
                 ...
             }
         }</programlisting>
+    </section>
   </section>
 </chapter>
