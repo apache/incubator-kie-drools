@@ -36,6 +36,7 @@ import org.jbpm.services.task.internals.rule.AssignmentService;
 import org.jbpm.services.task.rule.RuleContextProvider;
 import org.jbpm.services.task.rule.TaskRuleService;
 import org.jbpm.services.task.rule.impl.RuleContextProviderImpl;
+import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -50,6 +51,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.task.api.InternalTaskService;
+import org.kie.internal.task.api.model.ContentData;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
@@ -202,6 +204,33 @@ public class LifeCycleLocalWithRuleServiceTest extends HumanTaskServicesBaseTest
 
         try {
             taskService.addTask(task, params);
+            
+            fail("Task should not be created due to rule violation");
+        } catch (CannotAddTaskException e) {
+            assertTrue(e.getMessage().indexOf("John (manager) does not work here any more") != -1);
+        }
+        
+    }
+    
+    @Test
+    public void testCreateTaskWithDisallowedCreationBasedOnContentByRuleWithContentData() {
+        
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { workItemId = 1 } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('john')],businessAdministrators = [ new User('Administrator') ], }),";
+        str += "descriptions = [ new I18NText( 'en-UK', 'This is my description')], ";
+        str += "subjects = [ new I18NText( 'en-UK', 'This is my subject')], ";
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+
+
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("manager", "John");
+        
+        ContentData data = ContentMarshallerHelper.marshal(params, null);
+        try {
+            taskService.addTask(task, data);
             
             fail("Task should not be created due to rule violation");
         } catch (CannotAddTaskException e) {

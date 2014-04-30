@@ -17,14 +17,18 @@ package org.jbpm.services.task.rule.impl;
 
 import java.util.Map;
 
+import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.jbpm.services.task.rule.RuleContextProvider;
 import org.jbpm.services.task.rule.TaskRuleService;
 import org.jbpm.services.task.rule.TaskServiceRequest;
+import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.User;
+import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 import org.kie.internal.task.exception.TaskException;
 
@@ -57,6 +61,11 @@ public class TaskRuleServiceImpl implements TaskRuleService {
             session.setGlobal("request", request);
             session.insert(task);
             if (params != null) {
+            	if (params instanceof ContentData) {
+            		ContentMarshallerContext ctx = TaskContentRegistry.get().getMarshallerContext(task);
+            		params = ContentMarshallerHelper.unmarshall(((ContentData) params).getContent(), ctx.getEnvironment(), ctx.getClassloader());
+            	}
+            	
                 session.insert(params);
             }
             session.fireAllRules();
