@@ -17,6 +17,7 @@
       <!--<inputSolutionFile>data/tsp/import/coursera/assignment5.tsp</inputSolutionFile>-->
       <!--<inputSolutionFile>data/tsp/import/coursera/assignment6.tsp</inputSolutionFile>-->
       <problemStatisticType>BEST_SCORE</problemStatisticType>
+      <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
     </problemBenchmarks>
 
     <solver>
