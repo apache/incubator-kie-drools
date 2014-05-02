@@ -15,6 +15,7 @@
  */
 package org.jbpm.kie.services.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -108,6 +109,20 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         return Collections.unmodifiableCollection(availableProcesses);
     }
 
+    @Override
+    public Collection<String> getProcessIds(String deploymentId) {
+        List<String> processIds = new ArrayList<String>(availableProcesses.size());
+        if( deploymentId == null || deploymentId.isEmpty() ) { 
+            return processIds;
+        }
+        for( ProcessAssetDesc procAssetDesc : availableProcesses ) { 
+            if( procAssetDesc.getDeploymentId().equals(deploymentId) ) {
+                processIds.add(procAssetDesc.getId());
+            }
+        }
+        return processIds;
+    }
+    
     public Collection<ProcessInstanceDesc> getProcessInstances() { 
         List<ProcessInstanceDesc> processInstances =  commandService.execute(
         				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstances"));
