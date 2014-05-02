@@ -10,12 +10,6 @@
       <inputSolutionFile>data/tsp/import/dj38.tsp</inputSolutionFile>
       <inputSolutionFile>data/tsp/import/europe40.tsp</inputSolutionFile>
       <inputSolutionFile>data/tsp/import/lu980.tsp</inputSolutionFile>
-      <!--<inputSolutionFile>data/tsp/import/coursera/assignment1.tsp</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/tsp/import/coursera/assignment2.tsp</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/tsp/import/coursera/assignment3.tsp</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/tsp/import/coursera/assignment4.tsp</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/tsp/import/coursera/assignment5.tsp</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/tsp/import/coursera/assignment6.tsp</inputSolutionFile>-->
       <problemStatisticType>BEST_SCORE</problemStatisticType>
       <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
     </problemBenchmarks>
