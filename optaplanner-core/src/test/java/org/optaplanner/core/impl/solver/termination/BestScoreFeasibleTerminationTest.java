@@ -37,6 +37,7 @@ public class BestScoreFeasibleTerminationTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         when(solverScope.getScoreDefinition()).thenReturn(new HardSoftScoreDefinition());
         when(solverScope.getStartingInitializedScore()).thenReturn(HardSoftScore.valueOf(-100, -100));
+        when(solverScope.isBestSolutionInitialized()).thenReturn(true);
 
         when(solverScope.getBestScore()).thenReturn(HardSoftScore.valueOf(-100, -100));
         assertEquals(false, termination.isSolverTerminated(solverScope));
@@ -66,6 +67,7 @@ public class BestScoreFeasibleTerminationTest {
         AbstractSolverPhaseScope phaseScope = mock(AbstractSolverPhaseScope.class);
         when(phaseScope.getScoreDefinition()).thenReturn(new HardSoftScoreDefinition());
         when(phaseScope.getStartingScore()).thenReturn(HardSoftScore.valueOf(-100, -100));
+        when(phaseScope.isBestSolutionInitialized()).thenReturn(true);
 
         when(phaseScope.getBestScore()).thenReturn(HardSoftScore.valueOf(-100, -100));
         assertEquals(false, termination.isPhaseTerminated(phaseScope));
