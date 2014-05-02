@@ -302,6 +302,11 @@ public class ScoreDirectorFactoryConfig {
 
     private AbstractScoreDirectorFactory buildIncrementalScoreDirectorFactory() {
         if (incrementalScoreCalculatorClass != null) {
+            if (!IncrementalScoreCalculator.class.isAssignableFrom(incrementalScoreCalculatorClass)) {
+                throw new IllegalArgumentException(
+                        "The incrementalScoreCalculatorClass (" + incrementalScoreCalculatorClass
+                        + ") does not implement " + IncrementalScoreCalculator.class.getSimpleName() + ".");
+            }
             return new IncrementalScoreDirectorFactory(incrementalScoreCalculatorClass);
         } else {
             return null;
