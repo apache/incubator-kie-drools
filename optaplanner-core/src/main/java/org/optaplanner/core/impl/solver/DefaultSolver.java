@@ -137,10 +137,7 @@ public class DefaultSolver implements Solver {
     }
 
     public boolean isEveryProblemFactChangeProcessed() {
-        BlockingQueue<ProblemFactChange> problemFactChangeQueue
-                = basicPlumbingTermination.getProblemFactChangeQueue();
-        // TODO bug: the last ProblemFactChange might already been polled, but not processed yet
-        return problemFactChangeQueue.isEmpty();
+        return basicPlumbingTermination.isEveryProblemFactChangeProcessed();
     }
 
     // ************************************************************************
@@ -229,7 +226,7 @@ public class DefaultSolver implements Solver {
             return false;
         } else {
             BlockingQueue<ProblemFactChange> problemFactChangeQueue
-                    = basicPlumbingTermination.getProblemFactChangeQueue();
+                    = basicPlumbingTermination.startProblemFactChangesProcessing();
             solverScope.setWorkingSolutionFromBestSolution();
             Score score = null;
             int stepIndex = 0;
@@ -239,6 +236,7 @@ public class DefaultSolver implements Solver {
                 stepIndex++;
                 problemFactChange = problemFactChangeQueue.poll();
             }
+            basicPlumbingTermination.endProblemFactChangesProcessing();
             Solution newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
             // TODO BestSolutionRecaller.solverStarted() already calls countUninitializedVariables()
             int newBestUninitializedVariableCount = solverScope.getSolutionDescriptor()

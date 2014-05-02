@@ -31,8 +31,11 @@ import org.optaplanner.core.impl.solver.termination.AbstractTermination;
 public class BasicPlumbingTermination extends AbstractTermination {
 
     protected final boolean daemon;
+
     protected boolean terminatedEarly = false;
     protected BlockingQueue<ProblemFactChange> problemFactChangeQueue = new LinkedBlockingQueue<ProblemFactChange>();
+
+    protected boolean problemFactChangesBeingProcessed = false;
 
     public BasicPlumbingTermination(boolean daemon) {
         this.daemon = daemon;
@@ -96,8 +99,17 @@ public class BasicPlumbingTermination extends AbstractTermination {
         return added;
     }
 
-    public BlockingQueue<ProblemFactChange> getProblemFactChangeQueue() {
+    public synchronized BlockingQueue<ProblemFactChange> startProblemFactChangesProcessing() {
+        problemFactChangesBeingProcessed = true;
         return problemFactChangeQueue;
+    }
+
+    public synchronized void endProblemFactChangesProcessing() {
+        problemFactChangesBeingProcessed = false;
+    }
+
+    public boolean isEveryProblemFactChangeProcessed() {
+        return problemFactChangeQueue.isEmpty() && !problemFactChangesBeingProcessed;
     }
 
     // ************************************************************************
