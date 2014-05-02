@@ -243,8 +243,8 @@ public class ProblemBenchmarkResult {
         if (!writeOutputSolutionEnabled) {
             return;
         }
-        String filename = singleBenchmarkResult.getName() + "." + problemIO.getFileExtension();
-        File outputSolutionFile = new File(getProblemReportDirectory(), filename);
+        String filename = getName() + "." + problemIO.getFileExtension();
+        File outputSolutionFile = new File(singleBenchmarkResult.getSingleReportDirectory(), filename);
         problemIO.write(outputSolution, outputSolutionFile);
     }
 

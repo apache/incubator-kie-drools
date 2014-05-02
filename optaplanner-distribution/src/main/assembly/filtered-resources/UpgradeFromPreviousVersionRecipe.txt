@@ -4177,6 +4177,10 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
     <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingEasyScoreCalculator<easyScoreCalculatorClass>
 
+
+From 6.1.0.Beta3 to 6.1.0.Beta4
+-------------------------------
+
 [MINOR] If you have a custom ScoreDefinition: the Score interface has an extra method negate().
 
 [MINOR] If you combine Simulated Annealing with <bestScoreLimit>:
@@ -4210,3 +4214,7 @@ After in *.java:
                 ...
             }
         }
+
+[MINOR] A benchmark configuration with writeOutputSolutionEnabled=true now writes the solution files
+in the single benchmark directory (instead of the problem benchmark directory)
+and no longer alters the filename.
