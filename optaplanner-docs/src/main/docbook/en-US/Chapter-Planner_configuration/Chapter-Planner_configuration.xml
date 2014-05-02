@@ -1191,6 +1191,22 @@ public interface Standstill {
             <literal>LinkedHashSet</literal> or <literal>TreeSet</literal> (whichever is more applicable). It recognizes
             most of the common JDK <literal>Collection</literal> implementations.</para>
           </warning>
+
+          <para>The <literal>FieldAccessingSolutionCloner</literal> does not clone problem facts by default. If any of
+          your problem facts needs to be deep cloned for a planning clone, for example if the problem fact references a
+          planning entity or the planning solution, mark it with a <literal>@DeepPlanningClone</literal>
+          annotation:</para>
+
+          <programlisting language="java">@DeepPlanningClone
+public class SeatDesignationDependency {
+    private SeatDesignation leftSeatDesignation; // planning entity
+    private SeatDesignation rightSeatDesignation; // planning entity
+    ...
+}</programlisting>
+
+          <para>In the example above, because <literal>SeatDesignation</literal> is a planning entity (which is deep
+          planning cloned automatically), <literal>SeatDesignationDependency</literal> must be deep planning cloned
+          too.</para>
         </section>
 
         <section>

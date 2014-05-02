@@ -40,6 +40,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -48,6 +49,7 @@ import org.optaplanner.core.impl.solution.Solution;
 public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements SolutionCloner<SolutionG> {
 
     protected final SolutionDescriptor solutionDescriptor;
+
     protected final Map<Class, Constructor> constructorCache = new HashMap<Class, Constructor>();
     protected final Map<Class, List<Field>> fieldListCache = new HashMap<Class, List<Field>>();
     protected final Map<Field, Boolean> deepCloneDecisionFieldCache = new HashMap<Field, Boolean>();
@@ -102,7 +104,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
         }
         deepCloneDecision = deepCloneDecisionActualValueClassCache.get(actualValueClass);
         if (deepCloneDecision == null) {
-            deepCloneDecision = isClassEntityOrSolution(actualValueClass);
+            deepCloneDecision = isClassDeepCloned(actualValueClass);
             deepCloneDecisionActualValueClassCache.put(actualValueClass, deepCloneDecision);
         }
         return deepCloneDecision;
@@ -128,7 +130,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
 
     protected boolean isFieldAnEntityOrSolution(Field field) {
         Class<?> type = field.getType();
-        if (isClassEntityOrSolution(type)) {
+        if (isClassDeepCloned(type)) {
             return true;
         }
         if (Collection.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type)) {
@@ -139,7 +141,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
                 ParameterizedType parameterizedType = (ParameterizedType) genericType;
                 for (Type actualTypeArgument : parameterizedType.getActualTypeArguments()) {
                     if (actualTypeArgument instanceof Class
-                            && isClassEntityOrSolution((Class) actualTypeArgument)) {
+                            && isClassDeepCloned((Class) actualTypeArgument)) {
                         return true;
                     }
                 }
@@ -148,9 +150,10 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
         return false;
     }
 
-    private boolean isClassEntityOrSolution(Class<?> type) {
+    private boolean isClassDeepCloned(Class<?> type) {
         return solutionDescriptor.hasEntityDescriptor(type)
-                || solutionDescriptor.getSolutionClass().isAssignableFrom(type);
+                || solutionDescriptor.getSolutionClass().isAssignableFrom(type)
+                || type.isAnnotationPresent(DeepPlanningClone.class);
     }
 
     protected class FieldAccessingSolutionClonerRun {
