@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
 import java.util.Iterator;
 
+import com.google.common.collect.Iterators;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
@@ -96,14 +97,8 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
 
         private OriginalSubChainChangeMoveIterator() {
             subChainIterator = subChainSelector.iterator();
-            valueIterator = valueSelector.iterator();
-            // valueIterator.hasNext() returns true if there is a next for any entity parameter
-            if (!subChainIterator.hasNext() || !valueIterator.hasNext()) {
-                upcomingSelection = noUpcomingSelection();
-                upcomingCreated = true;
-            } else {
-                upcomingSubChain = subChainIterator.next();
-            }
+            // Don't do hasNext() in constructor (to avoid upcoming selections breaking mimic recording)
+            valueIterator = Iterators.emptyIterator();
         }
 
         protected Move createUpcomingSelection() {
@@ -112,14 +107,20 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
                 nextReversingSelection = null;
                 return upcomingSelection;
             }
-            while (!valueIterator.hasNext()) {
+
+            if (!valueIterator.hasNext()) {
                 if (!subChainIterator.hasNext()) {
                     return noUpcomingSelection();
                 }
                 upcomingSubChain = subChainIterator.next();
                 valueIterator = valueSelector.iterator();
+                if (!valueIterator.hasNext()) {
+                    // valueSelector is completely empty
+                    return noUpcomingSelection();
+                }
             }
             Object toValue = valueIterator.next();
+
             Move upcomingSelection = new SubChainChangeMove(
                     upcomingSubChain, valueSelector.getVariableDescriptor(), toValue);
             if (selectReversingMoveToo) {
@@ -139,41 +140,33 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
         private RandomSubChainChangeMoveIterator() {
             subChainIterator = subChainSelector.iterator();
             valueIterator = valueSelector.iterator();
-            // valueIterator.hasNext() returns true if there is a next for any subChain parameter
-            if (!subChainIterator.hasNext() || !valueIterator.hasNext()) {
-                upcomingSelection = noUpcomingSelection();
-                upcomingCreated = true;
-            }
+            // Don't do hasNext() in constructor (to avoid upcoming selections breaking mimic recording)
+            valueIterator = Iterators.emptyIterator();
         }
 
         protected Move createUpcomingSelection() {
             // Ideally, this code should have read:
             //     SubChain subChain = subChainIterator.next();
-            //     Object toValue = valueIterator.next(subChain);
+            //     Object toValue = valueIterator.next();
             // But empty selectors and ending selectors (such as non-random or shuffled) make it more complex
             if (!subChainIterator.hasNext()) {
                 subChainIterator = subChainSelector.iterator();
+                if (!subChainIterator.hasNext()) {
+                    // subChainSelector is completely empty
+                    return noUpcomingSelection();
+                }
             }
             SubChain subChain = subChainIterator.next();
-            int subChainIteratorCreationCount = 0;
-            // This loop is mostly only relevant when the subChainIterator or valueIterator is non-random or shuffled
-            while (!valueIterator.hasNext()) {
-                // First try to reset the valueIterator to get a next value
+
+            if (!valueIterator.hasNext()) {
                 valueIterator = valueSelector.iterator();
-                // If that's not sufficient (that subChain has an empty value list), then use the next subChain
                 if (!valueIterator.hasNext()) {
-                    if (!subChainIterator.hasNext()) {
-                        subChainIterator = subChainSelector.iterator();
-                        subChainIteratorCreationCount++;
-                        if (subChainIteratorCreationCount >= 2) {
-                            // All subChain-value combinations have been tried (some even more than once)
-                            return noUpcomingSelection();
-                        }
-                    }
-                    subChain = subChainIterator.next();
+                    // valueSelector is completely empty
+                    return noUpcomingSelection();
                 }
             }
             Object toValue = valueIterator.next();
+
             boolean reversing = selectReversingMoveToo ? workingRandom.nextBoolean() : false;
             return reversing
                     ? new SubChainReversingChangeMove(subChain, valueSelector.getVariableDescriptor(), toValue)

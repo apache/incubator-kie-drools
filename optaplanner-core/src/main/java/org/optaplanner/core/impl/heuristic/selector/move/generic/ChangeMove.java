@@ -82,8 +82,7 @@ public class ChangeMove implements Move {
             ChangeMove other = (ChangeMove) o;
             return new EqualsBuilder()
                     .append(entity, other.entity)
-                    .append(variableDescriptor.getVariableName(),
-                            other.variableDescriptor.getVariableName())
+                    .append(variableDescriptor, other.variableDescriptor)
                     .append(toPlanningValue, other.toPlanningValue)
                     .isEquals();
         } else {
@@ -94,7 +93,7 @@ public class ChangeMove implements Move {
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(entity)
-                .append(variableDescriptor.getVariableName())
+                .append(variableDescriptor)
                 .append(toPlanningValue)
                 .toHashCode();
     }

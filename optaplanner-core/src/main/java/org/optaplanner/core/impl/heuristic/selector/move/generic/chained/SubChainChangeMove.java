@@ -76,8 +76,7 @@ public class SubChainChangeMove implements Move {
             SubChainChangeMove other = (SubChainChangeMove) o;
             return new EqualsBuilder()
                     .append(subChain, other.subChain)
-                    .append(variableDescriptor.getVariableName(),
-                            other.variableDescriptor.getVariableName())
+                    .append(variableDescriptor, other.variableDescriptor)
                     .append(toPlanningValue, other.toPlanningValue)
                     .isEquals();
         } else {
@@ -88,7 +87,7 @@ public class SubChainChangeMove implements Move {
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(subChain)
-                .append(variableDescriptor.getVariableName())
+                .append(variableDescriptor)
                 .append(toPlanningValue)
                 .toHashCode();
     }

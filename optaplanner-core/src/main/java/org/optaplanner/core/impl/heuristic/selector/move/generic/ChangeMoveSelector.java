@@ -63,7 +63,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
             return entitySelector.getSize() * ((IterableSelector) valueSelector).getSize();
         } else {
             long size = 0;
-            for (java.util.Iterator it = entitySelector.endingIterator(); it.hasNext(); ) {
+            for (Iterator it = entitySelector.endingIterator(); it.hasNext(); ) {
                 Object entity =  it.next();
                 size += valueSelector.getSize(entity);
             }
@@ -88,6 +88,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
 
         private OriginalChangeMoveIterator() {
             entityIterator = entitySelector.iterator();
+            // Don't do hasNext() in constructor (to avoid upcoming selections breaking mimic recording)
             valueIterator = Iterators.emptyIterator();
         }
 
@@ -101,6 +102,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
                 valueIterator = valueSelector.iterator(upcomingEntity);
             }
             Object toValue = valueIterator.next();
+
             return chained
                     ? new ChainedChangeMove(upcomingEntity, valueSelector.getVariableDescriptor(), toValue)
                     : new ChangeMove(upcomingEntity, valueSelector.getVariableDescriptor(), toValue);
@@ -111,17 +113,18 @@ public class ChangeMoveSelector extends GenericMoveSelector {
     private class RandomChangeMoveIterator extends UpcomingSelectionIterator<Move> {
 
         private Iterator<Object> entityIterator;
-        private Iterator<Object> valueIterator = null;
 
         private RandomChangeMoveIterator() {
             entityIterator = entitySelector.iterator();
+            // Don't do hasNext() in constructor (to avoid upcoming selections breaking mimic recording)
         }
 
         @Override
         protected Move createUpcomingSelection() {
             // Ideally, this code should have read:
             //     Object entity = entityIterator.next();
-            //     Object toValue = valueIterator.next(entity);
+            //     Iterator<Object> valueIterator = valueSelector.iterator(entity);
+            //     Object toValue = valueIterator.next();
             // But empty selectors and ending selectors (such as non-random or shuffled) make it more complex
             if (!entityIterator.hasNext()) {
                 entityIterator = entitySelector.iterator();
@@ -130,7 +133,8 @@ public class ChangeMoveSelector extends GenericMoveSelector {
                 }
             }
             Object entity = entityIterator.next();
-            valueIterator = valueSelector.iterator(entity);
+
+            Iterator<Object> valueIterator = valueSelector.iterator(entity);
             int entityIteratorCreationCount = 0;
             // This loop is mostly only relevant when the entityIterator or valueIterator is non-random or shuffled
             while (!valueIterator.hasNext()) {
@@ -147,6 +151,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
                 valueIterator = valueSelector.iterator(entity);
             }
             Object toValue = valueIterator.next();
+
             return chained
                     ? new ChainedChangeMove(entity, valueSelector.getVariableDescriptor(), toValue)
                     : new ChangeMove(entity, valueSelector.getVariableDescriptor(), toValue);
