@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,33 +16,32 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.generic;
 
-import java.util.Collection;
-import java.util.List;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.pillar.PillarSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.value.chained.SubChainSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarSwapMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarChangeMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.SubChainChangeMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 
-@XStreamAlias("pillarSwapMoveSelector")
-public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig {
+@XStreamAlias("pillarChangeMoveSelector")
+public class PillarChangeMoveSelectorConfig extends MoveSelectorConfig {
 
     @XStreamAlias("pillarSelector")
     private PillarSelectorConfig pillarSelectorConfig = null;
-    @XStreamAlias("secondaryPillarSelector")
-    private PillarSelectorConfig secondaryPillarSelectorConfig = null;
-
-    // TODO jaxb use @XmlElementWrapper and wrap in variableNameIncludes
-    @XStreamImplicit(itemFieldName = "variableNameInclude")
-    private List<String> variableNameIncludeList = null;
+    @XStreamAlias("valueSelector")
+    private ValueSelectorConfig valueSelectorConfig = null;
 
     public PillarSelectorConfig getPillarSelectorConfig() {
         return pillarSelectorConfig;
@@ -52,20 +51,12 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig {
         this.pillarSelectorConfig = pillarSelectorConfig;
     }
 
-    public PillarSelectorConfig getSecondaryPillarSelectorConfig() {
-        return secondaryPillarSelectorConfig;
+    public ValueSelectorConfig getValueSelectorConfig() {
+        return valueSelectorConfig;
     }
 
-    public void setSecondaryPillarSelectorConfig(PillarSelectorConfig secondaryPillarSelectorConfig) {
-        this.secondaryPillarSelectorConfig = secondaryPillarSelectorConfig;
-    }
-
-    public List<String> getVariableNameIncludeList() {
-        return variableNameIncludeList;
-    }
-
-    public void setVariableNameIncludeList(List<String> variableNameIncludeList) {
-        this.variableNameIncludeList = variableNameIncludeList;
+    public void setValueSelectorConfig(ValueSelectorConfig valueSelectorConfig) {
+        this.valueSelectorConfig = valueSelectorConfig;
     }
 
     // ************************************************************************
@@ -76,38 +67,39 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig {
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         PillarSelectorConfig pillarSelectorConfig_ = pillarSelectorConfig == null ? new PillarSelectorConfig()
                 : pillarSelectorConfig;
-        PillarSelector leftPillarSelector = pillarSelectorConfig_.buildPillarSelector(configPolicy,
+        PillarSelector pillarSelector = pillarSelectorConfig_.buildPillarSelector(configPolicy,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        PillarSelectorConfig rightPillarSelectorConfig = secondaryPillarSelectorConfig == null
-                ? pillarSelectorConfig_ : secondaryPillarSelectorConfig;
-        PillarSelector rightPillarSelector = rightPillarSelectorConfig.buildPillarSelector(configPolicy,
+        ValueSelectorConfig valueSelectorConfig_ = valueSelectorConfig == null ? new ValueSelectorConfig()
+                : valueSelectorConfig;
+        ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(configPolicy,
+                pillarSelector.getEntityDescriptor(),
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        Collection<GenuineVariableDescriptor> variableDescriptors = deduceVariableDescriptors(
-                leftPillarSelector.getEntityDescriptor(), variableNameIncludeList);
-        return new PillarSwapMoveSelector(leftPillarSelector, rightPillarSelector, variableDescriptors,
+        if (!(valueSelector instanceof EntityIndependentValueSelector)) {
+            throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                    + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
+                    + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
+        }
+        return new PillarChangeMoveSelector(pillarSelector, (EntityIndependentValueSelector) valueSelector,
                 randomSelection);
     }
 
-    public void inherit(PillarSwapMoveSelectorConfig inheritedConfig) {
+    public void inherit(PillarChangeMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         if (pillarSelectorConfig == null) {
             pillarSelectorConfig = inheritedConfig.getPillarSelectorConfig();
         } else if (inheritedConfig.getPillarSelectorConfig() != null) {
             pillarSelectorConfig.inherit(inheritedConfig.getPillarSelectorConfig());
         }
-        if (secondaryPillarSelectorConfig == null) {
-            secondaryPillarSelectorConfig = inheritedConfig.getSecondaryPillarSelectorConfig();
-        } else if (inheritedConfig.getSecondaryPillarSelectorConfig() != null) {
-            secondaryPillarSelectorConfig.inherit(inheritedConfig.getSecondaryPillarSelectorConfig());
+        if (valueSelectorConfig == null) {
+            valueSelectorConfig = inheritedConfig.getValueSelectorConfig();
+        } else if (inheritedConfig.getValueSelectorConfig() != null) {
+            valueSelectorConfig.inherit(inheritedConfig.getValueSelectorConfig());
         }
-        variableNameIncludeList = ConfigUtils.inheritMergeableListProperty(
-                variableNameIncludeList, inheritedConfig.getVariableNameIncludeList());
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + pillarSelectorConfig
-                + (secondaryPillarSelectorConfig == null ? "" : ", " + secondaryPillarSelectorConfig) + ")";
+        return getClass().getSimpleName() + "(" + pillarSelectorConfig + ", " + valueSelectorConfig + ")";
     }
 
 }

@@ -30,6 +30,7 @@ import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSe
 import org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig;
 import org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
@@ -56,7 +57,8 @@ import org.optaplanner.core.impl.heuristic.selector.move.decorator.SortingMoveSe
  */
 @XStreamInclude({
         UnionMoveSelectorConfig.class, CartesianProductMoveSelectorConfig.class,
-        ChangeMoveSelectorConfig.class, SwapMoveSelectorConfig.class, PillarSwapMoveSelectorConfig.class,
+        ChangeMoveSelectorConfig.class, SwapMoveSelectorConfig.class,
+        PillarChangeMoveSelectorConfig.class, PillarSwapMoveSelectorConfig.class,
         SubChainChangeMoveSelectorConfig.class, SubChainSwapMoveSelectorConfig.class,
         MoveListFactoryConfig.class, MoveIteratorFactoryConfig.class
 })

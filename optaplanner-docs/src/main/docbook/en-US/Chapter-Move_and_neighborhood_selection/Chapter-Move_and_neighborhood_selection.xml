@@ -212,12 +212,48 @@
       <literal>variableNameInclude</literal> room will make it only swap room, not period.</para>
     </section>
 
+    <section xml:id="pillarChangeMoveSelector">
+      <title>pillarChangeMoveSelector</title>
+
+      <para>A <emphasis>pillar</emphasis> is a set of planning entities which have the same planning value(s) for their
+      planning variable(s). The <literal>PillarChangeMove</literal> selects 1 entity pillar and changes the value of 1
+      variable for all entities.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/pillarChangeMove.png"/>
+        </imageobject>
+      </mediaobject>
+
+      <para>Simplest configuration:</para>
+
+      <programlisting language="xml">    &lt;pillarChangeMoveSelector/&gt;</programlisting>
+
+      <para>Advanced configuration:</para>
+
+      <programlisting language="xml">    &lt;pillarSwapMoveSelector&gt;
+      ... &lt;!-- Normal selector properties --&gt;
+      &lt;pillarSelector&gt;
+        &lt;entitySelector&gt;
+          &lt;entityClass&gt;...Lecture&lt;/entityClass&gt;
+          ...
+        &lt;/entitySelector&gt;
+      &lt;/pillarSelector&gt;
+      &lt;valueSelector&gt;
+        &lt;variableName&gt;room&lt;/variableName&gt;
+        ...
+      &lt;/valueSelector&gt;
+    &lt;/pillarSwapMoveSelector&gt;</programlisting>
+
+      <para>The other properties are explained in <link linkend="changeMoveSelector">changeMoveSelector</link>.</para>
+    </section>
+
     <section xml:id="pillarSwapMoveSelector">
       <title>pillarSwapMoveSelector</title>
 
-      <para>A <emphasis>pillar</emphasis> is a set of planning entities which have the same planning value(s) for each
-      of their planning variables. The <literal>pillarSwapMove</literal> selects 2 different entity pillars and swaps
-      the values of all their variables for all their entities.</para>
+      <para>A <emphasis>pillar</emphasis> is a set of planning entities which have the same planning value(s) for their
+      planning variable(s). The <literal>PillarSwapMove</literal> selects 2 different entity pillars and swaps the
+      values of all their variables for all their entities.</para>
 
       <mediaobject>
         <imageobject>
