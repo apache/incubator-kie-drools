@@ -382,14 +382,30 @@ public class ASMConditionEvaluatorJitter {
                 return originalType;
             }
             for (Type interfaze : type.getGenericInterfaces()) {
-                if (interfaze instanceof ParameterizedType) {
-                    ParameterizedType pType = (ParameterizedType)interfaze;
-                    if (pType.getRawType() == Comparable.class) {
-                        return (Class<?>) pType.getActualTypeArguments()[0];
-                    }
+                Class<?> comparingClass = findComparingParameterClass(interfaze);
+                if (comparingClass != null) {
+                    return comparingClass;
                 }
             }
             return findComparingClass(type.getSuperclass(), originalType);
+        }
+
+        private Class<?> findComparingParameterClass(Type interfaze) {
+            if (interfaze instanceof ParameterizedType) {
+                ParameterizedType pType = (ParameterizedType)interfaze;
+                if (pType.getRawType() == Comparable.class) {
+                    return (Class<?>) pType.getActualTypeArguments()[0];
+                }
+            }
+            if (interfaze instanceof Class) {
+                for (Type superInterfaze : ((Class) interfaze).getGenericInterfaces()) {
+                    Class<?> comparingClass = findComparingParameterClass(superInterfaze);
+                    if (comparingClass != null) {
+                        return comparingClass;
+                    }
+                }
+            }
+            return null;
         }
 
         private void prepareLeftOperand(BooleanOperator operation, Class<?> type, Class<?> leftType, Class<?> rightType, Label shortcutEvaluation) {

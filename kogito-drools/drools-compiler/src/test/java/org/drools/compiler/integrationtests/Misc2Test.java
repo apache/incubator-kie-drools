@@ -1274,6 +1274,50 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     @Test
+    public void testJitComparable2() {
+        // DROOLS-469
+        String str =
+                "import " + Misc2Test.IntegerWrapperImpl2.class.getCanonicalName() + "\n" +
+                "\n" +
+                "rule \"minCost\"\n" +
+                "when\n" +
+                "    $a : IntegerWrapperImpl2()\n" +
+                "    IntegerWrapperImpl2( this < $a )\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.insert(new IntegerWrapperImpl2(2));
+        ksession.insert(new IntegerWrapperImpl2(3));
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    interface IntegerWraper2 extends Comparable<IntegerWraper2> {
+        int getInt();
+    }
+
+    public static abstract class AbstractIntegerWrapper2 implements IntegerWraper2 { }
+
+    public static class IntegerWrapperImpl2 extends AbstractIntegerWrapper2 {
+
+        private final int i;
+
+        public IntegerWrapperImpl2(int i) {
+            this.i = i;
+        }
+
+        public int compareTo(IntegerWraper2 o) {
+            return getInt() - o.getInt();
+        }
+
+        public int getInt() {
+            return i;
+        }
+    }
+
+    @Test
     public void testEqualityOfDifferentTypes() {
         // DROOLS-42
         String str =
