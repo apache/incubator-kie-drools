@@ -21,11 +21,13 @@ import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.Person;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.rule.builder.dialect.mvel.MVELDialectConfiguration;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.DefaultFactHandle;
@@ -5735,4 +5737,61 @@ public class Misc2Test extends CommonTestMethodBase {
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
         assertEquals(0, results.getMessages().size());
     }
+
+    @Test
+    public void testExtendsWithStrictModeOff() {
+        // DROOLS-475
+        String str =
+                "import java.util.HashMap;\n" +
+                "dialect \"mvel\"\n" +
+                "declare HashMap end\n" +
+                "\n" +
+                "declare Test extends HashMap end\n" +
+                "\n" +
+                "rule \"Insert\" salience 0\n" +
+                "when\n" +
+                "then\n" +
+                "Test t = new Test();\n" +
+                "t.Price = 10;\n" +
+                "t.put(\"A\", \"a\");\n" +
+                "t.OtherPrices = new HashMap();\n" +
+                "t.OtherPrices.OldPrice = 8;\n" +
+                "System.out.println(\"Inserting t=\"+t);\n" +
+                "insert(t);\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Test HashMap\" salience -1\n" +
+                "when\n" +
+                "t: HashMap( Price < 11 )\n" +
+                "then\n" +
+                "t.Price = 11;\n" +
+                "System.out.println(\"In Test HashMap\");\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Test Inherited\" salience -1\n" +
+                "when\n" +
+                "t: Test( Price < 100 )\n" +
+                "then\n" +
+                "t.Price = 12;\n" +
+                "System.out.println(\"In Test Inherited!\");\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Print Result\" salience -5\n" +
+                "when\n" +
+                "t: Test()\n" +
+                "then\n" +
+                "System.out.println(\"Finally Price is =\"+t.Price);\n" +
+                "//This as well doesn't print content as per toString() of HashMap is there a way to do that?\n" +
+                "System.out.println(\"Finally t=\"+t);\n" +
+                "end\n";
+
+        KnowledgeBuilderConfigurationImpl pkgBuilderCfg = new KnowledgeBuilderConfigurationImpl();
+        MVELDialectConfiguration mvelConf = (MVELDialectConfiguration) pkgBuilderCfg.getDialectConfiguration( "mvel" );
+        mvelConf.setStrict( false );
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(pkgBuilderCfg);
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        assertFalse( kbuilder.hasErrors() );
+    }
+
 }

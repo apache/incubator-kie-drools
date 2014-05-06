@@ -1133,7 +1133,7 @@ public class TypeDeclarationBuilder {
             String typesafe = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
             if (typesafe != null) {
                 type.setTypesafe(Boolean.parseBoolean(typesafe));
-            } else if (parent != null) {
+            } else if (parent != null && isSet(parent.getSetMask(), TypeDeclaration.TYPESAFE_BIT)) {
                 type.setTypesafe(parent.isTypesafe());
             }
 
