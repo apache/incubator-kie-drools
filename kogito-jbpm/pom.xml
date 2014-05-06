@@ -87,8 +87,7 @@
     <module>jbpm-runtime-manager</module>
     <module>jbpm-services</module>
     <module>jbpm-test</module>
-    <module>jbpm-examples</module>
-    <module>jbpm-document</module>
+    <module>jbpm-examples</module>    
   </modules>
 
   <build>
