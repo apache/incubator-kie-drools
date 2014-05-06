@@ -28,10 +28,10 @@ import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.impl.heuristic.selector.common.iterator.RandomSubListsIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
 
@@ -152,7 +152,7 @@ public class DefaultSubChainSelector extends AbstractSelector
         return selectionSize;
     }
 
-    private long calculateSubChainSelectionSize(SubChain anchorTrailingChain) {
+    protected long calculateSubChainSelectionSize(SubChain anchorTrailingChain) {
         long anchorTrailingChainSize = (long) anchorTrailingChain.getSize();
         long n = anchorTrailingChainSize - (long) minimumSubChainSize + 1L;
         long m = (maximumSubChainSize >= anchorTrailingChainSize)
@@ -162,7 +162,7 @@ public class DefaultSubChainSelector extends AbstractSelector
 
     public Iterator<SubChain> iterator() {
         if (!randomSelection) {
-            return new OriginalSubChainIterator(anchorTrailingChainList.iterator());
+            return new OriginalSubChainIterator(anchorTrailingChainList.listIterator());
         } else {
             return new RandomSubChainIterator();
         }
@@ -170,7 +170,7 @@ public class DefaultSubChainSelector extends AbstractSelector
 
     public ListIterator<SubChain> listIterator() {
         if (!randomSelection) {
-            return new OriginalSubChainIterator(anchorTrailingChainList.iterator());
+            return new OriginalSubChainIterator(anchorTrailingChainList.listIterator());
         } else {
             throw new IllegalStateException("The selector (" + this
                     + ") does not support a ListIterator with randomSelection (" + randomSelection + ").");
@@ -180,7 +180,7 @@ public class DefaultSubChainSelector extends AbstractSelector
     public ListIterator<SubChain> listIterator(int index) {
         if (!randomSelection) {
             // TODO Implement more efficient ListIterator https://issues.jboss.org/browse/PLANNER-37
-            OriginalSubChainIterator it = new OriginalSubChainIterator(anchorTrailingChainList.iterator());
+            OriginalSubChainIterator it = new OriginalSubChainIterator(anchorTrailingChainList.listIterator());
             for (int i = 0; i < index; i++) {
                 it.next();
             }
@@ -194,14 +194,14 @@ public class DefaultSubChainSelector extends AbstractSelector
     private class OriginalSubChainIterator extends UpcomingSelectionIterator<SubChain>
             implements ListIterator<SubChain> {
 
-        private final Iterator<SubChain> anchorTrailingChainIterator;
+        private final ListIterator<SubChain> anchorTrailingChainIterator;
         private List<Object> anchorTrailingChain;
         private int fromIndex; // Inclusive
         private int toIndex; // Exclusive
 
         private int nextListIteratorIndex;
 
-        public OriginalSubChainIterator(Iterator<SubChain> anchorTrailingChainIterator) {
+        public OriginalSubChainIterator(ListIterator<SubChain> anchorTrailingChainIterator) {
             this.anchorTrailingChainIterator = anchorTrailingChainIterator;
             fromIndex = 0;
             toIndex = 1;

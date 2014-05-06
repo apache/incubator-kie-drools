@@ -21,6 +21,7 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
+import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -36,7 +37,12 @@ import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelect
 @XStreamAlias("subChainSelector")
 public class SubChainSelectorConfig extends SelectorConfig {
 
-    private static final int DEFAULT_MINIMUM_SUB_CHAIN_SIZE = 2;
+    /**
+     * Defaults to 1, even if it partially duplicates {@link ChangeMoveSelectorConfig},
+     * because otherwise the default would not include
+     * swapping a pillar of size 1 with another pillar of size 2 or greater.
+     */
+    private static final int DEFAULT_MINIMUM_SUB_CHAIN_SIZE = 1;
     private static final int DEFAULT_MAXIMUM_SUB_CHAIN_SIZE = Integer.MAX_VALUE;
 
     @XStreamAlias("valueSelector")

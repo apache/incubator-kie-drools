@@ -25,6 +25,7 @@ import java.util.Random;
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
+import org.optaplanner.core.impl.heuristic.selector.common.iterator.RandomSubListsIterator;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
@@ -41,10 +42,51 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 public class DefaultSubChainSelectorTest {
 
     @Test
+    public void calculateSubChainSelectionSize() {
+        assertCalculateSubChainSelectionSize(4L, 1, 1);
+        assertCalculateSubChainSelectionSize(3L, 2, 2);
+        assertCalculateSubChainSelectionSize(2L, 3, 3);
+        assertCalculateSubChainSelectionSize(1L, 4, 4);
+
+        assertCalculateSubChainSelectionSize(7L, 1, 2);
+        assertCalculateSubChainSelectionSize(9L, 1, 3);
+        assertCalculateSubChainSelectionSize(10L, 1, 4);
+        assertCalculateSubChainSelectionSize(5L, 2, 3);
+        assertCalculateSubChainSelectionSize(6L, 2, 4);
+        assertCalculateSubChainSelectionSize(3L, 3, 4);
+
+        assertCalculateSubChainSelectionSize(10L, 1, 5);
+        assertCalculateSubChainSelectionSize(6L, 2, 5);
+        assertCalculateSubChainSelectionSize(3L, 3, 5);
+        assertCalculateSubChainSelectionSize(1L, 4, 5);
+        assertCalculateSubChainSelectionSize(0L, 5, 5);
+    }
+
+    private void assertCalculateSubChainSelectionSize(long expected, int minimumSubChainSize, int maximumSubChainSize) {
+        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
+
+        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
+        TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
+        TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
+        TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
+        TestdataChainedEntity a4 = new TestdataChainedEntity("a4", a3);
+
+        TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
+        TestdataChainedEntity b1 = new TestdataChainedEntity("b1", b0);
+        TestdataChainedEntity b2 = new TestdataChainedEntity("b2", b1);
+
+        EntityIndependentValueSelector valueSelector = SelectorTestUtils.mockEntityIndependentValueSelector(
+                variableDescriptor,
+                a0, a1, a2, a3, a4, b0, b1, b2);
+        DefaultSubChainSelector selector = new DefaultSubChainSelector(
+                valueSelector, false, minimumSubChainSize, maximumSubChainSize);
+        assertEquals(expected, selector.calculateSubChainSelectionSize(
+                new SubChain(Arrays.<Object>asList(a1, a2, a3, a4))));
+    }
+
+    @Test
     public void original() {
-        GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
-                TestdataChainedEntity.class, "chainedObject");
-        when(variableDescriptor.isChained()).thenReturn(true);
+        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -130,9 +172,7 @@ public class DefaultSubChainSelectorTest {
 
     @Test
     public void emptyEntitySelectorOriginal() {
-        GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
-                TestdataChainedEntity.class, "chainedObject");
-        when(variableDescriptor.isChained()).thenReturn(true);
+        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -196,9 +236,7 @@ public class DefaultSubChainSelectorTest {
 
     @Test
     public void originalMinimum2Maximum3() {
-        GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
-                TestdataChainedEntity.class, "chainedObject");
-        when(variableDescriptor.isChained()).thenReturn(true);
+        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -247,9 +285,7 @@ public class DefaultSubChainSelectorTest {
 
     @Test
     public void originalMinimum3Maximum3() {
-        GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
-                TestdataChainedEntity.class, "chainedObject");
-        when(variableDescriptor.isChained()).thenReturn(true);
+        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -297,9 +333,7 @@ public class DefaultSubChainSelectorTest {
 
     @Test
     public void random() {
-        GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
-                TestdataChainedEntity.class, "chainedObject");
-        when(variableDescriptor.isChained()).thenReturn(true);
+        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -354,9 +388,7 @@ public class DefaultSubChainSelectorTest {
 
     @Test
     public void randomMinimum2Maximum3() {
-        GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
-                TestdataChainedEntity.class, "chainedObject");
-        when(variableDescriptor.isChained()).thenReturn(true);
+        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -406,9 +438,7 @@ public class DefaultSubChainSelectorTest {
 
     @Test
     public void randomMinimum3Maximum3() {
-        GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
-                TestdataChainedEntity.class, "chainedObject");
-        when(variableDescriptor.isChained()).thenReturn(true);
+        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");

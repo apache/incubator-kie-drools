@@ -321,8 +321,21 @@
     &lt;/subChainChangeMoveSelector&gt;</programlisting>
 
       <para>The <literal>subChainSelector</literal> selects a number of entities, no less than
-      <literal>minimumSubChainSize</literal> (defaults to 2) and no more than <literal>maximumSubChainSize</literal>
-      (defaults to infinity).</para>
+      <literal>minimumSubChainSize</literal> (defaults to <literal>1</literal>) and no more than
+      <literal>maximumSubChainSize</literal> (defaults to <literal>infinity</literal>).</para>
+
+      <note>
+        <para>If <literal>minimumSubChainSize</literal> is <literal>1</literal> (which is the default), this selector
+        might select the same move as a <literal>ChangeMoveSelector</literal>, at a far lower selection probability
+        (because each move <emphasis>type</emphasis> has the same selection chance by default (not every move instance)
+        and there are far more <literal>SubChainChangeMove</literal> instances than <literal>ChangeMove</literal>
+        instances). However, don't just remove the <literal>ChangeMoveSelector</literal>, because experiments show that
+        it's good to focus on <literal>ChangeMove</literal>s.</para>
+
+        <para>Furthermore, in a <literal>SubChainSwapMoveSelector</literal>, setting
+        <literal>minimumSubChainSize</literal> prevents swapping a subchain of size <literal>1</literal> with a subchain
+        of at least size <literal>2</literal>.</para>
+      </note>
 
       <para>The property <literal>selectReversingMoveToo</literal> (defaults to true) enabled selecting the reverse of
       every subchain too.</para>
