@@ -79,9 +79,13 @@ public class BenchmarkReportConfig {
 
     public BenchmarkReport buildBenchmarkReport(PlannerBenchmarkResult plannerBenchmark) {
         BenchmarkReport benchmarkReport = new BenchmarkReport(plannerBenchmark);
-        benchmarkReport.setLocale(locale == null ? Locale.getDefault() : locale);
+        benchmarkReport.setLocale(determineLocale());
         supplySolverRanking(benchmarkReport);
         return benchmarkReport;
+    }
+
+    public Locale determineLocale() {
+        return locale == null ? Locale.getDefault() : locale;
     }
 
     protected void supplySolverRanking(BenchmarkReport benchmarkReport) {

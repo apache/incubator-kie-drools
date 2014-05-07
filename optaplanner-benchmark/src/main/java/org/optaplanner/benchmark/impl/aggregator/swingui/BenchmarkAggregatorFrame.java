@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import javax.swing.AbstractAction;
@@ -62,7 +63,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-import org.drools.core.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
@@ -73,6 +74,7 @@ import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
+import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,17 +97,11 @@ public class BenchmarkAggregatorFrame extends JFrame {
         benchmarkAggregatorFrame.setVisible(true);
     }
 
-    private static final String DETAIL_TEMPLATE_PLANNER_BENCHMARK = "Average score: %s%nAverage problem scale: %d";
-    private static final String DETAIL_TEMPLATE_PROBLEM_BENCHMARK = "Problem scale: %d%nUsed memory: %s";
-    private static final String DETAIL_TEMPLATE_SINGLE_BENCHMARK = "Score: %s%nPlanning entity"
-            + " count: %d%nUsed memory: %s%nTime spent: %d ms";
-    private static final String DETAIL_TEMPLATE_SOLVER_BENCHMARK = "Average score: %s%nTotal score: %s%n"
-            + "Average time spent: %d ms%nTotal winning score difference: %s";
-
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private final BenchmarkAggregator benchmarkAggregator;
     private final BenchmarkResultIO benchmarkResultIO;
+    private final MillisecondsSpentNumberFormat millisecondsSpentNumberFormat;
 
     private List<PlannerBenchmarkResult> plannerBenchmarkResultList;
     private Map<SingleBenchmarkResult, DefaultMutableTreeNode> resultCheckBoxMapping = new LinkedHashMap<SingleBenchmarkResult, DefaultMutableTreeNode>();
@@ -124,6 +120,8 @@ public class BenchmarkAggregatorFrame extends JFrame {
         this.benchmarkAggregator = benchmarkAggregator;
         benchmarkResultIO = new BenchmarkResultIO();
         plannerBenchmarkResultList = Collections.emptyList();
+        Locale locale = benchmarkAggregator.getBenchmarkReportConfig().determineLocale();
+        millisecondsSpentNumberFormat = new MillisecondsSpentNumberFormat(locale);
     }
 
     public void init() {
@@ -471,33 +469,50 @@ public class BenchmarkAggregatorFrame extends JFrame {
     }
 
     private MixedCheckBox createPlannerBenchmarkCheckBox(PlannerBenchmarkResult plannerBenchmarkResult) {
-        String plannerBenchmarkDetail = String.format(DETAIL_TEMPLATE_PLANNER_BENCHMARK, plannerBenchmarkResult.getAverageScore(),
+        String plannerBenchmarkDetail = String.format(
+                "Average score: %s%n"
+                + "Average problem scale: %d",
+                plannerBenchmarkResult.getAverageScore(),
                 plannerBenchmarkResult.getAverageProblemScale());
         return new MixedCheckBox(plannerBenchmarkResult.getName(), plannerBenchmarkDetail, plannerBenchmarkResult);
     }
 
     private MixedCheckBox createSolverBenchmarkCheckBox(SolverBenchmarkResult solverBenchmarkResult) {
         String solverCheckBoxName = solverBenchmarkResult.getName() + " (" + solverBenchmarkResult.getRanking() + ")";
-        String solverBenchmarkDetail = String.format(DETAIL_TEMPLATE_SOLVER_BENCHMARK, solverBenchmarkResult.getAverageScore(),
-                solverBenchmarkResult.getTotalScore(), solverBenchmarkResult.getAverageTimeMillisSpent(),
+        String solverBenchmarkDetail = String.format(
+                "Average score: %s%n"
+                + "Total score: %s%n"
+                + "Average time spent: %s%n"
+                + "Total winning score difference: %s",
+                solverBenchmarkResult.getAverageScore(),
+                solverBenchmarkResult.getTotalScore(),
+                millisecondsSpentNumberFormat.format(solverBenchmarkResult.getAverageTimeMillisSpent()),
                 solverBenchmarkResult.getTotalWinningScoreDifference());
         solverBenchmarkResultNameMapping.put(solverBenchmarkResult, solverBenchmarkResult.getName());
         return new MixedCheckBox(solverCheckBoxName, solverBenchmarkDetail, solverBenchmarkResult);
     }
 
     private MixedCheckBox createProblemBenchmarkCheckBox(ProblemBenchmarkResult problemBenchmarkResult) {
-        String problemBenchmarkDetail = String.format(DETAIL_TEMPLATE_PROBLEM_BENCHMARK, problemBenchmarkResult.getProblemScale(),
+        String problemBenchmarkDetail = String.format(
+                "Problem scale: %d%n"
+                + "Used memory: %s",
+                problemBenchmarkResult.getProblemScale(),
                 toEmptyStringIfNull(problemBenchmarkResult.getAverageUsedMemoryAfterInputSolution()));
         return new MixedCheckBox(problemBenchmarkResult.getName(), problemBenchmarkDetail);
     }
 
     private MixedCheckBox createSingleBenchmarkCheckBox(SingleBenchmarkResult singleBenchmarkResult) {
         String singleCheckBoxName = singleBenchmarkResult.getName() + " (" + singleBenchmarkResult.getRanking() + ")";
-        String singleBenchmarkDetail = String.format(DETAIL_TEMPLATE_SINGLE_BENCHMARK, singleBenchmarkResult.getScore(),
-                singleBenchmarkResult.getEntityCount(), toEmptyStringIfNull(singleBenchmarkResult.getUsedMemoryAfterInputSolution()),
-                singleBenchmarkResult.getTimeMillisSpent());
-        MixedCheckBox singleBenchmarkCheckBox = new MixedCheckBox(singleCheckBoxName, singleBenchmarkDetail, singleBenchmarkResult);
-        return singleBenchmarkCheckBox;
+        String singleBenchmarkDetail = String.format(
+                "Score: %s%n"
+                + "Planning entity count: %d%n"
+                + "Used memory: %s%n"
+                + "Time spent: %s",
+                singleBenchmarkResult.getScore(),
+                singleBenchmarkResult.getEntityCount(),
+                toEmptyStringIfNull(singleBenchmarkResult.getUsedMemoryAfterInputSolution()),
+                millisecondsSpentNumberFormat.format(singleBenchmarkResult.getTimeMillisSpent()));
+        return new MixedCheckBox(singleCheckBoxName, singleBenchmarkDetail, singleBenchmarkResult);
     }
 
     private String toEmptyStringIfNull(Object obj) {
