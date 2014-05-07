@@ -304,7 +304,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
         private boolean directionUp;
 
         public MoveNodeAction(boolean directionUp) {
-            super(directionUp ? "Move up" : "Move down",new ImageIcon(BenchmarkAggregatorFrame.class.getResource(
+            super(directionUp ? "Move up" : "Move down", new ImageIcon(BenchmarkAggregatorFrame.class.getResource(
                     directionUp ? "moveUp.png" : "moveDown.png")));
             this.directionUp = directionUp;
             setEnabled(!plannerBenchmarkResultList.isEmpty());
