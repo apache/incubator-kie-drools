@@ -59,16 +59,19 @@
     <dependency>
       <groupId>jivesoftware</groupId>
       <artifactId>smack</artifactId>
+      <optional>true</optional>
     </dependency>
     <!-- RSS -->
     <dependency>
       <groupId>rome</groupId>
       <artifactId>rome</artifactId>
+      <optional>true</optional>
     </dependency>
     <!-- FTP -->
     <dependency>
       <groupId>commons-net</groupId>
       <artifactId>commons-net</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.ftpserver</groupId>
