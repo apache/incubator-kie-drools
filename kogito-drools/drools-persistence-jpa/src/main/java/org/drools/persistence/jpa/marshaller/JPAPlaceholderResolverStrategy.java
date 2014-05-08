@@ -60,6 +60,10 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
             id = getClassIdValue(object);
         } else {
             em.merge(object);
+            // since this is invoked by marshaller it's safe to call flush
+            // and it's important to be flushed so subsequent unmarshall operations
+            // will get update content especially when merged
+            em.flush();
         }
         os.writeUTF(object.getClass().getCanonicalName());
         os.writeObject(id);
@@ -83,7 +87,12 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
             id = getClassIdValue(object);
         } else {
             em.merge(object);
+            // since this is invoked by marshaller it's safe to call flush
+            // and it's important to be flushed so subsequent unmarshall operations
+            // will get update content especially when merged
+            em.flush();
         }
+
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream( buff );
         oos.writeUTF(object.getClass().getCanonicalName());
