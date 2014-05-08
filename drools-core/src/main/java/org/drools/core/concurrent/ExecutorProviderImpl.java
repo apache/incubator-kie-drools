@@ -6,7 +6,7 @@ import java.util.concurrent.CompletionService;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +20,7 @@ public class ExecutorProviderImpl implements KieExecutors {
         static {
             executor = new ThreadPoolExecutor(0, Pool.SIZE,
                                               60L, TimeUnit.SECONDS,
-                                              new SynchronousQueue<Runnable>(),
+                                              new LinkedBlockingQueue<Runnable>(),
                                               new DaemonThreadFactory());
         }
     }
