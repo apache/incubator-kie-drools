@@ -216,14 +216,17 @@
       <title>pillarChangeMoveSelector</title>
 
       <para>A <emphasis>pillar</emphasis> is a set of planning entities which have the same planning value(s) for their
-      planning variable(s). The <literal>PillarChangeMove</literal> selects 1 entity pillar and changes the value of 1
-      variable for all entities.</para>
+      planning variable(s). The <literal>PillarChangeMove</literal> selects 1 entity pillar (or subset of those) and
+      changes the value of 1 variable (which is the same for all entities) to another value.</para>
 
       <mediaobject>
         <imageobject>
           <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/pillarChangeMove.png"/>
         </imageobject>
       </mediaobject>
+
+      <para>In the example above, queen A and C have the same value (row 0) and are moved to row 2. Also the yellow and
+      blue process have the same value (computer Y) and are moved to computer X.</para>
 
       <para>Simplest configuration:</para>
 
@@ -238,12 +241,29 @@
           &lt;entityClass&gt;...Lecture&lt;/entityClass&gt;
           ...
         &lt;/entitySelector&gt;
+        &lt;subPillarEnabled&gt;true&lt;/subPillarEnabled&gt;
+        &lt;minimumSubPillarSize&gt;1&lt;/minimumSubPillarSize&gt;
+        &lt;maximumSubPillarSize&gt;1000&lt;/maximumSubPillarSize&gt;
       &lt;/pillarSelector&gt;
       &lt;valueSelector&gt;
         &lt;variableName&gt;room&lt;/variableName&gt;
         ...
       &lt;/valueSelector&gt;
     &lt;/pillarSwapMoveSelector&gt;</programlisting>
+
+      <para>A sub pillar is a subset of entities that share the same value(s) for their variable(s). For example if
+      queen A, B, C and D are all located on row 0, they are a pillar and <literal>[A, D]</literal> is one of the many
+      sub pillars. If <literal>subPillarEnabled</literal> (defaults to <literal>true</literal>) is false, no sub pillars
+      are selected. If sub pillars are enabled, the pillar itself is also included and the properties
+      <literal>minimumSubPillarSize</literal> (defaults to <literal>1</literal>) and
+      <literal>maximumSubPillarSize</literal> (defaults to <literal>infinity</literal>) limit the size of the selected
+      (sub) pillar.</para>
+
+      <note>
+        <para>The number of sub pillars of a pillar is exponential to the size of the pillar. For example a pillar of
+        size 32 has <literal>(2^32 - 1)</literal> subpillars. Therefore a <literal>pillarSelector</literal> only
+        supports <link linkend="justInTimeRandomSelection">JIT random selection</link> (which is the default).</para>
+      </note>
 
       <para>The other properties are explained in <link linkend="changeMoveSelector">changeMoveSelector</link>.</para>
     </section>
@@ -274,11 +294,15 @@
           &lt;entityClass&gt;...Lecture&lt;/entityClass&gt;
           ...
         &lt;/entitySelector&gt;
+        &lt;subPillarEnabled&gt;true&lt;/subPillarEnabled&gt;
+        &lt;minimumSubPillarSize&gt;1&lt;/minimumSubPillarSize&gt;
+        &lt;maximumSubPillarSize&gt;1000&lt;/maximumSubPillarSize&gt;
       &lt;/pillarSelector&gt;
       &lt;secondaryPillarSelector&gt;
         &lt;entitySelector&gt;
           ...
         &lt;/entitySelector&gt;
+        ...
       &lt;/secondaryPillarSelector&gt;
       &lt;variableNameInclude&gt;room&lt;/variableNameInclude&gt;
       &lt;variableNameInclude&gt;...&lt;/variableNameInclude&gt;
@@ -287,7 +311,8 @@
       <para>The <literal>secondaryPillarSelector</literal> is rarely needed: if it is not specified, entities from the
       same <literal>pillarSelector</literal> are swapped.</para>
 
-      <para>The other properties are explained in <link linkend="swapMoveSelector">swapMoveSelector</link>.</para>
+      <para>The other properties are explained in <link linkend="swapMoveSelector">swapMoveSelector</link> and <link
+      linkend="pillarChangeMoveSelector">pillarChangeMoveSelector</link>.</para>
     </section>
 
     <section xml:id="subChainChangeMoveSelector">
