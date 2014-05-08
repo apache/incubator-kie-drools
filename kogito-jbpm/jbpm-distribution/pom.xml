@@ -252,5 +252,10 @@
       <artifactId>junit</artifactId>
       <scope>provided</scope>
     </dependency>
+     <dependency><!-- Workaround, maybe for http://jira.codehaus.org/browse/MJAVADOC-340 -->
+      <groupId>org.jboss.spec.javax.ejb</groupId>
+      <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 </project>
