@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.heuristic.selector.entity.pillar;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -30,14 +31,56 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class DefaultPillarSelectorTest {
 
+//    @Test
+//    public void calculateBasePillarSelectionSize() {
+//        assertCalculateBasePillarSelectionSize(4L, 1, 1);
+//        assertCalculateBasePillarSelectionSize(6L, 2, 2);
+//        assertCalculateBasePillarSelectionSize(4L, 3, 3);
+//        assertCalculateBasePillarSelectionSize(1L, 4, 4);
+//
+//        assertCalculateBasePillarSelectionSize(10L, 1, 2);
+//        assertCalculateBasePillarSelectionSize(14L, 1, 3);
+//        assertCalculateBasePillarSelectionSize(15L, 1, 4);
+//        assertCalculateBasePillarSelectionSize(10L, 2, 3);
+//        assertCalculateBasePillarSelectionSize(11L, 2, 4);
+//        assertCalculateBasePillarSelectionSize(5L, 3, 4);
+//
+//        assertCalculateBasePillarSelectionSize(15L, 1, 5);
+//        assertCalculateBasePillarSelectionSize(11L, 2, 5);
+//        assertCalculateBasePillarSelectionSize(5L, 3, 5);
+//        assertCalculateBasePillarSelectionSize(1L, 4, 5);
+//        assertCalculateBasePillarSelectionSize(0L, 5, 5);
+//    }
+//
+//    private void assertCalculateBasePillarSelectionSize(long expected, int minimumPillarSize, int maximumPillarSize) {
+//        TestdataValue val1 = new TestdataValue("1");
+//        TestdataValue val2 = new TestdataValue("2");
+//        TestdataValue val3 = new TestdataValue("3");
+//        TestdataValue val4 = new TestdataValue("4");
+//
+//        final TestdataEntity a = new TestdataEntity("a", val1);
+//        final TestdataEntity b = new TestdataEntity("b", val2);
+//        final TestdataEntity c = new TestdataEntity("c", val3);
+//        final TestdataEntity d = new TestdataEntity("d", val2);
+//
+//        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
+//                a, b, c, d);
+//        GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
+//                entitySelector.getEntityDescriptor(), "value");
+//        DefaultPillarSelector selector = new DefaultPillarSelector(
+//                entitySelector, Collections.singletonList(variableDescriptor), false,
+//                true, minimumPillarSize, maximumPillarSize);
+//        assertEquals(expected, selector.calculateBasePillarSelectionSize(Arrays.<Object>asList(a, b, c, d)));
+//    }
+
     @Test
-    public void original() {
+    public void originalNoSubs() {
         TestdataValue val1 = new TestdataValue("1");
         TestdataValue val2 = new TestdataValue("2");
         TestdataValue val3 = new TestdataValue("3");
@@ -63,7 +106,7 @@ public class DefaultPillarSelectorTest {
         }
 
         DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
-                entitySelector, Arrays.asList(variableDescriptor), false);
+                entitySelector, Arrays.asList(variableDescriptor), false, false, 1, Integer.MAX_VALUE);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         pillarSelector.solvingStarted(solverScope);
@@ -107,7 +150,7 @@ public class DefaultPillarSelectorTest {
     }
 
     @Test
-    public void emptyEntitySelectorOriginal() {
+    public void emptyEntitySelectorOriginalNoSubs() {
         TestdataValue v1 = new TestdataValue("1");
         TestdataValue v2 = new TestdataValue("2");
         TestdataValue v3 = new TestdataValue("3");
@@ -117,7 +160,7 @@ public class DefaultPillarSelectorTest {
                 entitySelector.getEntityDescriptor(), "value");
 
         DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
-                entitySelector, Arrays.asList(variableDescriptor), false);
+                entitySelector, Arrays.asList(variableDescriptor), false, false, 1, Integer.MAX_VALUE);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         pillarSelector.solvingStarted(solverScope);

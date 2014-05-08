@@ -19,10 +19,12 @@ package org.optaplanner.core.config.heuristic.selector.entity.pillar;
 import java.util.Collection;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.apache.commons.lang.BooleanUtils;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
+import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
@@ -39,6 +41,10 @@ public class PillarSelectorConfig extends SelectorConfig {
 //    @XStreamImplicit(itemFieldName = "variableName")
 //    private List<String> variableNameList = null;
 
+    protected Boolean subPillarEnabled = null;
+    protected Integer minimumSubPillarSize = null;
+    protected Integer maximumSubPillarSize = null;
+
     public EntitySelectorConfig getEntitySelectorConfig() {
         return entitySelectorConfig;
     }
@@ -54,6 +60,30 @@ public class PillarSelectorConfig extends SelectorConfig {
 //    public void setVariableNameList(List<String> variableNameList) {
 //        this.variableNameList = variableNameList;
 //    }
+
+    public Boolean getSubPillarEnabled() {
+        return subPillarEnabled;
+    }
+
+    public void setSubPillarEnabled(Boolean subPillarEnabled) {
+        this.subPillarEnabled = subPillarEnabled;
+    }
+
+    public Integer getMinimumSubPillarSize() {
+        return minimumSubPillarSize;
+    }
+
+    public void setMinimumSubPillarSize(Integer minimumSubPillarSize) {
+        this.minimumSubPillarSize = minimumSubPillarSize;
+    }
+
+    public Integer getMaximumSubPillarSize() {
+        return maximumSubPillarSize;
+    }
+
+    public void setMaximumSubPillarSize(Integer maximumSubPillarSize) {
+        this.maximumSubPillarSize = maximumSubPillarSize;
+    }
 
     // ************************************************************************
     // Builder methods
@@ -82,8 +112,18 @@ public class PillarSelectorConfig extends SelectorConfig {
                 minimumCacheType, SelectionOrder.ORIGINAL);
         Collection<GenuineVariableDescriptor> variableDescriptors = entitySelector.getEntityDescriptor()
                 .getVariableDescriptors();
+        if (BooleanUtils.isFalse(subPillarEnabled)
+                && (minimumSubPillarSize != null || maximumSubPillarSize != null)) {
+            throw new IllegalArgumentException("The pillarSelectorConfig (" + this
+                    + ") must not have subPillarEnabled (" + subPillarEnabled
+                    + ") with minimumSubPillarSize (" + minimumSubPillarSize
+                    + ") and maximumSubPillarSize (" + maximumSubPillarSize + ").");
+        }
         return new DefaultPillarSelector(entitySelector, variableDescriptors,
-                inheritedSelectionOrder.toRandomSelectionBoolean());
+                inheritedSelectionOrder.toRandomSelectionBoolean(),
+                subPillarEnabled == null ? true : subPillarEnabled,
+                minimumSubPillarSize == null ? 1 : minimumSubPillarSize,
+                maximumSubPillarSize == null ? Integer.MAX_VALUE : maximumSubPillarSize);
     }
 
     public void inherit(PillarSelectorConfig inheritedConfig) {
@@ -95,6 +135,12 @@ public class PillarSelectorConfig extends SelectorConfig {
         }
 //        variableNameList = ConfigUtils.inheritMergeableListProperty(variableNameList,
 //                inheritedConfig.getVariableNameList());
+        subPillarEnabled = ConfigUtils.inheritOverwritableProperty(subPillarEnabled,
+                inheritedConfig.getSubPillarEnabled());
+        minimumSubPillarSize = ConfigUtils.inheritOverwritableProperty(minimumSubPillarSize,
+                inheritedConfig.getMinimumSubPillarSize());
+        maximumSubPillarSize = ConfigUtils.inheritOverwritableProperty(maximumSubPillarSize,
+                inheritedConfig.getMaximumSubPillarSize());
     }
 
     @Override

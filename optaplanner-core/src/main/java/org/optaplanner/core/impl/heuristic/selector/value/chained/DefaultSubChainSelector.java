@@ -28,8 +28,8 @@ import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.impl.heuristic.selector.common.iterator.RandomSubListsIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
+import org.optaplanner.core.impl.heuristic.selector.entity.pillar.DefaultPillarSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -46,6 +46,10 @@ public class DefaultSubChainSelector extends AbstractSelector
     protected final EntityIndependentValueSelector valueSelector;
     protected final boolean randomSelection;
 
+    /**
+     * Unlike {@link DefaultPillarSelector#minimumSubPillarSize} and {@link DefaultPillarSelector#maximumSubPillarSize},
+     * the sub selection here is a sequence. For example from ABCDE,it can select BCD, but not ACD.
+     */
     protected final int minimumSubChainSize;
     protected final int maximumSubChainSize;
 
@@ -55,8 +59,6 @@ public class DefaultSubChainSelector extends AbstractSelector
             int minimumSubChainSize, int maximumSubChainSize) {
         this.valueSelector = valueSelector;
         this.randomSelection = randomSelection;
-        this.minimumSubChainSize = minimumSubChainSize;
-        this.maximumSubChainSize = maximumSubChainSize;
         if (!valueSelector.getVariableDescriptor().isChained()) {
             throw new IllegalArgumentException("The selector (" + this
                     + ")'s valueSelector (" + valueSelector
@@ -70,6 +72,8 @@ public class DefaultSubChainSelector extends AbstractSelector
         }
         solverPhaseLifecycleSupport.addEventListener(valueSelector);
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(CACHE_TYPE, this));
+        this.minimumSubChainSize = minimumSubChainSize;
+        this.maximumSubChainSize = maximumSubChainSize;
         if (minimumSubChainSize < 1) {
             throw new IllegalStateException("The selector (" + this
                     + ")'s minimumSubChainSize (" + minimumSubChainSize
@@ -274,7 +278,8 @@ public class DefaultSubChainSelector extends AbstractSelector
         @Override
         protected SubChain createUpcomingSelection() {
             SubChain anchorTrailingChain = selectAnchorTrailingChain();
-            // Every SubChain must have same probability. A random fromIndex and random toIndex would not be fair.
+            // Every SubChain has the same probability (from this point on at least).
+            // A random fromIndex and random toIndex would not be fair.
             long selectionSize = calculateSubChainSelectionSize(anchorTrailingChain);
             long selectionIndex = RandomUtils.nextLong(workingRandom, selectionSize);
             // Black magic to translate selectionIndex into fromIndex and toIndex
@@ -293,7 +298,8 @@ public class DefaultSubChainSelector extends AbstractSelector
         }
 
         private SubChain selectAnchorTrailingChain() {
-            // TODO support SelectionProbabilityWeightFactory, such as FairSelectorProbabilityWeightFactory too
+            // Known issue/compromise: Every SubChain should have same probability, but doesn't.
+            // Instead, every anchorTrailingChain has the same probability.
             int anchorTrailingChainListIndex = workingRandom.nextInt(anchorTrailingChainList.size());
             return anchorTrailingChainList.get(anchorTrailingChainListIndex);
         }

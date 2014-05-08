@@ -4221,4 +4221,16 @@ and no longer alters the filename.
 
 [MINOR] <subChainChangeMoveSelector> and <subChainSwapMoveSelector>'s <subChainSelector>s now default
 to a <minimumSubChainSize> of 1 instead of 2.
-This is to enable <subChainSwapMoveSelector> to swapf a subchain of size 1 and a subchain of at least size 2 too.
+This is to enable <subChainSwapMoveSelector> to swap a subchain of size 1 and a subchain of at least size 2 too.
+
+[MINOR] <pillarSwapMoveSelector>'s <pillarSelector> now selects subpillars too by default.
+Normally, that's an improvement.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <pillarSwapMoveSelector/>
+After in *SolverConfig.xml and *BenchmarkConfig.xml (if you don't want this new behaviour):
+      <pillarSwapMoveSelector>
+        <pillarSelector>
+          <subPillarEnabled>false</subPillarEnabled>
+        </pillarSelector>
+      </pillarSwapMoveSelector>
+Note: <pillarChangeMoveSelector> is not supported too

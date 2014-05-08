@@ -16,8 +16,10 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.pillar;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,7 +33,9 @@ import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecyc
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRandomIterator;
+import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.value.chained.DefaultSubChainSelector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
@@ -46,10 +50,19 @@ public class DefaultPillarSelector extends AbstractSelector
     protected final Collection<GenuineVariableDescriptor> variableDescriptors;
     protected final boolean randomSelection;
 
-    protected List<List<Object>> cachedPillarList = null;
+    protected final boolean subPillarEnabled;
+    /**
+     * Unlike {@link DefaultSubChainSelector#minimumSubChainSize} and {@link DefaultSubChainSelector#maximumSubChainSize},
+     * the sub selection here is any sub set. For example from ABCDE,it can select BCD and also ACD.
+     */
+    protected final int minimumSubPillarSize;
+    protected final int maximumSubPillarSize;
+
+    protected List<List<Object>> cachedBasePillarList = null;
 
     public DefaultPillarSelector(EntitySelector entitySelector,
-            Collection<GenuineVariableDescriptor> variableDescriptors, boolean randomSelection) {
+            Collection<GenuineVariableDescriptor> variableDescriptors, boolean randomSelection,
+            boolean subPillarEnabled, int minimumSubPillarSize, int maximumSubPillarSize) {
         this.entitySelector = entitySelector;
         this.variableDescriptors = variableDescriptors;
         this.randomSelection = randomSelection;
@@ -82,6 +95,25 @@ public class DefaultPillarSelector extends AbstractSelector
         }
         solverPhaseLifecycleSupport.addEventListener(entitySelector);
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(CACHE_TYPE, this));
+        this.subPillarEnabled = subPillarEnabled;
+        this.minimumSubPillarSize = minimumSubPillarSize;
+        this.maximumSubPillarSize = maximumSubPillarSize;
+        if (minimumSubPillarSize < 1) {
+            throw new IllegalStateException("The selector (" + this
+                    + ")'s minimumPillarSize (" + minimumSubPillarSize
+                    + ") must be at least 1.");
+        }
+        if (minimumSubPillarSize > maximumSubPillarSize) {
+            throw new IllegalStateException("The minimumPillarSize (" + minimumSubPillarSize
+                    + ") must be at least maximumSubChainSize (" + maximumSubPillarSize + ").");
+        }
+        if (!randomSelection && subPillarEnabled) {
+            throw new IllegalStateException("The selector (" + this
+                    + ") with randomSelection  (" + randomSelection + ") and subPillarEnabled (" + subPillarEnabled
+                    + ") does not support non random selection with sub pillars" +
+                    " because the number of sub pillars scales exponentially.\n"
+                    + "Either set subPillarEnabled to false or use JIT random selection.");
+        }
     }
 
     public EntityDescriptor getEntityDescriptor() {
@@ -100,7 +132,7 @@ public class DefaultPillarSelector extends AbstractSelector
     public void constructCache(DefaultSolverScope solverScope) {
         long entitySize = entitySelector.getSize();
         if (entitySize > (long) Integer.MAX_VALUE) {
-            throw new IllegalStateException("The subChainSelector (" + this + ") has an entitySelector ("
+            throw new IllegalStateException("The selector (" + this + ") has an entitySelector ("
                     + entitySelector + ") with entitySize (" + entitySize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
@@ -118,11 +150,11 @@ public class DefaultPillarSelector extends AbstractSelector
             }
             pillar.add(entity);
         }
-        cachedPillarList = new ArrayList<List<Object>>(valueStateToPillarMap.values());
+        cachedBasePillarList = new ArrayList<List<Object>>(valueStateToPillarMap.values());
     }
 
     public void disposeCache(DefaultSolverScope solverScope) {
-        cachedPillarList = null;
+        cachedBasePillarList = null;
     }
 
     // ************************************************************************
@@ -139,20 +171,46 @@ public class DefaultPillarSelector extends AbstractSelector
     }
 
     public long getSize() {
-        return (long) cachedPillarList.size();
+        if (!subPillarEnabled) {
+            return (long) cachedBasePillarList.size();
+        } else {
+            // For each pillar, the number of combinations is: the sum of every (n! / (k! (n-k)!))
+            // for which n is pillar.getSize() and k iterates from minimumSubPillarSize to maximumSubPillarSize
+            // This implies that a single pillar of size 64 is already too big to be held in a long
+            throw new UnsupportedOperationException("The selector (" + this
+                    + ") with randomSelection  (" + randomSelection + ") and subPillarEnabled (" + subPillarEnabled
+                    + ") does not support getSize()" +
+                    " because the number of sub pillars scales exponentially.");
+        }
     }
 
     public Iterator<List<Object>> iterator() {
         if (!randomSelection) {
-            return cachedPillarList.iterator();
+            if (!subPillarEnabled) {
+                return cachedBasePillarList.iterator();
+            } else {
+                throw new IllegalStateException(
+                        "Impossible state because the constructors fails with randomSelection (" + randomSelection
+                                + ") and subPillarEnabled (" + subPillarEnabled + ").");
+            }
         } else {
-            return new CachedListRandomIterator<List<Object>>(cachedPillarList, workingRandom);
+            if (!subPillarEnabled) {
+                return new CachedListRandomIterator<List<Object>>(cachedBasePillarList, workingRandom);
+            } else {
+                return new RandomSubPillarIterator();
+            }
         }
     }
 
     public ListIterator<List<Object>> listIterator() {
         if (!randomSelection) {
-            return cachedPillarList.listIterator();
+            if (!subPillarEnabled) {
+                return cachedBasePillarList.listIterator();
+            } else {
+                throw new IllegalStateException(
+                        "Impossible state because the constructors fails with randomSelection (" + randomSelection
+                                + ") and subPillarEnabled (" + subPillarEnabled + ").");
+            }
         } else {
             throw new IllegalStateException("The selector (" + this
                     + ") does not support a ListIterator with randomSelection (" + randomSelection + ").");
@@ -161,7 +219,13 @@ public class DefaultPillarSelector extends AbstractSelector
 
     public ListIterator<List<Object>> listIterator(int index) {
         if (!randomSelection) {
-            return cachedPillarList.listIterator(index);
+            if (!subPillarEnabled) {
+                return cachedBasePillarList.listIterator(index);
+            } else {
+                throw new IllegalStateException(
+                        "Impossible state because the constructors fails with randomSelection (" + randomSelection
+                                + ") and subPillarEnabled (" + subPillarEnabled + ").");
+            }
         } else {
             throw new IllegalStateException("The selector (" + this
                     + ") does not support a ListIterator with randomSelection (" + randomSelection + ").");
@@ -171,6 +235,45 @@ public class DefaultPillarSelector extends AbstractSelector
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" + entitySelector + ")";
+    }
+
+    private class RandomSubPillarIterator extends UpcomingSelectionIterator<List<Object>> {
+
+        public RandomSubPillarIterator() {
+            if (cachedBasePillarList.isEmpty()) {
+                upcomingSelection = noUpcomingSelection();
+                upcomingCreated = true;
+            }
+        }
+
+        @Override
+        protected List<Object> createUpcomingSelection() {
+            List<Object> basePillar = selectBasePillar();
+            // Known issue/compromise: Every subPillar should have same probability, but doesn't.
+            // Instead, every subPillar size has the same probability.
+            int basePillarSize = basePillar.size();
+            int min = (minimumSubPillarSize > basePillarSize) ? basePillarSize : minimumSubPillarSize;
+            int max = (maximumSubPillarSize > basePillarSize) ? basePillarSize : maximumSubPillarSize;
+            int subPillarSize = min + workingRandom.nextInt(max - min + 1);
+            // Random sampling: See http://eyalsch.wordpress.com/2010/04/01/random-sample/
+            // Used Swapping instead of Floyd because subPillarSize is large, to avoid hashCode() hit
+            Object[] sandboxPillar = basePillar.toArray(); // Clone to avoid changing basePillar
+            List<Object> subPillar = new ArrayList<Object>(subPillarSize);
+            for (int i = 0; i < subPillarSize; i++) {
+                int index = i + workingRandom.nextInt(basePillarSize - i);
+                subPillar.add(sandboxPillar[index]);
+                sandboxPillar[index] = sandboxPillar[i];
+            }
+            return subPillar;
+        }
+
+        private List<Object> selectBasePillar() {
+            // Known issue/compromise: Every subPillar should have same probability, but doesn't.
+            // Instead, every basePillar has the same probability.
+            int baseListIndex = workingRandom.nextInt(cachedBasePillarList.size());
+            return cachedBasePillarList.get(baseListIndex);
+        }
+
     }
 
 }
