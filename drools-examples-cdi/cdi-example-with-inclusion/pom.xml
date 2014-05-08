@@ -28,7 +28,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>cdi-example</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
   </dependencies>

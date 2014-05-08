@@ -227,7 +227,6 @@
         <dependency>
            <groupId>org.jbpm</groupId>
            <artifactId>downloaded-jdbc-driver-jar</artifactId>
-           <!-- <version>1.0</version> -->
            <scope>system</scope>
            <systemPath>${maven.jdbc.driver.jar}</systemPath>
         </dependency>  

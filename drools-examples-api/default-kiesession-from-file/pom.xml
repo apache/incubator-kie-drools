@@ -20,7 +20,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>default-kiesession</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
   </dependencies>
