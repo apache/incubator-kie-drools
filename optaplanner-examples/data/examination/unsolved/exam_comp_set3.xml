@@ -117370,506 +117370,506 @@
     <PeriodPenalty id="18325">
       <id>0</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16378"/>
-      <rightSideTopic reference="16380"/>
+      <leftTopic reference="16378"/>
+      <rightTopic reference="16380"/>
     </PeriodPenalty>
     <PeriodPenalty id="18326">
       <id>2</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16440"/>
-      <rightSideTopic reference="16654"/>
+      <leftTopic reference="16440"/>
+      <rightTopic reference="16654"/>
     </PeriodPenalty>
     <PeriodPenalty id="18327">
       <id>3</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16456"/>
-      <rightSideTopic reference="16656"/>
+      <leftTopic reference="16456"/>
+      <rightTopic reference="16656"/>
     </PeriodPenalty>
     <PeriodPenalty id="18328">
       <id>4</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16458"/>
-      <rightSideTopic reference="16652"/>
+      <leftTopic reference="16458"/>
+      <rightTopic reference="16652"/>
     </PeriodPenalty>
     <PeriodPenalty id="18329">
       <id>5</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16516"/>
-      <rightSideTopic reference="16532"/>
+      <leftTopic reference="16516"/>
+      <rightTopic reference="16532"/>
     </PeriodPenalty>
     <PeriodPenalty id="18330">
       <id>7</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16552"/>
-      <rightSideTopic reference="16640"/>
+      <leftTopic reference="16552"/>
+      <rightTopic reference="16640"/>
     </PeriodPenalty>
     <PeriodPenalty id="18331">
       <id>8</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16558"/>
-      <rightSideTopic reference="16646"/>
+      <leftTopic reference="16558"/>
+      <rightTopic reference="16646"/>
     </PeriodPenalty>
     <PeriodPenalty id="18332">
       <id>9</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16560"/>
-      <rightSideTopic reference="16658"/>
+      <leftTopic reference="16560"/>
+      <rightTopic reference="16658"/>
     </PeriodPenalty>
     <PeriodPenalty id="18333">
       <id>10</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16572"/>
-      <rightSideTopic reference="16650"/>
+      <leftTopic reference="16572"/>
+      <rightTopic reference="16650"/>
     </PeriodPenalty>
     <PeriodPenalty id="18334">
       <id>11</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16600"/>
-      <rightSideTopic reference="16636"/>
+      <leftTopic reference="16600"/>
+      <rightTopic reference="16636"/>
     </PeriodPenalty>
     <PeriodPenalty id="18335">
       <id>12</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16602"/>
-      <rightSideTopic reference="16644"/>
+      <leftTopic reference="16602"/>
+      <rightTopic reference="16644"/>
     </PeriodPenalty>
     <PeriodPenalty id="18336">
       <id>22</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16694"/>
-      <rightSideTopic reference="16698"/>
+      <leftTopic reference="16694"/>
+      <rightTopic reference="16698"/>
     </PeriodPenalty>
     <PeriodPenalty id="18337">
       <id>23</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16694"/>
-      <rightSideTopic reference="16714"/>
+      <leftTopic reference="16694"/>
+      <rightTopic reference="16714"/>
     </PeriodPenalty>
     <PeriodPenalty id="18338">
       <id>25</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16698"/>
-      <rightSideTopic reference="16714"/>
+      <leftTopic reference="16698"/>
+      <rightTopic reference="16714"/>
     </PeriodPenalty>
     <PeriodPenalty id="18339">
       <id>26</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16706"/>
-      <rightSideTopic reference="16710"/>
+      <leftTopic reference="16706"/>
+      <rightTopic reference="16710"/>
     </PeriodPenalty>
     <PeriodPenalty id="18340">
       <id>30</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16722"/>
-      <rightSideTopic reference="16728"/>
+      <leftTopic reference="16722"/>
+      <rightTopic reference="16728"/>
     </PeriodPenalty>
     <PeriodPenalty id="18341">
       <id>32</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16784"/>
-      <rightSideTopic reference="16866"/>
+      <leftTopic reference="16784"/>
+      <rightTopic reference="16866"/>
     </PeriodPenalty>
     <PeriodPenalty id="18342">
       <id>33</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16786"/>
-      <rightSideTopic reference="16868"/>
+      <leftTopic reference="16786"/>
+      <rightTopic reference="16868"/>
     </PeriodPenalty>
     <PeriodPenalty id="18343">
       <id>34</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16790"/>
-      <rightSideTopic reference="16870"/>
+      <leftTopic reference="16790"/>
+      <rightTopic reference="16870"/>
     </PeriodPenalty>
     <PeriodPenalty id="18344">
       <id>35</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16792"/>
-      <rightSideTopic reference="16872"/>
+      <leftTopic reference="16792"/>
+      <rightTopic reference="16872"/>
     </PeriodPenalty>
     <PeriodPenalty id="18345">
       <id>36</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16796"/>
-      <rightSideTopic reference="16874"/>
+      <leftTopic reference="16796"/>
+      <rightTopic reference="16874"/>
     </PeriodPenalty>
     <PeriodPenalty id="18346">
       <id>37</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16798"/>
-      <rightSideTopic reference="16876"/>
+      <leftTopic reference="16798"/>
+      <rightTopic reference="16876"/>
     </PeriodPenalty>
     <PeriodPenalty id="18347">
       <id>38</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16802"/>
-      <rightSideTopic reference="16878"/>
+      <leftTopic reference="16802"/>
+      <rightTopic reference="16878"/>
     </PeriodPenalty>
     <PeriodPenalty id="18348">
       <id>39</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16806"/>
-      <rightSideTopic reference="16808"/>
+      <leftTopic reference="16806"/>
+      <rightTopic reference="16808"/>
     </PeriodPenalty>
     <PeriodPenalty id="18349">
       <id>41</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16812"/>
-      <rightSideTopic reference="16814"/>
+      <leftTopic reference="16812"/>
+      <rightTopic reference="16814"/>
     </PeriodPenalty>
     <PeriodPenalty id="18350">
       <id>43</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16816"/>
-      <rightSideTopic reference="16818"/>
+      <leftTopic reference="16816"/>
+      <rightTopic reference="16818"/>
     </PeriodPenalty>
     <PeriodPenalty id="18351">
       <id>45</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16836"/>
-      <rightSideTopic reference="16838"/>
+      <leftTopic reference="16836"/>
+      <rightTopic reference="16838"/>
     </PeriodPenalty>
     <PeriodPenalty id="18352">
       <id>47</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16840"/>
-      <rightSideTopic reference="16842"/>
+      <leftTopic reference="16840"/>
+      <rightTopic reference="16842"/>
     </PeriodPenalty>
     <PeriodPenalty id="18353">
       <id>49</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16848"/>
-      <rightSideTopic reference="16850"/>
+      <leftTopic reference="16848"/>
+      <rightTopic reference="16850"/>
     </PeriodPenalty>
     <PeriodPenalty id="18354">
       <id>51</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16858"/>
-      <rightSideTopic reference="16860"/>
+      <leftTopic reference="16858"/>
+      <rightTopic reference="16860"/>
     </PeriodPenalty>
     <PeriodPenalty id="18355">
       <id>60</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16892"/>
-      <rightSideTopic reference="16928"/>
+      <leftTopic reference="16892"/>
+      <rightTopic reference="16928"/>
     </PeriodPenalty>
     <PeriodPenalty id="18356">
       <id>61</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16894"/>
-      <rightSideTopic reference="16922"/>
+      <leftTopic reference="16894"/>
+      <rightTopic reference="16922"/>
     </PeriodPenalty>
     <PeriodPenalty id="18357">
       <id>64</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="16950"/>
-      <rightSideTopic reference="16964"/>
+      <leftTopic reference="16950"/>
+      <rightTopic reference="16964"/>
     </PeriodPenalty>
     <PeriodPenalty id="18358">
       <id>66</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17000"/>
-      <rightSideTopic reference="17032"/>
+      <leftTopic reference="17000"/>
+      <rightTopic reference="17032"/>
     </PeriodPenalty>
     <PeriodPenalty id="18359">
       <id>67</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17024"/>
-      <rightSideTopic reference="17028"/>
+      <leftTopic reference="17024"/>
+      <rightTopic reference="17028"/>
     </PeriodPenalty>
     <PeriodPenalty id="18360">
       <id>68</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17024"/>
-      <rightSideTopic reference="17052"/>
+      <leftTopic reference="17024"/>
+      <rightTopic reference="17052"/>
     </PeriodPenalty>
     <PeriodPenalty id="18361">
       <id>70</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17028"/>
-      <rightSideTopic reference="17052"/>
+      <leftTopic reference="17028"/>
+      <rightTopic reference="17052"/>
     </PeriodPenalty>
     <PeriodPenalty id="18362">
       <id>72</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17036"/>
-      <rightSideTopic reference="17038"/>
+      <leftTopic reference="17036"/>
+      <rightTopic reference="17038"/>
     </PeriodPenalty>
     <PeriodPenalty id="18363">
       <id>76</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17094"/>
-      <rightSideTopic reference="17108"/>
+      <leftTopic reference="17094"/>
+      <rightTopic reference="17108"/>
     </PeriodPenalty>
     <PeriodPenalty id="18364">
       <id>77</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17100"/>
-      <rightSideTopic reference="17110"/>
+      <leftTopic reference="17100"/>
+      <rightTopic reference="17110"/>
     </PeriodPenalty>
     <PeriodPenalty id="18365">
       <id>80</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17124"/>
-      <rightSideTopic reference="17144"/>
+      <leftTopic reference="17124"/>
+      <rightTopic reference="17144"/>
     </PeriodPenalty>
     <PeriodPenalty id="18366">
       <id>81</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17136"/>
-      <rightSideTopic reference="17138"/>
+      <leftTopic reference="17136"/>
+      <rightTopic reference="17138"/>
     </PeriodPenalty>
     <PeriodPenalty id="18367">
       <id>83</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17140"/>
-      <rightSideTopic reference="17146"/>
+      <leftTopic reference="17140"/>
+      <rightTopic reference="17146"/>
     </PeriodPenalty>
     <PeriodPenalty id="18368">
       <id>86</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17154"/>
-      <rightSideTopic reference="17166"/>
+      <leftTopic reference="17154"/>
+      <rightTopic reference="17166"/>
     </PeriodPenalty>
     <PeriodPenalty id="18369">
       <id>87</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17156"/>
-      <rightSideTopic reference="17174"/>
+      <leftTopic reference="17156"/>
+      <rightTopic reference="17174"/>
     </PeriodPenalty>
     <PeriodPenalty id="18370">
       <id>90</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17176"/>
-      <rightSideTopic reference="17184"/>
+      <leftTopic reference="17176"/>
+      <rightTopic reference="17184"/>
     </PeriodPenalty>
     <PeriodPenalty id="18371">
       <id>92</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17200"/>
-      <rightSideTopic reference="17202"/>
+      <leftTopic reference="17200"/>
+      <rightTopic reference="17202"/>
     </PeriodPenalty>
     <PeriodPenalty id="18372">
       <id>94</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17284"/>
-      <rightSideTopic reference="17286"/>
+      <leftTopic reference="17284"/>
+      <rightTopic reference="17286"/>
     </PeriodPenalty>
     <PeriodPenalty id="18373">
       <id>96</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17338"/>
-      <rightSideTopic reference="17340"/>
+      <leftTopic reference="17338"/>
+      <rightTopic reference="17340"/>
     </PeriodPenalty>
     <PeriodPenalty id="18374">
       <id>97</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17338"/>
-      <rightSideTopic reference="17342"/>
+      <leftTopic reference="17338"/>
+      <rightTopic reference="17342"/>
     </PeriodPenalty>
     <PeriodPenalty id="18375">
       <id>98</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17338"/>
-      <rightSideTopic reference="17344"/>
+      <leftTopic reference="17338"/>
+      <rightTopic reference="17344"/>
     </PeriodPenalty>
     <PeriodPenalty id="18376">
       <id>100</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17340"/>
-      <rightSideTopic reference="17342"/>
+      <leftTopic reference="17340"/>
+      <rightTopic reference="17342"/>
     </PeriodPenalty>
     <PeriodPenalty id="18377">
       <id>101</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17340"/>
-      <rightSideTopic reference="17344"/>
+      <leftTopic reference="17340"/>
+      <rightTopic reference="17344"/>
     </PeriodPenalty>
     <PeriodPenalty id="18378">
       <id>104</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17342"/>
-      <rightSideTopic reference="17344"/>
+      <leftTopic reference="17342"/>
+      <rightTopic reference="17344"/>
     </PeriodPenalty>
     <PeriodPenalty id="18379">
       <id>108</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17404"/>
-      <rightSideTopic reference="17416"/>
+      <leftTopic reference="17404"/>
+      <rightTopic reference="17416"/>
     </PeriodPenalty>
     <PeriodPenalty id="18380">
       <id>109</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17406"/>
-      <rightSideTopic reference="17418"/>
+      <leftTopic reference="17406"/>
+      <rightTopic reference="17418"/>
     </PeriodPenalty>
     <PeriodPenalty id="18381">
       <id>110</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17408"/>
-      <rightSideTopic reference="17410"/>
+      <leftTopic reference="17408"/>
+      <rightTopic reference="17410"/>
     </PeriodPenalty>
     <PeriodPenalty id="18382">
       <id>112</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17412"/>
-      <rightSideTopic reference="17414"/>
+      <leftTopic reference="17412"/>
+      <rightTopic reference="17414"/>
     </PeriodPenalty>
     <PeriodPenalty id="18383">
       <id>116</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17420"/>
-      <rightSideTopic reference="17422"/>
+      <leftTopic reference="17420"/>
+      <rightTopic reference="17422"/>
     </PeriodPenalty>
     <PeriodPenalty id="18384">
       <id>118</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17424"/>
-      <rightSideTopic reference="17426"/>
+      <leftTopic reference="17424"/>
+      <rightTopic reference="17426"/>
     </PeriodPenalty>
     <PeriodPenalty id="18385">
       <id>120</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17428"/>
-      <rightSideTopic reference="17430"/>
+      <leftTopic reference="17428"/>
+      <rightTopic reference="17430"/>
     </PeriodPenalty>
     <PeriodPenalty id="18386">
       <id>122</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17438"/>
-      <rightSideTopic reference="17440"/>
+      <leftTopic reference="17438"/>
+      <rightTopic reference="17440"/>
     </PeriodPenalty>
     <PeriodPenalty id="18387">
       <id>124</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17442"/>
-      <rightSideTopic reference="17444"/>
+      <leftTopic reference="17442"/>
+      <rightTopic reference="17444"/>
     </PeriodPenalty>
     <PeriodPenalty id="18388">
       <id>126</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17474"/>
-      <rightSideTopic reference="17536"/>
+      <leftTopic reference="17474"/>
+      <rightTopic reference="17536"/>
     </PeriodPenalty>
     <PeriodPenalty id="18389">
       <id>127</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17474"/>
-      <rightSideTopic reference="17538"/>
+      <leftTopic reference="17474"/>
+      <rightTopic reference="17538"/>
     </PeriodPenalty>
     <PeriodPenalty id="18390">
       <id>128</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17476"/>
-      <rightSideTopic reference="17478"/>
+      <leftTopic reference="17476"/>
+      <rightTopic reference="17478"/>
     </PeriodPenalty>
     <PeriodPenalty id="18391">
       <id>131</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17536"/>
-      <rightSideTopic reference="17538"/>
+      <leftTopic reference="17536"/>
+      <rightTopic reference="17538"/>
     </PeriodPenalty>
     <PeriodPenalty id="18392">
       <id>134</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17550"/>
-      <rightSideTopic reference="17554"/>
+      <leftTopic reference="17550"/>
+      <rightTopic reference="17554"/>
     </PeriodPenalty>
     <PeriodPenalty id="18393">
       <id>136</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17572"/>
-      <rightSideTopic reference="17574"/>
+      <leftTopic reference="17572"/>
+      <rightTopic reference="17574"/>
     </PeriodPenalty>
     <PeriodPenalty id="18394">
       <id>138</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17616"/>
-      <rightSideTopic reference="17706"/>
+      <leftTopic reference="17616"/>
+      <rightTopic reference="17706"/>
     </PeriodPenalty>
     <PeriodPenalty id="18395">
       <id>139</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17668"/>
-      <rightSideTopic reference="17698"/>
+      <leftTopic reference="17668"/>
+      <rightTopic reference="17698"/>
     </PeriodPenalty>
     <PeriodPenalty id="18396">
       <id>142</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17712"/>
-      <rightSideTopic reference="17742"/>
+      <leftTopic reference="17712"/>
+      <rightTopic reference="17742"/>
     </PeriodPenalty>
     <PeriodPenalty id="18397">
       <id>143</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17722"/>
-      <rightSideTopic reference="17724"/>
+      <leftTopic reference="17722"/>
+      <rightTopic reference="17724"/>
     </PeriodPenalty>
     <PeriodPenalty id="18398">
       <id>147</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17754"/>
-      <rightSideTopic reference="17770"/>
+      <leftTopic reference="17754"/>
+      <rightTopic reference="17770"/>
     </PeriodPenalty>
     <PeriodPenalty id="18399">
       <id>149</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17796"/>
-      <rightSideTopic reference="17798"/>
+      <leftTopic reference="17796"/>
+      <rightTopic reference="17798"/>
     </PeriodPenalty>
     <PeriodPenalty id="18400">
       <id>151</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17800"/>
-      <rightSideTopic reference="17812"/>
+      <leftTopic reference="17800"/>
+      <rightTopic reference="17812"/>
     </PeriodPenalty>
     <PeriodPenalty id="18401">
       <id>152</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17802"/>
-      <rightSideTopic reference="17814"/>
+      <leftTopic reference="17802"/>
+      <rightTopic reference="17814"/>
     </PeriodPenalty>
     <PeriodPenalty id="18402">
       <id>153</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17806"/>
-      <rightSideTopic reference="17826"/>
+      <leftTopic reference="17806"/>
+      <rightTopic reference="17826"/>
     </PeriodPenalty>
     <PeriodPenalty id="18403">
       <id>154</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17808"/>
-      <rightSideTopic reference="17820"/>
+      <leftTopic reference="17808"/>
+      <rightTopic reference="17820"/>
     </PeriodPenalty>
     <PeriodPenalty id="18404">
       <id>155</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="17810"/>
-      <rightSideTopic reference="17822"/>
+      <leftTopic reference="17810"/>
+      <rightTopic reference="17822"/>
     </PeriodPenalty>
     <PeriodPenalty id="18405">
       <id>161</id>
       <periodPenaltyType>EXCLUSION</periodPenaltyType>
-      <leftSideTopic reference="17966"/>
-      <rightSideTopic reference="17972"/>
+      <leftTopic reference="17966"/>
+      <rightTopic reference="17972"/>
     </PeriodPenalty>
     <PeriodPenalty id="18406">
       <id>163</id>
       <periodPenaltyType>AFTER</periodPenaltyType>
-      <leftSideTopic reference="18004"/>
-      <rightSideTopic reference="18002"/>
+      <leftTopic reference="18004"/>
+      <rightTopic reference="18002"/>
     </PeriodPenalty>
     <PeriodPenalty id="18407">
       <id>165</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="18014"/>
-      <rightSideTopic reference="18042"/>
+      <leftTopic reference="18014"/>
+      <rightTopic reference="18042"/>
     </PeriodPenalty>
     <PeriodPenalty id="18408">
       <id>168</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="18192"/>
-      <rightSideTopic reference="18194"/>
+      <leftTopic reference="18192"/>
+      <rightTopic reference="18194"/>
     </PeriodPenalty>
   </periodPenaltyList>
   <roomPenaltyList id="18409">

@@ -74,41 +74,41 @@ rule "periodPenaltyExamCoincidence"
     when
         $periodPenalty : PeriodPenalty(
             periodPenaltyType == PeriodPenaltyType.EXAM_COINCIDENCE,
-            $leftSideTopic : leftSideTopic,
-            $rightSideTopic : rightSideTopic
+            $leftTopic : leftTopic,
+            $rightTopic : rightTopic
         )
-        $leftExam : Exam(topic == $leftSideTopic, $leftSidePeriod : period, period != null)
-        $rightExam : Exam(topic == $rightSideTopic, period != $leftSidePeriod, period != null)
-        // LeftSide and rightSide don't share a student because those are filtered out in ExaminationImporter
+        $leftExam : Exam(topic == $leftTopic, $leftPeriod : period, period != null)
+        $rightExam : Exam(topic == $rightTopic, period != $leftPeriod, period != null)
+        // Left and right don't share a student because those are filtered out in ExaminationImporter
     then
         scoreHolder.addHardConstraintMatch(kcontext,
-                - ($leftSideTopic.getStudentSize() + $rightSideTopic.getStudentSize()));
+                - ($leftTopic.getStudentSize() + $rightTopic.getStudentSize()));
 end
 rule "periodPenaltyExclusion"
     when
         $periodPenalty : PeriodPenalty(
             periodPenaltyType == PeriodPenaltyType.EXCLUSION,
-            $leftSideTopic : leftSideTopic,
-            $rightSideTopic : rightSideTopic
+            $leftTopic : leftTopic,
+            $rightTopic : rightTopic
         )
-        $leftExam : Exam(topic == $leftSideTopic, $leftSidePeriod : period, period != null)
-        $rightExam : Exam(topic == $rightSideTopic, period == $leftSidePeriod)
+        $leftExam : Exam(topic == $leftTopic, $leftPeriod : period, period != null)
+        $rightExam : Exam(topic == $rightTopic, period == $leftPeriod)
     then
         scoreHolder.addHardConstraintMatch(kcontext,
-                - ($leftSideTopic.getStudentSize() + $rightSideTopic.getStudentSize()));
+                - ($leftTopic.getStudentSize() + $rightTopic.getStudentSize()));
 end
 rule "periodPenaltyAfter"
     when
         $periodPenalty : PeriodPenalty(
             periodPenaltyType == PeriodPenaltyType.AFTER,
-            $leftSideTopic : leftSideTopic,
-            $rightSideTopic : rightSideTopic
+            $leftTopic : leftTopic,
+            $rightTopic : rightTopic
         )
-        $leftExam : Exam(topic == $leftSideTopic, $leftPeriodIndex : periodIndex, period != null)
-        $rightExam : Exam(topic == $rightSideTopic, $leftPeriodIndex <= periodIndex, period != null)
+        $leftExam : Exam(topic == $leftTopic, $leftPeriodIndex : periodIndex, period != null)
+        $rightExam : Exam(topic == $rightTopic, $leftPeriodIndex <= periodIndex, period != null)
     then
         scoreHolder.addHardConstraintMatch(kcontext,
-                - ($leftSideTopic.getStudentSize() + $rightSideTopic.getStudentSize()));
+                - ($leftTopic.getStudentSize() + $rightTopic.getStudentSize()));
 end
 
 // Room hard constraints

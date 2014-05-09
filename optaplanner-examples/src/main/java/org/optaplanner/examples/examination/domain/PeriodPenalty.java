@@ -23,8 +23,8 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 public class PeriodPenalty extends AbstractPersistable {
 
     private PeriodPenaltyType periodPenaltyType;
-    private Topic leftSideTopic;
-    private Topic rightSideTopic;
+    private Topic leftTopic;
+    private Topic rightTopic;
 
     public PeriodPenaltyType getPeriodPenaltyType() {
         return periodPenaltyType;
@@ -34,25 +34,25 @@ public class PeriodPenalty extends AbstractPersistable {
         this.periodPenaltyType = periodPenaltyType;
     }
 
-    public Topic getLeftSideTopic() {
-        return leftSideTopic;
+    public Topic getLeftTopic() {
+        return leftTopic;
     }
 
-    public void setLeftSideTopic(Topic leftSideTopic) {
-        this.leftSideTopic = leftSideTopic;
+    public void setLeftTopic(Topic leftTopic) {
+        this.leftTopic = leftTopic;
     }
 
-    public Topic getRightSideTopic() {
-        return rightSideTopic;
+    public Topic getRightTopic() {
+        return rightTopic;
     }
 
-    public void setRightSideTopic(Topic rightSideTopic) {
-        this.rightSideTopic = rightSideTopic;
+    public void setRightTopic(Topic rightTopic) {
+        this.rightTopic = rightTopic;
     }
 
     @Override
     public String toString() {
-        return periodPenaltyType + "@" + leftSideTopic.getId() + "&" + rightSideTopic.getId();
+        return periodPenaltyType + "@" + leftTopic.getId() + "&" + rightTopic.getId();
     }
 
 }

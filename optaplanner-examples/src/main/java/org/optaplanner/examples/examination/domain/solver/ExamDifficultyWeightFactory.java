@@ -18,11 +18,8 @@ package org.optaplanner.examples.examination.domain.solver;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
-import org.optaplanner.examples.curriculumcourse.domain.Course;
-import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 import org.optaplanner.examples.examination.domain.Exam;
 import org.optaplanner.examples.examination.domain.Examination;
-import org.optaplanner.examples.examination.domain.FollowingExam;
 import org.optaplanner.examples.examination.domain.LeadingExam;
 import org.optaplanner.examples.examination.domain.PeriodPenalty;
 
@@ -32,11 +29,11 @@ public class ExamDifficultyWeightFactory implements SelectionSorterWeightFactory
         int studentSizeTotal = exam.getTopicStudentSize();
         int maximumDuration = exam.getTopicDuration();
         for (PeriodPenalty periodPenalty : examination.getPeriodPenaltyList()) {
-            if (periodPenalty.getLeftSideTopic().equals(exam.getTopic())) {
+            if (periodPenalty.getLeftTopic().equals(exam.getTopic())) {
                 switch (periodPenalty.getPeriodPenaltyType()) {
                     case EXAM_COINCIDENCE:
-                        studentSizeTotal += periodPenalty.getRightSideTopic().getStudentSize();
-                        maximumDuration = Math.max(maximumDuration, periodPenalty.getRightSideTopic().getDuration());
+                        studentSizeTotal += periodPenalty.getRightTopic().getStudentSize();
+                        maximumDuration = Math.max(maximumDuration, periodPenalty.getRightTopic().getDuration());
                         break;
                     case EXCLUSION:
                         // Do nothing
@@ -48,18 +45,18 @@ public class ExamDifficultyWeightFactory implements SelectionSorterWeightFactory
                         throw new IllegalStateException("The periodPenaltyType ("
                                 + periodPenalty.getPeriodPenaltyType() + ") is not implemented.");
                 }
-            } else if (periodPenalty.getRightSideTopic().equals(exam.getTopic())) {
+            } else if (periodPenalty.getRightTopic().equals(exam.getTopic())) {
                 switch (periodPenalty.getPeriodPenaltyType()) {
                     case EXAM_COINCIDENCE:
-                        studentSizeTotal += periodPenalty.getLeftSideTopic().getStudentSize();
-                        maximumDuration = Math.max(maximumDuration, periodPenalty.getLeftSideTopic().getDuration());
+                        studentSizeTotal += periodPenalty.getLeftTopic().getStudentSize();
+                        maximumDuration = Math.max(maximumDuration, periodPenalty.getLeftTopic().getDuration());
                         break;
                     case EXCLUSION:
                         // Do nothing
                         break;
                     case AFTER:
-                        studentSizeTotal += periodPenalty.getLeftSideTopic().getStudentSize();
-                        maximumDuration = Math.max(maximumDuration, periodPenalty.getLeftSideTopic().getDuration());
+                        studentSizeTotal += periodPenalty.getLeftTopic().getStudentSize();
+                        maximumDuration = Math.max(maximumDuration, periodPenalty.getLeftTopic().getDuration());
                         break;
                     default:
                         throw new IllegalStateException("The periodPenaltyType ("

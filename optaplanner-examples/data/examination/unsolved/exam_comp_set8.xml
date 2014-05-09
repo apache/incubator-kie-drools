@@ -59486,128 +59486,128 @@
     <PeriodPenalty id="9010">
       <id>0</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="7725"/>
-      <rightSideTopic reference="7739"/>
+      <leftTopic reference="7725"/>
+      <rightTopic reference="7739"/>
     </PeriodPenalty>
     <PeriodPenalty id="9011">
       <id>1</id>
       <periodPenaltyType>AFTER</periodPenaltyType>
-      <leftSideTopic reference="7729"/>
-      <rightSideTopic reference="7753"/>
+      <leftTopic reference="7729"/>
+      <rightTopic reference="7753"/>
     </PeriodPenalty>
     <PeriodPenalty id="9012">
       <id>2</id>
       <periodPenaltyType>AFTER</periodPenaltyType>
-      <leftSideTopic reference="7915"/>
-      <rightSideTopic reference="7913"/>
+      <leftTopic reference="7915"/>
+      <rightTopic reference="7913"/>
     </PeriodPenalty>
     <PeriodPenalty id="9013">
       <id>3</id>
       <periodPenaltyType>AFTER</periodPenaltyType>
-      <leftSideTopic reference="7969"/>
-      <rightSideTopic reference="7967"/>
+      <leftTopic reference="7969"/>
+      <rightTopic reference="7967"/>
     </PeriodPenalty>
     <PeriodPenalty id="9014">
       <id>4</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="7973"/>
-      <rightSideTopic reference="7977"/>
+      <leftTopic reference="7973"/>
+      <rightTopic reference="7977"/>
     </PeriodPenalty>
     <PeriodPenalty id="9015">
       <id>5</id>
       <periodPenaltyType>AFTER</periodPenaltyType>
-      <leftSideTopic reference="7979"/>
-      <rightSideTopic reference="7971"/>
+      <leftTopic reference="7979"/>
+      <rightTopic reference="7971"/>
     </PeriodPenalty>
     <PeriodPenalty id="9016">
       <id>6</id>
       <periodPenaltyType>AFTER</periodPenaltyType>
-      <leftSideTopic reference="7979"/>
-      <rightSideTopic reference="7973"/>
+      <leftTopic reference="7979"/>
+      <rightTopic reference="7973"/>
     </PeriodPenalty>
     <PeriodPenalty id="9017">
       <id>7</id>
       <periodPenaltyType>AFTER</periodPenaltyType>
-      <leftSideTopic reference="7979"/>
-      <rightSideTopic reference="7975"/>
+      <leftTopic reference="7979"/>
+      <rightTopic reference="7975"/>
     </PeriodPenalty>
     <PeriodPenalty id="9018">
       <id>8</id>
       <periodPenaltyType>AFTER</periodPenaltyType>
-      <leftSideTopic reference="7979"/>
-      <rightSideTopic reference="7977"/>
+      <leftTopic reference="7979"/>
+      <rightTopic reference="7977"/>
     </PeriodPenalty>
     <PeriodPenalty id="9019">
       <id>9</id>
       <periodPenaltyType>AFTER</periodPenaltyType>
-      <leftSideTopic reference="8035"/>
-      <rightSideTopic reference="8033"/>
+      <leftTopic reference="8035"/>
+      <rightTopic reference="8033"/>
     </PeriodPenalty>
     <PeriodPenalty id="9020">
       <id>10</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="8203"/>
-      <rightSideTopic reference="8209"/>
+      <leftTopic reference="8203"/>
+      <rightTopic reference="8209"/>
     </PeriodPenalty>
     <PeriodPenalty id="9021">
       <id>11</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="8421"/>
-      <rightSideTopic reference="8423"/>
+      <leftTopic reference="8421"/>
+      <rightTopic reference="8423"/>
     </PeriodPenalty>
     <PeriodPenalty id="9022">
       <id>12</id>
       <periodPenaltyType>AFTER</periodPenaltyType>
-      <leftSideTopic reference="8493"/>
-      <rightSideTopic reference="8491"/>
+      <leftTopic reference="8493"/>
+      <rightTopic reference="8491"/>
     </PeriodPenalty>
     <PeriodPenalty id="9023">
       <id>13</id>
       <periodPenaltyType>AFTER</periodPenaltyType>
-      <leftSideTopic reference="8527"/>
-      <rightSideTopic reference="8525"/>
+      <leftTopic reference="8527"/>
+      <rightTopic reference="8525"/>
     </PeriodPenalty>
     <PeriodPenalty id="9024">
       <id>14</id>
       <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
-      <leftSideTopic reference="8639"/>
-      <rightSideTopic reference="8643"/>
+      <leftTopic reference="8639"/>
+      <rightTopic reference="8643"/>
     </PeriodPenalty>
     <PeriodPenalty id="9025">
       <id>15</id>
       <periodPenaltyType>AFTER</periodPenaltyType>
-      <leftSideTopic reference="8677"/>
-      <rightSideTopic reference="8711"/>
+      <leftTopic reference="8677"/>
+      <rightTopic reference="8711"/>
     </PeriodPenalty>
     <PeriodPenalty id="9026">
       <id>16</id>
       <periodPenaltyType>AFTER</periodPenaltyType>
-      <leftSideTopic reference="8699"/>
-      <rightSideTopic reference="8697"/>
+      <leftTopic reference="8699"/>
+      <rightTopic reference="8697"/>
     </PeriodPenalty>
     <PeriodPenalty id="9027">
       <id>17</id>
       <periodPenaltyType>AFTER</periodPenaltyType>
-      <leftSideTopic reference="8713"/>
-      <rightSideTopic reference="8677"/>
+      <leftTopic reference="8713"/>
+      <rightTopic reference="8677"/>
     </PeriodPenalty>
     <PeriodPenalty id="9028">
       <id>18</id>
       <periodPenaltyType>AFTER</periodPenaltyType>
-      <leftSideTopic reference="8769"/>
-      <rightSideTopic reference="8767"/>
+      <leftTopic reference="8769"/>
+      <rightTopic reference="8767"/>
     </PeriodPenalty>
     <PeriodPenalty id="9029">
       <id>19</id>
       <periodPenaltyType>AFTER</periodPenaltyType>
-      <leftSideTopic reference="8817"/>
-      <rightSideTopic reference="8815"/>
+      <leftTopic reference="8817"/>
+      <rightTopic reference="8815"/>
     </PeriodPenalty>
     <PeriodPenalty id="9030">
       <id>20</id>
       <periodPenaltyType>AFTER</periodPenaltyType>
-      <leftSideTopic reference="8713"/>
-      <rightSideTopic reference="8711"/>
+      <leftTopic reference="8713"/>
+      <rightTopic reference="8711"/>
     </PeriodPenalty>
   </periodPenaltyList>
   <roomPenaltyList id="9031">

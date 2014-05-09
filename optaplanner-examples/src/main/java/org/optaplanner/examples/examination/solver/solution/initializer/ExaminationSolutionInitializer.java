@@ -239,8 +239,8 @@ public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand 
 //        }
 //        for (PeriodPenalty periodPenalty : examination.getPeriodPenaltyList()) {
 //            if (periodPenalty.getPeriodPenaltyType() == PeriodPenaltyType.EXAM_COINCIDENCE) {
-//                Exam leftExam = topicToExamMap.get(periodPenalty.getLeftSideTopic());
-//                Exam rightExam = topicToExamMap.get(periodPenalty.getRightSideTopic());
+//                Exam leftExam = topicToExamMap.get(periodPenalty.getLeftTopic());
+//                Exam rightExam = topicToExamMap.get(periodPenalty.getRightTopic());
 //
 //                Set<Exam> newCoincidenceExamSet = new LinkedHashSet<Exam>(4);
 //                ExamCoincidence leftExamCoincidence = leftExam.getExamCoincidence();
@@ -260,8 +260,8 @@ public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand 
 //                    exam.setExamCoincidence(newExamCoincidence);
 //                }
 //            } else if (periodPenalty.getPeriodPenaltyType() == PeriodPenaltyType.AFTER) {
-//                Exam afterExam = topicToExamMap.get(periodPenalty.getLeftSideTopic());
-//                Exam beforeExam = topicToExamMap.get(periodPenalty.getRightSideTopic());
+//                Exam afterExam = topicToExamMap.get(periodPenalty.getLeftTopic());
+//                Exam beforeExam = topicToExamMap.get(periodPenalty.getRightTopic());
 //                ExamBefore examBefore = beforeExam.getExamBefore();
 //                if (examBefore == null) {
 //                    examBefore = new ExamBefore(new LinkedHashSet<Exam>(2));

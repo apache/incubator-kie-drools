@@ -235,11 +235,11 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter {
                 periodPenalty.setId((long) id);
                 id++;
                 Topic leftTopic = topicList.get(Integer.parseInt(lineTokens[0]));
-                periodPenalty.setLeftSideTopic(leftTopic);
+                periodPenalty.setLeftTopic(leftTopic);
                 PeriodPenaltyType periodPenaltyType = PeriodPenaltyType.valueOf(lineTokens[1]);
                 periodPenalty.setPeriodPenaltyType(periodPenaltyType);
                 Topic rightTopic = topicList.get(Integer.parseInt(lineTokens[2]));
-                periodPenalty.setRightSideTopic(rightTopic);
+                periodPenalty.setRightTopic(rightTopic);
                 boolean ignorePenalty = false;
 
                 switch (periodPenaltyType) {
@@ -321,8 +321,8 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter {
                             indirectPeriodPenalty.setId((long) id);
                             id++;
                             indirectPeriodPenalty.setPeriodPenaltyType(PeriodPenaltyType.EXAM_COINCIDENCE);
-                            indirectPeriodPenalty.setLeftSideTopic(leftTopic);
-                            indirectPeriodPenalty.setRightSideTopic(rightTopic);
+                            indirectPeriodPenalty.setLeftTopic(leftTopic);
+                            indirectPeriodPenalty.setRightTopic(rightTopic);
                             periodPenaltyList.add(indirectPeriodPenalty);
                             boolean added = coincidenceMap.get(leftTopic).add(rightTopic)
                                     && coincidenceMap.get(rightTopic).add(leftTopic);
@@ -352,8 +352,8 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter {
                         indirectPeriodPenalty.setId((long) id);
                         id++;
                         indirectPeriodPenalty.setPeriodPenaltyType(PeriodPenaltyType.AFTER);
-                        indirectPeriodPenalty.setLeftSideTopic(leftTopic);
-                        indirectPeriodPenalty.setRightSideTopic(rightTopic);
+                        indirectPeriodPenalty.setLeftTopic(leftTopic);
+                        indirectPeriodPenalty.setRightTopic(rightTopic);
                         periodPenaltyList.add(indirectPeriodPenalty);
                         boolean added = afterMap.get(leftTopic).add(rightTopic);
                         if (!added) {
