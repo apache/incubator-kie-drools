@@ -1,17 +1,5 @@
 package org.drools.compiler.kie.builder.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Properties;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.compiler.commons.jci.compilers.EclipseJavaCompilerSettings;
@@ -29,6 +17,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
+import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
@@ -42,8 +31,19 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
-
 import org.kie.internal.io.ResourceTypeImpl;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class KieBuilderImpl
         implements
@@ -208,7 +208,11 @@ public class KieBuilderImpl
         kProject.verify(messages);
 
         if ( messages.filterMessages( Level.ERROR ).isEmpty() ) {
-            KieServices.Factory.get().getRepository().addKieModule(kModule);
+            KieRepository kieRepository = KieServices.Factory.get().getRepository();
+            kieRepository.addKieModule(kModule);
+            for (InternalKieModule kDep : kModule.getKieDependencies().values()) {
+                kieRepository.addKieModule(kDep);
+            }
             return true;
         }
         return false;
@@ -298,12 +302,11 @@ public class KieBuilderImpl
     }
 
     public static boolean filterFileInKBase(InternalKieModule kieModule, KieBaseModel kieBase, String fileName) {
-        return isFileInKieBase( kieBase, fileName ) && (
-                FormatsManager.isKieExtension( fileName ) || getResourceType(kieModule, fileName) != null);
+        return isFileInKieBase( kieBase, fileName ) &&
+               (FormatsManager.isKieExtension( fileName ) || getResourceType(kieModule, fileName) != null);
     }
 
-    private static boolean isFileInKieBase(KieBaseModel kieBase,
-                                           String fileName) {
+    private static boolean isFileInKieBase(KieBaseModel kieBase, String fileName) {
         if ( kieBase.getPackages().isEmpty() ) {
             return true;
         } else {

@@ -1,20 +1,5 @@
 package org.drools.compiler.kie.builder.impl;
 
-import static org.drools.compiler.kie.builder.impl.AbstractKieModule.buildKnowledgePackages;
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
-import static org.drools.compiler.kie.util.CDIHelper.wireListnersAndWIHs;
-import static org.drools.core.util.ClassUtils.convertResourceToClassName;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.kie.util.ChangeSetBuilder;
@@ -27,7 +12,6 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.rule.*;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -59,6 +43,21 @@ import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.definition.KnowledgePackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import static org.drools.compiler.kie.builder.impl.AbstractKieModule.buildKnowledgePackages;
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
+import static org.drools.compiler.kie.util.CDIHelper.wireListnersAndWIHs;
+import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 public class KieContainerImpl
     implements
@@ -168,7 +167,7 @@ public class KieContainerImpl
                     for ( ResourceChangeSet rcs : cs.getChanges().values() ) {
                         if ( rcs.getChangeType() == ChangeType.REMOVED ) {
                             String resourceName = rcs.getResourceName();
-                            if ( !resourceName.endsWith( ".properties" ) && filterFileInKBase(newKM, kieBaseModel, resourceName) ) {
+                            if ( !resourceName.endsWith( ".properties" ) && isFileInKBase(newKM, kieBaseModel, resourceName) ) {
                                 pkgbuilder.removeObjectsGeneratedFromResource( currentKM.getResource( resourceName ) );
                             }
                         }
@@ -206,15 +205,28 @@ public class KieContainerImpl
         return results;
     }
 
+    private boolean isFileInKBase(InternalKieModule kieModule, KieBaseModel kieBase, String fileName) {
+        if (filterFileInKBase(kieModule, kieBase, fileName)) {
+            return true;
+        }
+        for (String include : kProject.getTransitiveIncludes(kieBase)) {
+            InternalKieModule includeModule = kProject.getKieModuleForKBase(include);
+            if (includeModule != null && filterFileInKBase(includeModule, kProject.getKieBaseModel(include), fileName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void updateAllResources(InternalKieModule currentKM, InternalKieModule newKM, KieBaseModel kieBaseModel, KnowledgeBuilderImpl kbuilder, CompositeKnowledgeBuilder ckbuilder) {
         for (String resourceName : currentKM.getFileNames()) {
-            if ( !resourceName.endsWith( ".properties" ) && filterFileInKBase(currentKM, kieBaseModel, resourceName) ) {
+            if ( !resourceName.endsWith( ".properties" ) && isFileInKBase(currentKM, kieBaseModel, resourceName) ) {
                 Resource resource = currentKM.getResource(resourceName);
                 kbuilder.removeObjectsGeneratedFromResource(resource);
             }
         }
         for (String resourceName : newKM.getFileNames()) {
-            if ( !resourceName.endsWith( ".properties" ) && filterFileInKBase(newKM, kieBaseModel, resourceName) ) {
+            if ( !resourceName.endsWith( ".properties" ) && isFileInKBase(newKM, kieBaseModel, resourceName) ) {
                 newKM.addResourceToCompiler(ckbuilder, resourceName);
             }
         }
@@ -232,7 +244,7 @@ public class KieContainerImpl
         for ( ResourceChangeSet rcs : cs.getChanges().values() ) {
             if ( rcs.getChangeType() != ChangeType.REMOVED ) {
                 String resourceName = rcs.getResourceName();
-                if ( !resourceName.endsWith( ".properties" ) && filterFileInKBase(newKM, kieBaseModel, resourceName) ) {
+                if ( !resourceName.endsWith( ".properties" ) && isFileInKBase(newKM, kieBaseModel, resourceName) ) {
                     List<ResourceChange> changes = rcs.getChanges();
                     if ( ! changes.isEmpty() ) {
                         // we need to deal with individual parts of the resource

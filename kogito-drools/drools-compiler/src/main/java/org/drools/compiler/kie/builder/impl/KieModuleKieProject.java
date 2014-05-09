@@ -1,13 +1,5 @@
 package org.drools.compiler.kie.builder.impl;
 
-import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
-import static org.drools.core.util.ClassUtils.convertResourceToClassName;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.core.common.ProjectClassLoader;
 import org.kie.api.builder.ReleaseId;
 import org.kie.internal.utils.ClassLoaderResolver;
@@ -15,6 +7,14 @@ import org.kie.internal.utils.NoDepsClassLoaderResolver;
 import org.kie.internal.utils.ServiceRegistryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
+import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 /**
  * Discovers all KieModules on the classpath, via the kmodule.xml file.
@@ -107,13 +107,22 @@ public class KieModuleKieProject extends AbstractKieProject {
         return clonedCL;
     }
 
-    public void updateToModule(InternalKieModule kieModule) {
+    public void updateToModule(InternalKieModule updatedKieModule) {
         this.kieModules = null;
         this.kJarFromKBaseName.clear();
         cleanIndex();
-        
-        this.kieModule = kieModule;
-        //this.cl.getStore().clear(); // can we do this in order to preserve the reference to the classloader? 
+
+        ReleaseId currentReleaseId = this.kieModule.getReleaseId();
+        ReleaseId updatingReleaseId = updatedKieModule.getReleaseId();
+
+        if (currentReleaseId.getGroupId().equals(updatingReleaseId.getGroupId()) &&
+            currentReleaseId.getArtifactId().equals(updatingReleaseId.getArtifactId())) {
+            this.kieModule = updatedKieModule;
+        } else if (this.kieModule.getKieDependencies().keySet().contains(updatingReleaseId)) {
+            this.kieModule.addKieDependency(updatedKieModule);
+        }
+
+        //this.cl.getStore().clear(); // can we do this in order to preserve the reference to the classloader?
         this.init(); // this might override class definitions, not sure we can do it any other way though
     }
 }

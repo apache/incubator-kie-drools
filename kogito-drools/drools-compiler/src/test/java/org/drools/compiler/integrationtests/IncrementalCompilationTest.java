@@ -1,5 +1,28 @@
 package org.drools.compiler.integrationtests;
 
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Message;
+import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.Results;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.definition.rule.Rule;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.builder.IncrementalResults;
+import org.kie.internal.builder.InternalKieBuilder;
+
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,28 +30,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.Message;
-import org.drools.compiler.kie.builder.impl.KieContainerImpl;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.kie.api.builder.Results;
-import org.kie.api.definition.rule.Rule;
-
-import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.definition.KiePackage;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.IncrementalResults;
-import org.kie.internal.builder.InternalKieBuilder;
 
 import static java.util.Arrays.asList;
 
@@ -995,4 +996,74 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         assertEquals( 0, results.getRemovedMessages().size() );
     }
 
+    @Test
+    public void testIncrementalCompilationWithIncludes() throws Exception {
+        // DROOLS-462
+
+        String drl1 = "global java.util.List list\n" +
+                      "rule R1 when\n" +
+                      " $s : String() " +
+                      "then\n" +
+                      " list.add( \"a\" + $s );" +
+                      "end\n";
+
+        String drl2 = "global java.util.List list\n" +
+                      "rule R1 when\n" +
+                      " $s : String() " +
+                      "then\n" +
+                      " list.add( \"b\" + $s );" +
+                      "end\n";
+
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId( "org.test", "test", "1.0.0-SNAPSHOT" );
+        KieServices ks = KieServices.Factory.get();
+
+        KieModuleModel kproj = ks.newKieModuleModel();
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
+                                          .addPackage("org.pkg1");
+        kieBaseModel1.newKieSessionModel("KSession1");
+        KieBaseModel kieBaseModel2 = kproj.newKieBaseModel("KBase2")
+                                          .addPackage("org.pkg2")
+                                          .addInclude("KBase1");
+        kieBaseModel2.newKieSessionModel("KSession2");
+
+        KieFileSystem kfs = ks.newKieFileSystem()
+                              .generateAndWritePomXML(releaseId)
+                              .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl1)
+                              .writeKModuleXML(kproj.toXML());
+
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+
+        kieBuilder.buildAll();
+        assertEquals( 0, kieBuilder.getResults().getMessages().size() );
+        KieModule kieModule = kieBuilder.getKieModule();
+
+        KieContainer kc = ks.newKieContainer( releaseId );
+
+        KieSession ksession = kc.newKieSession("KSession2");
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+        ksession.insert( "Foo" );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals("aFoo", list.get(0));
+        list.clear();
+
+        kfs.delete("src/main/resources/KBase1/org/pkg1/r1.drl");
+        kfs.write("src/main/resources/KBase1/org/pkg1/r2.drl", drl2);
+
+        IncrementalResults results = ( (InternalKieBuilder) kieBuilder ).incrementalBuild();
+        assertEquals( 0, results.getAddedMessages().size() );
+
+        kieModule = kieBuilder.getKieModule();
+
+        Results updateResults = kc.updateToVersion( releaseId );
+        assertEquals( 0, updateResults.getMessages().size() );
+
+        ksession.insert( "Bar" );
+        ksession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertTrue( list.containsAll( asList( "bBar", "bFoo" ) ) );
+    }
 }

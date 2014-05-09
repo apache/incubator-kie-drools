@@ -156,10 +156,9 @@ public class KieBuilderSetImpl implements KieBuilderSet {
                                  KieBaseModel kieBaseModel,
                                  InternalKieModule kieModule,
                                  String resourceName ) {
-        if ( !resourceName.endsWith(".properties") && filterFileInKBase(kieModule, kieBaseModel, resourceName) ) {
-            return kieModule.addResourceToCompiler(ckbuilder, resourceName);
-        }
-        return false;
+        return !resourceName.endsWith(".properties") &&
+               filterFileInKBase(kieModule, kieBaseModel, resourceName) &&
+               kieModule.addResourceToCompiler(ckbuilder, resourceName);
     }
 
     public static class DummyResource extends BaseResource {

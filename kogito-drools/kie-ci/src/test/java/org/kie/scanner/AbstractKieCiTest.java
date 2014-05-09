@@ -205,9 +205,9 @@ public class AbstractKieCiTest {
         return km;
     }
 
-    protected File createKPom(FileManager fileManager, ReleaseId releaseId) throws IOException {
+    protected File createKPom(FileManager fileManager, ReleaseId releaseId, ReleaseId... dependencies) throws IOException {
         File pomFile = fileManager.newFile("pom.xml");
-        fileManager.write(pomFile, getPom(releaseId));
+        fileManager.write(pomFile, getPom(releaseId, dependencies));
         return pomFile;
     }
 }
