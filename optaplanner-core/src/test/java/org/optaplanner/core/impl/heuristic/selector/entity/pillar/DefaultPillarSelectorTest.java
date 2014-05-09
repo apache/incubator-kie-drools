@@ -276,6 +276,57 @@ public class DefaultPillarSelectorTest {
     }
 
     @Test
+    public void randomWithSubs_Size2() {
+        TestdataValue val1 = new TestdataValue("1");
+        TestdataValue val2 = new TestdataValue("2");
+        TestdataValue val3 = new TestdataValue("3");
+        TestdataValue val4 = new TestdataValue("4");
+
+        final TestdataEntity a = new TestdataEntity("a", val1);
+        final TestdataEntity b = new TestdataEntity("b", val2);
+        final TestdataEntity c = new TestdataEntity("c", val3);
+        final TestdataEntity d = new TestdataEntity("d", val2);
+        final TestdataEntity e = new TestdataEntity("e", val3);
+        final TestdataEntity f = new TestdataEntity("f", val3);
+
+        GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
+        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(),
+                a, b, c, d, e, f);
+
+        DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
+                entitySelector, Arrays.asList(variableDescriptor), true, true, 2, 2);
+
+        Random workingRandom = mock(Random.class);
+
+        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
+        pillarSelector.solvingStarted(solverScope);
+
+        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
+        pillarSelector.phaseStarted(phaseScopeA);
+
+        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
+        pillarSelector.stepStarted(stepScopeA1);
+        // nextInt pattern: pillarIndex, subPillarSize, element 0, element 1, element 2, ...
+        // Expected pillar cache: [a], [b, d], [c, e, f]
+        when(workingRandom.nextInt(anyInt())).thenReturn(
+                0, 0, 0, // [a] If the pillar is less than the minimum, the minimum is reduced
+                2, 0, 0, 0, // [c, e, f]
+                1, 0, 0, 0, // [b, d]
+                1, 0, 1, 0); // [b, d]
+        assertCodesOfNeverEndingPillarSelector(pillarSelector, "[a]", "[c, e]", "[b, d]", "[d, b]");
+        pillarSelector.stepEnded(stepScopeA1);
+
+        pillarSelector.phaseEnded(phaseScopeA);
+
+        pillarSelector.solvingEnded(solverScope);
+
+        verifySolverPhaseLifecycle(entitySelector, 1, 1, 1);
+    }
+
+    @Test
     public void emptyEntitySelectorRandomWithSubs() {
         TestdataValue v1 = new TestdataValue("1");
         TestdataValue v2 = new TestdataValue("2");
