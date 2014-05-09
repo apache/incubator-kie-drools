@@ -93,17 +93,9 @@ public class DefaultPillarSelectorTest {
         final TestdataEntity e = new TestdataEntity("e", val3);
         final TestdataEntity f = new TestdataEntity("f", val3);
 
-        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
+        GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
+        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(),
                 a, b, c, d, e, f);
-        GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
-                entitySelector.getEntityDescriptor(), "value");
-        for (final TestdataEntity entity : Arrays.asList(a, b, c, d, e, f)) {
-            when(variableDescriptor.getValue(entity)).thenAnswer(new Answer<Object>() {
-                public Object answer(InvocationOnMock invocation) throws Throwable {
-                    return entity.getValue();
-                }
-            });
-        }
 
         DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
                 entitySelector, Arrays.asList(variableDescriptor), false, false, 1, Integer.MAX_VALUE);
@@ -155,9 +147,8 @@ public class DefaultPillarSelectorTest {
         TestdataValue v2 = new TestdataValue("2");
         TestdataValue v3 = new TestdataValue("3");
 
-        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
-        GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
-                entitySelector.getEntityDescriptor(), "value");
+        GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
+        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor());
 
         DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
                 entitySelector, Arrays.asList(variableDescriptor), false, false, 1, Integer.MAX_VALUE);
