@@ -1,5 +1,6 @@
 package org.kie.scanner;
 
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieScanner;
 import org.drools.core.util.FileManager;
 import org.junit.After;
@@ -12,7 +13,7 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
@@ -21,9 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 @Ignore
@@ -332,5 +331,44 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         List<Message> messages = kieBuilder.buildAll().getResults().getMessages();
         assertEquals(1, messages.size());
         assertTrue(messages.get(0).toString().contains("missing-dep"));
+    }
+
+    @Test
+    public void testScanIncludedDependency() throws Exception {
+        MavenRepository repository = getMavenRepository();
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId containerReleaseId = KieServices.Factory.get().newReleaseId( "org.kie", "test-container", "1.0.0-SNAPSHOT" );
+        ReleaseId includedReleaseId = KieServices.Factory.get().newReleaseId( "org.kie", "test-project", "1.0.0-SNAPSHOT" );
+
+        InternalKieModule kJar1 = createKieJar(ks, includedReleaseId, "rule1");
+        repository.deployArtifact(includedReleaseId, kJar1, createKPom(fileManager, includedReleaseId));
+
+        resetFileManager();
+
+        KieFileSystem kfs = ks.newKieFileSystem();
+        KieModuleModel kproj = ks.newKieModuleModel();
+        kproj.newKieBaseModel("KBase2").addInclude("KBase1").newKieSessionModel("KSession2");
+        kfs.writeKModuleXML(kproj.toXML());
+        kfs.writePomXML(getPom(containerReleaseId, includedReleaseId));
+
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        InternalKieModule containerKJar = (InternalKieModule) kieBuilder.getKieModule();
+        repository.deployArtifact(containerReleaseId, containerKJar, createKPom(fileManager, containerReleaseId, includedReleaseId));
+
+        KieContainer kieContainer = ks.newKieContainer(containerReleaseId);
+        KieSession ksession = kieContainer.newKieSession("KSession2");
+        checkKSession(ksession, "rule1");
+
+        KieScanner scanner = ks.newKieScanner(kieContainer);
+
+        InternalKieModule kJar2 = createKieJar(ks, includedReleaseId, "rule2");
+        repository.deployArtifact(includedReleaseId, kJar2, createKPom(fileManager, includedReleaseId));
+
+        scanner.scanNow();
+
+        KieSession ksession2 = kieContainer.newKieSession("KSession2");
+        checkKSession(ksession2, "rule2");
     }
 }

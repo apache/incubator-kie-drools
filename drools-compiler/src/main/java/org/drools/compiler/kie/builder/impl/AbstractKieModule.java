@@ -1,21 +1,6 @@
 package org.drools.compiler.kie.builder.impl;
 
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
-import static org.drools.core.util.ClassUtils.convertResourceToClassName;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
+import com.google.protobuf.ExtensionRegistry;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.CompDataEntry;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.CompilationData;
@@ -50,7 +35,19 @@ import org.kie.internal.io.ResourceTypeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.protobuf.ExtensionRegistry;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
+import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 public abstract class AbstractKieModule
         implements
@@ -186,7 +183,7 @@ public abstract class AbstractKieModule
         Map<String, InternalKieModule> assets = new HashMap<String, InternalKieModule>();
 
         boolean allIncludesAreValid = true;
-        for (String include : getTransitiveIncludes(kieProject, kBaseModel)) {
+        for (String include : kieProject.getTransitiveIncludes(kBaseModel)) {
             if (StringUtils.isEmpty(include)) {
                 continue;
             }
@@ -233,27 +230,6 @@ public abstract class AbstractKieModule
         kModule.cacheResultsForKieBase(kBaseModel.getName(), messages);
 
         return kbuilder;
-    }
-
-    private static Set<String> getTransitiveIncludes(KieProject kieProject, KieBaseModelImpl kBaseModel) {
-        Set<String> includes = new HashSet<String>();
-        getTransitiveIncludes(kieProject, kBaseModel, includes);
-        return includes;
-    }
-
-    private static void getTransitiveIncludes(KieProject kieProject, KieBaseModelImpl kBaseModel, Set<String> includes) {
-        if (kBaseModel == null) {
-            return;
-        }
-        Set<String> incs = kBaseModel.getIncludes();
-        if (incs != null && !incs.isEmpty()) {
-            for (String inc : incs) {
-                if (!includes.contains(inc)) {
-                    includes.add(inc);
-                    getTransitiveIncludes(kieProject, (KieBaseModelImpl) kieProject.getKieBaseModel(inc), includes);
-                }
-            }
-        }
     }
 
     private static void addFiles(Map<String, InternalKieModule> assets,

@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.buildKnowledgePackages;
 
@@ -25,6 +27,8 @@ public abstract class AbstractKieProject implements KieProject {
     private KieSessionModel                      defaultKieSession          = null;
 
     private KieSessionModel                      defaultStatelessKieSession = null;
+
+    private Map<KieBaseModel, Set<String>>       includesInKieBase          = new HashMap<KieBaseModel, Set<String>>();
 
     protected final Map<String, KieSessionModel> kSessionModels             = new HashMap<String, KieSessionModel>();
 
@@ -107,8 +111,38 @@ public abstract class AbstractKieProject implements KieProject {
     protected void cleanIndex() {
         kBaseModels.clear();
         kSessionModels.clear();
+        includesInKieBase.clear();
         defaultKieBase = null;
         defaultKieSession = null;
         defaultStatelessKieSession = null;
+    }
+
+    public Set<String> getTransitiveIncludes(String kBaseName) {
+        return getTransitiveIncludes(getKieBaseModel(kBaseName));
+    }
+
+    public Set<String> getTransitiveIncludes(KieBaseModel kBaseModel) {
+        Set<String> includes = includesInKieBase.get(kBaseModel);
+        if (includes == null) {
+            includes = new HashSet<String>();
+            getTransitiveIncludes(kBaseModel, includes);
+            includesInKieBase.put(kBaseModel, includes);
+        }
+        return includes;
+    }
+
+    private void getTransitiveIncludes(KieBaseModel kBaseModel, Set<String> includes) {
+        if (kBaseModel == null) {
+            return;
+        }
+        Set<String> incs = ((KieBaseModelImpl)kBaseModel).getIncludes();
+        if (incs != null && !incs.isEmpty()) {
+            for (String inc : incs) {
+                if (!includes.contains(inc)) {
+                    includes.add(inc);
+                    getTransitiveIncludes(getKieBaseModel(inc), includes);
+                }
+            }
+        }
     }
 }
