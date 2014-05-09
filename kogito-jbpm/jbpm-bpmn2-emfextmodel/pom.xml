@@ -37,17 +37,14 @@
     <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>org.eclipse.emf.common</artifactId>
-      <version>2.6.0.v20100614-1136</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>org.eclipse.emf.ecore</artifactId>
-      <version>2.6.0.v20100614-1136</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-      <version>2.5.0.v20100521-1846</version>
     </dependency>
   </dependencies>
 </project>

@@ -85,8 +85,7 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-persistence-jpa</artifactId>
-      <classifier>tests</classifier>
-      <version>${version}</version>
+      <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
