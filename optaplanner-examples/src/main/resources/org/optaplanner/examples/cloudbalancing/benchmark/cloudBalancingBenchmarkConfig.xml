@@ -89,6 +89,8 @@
         <unionMoveSelector>
           <changeMoveSelector/>
           <swapMoveSelector/>
+          <pillarChangeMoveSelector/>
+          <pillarSwapMoveSelector/>
         </unionMoveSelector>
         <acceptor>
           <entityTabuSize>7</entityTabuSize>
@@ -109,6 +111,8 @@
         <unionMoveSelector>
           <changeMoveSelector/>
           <swapMoveSelector/>
+          <pillarChangeMoveSelector/>
+          <pillarSwapMoveSelector/>
         </unionMoveSelector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>0hard/400soft</simulatedAnnealingStartingTemperature>
@@ -129,6 +133,8 @@
         <unionMoveSelector>
           <changeMoveSelector/>
           <swapMoveSelector/>
+          <pillarChangeMoveSelector/>
+          <pillarSwapMoveSelector/>
         </unionMoveSelector>
         <acceptor>
           <lateAcceptanceSize>400</lateAcceptanceSize>
@@ -139,24 +145,4 @@
       </localSearch>
     </solver>
   </solverBenchmark>
-  <!--<solverBenchmark>
-    <name>Late Simulated Annealing</name>
-    <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-      </constructionHeuristic>
-      <localSearch>
-        <unionMoveSelector>
-          <changeMoveSelector/>
-          <swapMoveSelector/>
-        </unionMoveSelector>
-        <acceptor>
-          <lateSimulatedAnnealingSize>100</lateSimulatedAnnealingSize>
-        </acceptor>
-        <forager>
-          <acceptedCountLimit>4</acceptedCountLimit>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>-->
 </plannerBenchmark>
