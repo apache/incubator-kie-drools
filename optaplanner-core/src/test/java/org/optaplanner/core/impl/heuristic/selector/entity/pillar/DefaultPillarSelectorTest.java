@@ -17,11 +17,9 @@
 package org.optaplanner.core.impl.heuristic.selector.entity.pillar;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Random;
 
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
@@ -191,11 +189,153 @@ public class DefaultPillarSelectorTest {
         verifySolverPhaseLifecycle(entitySelector, 1, 2, 3);
     }
 
+    @Test
+    public void randomWithSubs() {
+        TestdataValue val1 = new TestdataValue("1");
+        TestdataValue val2 = new TestdataValue("2");
+        TestdataValue val3 = new TestdataValue("3");
+        TestdataValue val4 = new TestdataValue("4");
+
+        final TestdataEntity a = new TestdataEntity("a", val1);
+        final TestdataEntity b = new TestdataEntity("b", val2);
+        final TestdataEntity c = new TestdataEntity("c", val3);
+        final TestdataEntity d = new TestdataEntity("d", val2);
+        final TestdataEntity e = new TestdataEntity("e", val3);
+        final TestdataEntity f = new TestdataEntity("f", val3);
+
+        GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
+        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(),
+                a, b, c, d, e, f);
+
+        DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
+                entitySelector, Arrays.asList(variableDescriptor), true, true, 1, Integer.MAX_VALUE);
+
+        Random workingRandom = mock(Random.class);
+
+        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
+        pillarSelector.solvingStarted(solverScope);
+
+        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
+        pillarSelector.phaseStarted(phaseScopeA);
+
+        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
+        pillarSelector.stepStarted(stepScopeA1);
+        // nextInt pattern: pillarIndex, subPillarSize, element 0, element 1, element 2, ...
+        // Expected pillar cache: [a], [b, d], [c, e, f]
+        when(workingRandom.nextInt(anyInt())).thenReturn(
+                0, 0, 0, // [a]
+                2, 1, 0, 0, // [c, e, f]
+                1, 0, 0, // [b, d]
+                1, 0, 1); // [b, d]
+        assertCodesOfNeverEndingPillarSelector(pillarSelector, "[a]", "[c, e]", "[b]", "[d]");
+        pillarSelector.stepEnded(stepScopeA1);
+
+        b.setValue(val3);
+        f.setValue(val4);
+
+        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
+        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
+        pillarSelector.stepStarted(stepScopeA2);
+        // nextInt pattern: pillarIndex, subPillarSize, element 0, element 1, element 2, ...
+        // Expected pillar cache: [a], [b, c, e], [d], [f]
+        when(workingRandom.nextInt(anyInt())).thenReturn(
+                3, 0, 0, // [f]
+                1, 2, 2, 0, 0, // [b, c, e]
+                1, 0, 0, // [b, c, e]
+                2, 0, 0); // [d]
+        assertCodesOfNeverEndingPillarSelector(pillarSelector, "[f]", "[e, c, b]", "[b]", "[d]");
+        pillarSelector.stepEnded(stepScopeA2);
+
+        pillarSelector.phaseEnded(phaseScopeA);
+
+        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
+        pillarSelector.phaseStarted(phaseScopeB);
+
+        AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
+        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
+        pillarSelector.stepStarted(stepScopeB1);
+        // nextInt pattern: pillarIndex, subPillarSize, element 0, element 1, element 2, ...
+        // Expected pillar cache: [a], [b, c, e], [d], [f]
+        when(workingRandom.nextInt(anyInt())).thenReturn(
+                3, 0, 0, // [f]
+                1, 2, 2, 0, 0, // [b, c, e]
+                1, 0, 0, // [b, c, e]
+                2, 0, 0); // [d]
+        assertCodesOfNeverEndingPillarSelector(pillarSelector, "[f]", "[e, c, b]", "[b]", "[d]");
+        pillarSelector.stepEnded(stepScopeB1);
+
+        pillarSelector.phaseEnded(phaseScopeB);
+
+        pillarSelector.solvingEnded(solverScope);
+
+        verifySolverPhaseLifecycle(entitySelector, 1, 2, 3);
+    }
+
+    @Test
+    public void emptyEntitySelectorRandomWithSubs() {
+        TestdataValue v1 = new TestdataValue("1");
+        TestdataValue v2 = new TestdataValue("2");
+        TestdataValue v3 = new TestdataValue("3");
+
+        GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
+        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor());
+
+        DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
+                entitySelector, Arrays.asList(variableDescriptor), true, true, 1, Integer.MAX_VALUE);
+
+        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        pillarSelector.solvingStarted(solverScope);
+
+        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
+        pillarSelector.phaseStarted(phaseScopeA);
+
+        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
+        pillarSelector.stepStarted(stepScopeA1);
+        assertCodesOfNeverEndingPillarSelector(pillarSelector);
+        pillarSelector.stepEnded(stepScopeA1);
+
+        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
+        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
+        pillarSelector.stepStarted(stepScopeA2);
+        assertCodesOfNeverEndingPillarSelector(pillarSelector);
+        pillarSelector.stepEnded(stepScopeA2);
+
+        pillarSelector.phaseEnded(phaseScopeA);
+
+        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
+        pillarSelector.phaseStarted(phaseScopeB);
+
+        AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
+        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
+        pillarSelector.stepStarted(stepScopeB1);
+        assertCodesOfNeverEndingPillarSelector(pillarSelector);
+        pillarSelector.stepEnded(stepScopeB1);
+
+        pillarSelector.phaseEnded(phaseScopeB);
+
+        pillarSelector.solvingEnded(solverScope);
+
+        verifySolverPhaseLifecycle(entitySelector, 1, 2, 3);
+    }
+
     private void assertAllCodesOfPillarSelector(PillarSelector pillarSelector, String... codes) {
         assertAllCodesOfIterator(pillarSelector.iterator(), codes);
         assertEquals(true, pillarSelector.isCountable());
         assertEquals(false, pillarSelector.isNeverEnding());
         assertEquals(codes.length, pillarSelector.getSize());
+    }
+
+    private void assertCodesOfNeverEndingPillarSelector(PillarSelector pillarSelector, String... codes) {
+        assertCodesOfIterator(pillarSelector.iterator(), codes);
+        assertEquals(true, pillarSelector.isCountable());
+        assertEquals(true, pillarSelector.isNeverEnding());
     }
 
 }
