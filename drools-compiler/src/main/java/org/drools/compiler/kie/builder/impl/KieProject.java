@@ -4,6 +4,8 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
 
+import java.util.Set;
+
 public interface KieProject {
     
     ReleaseId getGAV();
@@ -29,4 +31,7 @@ public interface KieProject {
     ResultsImpl verify();
 
     long getCreationTimestamp();
+
+    Set<String> getTransitiveIncludes(String kBaseName);
+    Set<String> getTransitiveIncludes(KieBaseModel kBaseModel);
 }
