@@ -73,7 +73,12 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>Pointless</entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Pointless (<link
+                  xlink:href="http://en.wikipedia.org/wiki/Eight_queens_puzzle#Explicit_solutions">cheatable</link>)</para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry>None</entry>
           </row>
@@ -105,7 +110,15 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>No</entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>No</para>
+                </listitem>
+
+                <listitem>
+                  <para>Definied by us</para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry><itemizedlist>
                 <listitem>
@@ -141,7 +154,15 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>Unrealistic</entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Unrealistic</para>
+                </listitem>
+
+                <listitem>
+                  <para><link xlink:href="http://www.tsp.gatech.edu/">TSP web</link></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry><itemizedlist>
                 <listitem>
@@ -177,7 +198,11 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>Unrealistic</entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Unrealistic</para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry><itemizedlist>
                 <listitem>
@@ -213,7 +238,15 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>Unrealistic</entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>No</para>
+                </listitem>
+
+                <listitem>
+                  <para>Definied by us</para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry><itemizedlist>
                 <listitem>
@@ -253,7 +286,17 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>Realistic</entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Realistic</para>
+                </listitem>
+
+                <listitem>
+                  <para><link
+                  xlink:href="http://www.cs.qub.ac.uk/itc2007/curriculmcourse/course_curriculm_index.htm">ITC 2007 track
+                  3</link></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry><itemizedlist>
                 <listitem>
@@ -289,7 +332,15 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>Nearly realistic</entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Nearly <emphasis role="bold">realistic</emphasis></para>
+                </listitem>
+
+                <listitem>
+                  <para><link xlink:href="http://challenge.roadef.org/2012/en/">ROADEF 2012</link></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry><itemizedlist>
                 <listitem>
@@ -333,7 +384,15 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>Unrealistic</entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Unrealistic</para>
+                </listitem>
+
+                <listitem>
+                  <para><link xlink:href="http://neo.lcc.uma.es/vrp/">VRP web</link></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry><itemizedlist>
                 <listitem>
@@ -369,7 +428,15 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>Unrealistic</entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Unrealistic</para>
+                </listitem>
+
+                <listitem>
+                  <para><link xlink:href="http://neo.lcc.uma.es/vrp/">VRP web</link></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry><itemizedlist>
                 <listitem>
@@ -413,7 +480,15 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>Nearly realistic</entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Nearly <emphasis role="bold">realistic</emphasis></para>
+                </listitem>
+
+                <listitem>
+                  <para><link xlink:href="http://allserv.kahosl.be/mista2013challenge/">MISTA 2013</link></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry><itemizedlist>
                 <listitem>
@@ -453,7 +528,15 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>Nearly realistic</entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Unrealistic</para>
+                </listitem>
+
+                <listitem>
+                  <para><link xlink:href="http://allserv.kahosl.be/~peter/pas/">Kaho PAS</link></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry><itemizedlist>
                 <listitem>
@@ -489,7 +572,16 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>Realistic</entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para><emphasis role="bold">Realistic</emphasis></para>
+                </listitem>
+
+                <listitem>
+                  <para><link xlink:href="http://www.cs.qub.ac.uk/itc2007/examtrack/exam_track_index.htm">ITC 2007 track
+                  1</link></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry><itemizedlist>
                 <listitem>
@@ -525,7 +617,15 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>Realistic</entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para><emphasis role="bold">Realistic</emphasis></para>
+                </listitem>
+
+                <listitem>
+                  <para><link xlink:href="http://www.kuleuven-kortrijk.be/nrpcompetition">INRC 2010</link></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry><itemizedlist>
                 <listitem>
@@ -565,7 +665,15 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>Unrealistic</entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Unrealistic</para>
+                </listitem>
+
+                <listitem>
+                  <para><link xlink:href="http://mat.gsia.cmu.edu/TOURN/">TTP</link></para>
+                </listitem>
+              </itemizedlist></entry>
 
             <entry>None</entry>
           </row>
