@@ -28,9 +28,14 @@ import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
 import org.kie.api.definition.process.Process;
 import org.kie.internal.KnowledgeBase;
+import org.slf4j.LoggerFactory;
 
 public class StartProcessHelperTest extends AbstractBaseTest {
 
+    public void addLogger() { 
+        logger = LoggerFactory.getLogger(this.getClass());
+    }
+    
     @Test
     public void testFindLatestProcessByNameNoInput() {
         

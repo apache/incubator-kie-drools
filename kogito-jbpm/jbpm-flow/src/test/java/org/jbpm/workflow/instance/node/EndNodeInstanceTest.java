@@ -17,7 +17,7 @@
 package org.jbpm.workflow.instance.node;
 
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.process.instance.ProcessInstance;
@@ -32,9 +32,14 @@ import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.slf4j.LoggerFactory;
 
 public class EndNodeInstanceTest extends AbstractBaseTest {
 	
+    public void addLogger() { 
+        logger = LoggerFactory.getLogger(this.getClass());
+    }
+    
     @Test
     public void testEndNode() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

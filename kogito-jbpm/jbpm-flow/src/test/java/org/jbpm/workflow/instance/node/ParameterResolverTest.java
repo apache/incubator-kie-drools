@@ -9,9 +9,13 @@ import java.util.regex.Matcher;
 
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 public class ParameterResolverTest extends AbstractBaseTest {
 
+    public void addLogger() { 
+        logger = LoggerFactory.getLogger(this.getClass());
+    }
     
     @Test
     public void testSingleVariable() {

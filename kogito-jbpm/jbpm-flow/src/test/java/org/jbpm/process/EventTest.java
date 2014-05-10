@@ -26,6 +26,7 @@ import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.test.Person;
+import org.jbpm.process.test.TestProcessEventListener;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.DroolsAction;
@@ -43,12 +44,32 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class EventTest extends AbstractBaseTest  {
     
-    private static final Logger logger = LoggerFactory.getLogger(EventTest.class);
+    public void addLogger() { 
+        logger = LoggerFactory.getLogger(this.getClass());
+    }
+    
+    String [] test1EventOrder = { 
+            "bps",
+            "bnt-0", "bnl-0",
+            "bnt-1", "ant-1",
+            "anl-0", "ant-0",
+            "aps",
+            "bvc-event", "avc-event",
+            "bnl-2",
+            "bnt-3", "bnl-3",
+            "bnt-4", "bnl-4",
+            "bnt-5", "bnl-5",
+            "bpc",
+            "apc",
+            "anl-5", "ant-5",
+            "anl-4", "ant-4",
+            "anl-3", "ant-3",
+            "anl-2"
+    };
     
 	@Test
     public void testEvent1() {
@@ -131,6 +152,8 @@ public class EventTest extends AbstractBaseTest  {
         );
         
         KieSession ksession = createKieSession(process); 
+        TestProcessEventListener procEventListener = new TestProcessEventListener();
+        ksession.addEventListener(procEventListener);
         
         ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
         assertEquals(0, myList.size());
@@ -139,8 +162,30 @@ public class EventTest extends AbstractBaseTest  {
         processInstance.signalEvent("myEvent", jack);
         assertEquals(1, myList.size());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        
+        verifyEventHistory(test1EventOrder, procEventListener.getEventHistory());
     }
 	
+    String [] test2EventOrder = { 
+            "bps",
+            "bnt-0", "bnl-0",
+            "bnt-1", "ant-1",
+            "anl-0", "ant-0",
+            "aps",
+            "bvc-event", "avc-event",
+            "bnl-2",
+            "bnt-3", "bnl-3",
+            "bnt-4", "bnl-4", "anl-4", "ant-4",
+            "anl-3", "ant-3",
+            "anl-2",
+            "bvc-event", "avc-event",
+            "bnl-5",
+            "bnt-6", "bnl-6",
+            "bnt-7", "bnl-7", "anl-7", "ant-7",
+            "anl-6", "ant-6",
+            "anl-5"
+    };
+    
     @Test
     public void testEvent2() {
         RuleFlowProcess process = new RuleFlowProcess();
@@ -217,6 +262,8 @@ public class EventTest extends AbstractBaseTest  {
         );
         
         KieSession ksession = createKieSession(process); 
+        TestProcessEventListener procEventListener = new TestProcessEventListener();
+        ksession.addEventListener(procEventListener);
         
         ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
         assertEquals(0, myList.size());
@@ -228,8 +275,34 @@ public class EventTest extends AbstractBaseTest  {
         john.setName("John");
         processInstance.signalEvent("myEvent", john);
         assertEquals(2, myList.size());
+       
+        verifyEventHistory(test2EventOrder, procEventListener.getEventHistory());
     }
 
+    String [] test3EventOrder = { 
+            "bps",
+            "bnt-0", "bnl-0",
+            "bnt-1", "ant-1",
+            "anl-0", "ant-0",
+            "aps",
+            "bvc-event", "avc-event",
+            "bnl-2",
+            "bnt-3", "bnl-3",
+            "bnt-1", "ant-1",
+            "anl-3", "ant-3",
+            "anl-2",
+            "bvc-event", "avc-event",
+            "bnl-4",
+            "bnt-5", "bnl-5",
+            "bnt-1", "bnl-1",
+            "bnt-6", "bnl-6",
+            "bpc", "apc",
+            "anl-6", "ant-6",
+            "anl-1", "ant-1",
+            "anl-5", "ant-5",
+            "anl-4",
+    };
+    
     @Test
     public void testEvent3() {
         RuleFlowProcess process = new RuleFlowProcess();
@@ -329,6 +402,8 @@ public class EventTest extends AbstractBaseTest  {
         );
         
         KieSession ksession = createKieSession(process); 
+        TestProcessEventListener procEventListener = new TestProcessEventListener();
+        ksession.addEventListener(procEventListener);
         
         ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
         assertEquals(0, myList.size());
@@ -342,7 +417,39 @@ public class EventTest extends AbstractBaseTest  {
         processInstance.signalEvent("myOtherEvent", john);
         assertEquals(2, myList.size());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+       
+        verifyEventHistory(test3EventOrder, procEventListener.getEventHistory());
     }
+   
+    String [] test3aEventOrder = { 
+            "bps",
+            "bnt-0", "bnl-0",
+            "bnt-1", "ant-1",
+            "anl-0", "ant-0",
+            "aps",
+            "bvc-event", "avc-event",
+            "bnl-2",
+            "bnt-3", "bnl-3",
+            "bnt-1", "ant-1",
+            "anl-3", "ant-3",
+            "anl-2",
+            "bnl-4",
+            "bnt-5", "bnl-5",
+            "bnt-1", "ant-1",
+            "anl-5", "ant-5",
+            "anl-4",
+            "bvc-event", "avc-event",
+            "bnl-6",
+            "bnt-7", "bnl-7",
+            "bnt-1", "bnl-1",
+            "bnt-8", "bnl-8",
+            "bpc",
+            "apc",
+            "anl-8", "ant-8",
+            "anl-1", "ant-1",
+            "anl-7", "ant-7",
+            "anl-6",
+    };
     
     @Test
     public void testEvent3a() {
@@ -443,6 +550,8 @@ public class EventTest extends AbstractBaseTest  {
         );
         
         KieSession ksession = createKieSession(process); 
+        TestProcessEventListener procEventListener = new TestProcessEventListener();
+        ksession.addEventListener(procEventListener);
         
         System.setProperty("jbpm.loop.level.disabled", "true");
         ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
@@ -461,7 +570,32 @@ public class EventTest extends AbstractBaseTest  {
         assertEquals(3, myList.size());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         System.clearProperty("jbpm.loop.level.disabled");
+       
+        verifyEventHistory(test3aEventOrder, procEventListener.getEventHistory());
     }
+   
+    String [] test4EventOrder = { 
+            "bps",
+            "bnt-0", "bnl-0",
+            "bnt-1", "ant-1",
+            "anl-0", "ant-0",
+            "aps",
+            "bnl-2",
+            "bnt-3", "bnl-3",
+            "bnt-1", "ant-1",
+            "anl-3", "ant-3",
+            "anl-2",
+            "bnl-4",
+            "bnt-5", "bnl-5",
+            "bnt-1", "bnl-1",
+            "bnt-6", "bnl-6",
+            "bpc",
+            "apc",
+            "anl-6", "ant-6",
+            "anl-1", "ant-1",
+            "anl-5", "ant-5",
+            "anl-4",
+    };
     
     @Test
     public void testEvent4() {
@@ -558,13 +692,40 @@ public class EventTest extends AbstractBaseTest  {
         );
         
         KieSession ksession = createKieSession(process);      
+        TestProcessEventListener procEventListener = new TestProcessEventListener();
+        ksession.addEventListener(procEventListener);
         
         ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
         assertEquals(0, myList.size());
         processInstance.signalEvent("myEvent", null);
         assertEquals(2, myList.size());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+       
+        verifyEventHistory(test4EventOrder, procEventListener.getEventHistory());
     }
+   
+    String [] test5EventOrder = { 
+            "bps",
+            "bnt-0", "bnl-0",
+            "bnt-1",
+            "bnt-1:1", "ant-1:1",
+            "ant-1",
+            "anl-0", "ant-0",
+            "aps",
+            "bvc-event", "avc-event",
+            "bnl-1:2",
+            "bnt-1:3", "bnl-1:3",
+            "bnt-1:4", "bnl-1:4",
+            "bnl-1",
+            "bnt-2", "bnl-2",
+            "bpc",
+            "apc",
+            "anl-2", "ant-2",
+            "anl-1",
+            "anl-1:4", "ant-1:4",
+            "anl-1:3", "ant-1:3",
+            "anl-1:2"
+    };
     
     @Test
     public void testEvent5() {
@@ -649,6 +810,8 @@ public class EventTest extends AbstractBaseTest  {
         );
         
         KieSession ksession = createKieSession(process); 
+        TestProcessEventListener procEventListener = new TestProcessEventListener();
+        ksession.addEventListener(procEventListener);
         
         ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
         assertEquals(0, myList.size());
@@ -657,6 +820,8 @@ public class EventTest extends AbstractBaseTest  {
         processInstance.signalEvent("myEvent", jack);
         assertEquals(1, myList.size());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+
+        verifyEventHistory(test5EventOrder, procEventListener.getEventHistory());
     }
     
 }

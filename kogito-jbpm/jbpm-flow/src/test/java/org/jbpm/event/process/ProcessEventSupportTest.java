@@ -56,7 +56,9 @@ import org.slf4j.LoggerFactory;
 
 public class ProcessEventSupportTest extends AbstractBaseTest {
     
-    private static final Logger logger = LoggerFactory.getLogger(ProcessEventSupportTest.class);
+    public void addLogger() { 
+        logger = LoggerFactory.getLogger(this.getClass());
+    }
 
 	@Test
     public void testProcessEventListener() throws Exception {

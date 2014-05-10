@@ -18,9 +18,6 @@ package org.jbpm.process.test;
 
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
-import java.util.Vector;
 
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;

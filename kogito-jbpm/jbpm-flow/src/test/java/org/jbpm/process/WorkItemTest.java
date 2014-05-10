@@ -29,9 +29,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.slf4j.LoggerFactory;
 
 public class WorkItemTest extends AbstractBaseTest {
 
+    public void addLogger() { 
+        logger = LoggerFactory.getLogger(this.getClass());
+    }
+    
 	@Test
     public void testReachNonRegisteredWorkItemHandler() {
         String processId = "org.drools.actions";

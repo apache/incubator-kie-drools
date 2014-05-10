@@ -5,13 +5,15 @@
     <encoder>
       <!-- %l lowers performance -->
       <!--<pattern>%d [%t] %-5p %l%n  %m%n</pattern>-->
-      <pattern>%d [%t] %-5p %m%n</pattern>
+      <pattern>%d [%t|%C] %-5p %m%n</pattern>
     </encoder>
   </appender>
 
   <logger name="org.jbpm" level="info"/>
   <logger name="bitronix.tm" level="error"/>
   <logger name="org.hibernate" level="warn"/>
+ 
+  <logger name="org.jbpm" level="info" />
   
   <root level="info">
     <appender-ref ref="consoleAppender" />

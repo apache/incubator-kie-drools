@@ -36,8 +36,13 @@ import org.kie.api.runtime.process.NodeInstance;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.slf4j.LoggerFactory;
 
 public class StartNodeInstanceTest extends AbstractBaseTest {
+    
+    public void addLogger() { 
+        logger = LoggerFactory.getLogger(this.getClass());
+    }
     
     @Test
     public void testStartNode() {

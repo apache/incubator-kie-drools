@@ -24,9 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.process.NodeInstance;
-import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 
 public class MockNodeInstance extends NodeInstanceImpl {
     

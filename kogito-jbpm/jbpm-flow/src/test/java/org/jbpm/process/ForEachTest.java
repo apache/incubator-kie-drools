@@ -28,6 +28,7 @@ import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.test.Person;
+import org.jbpm.process.test.TestProcessEventListener;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.DroolsAction;
@@ -41,12 +42,35 @@ import org.jbpm.workflow.core.node.StartNode;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ForEachTest extends AbstractBaseTest {
     
-    private static final Logger logger = LoggerFactory.getLogger(ForEachTest.class);
+    public void addLogger() { 
+        logger = LoggerFactory.getLogger(this.getClass());
+    }
+    
+    private String [] eventOrder = {
+            "bvc-persons", "avc-persons",
+            "bps",
+            "bnt-0", "bnl-0",
+            "bnt-1",
+            "bvc-3:2:child", "avc-3:2:child",
+            "bvc-3:2:child", "avc-3:2:child",
+            "bvc-3:2:child", "avc-3:2:child",
+            "bnt-1:2:1", "bnl-1:2:1", "anl-1:2:1", "ant-1:2:1",
+            "bnt-1:3:1", "bnl-1:3:1", "anl-1:3:1", "ant-1:3:1",
+            "bnt-1:4:1", "bnl-1:4:1",
+            "bnl-1",
+            "bnt-2", "bnl-2",
+            "bpc", "apc",
+            "anl-2", "ant-2",
+            "anl-1",
+            "anl-1:4:1", "ant-1:4:1",
+            "ant-1",
+            "anl-0", "ant-0",
+            "aps"
+    };
     
 	@Test
     public void testForEach() {
@@ -117,8 +141,13 @@ public class ForEachTest extends AbstractBaseTest {
         persons.add(new Person("Jane Doe"));
         persons.add(new Person("Jack"));
         parameters.put("persons", persons);
+        
+        TestProcessEventListener procEventListener = new TestProcessEventListener();
+        ksession.addEventListener(procEventListener);
         ksession.startProcess("org.drools.core.process.foreach", parameters);
         assertEquals(3, myList.size());
+     
+        verifyEventHistory(eventOrder, procEventListener.getEventHistory());
     }
 
 }

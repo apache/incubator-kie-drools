@@ -24,8 +24,13 @@ import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactoryRegistry;
 import org.jbpm.workflow.instance.impl.factory.CreateNewNodeFactory;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 public class ProcessNodeInstanceFactoryTest extends AbstractBaseTest {
+   
+    public void addLogger() { 
+        logger = LoggerFactory.getLogger(this.getClass());
+    }
     
     @Test
     public void testDefaultEntries() throws Exception {

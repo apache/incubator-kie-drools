@@ -16,11 +16,15 @@
 
 package org.jbpm.process;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.impl.WorkImpl;
 import org.jbpm.process.instance.impl.Action;
+import org.jbpm.process.test.TestProcessEventListener;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.DroolsAction;
@@ -39,13 +43,14 @@ import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SubProcessTest extends AbstractBaseTest  {
     
-    private static final Logger logger = LoggerFactory.getLogger(SubProcessTest.class);
-
+    public void addLogger() { 
+        logger = LoggerFactory.getLogger(this.getClass());
+    }
+    
 	private boolean executed = false;
 	private WorkItem workItem;
 	
@@ -54,7 +59,30 @@ public class SubProcessTest extends AbstractBaseTest  {
 		executed = false;
 		workItem = null;
 	}
-    
+  
+	String [] syncEventorder = { 
+	        "bps",
+	        "bnt-0", "bnl-0",
+	        "bnt-1",
+	        "bps",
+	        "bnt-0", "bnl-0",
+	        "bnt-1", "bnl-1",
+	        "bnt-2", "bnl-2",
+	        "bpc", "apc",
+	        "anl-2", "ant-2",
+	        "anl-1", "ant-1",
+	        "anl-0", "ant-0",
+	        "aps",
+	        "bnl-1",
+	        "bnt-2", "bnl-2",
+	        "bpc",
+	        "apc",
+	        "anl-2", "ant-2",
+	        "anl-1", "ant-1",
+	        "anl-0", "ant-0",
+	        "aps"
+	};
+	
 	@Test
     public void testSynchronousSubProcess() {
         RuleFlowProcess process = new RuleFlowProcess();
@@ -117,12 +145,29 @@ public class SubProcessTest extends AbstractBaseTest  {
         );
         
         KieSession ksession = createKieSession(process, subprocess); 
+        TestProcessEventListener procEventListener = new TestProcessEventListener();
+        ksession.addEventListener(procEventListener); 
         
         ksession.startProcess("org.drools.core.process.process");
         assertTrue(executed);
         assertEquals(0, ksession.getProcessInstances().size());
+        
+        verifyEventHistory(syncEventorder, procEventListener.getEventHistory());
     }
 
+	String [] asyncEventOrder = { 
+	        "bnl-1",
+	        "bnt-2", "bnl-2",
+	        "bpc", "apc",
+	        "bnl-1",
+	        "bnt-2", "bnl-2",
+	        "bpc", "apc",
+	        "anl-2", "ant-2",
+	        "anl-1",
+	        "anl-2", "ant-2",
+	        "anl-1",
+	};
+	
 	@Test
     public void testAsynchronousSubProcess() {
         RuleFlowProcess process = new RuleFlowProcess();
@@ -191,11 +236,16 @@ public class SubProcessTest extends AbstractBaseTest  {
 			}
         });
         ksession.startProcess("org.drools.core.process.process");
+        TestProcessEventListener procEventListener = new TestProcessEventListener();
+        ksession.addEventListener(procEventListener); 
+        
         assertNotNull(workItem);
         assertEquals(2, ksession.getProcessInstances().size());
         
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertEquals(0, ksession.getProcessInstances().size());
+        
+        verifyEventHistory(asyncEventOrder, procEventListener.getEventHistory());
     }
     
 	@Test

@@ -56,13 +56,14 @@ import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CompensationTest extends AbstractBaseTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(CompensationTest.class);
-
+    public void addLogger() { 
+        logger = LoggerFactory.getLogger(this.getClass());
+    }
+    
     private KieSession ksession; 
     
     @After

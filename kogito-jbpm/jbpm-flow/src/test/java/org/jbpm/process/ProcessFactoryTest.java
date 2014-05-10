@@ -19,9 +19,14 @@ package org.jbpm.process;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 public class ProcessFactoryTest extends AbstractBaseTest  {
-	
+
+    public void addLogger() { 
+        logger = LoggerFactory.getLogger(this.getClass());
+    }
+    
 	@Test
 	public void testProcessFactory() {
 		RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.drools.core.process");
