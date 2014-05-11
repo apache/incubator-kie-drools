@@ -19,24 +19,27 @@
   <termination>
     <bestScoreLimit>0</bestScoreLimit>
   </termination>
-  <constructionHeuristic>
-    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-  </constructionHeuristic>
-  <localSearch>
-    <changeMoveSelector>
-      <selectionOrder>ORIGINAL</selectionOrder>
-    </changeMoveSelector>
-    <!-- changeMoveSelector is the generic form of RowChangeMoveFactory: -->
-    <!--<moveListFactory>-->
-      <!--<moveListFactoryClass>org.optaplanner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveListFactoryClass>-->
-    <!--</moveListFactory>-->
-    <acceptor>
-      <entityTabuSize>5</entityTabuSize>
-    </acceptor>
-    <forager>
-      <!-- Real world problems require to use of <acceptedCountLimit> -->
-    </forager>
-  </localSearch>
+  <customSolverPhase>
+    <customSolverPhaseCommandClass>org.optaplanner.examples.nqueens.solver.solution.CheatingNQueensPhaseCommand</customSolverPhaseCommandClass>
+  </customSolverPhase>
+  <!--<constructionHeuristic>-->
+    <!--<constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>-->
+  <!--</constructionHeuristic>-->
+  <!--<localSearch>-->
+    <!--<changeMoveSelector>-->
+      <!--<selectionOrder>ORIGINAL</selectionOrder>-->
+    <!--</changeMoveSelector>-->
+    <!--&lt;!&ndash; changeMoveSelector is the generic form of RowChangeMoveFactory: &ndash;&gt;-->
+    <!--&lt;!&ndash;<moveListFactory>&ndash;&gt;-->
+      <!--&lt;!&ndash;<moveListFactoryClass>org.optaplanner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveListFactoryClass>&ndash;&gt;-->
+    <!--&lt;!&ndash;</moveListFactory>&ndash;&gt;-->
+    <!--<acceptor>-->
+      <!--<entityTabuSize>5</entityTabuSize>-->
+    <!--</acceptor>-->
+    <!--<forager>-->
+      <!--&lt;!&ndash; Real world problems require to use of <acceptedCountLimit> &ndash;&gt;-->
+    <!--</forager>-->
+  <!--</localSearch>-->
   <!-- To scale out, replace <localSearch> with this configuration: -->
   <!--<localSearch>-->
     <!--<unionMoveSelector>-->
