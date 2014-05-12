@@ -182,13 +182,13 @@ public abstract class AbstractTaskSerializationTest {
         Assume.assumeFalse(getType().equals(TestType.YAML));
 
         TaskSummaryImpl taskSumImpl = new TaskSummaryImpl(
-                1l, 2l, 
+                1l, 
                 "a", "b", "c", 
                 Status.Completed, 
                 3, true, 
                 new UserImpl("d"), new UserImpl("e"), 
                 new Date(), new Date(), new Date(), 
-                "f", 5, 
+                "f", 5, 2l, "deploymentId",
                 SubTasksStrategy.EndParentOnAllSubTasksEnd, 6l);
 
         JaxbTaskSummary jaxbTaskSum = new JaxbTaskSummary(taskSumImpl);

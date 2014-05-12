@@ -96,7 +96,6 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
 
     public long addTask(Task task, ContentData contentData) {
     	taskEventSupport.fireBeforeTaskAdded(task, persistenceContext);   	
-
         if (contentData != null) {
             Content content = TaskModelProvider.getFactory().newContent();
             ((InternalContent) content).setContent(contentData.getContent());
@@ -121,11 +120,11 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void claimNextAvailable(String userId, String language) {
+    public void claimNextAvailable(String userId) {
         List<Status> status = new ArrayList<Status>();
         status.add(Status.Ready);
         List<TaskSummary> queryTasks = persistenceContext.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByStatus", 
-                persistenceContext.addParametersToMap("userId", userId ,"language", language,"status", status),
+                persistenceContext.addParametersToMap("userId", userId, "status", status),
                 ClassUtil.<List<TaskSummary>>castClass(List.class));;
         if (queryTasks.size() > 0) {
             lifeCycleManager.taskOperation(Operation.Claim, queryTasks.get(0).getId(), userId, null, null, null);
@@ -134,7 +133,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         }
     }
 
-    public void claimNextAvailable(String userId, List<String> groupIds, String language) {
+    public void claimNextAvailable(String userId, List<String> groupIds) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -269,6 +268,24 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     
     public <T> T execute(Command<T> command) {
         return (T) ((TaskCommand) command).execute( new TaskContext() );
+    }
+
+    @Override
+    public void setName(long taskId, String name) {
+        Task task = persistenceContext.findTask(taskId);
+        ((InternalTask) task).setName(name);
+    }
+
+    @Override
+    public void setDescription(long taskId, String description) {
+        Task task = persistenceContext.findTask(taskId);
+        ((InternalTask) task).setDescription(description);
+    }
+
+    @Override
+    public void setSubject(long taskId, String subject) {
+        Task task = persistenceContext.findTask(taskId);
+        ((InternalTask) task).setSubject(subject);
     }
     
 

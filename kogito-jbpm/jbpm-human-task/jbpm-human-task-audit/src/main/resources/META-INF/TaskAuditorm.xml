@@ -19,100 +19,24 @@
         <query>delete from BAMTaskSummaryImpl b</query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
-    <named-query name="getAllUserAuditTasksAdmin">
+   
+    <named-query name="getAllAuditTasks">
         <query>
-            select u from UserAuditTaskImpl u where TYPE(u) = org.jbpm.services.task.audit.impl.model.UserAuditTaskImpl order by u.taskId DESC  
+            select a from AuditTaskImpl a order by a.taskId DESC  
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
-    <named-query name="getAllUserAuditTasks">
+    <named-query name="getAllAuditTasksByUser">
         <query>
-            select u from UserAuditTaskImpl u where TYPE(u) = org.jbpm.services.task.audit.impl.model.UserAuditTaskImpl and u.actualOwner = :userId order by u.taskId DESC  
+            select a from AuditTaskImpl a where a.actualOwner = :owner order by a.taskId DESC  
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
-     <named-query name="getUserAuditTaskById">
+    <named-query name="getAuditTaskById">
         <query>
-            select u from UserAuditTaskImpl u where u.taskId = :taskId  
+            select a from AuditTaskImpl a where a.taskId = :taskId 
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
-    <named-query name="getGroupAuditTaskById">
-        <query>
-            select g from GroupAuditTaskImpl g where g.taskId = :taskId   
-        </query>
-        <!-- hint name="org.hibernate.timeout" value="200"/ -->
-    </named-query>
-    <named-query name="getAllUserAuditTasksByStatus">
-        <query>
-            select u from UserAuditTaskImpl u where TYPE(u) = org.jbpm.services.task.audit.impl.model.UserAuditTaskImpl and u.actualOwner = :userId and u.status in :statuses  order by u.taskId DESC  
-        </query>
-        <!-- hint name="org.hibernate.timeout" value="200"/ -->
-    </named-query>
-    <named-query name="getAllUserAuditTasksByDueDate">
-        <query>
-            select u from UserAuditTaskImpl u where TYPE(u) = org.jbpm.services.task.audit.impl.model.UserAuditTaskImpl and u.actualOwner = :userId and u.dueDate = :dueDate order by u.taskId DESC  
-        </query>
-        <!-- hint name="org.hibernate.timeout" value="200"/ -->
-    </named-query>
-    <named-query name="getAllUserAuditTasksByStatusByDueDate">
-        <query>
-            select u from UserAuditTaskImpl u where TYPE(u) = org.jbpm.services.task.audit.impl.model.UserAuditTaskImpl and u.actualOwner = :userId and u.status in :statuses and u.dueDate = :dueDate order by u.taskId DESC  
-        </query>
-        <!-- hint name="org.hibernate.timeout" value="200"/ -->
-    </named-query>
-    <named-query name="getAllUserAuditTasksByStatusByDueDateOptional">
-        <query>
-            select u from UserAuditTaskImpl u where TYPE(u) = org.jbpm.services.task.audit.impl.model.UserAuditTaskImpl and u.actualOwner = :userId and u.status in :statuses  and (u.dueDate = :dueDate or u.dueDate = null) order by u.taskId DESC  
-        </query>
-        <!-- hint name="org.hibernate.timeout" value="200"/ -->
-    </named-query>
-    <named-query name="getAllGroupAuditTasksAdmin">
-        <query>
-            select g from GroupAuditTaskImpl g order by g.taskId DESC  
-        </query>
-        <!-- hint name="org.hibernate.timeout" value="200"/ -->
-    </named-query>
-    <named-query name="getAllGroupAuditTasks">
-        <query>
-            select g from GroupAuditTaskImpl g where LOCATE(:groupIds, g.potentialOwners) > 0 order by g.taskId DESC  
-        </query>
-        <!-- hint name="org.hibernate.timeout" value="200"/ -->
-    </named-query>
-    <named-query name="getAllGroupAuditTasksByStatus">
-        <query>
-            select g from GroupAuditTaskImpl g where LOCATE(:groupIds, g.potentialOwners) > 0 and  g.status in :statuses  order by g.taskId DESC  
-        </query>
-        <!-- hint name="org.hibernate.timeout" value="200"/ -->
-    </named-query>
-    <named-query name="getAllGroupAuditTasksByDueDate">
-        <query>
-            select g from GroupAuditTaskImpl g where LOCATE(:groupIds, g.potentialOwners) > 0 and g.dueDate = :dueDate order by g.taskId DESC  
-        </query>
-        <!-- hint name="org.hibernate.timeout" value="200"/ -->
-    </named-query>
-    <named-query name="getAllGroupAuditTasksByStatusByDueDate">
-        <query>
-            select g from GroupAuditTaskImpl g where LOCATE(:groupIds, g.potentialOwners) > 0 and g.status in :statuses and g.dueDate = :dueDate order by g.taskId DESC  
-        </query>
-        <!-- hint name="org.hibernate.timeout" value="200"/ -->
-    </named-query>
-    <named-query name="getAllGroupAuditTasksByStatusByDueDateOptional">
-        <query>
-            select g from GroupAuditTaskImpl g where LOCATE(:groupIds, g.potentialOwners) > 0 and g.status in :statuses  and (g.dueDate = :dueDate or g.dueDate = null) order by g.taskId DESC  
-        </query>
-        <!-- hint name="org.hibernate.timeout" value="200"/ -->
-    </named-query>
-    <named-query name="getAllHistoryAuditTasks">
-        <query>
-            select h from HistoryAuditTaskImpl h order by h.taskId DESC  
-        </query>
-        <!-- hint name="org.hibernate.timeout" value="200"/ -->
-    </named-query>
-    <named-query name="getAllHistoryAuditTasksByUser">
-        <query>
-            select h from HistoryAuditTaskImpl h where h.actualOwner = :owner order by h.taskId DESC  
-        </query>
-        <!-- hint name="org.hibernate.timeout" value="200"/ -->
-    </named-query>
+    
 </entity-mappings>

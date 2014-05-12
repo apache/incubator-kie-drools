@@ -11,70 +11,51 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
 
-@XmlRootElement(name="get-task-assigned-pot-owner-paging-command")
+@XmlRootElement(name = "get-task-assigned-pot-owner-paging-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetTaskAssignedAsPotentialOwnerPagingCommand extends UserGroupCallbackTaskCommand<List<TaskSummary>> {
 
-	private static final long serialVersionUID = 5077599352603072633L;
+    private static final long serialVersionUID = 5077599352603072633L;
 
-	@XmlElement
-    @XmlSchemaType(name="string")
-	private String language;
-	
-	@XmlElement
-	private Integer firstResult;
-	
-	@XmlElement
-	private Integer maxResults;
-    
-	public GetTaskAssignedAsPotentialOwnerPagingCommand() {
-	}
-	
-	
-	public GetTaskAssignedAsPotentialOwnerPagingCommand(String userId, List<String> groupIds, 
-			String language, int firstResult, int maxResults) {
-		this.userId = userId;
-		this.language = language;
-		this.groupsIds = groupIds;
-		this.firstResult = firstResult;
-		this.maxResults = maxResults;
+    @XmlElement
+    private Integer firstResult;
+
+    @XmlElement
+    private Integer maxResults;
+
+    public GetTaskAssignedAsPotentialOwnerPagingCommand() {
     }
-	
-	public String getLanguage() {
-		return language;
-	}
-	
-	public void setLanguage(String language) {
-		this.language = language;
-	}
 
+    public GetTaskAssignedAsPotentialOwnerPagingCommand(String userId, List<String> groupIds,
+            int firstResult, int maxResults) {
+        this.userId = userId;
+        this.groupsIds = groupIds;
+        this.firstResult = firstResult;
+        this.maxResults = maxResults;
+    }
 
-	public Integer getFirstResult() {
-		return firstResult;
-	}
+    public Integer getFirstResult() {
+        return firstResult;
+    }
 
+    public void setFirstResult(Integer firstResult) {
+        this.firstResult = firstResult;
+    }
 
-	public void setFirstResult(Integer firstResult) {
-		this.firstResult = firstResult;
-	}
+    public Integer getMaxResults() {
+        return maxResults;
+    }
 
+    public void setMaxResults(Integer maxResults) {
+        this.maxResults = maxResults;
+    }
 
-	public Integer getMaxResults() {
-		return maxResults;
-	}
-
-
-	public void setMaxResults(Integer maxResults) {
-		this.maxResults = maxResults;
-	}
-
-
-	public List<TaskSummary> execute(Context cntxt) {
+    public List<TaskSummary> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         doCallbackUserOperation(userId, context);
-        
-    	return context.getTaskQueryService().getTasksAssignedAsPotentialOwner(userId, groupsIds, language, firstResult, maxResults);
-        
+
+        return context.getTaskQueryService().getTasksAssignedAsPotentialOwner(userId, groupsIds, firstResult, maxResults);
+
     }
 
 }

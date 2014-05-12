@@ -33,7 +33,6 @@ import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
 import org.jbpm.services.task.commands.GetTasksByVariousFieldsCommand;
-import org.jbpm.services.task.impl.TaskQueryServiceImpl;
 import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -45,6 +44,7 @@ import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.TaskQueryService;
 import org.kie.internal.task.api.model.InternalI18NText;
+import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
 
 public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest {
@@ -63,7 +63,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [new User('Bobba Fet')], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name = 'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         List<TaskSummary> tasks = taskService.getTasksAssignedAsBusinessAdministrator("Bobba Fet", "en-UK");
@@ -75,7 +75,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
     
     @Test
     public void testGetTasksAssignedAsExcludedOwnerWithUserLangNoTask() {
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsExcludedOwner("Bobba Fet", "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsExcludedOwner("Bobba Fet");
         assertEquals(0, tasks.size());
     }
     
@@ -84,10 +84,10 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { excludedOwners = [new User('Bobba Fet')],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsExcludedOwner("Bobba Fet", "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsExcludedOwner("Bobba Fet");
         assertEquals(1, tasks.size());
     }
     
@@ -105,12 +105,12 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')  ],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", "en-UK");
         assertEquals(1, tasks.size());
-        assertEquals("Bobba Fet", tasks.get(0).getActualOwner().getId());
+        assertEquals("Bobba Fet", tasks.get(0).getActualOwnerId());
     }
 
     
@@ -120,7 +120,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
     public void testGetTasksAssignedAsPotentialOwnerWithUserGroupsLangNoTaskNoGroupIds() {
         List<String> groupIds = new ArrayList<String>();
         groupIds.add("Crusaders");
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds, "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds);
         assertEquals(0, tasks.size());
     }
     
@@ -129,28 +129,29 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')  ],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name = 'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         List<String> groupIds = new ArrayList<String>();
         groupIds.add("Crusaders");
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds, "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds);
         assertEquals(1, tasks.size());
-        assertEquals("Bobba Fet", tasks.get(0).getActualOwner().getId());
+        assertEquals("Bobba Fet", tasks.get(0).getActualOwnerId());
     }
     
     @Test
     public void testGetTasksAssignedAsPotentialOwnerWithUserGroupsLangOneTaskOneGroup() {
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new Group('Crusaders'), ],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         List<String> groupIds = new ArrayList<String>();
         groupIds.add("Crusaders");
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds, "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds);
         assertEquals(1, tasks.size());
         assertNull(tasks.get(0).getActualOwner());
+        assertNull(tasks.get(0).getActualOwnerId());
         assertEquals(Status.Ready, tasks.get(0).getStatus());
     }
     
@@ -158,7 +159,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
     public void testGetTasksAssignedAsPotentialOwnerWithUserGroupsLangStatus() {
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new Group('Crusaders'), ],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         List<String> groupIds = new ArrayList<String>();
@@ -166,9 +167,10 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         
         List<Status> status = new ArrayList<Status>();
         status.add(Status.Ready);
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwnerByStatusByGroup("Bobba Fet", groupIds, status, "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwnerByStatusByGroup("Bobba Fet", groupIds, status);
         assertEquals(1, tasks.size());
         assertNull(tasks.get(0).getActualOwner());
+        assertNull(tasks.get(0).getActualOwnerId());
         assertEquals(Status.Ready, tasks.get(0).getStatus());
     }
     
@@ -179,7 +181,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
     public void testGetTasksAssignedAsPotentialOwnerWithUserGroupsLangOffsetCountNoTask() {
         List<String> groupIds = new ArrayList<String>();
         groupIds.add("Crusaders");
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds, "en-UK", 0, 1);
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds,  0, 1);
         assertEquals(0, tasks.size());
     }
         
@@ -188,17 +190,17 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str1 = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str1 += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ],businessAdministrators = [ new User('Administrator') ], }),";
-        str1 += "names = [ new I18NText( 'en-UK', 'First task')] })";
+        str1 += "name = 'First task' })";
         String str2 = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str2 += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ],businessAdministrators = [ new User('Administrator') ], }),";
-        str2 += "names = [ new I18NText( 'en-UK', 'Second task')] })";
+        str2 += "name = 'Second task' })";
         Task task1 = TaskFactory.evalTask(new StringReader(str1));
         taskService.addTask(task1, new HashMap<String, Object>());
         Task task2 = TaskFactory.evalTask(new StringReader(str2));
         taskService.addTask(task2, new HashMap<String, Object>());       
         List<String> groupIds = new ArrayList<String>();
         groupIds.add("Crusaders");
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds, "en-UK", 0, 1);
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds, 0, 1);
         assertEquals(1, tasks.size());
         // FIXME tasks are returned in random order
         // assertEquals("First task", tasks.get(0).getName());
@@ -209,17 +211,17 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str1 = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str1 += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ],businessAdministrators = [ new User('Administrator') ], }),";
-        str1 += "names = [ new I18NText( 'en-UK', 'First task')] })";
+        str1 += "name =  'First task' })";
         String str2 = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str2 += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ],businessAdministrators = [ new User('Administrator') ], }),";
-        str2 += "names = [ new I18NText( 'en-UK', 'Second task')] })";
+        str2 += "name = 'Second task' })";
         Task task1 = TaskFactory.evalTask(new StringReader(str1));
         taskService.addTask(task1, new HashMap<String, Object>());
         Task task2 = TaskFactory.evalTask(new StringReader(str2));
         taskService.addTask(task2, new HashMap<String, Object>());       
         List<String> groupIds = new ArrayList<String>();
         groupIds.add("Crusaders");
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds, "en-UK", 0, 2);
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds, 0, 2);
         assertEquals(2, tasks.size());
         // FIXME tasks are returned in random order
         // assertEquals("First task", tasks.get(0).getName());
@@ -231,17 +233,17 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str1 = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str1 += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ],businessAdministrators = [ new User('Administrator') ], }),";
-        str1 += "names = [ new I18NText( 'en-UK', 'First task')] })";
+        str1 += "name = 'First task' })";
         String str2 = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str2 += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ],businessAdministrators = [ new User('Administrator') ], }),";
-        str2 += "names = [ new I18NText( 'en-UK', 'Second task')] })";
+        str2 += "name =  'Second task' })";
         Task task1 = TaskFactory.evalTask(new StringReader(str1));
         taskService.addTask(task1, new HashMap<String, Object>());
         Task task2 = TaskFactory.evalTask(new StringReader(str2));
         taskService.addTask(task2, new HashMap<String, Object>());       
         List<String> groupIds = new ArrayList<String>();
         groupIds.add("Crusaders");
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds, "en-UK", 1, 1);
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds,  1, 1);
         // FIXME tasks are returned in random order
         // assertEquals(1, tasks.size());
         // assertEquals("Second task", tasks.get(0).getName());
@@ -265,7 +267,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name = 'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         List<Status> statuses = new ArrayList<Status>();
@@ -280,14 +282,14 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         List<Status> statuses = new ArrayList<Status>();
         statuses.add(Status.Reserved);
         List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwnerByStatus("Bobba Fet", statuses, "en-UK");
         assertEquals(1, tasks.size());
-        assertEquals("Bobba Fet", tasks.get(0).getActualOwner().getId());
+        assertEquals("Bobba Fet", tasks.get(0).getActualOwnerId());
     }
     
     
@@ -300,7 +302,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         List<Status> statuses = new ArrayList<Status>();
         statuses.add(Status.Created);
         statuses.add(Status.Ready);
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwnerByStatusByGroup("Bobba Fet", groupIds, statuses, "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwnerByStatusByGroup("Bobba Fet", groupIds, statuses);
         assertEquals(0, tasks.size());
     }
     
@@ -309,7 +311,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         List<String> groupIds = new ArrayList<String>();
@@ -317,7 +319,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         List<Status> statuses = new ArrayList<Status>();
         statuses.add(Status.Created);
         statuses.add(Status.Ready);
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwnerByStatusByGroup("Bobba Fet", groupIds, statuses, "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwnerByStatusByGroup("Bobba Fet", groupIds, statuses);
         assertEquals(0, tasks.size());
     }
     
@@ -326,16 +328,16 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         List<String> groupIds = new ArrayList<String>();
         groupIds.add("Crusaders");
         List<Status> statuses = new ArrayList<Status>();
         statuses.add(Status.Reserved);
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwnerByStatusByGroup("Bobba Fet", groupIds, statuses, "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwnerByStatusByGroup("Bobba Fet", groupIds, statuses);
         assertEquals(1, tasks.size());
-        assertEquals("Bobba Fet", tasks.get(0).getActualOwner().getId());
+        assertEquals("Bobba Fet", tasks.get(0).getActualOwnerId());
     }
     
     
@@ -343,7 +345,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
     
     @Test
     public void testGetTasksAssignedAsRecipientWithUserLangNoTask() {
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsRecipient("Bobba Fet", "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsRecipient("Bobba Fet");
         assertEquals(0, tasks.size());
     }
     
@@ -352,10 +354,10 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { recipients = [new User('Bobba Fet')],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name'})";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsRecipient("Bobba Fet", "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsRecipient("Bobba Fet");
         assertEquals(1, tasks.size());
     }
     
@@ -364,7 +366,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
     
     @Test
     public void testGetTasksAssignedAsTaskInitiatorWithUserLangNoTask() {
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsTaskInitiator("Bobba Fet", "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsTaskInitiator("Bobba Fet");
         assertEquals(0, tasks.size());
     }
     
@@ -373,10 +375,10 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { taskInitiator = new User('Bobba Fet'),businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsTaskInitiator("Bobba Fet", "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsTaskInitiator("Bobba Fet");
         assertEquals(1, tasks.size());
     }
     
@@ -385,7 +387,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
     
     @Test
     public void testGetTasksAssignedAsTaskStakeholderWithUserLangNoTask() {
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsTaskStakeholder("Bobba Fet", "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsTaskStakeholder("Bobba Fet");
         assertEquals(0, tasks.size());
     }
     
@@ -394,10 +396,10 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { taskStakeholders = [new User('Bobba Fet')],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsTaskStakeholder("Bobba Fet", "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsTaskStakeholder("Bobba Fet");
         assertEquals(1, tasks.size());
     }
     
@@ -406,7 +408,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
     
     @Test
     public void testGetTasksAssignedByGroupWithGroupLangNoTask() {
-        List<TaskSummary> tasks = taskService.getTasksAssignedByGroup("Crusaders", "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedByGroup("Crusaders");
         assertEquals(0, tasks.size());
     }
     
@@ -415,10 +417,10 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new Group('Crusaders')  ],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name = 'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
-        List<TaskSummary> tasks = taskService.getTasksAssignedByGroup("Crusaders", "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedByGroup("Crusaders");
         assertEquals(1, tasks.size());
     }
     
@@ -429,7 +431,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
     public void testGetTasksAssignedByGroupsWithGroupsLangNoTask() {
         List<String> groupIds = new ArrayList<String>();
         groupIds.add("Crusaders");
-        List<TaskSummary> tasks = taskService.getTasksAssignedByGroups(groupIds, "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedByGroups(groupIds);
         assertEquals(0, tasks.size());
     }
     
@@ -438,12 +440,12 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new Group('Crusaders')  ],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name = 'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         List<String> groupIds = new ArrayList<String>();
         groupIds.add("Crusaders");
-        List<TaskSummary> tasks = taskService.getTasksAssignedByGroups(groupIds, "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedByGroups(groupIds);
         assertEquals(1, tasks.size());
     }
     
@@ -489,12 +491,12 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')  ],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name = 'This is my task name'})";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         List<TaskSummary> tasks = taskService.getTasksOwned("Bobba Fet", "en-UK");
         assertEquals(1, tasks.size());
-        assertEquals("Bobba Fet", tasks.get(0).getActualOwner().getId());
+        assertEquals("Bobba Fet", tasks.get(0).getActualOwnerId());
     }
     
     
@@ -514,14 +516,14 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')  ],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name = 'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         List<Status> statuses = new ArrayList<Status>();
         statuses.add(Status.Reserved);
         List<TaskSummary> tasks = taskService.getTasksOwnedByStatus("Bobba Fet", statuses, "en-UK");
         assertEquals(1, tasks.size());
-        assertEquals("Bobba Fet", tasks.get(0).getActualOwner().getId());
+        assertEquals("Bobba Fet", tasks.get(0).getActualOwnerId());
     }
     
     @Test
@@ -529,7 +531,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')  ],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         List<Status> statuses = new ArrayList<Status>();
@@ -556,7 +558,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { expirationTime = new Date( 10000000 ), } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')  ],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         List<Status> statuses = new ArrayList<Status>();
@@ -564,7 +566,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         Date date = new Date(10000000);
         List<TaskSummary> tasks = taskService.getTasksOwnedByExpirationDate("Bobba Fet", statuses, date);
         assertEquals(1, tasks.size());
-        assertEquals("Bobba Fet", tasks.get(0).getActualOwner().getId());
+        assertEquals("Bobba Fet", tasks.get(0).getActualOwnerId());
     }
     
     @Test
@@ -572,7 +574,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { expirationTime = new Date( 10000000 ), } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')  ],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name = 'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         List<Status> statuses = new ArrayList<Status>();
@@ -588,7 +590,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
     @Ignore("not familiar with sub task concept; groupIds is not supplied to corresponding query")
     @Test
     public void testGetSubTasksAssignedAsPotentialOwnerWithParentUserLangNoTask() {
-        List<TaskSummary> tasks = taskService.getSubTasksAssignedAsPotentialOwner(0, "Bobba Fet", "en-UK");
+        List<TaskSummary> tasks = taskService.getSubTasksAssignedAsPotentialOwner(0, "Bobba Fet");
         assertEquals(0, tasks.size());
     }
     
@@ -598,10 +600,10 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { taskStakeholders = [new User('Bobba Fet')],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name = 'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
-        List<TaskSummary> tasks = taskService.getSubTasksAssignedAsPotentialOwner(0, "Bobba Fet", "en-UK");
+        List<TaskSummary> tasks = taskService.getSubTasksAssignedAsPotentialOwner(0, "Bobba Fet");
         assertEquals(1, tasks.size());
     }
     
@@ -646,7 +648,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         
@@ -678,13 +680,13 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {processInstanceId = 99 } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         
         str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {processInstanceId = 100 } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'Another name')] })";
+        str += "name =  'Another name' })";
         task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         
@@ -697,13 +699,13 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {processInstanceId = 99 } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         
         str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {processInstanceId = 100 } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'Another name')] })";
+        str += "name =  'Another name' })";
         task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         
@@ -718,19 +720,19 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {processInstanceId = 99 } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         
         str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {processInstanceId = 100 } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'Another name')] })";
+        str += "name =  'Another name' })";
         task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         
         List<Status> statuses = new ArrayList<Status>();      
         statuses.add(Status.Reserved);
-        List<TaskSummary> tasks = taskService.getTasksByStatusByProcessInstanceIdByTaskName(99L, statuses, "This is my task name", "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksByStatusByProcessInstanceIdByTaskName(99L, statuses, "This is my task name");
         assertEquals(1, tasks.size());
     }
     
@@ -748,7 +750,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {" ;
         str += "expirationTime = new java.text.SimpleDateFormat(\"yyyy-MM-dd\").parse(\"2011-10-15\") } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         
@@ -756,7 +758,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {";
         str += "expirationTime = new java.text.SimpleDateFormat(\"yyyy-MM-dd\").parse(\"2013-04-15\") } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         
@@ -764,7 +766,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {";
         str += "expirationTime = new java.text.SimpleDateFormat(\"yyyy-MM-dd\").parse(\"2013-04-16\") } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         
@@ -772,7 +774,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {";
         str += "expirationTime = new java.text.SimpleDateFormat(\"yyyy-MM-dd\").parse(\"2013-08-16\") } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         
@@ -780,7 +782,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {";
         str += "expirationTime = new java.text.SimpleDateFormat(\"yyyy-MM-dd\").parse(\"2013-01-15\") } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Darth Vader')],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         
@@ -790,7 +792,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         List<TaskSummary> tasks = taskService.getTasksOwnedByExpirationDateBeforeSpecifiedDate("Bobba Fet", statuses, dateSpecified);
         assertEquals(2, tasks.size());
         for(TaskSummary taskSummary : tasks) {
-            assertTrue("Expected user 'Bobba Fet'!", taskSummary.getActualOwner().toString().contains("Bobba Fet"));
+            assertTrue("Expected user 'Bobba Fet'!", taskSummary.getActualOwnerId().contains("Bobba Fet"));
             // the expiration date should be before the specified date
             assertTrue("Expiration date needs to be before the specified date!", taskSummary.getExpirationTime().compareTo(dateSpecified) < 0);
         }
@@ -799,14 +801,21 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
     @Test
     public void testModifyTaskName() {
         // JBPM-4148
+        String taskName = "This is my task name";
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')  ],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name = '"+taskName+"' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
+        List<I18NText> names = new ArrayList<I18NText>();
+            I18NText text = TaskModelProvider.getFactory().newI18NText();
+            ((InternalI18NText) text).setLanguage("en-UK");
+            ((InternalI18NText) text).setText(taskName);
+            names.add(text);
+            ((InternalTask)task).setNames(names);
         taskService.addTask(task, new HashMap<String, Object>());
         List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", "en-UK");
         assertEquals(1, tasks.size());
-        assertEquals("This is my task name", tasks.get(0).getName());
+        assertEquals(taskName, tasks.get(0).getName());
         
         Task newTask = taskService.getTaskById(tasks.get(0).getId());
         List<I18NText> updatedNames = new ArrayList<I18NText>();
@@ -819,20 +828,30 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         
         List<TaskSummary> newTasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", "en-UK");
         assertEquals(1, newTasks.size());
-        assertEquals("New task name", newTasks.get(0).getName());
+        
+        newTask = taskService.getTaskById(newTasks.get(0).getId());
+        assertEquals("New task name", newTask.getNames().get(0).getText());
     }
     
     @Test
     public void testModifyTaskNameWithinTX() throws Exception{
         // JBPM-4148
+        String taskName = "This is my task name";
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')  ],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name = '"+taskName+"' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
+        List<I18NText> names = new ArrayList<I18NText>();
+            I18NText text = TaskModelProvider.getFactory().newI18NText();
+            ((InternalI18NText) text).setLanguage("en-UK");
+            ((InternalI18NText) text).setText(taskName);
+            names.add(text);
+            ((InternalTask)task).setNames(names);
+        
         taskService.addTask(task, new HashMap<String, Object>());
         List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", "en-UK");
         assertEquals(1, tasks.size());
-        assertEquals("This is my task name", tasks.get(0).getName());
+        assertEquals(taskName, tasks.get(0).getName());
         
         UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
         ut.begin();
@@ -842,7 +861,9 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         
         List<TaskSummary> newTasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", "en-UK");
         assertEquals(1, newTasks.size());
-        assertEquals("New task name", newTasks.get(0).getName());
+
+        newTask = taskService.getTaskById(newTasks.get(0).getId());
+        assertEquals("New task name", newTask.getNames().get(0).getText());
     }
     
     
@@ -866,7 +887,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
                 + "businessAdministrators = [new User('" + busAdmin + "')],"
                 + "potentialOwners = [new User('" + potOwner + "')]"
                 + " }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         Task taskImpl = TaskFactory.evalTask(new StringReader(str));
         ((InternalTaskData) taskImpl.getTaskData()).setWorkItemId(workItemId);
         ((InternalTaskData) taskImpl.getTaskData()).setProcessInstanceId(procInstId);
@@ -881,7 +902,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         busAdmins.add(busAdmin);
         potOwners.add(potOwner);
         
-        List<TaskSummary> results = taskService.getTasksByVariousFields(workItemIds, null, null, null, null, null, null, null, false);
+        List<TaskSummary> results = taskService.getTasksByVariousFields(workItemIds, null, null, null, null, null, null, false);
         assertEquals("List of tasks", 1, results.size());
         
         workItemId = 25;
@@ -893,7 +914,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
                 + "businessAdministrators = [new User('" + busAdmin + "')],"
                 + "potentialOwners = [new User('" + potOwner + "')]"
                 + " }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         taskImpl = TaskFactory.evalTask(new StringReader(str));
         ((InternalTaskData) taskImpl.getTaskData()).setWorkItemId(workItemId);
         ((InternalTaskData) taskImpl.getTaskData()).setProcessInstanceId(procInstId);
@@ -921,7 +942,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
                 + "businessAdministrators = [new User('" + busAdmin + "')],"
                 + "potentialOwners = [new User('" + potOwner + "')]"
                 + " }),";
-        str += "names = [ new I18NText( 'nl-NL', 'Koude Bevel')] })";
+        str += "name =  'Koude Bevel' })";
         taskImpl = TaskFactory.evalTask(new StringReader(str));
         ((InternalTaskData) taskImpl.getTaskData()).setWorkItemId(workItemId);
         ((InternalTaskData) taskImpl.getTaskData()).setProcessInstanceId(procInstId);
@@ -932,7 +953,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         taskService.fail(taskImpl.getId(), busAdmin, null);
 
         // everything
-        results = taskService.getTasksByVariousFields(null, null, null, null, null, null, null, null, false);
+        results = taskService.getTasksByVariousFields(null, null, null, null, null, null, null, false);
         assertEquals("List of tasks", 3, results.size());
         testOrderByTaskIdAscending(results);
         
@@ -946,25 +967,25 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         assertEquals( "Did not order when returning tasks (first task id: " + results.get(0).getId(), firstTaskid, results.get(0).getId());
         
         // single param tests
-        results = taskService.getTasksByVariousFields(workItemIds, null, null, null, null, null, null, null, false);
+        results = taskService.getTasksByVariousFields(workItemIds, null, null, null, null, null, null, false);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
-        results = taskService.getTasksByVariousFields(null, taskIds, null, null, null, null, null, null, false );
+        results = taskService.getTasksByVariousFields(null, taskIds, null, null, null, null, null, false );
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
-        results = taskService.getTasksByVariousFields(null, null, procInstIds, null, null, null, null, null, false);
+        results = taskService.getTasksByVariousFields(null, null, procInstIds, null, null, null, null, false);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
-        results = taskService.getTasksByVariousFields(null, null, null, busAdmins, null, null, null, null, false);
+        results = taskService.getTasksByVariousFields(null, null, null, busAdmins, null, null, null, false);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
-        results = taskService.getTasksByVariousFields(null, null, null, null, potOwners, null, null, null, false);
+        results = taskService.getTasksByVariousFields(null, null, null, null, potOwners, null, null, false);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
-        results = taskService.getTasksByVariousFields(null, null, null, null, null, potOwners, null, null, false);
+        results = taskService.getTasksByVariousFields(null, null, null, null, null, potOwners, null, false);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
-        results = taskService.getTasksByVariousFields(null, null, null, null, null, null, statuses, null, false);
+        results = taskService.getTasksByVariousFields(null, null, null, null, null, null, statuses, false);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
         
@@ -973,28 +994,28 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         testLongList.add(workItemIds.get(0));
         List<Long> testLongListTwo = new ArrayList<Long>();
         testLongListTwo.add(taskIds.get(1));
-        results = taskService.getTasksByVariousFields(testLongList, testLongListTwo, null, null, null, null, null, null, false);
+        results = taskService.getTasksByVariousFields(testLongList, testLongListTwo, null, null, null, null, null, false);
         assertEquals("List of tasks", 0, results.size());
-        results = taskService.getTasksByVariousFields(testLongList, testLongListTwo, null, null, null, null, null, null, true);
+        results = taskService.getTasksByVariousFields(testLongList, testLongListTwo, null, null, null, null, null, true);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
         
         // task id and/or process instance id 
         testLongList.clear();
         testLongList.add(procInstIds.get(1));
-        results = taskService.getTasksByVariousFields(null, testLongListTwo, testLongList, null, null, null, null, null, true);
+        results = taskService.getTasksByVariousFields(null, testLongListTwo, testLongList, null, null, null, null, true);
         assertEquals("List of tasks", 1, results.size());
         testOrderByTaskIdAscending(results);
-        results = taskService.getTasksByVariousFields(null, testLongListTwo, testLongList, null, null, null, null, null, false);
+        results = taskService.getTasksByVariousFields(null, testLongListTwo, testLongList, null, null, null, null, false);
         assertEquals("List of tasks", 1, results.size());
         testOrderByTaskIdAscending(results);
         
         // process instance id and/or bus admin 
         List<String> testStringList = new ArrayList<String>();
         testStringList.add(busAdmins.get(0));
-        results = taskService.getTasksByVariousFields(null, testLongListTwo, null, testStringList, null, null, null, null, false);
+        results = taskService.getTasksByVariousFields(null, testLongListTwo, null, testStringList, null, null, null, false);
         assertEquals("List of tasks", 0, results.size());
-        results = taskService.getTasksByVariousFields(null, testLongListTwo, null, testStringList, null, null, null, null, true);
+        results = taskService.getTasksByVariousFields(null, testLongListTwo, null, testStringList, null, null, null, true);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
     
@@ -1003,40 +1024,32 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         testStringList.add(busAdmins.get(1));
         List<String> testStringListTwo = new ArrayList<String>();
         testStringListTwo.add(potOwners.get(0));
-        results = taskService.getTasksByVariousFields(null, null, null, testStringList, testStringListTwo, null, null, null, false);
+        results = taskService.getTasksByVariousFields(null, null, null, testStringList, testStringListTwo, null, null, false);
         assertEquals("List of tasks", 0, results.size());
-        results = taskService.getTasksByVariousFields(null, null, null, testStringList, testStringListTwo, null, null, null, true);
+        results = taskService.getTasksByVariousFields(null, null, null, testStringList, testStringListTwo, null, null, true);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
         
         // pot owner and/or task owner
         testStringList.clear();
         testStringList.add(tasks[1].getTaskData().getActualOwner().getId());
-        results = taskService.getTasksByVariousFields(null, null, null, null, testStringListTwo, testStringList, null, null, false);
+        results = taskService.getTasksByVariousFields(null, null, null, null, testStringListTwo, testStringList, null, false);
         assertEquals("List of tasks", 0, results.size());
-        results = taskService.getTasksByVariousFields(null, null, null, null, testStringListTwo, testStringList, null, null, true);
+        results = taskService.getTasksByVariousFields(null, null, null, null, testStringListTwo, testStringList, null, true);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
         
         // task owner and/or status
         List<Status> testStatusList = new ArrayList<Status>();
         testStatusList.add(statuses.get(0));
-        results = taskService.getTasksByVariousFields(null, null, null, null, null, testStringList, testStatusList, null, false);
+        results = taskService.getTasksByVariousFields(null, null, null, null, null, testStringList, testStatusList, false);
         assertEquals("List of tasks", 0, results.size());
-        results = taskService.getTasksByVariousFields(null, null, null, null, null, testStringList, testStatusList, null, true);
+        results = taskService.getTasksByVariousFields(null, null, null, null, null, testStringList, testStatusList, true);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
         
-        // status and/or language
-        List<String> testLangList = new ArrayList<String>();
-        testLangList.add("en-UK");
-        results = taskService.getTasksByVariousFields(null, null, null, null, null, null, testStatusList, testLangList, true);
-        assertEquals("List of tasks", 2, results.size());
-        testOrderByTaskIdAscending(results);
-        testLangList.clear();
-        testLangList.add("nl-BE");
-        results = taskService.getTasksByVariousFields(null, null, null, null, null, testStringList, testStatusList, null, false);
-        assertEquals("List of tasks", 0, results.size());
+        
+        
     }
 
     private void testOrderByTaskIdAscending(List<TaskSummary> results) { 
@@ -1057,13 +1070,13 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
                 + "businessAdministrators = [new Group('Administrators')],"
                 + "potentialOwners = [new Group('Crusaders')]"
                 + " }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name = 'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         ((InternalTaskData) task.getTaskData()).setWorkItemId(1);
         ((InternalTaskData) task.getTaskData()).setProcessInstanceId(1);
         taskService.addTask(task, new HashMap<String, Object>());
         
-        List<TaskSummary> results = taskService.getTasksByVariousFields(null, null, null, null, potOwners, null, null, null, false);
+        List<TaskSummary> results = taskService.getTasksByVariousFields(null, null, null, null, potOwners,  null, null, false);
         
         assertNotNull(results);
         assertEquals(1, results.size());
@@ -1080,13 +1093,13 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
                 + "businessAdministrators = [new Group('Administrators')],"
                 + "potentialOwners = [new Group('Crusaders')]"
                 + " }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         ((InternalTaskData) task.getTaskData()).setWorkItemId(1);
         ((InternalTaskData) task.getTaskData()).setProcessInstanceId(1);
         taskService.addTask(task, new HashMap<String, Object>());
         
-        List<TaskSummary> results = taskService.getTasksByVariousFields(null, null, null, busAdmins, null, null, null, null, false);
+        List<TaskSummary> results = taskService.getTasksByVariousFields(null, null, null, busAdmins, null, null, null, false);
         
         assertNotNull(results);
         assertEquals(1, results.size());
@@ -1103,7 +1116,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
                 + "businessAdministrators = [new Group('Administrators')],"
                 + "potentialOwners = [new Group('Crusaders')]"
                 + " }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name = 'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         ((InternalTaskData) task.getTaskData()).setWorkItemId(1);
         ((InternalTaskData) task.getTaskData()).setProcessInstanceId(1);
@@ -1126,7 +1139,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
                 + "businessAdministrators = [new Group('Administrators')],"
                 + "potentialOwners = [new Group('Crusaders')]"
                 + " }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name = 'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         ((InternalTaskData) task.getTaskData()).setWorkItemId(1);
         ((InternalTaskData) task.getTaskData()).setProcessInstanceId(1);

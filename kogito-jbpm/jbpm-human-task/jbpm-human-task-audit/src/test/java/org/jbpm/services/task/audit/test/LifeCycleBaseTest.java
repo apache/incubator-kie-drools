@@ -15,7 +15,6 @@
  */
 package org.jbpm.services.task.audit.test;
 
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
@@ -23,19 +22,17 @@ import org.jbpm.services.task.HumanTaskServicesBaseTest;
 import org.jbpm.services.task.audit.commands.DeleteAuditEventsCommand;
 import org.jbpm.services.task.audit.commands.GetAuditEventsCommand;
 import org.jbpm.services.task.audit.impl.model.BAMTaskSummaryImpl;
-import org.jbpm.services.task.audit.impl.model.api.GroupAuditTask;
-import org.jbpm.services.task.audit.impl.model.api.HistoryAuditTask;
-import org.jbpm.services.task.audit.impl.model.api.UserAuditTask;
+import org.jbpm.services.task.audit.impl.model.api.AuditTask;
 import org.jbpm.services.task.audit.service.TaskAuditService;
-import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.jbpm.services.task.impl.model.command.DeleteBAMTaskSummariesCommand;
 import org.jbpm.services.task.impl.model.command.GetBAMTaskSummariesCommand;
-import static org.junit.Assert.assertEquals;
+import org.jbpm.services.task.utils.TaskFluent;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.task.api.model.TaskEvent;
 
 public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
@@ -45,38 +42,48 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
     
     @Test
     public void testComplete() {
-        // One potential owner, should go straight to state Reserved
-        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new Group('Knights Templer' )],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
-
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+      
+        Task task = new TaskFluent().setName("This is my task name")
+                                    .addPotentialGroup("Knights Templer")
+                                    .setAdminUser("Administrator")
+                                    .getTask();
+       
+        
+        
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
         
          
-        List<GroupAuditTask> allGroupAuditTasks = taskAuditService.getAllGroupAuditTasks("Knights Templer",0,0);
+        List<TaskSummary> allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
         
         
         assertEquals(1, allGroupAuditTasks.size());
+        
+        assertTrue(allGroupAuditTasks.get(0).getStatusId().equals("Ready"));
 
         taskService.claim(taskId, "Darth Vader");  
         
-        allGroupAuditTasks = taskAuditService.getAllGroupAuditTasks("Knights Templer",0,0);
-        
-        assertEquals(0, allGroupAuditTasks.size());
-        
-        taskService.release(taskId, "Darth Vader");
-        
-        allGroupAuditTasks = taskAuditService.getAllGroupAuditTasks("Knights Templer",0,0);
+        allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
         
         assertEquals(1, allGroupAuditTasks.size());
         
+        assertTrue(allGroupAuditTasks.get(0).getStatusId().equals("Reserved"));
+        
+        taskService.release(taskId, "Darth Vader");
+        
+        allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy" , null, null, null);
+        
+        assertEquals(1, allGroupAuditTasks.size());
+        
+        assertTrue(allGroupAuditTasks.get(0).getStatusId().equals("Ready"));
+        
         taskService.claim(taskId, "Darth Vader");    
         
-        allGroupAuditTasks = taskAuditService.getAllGroupAuditTasks("Knights Templer",0,0);
+        allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
         
-        assertEquals(0, allGroupAuditTasks.size());
+        assertEquals(1, allGroupAuditTasks.size());
+        
+        assertTrue(allGroupAuditTasks.get(0).getStatusId().equals("Reserved"));
         
         // Go straight from Ready to Inprogress
         taskService.start(taskId, "Darth Vader");
@@ -97,7 +104,10 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
      
         // test DeleteAuditEventsCommand        
         int numFirstTaskEvents = allTaskEvents.size();
-        task = (Task) TaskFactory.evalTask(new StringReader(str));
+        task = new TaskFluent().setName("This is my task name 2")
+                                    .addPotentialGroup("Knights Templer")
+                                    .setAdminUser("Administrator")
+                                    .getTask();
         taskService.addTask(task, new HashMap<String, Object>());
         long secondTaskId = task.getId();
         taskService.claim(secondTaskId, "Darth Vader");    
@@ -131,7 +141,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         bamTaskList = taskService.execute(new GetBAMTaskSummariesCommand());
         assertEquals( "BAM Task Summary list size after delete (task id: " + taskId + ") : ", 0, bamTaskList.size());
         
-        List<HistoryAuditTask> allHistoryAuditTasks = taskAuditService.getAllHistoryAuditTasks(0,0);
+        List<AuditTask> allHistoryAuditTasks = taskAuditService.getAllHistoryAuditTasks(0,0);
         assertEquals(2, allHistoryAuditTasks.size());
     }
     
@@ -139,70 +149,71 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
     @Test
     public void testExitAfterClaim() {
         // One potential owner, should go straight to state Reserved
-        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new Group('Knights Templer' )],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = new TaskFluent().setName("This is my task name 2")
+                                    .addPotentialGroup("Knights Templer")
+                                    .setAdminUser("Administrator")
+                                    .getTask();
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
         
          
-        List<GroupAuditTask> allGroupAuditTasks = taskAuditService.getAllGroupAuditTasks("Knights Templer",0,0);
+        List<TaskSummary> allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
+        
         
         
         assertEquals(1, allGroupAuditTasks.size());
+        assertTrue(allGroupAuditTasks.get(0).getStatusId().equals("Ready"));
 
         taskService.claim(taskId, "Darth Vader"); 
         
-        List<UserAuditTask> allUserAuditTasks = taskAuditService.getAllUserAuditTasks("Darth Vader",0,0);
-        assertEquals(1, allUserAuditTasks.size());
+        allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
+        assertEquals(1, allGroupAuditTasks.size());
+        assertTrue(allGroupAuditTasks.get(0).getStatusId().equals("Reserved"));
         
         taskService.exit(taskId, "Administrator");
         
-        List<HistoryAuditTask> allHistoryAuditTasks = taskAuditService.getAllHistoryAuditTasks(0,0);
+        List<AuditTask> allHistoryAuditTasks = taskAuditService.getAllHistoryAuditTasks(0,0);
         assertEquals(1, allHistoryAuditTasks.size());
         
-        allGroupAuditTasks = taskAuditService.getAllGroupAuditTasks("Knights Templer",0,0);
+        allGroupAuditTasks =taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
         assertEquals(0, allGroupAuditTasks.size());
-        
-        allUserAuditTasks = taskAuditService.getAllUserAuditTasks("Darth Vader",0,0);
-        assertEquals(0, allUserAuditTasks.size());
-        
         
         
         
     }
-    
+//    
      @Test
     public void testExitBeforeClaim() {
-        // One potential owner, should go straight to state Reserved
-        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new Group('Knights Templer' )],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+       
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = new TaskFluent().setName("This is my task name 2")
+                                    .addPotentialGroup("Knights Templer")
+                                    .setAdminUser("Administrator")
+                                    .getTask();
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
         
          
-        List<GroupAuditTask> allGroupAuditTasks = taskAuditService.getAllGroupAuditTasks("Knights Templer",0,0);
+        List<TaskSummary> allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
         
         
         assertEquals(1, allGroupAuditTasks.size());
+        assertTrue(allGroupAuditTasks.get(0).getStatusId().equals("Ready"));
         
         taskService.exit(taskId, "Administrator");
         
-        List<HistoryAuditTask> allHistoryAuditTasks = taskAuditService.getAllHistoryAuditTasks(0,0);
+        List<AuditTask> allHistoryAuditTasks = taskAuditService.getAllHistoryAuditTasks(0,0);
         assertEquals(1, allHistoryAuditTasks.size());
         
-        allGroupAuditTasks = taskAuditService.getAllGroupAuditTasks("Knights Templer",0,0);
+        allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
         assertEquals(0, allGroupAuditTasks.size());
         
         
         
     }
-   
+  
     
 
    

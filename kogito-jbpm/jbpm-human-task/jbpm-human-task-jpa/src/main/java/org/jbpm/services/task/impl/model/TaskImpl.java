@@ -57,6 +57,12 @@ public class TaskImpl implements InternalTask {
      */
     private int                  priority;
 
+    private String name;
+    
+    private String subject;
+    
+    private String description;
+    
     @OneToMany(cascade = CascadeType.ALL, targetEntity=I18NTextImpl.class)
     @JoinColumn(name = "Task_Names_Id", nullable = true)
     private List<I18NText> names        = Collections.emptyList();
@@ -103,6 +109,13 @@ public class TaskImpl implements InternalTask {
         out.writeShort( archived );
         out.writeUTF(taskType);
         out.writeUTF(formName);
+        
+        out.writeUTF(name);
+        
+        out.writeUTF(subject);
+        
+        out.writeUTF(description);
+        
         CollectionUtils.writeI18NTextList( names, out );
         CollectionUtils.writeI18NTextList( subjects, out );
         CollectionUtils.writeI18NTextList( descriptions, out );
@@ -151,6 +164,9 @@ public class TaskImpl implements InternalTask {
         archived = in.readShort();
         taskType = in.readUTF();
         formName = in.readUTF();
+        name = in.readUTF();
+        subject = in.readUTF();
+        description = in.readUTF();
         names = CollectionUtils.readI18NTextList( in );
         subjects = CollectionUtils.readI18NTextList( in );
         descriptions = CollectionUtils.readI18NTextList( in );
@@ -354,5 +370,31 @@ public class TaskImpl implements InternalTask {
     public void setSubTaskStrategy(SubTasksStrategy subTaskStrategy) {
         this.subTaskStrategy = subTaskStrategy;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
+    
 
 }

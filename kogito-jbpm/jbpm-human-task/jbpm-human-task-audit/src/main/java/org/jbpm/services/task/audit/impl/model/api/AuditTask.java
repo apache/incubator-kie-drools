@@ -74,4 +74,14 @@ public interface AuditTask {
     long getParentId();
 
     void setParentId(long parentId);
+    
+    String getActualOwner();
+
+    void setActualOwner(String actualOwner);
+
+    String getDeploymentId();
+
+    void setDeploymentId(String deploymentId);
+    
+    
 }

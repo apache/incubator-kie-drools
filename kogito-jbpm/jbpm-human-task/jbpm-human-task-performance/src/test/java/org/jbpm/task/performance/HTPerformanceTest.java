@@ -19,12 +19,10 @@ import javax.persistence.Persistence;
 
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
-import org.jbpm.services.task.lifecycle.listeners.BAMTaskEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.internal.task.api.InternalTaskService;
 
-import org.jbpm.services.task.audit.TaskAuditServiceFactory;
 
 /**
  *
@@ -42,10 +40,10 @@ public class HTPerformanceTest extends HTPerformanceBaseTest {
 		this.taskService = (InternalTaskService) HumanTaskServiceFactory.newTaskServiceConfigurator()
 												.entityManagerFactory(emf)
 												.listener(new JPATaskLifeCycleEventListener())
-												.listener(new BAMTaskEventListener())
+												//.listener(new BAMTaskEventListener())
 												.getTaskService();
                 
-                this.taskAuditService = TaskAuditServiceFactory.newTaskAuditServiceConfigurator().setTaskService(taskService).getTaskAuditService();
+//                this.taskAuditService = TaskAuditServiceFactory.newTaskAuditServiceConfigurator().setTaskService(taskService).getTaskAuditService();
 	}
 	
 	@After

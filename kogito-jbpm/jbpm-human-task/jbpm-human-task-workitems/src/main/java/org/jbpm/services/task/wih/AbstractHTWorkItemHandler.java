@@ -80,6 +80,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
             names.add(text);
             task.setNames(names);
         }
+        task.setName(taskName);
         // this should be replaced by FormName filled by designer
         // TaskName shouldn't be trimmed if we are planning to use that for the task lists
         String formName = (String) workItem.getParameter("TaskName"); 
@@ -97,12 +98,18 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         ((InternalI18NText) descText).setText(comment);
         descriptions.add(descText);
         task.setDescriptions(descriptions);
+        
+        task.setDescription(comment);
+        
         List<I18NText> subjects = new ArrayList<I18NText>();
         I18NText subjectText = TaskModelProvider.getFactory().newI18NText();
         ((InternalI18NText) subjectText).setLanguage("en-UK");
         ((InternalI18NText) subjectText).setText(comment);
         subjects.add(subjectText);
         task.setSubjects(subjects);
+        
+        task.setSubject(comment);
+        
         String priorityString = (String) workItem.getParameter("Priority");
         int priority = 0;
         if (priorityString != null) {
