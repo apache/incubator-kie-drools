@@ -16,12 +16,6 @@
 
 package org.drools.core.reteoo.builder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DefaultBetaConstraints;
@@ -46,6 +40,12 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.time.Interval;
 import org.drools.core.time.TemporalDependencyMatrix;
 import org.drools.core.time.TimeUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Utility functions for reteoo build
@@ -318,9 +318,10 @@ public class BuildUtils {
                 IntervalProviderConstraint constr = (IntervalProviderConstraint) obj;
                 if ( constr.isTemporal() ) {
                     // if a constraint already exists, calculate the intersection
-                    Declaration target = constr.getRequiredDeclarations()[0];
+                    Declaration[] decs = constr.getRequiredDeclarations();
                     // only calculate relationships to other event patterns
-                    if( target.isPatternDeclaration() && target.getPattern().getObjectType().isEvent() ) {
+                    if( decs.length > 0 && decs[0].isPatternDeclaration() && decs[0].getPattern().getObjectType().isEvent() ) {
+                        Declaration target = decs[0];
                         Interval interval = temporal.get( target );
                         if ( interval == null ) {
                             interval = constr.getInterval();
