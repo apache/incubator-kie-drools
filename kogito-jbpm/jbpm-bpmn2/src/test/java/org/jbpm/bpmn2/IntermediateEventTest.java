@@ -1687,6 +1687,96 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         }
         
     }
+    
+    @Test
+    public void testSignalBoundaryEventOnMultiInstanceSubprocess() throws Exception {
+        KieBase kbase = createKnowledgeBase(
+                "subprocess/BPMN2-MultiInstanceSubprocessWithBoundarySignal.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        List<String> approvers = new ArrayList<String>();
+        approvers.add("john");
+        approvers.add("john");
+        
+        params.put("approvers", approvers);
+
+        ProcessInstance processInstance = ksession.startProcess("boundary-catch-error-event", params);
+        assertProcessInstanceActive(processInstance);
+        
+        List<WorkItem> workItems = handler.getWorkItems();
+        assertNotNull(workItems);                
+        assertEquals(2, workItems.size());
+        
+        ksession.signalEvent("Outside", null, processInstance.getId());
+        assertProcessInstanceFinished(processInstance, ksession);
+        
+        ksession.dispose();        
+    }
+    
+    @Test
+    public void testSignalBoundaryEventNoInteruptOnMultiInstanceSubprocess() throws Exception {
+        KieBase kbase = createKnowledgeBase(
+                "subprocess/BPMN2-MultiInstanceSubprocessWithBoundarySignalNoInterupting.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        List<String> approvers = new ArrayList<String>();
+        approvers.add("john");
+        approvers.add("john");
+        
+        params.put("approvers", approvers);
+
+        ProcessInstance processInstance = ksession.startProcess("boundary-catch-error-event", params);
+        assertProcessInstanceActive(processInstance);
+        
+        List<WorkItem> workItems = handler.getWorkItems();
+        assertNotNull(workItems);                
+        assertEquals(2, workItems.size());
+        
+        ksession.signalEvent("Outside", null, processInstance.getId());
+        
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        
+        for (WorkItem wi : workItems) {
+        	ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+        }
+        assertProcessInstanceFinished(processInstance, ksession);
+        
+        ksession.dispose();        
+    }
+    
+    @Test
+    public void testErrorBoundaryEventOnMultiInstanceSubprocess() throws Exception {
+        KieBase kbase = createKnowledgeBase(
+                "subprocess/BPMN2-MultiInstanceSubprocessWithBoundaryError.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        List<String> approvers = new ArrayList<String>();
+        approvers.add("john");
+        approvers.add("john");
+        
+        params.put("approvers", approvers);
+
+        ProcessInstance processInstance = ksession.startProcess("boundary-catch-error-event", params);
+        assertProcessInstanceActive(processInstance);
+        
+        List<WorkItem> workItems = handler.getWorkItems();
+        assertNotNull(workItems);                
+        assertEquals(2, workItems.size());
+        
+        ksession.signalEvent("Inside", null, processInstance.getId());
+        assertProcessInstanceFinished(processInstance, ksession);
+        
+        ksession.dispose();        
+    }
 
     /*
      * helper methods
