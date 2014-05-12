@@ -49,9 +49,9 @@ public interface TaskInstanceService extends CommandExecutor {
 
     void claim(long taskId, String userId, List<String> groupIds);
 
-    void claimNextAvailable(String userId, String language);
+    void claimNextAvailable(String userId);
 
-    void claimNextAvailable(String userId, List<String> groupIds, String language);
+    void claimNextAvailable(String userId, List<String> groupIds);
 
     void complete(long taskId, String userId, Map<String, Object> data);
 
@@ -109,5 +109,10 @@ public interface TaskInstanceService extends CommandExecutor {
     
     SubTasksStrategy getSubTaskStrategy(long taskId);
     
+    void setName(long taskId, String name);
+    
+    void setDescription(long taskId, String description);
+    
+    void setSubject(long taskId, String subject);
     
 }
