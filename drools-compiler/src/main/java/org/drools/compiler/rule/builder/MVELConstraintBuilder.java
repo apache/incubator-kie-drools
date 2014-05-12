@@ -1,5 +1,15 @@
 package org.drools.compiler.rule.builder;
 
+import org.drools.compiler.compiler.AnalysisResult;
+import org.drools.compiler.compiler.DescrBuildError;
+import org.drools.compiler.compiler.Dialect;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.LiteralRestrictionDescr;
+import org.drools.compiler.lang.descr.OperatorDescr;
+import org.drools.compiler.lang.descr.PredicateDescr;
+import org.drools.compiler.lang.descr.RelationalExprDescr;
+import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
+import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.EvaluatorWrapper;
@@ -7,20 +17,9 @@ import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.Operator;
 import org.drools.core.base.mvel.MVELCompilationUnit;
-import org.drools.compiler.compiler.AnalysisResult;
-import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.compiler.compiler.Dialect;
-import org.drools.core.util.index.IndexUtil;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.LiteralRestrictionDescr;
-import org.drools.compiler.lang.descr.OperatorDescr;
-import org.drools.compiler.lang.descr.PredicateDescr;
-import org.drools.compiler.lang.descr.RelationalExprDescr;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.ReturnValueRestriction;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.rule.constraint.EvaluatorConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.Constraint;
@@ -29,6 +28,7 @@ import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Restriction;
+import org.drools.core.util.index.IndexUtil;
 import org.mvel2.ConversionHandler;
 import org.mvel2.DataConversion;
 import org.mvel2.util.CompatibilityStrategy;
@@ -40,10 +40,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.compiler.rule.builder.PatternBuilder.buildAnalysis;
 import static org.drools.compiler.rule.builder.PatternBuilder.getUsedDeclarations;
 import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
+import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 
 public class MVELConstraintBuilder implements ConstraintBuilder {
 
@@ -139,6 +139,18 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                              LiteralRestrictionDescr restrictionDescr) {
         if (!isMvelOperator(operator)) {
             Evaluator evaluator = buildLiteralEvaluator(context, extractor, restrictionDescr, vtype);
+            if (evaluator != null && evaluator.isTemporal()) {
+                try {
+                    field = context.getCompilerFactory().getFieldFactory().getFieldValue(field.getValue(),
+                                                                                         ValueType.DATE_TYPE,
+                                                                                         context.getKnowledgeBuilder().getDateFormats());
+                } catch (Exception e) {
+                    context.addError( new DescrBuildError( context.getParentDescr(),
+                                                           restrictionDescr,
+                                                           null,
+                                                           e.getMessage() ) );
+                }
+            }
             return new EvaluatorConstraint(field, evaluator, extractor);
         }
 
@@ -245,9 +257,9 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
 
         if ( evaluator == null ) {
             context.addError( new DescrBuildError( context.getParentDescr(),
-                                                          descr,
-                                                          null,
-                                                          "Evaluator '" + (isNegated ? "not " : "") + evaluatorString + "' does not support type '" + valueType ) );
+                                                   descr,
+                                                   null,
+                                                   "Evaluator '" + (isNegated ? "not " : "") + evaluatorString + "' does not support type '" + valueType ) );
         }
 
         return evaluator;

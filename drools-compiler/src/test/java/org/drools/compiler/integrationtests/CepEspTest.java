@@ -1,7 +1,6 @@
 package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.Message;
 import org.drools.compiler.OrderEvent;
 import org.drools.compiler.Sensor;
 import org.drools.compiler.StockTick;
@@ -15,7 +14,6 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -26,6 +24,7 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.time.SessionPseudoClock;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
+import org.drools.core.util.DateUtils;
 import org.drools.core.util.DroolsStreamUtils;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -84,9 +83,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class CepEspTest extends CommonTestMethodBase {
     
@@ -4897,4 +4894,93 @@ public class CepEspTest extends CommonTestMethodBase {
             return getClass().getSimpleName() + " (code=" + code + ")";
         }
     }
+
+    @Test
+    public void testTemporalOperatorWithConstant() {
+        // BZ-1096243
+        String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
+                     "import java.util.Date\n" +
+                     "global java.util.List list" +
+                     "\n" +
+                     "declare SimpleEvent\n" +
+                     "    @role( event )\n" +
+                     "    @timestamp( dateEvt )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R \n" +
+                     "    when\n" +
+                     "        $e : SimpleEvent( this after \"01-Jan-2014\"  )\n" +
+                     "    then\n" +
+                     "        list.add(\"1\");\n" +
+                     "    end\n " +
+                     "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KieSession ksession = kbase.newKieSession();
+        List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        SimpleEvent event = new SimpleEvent("code1", DateUtils.parseDate("18-Mar-2014").getTime());
+        ksession.insert(event);
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+    }
+
+    @Test
+    public void testTemporalOperatorWithConstantAndJoin() throws Exception {
+        // BZ 1096243
+        String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
+                     "import java.util.Date\n" +
+                     "global java.util.List list" +
+                     "\n" +
+                     "declare SimpleEvent\n" +
+                     "    @role( event )\n" +
+                     "    @timestamp( dateEvt )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R \n" +
+                     "    when\n" +
+                     "        $e1 : SimpleEvent( this after \"01-Jan-2014\"  )\n" +
+                     "        $e2 : SimpleEvent( this after $e1 ) \n" +
+                     "    then\n" +
+                     "        list.add(\"1\");\n" +
+                     "    end\n " +
+                     "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KieSession ksession = kbase.newKieSession();
+        List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        SimpleEvent event1 = new SimpleEvent("code1", DateUtils.parseDate("18-Mar-2014").getTime());
+        ksession.insert(event1);
+        SimpleEvent event2 = new SimpleEvent("code2", DateUtils.parseDate("19-Mar-2014").getTime());
+        ksession.insert(event2);
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+    }
+
+
 }

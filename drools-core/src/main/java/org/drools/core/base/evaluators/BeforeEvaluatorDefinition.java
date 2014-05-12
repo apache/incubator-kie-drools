@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -290,7 +291,16 @@ public class BeforeEvaluatorDefinition
                                 final InternalReadAccessor extractor,
                                 final InternalFactHandle object1,
                                 final FieldValue object2) {
-            throw new RuntimeException( "The 'before' operator can only be used to compare one event to another, and never to compare to literal constraints." );
+            long rightTS;
+            if ( extractor.isSelfReference() ) {
+                rightTS = ((EventFactHandle) object1).getStartTimestamp();
+            } else {
+                rightTS = extractor.getLongValue( workingMemory, object1.getObject() );
+            }
+
+            long leftTS = ((Date)object2.getValue()).getTime();
+
+            return evaluate(rightTS, leftTS);
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -309,6 +319,10 @@ public class BeforeEvaluatorDefinition
                 leftTS = context.declaration.getExtractor().getLongValue( workingMemory, left.getObject() );
             }
 
+            return evaluate(rightTS, leftTS);
+        }
+
+        private boolean evaluate(long rightTS, long leftTS) {
             long dist = leftTS - rightTS;
             return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
         }
@@ -328,8 +342,7 @@ public class BeforeEvaluatorDefinition
             } else {
                 rightTS = context.getFieldExtractor().getLongValue( workingMemory, right.getObject() );
             }
-            long dist = leftTS - rightTS;
-            return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
+            return evaluate(rightTS, leftTS);
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -356,9 +369,7 @@ public class BeforeEvaluatorDefinition
                 leftTS = extractor2.getLongValue( workingMemory, handle2.getObject() );
             }
 
-            long dist = leftTS - rightTS;
-
-            return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
+            return evaluate(rightTS, leftTS);
         }
 
         public String toString() {
