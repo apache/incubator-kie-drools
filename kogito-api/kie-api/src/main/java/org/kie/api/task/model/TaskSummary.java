@@ -15,42 +15,24 @@
  */
 package org.kie.api.task.model;
 
-import java.io.Externalizable;
-import java.util.Date;
 import java.util.List;
 
-public interface TaskSummary extends Externalizable {
-
-    long getId();
-
-    long getProcessInstanceId();
-
-    String getName();
+public interface TaskSummary extends QuickTaskSummary {
 
     String getSubject();
 
     String getDescription();
 
     Status getStatus();
-
-    int getPriority();
-
+    
     boolean isSkipable();
 
     User getActualOwner();
 
     User getCreatedBy();
 
-    Date getCreatedOn();
-
-    Date getActivationTime();
-
-    Date getExpirationTime();
-
-    String getProcessId();
-
-    int getProcessSessionId();
-
     List<String> getPotentialOwners();
+    
+    boolean isQuickTaskSummary();
 
 }

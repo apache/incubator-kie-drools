@@ -66,12 +66,6 @@ public interface TaskService {
 
     List<Long> getTasksByProcessInstanceId(long processInstanceId);
     
-    List<TaskSummary> getTasksByVariousFields( List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds, 
-            List<String> busAdmins, List<String> potOwners, List<String> taskOwners, 
-            List<Status> status, List<String> language, boolean union);
-    
-    List<TaskSummary> getTasksByVariousFields(Map <String, List<?>> parameters, boolean union);
-    
     long addTask(Task task, Map<String, Object> params);
 
     void release(long taskId, String userId);
