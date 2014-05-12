@@ -7,6 +7,7 @@
   <scoreDirectorFactory>
     <scoreDefinitionType>SIMPLE</scoreDefinitionType>
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensEasyScoreCalculator</easyScoreCalculatorClass>-->
+    <!--<easyScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensMapBasedEasyScoreCalculator</easyScoreCalculatorClass>-->
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensBasicIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
@@ -19,33 +20,27 @@
   <termination>
     <bestScoreLimit>0</bestScoreLimit>
   </termination>
-  <customSolverPhase>
-    <customSolverPhaseCommandClass>org.optaplanner.examples.nqueens.solver.solution.CheatingNQueensPhaseCommand</customSolverPhaseCommandClass>
-  </customSolverPhase>
-  <!--<constructionHeuristic>-->
-    <!--<constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>-->
-  <!--</constructionHeuristic>-->
-  <!--<localSearch>-->
-    <!--<changeMoveSelector>-->
-      <!--<selectionOrder>ORIGINAL</selectionOrder>-->
-    <!--</changeMoveSelector>-->
-    <!--&lt;!&ndash; changeMoveSelector is the generic form of RowChangeMoveFactory: &ndash;&gt;-->
-    <!--&lt;!&ndash;<moveListFactory>&ndash;&gt;-->
-      <!--&lt;!&ndash;<moveListFactoryClass>org.optaplanner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveListFactoryClass>&ndash;&gt;-->
-    <!--&lt;!&ndash;</moveListFactory>&ndash;&gt;-->
-    <!--<acceptor>-->
-      <!--<entityTabuSize>5</entityTabuSize>-->
-    <!--</acceptor>-->
-    <!--<forager>-->
-      <!--&lt;!&ndash; Real world problems require to use of <acceptedCountLimit> &ndash;&gt;-->
-    <!--</forager>-->
-  <!--</localSearch>-->
+  <constructionHeuristic>
+    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+  </constructionHeuristic>
+  <localSearch>
+    <changeMoveSelector>
+      <selectionOrder>ORIGINAL</selectionOrder>
+    </changeMoveSelector>
+    <!-- changeMoveSelector is the generic form of RowChangeMoveFactory: -->
+    <!--<moveListFactory>-->
+      <!--<moveListFactoryClass>org.optaplanner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveListFactoryClass>-->
+    <!--</moveListFactory>-->
+    <acceptor>
+      <entityTabuSize>5</entityTabuSize>
+    </acceptor>
+    <forager>
+      <!-- Real world problems require to use of <acceptedCountLimit> -->
+    </forager>
+  </localSearch>
+
   <!-- To scale out, replace <localSearch> with this configuration: -->
   <!--<localSearch>-->
-    <!--<unionMoveSelector>-->
-      <!--<changeMoveSelector/>-->
-      <!--<swapMoveSelector/>-->
-    <!--</unionMoveSelector>-->
     <!--<acceptor>-->
       <!--<entityTabuSize>11</entityTabuSize>-->
     <!--</acceptor>-->
@@ -54,4 +49,9 @@
       <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
     <!--</forager>-->
   <!--</localSearch>-->
+
+  <!-- To super scale out, replace <constructionHeuristic> and <localSearch> with this configuration: -->
+  <customSolverPhase>
+    <customSolverPhaseCommandClass>org.optaplanner.examples.nqueens.solver.solution.CheatingNQueensPhaseCommand</customSolverPhaseCommandClass>
+  </customSolverPhase>
 </solver>

@@ -72,6 +72,9 @@ public class NQueensGenerator extends LoggingMain {
         writeNQueens(32);
         writeNQueens(64);
         writeNQueens(256);
+//        writeNQueens(10000);
+//        writeNQueens(100000);
+//        writeNQueens(1000000);
     }
 
     private void writeNQueens(int n) {

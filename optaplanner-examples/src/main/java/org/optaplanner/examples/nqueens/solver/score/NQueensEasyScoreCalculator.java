@@ -16,7 +16,9 @@
 
 package org.optaplanner.examples.nqueens.solver.score;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
@@ -28,7 +30,7 @@ public class NQueensEasyScoreCalculator implements EasyScoreCalculator<NQueens> 
     public SimpleScore calculateScore(NQueens nQueens) {
         int n = nQueens.getN();
         List<Queen> queenList = nQueens.getQueenList();
-        
+
         int score = 0;
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
