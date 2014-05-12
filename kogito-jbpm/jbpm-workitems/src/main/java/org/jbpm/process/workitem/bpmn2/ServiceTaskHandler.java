@@ -31,20 +31,19 @@ import org.apache.cxf.endpoint.ClientCallback;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.bpmn2.core.Bpmn2Import;
-import org.jbpm.bpmn2.handler.WorkItemHandlerRuntimeException;
+import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ServiceTaskHandler implements WorkItemHandler {
+public class ServiceTaskHandler extends AbstractLogOrThrowWorkItemHandler {
     
     public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/";
     
@@ -255,21 +254,14 @@ public class ServiceTaskHandler implements WorkItemHandler {
     private void handleException(Throwable cause, String service, String operation, String paramType, Object param) { 
         logger.debug("Handling exception {} inside service {} and operation {} with param type {} and value {}",
                 cause.getMessage(), service, operation, paramType, param);
-        WorkItemHandlerRuntimeException wihRe;
-        if( cause instanceof InvocationTargetException ) { 
-            Throwable realCause = cause.getCause();
-            wihRe = new WorkItemHandlerRuntimeException(realCause);
-            wihRe.setStackTrace(realCause.getStackTrace());
-        } else { 
-            wihRe = new WorkItemHandlerRuntimeException(cause);
-            wihRe.setStackTrace(cause.getStackTrace());
-        }
-        wihRe.setInformation("Interface", service);
-        wihRe.setInformation("Operation", operation);
-        wihRe.setInformation("ParameterType", paramType);
-        wihRe.setInformation("Parameter", param);
-        wihRe.setInformation(WorkItemHandlerRuntimeException.WORKITEMHANDLERTYPE, this.getClass().getSimpleName());
-        throw wihRe;
+        Map<String, Object> data = new HashMap<String, Object>();
+
+        data.put("Interface", service);
+        data.put("Operation", operation);
+        data.put("ParameterType", paramType);
+        data.put("Parameter", param);
+        
+        handleException(cause, data);
         
     }
 
