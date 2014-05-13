@@ -16,12 +16,16 @@
 
 package org.drools.compiler.lang.dsl;
 
+import org.drools.compiler.lang.Expander;
+import org.drools.compiler.lang.ExpanderException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -30,11 +34,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.drools.compiler.lang.Expander;
-import org.drools.compiler.lang.ExpanderException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The default expander uses String templates to provide pseudo natural
@@ -130,23 +129,12 @@ public class DefaultExpander
             }
         }
 
-        // Move mappings with longest keys (i.e. more specific cases) first
-        Collections.sort(condition, DSLMappingEntryComparator.INSTANCE);
-        Collections.sort(consequence, DSLMappingEntryComparator.INSTANCE);
-
         if ( mapping.getOption( "result" ) ) showResult = true;
         if ( mapping.getOption( "steps" ) ) showSteps = true;
         if ( mapping.getOption( "keyword" ) ) showKeyword = true;
         if ( mapping.getOption( "when" ) ) showWhen = true;
         if ( mapping.getOption( "then" ) ) showThen = true;
         if ( mapping.getOption( "usage" ) ) showUsage = true;
-    }
-
-    private static class DSLMappingEntryComparator implements Comparator<DSLMappingEntry> {
-        private static final DSLMappingEntryComparator INSTANCE = new DSLMappingEntryComparator();
-        public int compare(DSLMappingEntry entry1, DSLMappingEntry entry2) {
-            return entry2.getMappingKey().length() - entry1.getMappingKey().length();
-        }
     }
 
     /**
