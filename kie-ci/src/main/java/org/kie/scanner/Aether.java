@@ -31,6 +31,7 @@ public class Aether {
     private static final Logger log = LoggerFactory.getLogger(Aether.class);
 
     private String localRepoDir;
+    private final boolean offline;
 
     public static Aether instance;
 
@@ -40,24 +41,25 @@ public class Aether {
 
     private RemoteRepository localRepository;
 
-    private Aether(String localRepoDir) {
-        this(loadMavenProject(), localRepoDir);
+    private Aether(String localRepoDir, boolean offline) {
+        this(loadMavenProject(), localRepoDir, offline);
     }
 
     Aether(MavenProject mavenProject) {
-        this(mavenProject, getAether().localRepoDir);
+        this(mavenProject, getAether().localRepoDir, getAether().offline);
     }
 
     public static synchronized Aether getAether() {
         if (instance == null) {
             Settings settings = MavenSettings.getSettings();
-            instance = new Aether(settings.getLocalRepository());
+            instance = new Aether(settings.getLocalRepository(), settings.isOffline());
         }
         return instance;
     }
 
-    private Aether(MavenProject mavenProject, String localRepoDir) {
+    private Aether(MavenProject mavenProject, String localRepoDir, boolean offline) {
         this.localRepoDir = localRepoDir;
+        this.offline = offline;
         system = newRepositorySystem();
         session = newRepositorySystemSession( system );
         repositories = initRepositories(mavenProject);
@@ -93,6 +95,7 @@ public class Aether {
         LocalRepository localRepo = new LocalRepository(localRepoDir);
         MavenRepositorySystemSession session = new MavenRepositorySystemSession();
         session.setLocalRepositoryManager( system.newLocalRepositoryManager( localRepo ) );
+        session.setOffline(offline);
         return session;
     }
 
