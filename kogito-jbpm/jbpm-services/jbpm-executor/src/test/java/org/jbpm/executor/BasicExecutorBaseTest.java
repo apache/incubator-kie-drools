@@ -58,6 +58,9 @@ public abstract class BasicExecutorBaseTest {
     public void tearDown() {
         executorService.clearAllRequests();
         executorService.clearAllErrors();
+        
+        System.clearProperty("org.kie.executor.msg.length");
+    	System.clearProperty("org.kie.executor.stacktrace.length");
     }
 
     @Test
@@ -170,6 +173,36 @@ public abstract class BasicExecutorBaseTest {
 
         List<RequestInfo> cancelledRequests = executorService.getCancelledRequests();
         assertEquals(1, cancelledRequests.size());
+
+    }
+    
+    @Test
+    public void executorExceptionTrimmingTest() throws InterruptedException {
+    	System.setProperty("org.kie.executor.msg.length", "10");
+    	System.setProperty("org.kie.executor.stacktrace.length", "20");
+        CommandContext commandContext = new CommandContext();
+        commandContext.setData("businessKey", UUID.randomUUID().toString());
+        cachedEntities.put((String) commandContext.getData("businessKey"), new AtomicLong(1));
+
+        commandContext.setData("callbacks", "org.jbpm.executor.SimpleIncrementCallback");
+        commandContext.setData("retries", 0);
+        executorService.scheduleRequest("org.jbpm.executor.ThrowExceptionCommand", commandContext);
+        logger.info("{} Sleeping for 10 secs", System.currentTimeMillis());
+        Thread.sleep(10000);
+
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests();
+        assertEquals(1, inErrorRequests.size());
+        logger.info("Error: {}", inErrorRequests.get(0));
+
+        List<ErrorInfo> errors = executorService.getAllErrors();
+        logger.info("Errors: {}", errors);
+        assertEquals(1, errors.size());
+        
+        ErrorInfo error = errors.get(0);
+        
+        assertEquals(10, error.getMessage().length());
+        assertEquals(20, error.getStacktrace().length());
+
 
     }
     

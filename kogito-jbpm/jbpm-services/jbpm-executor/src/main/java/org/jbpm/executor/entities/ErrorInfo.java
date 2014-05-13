@@ -29,12 +29,23 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 @SequenceGenerator(name="errorInfoIdSeq", sequenceName="ERROR_INFO_ID_SEQ")
 public class ErrorInfo implements org.kie.internal.executor.api.ErrorInfo, Serializable {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ErrorInfo.class);
 
     private static final long serialVersionUID = 1548071325967795108L;
+    
+    @Transient
+	private final int MESSAGE_LOG_LENGTH = Integer.parseInt(System.getProperty("org.kie.executor.msg.length", "255"));
+    @Transient
+    private final int STACKTRACE_LOG_LENGTH = Integer.parseInt(System.getProperty("org.kie.executor.stacktrace.length", "5000"));
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="errorInfoIdSeq")
@@ -57,6 +68,7 @@ public class ErrorInfo implements org.kie.internal.executor.api.ErrorInfo, Seria
         this.message = message;
         this.stacktrace = stacktrace;
         this.time = new Date();
+        trimToSize();
     }
 
     public Long getId() {
@@ -142,6 +154,16 @@ public class ErrorInfo implements org.kie.internal.executor.api.ErrorInfo, Seria
         return hash;
     }
 
-    
+    protected void trimToSize() {
+    	if (this.message != null && this.message.length() > MESSAGE_LOG_LENGTH) {
+    		logger.warn("trimming message as it's too long : {}", this.message.length());
+    		this.message = message.substring(0, MESSAGE_LOG_LENGTH);
+    	}
+    	
+    	if (this.stacktrace != null && this.stacktrace.length() > STACKTRACE_LOG_LENGTH) {
+    		logger.warn("trimming stacktrace as it's too long : {}", this.stacktrace.length());
+    		this.stacktrace = stacktrace.substring(0, STACKTRACE_LOG_LENGTH);
+    	}
+    }
     
 }
