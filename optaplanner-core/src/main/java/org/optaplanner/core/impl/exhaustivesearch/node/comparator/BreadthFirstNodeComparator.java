@@ -48,19 +48,19 @@ public class BreadthFirstNodeComparator implements Comparator<ExhaustiveSearchNo
         } else if (aDepth > bDepth) {
             return -1;
         }
+        // Investigate better score first
+        int scoreComparison = a.getScore().compareTo(b.getScore());
+        if (scoreComparison < 0) {
+            return -1;
+        } else if (scoreComparison > 0) {
+            return 1;
+        }
         if (scoreBounderEnabled) {
             // Investigate better optimistic bound first
             int optimisticBoundComparison = a.getOptimisticBound().compareTo(b.getOptimisticBound());
             if (optimisticBoundComparison < 0) {
                 return -1;
             } else if (optimisticBoundComparison > 0) {
-                return 1;
-            }
-            // Investigate better score first
-            int scoreComparison = a.getScore().compareTo(b.getScore());
-            if (scoreComparison < 0) {
-                return -1;
-            } else if (scoreComparison > 0) {
                 return 1;
             }
         }

@@ -18,23 +18,24 @@ package org.optaplanner.core.impl.exhaustivesearch.node.comparator;
 
 import org.junit.Test;
 
-public class OptimisticBoundFirstNodeComparatorTest extends AbstractNodeComparatorTest {
+public class ScoreFirstNodeComparatorTest extends AbstractNodeComparatorTest {
 
     @Test
     public void compare() {
-        OptimisticBoundFirstNodeComparator comparator = new OptimisticBoundFirstNodeComparator(true);
+        ScoreFirstNodeComparator comparator = new ScoreFirstNodeComparator(true);
+        assertLesser(comparator, buildNode(1, -95, 0, 5), buildNode(1, -90, 5));
         assertScoreCompareToOrder(comparator,
                 buildNode(1, -110, 5),
                 buildNode(1, -110, 7),
                 buildNode(2, -110, 5),
                 buildNode(2, -110, 7),
+                buildNode(1, -95, 0, 5),
+                buildNode(2, -95, 0, 5),
+                buildNode(2, -95, 0, 7),
                 buildNode(1, -90, 5),
                 buildNode(1, -90, 7),
                 buildNode(2, -90, 5),
-                buildNode(2, -90, 7),
-                buildNode(1, -95, 0, 5),
-                buildNode(2, -95, 0, 5),
-                buildNode(2, -95, 0, 7));
+                buildNode(2, -90, 7));
     }
 
 }

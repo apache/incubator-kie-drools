@@ -26,11 +26,20 @@ import static org.mockito.Mockito.*;
 
 public abstract class AbstractNodeComparatorTest {
 
-    protected ExhaustiveSearchNode buildNode(int depth, int optimisticBoundString, long breadth) {
+    protected ExhaustiveSearchNode buildNode(int depth, int scoreString, long breadth) {
         ExhaustiveSearchNode node = mock(ExhaustiveSearchNode.class);
         when(node.getDepth()).thenReturn(depth);
+        when(node.getScore()).thenReturn(SimpleScore.valueOf(scoreString));
+        when(node.getOptimisticBound()).thenReturn(SimpleScore.valueOf(scoreString));
+        when(node.getBreadth()).thenReturn(breadth);
+        return node;
+    }
+
+    protected ExhaustiveSearchNode buildNode(int depth, int scoreString, int optimisticBoundString, long breadth) {
+        ExhaustiveSearchNode node = mock(ExhaustiveSearchNode.class);
+        when(node.getDepth()).thenReturn(depth);
+        when(node.getScore()).thenReturn(SimpleScore.valueOf(scoreString));
         when(node.getOptimisticBound()).thenReturn(SimpleScore.valueOf(optimisticBoundString));
-        when(node.getScore()).thenReturn(SimpleScore.valueOf(optimisticBoundString));
         when(node.getBreadth()).thenReturn(breadth);
         return node;
     }

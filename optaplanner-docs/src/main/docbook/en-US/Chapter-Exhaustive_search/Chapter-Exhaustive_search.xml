@@ -116,9 +116,9 @@
 
       <itemizedlist>
         <listitem>
-          <para><literal>DEPTH_FIRST</literal> (default): Explore deeper nodes first (and secondarily by a better
-          optimistic bound or score first). Deeper nodes (especially leaf nodes) often improve the pessimistic bound. A
-          better pessimistic bound allows pruning more nodes to reduce the search space.</para>
+          <para><literal>DEPTH_FIRST</literal> (default): Explore deeper nodes first (and then a better score and then a
+          better optimistic bound). Deeper nodes (especially leaf nodes) often improve the pessimistic bound. A better
+          pessimistic bound allows pruning more nodes to reduce the search space.</para>
 
           <programlisting language="xml">  &lt;exhaustiveSearch&gt;
     &lt;exhaustiveSearchType&gt;BRANCH_AND_BOUND&lt;/exhaustiveSearchType&gt;
@@ -127,8 +127,8 @@
         </listitem>
 
         <listitem>
-          <para><literal>BREADTH_FIRST</literal> (not recommended): Explore nodes layer by layer (and secondarily by a
-          better optimistic bound or score first). Scales terribly in memory (and usually in performance too).</para>
+          <para><literal>BREADTH_FIRST</literal> (not recommended): Explore nodes layer by layer (and then a better
+          score and then a better optimistic bound). Scales terribly in memory (and usually in performance too).</para>
 
           <programlisting language="xml">  &lt;exhaustiveSearch&gt;
     &lt;exhaustiveSearchType&gt;BRANCH_AND_BOUND&lt;/exhaustiveSearchType&gt;
@@ -137,8 +137,20 @@
         </listitem>
 
         <listitem>
-          <para><literal>OPTIMISTIC_BOUND_FIRST</literal>: Explore nodes with a better optimistic bound or score first
-          (and secondarily deeper nodes first).</para>
+          <para><literal>SCORE_FIRST</literal>: Explore nodes with a better score first (and then a better optimistic
+          bound and then deeper nodes first). Might scale as terribly as <literal>BREADTH_FIRST</literal> in some
+          cases.</para>
+
+          <programlisting language="xml">  &lt;exhaustiveSearch&gt;
+    &lt;exhaustiveSearchType&gt;BRANCH_AND_BOUND&lt;/exhaustiveSearchType&gt;
+    &lt;nodeExplorationType&gt;SCORE_FIRST&lt;/nodeExplorationType&gt;
+  &lt;/exhaustiveSearch&gt;</programlisting>
+        </listitem>
+
+        <listitem>
+          <para><literal>OPTIMISTIC_BOUND_FIRST</literal>: Explore nodes with a better optimistic bound first (and then
+          a better score and then deeper nodes first). Might scale as terribly as <literal>BREADTH_FIRST</literal> in
+          some cases.</para>
 
           <programlisting language="xml">  &lt;exhaustiveSearch&gt;
     &lt;exhaustiveSearchType&gt;BRANCH_AND_BOUND&lt;/exhaustiveSearchType&gt;

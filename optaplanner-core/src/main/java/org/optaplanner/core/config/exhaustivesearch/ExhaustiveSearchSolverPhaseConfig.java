@@ -45,6 +45,7 @@ import org.optaplanner.core.impl.exhaustivesearch.node.comparator.BreadthFirstNo
 import org.optaplanner.core.impl.exhaustivesearch.node.comparator.OriginalOrderNodeComparator;
 import org.optaplanner.core.impl.exhaustivesearch.node.comparator.DepthFirstNodeComparator;
 import org.optaplanner.core.impl.exhaustivesearch.node.comparator.OptimisticBoundFirstNodeComparator;
+import org.optaplanner.core.impl.exhaustivesearch.node.comparator.ScoreFirstNodeComparator;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.ManualEntityMimicRecorder;
@@ -298,6 +299,7 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
         ORIGINAL_ORDER,
         DEPTH_FIRST,
         BREADTH_FIRST,
+        SCORE_FIRST,
         OPTIMISTIC_BOUND_FIRST;
 
         public Comparator<ExhaustiveSearchNode> buildNodeComparator(boolean scoreBounderEnabled) {
@@ -308,6 +310,8 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
                     return new DepthFirstNodeComparator(scoreBounderEnabled);
                 case BREADTH_FIRST:
                     return new BreadthFirstNodeComparator(scoreBounderEnabled);
+                case SCORE_FIRST:
+                    return new ScoreFirstNodeComparator(scoreBounderEnabled);
                 case OPTIMISTIC_BOUND_FIRST:
                     return new OptimisticBoundFirstNodeComparator(scoreBounderEnabled);
                 default:
