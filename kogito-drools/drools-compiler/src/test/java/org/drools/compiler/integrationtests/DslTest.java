@@ -341,8 +341,8 @@ public class DslTest extends CommonTestMethodBase {
     @Test
     public void testGreedyDsl() {
         // BZ-1078839
-        String dsl = "[when]There is a number with=i:Integer()\n"
-                     + "[when]There is a number with value of {value}=i:Integer(intValue() == {value})\n";
+        String dsl = "[when]There is a number with value of {value}=i:Integer(intValue() == {value})\n"
+                + "[when]There is a number with=i:Integer()\n";
 
         String dslr = "package org.test \n"
                      + "rule 'sample rule' \n"
