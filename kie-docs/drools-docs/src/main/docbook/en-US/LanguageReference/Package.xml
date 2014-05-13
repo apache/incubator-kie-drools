@@ -121,8 +121,8 @@ end
         working memory. Example:</para>
 
         <programlisting language="java">List list = new ArrayList();
-WorkingMemory wm = rulebase.newStatefulSession();
-wm.setGlobal( "myGlobalList", list );
+KieSession kieSession = kiebase.newKieSession();
+kieSession.setGlobal( "myGlobalList", list );
 </programlisting>
       </listitem>
     </orderedlist>
