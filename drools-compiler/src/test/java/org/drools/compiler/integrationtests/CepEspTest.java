@@ -199,6 +199,28 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
     @Test(timeout=10000)
+    @Ignore
+    // BZ 1096243 - should not throw ArrayIndexOutOfBoundsException
+    public void testStringValueOperand() throws Exception {
+        String rule = "";
+        rule += "package " + Message.class.getPackage().getName() + "\n" +
+                "declare " + Message.class.getCanonicalName() + "\n" +
+                 "   @role( event ) \n" +
+                "end\n" +
+                "rule \"testRuleCepStringArg\" \n" +
+                "dialect \"mvel\" \n" +
+                "when \n" +
+                "  $e1 : " + Message.class.getCanonicalName() + "( this after \"01-Jan-2014\" ) over window:time (10d) \n" +
+                "  $e2 : " + Message.class.getCanonicalName() + "( this after $e1 ) \n" +
+                "then \n" +
+                "end \n";
+
+        KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbc.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbc, rule );
+    }
+
+    @Test(timeout=10000)
     public void testAnnotatedEventAssertion() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_SimpleAnnotatedEventAssertion.drl" );
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
