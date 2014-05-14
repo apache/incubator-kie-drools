@@ -27,11 +27,8 @@ public interface InternalTask extends Task {
    
     void setId(long id);
 
-    // This property breaks JSON serialization
-    // Boolean isArchived();
+    Boolean isArchived();
 
-    Short getArchived();
-   
     void setArchived(Boolean archived);
     
     int getVersion();
