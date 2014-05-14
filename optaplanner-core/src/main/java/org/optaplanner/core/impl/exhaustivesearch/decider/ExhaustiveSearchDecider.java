@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.exhaustivesearch.decider;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.exhaustivesearch.event.ExhaustiveSearchPhaseLifecycleListener;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchLayer;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 import org.optaplanner.core.impl.exhaustivesearch.node.bounder.ScoreBounder;
@@ -32,7 +33,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExhaustiveSearchDecider {
+public class ExhaustiveSearchDecider implements ExhaustiveSearchPhaseLifecycleListener {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
