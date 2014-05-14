@@ -260,6 +260,7 @@ public class ProjectClassLoader extends ClassLoader {
         private final ProjectClassLoader projectClassLoader;
 
         private InternalTypesClassLoader(ProjectClassLoader projectClassLoader) {
+            super(projectClassLoader.getParent());
             this.projectClassLoader = projectClassLoader;
         }
 
