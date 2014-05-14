@@ -137,6 +137,12 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
             throw new IllegalArgumentException("The entity (" + entity + ") of class (" + entity.getClass()
                     + ") is not a configured @PlanningEntity.");
         }
+        if (kieSession.getFactHandle(entity) != null) {
+            throw new IllegalArgumentException("The entity (" + entity
+                    + ") was already added to this ScoreDirector."
+                    + " Usually the cause is that that specific instance was already in your Solution's entities" +
+                    " and you probably want to use before/afterVariableChanged() instead.");
+        }
         kieSession.insert(entity);
         super.afterEntityAdded(entityDescriptor, entity);
     }
@@ -160,7 +166,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     private void update(Object entity) {
         FactHandle factHandle = kieSession.getFactHandle(entity);
         if (factHandle == null) {
-            throw new IllegalArgumentException("The entity instance (" + entity
+            throw new IllegalArgumentException("The entity (" + entity
                     + ") was never added to this ScoreDirector."
                     + " Usually the cause is that that specific instance was not in your Solution's entities.");
         }
@@ -173,7 +179,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     public void afterEntityRemoved(EntityDescriptor entityDescriptor, Object entity) {
         FactHandle factHandle = kieSession.getFactHandle(entity);
         if (factHandle == null) {
-            throw new IllegalArgumentException("The entity instance (" + entity
+            throw new IllegalArgumentException("The entity (" + entity
                     + ") was never added to this ScoreDirector."
                     + " Usually the cause is that that specific instance was not in your Solution's entities.");
         }
@@ -190,6 +196,12 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
 
     @Override
     public void afterProblemFactAdded(Object problemFact) {
+        if (kieSession.getFactHandle(problemFact) != null) {
+            throw new IllegalArgumentException("The problemFact (" + problemFact
+                    + ") was already added to this ScoreDirector."
+                    + " Usually the cause is that that specific instance was already in your Solution's getProblemFacts()"
+                    + " and you probably want to use before/afterProblemFactChanged() instead.");
+        }
         kieSession.insert(problemFact);
         super.afterProblemFactAdded(problemFact);
     }
@@ -200,7 +212,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     public void afterProblemFactChanged(Object problemFact) {
         FactHandle factHandle = kieSession.getFactHandle(problemFact);
         if (factHandle == null) {
-            throw new IllegalArgumentException("The problemFact instance (" + problemFact
+            throw new IllegalArgumentException("The problemFact (" + problemFact
                     + ") was never added to this ScoreDirector."
                     + " Usually the cause is that that specific instance was not in your Solution's getProblemFacts().");
         }
@@ -214,7 +226,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     public void afterProblemFactRemoved(Object problemFact) {
         FactHandle factHandle = kieSession.getFactHandle(problemFact);
         if (factHandle == null) {
-            throw new IllegalArgumentException("The problemFact instance (" + problemFact
+            throw new IllegalArgumentException("The problemFact (" + problemFact
                     + ") was never added to this ScoreDirector."
                     + " Usually the cause is that that specific instance was not in your Solution's getProblemFacts().");
         }

@@ -35,9 +35,9 @@ public class ToOriginalMachineSolutionInitializer implements CustomPhaseCommand 
     private void initializeProcessAssignmentList(ScoreDirector scoreDirector,
             MachineReassignment machineReassignment) {
         for (MrProcessAssignment processAssignment : machineReassignment.getProcessAssignmentList()) {
-            scoreDirector.beforeEntityAdded(processAssignment);
+            scoreDirector.beforeVariableChanged(processAssignment, "machine");
             processAssignment.setMachine(processAssignment.getOriginalMachine());
-            scoreDirector.afterEntityAdded(processAssignment);
+            scoreDirector.afterVariableChanged(processAssignment, "machine");
         }
     }
 
