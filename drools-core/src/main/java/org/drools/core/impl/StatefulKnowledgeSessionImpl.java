@@ -747,11 +747,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     private InternalProcessRuntime createProcessRuntime() {
-        try {
-            return ProcessRuntimeFactory.newProcessRuntime(this);
-        } catch ( IllegalArgumentException e ) {
-            return null;
-        }
+        return ProcessRuntimeFactory.newProcessRuntime(this);
     }
 
     public String getEntryPointId() {
