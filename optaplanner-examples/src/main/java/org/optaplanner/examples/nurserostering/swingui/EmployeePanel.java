@@ -141,7 +141,7 @@ public class EmployeePanel extends JPanel {
                 }
             }
             shiftDatePanel.setBackground(backgroundColor);
-            boolean inPlanningWindow = nurseRosteringPanel.getNurseRoster().getNurseRosterInfo()
+            boolean inPlanningWindow = nurseRosteringPanel.getNurseRoster().getNurseRosterParametrization()
                     .isInPlanningWindow(shiftDate);
             shiftDatePanel.setEnabled(inPlanningWindow);
             shiftDatePanel.setBorder(BorderFactory.createCompoundBorder(

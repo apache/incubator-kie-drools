@@ -43,7 +43,7 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
-import org.optaplanner.examples.nurserostering.domain.NurseRosterInfo;
+import org.optaplanner.examples.nurserostering.domain.NurseRosterParametrization;
 import org.optaplanner.examples.nurserostering.domain.Shift;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 import org.optaplanner.examples.nurserostering.domain.ShiftDate;
@@ -137,7 +137,7 @@ public class NurseRosteringPanel extends SolutionPanel {
         unassignedPanel.setShiftDateListAndShiftList(shiftDateList, shiftList);
         updatePanel(nurseRoster);
         advancePlanningWindowStartButton.setEnabled(true);
-        planningWindowStartField.setText(nurseRoster.getNurseRosterInfo().getPlanningWindowStart().getLabel());
+        planningWindowStartField.setText(nurseRoster.getNurseRosterParametrization().getPlanningWindowStart().getLabel());
     }
 
     @Override
@@ -183,9 +183,9 @@ public class NurseRosteringPanel extends SolutionPanel {
         solutionBusiness.doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
                 NurseRoster nurseRoster = (NurseRoster) scoreDirector.getWorkingSolution();
-                NurseRosterInfo nurseRosterInfo = nurseRoster.getNurseRosterInfo();
+                NurseRosterParametrization nurseRosterParametrization = nurseRoster.getNurseRosterParametrization();
                 List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
-                ShiftDate planningWindowStart = nurseRosterInfo.getPlanningWindowStart();
+                ShiftDate planningWindowStart = nurseRosterParametrization.getPlanningWindowStart();
                 int windowStartIndex = shiftDateList.indexOf(planningWindowStart);
                 if (windowStartIndex < 0) {
                     throw new IllegalStateException("The planningWindowStart ("
@@ -232,9 +232,9 @@ public class NurseRosteringPanel extends SolutionPanel {
                 }
                 windowStartIndex++;
                 ShiftDate newPlanningWindowStart = shiftDateList.get(windowStartIndex);
-                nurseRosterInfo.setPlanningWindowStart(newPlanningWindowStart);
-                nurseRosterInfo.setLastShiftDate(newShiftDate);
-                scoreDirector.afterProblemFactChanged(nurseRosterInfo);
+                nurseRosterParametrization.setPlanningWindowStart(newPlanningWindowStart);
+                nurseRosterParametrization.setLastShiftDate(newShiftDate);
+                scoreDirector.afterProblemFactChanged(nurseRosterParametrization);
             }
         });
         resetPanel(solutionBusiness.getSolution());

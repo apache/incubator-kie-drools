@@ -31,7 +31,7 @@ public class MovableShiftAssignmentSelectionFilter implements SelectionFilter<Sh
 
     public boolean accept(NurseRoster nurseRoster, ShiftAssignment shiftAssignment) {
         ShiftDate shiftDate = shiftAssignment.getShift().getShiftDate();
-        return nurseRoster.getNurseRosterInfo().isInPlanningWindow(shiftDate);
+        return nurseRoster.getNurseRosterParametrization().isInPlanningWindow(shiftDate);
     }
 
 }

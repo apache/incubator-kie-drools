@@ -40,7 +40,7 @@ import org.optaplanner.examples.nurserostering.domain.DayOfWeek;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
-import org.optaplanner.examples.nurserostering.domain.NurseRosterInfo;
+import org.optaplanner.examples.nurserostering.domain.NurseRosterParametrization;
 import org.optaplanner.examples.nurserostering.domain.Pattern;
 import org.optaplanner.examples.nurserostering.domain.Shift;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
@@ -199,11 +199,11 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter {
 
         private void generateNurseRosterInfo(NurseRoster nurseRoster) {
             List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
-            NurseRosterInfo nurseRosterInfo = new NurseRosterInfo();
-            nurseRosterInfo.setFirstShiftDate(shiftDateList.get(0));
-            nurseRosterInfo.setLastShiftDate(shiftDateList.get(shiftDateList.size() - 1));
-            nurseRosterInfo.setPlanningWindowStart(shiftDateList.get(0));
-            nurseRoster.setNurseRosterInfo(nurseRosterInfo);
+            NurseRosterParametrization nurseRosterParametrization = new NurseRosterParametrization();
+            nurseRosterParametrization.setFirstShiftDate(shiftDateList.get(0));
+            nurseRosterParametrization.setLastShiftDate(shiftDateList.get(shiftDateList.size() - 1));
+            nurseRosterParametrization.setPlanningWindowStart(shiftDateList.get(0));
+            nurseRoster.setNurseRosterParametrization(nurseRosterParametrization);
         }
 
         private void readSkillList(NurseRoster nurseRoster, Element skillsElement) throws JDOMException {

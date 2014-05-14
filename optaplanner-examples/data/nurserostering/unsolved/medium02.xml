@@ -1,7 +1,7 @@
 <NurseRoster id="1">
   <id>0</id>
   <code>medium02</code>
-  <nurseRosterInfo id="2">
+  <nurseRosterParametrization id="2">
     <firstShiftDate id="3">
       <id>0</id>
       <dayIndex>0</dayIndex>
@@ -107,7 +107,7 @@
       </shiftList>
     </lastShiftDate>
     <planningWindowStart reference="3"/>
-  </nurseRosterInfo>
+  </nurseRosterParametrization>
   <skillList id="19">
     <Skill id="20">
       <id>0</id>

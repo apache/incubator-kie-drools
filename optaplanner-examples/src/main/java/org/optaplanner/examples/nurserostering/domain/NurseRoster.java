@@ -18,12 +18,10 @@ package org.optaplanner.examples.nurserostering.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -46,7 +44,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
 
     private String code;
 
-    private NurseRosterInfo nurseRosterInfo;
+    private NurseRosterParametrization nurseRosterParametrization;
     private List<Skill> skillList;
     private List<ShiftType> shiftTypeList;
     private List<ShiftTypeSkillRequirement> shiftTypeSkillRequirementList;
@@ -76,12 +74,12 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
         this.code = code;
     }
 
-    public NurseRosterInfo getNurseRosterInfo() {
-        return nurseRosterInfo;
+    public NurseRosterParametrization getNurseRosterParametrization() {
+        return nurseRosterParametrization;
     }
 
-    public void setNurseRosterInfo(NurseRosterInfo nurseRosterInfo) {
-        this.nurseRosterInfo = nurseRosterInfo;
+    public void setNurseRosterParametrization(NurseRosterParametrization nurseRosterParametrization) {
+        this.nurseRosterParametrization = nurseRosterParametrization;
     }
 
     public List<Skill> getSkillList() {
@@ -228,7 +226,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
 
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
-        facts.add(nurseRosterInfo);
+        facts.add(nurseRosterParametrization);
         facts.addAll(skillList);
         facts.addAll(shiftTypeList);
         facts.addAll(shiftTypeSkillRequirementList);
