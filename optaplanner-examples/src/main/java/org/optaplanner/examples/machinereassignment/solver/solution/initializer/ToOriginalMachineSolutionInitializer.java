@@ -23,7 +23,7 @@ import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MrOriginalMachineSolutionInitializer implements CustomPhaseCommand {
+public class ToOriginalMachineSolutionInitializer implements CustomPhaseCommand {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 

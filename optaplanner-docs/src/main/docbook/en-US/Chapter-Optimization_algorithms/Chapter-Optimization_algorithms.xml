@@ -640,8 +640,8 @@
     thing that matters is finding the best solution in the available time.</para>
 
     <para>For synchronous termination, configure a <literal>Termination</literal> on a <literal>Solver</literal> or a
-    <literal>Phase</literal> when it needs to stop. You can implement your own <literal>Termination</literal>, but
-    the build-in implementations should suffice for most needs. Every <literal>Termination</literal> can calculate a
+    <literal>Phase</literal> when it needs to stop. You can implement your own <literal>Termination</literal>, but the
+    build-in implementations should suffice for most needs. Every <literal>Termination</literal> can calculate a
     <emphasis>time gradient</emphasis> (needed for some optimization algorithms), which is a ratio between the time
     already spent solving and the estimated entire solving time of the <literal>Solver</literal> or
     <literal>Phase</literal>.</para>
@@ -914,21 +914,14 @@
 
     <para>For example:</para>
 
-    <programlisting language="java">public class ExaminationSolutionInitializer implements CustomPhaseCommand {
+    <programlisting language="java">public class ToOriginalMachineSolutionInitializer implements CustomPhaseCommand {
 
     public void changeWorkingSolution(ScoreDirector scoreDirector) {
-        Examination examination = (Examination) scoreDirector.getWorkingSolution();
-        for (Exam exam : examination.getExamList()) {
-            Score unscheduledScore = scoreDirector.calculateScore();
-            ...
-            for (Period period : examination.getPeriodList()) {
-                scoreDirector.beforeVariableChanged(exam, "period");
-                exam.setPeriod(period)
-                scoreDirector.afterVariableChanged(exam, "period");
-                Score score = scoreDirector.calculateScore();
-                ...
-            }
-            ...
+        MachineReassignment machineReassignment = (MachineReassignment) scoreDirector.getWorkingSolution();
+        for (MrProcessAssignment processAssignment : machineReassignment.getProcessAssignmentList()) {
+            scoreDirector.beforeEntityAdded(processAssignment);
+            processAssignment.setMachine(processAssignment.getOriginalMachine());
+            scoreDirector.afterEntityAdded(processAssignment);
         }
     }
 
@@ -951,7 +944,7 @@
     <programlisting language="xml">&lt;solver&gt;
   ...
   &lt;customPhase&gt;
-    &lt;customPhaseCommandClass&gt;org.optaplanner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer&lt;/customPhaseCommandClass&gt;
+    &lt;customPhaseCommandClass&gt;org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer&lt;/customPhaseCommandClass&gt;
   &lt;/customPhase&gt;
   ... &lt;!-- Other phases --&gt;
 &lt;/solver&gt;</programlisting>

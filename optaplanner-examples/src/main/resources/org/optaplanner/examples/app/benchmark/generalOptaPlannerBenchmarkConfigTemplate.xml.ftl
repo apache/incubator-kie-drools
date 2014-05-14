@@ -65,7 +65,7 @@
         <incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
       </scoreDirectorFactory>
       <customPhase>
-        <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customPhaseCommandClass>
+        <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
       </customPhase>
       <localSearch>
         <unionMoveSelector>
@@ -139,9 +139,37 @@
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>org/optaplanner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
-      <customPhase>
-        <customPhaseCommandClass>org.optaplanner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customPhaseCommandClass>
-      </customPhase>
+      <constructionHeuristic>
+        <queuedEntityPlacer>
+          <entitySelector id="placerEntitySelector">
+            <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
+            <cacheType>PHASE</cacheType>
+            <selectionOrder>SORTED</selectionOrder>
+            <sorterManner>DECREASING_DIFFICULTY</sorterManner>
+          </entitySelector>
+          <cartesianProductMoveSelector>
+            <changeMoveSelector>
+              <entitySelector mimicSelectorRef="placerEntitySelector"/>
+              <valueSelector>
+                <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
+                <variableName>period</variableName>
+                <cacheType>PHASE</cacheType>
+                <!--<selectionOrder>SORTED</selectionOrder>-->
+                <!--<sorterManner>INCREASING_STRENGTH</sorterManner>-->
+              </valueSelector>
+            </changeMoveSelector>
+            <changeMoveSelector>
+              <entitySelector mimicSelectorRef="placerEntitySelector"/>
+              <valueSelector>
+                <variableName>room</variableName>
+                <cacheType>PHASE</cacheType>
+                <selectionOrder>SORTED</selectionOrder>
+                <sorterManner>INCREASING_STRENGTH</sorterManner>
+              </valueSelector>
+            </changeMoveSelector>
+          </cartesianProductMoveSelector>
+        </queuedEntityPlacer>
+      </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
           <moveListFactory>

@@ -1815,7 +1815,7 @@ Note: if multiple variables are changed at the same time, you might want to use 
 [MAJOR] If you use a CustomSolverPhaseCommand
 or still have a custom SolutionInitializer (and haven't switched to the construction heuristics yet):
 Before in *SolutionInitializer.java or *.java:
-    public class MrOriginalMachineSolutionInitializer implements CustomSolverPhaseCommand {
+    public class ToOriginalMachineSolutionInitializer implements CustomSolverPhaseCommand {
         public void changeWorkingSolution(SolutionDirector solutionDirector) {
             ...
             processAssignment.setMachine(processAssignment.getOriginalMachine());
@@ -1824,7 +1824,7 @@ Before in *SolutionInitializer.java or *.java:
         }
     }
 After in *SolutionInitializer.java or *.java:
-    public class MrOriginalMachineSolutionInitializer implements CustomSolverPhaseCommand {
+    public class ToOriginalMachineSolutionInitializer implements CustomSolverPhaseCommand {
         public void changeWorkingSolution(ScoreDirector scoreDirector) {
             ...
             scoreDirector.beforeEntityAdded(processAssignment);
@@ -4255,18 +4255,18 @@ After in *.java:
 The element <customSolverPhase> has been renamed to <customPhase>.
 The element <customSolverPhaseCommandClass> has been renamed to <customPhaseCommandClass>.
 Before in *.java:
-    public class MrOriginalMachineSolutionInitializer implements CustomSolverPhaseCommand {
+    public class ToOriginalMachineSolutionInitializer implements CustomSolverPhaseCommand {
         ...
     }
 After in *.java:
-    public class MrOriginalMachineSolutionInitializer implements CustomPhaseCommand {
+    public class ToOriginalMachineSolutionInitializer implements CustomPhaseCommand {
         ...
     }
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
   <customSolverPhase>
-    <customSolverPhaseCommandClass>...MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+    <customSolverPhaseCommandClass>...ToOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
   </customSolverPhase>
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
   <customPhase>
-    <customPhaseCommandClass>....MrOriginalMachineSolutionInitializer</customPhaseCommandClass>
+    <customPhaseCommandClass>....ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
   </customPhase>
