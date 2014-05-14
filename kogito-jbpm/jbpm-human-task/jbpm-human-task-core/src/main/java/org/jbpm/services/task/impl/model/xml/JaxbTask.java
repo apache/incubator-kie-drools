@@ -360,8 +360,8 @@ public class JaxbTask implements InternalTask {
 
     @Override
     @JsonIgnore
-    public Short getArchived() {
-        return (Short) unsupported(Task.class);
+    public Boolean isArchived() {
+        return (Boolean) unsupported(Task.class);
     }
 
     @Override
