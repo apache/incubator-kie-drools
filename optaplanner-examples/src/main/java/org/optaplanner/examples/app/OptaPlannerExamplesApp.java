@@ -37,6 +37,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.TitledBorder;
 
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.cloudbalancing.app.CloudBalancingApp;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
@@ -64,10 +65,18 @@ public class OptaPlannerExamplesApp extends JFrame {
         optaPlannerExamplesApp.setVisible(true);
     }
 
+    private static String determineOptaPlannerExamplesVersion() {
+        String optaPlannerExamplesVersion = OptaPlannerExamplesApp.class.getPackage().getImplementationVersion();
+        if (optaPlannerExamplesVersion == null) {
+            optaPlannerExamplesVersion = "";
+        }
+        return optaPlannerExamplesVersion;
+    }
+
     private JTextArea descriptionTextArea;
 
     public OptaPlannerExamplesApp() {
-        super("OptaPlanner examples");
+        super("OptaPlanner examples " + determineOptaPlannerExamplesVersion());
         setIconImage(SolverAndPersistenceFrame.OPTA_PLANNER_ICON.getImage());
         setContentPane(createContentPane());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
