@@ -603,8 +603,8 @@
 
         <listitem>
           <para><literal>PHASE</literal>: Cached. Create each selection (<literal>Move</literal>, ...) at the beginning
-          of a <literal>SolverPhase</literal> and cache them in a list for the remainder of the
-          <literal>SolverPhase</literal>. Some selections cannot be phase cached because the list changes every step.
+          of a solver phase and cache them in a list for the remainder of the phase.
+          Some selections cannot be phase cached because the list changes every step.
           This scales up badly in memory footprint, but has a slight performance gain.</para>
         </listitem>
 

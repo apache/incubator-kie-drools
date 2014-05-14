@@ -64,9 +64,9 @@
         <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
         <incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
       </scoreDirectorFactory>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
+      <customPhase>
+        <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customPhaseCommandClass>
+      </customPhase>
       <localSearch>
         <unionMoveSelector>
           <changeMoveSelector/>
@@ -139,9 +139,9 @@
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>org/optaplanner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.optaplanner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
+      <customPhase>
+        <customPhaseCommandClass>org.optaplanner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customPhaseCommandClass>
+      </customPhase>
       <localSearch>
         <unionMoveSelector>
           <moveListFactory>

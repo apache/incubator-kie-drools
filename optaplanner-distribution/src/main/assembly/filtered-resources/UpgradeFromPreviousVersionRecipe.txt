@@ -4251,3 +4251,22 @@ After in *.java:
         ...
         solverConfig.setPhaseConfigList(phaseConfigList);
 
+[MAJOR] The interface CustomSolverPhaseCommand has been renamed to CustomPhaseCommand.
+The element <customSolverPhase> has been renamed to <customPhase>.
+The element <customSolverPhaseCommandClass> has been renamed to <customPhaseCommandClass>.
+Before in *.java:
+    public class MrOriginalMachineSolutionInitializer implements CustomSolverPhaseCommand {
+        ...
+    }
+After in *.java:
+    public class MrOriginalMachineSolutionInitializer implements CustomPhaseCommand {
+        ...
+    }
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+  <customSolverPhase>
+    <customSolverPhaseCommandClass>...MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+  </customSolverPhase>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+  <customPhase>
+    <customPhaseCommandClass>....MrOriginalMachineSolutionInitializer</customPhaseCommandClass>
+  </customPhase>

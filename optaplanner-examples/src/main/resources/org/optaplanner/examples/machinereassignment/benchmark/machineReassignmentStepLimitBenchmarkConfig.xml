@@ -23,9 +23,9 @@
 
   <solverBenchmark>
     <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
+      <customPhase>
+        <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customPhaseCommandClass>
+      </customPhase>
       <localSearch>
         <termination>
           <stepCountLimit>3000</stepCountLimit>

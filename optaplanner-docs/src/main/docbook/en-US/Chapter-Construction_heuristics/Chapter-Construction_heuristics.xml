@@ -42,7 +42,7 @@
     <section>
       <title>Configuration</title>
 
-      <para>Configure this <literal>SolverPhase</literal>:</para>
+      <para>Configure this solver phase:</para>
 
       <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;FIRST_FIT&lt;/constructionHeuristicType&gt;
@@ -85,7 +85,7 @@
     <section>
       <title>Configuration</title>
 
-      <para>Configure this <literal>SolverPhase</literal>:</para>
+      <para>Configure this solver phase:</para>
 
       <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;FIRST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
@@ -122,7 +122,7 @@
     <section>
       <title>Configuration</title>
 
-      <para>Configure this <literal>SolverPhase</literal>:</para>
+      <para>Configure this solver phase:</para>
 
       <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;BEST_FIT&lt;/constructionHeuristicType&gt;
@@ -159,7 +159,7 @@
     <section>
       <title>Configuration</title>
 
-      <para>Configure this <literal>SolverPhase</literal>:</para>
+      <para>Configure this solver phase:</para>
 
       <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;BEST_FIT_DECREASING&lt;/constructionHeuristicType&gt;

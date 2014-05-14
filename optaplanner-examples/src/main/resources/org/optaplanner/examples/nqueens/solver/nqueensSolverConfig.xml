@@ -51,7 +51,7 @@
   <!--</localSearch>-->
 
   <!-- To super scale out, replace <constructionHeuristic> and <localSearch> with this configuration: -->
-  <customSolverPhase>
-    <customSolverPhaseCommandClass>org.optaplanner.examples.nqueens.solver.solution.CheatingNQueensPhaseCommand</customSolverPhaseCommandClass>
-  </customSolverPhase>
+  <customPhase>
+    <customPhaseCommandClass>org.optaplanner.examples.nqueens.solver.solution.CheatingNQueensPhaseCommand</customPhaseCommandClass>
+  </customPhase>
 </solver>

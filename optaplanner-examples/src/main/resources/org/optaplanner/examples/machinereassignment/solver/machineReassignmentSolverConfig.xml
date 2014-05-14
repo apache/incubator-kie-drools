@@ -16,9 +16,9 @@
   <!--<constructionHeuristic>-->
     <!--<constructionHeuristicType>FIRST_FIT</constructionHeuristicType>-->
   <!--</constructionHeuristic>-->
-  <customSolverPhase>
-    <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
-  </customSolverPhase>
+  <customPhase>
+    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customPhaseCommandClass>
+  </customPhase>
   <localSearch>
     <unionMoveSelector>
       <changeMoveSelector/>

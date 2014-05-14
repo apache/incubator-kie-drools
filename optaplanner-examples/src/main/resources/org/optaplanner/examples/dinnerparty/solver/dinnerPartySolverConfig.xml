@@ -15,9 +15,9 @@
     <!--<minutesSpentLimit>1</minutesSpentLimit>-->
     <bestScoreLimit>20</bestScoreLimit>
   </termination>
-  <customSolverPhase>
-    <customSolverPhaseCommandClass>org.optaplanner.examples.dinnerparty.solver.solution.initializer.DinnerPartySolutionInitializer</customSolverPhaseCommandClass>
-  </customSolverPhase>
+  <customPhase>
+    <customPhaseCommandClass>org.optaplanner.examples.dinnerparty.solver.solution.initializer.DinnerPartySolutionInitializer</customPhaseCommandClass>
+  </customPhase>
   <localSearch>
     <swapMoveSelector>
       <cacheType>PHASE</cacheType>

@@ -51,17 +51,17 @@
   <solverBenchmark>
     <name>original</name>
     <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
+      <customPhase>
+        <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customPhaseCommandClass>
+      </customPhase>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
     <name>entityTabu7-2000</name>
     <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
+      <customPhase>
+        <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customPhaseCommandClass>
+      </customPhase>
       <localSearch>
         <unionMoveSelector>
           <changeMoveSelector/>
@@ -79,9 +79,9 @@
   <!--<solverBenchmark>-->
     <!--<name>entityTabu7-fading7-2000</name>-->
     <!--<solver>-->
-      <!--<customSolverPhase>-->
-        <!--<customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>-->
-      <!--</customSolverPhase>-->
+      <!--<customPhase>-->
+        <!--<customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customPhaseCommandClass>-->
+      <!--</customPhase>-->
       <!--<localSearch>-->
         <!--<unionMoveSelector>-->
           <!--<changeMoveSelector/>-->
@@ -100,9 +100,9 @@
   <!--<solverBenchmark>-->
     <!--<name>entityTabu5-fading10-2000</name>-->
     <!--<solver>-->
-      <!--<customSolverPhase>-->
-        <!--<customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>-->
-      <!--</customSolverPhase>-->
+      <!--<customPhase>-->
+        <!--<customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customPhaseCommandClass>-->
+      <!--</customPhase>-->
       <!--<localSearch>-->
         <!--<unionMoveSelector>-->
           <!--<changeMoveSelector/>-->
@@ -121,9 +121,9 @@
   <solverBenchmark>
     <name>lateAcceptance1000</name>
     <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
+      <customPhase>
+        <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customPhaseCommandClass>
+      </customPhase>
       <localSearch>
         <unionMoveSelector>
           <changeMoveSelector>
@@ -143,9 +143,9 @@
   <solverBenchmark>
     <name>lateAcceptance2000</name>
     <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
+      <customPhase>
+        <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customPhaseCommandClass>
+      </customPhase>
       <localSearch>
         <unionMoveSelector>
           <changeMoveSelector>

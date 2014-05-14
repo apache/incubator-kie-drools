@@ -18,7 +18,7 @@ package org.optaplanner.examples.nqueens.solver.solution;
 
 import java.util.List;
 
-import org.optaplanner.core.impl.phase.custom.CustomSolverPhaseCommand;
+import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * This class solves any N Queens instance using a polynomial time algorithm
  * (<a href="http://en.wikipedia.org/wiki/Eight_queens_puzzle#Explicit_solutions">>explicit solutions algorithm</a>).
  */
-public class CheatingNQueensPhaseCommand implements CustomSolverPhaseCommand {
+public class CheatingNQueensPhaseCommand implements CustomPhaseCommand {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 

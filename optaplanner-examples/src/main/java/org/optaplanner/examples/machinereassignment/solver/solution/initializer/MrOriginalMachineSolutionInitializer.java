@@ -16,14 +16,14 @@
 
 package org.optaplanner.examples.machinereassignment.solver.solution.initializer;
 
-import org.optaplanner.core.impl.phase.custom.CustomSolverPhaseCommand;
+import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MrOriginalMachineSolutionInitializer implements CustomSolverPhaseCommand {
+public class MrOriginalMachineSolutionInitializer implements CustomPhaseCommand {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 

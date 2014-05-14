@@ -51,9 +51,9 @@
   <solverBenchmark>
     <name>original</name>
     <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
+      <customPhase>
+        <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customPhaseCommandClass>
+      </customPhase>
     </solver>
   </solverBenchmark>
 <#list [7] as entityTabuSize>
@@ -61,9 +61,9 @@
     <solverBenchmark>
     <name>entityTabu${entityTabuSize}-mas${acceptedCountLimit}</name>
     <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
+      <customPhase>
+        <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customPhaseCommandClass>
+      </customPhase>
       <localSearch>
         <unionMoveSelector>
           <changeMoveSelector/>
@@ -84,9 +84,9 @@
     <solverBenchmark>
         <name>simulatedAnnealing${simulatedAnnealingStartingTemperature}soft</name>
         <solver>
-            <customSolverPhase>
-                <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
-            </customSolverPhase>
+            <customPhase>
+                <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customPhaseCommandClass>
+            </customPhase>
             <localSearch>
                 <unionMoveSelector>
                     <changeMoveSelector/>
@@ -106,9 +106,9 @@
     <solverBenchmark>
     <name>lateAcceptance${lateAcceptanceSize}</name>
     <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
+      <customPhase>
+        <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customPhaseCommandClass>
+      </customPhase>
       <localSearch>
         <unionMoveSelector>
           <changeMoveSelector/>

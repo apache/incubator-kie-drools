@@ -25,28 +25,28 @@ import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.phase.custom.CustomPhase;
-import org.optaplanner.core.impl.phase.custom.CustomSolverPhaseCommand;
+import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.phase.custom.DefaultCustomPhase;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
-@XStreamAlias("customSolverPhase")
+@XStreamAlias("customPhase")
 public class CustomPhaseConfig extends PhaseConfig {
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
 
-    @XStreamImplicit(itemFieldName = "customSolverPhaseCommandClass")
-    protected List<Class<? extends CustomSolverPhaseCommand>> customSolverPhaseCommandClassList = null;
+    @XStreamImplicit(itemFieldName = "customPhaseCommandClass")
+    protected List<Class<? extends CustomPhaseCommand>> customPhaseCommandClassList = null;
 
     protected Boolean forceUpdateBestSolution = null;
 
-    public List<Class<? extends CustomSolverPhaseCommand>> getCustomSolverPhaseCommandClassList() {
-        return customSolverPhaseCommandClassList;
+    public List<Class<? extends CustomPhaseCommand>> getCustomPhaseCommandClassList() {
+        return customPhaseCommandClassList;
     }
 
-    public void setCustomSolverPhaseCommandClassList(List<Class<? extends CustomSolverPhaseCommand>> customSolverPhaseCommandClassList) {
-        this.customSolverPhaseCommandClassList = customSolverPhaseCommandClassList;
+    public void setCustomPhaseCommandClassList(List<Class<? extends CustomPhaseCommand>> customPhaseCommandClassList) {
+        this.customPhaseCommandClassList = customPhaseCommandClassList;
     }
 
     public Boolean getForceUpdateBestSolution() {
@@ -64,28 +64,28 @@ public class CustomPhaseConfig extends PhaseConfig {
     public CustomPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
-        DefaultCustomPhase customSolverPhase = new DefaultCustomPhase();
-        configurePhase(customSolverPhase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
-        if (ConfigUtils.isEmptyCollection(customSolverPhaseCommandClassList)) {
+        DefaultCustomPhase customPhase = new DefaultCustomPhase();
+        configurePhase(customPhase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
+        if (ConfigUtils.isEmptyCollection(customPhaseCommandClassList)) {
             throw new IllegalArgumentException(
-                    "Configure at least 1 <customSolverPhaseCommandClass> in the <customSolverPhase> configuration.");
+                    "Configure at least 1 <customPhaseCommandClass> in the <customPhase> configuration.");
         }
-        List<CustomSolverPhaseCommand> customSolverPhaseCommandList
-                = new ArrayList<CustomSolverPhaseCommand>(customSolverPhaseCommandClassList.size());
-        for (Class<? extends CustomSolverPhaseCommand> customSolverPhaseCommandClass : customSolverPhaseCommandClassList) {
-            CustomSolverPhaseCommand customSolverPhaseCommand = ConfigUtils.newInstance(this,
-                    "customSolverPhaseCommandClass", customSolverPhaseCommandClass);
-            customSolverPhaseCommandList.add(customSolverPhaseCommand);
+        List<CustomPhaseCommand> customPhaseCommandList
+                = new ArrayList<CustomPhaseCommand>(customPhaseCommandClassList.size());
+        for (Class<? extends CustomPhaseCommand> customPhaseCommandClass : customPhaseCommandClassList) {
+            CustomPhaseCommand customPhaseCommand = ConfigUtils.newInstance(this,
+                    "customPhaseCommandClass", customPhaseCommandClass);
+            customPhaseCommandList.add(customPhaseCommand);
         }
-        customSolverPhase.setCustomSolverPhaseCommandList(customSolverPhaseCommandList);
-        customSolverPhase.setForceUpdateBestSolution(forceUpdateBestSolution == null ? false : forceUpdateBestSolution);
-        return customSolverPhase;
+        customPhase.setCustomPhaseCommandList(customPhaseCommandList);
+        customPhase.setForceUpdateBestSolution(forceUpdateBestSolution == null ? false : forceUpdateBestSolution);
+        return customPhase;
     }
 
     public void inherit(CustomPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        customSolverPhaseCommandClassList = ConfigUtils.inheritMergeableListProperty(
-                customSolverPhaseCommandClassList, inheritedConfig.getCustomSolverPhaseCommandClassList());
+        customPhaseCommandClassList = ConfigUtils.inheritMergeableListProperty(
+                customPhaseCommandClassList, inheritedConfig.getCustomPhaseCommandClassList());
         forceUpdateBestSolution = ConfigUtils.inheritOverwritableProperty(forceUpdateBestSolution,
                 inheritedConfig.getForceUpdateBestSolution());
     }

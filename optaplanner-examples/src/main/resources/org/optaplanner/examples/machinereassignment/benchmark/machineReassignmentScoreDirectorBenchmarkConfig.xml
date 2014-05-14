@@ -30,9 +30,9 @@
       <termination>
         <minutesSpentLimit>5</minutesSpentLimit>
       </termination>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
+      <customPhase>
+        <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customPhaseCommandClass>
+      </customPhase>
       <localSearch>
         <unionMoveSelector>
           <changeMoveSelector/>

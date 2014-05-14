@@ -33,11 +33,11 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 public class DefaultCustomPhase extends AbstractPhase
         implements CustomPhase {
 
-    protected List<CustomSolverPhaseCommand> customSolverPhaseCommandList;
+    protected List<CustomPhaseCommand> customPhaseCommandList;
     protected boolean forceUpdateBestSolution;
 
-    public void setCustomSolverPhaseCommandList(List<CustomSolverPhaseCommand> customSolverPhaseCommandList) {
-        this.customSolverPhaseCommandList = customSolverPhaseCommandList;
+    public void setCustomPhaseCommandList(List<CustomPhaseCommand> customPhaseCommandList) {
+        this.customPhaseCommandList = customPhaseCommandList;
     }
 
     public void setForceUpdateBestSolution(boolean forceUpdateBestSolution) {
@@ -53,11 +53,11 @@ public class DefaultCustomPhase extends AbstractPhase
         phaseStarted(phaseScope);
 
         CustomStepScope stepScope = new CustomStepScope(phaseScope);
-        Iterator<CustomSolverPhaseCommand> commandIterator = customSolverPhaseCommandList.iterator();
+        Iterator<CustomPhaseCommand> commandIterator = customPhaseCommandList.iterator();
         while (!termination.isPhaseTerminated(phaseScope) && commandIterator.hasNext()) {
-            CustomSolverPhaseCommand customSolverPhaseCommand = commandIterator.next();
+            CustomPhaseCommand customPhaseCommand = commandIterator.next();
             stepStarted(stepScope);
-            doStep(stepScope, customSolverPhaseCommand);
+            doStep(stepScope, customPhaseCommand);
             stepEnded(stepScope);
             phaseScope.setLastCompletedStepScope(stepScope);
             stepScope = new CustomStepScope(phaseScope);
@@ -73,9 +73,9 @@ public class DefaultCustomPhase extends AbstractPhase
         super.stepStarted(stepScope);
     }
 
-    private void doStep(CustomStepScope stepScope, CustomSolverPhaseCommand customSolverPhaseCommand) {
+    private void doStep(CustomStepScope stepScope, CustomPhaseCommand customPhaseCommand) {
         InnerScoreDirector scoreDirector = stepScope.getScoreDirector();
-        customSolverPhaseCommand.changeWorkingSolution(scoreDirector);
+        customPhaseCommand.changeWorkingSolution(scoreDirector);
         int uninitializedVariableCount = scoreDirector.getSolutionDescriptor()
                 .countUninitializedVariables(stepScope.getWorkingSolution());
         stepScope.setUninitializedVariableCount(uninitializedVariableCount);

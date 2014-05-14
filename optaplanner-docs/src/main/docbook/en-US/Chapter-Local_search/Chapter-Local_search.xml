@@ -300,7 +300,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
     <section>
       <title>Configuration</title>
 
-      <para>Configure this <literal>SolverPhase</literal>:</para>
+      <para>Configure this solver phase:</para>
 
       <programlisting language="xml">  &lt;localSearch&gt;
     ...

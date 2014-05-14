@@ -16,13 +16,13 @@
 
 package org.optaplanner.examples.examination.solver.solution.initializer;
 
-import org.optaplanner.core.impl.phase.custom.CustomSolverPhaseCommand;
+import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.examination.domain.Examination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand {
+public class ExaminationSolutionInitializer implements CustomPhaseCommand {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
