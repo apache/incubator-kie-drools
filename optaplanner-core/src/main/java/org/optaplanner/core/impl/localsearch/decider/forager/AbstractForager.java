@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.localsearch.decider.forager;
 
-import org.optaplanner.core.impl.localsearch.event.LocalSearchSolverPhaseLifecycleListenerAdapter;
+import org.optaplanner.core.impl.localsearch.event.LocalSearchPhaseLifecycleListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * Abstract superclass for {@link Forager}.
  * @see Forager
  */
-public abstract class AbstractForager extends LocalSearchSolverPhaseLifecycleListenerAdapter implements Forager {
+public abstract class AbstractForager extends LocalSearchPhaseLifecycleListenerAdapter implements Forager {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 

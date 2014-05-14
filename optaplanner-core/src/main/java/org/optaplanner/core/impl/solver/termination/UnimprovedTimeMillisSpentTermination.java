@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.solver.termination;
 
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
@@ -40,7 +40,7 @@ public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
         return isTerminated(bestSolutionTimeMillis);
     }
 
-    public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
+    public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
         long bestSolutionTimeMillis = phaseScope.getPhaseBestSolutionTimeMillis();
         return isTerminated(bestSolutionTimeMillis);
     }
@@ -60,7 +60,7 @@ public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
         return calculateTimeGradient(bestSolutionTimeMillis);
     }
 
-    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
+    public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
         long bestSolutionTimeMillis = phaseScope.getPhaseBestSolutionTimeMillis();
         return calculateTimeGradient(bestSolutionTimeMillis);
     }

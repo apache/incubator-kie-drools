@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.comparator.NaturalScoreComparator;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.score.comparator.FlatteningHardSoftScoreComparator;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -39,7 +39,7 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactoryTest {
         deciderScoreComparatorFactory.setSuccessiveNoHardChangeRepetitionMultiplicand(5.0);
         deciderScoreComparatorFactory.setHardWeightSurvivalRatio(0.9);
 
-        LocalSearchSolverPhaseScope phaseScope = createPhaseScope();
+        LocalSearchPhaseScope phaseScope = createPhaseScope();
         deciderScoreComparatorFactory.phaseStarted(phaseScope);
         LocalSearchStepScope stepScope = phaseScope.getLastCompletedStepScope();
         // Under hardScoreActivationThreshold 1
@@ -98,15 +98,15 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactoryTest {
     }
 
     private LocalSearchStepScope nextStepScope(LocalSearchStepScope lastCompletedStepScope) {
-        LocalSearchSolverPhaseScope phaseScope = lastCompletedStepScope.getPhaseScope();
+        LocalSearchPhaseScope phaseScope = lastCompletedStepScope.getPhaseScope();
         phaseScope.setLastCompletedStepScope(lastCompletedStepScope);
         return new LocalSearchStepScope(phaseScope);
     }
 
-    private LocalSearchSolverPhaseScope createPhaseScope() {
+    private LocalSearchPhaseScope createPhaseScope() {
         DefaultSolverScope solverScope = new DefaultSolverScope();
         solverScope.setBestScore(HardSoftScore.valueOf(-11, -200));
-        LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(solverScope);
+        LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
         phaseScope.setBestSolutionStepIndex(1000);
         LocalSearchStepScope lastCompletedStepScope = new LocalSearchStepScope(phaseScope, 1000);
         lastCompletedStepScope.setScore(HardSoftScore.valueOf(-11, -200));

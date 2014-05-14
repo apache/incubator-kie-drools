@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.AbstractTermination;
 
@@ -120,7 +120,7 @@ public class BasicPlumbingTermination extends AbstractTermination {
         return terminatedEarly || !problemFactChangeQueue.isEmpty();
     }
 
-    public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
+    public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
         throw new UnsupportedOperationException("BasicPlumbingTermination can only be used for solver termination.");
     }
 
@@ -128,7 +128,7 @@ public class BasicPlumbingTermination extends AbstractTermination {
         return -1.0; // Not supported
     }
 
-    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
+    public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
         throw new UnsupportedOperationException("BasicPlumbingTermination can only be used for solver termination.");
     }
 

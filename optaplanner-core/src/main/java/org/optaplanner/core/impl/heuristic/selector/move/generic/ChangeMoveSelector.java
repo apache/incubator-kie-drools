@@ -42,8 +42,8 @@ public class ChangeMoveSelector extends GenericMoveSelector {
         this.randomSelection = randomSelection;
         GenuineVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
         chained = variableDescriptor.isChained();
-        solverPhaseLifecycleSupport.addEventListener(entitySelector);
-        solverPhaseLifecycleSupport.addEventListener(valueSelector);
+        phaseLifecycleSupport.addEventListener(entitySelector);
+        phaseLifecycleSupport.addEventListener(valueSelector);
     }
 
     // ************************************************************************

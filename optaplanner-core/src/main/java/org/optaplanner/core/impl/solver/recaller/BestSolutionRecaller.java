@@ -19,8 +19,8 @@ package org.optaplanner.core.impl.solver.recaller;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.solver.event.SolverEventSupport;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
-import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A BestSolutionRecaller remembers the best solution that a {@link Solver} encounters.
  */
-public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
+public class BestSolutionRecaller extends PhaseLifecycleListenerAdapter {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -68,7 +68,7 @@ public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
     }
 
     public void processWorkingSolutionDuringStep(AbstractStepScope stepScope) {
-        AbstractSolverPhaseScope phaseScope = stepScope.getPhaseScope();
+        AbstractPhaseScope phaseScope = stepScope.getPhaseScope();
         int uninitializedVariableCount = stepScope.getUninitializedVariableCount();
         Score score = stepScope.getScore();
         DefaultSolverScope solverScope = phaseScope.getSolverScope();
@@ -92,7 +92,7 @@ public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
 
     public void processWorkingSolutionDuringMove(
             int uninitializedVariableCount, Score score, AbstractStepScope stepScope) {
-        AbstractSolverPhaseScope phaseScope = stepScope.getPhaseScope();
+        AbstractPhaseScope phaseScope = stepScope.getPhaseScope();
         DefaultSolverScope solverScope = phaseScope.getSolverScope();
         int bestUninitializedVariableCount = solverScope.getBestUninitializedVariableCount();
         Score bestScore = solverScope.getBestScore();

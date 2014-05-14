@@ -21,7 +21,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -50,7 +50,7 @@ public class ReinitializeVariableValueSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         valueSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         valueSelector.phaseStarted(phaseScopeA);
 
@@ -69,7 +69,7 @@ public class ReinitializeVariableValueSelectorTest {
 
         valueSelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         valueSelector.phaseStarted(phaseScopeB);
 
@@ -92,7 +92,7 @@ public class ReinitializeVariableValueSelectorTest {
 
         valueSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(childValueSelector, 1, 2, 4);
+        verifyPhaseLifecycle(childValueSelector, 1, 2, 4);
         verify(childValueSelector, atMost(4)).iterator(any());
         verify(childValueSelector, atMost(4)).getSize(any());
     }
@@ -115,7 +115,7 @@ public class ReinitializeVariableValueSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         valueSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         valueSelector.phaseStarted(phaseScopeA);
 
@@ -135,7 +135,7 @@ public class ReinitializeVariableValueSelectorTest {
 
         valueSelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         valueSelector.phaseStarted(phaseScopeB);
 
@@ -158,7 +158,7 @@ public class ReinitializeVariableValueSelectorTest {
 
         valueSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(childValueSelector, 1, 2, 4);
+        verifyPhaseLifecycle(childValueSelector, 1, 2, 4);
         verify(childValueSelector, atMost(4)).iterator(any());
         verify(childValueSelector, atMost(4)).getSize(any());
     }

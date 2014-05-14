@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.move.DummyMove;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -63,7 +63,7 @@ public class ProbabilityMoveSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.solvingStarted(solverScope);
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         when(phaseScopeA.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.phaseStarted(phaseScopeA);
@@ -78,7 +78,7 @@ public class ProbabilityMoveSelectorTest {
         moveSelector.phaseEnded(phaseScopeA);
         moveSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(childMoveSelector, 1, 1, 1);
+        verifyPhaseLifecycle(childMoveSelector, 1, 1, 1);
         verify(childMoveSelector, times(1)).iterator();
     }
 

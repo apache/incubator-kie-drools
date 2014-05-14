@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -111,7 +111,7 @@ public class DefaultSubChainSelectorTest {
         when(solverScope.getScoreDirector()).thenReturn(scoreDirector);
         subChainSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         subChainSelector.phaseStarted(phaseScopeA);
 
@@ -145,7 +145,7 @@ public class DefaultSubChainSelectorTest {
 
         subChainSelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         subChainSelector.phaseStarted(phaseScopeB);
 
@@ -165,7 +165,7 @@ public class DefaultSubChainSelectorTest {
 
         subChainSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(valueSelector, 1, 2, 3);
+        verifyPhaseLifecycle(valueSelector, 1, 2, 3);
     }
 
     @Test
@@ -190,7 +190,7 @@ public class DefaultSubChainSelectorTest {
         when(solverScope.getScoreDirector()).thenReturn(scoreDirector);
         subChainSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         subChainSelector.phaseStarted(phaseScopeA);
 
@@ -208,7 +208,7 @@ public class DefaultSubChainSelectorTest {
 
         subChainSelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         subChainSelector.phaseStarted(phaseScopeB);
 
@@ -222,7 +222,7 @@ public class DefaultSubChainSelectorTest {
 
         subChainSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(valueSelector, 1, 2, 3);
+        verifyPhaseLifecycle(valueSelector, 1, 2, 3);
     }
 
     private void assertAllCodesOfSubChainSelector(SubChainSelector subChainSelector, String... codes) {
@@ -261,7 +261,7 @@ public class DefaultSubChainSelectorTest {
         when(solverScope.getScoreDirector()).thenReturn(scoreDirector);
         subChainSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         subChainSelector.phaseStarted(phaseScopeA);
 
@@ -278,7 +278,7 @@ public class DefaultSubChainSelectorTest {
 
         subChainSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(valueSelector, 1, 1, 1);
+        verifyPhaseLifecycle(valueSelector, 1, 1, 1);
     }
 
     @Test
@@ -310,7 +310,7 @@ public class DefaultSubChainSelectorTest {
         when(solverScope.getScoreDirector()).thenReturn(scoreDirector);
         subChainSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         subChainSelector.phaseStarted(phaseScopeA);
 
@@ -326,7 +326,7 @@ public class DefaultSubChainSelectorTest {
 
         subChainSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(valueSelector, 1, 1, 1);
+        verifyPhaseLifecycle(valueSelector, 1, 1, 1);
     }
 
     @Test
@@ -355,7 +355,7 @@ public class DefaultSubChainSelectorTest {
         when(solverScope.getWorkingRandom()).thenReturn(new Random(0L));
         subChainSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         subChainSelector.phaseStarted(phaseScopeA);
 
@@ -381,7 +381,7 @@ public class DefaultSubChainSelectorTest {
 
         subChainSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(valueSelector, 1, 1, 1);
+        verifyPhaseLifecycle(valueSelector, 1, 1, 1);
     }
 
     @Test
@@ -410,7 +410,7 @@ public class DefaultSubChainSelectorTest {
         when(solverScope.getWorkingRandom()).thenReturn(new Random(0L));
         subChainSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         subChainSelector.phaseStarted(phaseScopeA);
 
@@ -431,7 +431,7 @@ public class DefaultSubChainSelectorTest {
 
         subChainSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(valueSelector, 1, 1, 1);
+        verifyPhaseLifecycle(valueSelector, 1, 1, 1);
     }
 
     @Test
@@ -460,7 +460,7 @@ public class DefaultSubChainSelectorTest {
         when(solverScope.getWorkingRandom()).thenReturn(new Random(0L));
         subChainSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         subChainSelector.phaseStarted(phaseScopeA);
 
@@ -478,7 +478,7 @@ public class DefaultSubChainSelectorTest {
 
         subChainSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(valueSelector, 1, 1, 1);
+        verifyPhaseLifecycle(valueSelector, 1, 1, 1);
     }
 
     private void assertContainsCodesOfNeverEndingSubChainSelector(

@@ -33,8 +33,8 @@ import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 import org.optaplanner.core.impl.heuristic.move.CompositeMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
-import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
@@ -69,17 +69,17 @@ public class PlannerAssert extends Assert {
     }
 
     // ************************************************************************
-    // SolverPhaseLifecycleListener methods
+    // PhaseLifecycleListener methods
     // ************************************************************************
 
-    public static void verifySolverPhaseLifecycle(SolverPhaseLifecycleListener lifecycleListener,
+    public static void verifyPhaseLifecycle(PhaseLifecycleListener phaseLifecycleListener,
             int solvingCount, int phaseCount, int stepCount) {
-        verify(lifecycleListener, times(solvingCount)).solvingStarted(Matchers.<DefaultSolverScope>any());
-        verify(lifecycleListener, times(phaseCount)).phaseStarted(Matchers.<AbstractSolverPhaseScope>any());
-        verify(lifecycleListener, times(stepCount)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(lifecycleListener, times(stepCount)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(lifecycleListener, times(phaseCount)).phaseEnded(Matchers.<AbstractSolverPhaseScope>any());
-        verify(lifecycleListener, times(solvingCount)).solvingEnded(Matchers.<DefaultSolverScope>any());
+        verify(phaseLifecycleListener, times(solvingCount)).solvingStarted(Matchers.<DefaultSolverScope>any());
+        verify(phaseLifecycleListener, times(phaseCount)).phaseStarted(Matchers.<AbstractPhaseScope>any());
+        verify(phaseLifecycleListener, times(stepCount)).stepStarted(Matchers.<AbstractStepScope>any());
+        verify(phaseLifecycleListener, times(stepCount)).stepEnded(Matchers.<AbstractStepScope>any());
+        verify(phaseLifecycleListener, times(phaseCount)).phaseEnded(Matchers.<AbstractPhaseScope>any());
+        verify(phaseLifecycleListener, times(solvingCount)).solvingEnded(Matchers.<DefaultSolverScope>any());
     }
 
     public static <O> void assertElementsOfIterator(Iterator<O> iterator, O... elements) {

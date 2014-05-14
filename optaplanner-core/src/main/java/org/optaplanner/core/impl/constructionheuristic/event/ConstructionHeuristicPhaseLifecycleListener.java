@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.localsearch.event;
+package org.optaplanner.core.impl.constructionheuristic.event;
 
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
+import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicPhaseScope;
+import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 import org.optaplanner.core.impl.solver.event.SolverLifecycleListener;
 
-public interface LocalSearchSolverPhaseLifecycleListener extends SolverLifecycleListener {
+public interface ConstructionHeuristicPhaseLifecycleListener extends SolverLifecycleListener {
 
-    void phaseStarted(LocalSearchSolverPhaseScope phaseScope);
+    void phaseStarted(ConstructionHeuristicPhaseScope phaseScope);
 
-    void stepStarted(LocalSearchStepScope stepScope);
+    void stepStarted(ConstructionHeuristicStepScope stepScope);
 
-    void stepEnded(LocalSearchStepScope stepScope);
+    void stepEnded(ConstructionHeuristicStepScope stepScope);
 
-    void phaseEnded(LocalSearchSolverPhaseScope phaseScope);
+    void phaseEnded(ConstructionHeuristicPhaseScope phaseScope);
 
 }

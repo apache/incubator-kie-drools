@@ -58,8 +58,8 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
                         + ") with neverEnding (" + valueSelector.isNeverEnding() + ").");
             }
         }
-        solverPhaseLifecycleSupport.addEventListener(subChainSelector);
-        solverPhaseLifecycleSupport.addEventListener(valueSelector);
+        phaseLifecycleSupport.addEventListener(subChainSelector);
+        phaseLifecycleSupport.addEventListener(valueSelector);
     }
 
     // ************************************************************************

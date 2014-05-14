@@ -44,7 +44,7 @@ public class SelectedCountLimitValueSelector extends AbstractValueSelector imple
             throw new IllegalArgumentException("The selector (" + this
                     + ") has a negative selectedCountLimit (" + selectedCountLimit + ").");
         }
-        solverPhaseLifecycleSupport.addEventListener(childValueSelector);
+        phaseLifecycleSupport.addEventListener(childValueSelector);
     }
 
     // ************************************************************************

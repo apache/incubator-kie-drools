@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractSolverPhaseScope {
+public abstract class AbstractPhaseScope {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -43,7 +43,7 @@ public abstract class AbstractSolverPhaseScope {
 
     protected int bestSolutionStepIndex;
 
-    public AbstractSolverPhaseScope(DefaultSolverScope solverScope) {
+    public AbstractPhaseScope(DefaultSolverScope solverScope) {
         this.solverScope = solverScope;
     }
 

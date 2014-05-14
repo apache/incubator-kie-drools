@@ -21,7 +21,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 
 public class LocalSearchStepScope extends AbstractStepScope {
 
-    private final LocalSearchSolverPhaseScope phaseScope;
+    private final LocalSearchPhaseScope phaseScope;
 
     private double timeGradient = Double.NaN;
     private Move step = null;
@@ -30,17 +30,17 @@ public class LocalSearchStepScope extends AbstractStepScope {
     private Long selectedMoveCount = null;
     private Long acceptedMoveCount = null;
 
-    public LocalSearchStepScope(LocalSearchSolverPhaseScope phaseScope) {
+    public LocalSearchStepScope(LocalSearchPhaseScope phaseScope) {
         this(phaseScope, phaseScope.getNextStepIndex());
     }
 
-    public LocalSearchStepScope(LocalSearchSolverPhaseScope phaseScope, int stepIndex) {
+    public LocalSearchStepScope(LocalSearchPhaseScope phaseScope, int stepIndex) {
         super(stepIndex);
         this.phaseScope = phaseScope;
     }
 
     @Override
-    public LocalSearchSolverPhaseScope getPhaseScope() {
+    public LocalSearchPhaseScope getPhaseScope() {
         return phaseScope;
     }
 

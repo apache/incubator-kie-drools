@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.phase.event;
+package org.optaplanner.core.impl.localsearch.event;
 
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
-import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.event.SolverLifecycleListenerAdapter;
 
-public abstract class SolverPhaseLifecycleListenerAdapter extends SolverLifecycleListenerAdapter
-        implements SolverPhaseLifecycleListener {
+public abstract class LocalSearchPhaseLifecycleListenerAdapter extends SolverLifecycleListenerAdapter
+        implements LocalSearchPhaseLifecycleListener {
 
-    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+    public void phaseStarted(LocalSearchPhaseScope phaseScope) {
         // Hook method
     }
 
-    public void stepStarted(AbstractStepScope stepScope) {
+    public void stepStarted(LocalSearchStepScope stepScope) {
         // Hook method
     }
 
-    public void stepEnded(AbstractStepScope stepScope) {
+    public void stepEnded(LocalSearchStepScope stepScope) {
         // Hook method
     }
 
-    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+    public void phaseEnded(LocalSearchPhaseScope phaseScope) {
         // Hook method
     }
 

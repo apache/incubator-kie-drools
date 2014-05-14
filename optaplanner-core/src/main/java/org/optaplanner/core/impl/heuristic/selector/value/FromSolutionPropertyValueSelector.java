@@ -23,10 +23,9 @@ import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * This is the common {@link ValueSelector} implementation.
@@ -68,7 +67,7 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
     // ************************************************************************
 
     @Override
-    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
         InnerScoreDirector scoreDirector = phaseScope.getScoreDirector();
         cachedValueRange = (ValueRange<Object>)
@@ -97,7 +96,7 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
     }
 
     @Override
-    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         cachedValueRange = null;
         if (valueRangeMightContainEntity) {

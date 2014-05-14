@@ -20,7 +20,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchLayer;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 import org.optaplanner.core.impl.exhaustivesearch.node.bounder.ScoreBounder;
-import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchSolverPhaseScope;
+import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchPhaseScope;
 import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchStepScope;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.ManualEntityMimicRecorder;
@@ -89,7 +89,7 @@ public class ExhaustiveSearchDecider {
         moveSelector.solvingStarted(solverScope);
     }
 
-    public void phaseStarted(ExhaustiveSearchSolverPhaseScope phaseScope) {
+    public void phaseStarted(ExhaustiveSearchPhaseScope phaseScope) {
         moveSelector.phaseStarted(phaseScope);
     }
 
@@ -101,7 +101,7 @@ public class ExhaustiveSearchDecider {
         moveSelector.stepEnded(stepScope);
     }
 
-    public void phaseEnded(ExhaustiveSearchSolverPhaseScope phaseScope) {
+    public void phaseEnded(ExhaustiveSearchPhaseScope phaseScope) {
         moveSelector.phaseEnded(phaseScope);
     }
 
@@ -139,7 +139,7 @@ public class ExhaustiveSearchDecider {
         processMove(stepScope, moveNode);
         undoMove.doMove(scoreDirector);
         if (assertExpectedUndoMoveScore) {
-            ExhaustiveSearchSolverPhaseScope phaseScope = stepScope.getPhaseScope();
+            ExhaustiveSearchPhaseScope phaseScope = stepScope.getPhaseScope();
             phaseScope.assertExpectedUndoMoveScore(move, undoMove);
         }
         logger.trace("        Move breadth ({}), score ({}), move ({}).",
@@ -147,7 +147,7 @@ public class ExhaustiveSearchDecider {
     }
 
     private void processMove(ExhaustiveSearchStepScope stepScope, ExhaustiveSearchNode moveNode) {
-        ExhaustiveSearchSolverPhaseScope phaseScope = stepScope.getPhaseScope();
+        ExhaustiveSearchPhaseScope phaseScope = stepScope.getPhaseScope();
         int uninitializedVariableCount = moveNode.getUninitializedVariableCount();
         if (!scoreBounderEnabled) {
             if (uninitializedVariableCount == 0) {

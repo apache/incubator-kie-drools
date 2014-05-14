@@ -17,11 +17,9 @@
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import com.google.common.collect.Iterators;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
@@ -33,7 +31,7 @@ public class DowncastingValueSelector extends AbstractValueSelector {
     public DowncastingValueSelector(ValueSelector childValueSelector, Class<?> downcastEntityClass) {
         this.childValueSelector = childValueSelector;
         this.downcastEntityClass = downcastEntityClass;
-        solverPhaseLifecycleSupport.addEventListener(childValueSelector);
+        phaseLifecycleSupport.addEventListener(childValueSelector);
     }
 
     public ValueSelector getChildValueSelector() {

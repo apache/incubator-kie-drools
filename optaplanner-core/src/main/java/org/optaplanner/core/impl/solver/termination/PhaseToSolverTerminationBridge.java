@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.solver.termination;
 
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
@@ -38,7 +38,7 @@ public class PhaseToSolverTerminationBridge extends AbstractTermination {
     }
 
     @Override
-    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope phaseScope) {
         // Do not delegate the event to the solverTermination, because it already gets the event from the DefaultSolver
     }
 
@@ -53,7 +53,7 @@ public class PhaseToSolverTerminationBridge extends AbstractTermination {
     }
 
     @Override
-    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope phaseScope) {
         // Do not delegate the event to the solverTermination, because it already gets the event from the DefaultSolver
     }
 
@@ -71,7 +71,7 @@ public class PhaseToSolverTerminationBridge extends AbstractTermination {
                 getClass().getSimpleName() + " can only be used for phase termination.");
     }
 
-    public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
+    public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
         return solverTermination.isSolverTerminated(phaseScope.getSolverScope());
     }
 
@@ -84,7 +84,7 @@ public class PhaseToSolverTerminationBridge extends AbstractTermination {
                 getClass().getSimpleName() + " can only be used for phase termination.");
     }
 
-    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
+    public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
         return solverTermination.calculateSolverTimeGradient(phaseScope.getSolverScope());
     }
 

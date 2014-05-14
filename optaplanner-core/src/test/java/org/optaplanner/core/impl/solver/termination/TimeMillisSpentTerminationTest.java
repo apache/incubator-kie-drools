@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.solver.termination;
 
 import org.junit.Test;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 import static org.junit.Assert .*;
@@ -53,7 +53,7 @@ public class TimeMillisSpentTerminationTest {
     @Test
     public void phaseTermination() {
         Termination termination = new TimeMillisSpentTermination(1000L);
-        AbstractSolverPhaseScope phaseScope = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScope = mock(AbstractPhaseScope.class);
 
         when(phaseScope.calculatePhaseTimeMillisSpent()).thenReturn(0L);
         assertEquals(false, termination.isPhaseTerminated(phaseScope));

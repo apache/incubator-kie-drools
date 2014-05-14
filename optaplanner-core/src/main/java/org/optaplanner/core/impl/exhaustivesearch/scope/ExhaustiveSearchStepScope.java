@@ -21,22 +21,22 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 
 public class ExhaustiveSearchStepScope extends AbstractStepScope {
 
-    private final ExhaustiveSearchSolverPhaseScope phaseScope;
+    private final ExhaustiveSearchPhaseScope phaseScope;
 
     private ExhaustiveSearchNode expandingNode;
     private Long selectedMoveCount = null;
 
-    public ExhaustiveSearchStepScope(ExhaustiveSearchSolverPhaseScope phaseScope) {
+    public ExhaustiveSearchStepScope(ExhaustiveSearchPhaseScope phaseScope) {
         this(phaseScope, phaseScope.getNextStepIndex());
     }
 
-    public ExhaustiveSearchStepScope(ExhaustiveSearchSolverPhaseScope phaseScope, int stepIndex) {
+    public ExhaustiveSearchStepScope(ExhaustiveSearchPhaseScope phaseScope, int stepIndex) {
         super(stepIndex);
         this.phaseScope = phaseScope;
     }
 
     @Override
-    public ExhaustiveSearchSolverPhaseScope getPhaseScope() {
+    public ExhaustiveSearchPhaseScope getPhaseScope() {
         return phaseScope;
     }
 

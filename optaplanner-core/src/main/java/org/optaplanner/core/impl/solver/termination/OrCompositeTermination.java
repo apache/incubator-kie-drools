@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.solver.termination;
 
 import java.util.List;
 
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class OrCompositeTermination extends AbstractCompositeTermination {
@@ -52,7 +52,7 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
      * @param phaseScope never null
      * @return true if any of the Termination is terminated.
      */
-    public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
+    public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
         for (Termination termination : terminationList) {
             if (termination.isPhaseTerminated(phaseScope)) {
                 return true;
@@ -88,7 +88,7 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
      * @param phaseScope never null
      * @return the maximum timeGradient of the Terminations.
      */
-    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
+    public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
         double timeGradient = 0.0;
         for (Termination termination : terminationList) {
             double nextTimeGradient = termination.calculatePhaseTimeGradient(phaseScope);

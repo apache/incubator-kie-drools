@@ -17,10 +17,10 @@
 package org.optaplanner.core.impl.phase;
 
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
-import org.optaplanner.core.impl.localsearch.DefaultLocalSearchSolverPhase;
-import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
-import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleSupport;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.localsearch.DefaultLocalSearchPhase;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleSupport;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
@@ -28,9 +28,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @see DefaultLocalSearchSolverPhase
+ * @see DefaultLocalSearchPhase
  */
-public abstract class AbstractSolverPhase implements SolverPhase {
+public abstract class AbstractPhase implements Phase {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -39,7 +39,7 @@ public abstract class AbstractSolverPhase implements SolverPhase {
     protected Termination termination;
     protected BestSolutionRecaller bestSolutionRecaller;
 
-    protected SolverPhaseLifecycleSupport solverPhaseLifecycleSupport = new SolverPhaseLifecycleSupport();
+    protected PhaseLifecycleSupport phaseLifecycleSupport = new PhaseLifecycleSupport();
 
     public Termination getTermination() {
         return termination;
@@ -68,46 +68,46 @@ public abstract class AbstractSolverPhase implements SolverPhase {
     public void solvingStarted(DefaultSolverScope solverScope) {
         // bestSolutionRecaller.solvingStarted(...) is called by DefaultSolver
         termination.solvingStarted(solverScope);
-        solverPhaseLifecycleSupport.fireSolvingStarted(solverScope);
+        phaseLifecycleSupport.fireSolvingStarted(solverScope);
     }
 
     public void solvingEnded(DefaultSolverScope solverScope) {
         // bestSolutionRecaller.solvingEnded(...) is called by DefaultSolver
         termination.solvingEnded(solverScope);
-        solverPhaseLifecycleSupport.fireSolvingEnded(solverScope);
+        phaseLifecycleSupport.fireSolvingEnded(solverScope);
     }
 
-    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope phaseScope) {
         phaseScope.reset();
         bestSolutionRecaller.phaseStarted(phaseScope);
         termination.phaseStarted(phaseScope);
-        solverPhaseLifecycleSupport.firePhaseStarted(phaseScope);
+        phaseLifecycleSupport.firePhaseStarted(phaseScope);
     }
 
     public void stepStarted(AbstractStepScope stepScope) {
         bestSolutionRecaller.stepStarted(stepScope);
         termination.stepStarted(stepScope);
-        solverPhaseLifecycleSupport.fireStepStarted(stepScope);
+        phaseLifecycleSupport.fireStepStarted(stepScope);
     }
 
     public void stepEnded(AbstractStepScope stepScope) {
         bestSolutionRecaller.stepEnded(stepScope);
         termination.stepEnded(stepScope);
-        solverPhaseLifecycleSupport.fireStepEnded(stepScope);
+        phaseLifecycleSupport.fireStepEnded(stepScope);
     }
 
-    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope phaseScope) {
         bestSolutionRecaller.phaseEnded(phaseScope);
         termination.phaseEnded(phaseScope);
-        solverPhaseLifecycleSupport.firePhaseEnded(phaseScope);
+        phaseLifecycleSupport.firePhaseEnded(phaseScope);
     }
 
-    public void addSolverPhaseLifecycleListener(SolverPhaseLifecycleListener lifecycleListener) {
-        solverPhaseLifecycleSupport.addEventListener(lifecycleListener);
+    public void addPhaseLifecycleListener(PhaseLifecycleListener phaseLifecycleListener) {
+        phaseLifecycleSupport.addEventListener(phaseLifecycleListener);
     }
 
-    public void removeSolverPhaseLifecycleListener(SolverPhaseLifecycleListener lifecycleListener) {
-        solverPhaseLifecycleSupport.removeEventListener(lifecycleListener);
+    public void removePhaseLifecycleListener(PhaseLifecycleListener phaseLifecycleListener) {
+        phaseLifecycleSupport.removeEventListener(phaseLifecycleListener);
     }
 
 }

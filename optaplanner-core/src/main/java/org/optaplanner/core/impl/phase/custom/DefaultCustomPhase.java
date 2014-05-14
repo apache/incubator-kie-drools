@@ -20,19 +20,18 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.phase.AbstractSolverPhase;
-import org.optaplanner.core.impl.phase.custom.scope.CustomSolverPhaseScope;
+import org.optaplanner.core.impl.phase.AbstractPhase;
+import org.optaplanner.core.impl.phase.custom.scope.CustomPhaseScope;
 import org.optaplanner.core.impl.phase.custom.scope.CustomStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
- * Default implementation of {@link CustomSolverPhase}.
+ * Default implementation of {@link CustomPhase}.
  */
-public class DefaultCustomSolverPhase extends AbstractSolverPhase
-        implements CustomSolverPhase {
+public class DefaultCustomPhase extends AbstractPhase
+        implements CustomPhase {
 
     protected List<CustomSolverPhaseCommand> customSolverPhaseCommandList;
     protected boolean forceUpdateBestSolution;
@@ -50,7 +49,7 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
     // ************************************************************************
 
     public void solve(DefaultSolverScope solverScope) {
-        CustomSolverPhaseScope phaseScope = new CustomSolverPhaseScope(solverScope);
+        CustomPhaseScope phaseScope = new CustomPhaseScope(solverScope);
         phaseStarted(phaseScope);
 
         CustomStepScope stepScope = new CustomStepScope(phaseScope);
@@ -66,7 +65,7 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
         phaseEnded(phaseScope);
     }
 
-    public void phaseStarted(CustomSolverPhaseScope phaseScope) {
+    public void phaseStarted(CustomPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
     }
 
@@ -94,7 +93,7 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
             bestSolutionRecaller.updateBestSolution(solverScope,
                     newBestSolution, stepScope.getUninitializedVariableCount());
         }
-        CustomSolverPhaseScope phaseScope = stepScope.getPhaseScope();
+        CustomPhaseScope phaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {
             long timeMillisSpent = phaseScope.calculateSolverTimeMillisSpent();
             logger.debug("    Custom step ({}), time spent ({}), score ({}), {} best score ({}).",
@@ -105,7 +104,7 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
         }
     }
 
-    public void phaseEnded(CustomSolverPhaseScope phaseScope) {
+    public void phaseEnded(CustomPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         logger.info("Custom phase ({}) ended: step total ({}), time spent ({}), best score ({}).",
                 phaseIndex,

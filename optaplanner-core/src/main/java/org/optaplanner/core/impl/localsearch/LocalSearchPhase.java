@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.phase.event;
+package org.optaplanner.core.impl.localsearch;
 
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
-import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.event.SolverLifecycleListener;
+import org.optaplanner.core.impl.phase.AbstractPhase;
+import org.optaplanner.core.impl.phase.Phase;
 
-public interface SolverPhaseLifecycleListener extends SolverLifecycleListener {
-
-    void phaseStarted(AbstractSolverPhaseScope phaseScope);
-
-    void stepStarted(AbstractStepScope stepScope);
-
-    void stepEnded(AbstractStepScope stepScope);
-
-    void phaseEnded(AbstractSolverPhaseScope phaseScope);
+/**
+ * A {@link LocalSearchPhase} is a {@link Phase} which uses a local search algorithm,
+ * such as tabu search, simulated annealing, ...
+ * @see Phase
+ * @see AbstractPhase
+ * @see DefaultLocalSearchPhase
+ */
+public interface LocalSearchPhase extends Phase {
 
 }

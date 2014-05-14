@@ -18,7 +18,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -52,7 +52,7 @@ public class QueuedEntityPlacerTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         placer.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         placer.phaseStarted(phaseScopeA);
         Iterator<Placement> placementIterator = placer.iterator();
@@ -81,7 +81,7 @@ public class QueuedEntityPlacerTest {
         assertFalse(placementIterator.hasNext());
         placer.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         placer.phaseStarted(phaseScopeB);
         placementIterator = placer.iterator();
@@ -97,8 +97,8 @@ public class QueuedEntityPlacerTest {
 
         placer.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(entitySelector, 1, 2, 4);
-        verifySolverPhaseLifecycle(valueSelector, 1, 2, 4);
+        verifyPhaseLifecycle(entitySelector, 1, 2, 4);
+        verifyPhaseLifecycle(valueSelector, 1, 2, 4);
     }
 
     @Test
@@ -128,7 +128,7 @@ public class QueuedEntityPlacerTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         placer.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         placer.phaseStarted(phaseScopeA);
         Iterator<Placement> placementIterator = placer.iterator();
@@ -166,9 +166,9 @@ public class QueuedEntityPlacerTest {
 
         placer.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(entitySelector, 1, 1, 4);
-        verifySolverPhaseLifecycle(primaryValueSelector, 1, 1, 4);
-        verifySolverPhaseLifecycle(secondaryValueSelector, 1, 1, 4);
+        verifyPhaseLifecycle(entitySelector, 1, 1, 4);
+        verifyPhaseLifecycle(primaryValueSelector, 1, 1, 4);
+        verifyPhaseLifecycle(secondaryValueSelector, 1, 1, 4);
     }
 
     private void assertPlacement(Placement placement, String entityCode, String... valueCodes) {
@@ -212,7 +212,7 @@ public class QueuedEntityPlacerTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         placer.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         placer.phaseStarted(phaseScopeA);
         Iterator<Placement> placementIterator = placer.iterator();
@@ -238,9 +238,9 @@ public class QueuedEntityPlacerTest {
 
         placer.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(entitySelector, 1, 1, 2);
-        verifySolverPhaseLifecycle(primaryValueSelector, 1, 1, 2);
-        verifySolverPhaseLifecycle(secondaryValueSelector, 1, 1, 2);
+        verifyPhaseLifecycle(entitySelector, 1, 1, 2);
+        verifyPhaseLifecycle(primaryValueSelector, 1, 1, 2);
+        verifyPhaseLifecycle(secondaryValueSelector, 1, 1, 2);
     }
 
 }

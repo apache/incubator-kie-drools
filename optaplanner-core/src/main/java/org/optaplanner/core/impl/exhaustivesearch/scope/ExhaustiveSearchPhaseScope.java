@@ -16,20 +16,17 @@
 
 package org.optaplanner.core.impl.exhaustivesearch.scope;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchLayer;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-public class ExhaustiveSearchSolverPhaseScope extends AbstractSolverPhaseScope {
+public class ExhaustiveSearchPhaseScope extends AbstractPhaseScope {
 
     private List<ExhaustiveSearchLayer> layerList;
     private SortedSet<ExhaustiveSearchNode> expandableNodeQueue;
@@ -37,7 +34,7 @@ public class ExhaustiveSearchSolverPhaseScope extends AbstractSolverPhaseScope {
 
     private ExhaustiveSearchStepScope lastCompletedStepScope;
 
-    public ExhaustiveSearchSolverPhaseScope(DefaultSolverScope solverScope) {
+    public ExhaustiveSearchPhaseScope(DefaultSolverScope solverScope) {
         super(solverScope);
         lastCompletedStepScope = new ExhaustiveSearchStepScope(this, -1);
     }

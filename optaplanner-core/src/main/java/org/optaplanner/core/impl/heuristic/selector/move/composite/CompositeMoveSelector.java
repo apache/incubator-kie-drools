@@ -35,7 +35,7 @@ public abstract class CompositeMoveSelector extends AbstractMoveSelector {
         this.childMoveSelectorList = childMoveSelectorList;
         this.randomSelection = randomSelection;
         for (MoveSelector childMoveSelector : childMoveSelectorList) {
-            solverPhaseLifecycleSupport.addEventListener(childMoveSelector);
+            phaseLifecycleSupport.addEventListener(childMoveSelector);
         }
         if (!randomSelection) {
             // Only the last childMoveSelector can be neverEnding

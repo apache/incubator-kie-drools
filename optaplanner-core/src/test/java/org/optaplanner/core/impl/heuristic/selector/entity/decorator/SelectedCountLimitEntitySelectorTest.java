@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 import org.junit.Test;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -38,7 +38,7 @@ public class SelectedCountLimitEntitySelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         entitySelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         entitySelector.phaseStarted(phaseScopeA);
 
@@ -56,7 +56,7 @@ public class SelectedCountLimitEntitySelectorTest {
 
         entitySelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         entitySelector.phaseStarted(phaseScopeB);
 
@@ -82,7 +82,7 @@ public class SelectedCountLimitEntitySelectorTest {
 
         entitySelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(childEntitySelector, 1, 2, 5);
+        verifyPhaseLifecycle(childEntitySelector, 1, 2, 5);
         verify(childEntitySelector, times(5)).iterator();
         verify(childEntitySelector, times(5)).getSize();
     }
@@ -97,7 +97,7 @@ public class SelectedCountLimitEntitySelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         entitySelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         entitySelector.phaseStarted(phaseScopeA);
 
@@ -115,7 +115,7 @@ public class SelectedCountLimitEntitySelectorTest {
 
         entitySelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         entitySelector.phaseStarted(phaseScopeB);
 
@@ -141,7 +141,7 @@ public class SelectedCountLimitEntitySelectorTest {
 
         entitySelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(childEntitySelector, 1, 2, 5);
+        verifyPhaseLifecycle(childEntitySelector, 1, 2, 5);
         verify(childEntitySelector, times(5)).iterator();
         verify(childEntitySelector, times(5)).getSize();
     }

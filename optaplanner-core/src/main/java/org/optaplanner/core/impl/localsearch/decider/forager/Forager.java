@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.localsearch.decider.forager;
 
-import org.optaplanner.core.impl.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
+import org.optaplanner.core.impl.localsearch.event.LocalSearchPhaseLifecycleListener;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
  * A Forager collects the accepted moves and picks the next step from those for the Decider.
  * @see AbstractForager
  */
-public interface Forager extends LocalSearchSolverPhaseLifecycleListener {
+public interface Forager extends LocalSearchPhaseLifecycleListener {
 
     boolean supportsNeverEndingMoveSelector();
 

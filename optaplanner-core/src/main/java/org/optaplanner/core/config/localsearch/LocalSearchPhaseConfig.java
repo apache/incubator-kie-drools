@@ -31,20 +31,20 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSel
 import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.optaplanner.core.config.localsearch.decider.forager.ForagerConfig;
-import org.optaplanner.core.config.phase.SolverPhaseConfig;
+import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.localsearch.DefaultLocalSearchSolverPhase;
-import org.optaplanner.core.impl.localsearch.LocalSearchSolverPhase;
+import org.optaplanner.core.impl.localsearch.DefaultLocalSearchPhase;
+import org.optaplanner.core.impl.localsearch.LocalSearchPhase;
 import org.optaplanner.core.impl.localsearch.decider.LocalSearchDecider;
 import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XStreamAlias("localSearch")
-public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
+public class LocalSearchPhaseConfig extends PhaseConfig {
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
@@ -85,11 +85,11 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public LocalSearchSolverPhase buildSolverPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
+    public LocalSearchPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
-        DefaultLocalSearchSolverPhase phase = new DefaultLocalSearchSolverPhase();
-        configureSolverPhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
+        DefaultLocalSearchPhase phase = new DefaultLocalSearchPhase();
+        configurePhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
         phase.setDecider(buildDecider(phaseConfigPolicy,
                 phase.getTermination()));
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
@@ -155,7 +155,7 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
         return moveSelector;
     }
 
-    public void inherit(LocalSearchSolverPhaseConfig inheritedConfig) {
+    public void inherit(LocalSearchPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         setMoveSelectorConfig(ConfigUtils.inheritOverwritableProperty(
                 getMoveSelectorConfig(), inheritedConfig.getMoveSelectorConfig()));

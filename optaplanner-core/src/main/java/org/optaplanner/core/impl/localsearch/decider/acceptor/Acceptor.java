@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.localsearch.decider.acceptor;
 
 import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
-import org.optaplanner.core.impl.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
+import org.optaplanner.core.impl.localsearch.event.LocalSearchPhaseLifecycleListener;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.heuristic.move.Move;
 
@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.heuristic.move.Move;
  * Note that the {@link Forager} can still ignore the advice of the {@link Acceptor}.
  * @see AbstractAcceptor
  */
-public interface Acceptor extends LocalSearchSolverPhaseLifecycleListener {
+public interface Acceptor extends LocalSearchPhaseLifecycleListener {
 
     /**
      * @param moveScope not null

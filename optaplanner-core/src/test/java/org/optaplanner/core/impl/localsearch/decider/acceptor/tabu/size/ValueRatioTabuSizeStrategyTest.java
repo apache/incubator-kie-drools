@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size;
 
 import org.junit.Test;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
@@ -28,7 +28,7 @@ public class ValueRatioTabuSizeStrategyTest {
 
     @Test
     public void tabuSize() {
-        LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(mock(DefaultSolverScope.class));
+        LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(mock(DefaultSolverScope.class));
         when(phaseScope.getWorkingValueCount()).thenReturn(100);
         LocalSearchStepScope stepScope = new LocalSearchStepScope(phaseScope);
         assertEquals(10, new ValueRatioTabuSizeStrategy(0.1).determineTabuSize(stepScope));

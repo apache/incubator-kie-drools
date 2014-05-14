@@ -69,9 +69,9 @@ public class SwapMoveSelector extends GenericMoveSelector {
             }
         }
         this.anyChained = anyChained;
-        solverPhaseLifecycleSupport.addEventListener(leftEntitySelector);
+        phaseLifecycleSupport.addEventListener(leftEntitySelector);
         if (leftEntitySelector != rightEntitySelector) {
-            solverPhaseLifecycleSupport.addEventListener(rightEntitySelector);
+            phaseLifecycleSupport.addEventListener(rightEntitySelector);
         }
     }
 

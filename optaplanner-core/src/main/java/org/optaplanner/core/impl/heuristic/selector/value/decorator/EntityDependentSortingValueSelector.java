@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class EntityDependentSortingValueSelector extends AbstractValueSelector {
@@ -51,7 +51,7 @@ public class EntityDependentSortingValueSelector extends AbstractValueSelector {
             throw new IllegalArgumentException("The selector (" + this
                     + ") does not support the cacheType (" + cacheType + ").");
         }
-        solverPhaseLifecycleSupport.addEventListener(childValueSelector);
+        phaseLifecycleSupport.addEventListener(childValueSelector);
     }
 
     public ValueSelector getChildValueSelector() {
@@ -68,13 +68,13 @@ public class EntityDependentSortingValueSelector extends AbstractValueSelector {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
         scoreDirector = phaseScope.getScoreDirector();
     }
 
     @Override
-    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         scoreDirector = null;
     }

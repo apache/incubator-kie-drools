@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.localsearch.decider.acceptor;
 import java.util.List;
 
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
@@ -48,7 +48,7 @@ public class CompositeAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
+    public void phaseStarted(LocalSearchPhaseScope phaseScope) {
         for (Acceptor acceptor : acceptorList) {
             acceptor.phaseStarted(phaseScope);
         }
@@ -79,7 +79,7 @@ public class CompositeAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void phaseEnded(LocalSearchSolverPhaseScope phaseScope) {
+    public void phaseEnded(LocalSearchPhaseScope phaseScope) {
         for (Acceptor acceptor : acceptorList) {
             acceptor.phaseEnded(phaseScope);
         }

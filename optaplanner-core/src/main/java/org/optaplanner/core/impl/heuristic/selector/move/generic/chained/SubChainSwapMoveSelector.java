@@ -48,9 +48,9 @@ public class SubChainSwapMoveSelector extends GenericMoveSelector {
                     + ") which is not equal to the rightSubChainSelector's variableDescriptor ("
                     + rightSubChainSelector.getVariableDescriptor() + ").");
         }
-        solverPhaseLifecycleSupport.addEventListener(leftSubChainSelector);
+        phaseLifecycleSupport.addEventListener(leftSubChainSelector);
         if (leftSubChainSelector != rightSubChainSelector) {
-            solverPhaseLifecycleSupport.addEventListener(rightSubChainSelector);
+            phaseLifecycleSupport.addEventListener(rightSubChainSelector);
         }
     }
 

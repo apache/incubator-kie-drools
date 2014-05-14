@@ -23,7 +23,7 @@ import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
@@ -66,14 +66,14 @@ public class CalculateCountSingleStatistic extends SingleStatistic<CalculateCoun
     // ************************************************************************
 
     public void open(Solver solver) {
-        ((DefaultSolver) solver).addSolverPhaseLifecycleListener(listener);
+        ((DefaultSolver) solver).addPhaseLifecycleListener(listener);
     }
 
     public void close(Solver solver) {
-        ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
+        ((DefaultSolver) solver).removePhaseLifecycleListener(listener);
     }
 
-    private class CalculateCountSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {
+    private class CalculateCountSingleStatisticListener extends PhaseLifecycleListenerAdapter {
 
         private long nextTimeMillisThreshold = timeMillisThresholdInterval;
         private long lastTimeMillisSpent = 0L;

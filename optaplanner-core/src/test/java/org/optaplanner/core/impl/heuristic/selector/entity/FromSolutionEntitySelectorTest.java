@@ -23,10 +23,9 @@ import java.util.Random;
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -66,7 +65,7 @@ public class FromSolutionEntitySelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         entitySelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         when(phaseScopeA.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.phaseStarted(phaseScopeA);
@@ -87,7 +86,7 @@ public class FromSolutionEntitySelectorTest {
 
         entitySelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         when(phaseScopeB.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.phaseStarted(phaseScopeB);
@@ -135,7 +134,7 @@ public class FromSolutionEntitySelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         entitySelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         when(phaseScopeA.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.phaseStarted(phaseScopeA);
@@ -162,7 +161,7 @@ public class FromSolutionEntitySelectorTest {
 
         entitySelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         when(phaseScopeB.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.phaseStarted(phaseScopeB);
@@ -235,7 +234,7 @@ public class FromSolutionEntitySelectorTest {
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         entitySelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         when(phaseScopeA.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.phaseStarted(phaseScopeA);
@@ -256,7 +255,7 @@ public class FromSolutionEntitySelectorTest {
 
         entitySelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         when(phaseScopeB.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.phaseStarted(phaseScopeB);
@@ -308,7 +307,7 @@ public class FromSolutionEntitySelectorTest {
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         entitySelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         when(phaseScopeA.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.phaseStarted(phaseScopeA);
@@ -335,7 +334,7 @@ public class FromSolutionEntitySelectorTest {
 
         entitySelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         when(phaseScopeB.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.phaseStarted(phaseScopeB);

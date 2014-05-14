@@ -27,12 +27,12 @@ public abstract class AbstractCachingMoveSelector extends AbstractMoveSelector i
                     + ") has a childMoveSelector (" + childMoveSelector
                     + ") with neverEnding (" + childMoveSelector.isNeverEnding() + ").");
         }
-        solverPhaseLifecycleSupport.addEventListener(childMoveSelector);
+        phaseLifecycleSupport.addEventListener(childMoveSelector);
         if (cacheType.isNotCached()) {
             throw new IllegalArgumentException("The selector (" + this
                     + ") does not support the cacheType (" + cacheType + ").");
         }
-        solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
+        phaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }
 
     public MoveSelector getChildMoveSelector() {

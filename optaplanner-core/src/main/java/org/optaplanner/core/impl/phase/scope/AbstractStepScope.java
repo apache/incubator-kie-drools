@@ -20,7 +20,6 @@ import java.util.Random;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
 
 public abstract class AbstractStepScope {
@@ -32,7 +31,7 @@ public abstract class AbstractStepScope {
     // Stays null if there is no need to clone it
     protected Solution clonedSolution = null;
 
-    public abstract AbstractSolverPhaseScope getPhaseScope();
+    public abstract AbstractPhaseScope getPhaseScope();
 
     public AbstractStepScope(int stepIndex) {
         this.stepIndex = stepIndex;

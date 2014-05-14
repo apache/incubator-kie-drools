@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -101,7 +101,7 @@ public class DefaultPillarSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         pillarSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         pillarSelector.phaseStarted(phaseScopeA);
 
@@ -122,7 +122,7 @@ public class DefaultPillarSelectorTest {
 
         pillarSelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         pillarSelector.phaseStarted(phaseScopeB);
 
@@ -136,7 +136,7 @@ public class DefaultPillarSelectorTest {
 
         pillarSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(entitySelector, 1, 2, 3);
+        verifyPhaseLifecycle(entitySelector, 1, 2, 3);
     }
 
     @Test
@@ -154,7 +154,7 @@ public class DefaultPillarSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         pillarSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         pillarSelector.phaseStarted(phaseScopeA);
 
@@ -172,7 +172,7 @@ public class DefaultPillarSelectorTest {
 
         pillarSelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         pillarSelector.phaseStarted(phaseScopeB);
 
@@ -186,7 +186,7 @@ public class DefaultPillarSelectorTest {
 
         pillarSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(entitySelector, 1, 2, 3);
+        verifyPhaseLifecycle(entitySelector, 1, 2, 3);
     }
 
     @Test
@@ -216,7 +216,7 @@ public class DefaultPillarSelectorTest {
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         pillarSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         pillarSelector.phaseStarted(phaseScopeA);
 
@@ -251,7 +251,7 @@ public class DefaultPillarSelectorTest {
 
         pillarSelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         pillarSelector.phaseStarted(phaseScopeB);
 
@@ -272,7 +272,7 @@ public class DefaultPillarSelectorTest {
 
         pillarSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(entitySelector, 1, 2, 3);
+        verifyPhaseLifecycle(entitySelector, 1, 2, 3);
     }
 
     @Test
@@ -302,7 +302,7 @@ public class DefaultPillarSelectorTest {
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         pillarSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         pillarSelector.phaseStarted(phaseScopeA);
 
@@ -323,7 +323,7 @@ public class DefaultPillarSelectorTest {
 
         pillarSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(entitySelector, 1, 1, 1);
+        verifyPhaseLifecycle(entitySelector, 1, 1, 1);
     }
 
     @Test
@@ -341,7 +341,7 @@ public class DefaultPillarSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         pillarSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         pillarSelector.phaseStarted(phaseScopeA);
 
@@ -359,7 +359,7 @@ public class DefaultPillarSelectorTest {
 
         pillarSelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         pillarSelector.phaseStarted(phaseScopeB);
 
@@ -373,7 +373,7 @@ public class DefaultPillarSelectorTest {
 
         pillarSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(entitySelector, 1, 2, 3);
+        verifyPhaseLifecycle(entitySelector, 1, 2, 3);
     }
 
     private void assertAllCodesOfPillarSelector(PillarSelector pillarSelector, String... codes) {

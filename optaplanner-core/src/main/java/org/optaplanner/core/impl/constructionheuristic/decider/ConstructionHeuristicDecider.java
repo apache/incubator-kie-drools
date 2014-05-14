@@ -5,7 +5,7 @@ import org.optaplanner.core.impl.constructionheuristic.decider.forager.Construct
 import org.optaplanner.core.impl.constructionheuristic.placer.AbstractEntityPlacer;
 import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
-import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicSolverPhaseScope;
+import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -45,7 +45,7 @@ public class ConstructionHeuristicDecider extends AbstractEntityPlacer {
         forager.solvingStarted(solverScope);
     }
 
-    public void phaseStarted(ConstructionHeuristicSolverPhaseScope phaseScope) {
+    public void phaseStarted(ConstructionHeuristicPhaseScope phaseScope) {
         forager.phaseStarted(phaseScope);
     }
 
@@ -57,7 +57,7 @@ public class ConstructionHeuristicDecider extends AbstractEntityPlacer {
         forager.stepEnded(stepScope);
     }
 
-    public void phaseEnded(ConstructionHeuristicSolverPhaseScope phaseScope) {
+    public void phaseEnded(ConstructionHeuristicPhaseScope phaseScope) {
         forager.phaseEnded(phaseScope);
     }
 
@@ -104,7 +104,7 @@ public class ConstructionHeuristicDecider extends AbstractEntityPlacer {
         processMove(moveScope);
         undoMove.doMove(scoreDirector);
         if (assertExpectedUndoMoveScore) {
-            ConstructionHeuristicSolverPhaseScope phaseScope = moveScope.getStepScope().getPhaseScope();
+            ConstructionHeuristicPhaseScope phaseScope = moveScope.getStepScope().getPhaseScope();
             phaseScope.assertExpectedUndoMoveScore(move, undoMove);
         }
         logger.trace("        Move index ({}), score ({}), move ({}).",

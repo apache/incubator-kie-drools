@@ -4234,3 +4234,20 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml (if you don't want this new 
         </pillarSelector>
       </pillarSwapMoveSelector>
 Note: <pillarChangeMoveSelector> is not supported too
+
+[MINOR] SolverPhase has been renamed to Phase. SolverPhaseConfig has been renamed to PhaseConfig.
+Before in *.java:
+        List<SolverPhaseConfig> solverPhaseConfigList = new ArrayList<SolverPhaseConfig>();
+        ConstructionHeuristicSolverPhaseConfig solverPhaseConfig = new ConstructionHeuristicSolverPhaseConfig();
+        ...
+        solverPhaseConfigList.add(solverPhaseConfig);
+        ...
+        solverConfig.setPhaseConfigList(phaseConfigList);
+After in *.java:
+        List<PhaseConfig> phaseConfigList = new ArrayList<PhaseConfig>();
+        ConstructionHeuristicPhaseConfig phaseConfig = new ConstructionHeuristicPhaseConfig();
+        ...
+        phaseConfigList.add(phaseConfig);
+        ...
+        solverConfig.setPhaseConfigList(phaseConfigList);
+

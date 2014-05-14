@@ -21,7 +21,7 @@ import java.util.Iterator;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
@@ -44,13 +44,13 @@ public class MoveIteratorFactoryToMoveSelectorBridge extends AbstractMoveSelecto
     // ************************************************************************
 
     @Override
-    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
         scoreDirector = phaseScope.getScoreDirector();
     }
 
     @Override
-    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         scoreDirector = null;
     }

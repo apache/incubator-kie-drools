@@ -23,12 +23,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.solver.event.SolverEventSupport;
-import org.optaplanner.core.impl.phase.SolverPhase;
-import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -53,7 +53,7 @@ public class DefaultSolver implements Solver {
     // Note that the basicPlumbingTermination is a component of this termination
     protected Termination termination;
     protected BestSolutionRecaller bestSolutionRecaller;
-    protected List<SolverPhase> solverPhaseList;
+    protected List<Phase> phaseList;
 
     protected AtomicBoolean solving = new AtomicBoolean(false);
 
@@ -92,12 +92,12 @@ public class DefaultSolver implements Solver {
         this.bestSolutionRecaller.setSolverEventSupport(solverEventSupport);
     }
 
-    public List<SolverPhase> getSolverPhaseList() {
-        return solverPhaseList;
+    public List<Phase> getPhaseList() {
+        return phaseList;
     }
 
-    public void setSolverPhaseList(List<SolverPhase> solverPhaseList) {
-        this.solverPhaseList = solverPhaseList;
+    public void setPhaseList(List<Phase> phaseList) {
+        this.phaseList = phaseList;
     }
 
     public DefaultSolverScope getSolverScope() {
@@ -154,7 +154,7 @@ public class DefaultSolver implements Solver {
         boolean restartSolver = true;
         while (restartSolver) {
             solvingStarted(solverScope);
-            runSolverPhases();
+            runPhases();
             solvingEnded(solverScope);
             restartSolver = checkProblemFactChanges();
         }
@@ -174,8 +174,8 @@ public class DefaultSolver implements Solver {
         solverScope.setWorkingRandom(randomFactory.createRandom());
         solverScope.setWorkingSolutionFromBestSolution();
         bestSolutionRecaller.solvingStarted(solverScope);
-        for (SolverPhase solverPhase : solverPhaseList) {
-            solverPhase.solvingStarted(solverScope);
+        for (Phase phase : phaseList) {
+            phase.solvingStarted(solverScope);
         }
         int startingSolverCount = solverScope.getStartingSolverCount() + 1;
         solverScope.setStartingSolverCount(startingSolverCount);
@@ -186,11 +186,11 @@ public class DefaultSolver implements Solver {
                 (randomFactory != null ? randomFactory : "not fixed"));
     }
 
-    protected void runSolverPhases() {
-        Iterator<SolverPhase> it = solverPhaseList.iterator();
+    protected void runPhases() {
+        Iterator<Phase> it = phaseList.iterator();
         while (!termination.isSolverTerminated(solverScope) && it.hasNext()) {
-            SolverPhase solverPhase = it.next();
-            solverPhase.solve(solverScope);
+            Phase phase = it.next();
+            phase.solve(solverScope);
             if (it.hasNext()) {
                 solverScope.setWorkingSolutionFromBestSolution();
             }
@@ -199,8 +199,8 @@ public class DefaultSolver implements Solver {
     }
 
     public void solvingEnded(DefaultSolverScope solverScope) {
-        for (SolverPhase solverPhase : solverPhaseList) {
-            solverPhase.solvingEnded(solverScope);
+        for (Phase phase : phaseList) {
+            phase.solvingEnded(solverScope);
         }
         bestSolutionRecaller.solvingEnded(solverScope);
     }
@@ -264,15 +264,15 @@ public class DefaultSolver implements Solver {
         solverEventSupport.removeEventListener(eventListener);
     }
 
-    public void addSolverPhaseLifecycleListener(SolverPhaseLifecycleListener solverPhaseLifecycleListener) {
-        for (SolverPhase solverPhase : solverPhaseList) {
-            solverPhase.addSolverPhaseLifecycleListener(solverPhaseLifecycleListener);
+    public void addPhaseLifecycleListener(PhaseLifecycleListener phaseLifecycleListener) {
+        for (Phase phase : phaseList) {
+            phase.addPhaseLifecycleListener(phaseLifecycleListener);
         }
     }
 
-    public void removeSolverPhaseLifecycleListener(SolverPhaseLifecycleListener solverPhaseLifecycleListener) {
-        for (SolverPhase solverPhase : solverPhaseList) {
-            solverPhase.addSolverPhaseLifecycleListener(solverPhaseLifecycleListener);
+    public void removePhaseLifecycleListener(PhaseLifecycleListener phaseLifecycleListener) {
+        for (Phase phase : phaseList) {
+            phase.addPhaseLifecycleListener(phaseLifecycleListener);
         }
     }
 

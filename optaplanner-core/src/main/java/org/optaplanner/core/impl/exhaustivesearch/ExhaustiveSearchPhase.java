@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.localsearch;
+package org.optaplanner.core.impl.exhaustivesearch;
 
-import org.optaplanner.core.impl.phase.AbstractSolverPhase;
-import org.optaplanner.core.impl.phase.SolverPhase;
+import org.optaplanner.core.impl.phase.AbstractPhase;
+import org.optaplanner.core.impl.phase.Phase;
 
 /**
- * A {@link LocalSearchSolverPhase} is a {@link SolverPhase} which uses a local search algorithm,
- * such as tabu search, simulated annealing, ...
- * @see SolverPhase
- * @see AbstractSolverPhase
- * @see DefaultLocalSearchSolverPhase
+ * A {@link ExhaustiveSearchPhase} is a {@link Phase} which uses an exhaustive algorithm.
+ * @see Phase
+ * @see AbstractPhase
+ * @see DefaultExhaustiveSearchPhase
  */
-public interface LocalSearchSolverPhase extends SolverPhase {
+public interface ExhaustiveSearchPhase extends Phase {
 
 }

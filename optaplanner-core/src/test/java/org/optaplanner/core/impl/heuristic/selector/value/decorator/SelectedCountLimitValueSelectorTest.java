@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -42,7 +42,7 @@ public class SelectedCountLimitValueSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         valueSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         valueSelector.phaseStarted(phaseScopeA);
 
@@ -60,7 +60,7 @@ public class SelectedCountLimitValueSelectorTest {
 
         valueSelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         valueSelector.phaseStarted(phaseScopeB);
 
@@ -86,7 +86,7 @@ public class SelectedCountLimitValueSelectorTest {
 
         valueSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(childValueSelector, 1, 2, 5);
+        verifyPhaseLifecycle(childValueSelector, 1, 2, 5);
         verify(childValueSelector, times(5)).iterator();
         verify(childValueSelector, times(5)).getSize();
     }
@@ -102,7 +102,7 @@ public class SelectedCountLimitValueSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         valueSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         valueSelector.phaseStarted(phaseScopeA);
 
@@ -120,7 +120,7 @@ public class SelectedCountLimitValueSelectorTest {
 
         valueSelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         valueSelector.phaseStarted(phaseScopeB);
 
@@ -146,7 +146,7 @@ public class SelectedCountLimitValueSelectorTest {
 
         valueSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(childValueSelector, 1, 2, 5);
+        verifyPhaseLifecycle(childValueSelector, 1, 2, 5);
         verify(childValueSelector, times(5)).iterator();
         verify(childValueSelector, times(5)).getSize();
     }
@@ -162,7 +162,7 @@ public class SelectedCountLimitValueSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         valueSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         valueSelector.phaseStarted(phaseScopeA);
 
@@ -180,7 +180,7 @@ public class SelectedCountLimitValueSelectorTest {
 
         valueSelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         valueSelector.phaseStarted(phaseScopeB);
 
@@ -206,7 +206,7 @@ public class SelectedCountLimitValueSelectorTest {
 
         valueSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(childValueSelector, 1, 2, 5);
+        verifyPhaseLifecycle(childValueSelector, 1, 2, 5);
         verify(childValueSelector, times(5)).iterator(entity);
         verify(childValueSelector, times(5)).getSize(entity);
     }
@@ -223,7 +223,7 @@ public class SelectedCountLimitValueSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         valueSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         valueSelector.phaseStarted(phaseScopeA);
 
@@ -241,7 +241,7 @@ public class SelectedCountLimitValueSelectorTest {
 
         valueSelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         valueSelector.phaseStarted(phaseScopeB);
 
@@ -267,7 +267,7 @@ public class SelectedCountLimitValueSelectorTest {
 
         valueSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(childValueSelector, 1, 2, 5);
+        verifyPhaseLifecycle(childValueSelector, 1, 2, 5);
         verify(childValueSelector, times(5)).iterator(entity);
         verify(childValueSelector, times(5)).getSize(entity);
     }

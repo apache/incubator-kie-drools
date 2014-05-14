@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.solver.termination;
 
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class StepCountTermination extends AbstractTermination {
@@ -40,7 +40,7 @@ public class StepCountTermination extends AbstractTermination {
                 getClass().getSimpleName() + " can only be used for phase termination.");
     }
 
-    public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
+    public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
         int nextStepIndex = phaseScope.getNextStepIndex();
         return nextStepIndex >= stepCountLimit;
     }
@@ -54,7 +54,7 @@ public class StepCountTermination extends AbstractTermination {
                 getClass().getSimpleName() + " can only be used for phase termination.");
     }
 
-    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
+    public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
         int nextStepIndex = phaseScope.getNextStepIndex();
         double timeGradient = ((double) nextStepIndex) / ((double) stepCountLimit);
         return Math.min(timeGradient, 1.0);

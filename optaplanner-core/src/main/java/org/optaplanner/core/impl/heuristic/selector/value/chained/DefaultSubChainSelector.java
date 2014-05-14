@@ -70,8 +70,8 @@ public class DefaultSubChainSelector extends AbstractSelector
                     + ") has a valueSelector (" + valueSelector
                     + ") with neverEnding (" + valueSelector.isNeverEnding() + ").");
         }
-        solverPhaseLifecycleSupport.addEventListener(valueSelector);
-        solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(CACHE_TYPE, this));
+        phaseLifecycleSupport.addEventListener(valueSelector);
+        phaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(CACHE_TYPE, this));
         this.minimumSubChainSize = minimumSubChainSize;
         this.maximumSubChainSize = maximumSubChainSize;
         if (minimumSubChainSize < 1) {

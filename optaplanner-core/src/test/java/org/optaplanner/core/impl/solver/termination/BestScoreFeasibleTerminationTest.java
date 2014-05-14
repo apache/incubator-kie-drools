@@ -18,10 +18,9 @@ package org.optaplanner.core.impl.solver.termination;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.score.definition.FeasibilityScoreDefinition;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 import static org.junit.Assert.*;
@@ -64,7 +63,7 @@ public class BestScoreFeasibleTerminationTest {
         FeasibilityScoreDefinition scoreDefinition = mock(FeasibilityScoreDefinition.class);
         when(scoreDefinition.getFeasibleLevelCount()).thenReturn(1);
         Termination termination = new BestScoreFeasibleTermination(scoreDefinition, new double[]{});
-        AbstractSolverPhaseScope phaseScope = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScope = mock(AbstractPhaseScope.class);
         when(phaseScope.getScoreDefinition()).thenReturn(new HardSoftScoreDefinition());
         when(phaseScope.getStartingScore()).thenReturn(HardSoftScore.valueOf(-100, -100));
         when(phaseScope.isBestSolutionInitialized()).thenReturn(true);

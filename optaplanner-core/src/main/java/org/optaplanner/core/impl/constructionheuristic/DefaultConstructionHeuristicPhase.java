@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,32 +14,34 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.localsearch;
+package org.optaplanner.core.impl.constructionheuristic;
 
-import org.optaplanner.core.impl.localsearch.decider.LocalSearchDecider;
-import org.optaplanner.core.impl.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
+import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
+import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
+import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
+import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicPhaseScope;
+import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.phase.AbstractSolverPhase;
+import org.optaplanner.core.impl.phase.AbstractPhase;
+import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
- * Default implementation of {@link LocalSearchSolverPhase}.
+ * Default implementation of {@link ConstructionHeuristicPhase}.
  */
-public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implements LocalSearchSolverPhase,
-        LocalSearchSolverPhaseLifecycleListener {
+public class DefaultConstructionHeuristicPhase extends AbstractPhase implements ConstructionHeuristicPhase {
 
-    protected LocalSearchDecider decider;
+    protected EntityPlacer entityPlacer;
+    protected ConstructionHeuristicDecider decider;
 
     protected boolean assertStepScoreFromScratch = false;
     protected boolean assertExpectedStepScore = false;
 
-    public LocalSearchDecider getDecider() {
-        return decider;
+    public void setEntityPlacer(EntityPlacer entityPlacer) {
+        this.entityPlacer = entityPlacer;
     }
 
-    public void setDecider(LocalSearchDecider decider) {
+    public void setDecider(ConstructionHeuristicDecider decider) {
         this.decider = decider;
     }
 
@@ -56,14 +58,13 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
     // ************************************************************************
 
     public void solve(DefaultSolverScope solverScope) {
-        LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(solverScope);
+        ConstructionHeuristicPhaseScope phaseScope = new ConstructionHeuristicPhaseScope(solverScope);
         phaseStarted(phaseScope);
 
-        while (!termination.isPhaseTerminated(phaseScope)) {
-            LocalSearchStepScope stepScope = new LocalSearchStepScope(phaseScope);
-            stepScope.setTimeGradient(termination.calculatePhaseTimeGradient(phaseScope));
+        for (Placement placement : entityPlacer) {
+            ConstructionHeuristicStepScope stepScope = new ConstructionHeuristicStepScope(phaseScope);
             stepStarted(stepScope);
-            decider.decideNextStep(stepScope);
+            decider.decideNextStep(stepScope, placement);
             if (stepScope.getStep() == null) {
                 if (termination.isPhaseTerminated(phaseScope)) {
                     logger.trace("    Step index ({}), time spent ({}) terminated without picking a nextStep.",
@@ -76,8 +77,7 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
                             stepScope.getPhaseScope().calculateSolverTimeMillisSpent());
                 } else {
                     throw new IllegalStateException("The step index (" + stepScope.getStepIndex()
-                            + ") has accepted/selected move count (" + stepScope.getAcceptedMoveCount() + "/"
-                            + stepScope.getSelectedMoveCount()
+                            + ") has selected move count (" + stepScope.getSelectedMoveCount()
                             + ") but failed to pick a nextStep (" + stepScope.getStep() + ").");
                 }
                 // Although stepStarted has been called, stepEnded is not called for this step
@@ -86,12 +86,15 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
             doStep(stepScope);
             stepEnded(stepScope);
             phaseScope.setLastCompletedStepScope(stepScope);
+            if (termination.isPhaseTerminated(phaseScope)) {
+                break;
+            }
         }
         phaseEnded(phaseScope);
     }
 
-    private void doStep(LocalSearchStepScope stepScope) {
-        LocalSearchSolverPhaseScope phaseScope = stepScope.getPhaseScope();
+    private void doStep(ConstructionHeuristicStepScope stepScope) {
+        ConstructionHeuristicPhaseScope phaseScope = stepScope.getPhaseScope();
         Move nextStep = stepScope.getStep();
         nextStep.doMove(stepScope.getScoreDirector());
         // there is no need to recalculate the score, but we still need to set it
@@ -102,51 +105,52 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
         if (assertExpectedStepScore) {
             phaseScope.assertExpectedWorkingScore(stepScope.getScore(), nextStep);
         }
-        bestSolutionRecaller.processWorkingSolutionDuringStep(stepScope);
     }
 
     @Override
     public void solvingStarted(DefaultSolverScope solverScope) {
         super.solvingStarted(solverScope);
+        entityPlacer.solvingStarted(solverScope);
         decider.solvingStarted(solverScope);
     }
 
-    public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
+    public void phaseStarted(ConstructionHeuristicPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
+        entityPlacer.phaseStarted(phaseScope);
         decider.phaseStarted(phaseScope);
-        // TODO maybe this restriction should be lifted to allow LocalSearch to initialize a solution too?
-        if (!phaseScope.getScoreDirector().isWorkingSolutionInitialized()) {
-            throw new IllegalStateException("Local Search phase started with an uninitialized Solution." +
-                    " First initialize the Solution. For example, run a Construction Heuristic phase first.");
-        }
     }
 
-    public void stepStarted(LocalSearchStepScope stepScope) {
+    public void stepStarted(ConstructionHeuristicStepScope stepScope) {
         super.stepStarted(stepScope);
+        entityPlacer.stepStarted(stepScope);
         decider.stepStarted(stepScope);
     }
 
-    public void stepEnded(LocalSearchStepScope stepScope) {
+    public void stepEnded(ConstructionHeuristicStepScope stepScope) {
         super.stepEnded(stepScope);
+        entityPlacer.stepEnded(stepScope);
         decider.stepEnded(stepScope);
-        LocalSearchSolverPhaseScope phaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {
-            long timeMillisSpent = phaseScope.calculateSolverTimeMillisSpent();
-            logger.debug("    LS step ({}), time spent ({}), score ({}), {} best score ({})," +
-                    " accepted/selected move count ({}/{}), picked move ({}).",
+            long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
+            logger.debug("    CH step ({}), time spent ({}), score ({}), selected move count ({}),"
+                    + " picked move ({}).",
                     stepScope.getStepIndex(), timeMillisSpent,
                     stepScope.getScore(),
-                    (stepScope.getBestScoreImproved() ? "new" : "   "), phaseScope.getBestScore(),
-                    stepScope.getAcceptedMoveCount(),
                     stepScope.getSelectedMoveCount(),
                     stepScope.getStepString());
         }
     }
 
-    public void phaseEnded(LocalSearchSolverPhaseScope phaseScope) {
+    public void phaseEnded(ConstructionHeuristicPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
+        Solution newBestSolution = phaseScope.getScoreDirector().cloneWorkingSolution();
+        int newBestUninitializedVariableCount = phaseScope.getSolutionDescriptor()
+                .countUninitializedVariables(newBestSolution);
+        bestSolutionRecaller.updateBestSolution(phaseScope.getSolverScope(),
+                newBestSolution, newBestUninitializedVariableCount);
+        entityPlacer.phaseEnded(phaseScope);
         decider.phaseEnded(phaseScope);
-        logger.info("Local Search phase ({}) ended: step total ({}), time spent ({}), best score ({}).",
+        logger.info("Construction Heuristic phase ({}) ended: step total ({}), time spent ({}), best score ({}).",
                 phaseIndex,
                 phaseScope.getNextStepIndex(),
                 phaseScope.calculateSolverTimeMillisSpent(),
@@ -155,7 +159,8 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
 
     @Override
     public void solvingEnded(DefaultSolverScope solverScope) {
-        super.solvingEnded(solverScope);
+        super.solvingStarted(solverScope);
+        entityPlacer.solvingEnded(solverScope);
         decider.solvingEnded(solverScope);
     }
 

@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.impl.solver.termination;
 
-import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Abstract superclass for {@link Termination}.
  */
-public abstract class AbstractTermination extends SolverPhaseLifecycleListenerAdapter implements Termination {
+public abstract class AbstractTermination extends PhaseLifecycleListenerAdapter implements Termination {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 

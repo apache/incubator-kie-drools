@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.FixedSelectorProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.move.DummyMove;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
@@ -46,7 +46,7 @@ public class UnionMoveSelectorTest {
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         moveSelector.solvingStarted(solverScope);
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         moveSelector.phaseStarted(phaseScopeA);
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
@@ -59,8 +59,8 @@ public class UnionMoveSelectorTest {
         moveSelector.phaseEnded(phaseScopeA);
         moveSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(childMoveSelectorList.get(0), 1, 1, 1);
-        verifySolverPhaseLifecycle(childMoveSelectorList.get(1), 1, 1, 1);
+        verifyPhaseLifecycle(childMoveSelectorList.get(0), 1, 1, 1);
+        verifyPhaseLifecycle(childMoveSelectorList.get(1), 1, 1, 1);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class UnionMoveSelectorTest {
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         moveSelector.solvingStarted(solverScope);
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         moveSelector.phaseStarted(phaseScopeA);
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
@@ -85,8 +85,8 @@ public class UnionMoveSelectorTest {
         moveSelector.phaseEnded(phaseScopeA);
         moveSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(childMoveSelectorList.get(0), 1, 1, 1);
-        verifySolverPhaseLifecycle(childMoveSelectorList.get(1), 1, 1, 1);
+        verifyPhaseLifecycle(childMoveSelectorList.get(0), 1, 1, 1);
+        verifyPhaseLifecycle(childMoveSelectorList.get(1), 1, 1, 1);
     }
 
     @Test
@@ -108,7 +108,7 @@ public class UnionMoveSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.solvingStarted(solverScope);
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         when(phaseScopeA.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.phaseStarted(phaseScopeA);
@@ -124,8 +124,8 @@ public class UnionMoveSelectorTest {
         moveSelector.phaseEnded(phaseScopeA);
         moveSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(childMoveSelectorList.get(0), 1, 1, 1);
-        verifySolverPhaseLifecycle(childMoveSelectorList.get(1), 1, 1, 1);
+        verifyPhaseLifecycle(childMoveSelectorList.get(0), 1, 1, 1);
+        verifyPhaseLifecycle(childMoveSelectorList.get(1), 1, 1, 1);
     }
 
     @Test
@@ -145,7 +145,7 @@ public class UnionMoveSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.solvingStarted(solverScope);
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         when(phaseScopeA.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.phaseStarted(phaseScopeA);
@@ -161,8 +161,8 @@ public class UnionMoveSelectorTest {
         moveSelector.phaseEnded(phaseScopeA);
         moveSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(childMoveSelectorList.get(0), 1, 1, 1);
-        verifySolverPhaseLifecycle(childMoveSelectorList.get(1), 1, 1, 1);
+        verifyPhaseLifecycle(childMoveSelectorList.get(0), 1, 1, 1);
+        verifyPhaseLifecycle(childMoveSelectorList.get(1), 1, 1, 1);
     }
 
 }

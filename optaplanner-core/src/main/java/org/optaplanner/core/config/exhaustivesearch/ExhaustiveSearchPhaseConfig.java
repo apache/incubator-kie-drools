@@ -29,14 +29,14 @@ import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
-import org.optaplanner.core.config.phase.SolverPhaseConfig;
+import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.exhaustivesearch.DefaultExhaustiveSearchSolverPhase;
-import org.optaplanner.core.impl.exhaustivesearch.ExhaustiveSearchSolverPhase;
+import org.optaplanner.core.impl.exhaustivesearch.DefaultExhaustiveSearchPhase;
+import org.optaplanner.core.impl.exhaustivesearch.ExhaustiveSearchPhase;
 import org.optaplanner.core.impl.exhaustivesearch.decider.ExhaustiveSearchDecider;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 import org.optaplanner.core.impl.exhaustivesearch.node.bounder.TrendBasedScoreBounder;
@@ -54,7 +54,7 @@ import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XStreamAlias("exhaustiveSearch")
-public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
+public class ExhaustiveSearchPhaseConfig extends PhaseConfig {
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
@@ -103,7 +103,7 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public ExhaustiveSearchSolverPhase buildSolverPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
+    public ExhaustiveSearchPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         phaseConfigPolicy.setInitializedChainedValueFilterEnabled(true);
@@ -113,8 +113,8 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
                 exhaustiveSearchType_.isSortEntitiesByDecreasingDifficulty());
         phaseConfigPolicy.setSortValuesByIncreasingStrengthEnabled(
                 exhaustiveSearchType_.isSortValuesByIncreasingStrength());
-        DefaultExhaustiveSearchSolverPhase phase = new DefaultExhaustiveSearchSolverPhase();
-        configureSolverPhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
+        DefaultExhaustiveSearchPhase phase = new DefaultExhaustiveSearchPhase();
+        configurePhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
         boolean scoreBounderEnabled = exhaustiveSearchType_.isScoreBounderEnabled();
         NodeExplorationType nodeExplorationType_ = nodeExplorationType != null ? nodeExplorationType
                 : (exhaustiveSearchType_ == ExhaustiveSearchType.BRUTE_FORCE
@@ -152,7 +152,7 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
         }
         if (entitySelectorConfig_.getCacheType() != null
                 && entitySelectorConfig_.getCacheType().compareTo(SelectionCacheType.PHASE) < 0) {
-            throw new IllegalArgumentException("The solverPhaseConfig (" + this
+            throw new IllegalArgumentException("The phaseConfig (" + this
                     + ") cannot have an entitySelectorConfig ("  + entitySelectorConfig_
                     + ") with a cacheType (" + entitySelectorConfig_.getCacheType()
                     + ") lower than " + SelectionCacheType.PHASE + ".");
@@ -163,7 +163,7 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
     protected EntityDescriptor deduceEntityDescriptor(SolutionDescriptor solutionDescriptor) {
         Collection<EntityDescriptor> entityDescriptors = solutionDescriptor.getGenuineEntityDescriptors();
         if (entityDescriptors.size() != 1) {
-            throw new IllegalArgumentException("The solverPhaseConfig (" + this
+            throw new IllegalArgumentException("The phaseConfig (" + this
                     + ") has no entitySelector configured"
                     + " and because there are multiple in the planningEntityClassSet ("
                     + solutionDescriptor.getEntityClassSet()
@@ -235,7 +235,7 @@ public class ExhaustiveSearchSolverPhaseConfig extends SolverPhaseConfig {
         return moveSelectorConfig_;
     }
 
-    public void inherit(ExhaustiveSearchSolverPhaseConfig inheritedConfig) {
+    public void inherit(ExhaustiveSearchPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         exhaustiveSearchType = ConfigUtils.inheritOverwritableProperty(exhaustiveSearchType,
                 inheritedConfig.getExhaustiveSearchType());

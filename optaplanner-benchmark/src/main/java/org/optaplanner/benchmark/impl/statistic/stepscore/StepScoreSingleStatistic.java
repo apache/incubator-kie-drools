@@ -23,7 +23,7 @@ import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
@@ -54,14 +54,14 @@ public class StepScoreSingleStatistic extends SingleStatistic<StepScoreStatistic
     // ************************************************************************
 
     public void open(Solver solver) {
-        ((DefaultSolver) solver).addSolverPhaseLifecycleListener(listener);
+        ((DefaultSolver) solver).addPhaseLifecycleListener(listener);
     }
 
     public void close(Solver solver) {
-        ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
+        ((DefaultSolver) solver).removePhaseLifecycleListener(listener);
     }
 
-    private class StepScoreSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {
+    private class StepScoreSingleStatisticListener extends PhaseLifecycleListenerAdapter {
 
         @Override
         public void stepEnded(AbstractStepScope stepScope) {

@@ -23,7 +23,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator.NaturalDeciderScoreComparatorFactory;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.heuristic.move.DummyMove;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
@@ -41,7 +41,7 @@ public class AcceptedForagerTest {
         // Setup
         Forager forager = new AcceptedForager(new NaturalDeciderScoreComparatorFactory(),
                 PickEarlyType.NEVER, Integer.MAX_VALUE);
-        LocalSearchSolverPhaseScope phaseScope = createPhaseScope();
+        LocalSearchPhaseScope phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
         LocalSearchStepScope stepScope = createStepScope(phaseScope);
         forager.stepStarted(stepScope);
@@ -73,7 +73,7 @@ public class AcceptedForagerTest {
         // Setup
         Forager forager = new AcceptedForager(new NaturalDeciderScoreComparatorFactory(),
                 PickEarlyType.NEVER, Integer.MAX_VALUE);
-        LocalSearchSolverPhaseScope phaseScope = createPhaseScope();
+        LocalSearchPhaseScope phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
         LocalSearchStepScope stepScope = createStepScope(phaseScope);
         forager.stepStarted(stepScope);
@@ -105,7 +105,7 @@ public class AcceptedForagerTest {
         // Setup
         Forager forager = new AcceptedForager(new NaturalDeciderScoreComparatorFactory(),
                 PickEarlyType.FIRST_BEST_SCORE_IMPROVING, Integer.MAX_VALUE);
-        LocalSearchSolverPhaseScope phaseScope = createPhaseScope();
+        LocalSearchPhaseScope phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
         LocalSearchStepScope stepScope = createStepScope(phaseScope);
         forager.stepStarted(stepScope);
@@ -134,7 +134,7 @@ public class AcceptedForagerTest {
         // Setup
         Forager forager = new AcceptedForager(new NaturalDeciderScoreComparatorFactory(),
                 PickEarlyType.FIRST_LAST_STEP_SCORE_IMPROVING, Integer.MAX_VALUE);
-        LocalSearchSolverPhaseScope phaseScope = createPhaseScope();
+        LocalSearchPhaseScope phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
         LocalSearchStepScope stepScope = createStepScope(phaseScope);
         forager.stepStarted(stepScope);
@@ -163,7 +163,7 @@ public class AcceptedForagerTest {
         // Setup
         Forager forager = new AcceptedForager(new NaturalDeciderScoreComparatorFactory(),
                 PickEarlyType.NEVER, 3);
-        LocalSearchSolverPhaseScope phaseScope = createPhaseScope();
+        LocalSearchPhaseScope phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
         LocalSearchStepScope stepScope = createStepScope(phaseScope);
         forager.stepStarted(stepScope);
@@ -187,9 +187,9 @@ public class AcceptedForagerTest {
         forager.phaseEnded(phaseScope);
     }
 
-    private LocalSearchSolverPhaseScope createPhaseScope() {
+    private LocalSearchPhaseScope createPhaseScope() {
         DefaultSolverScope solverScope = new DefaultSolverScope();
-        LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(solverScope);
+        LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
         DroolsScoreDirectorFactory scoreDirectorFactory = new DroolsScoreDirectorFactory();
         scoreDirectorFactory.setSolutionDescriptor(TestdataSolution.buildSolutionDescriptor());
         scoreDirectorFactory.setScoreDefinition(new SimpleScoreDefinition());
@@ -204,7 +204,7 @@ public class AcceptedForagerTest {
         return phaseScope;
     }
 
-    private LocalSearchStepScope createStepScope(LocalSearchSolverPhaseScope phaseScope) {
+    private LocalSearchStepScope createStepScope(LocalSearchPhaseScope phaseScope) {
         LocalSearchStepScope stepScope = new LocalSearchStepScope(phaseScope);
         return stepScope;
     }

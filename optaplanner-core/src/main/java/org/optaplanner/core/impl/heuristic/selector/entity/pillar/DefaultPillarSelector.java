@@ -16,10 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.pillar;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -93,8 +91,8 @@ public class DefaultPillarSelector extends AbstractSelector
                     + ") has an entitySelector (" + entitySelector
                     + ") with neverEnding (" + entitySelector.isNeverEnding() + ").");
         }
-        solverPhaseLifecycleSupport.addEventListener(entitySelector);
-        solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(CACHE_TYPE, this));
+        phaseLifecycleSupport.addEventListener(entitySelector);
+        phaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(CACHE_TYPE, this));
         this.subPillarEnabled = subPillarEnabled;
         this.minimumSubPillarSize = minimumSubPillarSize;
         this.maximumSubPillarSize = maximumSubPillarSize;

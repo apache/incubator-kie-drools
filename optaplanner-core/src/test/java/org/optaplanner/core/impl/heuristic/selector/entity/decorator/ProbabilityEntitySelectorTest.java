@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -66,7 +66,7 @@ public class ProbabilityEntitySelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         entitySelector.solvingStarted(solverScope);
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         when(phaseScopeA.getWorkingRandom()).thenReturn(workingRandom);
         entitySelector.phaseStarted(phaseScopeA);
@@ -95,7 +95,7 @@ public class ProbabilityEntitySelectorTest {
         entitySelector.phaseEnded(phaseScopeA);
         entitySelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(childEntitySelector, 1, 1, 1);
+        verifyPhaseLifecycle(childEntitySelector, 1, 1, 1);
         verify(childEntitySelector, times(1)).iterator();
     }
 

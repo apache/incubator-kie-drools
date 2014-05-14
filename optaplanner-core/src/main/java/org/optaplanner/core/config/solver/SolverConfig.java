@@ -23,7 +23,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
-import org.optaplanner.core.config.phase.SolverPhaseConfig;
+import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.random.RandomType;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
@@ -33,10 +33,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.phase.AbstractSolverPhase;
-import org.optaplanner.core.impl.phase.SolverPhase;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
+import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.BasicPlumbingTermination;
 import org.optaplanner.core.impl.solver.DefaultSolver;
@@ -69,7 +66,7 @@ public class SolverConfig {
     private TerminationConfig terminationConfig;
 
     @XStreamImplicit()
-    protected List<SolverPhaseConfig> solverPhaseConfigList = null;
+    protected List<PhaseConfig> phaseConfigList = null;
 
     public EnvironmentMode getEnvironmentMode() {
         return environmentMode;
@@ -143,12 +140,12 @@ public class SolverConfig {
         this.terminationConfig = terminationConfig;
     }
 
-    public List<SolverPhaseConfig> getSolverPhaseConfigList() {
-        return solverPhaseConfigList;
+    public List<PhaseConfig> getPhaseConfigList() {
+        return phaseConfigList;
     }
 
-    public void setSolverPhaseConfigList(List<SolverPhaseConfig> solverPhaseConfigList) {
-        this.solverPhaseConfigList = solverPhaseConfigList;
+    public void setPhaseConfigList(List<PhaseConfig> phaseConfigList) {
+        this.phaseConfigList = phaseConfigList;
     }
 
     // ************************************************************************
@@ -196,19 +193,19 @@ public class SolverConfig {
         solver.setTermination(termination);
         BestSolutionRecaller bestSolutionRecaller = buildBestSolutionRecaller(environmentMode);
         solver.setBestSolutionRecaller(bestSolutionRecaller);
-        if (ConfigUtils.isEmptyCollection(solverPhaseConfigList)) {
+        if (ConfigUtils.isEmptyCollection(phaseConfigList)) {
             throw new IllegalArgumentException(
                     "Configure at least 1 phase (for example <localSearch>) in the solver configuration.");
         }
-        List<SolverPhase> solverPhaseList = new ArrayList<SolverPhase>(solverPhaseConfigList.size());
+        List<Phase> phaseList = new ArrayList<Phase>(phaseConfigList.size());
         int phaseIndex = 0;
-        for (SolverPhaseConfig solverPhaseConfig : solverPhaseConfigList) {
-            SolverPhase solverPhase = solverPhaseConfig.buildSolverPhase(phaseIndex, configPolicy,
+        for (PhaseConfig phaseConfig : phaseConfigList) {
+            Phase phase = phaseConfig.buildPhase(phaseIndex, configPolicy,
                     bestSolutionRecaller, termination);
-            solverPhaseList.add(solverPhase);
+            phaseList.add(phase);
             phaseIndex++;
         }
-        solver.setSolverPhaseList(solverPhaseList);
+        solver.setPhaseList(phaseList);
         return solver;
     }
 
@@ -261,8 +258,8 @@ public class SolverConfig {
         } else if (inheritedConfig.getTerminationConfig() != null) {
             terminationConfig.inherit(inheritedConfig.getTerminationConfig());
         }
-        solverPhaseConfigList = ConfigUtils.inheritMergeableListProperty(
-                solverPhaseConfigList, inheritedConfig.getSolverPhaseConfigList());
+        phaseConfigList = ConfigUtils.inheritMergeableListProperty(
+                phaseConfigList, inheritedConfig.getPhaseConfigList());
     }
 
 }

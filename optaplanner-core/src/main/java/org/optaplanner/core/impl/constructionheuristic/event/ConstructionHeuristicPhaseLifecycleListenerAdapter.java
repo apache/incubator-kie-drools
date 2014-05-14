@@ -16,18 +16,27 @@
 
 package org.optaplanner.core.impl.constructionheuristic.event;
 
-import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicSolverPhaseScope;
+import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
-import org.optaplanner.core.impl.solver.event.SolverLifecycleListener;
+import org.optaplanner.core.impl.solver.event.SolverLifecycleListenerAdapter;
 
-public interface ConstructionHeuristicSolverPhaseLifecycleListener extends SolverLifecycleListener {
+public class ConstructionHeuristicPhaseLifecycleListenerAdapter extends SolverLifecycleListenerAdapter
+        implements ConstructionHeuristicPhaseLifecycleListener {
 
-    void phaseStarted(ConstructionHeuristicSolverPhaseScope phaseScope);
+    public void phaseStarted(ConstructionHeuristicPhaseScope phaseScope) {
+        // Hook method
+    }
 
-    void stepStarted(ConstructionHeuristicStepScope stepScope);
+    public void stepStarted(ConstructionHeuristicStepScope stepScope) {
+        // Hook method
+    }
 
-    void stepEnded(ConstructionHeuristicStepScope stepScope);
+    public void stepEnded(ConstructionHeuristicStepScope stepScope) {
+        // Hook method
+    }
 
-    void phaseEnded(ConstructionHeuristicSolverPhaseScope phaseScope);
+    public void phaseEnded(ConstructionHeuristicPhaseScope phaseScope) {
+        // Hook method
+    }
 
 }

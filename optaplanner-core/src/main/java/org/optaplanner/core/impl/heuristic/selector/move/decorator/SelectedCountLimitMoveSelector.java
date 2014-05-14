@@ -36,7 +36,7 @@ public class SelectedCountLimitMoveSelector extends AbstractMoveSelector {
             throw new IllegalArgumentException("The selector (" + this
                     + ") has a negative selectedCountLimit (" + selectedCountLimit + ").");
         }
-        solverPhaseLifecycleSupport.addEventListener(childMoveSelector);
+        phaseLifecycleSupport.addEventListener(childMoveSelector);
     }
 
     // ************************************************************************

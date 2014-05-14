@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.FixedTabuSizeStrategy;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -32,7 +32,7 @@ public class EntityTabuAcceptorTest {
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
         solverScope.setBestScore(SimpleScore.valueOf(0));
-        LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(solverScope);
+        LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
         acceptor.phaseStarted(phaseScope);
 
         LocalSearchStepScope stepScope0 = new LocalSearchStepScope(phaseScope);
@@ -112,7 +112,7 @@ public class EntityTabuAcceptorTest {
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
         solverScope.setBestScore(SimpleScore.valueOf(0));
-        LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(solverScope);
+        LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
         acceptor.phaseStarted(phaseScope);
 
         LocalSearchStepScope stepScope0 = new LocalSearchStepScope(phaseScope);
@@ -209,7 +209,7 @@ public class EntityTabuAcceptorTest {
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
         solverScope.setBestScore(SimpleScore.valueOf(-100));
-        LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(solverScope);
+        LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
         acceptor.phaseStarted(phaseScope);
 
         LocalSearchStepScope stepScope0 = new LocalSearchStepScope(phaseScope);

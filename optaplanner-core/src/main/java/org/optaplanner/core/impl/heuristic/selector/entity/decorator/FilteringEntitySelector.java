@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFi
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class FilteringEntitySelector extends AbstractEntitySelector {
@@ -40,7 +40,7 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
         this.childEntitySelector = childEntitySelector;
         this.filterList = filterList;
         bailOutEnabled = childEntitySelector.isNeverEnding();
-        solverPhaseLifecycleSupport.addEventListener(childEntitySelector);
+        phaseLifecycleSupport.addEventListener(childEntitySelector);
     }
 
     // ************************************************************************
@@ -48,13 +48,13 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
         scoreDirector = phaseScope.getScoreDirector();
     }
 
     @Override
-    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         scoreDirector = null;
     }

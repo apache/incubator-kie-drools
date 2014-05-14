@@ -23,12 +23,12 @@ import java.util.List;
 
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;
+import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
-import org.optaplanner.core.config.localsearch.LocalSearchSolverPhaseConfig;
+import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
-import org.optaplanner.core.config.phase.SolverPhaseConfig;
+import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
@@ -92,21 +92,23 @@ public class NQueensApp extends CommonApp {
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setBestScoreLimit("0");
         solverConfig.setTerminationConfig(terminationConfig);
-        List<SolverPhaseConfig> solverPhaseConfigList = new ArrayList<SolverPhaseConfig>();
-        ConstructionHeuristicSolverPhaseConfig constructionHeuristicSolverPhaseConfig
-                = new ConstructionHeuristicSolverPhaseConfig();
-        constructionHeuristicSolverPhaseConfig.setConstructionHeuristicType(
-                ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.FIRST_FIT_DECREASING);
-        solverPhaseConfigList.add(constructionHeuristicSolverPhaseConfig);
-        LocalSearchSolverPhaseConfig localSearchSolverPhaseConfig = new LocalSearchSolverPhaseConfig();
+        List<PhaseConfig> phaseConfigList = new ArrayList<PhaseConfig>();
+
+        ConstructionHeuristicPhaseConfig constructionHeuristicPhaseConfig = new ConstructionHeuristicPhaseConfig();
+        constructionHeuristicPhaseConfig.setConstructionHeuristicType(
+                ConstructionHeuristicPhaseConfig.ConstructionHeuristicType.FIRST_FIT_DECREASING);
+        phaseConfigList.add(constructionHeuristicPhaseConfig);
+
+        LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
         ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
         changeMoveSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
-        localSearchSolverPhaseConfig.setMoveSelectorConfig(changeMoveSelectorConfig);
+        localSearchPhaseConfig.setMoveSelectorConfig(changeMoveSelectorConfig);
         AcceptorConfig acceptorConfig = new AcceptorConfig();
         acceptorConfig.setEntityTabuSize(5);
-        localSearchSolverPhaseConfig.setAcceptorConfig(acceptorConfig);
-        solverPhaseConfigList.add(localSearchSolverPhaseConfig);
-        solverConfig.setSolverPhaseConfigList(solverPhaseConfigList);
+        localSearchPhaseConfig.setAcceptorConfig(acceptorConfig);
+        phaseConfigList.add(localSearchPhaseConfig);
+
+        solverConfig.setPhaseConfigList(phaseConfigList);
         return solverConfig.buildSolver();
     }
 

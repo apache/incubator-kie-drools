@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -75,7 +75,7 @@ public class SortingEntitySelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         entitySelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         entitySelector.phaseStarted(phaseScopeA);
 
@@ -93,7 +93,7 @@ public class SortingEntitySelectorTest {
 
         entitySelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         entitySelector.phaseStarted(phaseScopeB);
 
@@ -119,7 +119,7 @@ public class SortingEntitySelectorTest {
 
         entitySelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(childEntitySelector, 1, 2, 5);
+        verifyPhaseLifecycle(childEntitySelector, 1, 2, 5);
         verify(childEntitySelector, times(timesCalled)).iterator();
         verify(childEntitySelector, times(timesCalled)).getSize();
     }

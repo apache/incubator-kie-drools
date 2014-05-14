@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.phase.custom.scope;
+package org.optaplanner.core.impl.localsearch.scope;
 
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-public class CustomSolverPhaseScope extends AbstractSolverPhaseScope {
+public class LocalSearchPhaseScope extends AbstractPhaseScope {
 
-    private CustomStepScope lastCompletedStepScope;
+    private LocalSearchStepScope lastCompletedStepScope;
 
-    public CustomSolverPhaseScope(DefaultSolverScope solverScope) {
+    public LocalSearchPhaseScope(DefaultSolverScope solverScope) {
         super(solverScope);
-        lastCompletedStepScope = new CustomStepScope(this, -1);
+        lastCompletedStepScope = new LocalSearchStepScope(this, -1);
+        lastCompletedStepScope.setTimeGradient(0.0);
     }
 
-    public CustomStepScope getLastCompletedStepScope() {
+    public LocalSearchStepScope getLastCompletedStepScope() {
         return lastCompletedStepScope;
     }
 
-    public void setLastCompletedStepScope(CustomStepScope lastCompletedStepScope) {
+    public void setLastCompletedStepScope(LocalSearchStepScope lastCompletedStepScope) {
         this.lastCompletedStepScope = lastCompletedStepScope;
     }
 

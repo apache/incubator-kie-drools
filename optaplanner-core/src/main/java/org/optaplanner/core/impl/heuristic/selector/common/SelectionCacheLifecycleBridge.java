@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.impl.heuristic.selector.common;
 
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
-import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-public class SelectionCacheLifecycleBridge implements SolverPhaseLifecycleListener {
+public class SelectionCacheLifecycleBridge implements PhaseLifecycleListener {
 
     protected final SelectionCacheType cacheType;
     protected final SelectionCacheLifecycleListener selectionCacheLifecycleListener;
@@ -43,7 +43,7 @@ public class SelectionCacheLifecycleBridge implements SolverPhaseLifecycleListen
         }
     }
 
-    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope phaseScope) {
         if (cacheType == SelectionCacheType.PHASE) {
             selectionCacheLifecycleListener.constructCache(phaseScope.getSolverScope());
         }
@@ -61,7 +61,7 @@ public class SelectionCacheLifecycleBridge implements SolverPhaseLifecycleListen
         }
     }
 
-    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope phaseScope) {
         if (cacheType == SelectionCacheType.PHASE) {
             selectionCacheLifecycleListener.disposeCache(phaseScope.getSolverScope());
         }

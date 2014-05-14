@@ -16,19 +16,20 @@
 
 package org.optaplanner.core.impl.phase;
 
-import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
+import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
- * A SolverPhase
- * @see AbstractSolverPhase
+ * A phase of a {@link Solver}.
+ * @see AbstractPhase
  */
-public interface SolverPhase extends SolverPhaseLifecycleListener {
+public interface Phase extends PhaseLifecycleListener {
 
     void solve(DefaultSolverScope solverScope);
 
-    void addSolverPhaseLifecycleListener(SolverPhaseLifecycleListener lifecycleListener);
+    void addPhaseLifecycleListener(PhaseLifecycleListener phaseLifecycleListener);
 
-    void removeSolverPhaseLifecycleListener(SolverPhaseLifecycleListener lifecycleListener);
+    void removePhaseLifecycleListener(PhaseLifecycleListener phaseLifecycleListener);
 
 }

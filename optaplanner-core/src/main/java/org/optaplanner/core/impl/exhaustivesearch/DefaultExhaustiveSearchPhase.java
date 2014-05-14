@@ -28,18 +28,18 @@ import org.optaplanner.core.impl.exhaustivesearch.decider.ExhaustiveSearchDecide
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchLayer;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 import org.optaplanner.core.impl.exhaustivesearch.node.bounder.ScoreBounder;
-import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchSolverPhaseScope;
+import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchPhaseScope;
 import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchStepScope;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.phase.AbstractSolverPhase;
+import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
- * Default implementation of {@link ExhaustiveSearchSolverPhase}.
+ * Default implementation of {@link ExhaustiveSearchPhase}.
  */
-public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase implements ExhaustiveSearchSolverPhase {
+public class DefaultExhaustiveSearchPhase extends AbstractPhase implements ExhaustiveSearchPhase {
 
     protected Comparator<ExhaustiveSearchNode> nodeComparator;
     protected EntitySelector entitySelector;
@@ -86,7 +86,7 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
 
     public void solve(DefaultSolverScope solverScope) {
         SortedSet<ExhaustiveSearchNode> expandableNodeQueue = new TreeSet<ExhaustiveSearchNode>(nodeComparator);
-        ExhaustiveSearchSolverPhaseScope phaseScope = new ExhaustiveSearchSolverPhaseScope(solverScope);
+        ExhaustiveSearchPhaseScope phaseScope = new ExhaustiveSearchPhaseScope(solverScope);
         phaseScope.setExpandableNodeQueue(expandableNodeQueue);
         phaseStarted(phaseScope);
 
@@ -111,7 +111,7 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
         decider.solvingStarted(solverScope);
     }
 
-    public void phaseStarted(ExhaustiveSearchSolverPhaseScope phaseScope) {
+    public void phaseStarted(ExhaustiveSearchPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
         entitySelector.phaseStarted(phaseScope);
         decider.phaseStarted(phaseScope);
@@ -119,7 +119,7 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
         initStartNode(phaseScope);
     }
 
-    private void fillLayerList(ExhaustiveSearchSolverPhaseScope phaseScope) {
+    private void fillLayerList(ExhaustiveSearchPhaseScope phaseScope) {
         ExhaustiveSearchStepScope stepScope = new ExhaustiveSearchStepScope(phaseScope);
         entitySelector.stepStarted(stepScope);
         long entitySize = entitySelector.getSize();
@@ -146,7 +146,7 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
         phaseScope.setLayerList(layerList);
     }
 
-    private void initStartNode(ExhaustiveSearchSolverPhaseScope phaseScope) {
+    private void initStartNode(ExhaustiveSearchPhaseScope phaseScope) {
         ExhaustiveSearchLayer layer = phaseScope.getLayerList().get(0);
         ExhaustiveSearchNode startNode = new ExhaustiveSearchNode(layer, null);
 
@@ -172,7 +172,7 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
     }
 
     protected void restoreWorkingSolution(ExhaustiveSearchStepScope stepScope) {
-        ExhaustiveSearchSolverPhaseScope phaseScope = stepScope.getPhaseScope();
+        ExhaustiveSearchPhaseScope phaseScope = stepScope.getPhaseScope();
         ExhaustiveSearchNode oldNode = phaseScope.getLastCompletedStepScope().getExpandingNode();
         ExhaustiveSearchNode newNode = stepScope.getExpandingNode();
         List<Move> oldMoveList = new ArrayList<Move>(oldNode.getDepth());
@@ -211,7 +211,7 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
         // Skip entitySelector.stepEnded(stepScope)
         decider.stepEnded(stepScope);
         if (logger.isDebugEnabled()) {
-            ExhaustiveSearchSolverPhaseScope phaseScope = stepScope.getPhaseScope();
+            ExhaustiveSearchPhaseScope phaseScope = stepScope.getPhaseScope();
             long timeMillisSpent = phaseScope.calculateSolverTimeMillisSpent();
             logger.debug("    ES step ({}), time spent ({}), depth ({}), breadth ({}), {} best score ({}), selected move count ({}).",
                     stepScope.getStepIndex(), timeMillisSpent,
@@ -223,7 +223,7 @@ public class DefaultExhaustiveSearchSolverPhase extends AbstractSolverPhase impl
         }
     }
 
-    public void phaseEnded(ExhaustiveSearchSolverPhaseScope phaseScope) {
+    public void phaseEnded(ExhaustiveSearchPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         entitySelector.phaseEnded(phaseScope);
         decider.phaseEnded(phaseScope);

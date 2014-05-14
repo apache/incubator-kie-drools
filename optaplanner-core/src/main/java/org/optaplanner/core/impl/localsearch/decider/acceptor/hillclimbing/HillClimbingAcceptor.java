@@ -19,8 +19,6 @@ package org.optaplanner.core.impl.localsearch.decider.acceptor.hillclimbing;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptor;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
 public class HillClimbingAcceptor extends AbstractAcceptor {
 

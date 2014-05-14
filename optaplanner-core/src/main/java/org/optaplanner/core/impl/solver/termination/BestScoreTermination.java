@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.solver.termination;
 import java.util.Arrays;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -54,7 +54,7 @@ public class BestScoreTermination extends AbstractTermination {
         return isTerminated(solverScope.isBestSolutionInitialized(), solverScope.getBestScore());
     }
 
-    public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
+    public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
         return isTerminated(phaseScope.isBestSolutionInitialized(), phaseScope.getBestScore());
     }
 
@@ -72,7 +72,7 @@ public class BestScoreTermination extends AbstractTermination {
         return calculateTimeGradient(startingInitializedScore, bestScoreLimit, bestScore);
     }
 
-    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
+    public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
         Score startingInitializedScore = phaseScope.getStartingScore();
         Score bestScore = phaseScope.getBestScore();
         return calculateTimeGradient(startingInitializedScore, bestScoreLimit, bestScore);

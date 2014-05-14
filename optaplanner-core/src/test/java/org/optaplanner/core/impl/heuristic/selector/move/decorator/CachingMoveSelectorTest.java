@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.move.DummyMove;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
@@ -57,7 +57,7 @@ public class CachingMoveSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         moveSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         moveSelector.phaseStarted(phaseScopeA);
 
@@ -75,7 +75,7 @@ public class CachingMoveSelectorTest {
 
         moveSelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         moveSelector.phaseStarted(phaseScopeB);
 
@@ -101,7 +101,7 @@ public class CachingMoveSelectorTest {
 
         moveSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(childMoveSelector, 1, 2, 5);
+        verifyPhaseLifecycle(childMoveSelector, 1, 2, 5);
         verify(childMoveSelector, times(timesCalled)).iterator();
         verify(childMoveSelector, times(timesCalled)).getSize();
     }
@@ -134,7 +134,7 @@ public class CachingMoveSelectorTest {
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         when(phaseScopeA.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.phaseStarted(phaseScopeA);
@@ -157,7 +157,7 @@ public class CachingMoveSelectorTest {
 
         moveSelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         when(phaseScopeB.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.phaseStarted(phaseScopeB);
@@ -174,7 +174,7 @@ public class CachingMoveSelectorTest {
 
         moveSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(childMoveSelector, 1, 2, 3);
+        verifyPhaseLifecycle(childMoveSelector, 1, 2, 3);
         verify(childMoveSelector, times(timesCalled)).iterator();
         verify(childMoveSelector, times(timesCalled)).getSize();
     }

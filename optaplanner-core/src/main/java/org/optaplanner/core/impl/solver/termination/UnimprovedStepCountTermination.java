@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.solver.termination;
 
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class UnimprovedStepCountTermination extends AbstractTermination {
@@ -40,12 +40,12 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
                 getClass().getSimpleName() + " can only be used for phase termination.");
     }
 
-    public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
+    public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
         int unimprovedStepCount = calculateUnimprovedStepCount(phaseScope);
         return unimprovedStepCount >= unimprovedStepCountLimit;
     }
 
-    protected int calculateUnimprovedStepCount(AbstractSolverPhaseScope phaseScope) {
+    protected int calculateUnimprovedStepCount(AbstractPhaseScope phaseScope) {
         int bestStepIndex = phaseScope.getBestSolutionStepIndex();
         int lastStepIndex = phaseScope.getLastCompletedStepScope().getStepIndex();
         return lastStepIndex - bestStepIndex;
@@ -60,7 +60,7 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
                 getClass().getSimpleName() + " can only be used for phase termination.");
     }
 
-    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {
+    public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
         int unimprovedStepCount = calculateUnimprovedStepCount(phaseScope);
         double timeGradient = ((double) unimprovedStepCount) / ((double) unimprovedStepCountLimit);
         return Math.min(timeGradient, 1.0);

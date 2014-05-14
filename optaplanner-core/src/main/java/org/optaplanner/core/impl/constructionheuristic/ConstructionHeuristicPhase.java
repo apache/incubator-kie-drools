@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.constructionheuristic.decider.forager;
+package org.optaplanner.core.impl.constructionheuristic;
 
-import org.optaplanner.core.impl.constructionheuristic.event.ConstructionHeuristicPhaseLifecycleListenerAdapter;
+import org.optaplanner.core.impl.phase.AbstractPhase;
+import org.optaplanner.core.impl.phase.Phase;
 
-public abstract class AbstractConstructionHeuristicForager
-        extends ConstructionHeuristicPhaseLifecycleListenerAdapter
-        implements ConstructionHeuristicForager {
+/**
+ * A {@link ConstructionHeuristicPhase} is a {@link Phase} which uses a construction heuristic algorithm,
+ * such as first fit, best fit decreasing, cheapest insertion, ...
+ * @see Phase
+ * @see AbstractPhase
+ * @see DefaultConstructionHeuristicPhase
+ */
+public interface ConstructionHeuristicPhase extends Phase {
 
 }

@@ -43,8 +43,8 @@ public class PillarChangeMoveSelector extends GenericMoveSelector {
                     + ") has a variableDescriptor (" + variableDescriptor
                     + ") which is chained (" + variableDescriptor.isChained() + ").");
         }
-        solverPhaseLifecycleSupport.addEventListener(pillarSelector);
-        solverPhaseLifecycleSupport.addEventListener(valueSelector);
+        phaseLifecycleSupport.addEventListener(pillarSelector);
+        phaseLifecycleSupport.addEventListener(valueSelector);
     }
 
     // ************************************************************************

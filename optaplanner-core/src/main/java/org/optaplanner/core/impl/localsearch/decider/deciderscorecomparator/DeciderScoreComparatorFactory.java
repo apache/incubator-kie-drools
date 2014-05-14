@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator;
 import java.util.Comparator;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
+import org.optaplanner.core.impl.localsearch.event.LocalSearchPhaseLifecycleListener;
 
 /**
  * A DeciderScoreComparatorFactory creates a new DeciderScoreComparator each step,
@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.localsearch.event.LocalSearchSolverPhaseLifecyc
  * That Score Comparator can consider shifting penalty, aging penalty, ...
  * in which case it differs from the natural ordering of scores.
  */
-public interface DeciderScoreComparatorFactory extends LocalSearchSolverPhaseLifecycleListener {
+public interface DeciderScoreComparatorFactory extends LocalSearchPhaseLifecycleListener {
 
     /**
      * @return never null

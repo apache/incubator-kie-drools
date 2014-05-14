@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.constructionheuristic.placer;
 
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
-import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleSupport;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleSupport;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.slf4j.Logger;
@@ -31,30 +31,30 @@ public abstract class AbstractEntityPlacer {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected SolverPhaseLifecycleSupport solverPhaseLifecycleSupport = new SolverPhaseLifecycleSupport();
+    protected PhaseLifecycleSupport phaseLifecycleSupport = new PhaseLifecycleSupport();
 
     public void solvingStarted(DefaultSolverScope solverScope) {
-        solverPhaseLifecycleSupport.fireSolvingStarted(solverScope);
+        phaseLifecycleSupport.fireSolvingStarted(solverScope);
     }
 
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
-        solverPhaseLifecycleSupport.firePhaseStarted(solverPhaseScope);
+    public void phaseStarted(AbstractPhaseScope phaseScope) {
+        phaseLifecycleSupport.firePhaseStarted(phaseScope);
     }
 
     public void stepStarted(AbstractStepScope stepScope) {
-        solverPhaseLifecycleSupport.fireStepStarted(stepScope);
+        phaseLifecycleSupport.fireStepStarted(stepScope);
     }
 
     public void stepEnded(AbstractStepScope stepScope) {
-        solverPhaseLifecycleSupport.fireStepEnded(stepScope);
+        phaseLifecycleSupport.fireStepEnded(stepScope);
     }
 
-    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
-        solverPhaseLifecycleSupport.firePhaseEnded(solverPhaseScope);
+    public void phaseEnded(AbstractPhaseScope phaseScope) {
+        phaseLifecycleSupport.firePhaseEnded(phaseScope);
     }
 
     public void solvingEnded(DefaultSolverScope solverScope) {
-        solverPhaseLifecycleSupport.fireSolvingEnded(solverScope);
+        phaseLifecycleSupport.fireSolvingEnded(solverScope);
     }
 
 }

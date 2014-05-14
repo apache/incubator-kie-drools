@@ -70,9 +70,9 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
                         + variableDescriptor.isValueRangeEntityIndependent() + ").");
             }
         }
-        solverPhaseLifecycleSupport.addEventListener(leftPillarSelector);
+        phaseLifecycleSupport.addEventListener(leftPillarSelector);
         if (leftPillarSelector != rightPillarSelector) {
-            solverPhaseLifecycleSupport.addEventListener(rightPillarSelector);
+            phaseLifecycleSupport.addEventListener(rightPillarSelector);
         }
     }
 

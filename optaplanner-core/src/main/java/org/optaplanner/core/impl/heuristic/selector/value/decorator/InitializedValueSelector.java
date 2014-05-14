@@ -39,7 +39,7 @@ public class InitializedValueSelector extends AbstractValueSelector {
         this.variableDescriptor = childValueSelector.getVariableDescriptor();
         this.childValueSelector = childValueSelector;
         bailOutEnabled = childValueSelector.isNeverEnding();
-        solverPhaseLifecycleSupport.addEventListener(childValueSelector);
+        phaseLifecycleSupport.addEventListener(childValueSelector);
     }
 
     // ************************************************************************

@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator;
 
-import org.optaplanner.core.impl.localsearch.event.LocalSearchSolverPhaseLifecycleListenerAdapter;
+import org.optaplanner.core.impl.localsearch.event.LocalSearchPhaseLifecycleListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * Abstract superclass for {@link DeciderScoreComparatorFactory}.
  * @see DeciderScoreComparatorFactory
  */
-public abstract class AbstractDeciderScoreComparatorFactory extends LocalSearchSolverPhaseLifecycleListenerAdapter
+public abstract class AbstractDeciderScoreComparatorFactory extends LocalSearchPhaseLifecycleListenerAdapter
         implements DeciderScoreComparatorFactory {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());

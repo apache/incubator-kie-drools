@@ -20,21 +20,21 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 
 public class CustomStepScope extends AbstractStepScope {
 
-    private final CustomSolverPhaseScope phaseScope;
+    private final CustomPhaseScope phaseScope;
 
     private int uninitializedVariableCount = -1;
 
-    public CustomStepScope(CustomSolverPhaseScope phaseScope) {
+    public CustomStepScope(CustomPhaseScope phaseScope) {
         this(phaseScope, phaseScope.getNextStepIndex());
     }
 
-    public CustomStepScope(CustomSolverPhaseScope phaseScope, int stepIndex) {
+    public CustomStepScope(CustomPhaseScope phaseScope, int stepIndex) {
         super(stepIndex);
         this.phaseScope = phaseScope;
     }
 
     @Override
-    public CustomSolverPhaseScope getPhaseScope() {
+    public CustomPhaseScope getPhaseScope() {
         return phaseScope;
     }
 

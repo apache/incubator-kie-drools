@@ -37,7 +37,7 @@ public class SelectedCountLimitEntitySelector extends AbstractEntitySelector {
             throw new IllegalArgumentException("The selector (" + this
                     + ") has a negative selectedCountLimit (" + selectedCountLimit + ").");
         }
-        solverPhaseLifecycleSupport.addEventListener(childEntitySelector);
+        phaseLifecycleSupport.addEventListener(childEntitySelector);
     }
 
     // ************************************************************************

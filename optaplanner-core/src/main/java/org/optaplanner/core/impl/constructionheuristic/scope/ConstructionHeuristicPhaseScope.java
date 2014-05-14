@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.impl.constructionheuristic.scope;
 
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-public class ConstructionHeuristicSolverPhaseScope extends AbstractSolverPhaseScope {
+public class ConstructionHeuristicPhaseScope extends AbstractPhaseScope {
 
     private ConstructionHeuristicStepScope lastCompletedStepScope;
 
-    public ConstructionHeuristicSolverPhaseScope(DefaultSolverScope solverScope) {
+    public ConstructionHeuristicPhaseScope(DefaultSolverScope solverScope) {
         super(solverScope);
         lastCompletedStepScope = new ConstructionHeuristicStepScope(this, -1);
     }

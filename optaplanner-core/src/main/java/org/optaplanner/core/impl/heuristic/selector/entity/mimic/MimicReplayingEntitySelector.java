@@ -7,7 +7,7 @@ import java.util.NoSuchElementException;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
 public class MimicReplayingEntitySelector extends AbstractEntitySelector {
 
@@ -21,7 +21,7 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
 
     public MimicReplayingEntitySelector(EntityMimicRecorder entityMimicRecorder) {
         this.entityMimicRecorder = entityMimicRecorder;
-        // No solverPhaseLifecycleSupport because the MimicRecordingEntitySelector is hooked up elsewhere too
+        // No PhaseLifecycleSupport because the MimicRecordingEntitySelector is hooked up elsewhere too
         entityMimicRecorder.addMimicReplayingEntitySelector(this);
     }
 
@@ -30,7 +30,7 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
         // Doing this in phaseStarted instead of stepStarted due to QueuedEntityPlacer compatibility
         hasRecordingCreated = false;
@@ -38,7 +38,7 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
     }
 
     @Override
-    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         // Doing this in phaseEnded instead of stepEnded due to QueuedEntityPlacer compatibility
         hasRecordingCreated = false;

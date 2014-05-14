@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.solver.termination;
 import java.util.Arrays;
 import java.util.List;
 
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
@@ -52,7 +52,7 @@ public abstract class AbstractCompositeTermination extends AbstractTermination i
     }
 
     @Override
-    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope phaseScope) {
         for (Termination termination : terminationList) {
             termination.phaseStarted(phaseScope);
         }
@@ -73,7 +73,7 @@ public abstract class AbstractCompositeTermination extends AbstractTermination i
     }
 
     @Override
-    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope phaseScope) {
         for (Termination termination : terminationList) {
             termination.phaseEnded(phaseScope);
         }

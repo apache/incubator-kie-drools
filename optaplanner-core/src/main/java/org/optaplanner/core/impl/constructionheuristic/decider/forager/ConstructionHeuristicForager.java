@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.impl.constructionheuristic.decider.forager;
 
-import org.optaplanner.core.impl.constructionheuristic.event.ConstructionHeuristicSolverPhaseLifecycleListener;
+import org.optaplanner.core.impl.constructionheuristic.event.ConstructionHeuristicPhaseLifecycleListener;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 
 /**
  * @see AbstractConstructionHeuristicForager
  */
-public interface ConstructionHeuristicForager extends ConstructionHeuristicSolverPhaseLifecycleListener {
+public interface ConstructionHeuristicForager extends ConstructionHeuristicPhaseLifecycleListener {
 
     void addMove(ConstructionHeuristicMoveScope moveScope);
 

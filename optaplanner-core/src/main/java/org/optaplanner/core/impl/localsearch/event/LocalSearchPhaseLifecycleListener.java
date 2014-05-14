@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.constructionheuristic;
+package org.optaplanner.core.impl.localsearch.event;
 
-import org.optaplanner.core.impl.phase.AbstractSolverPhase;
-import org.optaplanner.core.impl.phase.SolverPhase;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
+import org.optaplanner.core.impl.solver.event.SolverLifecycleListener;
 
-/**
- * A {@link ConstructionHeuristicSolverPhase} is a {@link SolverPhase} which uses a construction heuristic algorithm,
- * such as first fit, best fit decreasing, cheapest insertion, ...
- * @see SolverPhase
- * @see AbstractSolverPhase
- * @see DefaultConstructionHeuristicSolverPhase
- */
-public interface ConstructionHeuristicSolverPhase extends SolverPhase {
+public interface LocalSearchPhaseLifecycleListener extends SolverLifecycleListener {
+
+    void phaseStarted(LocalSearchPhaseScope phaseScope);
+
+    void stepStarted(LocalSearchStepScope stepScope);
+
+    void stepEnded(LocalSearchStepScope stepScope);
+
+    void phaseEnded(LocalSearchPhaseScope phaseScope);
 
 }

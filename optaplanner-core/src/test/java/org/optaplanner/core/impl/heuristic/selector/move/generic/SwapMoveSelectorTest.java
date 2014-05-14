@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -41,7 +41,7 @@ public class SwapMoveSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         moveSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         moveSelector.phaseStarted(phaseScopeA);
 
@@ -59,7 +59,7 @@ public class SwapMoveSelectorTest {
 
         moveSelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         moveSelector.phaseStarted(phaseScopeB);
 
@@ -85,7 +85,7 @@ public class SwapMoveSelectorTest {
 
         moveSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(entitySelector, 1, 2, 5);
+        verifyPhaseLifecycle(entitySelector, 1, 2, 5);
     }
 
     @Test
@@ -98,7 +98,7 @@ public class SwapMoveSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         moveSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         moveSelector.phaseStarted(phaseScopeA);
 
@@ -116,7 +116,7 @@ public class SwapMoveSelectorTest {
 
         moveSelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         moveSelector.phaseStarted(phaseScopeB);
 
@@ -142,7 +142,7 @@ public class SwapMoveSelectorTest {
 
         moveSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(entitySelector, 1, 2, 5);
+        verifyPhaseLifecycle(entitySelector, 1, 2, 5);
     }
 
     @Test
@@ -161,7 +161,7 @@ public class SwapMoveSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         moveSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         moveSelector.phaseStarted(phaseScopeA);
 
@@ -183,7 +183,7 @@ public class SwapMoveSelectorTest {
 
         moveSelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         moveSelector.phaseStarted(phaseScopeB);
 
@@ -215,8 +215,8 @@ public class SwapMoveSelectorTest {
 
         moveSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(leftEntitySelector, 1, 2, 5);
-        verifySolverPhaseLifecycle(rightEntitySelector, 1, 2, 5);
+        verifyPhaseLifecycle(leftEntitySelector, 1, 2, 5);
+        verifyPhaseLifecycle(rightEntitySelector, 1, 2, 5);
     }
 
     @Test
@@ -234,7 +234,7 @@ public class SwapMoveSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         moveSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         moveSelector.phaseStarted(phaseScopeA);
 
@@ -252,7 +252,7 @@ public class SwapMoveSelectorTest {
 
         moveSelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         moveSelector.phaseStarted(phaseScopeB);
 
@@ -278,8 +278,8 @@ public class SwapMoveSelectorTest {
 
         moveSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(leftEntitySelector, 1, 2, 5);
-        verifySolverPhaseLifecycle(rightEntitySelector, 1, 2, 5);
+        verifyPhaseLifecycle(leftEntitySelector, 1, 2, 5);
+        verifyPhaseLifecycle(rightEntitySelector, 1, 2, 5);
     }
 
 }

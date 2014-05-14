@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
 public class SolutionTabuAcceptor extends AbstractTabuAcceptor {
@@ -46,7 +46,7 @@ public class SolutionTabuAcceptor extends AbstractTabuAcceptor {
     }
     
     @Override
-    public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
+    public void phaseStarted(LocalSearchPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
         // Add the starting solution to the tabu list
         Object tabu = phaseScope.getScoreDirector().cloneWorkingSolution();

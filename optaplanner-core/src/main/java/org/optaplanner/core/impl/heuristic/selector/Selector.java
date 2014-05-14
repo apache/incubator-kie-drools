@@ -24,13 +24,13 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 
 /**
  * General interface for {@link MoveSelector}, {@link EntitySelector} and {@link ValueSelector}
  * which generates {@link Move}s or parts of them.
  */
-public interface Selector extends SolverPhaseLifecycleListener {
+public interface Selector extends PhaseLifecycleListener {
 
     /**
      * If false, then {@link #isNeverEnding()} is true.

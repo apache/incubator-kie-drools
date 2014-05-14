@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.exhaustivesearch;
+package org.optaplanner.core.impl.phase.event;
 
-import org.optaplanner.core.impl.phase.AbstractSolverPhase;
-import org.optaplanner.core.impl.phase.SolverPhase;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.solver.event.SolverLifecycleListener;
 
-/**
- * A {@link ExhaustiveSearchSolverPhase} is a {@link SolverPhase} which uses an exhaustive algorithm.
- * @see SolverPhase
- * @see AbstractSolverPhase
- * @see DefaultExhaustiveSearchSolverPhase
- */
-public interface ExhaustiveSearchSolverPhase extends SolverPhase {
+public interface PhaseLifecycleListener extends SolverLifecycleListener {
+
+    void phaseStarted(AbstractPhaseScope phaseScope);
+
+    void stepStarted(AbstractStepScope stepScope);
+
+    void stepEnded(AbstractStepScope stepScope);
+
+    void phaseEnded(AbstractPhaseScope phaseScope);
 
 }

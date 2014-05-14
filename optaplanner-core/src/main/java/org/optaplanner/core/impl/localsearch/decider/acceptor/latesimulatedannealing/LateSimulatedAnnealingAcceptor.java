@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.localsearch.decider.acceptor.latesimulatedanne
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptor;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.score.ScoreUtils;
 
@@ -39,7 +39,7 @@ public class LateSimulatedAnnealingAcceptor extends AbstractAcceptor {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
+    public void phaseStarted(LocalSearchPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
         validate();
         previousScores = new Score[lateSimulatedAnnealingSize];
@@ -97,7 +97,7 @@ public class LateSimulatedAnnealingAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void phaseEnded(LocalSearchSolverPhaseScope phaseScope) {
+    public void phaseEnded(LocalSearchPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         previousScores = null;
         lateScoreIndex = -1;

@@ -16,31 +16,27 @@
 
 package org.optaplanner.core.config.phase;
 
-import java.util.Collection;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
-import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;
-import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchSolverPhaseConfig;
+import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
+import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
-import org.optaplanner.core.config.localsearch.LocalSearchSolverPhaseConfig;
-import org.optaplanner.core.config.phase.custom.CustomSolverPhaseConfig;
+import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
+import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.phase.AbstractSolverPhase;
-import org.optaplanner.core.impl.phase.SolverPhase;
+import org.optaplanner.core.impl.phase.AbstractPhase;
+import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.PhaseToSolverTerminationBridge;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XStreamInclude({
-        CustomSolverPhaseConfig.class,
-        ExhaustiveSearchSolverPhaseConfig.class,
-        ConstructionHeuristicSolverPhaseConfig.class,
-        LocalSearchSolverPhaseConfig.class
+        CustomPhaseConfig.class,
+        ExhaustiveSearchPhaseConfig.class,
+        ConstructionHeuristicPhaseConfig.class,
+        LocalSearchPhaseConfig.class
 })
-public abstract class SolverPhaseConfig {
+public abstract class PhaseConfig {
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
@@ -60,20 +56,20 @@ public abstract class SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public abstract SolverPhase buildSolverPhase(int phaseIndex,
+    public abstract Phase buildPhase(int phaseIndex,
             HeuristicConfigPolicy solverConfigPolicy, BestSolutionRecaller bestSolutionRecaller, Termination solverTermination);
 
-    protected void configureSolverPhase(AbstractSolverPhase solverPhase, int phaseIndex,
+    protected void configurePhase(AbstractPhase phase, int phaseIndex,
             HeuristicConfigPolicy configPolicy, BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
-        solverPhase.setPhaseIndex(phaseIndex);
-        solverPhase.setBestSolutionRecaller(bestSolutionRecaller);
+        phase.setPhaseIndex(phaseIndex);
+        phase.setBestSolutionRecaller(bestSolutionRecaller);
         TerminationConfig terminationConfig_ = terminationConfig == null ? new TerminationConfig()
                 : terminationConfig;
-        solverPhase.setTermination(terminationConfig_.buildTermination(configPolicy,
+        phase.setTermination(terminationConfig_.buildTermination(configPolicy,
                 new PhaseToSolverTerminationBridge(solverTermination)));
     }
 
-    public void inherit(SolverPhaseConfig inheritedConfig) {
+    public void inherit(PhaseConfig inheritedConfig) {
         if (terminationConfig == null) {
             terminationConfig = inheritedConfig.getTerminationConfig();
         } else if (inheritedConfig.getTerminationConfig() != null) {

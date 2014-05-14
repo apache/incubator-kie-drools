@@ -18,7 +18,7 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector impleme
 
     public MimicRecordingEntitySelector(EntitySelector childEntitySelector) {
         this.childEntitySelector = childEntitySelector;
-        solverPhaseLifecycleSupport.addEventListener(childEntitySelector);
+        phaseLifecycleSupport.addEventListener(childEntitySelector);
         replayingEntitySelectorList = new ArrayList<MimicReplayingEntitySelector>();
     }
 

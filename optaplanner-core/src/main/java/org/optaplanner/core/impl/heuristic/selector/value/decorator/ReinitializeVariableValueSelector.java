@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
@@ -40,7 +40,7 @@ public class ReinitializeVariableValueSelector extends AbstractValueSelector {
         this.childValueSelector = childValueSelector;
         this.reinitializeVariableEntityFilter = childValueSelector.getVariableDescriptor()
                 .getReinitializeVariableEntityFilter();
-        solverPhaseLifecycleSupport.addEventListener(childValueSelector);
+        phaseLifecycleSupport.addEventListener(childValueSelector);
     }
 
     // ************************************************************************
@@ -48,13 +48,13 @@ public class ReinitializeVariableValueSelector extends AbstractValueSelector {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
         scoreDirector = phaseScope.getScoreDirector();
     }
 
     @Override
-    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         scoreDirector = null;
     }

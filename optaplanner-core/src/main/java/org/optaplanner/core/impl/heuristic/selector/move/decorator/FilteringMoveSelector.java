@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSele
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class FilteringMoveSelector extends AbstractMoveSelector {
@@ -39,7 +39,7 @@ public class FilteringMoveSelector extends AbstractMoveSelector {
         this.childMoveSelector = childMoveSelector;
         this.filterList = filterList;
         bailOutEnabled = childMoveSelector.isNeverEnding();
-        solverPhaseLifecycleSupport.addEventListener(childMoveSelector);
+        phaseLifecycleSupport.addEventListener(childMoveSelector);
     }
 
     // ************************************************************************
@@ -47,13 +47,13 @@ public class FilteringMoveSelector extends AbstractMoveSelector {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
         scoreDirector = phaseScope.getScoreDirector();
     }
 
     @Override
-    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         scoreDirector = null;
     }

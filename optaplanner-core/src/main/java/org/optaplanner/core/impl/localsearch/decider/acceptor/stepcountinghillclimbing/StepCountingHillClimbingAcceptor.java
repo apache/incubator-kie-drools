@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.localsearch.decider.acceptor.stepcountinghillc
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptor;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
 public class StepCountingHillClimbingAcceptor extends AbstractAcceptor {
@@ -49,7 +49,7 @@ public class StepCountingHillClimbingAcceptor extends AbstractAcceptor {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
+    public void phaseStarted(LocalSearchPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
         thresholdScore = phaseScope.getBestScore();
         count = 0;
@@ -97,7 +97,7 @@ public class StepCountingHillClimbingAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void phaseEnded(LocalSearchSolverPhaseScope phaseScope) {
+    public void phaseEnded(LocalSearchPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         thresholdScore = null;
         count = -1;

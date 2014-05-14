@@ -24,9 +24,8 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
-import org.optaplanner.core.impl.score.definition.FeasibilityScoreDefinition;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
@@ -70,7 +69,7 @@ public class BestScoreTerminationTest {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getLevelCount()).thenReturn(1);
         Termination termination = new BestScoreTermination(scoreDefinition, SimpleScore.valueOf(-1000), new double[]{});
-        AbstractSolverPhaseScope phaseScope = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScope = mock(AbstractPhaseScope.class);
         when(phaseScope.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
         when(phaseScope.isBestSolutionInitialized()).thenReturn(true);
         when(phaseScope.getStartingScore()).thenReturn(SimpleScore.valueOf(-1100));

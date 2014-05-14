@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.move.DummyMove;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
@@ -38,7 +38,7 @@ public class SelectedCountLimitMoveSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         moveSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         moveSelector.phaseStarted(phaseScopeA);
 
@@ -56,7 +56,7 @@ public class SelectedCountLimitMoveSelectorTest {
 
         moveSelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         moveSelector.phaseStarted(phaseScopeB);
 
@@ -82,7 +82,7 @@ public class SelectedCountLimitMoveSelectorTest {
 
         moveSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(childMoveSelector, 1, 2, 5);
+        verifyPhaseLifecycle(childMoveSelector, 1, 2, 5);
         verify(childMoveSelector, times(5)).iterator();
         verify(childMoveSelector, times(5)).getSize();
     }
@@ -97,7 +97,7 @@ public class SelectedCountLimitMoveSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         moveSelector.solvingStarted(solverScope);
 
-        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         moveSelector.phaseStarted(phaseScopeA);
 
@@ -115,7 +115,7 @@ public class SelectedCountLimitMoveSelectorTest {
 
         moveSelector.phaseEnded(phaseScopeA);
 
-        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         moveSelector.phaseStarted(phaseScopeB);
 
@@ -141,7 +141,7 @@ public class SelectedCountLimitMoveSelectorTest {
 
         moveSelector.solvingEnded(solverScope);
 
-        verifySolverPhaseLifecycle(childMoveSelector, 1, 2, 5);
+        verifyPhaseLifecycle(childMoveSelector, 1, 2, 5);
         verify(childMoveSelector, times(5)).iterator();
         verify(childMoveSelector, times(5)).getSize();
     }

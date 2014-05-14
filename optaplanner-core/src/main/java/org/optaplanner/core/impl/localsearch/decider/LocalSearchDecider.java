@@ -21,7 +21,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
 import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -93,7 +93,7 @@ public class LocalSearchDecider {
         forager.solvingStarted(solverScope);
     }
 
-    public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
+    public void phaseStarted(LocalSearchPhaseScope phaseScope) {
         moveSelector.phaseStarted(phaseScope);
         acceptor.phaseStarted(phaseScope);
         forager.phaseStarted(phaseScope);
@@ -149,7 +149,7 @@ public class LocalSearchDecider {
         processMove(moveScope);
         undoMove.doMove(scoreDirector);
         if (assertExpectedUndoMoveScore) {
-            LocalSearchSolverPhaseScope phaseScope = moveScope.getStepScope()
+            LocalSearchPhaseScope phaseScope = moveScope.getStepScope()
                     .getPhaseScope();
             phaseScope.assertExpectedUndoMoveScore(move, undoMove);
         }
@@ -175,7 +175,7 @@ public class LocalSearchDecider {
         forager.stepEnded(stepScope);
     }
 
-    public void phaseEnded(LocalSearchSolverPhaseScope phaseScope) {
+    public void phaseEnded(LocalSearchPhaseScope phaseScope) {
         moveSelector.phaseEnded(phaseScope);
         acceptor.phaseEnded(phaseScope);
         forager.phaseEnded(phaseScope);

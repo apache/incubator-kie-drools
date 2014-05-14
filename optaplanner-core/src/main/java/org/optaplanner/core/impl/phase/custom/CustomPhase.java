@@ -16,15 +16,15 @@
 
 package org.optaplanner.core.impl.phase.custom;
 
-import org.optaplanner.core.impl.phase.AbstractSolverPhase;
-import org.optaplanner.core.impl.phase.SolverPhase;
+import org.optaplanner.core.impl.phase.AbstractPhase;
+import org.optaplanner.core.impl.phase.Phase;
 
 /**
- * A {@link CustomSolverPhase} is a {@link SolverPhase} which uses the brute force algorithm
- * @see SolverPhase
- * @see AbstractSolverPhase
- * @see DefaultCustomSolverPhase
+ * A {@link CustomPhase} is a {@link Phase} which uses the brute force algorithm
+ * @see Phase
+ * @see AbstractPhase
+ * @see DefaultCustomPhase
  */
-public interface CustomSolverPhase extends SolverPhase {
+public interface CustomPhase extends Phase {
 
 }

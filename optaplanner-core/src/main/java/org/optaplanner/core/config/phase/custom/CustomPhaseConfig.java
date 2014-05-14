@@ -22,16 +22,16 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
-import org.optaplanner.core.config.phase.SolverPhaseConfig;
+import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.phase.custom.CustomSolverPhase;
+import org.optaplanner.core.impl.phase.custom.CustomPhase;
 import org.optaplanner.core.impl.phase.custom.CustomSolverPhaseCommand;
-import org.optaplanner.core.impl.phase.custom.DefaultCustomSolverPhase;
+import org.optaplanner.core.impl.phase.custom.DefaultCustomPhase;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XStreamAlias("customSolverPhase")
-public class CustomSolverPhaseConfig extends SolverPhaseConfig {
+public class CustomPhaseConfig extends PhaseConfig {
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
@@ -61,11 +61,11 @@ public class CustomSolverPhaseConfig extends SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public CustomSolverPhase buildSolverPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
+    public CustomPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
-        DefaultCustomSolverPhase customSolverPhase = new DefaultCustomSolverPhase();
-        configureSolverPhase(customSolverPhase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
+        DefaultCustomPhase customSolverPhase = new DefaultCustomPhase();
+        configurePhase(customSolverPhase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
         if (ConfigUtils.isEmptyCollection(customSolverPhaseCommandClassList)) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <customSolverPhaseCommandClass> in the <customSolverPhase> configuration.");
@@ -82,7 +82,7 @@ public class CustomSolverPhaseConfig extends SolverPhaseConfig {
         return customSolverPhase;
     }
 
-    public void inherit(CustomSolverPhaseConfig inheritedConfig) {
+    public void inherit(CustomPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         customSolverPhaseCommandClassList = ConfigUtils.inheritMergeableListProperty(
                 customSolverPhaseCommandClassList, inheritedConfig.getCustomSolverPhaseCommandClassList());

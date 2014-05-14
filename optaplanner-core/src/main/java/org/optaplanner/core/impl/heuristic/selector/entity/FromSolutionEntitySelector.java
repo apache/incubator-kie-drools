@@ -23,10 +23,9 @@ import java.util.ListIterator;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRandomIterator;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * This is the common {@link EntitySelector} implementation.
@@ -64,7 +63,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
         InnerScoreDirector scoreDirector = phaseScope.getScoreDirector();
         cachedEntityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
@@ -87,7 +86,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     }
 
     @Override
-    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         cachedEntityList = null;
         cachedEntityListRevision = null;

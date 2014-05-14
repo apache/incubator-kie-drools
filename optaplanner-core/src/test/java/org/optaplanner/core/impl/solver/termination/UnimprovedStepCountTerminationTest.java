@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.solver.termination;
 
 import org.junit.Test;
-import org.optaplanner.core.impl.phase.scope.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 
 import static org.junit.Assert.*;
@@ -28,7 +28,7 @@ public class UnimprovedStepCountTerminationTest {
     @Test
     public void phaseTermination() {
         Termination termination = new UnimprovedStepCountTermination(4);
-        AbstractSolverPhaseScope phaseScope = mock(AbstractSolverPhaseScope.class);
+        AbstractPhaseScope phaseScope = mock(AbstractPhaseScope.class);
         AbstractStepScope lastCompletedStepScope = mock(AbstractStepScope.class);
         when(phaseScope.getLastCompletedStepScope()).thenReturn(lastCompletedStepScope);
 

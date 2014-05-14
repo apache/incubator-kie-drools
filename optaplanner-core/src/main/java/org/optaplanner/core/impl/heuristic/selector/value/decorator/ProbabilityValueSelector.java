@@ -52,12 +52,12 @@ public class ProbabilityValueSelector extends AbstractValueSelector
                     + ") has a childValueSelector (" + childValueSelector
                     + ") with neverEnding (" + childValueSelector.isNeverEnding() + ").");
         }
-        solverPhaseLifecycleSupport.addEventListener(childValueSelector);
+        phaseLifecycleSupport.addEventListener(childValueSelector);
         if (cacheType.isNotCached()) {
             throw new IllegalArgumentException("The selector (" + this
                     + ") does not support the cacheType (" + cacheType + ").");
         }
-        solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
+        phaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }
 
     @Override

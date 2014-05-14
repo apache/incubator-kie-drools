@@ -25,11 +25,11 @@ import org.optaplanner.core.config.constructionheuristic.decider.forager.Constru
 import org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig;
 import org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
-import org.optaplanner.core.config.phase.SolverPhaseConfig;
+import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.constructionheuristic.ConstructionHeuristicSolverPhase;
-import org.optaplanner.core.impl.constructionheuristic.DefaultConstructionHeuristicSolverPhase;
+import org.optaplanner.core.impl.constructionheuristic.ConstructionHeuristicPhase;
+import org.optaplanner.core.impl.constructionheuristic.DefaultConstructionHeuristicPhase;
 import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
 import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XStreamAlias("constructionHeuristic")
-public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
+public class ConstructionHeuristicPhaseConfig extends PhaseConfig {
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
@@ -80,7 +80,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
     // ************************************************************************
 
 
-    public ConstructionHeuristicSolverPhase buildSolverPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
+    public ConstructionHeuristicPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         phaseConfigPolicy.setReinitializeVariableFilterEnabled(true);
@@ -91,8 +91,8 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
                 constructionHeuristicType_.isSortEntitiesByDecreasingDifficulty());
         phaseConfigPolicy.setSortValuesByIncreasingStrengthEnabled(
                 constructionHeuristicType_.isSortValuesByIncreasingStrength());
-        DefaultConstructionHeuristicSolverPhase phase = new DefaultConstructionHeuristicSolverPhase();
-        configureSolverPhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
+        DefaultConstructionHeuristicPhase phase = new DefaultConstructionHeuristicPhase();
+        configurePhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
         phase.setDecider(buildDecider(phaseConfigPolicy, phase.getTermination()));
         EntityPlacerConfig entityPlacerConfig;
         if (ConfigUtils.isEmptyCollection(entityPlacerConfigList)) {
@@ -102,7 +102,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         } else {
             // TODO entityPlacerConfigList is only a List because of XStream limitations.
             throw new IllegalArgumentException("The entityPlacerConfigList (" + entityPlacerConfigList
-                    + ") must be a singleton or empty. Use multiple " + ConstructionHeuristicSolverPhaseConfig.class
+                    + ") must be a singleton or empty. Use multiple " + ConstructionHeuristicPhaseConfig.class
                     + " elements to initialize multiple entity classes.");
         }
         EntityPlacer entityPlacer = entityPlacerConfig.buildEntityPlacer(
@@ -133,7 +133,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         return decider;
     }
 
-    public void inherit(ConstructionHeuristicSolverPhaseConfig inheritedConfig) {
+    public void inherit(ConstructionHeuristicPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         constructionHeuristicType = ConfigUtils.inheritOverwritableProperty(constructionHeuristicType,
                 inheritedConfig.getConstructionHeuristicType());

@@ -52,12 +52,12 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
                     + ") has a childEntitySelector (" + childEntitySelector
                     + ") with neverEnding (" + childEntitySelector.isNeverEnding() + ").");
         }
-        solverPhaseLifecycleSupport.addEventListener(childEntitySelector);
+        phaseLifecycleSupport.addEventListener(childEntitySelector);
         if (cacheType.isNotCached()) {
             throw new IllegalArgumentException("The selector (" + this
                     + ") does not support the cacheType (" + cacheType + ").");
         }
-        solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
+        phaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }
 
     @Override

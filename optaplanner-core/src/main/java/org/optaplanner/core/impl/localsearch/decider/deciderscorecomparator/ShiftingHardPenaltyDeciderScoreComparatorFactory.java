@@ -21,7 +21,7 @@ import java.util.Comparator;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.comparator.NaturalScoreComparator;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.score.comparator.FlatteningHardSoftScoreComparator;
 
@@ -73,7 +73,7 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactory extends AbstractDe
     // ************************************************************************
 
     @Override
-    public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
+    public void phaseStarted(LocalSearchPhaseScope phaseScope) {
         successiveNoHardScoreChange = 0;
         shiftingPenaltyActive = false;
     }

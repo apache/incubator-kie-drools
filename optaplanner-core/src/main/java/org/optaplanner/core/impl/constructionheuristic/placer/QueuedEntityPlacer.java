@@ -17,9 +17,9 @@ public class QueuedEntityPlacer extends AbstractEntityPlacer implements EntityPl
     public QueuedEntityPlacer(EntitySelector entitySelector, List<MoveSelector> moveSelectorList) {
         this.entitySelector = entitySelector;
         this.moveSelectorList = moveSelectorList;
-        solverPhaseLifecycleSupport.addEventListener(entitySelector);
+        phaseLifecycleSupport.addEventListener(entitySelector);
         for (MoveSelector moveSelector : moveSelectorList) {
-            solverPhaseLifecycleSupport.addEventListener(moveSelector);
+            phaseLifecycleSupport.addEventListener(moveSelector);
         }
     }
 

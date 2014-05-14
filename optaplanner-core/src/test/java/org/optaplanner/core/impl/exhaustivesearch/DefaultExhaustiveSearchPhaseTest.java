@@ -22,7 +22,7 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.exhaustivesearch.decider.ExhaustiveSearchDecider;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchLayer;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
-import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchSolverPhaseScope;
+import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchPhaseScope;
 import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchStepScope;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
@@ -31,11 +31,11 @@ import org.optaplanner.core.impl.solution.Solution;
 
 import static org.mockito.Mockito.*;
 
-public class DefaultExhaustiveSearchSolverPhaseTest {
+public class DefaultExhaustiveSearchPhaseTest {
 
     @Test
     public void restoreWorkingSolution() {
-        ExhaustiveSearchSolverPhaseScope phaseScope = mock(ExhaustiveSearchSolverPhaseScope.class);
+        ExhaustiveSearchPhaseScope phaseScope = mock(ExhaustiveSearchPhaseScope.class);
         ExhaustiveSearchStepScope lastCompletedStepScope = mock(ExhaustiveSearchStepScope.class);
         when(phaseScope.getLastCompletedStepScope()).thenReturn(lastCompletedStepScope);
         ExhaustiveSearchStepScope stepScope = mock(ExhaustiveSearchStepScope.class);
@@ -74,10 +74,10 @@ public class DefaultExhaustiveSearchSolverPhaseTest {
         when(lastCompletedStepScope.getExpandingNode()).thenReturn(node3A);
         when(stepScope.getExpandingNode()).thenReturn(node4B);
 
-        DefaultExhaustiveSearchSolverPhase solverPhase = new DefaultExhaustiveSearchSolverPhase();
-        solverPhase.setEntitySelector(mock(EntitySelector.class));
-        solverPhase.setDecider(mock(ExhaustiveSearchDecider.class));
-        solverPhase.restoreWorkingSolution(stepScope);
+        DefaultExhaustiveSearchPhase phase = new DefaultExhaustiveSearchPhase();
+        phase.setEntitySelector(mock(EntitySelector.class));
+        phase.setDecider(mock(ExhaustiveSearchDecider.class));
+        phase.restoreWorkingSolution(stepScope);
 
         verify(node0.getMove(), times(0)).doMove(any(ScoreDirector.class));
         verify(node0.getUndoMove(), times(0)).doMove(any(ScoreDirector.class));

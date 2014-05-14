@@ -24,7 +24,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
 import org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
 /**
@@ -65,7 +65,7 @@ public class AcceptedForager extends AbstractForager {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
+    public void phaseStarted(LocalSearchPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
         deciderScoreComparatorFactory.phaseStarted(phaseScope);
     }
@@ -182,7 +182,7 @@ public class AcceptedForager extends AbstractForager {
     }
 
     @Override
-    public void phaseEnded(LocalSearchSolverPhaseScope phaseScope) {
+    public void phaseEnded(LocalSearchPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         deciderScoreComparatorFactory.phaseEnded(phaseScope);
         scoreComparator = null;
