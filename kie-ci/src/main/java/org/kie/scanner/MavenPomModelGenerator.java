@@ -1,5 +1,6 @@
 package org.kie.scanner;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
 import org.drools.compiler.kproject.ReleaseIdImpl;
@@ -31,15 +32,18 @@ public class MavenPomModelGenerator implements PomModelGenerator {
             // ignore
         }
 
-        for (Dependency dep : mavenProject.getDependencies()) {
+        // use getArtifacts instead of getDependencies to load transitive dependencies as well
+        for (Artifact dep : mavenProject.getArtifacts()) {
             String scope = dep.getScope();
             if ("provided".equals(scope) || "test".equals(scope)) {
                 continue;
             }
             pomModel.addDependency(new ReleaseIdImpl(dep.getGroupId(),
-                                                     dep.getArtifactId(),
-                                                     dep.getVersion()));
+                    dep.getArtifactId(),
+                    dep.getVersion()));
         }
+
+
         return pomModel;
     }
 }
