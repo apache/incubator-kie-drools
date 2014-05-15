@@ -26,6 +26,7 @@ import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -184,7 +185,16 @@ public class ValueSelectorConfig extends SelectorConfig {
                         + ") is not a subclass of the parentEntityClass (" + parentEntityClass
                         + ") configured by the " + EntitySelector.class.getSimpleName() + ".");
             }
-            entityDescriptor = configPolicy.getSolutionDescriptor().getEntityDescriptorStrict(downcastEntityClass);
+            SolutionDescriptor solutionDescriptor = configPolicy.getSolutionDescriptor();
+            entityDescriptor = solutionDescriptor.getEntityDescriptorStrict(downcastEntityClass);
+            if (entityDescriptor == null) {
+                throw new IllegalArgumentException("The selectorConfig (" + this
+                        + ") has an downcastEntityClass (" + downcastEntityClass
+                        + ") that is not a known planning entity.\n"
+                        + "Check your solver configuration. If that class (" + downcastEntityClass.getSimpleName()
+                        + ") is not in the planningEntityClassSet (" + solutionDescriptor.getEntityClassSet()
+                        + "), check your Solution implementation's annotated methods too.");
+            }
         }
         GenuineVariableDescriptor variableDescriptor = deduceVariableDescriptor(entityDescriptor, variableName);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
