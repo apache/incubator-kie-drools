@@ -486,7 +486,8 @@ public class BenchmarkAggregatorFrame extends JFrame {
                 + "Total winning score difference: %s",
                 solverBenchmarkResult.getAverageScore(),
                 solverBenchmarkResult.getTotalScore(),
-                millisecondsSpentNumberFormat.format(solverBenchmarkResult.getAverageTimeMillisSpent()),
+                solverBenchmarkResult.getAverageTimeMillisSpent() == null
+                        ? "" : millisecondsSpentNumberFormat.format(solverBenchmarkResult.getAverageTimeMillisSpent()),
                 solverBenchmarkResult.getTotalWinningScoreDifference());
         solverBenchmarkResultNameMapping.put(solverBenchmarkResult, solverBenchmarkResult.getName());
         return new MixedCheckBox(solverCheckBoxName, solverBenchmarkDetail, solverBenchmarkResult);
