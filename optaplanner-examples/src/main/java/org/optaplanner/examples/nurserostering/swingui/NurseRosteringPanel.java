@@ -18,7 +18,6 @@ package org.optaplanner.examples.nurserostering.swingui;
 
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -27,6 +26,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
@@ -58,7 +58,7 @@ public class NurseRosteringPanel extends SolutionPanel {
     private JPanel employeeListPanel;
 
     private JTextField planningWindowStartField;
-    private JButton advancePlanningWindowStartButton;
+    private AbstractAction advancePlanningWindowStartAction;
     private EmployeePanel unassignedPanel;
     private Map<Employee, EmployeePanel> employeeToPanelMap;
 
@@ -92,14 +92,14 @@ public class NurseRosteringPanel extends SolutionPanel {
         planningWindowStartField = new JTextField(10);
         planningWindowStartField.setEditable(false);
         headerPanel.add(planningWindowStartField);
-        advancePlanningWindowStartButton = new JButton("Advance 1 day into the future");
-        advancePlanningWindowStartButton.setEnabled(false);
-        advancePlanningWindowStartButton.addActionListener(new ActionListener() {
+        advancePlanningWindowStartAction = new AbstractAction("Advance 1 day into the future") {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 advancePlanningWindowStart();
             }
-        });
-        headerPanel.add(advancePlanningWindowStartButton);
+        };
+        advancePlanningWindowStartAction.setEnabled(false);
+        headerPanel.add(new JButton(advancePlanningWindowStartAction));
         return headerPanel;
     }
 
@@ -136,7 +136,7 @@ public class NurseRosteringPanel extends SolutionPanel {
         List<Shift> shiftList = nurseRoster.getShiftList();
         unassignedPanel.setShiftDateListAndShiftList(shiftDateList, shiftList);
         updatePanel(nurseRoster);
-        advancePlanningWindowStartButton.setEnabled(true);
+        advancePlanningWindowStartAction.setEnabled(true);
         planningWindowStartField.setText(nurseRoster.getNurseRosterParametrization().getPlanningWindowStart().getLabel());
     }
 

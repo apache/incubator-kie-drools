@@ -103,8 +103,7 @@ public class SolverAndPersistenceFrame extends JFrame {
         solutionPanel.setSolutionBusiness(solutionBusiness);
         solutionPanel.setSolverAndPersistenceFrame(this);
         registerListeners();
-        constraintMatchesDialog = new ConstraintMatchesDialog(this);
-        constraintMatchesDialog.setSolutionBusiness(solutionBusiness);
+        constraintMatchesDialog = new ConstraintMatchesDialog(this, solutionBusiness);
     }
 
     private void registerListeners() {

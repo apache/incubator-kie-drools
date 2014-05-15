@@ -31,6 +31,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -42,15 +43,11 @@ public class ConstraintMatchesDialog extends JDialog {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected SolverAndPersistenceFrame solverAndPersistenceFrame;
-    protected SolutionBusiness solutionBusiness;
+    protected final SolutionBusiness solutionBusiness;
 
-    public ConstraintMatchesDialog(SolverAndPersistenceFrame solverAndPersistenceFrame) {
+    public ConstraintMatchesDialog(SolverAndPersistenceFrame solverAndPersistenceFrame,
+            SolutionBusiness solutionBusiness) {
         super(solverAndPersistenceFrame, "Constraint matches", true);
-        this.solverAndPersistenceFrame = solverAndPersistenceFrame;
-    }
-
-    public void setSolutionBusiness(SolutionBusiness solutionBusiness) {
         this.solutionBusiness = solutionBusiness;
     }
 
@@ -62,6 +59,12 @@ public class ConstraintMatchesDialog extends JDialog {
                     = solutionBusiness.getConstraintMatchTotalList();
             JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
             final JTable table = new JTable(new ConstraintMatchTotalTableModel(constraintMatchTotalList));
+            TableColumnModel columnModel = table.getColumnModel();
+            columnModel.getColumn(0).setPreferredWidth(160);
+            columnModel.getColumn(1).setPreferredWidth(300);
+            columnModel.getColumn(2).setPreferredWidth(80);
+            columnModel.getColumn(3).setPreferredWidth(80);
+            columnModel.getColumn(4).setPreferredWidth(80);
             JScrollPane tableScrollPane = new JScrollPane(table);
             tableScrollPane.setPreferredSize(new Dimension(700, 300));
             splitPane.setTopComponent(tableScrollPane);
@@ -166,15 +169,6 @@ public class ConstraintMatchesDialog extends JDialog {
                     throw new IllegalStateException("The columnIndex (" + columnIndex + ") is invalid.");
             }
         }
-    }
-
-    private static class ShowButtonTableRenderer implements TableCellRenderer {
-
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-                int row, int column) {
-            return (JButton) value;
-        }
-
     }
 
 }
