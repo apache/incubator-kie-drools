@@ -175,8 +175,9 @@ public class NurseRosteringPanel extends SolutionPanel {
     private void advancePlanningWindowStart() {
         logger.info("Advancing planningWindowStart.");
         if (solutionBusiness.isSolving()) {
-            JOptionPane.showMessageDialog(this,
-                    "The GUI does not support this action yet during solving.\nPlanner itself does support it.",
+            JOptionPane.showMessageDialog(this.getTopLevelAncestor(),
+                    "The GUI does not support this action yet during solving.\nOptaPlanner itself does support it.\n"
+                    + "\nTerminate solving first and try again.",
                     "Unsupported in GUI", JOptionPane.ERROR_MESSAGE);
             return;
         }
