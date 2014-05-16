@@ -18,7 +18,6 @@ package org.optaplanner.examples.examination.swingui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -28,7 +27,6 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -61,16 +59,16 @@ public class ExaminationPanel extends SolutionPanel {
 
     public ExaminationPanel() {
         setLayout(new BorderLayout());
-        add(createHeaderPanel(), BorderLayout.NORTH);
         JTabbedPane tabbedPane = new JTabbedPane();
         roomsPanel = new TimeTablePanel<Room, Period>();
         tabbedPane.add("Rooms", new JScrollPane(roomsPanel));
         add(tabbedPane, BorderLayout.CENTER);
+        add(createFooterPanel(), BorderLayout.SOUTH);
         setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);
     }
 
-    private JPanel createHeaderPanel() {
-        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    private JPanel createFooterPanel() {
+        JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         institutionParametrizationEditAction = new AbstractAction("Edit scoring parameters") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -88,8 +86,8 @@ public class ExaminationPanel extends SolutionPanel {
             }
         };
         institutionParametrizationEditAction.setEnabled(false);
-        headerPanel.add(new JButton(institutionParametrizationEditAction));
-        return headerPanel;
+        footerPanel.add(new JButton(institutionParametrizationEditAction));
+        return footerPanel;
     }
 
     @Override
