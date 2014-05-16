@@ -38,8 +38,16 @@ public abstract class SolutionPanel extends JPanel implements Scrollable {
     protected SolverAndPersistenceFrame solverAndPersistenceFrame;
     protected SolutionBusiness solutionBusiness;
 
+    public SolverAndPersistenceFrame getSolverAndPersistenceFrame() {
+        return solverAndPersistenceFrame;
+    }
+
     public void setSolverAndPersistenceFrame(SolverAndPersistenceFrame solverAndPersistenceFrame) {
         this.solverAndPersistenceFrame = solverAndPersistenceFrame;
+    }
+
+    public SolutionBusiness getSolutionBusiness() {
+        return solutionBusiness;
     }
 
     public void setSolutionBusiness(SolutionBusiness solutionBusiness) {

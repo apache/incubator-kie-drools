@@ -18,6 +18,8 @@ package org.optaplanner.examples.examination.swingui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -26,12 +28,12 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import org.optaplanner.core.impl.solution.Solution;
@@ -53,13 +55,43 @@ public class ExaminationPanel extends SolutionPanel {
 
     private final TimeTablePanel<Room, Period> roomsPanel;
 
+    private final InstitutionParametrizationDialog institutionParametrizationDialog;
+    private AbstractAction institutionParametrizationEditAction;
+
     public ExaminationPanel() {
         setLayout(new BorderLayout());
+        Container topLevelAncestor = getTopLevelAncestor();
+        institutionParametrizationDialog = new InstitutionParametrizationDialog(
+                (topLevelAncestor instanceof JFrame ? (JFrame) topLevelAncestor : null), this);
+        add(createHeaderPanel(), BorderLayout.NORTH);
         JTabbedPane tabbedPane = new JTabbedPane();
         roomsPanel = new TimeTablePanel<Room, Period>();
         tabbedPane.add("Rooms", new JScrollPane(roomsPanel));
         add(tabbedPane, BorderLayout.CENTER);
         setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);
+    }
+
+    private JPanel createHeaderPanel() {
+        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        institutionParametrizationEditAction = new AbstractAction("Edit scoring parameters") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (solutionBusiness.isSolving()) {
+                    JOptionPane.showMessageDialog(ExaminationPanel.this.getTopLevelAncestor(),
+                            "The GUI does not support this action yet during solving.\n"
+                            + "OptaPlanner itself does support it.\n"
+                            + "\nTerminate solving first and try again.",
+                            "Unsupported in GUI", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                institutionParametrizationDialog.setInstitutionParametrization(
+                        getExamination().getInstitutionParametrization());
+                institutionParametrizationDialog.setVisible(true);
+            }
+        };
+        institutionParametrizationEditAction.setEnabled(false);
+        headerPanel.add(new JButton(institutionParametrizationEditAction));
+        return headerPanel;
     }
 
     @Override
@@ -81,6 +113,7 @@ public class ExaminationPanel extends SolutionPanel {
         Examination examination = (Examination) solution;
         defineGrid(examination);
         fillCells(examination);
+        institutionParametrizationEditAction.setEnabled(true);
         repaint(); // Hack to force a repaint of TimeTableLayout during "refresh screen while solving"
     }
 
