@@ -55,7 +55,7 @@ public class PhreakRuleTerminalNode {
         int salienceInt = 0;
         Salience salience = ruleAgendaItem.getRule().getSalience();
         if ( !salience.isDynamic() ) {
-            salienceInt = ruleAgendaItem.getRule().getSalience().getValue();
+            salienceInt = salience.getValue();
             salience = null;
         }
 
@@ -132,8 +132,7 @@ public class PhreakRuleTerminalNode {
         int salienceInt = 0;
         Salience salience = ruleAgendaItem.getRule().getSalience();
         if ( !salience.isDynamic() ) {
-            salienceInt = ruleAgendaItem.getRule().getSalience().getValue();
-        } else {
+            salienceInt = salience.getValue();
             salience = null;
         }
 
