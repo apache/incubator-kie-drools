@@ -21,12 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class IoUtils {
-
-    private static final Logger LOG = LoggerFactory.getLogger(IoUtils.class);
 
     public static int findPort() {
         for( int i = 1024; i < 65535; i++) {
