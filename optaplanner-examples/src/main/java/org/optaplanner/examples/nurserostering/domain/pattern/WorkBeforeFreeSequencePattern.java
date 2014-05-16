@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nurserostering.domain;
+package org.optaplanner.examples.nurserostering.domain.pattern;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.examples.nurserostering.domain.DayOfWeek;
+import org.optaplanner.examples.nurserostering.domain.ShiftType;
+import org.optaplanner.examples.nurserostering.domain.pattern.Pattern;
 
 @XStreamAlias("WorkBeforeFreeSequencePattern")
 public class WorkBeforeFreeSequencePattern extends Pattern {

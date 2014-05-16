@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nurserostering.domain;
+package org.optaplanner.examples.nurserostering.domain.pattern;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.examples.nurserostering.domain.ShiftType;
+import org.optaplanner.examples.nurserostering.domain.pattern.Pattern;
 
 @XStreamAlias("ShiftType3DaysPattern")
 public class ShiftType3DaysPattern extends Pattern {

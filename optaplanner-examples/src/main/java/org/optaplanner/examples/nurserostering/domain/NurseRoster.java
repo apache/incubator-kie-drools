@@ -32,6 +32,7 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 import org.optaplanner.examples.nurserostering.domain.contract.ContractLine;
 import org.optaplanner.examples.nurserostering.domain.contract.PatternContractLine;
+import org.optaplanner.examples.nurserostering.domain.pattern.Pattern;
 import org.optaplanner.examples.nurserostering.domain.request.DayOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.DayOnRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
