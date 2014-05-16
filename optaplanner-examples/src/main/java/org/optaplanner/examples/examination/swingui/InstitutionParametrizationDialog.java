@@ -89,9 +89,11 @@ public class InstitutionParametrizationDialog extends JDialog {
         formPanel.add(mixedDurationPenaltyField);
         formPanel.add(new JLabel("Front load: large exam size"));
         frontLoadLargeTopicSizeField = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
+        frontLoadLargeTopicSizeField.setEnabled(false); // Not yet implemented: requires Topic changes if changed
         formPanel.add(frontLoadLargeTopicSizeField);
         formPanel.add(new JLabel("Front load: last period size"));
         frontLoadLastPeriodSizeField = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
+        frontLoadLastPeriodSizeField.setEnabled(false); // Not yet implemented: requires Period changes if changed
         formPanel.add(frontLoadLastPeriodSizeField);
         formPanel.add(new JLabel("Front load: penalty"));
         frontLoadPenaltyField = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));

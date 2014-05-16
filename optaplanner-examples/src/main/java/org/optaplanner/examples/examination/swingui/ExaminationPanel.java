@@ -38,6 +38,7 @@ import javax.swing.SwingConstants;
 
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.examination.domain.Exam;
@@ -55,14 +56,11 @@ public class ExaminationPanel extends SolutionPanel {
 
     private final TimeTablePanel<Room, Period> roomsPanel;
 
-    private final InstitutionParametrizationDialog institutionParametrizationDialog;
+    private InstitutionParametrizationDialog institutionParametrizationDialog;
     private AbstractAction institutionParametrizationEditAction;
 
     public ExaminationPanel() {
         setLayout(new BorderLayout());
-        Container topLevelAncestor = getTopLevelAncestor();
-        institutionParametrizationDialog = new InstitutionParametrizationDialog(
-                (topLevelAncestor instanceof JFrame ? (JFrame) topLevelAncestor : null), this);
         add(createHeaderPanel(), BorderLayout.NORTH);
         JTabbedPane tabbedPane = new JTabbedPane();
         roomsPanel = new TimeTablePanel<Room, Period>();
@@ -92,6 +90,12 @@ public class ExaminationPanel extends SolutionPanel {
         institutionParametrizationEditAction.setEnabled(false);
         headerPanel.add(new JButton(institutionParametrizationEditAction));
         return headerPanel;
+    }
+
+    @Override
+    public void setSolverAndPersistenceFrame(SolverAndPersistenceFrame solverAndPersistenceFrame) {
+        super.setSolverAndPersistenceFrame(solverAndPersistenceFrame);
+        institutionParametrizationDialog = new InstitutionParametrizationDialog(solverAndPersistenceFrame, this);
     }
 
     @Override
