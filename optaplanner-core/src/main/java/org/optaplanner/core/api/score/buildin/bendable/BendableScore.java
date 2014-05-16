@@ -36,14 +36,14 @@ public final class BendableScore extends AbstractScore<BendableScore>
 
     public static BendableScore parseScore(int hardLevelCount, int softLevelCount, String scoreString) {
         int levelCount = hardLevelCount + softLevelCount;
-        String[] levelStrings = parseLevelStrings(scoreString, levelCount);
+        String[] levelStrings = parseLevelStrings(BendableScore.class, scoreString, levelCount);
         int[] hardScores = new int[hardLevelCount];
         int[] softScores = new int[softLevelCount];
         for (int i = 0; i < hardScores.length; i++) {
-            hardScores[i] = Integer.parseInt(levelStrings[i]);
+            hardScores[i] = parseLevelAsInt(BendableScore.class, scoreString, levelStrings[i]);
         }
         for (int i = 0; i < softScores.length; i++) {
-            softScores[i] = Integer.parseInt(levelStrings[hardScores.length + i]);
+            softScores[i] = parseLevelAsInt(BendableScore.class, scoreString, levelStrings[hardScores.length + i]);
         }
         return valueOf(hardScores, softScores);
     }

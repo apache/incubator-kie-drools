@@ -37,9 +37,9 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
     private static final String SOFT_LABEL = "soft";
 
     public static HardSoftBigDecimalScore parseScore(String scoreString) {
-        String[] levelStrings = parseLevelStrings(scoreString, HARD_LABEL, SOFT_LABEL);
-        BigDecimal hardScore = new BigDecimal(levelStrings[0]);
-        BigDecimal softScore = new BigDecimal(levelStrings[1]);
+        String[] levelStrings = parseLevelStrings(HardSoftBigDecimalScore.class, scoreString, HARD_LABEL, SOFT_LABEL);
+        BigDecimal hardScore = parseLevelAsBigDecimal(HardSoftBigDecimalScore.class, scoreString, levelStrings[0]);
+        BigDecimal softScore = parseLevelAsBigDecimal(HardSoftBigDecimalScore.class, scoreString, levelStrings[1]);
         return valueOf(hardScore, softScore);
     }
 

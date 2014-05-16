@@ -33,9 +33,9 @@ public final class HardSoftScore extends AbstractScore<HardSoftScore> implements
     private static final String SOFT_LABEL = "soft";
 
     public static HardSoftScore parseScore(String scoreString) {
-        String[] levelStrings = parseLevelStrings(scoreString, HARD_LABEL, SOFT_LABEL);
-        int hardScore = Integer.parseInt(levelStrings[0]);
-        int softScore = Integer.parseInt(levelStrings[1]);
+        String[] levelStrings = parseLevelStrings(HardSoftScore.class, scoreString, HARD_LABEL, SOFT_LABEL);
+        int hardScore = parseLevelAsInt(HardSoftScore.class, scoreString, levelStrings[0]);
+        int softScore = parseLevelAsInt(HardSoftScore.class, scoreString, levelStrings[1]);
         return valueOf(hardScore, softScore);
     }
 

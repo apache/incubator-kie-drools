@@ -37,10 +37,11 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
     private static final String SOFT_LABEL = "soft";
 
     public static HardMediumSoftScore parseScore(String scoreString) {
-        String[] levelStrings = parseLevelStrings(scoreString, HARD_LABEL, MEDIUM_LABEL, SOFT_LABEL);
-        int hardScore = Integer.parseInt(levelStrings[0]);
-        int mediumScore = Integer.parseInt(levelStrings[1]);
-        int softScore = Integer.parseInt(levelStrings[2]);
+        String[] levelStrings = parseLevelStrings(HardMediumSoftScore.class, scoreString,
+                HARD_LABEL, MEDIUM_LABEL, SOFT_LABEL);
+        int hardScore = parseLevelAsInt(HardMediumSoftScore.class, scoreString, levelStrings[0]);
+        int mediumScore = parseLevelAsInt(HardMediumSoftScore.class, scoreString, levelStrings[1]);
+        int softScore = parseLevelAsInt(HardMediumSoftScore.class, scoreString, levelStrings[2]);
         return valueOf(hardScore, mediumScore, softScore);
     }
 

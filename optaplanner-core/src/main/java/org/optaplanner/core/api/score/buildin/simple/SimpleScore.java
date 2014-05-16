@@ -28,7 +28,7 @@ import org.optaplanner.core.api.score.Score;
 public final class SimpleScore extends AbstractScore<SimpleScore> {
 
     public static SimpleScore parseScore(String scoreString) {
-        return valueOf(Integer.parseInt(scoreString));
+        return valueOf(parseLevelAsInt(SimpleScore.class, scoreString, scoreString));
     }
 
     public static SimpleScore valueOf(int score) {

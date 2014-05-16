@@ -33,7 +33,7 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
 
     public static SimpleDoubleScore parseScore(String scoreString) {
-        return valueOf(Double.parseDouble(scoreString));
+        return valueOf(parseLevelAsDouble(SimpleDoubleScore.class, scoreString, scoreString));
     }
 
     public static SimpleDoubleScore valueOf(double score) {

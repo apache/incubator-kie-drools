@@ -31,7 +31,7 @@ import org.optaplanner.core.api.score.Score;
 public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalScore> {
 
     public static SimpleBigDecimalScore parseScore(String scoreString) {
-        return valueOf(new BigDecimal(scoreString));
+        return valueOf(parseLevelAsBigDecimal(SimpleBigDecimalScore.class, scoreString, scoreString));
     }
 
     public static SimpleBigDecimalScore valueOf(BigDecimal score) {
