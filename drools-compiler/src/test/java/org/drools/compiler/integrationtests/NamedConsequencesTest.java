@@ -3,15 +3,16 @@ package org.drools.compiler.integrationtests;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class NamedConsequencesTest extends CommonTestMethodBase {
@@ -671,5 +672,67 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
         assertTrue(results.contains("Found a Car"));
         assertTrue(results.contains("Car is red"));
         assertTrue(results.contains("Car is NOT cheap"));
+    }
+
+    @Test
+    public void testDynamicSalience() {
+        // DROOLS-335
+        String str =
+                "import " + Fact.class.getCanonicalName() + ";\n" +
+                "global java.util.List results;\n" +
+                "rule R1 salience( -$id ) when\n" +
+                "    fact : Fact( status == Fact.Status.UNKNOWN, $id : id)\n" +
+                "    count : Long() from accumulate ( $s:Fact(this != fact, status==Fact.Status.NO, id < fact.id), count( $s ) )" +
+                "    if (count.intValue() > 1) break[yes]\n" +
+                "then\n" +
+                "    results.add(\"n\" + $id);" +
+                "    fact.setStatus(Fact.Status.NO);\n" +
+                "    update(fact);\n" +
+                "then[yes]\n" +
+                "    results.add(\"y\" + $id);" +
+                "    fact.setStatus(Fact.Status.YES);\n" +
+                "    update(fact);\n" +
+                "end\n" +
+                "    \n" +
+                "rule R2 salience 1 when\n" +
+                "    fact : Fact( status == Fact.Status.NO, $id : id )\n" +
+                "    Fact( status == Fact.Status.YES, id > $id )\n" +
+                "then\n" +
+                "    delete(fact);\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> results = new ArrayList<String>();
+        ksession.setGlobal("results", results);
+        for (int i = 1; i < 7; i++) {
+            ksession.insert(new Fact(i));
+        }
+
+        ksession.fireAllRules();
+        assertEquals(Arrays.asList("n1", "n2", "y3", "n4", "n5", "y6"), results);
+    }
+
+    public static class Fact {
+        public enum Status { UNKNOWN, NO, YES };
+        private final int id;
+        private Status status = Status.UNKNOWN;
+
+        public Fact(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public Status getStatus() {
+            return status;
+        }
+
+        public void setStatus(Status status) {
+            this.status = status;
+        }
     }
 }
