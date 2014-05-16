@@ -21,8 +21,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class IoUtils {
+
+    private static final Logger LOG = LoggerFactory.getLogger(IoUtils.class);
 
     public static int findPort() {
         for( int i = 1024; i < 65535; i++) {
@@ -146,7 +150,7 @@ public class IoUtils {
 
     public static List<String> recursiveListFile(File folder, String prefix, Predicate<? super File> filter) {
         List<String> files = new ArrayList<String>();
-        for (File child : folder.listFiles()) {
+        for (File child : safeListFiles(folder)) {
             filesInFolder(files, child, prefix, filter);
         }
         return files;
@@ -155,13 +159,30 @@ public class IoUtils {
     private static void filesInFolder(List<String> files, File file, String relativePath, Predicate<? super File> filter) {
         if (file.isDirectory()) {
             relativePath += file.getName() + "/";
-            for (File child : file.listFiles()) {
+            for (File child : safeListFiles(file)) {
                 filesInFolder(files, child, relativePath, filter);
             }
         } else {
             if (filter.apply(file)) {
                 files.add(relativePath + file.getName());
             }
+        }
+    }
+
+    /**
+     * Returns {@link File#listFiles()} on a given file, avoids returning null when an IO error occurs.
+     *
+     * @param file directory whose files will be returned
+     * @return {@link File#listFiles()}
+     * @throws IllegalArgumentException when the file is a directory or cannot be accessed
+     */
+    private static File[] safeListFiles(final File file) {
+        final File[] children = file.listFiles();
+        if (children != null) {
+            return children;
+        } else {
+            throw new IllegalArgumentException(String.format("Unable to retrieve contents of directory '%s'.",
+                                                             file.getAbsolutePath()));
         }
     }
 
