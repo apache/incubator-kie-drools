@@ -61,6 +61,7 @@ public class ExaminationPanel extends SolutionPanel {
     private AbstractAction institutionParametrizationEditAction;
 
     private int maximumPeriodDuration;
+    private int maximumRoomCapacity;
 
     public ExaminationPanel() {
         setLayout(new BorderLayout());
@@ -118,14 +119,14 @@ public class ExaminationPanel extends SolutionPanel {
     public void resetPanel(Solution solution) {
         roomsPanel.reset();
         Examination examination = (Examination) solution;
-        refreshMaximumPeriodDuration(examination);
+        refreshMaximums(examination);
         defineGrid(examination);
         fillCells(examination);
         institutionParametrizationEditAction.setEnabled(true);
         repaint(); // Hack to force a repaint of TimeTableLayout during "refresh screen while solving"
     }
 
-    private void refreshMaximumPeriodDuration(Examination examination) {
+    private void refreshMaximums(Examination examination) {
         maximumPeriodDuration = 0;
         for (Period period : examination.getPeriodList()) {
             int periodDuration = period.getDuration();
@@ -133,10 +134,17 @@ public class ExaminationPanel extends SolutionPanel {
                 maximumPeriodDuration = periodDuration;
             }
         }
+        maximumRoomCapacity = 0;
+        for (Room room : examination.getRoomList()) {
+            int roomCapacity = room.getCapacity();
+            if (roomCapacity > maximumRoomCapacity) {
+                maximumRoomCapacity = roomCapacity;
+            }
+        }
     }
 
     private void defineGrid(Examination examination) {
-        JButton footprint = new JButton("999999");
+        JButton footprint = new JButton("99999999");
         footprint.setMargin(new Insets(0, 0, 0, 0));
         int footprintWidth = footprint.getPreferredSize().width;
 
@@ -163,7 +171,7 @@ public class ExaminationPanel extends SolutionPanel {
     private void fillRoomCells(Examination examination) {
         for (Room room : examination.getRoomList()) {
             roomsPanel.addColumnHeader(room, HEADER_ROW,
-                    createHeaderPanel(new JLabel(room.getLabel(), SwingConstants.CENTER),
+                    createHeaderPanel(new JLabel(room.getLabel(), new RoomIcon(room), SwingConstants.CENTER),
                             "Capacity: " + room.getCapacity()));
         }
         roomsPanel.addColumnHeader(null, HEADER_ROW,
@@ -173,7 +181,7 @@ public class ExaminationPanel extends SolutionPanel {
     private void fillPeriodCells(Examination examination) {
         for (Period period : examination.getPeriodList()) {
             roomsPanel.addRowHeader(HEADER_COLUMN, period, createHeaderPanel(
-                    new JLabel(period.getLabel(), new DurationIcon(period.getDuration(), true), SwingConstants.LEFT),
+                    new JLabel(period.getLabel(), new PeriodIcon(period), SwingConstants.LEFT),
                     "Duration: " + period.getDuration()));
         }
         roomsPanel.addRowHeader(HEADER_COLUMN, null,
@@ -186,7 +194,7 @@ public class ExaminationPanel extends SolutionPanel {
             Color examColor = tangoColorFactory.pickColor(exam);
             roomsPanel.addCell(exam.getRoom(), exam.getPeriod(),
                     createButton(exam, examColor,
-                            "Student size: " + exam.getTopicStudentSize() + " - Duration: " + exam.getTopicDuration()));
+                            "Duration: " + exam.getTopicDuration() + " - Student size: " + exam.getTopicStudentSize()));
         }
     }
 
@@ -220,7 +228,7 @@ public class ExaminationPanel extends SolutionPanel {
         private Exam exam;
 
         public ExamAction(Exam exam) {
-            super(exam.getLabel(), new DurationIcon(exam.getTopicDuration(), false));
+            super(exam.getLabel(), new ExamIcon(exam));
             this.exam = exam;
         }
 
@@ -249,16 +257,14 @@ public class ExaminationPanel extends SolutionPanel {
 
     }
 
-    private class DurationIcon implements Icon {
+    private class PeriodIcon implements Icon {
 
         private static final int DIAMETER = 14;
 
-        private final int duration;
-        private final boolean isPeriod;
+        private final Period period;
 
-        private DurationIcon(int duration, boolean isPeriod) {
-            this.duration = duration;
-            this.isPeriod = isPeriod;
+        private PeriodIcon(Period period) {
+            this.period = period;
         }
 
         public int getIconWidth() {
@@ -270,13 +276,83 @@ public class ExaminationPanel extends SolutionPanel {
         }
 
         public void paintIcon(Component c, Graphics g, int x, int y) {
-            g.setColor(isPeriod ? TangoColorFactory.ALUMINIUM_6 : Color.WHITE);
+            g.setColor(TangoColorFactory.ALUMINIUM_6);
             g.fillOval(x, y, DIAMETER, DIAMETER);
-            g.setColor(isPeriod ? Color.WHITE : TangoColorFactory.ALUMINIUM_4);
-            g.fillArc(x, y, DIAMETER, DIAMETER,
-                    90, -(360 * duration / maximumPeriodDuration));
+            g.setColor(Color.WHITE);
+            g.fillArc(x, y, DIAMETER, DIAMETER, 90, -(360 * period.getDuration() / maximumPeriodDuration));
             g.setColor(TangoColorFactory.ALUMINIUM_6);
             g.drawOval(x, y, DIAMETER, DIAMETER);
+        }
+
+    }
+
+    private class RoomIcon implements Icon {
+
+        private static final int ICON_WIDTH = 10;
+        private static final int ICON_HEIGHT = PeriodIcon.DIAMETER;
+
+        private final Room room;
+
+        private RoomIcon(Room room) {
+            this.room = room;
+        }
+
+        public int getIconWidth() {
+            return ICON_WIDTH;
+        }
+
+        public int getIconHeight() {
+            return ICON_HEIGHT;
+        }
+
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            g.setColor(TangoColorFactory.ALUMINIUM_6);
+            g.fillRect(x + 1, y, ICON_WIDTH - 2, ICON_HEIGHT);
+            g.setColor(Color.WHITE);
+            int capacityHeight = ICON_HEIGHT * room.getCapacity() / maximumRoomCapacity;
+            g.fillRect(x + 1, y + (ICON_HEIGHT - capacityHeight), ICON_WIDTH - 2, capacityHeight);
+            g.setColor(TangoColorFactory.ALUMINIUM_6);
+            g.drawRect(x + 1, y, ICON_WIDTH - 2, ICON_HEIGHT);
+        }
+
+    }
+
+    private class ExamIcon implements Icon {
+
+        private static final int DIAMETER = PeriodIcon.DIAMETER;
+        private static final int ICON_WIDTH = RoomIcon.ICON_WIDTH;
+        private static final int ICON_HEIGHT = RoomIcon.ICON_HEIGHT;
+
+        private final Exam exam;
+
+        private ExamIcon(Exam exam) {
+            this.exam = exam;
+        }
+
+        public int getIconWidth() {
+            return DIAMETER + ICON_WIDTH;
+        }
+
+        public int getIconHeight() {
+            return DIAMETER;
+        }
+
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            g.setColor(Color.WHITE);
+            g.fillOval(x, y, DIAMETER, DIAMETER);
+            g.setColor(TangoColorFactory.ALUMINIUM_4);
+            g.fillArc(x, y, DIAMETER, DIAMETER, 90, -(360 * exam.getTopicDuration() / maximumPeriodDuration));
+            g.setColor(TangoColorFactory.ALUMINIUM_6);
+            g.drawOval(x, y, DIAMETER, DIAMETER);
+
+            x += DIAMETER + 1;
+            g.setColor(Color.WHITE);
+            g.fillRect(x + 1, y, ICON_WIDTH - 2, ICON_HEIGHT);
+            g.setColor(TangoColorFactory.ALUMINIUM_4);
+            int capacityHeight = ICON_HEIGHT * exam.getTopicStudentSize() / maximumRoomCapacity;
+            g.fillRect(x + 1, y + (ICON_HEIGHT - capacityHeight), ICON_WIDTH - 2, capacityHeight);
+            g.setColor(TangoColorFactory.ALUMINIUM_6);
+            g.drawRect(x + 1, y, ICON_WIDTH - 2, ICON_HEIGHT);
         }
 
     }
