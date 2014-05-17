@@ -18,13 +18,16 @@ package org.optaplanner.examples.examination.swingui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -56,6 +59,8 @@ public class ExaminationPanel extends SolutionPanel {
 
     private InstitutionParametrizationDialog institutionParametrizationDialog;
     private AbstractAction institutionParametrizationEditAction;
+
+    private int maximumPeriodDuration;
 
     public ExaminationPanel() {
         setLayout(new BorderLayout());
@@ -113,10 +118,21 @@ public class ExaminationPanel extends SolutionPanel {
     public void resetPanel(Solution solution) {
         roomsPanel.reset();
         Examination examination = (Examination) solution;
+        refreshMaximumPeriodDuration(examination);
         defineGrid(examination);
         fillCells(examination);
         institutionParametrizationEditAction.setEnabled(true);
         repaint(); // Hack to force a repaint of TimeTableLayout during "refresh screen while solving"
+    }
+
+    private void refreshMaximumPeriodDuration(Examination examination) {
+        maximumPeriodDuration = 0;
+        for (Period period : examination.getPeriodList()) {
+            int periodDuration = period.getDuration();
+            if (periodDuration > maximumPeriodDuration) {
+                maximumPeriodDuration = periodDuration;
+            }
+        }
     }
 
     private void defineGrid(Examination examination) {
@@ -156,8 +172,9 @@ public class ExaminationPanel extends SolutionPanel {
 
     private void fillPeriodCells(Examination examination) {
         for (Period period : examination.getPeriodList()) {
-            roomsPanel.addRowHeader(HEADER_COLUMN, period,
-                    createHeaderPanel(new JLabel(period.getLabel()), "Duration: " + period.getDuration()));
+            roomsPanel.addRowHeader(HEADER_COLUMN, period, createHeaderPanel(
+                    new JLabel(period.getLabel(), new DurationIcon(period.getDuration(), true), SwingConstants.LEFT),
+                    "Duration: " + period.getDuration()));
         }
         roomsPanel.addRowHeader(HEADER_COLUMN, null,
                 createHeaderPanel(new JLabel("Unassigned"), null));
@@ -203,7 +220,7 @@ public class ExaminationPanel extends SolutionPanel {
         private Exam exam;
 
         public ExamAction(Exam exam) {
-            super(exam.getLabel());
+            super(exam.getLabel(), new DurationIcon(exam.getTopicDuration(), false));
             this.exam = exam;
         }
 
@@ -228,6 +245,38 @@ public class ExaminationPanel extends SolutionPanel {
                 solutionBusiness.doChangeMove(exam, "room", toRoom);
                 solverAndPersistenceFrame.resetScreen();
             }
+        }
+
+    }
+
+    private class DurationIcon implements Icon {
+
+        private static final int DIAMETER = 14;
+
+        private final int duration;
+        private final boolean isPeriod;
+
+        private DurationIcon(int duration, boolean isPeriod) {
+            this.duration = duration;
+            this.isPeriod = isPeriod;
+        }
+
+        public int getIconWidth() {
+            return DIAMETER;
+        }
+
+        public int getIconHeight() {
+            return DIAMETER;
+        }
+
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            g.setColor(isPeriod ? TangoColorFactory.ALUMINIUM_6 : Color.WHITE);
+            g.fillOval(x, y, DIAMETER, DIAMETER);
+            g.setColor(isPeriod ? Color.WHITE : TangoColorFactory.ALUMINIUM_4);
+            g.fillArc(x, y, DIAMETER, DIAMETER,
+                    90, -(360 * duration / maximumPeriodDuration));
+            g.setColor(TangoColorFactory.ALUMINIUM_6);
+            g.drawOval(x, y, DIAMETER, DIAMETER);
         }
 
     }
