@@ -50,52 +50,53 @@ import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.InvalidRulePackage;
 import org.drools.core.rule.JavaDialectRuntimeData;
-import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.util.ClassUtils;
 import org.kie.api.definition.type.Role;
 import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.rule.Global;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
+import org.kie.internal.io.ResourceTypePackage;
 
 public class KnowledgePackageImpl
     implements
     InternalKnowledgePackage,
     Externalizable {
 
-    private static final long              serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
     /** Name of the pkg. */
-    private String                         name;
+    private String name;
 
     /** Set of all rule-names in this <code>Package</code>. */
-    private Map<String, RuleImpl>          rules;
+    private Map<String, RuleImpl> rules;
 
     private Map<String, ImportDeclaration> imports;
 
-    private Map<String, Function>          functions;
+    private Map<String, Function> functions;
 
     private Map<String, AccumulateFunction> accumulateFunctions;
 
     private Set<String> staticImports;
 
-    private Map<String, String>            globals;
+    private Map<String, String> globals;
 
-    private Map<String, FactTemplate>      factTemplates;
+    private Map<String, FactTemplate> factTemplates;
 
-    private Map<String, Process>           ruleFlows;
+    private Map<String, Process> ruleFlows;
 
     // private JavaDialectData packageCompilationData;
     private DialectRuntimeRegistry dialectRuntimeRegistry;
 
     private LinkedHashMap<String, TypeDeclaration> typeDeclarations;
 
-    private Set<String>                    entryPointsIds   = Collections.emptySet();
+    private Set<String> entryPointsIds = Collections.emptySet();
 
     private Map<String, WindowDeclaration> windowDeclarations;
 
@@ -103,23 +104,25 @@ public class KnowledgePackageImpl
 
     private TraitRegistry traitRegistry;
 
+    private Map<ResourceType, ResourceTypePackage> resourceTypePackages;
+
     /**
      * This is to indicate the the package has no errors during the
      * compilation/building phase
      */
-    private boolean                        valid            = true;
+    private boolean valid = true;
 
-    private boolean                        needStreamMode   = false;
+    private boolean needStreamMode = false;
 
     /**
      * This will keep a summary error message as to why this package is not
      * valid
      */
-    private String                         errorSummary;
+    private String errorSummary;
 
     private transient TypeResolver typeResolver;
 
-    private transient AtomicBoolean inUse            = new AtomicBoolean(false);
+    private transient AtomicBoolean inUse = new AtomicBoolean(false);
 
     public KnowledgePackageImpl() {
         this(null);
@@ -146,14 +149,22 @@ public class KnowledgePackageImpl
         this.classFieldAccessorStore = new ClassFieldAccessorStore();
         this.entryPointsIds = Collections.emptySet();
         this.windowDeclarations = Collections.emptyMap();
+        this.resourceTypePackages = Collections.emptyMap();
+    }
+
+    public Map<ResourceType, ResourceTypePackage> getResourceTypePackages() {
+        if ( resourceTypePackages == Collections.EMPTY_MAP) {
+            resourceTypePackages = new HashMap<ResourceType, ResourceTypePackage>();
+        }
+        return resourceTypePackages;
     }
 
     public Collection<Rule> getRules() {
-        List<Rule> list = new ArrayList<Rule>( rules.size() );
-        for ( RuleImpl rule : rules.values() ) {
-            list.add( rule );
+        List<Rule> list = new ArrayList<Rule>(rules.size());
+        for (RuleImpl rule : rules.values()) {
+            list.add(rule);
         }
-        return Collections.unmodifiableCollection( list );
+        return Collections.unmodifiableCollection(list);
     }
 
     public Function getFunction(String name) {
@@ -162,29 +173,29 @@ public class KnowledgePackageImpl
 
     public Collection<Process> getProcesses() {
         Collection<org.kie.api.definition.process.Process> processes = getRuleFlows().values();
-        List<Process> list = new ArrayList<Process>( processes.size() );
-        for ( org.kie.api.definition.process.Process process : processes ) {
-            list.add( process );
+        List<Process> list = new ArrayList<Process>(processes.size());
+        for (org.kie.api.definition.process.Process process : processes) {
+            list.add(process);
         }
-        return Collections.unmodifiableCollection( list );
+        return Collections.unmodifiableCollection(list);
     }
 
-    
+
     public Collection<FactType> getFactTypes() {
-        List<FactType> list = new ArrayList<FactType>( typeDeclarations.size() );
-        for ( TypeDeclaration typeDeclaration : typeDeclarations.values() ) {
+        List<FactType> list = new ArrayList<FactType>(typeDeclarations.size());
+        for (TypeDeclaration typeDeclaration : typeDeclarations.values()) {
             FactType factType = typeDeclaration.getTypeClassDef();
             // avoid native class definitions
-            if ( factType != null && factType.getName() != null ) {
-                list.add( factType );
+            if (factType != null && factType.getName() != null) {
+                list.add(factType);
             }
         }
-        return Collections.unmodifiableCollection( list );
+        return Collections.unmodifiableCollection(list);
     }
 
     public Map<String, FactType> getFactTypesMap() {
         Map<String, FactType> types = new HashMap<String, FactType>();
-        for ( Map.Entry<String, TypeDeclaration> entry : typeDeclarations.entrySet() ) {
+        for (Map.Entry<String, TypeDeclaration> entry : typeDeclarations.entrySet()) {
             types.put(entry.getKey(), entry.getValue().getTypeClassDef());
         }
         return types;

@@ -25,8 +25,6 @@ import org.drools.compiler.compiler.ParserError;
 import org.drools.compiler.compiler.ProcessBuilder;
 import org.drools.compiler.compiler.ProcessBuilderFactory;
 import org.drools.compiler.compiler.ProcessLoadError;
-import org.drools.compiler.compiler.ResourceTypeBuilder;
-import org.drools.compiler.compiler.ResourceTypeBuilderRegistry;
 import org.drools.compiler.compiler.ResourceTypeDeclarationWarning;
 import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.compiler.ScoreCardFactory;
@@ -83,6 +81,8 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ChangeSet;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.assembler.KieAssemblerService;
+import org.kie.internal.assembler.KieAssemblers;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -93,6 +93,7 @@ import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.ScoreCardConfiguration;
 import org.kie.internal.definition.KnowledgePackage;
+import org.kie.internal.utils.ServiceRegistryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -152,26 +153,26 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     private final org.drools.compiler.compiler.ProcessBuilder processBuilder;
 
-    private IllegalArgumentException                       processBuilderCreationFailure;
+    private IllegalArgumentException                          processBuilderCreationFailure;
 
-    private PMMLCompiler                                   pmmlCompiler;
+    private PMMLCompiler                                      pmmlCompiler;
 
-    //This list of package level attributes is initialised with the PackageDescr's attributes added to the builder.
+    //This list of package level attributes is initialised with the PackageDescr's attributes added to the assembler.
     //The package level attributes are inherited by individual rules not containing explicit overriding parameters.
     //The map is keyed on the PackageDescr's namespace and contains a map of AttributeDescr's keyed on the
     //AttributeDescr's name.
-    private final Map<String, Map<String, AttributeDescr>> packageAttributes  = new HashMap<String, Map<String, AttributeDescr>>();
+    private final Map<String, Map<String, AttributeDescr>>    packageAttributes  = new HashMap<String, Map<String, AttributeDescr>>();
 
     //PackageDescrs' list of ImportDescrs are kept identical as subsequent PackageDescrs are added.
-    private final Map<String, List<PackageDescr>>          packages           = new HashMap<String, List<PackageDescr>>();
+    private final Map<String, List<PackageDescr>>             packages           = new HashMap<String, List<PackageDescr>>();
 
     private final Stack<List<Resource>> buildResources     = new Stack<List<Resource>>();
 
-    private int                                            currentRulePackage = 0;
+    private int                                               currentRulePackage = 0;
 
-    private AssetFilter                                    assetFilter        = null;
+    private AssetFilter                                       assetFilter        = null;
 
-    private final TypeDeclarationBuilder                   typeBuilder;
+    private final TypeDeclarationBuilder                      typeBuilder;
 
     /**
      * Use this when package is starting from scratch.
@@ -570,7 +571,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     public void addProcessFromXml(Resource resource) {
         if (processBuilder == null) {
-            throw new RuntimeException("Unable to instantiate a process builder", processBuilderCreationFailure);
+            throw new RuntimeException("Unable to instantiate a process assembler", processBuilderCreationFailure);
         }
 
         if (ResourceType.DRF.equals(resource.getResourceType())) {
@@ -647,12 +648,16 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     void addPackageForExternalType(Resource resource,
                                    ResourceType type,
                                    ResourceConfiguration configuration) throws Exception {
-        ResourceTypeBuilder builder = ResourceTypeBuilderRegistry.getInstance().getResourceTypeBuilder(type);
-        if (builder != null) {
-            builder.setPackageBuilder(this);
-            builder.addKnowledgeResource(resource,
-                                         type,
-                                         configuration);
+        KieAssemblers assemblers = ServiceRegistryImpl.getInstance().get(KieAssemblers.class);
+
+        KieAssemblerService assembler = assemblers.getAssemblers().get(type);
+
+
+        if (assembler != null) {
+            assembler.addResource(this,
+                                  resource,
+                                  type,
+                                  configuration);
         } else {
             throw new RuntimeException("Unknown resource type: " + type);
         }
@@ -1395,7 +1400,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
     }
 
-    PackageRegistry newPackage(final PackageDescr packageDescr) {
+    public PackageRegistry newPackage(final PackageDescr packageDescr) {
         InternalKnowledgePackage pkg;
         if (this.kBase == null || (pkg = this.kBase.getPackage(packageDescr.getName())) == null) {
             // there is no rulebase or it does not define this package so define it
@@ -1578,7 +1583,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 window.setPattern(pattern);
             } else {
                 throw new RuntimeException(
-                        "BUG: builder not found for descriptor class " + wd.getPattern().getClass());
+                        "BUG: assembler not found for descriptor class " + wd.getPattern().getClass());
             }
 
             if (!context.getErrors().isEmpty()) {
