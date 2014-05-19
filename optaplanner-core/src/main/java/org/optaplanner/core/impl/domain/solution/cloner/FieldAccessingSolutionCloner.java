@@ -16,9 +16,12 @@
 
 package org.optaplanner.core.impl.domain.solution.cloner;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -96,7 +99,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
     protected boolean retrieveDeepCloneDecision(Field field, Class<?> actualValueClass) {
         Boolean deepCloneDecision = deepCloneDecisionFieldCache.get(field);
         if (deepCloneDecision == null) {
-            deepCloneDecision = isFieldAnEntityPropertyOnSolution(field) || isFieldAnEntityOrSolution(field);
+            deepCloneDecision = isFieldDeepCloned(field);
             deepCloneDecisionFieldCache.put(field, deepCloneDecision);
         }
         if (deepCloneDecision) {
@@ -108,6 +111,12 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             deepCloneDecisionActualValueClassCache.put(actualValueClass, deepCloneDecision);
         }
         return deepCloneDecision;
+    }
+
+    private boolean isFieldDeepCloned(Field field) {
+        return isFieldAnEntityPropertyOnSolution(field)
+                || isFieldAnEntityOrSolution(field)
+                || isFieldADeepCloneProperty(field);
     }
 
     protected boolean isFieldAnEntityPropertyOnSolution(Field field) {
@@ -148,6 +157,17 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             }
         }
         return false;
+    }
+
+    private boolean isFieldADeepCloneProperty(Field field) {
+        PropertyDescriptor propertyDescriptor;
+        try {
+            propertyDescriptor = new PropertyDescriptor(field.getName(), field.getDeclaringClass());
+        } catch (IntrospectionException e) {
+            return false;
+        }
+        Method readMethod = propertyDescriptor.getReadMethod();
+        return readMethod != null && readMethod.isAnnotationPresent(DeepPlanningClone.class);
     }
 
     private boolean isClassDeepCloned(Class<?> type) {
