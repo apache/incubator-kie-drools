@@ -125,6 +125,11 @@ public class JPATaskModelFactory implements TaskModelFactory {
 		
 		return new GroupImpl();
 	}
+        
+        @Override
+	public Group newGroup(String id) {
+		return new GroupImpl(id);
+	}
 
 	@Override
 	public I18NText newI18NText() {
@@ -184,6 +189,12 @@ public class JPATaskModelFactory implements TaskModelFactory {
 	public User newUser() {
 		
 		return new UserImpl();
+	}
+
+        @Override
+	public User newUser(String id) {
+		
+		return new UserImpl(id);
 	}
 
 }

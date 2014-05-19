@@ -586,7 +586,6 @@ public class TaskQueryServiceImpl implements TaskQueryService {
 "                    t.taskData.activationTime,\n" +
 "                    t.taskData.expirationTime,\n" +
 "                    t.taskData.processId,\n" +
-"                    t.taskData.processSessionId,\n" +
 "                    t.taskData.processInstanceId,\n" +
 "                    t.taskData.parentId,\n" +
 "                    t.taskData.deploymentId              )\n" +
@@ -613,7 +612,6 @@ public class TaskQueryServiceImpl implements TaskQueryService {
 "                    t.taskData.activationTime,\n" +
 "                    t.taskData.expirationTime,\n" +
 "                    t.taskData.processId,\n" +
-"                    t.taskData.processSessionId,\n" +
 "                    t.taskData.processInstanceId,\n" +
 "                    t.taskData.parentId,\n" +
 "                    t.taskData.deploymentId              )\n" +
@@ -626,20 +624,21 @@ public class TaskQueryServiceImpl implements TaskQueryService {
     
     private static String VARIOUS_FIELDS_TASKSUM_QUERY = 
             "select distinct"
-            + "  new org.jbpm.services.task.query.TaskSummaryImpl(t.id,"
-            + "  t.name," 
-            + "  t.subject," 
-            + "  t.description,"
-            + "  t.taskData.status,"
-            + "  t.priority,"
-            + "  t.taskData.skipable,"
-            + "  t.taskData.actualOwner.id," + "t.taskData.createdBy.id,"
-            + "  t.taskData.createdOn," + "t.taskData.activationTime," + "t.taskData.expirationTime,"
-            + "  t.taskData.processId," + "t.taskData.processSessionId,"
-            + "  t.taskData.processInstanceId,"
-            + "  t.taskData.deploymentId,"
-            + "  t.subTaskStrategy,"
-            + "  t.taskData.parentId ) "
+            + "  new org.jbpm.services.task.query.TaskSummaryImpl("
+            + "t.id,\n" +
+"                t.name,\n" +
+"                t.description,\n" +
+"                t.taskData.status,\n" +
+"                t.priority,\n" +
+"                t.taskData.actualOwner.id,\n" +
+"                t.taskData.createdBy.id,\n" +
+"                t.taskData.createdOn,\n" +
+"                t.taskData.activationTime,\n" +
+"                t.taskData.expirationTime,\n" +
+"                t.taskData.processId,\n" +
+"                t.taskData.processInstanceId,\n" +
+"                t.taskData.parentId,\n" +
+"                t.taskData.deploymentId              )"
             + "from"
             + "  TaskImpl t, "
             + "  OrganizationalEntityImpl businessAdministrator, "

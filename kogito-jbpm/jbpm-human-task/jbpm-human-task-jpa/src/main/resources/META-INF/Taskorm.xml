@@ -7,24 +7,20 @@
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,         
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t,
             OrganizationalEntityImpl businessAdministrator
@@ -42,24 +38,20 @@
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,         
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t,
             OrganizationalEntityImpl excludedOwners
@@ -77,24 +69,20 @@
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,         
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t,
             OrganizationalEntityImpl potentialOwners
@@ -111,24 +99,20 @@
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,         
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t,
             OrganizationalEntityImpl potentialOwners
@@ -147,24 +131,20 @@
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,         
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t, 
             OrganizationalEntityImpl potentialOwners
@@ -182,24 +162,20 @@
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,         
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t ,
             OrganizationalEntityImpl potentialOwners
@@ -217,24 +193,20 @@
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,         
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t ,
             OrganizationalEntityImpl potentialOwners
@@ -252,24 +224,20 @@
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,         
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t ,
             OrganizationalEntityImpl potentialOwners
@@ -320,24 +288,20 @@
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t,
             OrganizationalEntityImpl potentialOwners
@@ -357,24 +321,20 @@
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t,
             OrganizationalEntityImpl potentialOwners
@@ -469,24 +429,20 @@
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t,
             OrganizationalEntityImpl potentialOwners
@@ -505,24 +461,20 @@
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t,
             OrganizationalEntityImpl potentialOwners
@@ -540,24 +492,20 @@
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                    t.name,
+                    t.description,
+                    t.taskData.status,
+                    t.priority,
+                    t.taskData.actualOwner.id,
+                    t.taskData.createdBy.id,
+                    t.taskData.createdOn,
+                    t.taskData.activationTime,
+                    t.taskData.expirationTime,
+                    t.taskData.processId,
+                    t.taskData.processInstanceId,
+                    t.taskData.parentId,
+                    t.taskData.deploymentId              )
             from
             TaskImpl t,
             OrganizationalEntityImpl recipients
@@ -574,24 +522,20 @@
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t,
             OrganizationalEntityImpl taskInitiator
@@ -609,24 +553,20 @@
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t,
             OrganizationalEntityImpl taskStakeholder
@@ -644,24 +584,20 @@
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t
     
@@ -679,24 +615,20 @@
         <query>
             select
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,         
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t 
             left join t.peopleAssignments.potentialOwners potOwners
@@ -715,24 +647,20 @@
         <query>
             select
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,         
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t 
     
@@ -752,24 +680,20 @@
         <query>
             select
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,         
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t 
             left join t.peopleAssignments.potentialOwners potOwners
@@ -793,32 +717,26 @@
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,         
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
-            TaskImpl t 
+                TaskImpl t 
             
             where
             t.archived = 0 and
             t.taskData.status = :status 
-
-          
             order by t.id DESC
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -827,24 +745,20 @@
         <query>
             select
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,         
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t 
             
@@ -865,24 +779,20 @@
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,         
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t 
             where
@@ -897,24 +807,20 @@
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,         
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t 
     
@@ -934,24 +840,20 @@
         <query>
             select
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,         
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t 
     
@@ -1043,24 +945,20 @@
         <query>
             select distinct
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,         
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t 
             
@@ -1077,24 +975,20 @@
         <query>
             select distinct
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.name,
-            t.subject,
-            t.description,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            t.taskData.actualOwner.id,
-            t.taskData.createdBy.id,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.taskData.processInstanceId,         
-            t.taskData.deploymentId,
-            t.subTaskStrategy,
-            t.taskData.parentId              )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t
             
@@ -1152,7 +1046,6 @@
             t.taskData.activationTime,
             t.taskData.expirationTime,
             t.taskData.processId,
-            t.taskData.processSessionId,
             t.taskData.processInstanceId,
             t.taskData.parentId,
             t.taskData.deploymentId              )
@@ -1188,7 +1081,6 @@
             t.taskData.activationTime,
             t.taskData.expirationTime,
             t.taskData.processId,
-            t.taskData.processSessionId,
             t.taskData.processInstanceId,
             t.taskData.parentId,
             t.taskData.deploymentId              )
@@ -1221,7 +1113,6 @@
             t.taskData.activationTime,
             t.taskData.expirationTime,
             t.taskData.processId,
-            t.taskData.processSessionId,
             t.taskData.processInstanceId,
             t.taskData.parentId,
             t.taskData.deploymentId              )
@@ -1255,7 +1146,6 @@
                     t.taskData.activationTime,
                     t.taskData.expirationTime,
                     t.taskData.processId,
-                    t.taskData.processSessionId,
                     t.taskData.processInstanceId,
                     t.taskData.parentId,
                     t.taskData.deploymentId              )
@@ -1287,7 +1177,6 @@
                     t.taskData.activationTime,
                     t.taskData.expirationTime,
                     t.taskData.processId,
-                    t.taskData.processSessionId,
                     t.taskData.processInstanceId,
                     t.taskData.parentId,
                     t.taskData.deploymentId              )
@@ -1319,7 +1208,6 @@
                     t.taskData.activationTime,
                     t.taskData.expirationTime,
                     t.taskData.processId,
-                    t.taskData.processSessionId,
                     t.taskData.processInstanceId,
                     t.taskData.parentId,
                     t.taskData.deploymentId              )
@@ -1351,7 +1239,6 @@
                     t.taskData.activationTime,
                     t.taskData.expirationTime,
                     t.taskData.processId,
-                    t.taskData.processSessionId,
                     t.taskData.processInstanceId,
                     t.taskData.parentId,
                     t.taskData.deploymentId              )
