@@ -1,0 +1,22 @@
+<body>
+
+<h2>Drools API</h2>
+<P/>
+The documentation concentrates upon the following key interfaces:
+<li><tt>org.kie.WorkingMemory</tt></li>
+<li><tt>org.kie.RuleBase</tt></li>
+<li><tt>org.kie.RuleBaseFactory</tt></li>
+<li><tt>org.kie.compiler.PackageBuilder</tt></li>
+<li><tt>org.kie.compiler.RuleBaseLoader</tt></li>
+<li><tt>org.kie.rule.Package</tt></li>
+
+These interfaces are fully intended to be exposed to application code.
+Generally speaking, PackageBuilder would be used to assemble binary rule Packages, which are what is used by the
+core engine (RuleBase, WorkingMemory).<br>
+
+<br>
+The other utility classes are optional, and you may or may not need to use them based on your specific needs.
+<br>
+The Internal APIs are not intended for "normal" application code use, but from time to time, advanced uses may need to refer to or use this API directly.
+
+</body>

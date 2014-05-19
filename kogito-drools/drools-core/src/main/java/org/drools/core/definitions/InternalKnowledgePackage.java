@@ -3,6 +3,7 @@ package org.drools.core.definitions;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.TypeResolver;
+import org.kie.internal.io.ResourceTypePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.facttemplates.FactTemplate;
@@ -14,11 +15,11 @@ import org.drools.core.rule.WindowDeclaration;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.definition.KnowledgePackage;
 
 import java.io.Externalizable;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +34,9 @@ public interface InternalKnowledgePackage extends KnowledgePackage, Externalizab
 
     void resetErrors();
     void setError( String summary );
+
+
+    Map<ResourceType, ResourceTypePackage> getResourceTypePackages();
 
     Map<String, String> getGlobals();
     Map<String, Process> getRuleFlows();

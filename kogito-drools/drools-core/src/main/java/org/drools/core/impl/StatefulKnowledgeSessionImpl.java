@@ -131,7 +131,10 @@ import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
+import org.kie.internal.runtime.KieRuntimeService;
+import org.kie.internal.runtime.KieRuntimes;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.ServiceRegistryImpl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
@@ -247,6 +250,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     private InternalProcessRuntime processRuntime;
 
+    private Map<String, Object> runtimeServices;
+
     private transient ObjectMarshallingStrategyStore marshallingStore;
     private transient List                           ruleBaseListeners;
 
@@ -285,7 +290,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
              new RuleRuntimeEventSupport(),
              new AgendaEventSupport(),
              new RuleEventListenerSupport(),
-             null );
+             null);
     }
 
     public StatefulKnowledgeSessionImpl(final int id,
@@ -311,16 +316,16 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
 
     public StatefulKnowledgeSessionImpl(final int id,
-                                         final InternalKnowledgeBase kBase,
-                                         final FactHandleFactory handleFactory,
-                                         final boolean initInitFactHandle,
-                                         final long propagationContext,
-                                         final SessionConfiguration config,
-                                         final Environment environment,
-                                         final RuleRuntimeEventSupport workingMemoryEventSupport,
-                                         final AgendaEventSupport agendaEventSupport,
-                                         final RuleEventListenerSupport ruleEventListenerSupport,
-                                         final InternalAgenda agenda) {
+                                        final InternalKnowledgeBase kBase,
+                                        final FactHandleFactory handleFactory,
+                                        final boolean initInitFactHandle,
+                                        final long propagationContext,
+                                        final SessionConfiguration config,
+                                        final Environment environment,
+                                        final RuleRuntimeEventSupport workingMemoryEventSupport,
+                                        final AgendaEventSupport agendaEventSupport,
+                                        final RuleEventListenerSupport ruleEventListenerSupport,
+                                        final InternalAgenda agenda) {
         this.id = id;
         this.config = config;
         this.kBase = kBase;
@@ -347,15 +352,15 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.dateFormats = (DateFormats) this.environment.get(EnvironmentName.DATE_FORMATS);
         if (this.dateFormats == null) {
             this.dateFormats = new DateFormatsImpl();
-            this.environment.set( EnvironmentName.DATE_FORMATS,
-                                  this.dateFormats );
+            this.environment.set(EnvironmentName.DATE_FORMATS,
+                                 this.dateFormats);
         }
 
         final RuleBaseConfiguration conf = kBase.getConfiguration();
 
         this.sequential = conf.isSequential();
 
-        this.evaluatingActionQueue = new AtomicBoolean( false );
+        this.evaluatingActionQueue = new AtomicBoolean(false);
 
         this.ruleRuntimeEventSupport = workingMemoryEventSupport;
         this.agendaEventSupport = agendaEventSupport;
@@ -364,36 +369,71 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.lock = new ReentrantLock();
 
         timerService = TimerServiceFactory.getTimerService(this.config);
-        ((AcceptsTimerJobFactoryManager) timerService).setTimerJobFactoryManager( config.getTimerJobFactoryManager() );
+        ((AcceptsTimerJobFactoryManager) timerService).setTimerJobFactoryManager(config.getTimerJobFactoryManager());
 
-        this.propagationIdCounter = new AtomicLong( propagationContext );
+        this.propagationIdCounter = new AtomicLong(propagationContext);
 
-        this.firing = new AtomicBoolean( false );
+        this.firing = new AtomicBoolean(false);
 
         initTransient();
 
-        this.opCounter = new AtomicLong( 0 );
-        this.lastIdleTimestamp = new AtomicLong( -1 );
+        this.opCounter = new AtomicLong(0);
+        this.lastIdleTimestamp = new AtomicLong(-1);
 
-        if ( agenda == null ) {
+        if (agenda == null) {
             this.agenda = kBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda(kBase);
-        }  else {
+        } else {
             this.agenda = agenda;
         }
         this.agenda.setWorkingMemory(this);
-        
+
         this.processRuntime = createProcessRuntime();
 
-        if ( initInitFactHandle ) {
+        if (initInitFactHandle) {
             initInitialFact(kBase, null);
         }
+
+        //runtimeServices = new HashMap<ResourceType, KieRuntimeManager>();
+    }
+
+    public <T> T getKieRuntime(Class<T> cls) {
+        //  Only ever one KieRuntimeManager is created, using the two-tone pattern.
+
+        T runtime;
+        if (runtimeServices == null) {
+            runtime = createRuntimeService(cls);
+        } else {
+            runtime = (T) runtimeServices.get(cls.getName());
+            if (runtime == null) {
+                runtime = createRuntimeService(cls);
+            }
+        }
+
+        return (T) runtime;
+    }
+
+    public synchronized <T> T createRuntimeService(Class<T> cls) {
+        // This is sychronized to ensure that only ever one is created, using the two-tone pattern.
+        if (runtimeServices == null) {
+            runtimeServices = new HashMap<String, Object>();
+        }
+
+        T runtime = (T) runtimeServices.get(cls.getName());
+        if (runtime == null) {
+            KieRuntimes runtimes = ServiceRegistryImpl.getInstance().get(KieRuntimes.class);
+
+            KieRuntimeService service = (KieRuntimeService) runtimes.getRuntimes().get(cls.getName());
+            runtime  = (T) service.newKieRuntime(this);
+        }
+
+        return (T) runtime;
     }
 
     public EntryPoint getEntryPoint(String name) {
         return getWorkingMemoryEntryPoint(name);
     }
 
-    public Collection< ? extends org.kie.api.runtime.rule.EntryPoint> getEntryPoints() {
+    public Collection<? extends org.kie.api.runtime.rule.EntryPoint> getEntryPoints() {
         return this.entryPoints.values();
     }
 
@@ -402,21 +442,22 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public Collection<RuleRuntimeEventListener> getRuleRuntimeEventListeners() {
-        return Collections.unmodifiableCollection( ruleRuntimeEventSupport.getEventListeners() );
+        return Collections.unmodifiableCollection(ruleRuntimeEventSupport.getEventListeners());
     }
 
     public Collection<AgendaEventListener> getAgendaEventListeners() {
-        return Collections.unmodifiableCollection( this.agendaEventSupport.getEventListeners() );
+        return Collections.unmodifiableCollection(this.agendaEventSupport.getEventListeners());
     }
 
     private InternalProcessRuntime getInternalProcessRuntime() {
         InternalProcessRuntime processRuntime = this.getProcessRuntime();
-        if ( processRuntime == null ) throw new RuntimeException( "There is no ProcessRuntime available: are jBPM libraries missing on classpath?" );
+        if (processRuntime == null)
+            throw new RuntimeException("There is no ProcessRuntime available: are jBPM libraries missing on classpath?");
         return processRuntime;
     }
 
     public void addEventListener(ProcessEventListener listener) {
-        getInternalProcessRuntime().addEventListener( listener );
+        getInternalProcessRuntime().addEventListener(listener);
     }
 
     public Collection<ProcessEventListener> getProcessEventListeners() {
@@ -424,7 +465,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void removeEventListener(ProcessEventListener listener) {
-        getInternalProcessRuntime().removeEventListener( listener );
+        getInternalProcessRuntime().removeEventListener(listener);
     }
 
     public KnowledgeBase getKieBase() {
@@ -437,6 +478,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                 logger.close();
             } catch (Exception e) { /* the logger was already closed, swallow */ }
         }
+        this.kBase.disposeStatefulSession(this);
 
         for (WorkingMemoryEntryPoint ep : this.entryPoints.values()) {
             ep.dispose();
