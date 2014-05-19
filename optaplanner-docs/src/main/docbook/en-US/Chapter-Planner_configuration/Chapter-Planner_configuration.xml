@@ -1207,6 +1207,9 @@ public class SeatDesignationDependency {
           <para>In the example above, because <literal>SeatDesignation</literal> is a planning entity (which is deep
           planning cloned automatically), <literal>SeatDesignationDependency</literal> must be deep planning cloned
           too.</para>
+
+          <para>Alternatively, the <literal>@DeepPlanningClone</literal> annotation can also be used on a getter
+          method.</para>
         </section>
 
         <section>
