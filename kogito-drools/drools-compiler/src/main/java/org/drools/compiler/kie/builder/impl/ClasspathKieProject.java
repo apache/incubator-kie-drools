@@ -130,12 +130,14 @@ public class ClasspathKieProject extends AbstractKieProject {
             Class<?> c = Class.forName(OSGI_KIE_MODULE_CLASS_NAME);
             m = c.getMethod("create", URL.class);
         } catch (Exception e) {
-            throw new RuntimeException("It is necessary to have the drools-osgi-integration module on the path in order to create a KieProject from an ogsi bundle", e);
+            log.error("It is necessary to have the drools-osgi-integration module on the path in order to create a KieProject from an ogsi bundle", e);
+            throw new RuntimeException(e);
         }
         try {
             return (InternalKieModule) m.invoke(null, url);
         } catch (Exception e) {
-            throw new RuntimeException("Failure creating a OsgiKieModule caused by: " + e.getMessage(), e);
+            log.error("Failure creating a OsgiKieModule caused by: " + e.getMessage(), e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -144,7 +146,8 @@ public class ClasspathKieProject extends AbstractKieProject {
             Class clazz = Class.forName("org.kie.spring.KModuleSpringMarshaller");
             Method method = clazz.getDeclaredMethod("fromXML", java.net.URL.class, String.class);
             method.invoke(null, kModuleUrl, fixedURL);
-        } catch (Exception e){
+        } catch (Exception e) {
+            log.error("It is necessary to have the kie-spring module on the path in order to create a KieProject from a spring context", e);
             throw new RuntimeException(e);
         }
     }
