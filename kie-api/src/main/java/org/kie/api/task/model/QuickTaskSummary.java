@@ -46,8 +46,6 @@ public interface QuickTaskSummary extends Externalizable {
     String getProcessId();
     
     long getProcessInstanceId();
-
-    int getProcessSessionId();
     
     String getDeploymentId();
     

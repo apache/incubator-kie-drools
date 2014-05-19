@@ -30,6 +30,8 @@ public interface TaskSummary extends QuickTaskSummary {
     User getActualOwner();
 
     User getCreatedBy();
+    
+    int getProcessSessionId();
 
     List<String> getPotentialOwners();
     
