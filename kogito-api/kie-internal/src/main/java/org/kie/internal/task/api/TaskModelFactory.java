@@ -51,6 +51,8 @@ public interface TaskModelFactory {
 	FaultData newFaultData();
 	
 	Group newGroup();
+        
+        Group newGroup(String id);
 	
 	I18NText newI18NText();
 	
@@ -71,4 +73,6 @@ public interface TaskModelFactory {
 	Task newTask();
 	
 	User newUser();
+        
+        User newUser(String id);
 }
