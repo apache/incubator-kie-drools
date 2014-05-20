@@ -60,7 +60,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
-      <scope>test</scope>
+<!--      <scope>test</scope>-->
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
@@ -120,8 +120,45 @@
           <instructions>
             <Bundle-SymbolicName>org.jbpm.persistence.jpa;singleton:=true</Bundle-SymbolicName>
             <Import-Package>
+              javassist.util.proxy;resolution:=optional,
+              javax.persistence,
+              javax.naming,
               javax.transaction.*;resolution:=optional,
-              *
+              org.hibernate.proxy;resolution:=optional,
+              com.google.protobuf;resolution:=optional,
+              org.drools.core.command,
+              org.drools.core.command.impl,
+              org.drools.core.common,
+              org.drools.core.impl,
+              org.drools.core.marshalling.impl,
+              org.drools.core.runtime.process,
+              org.drools.core.time,
+              org.drools.core.time.impl,
+              org.drools.persistence,
+              org.drools.persistence.jpa,
+              org.drools.persistence.jta,
+              org.drools.persistence.map,
+              org.jbpm.marshalling.impl,
+              org.jbpm.process.core.timer,
+              org.jbpm.process.core.timer.impl,
+              org.jbpm.process.instance,
+              org.jbpm.process.instance.event,
+              org.jbpm.process.instance.impl,
+              org.jbpm.process.instance.timer,
+              org.jbpm.workflow.instance.impl,
+              org.jbpm.workflow.instance.node,
+              org.kie.api,
+              org.kie.api.command,
+              org.kie.api.definition.process,
+              org.kie.api.marshalling,
+              org.kie.api.runtime,
+              org.kie.api.runtime.manager,
+              org.kie.api.runtime.process,
+              org.kie.internal.command,
+              org.kie.internal.process,
+              org.kie.internal.runtime.manager,
+              org.kie.internal.runtime.manager.context,
+              org.slf4j
             </Import-Package>
             <Export-Package>
               org.jbpm.persistence.*

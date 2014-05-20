@@ -151,10 +151,12 @@
             <Bundle-SymbolicName>org.jbpm.runtime.manager</Bundle-SymbolicName>
             <Import-Package>
               !org.jbpm.runtime.manager*,
-              org.sonatype.aether.artifact;resolution:=optional,
-              org.kie.scanner;resolution:=optional,
+              javassist.util.proxy;resolution:=optional,
               org.jboss.solder.core;resolution:=optional,
               org.jbpm.services.task.audit;resolution:=optional,
+              org.hibernate.proxy;resolution:=optional,
+              org.kie.scanner;resolution:=optional,
+              org.sonatype.aether.artifact;resolution:=optional,
               *,
             </Import-Package>
             <Private-Package></Private-Package>
