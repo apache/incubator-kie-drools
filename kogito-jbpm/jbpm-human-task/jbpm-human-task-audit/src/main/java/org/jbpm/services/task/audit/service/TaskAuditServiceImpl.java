@@ -23,6 +23,7 @@ import org.jbpm.services.task.audit.commands.GetAuditEventsCommand;
 import org.jbpm.services.task.audit.impl.model.api.AuditTask;
 import org.kie.api.task.TaskService;
 import org.kie.internal.task.api.InternalTaskService;
+import org.kie.internal.task.api.QueryFilter;
 import org.kie.internal.task.api.model.TaskEvent;
 
 /**
@@ -34,19 +35,19 @@ public class TaskAuditServiceImpl implements TaskAuditService {
     private InternalTaskService taskService;
     
     @Override
-    public List<TaskEvent> getAllTaskEvents(long taskId, int offset, int count) {
-        return taskService.execute(new GetAuditEventsCommand(taskId, offset, count));
+    public List<TaskEvent> getAllTaskEvents(long taskId, QueryFilter filter) {
+        return taskService.execute(new GetAuditEventsCommand(taskId, filter));
     }
     
    
     @Override
-    public List<AuditTask> getAllHistoryAuditTasks( int offset, int count) {
-        return taskService.execute(new GetAllHistoryAuditTasksCommand( offset, count));
+    public List<AuditTask> getAllHistoryAuditTasks( QueryFilter filter) {
+        return taskService.execute(new GetAllHistoryAuditTasksCommand(filter));
     }
 
     @Override
-    public List<AuditTask> getAllHistoryAuditTasksByUser(String userId, int offset, int count) {
-        return taskService.execute(new GetAllHistoryAuditTasksByUserCommand(userId, offset, count));
+    public List<AuditTask> getAllHistoryAuditTasksByUser(String userId, QueryFilter filter) {
+        return taskService.execute(new GetAllHistoryAuditTasksByUserCommand(userId, filter));
     }
     
     @Override

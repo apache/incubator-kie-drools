@@ -12,7 +12,6 @@ import java.util.Queue;
 import org.jbpm.services.task.MvelFilePath;
 import org.jbpm.services.task.commands.CancelDeadlineCommand;
 import org.jbpm.services.task.commands.CompositeCommand;
-import org.jbpm.services.task.commands.PaginatedTaskCommand;
 import org.jbpm.services.task.commands.ProcessSubTaskCommand;
 import org.jbpm.services.task.commands.SkipTaskCommand;
 import org.jbpm.services.task.commands.StartTaskCommand;
@@ -126,7 +125,7 @@ public abstract class AbstractTaskSerializationTest {
         Assume.assumeTrue(!getType().equals(TestType.YAML));
 
         for (Class<?> jaxbClass : reflections.getSubTypesOf(TaskCommand.class)) {
-            if (jaxbClass.equals(UserGroupCallbackTaskCommand.class) || jaxbClass.equals(PaginatedTaskCommand.class)) {
+            if (jaxbClass.equals(UserGroupCallbackTaskCommand.class)) {
                 continue;
             }
             addClassesToSerializationContext(jaxbClass);

@@ -39,7 +39,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             
-        persistenceContext.persist(auditTaskImpl);
+        persistenceContext.merge(auditTaskImpl);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             
-        persistenceContext.persist(auditTaskImpl);
+        persistenceContext.merge(auditTaskImpl);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             
-        persistenceContext.persist(auditTaskImpl);
+        persistenceContext.merge(auditTaskImpl);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             
-        persistenceContext.persist(auditTaskImpl);
+        persistenceContext.merge(auditTaskImpl);
         //@TODO:        There is also the possibility that a GroupAuditTask exist in Lucene..
         //        make sure that you remove it as well        
         
@@ -125,7 +125,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             
-        persistenceContext.persist(auditTaskImpl);
+        persistenceContext.merge(auditTaskImpl);
 
     }
 
@@ -146,7 +146,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             
-        persistenceContext.persist(auditTaskImpl);
+        persistenceContext.merge(auditTaskImpl);
     }
 
     @Override
@@ -167,7 +167,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             
-        persistenceContext.persist(auditTaskImpl);
+        persistenceContext.merge(auditTaskImpl);
     }
 
     @Override
@@ -186,7 +186,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
                                                                                 ti.getTaskData().getProcessId(), ti.getTaskData().getProcessSessionId(),
                                                                                 ti.getTaskData().getDeploymentId(),
                                                                                 ti.getTaskData().getParentId());
-        persistenceContext.persist(auditTaskImpl);
+        persistenceContext.merge(auditTaskImpl);
         //@TODO: Create User or Group Task for Lucene
         persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.ADDED, userId, new Date()));
     }
@@ -208,7 +208,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             
-        persistenceContext.persist(auditTaskImpl);
+        persistenceContext.merge(auditTaskImpl);
         
     }
 
@@ -227,7 +227,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             
-        persistenceContext.persist(auditTaskImpl);
+        persistenceContext.merge(auditTaskImpl);
         
         //@TODO: Remove UserAuditTask and create a new GroupAuditTask for lucene  
 
@@ -250,7 +250,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             
-        persistenceContext.persist(auditTaskImpl);
+        persistenceContext.merge(auditTaskImpl);
     }
 
     @Override
@@ -270,7 +270,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             
-        persistenceContext.persist(auditTaskImpl);
+        persistenceContext.merge(auditTaskImpl);
     }
 
     @Override
@@ -289,7 +289,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             
-        persistenceContext.persist(auditTaskImpl);
+        persistenceContext.merge(auditTaskImpl);
     }
 
     @Override
@@ -309,7 +309,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             
-        persistenceContext.persist(auditTaskImpl);
+        persistenceContext.merge(auditTaskImpl);
     }
 
     @Override

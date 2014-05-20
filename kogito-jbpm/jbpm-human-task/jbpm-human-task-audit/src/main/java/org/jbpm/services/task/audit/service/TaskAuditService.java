@@ -19,6 +19,7 @@ package org.jbpm.services.task.audit.service;
 import java.util.List;
 import org.jbpm.services.task.audit.impl.model.api.AuditTask;
 import org.kie.api.task.TaskService;
+import org.kie.internal.task.api.QueryFilter;
 import org.kie.internal.task.api.model.TaskEvent;
 
 /**
@@ -28,10 +29,10 @@ import org.kie.internal.task.api.model.TaskEvent;
 public interface TaskAuditService {
     void setTaskService(TaskService taskService);
     
-    List<TaskEvent> getAllTaskEvents(long taskId, int offset, int count);
+    List<TaskEvent> getAllTaskEvents(long taskId, QueryFilter filter);
     
-    List<AuditTask> getAllHistoryAuditTasks( int offset, int count);
-    List<AuditTask> getAllHistoryAuditTasksByUser(String userId, int offset, int count);
+    List<AuditTask> getAllHistoryAuditTasks( QueryFilter filter);
+    List<AuditTask> getAllHistoryAuditTasksByUser(String userId, QueryFilter filter);
     
     
 }
