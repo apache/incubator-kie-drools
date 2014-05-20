@@ -56,10 +56,10 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
 
     @Override
     public SelectionCacheType getCacheType() {
-        SelectionCacheType inheritCacheType = valueRangeMightContainEntity
+        SelectionCacheType intrinsicCacheType = valueRangeMightContainEntity
                 ? SelectionCacheType.STEP : SelectionCacheType.PHASE;
-        return (inheritCacheType.compareTo(minimumCacheType) > 0)
-                ? inheritCacheType : minimumCacheType;
+        return (intrinsicCacheType.compareTo(minimumCacheType) > 0)
+                ? intrinsicCacheType : minimumCacheType;
     }
 
     // ************************************************************************

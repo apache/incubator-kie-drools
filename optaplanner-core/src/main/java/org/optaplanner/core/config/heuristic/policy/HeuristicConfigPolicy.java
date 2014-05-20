@@ -3,22 +3,22 @@ package org.optaplanner.core.config.heuristic.policy;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.EntityMimicRecorder;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
-import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 public class HeuristicConfigPolicy {
 
     private final EnvironmentMode environmentMode;
     private final InnerScoreDirectorFactory scoreDirectorFactory;
 
-    private boolean sortEntitiesByDecreasingDifficultyEnabled = false;
-    private boolean sortValuesByIncreasingStrengthEnabled = false;
+    private EntitySorterManner entitySorterManner = EntitySorterManner.NONE;
+    private ValueSorterManner valueSorterManner = ValueSorterManner.NONE;
     private boolean reinitializeVariableFilterEnabled = false;
     private boolean initializedChainedValueFilterEnabled = false;
 
@@ -46,20 +46,20 @@ public class HeuristicConfigPolicy {
         return scoreDirectorFactory;
     }
 
-    public boolean isSortEntitiesByDecreasingDifficultyEnabled() {
-        return sortEntitiesByDecreasingDifficultyEnabled;
+    public EntitySorterManner getEntitySorterManner() {
+        return entitySorterManner;
     }
 
-    public void setSortEntitiesByDecreasingDifficultyEnabled(boolean sortEntitiesByDecreasingDifficultyEnabled) {
-        this.sortEntitiesByDecreasingDifficultyEnabled = sortEntitiesByDecreasingDifficultyEnabled;
+    public void setEntitySorterManner(EntitySorterManner entitySorterManner) {
+        this.entitySorterManner = entitySorterManner;
     }
 
-    public boolean isSortValuesByIncreasingStrengthEnabled() {
-        return sortValuesByIncreasingStrengthEnabled;
+    public ValueSorterManner getValueSorterManner() {
+        return valueSorterManner;
     }
 
-    public void setSortValuesByIncreasingStrengthEnabled(boolean sortValuesByIncreasingStrengthEnabled) {
-        this.sortValuesByIncreasingStrengthEnabled = sortValuesByIncreasingStrengthEnabled;
+    public void setValueSorterManner(ValueSorterManner valueSorterManner) {
+        this.valueSorterManner = valueSorterManner;
     }
 
     public boolean isReinitializeVariableFilterEnabled() {

@@ -25,6 +25,8 @@ import org.optaplanner.core.config.constructionheuristic.decider.forager.Constru
 import org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig;
 import org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
+import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -87,10 +89,10 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig {
         phaseConfigPolicy.setInitializedChainedValueFilterEnabled(true);
         ConstructionHeuristicType constructionHeuristicType_ = constructionHeuristicType == null
                 ? ConstructionHeuristicType.FIRST_FIT : constructionHeuristicType;
-        phaseConfigPolicy.setSortEntitiesByDecreasingDifficultyEnabled(
-                constructionHeuristicType_.isSortEntitiesByDecreasingDifficulty());
-        phaseConfigPolicy.setSortValuesByIncreasingStrengthEnabled(
-                constructionHeuristicType_.isSortValuesByIncreasingStrength());
+        phaseConfigPolicy.setEntitySorterManner(
+                constructionHeuristicType_.getDefaultEntitySorterManner());
+        phaseConfigPolicy.setValueSorterManner(
+                constructionHeuristicType_.getDefaultValueSorterManner());
         DefaultConstructionHeuristicPhase phase = new DefaultConstructionHeuristicPhase();
         configurePhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
         phase.setDecider(buildDecider(phaseConfigPolicy, phase.getTermination()));
@@ -152,28 +154,28 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig {
         BEST_FIT,
         BEST_FIT_DECREASING;
 
-        public boolean isSortEntitiesByDecreasingDifficulty() {
+        public EntitySorterManner getDefaultEntitySorterManner() {
             switch (this) {
                 case FIRST_FIT:
                 case BEST_FIT:
-                    return false;
+                    return EntitySorterManner.NONE;
                 case FIRST_FIT_DECREASING:
                 case BEST_FIT_DECREASING:
-                    return true;
+                    return EntitySorterManner.DECREASING_DIFFICULTY;
                 default:
                     throw new IllegalStateException("The constructionHeuristicType ("
                             + this + ") is not implemented.");
             }
         }
 
-        public boolean isSortValuesByIncreasingStrength() {
+        public ValueSorterManner getDefaultValueSorterManner() {
             switch (this) {
                 case FIRST_FIT:
                 case FIRST_FIT_DECREASING:
-                    return false;
+                    return ValueSorterManner.NONE;
                 case BEST_FIT:
                 case BEST_FIT_DECREASING:
-                    return true;
+                    return ValueSorterManner.INCREASING_STRENGTH;
                 default:
                     throw new IllegalStateException("The constructionHeuristicType ("
                             + this + ") is not implemented.");

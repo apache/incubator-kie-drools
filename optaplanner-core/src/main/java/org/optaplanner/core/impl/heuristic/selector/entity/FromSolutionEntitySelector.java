@@ -51,11 +51,14 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
         return entityDescriptor;
     }
 
+    /**
+     * @return never null, at least {@link SelectionCacheType#STEP}
+     */
     @Override
     public SelectionCacheType getCacheType() {
-        SelectionCacheType inheritCacheType = SelectionCacheType.STEP;
-        return (inheritCacheType.compareTo(minimumCacheType) > 0)
-                ? inheritCacheType : minimumCacheType;
+        SelectionCacheType intrinsicCacheType = SelectionCacheType.STEP;
+        return (intrinsicCacheType.compareTo(minimumCacheType) > 0)
+                ? intrinsicCacheType : minimumCacheType;
     }
 
     // ************************************************************************

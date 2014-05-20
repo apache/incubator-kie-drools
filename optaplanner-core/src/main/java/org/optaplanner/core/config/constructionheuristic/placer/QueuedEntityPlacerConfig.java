@@ -26,10 +26,12 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedEntityPlacer;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -79,23 +81,8 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
             List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<MoveSelectorConfig>(
                     variableDescriptors.size());
             for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
-                ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
-                EntitySelectorConfig changeEntitySelectorConfig = new EntitySelectorConfig();
-                changeEntitySelectorConfig.setMimicSelectorRef(entitySelectorConfig_.getId());
-                changeMoveSelectorConfig.setEntitySelectorConfig(changeEntitySelectorConfig);
-                ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
-                changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
-                if (configPolicy.isSortValuesByIncreasingStrengthEnabled()) {
-                    if (variableDescriptor.isValueRangeEntityIndependent()) {
-                        changeValueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
-                    } else {
-                        changeValueSelectorConfig.setCacheType(SelectionCacheType.STEP);
-                    }
-                    changeValueSelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
-                    changeValueSelectorConfig.setSorterManner(ValueSelectorConfig.ValueSorterManner.INCREASING_STRENGTH);
-                }
-                changeMoveSelectorConfig.setValueSelectorConfig(changeValueSelectorConfig);
-                subMoveSelectorConfigList.add(changeMoveSelectorConfig);
+                subMoveSelectorConfigList.add(buildChangeMoveSelectorConfig(
+                        configPolicy, entitySelectorConfig_.getId(), variableDescriptor));
             }
             if (true) { // TODO
                 MoveSelectorConfig subMoveSelectorConfig;
@@ -127,10 +114,10 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
             Class<?> entityClass = entityDescriptor.getEntityClass();
             entitySelectorConfig_.setId(entityClass.getName());
             entitySelectorConfig_.setEntityClass(entityClass);
-            if (configPolicy.isSortEntitiesByDecreasingDifficultyEnabled()) {
+            if (configPolicy.getEntitySorterManner().hasSorter(entityDescriptor)) {
                 entitySelectorConfig_.setCacheType(SelectionCacheType.PHASE);
                 entitySelectorConfig_.setSelectionOrder(SelectionOrder.SORTED);
-                entitySelectorConfig_.setSorterManner(EntitySelectorConfig.EntitySorterManner.DECREASING_DIFFICULTY);
+                entitySelectorConfig_.setSorterManner(configPolicy.getEntitySorterManner());
             }
         } else {
             entitySelectorConfig_ = entitySelectorConfig;
@@ -143,6 +130,27 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
                     + ") lower than " + SelectionCacheType.PHASE + ".");
         }
         return entitySelectorConfig_;
+    }
+
+    private ChangeMoveSelectorConfig buildChangeMoveSelectorConfig(HeuristicConfigPolicy configPolicy,
+            String entitySelectorConfigId, GenuineVariableDescriptor variableDescriptor) {
+        ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
+        EntitySelectorConfig changeEntitySelectorConfig = new EntitySelectorConfig();
+        changeEntitySelectorConfig.setMimicSelectorRef(entitySelectorConfigId);
+        changeMoveSelectorConfig.setEntitySelectorConfig(changeEntitySelectorConfig);
+        ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
+        changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
+        if (configPolicy.getValueSorterManner().hasSorter(variableDescriptor)) {
+            if (variableDescriptor.isValueRangeEntityIndependent()) {
+                changeValueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
+            } else {
+                changeValueSelectorConfig.setCacheType(SelectionCacheType.STEP);
+            }
+            changeValueSelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
+            changeValueSelectorConfig.setSorterManner(configPolicy.getValueSorterManner());
+        }
+        changeMoveSelectorConfig.setValueSelectorConfig(changeValueSelectorConfig);
+        return changeMoveSelectorConfig;
     }
 
     public void inherit(QueuedEntityPlacerConfig inheritedConfig) {

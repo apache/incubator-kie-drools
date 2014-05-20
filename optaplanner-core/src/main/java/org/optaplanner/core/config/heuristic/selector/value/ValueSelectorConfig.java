@@ -20,7 +20,6 @@ import java.util.Comparator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -343,7 +342,11 @@ public class ValueSelectorConfig extends SelectorConfig {
         if (resolvedSelectionOrder == SelectionOrder.SORTED) {
             SelectionSorter sorter;
             if (sorterManner != null) {
-                sorter = sorterManner.determineSorter(valueSelector.getVariableDescriptor());
+                GenuineVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
+                if (!sorterManner.hasSorter(variableDescriptor)) {
+                    return valueSelector;
+                }
+                sorter = sorterManner.determineSorter(variableDescriptor);
             } else if (sorterComparatorClass != null) {
                 Comparator<Object> sorterComparator = ConfigUtils.newInstance(this,
                         "sorterComparatorClass", sorterComparatorClass);
@@ -509,33 +512,6 @@ public class ValueSelectorConfig extends SelectorConfig {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" + variableName + ")";
-    }
-
-    /**
-     * Build-in ways of sorting.
-     */
-    public static enum ValueSorterManner {
-        INCREASING_STRENGTH;
-
-        public SelectionSorter determineSorter(GenuineVariableDescriptor variableDescriptor) {
-            SelectionSorter sorter;
-            switch (this) {
-                case INCREASING_STRENGTH:
-                    sorter = variableDescriptor.getIncreasingStrengthSorter();
-                    if (sorter == null) {
-                        throw new IllegalArgumentException("The sorterManner (" + this
-                                + ") on entity class ("
-                                + variableDescriptor.getEntityDescriptor().getEntityClass()
-                                + ")'s variable (" + variableDescriptor.getVariableName()
-                                + ") fails because that variable getter's " + PlanningVariable.class.getSimpleName()
-                                + " annotation does not declare any strength comparison.");
-                    }
-                    return sorter;
-                default:
-                    throw new IllegalStateException("The sorterManner ("
-                            + this + ") is not implemented.");
-            }
-        }
     }
 
 }

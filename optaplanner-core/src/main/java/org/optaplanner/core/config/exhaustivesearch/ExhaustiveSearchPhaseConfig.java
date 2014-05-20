@@ -25,10 +25,12 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -61,6 +63,8 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig {
 
     protected ExhaustiveSearchType exhaustiveSearchType = null;
     protected NodeExplorationType nodeExplorationType = null;
+    protected EntitySorterManner entitySorterManner = null;
+    protected ValueSorterManner valueSorterManner = null;
 
     @XStreamAlias("entitySelector")
     protected EntitySelectorConfig entitySelectorConfig = null;
@@ -81,6 +85,22 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig {
 
     public void setNodeExplorationType(NodeExplorationType nodeExplorationType) {
         this.nodeExplorationType = nodeExplorationType;
+    }
+
+    public EntitySorterManner getEntitySorterManner() {
+        return entitySorterManner;
+    }
+
+    public void setEntitySorterManner(EntitySorterManner entitySorterManner) {
+        this.entitySorterManner = entitySorterManner;
+    }
+
+    public ValueSorterManner getValueSorterManner() {
+        return valueSorterManner;
+    }
+
+    public void setValueSorterManner(ValueSorterManner valueSorterManner) {
+        this.valueSorterManner = valueSorterManner;
     }
 
     public EntitySelectorConfig getEntitySelectorConfig() {
@@ -109,10 +129,10 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig {
         phaseConfigPolicy.setInitializedChainedValueFilterEnabled(true);
         ExhaustiveSearchType exhaustiveSearchType_ = exhaustiveSearchType == null
                 ? ExhaustiveSearchType.BRANCH_AND_BOUND : exhaustiveSearchType;
-        phaseConfigPolicy.setSortEntitiesByDecreasingDifficultyEnabled(
-                exhaustiveSearchType_.isSortEntitiesByDecreasingDifficulty());
-        phaseConfigPolicy.setSortValuesByIncreasingStrengthEnabled(
-                exhaustiveSearchType_.isSortValuesByIncreasingStrength());
+        phaseConfigPolicy.setEntitySorterManner(entitySorterManner != null ? entitySorterManner
+                : exhaustiveSearchType_.getDefaultEntitySorterManner());
+        phaseConfigPolicy.setValueSorterManner(valueSorterManner != null ? valueSorterManner
+                : exhaustiveSearchType_.getDefaultValueSorterManner());
         DefaultExhaustiveSearchPhase phase = new DefaultExhaustiveSearchPhase();
         configurePhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
         boolean scoreBounderEnabled = exhaustiveSearchType_.isScoreBounderEnabled();
@@ -142,10 +162,10 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig {
             entitySelectorConfig_ = new EntitySelectorConfig();
             EntityDescriptor entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
             entitySelectorConfig_.setEntityClass(entityDescriptor.getEntityClass());
-            if (configPolicy.isSortEntitiesByDecreasingDifficultyEnabled()) {
+            if (configPolicy.getEntitySorterManner().hasSorter(entityDescriptor)) {
                 entitySelectorConfig_.setCacheType(SelectionCacheType.PHASE);
                 entitySelectorConfig_.setSelectionOrder(SelectionOrder.SORTED);
-                entitySelectorConfig_.setSorterManner(EntitySelectorConfig.EntitySorterManner.DECREASING_DIFFICULTY);
+                entitySelectorConfig_.setSorterManner(configPolicy.getEntitySorterManner());
             }
         } else {
             entitySelectorConfig_ = entitySelectorConfig;
@@ -212,14 +232,14 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig {
                 changeMoveSelectorConfig.setEntitySelectorConfig(changeEntitySelectorConfig);
                 ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
                 changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
-                if (configPolicy.isSortValuesByIncreasingStrengthEnabled()) {
+                if (configPolicy.getValueSorterManner().hasSorter(variableDescriptor)) {
                     if (variableDescriptor.isValueRangeEntityIndependent()) {
                         changeValueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
                     } else {
                         changeValueSelectorConfig.setCacheType(SelectionCacheType.STEP);
                     }
                     changeValueSelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
-                    changeValueSelectorConfig.setSorterManner(ValueSelectorConfig.ValueSorterManner.INCREASING_STRENGTH);
+                    changeValueSelectorConfig.setSorterManner(configPolicy.getValueSorterManner());
                 }
                 changeMoveSelectorConfig.setValueSelectorConfig(changeValueSelectorConfig);
                 subMoveSelectorConfigList.add(changeMoveSelectorConfig);
@@ -241,6 +261,10 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig {
                 inheritedConfig.getExhaustiveSearchType());
         nodeExplorationType = ConfigUtils.inheritOverwritableProperty(nodeExplorationType,
                 inheritedConfig.getNodeExplorationType());
+        entitySorterManner = ConfigUtils.inheritOverwritableProperty(entitySorterManner,
+                inheritedConfig.getEntitySorterManner());
+        valueSorterManner = ConfigUtils.inheritOverwritableProperty(valueSorterManner,
+                inheritedConfig.getValueSorterManner());
         if (entitySelectorConfig == null) {
             entitySelectorConfig = inheritedConfig.getEntitySelectorConfig();
         } else if (inheritedConfig.getEntitySelectorConfig() != null) {
@@ -257,24 +281,24 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig {
         BRUTE_FORCE,
         BRANCH_AND_BOUND;
 
-        public boolean isSortEntitiesByDecreasingDifficulty() {
+        public EntitySorterManner getDefaultEntitySorterManner() {
             switch (this) {
                 case BRUTE_FORCE:
-                    return false;
+                    return EntitySorterManner.NONE;
                 case BRANCH_AND_BOUND:
-                    return true;
+                    return EntitySorterManner.DECREASING_DIFFICULTY_IF_AVAILABLE;
                 default:
                     throw new IllegalStateException("The exhaustiveSearchType ("
                             + this + ") is not implemented.");
             }
         }
 
-        public boolean isSortValuesByIncreasingStrength() {
+        public ValueSorterManner getDefaultValueSorterManner() {
             switch (this) {
                 case BRUTE_FORCE:
-                    return false;
+                    return ValueSorterManner.NONE;
                 case BRANCH_AND_BOUND:
-                    return true;
+                    return ValueSorterManner.INCREASING_STRENGTH_IF_AVAILABLE;
                 default:
                     throw new IllegalStateException("The exhaustiveSearchType ("
                             + this + ") is not implemented.");

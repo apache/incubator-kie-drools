@@ -23,7 +23,6 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -279,6 +278,7 @@ public class EntitySelectorConfig extends SelectorConfig {
             throw new IllegalArgumentException("The minimumCacheType (" + minimumCacheType
                     + ") is not yet supported. Please use " + SelectionCacheType.PHASE + " instead.");
         }
+        // FromSolutionEntitySelector has an intrinsicCacheType STEP
         return new FromSolutionEntitySelector(entityDescriptor, minimumCacheType, randomSelection);
     }
 
@@ -366,7 +366,11 @@ public class EntitySelectorConfig extends SelectorConfig {
         if (resolvedSelectionOrder == SelectionOrder.SORTED) {
             SelectionSorter sorter;
             if (sorterManner != null) {
-                sorter = sorterManner.determineSorter(entitySelector.getEntityDescriptor());
+                EntityDescriptor entityDescriptor = entitySelector.getEntityDescriptor();
+                if (!sorterManner.hasSorter(entityDescriptor)) {
+                    return entitySelector;
+                }
+                sorter = sorterManner.determineSorter(entityDescriptor);
             } else if (sorterComparatorClass != null) {
                 Comparator<Object> sorterComparator = ConfigUtils.newInstance(this,
                         "sorterComparatorClass", sorterComparatorClass);
@@ -500,31 +504,6 @@ public class EntitySelectorConfig extends SelectorConfig {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" + entityClass + ")";
-    }
-
-    /**
-     * Build-in ways of sorting.
-     */
-    public static enum EntitySorterManner {
-        DECREASING_DIFFICULTY;
-
-        public SelectionSorter determineSorter(EntityDescriptor entityDescriptor) {
-            SelectionSorter sorter;
-            switch (this) {
-                case DECREASING_DIFFICULTY:
-                    sorter = entityDescriptor.getDecreasingDifficultySorter();
-                    if (sorter == null) {
-                        throw new IllegalArgumentException("The sorterManner (" + this
-                                + ") on entity class (" + entityDescriptor.getEntityClass()
-                                + ") fails because that entity class's " + PlanningEntity.class.getSimpleName()
-                                + " annotation does not declare any difficulty comparison.");
-                    }
-                    return sorter;
-                default:
-                    throw new IllegalStateException("The sorterManner ("
-                            + this + ") is not implemented.");
-            }
-        }
     }
 
 }
