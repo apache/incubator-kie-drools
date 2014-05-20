@@ -53,6 +53,8 @@
             <Bundle-SymbolicName>org.jbpm.process.audit</Bundle-SymbolicName>
             <Import-Package>
               !org.jbpm.process.audit,
+              javassist.util.proxy;resolution:=optional,
+              org.hibernate.proxy;resolution:=optional,
               *
             </Import-Package>
             <Private-Package></Private-Package>
