@@ -54,10 +54,10 @@
   </inheritedSolverBenchmark>
 
   <!--<solverBenchmark>-->
-    <!--<name>DEPTH_FIRST_BRANCH_AND_BOUND</name>-->
+    <!--<name>BRANCH_AND_BOUND</name>-->
     <!--<solver>-->
       <!--<exhaustiveSearch>-->
-        <!--<exhaustiveSearchType>DEPTH_FIRST_BRANCH_AND_BOUND</exhaustiveSearchType>-->
+        <!--<exhaustiveSearchType>BRANCH_AND_BOUND</exhaustiveSearchType>-->
       <!--</exhaustiveSearch>-->
     <!--</solver>-->
   <!--</solverBenchmark>-->
