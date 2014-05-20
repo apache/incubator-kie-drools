@@ -36,8 +36,13 @@
           <instructions>
             <Bundle-SymbolicName>org.drools.persistence.jpa</Bundle-SymbolicName>
             <Import-Package>
+              javassist.util.proxy;resolution:=optional,
               javax.transaction;resolution:=optional,
               javax.naming;resolution:=optional,
+              org.drools.container.spring.beans.persistence;resolution:=optional,
+              org.drools.core.marshalling.impl;resolution:=optional,
+              org.hibernate.proxy;resolution:=optional,
+              org.kie.spring.persistence;resolution:=optional,
               *
             </Import-Package>
             <Export-Package>
