@@ -24,17 +24,17 @@ public class OptimisticBoundFirstNodeComparatorTest extends AbstractNodeComparat
     public void compare() {
         OptimisticBoundFirstNodeComparator comparator = new OptimisticBoundFirstNodeComparator(true);
         assertScoreCompareToOrder(comparator,
-                buildNode(1, -110, 5),
-                buildNode(1, -110, 7),
-                buildNode(2, -110, 5),
-                buildNode(2, -110, 7),
-                buildNode(1, -90, 5),
-                buildNode(1, -90, 7),
-                buildNode(2, -90, 5),
-                buildNode(2, -90, 7),
-                buildNode(1, -95, 0, 5),
-                buildNode(2, -95, 0, 5),
-                buildNode(2, -95, 0, 7));
+                buildNode(1, -110, 5, 40),
+                buildNode(1, -110, 7, 40),
+                buildNode(2, -110, 5, 40),
+                buildNode(2, -110, 7, 40),
+                buildNode(1, -90, 5, 40),
+                buildNode(1, -90, 7, 40),
+                buildNode(2, -90, 5, 40),
+                buildNode(2, -90, 7, 40),
+                buildNode(1, -95, 0, 5, 40),
+                buildNode(2, -95, 0, 5, 40),
+                buildNode(2, -95, 0, 7, 40));
     }
 
 }

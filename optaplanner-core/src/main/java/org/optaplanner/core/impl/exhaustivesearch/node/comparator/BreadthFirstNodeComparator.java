@@ -64,7 +64,8 @@ public class BreadthFirstNodeComparator implements Comparator<ExhaustiveSearchNo
                 return 1;
             }
         }
-        // Investigate lower breath index first (does not affect the churn on workingSolution)
+        // No point to investigating higher parent breath index first (no impact on the churn on workingSolution)
+        // Investigate lower breath index first (to respect ValueSortingManner)
         long aBreadth = a.getBreadth();
         long bBreadth = b.getBreadth();
         if (aBreadth < bBreadth) {

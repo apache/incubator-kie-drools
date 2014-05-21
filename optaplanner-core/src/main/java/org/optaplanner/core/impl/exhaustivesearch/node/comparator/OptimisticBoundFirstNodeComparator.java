@@ -56,16 +56,23 @@ public class OptimisticBoundFirstNodeComparator implements Comparator<Exhaustive
         } else if (aDepth > bDepth) {
             return 1;
         }
-        // Investigate higher breath index first (to reduce the churn on workingSolution)
+        // Investigate higher parent breath index first (to reduce on the churn on workingSolution)
+        long aParentBreadth = a.getParentBreadth();
+        long bParentBreadth = b.getParentBreadth();
+        if (aParentBreadth < bParentBreadth) {
+            return -1;
+        } else if (aParentBreadth > bParentBreadth) {
+            return 1;
+        }
+        // Investigate lower breath index first (to respect ValueSortingManner)
         long aBreadth = a.getBreadth();
         long bBreadth = b.getBreadth();
         if (aBreadth < bBreadth) {
-            return -1;
-        } else if (aBreadth > bBreadth) {
             return 1;
-        } else {
-            return 0;
+        } else if (aBreadth > bBreadth) {
+            return -1;
         }
+        return 0;
     }
 
 }

@@ -102,6 +102,10 @@ public class ExhaustiveSearchNode {
         return layer.getEntity();
     }
 
+    public long getParentBreadth() {
+        return parent == null ? -1 : parent.getBreadth();
+    }
+
     @Override
     public String toString() {
         return layer.getDepth() + "-" + breadth;
