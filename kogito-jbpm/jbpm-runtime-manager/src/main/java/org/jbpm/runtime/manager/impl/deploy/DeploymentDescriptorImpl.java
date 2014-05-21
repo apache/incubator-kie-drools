@@ -18,7 +18,9 @@ package org.jbpm.runtime.manager.impl.deploy;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -61,35 +63,35 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 	
 	@XmlElement(name="marshalling-strategy")
 	@XmlElementWrapper(name="marshalling-strategies")
-	private List<ObjectModel> marshallingStrategies = new ArrayList<ObjectModel>();
+	private Set<ObjectModel> marshallingStrategies = new HashSet<ObjectModel>();
 	
 	@XmlElement(name="event-listener")
 	@XmlElementWrapper(name="event-listeners")
-	private List<ObjectModel> eventListeners = new ArrayList<ObjectModel>();
+	private Set<ObjectModel> eventListeners = new HashSet<ObjectModel>();
 	
 	@XmlElement(name="task-event-listener")
 	@XmlElementWrapper(name="task-event-listeners")
-	private List<ObjectModel> taskEventListeners = new ArrayList<ObjectModel>();
+	private Set<ObjectModel> taskEventListeners = new HashSet<ObjectModel>();
 	
 	@XmlElement(name="global")
 	@XmlElementWrapper(name="globals")
-	private List<NamedObjectModel> globals = new ArrayList<NamedObjectModel>();
+	private Set<NamedObjectModel> globals = new HashSet<NamedObjectModel>();
 	
 	@XmlElement(name="work-item-handler")
 	@XmlElementWrapper(name="work-item-handlers")
-	private List<NamedObjectModel> workItemHandlers = new ArrayList<NamedObjectModel>();
+	private Set<NamedObjectModel> workItemHandlers = new HashSet<NamedObjectModel>();
 	
 	@XmlElement(name="environment-entry")
 	@XmlElementWrapper(name="environment-entries")
-	private List<NamedObjectModel> environmentEntries = new ArrayList<NamedObjectModel>();
+	private Set<NamedObjectModel> environmentEntries = new HashSet<NamedObjectModel>();
 	
 	@XmlElement(name="configuration")
 	@XmlElementWrapper(name="configurations")
-	private List<NamedObjectModel> configuration = new ArrayList<NamedObjectModel>();
+	private Set<NamedObjectModel> configuration = new HashSet<NamedObjectModel>();
 	
 	@XmlElement(name="required-role")
 	@XmlElementWrapper(name="required-roles")
-	private List<String> requiredRoles = new ArrayList<String>();
+	private Set<String> requiredRoles = new HashSet<String>();
 	
 	public DeploymentDescriptorImpl() {
 		// fox jaxb only
@@ -127,42 +129,42 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 
 	@Override
 	public List<ObjectModel> getMarshallingStrategies() {		
-		return marshallingStrategies;
+		return new ArrayList<ObjectModel>(marshallingStrategies);
 	}
 
 	@Override
 	public List<ObjectModel> getEventListeners() {		
-		return eventListeners;
+		return new ArrayList<ObjectModel>(eventListeners);
 	}
 
 	@Override
 	public List<NamedObjectModel> getGlobals() {		
-		return globals;
+		return new ArrayList<NamedObjectModel>(globals);
 	}
 
 	@Override
 	public List<NamedObjectModel> getWorkItemHandlers() {		
-		return workItemHandlers;
+		return new ArrayList<NamedObjectModel>(workItemHandlers);
 	}
 
 	@Override
 	public List<ObjectModel> getTaskEventListeners() {		
-		return taskEventListeners;
+		return new ArrayList<ObjectModel>(taskEventListeners);
 	}
 
 	@Override
 	public List<NamedObjectModel> getEnvironmentEntries() {		
-		return environmentEntries;
+		return new ArrayList<NamedObjectModel>(environmentEntries);
 	}
 
 	@Override
 	public List<NamedObjectModel> getConfiguration() {		
-		return configuration;
+		return new ArrayList<NamedObjectModel>(configuration);
 	}
 	
 	@Override
 	public List<String> getRequiredRoles() {
-		return requiredRoles;
+		return new ArrayList<String>(requiredRoles);
 	}
 
 
@@ -187,35 +189,35 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 	}
 
 	public void setMarshallingStrategies(List<ObjectModel> marshallingStrategies) {
-		this.marshallingStrategies = marshallingStrategies;
+		this.marshallingStrategies = new HashSet<ObjectModel>(marshallingStrategies);
 	}
 
 	public void setEventListeners(List<ObjectModel> eventListeners) {
-		this.eventListeners = eventListeners;
+		this.eventListeners = new HashSet<ObjectModel>(eventListeners);
 	}
 
 	public void setTaskEventListeners(List<ObjectModel> taskEventListeners) {
-		this.taskEventListeners = taskEventListeners;
+		this.taskEventListeners = new HashSet<ObjectModel>(taskEventListeners);
 	}
 
 	public void setGlobals(List<NamedObjectModel> globals) {
-		this.globals = globals;
+		this.globals = new HashSet<NamedObjectModel>(globals);
 	}
 
 	public void setWorkItemHandlers(List<NamedObjectModel> workItemHandlers) {
-		this.workItemHandlers = workItemHandlers;
+		this.workItemHandlers = new HashSet<NamedObjectModel>(workItemHandlers);
 	}
 
 	public void setEnvironmentEntries(List<NamedObjectModel> environmentEntires) {
-		this.environmentEntries = environmentEntires;
+		this.environmentEntries = new HashSet<NamedObjectModel>(environmentEntires);
 	}
 
 	public void setConfiguration(List<NamedObjectModel> configuration) {
-		this.configuration = configuration;
+		this.configuration = new HashSet<NamedObjectModel>(configuration);
 	}
 	
 	public void setRequiredRoles(List<String> requiredRoles) {
-		this.requiredRoles = requiredRoles;
+		this.requiredRoles = new HashSet<String>(requiredRoles);
 	}
 
 
@@ -277,7 +279,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 			@Override
 			public DeploymentDescriptorBuilder addWorkItemHandler(NamedObjectModel model) {
 				if (handler.accepted(model)) {
-					descriptor.getWorkItemHandlers().add(model);
+					descriptor.workItemHandlers.add(model);
 				}
 				return this;
 			}
@@ -285,7 +287,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 			@Override
 			public DeploymentDescriptorBuilder addTaskEventListener(ObjectModel model) {
 				if (handler.accepted(model)) {
-					descriptor.getTaskEventListeners().add(model);
+					descriptor.taskEventListeners.add(model);
 				}
 				return this;
 			}
@@ -293,7 +295,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 			@Override
 			public DeploymentDescriptorBuilder addMarshalingStrategy(ObjectModel model) {
 				if (handler.accepted(model)) {
-					descriptor.getMarshallingStrategies().add(model);
+					descriptor.marshallingStrategies.add(model);
 				}
 				return this;
 			}
@@ -301,7 +303,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 			@Override
 			public DeploymentDescriptorBuilder addGlobal(NamedObjectModel model) {
 				if (handler.accepted(model)) {
-					descriptor.getGlobals().add(model);
+					descriptor.globals.add(model);
 				}
 				return this;
 			}
@@ -309,7 +311,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 			@Override
 			public DeploymentDescriptorBuilder addEventListener(ObjectModel model) {
 				if (handler.accepted(model)) {
-					descriptor.getEventListeners().add(model);
+					descriptor.eventListeners.add(model);
 				}
 				return this;
 			}
@@ -317,7 +319,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 			@Override
 			public DeploymentDescriptorBuilder addEnvironmentEntry(NamedObjectModel model) {
 				if (handler.accepted(model)) {
-					descriptor.getEnvironmentEntries().add(model);
+					descriptor.environmentEntries.add(model);
 				}
 				return this;
 			}
@@ -325,11 +327,19 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 			@Override
 			public DeploymentDescriptorBuilder addConfiguration(NamedObjectModel model) {
 				if (handler.accepted(model)) {
-					descriptor.getConfiguration().add(model);
+					descriptor.configuration.add(model);
 				}
 				return this;
 			}
 
+			@Override
+			public DeploymentDescriptorBuilder addRequiredRole(String role) {
+				if (handler.accepted(role)) {
+					descriptor.requiredRoles.add(role);
+				}
+				return this;
+			}
+			
 			@Override
 			public DeploymentDescriptorBuilder setConfiguration(List<NamedObjectModel> models) {
 				if (handler.accepted(models)) {
@@ -387,6 +397,14 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 			}
 
 			@Override
+			public DeploymentDescriptorBuilder setRequiredRoles(List<String> roles) {
+				if (handler.accepted(roles)) {
+					descriptor.setRequiredRoles(roles);
+				}
+				return this;
+			}
+			
+			@Override
 			public void setBuildHandler(BuilderHandler handler) {
 				this.handler = handler;
 			}
@@ -395,22 +413,6 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 			public DeploymentDescriptor get() {
 
 				return descriptor;
-			}
-
-			@Override
-			public DeploymentDescriptorBuilder addRequiredRole(String role) {
-				if (handler.accepted(role)) {
-					descriptor.getRequiredRoles().add(role);
-				}
-				return this;
-			}
-
-			@Override
-			public DeploymentDescriptorBuilder setRequiredRoles(List<String> roles) {
-				if (handler.accepted(roles)) {
-					descriptor.setRequiredRoles(roles);
-				}
-				return this;
 			}
 
 		};
