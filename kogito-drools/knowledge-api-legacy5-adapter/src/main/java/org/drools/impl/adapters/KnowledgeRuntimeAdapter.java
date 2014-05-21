@@ -197,7 +197,8 @@ public class KnowledgeRuntimeAdapter implements org.drools.runtime.KnowledgeRunt
     }
 
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
-        return new WorkingMemoryEntryPointAdapter(delegate.getEntryPoint(name));
+        EntryPoint entryPoint = delegate.getEntryPoint(name);
+        return entryPoint == null ? null : new WorkingMemoryEntryPointAdapter(entryPoint);
     }
 
     public Collection<? extends WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
