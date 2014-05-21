@@ -46,6 +46,7 @@ public class ExhaustiveSearchStepScope extends AbstractStepScope {
 
     public void setExpandingNode(ExhaustiveSearchNode expandingNode) {
         this.expandingNode = expandingNode;
+        this.score = expandingNode.getScore();
     }
 
     public Long getSelectedMoveCount() {
