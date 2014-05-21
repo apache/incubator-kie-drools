@@ -117,8 +117,15 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     }
 
     public Node getNode() {
-        return ((org.jbpm.workflow.core.NodeContainer)
-    		this.nodeInstanceContainer.getNodeContainer()).internalGetNode( this.nodeId );
+    	try {
+    		return ((org.jbpm.workflow.core.NodeContainer)
+				this.nodeInstanceContainer.getNodeContainer()).internalGetNode( this.nodeId );
+    	} catch (IllegalArgumentException e) {
+    		throw new IllegalArgumentException(
+				"Unknown node id: " + this.nodeId 
+				+ " for node instance " + this.id 
+				+ " for process instance " + this.processInstance, e);
+    	}
     }
     
     public boolean isInversionOfControl() {
