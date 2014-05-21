@@ -30,6 +30,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 @XmlAccessorType(XmlAccessType.NONE)
 public class NamedObjectModel extends ObjectModel {
 
+	private static final long serialVersionUID = -72398619245628956L;
+	
 	@XmlElement(name="name")
 	@XmlSchemaType(name="string")
 	private String name;
@@ -54,6 +56,31 @@ public class NamedObjectModel extends ObjectModel {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NamedObjectModel other = (NamedObjectModel) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
 	}
 
 }
