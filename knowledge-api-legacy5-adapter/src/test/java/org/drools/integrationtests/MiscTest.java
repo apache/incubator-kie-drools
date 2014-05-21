@@ -1,6 +1,5 @@
 package org.drools.integrationtests;
 
-import junit.framework.TestCase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
@@ -8,16 +7,18 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.time.SessionPseudoClock;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.drools.time.SessionPseudoClock;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.fail;
 
@@ -158,7 +159,23 @@ public class MiscTest {
         } catch( Exception other) {
             fail("Wrong exception raised = "+other.getClass().getCanonicalName());
         }
+    }
 
+    @Test
+    public void testNotExistingEntryPoint() {
+        // BZ-1099767
+        String str =
+                "package foo.bar\n" +
+                "rule R\n" +
+                "when\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        WorkingMemoryEntryPoint entryPoint = ksession.getWorkingMemoryEntryPoint("x");
+        assertNull(entryPoint);
     }
 
 }
