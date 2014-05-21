@@ -123,7 +123,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     	} catch (IllegalArgumentException e) {
     		throw new IllegalArgumentException(
 				"Unknown node id: " + this.nodeId 
-				+ " for node instance " + this.id 
+				+ " for node instance " + getUniqueId()
 				+ " for process instance " + this.processInstance, e);
     	}
     }
