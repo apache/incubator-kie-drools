@@ -30,6 +30,7 @@ import org.apache.commons.io.IOUtils;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.impl.solution.Solution;
 
 /**
  * XML based configuration that builds a {@link Solver} with {@link XStream}.
@@ -37,6 +38,11 @@ import org.optaplanner.core.config.solver.SolverConfig;
  */
 public class XStreamXmlSolverFactory extends SolverFactory {
 
+    /**
+     * Builds the {@link XStream} setup which is used to read/write solver configs and benchmark configs.
+     * It should never be used to read/write {@link Solution} instances. Use XStreamProblemIO for that instead.
+     * @return never null.
+     */
     public static XStream buildXStream() {
         XStream xStream = new XStream();
         xStream.setMode(XStream.ID_REFERENCES);
