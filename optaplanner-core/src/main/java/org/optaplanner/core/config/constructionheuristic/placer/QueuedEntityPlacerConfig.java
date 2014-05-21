@@ -47,7 +47,7 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
     @XStreamAlias("entitySelector")
     protected EntitySelectorConfig entitySelectorConfig = null;
     @XStreamImplicit()
-    private List<MoveSelectorConfig> moveSelectorConfigList = null;
+    protected List<MoveSelectorConfig> moveSelectorConfigList = null;
 
     public EntitySelectorConfig getEntitySelectorConfig() {
         return entitySelectorConfig;

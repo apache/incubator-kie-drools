@@ -26,10 +26,11 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
- * General superclass for {@link QueuedEntityPlacerConfig} // TODO and {@link PooledEntityPlacerConfig}.
+ * General superclass for {@link QueuedEntityPlacerConfig} and {@link PooledEntityPlacerConfig}.
  */
 @XStreamInclude({
-        QueuedEntityPlacerConfig.class
+        QueuedEntityPlacerConfig.class,
+        PooledEntityPlacerConfig.class
 })
 public abstract class EntityPlacerConfig {
 

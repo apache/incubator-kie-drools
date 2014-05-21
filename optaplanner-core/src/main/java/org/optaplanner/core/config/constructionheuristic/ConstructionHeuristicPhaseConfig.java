@@ -23,6 +23,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicForagerConfig;
 import org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig;
+import org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlacerConfig;
 import org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
@@ -87,20 +88,25 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         phaseConfigPolicy.setReinitializeVariableFilterEnabled(true);
         phaseConfigPolicy.setInitializedChainedValueFilterEnabled(true);
+        DefaultConstructionHeuristicPhase phase = new DefaultConstructionHeuristicPhase();
+        configurePhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
+        phase.setDecider(buildDecider(phaseConfigPolicy, phase.getTermination()));
         ConstructionHeuristicType constructionHeuristicType_ = constructionHeuristicType == null
                 ? ConstructionHeuristicType.FIRST_FIT : constructionHeuristicType;
         phaseConfigPolicy.setEntitySorterManner(
                 constructionHeuristicType_.getDefaultEntitySorterManner());
         phaseConfigPolicy.setValueSorterManner(
                 constructionHeuristicType_.getDefaultValueSorterManner());
-        DefaultConstructionHeuristicPhase phase = new DefaultConstructionHeuristicPhase();
-        configurePhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
-        phase.setDecider(buildDecider(phaseConfigPolicy, phase.getTermination()));
         EntityPlacerConfig entityPlacerConfig;
         if (ConfigUtils.isEmptyCollection(entityPlacerConfigList)) {
-            entityPlacerConfig = new QueuedEntityPlacerConfig();
+            entityPlacerConfig = constructionHeuristicType_.newEntityPlacerConfig();
         } else if (entityPlacerConfigList.size() == 1) {
             entityPlacerConfig = entityPlacerConfigList.get(0);
+            if (constructionHeuristicType != null) {
+                throw new IllegalArgumentException("The constructionHeuristicType (" + constructionHeuristicType
+                        + ") should not be configured if the entityPlacerConfig (" + entityPlacerConfig
+                        + ") is explicitly configured.");
+            }
         } else {
             // TODO entityPlacerConfigList is only a List because of XStream limitations.
             throw new IllegalArgumentException("The entityPlacerConfigList (" + entityPlacerConfigList
@@ -152,7 +158,8 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig {
         FIRST_FIT,
         FIRST_FIT_DECREASING,
         BEST_FIT,
-        BEST_FIT_DECREASING;
+        BEST_FIT_DECREASING,
+        CHEAPEST_INSERTION;
 
         public EntitySorterManner getDefaultEntitySorterManner() {
             switch (this) {
@@ -162,9 +169,10 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig {
                 case FIRST_FIT_DECREASING:
                 case BEST_FIT_DECREASING:
                     return EntitySorterManner.DECREASING_DIFFICULTY;
+                case CHEAPEST_INSERTION:
+                    return EntitySorterManner.DECREASING_DIFFICULTY_IF_AVAILABLE;
                 default:
-                    throw new IllegalStateException("The constructionHeuristicType ("
-                            + this + ") is not implemented.");
+                    throw new IllegalStateException("The constructionHeuristicType (" + this + ") is not implemented.");
             }
         }
 
@@ -176,9 +184,24 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig {
                 case BEST_FIT:
                 case BEST_FIT_DECREASING:
                     return ValueSorterManner.INCREASING_STRENGTH;
+                case CHEAPEST_INSERTION:
+                    return ValueSorterManner.INCREASING_STRENGTH_IF_AVAILABLE;
                 default:
-                    throw new IllegalStateException("The constructionHeuristicType ("
-                            + this + ") is not implemented.");
+                    throw new IllegalStateException("The constructionHeuristicType (" + this + ") is not implemented.");
+            }
+        }
+
+        public EntityPlacerConfig newEntityPlacerConfig() {
+            switch (this) {
+                case FIRST_FIT:
+                case FIRST_FIT_DECREASING:
+                case BEST_FIT:
+                case BEST_FIT_DECREASING:
+                    return new QueuedEntityPlacerConfig();
+                case CHEAPEST_INSERTION:
+                    return new PooledEntityPlacerConfig();
+                default:
+                    throw new IllegalStateException("The constructionHeuristicType (" + this + ") is not implemented.");
             }
         }
     }
