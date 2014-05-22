@@ -490,6 +490,24 @@ $ mvn exec:exec
     </mediaobject>
   </section>
 
+  <section xml:id="relationshipWithKie">
+    <title>Relationship with Drools and jBPM</title>
+
+    <para>OptaPlanner is part of the <link xlink:href="http://www.kiegroup.org">KIE group of projects</link>. It
+    releases regularly (often once or twice per month) together with the <link
+    xlink:href="http://www.drools.org/">Drools</link> rule engine and the <link
+    xlink:href="http://www.jbpm.org/">jBPM</link> workflow engine.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Planner_introduction/kieFunctionalityOverview.png"/>
+      </imageobject>
+    </mediaobject>
+
+    <para>See <link linkend="architectureOverview">the architecture overview</link> to learn more about the optional
+    integration with Drools. </para>
+  </section>
+
   <section xml:id="questionsIssuesAndBlog">
     <title>Questions, issues and blog</title>
 

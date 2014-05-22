@@ -120,7 +120,7 @@
     planner.</para>
   </section>
 
-  <section>
+  <section xml:id="architectureOverview">
     <title>Architecture overview</title>
 
     <para>OptaPlanner is the first framework to combine optimization algorithms (metaheuristics, ...) with score
