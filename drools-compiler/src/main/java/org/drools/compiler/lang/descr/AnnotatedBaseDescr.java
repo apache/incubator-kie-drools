@@ -58,6 +58,12 @@ public class AnnotatedBaseDescr extends BaseDescr
     public AnnotationDescr addAnnotation( AnnotationDescr annotation ) {
         if ( this.annotations == null ) {
             this.annotations = new HashMap<String, AnnotationDescr>();
+        } else {
+            AnnotationDescr existingAnnotation = annotations.get( annotation.getName() );
+            if (existingAnnotation != null) {
+                existingAnnotation.setDuplicated();
+                return existingAnnotation;
+            }
         }
         return this.annotations.put( annotation.getName(),
                                      annotation );
@@ -73,6 +79,12 @@ public class AnnotatedBaseDescr extends BaseDescr
                                           String value ) {
         if ( this.annotations == null ) {
             this.annotations = new HashMap<String, AnnotationDescr>();
+        } else {
+            AnnotationDescr existingAnnotation = annotations.get( name );
+            if (existingAnnotation != null) {
+                existingAnnotation.setDuplicated();
+                return existingAnnotation;
+            }
         }
         AnnotationDescr annotation = new AnnotationDescr( name,
                                                           value );
