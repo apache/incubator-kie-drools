@@ -73,7 +73,7 @@ public abstract class HTPerformanceBaseTest extends HumanTaskServicesBaseTest {
            
         }
         
-        for(int i = 0; i < 99; i++){
+        for(int i = 0; i < times; i++){
             long beforeQueryTime = System.currentTimeMillis();
             System.out.println("Querying tasks....");
             List<TaskSummary> tasksAssignedAsPotentialOwner = taskService.getTasksAssignedAsPotentialOwner("salaboy",null, null, new QueryFilterImpl(i * 1000,1000));

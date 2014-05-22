@@ -83,7 +83,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(10, task.getPriority());
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Reserved, task.getStatus());
-        assertEquals("Darth Vader", task.getActualOwnerId());
+        assertEquals("Darth Vader", task.getActualOwner().getId());
         assertEquals(10, task.getProcessInstanceId());
 
         taskService.start(task.getId(), "Darth Vader");
@@ -212,7 +212,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(10, task.getPriority());
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Reserved, task.getStatus());
-        assertEquals("Darth Vader", task.getActualOwnerId());
+        assertEquals("Darth Vader", task.getActualOwner().getId());
 
         taskService.start(task.getId(), "Darth Vader");
         
@@ -242,7 +242,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(10, task.getPriority());
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Reserved, task.getStatus());
-        assertEquals("Darth Vader", task.getActualOwnerId());
+        assertEquals("Darth Vader", task.getActualOwner().getId());
 
         taskService.skip(task.getId(), "Darth Vader");
         
@@ -304,7 +304,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(10, taskSummary.getPriority());
         assertEquals("Comment", taskSummary.getDescription());
         assertEquals(Status.Reserved, taskSummary.getStatus());
-        assertEquals("Darth Vader", taskSummary.getActualOwnerId());
+        assertEquals("Darth Vader", taskSummary.getActualOwner().getId());
     }
     @Test
     public void testTaskAbortSkippable() throws Exception {
@@ -371,7 +371,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(10, taskSummary.getPriority());
         assertEquals("Comment", taskSummary.getDescription());
         assertEquals(Status.Reserved, taskSummary.getStatus());
-        assertEquals("Darth Vader", taskSummary.getActualOwnerId());
+        assertEquals("Darth Vader", taskSummary.getActualOwner().getId());
         
         Task task = taskService.getTaskById(taskSummary.getId());
         assertEquals(AccessType.Inline, ((InternalTaskData) task.getTaskData()).getDocumentAccessType());
@@ -428,7 +428,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(10, taskSummary.getPriority());
         assertEquals("Comment", taskSummary.getDescription());
         assertEquals(Status.Reserved, taskSummary.getStatus());
-        assertEquals("Darth Vader", taskSummary.getActualOwnerId());
+        assertEquals("Darth Vader", taskSummary.getActualOwner().getId());
 
 
 
@@ -560,8 +560,8 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(10, task.getPriority());
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Reserved, task.getStatus());
-        assertEquals("Darth Vader", task.getActualOwnerId());
-        assertEquals("john", task.getCreatedById());
+        assertEquals("Darth Vader", task.getActualOwner().getId());
+        assertEquals("john", task.getCreatedBy().getId());
         assertEquals(10, task.getProcessInstanceId());
 
         taskService.start(task.getId(), "Darth Vader");
@@ -591,8 +591,8 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(10, task.getPriority());
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Reserved, task.getStatus());
-        assertEquals("Darth Vader", task.getActualOwnerId());
-        assertEquals("Darth Vader", task.getCreatedById());
+        assertEquals("Darth Vader", task.getActualOwner().getId());
+        assertEquals("Darth Vader", task.getCreatedBy().getId());
         assertEquals(10, task.getProcessInstanceId());
 
         taskService.start(task.getId(), "Darth Vader");
@@ -624,7 +624,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(10, task.getPriority());
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Reserved, task.getStatus());
-        assertEquals("Darth Vader", task.getActualOwnerId());
+        assertEquals("Darth Vader", task.getActualOwner().getId());
         assertEquals(10, task.getProcessInstanceId());
 
         taskService.start(task.getId(), "Darth Vader");
@@ -655,7 +655,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(10, task.getPriority());
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Reserved, task.getStatus());
-        assertEquals("Darth Vader", task.getActualOwnerId());
+        assertEquals("Darth Vader", task.getActualOwner().getId());
         assertEquals(10, task.getProcessInstanceId());
 
         taskService.start(task.getId(), "Darth Vader");
@@ -687,7 +687,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(10, task.getPriority());
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Reserved, task.getStatus());
-        assertEquals("Darth Vader", task.getActualOwnerId());
+        assertEquals("Darth Vader", task.getActualOwner().getId());
         assertEquals(10, task.getProcessInstanceId());
         
         assertEquals(DateTimeUtils.parseDateTime("2013-11-25T10:35:00Z"), task.getExpirationTime().getTime());
@@ -720,7 +720,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(10, task.getPriority());
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Reserved, task.getStatus());
-        assertEquals("Darth Vader", task.getActualOwnerId());
+        assertEquals("Darth Vader", task.getActualOwner().getId());
         assertEquals(10, task.getProcessInstanceId());
         
         assertTrue( currentTime + DateTimeUtils.parseDuration("2d") > task.getExpirationTime().getTime());
