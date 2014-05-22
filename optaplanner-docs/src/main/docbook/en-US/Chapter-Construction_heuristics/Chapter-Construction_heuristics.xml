@@ -392,7 +392,44 @@
   </section>
 
   <section xml:id="cheapestInsertion">
-    <title>Cheapest insertion</title>
+    <title>Cheapest Insertion</title>
+
+    <section>
+      <title>Algorithm description</title>
+
+      <para>The Cheapest Insertion algorithm cycles through all the planning values for all the planning entities,
+      initializing 1 planning entity at a time. It assigns a planning entity to the best available planning value (out
+      of all the planning entities and values), taking the already initialized planning entities into account. It
+      terminates when all planning entities have been initialized. It never changes a planning entity after it has been
+      assigned.</para>
+
+      <note>
+        <para>Cheapest Insertion scales considerably worse than First Fit, etc.</para>
+      </note>
+    </section>
+
+    <section>
+      <title>Configuration</title>
+
+      <para>Simplest configuration of Cheapest Insertion:</para>
+
+      <programlisting language="xml">  &lt;constructionHeuristic&gt;
+    &lt;constructionHeuristicType&gt;CHEAPEST_INSERTION&lt;/constructionHeuristicType&gt;
+  &lt;/constructionHeuristic&gt;</programlisting>
+
+      <note>
+        <para>If the <link linkend="initializingScoreTrend">InitializingScoreTrend</link> is
+        <literal>ONLY_DOWN</literal>, this algorithm is faster: for an entity, it picks the first move for which the
+        score does not deteriorate the last step score, ignoring all subsequent moves.</para>
+      </note>
+
+      <para>For advanced configuration, see <link linkend="advancedConstructiveInsertion">Advanced Constructive
+      Insertion</link>.</para>
+    </section>
+  </section>
+
+  <section xml:id="regretInsertion">
+    <title>Regret Insertion</title>
 
     <section>
       <title>Algorithm description</title>
@@ -407,19 +444,20 @@
     </section>
   </section>
 
-  <section xml:id="regretInsertion">
-    <title>Regret insertion</title>
+  <section xml:id="advancedConstructiveInsertion">
+    <title>Advanced Constructive Insertion</title>
 
     <section>
       <title>Algorithm description</title>
 
-      <para>TODO</para>
+      <para>Advanced Constructive Insertion is a versatile, generic form of <link linkend="cheapestInsertion">Cheapest
+      Insertion</link> and <link linkend="regretInsertion">Regret Insertion</link>.</para>
     </section>
 
     <section>
       <title>Configuration</title>
 
-      <para>TODO Not implemented yet.</para>
+      <para>TODO</para>
     </section>
   </section>
 </chapter>

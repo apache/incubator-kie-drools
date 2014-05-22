@@ -83,8 +83,9 @@
         </imageobject>
       </mediaobject>
 
-      <para>Notice that Branch And Bound (much like Brute Force) creates a search tree that explodes exponentially as
-      the problem size increases. So it hits the same scalability wall, only a little bit later.</para>
+      <para>Notice that Branch And Bound (much like <link linkend="bruteForce">Brute Force</link>) creates a search tree
+      that explodes exponentially as the problem size increases. So it hits the same scalability wall, only a little bit
+      later.</para>
 
       <important>
         <para><emphasis role="bold">Branch And Bound is mostly unusable for a real-world problem due to time
