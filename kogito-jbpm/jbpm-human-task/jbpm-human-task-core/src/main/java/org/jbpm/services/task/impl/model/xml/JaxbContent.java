@@ -50,20 +50,22 @@ public class JaxbContent implements Content {
             return; 
         }
         this.id = content.getId();
-        Object realContentObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
-        this.className = realContentObject.getClass().getName();
-        boolean serialize = true;
-        if( realContentObject instanceof Map<?, ?> ) { 
-            Map<?,?> contentMap = (Map<?,?>) realContentObject;
-            if( ! contentMap.isEmpty() ) { 
-                if( contentMap.keySet().iterator().next() instanceof String ) { 
-                    serialize = false;
-                    this.contentMap = (Map<String, Object>) contentMap;
+        if( content.getContent() != null ) { 
+            Object realContentObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+            this.className = realContentObject.getClass().getName();
+            boolean serialize = true;
+            if( realContentObject instanceof Map<?, ?> ) { 
+                Map<?,?> contentMap = (Map<?,?>) realContentObject;
+                if( ! contentMap.isEmpty() ) { 
+                    if( contentMap.keySet().iterator().next() instanceof String ) { 
+                        serialize = false;
+                        this.contentMap = (Map<String, Object>) contentMap;
+                    }
                 }
             }
-        }
-        if( serialize ) { 
-            this.serializedContent = StringObjectMapXmlAdapter.serializeObject(realContentObject, "Content(" + this.id + ").content" );
+            if( serialize ) { 
+                this.serializedContent = StringObjectMapXmlAdapter.serializeObject(realContentObject, "Content(" + this.id + ").content" );
+            }
         }
     }
     
