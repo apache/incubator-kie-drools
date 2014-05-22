@@ -5794,4 +5794,17 @@ public class Misc2Test extends CommonTestMethodBase {
         assertFalse( kbuilder.hasErrors() );
     }
 
+    @Test
+    public void testCompilationFailureWithDuplicatedAnnotation() {
+        // BZ-1099896
+        String str = "declare EventA\n" +
+                     " @role(fact)\n" +
+                     " @role(event)\n" +
+                     "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        assertEquals(1, results.getMessages().size());
+    }
 }

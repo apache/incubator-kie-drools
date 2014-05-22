@@ -1121,7 +1121,7 @@ public class TypeDeclarationBuilder {
             }
 
             // is it a regular fact or an event?
-            AnnotationDescr annotationDescr = typeDescr.getAnnotation(TypeDeclaration.Role.ID);
+            AnnotationDescr annotationDescr = getSingleAnnotation(typeDescr, TypeDeclaration.Role.ID);
             String role = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
             if (role != null) {
                 type.setRole(TypeDeclaration.Role.parseRole(role));
@@ -1129,7 +1129,7 @@ public class TypeDeclarationBuilder {
                 type.setRole(parent.getRole());
             }
 
-            annotationDescr = typeDescr.getAnnotation(TypeDeclaration.ATTR_TYPESAFE);
+            annotationDescr = getSingleAnnotation(typeDescr, TypeDeclaration.ATTR_TYPESAFE);
             String typesafe = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
             if (typesafe != null) {
                 type.setTypesafe(Boolean.parseBoolean(typesafe));
@@ -1138,14 +1138,14 @@ public class TypeDeclarationBuilder {
             }
 
             // is it a pojo or a template?
-            annotationDescr = typeDescr.getAnnotation(TypeDeclaration.Format.ID);
+            annotationDescr = getSingleAnnotation(typeDescr, TypeDeclaration.Format.ID);
             String format = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
             if (format != null) {
                 type.setFormat(TypeDeclaration.Format.parseFormat(format));
             }
 
             // is it a class, a trait or an enum?
-            annotationDescr = typeDescr.getAnnotation(TypeDeclaration.Kind.ID);
+            annotationDescr = getSingleAnnotation(typeDescr, TypeDeclaration.Kind.ID);
             String kind = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
             if (kind != null) {
                 type.setKind(TypeDeclaration.Kind.parseKind(kind));
@@ -1154,7 +1154,7 @@ public class TypeDeclarationBuilder {
                 type.setKind(TypeDeclaration.Kind.ENUM);
             }
 
-            annotationDescr = typeDescr.getAnnotation(TypeDeclaration.ATTR_CLASS);
+            annotationDescr = getSingleAnnotation(typeDescr, TypeDeclaration.ATTR_CLASS);
             String className = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
             if (isEmpty(className)) {
                 className = type.getTypeName();
@@ -1188,6 +1188,18 @@ public class TypeDeclarationBuilder {
         }
 
         return unresolvedTypes;
+    }
+
+    private AnnotationDescr getSingleAnnotation(AbstractClassTypeDeclarationDescr typeDescr, String name) {
+        AnnotationDescr annotationDescr = typeDescr.getAnnotation(name);
+        if (annotationDescr != null && annotationDescr.isDuplicated()) {
+            kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
+                                                               "Duplicated annotation '" + name +
+                                                               "' for type declaration of '" +
+                                                               typeDescr.getTypeName() + "'"));
+            return null;
+        }
+        return annotationDescr;
     }
 
     /**

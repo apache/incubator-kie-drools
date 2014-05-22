@@ -26,6 +26,8 @@ public class AnnotationDescr extends BaseDescr {
     private final String        name;
     private Map<String, String> values;
 
+    private boolean duplicated = false;
+
     // '' and 'a' are passed through as 
     public static String unquote( String s ){
         if( s.startsWith( "\"" ) && s.endsWith( "\"" ) ||
@@ -152,5 +154,13 @@ public class AnnotationDescr extends BaseDescr {
                 return sb.toString();
 
         }
+    }
+
+    public boolean isDuplicated() {
+        return duplicated;
+    }
+
+    public void setDuplicated() {
+        this.duplicated = true;
     }
 }
