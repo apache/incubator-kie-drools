@@ -28,7 +28,7 @@ rule "Purchase notification"
 
     when
         $c : Customer()
-        $p : Purchase( customer == $c)
+        $p : Purchase( customer == $c )
     then
         System.out.println( "Customer " + $c.name + " just purchased " + $p.product.name );
 end
@@ -50,7 +50,7 @@ rule "Discount awarded notification"
         System.out.println( "Customer " + $c.name + " now has a discount of " + $d.amount );
 end
 
-rule "Apply 10% discount if total purcahses is over 100"
+rule "Apply 10% discount if total purchases is over 100"
     no-loop true
     dialect "java"
     when
@@ -58,7 +58,7 @@ rule "Apply 10% discount if total purcahses is over 100"
         $i : Double(doubleValue  > 100) from accumulate ( Purchase( customer == $c, $price : product.price ),
                                                                     sum( $price ) )
     then
-          $c.setDiscount( 10 );
+        $c.setDiscount( 10 );
         insertLogical( new Discount($c, 10) );
         System.out.println( "Customer " + $c.getName() + " now has a shopping total of " + $i );
 end
