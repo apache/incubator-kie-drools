@@ -2210,14 +2210,14 @@
      inkscape:cx="359.38983"
      inkscape:cy="275.71399"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer3"
      showgrid="true"
      width="800px"
      borderlayer="true"
      gridtolerance="10"
      inkscape:window-width="1680"
      inkscape:window-height="991"
-     inkscape:window-x="1680"
+     inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
      inkscape:snap-grids="true"
@@ -3614,7 +3614,7 @@
            y="73.777191"
            style="font-size:16px;font-weight:normal;-inkscape-font-specification:Arial" /></flowRegion><flowPara
          style="font-size:16px;font-weight:normal;-inkscape-font-specification:Arial"
-         id="flowPara4888">WebApp to manage</flowPara><flowPara
+         id="flowPara4888">WebApp to manage and monitor</flowPara><flowPara
          id="flowPara4890"
          style="font-size:16px;font-weight:normal;-inkscape-font-specification:Arial">workflows, forms, ...</flowPara></flowRoot>    <rect
        ry="5"
