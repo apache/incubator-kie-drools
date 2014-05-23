@@ -18,8 +18,6 @@ package org.kie.internal.runtime.conf;
 
 import java.util.List;
 
-import org.kie.internal.deployment.DeploymentUnit.RuntimeStrategy;
-
 /**
  * Deployment descriptor defines configurable components of deployable unit - kjar
  * that will be used upon deployment to execution environment providing flexible and
