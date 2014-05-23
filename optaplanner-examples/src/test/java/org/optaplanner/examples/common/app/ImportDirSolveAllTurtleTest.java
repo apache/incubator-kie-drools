@@ -50,10 +50,11 @@ public abstract class ImportDirSolveAllTurtleTest extends SolveAllTurtleTest {
         return filesAsParameters;
     }
 
+    protected File dataFile;
     protected AbstractSolutionImporter solutionImporter;
 
     protected ImportDirSolveAllTurtleTest(File dataFile) {
-        super(dataFile);
+        this.dataFile = dataFile;
     }
 
     @Before

@@ -43,12 +43,6 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
         assumeTrue(ObjectUtils.equals("true", System.getProperty("runTurtleTests")));
     }
 
-    protected File dataFile;
-
-    protected SolveAllTurtleTest(File dataFile) {
-        this.dataFile = dataFile;
-    }
-
     protected abstract String createSolverConfigResource();
 
     protected abstract Solution readPlanningProblem();

@@ -50,10 +50,11 @@ public abstract class UnsolvedDirSolveAllTurtleTest extends SolveAllTurtleTest {
         return filesAsParameters;
     }
 
+    protected File dataFile;
     protected SolutionDao solutionDao;
 
     protected UnsolvedDirSolveAllTurtleTest(File dataFile) {
-        super(dataFile);
+        this.dataFile = dataFile;
     }
 
     @Before
