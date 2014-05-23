@@ -20,13 +20,13 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
+import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingDao;
-import org.optaplanner.examples.common.app.ConstructionHeuristicTest;
+import org.optaplanner.examples.common.app.ExhaustiveSearchTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.nqueens.persistence.NQueensDao;
 
-public class CloudBalanceConstructionHeuristicTest extends ConstructionHeuristicTest {
+public class CloudBalancingExhaustiveSearchTest extends ExhaustiveSearchTest {
 
     @Parameterized.Parameters(name = "{index}: {0} - {1}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
@@ -35,9 +35,9 @@ public class CloudBalanceConstructionHeuristicTest extends ConstructionHeuristic
                 "3computers-9processes.xml");
     }
 
-    public CloudBalanceConstructionHeuristicTest(File unsolvedDataFile,
-            ConstructionHeuristicPhaseConfig.ConstructionHeuristicType constructionHeuristicType) {
-        super(unsolvedDataFile, constructionHeuristicType);
+    public CloudBalancingExhaustiveSearchTest(File unsolvedDataFile,
+            ExhaustiveSearchPhaseConfig.ExhaustiveSearchType exhaustiveSearchType) {
+        super(unsolvedDataFile, exhaustiveSearchType);
     }
 
     @Override

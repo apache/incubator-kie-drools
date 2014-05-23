@@ -17,56 +17,42 @@
 package org.optaplanner.examples.common.app;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.ObjectUtils;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
+import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
-import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
-import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
-import org.optaplanner.core.impl.solution.Solution;
-import org.optaplanner.examples.common.business.ProblemFileComparator;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assume.*;
-
-public abstract class ConstructionHeuristicTest extends PhaseTest {
+@RunWith(Parameterized.class)
+public abstract class ExhaustiveSearchTest extends PhaseTest {
 
     protected static Collection<Object[]> buildParameters(SolutionDao solutionDao, String... unsolvedFileNames) {
-        return buildParameters(solutionDao, ConstructionHeuristicPhaseConfig.ConstructionHeuristicType.values(),
+        return buildParameters(solutionDao, ExhaustiveSearchPhaseConfig.ExhaustiveSearchType.values(),
                 unsolvedFileNames);
     }
 
-    protected ConstructionHeuristicPhaseConfig.ConstructionHeuristicType constructionHeuristicType;
+    protected ExhaustiveSearchPhaseConfig.ExhaustiveSearchType exhaustiveSearchType;
 
-    protected ConstructionHeuristicTest(File dataFile,
-            ConstructionHeuristicPhaseConfig.ConstructionHeuristicType constructionHeuristicType) {
+    protected ExhaustiveSearchTest(File dataFile,
+            ExhaustiveSearchPhaseConfig.ExhaustiveSearchType exhaustiveSearchType) {
         super(dataFile);
-        this.constructionHeuristicType = constructionHeuristicType;
+        this.exhaustiveSearchType = exhaustiveSearchType;
     }
 
     protected SolverFactory buildSolverFactory() {
         SolverFactory solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
         SolverConfig solverConfig = solverFactory.getSolverConfig();
         solverConfig.setTerminationConfig(new TerminationConfig());
-        ConstructionHeuristicPhaseConfig constructionHeuristicPhaseConfig = new ConstructionHeuristicPhaseConfig();
-        constructionHeuristicPhaseConfig.setConstructionHeuristicType(constructionHeuristicType);
-        solverConfig.setPhaseConfigList(Arrays.<PhaseConfig>asList(constructionHeuristicPhaseConfig));
+        ExhaustiveSearchPhaseConfig exhaustiveSearchPhaseConfig = new ExhaustiveSearchPhaseConfig();
+        exhaustiveSearchPhaseConfig.setExhaustiveSearchType(exhaustiveSearchType);
+        solverConfig.setPhaseConfigList(Arrays.<PhaseConfig>asList(exhaustiveSearchPhaseConfig));
         return solverFactory;
     }
 
