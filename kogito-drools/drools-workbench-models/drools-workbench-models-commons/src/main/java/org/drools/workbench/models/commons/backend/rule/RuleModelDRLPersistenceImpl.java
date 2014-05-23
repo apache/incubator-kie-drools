@@ -2227,10 +2227,10 @@ public class RuleModelDRLPersistenceImpl
             return operator;
         }
 
-        if ( expr.contains( "not in" ) ) {
+        if ( expr.contains( " not in " ) ) {
             return "not in";
         }
-        if ( expr.contains( " in" ) ) {
+        if ( expr.contains( " in " ) ) {
             return "in";
         }
         return null;
@@ -2774,7 +2774,7 @@ public class RuleModelDRLPersistenceImpl
             } else {
                 operator = findOperator( expr );
                 if ( operator != null ) {
-                    int opPos = expr.indexOf( operator );
+                    int opPos = expr.lastIndexOf( operator );
                     fieldName = expr.substring( 0,
                                                 opPos ).trim();
                     value = expr.substring( opPos + operator.length(),
