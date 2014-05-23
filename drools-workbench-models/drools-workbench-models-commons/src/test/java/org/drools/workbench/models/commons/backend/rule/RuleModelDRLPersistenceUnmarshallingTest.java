@@ -22,11 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.workbench.models.datamodel.rule.ExpressionCollection;
-import org.drools.workbench.models.datamodel.rule.ExpressionMethod;
-import org.drools.workbench.models.datamodel.rule.ExpressionText;
-import org.drools.workbench.models.datamodel.rule.FromCollectCompositeFactPattern;
-import org.junit.Assert;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.MethodInfo;
@@ -45,9 +40,12 @@ import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.DSLComplexVariableValue;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.DSLVariableValue;
+import org.drools.workbench.models.datamodel.rule.ExpressionCollection;
 import org.drools.workbench.models.datamodel.rule.ExpressionField;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
+import org.drools.workbench.models.datamodel.rule.ExpressionMethod;
 import org.drools.workbench.models.datamodel.rule.ExpressionPart;
+import org.drools.workbench.models.datamodel.rule.ExpressionText;
 import org.drools.workbench.models.datamodel.rule.ExpressionUnboundFact;
 import org.drools.workbench.models.datamodel.rule.ExpressionVariable;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
@@ -55,6 +53,7 @@ import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.models.datamodel.rule.FromAccumulateCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.FromCollectCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.IPattern;
@@ -64,7 +63,6 @@ import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -4444,6 +4442,202 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         assertEquals( 0,
                       m.rhs.length );
+    }
+
+    @Test
+    public void testLHSInOperatorFieldNameNotContainingInLiteral() {
+        String drl = "package org.test\n"
+                + "rule \"in\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "Person( field1 in (1, 2) )\n"
+                + "then\n"
+                + "end";
+
+        addModelField( "org.test.Person",
+                       "field1",
+                       "java.lang.Integer",
+                       DataType.TYPE_NUMERIC_INTEGER );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals( "Person",
+                      fp.getFactType() );
+
+        assertEquals( 1,
+                      fp.getConstraintList().getConstraints().length );
+        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+
+        SingleFieldConstraint sfp = (SingleFieldConstraint) fp.getConstraint( 0 );
+        assertEquals( "Person",
+                      sfp.getFactType() );
+        assertEquals( "field1",
+                      sfp.getFieldName() );
+        assertEquals( "in",
+                      sfp.getOperator() );
+        assertEquals( "1, 2",
+                      sfp.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      sfp.getConstraintValueType() );
+    }
+
+    @Test
+    public void testLHSInOperatorFieldNameContainingInLiteral() {
+        String drl = "package org.test\n"
+                + "rule \"in\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "Person( rating in (1, 2) )\n"
+                + "then\n"
+                + "end";
+
+        addModelField( "org.test.Person",
+                       "rating",
+                       "java.lang.Integer",
+                       DataType.TYPE_NUMERIC_INTEGER );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals( "Person",
+                      fp.getFactType() );
+
+        assertEquals( 1,
+                      fp.getConstraintList().getConstraints().length );
+        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+
+        SingleFieldConstraint sfp = (SingleFieldConstraint) fp.getConstraint( 0 );
+        assertEquals( "Person",
+                      sfp.getFactType() );
+        assertEquals( "rating",
+                      sfp.getFieldName() );
+        assertEquals( "in",
+                      sfp.getOperator() );
+        assertEquals( "1, 2",
+                      sfp.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      sfp.getConstraintValueType() );
+    }
+
+    @Test
+    public void testLHSInOperatorFieldNameNotContainingNotInLiteral() {
+        String drl = "package org.test\n"
+                + "rule \"in\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "Person( field1 not in (1, 2) )\n"
+                + "then\n"
+                + "end";
+
+        addModelField( "org.test.Person",
+                       "field1",
+                       "java.lang.Integer",
+                       DataType.TYPE_NUMERIC_INTEGER );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals( "Person",
+                      fp.getFactType() );
+
+        assertEquals( 1,
+                      fp.getConstraintList().getConstraints().length );
+        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+
+        SingleFieldConstraint sfp = (SingleFieldConstraint) fp.getConstraint( 0 );
+        assertEquals( "Person",
+                      sfp.getFactType() );
+        assertEquals( "field1",
+                      sfp.getFieldName() );
+        assertEquals( "not in",
+                      sfp.getOperator() );
+        assertEquals( "1, 2",
+                      sfp.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      sfp.getConstraintValueType() );
+    }
+
+    @Test
+    public void testLHSInOperatorFieldNameContainingNotInLiteral() {
+        String drl = "package org.test\n"
+                + "rule \"in\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "Person( rating not in (1, 2) )\n"
+                + "then\n"
+                + "end";
+
+        addModelField( "org.test.Person",
+                       "rating",
+                       "java.lang.Integer",
+                       DataType.TYPE_NUMERIC_INTEGER );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals( "Person",
+                      fp.getFactType() );
+
+        assertEquals( 1,
+                      fp.getConstraintList().getConstraints().length );
+        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+
+        SingleFieldConstraint sfp = (SingleFieldConstraint) fp.getConstraint( 0 );
+        assertEquals( "Person",
+                      sfp.getFactType() );
+        assertEquals( "rating",
+                      sfp.getFieldName() );
+        assertEquals( "not in",
+                      sfp.getOperator() );
+        assertEquals( "1, 2",
+                      sfp.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      sfp.getConstraintValueType() );
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
