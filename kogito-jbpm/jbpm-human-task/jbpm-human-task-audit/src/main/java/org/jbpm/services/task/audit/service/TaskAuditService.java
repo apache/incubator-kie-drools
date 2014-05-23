@@ -22,10 +22,7 @@ import org.kie.api.task.TaskService;
 import org.kie.internal.task.api.QueryFilter;
 import org.kie.internal.task.api.model.TaskEvent;
 
-/**
- *
- * @author salaboy
- */
+
 public interface TaskAuditService {
     
     void setTaskService(TaskService taskService);

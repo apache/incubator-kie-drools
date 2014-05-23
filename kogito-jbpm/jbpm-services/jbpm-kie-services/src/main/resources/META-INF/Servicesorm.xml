@@ -218,30 +218,6 @@
   </named-query>
   
   <!-- node instance queries -->
-  <named-query name="getProcessInstanceHistory">
-    <query>
-      select
-      new org.jbpm.kie.services.impl.model.NodeInstanceDesc(
-      log.nodeInstanceId,
-      log.nodeId,
-      log.nodeName,
-      log.nodeType,
-      log.externalId,
-      log.processInstanceId,
-      log.date,
-      log.connection,
-      log.type
-      )
-      from
-        NodeInstanceLog log
-      where
-        log.processInstanceId=:processId AND log.externalId=:externalId AND log.type =:type 
-      ORDER BY 
-        log.date DESC, log.id DESC
-
-    </query>
-    <!-- hint name="org.hibernate.timeout" value="200"/ -->
-  </named-query>
 
   <named-query name="getProcessInstanceFullHistory">
     <query>
@@ -255,12 +231,39 @@
       log.processInstanceId,
       log.date,
       log.connection,
-      log.type
+      log.type,
+      log.workItemId
       )
       from
         NodeInstanceLog log
       where
         log.processInstanceId=:processId AND log.externalId=:externalId 
+      ORDER BY 
+        log.date DESC, log.id DESC
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+  
+    <named-query name="getProcessInstanceFullHistoryByType">
+    <query>
+      select
+      new org.jbpm.kie.services.impl.model.NodeInstanceDesc(
+      log.nodeInstanceId,
+      log.nodeId,
+      log.nodeName,
+      log.nodeType,
+      log.externalId,
+      log.processInstanceId,
+      log.date,
+      log.connection,
+      log.type,
+      log.workItemId
+      )
+      from
+        NodeInstanceLog log
+      where
+        log.processInstanceId=:processId AND log.externalId=:externalId 
+        AND log.type=:type
       ORDER BY 
         log.date DESC, log.id DESC
     </query>
@@ -280,7 +283,8 @@
       log.processInstanceId,
       log.date,
       log.connection,
-      log.type
+      log.type,
+      log.workItemId
       )
       from
         NodeInstanceLog log
@@ -308,7 +312,8 @@
       log.processInstanceId,
       log.date,
       log.connection,
-      log.type
+      log.type,
+      log.workItemId
       )
       from
         NodeInstanceLog log
@@ -318,6 +323,32 @@
                     			HAVING sum(nid.type) &gt;= 1) 
        	and log.type = 1 
        	and log.processInstanceId=:processId  
+      ORDER BY 
+        log.date ASC
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+  
+    <named-query name="getNodeInstanceForWorkItem">
+    <query>
+      select
+      new org.jbpm.kie.services.impl.model.NodeInstanceDesc(
+      log.nodeInstanceId,
+      log.nodeId,
+      log.nodeName,
+      log.nodeType,
+      log.externalId,
+      log.processInstanceId,
+      log.date,
+      log.connection,
+      log.type,
+      log.workItemId
+      )
+      from
+        NodeInstanceLog log
+      where
+        log.workItemId=:workItemId
+       	and log.type = 0   
       ORDER BY 
         log.nodeInstanceId, log.id ASC
     </query>
@@ -368,5 +399,59 @@
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>
   
+  <named-query name="getTaskInstanceById">
+    <query>
+        select 
+	      new org.jbpm.kie.services.impl.model.UserTaskInstanceDesc(
+	      a.taskId,
+	      a.status,
+	      a.activationTime,
+	      a.name,
+	      a.description,
+	      a.priority,
+	      a.actualOwner,
+	      a.createdBy,
+	      a.deploymentId,
+	      a.processId,
+	      a.processInstanceId,
+	      a.createdOn,
+	      a.dueDate
+	      )
+        from 
+        	AuditTaskImpl a 
+        where 
+        	a.taskId = :taskId 
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+  
+    <named-query name="getTaskInstanceByWorkItemId">
+    <query>
+        select 
+	      new org.jbpm.kie.services.impl.model.UserTaskInstanceDesc(
+	      a.taskId,
+	      a.status,
+	      a.activationTime,
+	      a.name,
+	      a.description,
+	      a.priority,
+	      a.actualOwner,
+	      a.createdBy,
+	      a.deploymentId,
+	      a.processId,
+	      a.processInstanceId,
+	      a.createdOn,
+	      a.dueDate
+	      )
+        from 
+        	AuditTaskImpl a,
+        	TaskImpl t 
+        where 
+        	a.taskId = t.id and
+        	t.taskData.workItemId = :workItemId 
+        	
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
   
 </entity-mappings>

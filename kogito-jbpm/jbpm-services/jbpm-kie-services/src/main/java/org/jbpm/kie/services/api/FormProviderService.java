@@ -15,13 +15,10 @@
  */
 package org.jbpm.kie.services.api;
 
-/**
- *
- * @author salaboy
- */
+
 public interface FormProviderService {
-    String getFormDisplayTask(long taskId);
-    String getFormDisplayProcess(String deploymentId, String processId);
-   // FormRepresentation getAssociatedForm(String bpmn2, String taskName);
-  //  FormRepresentation createFormFromTask(Map<String, String> inputs, Map<String, String> outputs, TaskDef task);
+
+	String getFormDisplayTask(long taskId);
+    
+	String getFormDisplayProcess(String deploymentId, String processId);
 }

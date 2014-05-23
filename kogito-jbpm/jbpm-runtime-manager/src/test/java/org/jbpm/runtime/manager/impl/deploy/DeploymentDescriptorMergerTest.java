@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-import org.kie.internal.deployment.DeploymentUnit.RuntimeStrategy;
 import org.kie.internal.runtime.conf.AuditMode;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.MergeMode;
 import org.kie.internal.runtime.conf.NamedObjectModel;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.conf.PersistenceMode;
+import org.kie.internal.runtime.conf.RuntimeStrategy;
 
 public class DeploymentDescriptorMergerTest {
 

@@ -14,6 +14,8 @@ public interface AuditEventBuilder {
     
     AuditEvent buildEvent(ProcessNodeTriggeredEvent pnte);
     
+    AuditEvent buildEvent(ProcessNodeTriggeredEvent pnte, Object log);
+    
     AuditEvent buildEvent(ProcessNodeLeftEvent pnle, Object log);
     
     AuditEvent buildEvent(ProcessVariableChangedEvent pvce);

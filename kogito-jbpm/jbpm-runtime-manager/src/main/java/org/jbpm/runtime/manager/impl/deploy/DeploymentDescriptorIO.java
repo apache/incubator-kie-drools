@@ -16,7 +16,6 @@
 
 package org.jbpm.runtime.manager.impl.deploy;
 
-import java.io.File;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URL;

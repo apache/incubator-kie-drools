@@ -15,6 +15,7 @@
  */
 package org.jbpm.services.task.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.api.task.model.Comment;
@@ -58,7 +59,7 @@ public class TaskCommentServiceImpl implements TaskCommentService {
 
     public List<Comment> getAllCommentsByTaskId(long taskId) {
         Task task = persistenceContext.findTask(taskId);
-        return task.getTaskData().getComments();
+        return new ArrayList<Comment>(task.getTaskData().getComments());
     }
 
     public Comment getCommentById(long commentId) {

@@ -15,18 +15,18 @@
  */
 package org.jbpm.kie.services.impl.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.internal.deployment.DeployedAsset;
+import org.jbpm.services.api.model.ProcessDefinition;
 
 /**
  *
  */
-public class ProcessAssetDesc implements Serializable, DeployedAsset {
+public class ProcessAssetDesc implements ProcessDefinition {
     
     private static final long serialVersionUID = -9059086115873165296L;
     
@@ -42,6 +42,11 @@ public class ProcessAssetDesc implements Serializable, DeployedAsset {
     private String encodedProcessSource;
     private Map<String, String> forms = new HashMap<String, String>();
     private List<String> roles = new ArrayList<String>();
+    
+    private Map<String, Collection<String>> associatedEntities;
+    private Map<String, String> serviceTasks;
+    private Map<String, String> processVariables;
+    private Collection<String> reusableSubProcesses;
 
 	public ProcessAssetDesc() {
     }
@@ -202,6 +207,51 @@ public class ProcessAssetDesc implements Serializable, DeployedAsset {
 
 	public void setRoles(List<String> roles) {
 		this.roles = roles;
+	}
+
+
+	@Override
+	public Map<String, Collection<String>> getAssociatedEntities() {
+		return associatedEntities;
+	}
+
+
+	@Override
+	public Map<String, String> getServiceTasks() {
+		return serviceTasks;
+	}
+
+
+	@Override
+	public Map<String, String> getProcessVariables() {
+		return processVariables;
+	}
+
+
+	@Override
+	public Collection<String> getReusableSubProcesses() {
+		return reusableSubProcesses;
+	}
+
+
+	public void setAssociatedEntities(
+			Map<String, Collection<String>> associatedEntities) {
+		this.associatedEntities = associatedEntities;
+	}
+
+
+	public void setServiceTasks(Map<String, String> serviceTasks) {
+		this.serviceTasks = serviceTasks;
+	}
+
+
+	public void setProcessVariables(Map<String, String> processVariables) {
+		this.processVariables = processVariables;
+	}
+
+
+	public void setReusableSubProcesses(Collection<String> reusableSubProcesses) {
+		this.reusableSubProcesses = reusableSubProcesses;
 	}
     
 

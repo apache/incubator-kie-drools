@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.jbpm.process.audit.AbstractAuditLogger;
+import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 
 import com.thoughtworks.xstream.XStream;
@@ -55,7 +56,23 @@ public class AsyncAuditLogReceiver implements MessageListener {
                 Object event = xstram.fromXML(messageContent);
                 
                 switch (eventType) {
-   
+                case AbstractAuditLogger.AFTER_NODE_ENTER_EVENT_TYPE:
+                    NodeInstanceLog nodeAfterEnterEvent = (NodeInstanceLog) event;
+                    if (nodeAfterEnterEvent.getWorkItemId() != null) {
+                    List<NodeInstanceLog> result = em.createQuery(
+                            "from NodeInstanceLog as log where log.nodeInstanceId = :nodeId and log.type = 0")
+                            .setParameter("nodeId", nodeAfterEnterEvent.getNodeInstanceId()).getResultList();
+                            
+                            if (result != null && result.size() != 0) {
+                            	NodeInstanceLog log = result.get(result.size() - 1);
+                               log.setWorkItemId(nodeAfterEnterEvent.getWorkItemId());
+                               
+                               
+                               em.merge(log);   
+                           }
+                    }
+                    break;
+                
                 case AbstractAuditLogger.AFTER_COMPLETE_EVENT_TYPE:
                     ProcessInstanceLog processCompletedEvent = (ProcessInstanceLog) event;
                     List<ProcessInstanceLog> result = em.createQuery(

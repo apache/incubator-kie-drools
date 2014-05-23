@@ -15,23 +15,25 @@
  */
 package org.jbpm.kie.services.impl.bpmn2;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.bpmn2.xml.ItemDefinitionHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-@ApplicationScoped
+
 public class DataServiceItemDefinitionHandler extends ItemDefinitionHandler {
 
     private ProcessDescRepoHelper repositoryHelper;
-    
-    @Inject
     private ProcessDescriptionRepository repository;
     
-    @Override
+    public DataServiceItemDefinitionHandler(ProcessDescRepoHelper repositoryHelper,
+			ProcessDescriptionRepository repository) {
+		this.repositoryHelper = repositoryHelper;
+		this.repository = repository;
+	}
+
+	@Override
     public Object start(final String uri, final String localName,
             final Attributes attrs, final ExtensibleXmlParser parser)
             throws SAXException {

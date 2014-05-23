@@ -12,6 +12,7 @@ import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.audit.VariableInstanceLog;
+import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
@@ -80,6 +81,7 @@ public class AsyncAuditLogProducer extends AbstractAuditLogger {
     public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
         NodeInstanceLog log = (NodeInstanceLog) builder.buildEvent(event);
         sendMessage(log, BEFORE_NODE_ENTER_EVENT_TYPE);
+        ((NodeInstanceImpl) event.getNodeInstance()).getMetaData().put("NodeInstanceLog", log);
     }
 
     @Override
@@ -109,7 +111,12 @@ public class AsyncAuditLogProducer extends AbstractAuditLogger {
     
     @Override
     public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
-        
+    	// trigger this to record some of the data (like work item id) after activity was triggered
+    	NodeInstanceLog log = (NodeInstanceLog) ((NodeInstanceImpl) event.getNodeInstance()).getMetaData().get("NodeInstanceLog");
+    	NodeInstanceLog logUpdated = (NodeInstanceLog) builder.buildEvent(event, log);
+    	if (logUpdated != null) {
+    		sendMessage(log, AFTER_NODE_ENTER_EVENT_TYPE);
+    	}
     }
 
     @Override

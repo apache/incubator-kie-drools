@@ -19,7 +19,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 
-public class ProcessInstanceDesc implements Serializable{
+public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessInstanceDesc, Serializable{
 
     private static final long serialVersionUID = 7310019271033570922L;
 
@@ -53,7 +53,7 @@ public class ProcessInstanceDesc implements Serializable{
         return processId;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -61,7 +61,7 @@ public class ProcessInstanceDesc implements Serializable{
         return processName;
     }
 
-    public int getState() {
+    public Integer getState() {
         return state;
     }
 

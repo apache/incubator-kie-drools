@@ -15,7 +15,7 @@
  */
 package org.jbpm.runtime.manager.impl;
 
-import org.jbpm.runtime.manager.impl.factory.CDITaskServiceFactory;
+import org.jbpm.runtime.manager.impl.factory.LocalTaskServiceFactory;
 import org.jbpm.runtime.manager.impl.tx.DestroySessionTransactionSynchronization;
 import org.jbpm.runtime.manager.impl.tx.DisposeSessionTransactionSynchronization;
 import org.kie.api.runtime.KieSession;
@@ -110,7 +110,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     @Override
     public void close() {
         try {
-            if (taskServiceFactory instanceof CDITaskServiceFactory) {
+            if (!(taskServiceFactory instanceof LocalTaskServiceFactory)) {
                 // if it's CDI based (meaning single application scoped bean) we need to unregister context
                 removeRuntimeFromTaskService((InternalTaskService) taskServiceFactory.newTaskService());
             }

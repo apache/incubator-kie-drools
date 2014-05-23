@@ -33,6 +33,7 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
+import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.api.event.KieRuntimeEvent;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEventListener;
@@ -108,8 +109,9 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
     
     @Override
     public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-        NodeInstanceLog log = (NodeInstanceLog) builder.buildEvent(event);
+    	NodeInstanceLog log = (NodeInstanceLog) builder.buildEvent(event);
         persist(log, event);
+        ((NodeInstanceImpl) event.getNodeInstance()).getMetaData().put("NodeInstanceLog", log);
     }
 
     @Override
@@ -155,6 +157,9 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
     
     @Override
     public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+    	// trigger this to record some of the data (like work item id) after activity was triggered
+    	NodeInstanceLog log = (NodeInstanceLog) ((NodeInstanceImpl) event.getNodeInstance()).getMetaData().get("NodeInstanceLog");
+    	builder.buildEvent(event, log);
         
     }
 

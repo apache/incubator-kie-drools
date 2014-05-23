@@ -21,16 +21,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
-import org.kie.internal.task.api.model.TaskDef;
+import org.jbpm.services.api.model.UserTaskDefinition;
 
 public class ProcessDescRepoHelper {
 
     private ProcessAssetDesc process;
-    private Map<String, TaskDef> tasks = new HashMap<String, TaskDef>();
+    private Map<String, UserTaskDefinition> tasks = new HashMap<String, UserTaskDefinition>();
     private Map<String, Map<String, String>> taskInputMappings = new HashMap<String, Map<String, String>>();
     private Map<String, Map<String, String>> taskOutputMappings = new HashMap<String, Map<String, String>>();
     private Map<String, String> inputs = new HashMap<String, String>();
-    private Map<String, String> taskAssignments = new HashMap<String, String>();
+    private Map<String, Collection<String>> taskAssignments = new HashMap<String, Collection<String>>();
     private Collection<String> reusableSubProcesses = new ArrayList<String>();
     private Map<String, String> itemDefinitions = new HashMap<String, String>();
     private Map<String, String> serviceTasks = new HashMap<String, String>();
@@ -47,7 +47,7 @@ public class ProcessDescRepoHelper {
         return process;
     }
 
-    public Map<String, TaskDef> getTasks() {
+    public Map<String, UserTaskDefinition> getTasks() {
         return tasks;
     }
 
@@ -63,7 +63,7 @@ public class ProcessDescRepoHelper {
         return inputs;
     }
 
-    public Map<String, String> getTaskAssignments() {
+    public Map<String, Collection<String>> getTaskAssignments() {
         return taskAssignments;
     }
 

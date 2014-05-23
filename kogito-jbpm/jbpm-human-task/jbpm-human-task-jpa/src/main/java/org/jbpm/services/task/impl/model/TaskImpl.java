@@ -120,7 +120,11 @@ public class TaskImpl implements InternalTask {
         out.writeLong( id );
         out.writeInt( priority );
         out.writeShort( archived );
-        out.writeUTF(taskType);
+        if (taskType != null) {
+        	out.writeUTF(taskType);
+        } else {
+        	out.writeUTF("");
+        }
         out.writeUTF(formName);
         
         out.writeUTF(name);

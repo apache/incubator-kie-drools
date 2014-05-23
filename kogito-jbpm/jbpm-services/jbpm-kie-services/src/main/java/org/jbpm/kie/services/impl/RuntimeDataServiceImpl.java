@@ -18,50 +18,65 @@ package org.jbpm.kie.services.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.jbpm.kie.services.api.IdentityProvider;
-import org.jbpm.kie.services.api.RuntimeDataService;
-import org.jbpm.kie.services.impl.event.Deploy;
-import org.jbpm.kie.services.impl.event.DeploymentEvent;
-import org.jbpm.kie.services.impl.event.Undeploy;
-import org.jbpm.kie.services.impl.model.NodeInstanceDesc;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
-import org.jbpm.kie.services.impl.model.ProcessInstanceDesc;
-import org.jbpm.kie.services.impl.model.VariableStateDesc;
-import org.jbpm.process.audit.NodeInstanceLog;
+import org.jbpm.services.api.DeploymentEvent;
+import org.jbpm.services.api.DeploymentEventListener;
+import org.jbpm.services.api.RuntimeDataService;
+import org.jbpm.services.api.model.DeployedAsset;
+import org.jbpm.services.api.model.NodeInstanceDesc;
+import org.jbpm.services.api.model.ProcessDefinition;
+import org.jbpm.services.api.model.ProcessInstanceDesc;
+import org.jbpm.services.api.model.UserTaskInstanceDesc;
+import org.jbpm.services.api.model.VariableDesc;
+import org.jbpm.services.task.query.QueryFilterImpl;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.jbpm.shared.services.impl.commands.QueryNameCommand;
-import org.kie.internal.deployment.DeployedAsset;
+import org.kie.api.task.TaskService;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.task.api.InternalTaskService;
+import org.kie.internal.task.api.QueryFilter;
 
 
-@ApplicationScoped
-public class RuntimeDataServiceImpl implements RuntimeDataService {
 
-    private Set<ProcessAssetDesc> availableProcesses = new HashSet<ProcessAssetDesc>();
+public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEventListener {
+
+    protected Set<ProcessDefinition> availableProcesses = new HashSet<ProcessDefinition>();
     
-    @Inject 
     private TransactionalCommandService commandService;
-    
-    @Inject
+        
     private IdentityProvider identityProvider;
+    
+    private TaskService taskService;
 
     public void setCommandService(TransactionalCommandService commandService) {
         this.commandService = commandService;
     }
+
+    public void setIdentityProvider(IdentityProvider identityProvider) {
+		this.identityProvider = identityProvider;
+	}
+
     
-    public void indexOnDeploy(@Observes@Deploy DeploymentEvent event) {
+    public void setTaskService(TaskService taskService) {
+		this.taskService = taskService;
+	}
+
+	/*
+     * start
+     * helper methods to index data upon deployment
+     */
+    public void onDeploy(DeploymentEvent event) {
         Collection<DeployedAsset> assets = event.getDeployedUnit().getDeployedAssets();
         for( DeployedAsset asset : assets ) { 
             if( asset instanceof ProcessAssetDesc ) { 
@@ -70,21 +85,30 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         }
     }
     
-    public void removeOnUnDeploy(@Observes@Undeploy DeploymentEvent event) {
+    public void onUnDeploy(DeploymentEvent event) {
         Collection<ProcessAssetDesc> outputCollection = new HashSet<ProcessAssetDesc>();
         CollectionUtils.select(availableProcesses, new UnsecureByDeploymentIdPredicate(event.getDeploymentId()), outputCollection);
         
         availableProcesses.removeAll(outputCollection);
     }
 
-    public Collection<ProcessAssetDesc> getProcessesByDeploymentId(String deploymentId) {
-        Collection<ProcessAssetDesc> outputCollection = new HashSet<ProcessAssetDesc>();
+    /*
+     * end
+     * helper methods to index data upon deployment
+     */
+    
+    /*
+     * start
+     * process definition methods
+     */
+	public Collection<ProcessDefinition> getProcessesByDeploymentId(String deploymentId) {
+        Collection<ProcessDefinition> outputCollection = new HashSet<ProcessDefinition>();
         CollectionUtils.select(availableProcesses, new ByDeploymentIdPredicate(deploymentId, identityProvider.getRoles()), outputCollection);
         
         return Collections.unmodifiableCollection(outputCollection);
     }
     
-    public ProcessAssetDesc getProcessesByDeploymentIdProcessId(String deploymentId, String processId) {
+    public ProcessDefinition getProcessesByDeploymentIdProcessId(String deploymentId, String processId) {
         Collection<ProcessAssetDesc> outputCollection = new HashSet<ProcessAssetDesc>();
         CollectionUtils.select(availableProcesses, new ByDeploymentIdProcessIdPredicate(deploymentId, processId, identityProvider.getRoles()), outputCollection);
         
@@ -94,13 +118,13 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         return null; 
     }
     
-    public Collection<ProcessAssetDesc> getProcessesByFilter(String filter) {
-        Collection<ProcessAssetDesc> outputCollection = new HashSet<ProcessAssetDesc>();
+    public Collection<ProcessDefinition> getProcessesByFilter(String filter) {
+        Collection<ProcessDefinition> outputCollection = new HashSet<ProcessDefinition>();
         CollectionUtils.select(availableProcesses, new RegExPredicate("^.*"+filter+".*$", identityProvider.getRoles()), outputCollection);
         return Collections.unmodifiableCollection(outputCollection);
     }
 
-    public ProcessAssetDesc getProcessById(String processId){
+    public ProcessDefinition getProcessById(String processId){
         
         Collection<ProcessAssetDesc> outputCollection = new HashSet<ProcessAssetDesc>();
         CollectionUtils.select(availableProcesses, new ByProcessIdPredicate(processId, identityProvider.getRoles()), outputCollection);
@@ -110,8 +134,8 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         return null;   
     }
     
-    public Collection<ProcessAssetDesc> getProcesses() {
-    	Collection<ProcessAssetDesc> outputCollection = new HashSet<ProcessAssetDesc>();
+    public Collection<ProcessDefinition> getProcesses() {
+    	Collection<ProcessDefinition> outputCollection = new HashSet<ProcessDefinition>();
     	CollectionUtils.select(availableProcesses, new SecurePredicate(identityProvider.getRoles()), outputCollection);
         return Collections.unmodifiableCollection(outputCollection);
     }
@@ -122,13 +146,23 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         if( deploymentId == null || deploymentId.isEmpty() ) { 
             return processIds;
         }
-        for( ProcessAssetDesc procAssetDesc : availableProcesses ) { 
-            if( procAssetDesc.getDeploymentId().equals(deploymentId) ) {
+        for( ProcessDefinition procAssetDesc : availableProcesses ) { 
+            if( ((ProcessAssetDesc)procAssetDesc).getDeploymentId().equals(deploymentId) ) {
                 processIds.add(procAssetDesc.getId());
             }
         }
         return processIds;
     }
+    /*
+     * end
+     * process definition methods
+     */
+    
+    
+    /*
+     * start
+     * process instances methods
+     */    
     
     public Collection<ProcessInstanceDesc> getProcessInstances() {
         List<ProcessInstanceDesc> processInstances =  commandService.execute(
@@ -170,7 +204,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
 	        Collection<ProcessInstanceDesc> outputCollection = new HashSet<ProcessInstanceDesc>();
 	        CollectionUtils.select(processInstances, new SecureInstancePredicate(identityProvider.getRoles()), outputCollection);
 	        return Collections.unmodifiableCollection(outputCollection);
-        } catch(ContextNotActiveException e) {
+        } catch(IllegalStateException e) {
         	// in case there is no way to get roles from identity provider return complete list
         	return processInstances;
         }
@@ -206,8 +240,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
 
     
     @Override
-    public Collection<ProcessInstanceDesc> getProcessInstancesByProcessId(
-            List<Integer> states, String processId, String initiator) {
+    public Collection<ProcessInstanceDesc> getProcessInstancesByProcessId(List<Integer> states, String processId, String initiator) {
         List<ProcessInstanceDesc> processInstances = null; 
         Map<String, Object> params = new HashMap<String, Object>();
 
@@ -250,28 +283,47 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         CollectionUtils.select(processInstances, new SecureInstancePredicate(identityProvider.getRoles()), outputCollection);
         return Collections.unmodifiableCollection(outputCollection);
     }    
+    
+    /*
+     * end
+     * process instances methods
+     */
 
-    public Collection<NodeInstanceDesc> getProcessInstanceHistory(String deploymentId, long processId) {
+    
+    /*
+     * start
+     * node instances methods
+     */    
+    @Override
+    public Collection<NodeInstanceDesc> getProcessInstanceHistoryActive(String deploymentId, long processId) {
         return getProcessInstanceHistory(deploymentId, processId, false);
     }
+    
+    @Override
+    public Collection<NodeInstanceDesc> getProcessInstanceHistoryCompleted(String deploymentId, long processId) {
+        return getProcessInstanceHistory(deploymentId, processId, true);
+    }
 
-
-    public Collection<NodeInstanceDesc> getProcessInstanceHistory(String deploymentId, long processId, boolean completed) {
+    
+    protected Collection<NodeInstanceDesc> getProcessInstanceHistory(String deploymentId, long processId, boolean completed) {
     	Map<String, Object> params = new HashMap<String, Object>();
     	params.put("processId", processId);
-    	params.put("externalId", deploymentId);              
+    	params.put("externalId", deploymentId);
+    	List<NodeInstanceDesc> nodeInstances = Collections.emptyList();
         if (completed) {
-            params.put("type", NodeInstanceLog.TYPE_EXIT);
+        	nodeInstances = commandService.execute(
+    				new QueryNameCommand<List<NodeInstanceDesc>>("getProcessInstanceCompletedNodes", 
+                    params));
         } else {
-            params.put("type", NodeInstanceLog.TYPE_ENTER);
+        	nodeInstances = commandService.execute(
+    				new QueryNameCommand<List<NodeInstanceDesc>>("getProcessInstanceActiveNodes", 
+                    params));
         }
-
-        List<NodeInstanceDesc> nodeInstances = commandService.execute(
-				new QueryNameCommand<List<NodeInstanceDesc>>("getProcessInstanceHistory", params));
 
         return nodeInstances;
     }
-
+    
+    @Override
     public Collection<NodeInstanceDesc> getProcessInstanceFullHistory(String deploymentId, long processId) {
     	Map<String, Object> params = new HashMap<String, Object>();
     	params.put("processId", processId);
@@ -282,50 +334,194 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
 
         return nodeInstances;
     }
-
-    public Collection<NodeInstanceDesc> getProcessInstanceActiveNodes(String deploymentId, long processId) {
+    
+    @Override
+    public Collection<NodeInstanceDesc> getProcessInstanceFullHistoryByType(String deploymentId, long processId, EntryType type) {    	
     	Map<String, Object> params = new HashMap<String, Object>();
     	params.put("processId", processId);
     	params.put("externalId", deploymentId);
-        List<NodeInstanceDesc> activeNodeInstances = commandService.execute(
-				new QueryNameCommand<List<NodeInstanceDesc>>("getProcessInstanceActiveNodes", 
+    	params.put("type", type.getValue());
+        List<NodeInstanceDesc> nodeInstances = commandService.execute(
+				new QueryNameCommand<List<NodeInstanceDesc>>("getProcessInstanceFullHistoryByType", 
                 params));
-        
-        return activeNodeInstances;
+
+        return nodeInstances;
     }
     
 
-    public Collection<NodeInstanceDesc> getProcessInstanceCompletedNodes(String deploymentId, long processId) {
-    	Map<String, Object> params = new HashMap<String, Object>();
-    	params.put("processId", processId);
-    	params.put("externalId", deploymentId);
-        List<NodeInstanceDesc> completedNodeInstances = commandService.execute(
-				new QueryNameCommand<List<NodeInstanceDesc>>("getProcessInstanceCompletedNodes", 
-                params));
+	@Override
+	public NodeInstanceDesc getNodeInstanceForWorkItem(Long workItemId) {
+		Map<String, Object> params = new HashMap<String, Object>();
+        params.put("workItemId", workItemId);
+        params.put("maxResults", 1);
+        List<NodeInstanceDesc> nodeInstances = commandService.execute(
+				new QueryNameCommand<List<NodeInstanceDesc>>("getNodeInstanceForWorkItem", params));
 
-        return completedNodeInstances;
-        
-    }
+    	if (!nodeInstances.isEmpty()) {
+        	return nodeInstances.iterator().next();
+        }
+        return null;
+	}
     
-    public Collection<VariableStateDesc> getVariablesCurrentState(long processInstanceId) {
+    /*
+     * end
+     * node instances methods
+     */
+    
+    /*
+     * start 
+     * variable methods
+     */
+    
+    public Collection<VariableDesc> getVariablesCurrentState(long processInstanceId) {
     	Map<String, Object> params = new HashMap<String, Object>();
         params.put("processInstanceId", processInstanceId);
-        List<VariableStateDesc> variablesState = commandService.execute(
-				new QueryNameCommand<List<VariableStateDesc>>("getVariablesCurrentState", params));
+        List<VariableDesc> variablesState = commandService.execute(
+				new QueryNameCommand<List<VariableDesc>>("getVariablesCurrentState", params));
 
         return variablesState;
     }
     
-    public Collection<VariableStateDesc> getVariableHistory(long processInstanceId, String variableId) {
+    public Collection<VariableDesc> getVariableHistory(long processInstanceId, String variableId) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("processInstanceId", processInstanceId);
         params.put("variableId", variableId);
-    	List<VariableStateDesc> variablesState = commandService.execute(
-				new QueryNameCommand<List<VariableStateDesc>>("getVariableHistory", 
+    	List<VariableDesc> variablesState = commandService.execute(
+				new QueryNameCommand<List<VariableDesc>>("getVariableHistory", 
                 params));                
 
         return variablesState;
     }
+    
+    /*
+     * end 
+     * variable methods
+     */
+    
+    /*
+     * start
+     * task methods
+     */
+    
+	@Override
+	public UserTaskInstanceDesc getTaskByWorkItemId(Long workItemId) {
+		Map<String, Object> params = new HashMap<String, Object>();
+        params.put("workItemId", workItemId);
+        params.put("maxResults", 1);
+        List<UserTaskInstanceDesc> tasks = commandService.execute(
+				new QueryNameCommand<List<UserTaskInstanceDesc>>("getTaskInstanceByWorkItemId", params));
+
+    	if (!tasks.isEmpty()) {
+        	return tasks.iterator().next();
+        }
+        return null;
+	}
+
+	@Override
+	public UserTaskInstanceDesc getTaskById(Long taskId) {
+		Map<String, Object> params = new HashMap<String, Object>();
+        params.put("taskId", taskId);
+        params.put("maxResults", 1);
+        List<UserTaskInstanceDesc> tasks = commandService.execute(
+				new QueryNameCommand<List<UserTaskInstanceDesc>>("getTaskInstanceById", params));
+
+    	if (!tasks.isEmpty()) {
+        	return tasks.iterator().next();
+        }
+        return null;
+	}
+
+	@Override
+	public List<TaskSummary> getTasksAssignedAsBusinessAdministrator(String userId, QueryFilter filter) {
+		return taskService.getTasksAssignedAsBusinessAdministrator(userId, filter.getLanguage());
+	}
+
+	@Override
+	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, QueryFilter filter) {
+		return taskService.getTasksAssignedAsPotentialOwner(userId, filter.getLanguage());
+	}
+	
+	@Override
+	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, QueryFilter filter) {
+		return ((InternalTaskService)taskService).getTasksAssignedAsPotentialOwner(userId, groupIds , null, filter);
+	}
+
+	@Override
+	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, List<Status> status, QueryFilter filter) {
+		return ((InternalTaskService)taskService).getTasksAssignedAsPotentialOwner(userId, groupIds , status, filter);
+	}
+	
+	@Override
+	public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String userId, List<Status> status, QueryFilter filter) {
+		return taskService.getTasksAssignedAsPotentialOwnerByStatus(userId, status, filter.getLanguage());
+	}
+
+	@Override
+	public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDateOptional(
+			String userId, List<Status> status, Date from, QueryFilter filter) {
+        List<TaskSummary> taskSummaries = null;
+        if (from != null) {
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("expirationDate", from);
+			QueryFilter qf = new QueryFilterImpl( "(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", 
+	                            params, "order by t.id DESC", filter.getOffset(), filter.getCount());
+	                
+	 
+			taskSummaries = ((InternalTaskService)taskService).getTasksAssignedAsPotentialOwner(userId, null, status, qf);
+        } else {
+            QueryFilter qf = new QueryFilterImpl(filter.getOffset(), filter.getCount());
+            taskSummaries = ((InternalTaskService)taskService).getTasksAssignedAsPotentialOwner(userId,null, status, qf);
+        }
+        return taskSummaries;
+	}
+
+	@Override
+	public List<TaskSummary> getTasksOwnedByExpirationDateOptional(String userId, List<Status> strStatuses, Date from,
+			QueryFilter filter) {
+        List<TaskSummary> taskSummaries = null;
+        if (from != null) {
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("expirationDate", from);
+			QueryFilter qf = new QueryFilterImpl( "(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", 
+	                            params, "order by t.id DESC", filter.getOffset(), filter.getCount());
+	                
+	 
+			taskSummaries = ((InternalTaskService)taskService).getTasksOwned(userId, null, qf);
+        } else {
+            QueryFilter qf = new QueryFilterImpl(filter.getOffset(), filter.getCount());
+            taskSummaries = ((InternalTaskService)taskService).getTasksOwned(userId,null, qf);
+        }
+        return taskSummaries;
+	}
+
+	@Override
+	public List<TaskSummary> getTasksOwned(String userId, QueryFilter filter) {
+		return taskService.getTasksOwned(userId, filter.getLanguage());
+	}
+
+	@Override
+	public List<TaskSummary> getTasksOwnedByStatus(String userId, List<Status> status, QueryFilter filter) {
+		return taskService.getTasksOwnedByStatus(userId, status, filter.getLanguage());
+	}
+
+	@Override
+	public List<Long> getTasksByProcessInstanceId(Long processInstanceId) {
+		return taskService.getTasksByProcessInstanceId(processInstanceId);
+	}
+
+	@Override
+	public List<TaskSummary> getTasksByStatusByProcessInstanceId(Long processInstanceId, List<Status> status, QueryFilter filter) {
+		return taskService.getTasksByStatusByProcessInstanceId(processInstanceId, status, filter.getLanguage());
+	}
+	/*
+     * end
+     * task methods
+     */
+    
+    /*
+     * start
+     * predicates for collection filtering
+     */
 
     private class RegExPredicate extends SecurePredicate {
         private String pattern;
@@ -456,7 +652,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
     	
     	public boolean evaluate(Object object) {
     		ProcessInstanceDesc pInstDesc = (ProcessInstanceDesc) object;
-    		ProcessAssetDesc pDesc = getProcessesByDeploymentIdProcessId(pInstDesc.getDeploymentId(), pInstDesc.getProcessId());
+    		ProcessDefinition pDesc = getProcessesByDeploymentIdProcessId(pInstDesc.getDeploymentId(), pInstDesc.getProcessId());
     		if (this.roles == null || this.roles.isEmpty()) {
     			return true;
     		}
@@ -492,4 +688,10 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         }
         
     }
+
+
+    /*
+     * end
+     * predicates for collection filtering
+     */
 }

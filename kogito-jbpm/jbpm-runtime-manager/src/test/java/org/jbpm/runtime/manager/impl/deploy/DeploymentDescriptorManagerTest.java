@@ -12,12 +12,12 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
-import org.kie.internal.deployment.DeploymentUnit.RuntimeStrategy;
 import org.kie.internal.runtime.conf.AuditMode;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.MergeMode;
 import org.kie.internal.runtime.conf.NamedObjectModel;
 import org.kie.internal.runtime.conf.PersistenceMode;
+import org.kie.internal.runtime.conf.RuntimeStrategy;
 
 public class DeploymentDescriptorManagerTest extends AbstractDeploymentDescriptorTest {
 

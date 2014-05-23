@@ -7,8 +7,8 @@
     <artifactId>jbpm-services</artifactId>
     <version>6.2.0-SNAPSHOT</version>
   </parent>
-  <groupId>org.jbpm</groupId>
   <artifactId>jbpm-kie-services</artifactId>
+  <packaging>bundle</packaging>
   <name>jBPM :: KIE Services</name>
 
   <dependencies>
@@ -41,6 +41,11 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-human-task-workitems</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-services-api</artifactId>
+    </dependency>
 
     <!-- kie -->
     <dependency>
@@ -55,17 +60,7 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-ci</artifactId>
     </dependency>  
-
-    <dependency>
-      <groupId>org.jboss.solder</groupId>
-      <artifactId>solder-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
+  
     <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>
       <artifactId>hibernate-jpa-2.0-api</artifactId>
@@ -83,18 +78,6 @@
     <dependency>
       <groupId>org.mvel</groupId>
       <artifactId>mvel2</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-queryparser</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-analyzers-common</artifactId>
     </dependency>
 
     <dependency>
@@ -127,19 +110,6 @@
     
     <!-- test -->
     <dependency>
-      <groupId>org.jboss.solder</groupId>
-      <artifactId>solder-impl</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-runtime-manager</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
       <scope>test</scope>
@@ -164,28 +134,8 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.jboss.spec.javax.ejb</groupId>
-      <artifactId>jboss-ejb-api_3.1_spec</artifactId>
-      <scope>test</scope>
-    </dependency>
   
     <!-- test: arquillian -->
-    <dependency>
-      <groupId>org.jboss.arquillian.junit</groupId>
-      <artifactId>arquillian-junit-container</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.arquillian.container</groupId>
-      <artifactId>arquillian-weld-se-embedded-1.1</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.arquillian.core</groupId>
-      <artifactId>arquillian-core-api</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
     	<groupId>org.jbpm</groupId>
     	<artifactId>jbpm-shared-services</artifactId>
@@ -193,7 +143,23 @@
   </dependencies>
 
   <build>
-    <plugins>    
+    <plugins> 
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>org.jbpm.kie.services.api.jpa;singleton:=true</Bundle-SymbolicName>
+            <Import-Package>
+              javax.transaction.*;resolution:=optional,
+              *
+            </Import-Package>
+            <Export-Package>
+              org.jbpm.kie.services.api.*,
+            </Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>   
       <plugin>
       <!-- we need to fork always as we have mixture of both arquillian tests and regular 
     and to avoid clashing between them as both need to setup data source and bound it to JNDI -->

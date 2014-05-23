@@ -38,6 +38,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				persistenceContext.addParametersToMap("taskId", ti.getId()),
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
+        auditTaskImpl.setActualOwner(userId);
             
         persistenceContext.merge(auditTaskImpl);
     }
@@ -57,6 +58,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				persistenceContext.addParametersToMap("taskId", ti.getId()),
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
+        auditTaskImpl.setActualOwner(userId);
             
         persistenceContext.merge(auditTaskImpl);
     }
@@ -78,6 +80,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				persistenceContext.addParametersToMap("taskId", ti.getId()),
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
+        auditTaskImpl.setActualOwner(userId);
             
         persistenceContext.merge(auditTaskImpl);
     }
@@ -102,6 +105,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				persistenceContext.addParametersToMap("taskId", ti.getId()),
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
+        auditTaskImpl.setActualOwner(userId);
             
         persistenceContext.merge(auditTaskImpl);
         //@TODO:        There is also the possibility that a GroupAuditTask exist in Lucene..
@@ -124,6 +128,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				persistenceContext.addParametersToMap("taskId", ti.getId()),
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
+        auditTaskImpl.setActualOwner(userId);
             
         persistenceContext.merge(auditTaskImpl);
 
@@ -145,6 +150,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				persistenceContext.addParametersToMap("taskId", ti.getId()),
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
+        auditTaskImpl.setActualOwner(userId);
             
         persistenceContext.merge(auditTaskImpl);
     }
@@ -166,6 +172,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				persistenceContext.addParametersToMap("taskId", ti.getId()),
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
+        auditTaskImpl.setActualOwner(userId);
             
         persistenceContext.merge(auditTaskImpl);
     }
@@ -207,6 +214,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				persistenceContext.addParametersToMap("taskId", ti.getId()),
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
+        auditTaskImpl.setActualOwner(userId);
             
         persistenceContext.merge(auditTaskImpl);
         
@@ -226,6 +234,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				persistenceContext.addParametersToMap("taskId", ti.getId()),
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
+        auditTaskImpl.setActualOwner(userId);
             
         persistenceContext.merge(auditTaskImpl);
         
@@ -249,6 +258,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				persistenceContext.addParametersToMap("taskId", ti.getId()),
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
+        auditTaskImpl.setActualOwner(userId);
             
         persistenceContext.merge(auditTaskImpl);
     }
@@ -269,6 +279,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				persistenceContext.addParametersToMap("taskId", ti.getId()),
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
+        auditTaskImpl.setActualOwner(userId);
             
         persistenceContext.merge(auditTaskImpl);
     }
@@ -288,6 +299,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				persistenceContext.addParametersToMap("taskId", ti.getId()),
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
+        auditTaskImpl.setActualOwner(userId);
             
         persistenceContext.merge(auditTaskImpl);
     }
@@ -308,6 +320,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				persistenceContext.addParametersToMap("taskId", ti.getId()),
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
+        auditTaskImpl.setActualOwner(userId);
             
         persistenceContext.merge(auditTaskImpl);
     }
@@ -327,6 +340,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 				persistenceContext.addParametersToMap("taskId", ti.getId()),
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
+        auditTaskImpl.setActualOwner(userId);
             
         persistenceContext.merge(auditTaskImpl);
     }

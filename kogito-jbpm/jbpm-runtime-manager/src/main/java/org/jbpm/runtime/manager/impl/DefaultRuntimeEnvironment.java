@@ -16,15 +16,14 @@
 package org.jbpm.runtime.manager.impl;
 
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.impl.QuartzSchedulerService;
 import org.jbpm.process.core.timer.impl.ThreadPoolSchedulerService;
+import org.jbpm.runtime.manager.impl.identity.UserDataServiceProvider;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.runtime.manager.impl.mapper.InMemoryMapper;
 import org.jbpm.runtime.manager.impl.mapper.JPAMapper;
-import org.jbpm.services.task.identity.MvelUserGroupCallbackImpl;
 import org.kie.api.runtime.EnvironmentName;
 
 /**
@@ -56,16 +55,14 @@ public class DefaultRuntimeEnvironment extends SimpleRuntimeEnvironment {
         this.emf = emf;
         this.schedulerService = globalSchedulerService;
         this.usePersistence = true;
-        // TODO is this the right one to be default?
-        this.userGroupCallback = new MvelUserGroupCallbackImpl(true);
+        this.userGroupCallback = UserDataServiceProvider.getUserGroupCallback();
     }
     
     public DefaultRuntimeEnvironment(EntityManagerFactory emf, boolean usePersistence) {
         this(emf, null);
         this.usePersistence = usePersistence;
         this.emf = emf;
-        // TODO is this the right one to be default?
-        this.userGroupCallback = new MvelUserGroupCallbackImpl(true);
+        this.userGroupCallback = UserDataServiceProvider.getUserGroupCallback();
     }
     
     public void init() {

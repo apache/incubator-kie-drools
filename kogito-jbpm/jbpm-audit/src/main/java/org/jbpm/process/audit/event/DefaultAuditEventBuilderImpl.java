@@ -79,6 +79,24 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
         log.setNodeType(nodeType);
         return log;
     }
+    
+    @Override
+    public AuditEvent buildEvent(ProcessNodeTriggeredEvent pnte, Object log) {
+    	NodeInstanceImpl nodeInstance = (NodeInstanceImpl) pnte.getNodeInstance();
+    
+    	NodeInstanceLog logEvent =null;
+        if (log != null) {
+            logEvent = (NodeInstanceLog) log;
+        
+	        if (nodeInstance instanceof WorkItemNodeInstance && ((WorkItemNodeInstance) nodeInstance).getWorkItem() != null) {
+	        	logEvent.setWorkItemId(((WorkItemNodeInstance) nodeInstance).getWorkItem().getId());
+	        }
+	
+	        return logEvent;
+        }
+        
+        return null;
+    }
 
     @Override
     public AuditEvent buildEvent(ProcessNodeLeftEvent pnle, Object log) {

@@ -27,7 +27,11 @@ public class TransactionalCommandService implements CommandService {
         return context;
     }
 
-    public <T> T execute(Command<T> command) {
+    protected void setEmf(EntityManagerFactory emf) {
+		this.emf = emf;
+	}
+
+	public <T> T execute(Command<T> command) {
     	boolean transactionOwner = false;
 		T result = null;
 		

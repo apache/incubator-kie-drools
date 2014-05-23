@@ -15,63 +15,47 @@
  */
 package org.jbpm.kie.services.impl.bpmn2;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.compiler.BPMN2ProcessProvider;
 import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.core.util.StringUtils;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
-import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
+import org.jbpm.services.api.DefinitionService;
+import org.jbpm.services.api.model.ProcessDefinition;
+import org.jbpm.services.api.model.UserTaskDefinition;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.internal.task.api.model.TaskDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-@ApplicationScoped
-public class BPMN2DataServiceImpl implements BPMN2DataService {
+public class BPMN2DataServiceImpl implements DefinitionService {
     
     private static final Logger logger = LoggerFactory.getLogger(BPMN2DataServiceImpl.class);
+    
+    private ConcurrentHashMap<String, Map<String, ProcessDescRepoHelper>> definitionCache = 
+    		new ConcurrentHashMap<String, Map<String, ProcessDescRepoHelper>>();
+    
 
-    @Inject
-    private BPMN2DataServiceSemanticModule module;
-    
-    @Inject
-    private ProcessDescriptionRepository repo;
-    
-    private BPMN2ProcessProvider provider;
-    
+
     public BPMN2DataServiceImpl() {
     }
-    
-    
-
-    public void setSemanticModule(BPMN2DataServiceSemanticModule module) {
-        this.module = module;
-    }
-
-    public void setRepository(ProcessDescriptionRepository repo) {
-        this.repo = repo;
-    }
-    
-    @PostConstruct
-    public void init() {
-        provider = new BPMN2ProcessProvider() {
+        
+    public BPMN2ProcessProvider getProvider(final BPMN2DataServiceSemanticModule module) {
+         return new BPMN2ProcessProvider() {
             @Override
             public void configurePackageBuilder(KnowledgeBuilder packageBuilder) {
                 KnowledgeBuilderConfigurationImpl conf 
@@ -84,104 +68,15 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
             }
         };
     }
-
-    public Map<String, String> getTaskInputMappings(String processId, String taskName){
-        if (processId == null || "".equals(processId)) {
-            throw new IllegalStateException("The Process id cannot be Empty!");
-        }
-        ProcessDescRepoHelper helper = repo.getProcessDesc(processId);
-        if (helper == null) {
-            throw new IllegalStateException("No process available with given id : " + processId);
-        }
-        return helper.getTaskInputMappings().get(taskName);
-    }
     
-     public Map<String, String> getTaskOutputMappings(String processId, String taskName){
-        if (processId == null || "".equals(processId)) {
-            throw new IllegalStateException("The Process id cannot be Empty!");
-        }
-        
-        ProcessDescRepoHelper helper = repo.getProcessDesc(processId);
-        if (helper == null) {
-            throw new IllegalStateException("No process available with given id : " + processId);
-        }
-        return helper.getTaskOutputMappings().get(taskName);
-    }
-
-
-    public Collection<TaskDef> getAllTasksDef(String processId){
-        if (processId == null || "".equals(processId)) {
-            throw new IllegalStateException("The Process id cannot be Empty!");
-        }
-    
-        ProcessDescRepoHelper helper = repo.getProcessDesc(processId);
-        if (helper == null) {
-            throw new IllegalStateException("No process available with given id : " + processId);
-        }
-        return helper.getTasks().values();
-    }
-
-    public Map<String, String> getAssociatedEntities(String processId) {
-        if (processId == null || "".equals(processId)) {
-            throw new IllegalStateException("The Process id cannot be Empty!");
-        }
-        
-        ProcessDescRepoHelper helper = repo.getProcessDesc(processId);
-        if (helper == null) {
-            throw new IllegalStateException("No process available with given id : " + processId);
-        }
-        return helper.getTaskAssignments();
-    }
-
-    public List<String> getAssociatedDomainObjects(String bpmn2Content) {
-         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public Map<String, String> getProcessData(String processId) {
-        if (processId == null || "".equals(processId)) {
-            throw new IllegalStateException("The Process id cannot be Empty!");
-        }
-        ProcessDescRepoHelper helper = repo.getProcessDesc(processId);
-        if (helper == null) {
-            throw new IllegalStateException("No process available with given id : " + processId);
-        }
-        return helper.getInputs();
-    }
-
-    public List<String> getAssociatedForms(String processId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public ProcessAssetDesc getProcessDesc(String processId){
-        if (processId == null || "".equals(processId)) {
-            throw new IllegalStateException("The Process id cannot be Empty!");
-        }
-        
-        ProcessDescRepoHelper helper = repo.getProcessDesc(processId);
-        if (helper == null) {
-            throw new IllegalStateException("No process available with given id : " + processId);
-        }
-        return helper.getProcess();
-    }
-
-    @Override
-    public Collection<String> getReusableSubProcesses(String processId) {
-        if (processId == null || "".equals(processId)) {
-            throw new IllegalStateException("The Process id cannot be Empty!");
-        }
-        ProcessDescRepoHelper helper = repo.getProcessDesc(processId);
-        if (helper == null) {
-            throw new IllegalStateException("No process available with given id : " + processId);
-        }
-        return helper.getReusableSubProcesses();
-    }
-
-    @Override
-    public ProcessAssetDesc findProcessId(final String bpmn2Content, ClassLoader classLoader) {
-        if (bpmn2Content == null || "".equals(bpmn2Content)) {
+	@Override
+	public ProcessDefinition buildProcessDefinition(String deploymentId,String bpmn2Content, ClassLoader classLoader, boolean cache)
+			throws IllegalArgumentException {
+		if (StringUtils.isEmpty(bpmn2Content)) {
             return null;
         }
-        
+		BPMN2DataServiceSemanticModule module = new BPMN2DataServiceSemanticModule();
+        BPMN2ProcessProvider provider = getProvider(module);
         BPMN2ProcessProvider originalProvider = BPMN2ProcessFactory.getBPMN2ProcessProvider();
         if (originalProvider != provider) {
             BPMN2ProcessFactory.setBPMN2ProcessProvider(provider);
@@ -208,20 +103,183 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
         KnowledgePackage pckg = kbuilder.getKnowledgePackages().iterator().next();
         
         org.kie.api.definition.process.Process process = pckg.getProcesses().iterator().next();
-        return new ProcessAssetDesc(process.getId(), process.getName(), process.getVersion()
+        ProcessAssetDesc definition = new ProcessAssetDesc(process.getId(), process.getName(), process.getVersion()
                 , process.getPackageName(), process.getType(), process.getKnowledgeType().name(),
                 process.getNamespace(), "");
+        
+        ProcessDescRepoHelper helper = module.getRepo().removeProcessDescription(process.getId());
+        
+        definition.setAssociatedEntities(helper.getTaskAssignments());
+        definition.setProcessVariables(helper.getInputs());
+        definition.setReusableSubProcesses(helper.getReusableSubProcesses());
+        definition.setServiceTasks(helper.getServiceTasks());
+        
+        // cache the data if requested
+        if (cache) {
+        	Map<String, ProcessDescRepoHelper> definitions = null;
+        	synchronized (definitionCache) {
+        		definitions = definitionCache.get(deploymentId);
+        		if (definitions == null) {
+        			definitions = new ConcurrentHashMap<String, ProcessDescRepoHelper>();
+        			definitionCache.put(deploymentId, definitions);
+        		}
+        		definitions.put(process.getId(), helper);
+			}
+        }
+        
+        
+        return definition;
+	}
+
+	@Override
+	public Map<String, String> getServiceTasks(String deploymentId, String processId) {
+        if (StringUtils.isEmpty(deploymentId) || StringUtils.isEmpty(processId)) {
+            throw new IllegalStateException("The Deployment id and Process id cannot be Empty!");
+        }
+        
+        if (definitionCache.containsKey(deploymentId)) {
+	        
+	        ProcessDescRepoHelper helper = definitionCache.get(deploymentId).get(processId);
+	        if (helper == null) {
+	            throw new IllegalStateException("No process available with given id : " + processId);
+	        }
+	        return Collections.unmodifiableMap(helper.getServiceTasks());
+        }
+        
+        return null;
     }
 
-    @Override
-    public Map<String, String> getAllServiceTasks(String processId) {
-        if (processId == null || "".equals(processId)) {
+	@Override
+	public ProcessDefinition getProcessDefinition(String deploymentId, String processId) {
+		if (StringUtils.isEmpty(deploymentId) || StringUtils.isEmpty(processId)) {
             throw new IllegalStateException("The Process id cannot be Empty!");
         }
-        ProcessDescRepoHelper helper = repo.getProcessDesc(processId);
-        if (helper == null) {
-            throw new IllegalStateException("No process available with given id : " + processId);
+        
+        if (definitionCache.containsKey(deploymentId)) {
+	        
+	        ProcessDescRepoHelper helper = definitionCache.get(deploymentId).get(processId);
+	        if (helper == null) {
+	            throw new IllegalStateException("No process available with given id : " + processId);
+	        }
+	        return helper.getProcess();
         }
-        return helper.getServiceTasks();
-    }
+        
+        return null;
+	}
+
+
+
+	@Override
+	public Collection<String> getReusableSubProcesses(String deploymentId, String processId) {
+		if (StringUtils.isEmpty(deploymentId) || StringUtils.isEmpty(processId)) {
+            throw new IllegalStateException("The Process id cannot be Empty!");
+        }
+        if (definitionCache.containsKey(deploymentId)) {
+	        
+	        ProcessDescRepoHelper helper = definitionCache.get(deploymentId).get(processId);
+	        if (helper == null) {
+	            throw new IllegalStateException("No process available with given id : " + processId);
+	        }
+	        return new ArrayList<String>(helper.getReusableSubProcesses());
+        }
+        
+        return null;
+	}
+
+
+
+	@Override
+	public Map<String, String> getProcessVariables(String deploymentId, String processId) {
+		if (StringUtils.isEmpty(deploymentId) || StringUtils.isEmpty(processId)) {
+			throw new IllegalStateException("The Process id cannot be Empty!");
+        }
+        if (definitionCache.containsKey(deploymentId)) {
+	        
+	        ProcessDescRepoHelper helper = definitionCache.get(deploymentId).get(processId);
+	        if (helper == null) {
+	            throw new IllegalStateException("No process available with given id : " + processId);
+	        }
+	        return Collections.unmodifiableMap(helper.getInputs());
+        }
+        
+        return null;
+	}
+
+	
+	@Override
+	public Map<String, Collection<String>> getAssociatedEntities(String deploymentId, String processId) {
+		if (StringUtils.isEmpty(deploymentId) || StringUtils.isEmpty(processId)) {
+		     throw new IllegalStateException("The Process id cannot be Empty!");
+        }
+        
+        if (definitionCache.containsKey(deploymentId)) {
+	        
+	        ProcessDescRepoHelper helper = definitionCache.get(deploymentId).get(processId);
+	        if (helper == null) {
+	            throw new IllegalStateException("No process available with given id : " + processId);
+	        }
+	        return Collections.unmodifiableMap(helper.getTaskAssignments());
+        }
+        
+        return null;
+	}
+
+
+
+	@Override
+	public Collection<UserTaskDefinition> getTasksDefinitions(String deploymentId, String processId) {
+		if (StringUtils.isEmpty(deploymentId) || StringUtils.isEmpty(processId)) {
+			 throw new IllegalStateException("The Process id cannot be Empty!");
+        }
+    
+        if (definitionCache.containsKey(deploymentId)) {
+	        
+	        ProcessDescRepoHelper helper = definitionCache.get(deploymentId).get(processId);
+	        if (helper == null) {
+	            throw new IllegalStateException("No process available with given id : " + processId);
+	        }
+	        return new ArrayList<UserTaskDefinition>(helper.getTasks().values());
+        }
+        
+        return null;
+	}
+
+
+
+	@Override
+	public Map<String, String> getTaskInputMappings(String deploymentId,String processId, String taskName) {
+		if (StringUtils.isEmpty(deploymentId) || StringUtils.isEmpty(processId) || StringUtils.isEmpty(taskName)) {
+			 throw new IllegalStateException("The Process id cannot be Empty!");
+        }
+        if (definitionCache.containsKey(deploymentId)) {
+	        
+	        ProcessDescRepoHelper helper = definitionCache.get(deploymentId).get(processId);
+	        if (helper == null) {
+	            throw new IllegalStateException("No process available with given id : " + processId);
+	        }
+	        return Collections.unmodifiableMap(helper.getTaskInputMappings().get(taskName));
+        }
+        
+        return null;
+	}
+
+
+
+	@Override
+	public Map<String, String> getTaskOutputMappings(String deploymentId, String processId, String taskName) {
+		if (StringUtils.isEmpty(deploymentId) || StringUtils.isEmpty(processId) || StringUtils.isEmpty(taskName)) {
+			throw new IllegalStateException("The Process id cannot be Empty!");
+        }
+        
+        if (definitionCache.containsKey(deploymentId)) {
+	        
+	        ProcessDescRepoHelper helper = definitionCache.get(deploymentId).get(processId);
+	        if (helper == null) {
+	            throw new IllegalStateException("No process available with given id : " + processId);
+	        }
+	        return Collections.unmodifiableMap(helper.getTaskOutputMappings().get(taskName));
+        }
+        
+        return null;
+	}
 }

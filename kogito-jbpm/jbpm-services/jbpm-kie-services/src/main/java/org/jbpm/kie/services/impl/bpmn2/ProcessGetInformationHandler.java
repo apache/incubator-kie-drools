@@ -15,8 +15,6 @@
  */
 package org.jbpm.kie.services.impl.bpmn2;
 
-import javax.inject.Inject;
-
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.xml.ProcessHandler;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
@@ -25,13 +23,18 @@ import org.xml.sax.SAXException;
 
 public class ProcessGetInformationHandler extends ProcessHandler {
 
-    @Inject
+    
     private ProcessDescriptionRepository repository;
     
     private ProcessDescRepoHelper repositoryHelper;
 
     public ProcessGetInformationHandler() {
     }
+    
+    public ProcessGetInformationHandler(ProcessDescRepoHelper repoHelper, ProcessDescriptionRepository repo) {
+		this.repository = repo;
+		this.repositoryHelper = repoHelper;
+	}
 
     @Override
     public Object start(String uri, String localName, Attributes attrs,

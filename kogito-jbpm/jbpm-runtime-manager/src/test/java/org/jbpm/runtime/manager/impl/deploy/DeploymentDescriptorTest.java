@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-import org.kie.internal.deployment.DeploymentUnit.RuntimeStrategy;
 import org.kie.internal.runtime.conf.AuditMode;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.conf.PersistenceMode;
+import org.kie.internal.runtime.conf.RuntimeStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

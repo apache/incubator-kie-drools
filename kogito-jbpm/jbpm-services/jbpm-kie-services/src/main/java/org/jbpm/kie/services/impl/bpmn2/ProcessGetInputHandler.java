@@ -15,13 +15,10 @@
  */
 package org.jbpm.kie.services.impl.bpmn2;
 
-import javax.inject.Inject;
-
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;
 import org.jbpm.bpmn2.xml.PropertyHandler;
 import org.jbpm.process.core.context.variable.Variable;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -29,14 +26,17 @@ import org.xml.sax.SAXException;
 public class ProcessGetInputHandler extends PropertyHandler implements Handler {
 
     private ProcessDescRepoHelper repositoryHelper;
-    
-    @Inject
     private ProcessDescriptionRepository repository;
     
     public ProcessGetInputHandler() {
             super();
             
     }
+    
+    public ProcessGetInputHandler(ProcessDescRepoHelper repoHelper, ProcessDescriptionRepository repo) {
+		this.repository = repo;
+		this.repositoryHelper = repoHelper;
+	}
 
     @Override
     public Object start(final String uri, final String localName,

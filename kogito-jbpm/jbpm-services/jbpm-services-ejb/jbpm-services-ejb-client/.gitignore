@@ -1,0 +1,21 @@
+/target
+/local
+
+# Eclipse, Netbeans and IntelliJ files
+.classpath
+.project
+.settings/
+!.gitignore
+/nbproject
+/*.ipr
+/*.iws
+/*.iml
+
+# test data
+/data
+/*.db
+/target
+/target
+/target
+/target
+/target

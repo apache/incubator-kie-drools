@@ -15,27 +15,22 @@
  */
 package org.jbpm.kie.services.impl.bpmn2;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.xml.TaskHandler;
-
-
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-@ApplicationScoped
+
 public class AbstractTaskGetInformationHandler extends TaskHandler {
 
     private ProcessDescRepoHelper repositoryHelper;
-    
-    @Inject
     private ProcessDescriptionRepository repository;
 
     
-    public AbstractTaskGetInformationHandler() {
-    }
-
+    public AbstractTaskGetInformationHandler(ProcessDescRepoHelper repoHelper, ProcessDescriptionRepository repo) {
+		this.repository = repo;
+		this.repositoryHelper = repoHelper;
+	}
    
     @Override
     protected void handleNode(final org.jbpm.workflow.core.Node node, final Element element, final String uri, 

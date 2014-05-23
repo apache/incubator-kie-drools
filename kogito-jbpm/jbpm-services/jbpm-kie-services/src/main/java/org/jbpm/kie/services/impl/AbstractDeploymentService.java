@@ -1,73 +1,92 @@
+/*
+ * Copyright 2014 JBoss by Red Hat.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jbpm.kie.services.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
 
 import org.jbpm.kie.services.api.IdentityProvider;
-import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
-import org.jbpm.kie.services.impl.event.Deploy;
-import org.jbpm.kie.services.impl.event.DeploymentEvent;
-import org.jbpm.kie.services.impl.event.Undeploy;
-import org.jbpm.kie.services.impl.model.ProcessInstanceDesc;
 import org.jbpm.kie.services.impl.security.IdentityRolesSecurityManager;
 import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
+import org.jbpm.services.api.DeploymentEvent;
+import org.jbpm.services.api.DeploymentEventListener;
+import org.jbpm.services.api.DeploymentService;
+import org.jbpm.services.api.RuntimeDataService;
+import org.jbpm.services.api.model.DeployedUnit;
+import org.jbpm.services.api.model.DeploymentUnit;
+import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.deployment.DeployedUnit;
-import org.kie.internal.deployment.DeploymentService;
-import org.kie.internal.deployment.DeploymentUnit;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 
 public abstract class AbstractDeploymentService implements DeploymentService {
     
-    @Inject
-    private BeanManager beanManager; 
-    @Inject
-    private RuntimeManagerFactory managerFactory; 
-    @Inject
-    private RuntimeDataService runtimeDataService;
-    @Inject
-    @PersistenceUnit(unitName = "org.jbpm.domain")
-    private EntityManagerFactory emf;
-    @Inject
-    private IdentityProvider identityProvider;
-    @Inject
-    @Deploy
-    protected Event<DeploymentEvent> deploymentEvent;
-    @Inject
-    @Undeploy
-    protected Event<DeploymentEvent> undeploymentEvent;
+    protected RuntimeManagerFactory managerFactory;     
+    protected RuntimeDataService runtimeDataService;    
+    protected EntityManagerFactory emf;    
+    protected IdentityProvider identityProvider;
     
-    protected Map<String, DeployedUnit> deploymentsMap = new ConcurrentHashMap<String, DeployedUnit>();
+    protected Set<DeploymentEventListener> listeners = new HashSet<DeploymentEventListener>();
     
-    public EntityManagerFactory getEmf() {
-        return emf;
+    public void addListener(DeploymentEventListener listener) {
+    	this.listeners.add(listener);
     }
 
-    public void setEmf(EntityManagerFactory emf) {
-        this.emf = emf;
+    public void removeListener(DeploymentEventListener listener) {
+    	this.listeners.remove(listener);
     }
+    
+    public Collection<DeploymentEventListener> getListeners() {
+    	return Collections.unmodifiableSet(listeners);
+    }
+    
+    protected Map<String, DeployedUnit> deploymentsMap = new ConcurrentHashMap<String, DeployedUnit>();
     
     @Override
     public void deploy(DeploymentUnit unit) {
         if (deploymentsMap.containsKey(unit.getIdentifier())) {
             throw new IllegalStateException("Unit with id " + unit.getIdentifier() + " is already deployed");
         }
+    }
+    
+    public void notifyOnDeploy(DeploymentUnit unit, DeployedUnit deployedUnit){
+    	DeploymentEvent event = new DeploymentEvent(unit.getIdentifier(), deployedUnit);
+    	for (DeploymentEventListener listener : listeners) {
+    		listener.onDeploy(event);
+    	}    
+    }
+    public void notifyOnUnDeploy(DeploymentUnit unit, DeployedUnit deployedUnit){
+    	DeploymentEvent event = new DeploymentEvent(unit.getIdentifier(), deployedUnit);
+    	for (DeploymentEventListener listener : listeners) {
+    		listener.onUnDeploy(event);
+    	}
     }
     
     public void commonDeploy(DeploymentUnit unit, DeployedUnitImpl deployedUnit, RuntimeEnvironment environemnt) {
@@ -102,20 +121,17 @@ public abstract class AbstractDeploymentService implements DeploymentService {
                 if (descriptor.getRequiredRoles() != null && !descriptor.getRequiredRoles().isEmpty()) {
                 	((InternalRuntimeManager)manager).setSecurityManager(new IdentityRolesSecurityManager(identityProvider, descriptor.getRequiredRoles()));
                 }
+                notifyOnDeploy(unit, deployedUnit);
                 
-                if (deploymentEvent != null) {
-                    deploymentEvent.fire(new DeploymentEvent(unit.getIdentifier(), deployedUnit));
-                }
             } catch (Exception e) {
                 deploymentsMap.remove(unit.getIdentifier());
-                manager.close();
-                if (undeploymentEvent != null && deployedUnit != null) {
-                    undeploymentEvent.fire(new DeploymentEvent(unit.getIdentifier(), deployedUnit));
+                if (manager != null) {
+                	manager.close();
                 }
+                notifyOnUnDeploy(unit, deployedUnit);
                 throw new RuntimeException(e);
             }
         }
-
         
     }
     
@@ -136,15 +152,13 @@ public abstract class AbstractDeploymentService implements DeploymentService {
                 RuntimeManager manager = deployed.getRuntimeManager();
                 ((AbstractRuntimeManager)manager).close(true);
             }
-            if (undeploymentEvent != null) {
-                undeploymentEvent.fire(new DeploymentEvent(unit.getIdentifier(), deployed));
-            }
+            notifyOnUnDeploy(unit, deployed);
         }
     }
 
     @Override
     public RuntimeManager getRuntimeManager(String deploymentUnitId) {
-        if (deploymentsMap.containsKey(deploymentUnitId)) {
+        if (deploymentUnitId != null && deploymentsMap.containsKey(deploymentUnitId)) {
             return deploymentsMap.get(deploymentUnitId).getRuntimeManager();
         }
         
@@ -182,17 +196,28 @@ public abstract class AbstractDeploymentService implements DeploymentService {
     public RuntimeDataService getRuntimeDataService() {
         return runtimeDataService;
     }
+    
+    public EntityManagerFactory getEmf() {
+        return emf;
+    }
+
+    public void setEmf(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
 
     public void setRuntimeDataService(RuntimeDataService runtimeDataService) {
         this.runtimeDataService = runtimeDataService;
     }
     
-    protected AuditEventBuilder setupAuditLogger(IdentityProvider identityProvider, String deploymentUnitId) { 
-       
+    public void setIdentityProvider(IdentityProvider identityProvider) {
+		this.identityProvider = identityProvider;
+	}
+	
+	protected AuditEventBuilder setupAuditLogger(IdentityProvider identityProvider, String deploymentUnitId) { 
+	       
         ServicesAwareAuditEventBuilder auditEventBuilder = new ServicesAwareAuditEventBuilder();
         auditEventBuilder.setIdentityProvider(identityProvider);
-        auditEventBuilder.setDeploymentUnitId(deploymentUnitId);
-        auditEventBuilder.setBeanManager(beanManager);        
+        auditEventBuilder.setDeploymentUnitId(deploymentUnitId);      
         
         return auditEventBuilder;
     }

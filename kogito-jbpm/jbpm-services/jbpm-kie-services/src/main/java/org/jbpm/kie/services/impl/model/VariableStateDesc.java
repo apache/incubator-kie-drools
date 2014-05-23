@@ -17,10 +17,13 @@ package org.jbpm.kie.services.impl.model;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import javax.persistence.Column;
 
+import org.jbpm.services.api.model.VariableDesc;
 
-public class VariableStateDesc implements Serializable{
+
+public class VariableStateDesc implements VariableDesc, Serializable{
 
     private static final long serialVersionUID = -9063441776686542527L;
 
@@ -73,7 +76,7 @@ public class VariableStateDesc implements Serializable{
         return deploymentId;
     }
 
-    public long getProcessInstanceId() {
+    public Long getProcessInstanceId() {
         return processInstanceId;
     }
 

@@ -1,0 +1,63 @@
+/*
+ * Copyright 2014 JBoss by Red Hat.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.jbpm.services.cdi.impl;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
+import org.jbpm.kie.services.api.IdentityProvider;
+import org.jbpm.kie.services.impl.RuntimeDataServiceImpl;
+import org.jbpm.services.api.DeploymentEvent;
+import org.jbpm.services.cdi.Deploy;
+import org.jbpm.services.cdi.Undeploy;
+import org.jbpm.shared.services.impl.TransactionalCommandService;
+import org.kie.api.task.TaskService;
+
+@ApplicationScoped
+public class RuntimeDataServiceCDIImpl extends RuntimeDataServiceImpl {
+
+	@Override
+    public void onDeploy(@Observes@Deploy DeploymentEvent event) {
+        super.onDeploy(event);
+    }
+    
+	@Override
+    public void onUnDeploy(@Observes@Undeploy DeploymentEvent event) {
+        super.onUnDeploy(event);
+    }
+
+    @Inject
+	@Override
+	public void setCommandService(TransactionalCommandService commandService) {
+		super.setCommandService(commandService);
+	}
+
+    @Inject
+	@Override
+	public void setIdentityProvider(IdentityProvider identityProvider) {
+		super.setIdentityProvider(identityProvider);
+	}
+
+    @Inject
+	@Override
+	public void setTaskService(TaskService taskService) {
+		super.setTaskService(taskService);
+	}
+	    
+	    
+}

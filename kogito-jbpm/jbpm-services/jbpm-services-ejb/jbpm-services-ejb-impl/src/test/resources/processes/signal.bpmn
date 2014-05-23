@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace=""
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <process processType="Private" isExecutable="true" id="signal" name="Default Process" tns:packageName="defaultPackage" tns:version="1" >
+
+    <!-- nodes -->
+    <startEvent id="StartEvent_1" name="StartProcess" />
+    <intermediateCatchEvent id="IntermediateCatchEvent_1" name="Catch" >
+      <signalEventDefinition signalRef="MySignal"/>
+    </intermediateCatchEvent>
+    <endEvent id="EndEvent_1" name="EndProcess" />
+    <scriptTask id="ScriptTask_1" name="Script Task" >
+      <script>System.out.println("Script executed");</script>
+    </scriptTask>
+
+    <!-- connections -->
+    <sequenceFlow id="StartEvent_1-IntermediateCatchEvent_1" sourceRef="StartEvent_1" targetRef="IntermediateCatchEvent_1" />
+    <sequenceFlow id="ScriptTask_1-EndEvent_1" sourceRef="ScriptTask_1" targetRef="EndEvent_1" />
+    <sequenceFlow id="IntermediateCatchEvent_1-ScriptTask_1" sourceRef="IntermediateCatchEvent_1" targetRef="ScriptTask_1" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="signal" >
+      <bpmndi:BPMNShape bpmnElement="StartEvent_1" >
+        <dc:Bounds x="94" y="94" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="IntermediateCatchEvent_1" >
+        <dc:Bounds x="347" y="94" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="EndEvent_1" >
+        <dc:Bounds x="724" y="94" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ScriptTask_1" >
+        <dc:Bounds x="504" y="93" width="110" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="StartEvent_1-IntermediateCatchEvent_1" >
+        <di:waypoint x="118" y="118" />
+        <di:waypoint x="371" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="ScriptTask_1-EndEvent_1" >
+        <di:waypoint x="559" y="118" />
+        <di:waypoint x="748" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="IntermediateCatchEvent_1-ScriptTask_1" >
+        <di:waypoint x="371" y="118" />
+        <di:waypoint x="559" y="118" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

@@ -35,4 +35,12 @@ public class TaskContentRegistry {
         
         return new ContentMarshallerContext();
 	}
+	
+	public ContentMarshallerContext getMarshallerContext(String deploymentId) {
+		if (deploymentId != null && this.marhsalContexts.containsKey(deploymentId)) {
+            return this.marhsalContexts.get(deploymentId);
+        }
+        
+        return new ContentMarshallerContext();
+	}
 }

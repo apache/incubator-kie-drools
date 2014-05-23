@@ -15,10 +15,6 @@
  */
 package org.jbpm.runtime.manager.impl;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
 import org.drools.core.time.TimerService;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
@@ -50,12 +46,9 @@ import org.kie.internal.runtime.manager.TaskServiceFactory;
  * </ul>
  *
  */
-@ApplicationScoped
 public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
     
-    @Inject
-    private Instance<TaskServiceFactory> taskServiceFactoryInjected;
-    
+
     @Override
     public RuntimeManager newSingletonRuntimeManager(RuntimeEnvironment environment) {
         
@@ -124,14 +117,9 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
         if (taskServiceFactory != null) {
         	return taskServiceFactory;
         }
-        try {
-            taskServiceFactory = taskServiceFactoryInjected.get();
-            // since this is CDI let's make sure it has all dependencies met
-            taskServiceFactory.newTaskService().toString();
-        } catch (Exception e) {
-            taskServiceFactory = new LocalTaskServiceFactory(environment);
-        }
         
+        taskServiceFactory = new LocalTaskServiceFactory(environment);
+               
         return taskServiceFactory;
     }
     

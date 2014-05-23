@@ -16,17 +16,18 @@
 
 package org.jbpm.services.task.query;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.kie.internal.task.api.QueryFilter;
 
-/**
- *
- * @author salaboy
- */
-public class QueryFilterImpl implements QueryFilter{
 
-    private int offset = 0;
+public class QueryFilterImpl implements QueryFilter, Serializable {
+
+	private static final long serialVersionUID = -6228032000092881493L;
+
+	private int offset = 0;
     private int count = 0;
     private boolean singleResult = false;
     private String language ="";

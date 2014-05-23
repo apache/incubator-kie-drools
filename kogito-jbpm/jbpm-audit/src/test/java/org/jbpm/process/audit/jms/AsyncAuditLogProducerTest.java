@@ -97,7 +97,7 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
         MessageReceiver receiver = new MessageReceiver();
         List<Message> messages = receiver.receive(queue);
         assertNotNull(messages);
-        assertEquals(8, messages.size());
+        assertEquals(11, messages.size());
 
     }
     
@@ -127,7 +127,7 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
         MessageReceiver receiver = new MessageReceiver();
         List<Message> messages = receiver.receive(queue);
         assertNotNull(messages);
-        assertEquals(8, messages.size());
+        assertEquals(11, messages.size());
 
     }
     
@@ -189,7 +189,7 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
         MessageReceiver receiver = new MessageReceiver();
         List<Message> messages = receiver.receive(queue);
         assertNotNull(messages);
-        assertEquals(8, messages.size());
+        assertEquals(11, messages.size());
 
     }
     

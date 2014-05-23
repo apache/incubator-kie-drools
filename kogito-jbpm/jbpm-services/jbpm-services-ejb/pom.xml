@@ -1,0 +1,16 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jbpm</groupId>
+    <artifactId>jbpm-services</artifactId>
+    <version>6.2.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>jbpm-services-ejb</artifactId>
+  <packaging>pom</packaging>
+  <modules>
+  	<module>jbpm-services-ejb-api</module>
+  	<module>jbpm-services-ejb-impl</module>
+  	<module>jbpm-services-ejb-client</module>
+  </modules>
+  <name>jBPM :: EJB Services </name>
+</project>

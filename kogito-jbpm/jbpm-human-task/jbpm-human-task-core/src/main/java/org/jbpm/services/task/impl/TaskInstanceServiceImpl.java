@@ -191,6 +191,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     public void setTaskNames(long taskId, List<I18NText> taskNames) {
         Task task = persistenceContext.findTask(taskId);
         ((InternalTask) task).setNames(taskNames);
+        ((InternalTask) task).setName(taskNames.get(0).getText());
     }
 
     public void skip(long taskId, String userId) {
@@ -227,6 +228,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     public void setDescriptions(long taskId, List<I18NText> descriptions) {
         Task task = persistenceContext.findTask(taskId);
         ((InternalTask) task).setDescriptions(descriptions);
+        ((InternalTask) task).setDescription(descriptions.get(0).getText());
     }
 
     public void setSkipable(long taskId, boolean skipable) {

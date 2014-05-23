@@ -18,7 +18,7 @@ package org.jbpm.kie.services.impl.model;
 import java.io.Serializable;
 import java.util.Date;
 
-public class NodeInstanceDesc implements Serializable{
+public class NodeInstanceDesc implements org.jbpm.services.api.model.NodeInstanceDesc, Serializable{
     
     private static final long serialVersionUID = -5724814793988493958L;
     
@@ -32,6 +32,8 @@ public class NodeInstanceDesc implements Serializable{
     private int type;
     
     private Date dataTimeStamp;
+    
+    private Long workItemId;
 
     public NodeInstanceDesc() {
     }
@@ -39,7 +41,7 @@ public class NodeInstanceDesc implements Serializable{
 
     public NodeInstanceDesc(String id, String nodeId, String name, String nodeType,
                             String deploymentId, long processInstanceId, Date date, 
-                            String connection, int type) {
+                            String connection, int type, Long workItemId) {
         this.id = Long.parseLong(id);
         this.name = name;
         this.nodeId = nodeId;
@@ -49,9 +51,10 @@ public class NodeInstanceDesc implements Serializable{
         this.dataTimeStamp = date;
         this.connection = connection;
         this.type = type;
+        this.workItemId = workItemId;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -63,7 +66,7 @@ public class NodeInstanceDesc implements Serializable{
         return deploymentId;
     }
 
-    public long getProcessInstanceId() {
+    public Long getProcessInstanceId() {
         return processInstanceId;
     }
 
@@ -100,5 +103,15 @@ public class NodeInstanceDesc implements Serializable{
     public void setConnection(String incomingConnection) {
         this.connection = incomingConnection;
     }
+
+
+	public Long getWorkItemId() {
+		return workItemId;
+	}
+
+
+	public void setWorkItemId(Long workItemId) {
+		this.workItemId = workItemId;
+	}
     
 }

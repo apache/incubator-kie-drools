@@ -28,7 +28,7 @@ import org.drools.persistence.OrderedTransactionSynchronization;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionManagerHelper;
 import org.drools.persistence.jta.JtaTransactionManager;
-import org.jbpm.runtime.manager.impl.factory.CDITaskServiceFactory;
+import org.jbpm.runtime.manager.impl.factory.LocalTaskServiceFactory;
 import org.jbpm.runtime.manager.impl.mapper.EnvironmentAwareProcessInstanceContext;
 import org.jbpm.runtime.manager.impl.mapper.InMemoryMapper;
 import org.jbpm.runtime.manager.impl.mapper.JPAMapper;
@@ -166,7 +166,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     @Override
     public void close() {
         try {
-            if (taskServiceFactory instanceof CDITaskServiceFactory) {
+        	if (!(taskServiceFactory instanceof LocalTaskServiceFactory)) {
                 // if it's CDI based (meaning single application scoped bean) we need to unregister context
                 removeRuntimeFromTaskService((InternalTaskService) taskServiceFactory.newTaskService());
             }
