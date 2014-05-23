@@ -18,8 +18,6 @@ package org.kie.internal.runtime.conf;
 
 import java.util.List;
 
-import org.kie.internal.deployment.DeploymentUnit.RuntimeStrategy;
-
 /**
  * Fluent API style builder to simplify construction (or modification)
  * of descriptor instances.
