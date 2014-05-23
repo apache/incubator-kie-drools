@@ -1032,13 +1032,13 @@ public class TemporalEvaluatorFactoryTest {
                                                     final Object[] row,
                                                     final Evaluator evaluator) {
         final FieldValue value = FieldFactory.getInstance().getFieldValue( row[2] );
-        RuntimeDroolsException exc = null;
+        RuntimeException exc = null;
         try {
             evaluator.evaluate( null,
                                 extractor,
                                 ( EventFactHandle ) row[0],
                                 value );
-        } catch ( RuntimeDroolsException e ) {
+        } catch ( RuntimeException e ) {
             exc = e;
         }
         assertNotNull( exc );
