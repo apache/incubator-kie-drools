@@ -1,18 +1,5 @@
 package org.drools.compiler.compiler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import org.drools.core.base.TypeResolver;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -23,10 +10,6 @@ import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.core.rule.Package;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.Rule;
-import org.drools.core.rule.RuleConditionElement;
 import org.drools.compiler.rule.builder.AccumulateBuilder;
 import org.drools.compiler.rule.builder.ConsequenceBuilder;
 import org.drools.compiler.rule.builder.EnabledBuilder;
@@ -43,14 +26,26 @@ import org.drools.compiler.rule.builder.RuleClassBuilder;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.SalienceBuilder;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.core.base.TypeResolver;
+import org.drools.core.rule.Package;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.Rule;
+import org.drools.core.rule.RuleConditionElement;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.KBuilderSeverityOption;
 import org.kie.internal.utils.ChainedProperties;
-import org.kie.api.io.Resource;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import static org.junit.Assert.*;
 
 public class PackageBuilderConfigurationTest {
 
@@ -412,6 +407,9 @@ public class PackageBuilderConfigurationTest {
 
         public List<KnowledgeBuilderResult> getResults() {
             return null;
+        }
+
+        public void clearResults() {
         }
 
         public ReturnValueBuilder getReturnValueBuilder() {

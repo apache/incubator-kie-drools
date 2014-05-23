@@ -744,6 +744,10 @@ public class MVELDialect
         return results;
     }
 
+    public void clearResults() {
+        this.results.clear();
+    }
+
     public ReturnValueBuilder getReturnValueBuilder() {
         return RETURN_VALUE_BUILDER;
     }
