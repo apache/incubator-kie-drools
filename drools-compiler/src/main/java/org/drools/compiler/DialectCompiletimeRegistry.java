@@ -76,7 +76,7 @@ public class DialectCompiletimeRegistry {
             List results = dialect.getResults();
             if ( results != null ) {
                 list.addAll( results );
-                results.clear();
+                dialect.clearResults();
             }
         }
         return list;

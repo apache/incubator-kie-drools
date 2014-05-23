@@ -92,6 +92,8 @@ public interface Dialect {
     public void addStaticImport(String importEntry);
 
     List getResults();
+    
+    void clearResults();
 
     void init(RuleDescr ruleDescr);
 

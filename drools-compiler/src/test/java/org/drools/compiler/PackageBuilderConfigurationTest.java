@@ -413,6 +413,9 @@ public class PackageBuilderConfigurationTest {
         public List getResults() {
             return null;
         }
+        
+        public void clearResults() {
+        }
 
         public ReturnValueBuilder getReturnValueBuilder() {
             return null;

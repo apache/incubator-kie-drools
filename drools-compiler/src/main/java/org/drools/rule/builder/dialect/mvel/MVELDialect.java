@@ -687,6 +687,10 @@ public class MVELDialect
     public List getResults() {
         return results;
     }
+    
+    public void clearResults() {
+    	this.results.clear();
+    }
 
     public ReturnValueBuilder getReturnValueBuilder() {
         return this.RETURN_VALUE_BUILDER;
