@@ -658,6 +658,11 @@ public class JavaDialect
         return this.results;
     }
 
+    public void clearResults() {
+        this.results.clear();
+        this.errorHandlers.clear();
+    }
+
     public String getId() {
         return ID;
     }

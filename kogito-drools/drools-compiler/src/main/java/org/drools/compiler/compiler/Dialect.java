@@ -1,9 +1,5 @@
 package org.drools.compiler.compiler;
 
-import java.util.List;
-import java.util.Map;
-
-import org.drools.core.base.TypeResolver;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.compiler.lang.descr.ImportDescr;
@@ -24,8 +20,12 @@ import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleClassBuilder;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.SalienceBuilder;
-import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.drools.core.base.TypeResolver;
 import org.kie.api.io.Resource;
+import org.kie.internal.builder.KnowledgeBuilderResult;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * A Dialect implementation handles the building and execution of code
@@ -94,6 +94,8 @@ public interface Dialect {
     public void addStaticImport(ImportDescr importDescr);
 
     List<KnowledgeBuilderResult> getResults();
+
+    void clearResults();
 
     void init(RuleDescr ruleDescr);
 
