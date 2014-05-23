@@ -72,7 +72,7 @@ public class DialectCompiletimeRegistry {
                         list.add(result);
                     }
                 }
-                results.clear();
+                dialect.clearResults();
             }
         }
         return list;
