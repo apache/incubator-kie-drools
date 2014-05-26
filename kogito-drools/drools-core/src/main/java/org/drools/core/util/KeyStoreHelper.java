@@ -65,28 +65,27 @@ public class KeyStoreHelper {
      */
     public KeyStoreHelper() {
         try {
-            Properties prop = System.getProperties();
-            this.signed = Boolean.valueOf( prop.getProperty( PROP_SIGN,
-                                                             RuleBaseConfiguration.DEFAULT_SIGN_ON_SERIALIZATION ) ).booleanValue();
-            String url = prop.getProperty( PROP_PVT_KS_URL,
-                                           "" );
+            this.signed = Boolean.valueOf( System.getProperty( PROP_SIGN,
+                                                               RuleBaseConfiguration.DEFAULT_SIGN_ON_SERIALIZATION ) ).booleanValue();
+            String url = System.getProperty( PROP_PVT_KS_URL,
+                                             "" );
             if ( url.length() > 0 ) {
                 this.pvtKeyStoreURL = new URL( url );
             }
-            this.pvtKeyStorePwd = prop.getProperty( PROP_PVT_KS_PWD,
-                                                    "" ).toCharArray();
-            this.pvtKeyAlias = prop.getProperty( PROP_PVT_ALIAS,
-                                                 "" );
-            this.pvtKeyPassword = prop.getProperty( PROP_PVT_PWD,
-                                                    "" ).toCharArray();
+            this.pvtKeyStorePwd = System.getProperty( PROP_PVT_KS_PWD,
+                                                       "" ).toCharArray();
+            this.pvtKeyAlias = System.getProperty( PROP_PVT_ALIAS,
+                                                   "" );
+            this.pvtKeyPassword = System.getProperty( PROP_PVT_PWD,
+                                                      "" ).toCharArray();
 
-            url = prop.getProperty( PROP_PUB_KS_URL,
-                                    "" );
+            url = System.getProperty( PROP_PUB_KS_URL,
+                                      "" );
             if ( url.length() > 0 ) {
                 this.pubKeyStoreURL = new URL( url );
             }
-            this.pubKeyStorePwd = prop.getProperty( PROP_PUB_KS_PWD,
-                                                    "" ).toCharArray();
+            this.pubKeyStorePwd = System.getProperty( PROP_PUB_KS_PWD,
+                                                       "" ).toCharArray();
             initKeyStore();
         } catch ( Exception e ) {
             throw new RuntimeException( "Error initialising KeyStore: " + e.getMessage(), e );
