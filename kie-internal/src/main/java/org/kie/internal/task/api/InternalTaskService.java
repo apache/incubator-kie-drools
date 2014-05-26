@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
@@ -42,7 +41,7 @@ import org.kie.internal.task.api.model.TaskEvent;
  *  facade of all the other services, providing a single entry point
  *  to access to all the services
  */
-public interface InternalTaskService extends TaskService, CommandExecutor {
+public interface InternalTaskService extends TaskService {
     
     void addGroup(Group group);
 
@@ -200,9 +199,7 @@ public interface InternalTaskService extends TaskService, CommandExecutor {
 
     List<Comment> getAllCommentsByTaskId(long taskId);
 
-    Comment getCommentById(long commentId);
-    
-    Map<String, Object> getTaskContent(long taskId);
+    Comment getCommentById(long commentId);        
     
     void addMarshallerContext(String ownerId, ContentMarshallerContext context);
     
