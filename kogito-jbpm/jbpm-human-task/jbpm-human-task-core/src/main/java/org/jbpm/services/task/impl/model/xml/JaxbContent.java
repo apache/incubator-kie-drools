@@ -16,7 +16,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.jbpm.services.task.impl.model.xml.adapter.StringObjectMapXmlAdapter;
-import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.task.model.Content;
 
 @XmlRootElement(name="content")
@@ -46,41 +45,17 @@ public class JaxbContent implements Content {
     }
     
     public void initialize(Content content) { 
-        if( content == null ) { 
+        if( content == null || content.getId() == -1) { 
             return; 
         }
         this.id = content.getId();
-        if( content.getContent() != null ) { 
-            Object realContentObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
-            this.className = realContentObject.getClass().getName();
-            boolean serialize = true;
-            if( realContentObject instanceof Map<?, ?> ) { 
-                Map<?,?> contentMap = (Map<?,?>) realContentObject;
-                if( ! contentMap.isEmpty() ) { 
-                    if( contentMap.keySet().iterator().next() instanceof String ) { 
-                        serialize = false;
-                        this.contentMap = (Map<String, Object>) contentMap;
-                    }
-                }
-            }
-            if( serialize ) { 
-                this.serializedContent = StringObjectMapXmlAdapter.serializeObject(realContentObject, "Content(" + this.id + ").content" );
-            }
-        }
+        this.serializedContent = content.getContent();
     }
     
     @Override
     @JsonIgnore
     public byte[] getContent() {
-        byte [] realContent = null;
-        if( this.serializedContent != null ) { 
-            Object contentObject = StringObjectMapXmlAdapter.deserializeObject(this.serializedContent, this.className, 
-                    "Content(" + this.id + ").content" );
-            realContent = ContentMarshallerHelper.marshallContent(contentObject, null);
-        } else if( this.contentMap != null ) { 
-            realContent = ContentMarshallerHelper.marshallContent(this.contentMap, null);
-        }
-        return realContent;
+        return serializedContent;
     }
    
     public byte[] getSerializedContent() { 
