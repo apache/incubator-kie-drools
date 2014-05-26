@@ -18,6 +18,7 @@ package org.kie.api.task;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.OrganizationalEntity;
@@ -30,7 +31,7 @@ import org.kie.api.task.model.TaskSummary;
  *  facade of all the other services, providing a single entry point
  *  to access to all the services
  */
-public interface TaskService {
+public interface TaskService extends CommandExecutor {
     
     void activate(long taskId, String userId);
 
@@ -92,4 +93,5 @@ public interface TaskService {
 
     Attachment getAttachmentById(long attachId);
     
+    Map<String, Object> getTaskContent(long taskId);
 }
