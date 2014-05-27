@@ -1,0 +1,55 @@
+package com.sample
+ 
+import org.drools.compiler.integrationtests.Misc2Test.Trailer;
+
+global java.util.List trailerList;
+
+//rule "dummy rule" // (A) If you uncommnet this dummy rule, rules will work expectedly
+//	ruleflow-group "rfgroup1"
+//   when
+//         $trailer : Trailer(status == Trailer.TypeStatus.WAITING)
+//    then
+//        System.out.println( "[rfgroup1] dummy rule : " + $trailer );
+//end
+
+rule "find waiting trailer"
+	ruleflow-group "rfgroup1"
+    when
+		$trailer : Trailer(status == Trailer.TypeStatus.WAITING);
+		not Trailer(status == Trailer.TypeStatus.LOADING); // (B) If you comment-out one or two of these 'not' pattern, rules will work expectedly
+		not Trailer(status == Trailer.TypeStatus.SHIPPING);
+    then
+        System.out.println( "[rfgroup1] find waiting trailer : " + $trailer);
+        $trailer.setStatus(Trailer.TypeStatus.LOADING); // (C) If you set Trailer.TypeStatus.SHIPPING here, rules will work expectedly
+        update($trailer);
+end
+
+rule "ship"
+	ruleflow-group "rfgroup1"
+    when
+		$trailer : Trailer(status == Trailer.TypeStatus.LOADING);
+    then
+        System.out.println( "[rfgroup1] ship : " + $trailer);
+        $trailer.setStatus(Trailer.TypeStatus.SHIPPING);
+        update($trailer);
+end
+
+rule "shipping done"
+	ruleflow-group "rfgroup1"
+    when
+		$trailer : Trailer(status == Trailer.TypeStatus.SHIPPING);
+    then
+        System.out.println( "[rfgroup1] shipping done : " + $trailer);
+        trailerList.add($trailer.getTrailerID());
+        retract($trailer);
+end
+
+rule "insert new trailers"
+	no-loop 
+	ruleflow-group "rfgroup2"
+    when
+    then
+        System.out.println( "[rfgroup2] insert new trailers");
+        insert(new Trailer("002", Trailer.TypeStatus.WAITING));
+end
+
