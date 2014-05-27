@@ -23,11 +23,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicForagerConfig;
 import org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig;
-import org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlacerConfig;
-import org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
-import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
-import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -151,58 +147,6 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig {
             foragerConfig = inheritedConfig.getForagerConfig();
         } else if (inheritedConfig.getForagerConfig() != null) {
             foragerConfig.inherit(inheritedConfig.getForagerConfig());
-        }
-    }
-
-    public static enum ConstructionHeuristicType {
-        FIRST_FIT,
-        FIRST_FIT_DECREASING,
-        BEST_FIT,
-        BEST_FIT_DECREASING,
-        CHEAPEST_INSERTION;
-
-        public EntitySorterManner getDefaultEntitySorterManner() {
-            switch (this) {
-                case FIRST_FIT:
-                case BEST_FIT:
-                    return EntitySorterManner.NONE;
-                case FIRST_FIT_DECREASING:
-                case BEST_FIT_DECREASING:
-                    return EntitySorterManner.DECREASING_DIFFICULTY;
-                case CHEAPEST_INSERTION:
-                    return EntitySorterManner.DECREASING_DIFFICULTY_IF_AVAILABLE;
-                default:
-                    throw new IllegalStateException("The constructionHeuristicType (" + this + ") is not implemented.");
-            }
-        }
-
-        public ValueSorterManner getDefaultValueSorterManner() {
-            switch (this) {
-                case FIRST_FIT:
-                case FIRST_FIT_DECREASING:
-                    return ValueSorterManner.NONE;
-                case BEST_FIT:
-                case BEST_FIT_DECREASING:
-                    return ValueSorterManner.INCREASING_STRENGTH;
-                case CHEAPEST_INSERTION:
-                    return ValueSorterManner.INCREASING_STRENGTH_IF_AVAILABLE;
-                default:
-                    throw new IllegalStateException("The constructionHeuristicType (" + this + ") is not implemented.");
-            }
-        }
-
-        public EntityPlacerConfig newEntityPlacerConfig() {
-            switch (this) {
-                case FIRST_FIT:
-                case FIRST_FIT_DECREASING:
-                case BEST_FIT:
-                case BEST_FIT_DECREASING:
-                    return new QueuedEntityPlacerConfig();
-                case CHEAPEST_INSERTION:
-                    return new PooledEntityPlacerConfig();
-                default:
-                    throw new IllegalStateException("The constructionHeuristicType (" + this + ") is not implemented.");
-            }
         }
     }
 

@@ -4298,3 +4298,8 @@ Before in *.java:
 After in *.java:
     import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
     import org.optaplanner.benchmark.config.ranking.SolverRankingType;
+Before in *.java:
+    import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
+After in *.java:
+    import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
+    import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;

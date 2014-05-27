@@ -20,8 +20,7 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
-import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingDao;
+import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
 import org.optaplanner.examples.common.app.ConstructionHeuristicTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseDao;
@@ -35,7 +34,7 @@ public class CurriculumCourseConstructionHeuristicTest extends ConstructionHeuri
     }
 
     public CurriculumCourseConstructionHeuristicTest(File unsolvedDataFile,
-            ConstructionHeuristicPhaseConfig.ConstructionHeuristicType constructionHeuristicType) {
+            ConstructionHeuristicType constructionHeuristicType) {
         super(unsolvedDataFile, constructionHeuristicType);
     }
 

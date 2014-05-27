@@ -24,6 +24,7 @@ import java.util.List;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
+import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
@@ -96,7 +97,7 @@ public class NQueensApp extends CommonApp {
 
         ConstructionHeuristicPhaseConfig constructionHeuristicPhaseConfig = new ConstructionHeuristicPhaseConfig();
         constructionHeuristicPhaseConfig.setConstructionHeuristicType(
-                ConstructionHeuristicPhaseConfig.ConstructionHeuristicType.FIRST_FIT_DECREASING);
+                ConstructionHeuristicType.FIRST_FIT_DECREASING);
         phaseConfigList.add(constructionHeuristicPhaseConfig);
 
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();

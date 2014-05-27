@@ -20,13 +20,10 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
+import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
 import org.optaplanner.examples.common.app.ConstructionHeuristicTest;
-import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.nqueens.persistence.NQueensDao;
-import org.optaplanner.examples.nqueens.solver.score.NQueensEasyScoreCalculator;
 
 public class NQueensConstructionHeuristicTest extends ConstructionHeuristicTest {
 
@@ -38,7 +35,7 @@ public class NQueensConstructionHeuristicTest extends ConstructionHeuristicTest 
     }
 
     public NQueensConstructionHeuristicTest(File unsolvedDataFile,
-            ConstructionHeuristicPhaseConfig.ConstructionHeuristicType constructionHeuristicType) {
+            ConstructionHeuristicType constructionHeuristicType) {
         super(unsolvedDataFile, constructionHeuristicType);
     }
 
