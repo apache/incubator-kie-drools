@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;

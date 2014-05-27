@@ -28,7 +28,7 @@ import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.solution.ProblemIO;
 import org.optaplanner.persistence.xstream.XStreamProblemIO;

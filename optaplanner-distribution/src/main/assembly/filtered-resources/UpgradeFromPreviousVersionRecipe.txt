@@ -4290,3 +4290,9 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
   </scoreDirectorFactory>
 
 [MINOR] The interface SolverRankingWeightFactory has moved package (but almost nobody uses that).
+
+[MINOR] Configuration by Java (instead of XML): Enums for the Config classes have been moved into the config package.
+Before in *.java:
+    import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
+After in *.java:
+    import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
