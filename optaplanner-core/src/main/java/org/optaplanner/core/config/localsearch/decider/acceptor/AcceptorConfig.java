@@ -72,6 +72,7 @@ public class AcceptorConfig {
     protected Integer stepCountingHillClimbingSize = null;
     protected StepCountingHillClimbingType stepCountingHillClimbingType = null;
 
+    @Deprecated // Experimental feature
     protected Integer lateSimulatedAnnealingSize = null;
 
     public List<Class<? extends Acceptor>> getAcceptorClassList() {
@@ -234,10 +235,12 @@ public class AcceptorConfig {
         this.stepCountingHillClimbingType = stepCountingHillClimbingType;
     }
 
+    @Deprecated // Experimental feature
     public Integer getLateSimulatedAnnealingSize() {
         return lateSimulatedAnnealingSize;
     }
 
+    @Deprecated // Experimental feature
     public void setLateSimulatedAnnealingSize(Integer lateSimulatedAnnealingSize) {
         this.lateSimulatedAnnealingSize = lateSimulatedAnnealingSize;
     }
