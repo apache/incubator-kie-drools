@@ -22,6 +22,7 @@ import org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator.Deci
 import org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator.NaturalDeciderScoreComparatorFactory;
 import org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator.ShiftingHardPenaltyDeciderScoreComparatorFactory;
 
+@Deprecated // Experimental feature (no backwards compatibility guarantee)
 @XStreamAlias("deciderScoreComparatorFactory")
 public class DeciderScoreComparatorFactoryConfig {
 
@@ -167,11 +168,6 @@ public class DeciderScoreComparatorFactoryConfig {
         if (startingHardWeight == null) {
             startingHardWeight = inheritedConfig.getStartingHardWeight();
         }
-    }
-
-    public static enum DeciderScoreComparatorFactoryType {
-        NATURAL,
-        SHIFTING_HARD_PENALTY;
     }
 
 }

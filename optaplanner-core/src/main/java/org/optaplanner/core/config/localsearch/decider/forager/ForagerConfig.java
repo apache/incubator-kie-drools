@@ -30,9 +30,10 @@ public class ForagerConfig {
 
     private Class<? extends Forager> foragerClass = null;
     @XStreamAlias("deciderScoreComparatorFactory")
+    @Deprecated // Experimental feature (no backwards compatibility guarantee)
     private DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig = null;
-    private PickEarlyType pickEarlyType = null;
 
+    protected PickEarlyType pickEarlyType = null;
     protected Integer acceptedCountLimit = null;
 
     public Class<? extends Forager> getForagerClass() {
@@ -43,10 +44,12 @@ public class ForagerConfig {
         this.foragerClass = foragerClass;
     }
 
+    @Deprecated // Experimental feature (no backwards compatibility guarantee)
     public DeciderScoreComparatorFactoryConfig getDeciderScoreComparatorFactoryConfig() {
         return deciderScoreComparatorFactoryConfig;
     }
 
+    @Deprecated // Experimental feature (no backwards compatibility guarantee)
     public void setDeciderScoreComparatorFactoryConfig(
             DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig) {
         this.deciderScoreComparatorFactoryConfig = deciderScoreComparatorFactoryConfig;

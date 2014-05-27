@@ -14,18 +14,10 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.config.localsearch.decider.acceptor;
+package org.optaplanner.core.config.localsearch.decider.deciderscorecomparator;
 
-public enum AcceptorType {
-    HILL_CLIMBING,
-    ENTITY_TABU,
-    VALUE_TABU,
-    MOVE_TABU,
-    UNDO_MOVE_TABU,
-    SOLUTION_TABU,
-    SIMULATED_ANNEALING,
-    LATE_ACCEPTANCE,
-    STEP_COUNTING_HILL_CLIMBING,
-    @Deprecated // Experimental feature (no backwards compatibility guarantee)
-    LATE_SIMULATED_ANNEALING;
+@Deprecated // Experimental feature (no backwards compatibility guarantee)
+public enum DeciderScoreComparatorFactoryType {
+    NATURAL,
+    SHIFTING_HARD_PENALTY;
 }

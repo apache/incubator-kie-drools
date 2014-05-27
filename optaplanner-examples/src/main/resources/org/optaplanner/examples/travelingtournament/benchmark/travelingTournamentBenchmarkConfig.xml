@@ -130,38 +130,4 @@
       </localSearch>
     </solver>
   </solverBenchmark>
-  <!--<solverBenchmark>-->
-    <!--<name>deciderScoreComparatorFactory-SHIFTING_HARD_PENALTY</name>-->
-    <!--<solver>-->
-      <!--<localSearch>-->
-        <!--<unionMoveSelector>-->
-          <!--<swapMoveSelector>-->
-            <!--<cacheType>PHASE</cacheType>-->
-            <!--<selectionOrder>SHUFFLED</selectionOrder>-->
-            <!--<filterClass>org.optaplanner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>-->
-          <!--</swapMoveSelector>-->
-          <!--<moveListFactory>-->
-            <!--<cacheType>STEP</cacheType>-->
-            <!--<selectionOrder>SHUFFLED</selectionOrder>-->
-            <!--<moveListFactoryClass>org.optaplanner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactoryeListFactoryClass>-->
-          <!--</moveListFactory>-->
-        <!--</unionMoveSelector>-->
-        <!--<acceptor>-->
-          <!--<solutionTabuSize>1500</solutionTabuSize>-->
-          <!--<moveTabuSize>7</moveTabuSize>-->
-        <!--</acceptor>-->
-        <!--<forager>-->
-          <!--<deciderScoreComparatorFactory>-->
-            <!--<deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>-->
-            <!--<hardScoreActivationThreshold>0</hardScoreActivationThreshold>-->
-            <!--<successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>-->
-            <!--<successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>-->
-            <!--<successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>-->
-            <!--<hardWeightSurvivalRatio>0.5</hardWeightSurvivalRatio>-->
-            <!--<startingHardWeight>1000</startingHardWeight>-->
-          <!--</deciderScoreComparatorFactory>-->
-        <!--</forager>-->
-      <!--<localSearch>-->
-    <!--</solver>-->
-  <!--</solverBenchmark>-->
 </plannerBenchmark>
