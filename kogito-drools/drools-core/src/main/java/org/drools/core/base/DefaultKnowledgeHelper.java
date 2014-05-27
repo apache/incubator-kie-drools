@@ -657,6 +657,14 @@ public class DefaultKnowledgeHelper
 
     protected <K> TraitableBean<K,CoreWrapper<K>> asTraitable( K core, TraitFactory builder ) {
         ClassDefinition coreDef = lookupClassDefinition( core );
+        if ( coreDef.getDefinedClass() != core.getClass() ) {
+            // ensure that a compatible interface cDef is not replaced for the missing actual definition
+            try {
+                coreDef = builder.buildClassDefinition( core.getClass(), core.getClass() );
+            } catch ( IOException e ) {
+                e.printStackTrace();
+            }
+        }
 
         if ( core instanceof Map ) {
             if ( ! coreDef.isTraitable() ) {

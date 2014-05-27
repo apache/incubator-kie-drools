@@ -289,34 +289,6 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
     }
 
 
-    private InternalKnowledgePackage getPackage(String pack) {
-        InternalKnowledgePackage pkg = kBase.getPackage( pack );
-        if ( pkg == null ) {
-            pkg = new KnowledgePackageImpl( pack );
-            JavaDialectRuntimeData data = new JavaDialectRuntimeData();
-            pkg.getDialectRuntimeRegistry().setDialectData( "java", data );
-            data.onAdd(pkg.getDialectRuntimeRegistry(),
-                       kBase.getRootClassLoader());
-            kBase.addPackages( Arrays.asList(pkg) );
-        }
-        return pkg;
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public synchronized CoreWrapper<K> getCoreWrapper( Class<K> coreKlazz , ClassDefinition coreDef ) {
         if ( wrapperCache == null ) {
@@ -349,7 +321,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
     }
 
-    private ClassDefinition buildClassDefinition(Class<?> klazz, Class<?> wrapperClass) throws IOException {
+    public ClassDefinition buildClassDefinition(Class<?> klazz, Class<?> wrapperClass) throws IOException {
         ClassFieldInspector inspector = new ClassFieldInspector( klazz );
 
         InternalKnowledgePackage traitPackage = kBase.getPackagesMap().get( pack );
@@ -364,7 +336,11 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         if ( ! klazz.isInterface() ) {
             String className = wrapperClass.getName();
             String superClass = wrapperClass != klazz ? klazz.getName() : klazz.getSuperclass().getName();
-            String[] interfaces = new String[] {CoreWrapper.class.getName()};
+            String[] interfaces = new String[ klazz.getInterfaces().length + 1 ];
+            for ( int j = 0; j <  klazz.getInterfaces().length; j++ ) {
+                interfaces[ j ] = klazz.getInterfaces()[ j ].getName();
+            }
+            interfaces[ interfaces.length - 1 ] = CoreWrapper.class.getName();
             def = new ClassDefinition( className, superClass, interfaces );
             def.setDefinedClass( wrapperClass );
 

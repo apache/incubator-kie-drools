@@ -232,11 +232,15 @@ public class ClassObjectTypeConf
     }
 
     protected boolean determineTraitStatus() {
-        return typeDecl != null && (
+        return typeDecl != null
+               // if cls implements an interface and cls is never actually used, typeDecl will reference the interface
+               // rather than the actual class, but this may not reflect the actual traitability
+               && typeDecl.getTypeClass() == cls && (
                 typeDecl.getKind() == TypeDeclaration.Kind.TRAIT
                 || typeDecl.getTypeClassDef().isTraitable()
                 || typeDecl.getTypeClass().getAnnotation( Traitable.class ) != null
         ) || Thing.class.isAssignableFrom( cls )
+               || cls.getAnnotation( Traitable.class ) != null
                || TraitableBean.class.isAssignableFrom( cls );
     }
 
