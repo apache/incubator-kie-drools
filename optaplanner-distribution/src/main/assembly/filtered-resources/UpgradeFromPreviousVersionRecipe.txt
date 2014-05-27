@@ -4288,3 +4288,5 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
     <bendableSoftLevelsSize>3</bendableSoftLevelsSize>
     ...
   </scoreDirectorFactory>
+
+[MINOR] The interface SolverRankingWeightFactory has moved package (but almost nobody uses that).

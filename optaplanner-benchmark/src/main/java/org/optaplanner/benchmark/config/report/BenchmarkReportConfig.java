@@ -16,20 +16,17 @@
 
 package org.optaplanner.benchmark.config.report;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Locale;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.benchmark.api.ranking.SolverRankingType;
-import org.optaplanner.benchmark.api.ranking.SolverRankingWeightFactory;
-import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
+import org.optaplanner.benchmark.impl.ranking.SolverRankingWeightFactory;
 import org.optaplanner.benchmark.impl.ranking.TotalRankSolverRankingWeightFactory;
 import org.optaplanner.benchmark.impl.ranking.TotalScoreSolverRankingComparator;
 import org.optaplanner.benchmark.impl.ranking.WorstScoreSolverRankingComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
-import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.config.util.ConfigUtils;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.api.ranking;
+package org.optaplanner.benchmark.impl.ranking;
 
 import java.util.List;
 
