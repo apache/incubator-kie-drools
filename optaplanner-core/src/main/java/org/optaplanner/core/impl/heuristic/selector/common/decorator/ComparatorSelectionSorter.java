@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class ComparatorSelectionSorter implements SelectionSorter<Object> {

@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.heuristic.selector.common.decorator;
+package org.optaplanner.core.config.heuristic.selector.common.decorator;
+
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 
 /**
  * @see SelectionSorter
