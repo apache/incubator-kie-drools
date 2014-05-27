@@ -23,8 +23,8 @@ import java.util.Collection;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig;
+import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
@@ -34,14 +34,14 @@ import org.optaplanner.examples.common.persistence.SolutionDao;
 public abstract class ExhaustiveSearchTest extends PhaseTest {
 
     protected static Collection<Object[]> buildParameters(SolutionDao solutionDao, String... unsolvedFileNames) {
-        return buildParameters(solutionDao, ExhaustiveSearchPhaseConfig.ExhaustiveSearchType.values(),
+        return buildParameters(solutionDao, ExhaustiveSearchType.values(),
                 unsolvedFileNames);
     }
 
-    protected ExhaustiveSearchPhaseConfig.ExhaustiveSearchType exhaustiveSearchType;
+    protected ExhaustiveSearchType exhaustiveSearchType;
 
     protected ExhaustiveSearchTest(File dataFile,
-            ExhaustiveSearchPhaseConfig.ExhaustiveSearchType exhaustiveSearchType) {
+            ExhaustiveSearchType exhaustiveSearchType) {
         super(dataFile);
         this.exhaustiveSearchType = exhaustiveSearchType;
     }

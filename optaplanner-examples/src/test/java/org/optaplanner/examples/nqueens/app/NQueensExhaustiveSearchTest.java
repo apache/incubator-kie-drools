@@ -20,10 +20,8 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
-import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig;
+import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType;
 import org.optaplanner.core.impl.solution.Solution;
-import org.optaplanner.examples.common.app.ConstructionHeuristicTest;
 import org.optaplanner.examples.common.app.ExhaustiveSearchTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.nqueens.domain.NQueens;
@@ -40,7 +38,7 @@ public class NQueensExhaustiveSearchTest extends ExhaustiveSearchTest {
     }
 
     public NQueensExhaustiveSearchTest(File unsolvedDataFile,
-            ExhaustiveSearchPhaseConfig.ExhaustiveSearchType exhaustiveSearchType) {
+            ExhaustiveSearchType exhaustiveSearchType) {
         super(unsolvedDataFile, exhaustiveSearchType);
     }
 

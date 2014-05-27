@@ -20,11 +20,10 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig;
+import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingDao;
 import org.optaplanner.examples.common.app.ExhaustiveSearchTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.nqueens.persistence.NQueensDao;
 
 public class CloudBalancingExhaustiveSearchTest extends ExhaustiveSearchTest {
 
@@ -36,7 +35,7 @@ public class CloudBalancingExhaustiveSearchTest extends ExhaustiveSearchTest {
     }
 
     public CloudBalancingExhaustiveSearchTest(File unsolvedDataFile,
-            ExhaustiveSearchPhaseConfig.ExhaustiveSearchType exhaustiveSearchType) {
+            ExhaustiveSearchType exhaustiveSearchType) {
         super(unsolvedDataFile, exhaustiveSearchType);
     }
 
