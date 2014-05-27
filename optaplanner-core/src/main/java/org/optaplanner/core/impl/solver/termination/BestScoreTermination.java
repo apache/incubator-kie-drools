@@ -85,7 +85,7 @@ public class BestScoreTermination extends AbstractTermination {
         Number[] scoreDiffNumbers = scoreDiff.toLevelNumbers();
         if (scoreDiffNumbers.length != totalDiffNumbers.length) {
             throw new IllegalStateException("The startScore (" + startScore + "), endScore (" + endScore
-                    + ") and score (" + score + ") don't have the same level count.");
+                    + ") and score (" + score + ") don't have the same levelsSize.");
         }
         return ScoreUtils.calculateTimeGradient(totalDiffNumbers, scoreDiffNumbers, timeGradientWeightNumbers,
                 levelsSize);

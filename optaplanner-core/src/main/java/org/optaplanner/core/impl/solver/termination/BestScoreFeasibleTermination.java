@@ -75,7 +75,7 @@ public class BestScoreFeasibleTermination extends AbstractTermination {
         Number[] scoreDiffNumbers = scoreDiff.toLevelNumbers();
         if (scoreDiffNumbers.length != totalDiffNumbers.length) {
             throw new IllegalStateException("The startScore (" + startScore + ") and score (" + score
-                    + ") don't have the same level count.");
+                    + ") don't have the same levelsSize.");
         }
         return ScoreUtils.calculateTimeGradient(totalDiffNumbers, scoreDiffNumbers, timeGradientWeightFeasibleNumbers,
                 feasibleLevelsSize);
