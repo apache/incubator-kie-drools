@@ -4294,5 +4294,7 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
 [MINOR] Configuration by Java (instead of XML): Enums for the Config classes have been moved into the config package.
 Before in *.java:
     import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
+    import org.optaplanner.benchmark.api.ranking.SolverRankingType;
 After in *.java:
     import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
+    import org.optaplanner.benchmark.config.ranking.SolverRankingType;

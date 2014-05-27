@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.api.ranking;
+package org.optaplanner.benchmark.config.ranking;
 
 import org.optaplanner.benchmark.impl.ranking.TotalRankSolverRankingWeightFactory;
 import org.optaplanner.benchmark.impl.ranking.TotalScoreSolverRankingComparator;

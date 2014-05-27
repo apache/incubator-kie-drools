@@ -20,7 +20,7 @@ import java.util.Comparator;
 import java.util.Locale;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.benchmark.api.ranking.SolverRankingType;
+import org.optaplanner.benchmark.config.ranking.SolverRankingType;
 import org.optaplanner.benchmark.impl.ranking.SolverRankingWeightFactory;
 import org.optaplanner.benchmark.impl.ranking.TotalRankSolverRankingWeightFactory;
 import org.optaplanner.benchmark.impl.ranking.TotalScoreSolverRankingComparator;
