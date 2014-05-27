@@ -23,8 +23,8 @@ public interface FeasibilityScoreDefinition<S extends FeasibilityScore> extends 
     /**
      * Returns the number of levels of {@link Score#toLevelNumbers()}.
      * that are used to determine {@link FeasibilityScore#isFeasible()}.
-     * @return at least 0, at most {@link #getLevelCount()}
+     * @return at least 0, at most {@link #getLevelsSize()}
      */
-    int getFeasibleLevelCount();
+    int getFeasibleLevelsSize();
 
 }

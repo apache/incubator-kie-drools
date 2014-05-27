@@ -36,8 +36,8 @@
 
       <scoreDirectorFactory>
         <scoreDefinitionType>BENDABLE</scoreDefinitionType>
-        <bendableHardLevelCount>1</bendableHardLevelCount>
-        <bendableSoftLevelCount>2</bendableSoftLevelCount>
+        <bendableHardLevelsSize>1</bendableHardLevelsSize>
+        <bendableSoftLevelsSize>2</bendableSoftLevelsSize>
         <incrementalScoreCalculatorClass>org.optaplanner.examples.projectjobscheduling.solver.score.ProjectJobSchedulingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
       </scoreDirectorFactory>
       <termination>

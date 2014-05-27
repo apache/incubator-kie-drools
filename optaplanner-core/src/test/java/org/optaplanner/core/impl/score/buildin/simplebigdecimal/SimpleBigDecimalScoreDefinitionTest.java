@@ -16,18 +16,15 @@
 
 package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
 
-import java.math.BigDecimal;
-
 import org.junit.Test;
-import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 
 import static org.junit.Assert.assertEquals;
 
 public class SimpleBigDecimalScoreDefinitionTest {
 
     @Test
-    public void getLevelCount() {
-        assertEquals(1, new SimpleBigDecimalScoreDefinition().getLevelCount());
+    public void getLevelsSize() {
+        assertEquals(1, new SimpleBigDecimalScoreDefinition().getLevelsSize());
     }
 
 }

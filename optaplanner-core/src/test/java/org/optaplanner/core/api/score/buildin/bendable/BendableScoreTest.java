@@ -228,9 +228,9 @@ public class BendableScoreTest extends AbstractScoreTest {
         SerializationTestUtils.serializeAndDeserializeWithAll(input,
                 new SerializationTestUtils.OutputAsserter<BendableScore>() {
                     public void assertOutput(BendableScore output) {
-                        assertEquals(1, output.getHardLevelCount());
+                        assertEquals(1, output.getHardLevelsSize());
                         assertEquals(-5, output.getHardScore(0));
-                        assertEquals(2, output.getSoftLevelCount());
+                        assertEquals(2, output.getSoftLevelsSize());
                         assertEquals(-300, output.getSoftScore(0));
                         assertEquals(-4000, output.getSoftScore(1));
                     }

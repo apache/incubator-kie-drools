@@ -69,8 +69,8 @@ public class ScoreDirectorFactoryConfig {
 
     protected Class<? extends ScoreDefinition> scoreDefinitionClass = null;
     protected ScoreDefinitionType scoreDefinitionType = null;
-    protected Integer bendableHardLevelCount = null;
-    protected Integer bendableSoftLevelCount = null;
+    protected Integer bendableHardLevelsSize = null;
+    protected Integer bendableSoftLevelsSize = null;
 
     protected Class<? extends EasyScoreCalculator> easyScoreCalculatorClass = null;
 
@@ -106,20 +106,20 @@ public class ScoreDirectorFactoryConfig {
         this.scoreDefinitionType = scoreDefinitionType;
     }
 
-    public Integer getBendableHardLevelCount() {
-        return bendableHardLevelCount;
+    public Integer getBendableHardLevelsSize() {
+        return bendableHardLevelsSize;
     }
 
-    public void setBendableHardLevelCount(Integer bendableHardLevelCount) {
-        this.bendableHardLevelCount = bendableHardLevelCount;
+    public void setBendableHardLevelsSize(Integer bendableHardLevelsSize) {
+        this.bendableHardLevelsSize = bendableHardLevelsSize;
     }
 
-    public Integer getBendableSoftLevelCount() {
-        return bendableSoftLevelCount;
+    public Integer getBendableSoftLevelsSize() {
+        return bendableSoftLevelsSize;
     }
 
-    public void setBendableSoftLevelCount(Integer bendableSoftLevelCount) {
-        this.bendableSoftLevelCount = bendableSoftLevelCount;
+    public void setBendableSoftLevelsSize(Integer bendableSoftLevelsSize) {
+        this.bendableSoftLevelsSize = bendableSoftLevelsSize;
     }
 
     public Class<? extends EasyScoreCalculator> getEasyScoreCalculatorClass() {
@@ -232,23 +232,23 @@ public class ScoreDirectorFactoryConfig {
         }
         scoreDirectorFactory.setInitializingScoreTrend(InitializingScoreTrend.parseTrend(
                 initializingScoreTrend == null ? InitializingScoreTrendLevel.ANY.name() : initializingScoreTrend,
-                scoreDefinition.getLevelCount()));
+                scoreDefinition.getLevelsSize()));
         return scoreDirectorFactory;
     }
 
     public ScoreDefinition buildScoreDefinition() {
         if (scoreDefinitionType != ScoreDefinitionType.BENDABLE
-                && (bendableHardLevelCount != null || bendableSoftLevelCount != null)) {
+                && (bendableHardLevelsSize != null || bendableSoftLevelsSize != null)) {
             throw new IllegalArgumentException("With scoreDefinitionType (" + scoreDefinitionType
-                    + ") there must be no bendableHardLevelCount (" + bendableHardLevelCount
-                    + ") or bendableSoftLevelCount (" + bendableSoftLevelCount + ").");
+                    + ") there must be no bendableHardLevelsSize (" + bendableHardLevelsSize
+                    + ") or bendableSoftLevelsSize (" + bendableSoftLevelsSize + ").");
         }
         if (scoreDefinitionClass != null) {
-            if (scoreDefinitionType != null || bendableHardLevelCount != null || bendableSoftLevelCount != null) {
+            if (scoreDefinitionType != null || bendableHardLevelsSize != null || bendableSoftLevelsSize != null) {
                 throw new IllegalStateException("With scoreDefinitionClass (" + scoreDefinitionClass
                         + ") there must be no scoreDefinitionType (" + scoreDefinitionType
-                        + ") or bendableHardLevelCount (" + bendableHardLevelCount
-                        + ") or bendableSoftLevelCount (" + bendableSoftLevelCount+ ").");
+                        + ") or bendableHardLevelsSize (" + bendableHardLevelsSize
+                        + ") or bendableSoftLevelsSize (" + bendableSoftLevelsSize + ").");
             }
             return ConfigUtils.newInstance(this, "scoreDefinitionClass", scoreDefinitionClass);
         }
@@ -275,12 +275,12 @@ public class ScoreDirectorFactoryConfig {
                 case HARD_MEDIUM_SOFT_LONG:
                     return new HardMediumSoftLongScoreDefinition();
                 case BENDABLE:
-                    if (bendableHardLevelCount == null || bendableSoftLevelCount == null) {
+                    if (bendableHardLevelsSize == null || bendableSoftLevelsSize == null) {
                         throw new IllegalArgumentException("With scoreDefinitionType (" + scoreDefinitionType
-                                + ") there must be a bendableHardLevelCount (" + bendableHardLevelCount
-                                + ") and a bendableSoftLevelCount (" + bendableSoftLevelCount + ").");
+                                + ") there must be a bendableHardLevelsSize (" + bendableHardLevelsSize
+                                + ") and a bendableSoftLevelsSize (" + bendableSoftLevelsSize + ").");
                     }
-                    return new BendableScoreDefinition(bendableHardLevelCount, bendableSoftLevelCount);
+                    return new BendableScoreDefinition(bendableHardLevelsSize, bendableSoftLevelsSize);
                 default:
                     throw new IllegalStateException("The scoreDefinitionType (" + scoreDefinitionType
                             + ") is not implemented.");
@@ -398,11 +398,11 @@ public class ScoreDirectorFactoryConfig {
 
     public void inherit(ScoreDirectorFactoryConfig inheritedConfig) {
         if (scoreDefinitionClass == null && scoreDefinitionType == null
-                && bendableHardLevelCount == null && bendableSoftLevelCount == null) {
+                && bendableHardLevelsSize == null && bendableSoftLevelsSize == null) {
             scoreDefinitionClass = inheritedConfig.getScoreDefinitionClass();
             scoreDefinitionType = inheritedConfig.getScoreDefinitionType();
-            bendableHardLevelCount = inheritedConfig.getBendableHardLevelCount();
-            bendableSoftLevelCount = inheritedConfig.getBendableSoftLevelCount();
+            bendableHardLevelsSize = inheritedConfig.getBendableHardLevelsSize();
+            bendableSoftLevelsSize = inheritedConfig.getBendableSoftLevelsSize();
         }
         easyScoreCalculatorClass = ConfigUtils.inheritOverwritableProperty(
                 easyScoreCalculatorClass, inheritedConfig.getEasyScoreCalculatorClass());

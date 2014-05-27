@@ -31,7 +31,7 @@ public class BestScoreFeasibleTerminationTest {
     @Test
     public void solveTermination() {
         FeasibilityScoreDefinition scoreDefinition = mock(FeasibilityScoreDefinition.class);
-        when(scoreDefinition.getFeasibleLevelCount()).thenReturn(1);
+        when(scoreDefinition.getFeasibleLevelsSize()).thenReturn(1);
         Termination termination = new BestScoreFeasibleTermination(scoreDefinition, new double[]{});
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         when(solverScope.getScoreDefinition()).thenReturn(new HardSoftScoreDefinition());
@@ -61,7 +61,7 @@ public class BestScoreFeasibleTerminationTest {
     @Test
     public void phaseTermination() {
         FeasibilityScoreDefinition scoreDefinition = mock(FeasibilityScoreDefinition.class);
-        when(scoreDefinition.getFeasibleLevelCount()).thenReturn(1);
+        when(scoreDefinition.getFeasibleLevelsSize()).thenReturn(1);
         Termination termination = new BestScoreFeasibleTermination(scoreDefinition, new double[]{});
         AbstractPhaseScope phaseScope = mock(AbstractPhaseScope.class);
         when(phaseScope.getScoreDefinition()).thenReturn(new HardSoftScoreDefinition());
@@ -91,7 +91,7 @@ public class BestScoreFeasibleTerminationTest {
     @Test
     public void calculateTimeGradientBendableScoreHHSSS() {
         FeasibilityScoreDefinition scoreDefinition = mock(FeasibilityScoreDefinition.class);
-        when(scoreDefinition.getFeasibleLevelCount()).thenReturn(2);
+        when(scoreDefinition.getFeasibleLevelsSize()).thenReturn(2);
         BestScoreFeasibleTermination termination = new BestScoreFeasibleTermination(scoreDefinition,
                 new double[]{0.75});
 

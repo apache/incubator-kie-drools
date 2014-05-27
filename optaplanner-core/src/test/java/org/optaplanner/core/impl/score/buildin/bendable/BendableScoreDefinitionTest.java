@@ -17,28 +17,27 @@
 package org.optaplanner.core.impl.score.buildin.bendable;
 
 import org.junit.Test;
-import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 
 import static org.junit.Assert.*;
 
 public class BendableScoreDefinitionTest {
 
     @Test
-    public void getLevelCount() {
-        assertEquals(2, new BendableScoreDefinition(1, 1).getLevelCount());
-        assertEquals(7, new BendableScoreDefinition(3, 4).getLevelCount());
-        assertEquals(7, new BendableScoreDefinition(4, 3).getLevelCount());
-        assertEquals(5, new BendableScoreDefinition(0, 5).getLevelCount());
-        assertEquals(5, new BendableScoreDefinition(5, 0).getLevelCount());
+    public void getLevelsSize() {
+        assertEquals(2, new BendableScoreDefinition(1, 1).getLevelsSize());
+        assertEquals(7, new BendableScoreDefinition(3, 4).getLevelsSize());
+        assertEquals(7, new BendableScoreDefinition(4, 3).getLevelsSize());
+        assertEquals(5, new BendableScoreDefinition(0, 5).getLevelsSize());
+        assertEquals(5, new BendableScoreDefinition(5, 0).getLevelsSize());
     }
 
     @Test
-    public void getFeasibleLevelCount() {
-        assertEquals(1, new BendableScoreDefinition(1, 1).getFeasibleLevelCount());
-        assertEquals(3, new BendableScoreDefinition(3, 4).getFeasibleLevelCount());
-        assertEquals(4, new BendableScoreDefinition(4, 3).getFeasibleLevelCount());
-        assertEquals(0, new BendableScoreDefinition(0, 5).getFeasibleLevelCount());
-        assertEquals(5, new BendableScoreDefinition(5, 0).getFeasibleLevelCount());
+    public void getFeasibleLevelsSize() {
+        assertEquals(1, new BendableScoreDefinition(1, 1).getFeasibleLevelsSize());
+        assertEquals(3, new BendableScoreDefinition(3, 4).getFeasibleLevelsSize());
+        assertEquals(4, new BendableScoreDefinition(4, 3).getFeasibleLevelsSize());
+        assertEquals(0, new BendableScoreDefinition(0, 5).getFeasibleLevelsSize());
+        assertEquals(5, new BendableScoreDefinition(5, 0).getFeasibleLevelsSize());
     }
 
 }

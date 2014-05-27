@@ -26,23 +26,23 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class BestScoreTermination extends AbstractTermination {
 
-    private final int levelCount;
+    private final int levelsSize;
     private final Score bestScoreLimit;
     private final double[] timeGradientWeightNumbers;
 
     public BestScoreTermination(ScoreDefinition scoreDefinition, Score bestScoreLimit, double[] timeGradientWeightNumbers) {
-        levelCount = scoreDefinition.getLevelCount();
+        levelsSize = scoreDefinition.getLevelsSize();
         this.bestScoreLimit = bestScoreLimit;
         if (bestScoreLimit == null) {
             throw new IllegalArgumentException("The bestScoreLimit (" + bestScoreLimit
                     + ") cannot be null.");
         }
         this.timeGradientWeightNumbers = timeGradientWeightNumbers;
-        if (timeGradientWeightNumbers.length != levelCount - 1) {
+        if (timeGradientWeightNumbers.length != levelsSize - 1) {
             throw new IllegalStateException(
                     "The timeGradientWeightNumbers (" + Arrays.toString(timeGradientWeightNumbers)
                             + ")'s length (" + timeGradientWeightNumbers.length
-                            + ") is not 1 less than the levelCount (" + scoreDefinition.getLevelCount() + ").");
+                            + ") is not 1 less than the levelsSize (" + scoreDefinition.getLevelsSize() + ").");
         }
     }
 
@@ -88,7 +88,7 @@ public class BestScoreTermination extends AbstractTermination {
                     + ") and score (" + score + ") don't have the same level count.");
         }
         return ScoreUtils.calculateTimeGradient(totalDiffNumbers, scoreDiffNumbers, timeGradientWeightNumbers,
-                levelCount);
+                levelsSize);
     }
 
 }

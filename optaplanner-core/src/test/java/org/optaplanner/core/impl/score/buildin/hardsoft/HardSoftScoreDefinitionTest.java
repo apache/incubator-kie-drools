@@ -17,20 +17,19 @@
 package org.optaplanner.core.impl.score.buildin.hardsoft;
 
 import org.junit.Test;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 
 import static org.junit.Assert.*;
 
 public class HardSoftScoreDefinitionTest {
 
     @Test
-    public void getLevelCount() {
-        assertEquals(2, new HardSoftScoreDefinition().getLevelCount());
+    public void getLevelsSize() {
+        assertEquals(2, new HardSoftScoreDefinition().getLevelsSize());
     }
 
     @Test
-    public void getFeasibleLevelCount() {
-        assertEquals(1, new HardSoftScoreDefinition().getFeasibleLevelCount());
+    public void getFeasibleLevelsSize() {
+        assertEquals(1, new HardSoftScoreDefinition().getFeasibleLevelsSize());
     }
 
 }

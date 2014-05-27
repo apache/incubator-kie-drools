@@ -16,23 +16,20 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal;
 
-import java.math.BigDecimal;
-
 import org.junit.Test;
-import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 
 import static org.junit.Assert.assertEquals;
 
 public class HardSoftBigDecimalScoreDefinitionTest {
 
     @Test
-    public void getLevelCount() {
-        assertEquals(2, new HardSoftBigDecimalScoreDefinition().getLevelCount());
+    public void getLevelsSize() {
+        assertEquals(2, new HardSoftBigDecimalScoreDefinition().getLevelsSize());
     }
 
     @Test
-    public void getFeasibleLevelCount() {
-        assertEquals(1, new HardSoftBigDecimalScoreDefinition().getFeasibleLevelCount());
+    public void getFeasibleLevelsSize() {
+        assertEquals(1, new HardSoftBigDecimalScoreDefinition().getFeasibleLevelsSize());
     }
 
 }

@@ -17,15 +17,14 @@
 package org.optaplanner.core.impl.score.buildin.simple;
 
 import org.junit.Test;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
 import static org.junit.Assert.assertEquals;
 
 public class SimpleScoreDefinitionTest {
 
     @Test
-    public void getLevelCount() {
-        assertEquals(1, new SimpleScoreDefinition().getLevelCount());
+    public void getLevelsSize() {
+        assertEquals(1, new SimpleScoreDefinition().getLevelsSize());
     }
 
 }

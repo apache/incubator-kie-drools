@@ -4270,3 +4270,21 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
   <customPhase>
     <customPhaseCommandClass>....ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
   </customPhase>
+
+[IMPL_DETAIL] The method ScoreDefinition.getLevelCount() has been renamed to ScoreDefinition.getLevelsSize().
+
+[MAJOR] BendableScore: the configuration has changed: ...LevelCount has been renamed to ...LevelsSize
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+  <scoreDirectorFactory>
+    <scoreDefinitionType>BENDABLE</scoreDefinitionType>
+    <bendableHardLevelCount>2</bendableHardLevelCount>
+    <bendableSoftLevelCount>3</bendableSoftLevelCount>
+    ...
+  </scoreDirectorFactory>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+  <scoreDirectorFactory>
+    <scoreDefinitionType>BENDABLE</scoreDefinitionType>
+    <bendableHardLevelsSize>2</bendableHardLevelsSize>
+    <bendableSoftLevelsSize>3</bendableSoftLevelsSize>
+    ...
+  </scoreDirectorFactory>

@@ -32,7 +32,7 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
     // ************************************************************************
 
     @Override
-    public int getLevelCount() {
+    public int getLevelsSize() {
         return 1;
     }
 

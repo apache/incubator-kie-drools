@@ -76,7 +76,7 @@ public class InitializingScoreTrend implements Serializable {
     // Complex methods
     // ************************************************************************
 
-    public int getLevelCount() {
+    public int getLevelsSize() {
         return trendLevels.length;
     }
 

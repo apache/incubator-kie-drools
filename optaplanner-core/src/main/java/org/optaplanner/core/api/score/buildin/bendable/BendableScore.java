@@ -27,18 +27,18 @@ import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
  * <p/>
  * This class is immutable.
  * <p/>
- * The {@link #getHardLevelCount()} and {@link #getSoftLevelCount()} must be the same as in the
+ * The {@link #getHardLevelsSize()} and {@link #getSoftLevelsSize()} must be the same as in the
  * {@link BendableScoreDefinition} used.
  * @see Score
  */
 public final class BendableScore extends AbstractScore<BendableScore>
         implements FeasibilityScore<BendableScore> {
 
-    public static BendableScore parseScore(int hardLevelCount, int softLevelCount, String scoreString) {
-        int levelCount = hardLevelCount + softLevelCount;
-        String[] levelStrings = parseLevelStrings(BendableScore.class, scoreString, levelCount);
-        int[] hardScores = new int[hardLevelCount];
-        int[] softScores = new int[softLevelCount];
+    public static BendableScore parseScore(int hardLevelsSize, int softLevelsSize, String scoreString) {
+        int levelsSize = hardLevelsSize + softLevelsSize;
+        String[] levelStrings = parseLevelStrings(BendableScore.class, scoreString, levelsSize);
+        int[] hardScores = new int[hardLevelsSize];
+        int[] softScores = new int[softLevelsSize];
         for (int i = 0; i < hardScores.length; i++) {
             hardScores[i] = parseLevelAsInt(BendableScore.class, scoreString, levelStrings[i]);
         }
@@ -72,24 +72,24 @@ public final class BendableScore extends AbstractScore<BendableScore>
 
     // Intentionally no getters for the hardScores or softScores int arrays to guarantee that this class is immutable
 
-    public int getHardLevelCount() {
+    public int getHardLevelsSize() {
         return hardScores.length;
     }
 
     /**
-     * @param index 0 <= index < hardLevelCount
+     * @param index 0 <= index < {@link #getHardLevelsSize()}
      * @return higher is better
      */
     public int getHardScore(int index) {
         return hardScores[index];
     }
 
-    public int getSoftLevelCount() {
+    public int getSoftLevelsSize() {
         return softScores.length;
     }
 
     /**
-     * @param index 0 <= index < softLevelCount
+     * @param index 0 <= index < {@link #getSoftLevelsSize()}
      * @return higher is better
      */
     public int getSoftScore(int index) {
@@ -202,8 +202,8 @@ public final class BendableScore extends AbstractScore<BendableScore>
             return true;
         } else if (o instanceof BendableScore) {
             BendableScore other = (BendableScore) o;
-            if (getHardLevelCount() != other.getHardLevelCount()
-                    || getSoftLevelCount() != other.getSoftLevelCount()) {
+            if (getHardLevelsSize() != other.getHardLevelsSize()
+                    || getSoftLevelsSize() != other.getSoftLevelsSize()) {
                 return false;
             }
             for (int i = 0; i < hardScores.length; i++) {
@@ -281,17 +281,17 @@ public final class BendableScore extends AbstractScore<BendableScore>
     }
 
     public void validateCompatible(BendableScore other) {
-        if (getHardLevelCount() != other.getHardLevelCount()) {
+        if (getHardLevelsSize() != other.getHardLevelsSize()) {
             throw new IllegalArgumentException("The score (" + this
-                    + ") with hardScoreSize (" + getHardLevelCount()
+                    + ") with hardScoreSize (" + getHardLevelsSize()
                     + ") is not compatible with the other score (" + other
-                    + ") with hardScoreSize (" + other.getHardLevelCount() + ").");
+                    + ") with hardScoreSize (" + other.getHardLevelsSize() + ").");
         }
-        if (getSoftLevelCount() != other.getSoftLevelCount()) {
+        if (getSoftLevelsSize() != other.getSoftLevelsSize()) {
             throw new IllegalArgumentException("The score (" + this
-                    + ") with softScoreSize (" + getSoftLevelCount()
+                    + ") with softScoreSize (" + getSoftLevelsSize()
                     + ") is not compatible with the other score (" + other
-                    + ") with softScoreSize (" + other.getSoftLevelCount() + ").");
+                    + ") with softScoreSize (" + other.getSoftLevelsSize() + ").");
         }
     }
 

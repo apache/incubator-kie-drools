@@ -30,13 +30,13 @@ public class BendableScoreHolder extends AbstractScoreHolder {
     private int[] hardScores;
     private int[] softScores;
 
-    public BendableScoreHolder(boolean constraintMatchEnabled, int hardLevelCount, int softLevelCount) {
+    public BendableScoreHolder(boolean constraintMatchEnabled, int hardLevelsSize, int softLevelsSize) {
         super(constraintMatchEnabled);
-        hardScores = new int[hardLevelCount];
-        softScores = new int[softLevelCount];
+        hardScores = new int[hardLevelsSize];
+        softScores = new int[softLevelsSize];
     }
 
-    public int getHardLevelCount() {
+    public int getHardLevelsSize() {
         return hardScores.length;
     }
 
@@ -49,7 +49,7 @@ public class BendableScoreHolder extends AbstractScoreHolder {
         hardScores[hardLevel] = hardScore;
     }
 
-    public int getSoftLevelCount() {
+    public int getSoftLevelsSize() {
         return softScores.length;
     }
 
@@ -77,7 +77,7 @@ public class BendableScoreHolder extends AbstractScoreHolder {
 
     public void addSoftConstraintMatch(RuleContext kcontext, final int softLevel, final int weight) {
         softScores[softLevel] += weight;
-        registerIntConstraintMatch(kcontext, getHardLevelCount() + softLevel, weight, new Runnable() {
+        registerIntConstraintMatch(kcontext, getHardLevelsSize() + softLevel, weight, new Runnable() {
             public void run() {
                 softScores[softLevel] -= weight;
             }

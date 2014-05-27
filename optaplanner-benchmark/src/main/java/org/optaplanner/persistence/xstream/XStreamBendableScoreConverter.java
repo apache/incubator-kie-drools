@@ -20,8 +20,8 @@ import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 
 public class XStreamBendableScoreConverter extends XStreamScoreConverter {
 
-    public XStreamBendableScoreConverter(int hardLevelCount, int softLevelCount) {
-        super(new BendableScoreDefinition(hardLevelCount, softLevelCount));
+    public XStreamBendableScoreConverter(int hardLevelsSize, int softLevelsSize) {
+        super(new BendableScoreDefinition(hardLevelsSize, softLevelsSize));
     }
 
 }

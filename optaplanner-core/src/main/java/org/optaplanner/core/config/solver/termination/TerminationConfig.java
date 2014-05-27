@@ -215,7 +215,7 @@ public class TerminationConfig implements Cloneable {
         if (bestScoreLimit != null) {
             Score bestScoreLimit_ = configPolicy.getScoreDefinition().parseScore(bestScoreLimit);
             ScoreDefinition scoreDefinition = configPolicy.getScoreDefinition();
-            double[] timeGradientWeightNumbers = new double[scoreDefinition.getLevelCount() - 1];
+            double[] timeGradientWeightNumbers = new double[scoreDefinition.getLevelsSize() - 1];
             for (int i = 0; i < timeGradientWeightNumbers.length; i++) {
                 timeGradientWeightNumbers[i] = 0.50; // Number pulled out of thin air
             }
@@ -235,7 +235,7 @@ public class TerminationConfig implements Cloneable {
             }
             FeasibilityScoreDefinition feasibilityScoreDefinition = (FeasibilityScoreDefinition) scoreDefinition;
             double[] timeGradientWeightFeasibleNumbers
-                    = new double[feasibilityScoreDefinition.getFeasibleLevelCount() - 1];
+                    = new double[feasibilityScoreDefinition.getFeasibleLevelsSize() - 1];
             for (int i = 0; i < timeGradientWeightFeasibleNumbers.length; i++) {
                 timeGradientWeightFeasibleNumbers[i] = 0.50; // Number pulled out of thin air
             }

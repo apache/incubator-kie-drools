@@ -17,14 +17,10 @@
 package org.optaplanner.core.impl.score.definition;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
-import org.optaplanner.core.impl.score.trend.InitializingScoreTrendLevel;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * A ScoreDefinition knows how to compare {@link Score}s and what the perfect maximum/minimum {@link Score} is.
@@ -37,7 +33,7 @@ public interface ScoreDefinition<S extends Score> {
      * Returns the length of {@link Score#toLevelNumbers()} for every {@link Score} of this definition.
      * @return at least 1
      */
-    int getLevelCount();
+    int getLevelsSize();
 
     /**
      * Returns the {@link Class} of the actual {@link Score} implementation
@@ -71,8 +67,8 @@ public interface ScoreDefinition<S extends Score> {
     /**
      * Builds a {@link Score} which is equal or better than any other {@link Score} with more variables initialized
      * (while the already variables don't change).
-     * @param initializingScoreTrend never null, with {@link InitializingScoreTrend#getLevelCount()}
-     * equal to {@link #getLevelCount()}.
+     * @param initializingScoreTrend never null, with {@link InitializingScoreTrend#getLevelsSize()}
+     * equal to {@link #getLevelsSize()}.
      * @param score never null
      * @return never null
      */
@@ -81,8 +77,8 @@ public interface ScoreDefinition<S extends Score> {
     /**
      * Builds a {@link Score} which is equal or worse than any other {@link Score} with more variables initialized
      * (while the already variables don't change).
-     * @param initializingScoreTrend never null, with {@link InitializingScoreTrend#getLevelCount()}
-     * equal to {@link #getLevelCount()}.
+     * @param initializingScoreTrend never null, with {@link InitializingScoreTrend#getLevelsSize()}
+     * equal to {@link #getLevelsSize()}.
      * @param score never null
      * @return never null
      */

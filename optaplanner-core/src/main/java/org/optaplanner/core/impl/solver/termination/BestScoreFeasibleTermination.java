@@ -26,19 +26,19 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class BestScoreFeasibleTermination extends AbstractTermination {
 
-    private final int feasibleLevelCount;
+    private final int feasibleLevelsSize;
     private final double[] timeGradientWeightFeasibleNumbers;
 
     public BestScoreFeasibleTermination(FeasibilityScoreDefinition scoreDefinition,
             double[] timeGradientWeightFeasibleNumbers) {
-        feasibleLevelCount = scoreDefinition.getFeasibleLevelCount();
+        feasibleLevelsSize = scoreDefinition.getFeasibleLevelsSize();
         this.timeGradientWeightFeasibleNumbers = timeGradientWeightFeasibleNumbers;
-        if (timeGradientWeightFeasibleNumbers.length != feasibleLevelCount - 1) {
+        if (timeGradientWeightFeasibleNumbers.length != feasibleLevelsSize - 1) {
             throw new IllegalStateException(
                     "The timeGradientWeightNumbers (" + Arrays.toString(timeGradientWeightFeasibleNumbers)
                             + ")'s length (" + timeGradientWeightFeasibleNumbers.length
-                            + ") is not 1 less than the feasibleLevelCount ("
-                            + scoreDefinition.getFeasibleLevelCount() + ").");
+                            + ") is not 1 less than the feasibleLevelsSize (" + scoreDefinition.getFeasibleLevelsSize()
+                            + ").");
         }
     }
 
@@ -78,7 +78,7 @@ public class BestScoreFeasibleTermination extends AbstractTermination {
                     + ") don't have the same level count.");
         }
         return ScoreUtils.calculateTimeGradient(totalDiffNumbers, scoreDiffNumbers, timeGradientWeightFeasibleNumbers,
-                feasibleLevelCount);
+                feasibleLevelsSize);
     }
 
 }

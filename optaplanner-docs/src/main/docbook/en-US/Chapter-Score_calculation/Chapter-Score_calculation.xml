@@ -365,8 +365,8 @@
 
       <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;BENDABLE&lt;/scoreDefinitionType&gt;
-    &lt;bendableHardLevelCount&gt;2&lt;/bendableHardLevelCount&gt;
-    &lt;bendableSoftLevelCount&gt;3&lt;/bendableSoftLevelCount&gt;
+    &lt;bendableHardLevelsSize&gt;2&lt;/bendableHardLevelsSize&gt;
+    &lt;bendableSoftLevelsSize&gt;3&lt;/bendableSoftLevelsSize&gt;
     ...
   &lt;/scoreDirectorFactory&gt;</programlisting>
     </section>

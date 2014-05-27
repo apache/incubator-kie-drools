@@ -37,7 +37,7 @@ public class BestScoreTerminationTest {
     @Test
     public void solveTermination() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
-        when(scoreDefinition.getLevelCount()).thenReturn(1);
+        when(scoreDefinition.getLevelsSize()).thenReturn(1);
         Termination termination = new BestScoreTermination(scoreDefinition, SimpleScore.valueOf(-1000), new double[]{});
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         when(solverScope.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
@@ -67,7 +67,7 @@ public class BestScoreTerminationTest {
     @Test
     public void phaseTermination() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
-        when(scoreDefinition.getLevelCount()).thenReturn(1);
+        when(scoreDefinition.getLevelsSize()).thenReturn(1);
         Termination termination = new BestScoreTermination(scoreDefinition, SimpleScore.valueOf(-1000), new double[]{});
         AbstractPhaseScope phaseScope = mock(AbstractPhaseScope.class);
         when(phaseScope.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
@@ -97,7 +97,7 @@ public class BestScoreTerminationTest {
     @Test
     public void calculateTimeGradientSimpleScore() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
-        when(scoreDefinition.getLevelCount()).thenReturn(1);
+        when(scoreDefinition.getLevelsSize()).thenReturn(1);
         BestScoreTermination termination = new BestScoreTermination(scoreDefinition,
                 SimpleScore.valueOf(10), new double[]{});
 
@@ -119,7 +119,7 @@ public class BestScoreTerminationTest {
     @Test
     public void calculateTimeGradientSimpleBigDecimalScore() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
-        when(scoreDefinition.getLevelCount()).thenReturn(1);
+        when(scoreDefinition.getLevelsSize()).thenReturn(1);
         BestScoreTermination termination = new BestScoreTermination(scoreDefinition,
                 SimpleBigDecimalScore.valueOf(new BigDecimal("10.00")), new double[]{});
 
@@ -146,7 +146,7 @@ public class BestScoreTerminationTest {
     @Test
     public void calculateTimeGradientHardSoftScore() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
-        when(scoreDefinition.getLevelCount()).thenReturn(2);
+        when(scoreDefinition.getLevelsSize()).thenReturn(2);
         BestScoreTermination termination = new BestScoreTermination(scoreDefinition,
                 HardSoftScore.valueOf(-10, -300), new double[]{0.75});
 
@@ -209,7 +209,7 @@ public class BestScoreTerminationTest {
     @Test
     public void calculateTimeGradientHardSoftBigDecimalScore() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
-        when(scoreDefinition.getLevelCount()).thenReturn(2);
+        when(scoreDefinition.getLevelsSize()).thenReturn(2);
         BestScoreTermination termination = new BestScoreTermination(scoreDefinition,
                 HardSoftBigDecimalScore.valueOf(new BigDecimal("10.00"), new BigDecimal("10.00")), new double[]{0.75});
 
@@ -243,7 +243,7 @@ public class BestScoreTerminationTest {
     @Test
     public void calculateTimeGradientBendableScoreHS() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
-        when(scoreDefinition.getLevelCount()).thenReturn(2);
+        when(scoreDefinition.getLevelsSize()).thenReturn(2);
         BestScoreTermination termination = new BestScoreTermination(scoreDefinition,
                 BendableScore.valueOf(new int[]{-10}, new int[]{-300}), new double[]{0.75});
 
@@ -306,7 +306,7 @@ public class BestScoreTerminationTest {
     @Test
     public void calculateTimeGradientBendableScoreHHSSS() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
-        when(scoreDefinition.getLevelCount()).thenReturn(5);
+        when(scoreDefinition.getLevelsSize()).thenReturn(5);
         BestScoreTermination termination = new BestScoreTermination(scoreDefinition,
                 BendableScore.valueOf(new int[]{0, 0}, new int[]{0, 0, -10}),
                 new double[]{0.75, 0.75, 0.75, 0.75});

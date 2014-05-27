@@ -47,9 +47,9 @@ public class XStreamBendableScoreConverterTest {
                 new SerializationTestUtils.OutputAsserter<XStreamBendableScoreConverterTestObject>() {
                     public void assertOutput(XStreamBendableScoreConverterTestObject output) {
                         BendableScore score = output.getScore();
-                        assertEquals(1, score.getHardLevelCount());
+                        assertEquals(1, score.getHardLevelsSize());
                         assertEquals(-5, score.getHardScore(0));
-                        assertEquals(2, score.getSoftLevelCount());
+                        assertEquals(2, score.getSoftLevelsSize());
                         assertEquals(-300, score.getSoftScore(0));
                         assertEquals(-4000, score.getSoftScore(1));
                     }
