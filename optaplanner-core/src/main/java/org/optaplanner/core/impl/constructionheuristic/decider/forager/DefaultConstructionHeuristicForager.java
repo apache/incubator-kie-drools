@@ -20,6 +20,7 @@ import java.util.Comparator;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.comparator.NaturalScoreComparator;
+import org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicPickEarlyType;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 

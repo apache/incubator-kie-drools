@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.constructionheuristic.decider.forager;
+package org.optaplanner.core.config.constructionheuristic.decider.forager;
 
 public enum ConstructionHeuristicPickEarlyType {
     NEVER,
