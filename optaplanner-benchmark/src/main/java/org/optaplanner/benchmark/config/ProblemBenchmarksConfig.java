@@ -157,7 +157,7 @@ public class ProblemBenchmarksConfig {
                 problemStatisticTypeList == null ? 0 : problemStatisticTypeList.size());
         if (problemStatisticTypeList != null) {
             for (ProblemStatisticType problemStatisticType : problemStatisticTypeList) {
-                problemStatisticList.add(problemStatisticType.createProblemStatistic(problemBenchmarkResult));
+                problemStatisticList.add(problemStatisticType.buildProblemStatistic(problemBenchmarkResult));
             }
         }
         problemBenchmarkResult.setProblemStatisticList(problemStatisticList);
