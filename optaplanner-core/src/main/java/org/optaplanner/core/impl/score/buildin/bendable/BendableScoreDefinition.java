@@ -22,7 +22,7 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractFeasibilityScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
-import org.optaplanner.core.impl.score.trend.InitializingScoreTrendLevel;
+import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 
 public class BendableScoreDefinition extends AbstractFeasibilityScoreDefinition<BendableScore> {
 

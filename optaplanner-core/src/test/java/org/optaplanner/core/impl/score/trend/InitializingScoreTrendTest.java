@@ -17,9 +17,9 @@
 package org.optaplanner.core.impl.score.trend;
 
 import org.junit.Test;
+import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class InitializingScoreTrendTest {
 

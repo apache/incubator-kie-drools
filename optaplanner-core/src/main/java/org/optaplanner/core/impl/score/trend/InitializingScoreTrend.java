@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.trend;
 import java.io.Serializable;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.solution.Solution;
 
 /**

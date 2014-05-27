@@ -20,9 +20,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
-import org.optaplanner.core.impl.score.trend.InitializingScoreTrendLevel;
 
 public class TrendBasedScoreBounder implements ScoreBounder {
 

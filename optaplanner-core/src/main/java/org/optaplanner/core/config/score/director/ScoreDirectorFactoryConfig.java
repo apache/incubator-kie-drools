@@ -58,7 +58,7 @@ import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDire
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
-import org.optaplanner.core.impl.score.trend.InitializingScoreTrendLevel;
+import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

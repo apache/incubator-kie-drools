@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.trend;
+package org.optaplanner.core.config.score.trend;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.optaplanner.core.impl.solution.Solution;
 
 /**

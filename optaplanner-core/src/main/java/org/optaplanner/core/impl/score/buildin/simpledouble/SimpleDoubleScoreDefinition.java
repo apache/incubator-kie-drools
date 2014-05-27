@@ -16,14 +16,11 @@
 
 package org.optaplanner.core.impl.score.buildin.simpledouble;
 
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
 import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScoreHolder;
-import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
-import org.optaplanner.core.impl.score.trend.InitializingScoreTrendLevel;
+import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 
 public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleDoubleScore> {
 
