@@ -3,6 +3,7 @@ package org.drools.compiler.factmodel.traits;
 import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.Traitable;
+import org.drools.core.factmodel.traits.VirtualPropertyMode;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
@@ -109,7 +110,7 @@ public class LegacyTraitTest {
                         "\n";
 
         StatefulKnowledgeSession ks = getSessionFromString( source );
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ks.getKieBase() );
+        TraitFactory.setMode( VirtualPropertyMode.MAP, ks.getKieBase() );
 
         ProcedureImpl procedure = new ProcedureImpl();
 

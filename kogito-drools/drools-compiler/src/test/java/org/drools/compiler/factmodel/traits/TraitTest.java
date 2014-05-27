@@ -16,6 +16,7 @@
 
 package org.drools.compiler.factmodel.traits;
 
+import org.drools.core.factmodel.traits.VirtualPropertyMode;
 import org.junit.Assert;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
@@ -98,18 +99,18 @@ public class TraitTest extends CommonTestMethodBase {
     private static long t0;
 
 
-    public TraitFactory.VirtualPropertyMode mode;
+    public VirtualPropertyMode mode;
 
     @Parameterized.Parameters
     public static Collection modes() {
-        return Arrays.asList( new TraitFactory.VirtualPropertyMode[][]
+        return Arrays.asList( new VirtualPropertyMode[][]
                                       {
-                                              { TraitFactory.VirtualPropertyMode.MAP },
-                                              { TraitFactory.VirtualPropertyMode.TRIPLES }
+                                              { VirtualPropertyMode.MAP },
+                                              { VirtualPropertyMode.TRIPLES }
                                       } );
     }
 
-    public TraitTest( TraitFactory.VirtualPropertyMode m ) {
+    public TraitTest( VirtualPropertyMode m ) {
         this.mode = m;
     }
 
@@ -814,7 +815,7 @@ public class TraitTest extends CommonTestMethodBase {
             assertNotNull( coreTraits );
             assertNotNull( coreProperties );
 
-            if ( mode == TraitFactory.VirtualPropertyMode.MAP ) {
+            if ( mode == VirtualPropertyMode.MAP ) {
                 assertTrue( proxyFields instanceof MapWrapper );
                 assertTrue( coreTraits instanceof TraitTypeMap );
                 assertTrue( coreProperties instanceof HashMap );
@@ -2211,7 +2212,7 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
-    void testTraitActualTypeCodeWithEntities( String trig, TraitFactory.VirtualPropertyMode mode ) {
+    void testTraitActualTypeCodeWithEntities( String trig, VirtualPropertyMode mode ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( new ClassPathResource( "org/drools/compiler/factmodel/traits/testComplexDonShed.drl" ), ResourceType.DRL );
         if ( kbuilder.hasErrors() ) {
