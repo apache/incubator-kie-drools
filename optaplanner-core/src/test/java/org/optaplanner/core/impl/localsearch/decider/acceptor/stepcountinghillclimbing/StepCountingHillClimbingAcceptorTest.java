@@ -2,6 +2,7 @@ package org.optaplanner.core.impl.localsearch.decider.acceptor.stepcountinghillc
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.config.localsearch.decider.acceptor.stepcountinghillclimbing.StepCountingHillClimbingType;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptorTest;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;

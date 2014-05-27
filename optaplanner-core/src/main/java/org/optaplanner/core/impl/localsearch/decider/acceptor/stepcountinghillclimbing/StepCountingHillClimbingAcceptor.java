@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.localsearch.decider.acceptor.stepcountinghillclimbing;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.config.localsearch.decider.acceptor.stepcountinghillclimbing.StepCountingHillClimbingType;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptor;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;

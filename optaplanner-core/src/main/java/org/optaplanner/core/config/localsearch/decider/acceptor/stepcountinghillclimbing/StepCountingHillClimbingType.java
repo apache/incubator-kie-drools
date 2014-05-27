@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.localsearch.decider.acceptor.stepcountinghillclimbing;
+package org.optaplanner.core.config.localsearch.decider.acceptor.stepcountinghillclimbing;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig;
 
 /**
  * Determines what increment the counter of Step Counting Hill Climbing.
@@ -29,13 +30,12 @@ public enum StepCountingHillClimbingType {
     /**
      * Every accepted move is counted.
      * <p/>
-     * Note: If acceptedCountLimit = 1, then this behaves exactly the same as {link #STEP}.
+     * Note: If {@link LocalSearchForagerConfig#getAcceptedCountLimit()} = 1,
+     * then this behaves exactly the same as {link #STEP}.
      */
     ACCEPTED_MOVE,
     /**
      * Every step is counted. Every step was always an accepted move. This is the default.
-     * <p/>
-     * Note: If acceptedCountLimit = 1, then this behaves exactly the same as {link #ACCEPTED_MOVE}.
      */
     STEP,
     /**
