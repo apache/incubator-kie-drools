@@ -34,6 +34,8 @@ public class WorkItemImpl implements WorkItem, Serializable {
     private Map<String, Object> results = new HashMap<String, Object>();
     private long processInstanceId;
     private String deploymentId;
+    private long nodeInstanceId;
+    private long nodeId;
     
     public void setId(long id) {
         this.id = id;
@@ -109,6 +111,21 @@ public class WorkItemImpl implements WorkItem, Serializable {
         this.deploymentId = deploymentId;
     }
 
+    public long getNodeInstanceId() {
+        return nodeInstanceId;
+    }
+
+    public void setNodeInstanceId(long nodeInstanceId) {
+        this.nodeInstanceId = nodeInstanceId;
+    }
+
+    public long getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(long nodeId) {
+        this.nodeId = nodeId;
+    }
 
     public String toString() {
         StringBuilder b = new StringBuilder("WorkItem ");
