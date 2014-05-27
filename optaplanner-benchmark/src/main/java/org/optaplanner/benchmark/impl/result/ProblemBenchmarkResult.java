@@ -378,7 +378,7 @@ public class ProblemBenchmarkResult {
                     newResult.problemStatisticList = new ArrayList<ProblemStatistic>(oldResult.problemStatisticList.size());
                     for (ProblemStatistic oldProblemStatistic : oldResult.problemStatisticList) {
                         newResult.problemStatisticList.add(
-                                oldProblemStatistic.getProblemStatisticType().create(newResult));
+                                oldProblemStatistic.getProblemStatisticType().createProblemStatistic(newResult));
                     }
                     newResult.singleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>(
                             oldResult.singleBenchmarkResultList.size());

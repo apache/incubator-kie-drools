@@ -34,7 +34,7 @@ public enum ProblemStatisticType implements StatisticType {
     MOVE_COUNT_PER_STEP,
     MEMORY_USE;
 
-    public ProblemStatistic create(ProblemBenchmarkResult problemBenchmarkResult) {
+    public ProblemStatistic createProblemStatistic(ProblemBenchmarkResult problemBenchmarkResult) {
         // Keep in sync with ProblemStatistic XStreamInclude list
         switch (this) {
             case BEST_SCORE:
