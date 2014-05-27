@@ -18,7 +18,6 @@ package org.optaplanner.core.config.exhaustivesearch;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -40,14 +39,8 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.exhaustivesearch.DefaultExhaustiveSearchPhase;
 import org.optaplanner.core.impl.exhaustivesearch.ExhaustiveSearchPhase;
 import org.optaplanner.core.impl.exhaustivesearch.decider.ExhaustiveSearchDecider;
-import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 import org.optaplanner.core.impl.exhaustivesearch.node.bounder.TrendBasedScoreBounder;
 import org.optaplanner.core.impl.exhaustivesearch.node.bounder.ScoreBounder;
-import org.optaplanner.core.impl.exhaustivesearch.node.comparator.BreadthFirstNodeComparator;
-import org.optaplanner.core.impl.exhaustivesearch.node.comparator.OriginalOrderNodeComparator;
-import org.optaplanner.core.impl.exhaustivesearch.node.comparator.DepthFirstNodeComparator;
-import org.optaplanner.core.impl.exhaustivesearch.node.comparator.OptimisticBoundFirstNodeComparator;
-import org.optaplanner.core.impl.exhaustivesearch.node.comparator.ScoreFirstNodeComparator;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.ManualEntityMimicRecorder;
@@ -275,33 +268,6 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig {
         } else if (inheritedConfig.getMoveSelectorConfig() != null) {
             moveSelectorConfig.inherit(inheritedConfig.getMoveSelectorConfig());
         }
-    }
-
-    public static enum NodeExplorationType {
-        ORIGINAL_ORDER,
-        DEPTH_FIRST,
-        BREADTH_FIRST,
-        SCORE_FIRST,
-        OPTIMISTIC_BOUND_FIRST;
-
-        public Comparator<ExhaustiveSearchNode> buildNodeComparator(boolean scoreBounderEnabled) {
-            switch (this) {
-                case ORIGINAL_ORDER:
-                    return new OriginalOrderNodeComparator();
-                case DEPTH_FIRST:
-                    return new DepthFirstNodeComparator(scoreBounderEnabled);
-                case BREADTH_FIRST:
-                    return new BreadthFirstNodeComparator(scoreBounderEnabled);
-                case SCORE_FIRST:
-                    return new ScoreFirstNodeComparator(scoreBounderEnabled);
-                case OPTIMISTIC_BOUND_FIRST:
-                    return new OptimisticBoundFirstNodeComparator(scoreBounderEnabled);
-                default:
-                    throw new IllegalStateException("The nodeExplorationType ("
-                            + this + ") is not implemented.");
-            }
-        }
-
     }
 
 }
