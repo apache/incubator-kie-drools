@@ -4301,6 +4301,8 @@ After in *.java:
 Before in *.java:
     import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.ConstructionHeuristicType;
     import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.ScoreDefinitionType;
+    import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig.AcceptorType;
 After in *.java:
     import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
     import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
+    import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType;

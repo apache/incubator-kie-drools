@@ -21,7 +21,6 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.apache.commons.lang.ObjectUtils;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -461,19 +460,6 @@ public class AcceptorConfig {
                 inheritedConfig.getStepCountingHillClimbingType());
         lateSimulatedAnnealingSize = ConfigUtils.inheritOverwritableProperty(lateSimulatedAnnealingSize,
                 inheritedConfig.getLateSimulatedAnnealingSize());
-    }
-
-    public static enum AcceptorType {
-        HILL_CLIMBING,
-        ENTITY_TABU,
-        VALUE_TABU,
-        MOVE_TABU,
-        UNDO_MOVE_TABU,
-        SOLUTION_TABU,
-        SIMULATED_ANNEALING,
-        LATE_ACCEPTANCE,
-        STEP_COUNTING_HILL_CLIMBING,
-        LATE_SIMULATED_ANNEALING;
     }
 
 }

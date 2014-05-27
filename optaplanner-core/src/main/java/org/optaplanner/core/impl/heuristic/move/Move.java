@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
+import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -76,7 +76,7 @@ public interface Move {
 
     /**
      * Returns all planning entities that are being changed by this move.
-     * Required for {@link AcceptorConfig.AcceptorType#ENTITY_TABU}.
+     * Required for {@link AcceptorType#ENTITY_TABU}.
      * <p/>
      * Duplicates entries in the returned {@link Collection} are best avoided.
      * The returned {@link Collection} is recommended to be in a stable order.
@@ -87,7 +87,7 @@ public interface Move {
 
     /**
      * Returns all planning values that entities are being assigned to by this move.
-     * Required for {@link AcceptorConfig.AcceptorType#VALUE_TABU}.
+     * Required for {@link AcceptorType#VALUE_TABU}.
      * <p/>
      * Duplicates entries in the returned {@link Collection} are best avoided.
      * The returned {@link Collection} is recommended to be in a stable order.
