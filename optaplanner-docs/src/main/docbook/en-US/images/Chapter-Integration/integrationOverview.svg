@@ -511,7 +511,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1.315"
      inkscape:cx="400"
-     inkscape:cy="330.41825"
+     inkscape:cy="300"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -520,7 +520,7 @@
      gridtolerance="10"
      inkscape:window-width="1680"
      inkscape:window-height="991"
-     inkscape:window-x="1680"
+     inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
      inkscape:snap-grids="true"
@@ -991,7 +991,7 @@
            y="-42.597328"
            x="350"
            height="100.00006"
-           width="150"
+           width="180"
            id="rect4672" /></flowRegion><flowPara
          id="flowPara4686"
          style="fill:#8f5902">@PlanningEntity</flowPara><flowPara
