@@ -53,7 +53,7 @@
 
     <dependency>
       <groupId>org.jboss.spec.javax.security.jacc</groupId>
-      <artifactId>jboss-jacc-api_1.5_spec</artifactId>
+      <artifactId>jboss-jacc-api_1.4_spec</artifactId>
       <version>${version.org.jboss.spec.javax.security.jacc}</version>
       <scope>provided</scope>
     </dependency>
