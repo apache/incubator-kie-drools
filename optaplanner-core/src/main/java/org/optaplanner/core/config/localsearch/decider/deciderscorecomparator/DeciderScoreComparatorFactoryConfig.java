@@ -171,7 +171,7 @@ public class DeciderScoreComparatorFactoryConfig {
 
     public static enum DeciderScoreComparatorFactoryType {
         NATURAL,
-        SHIFTING_HARD_PENALTY
+        SHIFTING_HARD_PENALTY;
     }
 
 }

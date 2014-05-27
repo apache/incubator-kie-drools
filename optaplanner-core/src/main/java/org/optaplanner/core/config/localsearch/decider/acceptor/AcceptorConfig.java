@@ -473,7 +473,7 @@ public class AcceptorConfig {
         SIMULATED_ANNEALING,
         LATE_ACCEPTANCE,
         STEP_COUNTING_HILL_CLIMBING,
-        LATE_SIMULATED_ANNEALING,
+        LATE_SIMULATED_ANNEALING;
     }
 
 }

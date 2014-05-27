@@ -36,5 +36,6 @@ public enum SolverRankingType {
      * Maximize the overall ranking.
      * @see TotalRankSolverRankingWeightFactory
      */
-    TOTAL_RANKING
+    TOTAL_RANKING;
+
 }
