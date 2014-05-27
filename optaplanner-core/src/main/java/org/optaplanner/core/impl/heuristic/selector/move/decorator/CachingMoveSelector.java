@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.decorator;
 
 import java.util.Iterator;
 
-import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRandomIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.CachingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;

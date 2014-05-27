@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.heuristic.selector.common;
+package org.optaplanner.core.config.heuristic.selector.common;
 
 /**
  * There is no INHERIT by design because 2 sequential caches provides no benefit, only memory overhead.

@@ -4297,6 +4297,7 @@ and any inner classes of those enums have been moved to the top level.
 Before in *.java:
     import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.ScoreDefinitionType;
     import org.optaplanner.core.config.solver.termination.TerminationConfig.TerminationCompositionStyle;
+    import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
     import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.ConstructionHeuristicType;
     import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicPickEarlyType;
     import org.optaplanner.core.impl.localsearch.decider.forager.PickEarlyType;
@@ -4306,6 +4307,7 @@ Before in *.java:
 After in *.java:
     import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
     import org.optaplanner.core.config.solver.termination.TerminationCompositionStyle;
+    import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
     import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
     import org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicPickEarlyType;
     import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchPickEarlyType;

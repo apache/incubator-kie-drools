@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 import java.util.Iterator;
 import java.util.ListIterator;
 
-import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;

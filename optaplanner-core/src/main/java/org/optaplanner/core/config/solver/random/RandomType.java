@@ -16,11 +16,6 @@
 
 package org.optaplanner.core.config.solver.random;
 
-import java.util.Random;
-
-import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
-import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
-
 /**
  * Defines the pseudo random number generator.
  * See the <a href="http://commons.apache.org/proper/commons-math/userguide/random.html#a2.7_PRNG_Pluggability">PRNG</a>
