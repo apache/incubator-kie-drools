@@ -163,6 +163,8 @@ message WorkItem {
     repeated Variable variable = 5;
 
     optional string deployment_id = 6;
+    optional int64 node_instance_id = 7;
+    optional int64 node_id = 8;
 }
 
 message ProcessTimer {

@@ -119,6 +119,8 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         }
         String deploymentId = (String) getProcessInstance().getKnowledgeRuntime().getEnvironment().get("deploymentId");
         ((WorkItem) workItem).setDeploymentId(deploymentId);
+        ((WorkItem) workItem).setNodeInstanceId(this.getId());
+        ((WorkItem) workItem).setNodeId(getNodeId());
         if (isInversionOfControl()) {
             ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime()
                 .update(((ProcessInstance) getProcessInstance()).getKnowledgeRuntime().getFactHandle(this), this);

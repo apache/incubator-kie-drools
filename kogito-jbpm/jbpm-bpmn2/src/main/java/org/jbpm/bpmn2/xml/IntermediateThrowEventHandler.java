@@ -238,6 +238,10 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 										+ message.getType()
 										+ "\");"
 										+ EOL
+										+ "workItem.setNodeInstanceId(kcontext.getNodeInstance().getId());"
+										+ EOL
+										+ "workItem.setNodeId(kcontext.getNodeInstance().getNodeId());"
+										+ EOL
 										+ (variable == null ? ""
 												: "workItem.setParameter(\"Message\", "
 														+ variable + ");" + EOL)

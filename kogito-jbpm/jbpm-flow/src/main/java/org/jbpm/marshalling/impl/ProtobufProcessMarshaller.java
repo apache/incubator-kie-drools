@@ -177,6 +177,14 @@ public class ProtobufProcessMarshaller
                 .setProcessInstancesId( workItem.getProcessInstanceId() )
                 .setName( workItem.getName() )
                 .setState( workItem.getState() );
+        
+        if (workItem instanceof org.drools.core.process.instance.WorkItem) {
+        	if (((org.drools.core.process.instance.WorkItem)workItem).getDeploymentId() != null){
+        	_workItem.setDeploymentId(((org.drools.core.process.instance.WorkItem)workItem).getDeploymentId());
+        	}
+        	_workItem.setNodeId(((org.drools.core.process.instance.WorkItem)workItem).getNodeId())
+        	.setNodeInstanceId(((org.drools.core.process.instance.WorkItem)workItem).getNodeInstanceId());
+        }
 
         if ( includeVariables ) {
             Map<String, Object> parameters = workItem.getParameters();
@@ -202,6 +210,9 @@ public class ProtobufProcessMarshaller
         workItem.setProcessInstanceId( _workItem.getProcessInstancesId() );
         workItem.setName( _workItem.getName() );
         workItem.setState( _workItem.getState() );
+        workItem.setDeploymentId(_workItem.getDeploymentId());
+        workItem.setNodeId(_workItem.getNodeId());
+        workItem.setNodeInstanceId(_workItem.getNodeInstanceId());
 
         if ( includeVariables ) {
             for ( JBPMMessages.Variable _variable : _workItem.getVariableList() ) {

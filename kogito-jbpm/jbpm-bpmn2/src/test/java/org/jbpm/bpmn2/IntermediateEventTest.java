@@ -33,6 +33,7 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.process.core.Work;
 import org.drools.persistence.SingleSessionCommandService;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
@@ -884,6 +885,30 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 "MessageIntermediateEvent", params);
         assertProcessInstanceCompleted(processInstance);
 
+    }
+    
+    @Test
+    public void testMessageIntermediateThrowVerifyWorkItemData() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventMessage.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Send Task", handler);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "MyValue");
+        ProcessInstance processInstance = ksession.startProcess("MessageIntermediateEvent", params);
+        assertProcessInstanceCompleted(processInstance);
+        
+        WorkItem workItem = handler.getWorkItem();
+        assertNotNull(workItem);
+        assertTrue(workItem instanceof org.drools.core.process.instance.WorkItem);
+        
+        long nodeInstanceId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeInstanceId();
+        long nodeId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeId();
+        
+        assertNotNull(nodeId);
+        assertTrue(nodeId > 0);
+        assertNotNull(nodeInstanceId);
+        assertTrue(nodeInstanceId > 0);
     }
 
     @Test

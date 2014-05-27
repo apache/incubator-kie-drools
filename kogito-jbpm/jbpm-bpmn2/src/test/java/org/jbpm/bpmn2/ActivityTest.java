@@ -26,6 +26,7 @@ import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
@@ -45,6 +46,7 @@ import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicUtils;
+import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -65,10 +67,12 @@ import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.DataTransformer;
+import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.internal.command.Context;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
@@ -475,6 +479,53 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertProcessInstanceFinished(processInstance, ksession);
+        ksession.dispose();
+    }
+    
+    @Test
+    public void testUserTaskVerifyParameters() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-UserTask.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ksession.getEnvironment().set("deploymentId", "test-deployment-id");
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        ProcessInstance processInstance = ksession.startProcess("UserTask");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession, true);
+        final WorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        assertEquals("john", workItem.getParameter("ActorId"));
+        final long pId = processInstance.getId();
+        
+        ksession.execute(new GenericCommand<Void>() {
+
+			@Override
+			public Void execute(Context context) {
+				
+				KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+		        ProcessInstance processInstance = ksession.getProcessInstance(pId);
+		        assertNotNull(processInstance);
+		        NodeInstance nodeInstance = ((WorkflowProcessInstance) processInstance)
+		        		.getNodeInstance(((org.drools.core.process.instance.WorkItem)workItem).getNodeInstanceId());
+		        
+		        assertNotNull(nodeInstance);
+		        assertTrue(nodeInstance instanceof WorkItemNodeInstance);
+		        String deploymentId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getDeploymentId();
+		        long nodeInstanceId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getNodeInstanceId();
+		        long nodeId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getNodeId();
+		        
+		        assertEquals(((org.drools.core.process.instance.WorkItem)workItem).getDeploymentId(), deploymentId);
+		        assertEquals(((org.drools.core.process.instance.WorkItem)workItem).getNodeId(), nodeId);
+		        assertEquals(((org.drools.core.process.instance.WorkItem)workItem).getNodeInstanceId(), nodeInstanceId);
+		        
+		        return null;
+			}
+		});
+        
+
+        
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
         ksession.dispose();

@@ -17799,6 +17799,26 @@ public final class JBPMMessages {
      */
     com.google.protobuf.ByteString
         getDeploymentIdBytes();
+
+    // optional int64 node_instance_id = 7;
+    /**
+     * <code>optional int64 node_instance_id = 7;</code>
+     */
+    boolean hasNodeInstanceId();
+    /**
+     * <code>optional int64 node_instance_id = 7;</code>
+     */
+    long getNodeInstanceId();
+
+    // optional int64 node_id = 8;
+    /**
+     * <code>optional int64 node_id = 8;</code>
+     */
+    boolean hasNodeId();
+    /**
+     * <code>optional int64 node_id = 8;</code>
+     */
+    long getNodeId();
   }
   /**
    * Protobuf type {@code org.jbpm.marshalling.WorkItem}
@@ -17882,6 +17902,16 @@ public final class JBPMMessages {
             case 50: {
               bitField0_ |= 0x00000010;
               deploymentId_ = input.readBytes();
+              break;
+            }
+            case 56: {
+              bitField0_ |= 0x00000020;
+              nodeInstanceId_ = input.readInt64();
+              break;
+            }
+            case 64: {
+              bitField0_ |= 0x00000040;
+              nodeId_ = input.readInt64();
               break;
             }
           }
@@ -18097,6 +18127,38 @@ public final class JBPMMessages {
       }
     }
 
+    // optional int64 node_instance_id = 7;
+    public static final int NODE_INSTANCE_ID_FIELD_NUMBER = 7;
+    private long nodeInstanceId_;
+    /**
+     * <code>optional int64 node_instance_id = 7;</code>
+     */
+    public boolean hasNodeInstanceId() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    /**
+     * <code>optional int64 node_instance_id = 7;</code>
+     */
+    public long getNodeInstanceId() {
+      return nodeInstanceId_;
+    }
+
+    // optional int64 node_id = 8;
+    public static final int NODE_ID_FIELD_NUMBER = 8;
+    private long nodeId_;
+    /**
+     * <code>optional int64 node_id = 8;</code>
+     */
+    public boolean hasNodeId() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    /**
+     * <code>optional int64 node_id = 8;</code>
+     */
+    public long getNodeId() {
+      return nodeId_;
+    }
+
     private void initFields() {
       id_ = 0L;
       processInstancesId_ = 0L;
@@ -18104,6 +18166,8 @@ public final class JBPMMessages {
       state_ = 0;
       variable_ = java.util.Collections.emptyList();
       deploymentId_ = "";
+      nodeInstanceId_ = 0L;
+      nodeId_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -18134,6 +18198,12 @@ public final class JBPMMessages {
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         output.writeBytes(6, getDeploymentIdBytes());
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeInt64(7, nodeInstanceId_);
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeInt64(8, nodeId_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -18167,6 +18237,14 @@ public final class JBPMMessages {
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(6, getDeploymentIdBytes());
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(7, nodeInstanceId_);
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(8, nodeId_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -18301,6 +18379,10 @@ public final class JBPMMessages {
         }
         deploymentId_ = "";
         bitField0_ = (bitField0_ & ~0x00000020);
+        nodeInstanceId_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000040);
+        nodeId_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
 
@@ -18358,6 +18440,14 @@ public final class JBPMMessages {
           to_bitField0_ |= 0x00000010;
         }
         result.deploymentId_ = deploymentId_;
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.nodeInstanceId_ = nodeInstanceId_;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000040;
+        }
+        result.nodeId_ = nodeId_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -18418,6 +18508,12 @@ public final class JBPMMessages {
           bitField0_ |= 0x00000020;
           deploymentId_ = other.deploymentId_;
           onChanged();
+        }
+        if (other.hasNodeInstanceId()) {
+          setNodeInstanceId(other.getNodeInstanceId());
+        }
+        if (other.hasNodeId()) {
+          setNodeId(other.getNodeId());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -18929,6 +19025,72 @@ public final class JBPMMessages {
   }
   bitField0_ |= 0x00000020;
         deploymentId_ = value;
+        onChanged();
+        return this;
+      }
+
+      // optional int64 node_instance_id = 7;
+      private long nodeInstanceId_ ;
+      /**
+       * <code>optional int64 node_instance_id = 7;</code>
+       */
+      public boolean hasNodeInstanceId() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      /**
+       * <code>optional int64 node_instance_id = 7;</code>
+       */
+      public long getNodeInstanceId() {
+        return nodeInstanceId_;
+      }
+      /**
+       * <code>optional int64 node_instance_id = 7;</code>
+       */
+      public Builder setNodeInstanceId(long value) {
+        bitField0_ |= 0x00000040;
+        nodeInstanceId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 node_instance_id = 7;</code>
+       */
+      public Builder clearNodeInstanceId() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        nodeInstanceId_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // optional int64 node_id = 8;
+      private long nodeId_ ;
+      /**
+       * <code>optional int64 node_id = 8;</code>
+       */
+      public boolean hasNodeId() {
+        return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
+      /**
+       * <code>optional int64 node_id = 8;</code>
+       */
+      public long getNodeId() {
+        return nodeId_;
+      }
+      /**
+       * <code>optional int64 node_id = 8;</code>
+       */
+      public Builder setNodeId(long value) {
+        bitField0_ |= 0x00000080;
+        nodeId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 node_id = 8;</code>
+       */
+      public Builder clearNodeId() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        nodeId_ = 0L;
         onChanged();
         return this;
       }
@@ -21426,33 +21588,34 @@ public final class JBPMMessages {
       "\026COMPOSITE_CONTEXT_NODE\020\t\022\021\n\rFOR_EACH_NO" +
       "DE\020\n\022\020\n\014DYNAMIC_NODE\020\013\022\031\n\025EVENT_SUBPROCE" +
       "SS_NODE\020\014\"?\n\010Variable\022\014\n\004name\030\001 \001(\t\022\026\n\016s" +
-      "trategy_index\030\002 \001(\005\022\r\n\005value\030\003 \001(\014\"\232\001\n\010W",
+      "trategy_index\030\002 \001(\005\022\r\n\005value\030\003 \001(\014\"\305\001\n\010W",
       "orkItem\022\n\n\002id\030\001 \001(\003\022\034\n\024process_instances" +
       "_id\030\002 \001(\003\022\014\n\004name\030\003 \001(\t\022\r\n\005state\030\004 \001(\005\0220" +
       "\n\010variable\030\005 \003(\0132\036.org.jbpm.marshalling." +
-      "Variable\022\025\n\rdeployment_id\030\006 \001(\t\"\265\002\n\014Proc" +
-      "essTimer\022?\n\005timer\030\001 \001(\01320.org.jbpm.marsh" +
-      "alling.ProcessTimer.TimerInstance\0225\n\007tri" +
-      "gger\030\002 \001(\0132$.org.drools.core.marshalling" +
-      ".Trigger\032\254\001\n\rTimerInstance\022\n\n\002id\030\001 \001(\003\022\020" +
-      "\n\010timer_id\030\002 \001(\003\022\r\n\005delay\030\003 \001(\003\022\016\n\006perio" +
-      "d\030\004 \001(\003\022\033\n\023process_instance_id\030\005 \001(\003\022\026\n\016",
-      "activated_time\030\006 \001(\003\022\026\n\016last_triggered\030\007" +
-      " \001(\003\022\021\n\tsessionId\030\010 \001(\005\"+\n\016IterationLeve" +
-      "l\022\n\n\002id\030\001 \001(\t\022\r\n\005level\030\002 \001(\005:i\n\020process_" +
-      "instance\022(.org.drools.core.marshalling.P" +
-      "rocessData\030\n \003(\0132%.org.jbpm.marshalling." +
-      "ProcessInstance:[\n\twork_item\022(.org.drool" +
-      "s.core.marshalling.ProcessData\030\013 \003(\0132\036.o" +
-      "rg.jbpm.marshalling.WorkItem::\n\010timer_id" +
-      "\022(.org.drools.core.marshalling.ProcessDa" +
-      "ta\030\r \001(\003:c\n\rprocess_timer\022(.org.drools.c",
-      "ore.marshalling.ProcessData\030\014 \003(\0132\".org." +
-      "jbpm.marshalling.ProcessTimer:a\n\nproc_ti" +
-      "mer\022).org.drools.core.marshalling.Timers" +
-      ".Timer\030d \001(\0132\".org.jbpm.marshalling.Proc" +
-      "essTimerB)\n\031org.jbpm.marshalling.implB\014J" +
-      "BPMMessages"
+      "Variable\022\025\n\rdeployment_id\030\006 \001(\t\022\030\n\020node_" +
+      "instance_id\030\007 \001(\003\022\017\n\007node_id\030\010 \001(\003\"\265\002\n\014P" +
+      "rocessTimer\022?\n\005timer\030\001 \001(\01320.org.jbpm.ma" +
+      "rshalling.ProcessTimer.TimerInstance\0225\n\007" +
+      "trigger\030\002 \001(\0132$.org.drools.core.marshall" +
+      "ing.Trigger\032\254\001\n\rTimerInstance\022\n\n\002id\030\001 \001(" +
+      "\003\022\020\n\010timer_id\030\002 \001(\003\022\r\n\005delay\030\003 \001(\003\022\016\n\006pe",
+      "riod\030\004 \001(\003\022\033\n\023process_instance_id\030\005 \001(\003\022" +
+      "\026\n\016activated_time\030\006 \001(\003\022\026\n\016last_triggere" +
+      "d\030\007 \001(\003\022\021\n\tsessionId\030\010 \001(\005\"+\n\016IterationL" +
+      "evel\022\n\n\002id\030\001 \001(\t\022\r\n\005level\030\002 \001(\005:i\n\020proce" +
+      "ss_instance\022(.org.drools.core.marshallin" +
+      "g.ProcessData\030\n \003(\0132%.org.jbpm.marshalli" +
+      "ng.ProcessInstance:[\n\twork_item\022(.org.dr" +
+      "ools.core.marshalling.ProcessData\030\013 \003(\0132" +
+      "\036.org.jbpm.marshalling.WorkItem::\n\010timer" +
+      "_id\022(.org.drools.core.marshalling.Proces",
+      "sData\030\r \001(\003:c\n\rprocess_timer\022(.org.drool" +
+      "s.core.marshalling.ProcessData\030\014 \003(\0132\".o" +
+      "rg.jbpm.marshalling.ProcessTimer:a\n\nproc" +
+      "_timer\022).org.drools.core.marshalling.Tim" +
+      "ers.Timer\030d \001(\0132\".org.jbpm.marshalling.P" +
+      "rocessTimerB)\n\031org.jbpm.marshalling.impl" +
+      "B\014JBPMMessages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -21578,7 +21741,7 @@ public final class JBPMMessages {
           internal_static_org_jbpm_marshalling_WorkItem_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_jbpm_marshalling_WorkItem_descriptor,
-              new java.lang.String[] { "Id", "ProcessInstancesId", "Name", "State", "Variable", "DeploymentId", });
+              new java.lang.String[] { "Id", "ProcessInstancesId", "Name", "State", "Variable", "DeploymentId", "NodeInstanceId", "NodeId", });
           internal_static_org_jbpm_marshalling_ProcessTimer_descriptor =
             getDescriptor().getMessageTypes().get(3);
           internal_static_org_jbpm_marshalling_ProcessTimer_fieldAccessorTable = new
