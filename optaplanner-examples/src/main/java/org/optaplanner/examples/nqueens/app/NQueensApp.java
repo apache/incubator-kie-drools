@@ -30,6 +30,7 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSel
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
+import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
@@ -85,7 +86,7 @@ public class NQueensApp extends CommonApp {
         solverConfig.setPlanningEntityClassList(Collections.<Class<?>>singletonList(Queen.class));
 
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
-        scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDirectorFactoryConfig.ScoreDefinitionType.SIMPLE);
+        scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDefinitionType.SIMPLE);
         scoreDirectorFactoryConfig.setScoreDrlList(
                 Arrays.asList("org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl"));
         solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);

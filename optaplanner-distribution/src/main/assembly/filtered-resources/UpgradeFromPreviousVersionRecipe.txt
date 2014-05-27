@@ -4299,7 +4299,8 @@ After in *.java:
     import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
     import org.optaplanner.benchmark.config.ranking.SolverRankingType;
 Before in *.java:
-    import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
+    import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.ConstructionHeuristicType;
+    import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.ScoreDefinitionType;
 After in *.java:
-    import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
     import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
+    import org.optaplanner.core.config.score.definition.ScoreDefinitionType;

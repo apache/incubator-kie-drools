@@ -34,6 +34,7 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.io.KieResources;
 import org.kie.api.runtime.KieContainer;
+import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.config.util.KeyAsElementMapConverter;
@@ -421,28 +422,6 @@ public class ScoreDirectorFactoryConfig {
 
         assertionScoreDirectorFactory = ConfigUtils.inheritOverwritableProperty(
                 assertionScoreDirectorFactory, inheritedConfig.getAssertionScoreDirectorFactory());
-    }
-
-    public static enum ScoreDefinitionType {
-        SIMPLE,
-        SIMPLE_LONG,
-        /**
-         * WARNING: NOT RECOMMENDED TO USE DUE TO ROUNDING ERRORS THAT CAUSE SCORE CORRUPTION.
-         * Use {@link #SIMPLE_BIG_DECIMAL} instead.
-         */
-        SIMPLE_DOUBLE,
-        SIMPLE_BIG_DECIMAL,
-        HARD_SOFT,
-        HARD_SOFT_LONG,
-        /**
-         * WARNING: NOT RECOMMENDED TO USE DUE TO ROUNDING ERRORS THAT CAUSE SCORE CORRUPTION.
-         * Use {@link #HARD_SOFT_BIG_DECIMAL} instead.
-         */
-        HARD_SOFT_DOUBLE,
-        HARD_SOFT_BIG_DECIMAL,
-        HARD_MEDIUM_SOFT,
-        HARD_MEDIUM_SOFT_LONG,
-        BENDABLE;
     }
 
 }
