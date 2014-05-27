@@ -4291,22 +4291,26 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
 
 [MINOR] The interface SolverRankingWeightFactory has moved package (but almost nobody uses that).
 
-[MINOR] Configuration by Java (instead of XML): Enums for the Config classes have been moved into the config package.
+[MINOR] Configuration by Java (instead of XML):
+Enums for the Config classes have been moved into the config package
+and any inner classes of those enums have been moved to the top level.
 Before in *.java:
+    import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.ScoreDefinitionType;
+    import org.optaplanner.core.config.solver.termination.TerminationConfig.TerminationCompositionStyle;
+    import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.ConstructionHeuristicType;
     import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicPickEarlyType;
+    import org.optaplanner.core.impl.localsearch.decider.forager.PickEarlyType;
+    import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig.AcceptorType;
     import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
     import org.optaplanner.benchmark.api.ranking.SolverRankingType;
 After in *.java:
+    import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
+    import org.optaplanner.core.config.solver.termination.TerminationCompositionStyle;
+    import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
     import org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicPickEarlyType;
+    import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchPickEarlyType;
+    import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType;
     import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
     import org.optaplanner.benchmark.config.ranking.SolverRankingType;
-Before in *.java:
-    import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.ConstructionHeuristicType;
-    import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.ScoreDefinitionType;
-    import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig.AcceptorType;
-    import org.optaplanner.core.config.solver.termination.TerminationConfig.TerminationCompositionStyle;
-After in *.java:
-    import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
-    import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
-    import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType;
-    import org.optaplanner.core.config.solver.termination.TerminationCompositionStyle;
+
+[IMPL_DETAIL] ForagerConfig has been renamed to LocalSearchForagerConfig

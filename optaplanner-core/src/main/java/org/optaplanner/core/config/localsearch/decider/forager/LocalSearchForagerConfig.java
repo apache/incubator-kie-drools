@@ -23,17 +23,17 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
 import org.optaplanner.core.impl.localsearch.decider.forager.AcceptedForager;
 import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
-import org.optaplanner.core.impl.localsearch.decider.forager.PickEarlyType;
 
-@XStreamAlias("forager")
-public class ForagerConfig {
+@XStreamAlias("localSearchForagerConfig")
+public class LocalSearchForagerConfig {
 
     private Class<? extends Forager> foragerClass = null;
+
     @XStreamAlias("deciderScoreComparatorFactory")
     @Deprecated // Experimental feature (no backwards compatibility guarantee)
     private DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig = null;
 
-    protected PickEarlyType pickEarlyType = null;
+    protected LocalSearchPickEarlyType pickEarlyType = null;
     protected Integer acceptedCountLimit = null;
 
     public Class<? extends Forager> getForagerClass() {
@@ -55,11 +55,11 @@ public class ForagerConfig {
         this.deciderScoreComparatorFactoryConfig = deciderScoreComparatorFactoryConfig;
     }
 
-    public PickEarlyType getPickEarlyType() {
+    public LocalSearchPickEarlyType getPickEarlyType() {
         return pickEarlyType;
     }
 
-    public void setPickEarlyType(PickEarlyType pickEarlyType) {
+    public void setPickEarlyType(LocalSearchPickEarlyType pickEarlyType) {
         this.pickEarlyType = pickEarlyType;
     }
 
@@ -79,19 +79,19 @@ public class ForagerConfig {
         if (foragerClass != null) {
             return ConfigUtils.newInstance(this, "foragerClass", foragerClass);
         }
-        PickEarlyType pickEarlyType = (this.pickEarlyType == null) ? PickEarlyType.NEVER : this.pickEarlyType;
+        LocalSearchPickEarlyType pickEarlyType_ = (this.pickEarlyType == null)
+                ? LocalSearchPickEarlyType.NEVER : this.pickEarlyType;
         int acceptedCountLimit = (this.acceptedCountLimit == null) ? Integer.MAX_VALUE : this.acceptedCountLimit;
 
         DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig_
                 = deciderScoreComparatorFactoryConfig == null ? new DeciderScoreComparatorFactoryConfig()
                 : deciderScoreComparatorFactoryConfig;
-        DeciderScoreComparatorFactory deciderScoreComparatorFactory = deciderScoreComparatorFactoryConfig_
-                .buildDeciderScoreComparatorFactory();
-        AcceptedForager forager = new AcceptedForager(deciderScoreComparatorFactory, pickEarlyType, acceptedCountLimit);
-        return forager;
+        DeciderScoreComparatorFactory deciderScoreComparatorFactory
+                = deciderScoreComparatorFactoryConfig_.buildDeciderScoreComparatorFactory();
+        return new AcceptedForager(deciderScoreComparatorFactory, pickEarlyType_, acceptedCountLimit);
     }
 
-    public void inherit(ForagerConfig inheritedConfig) {
+    public void inherit(LocalSearchForagerConfig inheritedConfig) {
         // TODO this is messed up
         if (foragerClass == null && pickEarlyType == null && acceptedCountLimit == null) {
             foragerClass = inheritedConfig.getForagerClass();

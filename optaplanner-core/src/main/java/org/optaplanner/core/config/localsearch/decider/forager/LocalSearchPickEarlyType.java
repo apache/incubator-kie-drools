@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.localsearch.decider.forager;
+package org.optaplanner.core.config.localsearch.decider.forager;
 
-public enum PickEarlyType {
+public enum LocalSearchPickEarlyType {
     NEVER,
     FIRST_BEST_SCORE_IMPROVING,
     FIRST_LAST_STEP_SCORE_IMPROVING;

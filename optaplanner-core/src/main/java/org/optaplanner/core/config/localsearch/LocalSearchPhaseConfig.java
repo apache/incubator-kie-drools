@@ -30,7 +30,7 @@ import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSe
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
-import org.optaplanner.core.config.localsearch.decider.forager.ForagerConfig;
+import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -55,7 +55,7 @@ public class LocalSearchPhaseConfig extends PhaseConfig {
     @XStreamAlias("acceptor")
     private AcceptorConfig acceptorConfig = null;
     @XStreamAlias("forager")
-    private ForagerConfig foragerConfig = null;
+    private LocalSearchForagerConfig foragerConfig = null;
 
     public MoveSelectorConfig getMoveSelectorConfig() {
         return moveSelectorConfigList == null ? null : moveSelectorConfigList.get(0);
@@ -73,11 +73,11 @@ public class LocalSearchPhaseConfig extends PhaseConfig {
         this.acceptorConfig = acceptorConfig;
     }
 
-    public ForagerConfig getForagerConfig() {
+    public LocalSearchForagerConfig getForagerConfig() {
         return foragerConfig;
     }
 
-    public void setForagerConfig(ForagerConfig foragerConfig) {
+    public void setForagerConfig(LocalSearchForagerConfig foragerConfig) {
         this.foragerConfig = foragerConfig;
     }
 
@@ -110,7 +110,7 @@ public class LocalSearchPhaseConfig extends PhaseConfig {
         AcceptorConfig acceptorConfig_ = acceptorConfig == null ? new AcceptorConfig()
                 : acceptorConfig;
         decider.setAcceptor(acceptorConfig_.buildAcceptor(configPolicy));
-        ForagerConfig foragerConfig_ = foragerConfig == null ? new ForagerConfig()
+        LocalSearchForagerConfig foragerConfig_ = foragerConfig == null ? new LocalSearchForagerConfig()
                 : foragerConfig;
         Forager forager = foragerConfig_.buildForager(configPolicy);
         decider.setForager(forager);

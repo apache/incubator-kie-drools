@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchPickEarlyType;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
 import org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
@@ -35,7 +36,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 public class AcceptedForager extends AbstractForager {
 
     protected final DeciderScoreComparatorFactory deciderScoreComparatorFactory;
-    protected final PickEarlyType pickEarlyType;
+    protected final LocalSearchPickEarlyType pickEarlyType;
     protected final int acceptedCountLimit;
 
     protected Comparator<Score> scoreComparator;
@@ -49,7 +50,7 @@ public class AcceptedForager extends AbstractForager {
 
     protected LocalSearchMoveScope earlyPickedMoveScope;
 
-    public AcceptedForager(DeciderScoreComparatorFactory deciderScoreComparatorFactory, PickEarlyType pickEarlyType,
+    public AcceptedForager(DeciderScoreComparatorFactory deciderScoreComparatorFactory, LocalSearchPickEarlyType pickEarlyType,
             int acceptedCountLimit) {
         this.deciderScoreComparatorFactory = deciderScoreComparatorFactory;
         this.pickEarlyType = pickEarlyType;
