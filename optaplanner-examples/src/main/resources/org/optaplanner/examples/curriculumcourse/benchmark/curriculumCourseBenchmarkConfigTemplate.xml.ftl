@@ -136,34 +136,4 @@
       </solverBenchmark>
     </#list>
   </#list>
-  <#--<#list [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000] as lateSimulatedAnnealingSize>-->
-  <#--<solverBenchmark>-->
-    <#--<name>Late Simulated Annealing ${lateSimulatedAnnealingSize}</name>-->
-    <#--<solver>-->
-      <#--<localSearch>-->
-        <#--<unionMoveSelector>-->
-          <#--<changeMoveSelector>-->
-            <#--<valueSelector>-->
-              <#--<variableName>period</variableName>-->
-            <#--</valueSelector>-->
-          <#--</changeMoveSelector>-->
-          <#--<changeMoveSelector>-->
-            <#--<valueSelector>-->
-              <#--<variableName>room</variableName>-->
-            <#--</valueSelector>-->
-          <#--</changeMoveSelector>-->
-          <#--<swapMoveSelector>-->
-            <#--<filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>-->
-          <#--</swapMoveSelector>-->
-        <#--</unionMoveSelector>-->
-        <#--<acceptor>-->
-          <#--<lateSimulatedAnnealingSize>${lateSimulatedAnnealingSize}</lateSimulatedAnnealingSize>-->
-        <#--</acceptor>-->
-        <#--<forager>-->
-          <#--<acceptedCountLimit>1</acceptedCountLimit>-->
-        <#--</forager>-->
-      <#--</localSearch>-->
-    <#--</solver>-->
-  <#--</solverBenchmark>-->
-  <#--</#list>-->
 </plannerBenchmark>
