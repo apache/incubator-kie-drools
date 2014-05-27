@@ -382,9 +382,4 @@ public class TerminationConfig implements Cloneable {
         return clone;
     }
 
-    public enum TerminationCompositionStyle {
-        AND,
-        OR;
-    }
-
 }
