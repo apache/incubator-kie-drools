@@ -31,13 +31,16 @@ import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;
 import org.jbpm.bpmn2.core.Definitions;
+import org.jbpm.bpmn2.core.Interface;
 import org.jbpm.bpmn2.core.ItemDefinition;
+import org.jbpm.bpmn2.core.Interface.Operation;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.NodeContainer;
+import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 import org.w3c.dom.Element;
@@ -74,10 +77,14 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
         List<Process> processes = ((ProcessBuildData) parser.getData()).getProcesses();
 		Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
             ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
+		
+		List<Interface> interfaces = (List<Interface>) ((ProcessBuildData) parser.getData()).getMetaData("Interfaces");
+		
         for (Process process : processes) {
             RuleFlowProcess ruleFlowProcess = (RuleFlowProcess)process;
             ruleFlowProcess.setMetaData("TargetNamespace", namespace);
             postProcessItemDefinitions(ruleFlowProcess, itemDefinitions);
+            postProcessInterfaces(ruleFlowProcess, interfaces);
         }
         definitions.setTargetNamespace(namespace);
         return definitions;
@@ -85,6 +92,49 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
 
 	public Class<?> generateNodeFor() {
 		return Definitions.class;
+	}
+	
+	private void postProcessInterfaces(NodeContainer nodeContainer, List<Interface> interfaces) {
+
+		for (Node node: nodeContainer.getNodes()) {
+			if (node instanceof NodeContainer) {
+				postProcessInterfaces((NodeContainer) node, interfaces);
+			}
+			if (node instanceof WorkItemNode && "Service Task".equals(((WorkItemNode) node).getMetaData("Type"))) {
+				WorkItemNode workItemNode = (WorkItemNode) node;
+				if (interfaces == null) {
+		            throw new IllegalArgumentException("No interfaces found");
+		        }
+				String operationRef = (String) workItemNode.getMetaData("OperationRef");
+		        String implementation = (String) workItemNode.getMetaData("Implementation");
+		        Operation operation = null;
+		        for (Interface i: interfaces) {
+		            operation = i.getOperation(operationRef);
+		            if (operation != null) {
+		                break;
+		            }
+		        }
+		        if (operation == null) {
+		            throw new IllegalArgumentException("Could not find operation " + operationRef);
+		        }
+		        // avoid overriding parameters set by data input associations
+		        if (workItemNode.getWork().getParameter("Interface") == null) {
+		            workItemNode.getWork().setParameter("Interface", operation.getInterface().getName());
+		        }
+		        if (workItemNode.getWork().getParameter("Operation") == null) {
+		            workItemNode.getWork().setParameter("Operation", operation.getName());
+		        }
+		        if (workItemNode.getWork().getParameter("ParameterType") == null) {
+		            workItemNode.getWork().setParameter("ParameterType", operation.getMessage().getType());
+		        }
+		        // parameters to support web service invocation 
+		        if (implementation != null) {
+		            workItemNode.getWork().setParameter("interfaceImplementationRef", operation.getInterface().getImplementationRef());
+		            workItemNode.getWork().setParameter("operationImplementationRef", operation.getImplementationRef());
+		            workItemNode.getWork().setParameter("implementation", implementation);
+		        }
+			}
+		}
 	}
 	
 	private void postProcessItemDefinitions(NodeContainer nodeContainer, Map<String, ItemDefinition> itemDefinitions) {

@@ -1357,4 +1357,16 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-InvalidServiceProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
     }
+    
+    @Test // JBPM-3951
+    public void testServiceTaskInterface() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-ServiceTask.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task", new SystemOutWorkItemHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("EAID_DP000000_23D3_4e7e_80FE_6D8C0AF83CAA", params);
+        assertProcessInstanceFinished(processInstance, ksession);
+
+    }
 }

@@ -46,36 +46,40 @@ public class ServiceTaskHandler extends TaskHandler {
         WorkItemNode workItemNode = (WorkItemNode) node;
         String operationRef = element.getAttribute("operationRef");
         String implementation = element.getAttribute("implementation");
-        List<Interface> interfaces = (List<Interface>)
-            ((ProcessBuildData) parser.getData()).getMetaData("Interfaces");
-        if (interfaces == null) {
-            throw new IllegalArgumentException("No interfaces found");
-        }
-        Operation operation = null;
-        for (Interface i: interfaces) {
-            operation = i.getOperation(operationRef);
-            if (operation != null) {
-                break;
-            }
-        }
-        if (operation == null) {
-            throw new IllegalArgumentException("Could not find operation " + operationRef);
-        }
-        // avoid overriding parameters set by data input associations
-        if (workItemNode.getWork().getParameter("Interface") == null) {
-            workItemNode.getWork().setParameter("Interface", operation.getInterface().getName());
-        }
-        if (workItemNode.getWork().getParameter("Operation") == null) {
-            workItemNode.getWork().setParameter("Operation", operation.getName());
-        }
-        if (workItemNode.getWork().getParameter("ParameterType") == null) {
-            workItemNode.getWork().setParameter("ParameterType", operation.getMessage().getType());
-        }
-        // parameters to support web service invocation 
-        if (implementation != null) {
-            workItemNode.getWork().setParameter("interfaceImplementationRef", operation.getInterface().getImplementationRef());
-            workItemNode.getWork().setParameter("operationImplementationRef", operation.getImplementationRef());
-            workItemNode.getWork().setParameter("implementation", implementation);
+        List<Interface> interfaces = (List<Interface>) ((ProcessBuildData) parser.getData()).getMetaData("Interfaces");
+        
+        workItemNode.setMetaData("OperationRef", operationRef);
+        workItemNode.setMetaData("Implementation", implementation);
+        workItemNode.setMetaData("Type", "Service Task");
+        if (interfaces != null) {
+//            throw new IllegalArgumentException("No interfaces found");
+        
+	        Operation operation = null;
+	        for (Interface i: interfaces) {
+	            operation = i.getOperation(operationRef);
+	            if (operation != null) {
+	                break;
+	            }
+	        }
+	        if (operation == null) {
+	            throw new IllegalArgumentException("Could not find operation " + operationRef);
+	        }
+	        // avoid overriding parameters set by data input associations
+	        if (workItemNode.getWork().getParameter("Interface") == null) {
+	            workItemNode.getWork().setParameter("Interface", operation.getInterface().getName());
+	        }
+	        if (workItemNode.getWork().getParameter("Operation") == null) {
+	            workItemNode.getWork().setParameter("Operation", operation.getName());
+	        }
+	        if (workItemNode.getWork().getParameter("ParameterType") == null) {
+	            workItemNode.getWork().setParameter("ParameterType", operation.getMessage().getType());
+	        }
+	        // parameters to support web service invocation 
+	        if (implementation != null) {
+	            workItemNode.getWork().setParameter("interfaceImplementationRef", operation.getInterface().getImplementationRef());
+	            workItemNode.getWork().setParameter("operationImplementationRef", operation.getImplementationRef());
+	            workItemNode.getWork().setParameter("implementation", implementation);
+	        }
         }
     }
     
