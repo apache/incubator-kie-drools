@@ -17,12 +17,11 @@
 package org.optaplanner.core.config.heuristic.selector.value;
 
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 
 /**
- * Build-in ways of sorting.
+ * The manner of sorting a values for a {@link PlanningVariable}.
  */
 public enum ValueSorterManner {
     INCREASING_STRENGTH,

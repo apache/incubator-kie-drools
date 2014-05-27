@@ -21,7 +21,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 
 /**
- * Build-in ways of sorting.
+ * The manner of sorting {@link PlanningEntity} instances.
  */
 public enum EntitySorterManner {
     DECREASING_DIFFICULTY,
