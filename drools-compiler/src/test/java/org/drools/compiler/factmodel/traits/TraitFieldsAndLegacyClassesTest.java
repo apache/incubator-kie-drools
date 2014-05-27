@@ -3,6 +3,7 @@ package org.drools.compiler.factmodel.traits;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.traits.TraitFactory;
+import org.drools.core.factmodel.traits.VirtualPropertyMode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -19,18 +20,18 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
 
-    public TraitFactory.VirtualPropertyMode mode;
+    public VirtualPropertyMode mode;
 
     @Parameterized.Parameters
         public static Collection modes() {
-        return Arrays.asList( new TraitFactory.VirtualPropertyMode[][]
+        return Arrays.asList( new VirtualPropertyMode[][]
                                       {
-                                              { TraitFactory.VirtualPropertyMode.MAP },
-                                              { TraitFactory.VirtualPropertyMode.TRIPLES }
+                                              { VirtualPropertyMode.MAP },
+                                              { VirtualPropertyMode.TRIPLES }
                                       } );
     }
 
-    public TraitFieldsAndLegacyClassesTest( TraitFactory.VirtualPropertyMode m ) {
+    public TraitFieldsAndLegacyClassesTest( VirtualPropertyMode m ) {
         this.mode = m;
     }
 

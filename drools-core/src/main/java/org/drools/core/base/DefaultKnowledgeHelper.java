@@ -601,10 +601,64 @@ public class DefaultKnowledgeHelper
         return null;
     }
 
+    public void modify(Object newObject) {
+        // TODO Auto-generated method stub
 
+    }
+
+    public KieRuntime getKieRuntime() {
+        return getKnowledgeRuntime();
+    }
+
+    protected  <K> ClassDefinition lookupClassDefinition( K core ) {
+        InternalKnowledgePackage pack = this.getWorkingMemory().getKnowledgeBase().getPackage( core.getClass().getPackage().getName() );
+        if ( pack != null ) {
+            TypeDeclaration decl = pack.getTypeDeclaration( core.getClass() );
+            if ( decl != null ) {
+                return decl.getTypeClassDef();
+            }
+        }
+        return null;
+    }
+
+    private <K> InternalFactHandle lookupHandleForWrapper( K core ) {
+        for ( EntryPoint ep : workingMemory.getEntryPoints() ) {
+            ObjectStore store = ((InternalWorkingMemoryEntryPoint) ep).getObjectStore();
+            Iterator iter = store.iterateFactHandles();
+            while ( iter.hasNext() ) {
+                InternalFactHandle handle = (InternalFactHandle) iter.next();
+                if ( handle.isTraitable() && handle.getObject() instanceof CoreWrapper && ( (CoreWrapper) handle.getObject() ).getCore() == core ) {
+                    return handle;
+                }
+            }
+        }
+        return null;
+    }
+
+    /* Trait helper methods */
+
+    protected <T> void configureTrait( T thing, Object value ) {
+
+    }
+
+    public <T, K> T don( Thing<K> core, Class<T> trait, boolean logical ) {
+        return don( core.getCore(), trait, logical );
+    }
+
+    public <T, K> T don( K core, Class<T> trait ) {
+        return don( core, trait, false );
+    }
+
+    public <T, K> T don( Thing<K> core, Class<T> trait ) {
+        return don( core.getCore(), trait );
+    }
 
     public <T, K> T don( K core, Collection<Class<? extends Thing>> traits ) {
         return don( core, traits, false );
+    }
+
+    public <T,K> Thing<K> shed( Thing<K> thing, Class<T> trait ) {
+        return shed( (TraitableBean<K,? extends TraitableBean>) thing.getCore(), trait );
     }
 
     public <T, K> T don( K core, Collection<Class<? extends Thing>> traits, boolean logical ) {
@@ -651,48 +705,16 @@ public class DefaultKnowledgeHelper
         return thing;
     }
 
-	public KieRuntime getKieRuntime() {
-        return getKnowledgeRuntime();
-    }
-
-    protected <K> TraitableBean<K,CoreWrapper<K>> asTraitable( K core, TraitFactory builder ) {
-        ClassDefinition coreDef = lookupClassDefinition( core );
-        if ( coreDef.getDefinedClass() != core.getClass() ) {
-            // ensure that a compatible interface cDef is not replaced for the missing actual definition
-            try {
-                coreDef = builder.buildClassDefinition( core.getClass(), core.getClass() );
-            } catch ( IOException e ) {
-                e.printStackTrace();
+    private <T,K> void refresh( T thing, K core, TraitableBean inner, Class<T> trait, Collection<Thing> mostSpecificTraits, boolean logical ) {
+        if ( mostSpecificTraits != null ) {
+            updateCore( inner, core, trait, logical );
+            if ( ! mostSpecificTraits.isEmpty() ) {
+                updateTraits( inner, Long.MIN_VALUE, (Thing) thing, trait, null, mostSpecificTraits );
             }
+        } else if ( Thing.class == trait ) {
+            updateCore( inner, core, trait, logical );
         }
-
-        if ( core instanceof Map ) {
-            if ( ! coreDef.isTraitable() ) {
-                throw new UnsupportedOperationException( "Error: cannot apply a trait to non-traitable class " + core.getClass() + ". Was it declared as @Traitable? ");
-            }
-            return coreDef.isFullTraiting() ? new LogicalMapCore( (Map) core ) : new MapCore( (Map) core );
-        }
-
-        CoreWrapper<K> wrapper = builder.getCoreWrapper( core.getClass(), coreDef );
-        if ( wrapper == null ) {
-            throw new UnsupportedOperationException( "Error: cannot apply a trait to non-traitable class " + core.getClass() + ". Was it declared as @Traitable? ");
-        }
-        wrapper.init( core );
-        return wrapper;
     }
-
-    protected  <K> ClassDefinition lookupClassDefinition( K core ) {
-        InternalKnowledgePackage pack = this.getWorkingMemory().getKnowledgeBase().getPackage( core.getClass().getPackage().getName() );
-        if ( pack != null ) {
-            TypeDeclaration decl = pack.getTypeDeclaration( core.getClass() );
-            if ( decl != null ) {
-                return decl.getTypeClassDef();
-            }
-        }
-        return null;
-    }
-
-
 
     protected <T, K> T applyManyTraits( K core, Collection<Class<? extends Thing>> traits, Object value, boolean logical) throws LogicalTypeInconsistencyException {
         // Precondition : traits is not empty, checked by don
@@ -743,7 +765,6 @@ public class DefaultKnowledgeHelper
     }
 
 
-
     protected <T, K> T applyTrait( K core, Class<T> trait, Object value, boolean logical ) throws LogicalTypeInconsistencyException {
         TraitFactory builder = TraitFactory.getTraitBuilderForKnowledgeBase( this.getKnowledgeRuntime().getKieBase() );
 
@@ -771,25 +792,6 @@ public class DefaultKnowledgeHelper
         return thing;
     }
 
-    protected Collection<Thing> getTraitBoundary( TraitableBean inner, boolean needsProxy, boolean hasTrait, Class trait ) {
-        boolean refresh = ! needsProxy && ! hasTrait && Thing.class != trait;
-        if ( refresh ) {
-            return inner.getMostSpecificTraits();
-        }
-        return null;
-    }
-
-    private <T,K> void refresh( T thing, K core, TraitableBean inner, Class<T> trait, Collection<Thing> mostSpecificTraits, boolean logical ) {
-        if ( mostSpecificTraits != null ) {
-            updateCore( inner, core, trait, logical );
-            if ( ! mostSpecificTraits.isEmpty() ) {
-                updateTraits( inner, Long.MIN_VALUE, (Thing) thing, trait, null, mostSpecificTraits );
-            }
-        } else if ( Thing.class == trait ) {
-            updateCore( inner, core, trait, logical );
-        }
-    }
-
     private <T> void updateCore( TraitableBean inner, Object core, Class<T> trait, boolean logical ) {
         FactHandle handle = lookupFactHandle( inner );
         InternalFactHandle h = (InternalFactHandle) handle;
@@ -815,120 +817,6 @@ public class DefaultKnowledgeHelper
             }
         }
 
-    }
-
-    private <T, K> T asTrait( K core, TraitableBean inner, Class<T> trait, boolean needsProxy, boolean hasTrait, boolean needsUpdate, TraitFactory builder, boolean logical ) throws LogicalTypeInconsistencyException {
-        T thing;
-        if ( needsProxy ) {
-            thing = (T) inner;
-            inner.addTrait( trait.getName(), (Thing<K>) core );
-        } else if ( hasTrait ) {
-            thing = (T) inner.getTrait( trait.getName() );
-        } else {
-            thing = (T) builder.getProxy( inner, trait, logical );
-        }
-
-        if ( needsUpdate ) {
-            InternalFactHandle h = (InternalFactHandle) lookupFactHandle( core );
-            if ( h == null ) {
-                h = lookupHandleForWrapper( core );
-            }
-            if ( h == null ) {
-                h = (InternalFactHandle) this.workingMemory.insert( core,
-                                                                    null,
-                                                                    false,
-                                                                    logical,
-                                                                    this.activation.getRule(),
-                                                                    this.activation );
-                if ( this.identityMap != null ) {
-                    this.getIdentityMap().put( core,
-                                               h );
-                }
-            }
-            if ( ! h.isTraitOrTraitable() ) {
-                throw new IllegalStateException( "A traited working memory element is being used with a default fact handle. " +
-                                                 "Please verify that its class was declared as @Traitable : " + core.getClass().getName() );
-            }
-            this.update( h, inner );
-        }
-
-        return thing;
-    }
-
-    private <K> InternalFactHandle lookupHandleForWrapper( K core ) {
-        for ( EntryPoint ep : workingMemory.getEntryPoints() ) {
-            ObjectStore store = ((InternalWorkingMemoryEntryPoint) ep).getObjectStore();
-            Iterator iter = store.iterateFactHandles();
-            while ( iter.hasNext() ) {
-                InternalFactHandle handle = (InternalFactHandle) iter.next();
-                if ( handle.isTraitable() && handle.getObject() instanceof CoreWrapper && ( (CoreWrapper) handle.getObject() ).getCore() == core ) {
-                    return handle;
-                }
-            }
-        }
-        return null;
-    }
-
-    private <K> TraitableBean makeTraitable( K core, TraitFactory builder, boolean logical ) {
-        boolean needsWrapping = ! ( core instanceof TraitableBean );
-
-        TraitableBean<K,? extends TraitableBean> inner = needsWrapping ? asTraitable( core, builder ) : (TraitableBean<K,? extends TraitableBean>) core;
-        if ( needsWrapping ) {
-            InternalFactHandle h = (InternalFactHandle) lookupFactHandle( core );
-            InternalWorkingMemoryEntryPoint ep = h != null ? (InternalWorkingMemoryEntryPoint) h.getEntryPoint() : (InternalWorkingMemoryEntryPoint) ((StatefulKnowledgeSessionImpl)workingMemory).getEntryPoint("DEFAULT");
-            ObjectTypeConfigurationRegistry reg = ep.getObjectTypeConfigurationRegistry();
-
-            ObjectTypeConf coreConf = reg.getObjectTypeConf( ep.getEntryPoint(), core );
-
-            ObjectTypeConf innerConf = reg.getObjectTypeConf( ep.getEntryPoint(), inner );
-            if ( coreConf.isTMSEnabled() ) {
-                innerConf.enableTMS();
-            }
-            if ( inner._getFieldTMS() != null && inner._getFieldTMS().needsInit() ) {
-                inner._getFieldTMS().init( workingMemory );
-            }
-        } else {
-            TraitFieldTMS ftms = inner._getFieldTMS();
-            if ( ftms != null ) {
-                FactHandle handle = lookupFactHandle( inner );
-                if ( handle == null ) {
-                    handle = this.workingMemory.insert( inner,
-                                                        null,
-                                                        false,
-                                                        logical,
-                                                        this.activation.getRule(),
-                                                        this.activation );
-                    if ( this.identityMap != null ) {
-                        this.getIdentityMap().put( inner,
-                                                   handle );
-                    }
-                }
-                if ( ftms.needsInit() ) {
-                    ftms.init( workingMemory );
-                }
-            }
-        }
-        return inner;
-    }
-
-    protected <T> void configureTrait( T thing, Object value ) {
-
-    }
-
-    public <T, K> T don( Thing<K> core, Class<T> trait, boolean logical ) {
-        return don( core.getCore(), trait, logical );
-    }
-
-    public <T, K> T don( K core, Class<T> trait ) {
-        return don( core, trait, false );
-    }
-
-    public <T, K> T don( Thing<K> core, Class<T> trait ) {
-        return don( core.getCore(), trait );
-    }
-
-    public <T,K> Thing<K> shed( Thing<K> thing, Class<T> trait ) {
-        return shed( (TraitableBean<K,? extends TraitableBean>) thing.getCore(), trait );
     }
 
     public <T,K,X extends TraitableBean> Thing<K> shed( TraitableBean<K,X> core, Class<T> trait ) {
@@ -979,9 +867,98 @@ public class DefaultKnowledgeHelper
         }
     }
 
-    public void modify(Object newObject) {
-        // TODO Auto-generated method stub
 
+
+
+
+    protected Collection<Thing> getTraitBoundary( TraitableBean inner, boolean needsProxy, boolean hasTrait, Class trait ) {
+        boolean refresh = ! needsProxy && ! hasTrait && Thing.class != trait;
+        if ( refresh ) {
+            return inner.getMostSpecificTraits();
+        }
+        return null;
+    }
+
+
+    private <T, K> T asTrait( K core, TraitableBean inner, Class<T> trait, boolean needsProxy, boolean hasTrait, boolean needsUpdate, TraitFactory builder, boolean logical ) throws LogicalTypeInconsistencyException {
+        T thing;
+        if ( needsProxy ) {
+            thing = (T) inner;
+            inner.addTrait( trait.getName(), (Thing<K>) core );
+        } else if ( hasTrait ) {
+            thing = (T) inner.getTrait( trait.getName() );
+        } else {
+            thing = (T) builder.getProxy( inner, trait, logical );
+        }
+
+        if ( needsUpdate ) {
+            InternalFactHandle h = (InternalFactHandle) lookupFactHandle( core );
+            if ( h == null ) {
+                h = lookupHandleForWrapper( core );
+            }
+            if ( h == null ) {
+                h = (InternalFactHandle) this.workingMemory.insert( core,
+                                                                    null,
+                                                                    false,
+                                                                    logical,
+                                                                    this.activation.getRule(),
+                                                                    this.activation );
+                if ( this.identityMap != null ) {
+                    this.getIdentityMap().put( core,
+                                               h );
+                }
+            }
+            if ( ! h.isTraitOrTraitable() ) {
+                throw new IllegalStateException( "A traited working memory element is being used with a default fact handle. " +
+                                                 "Please verify that its class was declared as @Traitable : " + core.getClass().getName() );
+            }
+            this.update( h, inner );
+        }
+
+        return thing;
+    }
+
+    private <K> TraitableBean makeTraitable( K core, TraitFactory builder, boolean logical ) {
+        boolean needsWrapping = ! ( core instanceof TraitableBean );
+
+        ClassDefinition coreDef = lookupClassDefinition( core );
+        TraitableBean<K,? extends TraitableBean> inner = needsWrapping ? builder.asTraitable( core, coreDef ) : (TraitableBean<K,? extends TraitableBean>) core;
+        if ( needsWrapping ) {
+            InternalFactHandle h = (InternalFactHandle) lookupFactHandle( core );
+            InternalWorkingMemoryEntryPoint ep = h != null ? (InternalWorkingMemoryEntryPoint) h.getEntryPoint() : (InternalWorkingMemoryEntryPoint) ((StatefulKnowledgeSessionImpl)workingMemory).getEntryPoint("DEFAULT");
+            ObjectTypeConfigurationRegistry reg = ep.getObjectTypeConfigurationRegistry();
+
+            ObjectTypeConf coreConf = reg.getObjectTypeConf( ep.getEntryPoint(), core );
+
+            ObjectTypeConf innerConf = reg.getObjectTypeConf( ep.getEntryPoint(), inner );
+            if ( coreConf.isTMSEnabled() ) {
+                innerConf.enableTMS();
+            }
+            if ( inner._getFieldTMS() != null && inner._getFieldTMS().needsInit() ) {
+                inner._getFieldTMS().init( workingMemory );
+            }
+        } else {
+            TraitFieldTMS ftms = inner._getFieldTMS();
+            if ( ftms != null ) {
+                FactHandle handle = lookupFactHandle( inner );
+                if ( handle == null ) {
+                    handle = this.workingMemory.insert( inner,
+                                                        null,
+                                                        false,
+                                                        logical,
+                                                        this.activation.getRule(),
+                                                        this.activation );
+                    if ( this.identityMap != null ) {
+                        this.getIdentityMap().put( inner,
+                                                   handle );
+                    }
+                }
+                if ( ftms.needsInit() ) {
+                    ftms.init( workingMemory );
+                }
+            }
+        }
+        return inner;
     }
 
 }

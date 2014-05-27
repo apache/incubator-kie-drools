@@ -16,146 +16,76 @@
 
 package org.drools.core.factmodel.traits;
 
-import org.drools.core.base.ClassFieldAccessor;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassBuilderFactory;
-import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.KieComponentFactory;
-import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;
-import org.drools.core.util.asm.ClassFieldInspector;
 import org.kie.api.KieBase;
-import org.kie.internal.KnowledgeBase;
-import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
-import org.mvel2.asm.Type;
 
 import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Map;
 
-public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implements Opcodes, Externalizable {
-
-//    private static TripleStore store = new TripleStore( 500, 0.6f );
-
-    public enum VirtualPropertyMode { MAP, TRIPLES }
-
-    private VirtualPropertyMode mode = VirtualPropertyMode.TRIPLES;
-
-    public final static String SUFFIX = "_Trait__Extension";
-
-    private static final String pack = "org.drools.core.factmodel.traits.";
-
-    private Map<String, Constructor> factoryCache = new HashMap<String, Constructor>();
-
-    private Map<Class, Class<? extends CoreWrapper<?>>> wrapperCache = new HashMap<Class, Class<? extends CoreWrapper<?>>>();
+public class TraitFactory<T extends Thing<K>, K extends TraitableBean> extends AbstractTraitFactory<T,K> implements Opcodes, Externalizable {
 
     private transient InternalKnowledgeBase kBase;
-    
-    
-    public static void setMode( VirtualPropertyMode newMode, KnowledgeBase kBase ) {
+        
+    public static void setMode( VirtualPropertyMode newMode, KieBase kBase ) {
         KieComponentFactory rcf = ((InternalKnowledgeBase) kBase).getConfiguration().getComponentFactory();
-        ClassBuilderFactory cbf = rcf.getClassBuilderFactory();
-        rcf.getTraitFactory().mode = newMode;
-        switch ( newMode ) {
-            case MAP    :
-                cbf.setPropertyWrapperBuilder( new TraitMapPropertyWrapperClassBuilderImpl() );
-                cbf.setTraitProxyBuilder( new TraitMapProxyClassBuilderImpl() );
-                break;
-            case TRIPLES:
-                cbf.setPropertyWrapperBuilder( new TraitTriplePropertyWrapperClassBuilderImpl() );
-                cbf.setTraitProxyBuilder( new TraitTripleProxyClassBuilderImpl() );
-                break;
-            default     :   throw new RuntimeException( " This should not happen : unexpected property wrapping method " + newMode );
-        }
-
+        setMode( newMode, rcf );
     }
 
     public static TraitFactory getTraitBuilderForKnowledgeBase( KieBase kb ) {
         return ((InternalKnowledgeBase) kb).getConfiguration().getComponentFactory().getTraitFactory();
     }
 
+    public TraitFactory() {
 
-
-    public TraitFactory() {        
     }
 
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( mode );
-        out.writeObject( factoryCache );
-        out.writeObject( wrapperCache );
+    protected Class<?> registerAndLoadTypeDefinition( String proxyName, byte[] proxy ) throws ClassNotFoundException {
+        return kBase.registerAndLoadTypeDefinition( proxyName, proxy );
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        mode = (VirtualPropertyMode) in.readObject();
-        factoryCache = (Map<String, Constructor>) in.readObject();
-        wrapperCache = (Map<Class, Class<? extends CoreWrapper<?>>>) in.readObject();
-    }
-    
-
-
-    @Deprecated()
-    /**
-     * Test compatiblity only, do not use
-     */
-    public T getProxy( K core, Class<?> trait ) throws LogicalTypeInconsistencyException {
-        return getProxy( core, trait, false );
+    protected ClassLoader getRootClassLoader() {
+        return kBase.getRootClassLoader();
     }
 
-    public T getProxy( K core, Class<?> trait, boolean logical ) throws LogicalTypeInconsistencyException {
-        String traitName = trait.getName();
+    protected KieComponentFactory getComponentFactory() {
+        return kBase.getConfiguration().getComponentFactory();
+    }
 
-        if ( core.hasTrait( traitName ) ) {
-            return (T) core.getTrait( traitName );
+    protected TraitRegistry getTraitRegistry() {
+        return kBase.getTraitRegistry();
+    }
+
+    protected HierarchyEncoder getHierarchyEncoder() {
+        return getTraitRegistry().getHierarchy();
+
+    }
+
+    protected TripleStore getTripleStore() {
+        return kBase.getTripleStore();
+    }
+
+    protected TripleFactory getTripleFactory() {
+        return getComponentFactory().getTripleFactory();
+    }
+
+    protected ClassFieldAccessorStore getClassFieldAccessorStore() {
+        InternalKnowledgePackage traitPackage = kBase.getPackagesMap().get( pack );
+        if ( traitPackage == null ) {
+            traitPackage = new KnowledgePackageImpl( pack );
+            traitPackage.setClassFieldAccessorCache( kBase.getClassFieldAccessorCache() );
+            kBase.getPackagesMap().put( pack, traitPackage );
         }
-
-        String key = getKey( core.getClass(), trait );
-
-        Constructor<T> konst;
-        synchronized ( factoryCache ) {
-             konst = factoryCache.get( key );
-            if ( konst == null ) {
-                konst = cacheConstructor( key, core, trait );
-            }
-        }
-
-        T proxy = null;
-        HierarchyEncoder hier = kBase.getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
-        try {
-            switch ( mode ) {
-                case MAP    :   proxy = konst.newInstance( core, core._getDynamicProperties(), hier.getCode( trait.getName() ), hier.getBottom(), logical );
-                    break;
-                case TRIPLES:   proxy = konst.newInstance( core, kBase.getTripleStore(), getTripleFactory(), hier.getCode( trait.getName() ), hier.getBottom(), logical );
-                    break;
-                default     :   throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
-            }
-
-            return proxy;
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        throw new LogicalTypeInconsistencyException( "Could not apply trait " + trait + " to object " + core, trait, core.getClass() );
+        ClassFieldAccessorStore store = traitPackage.getClassFieldAccessorStore();
+        return store;
     }
 
 
@@ -166,354 +96,5 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
     public void setRuleBase( InternalKnowledgeBase kBase ) {
         this.kBase = kBase;
     }
-
-
-    private Constructor<T> cacheConstructor( String key, K core, Class<?> trait ) {
-        Class<T> proxyClass = buildProxyClass( key, core, trait );
-        if ( proxyClass == null ) {
-            return null;
-        }
-        try {
-            Constructor konst;
-            switch ( mode ) {
-                case MAP    :   konst = proxyClass.getConstructor( core.getClass(), Map.class, BitSet.class, BitSet.class, boolean.class );
-                    break;
-                case TRIPLES:   konst = proxyClass.getConstructor( core.getClass(), TripleStore.class, TripleFactory.class, BitSet.class, BitSet.class, boolean.class );
-                    break;
-                default     :   throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
-            }
-
-            factoryCache.put( key, konst );
-            return konst;
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-
-    public static String getProxyName( ClassDefinition trait, ClassDefinition core ) {
-        return getKey( core.getDefinedClass(), trait.getDefinedClass() ) + "_Proxy";
-    }
-
-    public static String getPropertyWrapperName( ClassDefinition trait, ClassDefinition core ) {
-        return getKey( core.getDefinedClass(), trait.getDefinedClass() ) + "_ProxyWrapper";
-    }
-
-    private static String getKey( Class core, Class trait  ) {
-        return ( trait.getName() + "." + core.getName() );
-    }
-
-
-    public static String getSoftFieldKey( String fieldName, Class fieldType, Class trait, Class core ) {
-            return fieldName;
-    }
-
-
-
-
-    private Class<T> buildProxyClass( String key, K core, Class<?> trait ) {
-
-        Class coreKlass = core.getClass();
-
-
-        // get the trait classDef
-        ClassDefinition tdef = kBase.getTraitRegistry().getTrait( trait.getName() );
-        ClassDefinition cdef = kBase.getTraitRegistry().getTraitable( coreKlass.getName() );
-
-        if ( tdef == null ) {
-            if ( trait.getAnnotation( Trait.class ) != null ) {
-                try {
-                    if ( Thing.class.isAssignableFrom( trait ) ) {
-                        tdef = buildClassDefinition( trait, null );
-                    } else {
-                        throw new RuntimeException( "Unable to create definition for class " + trait +
-                                                    " : trait interfaces should extend " + Thing.class.getName() + " or be DECLARED as traits explicitly" );
-                    }
-                } catch ( IOException e ) {
-                    throw new RuntimeException( "Unable to create definition for class " + trait + " : " + e.getMessage() );
-                }
-                kBase.getTraitRegistry().addTrait( tdef );
-            } else {
-                throw new RuntimeException( "Unable to find Trait definition for class " + trait.getName() + ". It should have been DECLARED as a trait" );
-            }        }
-        if ( cdef == null ) {
-            if ( core.getClass().getAnnotation( Traitable.class ) != null ) {
-                try {
-                    cdef = buildClassDefinition( core.getClass(), core.getClass() );
-                } catch ( IOException e ) {
-                    throw new RuntimeException( "Unable to create definition for class " + coreKlass.getName() + " : " + e.getMessage() );
-                }
-                kBase.getTraitRegistry().addTraitable( cdef );
-            } else {
-                throw new RuntimeException( "Unable to find Core class definition for class " + coreKlass.getName() + ". It should have been DECLARED as a trait" );
-            }
-        }
-
-        String proxyName = getProxyName( tdef, cdef );
-        String wrapperName = getPropertyWrapperName( tdef, cdef );
-
-        KieComponentFactory rcf = kBase.getConfiguration().getComponentFactory();
-
-
-        TraitPropertyWrapperClassBuilder propWrapperBuilder = (TraitPropertyWrapperClassBuilder) rcf.getClassBuilderFactory().getPropertyWrapperBuilder();
-
-        propWrapperBuilder.init( tdef, kBase.getTraitRegistry() );
-        try {
-            byte[] propWrapper = propWrapperBuilder.buildClass( cdef, kBase.getRootClassLoader() );
-            kBase.registerAndLoadTypeDefinition( wrapperName, propWrapper );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        TraitProxyClassBuilder proxyBuilder = (TraitProxyClassBuilder) rcf.getClassBuilderFactory().getTraitProxyBuilder();
-
-        proxyBuilder.init( tdef, rcf.getBaseTraitProxyClass(), kBase.getTraitRegistry() );
-        try {
-            byte[] proxy = proxyBuilder.buildClass( cdef, kBase.getRootClassLoader() );
-            kBase.registerAndLoadTypeDefinition( proxyName, proxy );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            BitSet mask = kBase.getTraitRegistry().getFieldMask( trait.getName(), cdef.getDefinedClass().getName() );
-            Class<T> wrapperClass = (Class<T>) kBase.getRootClassLoader().loadClass( wrapperName );
-            Class<T> proxyClass = (Class<T>) kBase.getRootClassLoader().loadClass( proxyName );
-            return proxyClass;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-
-
-    public synchronized CoreWrapper<K> getCoreWrapper( Class<K> coreKlazz , ClassDefinition coreDef ) {
-        if ( wrapperCache == null ) {
-            wrapperCache = new HashMap<Class, Class<? extends CoreWrapper<?>>>();
-        }
-        Class<? extends CoreWrapper<K>> wrapperClass = null;
-        if ( wrapperCache.containsKey( coreKlazz ) ) {
-            wrapperClass = (Class<? extends CoreWrapper<K>>) wrapperCache.get( coreKlazz );
-        } else {
-            try {
-                wrapperClass = buildCoreWrapper( coreKlazz, coreDef );
-            } catch (IOException e) {
-                return null;
-            } catch (ClassNotFoundException e) {
-                return null;
-            }
-            wrapperCache.put( coreKlazz, wrapperClass );
-        }
-
-        try {
-            kBase.getTraitRegistry().addTraitable( buildClassDefinition( coreKlazz, wrapperClass ) );
-            return wrapperClass != null ? wrapperClass.newInstance() : null;
-        } catch (InstantiationException e) {
-            return null;
-        } catch (IllegalAccessException e) {
-            return null;
-        } catch (IOException e) {
-            return null;
-        }
-
-    }
-
-    public ClassDefinition buildClassDefinition(Class<?> klazz, Class<?> wrapperClass) throws IOException {
-        ClassFieldInspector inspector = new ClassFieldInspector( klazz );
-
-        InternalKnowledgePackage traitPackage = kBase.getPackagesMap().get( pack );
-        if ( traitPackage == null ) {
-            traitPackage = new KnowledgePackageImpl( pack );
-            traitPackage.setClassFieldAccessorCache( kBase.getClassFieldAccessorCache() );
-            kBase.getPackagesMap().put( pack, traitPackage );
-        }
-        ClassFieldAccessorStore store = traitPackage.getClassFieldAccessorStore();
-
-        ClassDefinition def;
-        if ( ! klazz.isInterface() ) {
-            String className = wrapperClass.getName();
-            String superClass = wrapperClass != klazz ? klazz.getName() : klazz.getSuperclass().getName();
-            String[] interfaces = new String[ klazz.getInterfaces().length + 1 ];
-            for ( int j = 0; j <  klazz.getInterfaces().length; j++ ) {
-                interfaces[ j ] = klazz.getInterfaces()[ j ].getName();
-            }
-            interfaces[ interfaces.length - 1 ] = CoreWrapper.class.getName();
-            def = new ClassDefinition( className, superClass, interfaces );
-            def.setDefinedClass( wrapperClass );
-
-            Traitable tbl = wrapperClass.getAnnotation( Traitable.class );
-            def.setTraitable( true, tbl != null && tbl.logical() );
-        } else {
-            String className = klazz.getName();
-            String superClass = Object.class.getName();
-            String[] interfaces = new String[ klazz.getInterfaces().length ];
-            for ( int j = 0; j <  klazz.getInterfaces().length; j++ ) {
-                interfaces[ j ] = klazz.getInterfaces()[ j ].getName();
-            }
-            def = new ClassDefinition( className, superClass, interfaces );
-            def.setDefinedClass( klazz );
-        }
-        Map<String, Field> fields = inspector.getFieldTypesField();
-        for ( Field f : fields.values() ) {
-            if ( f != null ) {
-                FieldDefinition fld = new FieldDefinition();
-                fld.setName( f.getName() );
-                fld.setTypeName( f.getType().getName() );
-                fld.setInherited( true );
-                ClassFieldAccessor accessor = store.getAccessor( def.getDefinedClass().getName(),
-                        fld.getName() );
-                fld.setReadWriteAccessor( accessor );
-
-                def.addField( fld );
-            }
-        }
-
-
-        return def;
-    }
-
-    private Class<CoreWrapper<K>> buildCoreWrapper( Class<K> coreKlazz, ClassDefinition coreDef ) throws IOException, ClassNotFoundException {
-
-        String coreName = coreKlazz.getName();
-        String wrapperName = coreName + "Wrapper";
-
-        try {
-            byte[] wrapper = new TraitCoreWrapperClassBuilderImpl().buildClass( coreDef, kBase.getRootClassLoader() );
-            kBase.registerAndLoadTypeDefinition( wrapperName, wrapper );
-//            JavaDialectRuntimeData data = ((JavaDialectRuntimeData) getPackage( pack ).getDialectRuntimeRegistry().
-//                getDialectData( "java" ));
-
-//            String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( wrapperName );
-//            data.putClassDefinition( resourceName, wrapper );
-//            data.write( resourceName, wrapper );
-
-
-//            data.onBeforeExecute();
-        } catch ( Exception e ) {
-            e.printStackTrace();
-        }
-
-        Class<CoreWrapper<K>> wrapperClass = (Class<CoreWrapper<K>>) kBase.getRootClassLoader().loadClass( wrapperName );
-        return wrapperClass;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public static void valueOf( MethodVisitor mv, String type ) {
-        mv.visitMethodInsn( INVOKESTATIC,
-                BuildUtils.getInternalType( BuildUtils.box( type ) ),
-                "valueOf",
-                "(" + BuildUtils.getTypeDescriptor( type ) + ")" +
-                        BuildUtils.getTypeDescriptor( BuildUtils.box( type ) )
-        );
-
-    }
-
-
-    public static void primitiveValue( MethodVisitor mv, String fieldType ) {
-        mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( BuildUtils.box( fieldType ) ) );
-        mv.visitMethodInsn(
-                INVOKEVIRTUAL,
-                BuildUtils.getInternalType( BuildUtils.box( fieldType ) ),
-                fieldType + "Value",
-                "()"+ BuildUtils.getTypeDescriptor( fieldType ) );
-    }
-
-
-    public static void invokeExtractor( MethodVisitor mv, String masterName, ClassDefinition trait, ClassDefinition core, FieldDefinition field ) {
-        FieldDefinition tgtField = core.getFieldByAlias( field.resolveAlias() );
-        String fieldType = tgtField.getTypeName();
-        String fieldName = tgtField.getName();
-        String returnType = BuildUtils.getTypeDescriptor( fieldType );
-
-        mv.visitVarInsn( ALOAD, 0 );
-        mv.visitFieldInsn( GETFIELD,
-                           BuildUtils.getInternalType( masterName ),
-                           "object",
-                           BuildUtils.getTypeDescriptor( core.getClassName() ) );
-
-        mv.visitMethodInsn( INVOKEVIRTUAL,
-                            Type.getInternalName( core.getDefinedClass() ),
-                            BuildUtils.getterName( fieldName, fieldType ),
-                            Type.getMethodDescriptor( Type.getType( returnType ), new Type[] {} ) );
-
-
-    }
-
-
-    public static void invokeInjector( MethodVisitor mv, String masterName, ClassDefinition trait, ClassDefinition core, FieldDefinition field, boolean toNull, int pointer ) {
-        FieldDefinition tgtField = core.getFieldByAlias( field.resolveAlias() );
-        String fieldType = tgtField.getTypeName();
-        String fieldName = tgtField.getName();
-        String returnType = BuildUtils.getTypeDescriptor( fieldType );
-
-
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn( GETFIELD,
-                           BuildUtils.getInternalType( masterName ),
-                           "object",
-                           BuildUtils.getTypeDescriptor( core.getName() ) );
-
-        if ( toNull ) {
-            mv.visitInsn( BuildUtils.zero( field.getTypeName() ) );
-        } else {
-            mv.visitVarInsn( BuildUtils.varType( fieldType ), pointer );
-        }
-
-        if ( ! BuildUtils.isPrimitive( fieldType ) ) {
-            mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( fieldType ) );
-        }
-
-        mv.visitMethodInsn( INVOKEVIRTUAL,
-                            Type.getInternalName( core.getDefinedClass() ),
-                            BuildUtils.setterName( fieldName, fieldType ),
-                            Type.getMethodDescriptor( Type.getType( void.class ), new Type[] { Type.getType( returnType ) } ) );
-
-    }
-
-
-    public static String buildSignature( Method method ) {
-        String sig = "(";
-        for ( Class arg : method.getParameterTypes() ) {
-            sig += BuildUtils.getTypeDescriptor( arg.getName() );
-        }
-        sig += ")";
-        sig += BuildUtils.getTypeDescriptor( method.getReturnType().getName() );
-        return sig;
-    }
-
-
-    public static int getStackSize( Method m ) {
-        int stack = 1;
-        for ( Class klass : m.getParameterTypes() ) {
-            stack += BuildUtils.sizeOf( klass.getName() );
-        }
-        return stack;
-    }
-
-    public TripleFactory getTripleFactory() {
-        return kBase.getConfiguration().getComponentFactory().getTripleFactory();
-    }
-
 
 }
