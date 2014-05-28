@@ -30,8 +30,12 @@ import static java.lang.annotation.RetentionPolicy.*;
  * Each planning solution must have at least 1 {@link PlanningEntityCollectionProperty}
  * or {@link PlanningEntityProperty} property.
  * <p/>
- * The class should have a public no-arg constructor, so it can be cloned.
- * TODO currently this violated DRY because the user needs to implement {@link Solution} too.
+ * The class should have a public no-arg constructor, so it can be cloned
+ * (unless the {@link #solutionCloner()} is specified).
+ * <p/>
+ * This annotation describes declarative properties of the planning solution.
+ * The planning solution class must also implement {@link Solution},
+ * which is needed to get/set state.
  */
 @Target({TYPE})
 @Retention(RUNTIME)

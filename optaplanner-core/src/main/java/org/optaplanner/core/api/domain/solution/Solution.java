@@ -32,6 +32,11 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  * A Solution is mutable.
  * For scalability reasons, the same Solution instance, called the working solution, is continuously modified.
  * It's cloned to recall the best solution.
+ * <p/>
+ * This annotation described declarative properties of the planning solution.
+ * The planning solution class must implement this interface which is needed to get/set state.
+ * But the planning solution class must also be annotated with {@link PlanningSolution}
+ * describes declarative properties.
  */
 public interface Solution<S extends Score> {
 
