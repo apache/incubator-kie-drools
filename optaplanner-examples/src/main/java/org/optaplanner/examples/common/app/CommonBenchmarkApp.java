@@ -17,6 +17,7 @@
 package org.optaplanner.examples.common.app;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -35,6 +36,10 @@ public abstract class CommonBenchmarkApp extends LoggingMain {
         for (ArgOption argOption : argOptions) {
             benchmarkArgumentMap.put(argOption.getName(), argOption);
         }
+    }
+
+    public Collection<ArgOption> getArgOptions() {
+        return benchmarkArgumentMap.values();
     }
 
     public void buildAndBenchmark(String[] args) {
@@ -58,12 +63,7 @@ public abstract class CommonBenchmarkApp extends LoggingMain {
         if (argOption == null) {
             argOption = benchmarkArgumentMap.values().iterator().next();
         }
-        PlannerBenchmarkFactory plannerBenchmarkFactory;
-        if (!argOption.isTemplate()) {
-            plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(argOption.getBenchmarkConfig());
-        } else {
-            plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(argOption.getBenchmarkConfig());
-        }
+        PlannerBenchmarkFactory plannerBenchmarkFactory = argOption.buildPlannerBenchmarkFactory();
         if (!aggregator) {
             PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
             plannerBenchmark.benchmark();
@@ -72,7 +72,7 @@ public abstract class CommonBenchmarkApp extends LoggingMain {
         }
     }
 
-    protected static class ArgOption {
+    public static class ArgOption {
 
         private String name;
         private String benchmarkConfig;
@@ -98,6 +98,19 @@ public abstract class CommonBenchmarkApp extends LoggingMain {
 
         public boolean isTemplate() {
             return template;
+        }
+
+        public PlannerBenchmarkFactory buildPlannerBenchmarkFactory() {
+            if (!template) {
+                return PlannerBenchmarkFactory.createFromXmlResource(benchmarkConfig);
+            } else {
+                return PlannerBenchmarkFactory.createFromFreemarkerXmlResource(benchmarkConfig);
+            }
+        }
+
+        @Override
+        public String toString() {
+            return name + " (" + benchmarkConfig + ")";
         }
 
     }
