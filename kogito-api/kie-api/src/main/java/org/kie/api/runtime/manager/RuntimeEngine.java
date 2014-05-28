@@ -16,6 +16,7 @@
 package org.kie.api.runtime.manager;
 
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.audit.AuditService;
 import org.kie.api.task.TaskService;
 
 /**
@@ -41,5 +42,12 @@ public interface RuntimeEngine {
 	 * Returns <code>TaskService</code> configured for this <code>RuntimeEngine</code>
 	 * @return
 	 */
-    TaskService getTaskService();   
+    TaskService getTaskService();
+    
+    /**
+     * Returns <code>AuditService</code> that gives access to underlying runtime data such
+     * as process instance, node instance and variable log entries.
+     * @return
+     */
+    AuditService getAuditLogService();
 }
