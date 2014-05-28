@@ -403,6 +403,12 @@
       terminates when all planning entities have been initialized. It never changes a planning entity after it has been
       assigned.</para>
 
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Construction_heuristics/cheapestInsertionNQueens04.png"/>
+        </imageobject>
+      </mediaobject>
+
       <note>
         <para>Cheapest Insertion scales considerably worse than First Fit, etc.</para>
       </note>

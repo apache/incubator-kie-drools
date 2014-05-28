@@ -60,9 +60,9 @@
      pagecolor="#ffffff"
      id="base"
      inkscape:zoom="0.87666667"
-     inkscape:cx="532.69099"
-     inkscape:cy="523.35996"
-     inkscape:window-x="0"
+     inkscape:cx="584.44703"
+     inkscape:cy="405.95031"
+     inkscape:window-x="1680"
      inkscape:window-y="27"
      inkscape:current-layer="svg2"
      inkscape:grid-points="true"
@@ -100,6 +100,18 @@
      id="path6111"
      d="m 270.5,169.5 130,40"
      style="opacity:0.3;fill:none;stroke:#a40000;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     sodipodi:nodetypes="cc" />
+  <path
+     sodipodi:nodetypes="cc"
+     style="fill:none;stroke:#4e9a06;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     d="m 270.5,169.5 0,39.99996"
+     id="path9655"
+     inkscape:connector-curvature="0" />
+  <path
+     inkscape:connector-curvature="0"
+     id="path9657"
+     d="m 270.5,159.5 0,10"
+     style="fill:none;stroke:#4e9a06;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
      sodipodi:nodetypes="cc" />
   <path
      sodipodi:nodetypes="cc"
@@ -1368,18 +1380,6 @@
            id="rect8973" /></flowRegion><flowPara
          id="flowPara8975"
          style="fill:#4e9a06">0</flowPara></flowRoot>  </g>
-  <path
-     sodipodi:nodetypes="cc"
-     style="fill:none;stroke:#4e9a06;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
-     d="m 270.5,169.5 0,39.99996"
-     id="path9655"
-     inkscape:connector-curvature="0" />
-  <path
-     inkscape:connector-curvature="0"
-     id="path9657"
-     d="m 270.5,159.5 0,10"
-     style="fill:none;stroke:#4e9a06;stroke-width:1.00000012px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
-     sodipodi:nodetypes="cc" />
   <g
      transform="translate(50,-385.41364)"
      id="g9699">
