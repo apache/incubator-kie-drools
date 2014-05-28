@@ -4271,6 +4271,10 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
     <customPhaseCommandClass>....ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
   </customPhase>
 
+
+From 6.1.0.Beta4 to 6.1.0.Beta5
+-------------------------------
+
 [IMPL_DETAIL] The method ScoreDefinition.getLevelCount() has been renamed to ScoreDefinition.getLevelsSize().
 
 [MAJOR] BendableScore: the configuration has changed: ...LevelCount has been renamed to ...LevelsSize
