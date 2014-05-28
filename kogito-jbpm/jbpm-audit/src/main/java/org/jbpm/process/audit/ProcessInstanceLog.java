@@ -32,7 +32,7 @@ import org.jbpm.process.audit.event.AuditEvent;
 
 @Entity
 @SequenceGenerator(name="processInstanceLogIdSeq", sequenceName="PROC_INST_LOG_ID_SEQ", allocationSize=1)
-public class ProcessInstanceLog implements Serializable, AuditEvent {
+public class ProcessInstanceLog implements Serializable, AuditEvent, org.kie.api.runtime.manager.audit.ProcessInstanceLog {
     
 	private static final long serialVersionUID = 510l;
 	

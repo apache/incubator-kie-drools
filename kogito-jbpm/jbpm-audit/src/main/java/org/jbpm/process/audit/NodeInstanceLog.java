@@ -32,10 +32,8 @@ import org.jbpm.process.audit.event.AuditEvent;
 
 @Entity
 @SequenceGenerator(name="nodeInstanceLogIdSeq", sequenceName="NODE_INST_LOG_ID_SEQ", allocationSize=1)
-public class NodeInstanceLog implements Serializable, AuditEvent {
-    
-	public static final int TYPE_ENTER = 0;
-	public static final int TYPE_EXIT = 1;
+public class NodeInstanceLog implements Serializable, AuditEvent, org.kie.api.runtime.manager.audit.NodeInstanceLog {
+   
 	
 	private static final long serialVersionUID = 510l;
 	

@@ -199,6 +199,7 @@
               org.kie.api.runtime,
               org.kie.api.runtime.conf,
               org.kie.api.runtime.manager,
+              org.kie.api.runtime.manager.audit,
               org.kie.api.runtime.process,
               org.kie.api.task,
               org.kie.api.task.model,

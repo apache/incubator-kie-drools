@@ -33,9 +33,6 @@ import javax.sql.DataSource;
 import org.drools.core.audit.WorkingMemoryInMemoryLogger;
 import org.drools.core.audit.event.LogEvent;
 import org.drools.core.audit.event.RuleFlowNodeLogEvent;
-import org.jbpm.process.audit.AuditLogService;
-import org.jbpm.process.audit.JPAAuditLogService;
-import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
@@ -53,6 +50,8 @@ import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
+import org.kie.api.runtime.manager.audit.AuditService;
+import org.kie.api.runtime.manager.audit.NodeInstanceLog;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -122,7 +121,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     private RuntimeManagerFactory managerFactory = RuntimeManagerFactory.Factory.get();
     protected RuntimeManager manager;
 
-    private AuditLogService logService;
+    private AuditService logService;
     private WorkingMemoryInMemoryLogger inMemoryLogger;    
    
     protected Set<RuntimeEngine> activeEngines = new HashSet<RuntimeEngine>();
@@ -414,7 +413,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
         RuntimeEngine runtimeEngine = manager.getRuntimeEngine(context);
         activeEngines.add(runtimeEngine);
         if (sessionPersistence) {            
-            logService = new JPAAuditLogService(runtimeEngine.getKieSession().getEnvironment());               
+            logService = runtimeEngine.getAuditLogService();               
             
         } else {            
             inMemoryLogger = new WorkingMemoryInMemoryLogger((StatefulKnowledgeSession) runtimeEngine.getKieSession());
@@ -488,7 +487,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
             names.add(nodeName);
         }
         if (sessionPersistence) {
-            List<NodeInstanceLog> logs = logService.findNodeInstances(processInstanceId);
+            List<? extends NodeInstanceLog> logs = logService.findNodeInstances(processInstanceId);
             if (logs != null) {
                 for (NodeInstanceLog l : logs) {
                     String nodeName = l.getNodeName();
@@ -650,7 +649,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
         return workItemHandler;
     }
     
-    protected AuditLogService getLogService() {
+    protected AuditService getLogService() {
         return logService;
     }
     

@@ -18,10 +18,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jbpm.process.audit.AuditLogService;
-import org.jbpm.process.audit.JPAAuditLogService;
-import org.jbpm.process.audit.ProcessInstanceLog;
-import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.runtime.manager.impl.ManagedAuditEventBuilderImpl;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
@@ -38,11 +34,12 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
+import org.kie.api.runtime.manager.audit.AuditService;
+import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
@@ -182,9 +179,9 @@ public class MultipleRuntimeManagerTest extends AbstractBaseTest {
         assertNotNull(tasks);
         assertEquals(1, tasks.size());
         
-        AuditLogService logService = new JPAAuditLogService(((InternalRuntimeManager)manager).getEnvironment().getEnvironment());
+        AuditService logService = runtime.getAuditLogService();
         
-        List<ProcessInstanceLog> logs = logService.findActiveProcessInstances("UserTask");
+        List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("UserTask");
         assertNotNull(logs);      
         assertEquals(1, logs.size());
         

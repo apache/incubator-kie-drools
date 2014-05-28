@@ -14,9 +14,6 @@ import javax.transaction.UserTransaction;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.SingleSessionCommandService;
 import org.hibernate.StaleObjectStateException;
-import org.jbpm.process.audit.AuditLogService;
-import org.jbpm.process.audit.JPAAuditLogService;
-import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.impl.ThreadPoolSchedulerService;
 import org.jbpm.services.task.exception.PermissionDeniedException;
@@ -32,6 +29,8 @@ import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
+import org.kie.api.runtime.manager.audit.AuditService;
+import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Group;
@@ -132,9 +131,10 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
             }
         }
         //make sure all process instance were completed
-        AuditLogService logService = new JPAAuditLogService(environment.getEnvironment());
+        engine = manager.getRuntimeEngine(EmptyContext.get());
+        AuditService logService = engine.getAuditLogService();
         //active
-        List<ProcessInstanceLog> logs = logService.findActiveProcessInstances("IntermediateCatchEvent");
+        List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("IntermediateCatchEvent");
         assertNotNull(logs);
         for (ProcessInstanceLog log : logs) {
             logger.debug("Left over {}", log.getProcessInstanceId());
@@ -145,7 +145,7 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
         logs = logService.findProcessInstances("IntermediateCatchEvent");
         assertNotNull(logs);
         assertEquals(nbThreadsProcess, logs.size());
-        logService.dispose();
+        manager.disposeRuntimeEngine(engine);
         
         logger.debug("Done");
     }

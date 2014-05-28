@@ -12,9 +12,6 @@ import java.util.Properties;
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
-import org.jbpm.process.audit.AuditLogService;
-import org.jbpm.process.audit.JPAAuditLogService;
-import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractBaseTest;
@@ -28,6 +25,8 @@ import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
+import org.kie.api.runtime.manager.audit.AuditService;
+import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.io.ResourceFactory;
@@ -206,12 +205,10 @@ public class PerRequestRuntimeManagerTest extends AbstractBaseTest {
         assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
                
         ksession.getWorkItemManager().completeWorkItem(1, null);
-        manager.disposeRuntimeEngine(runtime);
-        manager.close();
         
-        AuditLogService logService = new JPAAuditLogService(environment.getEnvironment());
+        AuditService logService = runtime.getAuditLogService();
                 
-        List<ProcessInstanceLog> logs = logService.findActiveProcessInstances("ParentProcess");
+        List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("ParentProcess");
         assertNotNull(logs);
         assertEquals(0, logs.size());
         
@@ -227,7 +224,9 @@ public class PerRequestRuntimeManagerTest extends AbstractBaseTest {
         assertNotNull(logs);
         assertEquals(1, logs.size());
         
-        logService.dispose();
+        manager.disposeRuntimeEngine(runtime);
+        manager.close();
+        
     }
     
     @Test

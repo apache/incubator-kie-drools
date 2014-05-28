@@ -18,7 +18,7 @@ package org.jbpm.process.audit;
 
 import java.util.List;
 
-import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.manager.audit.AuditService;
 
 /**
  * This class is essentially a very simple implementation of a service
@@ -27,13 +27,13 @@ import org.kie.api.runtime.Environment;
  * </p>
  * Please see the public methods for the interface of this service. 
  */
-public interface AuditLogService {
+public interface AuditLogService extends AuditService {
 
     /**
      * Service methods
      * @return
      */
-
+	@Override
     public List<ProcessInstanceLog> findProcessInstances();
 
     public List<ProcessInstanceLog> findProcessInstances(String processId);
@@ -55,9 +55,6 @@ public interface AuditLogService {
     public List<VariableInstanceLog> findVariableInstancesByName(String variableId, boolean onlyActiveProcesses);
     
     public List<VariableInstanceLog> findVariableInstancesByNameAndValue(String variableId, String value, boolean onlyActiveProcesses);
-    
-    public void clear();
 
-    public void dispose();
 
 }

@@ -13,7 +13,6 @@ import java.util.Properties;
 
 import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
-import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
@@ -30,6 +29,8 @@ import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
+import org.kie.api.runtime.manager.audit.AuditService;
+import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
@@ -328,11 +329,11 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
                
         ksession.getWorkItemManager().completeWorkItem(1, null);
-        manager.disposeRuntimeEngine(runtime);
         
-        AuditLogService logService = new JPAAuditLogService(environment.getEnvironment());
         
-        List<ProcessInstanceLog> logs = logService.findActiveProcessInstances("ParentProcess");
+        AuditService logService = runtime.getAuditLogService();
+        
+        List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("ParentProcess");
         assertNotNull(logs);
         assertEquals(0, logs.size());
         
@@ -348,7 +349,8 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         assertNotNull(logs);
         assertEquals(1, logs.size());
         
-        logService.dispose();
+        manager.disposeRuntimeEngine(runtime);
+        manager.close();
     }
     
     @Test
@@ -381,14 +383,9 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         
         assertNull(ksession.getProcessInstance(pi.getId()));
         
-        // dispose session that should not have affect on the session at all
-        manager.disposeRuntimeEngine(runtime);
+        AuditService logService = runtime.getAuditLogService();
         
-        // close manager which will close session maintained by the manager
-        manager.close();
-        AuditLogService logService = new JPAAuditLogService(environment.getEnvironment());
-        
-        List<ProcessInstanceLog> logs = logService.findActiveProcessInstances("BPMN2-BusinessRuleTask");
+        List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("BPMN2-BusinessRuleTask");
         assertNotNull(logs);
         assertEquals(0, logs.size());
         
@@ -396,7 +393,11 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         assertNotNull(logs);
         assertEquals(1, logs.size());
         
-        logService.dispose();
+        // dispose session that should not have affect on the session at all
+        manager.disposeRuntimeEngine(runtime);
+        
+        // close manager which will close session maintained by the manager
+        manager.close();
     }
     
     @Test
@@ -426,15 +427,10 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         ProcessInstance pi = ksession.startProcess("BPMN2-BusinessRuleTask");
         
         assertNull(ksession.getProcessInstance(pi.getId()));
+                
+        AuditService logService = runtime.getAuditLogService();
         
-        // dispose session that should not have affect on the session at all
-        manager.disposeRuntimeEngine(runtime);
-        
-        // close manager which will close session maintained by the manager
-        manager.close();
-        AuditLogService logService = new JPAAuditLogService(environment.getEnvironment());
-        
-        List<ProcessInstanceLog> logs = logService.findActiveProcessInstances("BPMN2-BusinessRuleTask");
+        List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("BPMN2-BusinessRuleTask");
         assertNotNull(logs);
         assertEquals(0, logs.size());
         
@@ -442,7 +438,11 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         assertNotNull(logs);
         assertEquals(1, logs.size());
         
-        logService.dispose();
+        // dispose session that should not have affect on the session at all
+        manager.disposeRuntimeEngine(runtime);
+        
+        // close manager which will close session maintained by the manager
+        manager.close();
     }
     
     @Test
@@ -549,17 +549,11 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         ksession.startProcessInstance(pi.getId());
         
         assertNull(ksession.getProcessInstance(pi.getId()));
-        
-        // dispose session that should not have affect on the session at all
-        manager.disposeRuntimeEngine(runtime);
-        
         assertEquals(1, list.size());
+                
+        AuditService logService = runtime.getAuditLogService();
         
-        // close manager which will close session maintained by the manager
-        manager.close();
-        AuditLogService logService = new JPAAuditLogService(environment.getEnvironment());
-        
-        List<ProcessInstanceLog> logs = logService.findActiveProcessInstances("BPMN2-BusinessRuleTask");
+        List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("BPMN2-BusinessRuleTask");
         assertNotNull(logs);
         assertEquals(0, logs.size());
         
@@ -567,6 +561,10 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         assertNotNull(logs);
         assertEquals(1, logs.size());
         
-        logService.dispose();
+        // dispose session that should not have affect on the session at all
+        manager.disposeRuntimeEngine(runtime);
+        
+        // close manager which will close session maintained by the manager
+        manager.close();
     }
 }

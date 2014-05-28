@@ -18,12 +18,15 @@ package org.jbpm.runtime.manager.impl;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.jbpm.process.audit.JPAAuditLogService;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.audit.AuditService;
 import org.kie.api.task.TaskService;
 import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.DisposeListener;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
 
 /**
  * Implementation of the <code>RuntimeEngine</code> that additionally implement <code>Disposable</code>
@@ -37,6 +40,7 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
 
     private KieSession ksession;
     private TaskService taskService;
+    private AuditService auditService;
     
     private RuntimeManager manager;
     
@@ -82,6 +86,9 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            if (auditService != null) {
+            	auditService.dispose();
+            }
             this.disposed = true;
         }
     }
@@ -105,5 +112,18 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
     public boolean isDisposed() {
         return disposed;
     }
+
+	@Override
+	public AuditService getAuditLogService() {	
+		if (auditService == null) {
+			boolean usePersistence = ((InternalRuntimeManager)manager).getEnvironment().usePersistence();
+			if (usePersistence) {
+				auditService = new JPAAuditLogService(ksession.getEnvironment());
+			} else {
+				throw new UnsupportedOperationException("AuditService was not configured, supported only with persistence");
+			}
+		}
+		return auditService;
+	}
 
 }

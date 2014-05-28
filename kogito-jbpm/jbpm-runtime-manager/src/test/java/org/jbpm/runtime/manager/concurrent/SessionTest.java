@@ -18,9 +18,6 @@ import javax.transaction.UserTransaction;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.SingleSessionCommandService;
 import org.hibernate.StaleObjectStateException;
-import org.jbpm.process.audit.AuditLogService;
-import org.jbpm.process.audit.JPAAuditLogService;
-import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
@@ -40,6 +37,8 @@ import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
+import org.kie.api.runtime.manager.audit.AuditService;
+import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.task.model.Status;
@@ -151,9 +150,10 @@ public class SessionTest extends AbstractBaseTest {
 		}
 		Thread.sleep(1000);
 	      //make sure all process instance were completed
-		AuditLogService logService = new JPAAuditLogService(environment.getEnvironment());        
+		RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+		AuditService logService = runtime.getAuditLogService();       
         //active
-        List<ProcessInstanceLog> logs = logService.findActiveProcessInstances("com.sample.bpmn.hello");
+        List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("com.sample.bpmn.hello");
         assertNotNull(logs);
         assertEquals(0, logs.size());
         
@@ -162,7 +162,7 @@ public class SessionTest extends AbstractBaseTest {
         assertNotNull(logs);
         assertEquals(nbThreadsProcess*nbInvocations, logs.size());
         logger.debug("Done");
-        logService.dispose();
+        manager.disposeRuntimeEngine(runtime);
 	}
 	
 	@Test
@@ -195,10 +195,11 @@ public class SessionTest extends AbstractBaseTest {
              }
 		}
 		//make sure all process instance were completed
-		AuditLogService logService = new JPAAuditLogService(environment.getEnvironment());
+		RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+		AuditService logService = runtime.getAuditLogService();
         
 		//active
-		List<ProcessInstanceLog> logs = logService.findActiveProcessInstances("com.sample.bpmn.hello");
+		List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("com.sample.bpmn.hello");
 		assertNotNull(logs);
 		assertEquals(0, logs.size());
 		
@@ -207,7 +208,7 @@ public class SessionTest extends AbstractBaseTest {
         assertNotNull(logs);
         assertEquals(nbThreadsProcess*nbInvocations, logs.size());
         logger.debug("Done");
-        logService.dispose();
+        manager.disposeRuntimeEngine(runtime);
 	}
 	
     @Test
@@ -239,11 +240,12 @@ public class SessionTest extends AbstractBaseTest {
                 fail("Failure, did not finish in time most likely hanging");
             }
         }
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
         //make sure all process instance were completed
-        AuditLogService logService = new JPAAuditLogService(environment.getEnvironment());
+        AuditService logService = runtime.getAuditLogService();
         
         //active
-        List<ProcessInstanceLog> logs = logService.findActiveProcessInstances("com.sample.bpmn.hello");
+        List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("com.sample.bpmn.hello");
         assertNotNull(logs);
         assertEquals(0, logs.size());
         
@@ -252,7 +254,7 @@ public class SessionTest extends AbstractBaseTest {
         assertNotNull(logs);
         assertEquals(nbThreadsProcess*nbInvocations, logs.size());        
         logger.debug("Done");
-        logService.dispose();
+        manager.disposeRuntimeEngine(runtime);
     }
     
     @Test

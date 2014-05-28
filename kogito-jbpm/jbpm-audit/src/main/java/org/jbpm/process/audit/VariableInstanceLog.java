@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 @Entity
 @SequenceGenerator(name="variableInstanceLogIdSeq", sequenceName="VAR_INST_LOG_ID_SEQ", allocationSize=1)
-public class VariableInstanceLog implements Serializable, AuditEvent {
+public class VariableInstanceLog implements Serializable, AuditEvent, org.kie.api.runtime.manager.audit.VariableInstanceLog {
     
 	private static final Logger logger = LoggerFactory.getLogger(VariableInstanceLog.class);
 	
