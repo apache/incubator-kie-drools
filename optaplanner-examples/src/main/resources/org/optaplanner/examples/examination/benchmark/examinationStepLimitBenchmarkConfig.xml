@@ -25,18 +25,28 @@
           <stepCountLimit>100</stepCountLimit>
         </termination>
         <unionMoveSelector>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.optaplanner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.optaplanner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.optaplanner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveListFactoryClass>
-          </moveListFactory>
+          <cartesianProductMoveSelector>
+            <changeMoveSelector>
+              <entitySelector id="cartesianProductEntitySelector">
+                <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
+              </entitySelector>
+              <valueSelector>
+                <variableName>room</variableName>
+              </valueSelector>
+            </changeMoveSelector>
+            <changeMoveSelector>
+              <entitySelector mimicSelectorRef="cartesianProductEntitySelector"/>
+              <valueSelector>
+                <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
+                <variableName>period</variableName>
+              </valueSelector>
+            </changeMoveSelector>
+          </cartesianProductMoveSelector>
+          <swapMoveSelector>
+            <entitySelector>
+              <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
+            </entitySelector>
+          </swapMoveSelector>
         </unionMoveSelector>
         <acceptor>
           <entityTabuSize>10</entityTabuSize>
