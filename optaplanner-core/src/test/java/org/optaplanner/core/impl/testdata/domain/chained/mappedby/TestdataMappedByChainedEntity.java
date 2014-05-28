@@ -2,6 +2,7 @@ package org.optaplanner.core.impl.testdata.domain.chained.mappedby;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
@@ -31,7 +32,8 @@ public class TestdataMappedByChainedEntity extends TestdataObject implements Tes
         this.chainedObject = chainedObject;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"chainedAnchorRange", "chainedEntityRange"}, chained = true)
+    @PlanningVariable(valueRangeProviderRefs = {"chainedAnchorRange", "chainedEntityRange"},
+            graphType = PlanningVariableGraphType.CHAINED)
     public TestdataMappedByChainedObject getChainedObject() {
         return chainedObject;
     }

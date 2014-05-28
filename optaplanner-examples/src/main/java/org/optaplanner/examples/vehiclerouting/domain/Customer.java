@@ -20,6 +20,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.vehiclerouting.domain.solver.VehicleUpdatingVariableListener;
 import org.optaplanner.examples.vehiclerouting.domain.solver.VrpCustomerDifficultyComparator;
@@ -60,7 +61,8 @@ public class Customer extends AbstractPersistable implements Standstill {
     }
 
     // HACK TODO remove ArrivalTimeUpdatingVariableListener.class and add it only for VrpTimeWindowedCustomer
-    @PlanningVariable(chained = true, valueRangeProviderRefs = {"vehicleRange", "customerRange"},
+    @PlanningVariable(valueRangeProviderRefs = {"vehicleRange", "customerRange"},
+            graphType = PlanningVariableGraphType.CHAINED,
             variableListenerClasses = {VehicleUpdatingVariableListener.class, ArrivalTimeUpdatingVariableListener.class})
     public Standstill getPreviousStandstill() {
         return previousStandstill;

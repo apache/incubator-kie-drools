@@ -22,6 +22,7 @@ import java.util.Comparator;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -92,7 +93,7 @@ public class ShadowVariableDescriptor {
     }
 
     private void processChained(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
-        boolean chained = planningVariableAnnotation.chained();
+        boolean chained = planningVariableAnnotation.graphType()  == PlanningVariableGraphType.CHAINED;
         if (chained) {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + entityDescriptor.getEntityClass()

@@ -829,7 +829,7 @@ public class Visit ... implements Standstill {
 
     public City getCity() {...}
 
-    @PlanningVariable(chained = true, valueRangeProviderRefs = {"domicileRange", "visitRange"})
+    @PlanningVariable(graphType = PlanningVariableGraphType.CHAINED, valueRangeProviderRefs = {"domicileRange", "visitRange"})
     public Standstill getPreviousStandstill() {
         return previousStandstill;
     }
@@ -872,7 +872,7 @@ public class Visit ... implements Standstill {
         <programlisting language="java">@PlanningEntity
 public class Customer ... {
 
-    @PlanningVariable(chained = true, ...)
+    @PlanningVariable(graphType = PlanningVariableGraphType.CHAINED, ...)
     public Standstill getPreviousStandstill() {
         return previousStandstill;
     }

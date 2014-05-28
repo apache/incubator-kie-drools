@@ -4322,3 +4322,16 @@ After in *.java:
     import org.optaplanner.benchmark.config.ranking.SolverRankingType;
 
 [IMPL_DETAIL] ForagerConfig has been renamed to LocalSearchForagerConfig
+
+[MAJOR] The @PlanningVariable property chained has been refactored to graphType.
+This is to allow support for other graph types (such as TREE) in the future.
+Before in *.java:
+    @PlanningVariable(chained = true, ...)
+    public Standstill getPreviousStandstill() {
+        return previousStandstill;
+    }
+After in *.java:
+    @PlanningVariable(graphType = PlanningVariableGraphType.CHAINED, ...)
+    public Standstill getPreviousStandstill() {
+        return previousStandstill;
+    }

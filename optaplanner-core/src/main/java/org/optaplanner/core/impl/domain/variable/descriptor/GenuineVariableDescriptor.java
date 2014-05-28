@@ -28,6 +28,7 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
@@ -116,7 +117,7 @@ public class GenuineVariableDescriptor {
     }
 
     private void processChained(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
-        chained = planningVariableAnnotation.chained();
+        chained = planningVariableAnnotation.graphType() == PlanningVariableGraphType.CHAINED;
         if (chained && !variablePropertyAccessor.getPropertyType().isAssignableFrom(
                 entityDescriptor.getEntityClass())) {
             throw new IllegalArgumentException("The planningEntityClass ("
