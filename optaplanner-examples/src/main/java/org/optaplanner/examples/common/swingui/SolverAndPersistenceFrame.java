@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -142,17 +143,21 @@ public class SolverAndPersistenceFrame extends JFrame {
     }
 
     private JComponent createQuickOpenPanel() {
-        JSplitPane quickOpenSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+        JPanel quickOpenPanel = new JPanel(new BorderLayout());
+        quickOpenPanel.add(new JLabel("Quick open"), BorderLayout.NORTH);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
                 createQuickOpenUnsolvedPanel(), createQuickOpenSolvedPanel());
-        quickOpenSplitPane.setResizeWeight(0.8);
-        return quickOpenSplitPane;
+        splitPane.setResizeWeight(0.8);
+        splitPane.setBorder(null);
+        quickOpenPanel.add(splitPane, BorderLayout.CENTER);
+        return quickOpenPanel;
     }
 
     private JComponent createQuickOpenUnsolvedPanel() {
         quickOpenUnsolvedPanel = new JPanel();
         quickOpenUnsolvedActionList = new ArrayList<Action>();
         List<File> unsolvedFileList = solutionBusiness.getUnsolvedFileList();
-        return createQuickOpenPanel(quickOpenUnsolvedPanel, "Quick open (unsolved)", quickOpenUnsolvedActionList,
+        return createQuickOpenPanel(quickOpenUnsolvedPanel, "Unsolved (XStream XML)", quickOpenUnsolvedActionList,
                 unsolvedFileList);
     }
 
@@ -160,7 +165,7 @@ public class SolverAndPersistenceFrame extends JFrame {
         quickOpenSolvedPanel = new JPanel();
         quickOpenSolvedActionList = new ArrayList<Action>();
         List<File> solvedFileList = solutionBusiness.getSolvedFileList();
-        return createQuickOpenPanel(quickOpenSolvedPanel, "Quick open (solved)", quickOpenSolvedActionList,
+        return createQuickOpenPanel(quickOpenSolvedPanel, "Solved (XStream XML)", quickOpenSolvedActionList,
                 solvedFileList);
     }
 
@@ -332,7 +337,7 @@ public class SolverAndPersistenceFrame extends JFrame {
                 }
 
                 public String getDescription() {
-                    return "Solver xml files";
+                    return "Solution XStream XML files";
                 }
             });
             fileChooser.setDialogTitle(NAME);
@@ -366,7 +371,7 @@ public class SolverAndPersistenceFrame extends JFrame {
                 }
 
                 public String getDescription() {
-                    return "Solver xml files";
+                    return "Solution XStream XML files";
                 }
             });
             fileChooser.setDialogTitle(NAME);
