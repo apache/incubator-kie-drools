@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.domain.valuerange.descriptor;
 
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.api.domain.solution.Solution;
 
 public interface ValueRangeDescriptor {
 

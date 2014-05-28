@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.solver;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.api.domain.solution.Solution;
 
 /**
  * A ProblemFactChange represents a change in 1 or more problem facts of a {@link Solution}.

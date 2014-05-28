@@ -19,7 +19,7 @@ package org.optaplanner.examples.vehiclerouting.persistence;
 import java.io.File;
 
 import org.optaplanner.core.impl.solution.ProblemIO;
-import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.api.domain.solution.Solution;
 
 public class VehicleRoutingProblemIO implements ProblemIO {
 

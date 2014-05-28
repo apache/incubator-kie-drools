@@ -26,7 +26,7 @@ import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
-import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.api.domain.solution.Solution;
 
 public abstract class AbstractXmlSolutionExporter extends AbstractSolutionExporter {
 

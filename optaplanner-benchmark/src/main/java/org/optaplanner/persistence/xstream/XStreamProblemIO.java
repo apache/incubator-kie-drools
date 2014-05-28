@@ -29,7 +29,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.core.impl.solution.ProblemIO;
-import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.api.domain.solution.Solution;
 
 public class XStreamProblemIO implements ProblemIO {
 

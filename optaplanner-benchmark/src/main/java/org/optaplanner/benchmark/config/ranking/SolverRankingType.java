@@ -19,7 +19,7 @@ package org.optaplanner.benchmark.config.ranking;
 import org.optaplanner.benchmark.impl.ranking.TotalRankSolverRankingWeightFactory;
 import org.optaplanner.benchmark.impl.ranking.TotalScoreSolverRankingComparator;
 import org.optaplanner.benchmark.impl.ranking.WorstScoreSolverRankingComparator;
-import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.api.domain.solution.Solution;
 
 public enum SolverRankingType {
     /**

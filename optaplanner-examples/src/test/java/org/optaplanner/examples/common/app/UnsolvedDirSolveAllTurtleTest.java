@@ -18,15 +18,13 @@ package org.optaplanner.examples.common.app;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
-import org.optaplanner.core.impl.solution.Solution;
-import org.optaplanner.examples.common.business.ExtensionFileFilter;
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 

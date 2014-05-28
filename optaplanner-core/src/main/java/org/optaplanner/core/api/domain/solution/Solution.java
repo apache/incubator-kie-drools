@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.solution;
+package org.optaplanner.core.api.domain.solution;
 
 import java.util.Collection;
 

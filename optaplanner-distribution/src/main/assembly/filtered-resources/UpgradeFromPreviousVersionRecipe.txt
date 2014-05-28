@@ -4323,6 +4323,13 @@ After in *.java:
 
 [IMPL_DETAIL] ForagerConfig has been renamed to LocalSearchForagerConfig
 
+[MAJOR] The interface Solution has been promoted to the public API.
+It has also moved package from impl.solution to api.domain.solution
+Before in *.java:
+    import org.optaplanner.core.impl.solution.Solution;
+After in *.java:
+    import org.optaplanner.core.api.domain.solution.Solution;
+
 [MAJOR] The @PlanningVariable property chained has been refactored to graphType.
 This is to allow support for other graph types (such as TREE) in the future.
 Before in *.java:

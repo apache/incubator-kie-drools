@@ -1,6 +1,6 @@
 package org.optaplanner.core.api.domain.solution.cloner;
 
-import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.api.domain.solution.Solution;
 
 /**
  * Clones a {@link Solution} during planning.

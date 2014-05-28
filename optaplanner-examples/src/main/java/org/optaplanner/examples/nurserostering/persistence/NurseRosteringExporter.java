@@ -19,7 +19,7 @@ package org.optaplanner.examples.nurserostering.persistence;
 import java.io.IOException;
 
 import org.jdom.Element;
-import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractXmlSolutionExporter;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 import org.optaplanner.examples.nurserostering.domain.Shift;

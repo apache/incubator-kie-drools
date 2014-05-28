@@ -17,16 +17,12 @@
 package org.optaplanner.examples.common.persistence;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import com.google.common.math.BigIntegerMath;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
 

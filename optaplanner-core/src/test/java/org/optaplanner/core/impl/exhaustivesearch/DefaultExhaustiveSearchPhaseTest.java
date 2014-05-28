@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchStepScop
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.api.domain.solution.Solution;
 
 import static org.mockito.Mockito.*;
 

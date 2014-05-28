@@ -22,7 +22,7 @@ import java.util.List;
 import org.junit.Test;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 
 import static org.mockito.Mockito.*;

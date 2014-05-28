@@ -20,7 +20,7 @@ import java.util.Random;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.api.domain.solution.Solution;
 
 public abstract class AbstractStepScope {
 

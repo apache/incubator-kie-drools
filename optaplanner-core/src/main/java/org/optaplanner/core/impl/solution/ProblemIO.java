@@ -18,6 +18,8 @@ package org.optaplanner.core.impl.solution;
 
 import java.io.File;
 
+import org.optaplanner.core.api.domain.solution.Solution;
+
 /**
  * Reads or writes a {@link Solution} from or to a {@link File}.
  * <p/>

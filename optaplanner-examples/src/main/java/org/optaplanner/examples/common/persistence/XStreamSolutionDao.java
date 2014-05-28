@@ -18,10 +18,8 @@ package org.optaplanner.examples.common.persistence;
 
 import java.io.File;
 
-import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.persistence.xstream.XStreamProblemIO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class XStreamSolutionDao extends AbstractSolutionDao {
 

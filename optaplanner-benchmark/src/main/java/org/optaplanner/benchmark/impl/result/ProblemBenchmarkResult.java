@@ -40,7 +40,7 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.solution.ProblemIO;
-import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

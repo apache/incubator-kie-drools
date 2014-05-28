@@ -36,7 +36,7 @@ import java.util.Queue;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.examination.domain.Exam;
 import org.optaplanner.examples.examination.domain.Examination;

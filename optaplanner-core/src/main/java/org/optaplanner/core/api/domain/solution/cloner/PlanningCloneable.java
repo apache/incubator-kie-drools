@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.api.domain.solution.cloner;
 
-import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.api.domain.solution.Solution;
 
 /**
  * Tagging interface for a {@link Solution} that implements its own planning cloning

@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescript
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.api.domain.solution.Solution;
 
 public class SwapMove implements Move {
 

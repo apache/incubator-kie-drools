@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
-import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.api.domain.solution.Solution;
 
 /**
  * Bounds the possible {@link Score}s for a {@link Solution} as more and more variables are initialized
