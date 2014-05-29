@@ -26,6 +26,11 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-bpmn2</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- External dependencies -->
     <dependency>
       <groupId>org.osgi</groupId>

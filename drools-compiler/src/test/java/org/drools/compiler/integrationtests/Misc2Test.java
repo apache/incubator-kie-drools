@@ -99,17 +99,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -5806,5 +5810,77 @@ public class Misc2Test extends CommonTestMethodBase {
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
         assertEquals(1, results.getMessages().size());
+    }
+
+    @Test
+    public void testRuleflowWithNotPattern() {
+        // BZ-1101471
+
+        InputStream drl = this.getClass().getResourceAsStream( "ruleflow_with_not.drl" );
+        InputStream bpmn = this.getClass().getResourceAsStream( "ruleflow_with_not.bpmn" );
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+
+        kfs.write( "src/main/resources/com/sample/ruleflow_with_not.drl", KieServices.Factory.get().getResources().newInputStreamResource(drl) );
+        kfs.write( "src/main/resources/com/sample/ruleflow_with_not.bpmn", KieServices.Factory.get().getResources().newInputStreamResource(bpmn) );
+
+        KieBuilder kbuilder = ks.newKieBuilder( kfs );
+        Results results = kbuilder.buildAll().getResults();
+        for (Iterator<org.kie.api.builder.Message> iterator = results.getMessages().iterator(); iterator.hasNext();) {
+            org.kie.api.builder.Message message = iterator.next();
+            System.out.println(message.getText());
+        }
+
+        KieSession ksession = ks.newKieContainer(kbuilder.getKieModule().getReleaseId()).newKieSession();
+
+        ArrayList<String> trailerList = new ArrayList<String>();
+        ksession.setGlobal("trailerList", trailerList);
+
+        Trailer trailer1 = new Trailer("001", Trailer.TypeStatus.WAITING);
+
+        ksession.insert(trailer1);
+
+        ksession.startProcess("com.sample.bpmn.hello");
+
+        ksession.fireAllRules();
+
+        assertEquals(2, trailerList.size());
+    }
+
+    public static class Trailer {
+
+        public static enum TypeStatus {
+            WAITING,
+            LOADING,
+            SHIPPING;
+        }
+
+        private String trailerID;
+        private TypeStatus status;
+
+        public Trailer() {}
+
+        public Trailer(String trailerID, TypeStatus status) {
+            this.trailerID = trailerID;
+            this.status = status;
+        }
+
+        public String getTrailerID() {
+            return trailerID;
+        }
+
+        public void setTrailerID(String trailerID) {
+            this.trailerID = trailerID;
+        }
+
+        public TypeStatus getStatus() {
+            return status;
+        }
+
+        public void setStatus(TypeStatus status) {
+            this.status = status;
+        }
+
     }
 }
