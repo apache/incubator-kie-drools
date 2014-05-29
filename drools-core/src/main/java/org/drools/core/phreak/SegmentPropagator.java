@@ -29,6 +29,7 @@ public class SegmentPropagator {
                 SegmentMemory smem = firstSmem.getNext();
                 if ( smem != null ) {
                     for ( LeftTuple peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
+                        peer.setPropagationContext( leftTuple.getPropagationContext() );
                         LeftTupleSets stagedLeftTuples = smem.getStagedLeftTuples();
                         stagedLeftTuples.addDelete( peer );
                         smem = smem.getNext();
@@ -46,6 +47,7 @@ public class SegmentPropagator {
                 if ( smem != null ) {                
                     for ( LeftTuple peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
                         if ( peer.getStagedType() == LeftTuple.NONE ) {
+                            peer.setPropagationContext( leftTuple.getPropagationContext() );
                             // only stage, if not already staged, if insert, leave as insert
                             LeftTupleSets stagedLeftTuples = smem.getStagedLeftTuples();
                             stagedLeftTuples.addUpdate( peer );

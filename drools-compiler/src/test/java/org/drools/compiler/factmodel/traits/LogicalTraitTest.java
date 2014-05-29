@@ -22,6 +22,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitField;
 import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.core.factmodel.traits.VirtualPropertyMode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -46,18 +47,18 @@ import java.util.Set;
 public class LogicalTraitTest extends CommonTestMethodBase {
 
 
-    public TraitFactory.VirtualPropertyMode mode;
+    public VirtualPropertyMode mode;
 
     @Parameterized.Parameters
     public static Collection modes() {
-        return Arrays.asList( new TraitFactory.VirtualPropertyMode[][]
+        return Arrays.asList( new VirtualPropertyMode[][]
                                       {
-                                              { TraitFactory.VirtualPropertyMode.MAP },
-                                              { TraitFactory.VirtualPropertyMode.TRIPLES }
+                                              { VirtualPropertyMode.MAP },
+                                              { VirtualPropertyMode.TRIPLES }
                                       } );
     }
 
-    public LogicalTraitTest( TraitFactory.VirtualPropertyMode m ) {
+    public LogicalTraitTest( VirtualPropertyMode m ) {
         this.mode = m;
     }
 
