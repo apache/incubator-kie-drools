@@ -28,28 +28,32 @@ public class StringObjectMapXmlAdapter extends XmlAdapter<JaxbStringObjectMap, M
         for(Entry<String, Object> entry : map.entrySet()) {
             Object value = entry.getValue();
             String key = entry.getKey();
-            byte [] content = null;
-            String className = null;
-            if( value != null ) { 
-                className = value.getClass().getName();
-                content = serializeObject(value, key);
-            } 
-            
-            JaxbStringObjectMapEntry xmlEntry = new JaxbStringObjectMapEntry(key, className, content);
+            JaxbStringObjectMapEntry xmlEntry = createJaxbStringObjectMapEntry(value, key);
             xmlMap.addEntry(xmlEntry);
         }
         return xmlMap;
     }
+   
+    static JaxbStringObjectMapEntry createJaxbStringObjectMapEntry(Object value, String key) { 
+        byte [] content = null;
+        String className = null;
+        if( value != null ) { 
+            className = value.getClass().getName();
+            content = serializeObject(value, key);
+        } 
+
+        return new JaxbStringObjectMapEntry(key, className, content);
+    }
     
-    public static byte [] serializeObject(Object obj, String name) { 
+    public static byte [] serializeObject(Object obj, String key) { 
         Class<?> valueClass = obj.getClass();
         if( valueClass.getCanonicalName() == null ) { 
-            logger.error("Unable to serialize '" + name + "' " +
+            logger.error("Unable to serialize '" + key + "' " +
                     "because serialization of weird classes is not supported: " + valueClass.getName());
             return null;
         }
         if( ! (obj  instanceof Serializable) ) { 
-            logger.error("Unable to serialize '" + name + "' " +
+            logger.error("Unable to serialize '" + key + "' " +
                     "because " + valueClass.getName() + " is an unserializable class" );
             return null;
         }
@@ -61,7 +65,7 @@ public class StringObjectMapXmlAdapter extends XmlAdapter<JaxbStringObjectMap, M
             out.writeObject(obj);
             serializedBytes = bais.toByteArray();
         } catch( IOException ioe ) { 
-            logger.error("Unable to serialize '" + name + "' " + "because of exception: " + ioe.getMessage(), ioe );
+            logger.error("Unable to serialize '" + key + "' " + "because of exception: " + ioe.getMessage(), ioe );
             return null;
         }
         return serializedBytes;

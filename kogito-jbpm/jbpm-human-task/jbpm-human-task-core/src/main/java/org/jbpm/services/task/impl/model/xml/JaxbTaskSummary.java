@@ -50,15 +50,15 @@ public class JaxbTaskSummary implements TaskSummary {
     @XmlSchemaType(name="long")
     private long id;
     
-    @XmlElement(name="name")
+    @XmlElement
     @XmlSchemaType(name="string")
     private String name;
     
-    @XmlElement(name="subject")
+    @XmlElement
     @XmlSchemaType(name="string")
     private String subject;
     
-    @XmlElement(name="description")
+    @XmlElement
     @XmlSchemaType(name="string")
     private String description;
     
@@ -131,6 +131,7 @@ public class JaxbTaskSummary implements TaskSummary {
         this.description = taskSum.getDescription();
         this.status = taskSum.getStatus();
         this.priority = taskSum.getPriority();
+        this.skipable = taskSum.isSkipable();
         User actual = taskSum.getActualOwner();
         if( actual != null ) { 
             this.actualOwnerId = actual.getId();
