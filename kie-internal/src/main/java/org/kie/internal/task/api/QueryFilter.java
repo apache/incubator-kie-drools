@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2014 JBoss by Red Hat.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,33 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.api.task.model;
+package org.kie.internal.task.api;
 
-import java.io.Externalizable;
-import java.util.List;
+import java.util.Map;
 
-public interface Task extends Externalizable {
-   
-    Long getId();
-
-    int getPriority();
-
-    List<I18NText> getNames();
-
-    List<I18NText> getSubjects();
-
-    List<I18NText> getDescriptions();
-    
-    String getName();
-    
-    String getSubject();
-    
-    String getDescription();
-
-    PeopleAssignments getPeopleAssignments();
-
-    TaskData getTaskData();
-
-    String getTaskType();
-
+/**
+ *
+ * @author salaboy
+ */
+public interface QueryFilter {
+    int getOffset();
+    int getCount();
+    boolean isSingleResult();
+    String getLanguage();
+    String getOrderBy();
+    String getFilterParams();
+    Map<String, Object> getParams();
 }

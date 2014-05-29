@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2014 JBoss by Red Hat.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,30 +17,38 @@
 package org.kie.api.task.model;
 
 import java.io.Externalizable;
-import java.util.List;
+import java.util.Date;
 
-public interface Task extends Externalizable {
-   
-    Long getId();
+/**
+ *
+ * @author salaboy
+ */
+public interface QuickTaskSummary extends Externalizable {
+    
+    long getId();
+
+    String getName();
+
+    String getStatusId();
 
     int getPriority();
 
-    List<I18NText> getNames();
+    String getActualOwnerId();
 
-    List<I18NText> getSubjects();
+    String getCreatedById();
 
-    List<I18NText> getDescriptions();
+    Date getCreatedOn();
+
+    Date getActivationTime();
+
+    Date getExpirationTime();
+
+    String getProcessId();
     
-    String getName();
+    long getProcessInstanceId();
     
-    String getSubject();
+    String getDeploymentId();
     
-    String getDescription();
-
-    PeopleAssignments getPeopleAssignments();
-
-    TaskData getTaskData();
-
-    String getTaskType();
+    long getParentId();
 
 }

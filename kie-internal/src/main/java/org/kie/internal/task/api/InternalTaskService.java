@@ -43,6 +43,10 @@ import org.kie.internal.task.api.model.TaskEvent;
  */
 public interface InternalTaskService extends TaskService {
     
+    List<TaskSummary> getTasksOwned(String userId, List<Status> status, QueryFilter filter);
+    
+    List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, List<Status> status, QueryFilter filter);
+    
     void addGroup(Group group);
 
     void addUser(User user);
@@ -51,7 +55,7 @@ public interface InternalTaskService extends TaskService {
 
     void claim(long taskId, String userId, List<String> groupIds);
 
-    void claimNextAvailable(String userId, List<String> groupIds, String language);
+    void claimNextAvailable(String userId, List<String> groupIds);
 
     void deleteFault(long taskId, String userId);
 
@@ -77,7 +81,7 @@ public interface InternalTaskService extends TaskService {
 
     List<Group> getGroups();
 
-    List<TaskSummary> getSubTasksAssignedAsPotentialOwner(long parentId, String userId, String language);
+    List<TaskSummary> getSubTasksAssignedAsPotentialOwner(long parentId, String userId);
 
     List<TaskSummary> getSubTasksByParent(long parentId);
     
@@ -93,23 +97,23 @@ public interface InternalTaskService extends TaskService {
     
     List<TaskSummary> getTasksOwnedByExpirationDateOptional(String userId, List<Status> statuses, Date expirationDate);
     
-    List<TaskSummary> getTasksAssignedAsExcludedOwner(String userId, String language);
+    List<TaskSummary> getTasksAssignedAsExcludedOwner(String userId);
 
-    List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language);
+    List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds);
 
-    List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResults);
+    List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds,  int firstResult, int maxResults);
 
-    List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language);
+    List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status);
 
-    List<TaskSummary> getTasksAssignedAsRecipient(String userId, String language);
+    List<TaskSummary> getTasksAssignedAsRecipient(String userId);
 
-    List<TaskSummary> getTasksAssignedAsTaskInitiator(String userId, String language);
+    List<TaskSummary> getTasksAssignedAsTaskInitiator(String userId);
 
-    List<TaskSummary> getTasksAssignedAsTaskStakeholder(String userId, String language);
+    List<TaskSummary> getTasksAssignedAsTaskStakeholder(String userId);
     
     List<TaskSummary> getTasksOwnedByExpirationDateBeforeSpecifiedDate(String userId, List<Status> status, Date date);
     
-    List<TaskSummary> getTasksByStatusByProcessInstanceIdByTaskName(long processInstanceId, List<Status> status, String taskName, String language);
+    List<TaskSummary> getTasksByStatusByProcessInstanceIdByTaskName(long processInstanceId, List<Status> status, String taskName);
     
     Map<Long, List<OrganizationalEntity>> getPotentialOwnersForTaskIds(List<Long> taskIds);
     
@@ -189,9 +193,11 @@ public interface InternalTaskService extends TaskService {
 
     int getPendingTaskByUserId(String userId);
     
-    List<TaskSummary> getTasksAssignedByGroup(String groupId, String language); 
+    List<TaskSummary> getTasksAssignedByGroup(String groupId); 
     
-    List<TaskSummary> getTasksAssignedByGroups(List<String> groupIds, String language); 
+    List<TaskSummary> getTasksAssignedByGroups(List<String> groupIds); 
+    
+    
     
     long addComment(long taskId, Comment comment);
 
@@ -206,4 +212,11 @@ public interface InternalTaskService extends TaskService {
     void removeMarshallerContext(String ownerId);
     
     ContentMarshallerContext getMarshallerContext(Task task);
+    
+    List<TaskSummary> getTasksByVariousFields( List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds, 
+            List<String> busAdmins, List<String> potOwners, List<String> taskOwners, 
+            List<Status> status,  boolean union);
+    
+    List<TaskSummary> getTasksByVariousFields(Map <String, List<?>> parameters, boolean union);
+    
 }
