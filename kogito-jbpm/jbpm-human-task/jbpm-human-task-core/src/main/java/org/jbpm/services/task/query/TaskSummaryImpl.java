@@ -30,9 +30,9 @@ import org.kie.internal.task.api.model.SubTasksStrategy;
 public class TaskSummaryImpl implements InternalTaskSummary {
 
     private long id;
-    private String name;
-    private String subject;
-    private String description;
+    private String name = "";
+    private String subject = "";
+    private String description = "";
     private Status status;
     private String statusId;
     private int priority;
