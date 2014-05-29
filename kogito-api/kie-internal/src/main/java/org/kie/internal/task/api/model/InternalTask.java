@@ -62,5 +62,10 @@ public interface InternalTask extends Task {
     SubTasksStrategy getSubTaskStrategy();
 
     void setSubTaskStrategy(SubTasksStrategy subTaskStrategy);
+   
+    
+    void setName(String name);
+    void setSubject(String subject);
+    void setDescription(String description);
 
 }

@@ -19,7 +19,6 @@ package org.kie.internal.task.api;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
@@ -34,12 +33,16 @@ import org.kie.api.task.model.TaskSummary;
  *  related with Task Statistics here. 
  */
 public interface TaskQueryService {
+    
+    List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, List<Status> status, QueryFilter filter);
+    
+    List<TaskSummary> getTasksOwned(String userId, List<Status> status, QueryFilter filter);
+    
+    List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds);
+    
+    List<TaskSummary> getTasksAssignedAsBusinessAdministrator(String userId);
 
-    List<TaskSummary> getTasksAssignedAsBusinessAdministrator(String userId, String language);
-
-    List<TaskSummary> getTasksAssignedAsExcludedOwner(String userId, String language);
-
-    List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, String language);
+    List<TaskSummary> getTasksAssignedAsExcludedOwner(String userId);
     
     List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDate(String userId, List<String> groupIds, List<Status> status, Date expirationDate);
     
@@ -49,31 +52,29 @@ public interface TaskQueryService {
     
     List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDateOptional(String userId, List<Status> status, Date expirationDate);
 
-    List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language);
+    List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, int firstResult, int maxResults);
 
-    List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResults);
+    List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String userId, List<Status> status);
+    
+    List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status);
+    
+    List<TaskSummary> getTasksAssignedAsRecipient(String userId);
 
-    List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String userId, List<Status> status, String language);
-    
-    List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language);
-    
-    List<TaskSummary> getTasksAssignedAsRecipient(String userId, String language);
+    List<TaskSummary> getTasksAssignedAsTaskInitiator(String userId);
 
-    List<TaskSummary> getTasksAssignedAsTaskInitiator(String userId, String language);
+    List<TaskSummary> getTasksAssignedAsTaskStakeholder(String userId);
 
-    List<TaskSummary> getTasksAssignedAsTaskStakeholder(String userId, String language);
+    List<TaskSummary> getTasksAssignedByGroup(String groupId);
+    
+    List<TaskSummary> getTasksAssignedByGroups(List<String> groupsId);
+    
+    List<TaskSummary> getTasksAssignedByGroupsByExpirationDate(List<String> groupIds,  Date expirationDate);
+    
+    List<TaskSummary> getTasksAssignedByGroupsByExpirationDateOptional(List<String> groupIds,  Date expirationDate);
+    
+    List<TaskSummary> getTasksOwned(String userId);
 
-    List<TaskSummary> getTasksAssignedByGroup(String groupId, String language);
-    
-    List<TaskSummary> getTasksAssignedByGroups(List<String> groupsId, String language);
-    
-    List<TaskSummary> getTasksAssignedByGroupsByExpirationDate(List<String> groupIds, String language, Date expirationDate);
-    
-    List<TaskSummary> getTasksAssignedByGroupsByExpirationDateOptional(List<String> groupIds, String language, Date expirationDate);
-    
-    List<TaskSummary> getTasksOwned(String userId, String language);
-
-    List<TaskSummary> getTasksOwnedByStatus(String userId, List<Status> status, String language);
+    List<TaskSummary> getTasksOwnedByStatus(String userId, List<Status> status);
     
     List<TaskSummary> getTasksOwnedByExpirationDate(String userId, List<Status> status, Date expirationDate);
     
@@ -81,13 +82,13 @@ public interface TaskQueryService {
     
     List<TaskSummary> getTasksOwnedByExpirationDateBeforeSpecifiedDate(String userId, List<Status> status, Date date);
     
-    List<TaskSummary> getSubTasksAssignedAsPotentialOwner(long parentId, String userId, String language);
+    List<TaskSummary> getSubTasksAssignedAsPotentialOwner(long parentId, String userId);
     
     List<TaskSummary> getSubTasksByParent(long parentId);
     
-    List<TaskSummary> getTasksByStatusByProcessInstanceId(long processInstanceId, List<Status> status, String language);
+    List<TaskSummary> getTasksByStatusByProcessInstanceId(long processInstanceId, List<Status> status);
 
-    List<TaskSummary> getTasksByStatusByProcessInstanceIdByTaskName(long processInstanceId, List<Status> status, String taskName, String language);
+    List<TaskSummary> getTasksByStatusByProcessInstanceIdByTaskName(long processInstanceId, List<Status> status, String taskName);
 
     int getPendingSubTasksByParent(long parentId);
     
@@ -101,7 +102,7 @@ public interface TaskQueryService {
     
     List<TaskSummary> getTasksByVariousFields( List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds, 
             List<String> busAdmins, List<String> potOwners, List<String> taskOwners, 
-            List<Status> status, List<String> language, boolean union);
+            List<Status> status,  boolean union);
     
     List<TaskSummary> getTasksByVariousFields( Map<String, List<?>> parameters, boolean union);
     
@@ -115,5 +116,4 @@ public interface TaskQueryService {
     static String POTENTIAL_OWNER_ID_LIST = "potential owner id list";
     static String ACTUAL_OWNER_ID_LIST = "task owner id list";
     static String STATUS_LIST = "status list";
-    static String LANGUAGE = "language";
 }
