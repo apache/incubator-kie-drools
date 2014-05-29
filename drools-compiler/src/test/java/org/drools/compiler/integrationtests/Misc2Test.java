@@ -91,6 +91,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -5669,5 +5670,49 @@ public class Misc2Test extends CommonTestMethodBase {
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
         assertEquals(0, results.getMessages().size());
+    }
+
+    @Test()
+    public void testCrossNoLoopWithNodeSharing() throws Exception {
+        // DROOLS-501 Propgation context is not set correctly when nodes are shared
+        // This test was looping in 6.1.0-Beta4
+        String drl = "package org.drools.compiler.loop " +
+
+                     "rule 'Rule 1' " +
+                     "  agenda-group 'Start' " +
+                     "  no-loop " +
+                     "  when " +
+                     "      $thing1 : String() " +
+                     "      $thing2 : Integer() " +
+                     "  then\n" +
+                     "      System.out.println( 'At 1' ); " +
+                     "      update( $thing2 ); " +
+                     "end " +
+
+                     "rule 'Rule 2' " +
+                     "  agenda-group 'End' " +
+                     "  no-loop " +
+                     "  when " +
+                     "      $thing1 : String() " +
+                     "      $thing2 : Integer() " +
+                     "  then " +
+                     "      System.out.println( 'At 2' ); " +
+                     "      update( $thing2 ); " +
+                     "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession session = helper.build().newKieSession();
+
+        session.insert( "hello" );
+        session.insert( new Integer( 42 ) );
+
+        // set the agenda groups in reverse order so that stack is preserved
+        session.getAgenda().getAgendaGroup( "End" ).setFocus();
+        session.getAgenda().getAgendaGroup( "Start" ).setFocus();
+
+        int x = session.fireAllRules( 10 );
+        assertEquals( 2, x );
+        session.dispose();
     }
 }
