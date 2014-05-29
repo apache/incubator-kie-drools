@@ -1,1131 +1,714 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_0.xsd"
-               version="2.0">
-      <named-query name="TasksAssignedAsBusinessAdministrator">
-          <query>
-select distinct 
-     new org.jbpm.services.task.query.TaskSummaryImpl(
-     t.id,
-     t.taskData.processInstanceId,
-     name.shortText,
-     subject.shortText,
-     description.shortText,
-     t.taskData.status,
-     t.priority,
-     t.taskData.skipable,
-     actualOwner,
-     createdBy,
-     t.taskData.createdOn,
-     t.taskData.activationTime,
-     t.taskData.expirationTime,
-     t.taskData.processId,
-     t.taskData.processSessionId,
-     t.subTaskStrategy,
-     t.taskData.parentId              )
-from
-    TaskImpl t 
-    left join t.taskData.createdBy as createdBy
-    left join t.taskData.actualOwner as actualOwner             
-    left join t.subjects as subject
-    left join t.descriptions as description
-    left join t.names as name,
-    OrganizationalEntityImpl businessAdministrator
-where
-    t.archived = 0 and
-    businessAdministrator.id = :userId and
-    businessAdministrator in elements ( t.peopleAssignments.businessAdministrators  )  and
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_0.xsd"
+                 version="2.0">
+    <named-query name="TasksAssignedAsBusinessAdministrator">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t,
+            OrganizationalEntityImpl businessAdministrator
+            where
+            t.archived = 0 and
+            businessAdministrator.id = :userId and
+            businessAdministrator in elements ( t.peopleAssignments.businessAdministrators  )  
 
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
-
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
-
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-    ) 
-    order by t.id DESC
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-      <named-query name="TasksAssignedAsExcludedOwner">
-          <query>
-select distinct 
-     new org.jbpm.services.task.query.TaskSummaryImpl(
-     t.id,
-     t.taskData.processInstanceId,
-     name.shortText,
-     subject.shortText,
-     description.shortText,
-     t.taskData.status,
-     t.priority,
-     t.taskData.skipable,
-     actualOwner,
-     createdBy,
-     t.taskData.createdOn,
-     t.taskData.activationTime,
-     t.taskData.expirationTime,
-     t.taskData.processId,
-     t.taskData.processSessionId,
-     t.subTaskStrategy,
-     t.taskData.parentId              )
-from
-    TaskImpl t 
-    left join t.taskData.createdBy as createdBy
-    left join t.taskData.actualOwner as actualOwner 
-    left join t.subjects as subject
-    left join t.descriptions as description
-    left join t.names as name,
-    OrganizationalEntityImpl excludedOwners
-where
-    t.archived = 0 and
-    excludedOwners.id = :userId and
-    excludedOwners in elements ( t.peopleAssignments.excludedOwners  )  and
-
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
-
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
-
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-    ) 
-    order by t.id DESC      
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-      <named-query name="TasksAssignedAsPotentialOwner">
-          <query>
-select distinct 
-     new org.jbpm.services.task.query.TaskSummaryImpl(
-     t.id,
-     t.taskData.processInstanceId,
-     name.shortText,
-     subject.shortText,
-     description.shortText,
-     t.taskData.status,
-     t.priority,
-     t.taskData.skipable,
-     actualOwner,
-     createdBy,
-     t.taskData.createdOn,
-     t.taskData.activationTime,
-     t.taskData.expirationTime,
-     t.taskData.processId,
-     t.taskData.processSessionId,
-     t.subTaskStrategy,
-     t.taskData.parentId              )
-from
-    TaskImpl t
-    left join t.taskData.createdBy as createdBy 
-    left join t.taskData.actualOwner as actualOwner
-    left join t.subjects as subject
-    left join t.descriptions as description
-    left join t.names as name,
-    OrganizationalEntityImpl potentialOwners
-where
-    t.archived = 0 and
-    potentialOwners.id = :userId and
-    potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
-
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
-
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
-
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-    ) and
-
-    t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
-    order by t.id DESC            
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-      <named-query name="TasksAssignedAsPotentialOwnerByStatus">
-          <query>
-select distinct 
-     new org.jbpm.services.task.query.TaskSummaryImpl(
-     t.id,
-     t.taskData.processInstanceId,
-     name.shortText,
-     subject.shortText,
-     description.shortText,
-     t.taskData.status,
-     t.priority,
-     t.taskData.skipable,
-     actualOwner,
-     createdBy,
-     t.taskData.createdOn,
-     t.taskData.activationTime,
-     t.taskData.expirationTime,
-     t.taskData.processId,
-     t.taskData.processSessionId,
-     t.subTaskStrategy,
-     t.taskData.parentId              )
-from
-    TaskImpl t 
-    left join t.taskData.createdBy as createdBy
-    left join t.taskData.actualOwner as actualOwner
-    left join t.subjects as subject
-    left join t.descriptions as description
-    left join t.names as name,
-    OrganizationalEntityImpl potentialOwners
-where
-    t.archived = 0 and
-    potentialOwners.id = :userId and
-    potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
-
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
-
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
-
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-    ) and
-
-    t.taskData.status in (:status) 
-    order by t.id DESC    
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-            <named-query name="TasksAssignedAsPotentialOwnerByStatusByGroup">
-          <query>
-select distinct 
-     new org.jbpm.services.task.query.TaskSummaryImpl(
-     t.id,
-     t.taskData.processInstanceId,
-     name.shortText,
-     subject.shortText,
-     description.shortText,
-     t.taskData.status,
-     t.priority,
-     t.taskData.skipable,
-     actualOwner,
-     createdBy,
-     t.taskData.createdOn,
-     t.taskData.activationTime,
-     t.taskData.expirationTime,
-     t.taskData.processId,
-     t.taskData.processSessionId,
-     t.subTaskStrategy,
-     t.taskData.parentId              )
-from
-    TaskImpl t 
-    left join t.taskData.createdBy as createdBy
-    left join t.taskData.actualOwner as actualOwner
-    left join t.subjects as subject
-    left join t.descriptions as description
-    left join t.names as name,
-    OrganizationalEntityImpl potentialOwners
-where
-    t.archived = 0 and
-    ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
-    potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
-
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
-
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
-
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-    ) and
-
-    t.taskData.status in (:status) 
-    order by t.id DESC
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-            <named-query name="TasksAssignedAsPotentialOwnerWithGroups">
-          <query>
-select distinct 
-     new org.jbpm.services.task.query.TaskSummaryImpl(
-     t.id,
-     t.taskData.processInstanceId,
-     name.shortText,
-     subject.shortText,
-     description.shortText,
-     t.taskData.status,
-     t.priority,
-     t.taskData.skipable,
-     actualOwner,
-     createdBy,
-     t.taskData.createdOn,
-     t.taskData.activationTime,
-     t.taskData.expirationTime,
-     t.taskData.processId,
-     t.taskData.processSessionId,
-     t.subTaskStrategy,
-     t.taskData.parentId              )
-from
-    TaskImpl t 
-    left join t.taskData.createdBy as createdBy
-    left join t.taskData.actualOwner as actualOwner
-    left join t.subjects as subject
-    left join t.descriptions as description
-    left join t.names as name,
-    OrganizationalEntityImpl potentialOwners
-where
-    t.archived = 0 and
-    ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
-    potentialOwners in elements ( t.peopleAssignments.potentialOwners )  and
-
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
-
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
-
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-    ) and
-
-    t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
-    order by t.id DESC          
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
- <named-query name="TasksAssignedAsPotentialOwnerByStatusWithGroups">
-          <query>
-select distinct 
-     new org.jbpm.services.task.query.TaskSummaryImpl(
-     t.id,
-     t.taskData.processInstanceId,
-     name.shortText,
-     subject.shortText,
-     description.shortText,
-     t.taskData.status,
-     t.priority,
-     t.taskData.skipable,
-     actualOwner,
-     createdBy,
-     t.taskData.createdOn,
-     t.taskData.activationTime,
-     t.taskData.expirationTime,
-     t.taskData.processId,
-     t.taskData.processSessionId,
-     t.subTaskStrategy,
-     t.taskData.parentId              )
-from
-    TaskImpl t 
-    left join t.taskData.createdBy as createdBy
-    left join t.taskData.actualOwner as actualOwner
-    left join t.subjects as subject
-    left join t.descriptions as description
-    left join t.names as name,
-    OrganizationalEntityImpl potentialOwners
-where
-    t.archived = 0 and
-    ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
-    potentialOwners in elements ( t.peopleAssignments.potentialOwners )  and
-
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
-
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
-
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-    ) and
-
-    t.taskData.status in (:status) 
-              order by t.id DESC
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-       <named-query name="TasksAssignedAsPotentialOwnerByGroup">
-          <query>
-select distinct 
-     new org.jbpm.services.task.query.TaskSummaryImpl(
-     t.id,
-     t.taskData.processInstanceId,
-     name.shortText,
-     subject.shortText,
-     description.shortText,
-     t.taskData.status,
-     t.priority,
-     t.taskData.skipable,
-     actualOwner,
-     createdBy,
-     t.taskData.createdOn,
-     t.taskData.activationTime,
-     t.taskData.expirationTime,
-     t.taskData.processId,
-     t.taskData.processSessionId,
-     t.subTaskStrategy,
-     t.taskData.parentId              )
-from
-    TaskImpl t 
-    left join t.taskData.createdBy as createdBy
-    left join t.taskData.actualOwner as actualOwner
-    left join t.subjects as subject
-    left join t.descriptions as description
-    left join t.names as name,
-    OrganizationalEntityImpl potentialOwners
-where
-    t.archived = 0 and
-    t.taskData.actualOwner = null and
-    potentialOwners.id = :groupId and
-    potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
-
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
-
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
-
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-    ) and
-
-    t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
-    order by t.id DESC
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-      
-        <named-query name="TasksAssignedAsPotentialOwnerByGroups">
-          <query>
-select
-     
-     t.id,
-     potentialOwners.id
-
-from
-    TaskImpl t, 
     
-              OrganizationalEntityImpl potentialOwners        
-
-where
-    
-    potentialOwners.id in (:groupIds) and
-    potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and      
-    t.archived = 0 and
-    t.taskData.actualOwner = null and          
-    
-
-
-    t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
-    
-    
-              
-    
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-      
-       <named-query name="TasksAssignedAsPotentialOwnerStatusByExpirationDate">
-          <query>
-select distinct 
-     new org.jbpm.services.task.query.TaskSummaryImpl(
-     t.id,
-     t.taskData.processInstanceId,
-     name.shortText,
-     subject.shortText,
-     description.shortText,
-     t.taskData.status,
-     t.priority,
-     t.taskData.skipable,
-     actualOwner,
-     createdBy,
-     t.taskData.createdOn,
-     t.taskData.activationTime,
-     t.taskData.expirationTime,
-     t.taskData.processId,
-     t.taskData.processSessionId,
-     t.subTaskStrategy,
-     t.taskData.parentId              )
-from
-    TaskImpl t 
-    left join t.taskData.createdBy as createdBy
-    left join t.taskData.actualOwner as actualOwner
-    left join t.subjects as subject
-    left join t.descriptions as description
-    left join t.names as name,
-    OrganizationalEntityImpl potentialOwners
-where
-    t.archived = 0 and
-    ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
-    potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
-
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
-
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
-
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-    ) and
-    t.taskData.expirationTime = :expirationDate and
-    t.taskData.status in (:status) 
-              order by t.id DESC
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-      
-       <named-query name="TasksAssignedAsPotentialOwnerStatusByExpirationDateOptional">
-          <query>
-select distinct 
-     new org.jbpm.services.task.query.TaskSummaryImpl(
-     t.id,
-     t.taskData.processInstanceId,
-     name.shortText,
-     subject.shortText,
-     description.shortText,
-     t.taskData.status,
-     t.priority,
-     t.taskData.skipable,
-     actualOwner,
-     createdBy,
-     t.taskData.createdOn,
-     t.taskData.activationTime,
-     t.taskData.expirationTime,
-     t.taskData.processId,
-     t.taskData.processSessionId,
-     t.subTaskStrategy,
-     t.taskData.parentId              )
-from
-    TaskImpl t 
-    left join t.taskData.createdBy as createdBy
-    left join t.taskData.actualOwner as actualOwner
-    left join t.subjects as subject
-    left join t.descriptions as description
-    left join t.names as name,
-    OrganizationalEntityImpl potentialOwners
-where
-    t.archived = 0 and
-    ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
-    potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
-
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
-
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
-
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-    ) and
-    (t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null) and
-    t.taskData.status in (:status) 
-    order by t.id DESC     
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-      
-       <named-query name="TasksAssignedAsPotentialOwnerByGroupsByExpirationDate">
-          <query>
-select
-     
-     t.id,
-     potentialOwners.id
-
-from
-    TaskImpl t, 
-    
-              OrganizationalEntityImpl potentialOwners        
-
-where
-    
-    potentialOwners.id in (:groupIds) and
-    potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and      
-    t.archived = 0 and
-    t.taskData.actualOwner = null and          
-    t.taskData.expirationTime = :expirationDate and
-    t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
-    
-    
-              
-    
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-      
-      
-       <named-query name="GetPotentialOwnersForTaskIds">
-          <query>
-select
-     t.id,         
-     potentialOwners
-from
-    TaskImpl t, 
-    OrganizationalEntityImpl potentialOwners        
-
-where
-    t.id in (:taskIds) and
-    potentialOwners in elements ( t.peopleAssignments.potentialOwners  ) 
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-      
-      
-      
-       <named-query name="TasksAssignedAsPotentialOwnerByGroupsByExpirationDateOptional">
-          <query>
-select
-     
-     t.id,
-     potentialOwners.id
-
-from
-    TaskImpl t, 
-    
-              OrganizationalEntityImpl potentialOwners        
-
-where
-    
-    potentialOwners.id in (:groupIds) and
-    potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and      
-    t.archived = 0 and
-    t.taskData.actualOwner = null and          
-    (t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null) and
-    t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
-    
-    
-              
-    
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>      
- 
-      <named-query name="SubTasksAssignedAsPotentialOwner">
-          <query>
-select distinct 
-     new org.jbpm.services.task.query.TaskSummaryImpl(
-     t.id,
-     t.taskData.processInstanceId,
-     name.shortText,
-     subject.shortText,
-     description.shortText,
-     t.taskData.status,
-     t.priority,
-     t.taskData.skipable,
-     actualOwner,
-     createdBy,
-     t.taskData.createdOn,
-     t.taskData.activationTime,
-     t.taskData.expirationTime,
-     t.taskData.processId,
-     t.taskData.processSessionId,
-     t.subTaskStrategy,
-     t.taskData.parentId              )
-from
-    TaskImpl t 
-    left join t.taskData.createdBy as createdBy
-    left join t.taskData.actualOwner as actualOwner
-    left join t.subjects as subject
-    left join t.descriptions as description
-    left join t.names as name,
-    OrganizationalEntityImpl potentialOwners
-where
-    t.archived = 0 and
-    t.taskData.parentId = :parentId and
-    (potentialOwners.id = :userId or potentialOwners.id in (:groupIds)) and
-    potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
-
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
-
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
-
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-    ) and
-
-    t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
-              order by t.id DESC
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-
-<named-query name="GetSubTasksByParentTaskId">
-          <query>
-select distinct 
-     new org.jbpm.services.task.query.TaskSummaryImpl(
-     t.id,
-     t.taskData.processInstanceId,
-     name.shortText,
-     subject.shortText,
-     description.shortText,
-     t.taskData.status,
-     t.priority,
-     t.taskData.skipable,
-     actualOwner,
-     createdBy,
-     t.taskData.createdOn,
-     t.taskData.activationTime,
-     t.taskData.expirationTime,
-     t.taskData.processId,
-     t.taskData.processSessionId,
-     t.subTaskStrategy,
-     t.taskData.parentId              )
-from
-    TaskImpl t
-    left join t.taskData.createdBy as createdBy
-    left join t.taskData.actualOwner as actualOwner
-    left join t.subjects as subject
-    left join t.descriptions as description
-    left join t.names as name
-where
-    t.archived = 0 and
-    t.taskData.parentId = :parentId and
-    
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
-
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
-
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-    ) and
-
-    t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
-    order by t.id DESC
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-
-
-      <named-query name="TasksAssignedAsRecipient">
-          <query>
-select distinct 
-     new org.jbpm.services.task.query.TaskSummaryImpl(
-     t.id,
-     t.taskData.processInstanceId,
-     name.shortText,
-     subject.shortText,
-     description.shortText,
-     t.taskData.status,
-     t.priority,
-     t.taskData.skipable,
-     actualOwner,
-     createdBy,
-     t.taskData.createdOn,
-     t.taskData.activationTime,
-     t.taskData.expirationTime,
-     t.taskData.processId,
-     t.taskData.processSessionId,
-     t.subTaskStrategy,
-     t.taskData.parentId              )
-from
-    TaskImpl t 
-    left join t.taskData.createdBy as createdBy
-    left join t.taskData.actualOwner as actualOwner 
-    left join t.subjects as subject
-    left join t.descriptions as description
-    left join t.names as name,
-    OrganizationalEntityImpl recipients
-where
-    t.archived = 0 and
-    recipients.id = :userId and
-    recipients in elements ( t.peopleAssignments.recipients  )  and
-
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
-
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
-
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-    ) 
-              order by t.id DESC
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-      <named-query name="TasksAssignedAsTaskInitiator">
-          <query>
-select distinct 
-     new org.jbpm.services.task.query.TaskSummaryImpl(
-     t.id,
-     t.taskData.processInstanceId,
-     name.shortText,
-     subject.shortText,
-     description.shortText,
-     t.taskData.status,
-     t.priority,
-     t.taskData.skipable,
-     actualOwner,
-     createdBy,
-     t.taskData.createdOn,
-     t.taskData.activationTime,
-     t.taskData.expirationTime,
-     t.taskData.processId,
-     t.taskData.processSessionId,
-     t.subTaskStrategy,
-     t.taskData.parentId              )
-from
-    TaskImpl t 
-    left join t.taskData.createdBy as createdBy
-    left join t.taskData.actualOwner as actualOwner           
-    left join t.subjects as subject
-    left join t.descriptions as description
-    left join t.names as name,
-    OrganizationalEntityImpl taskInitiator
-where
-    t.archived = 0 and
-    taskInitiator.id = :userId and
-    taskInitiator = t.peopleAssignments.taskInitiator and
-
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
-
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
-
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-    ) 
-              order by t.id DESC
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-      <named-query name="TasksAssignedAsTaskStakeholder">
-          <query>
-select distinct 
-     new org.jbpm.services.task.query.TaskSummaryImpl(
-     t.id,
-     t.taskData.processInstanceId,
-     name.shortText,
-     subject.shortText,
-     description.shortText,
-     t.taskData.status,
-     t.priority,
-     t.taskData.skipable,
-     actualOwner,
-     createdBy,
-     t.taskData.createdOn,
-     t.taskData.activationTime,
-     t.taskData.expirationTime,
-     t.taskData.processId,
-     t.taskData.processSessionId,
-     t.subTaskStrategy,
-     t.taskData.parentId              )
-from
-    TaskImpl t 
-    left join t.taskData.createdBy as createdBy
-    left join t.taskData.actualOwner as actualOwner           
-    left join t.subjects as subject
-    left join t.descriptions as description
-    left join t.names as name,
-    OrganizationalEntityImpl taskStakeholder
-where
-    t.archived = 0 and
-    taskStakeholder.id = :userId and
-    taskStakeholder in elements ( t.peopleAssignments.taskStakeholders  )  and
-
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
-
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
-
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-    ) 
-              order by t.id DESC
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-      <named-query name="TasksOwned">
-          <query>
-select distinct 
-    new org.jbpm.services.task.query.TaskSummaryImpl(
-    t.id,
-    t.taskData.processInstanceId,
-    name.shortText,
-    subject.shortText,
-    description.shortText,
-    t.taskData.status,
-    t.priority,
-    t.taskData.skipable,
-    actualOwner,
-    createdBy,
-    t.taskData.createdOn,
-    t.taskData.activationTime,
-    t.taskData.expirationTime,
-    t.taskData.processId,
-    t.taskData.processSessionId,
-    t.subTaskStrategy,
-    t.taskData.parentId              )
-from
-    TaskImpl t 
-    left join t.taskData.createdBy as createdBy
-    left join t.taskData.actualOwner as actualOwner 
-    left join t.subjects as subject
-    left join t.descriptions as description
-    left join t.names as name
-where
-    t.archived = 0 and
-    t.taskData.actualOwner.id = :userId and
-
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
-
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
-
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-    ) 
-              order by t.id DESC
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-
-       <named-query name="TasksOwnedWithParticularStatusByExpirationDate">
-          <query>
-select
-    new org.jbpm.services.task.query.TaskSummaryImpl(
-    t.id,
-    t.taskData.processInstanceId,
-    name.shortText,
-    subject.shortText,
-    description.shortText,
-    t.taskData.status,
-    t.priority,
-    t.taskData.skipable,
-    actualOwner,
-    createdBy,
-    t.taskData.createdOn,
-    t.taskData.activationTime,
-    t.taskData.expirationTime,
-    t.taskData.processId,
-    t.taskData.processSessionId,
-    t.subTaskStrategy,
-    t.taskData.parentId )
-from
-    TaskImpl t 
-    left join t.taskData.createdBy as createdBy
-    left join t.taskData.actualOwner as actualOwner 
-    left join t.subjects as subject
-    left join t.descriptions as description 
-    left join t.names as name
-    left join t.peopleAssignments.potentialOwners potOwners
-where
-    t.archived = 0 and          
-    (t.taskData.actualOwner.id = :userId or potOwners.id = :userId) and
-    t.taskData.status in (:status) and
-    t.taskData.expirationTime = :expirationDate and
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
-
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
-
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-            ) 
-    order by t.id DESC         
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-      
-      <named-query name="TasksOwnedWithParticularStatusByExpirationDateBeforeSpecifiedDate">
-          <query>
-select
-    new org.jbpm.services.task.query.TaskSummaryImpl(
-    t.id,
-    t.taskData.processInstanceId,
-    name.shortText,
-    subject.shortText,
-    description.shortText,
-    t.taskData.status,
-    t.priority,
-    t.taskData.skipable,
-    actualOwner,
-    createdBy,
-    t.taskData.createdOn,
-    t.taskData.activationTime,
-    t.taskData.expirationTime,
-    t.taskData.processId,
-    t.taskData.processSessionId,
-    t.subTaskStrategy,
-    t.taskData.parentId )
-from
-    TaskImpl t 
-    left join t.taskData.createdBy as createdBy
-    left join t.taskData.actualOwner as actualOwner 
-    left join t.subjects as subject
-    left join t.descriptions as description 
-    left join t.names as name
-    left join t.peopleAssignments.potentialOwners potOwners
-where
-    t.archived = 0 and
-    (t.taskData.actualOwner.id = :userId or potOwners.id = :userId) and
-    t.taskData.status in (:status) and
-    t.taskData.expirationTime &lt; :date and
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
-
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
-
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-            ) 
             order by t.id DESC
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    <named-query name="TasksAssignedAsExcludedOwner">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t,
+            OrganizationalEntityImpl excludedOwners
+            where
+            t.archived = 0 and
+            excludedOwners.id = :userId and
+            excludedOwners in elements ( t.peopleAssignments.excludedOwners  )  
+
+   
+            order by t.id DESC      
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    <named-query name="TasksAssignedAsPotentialOwner">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t,
+            OrganizationalEntityImpl potentialOwners
+            where
+            t.archived = 0 and
+            potentialOwners.id = :userId and
+            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
+            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
+            order by t.id DESC            
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    <named-query name="TasksAssignedAsPotentialOwnerByStatus">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t,
+            OrganizationalEntityImpl potentialOwners
+            where
+            t.archived = 0 and
+            potentialOwners.id = :userId and
+            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
+
+    
+            t.taskData.status in (:status) 
+            order by t.id DESC    
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    <named-query name="TasksAssignedAsPotentialOwnerByStatusByGroup">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t, 
+            OrganizationalEntityImpl potentialOwners
+            where
+            t.archived = 0 and
+            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
+
+            t.taskData.status in (:status) 
+            order by t.id DESC
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    <named-query name="TasksAssignedAsPotentialOwnerWithGroups">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t ,
+            OrganizationalEntityImpl potentialOwners
+            where
+            t.archived = 0 and
+            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            potentialOwners in elements ( t.peopleAssignments.potentialOwners )  and
+
+            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
+            order by t.id DESC          
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    <named-query name="TasksAssignedAsPotentialOwnerByStatusWithGroups">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t ,
+            OrganizationalEntityImpl potentialOwners
+            where
+            t.archived = 0 and
+            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            potentialOwners in elements ( t.peopleAssignments.potentialOwners )  and
+
+            t.taskData.status in (:status) 
+            order by t.id DESC
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    <named-query name="TasksAssignedAsPotentialOwnerByGroup">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t ,
+            OrganizationalEntityImpl potentialOwners
+            where
+            t.archived = 0 and
+            t.taskData.actualOwner = null and
+            potentialOwners.id = :groupId and
+            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
+
+
+            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
+            order by t.id DESC
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
       
-        <named-query name="TasksOwnedWithParticularStatusByExpirationDateOptional">
-          <query>
-select
-    new org.jbpm.services.task.query.TaskSummaryImpl(
-    t.id,
-    t.taskData.processInstanceId,
-    name.shortText,
-    subject.shortText,
-    description.shortText,
-    t.taskData.status,
-    t.priority,
-    t.taskData.skipable,
-    actualOwner,
-    createdBy,
-    t.taskData.createdOn,
-    t.taskData.activationTime,
-    t.taskData.expirationTime,
-    t.taskData.processId,
-    t.taskData.processSessionId,
-    t.subTaskStrategy,
-    t.taskData.parentId )
-from
-    TaskImpl t 
-    left join t.taskData.createdBy as createdBy
-    left join t.taskData.actualOwner as actualOwner 
-    left join t.subjects as subject
-    left join t.descriptions as description 
-    left join t.names as name
-    left join t.peopleAssignments.potentialOwners potOwners
-where
-    t.archived = 0 and          
-    (t.taskData.actualOwner.id = :userId or potOwners.id = :userId) and
-    t.taskData.status in (:status) and
-    (t.taskData.expirationTime = :expirationDate or
-    t.taskData.expirationTime is null)
-     and
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
+    <named-query name="TasksAssignedAsPotentialOwnerByGroups">
+        <query>
+            select
+     
+            t.id,
+            potentialOwners.id
 
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
+            from
+            TaskImpl t, 
+    
+            OrganizationalEntityImpl potentialOwners        
 
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-    ) 
+            where
+    
+            potentialOwners.id in (:groupIds) and
+            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and      
+            t.archived = 0 and
+            t.taskData.actualOwner = null and          
+    
 
-    order by t.id DESC
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
+
+            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
+    
+    
+              
+    
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+      
+    <named-query name="TasksAssignedAsPotentialOwnerStatusByExpirationDate">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t,
+            OrganizationalEntityImpl potentialOwners
+            where
+            t.archived = 0 and
+            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
+
+            t.taskData.expirationTime = :expirationDate and
+            t.taskData.status in (:status) 
+            order by t.id DESC
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+      
+    <named-query name="TasksAssignedAsPotentialOwnerStatusByExpirationDateOptional">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t,
+            OrganizationalEntityImpl potentialOwners
+            where
+            t.archived = 0 and
+            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
+
+            (t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null) and
+            t.taskData.status in (:status) 
+            order by t.id DESC     
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+      
+    <named-query name="TasksAssignedAsPotentialOwnerByGroupsByExpirationDate">
+        <query>
+            select
+     
+            t.id,
+            potentialOwners.id
+
+            from
+            TaskImpl t, 
+    
+            OrganizationalEntityImpl potentialOwners        
+
+            where
+    
+            potentialOwners.id in (:groupIds) and
+            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and      
+            t.archived = 0 and
+            t.taskData.actualOwner = null and          
+            t.taskData.expirationTime = :expirationDate and
+            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
+    
+    
+              
+    
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+      
+      
+    <named-query name="GetPotentialOwnersForTaskIds">
+        <query>
+            select
+            t.id,         
+            potentialOwners
+            from
+            TaskImpl t, 
+            OrganizationalEntityImpl potentialOwners        
+
+            where
+            t.id in (:taskIds) and
+            potentialOwners in elements ( t.peopleAssignments.potentialOwners  ) 
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+      
+      
+      
+    <named-query name="TasksAssignedAsPotentialOwnerByGroupsByExpirationDateOptional">
+        <query>
+            select
+     
+            t.id,
+            potentialOwners.id
+
+            from
+            TaskImpl t, 
+    
+            OrganizationalEntityImpl potentialOwners        
+
+            where
+    
+            potentialOwners.id in (:groupIds) and
+            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and      
+            t.archived = 0 and
+            t.taskData.actualOwner = null and          
+            (t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null) and
+            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
+    
+    
+              
+    
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>      
+ 
+    <named-query name="SubTasksAssignedAsPotentialOwner">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t,
+            OrganizationalEntityImpl potentialOwners
+            where
+            t.archived = 0 and
+            t.taskData.parentId = :parentId and
+            (potentialOwners.id = :userId or potentialOwners.id in (:groupIds)) and
+            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
+            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
+            order by t.id DESC
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+
+    <named-query name="GetSubTasksByParentTaskId">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t,
+            OrganizationalEntityImpl potentialOwners
+            where
+            t.archived = 0 and
+            t.taskData.parentId = :parentId and
+            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
+            order by t.id DESC
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+
+
+    <named-query name="TasksAssignedAsRecipient">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                    t.name,
+                    t.description,
+                    t.taskData.status,
+                    t.priority,
+                    t.taskData.actualOwner.id,
+                    t.taskData.createdBy.id,
+                    t.taskData.createdOn,
+                    t.taskData.activationTime,
+                    t.taskData.expirationTime,
+                    t.taskData.processId,
+                    t.taskData.processInstanceId,
+                    t.taskData.parentId,
+                    t.taskData.deploymentId              )
+            from
+            TaskImpl t,
+            OrganizationalEntityImpl recipients
+            where
+            t.archived = 0 and
+            recipients.id = :userId and
+            recipients in elements ( t.peopleAssignments.recipients  )  
+
+            order by t.id DESC
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    <named-query name="TasksAssignedAsTaskInitiator">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t,
+            OrganizationalEntityImpl taskInitiator
+            where
+            t.archived = 0 and
+            taskInitiator.id = :userId and
+            taskInitiator = t.peopleAssignments.taskInitiator 
+
+   
+            order by t.id DESC
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    <named-query name="TasksAssignedAsTaskStakeholder">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t,
+            OrganizationalEntityImpl taskStakeholder
+            where
+            t.archived = 0 and
+            taskStakeholder.id = :userId and
+            taskStakeholder in elements ( t.peopleAssignments.taskStakeholders  )  
+
+   
+            order by t.id DESC
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    <named-query name="TasksOwned">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t
+    
+            where
+            t.archived = 0 and
+            t.taskData.actualOwner.id = :userId 
+
+   
+            order by t.id DESC
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+
+    <named-query name="TasksOwnedWithParticularStatusByExpirationDate">
+        <query>
+            select
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t 
+            left join t.peopleAssignments.potentialOwners potOwners
+            where
+            t.archived = 0 and          
+            (t.taskData.actualOwner.id = :userId or potOwners.id = :userId) and
+            t.taskData.status in (:status) and
+            t.taskData.expirationTime = :expirationDate 
+   
+            order by t.id DESC         
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+      
+    <named-query name="TasksOwnedWithParticularStatusByExpirationDateBeforeSpecifiedDate">
+        <query>
+            select
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t 
+    
+            left join t.peopleAssignments.potentialOwners potOwners
+            where
+            t.archived = 0 and
+            (t.taskData.actualOwner.id = :userId or potOwners.id = :userId) and
+            t.taskData.status in (:status) and
+            t.taskData.expirationTime &lt; :date 
+   
+            order by t.id DESC
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+      
+    <named-query name="TasksOwnedWithParticularStatusByExpirationDateOptional">
+        <query>
+            select
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t 
+            left join t.peopleAssignments.potentialOwners potOwners
+            where
+            t.archived = 0 and          
+            (t.taskData.actualOwner.id = :userId or potOwners.id = :userId) and
+            t.taskData.status in (:status) and
+            (t.taskData.expirationTime = :expirationDate or
+            t.taskData.expirationTime is null)
+    
+
+            order by t.id DESC
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
       
       
       
@@ -1134,465 +717,540 @@ where
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.taskData.processInstanceId,
-            name.shortText,
-            subject.shortText,
-            description.shortText,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            actualOwner,
-            createdBy,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.subTaskStrategy,
-            t.taskData.parentId            )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
-            TaskImpl t 
-            left join t.taskData.createdBy as createdBy
-            left join t.taskData.actualOwner as actualOwner 
-            left join t.subjects as subject
-            left join t.descriptions as description
-            left join t.names as name
+                TaskImpl t 
+            
             where
             t.archived = 0 and
-            t.taskData.status = :status and
-
-            (
-            name.language = :language
-            or t.names.size = 0
-            ) and
-
-            (
-            subject.language = :language
-            or t.subjects.size = 0
-            ) and
-
-            (
-            description.language = :language
-            or t.descriptions.size = 0
-            ) 
+            t.taskData.status = :status 
             order by t.id DESC
         </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
     <named-query name="TasksByStatusSince">
         <query>
             select
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.taskData.processInstanceId,
-            name.shortText,
-            subject.shortText,
-            description.shortText,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            actualOwner,
-            createdBy,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.subTaskStrategy,
-            t.taskData.parentId         )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t 
-            left join t.taskData.createdBy as createdBy
-            left join t.taskData.actualOwner as actualOwner 
-            left join t.subjects as subject
-            left join t.descriptions as description
-            left join t.names as name
+            
             where
             t.archived = 0 and
             t.taskData.status = :status and
             
-            (
-            name.language = :language
-            or t.names.size = 0
-            ) and
-
-            (
-            subject.language = :language
-            or t.subjects.size = 0
-            ) and
-
-            (
-            description.language = :language
-            or t.descriptions.size = 0
-            ) and
+           
 
             t.taskData.activationTime &lt; :since
             
             order by t.id DESC
         </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
       
     <named-query name="ArchivedTasks">
         <query>
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.taskData.processInstanceId,
-            name.shortText,
-            subject.shortText,
-            description.shortText,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            actualOwner,
-            createdBy,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.subTaskStrategy,
-            t.taskData.parentId       )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t 
-            left join t.taskData.createdBy as createdBy
-            left join t.taskData.actualOwner as actualOwner 
-            left join t.subjects as subject
-            left join t.descriptions as description
-            left join t.names as name
             where
-            t.archived = 1 and
+            t.archived = 1
 
-            (
-            name.language = :language
-            or t.names.size = 0
-            ) and
-
-            (
-            subject.language = :language
-            or t.subjects.size = 0
-            ) and
-
-            (
-            description.language = :language
-            or t.descriptions.size = 0
-            )
         </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
 
       
-      <named-query name="TasksOwnedWithParticularStatus">
-          <query>
-select distinct 
-    new org.jbpm.services.task.query.TaskSummaryImpl(
-    t.id,
-    t.taskData.processInstanceId,
-    name.shortText,
-    subject.shortText,
-    description.shortText,
-    t.taskData.status,
-    t.priority,
-    t.taskData.skipable,
-    actualOwner,
-    createdBy,
-    t.taskData.createdOn,
-    t.taskData.activationTime,
-    t.taskData.expirationTime,
-    t.taskData.processId,
-    t.taskData.processSessionId,
-    t.subTaskStrategy,
-    t.taskData.parentId )
-from
-    TaskImpl t 
-    left join t.taskData.createdBy as createdBy
-    left join t.taskData.actualOwner as actualOwner 
-    left join t.subjects as subject
-    left join t.descriptions as description 
-    left join t.names as name
-where
-    t.archived = 0 and          
-    t.taskData.actualOwner.id = :userId and
-    t.taskData.status in (:status) and
-
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
-
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
-
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-    ) 
-    order by t.id DESC
-              
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-      
-          <named-query name="TaskSummariesByIds">
-          <query>
-select
-    new org.jbpm.services.task.query.TaskSummaryImpl(
-    t.id,
-    t.taskData.processInstanceId,
-    name.shortText,
-    subject.shortText,
-    description.shortText,
-    t.taskData.status,
-    t.priority,
-    t.taskData.skipable,
-    actualOwner,
-    createdBy,
-    t.taskData.createdOn,
-    t.taskData.activationTime,
-    t.taskData.expirationTime,
-    t.taskData.processId,
-    t.taskData.processSessionId,
-    t.subTaskStrategy,
-    t.taskData.parentId )
-from
-    TaskImpl t 
-    left join t.taskData.createdBy as createdBy
-    left join t.taskData.actualOwner as actualOwner 
-    left join t.subjects as subject
-    left join t.descriptions as description 
-    left join t.names as name
-where
-    t.id in (:taskIds)     and      
-
-    (
-    name.language = :language
-    or t.names.size = 0
-    ) and
-
-    (
-    subject.language = :language
-    or t.subjects.size = 0
-    ) and
-
-    (
-    description.language = :language
-    or t.descriptions.size = 0
-    ) 
-    order by t.id DESC
+    <named-query name="TasksOwnedWithParticularStatus">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t 
     
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
+            where
+            t.archived = 0 and          
+            t.taskData.actualOwner.id = :userId and
+            t.taskData.status in (:status) 
+
+   
+            order by t.id DESC
+              
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
       
-       <named-query name="TasksOwnedPotentialOwnersByTaskIds">
-          <query>
-select
+    <named-query name="TaskSummariesByIds">
+        <query>
+            select
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t 
+    
+            where
+            t.id in (:taskIds)  
+            order by t.id DESC
+    
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+      
+    <named-query name="TasksOwnedPotentialOwnersByTaskIds">
+        <query>
+            select
      
-     t.id,
-     potentialOwners.id
+            t.id,
+            potentialOwners.id
 
-from
-    TaskImpl t, 
-    OrganizationalEntityImpl potentialOwners        
+            from
+            TaskImpl t, 
+            OrganizationalEntityImpl potentialOwners        
 
-where
+            where
     
-    t.id in (:taskIds) and
-    potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and      
-    t.archived = 0 and
-    t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
+            t.id in (:taskIds) and
+            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and      
+            t.archived = 0 and
+            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
     
     
               
     
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
  
-	  <named-query name="UnescalatedEndDeadlines">
-          <query>
-select
-     new org.jbpm.services.task.query.DeadlineSummaryImpl(
-     t.id,
-     d.id,
-     d.date)
-from
-    TaskImpl t,
-    DeadlineImpl d
-where
-    t.archived = 0 and
-    d in elements( t.deadlines.endDeadlines ) and
-    d.escalated = 0
-order by
-    d.date
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
+    <named-query name="UnescalatedEndDeadlines">
+        <query>
+            select
+            new org.jbpm.services.task.query.DeadlineSummaryImpl(
+            t.id,
+            d.id,
+            d.date)
+            from
+            TaskImpl t,
+            DeadlineImpl d
+            where
+            t.archived = 0 and
+            d in elements( t.deadlines.endDeadlines ) and
+            d.escalated = 0
+            order by
+            d.date
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
       
-          <named-query name="UnescalatedStartDeadlines">
-          <query>
-select
-     new org.jbpm.services.task.query.DeadlineSummaryImpl(
-     t.id,
-     d.id,
-     d.date)
-from
-    TaskImpl t,
-    DeadlineImpl d
-where
-    t.archived = 0 and
-    d in elements( t.deadlines.startDeadlines ) and
-    d.escalated = 0
-order by
-    d.date
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-      <named-query name="TaskByWorkItemId">
-          <query>
-select
-    t
-from
-    TaskImpl t 
-where
-    t.archived = 0 and
-    t.taskData.workItemId = :workItemId
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-      <named-query name="TasksByStatusByProcessId">
+    <named-query name="UnescalatedStartDeadlines">
+        <query>
+            select
+            new org.jbpm.services.task.query.DeadlineSummaryImpl(
+            t.id,
+            d.id,
+            d.date)
+            from
+            TaskImpl t,
+            DeadlineImpl d
+            where
+            t.archived = 0 and
+            d in elements( t.deadlines.startDeadlines ) and
+            d.escalated = 0
+            order by
+            d.date
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    <named-query name="TaskByWorkItemId">
+        <query>
+            select
+            t
+            from
+            TaskImpl t 
+            where
+            t.archived = 0 and
+            t.taskData.workItemId = :workItemId
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    <named-query name="TasksByStatusByProcessId">
         <query>
             select distinct
             new org.jbpm.services.task.query.TaskSummaryImpl(
-            t.id,
-            t.taskData.processInstanceId,
-            name.shortText,
-            subject.shortText,
-            description.shortText,
-            t.taskData.status,
-            t.priority,
-            t.taskData.skipable,
-            actualOwner,
-            createdBy,
-            t.taskData.createdOn,
-            t.taskData.activationTime,
-            t.taskData.expirationTime,
-            t.taskData.processId,
-            t.taskData.processSessionId,
-            t.subTaskStrategy,
-            t.taskData.parentId )
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
             from
             TaskImpl t 
-            left join t.taskData.actualOwner as actualOwner            
-            left join t.taskData.createdBy as createdBy
-            left join t.subjects as subject
-            left join t.descriptions as description
-            left join t.names as name
+            
             where
             t.archived = 0 and
             t.taskData.processInstanceId = :processInstanceId and
-            (
-            name.language = :language
-            or t.names.size = 0
-            ) and
-
-            (
-            subject.language = :language
-            or t.subjects.size = 0
-            ) and
-
-            (
-            description.language = :language
-            or t.descriptions.size = 0
-            ) and
+           
 
             t.taskData.status in (:status) 
         </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
     <named-query name="TasksByStatusByProcessIdByTaskName">
         <query>
             select distinct
             new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t
+            
+            where
+            t.archived = 0 and
+            t.taskData.processInstanceId = :processInstanceId and
+            t.name = :taskName and
+            t.taskData.status in (:status) 
+            order by t.id DESC
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    <named-query name="TasksByProcessInstanceId">
+        <query>
+            select
+            t.id
+            from
+            TaskImpl t
+            where
+            t.archived = 0 and
+            t.taskData.processInstanceId = :processInstanceId
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+   
+   
+ 
+    <named-query name="AttachmentsByTaskId">
+        <query>
+            select
+            a
+            from
+            TaskImpl t 
+            join t.taskData.attachments as  a  
+            where 
+            t.id = :taskId
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+      
+      
+   
+    <named-query name="QuickTasksAssignedAsPotentialOwnerWithGroupsByStatus">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
             t.id,
-            t.taskData.processInstanceId,
-            name.shortText,
-            subject.shortText,
-            description.shortText,
+            t.name,
+            t.description,
             t.taskData.status,
             t.priority,
-            t.taskData.skipable,
-            actualOwner,
-            createdBy,
+            t.taskData.actualOwner.id,
+            t.taskData.createdBy.id,
             t.taskData.createdOn,
             t.taskData.activationTime,
             t.taskData.expirationTime,
             t.taskData.processId,
-            t.taskData.processSessionId,
-            t.subTaskStrategy,
-            t.taskData.parentId )
+            t.taskData.processInstanceId,
+            t.taskData.parentId,
+            t.taskData.deploymentId              )
             from
-            TaskImpl t
-            left join t.taskData.actualOwner as actualOwner
-            left join t.taskData.createdBy as createdBy
-            left join t.subjects as subject
-            left join t.descriptions as description
-            left join t.names as name
+            TaskImpl t,
+            OrganizationalEntityImpl potentialOwners
             where
             t.archived = 0 and
-            t.taskData.processInstanceId = :processInstanceId and
-            name.shortText = :taskName and
-            (
-            name.language = :language
-            or t.names.size = 0
-            ) and
-
-            (
-            subject.language = :language
-            or t.subjects.size = 0
-            ) and
-
-            (
-            description.language = :language
-            or t.descriptions.size = 0
-            ) and
-
+            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            potentialOwners in elements ( t.peopleAssignments.potentialOwners )  and
+            t.taskData.status in (:status) 
+            order by t.id DESC          
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+      
+      
+     
+   
+   
+    <named-query name="QuickTasksAssignedAsPotentialOwnerStatusByExpirationDateOptional">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+            t.id,
+            t.name,
+            t.description,
+            t.taskData.status,
+            t.priority,
+            t.taskData.actualOwner.id,
+            t.taskData.createdBy.id,
+            t.taskData.createdOn,
+            t.taskData.activationTime,
+            t.taskData.expirationTime,
+            t.taskData.processId,
+            t.taskData.processInstanceId,
+            t.taskData.parentId,
+            t.taskData.deploymentId              )
+            from
+            TaskImpl t ,
+            OrganizationalEntityImpl potentialOwners
+            where
+            t.archived = 0 and
+            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
+            (t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null) and
+            t.taskData.status in (:status) 
+            order by t.id DESC     
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+      
+    <named-query name="QuickTasksAssignedAsPotentialOwnerStatusByExpirationDate">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+            t.id,
+            t.name,
+            t.description,
+            t.taskData.status,
+            t.priority,
+            t.taskData.actualOwner.id,
+            t.taskData.createdBy.id,
+            t.taskData.createdOn,
+            t.taskData.activationTime,
+            t.taskData.expirationTime,
+            t.taskData.processId,
+            t.taskData.processInstanceId,
+            t.taskData.parentId,
+            t.taskData.deploymentId              )
+            from
+            TaskImpl t ,
+            OrganizationalEntityImpl potentialOwners
+            where
+            t.archived = 0 and
+            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
+    
+            t.taskData.expirationTime = :expirationDate and
             t.taskData.status in (:status) 
             order by t.id DESC
         </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
-          <named-query name="TasksByProcessInstanceId">
-          <query>
-select
-    t.id
-from
-    TaskImpl t
-where
-    t.archived = 0 and
-    t.taskData.processInstanceId = :processInstanceId
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-   
-   
- 
-<named-query name="AttachmentsByTaskId">
-          <query>
-select
-     a
-from
-    TaskImpl t 
-    join t.taskData.attachments as  a  
-where 
-    t.id = :taskId
-          </query>
-          <!-- hint name="org.hibernate.timeout" value="200"/ -->
-      </named-query>
-      
-      
+    
+    <named-query name="NewTasksAssignedAsPotentialOwner">
+        <query>
+            select distinct 
+                new org.jbpm.services.task.query.TaskSummaryImpl(
+                    t.id,
+                    t.name,
+                    t.description,
+                    t.taskData.status,
+                    t.priority,
+                    t.taskData.actualOwner.id,
+                    t.taskData.createdBy.id,
+                    t.taskData.createdOn,
+                    t.taskData.activationTime,
+                    t.taskData.expirationTime,
+                    t.taskData.processId,
+                    t.taskData.processInstanceId,
+                    t.taskData.parentId,
+                    t.taskData.deploymentId              )
+            from
+                TaskImpl t,
+                OrganizationalEntityImpl potentialOwners
+            where
+                t.archived = 0 and
+                ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+                potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
+                t.taskData.status in (:status) 
+            order by t.id DESC    
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    
+    <named-query name="NewTasksAssignedAsPotentialOwnerByExpirationDateOptional">
+        <query>
+            select distinct 
+                new org.jbpm.services.task.query.TaskSummaryImpl(
+                    t.id,
+                    t.name,
+                    t.description,
+                    t.taskData.status,
+                    t.priority,
+                    t.taskData.actualOwner.id,
+                    t.taskData.createdBy.id,
+                    t.taskData.createdOn,
+                    t.taskData.activationTime,
+                    t.taskData.expirationTime,
+                    t.taskData.processId,
+                    t.taskData.processInstanceId,
+                    t.taskData.parentId,
+                    t.taskData.deploymentId              )
+            from
+                TaskImpl t,
+                OrganizationalEntityImpl potentialOwners
+            where
+            t.archived = 0 and
+            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
+            (t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null) and
+            t.taskData.status in (:status) 
+            order by t.id DESC     
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+     <named-query name="NewTasksAssignedAsPotentialOwnerByExpirationDate">
+        <query>
+            select distinct 
+                new org.jbpm.services.task.query.TaskSummaryImpl(
+                    t.id,
+                    t.name,
+                    t.description,
+                    t.taskData.status,
+                    t.priority,
+                    t.taskData.actualOwner.id,
+                    t.taskData.createdBy.id,
+                    t.taskData.createdOn,
+                    t.taskData.activationTime,
+                    t.taskData.expirationTime,
+                    t.taskData.processId,
+                    t.taskData.processInstanceId,
+                    t.taskData.parentId,
+                    t.taskData.deploymentId              )
+            from
+                TaskImpl t,
+                OrganizationalEntityImpl potentialOwners
+            where
+                t.archived = 0 and
+                ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+                potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
+                t.taskData.expirationTime = :expirationDate and
+                t.taskData.status in (:status) 
+                order by t.id DESC
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    <named-query name="NewTasksOwned">
+        <query>
+            select distinct 
+                new org.jbpm.services.task.query.TaskSummaryImpl(
+                    t.id,
+                    t.name,
+                    t.description,
+                    t.taskData.status,
+                    t.priority,
+                    t.taskData.actualOwner.id,
+                    t.taskData.createdBy.id,
+                    t.taskData.createdOn,
+                    t.taskData.activationTime,
+                    t.taskData.expirationTime,
+                    t.taskData.processId,
+                    t.taskData.processInstanceId,
+                    t.taskData.parentId,
+                    t.taskData.deploymentId              )
+            from
+                TaskImpl t
+            where
+                t.archived = 0 and
+                t.taskData.actualOwner.id = :userId and
+                t.taskData.status in (:status) 
+                order by t.id DESC
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    
 </entity-mappings>

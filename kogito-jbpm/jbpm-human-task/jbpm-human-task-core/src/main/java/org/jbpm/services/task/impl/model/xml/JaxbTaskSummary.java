@@ -50,15 +50,15 @@ public class JaxbTaskSummary implements TaskSummary {
     @XmlSchemaType(name="long")
     private long id;
     
-    @XmlElement
+    @XmlElement(name="name")
     @XmlSchemaType(name="string")
     private String name;
     
-    @XmlElement
+    @XmlElement(name="subject")
     @XmlSchemaType(name="string")
     private String subject;
     
-    @XmlElement
+    @XmlElement(name="description")
     @XmlSchemaType(name="string")
     private String description;
     
@@ -103,7 +103,15 @@ public class JaxbTaskSummary implements TaskSummary {
     @XmlElement(name="process-session-id")
     @XmlSchemaType(name="int")
     private int processSessionId;
+    
+    @XmlElement(name="deployment-id")
+    @XmlSchemaType(name="string")
+    private String deploymentId;
 
+    @XmlElement(name="quick-task-summary")
+    @XmlSchemaType(name="boolean")
+    private boolean quickTaskSummary;
+    
     @XmlElement(name="sub-task-strategy")
     @XmlJavaTypeAdapter(value=SubTasksStrategyXmlAdapter.class, type=SubTasksStrategy.class)
     private SubTasksStrategy subTaskStrategy;
@@ -123,7 +131,6 @@ public class JaxbTaskSummary implements TaskSummary {
         this.description = taskSum.getDescription();
         this.status = taskSum.getStatus();
         this.priority = taskSum.getPriority();
-        this.skipable = taskSum.isSkipable();
         User actual = taskSum.getActualOwner();
         if( actual != null ) { 
             this.actualOwnerId = actual.getId();
@@ -137,6 +144,8 @@ public class JaxbTaskSummary implements TaskSummary {
         this.expirationTime = taskSum.getExpirationTime();
         this.processId = taskSum.getProcessId();
         this.processSessionId = taskSum.getProcessSessionId();
+        this.deploymentId = taskSum.getDeploymentId();
+        this.quickTaskSummary = false;
     }
     
     
@@ -311,6 +320,25 @@ public class JaxbTaskSummary implements TaskSummary {
 
     public void setPotentialOwners(List<String> potentialOwners) {
         this.potentialOwners = potentialOwners;
+    }
+
+    public String getDeploymentId() {
+        return deploymentId;
+    }
+
+    @Override
+    public String getStatusId() {
+        return (status != null)?status.name():"";
+    }
+
+    @Override
+    public boolean isQuickTaskSummary() {
+        return quickTaskSummary;
+    }
+
+    @Override
+    public long getParentId() {
+        return parentId;
     }
 
 }

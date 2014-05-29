@@ -240,7 +240,7 @@ public class HumanResourcesHiringTest extends AbstractBaseTest {
         assertNotNull(completedNodes);
         assertEquals(1, completedNodes.size());
         
-        List<TaskSummary> tasks = ((InternalTaskService) taskService).getTasksAssignedByGroup("HR", "en-UK");
+        List<TaskSummary> tasks = ((InternalTaskService) taskService).getTasksAssignedByGroup("HR");
 
         TaskSummary HRInterview = tasks.get(0);
 
@@ -271,7 +271,7 @@ public class HumanResourcesHiringTest extends AbstractBaseTest {
         assertNotNull(tasks);
         assertEquals(1, tasks.size());
 
-        tasks = ((InternalTaskService) taskService).getTasksAssignedByGroup("IT", "en-UK");
+        tasks = ((InternalTaskService) taskService).getTasksAssignedByGroup("IT");
         assertNotNull(tasks);
         assertEquals(1, tasks.size());
         TaskSummary techInterview = tasks.get(0);
@@ -310,7 +310,7 @@ public class HumanResourcesHiringTest extends AbstractBaseTest {
 		assertEquals(3, completedNodes.size());
 
 
-        tasks = ((InternalTaskService) taskService).getTasksAssignedByGroup("Accounting", "en-UK");
+        tasks = ((InternalTaskService) taskService).getTasksAssignedByGroup("Accounting");
         assertNotNull(tasks);
         assertEquals(1, tasks.size());
         TaskSummary createProposal = tasks.get(0);
@@ -346,7 +346,7 @@ public class HumanResourcesHiringTest extends AbstractBaseTest {
 		assertNotNull(completedNodes);
 		assertEquals(5, completedNodes.size());
 
-        tasks = ((InternalTaskService) taskService).getTasksAssignedByGroup("HR", "en-UK");
+        tasks = ((InternalTaskService) taskService).getTasksAssignedByGroup("HR");
         assertNotNull(tasks);
         assertEquals(1, tasks.size());
         TaskSummary signContract = tasks.get(0);

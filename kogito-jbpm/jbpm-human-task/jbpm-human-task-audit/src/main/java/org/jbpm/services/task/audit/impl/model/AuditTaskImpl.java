@@ -24,8 +24,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 
@@ -34,16 +32,15 @@ import javax.persistence.Temporal;
  * @author salaboy
  */
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @SequenceGenerator(name="auditIdSeq", sequenceName="AUDIT_ID_SEQ", allocationSize=1)
-public abstract class AbstractAuditTaskImpl implements Serializable, AuditTask {
+public class AuditTaskImpl implements Serializable, AuditTask {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="auditIdSeq")
-    private long id;
+    private Long id;
     
-    @Column(name = "TASK_ID")
-    private long taskId;
+    
+    private Long taskId;
     
     private String status;
     @Temporal(javax.persistence.TemporalType.DATE)
@@ -52,6 +49,7 @@ public abstract class AbstractAuditTaskImpl implements Serializable, AuditTask {
     private String description;
     private int priority;
     private String createdBy;
+    private String actualOwner;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date createdOn;
     @Temporal(javax.persistence.TemporalType.DATE)
@@ -60,11 +58,15 @@ public abstract class AbstractAuditTaskImpl implements Serializable, AuditTask {
     private String processId;
     private int processSessionId;
     private long parentId;
+    private String deploymentId;
 
-    public AbstractAuditTaskImpl() {
+    public AuditTaskImpl() {
     }
     
-    public AbstractAuditTaskImpl(long taskId, String status, Date activationTime, String name, String description, int priority, String createdBy, Date createdOn, Date dueDate, long processInstanceId, String processId, int processSessionId, long parentId) {
+    public AuditTaskImpl(long taskId, String name, String status, Date activationTime, 
+            String actualOwner , String description, int priority, String createdBy, 
+            Date createdOn, Date dueDate, long processInstanceId, String processId, 
+            int processSessionId, String deploymentId, long parentId) {
         this.taskId = taskId;
         this.status = status;
         this.activationTime = activationTime;
@@ -73,13 +75,24 @@ public abstract class AbstractAuditTaskImpl implements Serializable, AuditTask {
         this.priority = priority;
         this.createdBy = createdBy;
         this.createdOn = createdOn;
+        this.actualOwner = actualOwner;
         this.dueDate = dueDate;
         this.processInstanceId = processInstanceId;
         this.processId = processId;
         this.processSessionId = processSessionId;
+        this.deploymentId = deploymentId;
         this.parentId = parentId;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
+    
     @Override
     public long getTaskId() {
         return taskId;
@@ -208,6 +221,22 @@ public abstract class AbstractAuditTaskImpl implements Serializable, AuditTask {
     @Override
     public void setParentId(long parentId) {
         this.parentId = parentId;
+    }
+
+    public String getActualOwner() {
+        return actualOwner;
+    }
+
+    public void setActualOwner(String actualOwner) {
+        this.actualOwner = actualOwner;
+    }
+
+    public String getDeploymentId() {
+        return deploymentId;
+    }
+
+    public void setDeploymentId(String deploymentId) {
+        this.deploymentId = deploymentId;
     }
     
     

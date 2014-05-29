@@ -34,22 +34,26 @@ public class TaskSummaryImpl implements InternalTaskSummary {
     private String subject;
     private String description;
     private Status status;
+    private String statusId;
     private int priority;
     private boolean skipable;
     private User actualOwner;
+    private String actualOwnerId;
     private User createdBy;
+    private String createdById;
     private Date createdOn;
     private Date activationTime;
     private Date expirationTime;
     private long processInstanceId;
     private String processId;
     private int processSessionId;
+    private String deploymentId;
     private SubTasksStrategy subTaskStrategy;
     private long parentId;
     private List<String> potentialOwners;
+    private boolean quickTaskSummary;
 
     public TaskSummaryImpl(long id,
-            long processInstanceId,
             String name,
             String subject,
             String description,
@@ -63,6 +67,8 @@ public class TaskSummaryImpl implements InternalTaskSummary {
             Date expirationTime,
             String processId,
             int processSessionId,
+            long processInstanceId,
+            String deploymentId,
             SubTasksStrategy subTaskStrategy,
             long parentId) {
         super();
@@ -75,7 +81,13 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         this.priority = priority;
         this.skipable = skipable;
         this.actualOwner = actualOwner;
+        if (actualOwner != null) {
+            this.actualOwnerId = actualOwner.getId();
+        }
         this.createdBy = createdBy;
+        if (createdBy != null) {
+            this.createdById = createdBy.getId();
+        }
         this.createdOn = createdOn;
         this.activationTime = activationTime;
         this.expirationTime = expirationTime;
@@ -83,9 +95,46 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         this.processSessionId = processSessionId;
         this.subTaskStrategy = subTaskStrategy;
         this.parentId = parentId;
+        this.deploymentId = deploymentId;
+        this.quickTaskSummary = false;
     }
-    
-    
+
+    /*
+     * Construct a QuickTaskSummary
+     */
+    public TaskSummaryImpl(long id,
+            String name,
+            String description,
+            Status status,
+            int priority,
+            String actualOwner,
+            String createdBy,
+            Date createdOn,
+            Date activationTime,
+            Date expirationTime,
+            String processId,
+            long processInstanceId,
+            long parentId,
+            String deploymentId) {
+        this.id = id;
+        this.processInstanceId = processInstanceId;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        if (status != null) {
+            this.statusId = status.name();
+        }
+        this.priority = priority;
+        this.actualOwnerId = actualOwner;
+        this.createdById = createdBy;
+        this.createdOn = createdOn;
+        this.activationTime = activationTime;
+        this.expirationTime = expirationTime;
+        this.processId = processId;
+        this.parentId = parentId;
+        this.deploymentId = deploymentId;
+        this.quickTaskSummary = true;
+    }
 
     public TaskSummaryImpl() {
     }
@@ -302,6 +351,9 @@ public class TaskSummaryImpl implements InternalTaskSummary {
     }
 
     public User getActualOwner() {
+        if(quickTaskSummary && actualOwnerId != null && !actualOwnerId.equals("")){
+            actualOwner = TaskModelProvider.getFactory().newUser(actualOwnerId);
+        }
         return actualOwner;
     }
 
@@ -310,6 +362,9 @@ public class TaskSummaryImpl implements InternalTaskSummary {
     }
 
     public User getCreatedBy() {
+        if(quickTaskSummary && createdById != null && !createdById.equals("")){
+            createdBy = TaskModelProvider.getFactory().newUser(createdById);
+        }
         return createdBy;
     }
 
@@ -379,6 +434,10 @@ public class TaskSummaryImpl implements InternalTaskSummary {
 
     public void setPotentialOwners(List<String> potentialOwners) {
         this.potentialOwners = potentialOwners;
+    }
+
+    public boolean isQuickTaskSummary() {
+        return quickTaskSummary;
     }
 
     @Override
@@ -510,5 +569,25 @@ public class TaskSummaryImpl implements InternalTaskSummary {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String getStatusId() {
+        return statusId;
+    }
+
+    @Override
+    public String getActualOwnerId() {
+        return actualOwnerId;
+    }
+
+    @Override
+    public String getCreatedById() {
+        return createdById;
+    }
+
+    @Override
+    public String getDeploymentId() {
+        return deploymentId;
     }
 }

@@ -51,14 +51,26 @@ public class JaxbTask implements InternalTask {
     @XmlElement(name="task-type")
     @XmlSchemaType(name="int")
     private String taskType; 
-
+    
     @XmlElement(name="name")
-    private List<JaxbI18NText> jaxbNames;
+    @XmlSchemaType(name="String")
+    private String name;
     
     @XmlElement(name="subject")
-    private List<JaxbI18NText> jaxbSubjects;
+    @XmlSchemaType(name="String")
+    private String subject;
     
     @XmlElement(name="description")
+    @XmlSchemaType(name="String")
+    private String description;
+    
+    @XmlElement(name="names")
+    private List<JaxbI18NText> jaxbNames;
+    
+    @XmlElement(name="subjects")
+    private List<JaxbI18NText> jaxbSubjects;
+    
+    @XmlElement(name="descriptions")
     private List<JaxbI18NText> jaxbDescriptions;
     
     @XmlElement(name="people-assignments")
@@ -102,6 +114,9 @@ public class JaxbTask implements InternalTask {
         this.jaxbTaskData = new JaxbTaskData(task.getTaskData());
         this.taskType = task.getTaskType();
         this.formName = ((InternalTask)task).getFormName();
+        this.name = ((InternalTask)task).getName();
+        this.description = ((InternalTask)task).getDescription();
+        this.subject = ((InternalTask)task).getSubject();
     }
     
     @Override
@@ -401,5 +416,34 @@ public class JaxbTask implements InternalTask {
     public void setSubTaskStrategy(SubTasksStrategy subTaskStrategy) {
         unsupported(Task.class);
     }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String getSubject() {
+        return subject;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
+    
 
 }

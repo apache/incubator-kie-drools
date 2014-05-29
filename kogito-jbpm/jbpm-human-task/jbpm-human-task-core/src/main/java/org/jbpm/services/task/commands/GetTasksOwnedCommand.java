@@ -11,59 +11,53 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
+import org.kie.internal.task.api.QueryFilter;
 
-@XmlRootElement(name="get-task-by-owner-command")
+@XmlRootElement(name = "get-task-by-owner-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetTasksOwnedCommand extends UserGroupCallbackTaskCommand<List<TaskSummary>> {
 
-	private static final long serialVersionUID = -1763215272466075367L;
+    private static final long serialVersionUID = -1763215272466075367L;
 
-	@XmlElement
-    @XmlSchemaType(name="string")
-	private String language;
-    
     @XmlElement
-	private List<Status> status;
-	
-	public GetTasksOwnedCommand() {
-	}
-	
-	public GetTasksOwnedCommand(String userId, String language) {
-		this.userId = userId;
-		this.language = language;
+    private List<Status> status;
+    
+    private QueryFilter filter;
+
+    public GetTasksOwnedCommand() {
     }
 
-	public GetTasksOwnedCommand(String userId, String language, List<Status> status) {
-		this.userId = userId;
-		this.language = language;
-		this.status = status;
+    public GetTasksOwnedCommand(String userId) {
+        this.userId = userId;
+
     }
 
-    public String getLanguage() {
-		return language;
-	}
+    public GetTasksOwnedCommand(String userId, List<Status> status) {
+        this.userId = userId;
+        this.status = status;
+    }
+    
+    public GetTasksOwnedCommand(String userId, List<Status> status, QueryFilter filter) {
+        this.userId = userId;
+        this.status = status;
+        this.filter = filter;
+    }
 
-	public void setLanguage(String language) {
-		this.language = language;
-	}
+    public List<Status> getStatus() {
+        return status;
+    }
 
-	public List<Status> getStatus() {
-		return status;
-	}
+    public QueryFilter getFilter() {
+        return filter;
+    }
 
-	public void setStatus(List<Status> status) {
-		this.status = status;
-	}
 
-	public List<TaskSummary> execute(Context cntxt) {
+    public List<TaskSummary> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         doCallbackUserOperation(userId, context);
         doUserGroupCallbackOperation(userId, null, context);
-        if (status == null) {
-        	return context.getTaskQueryService().getTasksOwned(userId, language);
-        } else {
-        	return context.getTaskQueryService().getTasksOwnedByStatus(userId, status, language);
-        }
+        return context.getTaskQueryService().getTasksOwned(userId, status, filter);
+        
     }
 
 }

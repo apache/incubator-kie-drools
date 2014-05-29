@@ -47,7 +47,7 @@ public abstract class TaskAttachmentBaseTest extends HumanTaskServicesBaseTest {
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [new User('Bobba Fet')], }),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "name =  'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         List<TaskSummary> tasks = taskService.getTasksAssignedAsBusinessAdministrator("Bobba Fet", "en-UK");

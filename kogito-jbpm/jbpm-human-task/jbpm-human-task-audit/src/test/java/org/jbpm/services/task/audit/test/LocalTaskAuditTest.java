@@ -33,7 +33,7 @@ import org.jbpm.services.task.audit.TaskAuditServiceFactory;
  *
  */
 
-public class LocalLifeCycleTest extends LifeCycleBaseTest {
+public class LocalTaskAuditTest extends TaskAuditBaseTest {
 
 	private PoolingDataSource pds;
 	private EntityManagerFactory emf;

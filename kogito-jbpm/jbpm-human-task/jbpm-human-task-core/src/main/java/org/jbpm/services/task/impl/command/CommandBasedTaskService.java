@@ -2,9 +2,9 @@ package org.jbpm.services.task.impl.command;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.drools.core.command.CommandService;
 import org.jbpm.services.task.commands.ActivateTaskCommand;
 import org.jbpm.services.task.commands.AddAttachmentCommand;
@@ -52,9 +52,7 @@ import org.jbpm.services.task.commands.GetSubTasksCommand;
 import org.jbpm.services.task.commands.GetTaskAssignedAsBusinessAdminCommand;
 import org.jbpm.services.task.commands.GetTaskAssignedAsExcludedOwnerCommand;
 import org.jbpm.services.task.commands.GetTaskAssignedAsInitiatorCommand;
-import org.jbpm.services.task.commands.GetTaskAssignedAsPotentialOwnerByExpDateCommand;
 import org.jbpm.services.task.commands.GetTaskAssignedAsPotentialOwnerCommand;
-import org.jbpm.services.task.commands.GetTaskAssignedAsPotentialOwnerPagingCommand;
 import org.jbpm.services.task.commands.GetTaskAssignedAsRecipientCommand;
 import org.jbpm.services.task.commands.GetTaskAssignedAsStakeholderCommand;
 import org.jbpm.services.task.commands.GetTaskAssignedByGroupsCommand;
@@ -90,8 +88,10 @@ import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.commands.UndeployTaskDefCommand;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.impl.TaskContentRegistry;
+import org.jbpm.services.task.query.QueryFilterImpl;
 import org.jbpm.services.task.rule.TaskRuleService;
 import org.kie.api.command.Command;
+import org.kie.internal.task.api.QueryFilter;
 import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
@@ -137,7 +137,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	}
 
 	public void claimNextAvailable(String userId, String language) {
-		executor.execute(new ClaimNextAvailableTaskCommand(userId, language));
+		executor.execute(new ClaimNextAvailableTaskCommand(userId));
 	}
 
 	public void complete(long taskId, String userId, Map<String, Object> data) {
@@ -176,32 +176,77 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 		return executor.execute(new GetTaskCommand(taskId));
 	}
 
-	public List<TaskSummary> getTasksAssignedAsBusinessAdministrator(
-			String userId, String language) {
-		return executor.execute(new GetTaskAssignedAsBusinessAdminCommand(userId, language));
+	public List<TaskSummary> getTasksAssignedAsBusinessAdministrator(String userId, String language) {
+		return executor.execute(new GetTaskAssignedAsBusinessAdminCommand(userId));
 	}
 
 	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, String language) {
-		return executor.execute(new GetTaskAssignedAsPotentialOwnerCommand(userId, language));
+		return getTasksAssignedAsPotentialOwner(userId, null, null, null);
 	}
-
+        
+        @Override
+        public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds) {
+                return getTasksAssignedAsPotentialOwner(userId, groupIds, null, null);
+        }
+        
+        public List<TaskSummary> getTasksAssignedAsPotentialOwner(
+			String userId, List<String> groupIds, List<Status> status, QueryFilter filter) {
+		return executor.execute(new GetTaskAssignedAsPotentialOwnerCommand(userId, groupIds, status, filter));
+	}
+        
 	public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(
 			String userId, List<Status> status, String language) {
-		return executor.execute(new GetTaskAssignedAsPotentialOwnerCommand(userId, language, status));
+		return getTasksAssignedAsPotentialOwner(userId, null, status, null);
+	}
+        
+        @Override
+	public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDate(
+			String userId, List<Status> statuses, Date expirationDate) {	
+                        Map<String, Object> params = new HashMap<String, Object>();
+                        params.put("expirationDate", expirationDate);
+		return getTasksAssignedAsPotentialOwner(userId, null, statuses, 
+                        new QueryFilterImpl( "t.taskData.expirationTime = :expirationDate", params, "order by t.id DESC"));
 	}
 
+	@Override
+	public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDateOptional(
+			String userId, List<Status> statuses, Date expirationDate) {
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("expirationDate", expirationDate);
+		return getTasksAssignedAsPotentialOwner(userId, null, statuses, 
+                        new QueryFilterImpl( "(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", params, "order by t.id DESC"));
+	}
+        
+        @Override
+	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId,
+			List<String> groupIds, int firstResult,
+			int maxResults) {
+		return getTasksAssignedAsPotentialOwner(userId, groupIds, null, new QueryFilterImpl(firstResult, maxResults));
+	}
+
+	@Override
+	public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(
+			String userId, List<String> groupIds, List<Status> status) {
+		return getTasksAssignedAsPotentialOwner(userId, groupIds, status, null);
+	}
+
+        public List<TaskSummary> getTasksOwned(String userId,
+			List<Status> status, QueryFilter filter) {
+		return executor.execute(new GetTasksOwnedCommand(userId, status, filter));
+	}
+        
 	public List<TaskSummary> getTasksOwned(String userId, String language) {
-		return executor.execute(new GetTasksOwnedCommand(userId, language));
+		return getTasksOwned(userId, null, null);
 	}
 
 	public List<TaskSummary> getTasksOwnedByStatus(String userId,
 			List<Status> status, String language) {
-		return executor.execute(new GetTasksOwnedCommand(userId, language, status));
+		return getTasksOwned(userId, status, null);
 	}
 
 	public List<TaskSummary> getTasksByStatusByProcessInstanceId(
 			long processInstanceId, List<Status> status, String language) {
-		return executor.execute(new GetTasksByStatusByProcessInstanceIdCommand(processInstanceId, language, status));
+		return executor.execute(new GetTasksByStatusByProcessInstanceIdCommand(processInstanceId, status));
 	}
 
 	public List<Long> getTasksByProcessInstanceId(long processInstanceId) {
@@ -211,10 +256,10 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
     @Override
     public List<TaskSummary> getTasksByVariousFields(List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
             List<String> busAdmins, List<String> potOwners, List<String> taskOwners, List<Status> statuses, 
-            List<String> language, boolean union) {
+            boolean union) {
 		return executor.execute(new GetTasksByVariousFieldsCommand(workItemIds, taskIds, procInstIds, 
 		        busAdmins, potOwners, taskOwners, 
-		        statuses, language, union));
+		        statuses, union));
     }
 
     @Override
@@ -289,8 +334,8 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	}
 
 	@Override
-	public void claimNextAvailable(String userId, List<String> groupIds, String language) {
-		executor.execute(new ClaimNextAvailableTaskCommand(userId, language));
+	public void claimNextAvailable(String userId, List<String> groupIds) {
+		executor.execute(new ClaimNextAvailableTaskCommand(userId));
 	}
 
 	@Override
@@ -354,8 +399,8 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	}
 
 	@Override
-	public List<TaskSummary> getSubTasksAssignedAsPotentialOwner(long parentId, String userId, String language) {
-		return executor.execute(new GetSubTasksCommand(parentId, userId, language));
+	public List<TaskSummary> getSubTasksAssignedAsPotentialOwner(long parentId, String userId) {
+		return executor.execute(new GetSubTasksCommand(parentId, userId));
 	}
 
 	@Override
@@ -374,68 +419,41 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	}
 
 	@Override
-	public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDate(
-			String userId, List<Status> statuses, Date expirationDate) {		
-		return executor.execute(new GetTaskAssignedAsPotentialOwnerByExpDateCommand(userId, statuses, expirationDate, false));
-	}
-
-	@Override
-	public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDateOptional(
-			String userId, List<Status> statuses, Date expirationDate) {
-		return executor.execute(new GetTaskAssignedAsPotentialOwnerByExpDateCommand(userId, statuses, expirationDate, true));
-	}
-
-	@Override
 	public List<TaskSummary> getTasksOwnedByExpirationDate(String userId,
 			List<Status> statuses, Date expirationDate) {
 		
-		return executor.execute(new GetTaskOwnedByExpDateCommand(userId, statuses, expirationDate, false));
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put("expirationDate", expirationDate);
+                return getTasksOwned(userId, statuses, new QueryFilterImpl("t.taskData.expirationTime = :expirationDate", params, "order by t.id DESC"));
 	}
 
 	@Override
 	public List<TaskSummary> getTasksOwnedByExpirationDateOptional(
 			String userId, List<Status> statuses, Date expirationDate) {
-		return executor.execute(new GetTaskOwnedByExpDateCommand(userId, statuses, expirationDate, true));
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put("expirationDate", expirationDate);
+                return getTasksOwned(userId, statuses, new QueryFilterImpl("(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", params, "order by t.id DESC"));
 	}
 
 	@Override
-	public List<TaskSummary> getTasksAssignedAsExcludedOwner(String userId,
-			String language) {
-		return executor.execute(new GetTaskAssignedAsExcludedOwnerCommand(userId, language));
+	public List<TaskSummary> getTasksAssignedAsExcludedOwner(String userId) {
+		return executor.execute(new GetTaskAssignedAsExcludedOwnerCommand(userId));
+	}
+
+
+	@Override
+	public List<TaskSummary> getTasksAssignedAsRecipient(String userId) {
+		return executor.execute(new GetTaskAssignedAsRecipientCommand(userId));
 	}
 
 	@Override
-	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language) {
-		return executor.execute(new GetTaskAssignedAsPotentialOwnerCommand(userId, language));
+	public List<TaskSummary> getTasksAssignedAsTaskInitiator(String userId) {
+		return executor.execute(new GetTaskAssignedAsInitiatorCommand(userId));
 	}
 
 	@Override
-	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId,
-			List<String> groupIds, String language, int firstResult,
-			int maxResults) {
-		return executor.execute(new GetTaskAssignedAsPotentialOwnerPagingCommand(userId, groupIds, language, firstResult, maxResults));
-	}
-
-	@Override
-	public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(
-			String userId, List<String> groupIds, List<Status> status,
-			String language) {
-		return executor.execute(new GetTaskAssignedAsPotentialOwnerCommand(userId, groupIds, language, status));
-	}
-
-	@Override
-	public List<TaskSummary> getTasksAssignedAsRecipient(String userId, String language) {
-		return executor.execute(new GetTaskAssignedAsRecipientCommand(userId, language));
-	}
-
-	@Override
-	public List<TaskSummary> getTasksAssignedAsTaskInitiator(String userId, String language) {
-		return executor.execute(new GetTaskAssignedAsInitiatorCommand(userId, language));
-	}
-
-	@Override
-	public List<TaskSummary> getTasksAssignedAsTaskStakeholder(String userId, String language) {
-		return executor.execute(new GetTaskAssignedAsStakeholderCommand(userId, language));
+	public List<TaskSummary> getTasksAssignedAsTaskStakeholder(String userId) {
+		return executor.execute(new GetTaskAssignedAsStakeholderCommand(userId));
 	}
 
 	@Override
@@ -446,9 +464,8 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 
 	@Override
 	public List<TaskSummary> getTasksByStatusByProcessInstanceIdByTaskName(
-			long processInstanceId, List<Status> status, String taskName,
-			String language) {
-		return executor.execute(new GetTasksByStatusByProcessInstanceIdCommand(processInstanceId, language, status, taskName));
+			long processInstanceId, List<Status> status, String taskName) {
+		return executor.execute(new GetTasksByStatusByProcessInstanceIdCommand(processInstanceId, status, taskName));
 	}
 
 	@Override
@@ -641,13 +658,13 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	}
 
 	@Override
-	public List<TaskSummary> getTasksAssignedByGroup(String groupId, String language) {		
-		return executor.execute(new GetTaskAssignedByGroupsCommand(Collections.singletonList(groupId), language));
+	public List<TaskSummary> getTasksAssignedByGroup(String groupId) {		
+		return executor.execute(new GetTaskAssignedByGroupsCommand(Collections.singletonList(groupId)));
 	}
 
 	@Override
-	public List<TaskSummary> getTasksAssignedByGroups(List<String> groupIds, String language) {
-		return executor.execute(new GetTaskAssignedByGroupsCommand(groupIds, language));
+	public List<TaskSummary> getTasksAssignedByGroups(List<String> groupIds) {
+		return executor.execute(new GetTaskAssignedByGroupsCommand(groupIds));
 	}
 
 	@Override

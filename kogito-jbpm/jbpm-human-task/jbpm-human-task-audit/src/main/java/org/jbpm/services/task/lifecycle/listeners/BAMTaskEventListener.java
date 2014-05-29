@@ -239,7 +239,7 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
                 actualOwner = ti.getTaskData().getActualOwner().getId();
             }
 
-            result = new BAMTaskSummaryImpl(ti.getId(), ti.getNames().get(0).getText(), status.toString(), new Date(), actualOwner, ti.getTaskData().getProcessInstanceId());
+            result = new BAMTaskSummaryImpl(ti.getId(), ti.getName(), status.toString(), new Date(), actualOwner, ti.getTaskData().getProcessInstanceId());
             if (worker != null) worker.createTask(result, ti);
             persistenceContext.persist(result);
         } else if (taskSummaries.size() == 1) {

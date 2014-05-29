@@ -108,7 +108,7 @@ public class FormProviderServiceImpl implements FormProviderService {
         if (task == null) {
             return "";
         }
-        String name = task.getNames().get(0).getText();
+        String name = task.getName();
         ProcessAssetDesc processDesc = dataService.getProcessesByDeploymentIdProcessId(task.getTaskData().getDeploymentId(), task.getTaskData().getProcessId());
         Map<String, Object> renderContext = new HashMap<String, Object>();
 
@@ -139,7 +139,7 @@ public class FormProviderServiceImpl implements FormProviderService {
         Map<String, String> taskOutputMappings = null;
         if (processId != null && !processId.equals("")) {
 
-            taskOutputMappings = bpmn2Service.getTaskOutputMappings(processId, task.getNames().iterator().next().getText());
+            taskOutputMappings = bpmn2Service.getTaskOutputMappings(processId, task.getName());
 
         }
         if (taskOutputMappings == null) {

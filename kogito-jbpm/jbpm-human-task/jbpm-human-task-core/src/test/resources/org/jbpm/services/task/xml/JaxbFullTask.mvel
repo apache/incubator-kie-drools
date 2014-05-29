@@ -24,9 +24,13 @@ with ( new Task() ) {
                    faultName = "koningsmoord en trouwen met diens broer",
                    faultType = "tragedy",
                    faultContentId = 1911,
+                   deploymentId = "org.jbpm:test:1.0.0",
                    parentId = 1564,
                    previousStatus = Status.Ready
                 }),
+    name = 'Claudius',
+    subject = 'Hero-Fool',
+    description = 'Tragedy',
     names = [ new I18NText( 'en-UK', 'Claudius'), new I18NText( 'en-UK', 'Bernardo') ],
     subjects = [ new I18NText( 'en-UK', 'Hero-Fool'), new I18NText( 'en-UK', 'Tragedy') ],
     descriptions = [ new I18NText( 'en-UK', 'Tragedy'), new I18NText( 'en-UK', 'Drama') ],

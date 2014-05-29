@@ -107,7 +107,6 @@ public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand
 	        this.potOwners = (List<String>) params.get(POTENTIAL_OWNER_ID_LIST);
 	        this.taskOwners = (List<String>) params.get(ACTUAL_OWNER_ID_LIST);
 	        this.statuses = (List<Status>) params.get(STATUS_LIST);
-	        this.language = (List<String>) params.get(LANGUAGE);
 	    }
 	}
 
@@ -125,7 +124,6 @@ public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand
         params.put(POTENTIAL_OWNER_ID_LIST, potOwners);
         params.put(ACTUAL_OWNER_ID_LIST, taskOwners);
         params.put(STATUS_LIST, statuses);
-        params.put(LANGUAGE, language);
         if( maxResults != null && maxResults.intValue() > 0 ) {
             Integer [] maxResultsArr = { maxResults };
             params.put("maxResults", Arrays.asList(maxResultsArr));

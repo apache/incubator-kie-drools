@@ -12,40 +12,28 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
 
-@XmlRootElement(name="get-task-assigned-stake-holder-command")
+@XmlRootElement(name = "get-task-assigned-stake-holder-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetTaskAssignedAsInitiatorCommand extends UserGroupCallbackTaskCommand<List<TaskSummary>> {
 
-	private static final long serialVersionUID = 5077599352603072633L;
+    private static final long serialVersionUID = 5077599352603072633L;
 
-	@XmlElement
-    @XmlSchemaType(name="string")
-	private String language;
-	
     @XmlElement
-	private List<Status> status;
-	
-	public GetTaskAssignedAsInitiatorCommand() {
-	}
-	
-	public GetTaskAssignedAsInitiatorCommand(String userId, String language) {
-		this.userId = userId;
-		this.language = language;
+    private List<Status> status;
+
+    public GetTaskAssignedAsInitiatorCommand() {
     }
-	
-	public String getLanguage() {
-		return language;
-	}
-	
-	public void setLanguage(String language) {
-		this.language = language;
-	}
+
+    public GetTaskAssignedAsInitiatorCommand(String userId) {
+        this.userId = userId;
+
+    }
 
     public List<TaskSummary> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         doCallbackUserOperation(userId, context);
         doUserGroupCallbackOperation(userId, null, context);
-    	return context.getTaskQueryService().getTasksAssignedAsTaskInitiator(userId, language);
+        return context.getTaskQueryService().getTasksAssignedAsTaskInitiator(userId);
 
     }
 

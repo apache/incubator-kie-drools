@@ -30,6 +30,7 @@ import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
 import org.jbpm.services.task.rule.TaskRuleService;
 import org.kie.api.task.model.Group;
+import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
@@ -71,6 +72,7 @@ public class AddTaskCommand extends UserGroupCallbackTaskCommand<Long> {
     
     public AddTaskCommand() {
     }
+  
 
     public AddTaskCommand(Task task, Map<String, Object> params) {
         setTask(task);
@@ -183,7 +185,7 @@ public class AddTaskCommand extends UserGroupCallbackTaskCommand<Long> {
     
     private void initializeTask(Task task){
         Status assignedStatus = null;
-
+            
         if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getPotentialOwners() != null && task.getPeopleAssignments().getPotentialOwners().size() == 1) {
             // if there is a single potential owner, assign and set status to Reserved
             OrganizationalEntity potentialOwner = task.getPeopleAssignments().getPotentialOwners().get(0);

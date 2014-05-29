@@ -128,9 +128,9 @@ public class LifeCycleLocalWithRuleServiceTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { workItemId = 1 } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('john')],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "descriptions = [ new I18NText( 'en-UK', 'This is my description')], ";
-        str += "subjects = [ new I18NText( 'en-UK', 'This is my subject')], ";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "description =  'This is my description', ";
+        str += "subject = 'This is my subject', ";
+        str += "name =  'This is my task name' })";
 
 
         Task task = (Task) TaskFactory.evalTask(new StringReader(str));
@@ -147,9 +147,9 @@ public class LifeCycleLocalWithRuleServiceTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { workItemId = 1 } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('john'), new User('mary'),new User('krisv')],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "descriptions = [ new I18NText( 'en-UK', 'This is my description')], ";
-        str += "subjects = [ new I18NText( 'en-UK', 'This is my subject')], ";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "description = 'This is my description', ";
+        str += "subject =  'This is my subject', ";
+        str += "name =  'This is my task name' })";
 
 
         Task task = (Task) TaskFactory.evalTask(new StringReader(str));
@@ -159,7 +159,7 @@ public class LifeCycleLocalWithRuleServiceTest extends HumanTaskServicesBaseTest
         assertNotNull(tasks);
         assertEquals(1, tasks.size());
         
-        assertEquals("mary", tasks.get(0).getActualOwner().getId());
+        assertEquals("mary", tasks.get(0).getActualOwnerId());
         assertEquals(Status.Reserved, tasks.get(0).getStatus());
     }
 
@@ -248,9 +248,9 @@ public class LifeCycleLocalWithRuleServiceTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { workItemId = 1 } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [], businessAdministrators = [ new User('Administrator') ], }),";
-        str += "descriptions = [ new I18NText( 'en-UK', 'This is my description')], ";
-        str += "subjects = [ new I18NText( 'en-UK', 'This is my subject')], ";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "description = 'This is my description', ";
+        str += "subject =  'This is my subject', ";
+        str += "name =  'This is my task name' })";
 
 
         Task task = (Task) TaskFactory.evalTask(new StringReader(str));
@@ -271,9 +271,9 @@ public class LifeCycleLocalWithRuleServiceTest extends HumanTaskServicesBaseTest
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { workItemId = 1 } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('mary')],businessAdministrators = [ new User('Administrator') ], }),";
-        str += "descriptions = [ new I18NText( 'en-UK', 'This is my description')], ";
-        str += "subjects = [ new I18NText( 'en-UK', 'This is my subject')], ";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        str += "description =  'This is my description', ";
+        str += "subject = 'This is my subject', ";
+        str += "name = 'This is my task name' })";
 
 
         Task task = (Task) TaskFactory.evalTask(new StringReader(str));

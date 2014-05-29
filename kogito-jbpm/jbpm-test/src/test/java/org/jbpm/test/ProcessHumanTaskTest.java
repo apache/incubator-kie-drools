@@ -77,7 +77,7 @@ public class ProcessHumanTaskTest extends JbpmJUnitBaseTestCase {
         // let john execute Task 1
         List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
         TaskSummary task = list.get(0);
-        assertEquals("mary", task.getCreatedBy().getId());
+        assertEquals("mary", task.getCreatedById());
         logger.info("John is executing task {}", task.getName());
         taskService.start(task.getId(), "john");
         taskService.complete(task.getId(), "john", null);
@@ -87,7 +87,7 @@ public class ProcessHumanTaskTest extends JbpmJUnitBaseTestCase {
         // let mary execute Task 2
         list = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
         task = list.get(0);
-        assertEquals("krisv", task.getCreatedBy().getId());
+        assertEquals("krisv", task.getCreatedById());
         logger.info("Mary is executing task {}", task.getName());
         taskService.start(task.getId(), "mary");
         taskService.complete(task.getId(), "mary", null);
