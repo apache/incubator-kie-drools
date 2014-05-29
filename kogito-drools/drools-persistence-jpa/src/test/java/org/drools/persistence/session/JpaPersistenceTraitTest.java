@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.core.factmodel.traits.VirtualPropertyMode;
 import org.drools.persistence.util.PersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -244,7 +245,7 @@ public class JpaPersistenceTraitTest {
                 ResourceType.DRL );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, kbase );
+        TraitFactory.setMode( VirtualPropertyMode.MAP, kbase );
 
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
@@ -290,7 +291,7 @@ public class JpaPersistenceTraitTest {
 
 
 
-    public void traitsLegacyWrapperWithJPA( TraitFactory.VirtualPropertyMode mode ) {
+    public void traitsLegacyWrapperWithJPA( VirtualPropertyMode mode ) {
         String str = "package org.drools.trait.test; \n" +
                 "global java.util.List list; \n" +
                 "import org.drools.core.factmodel.traits.*; \n" +
@@ -386,12 +387,12 @@ public class JpaPersistenceTraitTest {
 
     @Test
     public void testTraitsOnLegacyJPATriple() {
-        traitsLegacyWrapperWithJPA( TraitFactory.VirtualPropertyMode.TRIPLES );
+        traitsLegacyWrapperWithJPA( VirtualPropertyMode.TRIPLES );
     }
 
     @Test
     public void testTraitsOnLegacyJPAMap() {
-        traitsLegacyWrapperWithJPA( TraitFactory.VirtualPropertyMode.MAP );
+        traitsLegacyWrapperWithJPA( VirtualPropertyMode.MAP );
     }
 
 }
