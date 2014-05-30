@@ -5809,7 +5809,7 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(1, results.getMessages().size());
     }
 
-    @Test()
+    @Test
     public void testCrossNoLoopWithNodeSharing() throws Exception {
         // DROOLS-501 Propgation context is not set correctly when nodes are shared
         // This test was looping in 6.1.0-Beta4
@@ -5853,5 +5853,89 @@ public class Misc2Test extends CommonTestMethodBase {
         session.dispose();
     }
 
+    @Test
+    public void testNotNodesUnlinking() throws Exception {
+        // BZ-1101471
+        String drl = "import " + Trailer.class.getCanonicalName() + ";" +
+                     "global java.util.List trailerList;" +
+                     "rule R1\n" +
+                     "agenda-group 'Start'\n" +
+                     "    when\n" +
+                     "$trailer : Trailer(status == Trailer.TypeStatus.WAITING);\n" +
+                     "not Trailer(status == Trailer.TypeStatus.LOADING); \n" +
+                     "not Trailer(status == Trailer.TypeStatus.SHIPPING);\n" +
+                     "    then\n" +
+                     "        System.out.println( \"[rfgroup1] find waiting trailer : \" + $trailer);\n" +
+                     "        $trailer.setStatus(Trailer.TypeStatus.LOADING); \n" +
+                     "        update($trailer);\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R2\n" +
+                     "agenda-group 'Start'\n" +
+                     "    when\n" +
+                     "$trailer : Trailer(status == Trailer.TypeStatus.LOADING);\n" +
+                     "    then\n" +
+                     "        System.out.println( \"[rfgroup1] ship : \" + $trailer);\n" +
+                     "        $trailer.setStatus(Trailer.TypeStatus.SHIPPING);\n" +
+                     "        update($trailer);\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R3\n" +
+                     "agenda-group 'Start'\n" +
+                     "    when\n" +
+                     "$trailer : Trailer(status == Trailer.TypeStatus.SHIPPING);\n" +
+                     "    then\n" +
+                     "        System.out.println( \"[rfgroup1] shipping done : \" + $trailer);\n" +
+                     "        trailerList.add($trailer);\n" +
+                     "        retract($trailer);\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R4\n" +
+                     "no-loop\n" +
+                     "agenda-group 'End'\n" +
+                     "    when\n" +
+                     "    then\n" +
+                     "        System.out.println( \"[rfgroup2] insert new trailers\");\n" +
+                     "        insert(new Trailer(Trailer.TypeStatus.WAITING));\n" +
+                     "end";
 
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession ksession = helper.build().newKieSession();
+
+        ArrayList<Trailer> trailerList = new ArrayList<Trailer>();
+        ksession.setGlobal("trailerList", trailerList);
+
+        Trailer trailer1 = new Trailer(Trailer.TypeStatus.WAITING);
+
+        ksession.insert(trailer1);
+
+        // set the agenda groups in reverse order so that stack is preserved
+        ksession.getAgenda().getAgendaGroup( "Start" ).setFocus();
+        ksession.getAgenda().getAgendaGroup( "End" ).setFocus();
+        ksession.getAgenda().getAgendaGroup( "Start" ).setFocus();
+
+        ksession.fireAllRules();
+
+        assertEquals(2, trailerList.size());
+    }
+
+
+    public static class Trailer {
+        public enum TypeStatus { WAITING, LOADING, SHIPPING }
+
+        private TypeStatus status;
+
+        public Trailer(TypeStatus status) {
+            this.status = status;
+        }
+
+        public TypeStatus getStatus() {
+            return status;
+        }
+
+        public void setStatus(TypeStatus status) {
+            this.status = status;
+        }
+    }
 }

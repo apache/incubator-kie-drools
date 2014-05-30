@@ -16,10 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -28,7 +24,9 @@ import org.drools.core.phreak.RightTupleEntry;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 
-import static org.drools.core.util.BitMaskUtil.intersect;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 public class NotNode extends BetaNode {
     private static final long serialVersionUID = 510l;
@@ -174,9 +172,18 @@ public class NotNode extends BetaNode {
                                   final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         rightTuple.setPropagationContext( pctx );
+        doDeleteRightTuple( rightTuple,
+                            workingMemory,
+                            memory );
+    }
+
+    public void doDeleteRightTuple(final RightTuple rightTuple,
+                                   final InternalWorkingMemory wm,
+                                   final BetaMemory memory) {
         RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
         boolean  stagedDeleteWasEmpty = false;
         if ( streamMode ) {
+            PropagationContext pctx = rightTuple.getPropagationContext();
             stagedDeleteWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
             memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, pctx, memory, pctx.getType()));
             //log.trace( "NotNode delete queue={} size={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), rightTuple );
@@ -186,10 +193,10 @@ public class NotNode extends BetaNode {
 
         if (  memory.getAndDecCounter() == 1 && isEmptyBetaConstraints()  ) {
             // NotNodes can only be unlinked, if they have no variable constraints
-            memory.linkNode( workingMemory );
+            memory.linkNode( wm );
         }  else if ( stagedDeleteWasEmpty ) {
             // nothing staged before, notify rule, so it can evaluate network
-            memory.setNodeDirty(workingMemory);
+            memory.setNodeDirty( wm );
         }
     }
 
