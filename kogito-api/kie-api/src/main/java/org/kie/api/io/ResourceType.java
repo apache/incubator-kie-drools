@@ -25,19 +25,19 @@ public class ResourceType
         implements
         Serializable {
 
-    private static final long                      serialVersionUID        = 1613735834228581906L;
+    private static final long serialVersionUID = 1613735834228581906L;
 
-    private String                                 name;
+    private String name;
 
-    private String                                 description;
+    private String description;
 
-    private String                                 defaultExtension;
+    private String defaultExtension;
 
-    private String[]                               otherExtensions;
+    private String[] otherExtensions;
 
-    private String                                 defaultPath;
+    private String defaultPath;
 
-    private static final Map<String, ResourceType> CACHE                   = Collections.synchronizedMap( new HashMap<String, ResourceType>() );
+    private static final Map<String, ResourceType> CACHE = Collections.synchronizedMap(new HashMap<String, ResourceType>());
 
     public ResourceType(String name,
                         String description,
@@ -67,130 +67,137 @@ public class ResourceType
     }
 
     /** Drools Rule Language */
-    public static final ResourceType DRL        = addResourceTypeToRegistry( "DRL",
-                                                                             "Drools Rule Language",
-                                                                             "src/main/resources",
-                                                                             "drl" );
+    public static final ResourceType DRL = addResourceTypeToRegistry("DRL",
+                                                                     "Drools Rule Language",
+                                                                     "src/main/resources",
+                                                                     "drl");
 
     /** Drools Rule Language - Workaround for double-dot file extensions for 6.0 */
-    public static final ResourceType GDRL        = addResourceTypeToRegistry( "GDRL",
-                                                                              "Drools Rule Language",
-                                                                              "src/main/resources",
-                                                                              "gdrl" );
+    public static final ResourceType GDRL = addResourceTypeToRegistry("GDRL",
+                                                                      "Drools Rule Language",
+                                                                      "src/main/resources",
+                                                                      "gdrl");
 
     /** Drools Rule Language - Workaround for double-dot file extensions for 6.0 */
-    public static final ResourceType RDRL        = addResourceTypeToRegistry( "RDRL",
-                                                                              "Drools Rule Language",
-                                                                              "src/main/resources",
-                                                                              "rdrl" );
+    public static final ResourceType RDRL = addResourceTypeToRegistry("RDRL",
+                                                                      "Drools Rule Language",
+                                                                      "src/main/resources",
+                                                                      "rdrl");
 
     /** Drools XML Rule Language */
-    public static final ResourceType XDRL       = addResourceTypeToRegistry( "XDRL",
-                                                                             "Drools XML Rule Language",
-                                                                             "src/main/resources",
-                                                                             "xdrl" );
+    public static final ResourceType XDRL = addResourceTypeToRegistry("XDRL",
+                                                                      "Drools XML Rule Language",
+                                                                      "src/main/resources",
+                                                                      "xdrl");
 
     /** Drools DSL */
-    public static final ResourceType DSL        = addResourceTypeToRegistry( "DSL",
-                                                                             "Drools DSL",
-                                                                             "src/main/resources",
-                                                                             "dsl" );
+    public static final ResourceType DSL = addResourceTypeToRegistry("DSL",
+                                                                     "Drools DSL",
+                                                                     "src/main/resources",
+                                                                     "dsl");
 
     /** Drools DSL Rule */
-    public static final ResourceType DSLR       = addResourceTypeToRegistry( "DSLR",
-                                                                             "Drools DSL Rule",
-                                                                             "src/main/resources",
-                                                                             "dslr" );
+    public static final ResourceType DSLR = addResourceTypeToRegistry("DSLR",
+                                                                      "Drools DSL Rule",
+                                                                      "src/main/resources",
+                                                                      "dslr");
 
     /** Drools DSL Rule - Workaround for double-dot file extensions for 6.0 */
-    public static final ResourceType RDSLR       = addResourceTypeToRegistry( "RDSLR",
-                                                                              "Drools DSL Rule",
-                                                                              "src/main/resources",
-                                                                              "rdslr" );
+    public static final ResourceType RDSLR = addResourceTypeToRegistry("RDSLR",
+                                                                       "Drools DSL Rule",
+                                                                       "src/main/resources",
+                                                                       "rdslr");
 
     /** Drools Rule Flow Language */
-    public static final ResourceType DRF        = addResourceTypeToRegistry( "DRF",
-                                                                             "Drools Rule Flow Language",
-                                                                             "src/main/resources",
-                                                                             "rf" );
+    public static final ResourceType DRF = addResourceTypeToRegistry("DRF",
+                                                                     "Drools Rule Flow Language",
+                                                                     "src/main/resources",
+                                                                     "rf");
 
     /** jBPM BPMN2 Language */
-    public static final ResourceType BPMN2      = addResourceTypeToRegistry( "BPMN2",
-                                                                             "jBPM BPMN2 Language",
-                                                                             "src/main/resources",
-                                                                             "bpmn", "bpmn2" );
+    public static final ResourceType BPMN2 = addResourceTypeToRegistry("BPMN2",
+                                                                       "jBPM BPMN2 Language",
+                                                                       "src/main/resources",
+                                                                       "bpmn", "bpmn2");
 
     /** Decision Table */
-    public static final ResourceType DTABLE     = addResourceTypeToRegistry( "DTABLE",
-                                                                             "Decision Table",
-                                                                             "src/main/resources",
-                                                                             "xls", "csv" );
+    public static final ResourceType DTABLE = addResourceTypeToRegistry("DTABLE",
+                                                                        "Decision Table",
+                                                                        "src/main/resources",
+                                                                        "xls", "csv");
 
     /** Binary Package */
-    public static final ResourceType PKG        = addResourceTypeToRegistry( "PKG",
-                                                                             "Binary Package",
-                                                                             "src/main/resources",
-                                                                             "pkg" );
+    public static final ResourceType PKG = addResourceTypeToRegistry("PKG",
+                                                                     "Binary Package",
+                                                                     "src/main/resources",
+                                                                     "pkg");
 
     /** Drools Business Rule Language */
-    public static final ResourceType BRL        = addResourceTypeToRegistry( "BRL",
-                                                                             "Drools Business Rule Language",
-                                                                             "src/main/resources",
-                                                                             "brl" );
+    public static final ResourceType BRL = addResourceTypeToRegistry("BRL",
+                                                                     "Drools Business Rule Language",
+                                                                     "src/main/resources",
+                                                                     "brl");
 
     /** Change Set */
-    public static final ResourceType CHANGE_SET = addResourceTypeToRegistry( "CHANGE_SET",
-                                                                             "Change Set",
-                                                                             "src/main/resources",
-                                                                             "xcs" );
+    public static final ResourceType CHANGE_SET = addResourceTypeToRegistry("CHANGE_SET",
+                                                                            "Change Set",
+                                                                            "src/main/resources",
+                                                                            "xcs");
 
     /** XSD */
-    public static final ResourceType XSD        = addResourceTypeToRegistry( "XSD",
-                                                                             "XSD",
-                                                                             "src/main/resources",
-                                                                             "xsd" );
+    public static final ResourceType XSD = addResourceTypeToRegistry("XSD",
+                                                                     "XSD",
+                                                                     "src/main/resources",
+                                                                     "xsd");
 
     /** PMML */
-    public static final ResourceType PMML       = addResourceTypeToRegistry( "PMML",
-                                                                             "Predictive Model Markup Language",
-                                                                             "src/main/resources",
-                                                                             "pmml" );
+    public static final ResourceType PMML = addResourceTypeToRegistry("PMML",
+                                                                      "Predictive Model Markup Language",
+                                                                      "src/main/resources",
+                                                                      "pmml");
 
     /** DESCR */
-    public static final ResourceType DESCR      = addResourceTypeToRegistry( "DESCR",
-                                                                             "Knowledge Descriptor",
-                                                                             "src/main/resources",
-                                                                             "descr" );
+    public static final ResourceType DESCR = addResourceTypeToRegistry("DESCR",
+                                                                       "Knowledge Descriptor",
+                                                                       "src/main/resources",
+                                                                       "descr");
 
     /** JAVA */
-    public static final ResourceType JAVA       = addResourceTypeToRegistry( "JAVA",
-                                                                             "Java class",
-                                                                             "src/main/java",
-                                                                             "java" );
+    public static final ResourceType JAVA = addResourceTypeToRegistry("JAVA",
+                                                                      "Java class",
+                                                                      "src/main/java",
+                                                                      "java");
 
     /** PROPERTIES */
-    public static final ResourceType PROPERTIES = addResourceTypeToRegistry( "PROPERTIES",
-                                                                             "Properties file",
-                                                                             "src/main/resources",
-                                                                             "properties" );
+    public static final ResourceType PROPERTIES = addResourceTypeToRegistry("PROPERTIES",
+                                                                            "Properties file",
+                                                                            "src/main/resources",
+                                                                            "properties");
 
     /** Score Card - Workaround for double-dot file extensions for 6.0 */
-    public static final ResourceType SCARD     = addResourceTypeToRegistry( "SCARD",
-                                                                            "Score Crd",
-                                                                            "src/main/resources",
-                                                                            "sxls" );
+    public static final ResourceType SCARD = addResourceTypeToRegistry("SCARD",
+                                                                       "Score Crd",
+                                                                       "src/main/resources",
+                                                                       "sxls");
+
+
+    /** Bayesian */
+    public static final ResourceType BAYES = addResourceTypeToRegistry("Bayes",
+                                                                       "Bayesian Belief Network",
+                                                                       "src/main/resources",
+                                                                       "xmlbif", "bif");
 
     public static ResourceType getResourceType(final String resourceType) {
-        ResourceType resource = CACHE.get( resourceType );
-        if ( resource == null ) {
-            throw new RuntimeException( "Unable to determine resource type " + resourceType );
+        ResourceType resource = CACHE.get(resourceType);
+        if (resource == null) {
+            throw new RuntimeException("Unable to determine resource type " + resourceType);
         }
         return resource;
     }
 
     public static ResourceType determineResourceType(final String resourceName) {
-        for ( ResourceType type : CACHE.values() ) {
-            if ( type.matchesExtension( resourceName ) ) {
+        for (ResourceType type : CACHE.values()) {
+            if (type.matchesExtension(resourceName)) {
                 return type;
             }
         }
@@ -198,13 +205,13 @@ public class ResourceType
     }
 
     public boolean matchesExtension(String resourceName) {
-        if ( resourceName != null ) {
+        if (resourceName != null) {
 
-            if ( resourceName.endsWith( "." + defaultExtension ) ) {
+            if (resourceName.endsWith("." + defaultExtension)) {
                 return true;
             }
-            for ( String extension : otherExtensions ) {
-                if ( resourceName.endsWith( "." + extension ) ) {
+            for (String extension : otherExtensions) {
+                if (resourceName.endsWith("." + extension)) {
                     return true;
                 }
             }
@@ -239,11 +246,11 @@ public class ResourceType
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         final ResourceType other = (ResourceType) obj;
-        if ( !name.equals( other.name ) ) return false;
+        if (!name.equals(other.name)) return false;
         return true;
     }
 
