@@ -76,22 +76,11 @@ public class GenuineVariableDescriptor {
     private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
         PlanningVariable planningVariableAnnotation = variablePropertyAccessor.getReadMethod()
                 .getAnnotation(PlanningVariable.class);
-        // Keep in sync with ShadowVariableDescriptor.processPropertyAnnotations()
-        processMappedBy(descriptorPolicy, planningVariableAnnotation);
         processNullable(descriptorPolicy, planningVariableAnnotation);
         processChained(descriptorPolicy, planningVariableAnnotation);
         processValueRangeRefs(descriptorPolicy, planningVariableAnnotation);
         processStrength(descriptorPolicy, planningVariableAnnotation);
         processVariableListeners(descriptorPolicy, planningVariableAnnotation);
-    }
-
-    private void processMappedBy(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
-        String mappedBy = planningVariableAnnotation.mappedBy();
-        if (!mappedBy.equals("")) {
-            throw new IllegalStateException("Impossible state: the " + EntityDescriptor.class
-                    + " would never try to build a " + GenuineVariableDescriptor.class
-                    + " for a shadow variable with mappedBy (" + mappedBy + ").");
-        }
     }
 
     private void processNullable(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {

@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.api.domain.variable.PlanningShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
@@ -141,20 +142,34 @@ public class EntityDescriptor {
         boolean noPlanningVariableAnnotation = true;
         for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
             Method propertyGetter = propertyDescriptor.getReadMethod();
-            if (propertyGetter != null && propertyGetter.isAnnotationPresent(PlanningVariable.class)) {
-                PlanningVariable planningVariableAnnotation = propertyGetter.getAnnotation(PlanningVariable.class);
-                noPlanningVariableAnnotation = false;
-                if (propertyDescriptor.getWriteMethod() == null) {
-                    throw new IllegalStateException("The planningEntityClass (" + entityClass
-                            + ") has a PlanningVariable annotated property (" + propertyDescriptor.getName()
-                            + ") that should have a setter.");
-                }
-                if (planningVariableAnnotation.mappedBy().equals("")) {
+            if (propertyGetter != null) {
+                if (propertyGetter.isAnnotationPresent(PlanningVariable.class)) {
+                    noPlanningVariableAnnotation = false;
+                    if (propertyDescriptor.getWriteMethod() == null) {
+                        throw new IllegalStateException("The planningEntityClass (" + entityClass
+                                + ") has a "+ PlanningVariable.class.getSimpleName()
+                                + " annotated property (" + propertyDescriptor.getName()
+                                + ") that should have a setter.");
+                    }
                     GenuineVariableDescriptor variableDescriptor = new GenuineVariableDescriptor(
                             this, propertyDescriptor);
                     genuineVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
                     variableDescriptor.processAnnotations(descriptorPolicy);
-                } else {
+                }
+                if (propertyGetter.isAnnotationPresent(PlanningShadowVariable.class)) {
+                    if (propertyGetter.isAnnotationPresent(PlanningVariable.class)) {
+                        throw new IllegalStateException("The planningEntityClass (" + entityClass
+                                + ") has a property (" + propertyDescriptor.getName()
+                                + ") that has both a " + PlanningVariable.class.getSimpleName() + " annotation and a "
+                                + PlanningShadowVariable.class.getSimpleName() + " annotation.");
+                    }
+                    noPlanningVariableAnnotation = false;
+                    if (propertyDescriptor.getWriteMethod() == null) {
+                        throw new IllegalStateException("The planningEntityClass (" + entityClass
+                                + ") has a "+ PlanningShadowVariable.class.getSimpleName()
+                                + " annotated property (" + propertyDescriptor.getName()
+                                + ") that should have a setter.");
+                    }
                     ShadowVariableDescriptor variableDescriptor = new ShadowVariableDescriptor(
                             this, propertyDescriptor);
                     shadowVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);

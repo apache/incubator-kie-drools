@@ -881,13 +881,13 @@ public class Customer ... {
 
 }</programlisting>
 
-        <para>And then annotate the other side as a <literal>@PlanningVariable</literal> with only a
-        <literal>mappedBy</literal> annotation (and no <literal>valueRangeProviderRefs</literal>).</para>
+        <para>And then annotate the other side as a <literal>@PlanningShadowVariable</literal> with a
+        <literal>mappedBy</literal> annotation.</para>
 
         <programlisting language="java">@PlanningEntity
 public interface Standstill {
 
-    @PlanningVariable(mappedBy = "previousStandstill")
+    @PlanningShadowVariable(mappedBy = "previousStandstill")
     Customer getNextCustomer();
     void setNextCustomer(Customer nextCustomer);
 

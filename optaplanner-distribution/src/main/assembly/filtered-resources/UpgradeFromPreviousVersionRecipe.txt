@@ -4342,3 +4342,14 @@ After in *.java:
     public Standstill getPreviousStandstill() {
         return previousStandstill;
     }
+
+[MAJOR] For the shadow variable of a bi-directional relationship,
+the declaration has changed from @PlanningVariable(mappedBy) to @PlanningShadowVariable(mappedBy).
+Before in *.java:
+    @PlanningVariable(mappedBy = "previousStandstill")
+    Customer getNextCustomer();
+    void setNextCustomer(Customer nextCustomer);
+After in *.java:
+    @PlanningShadowVariable(mappedBy = "previousStandstill")
+    Customer getNextCustomer();
+    void setNextCustomer(Customer nextCustomer);

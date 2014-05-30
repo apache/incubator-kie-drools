@@ -41,21 +41,10 @@ import static java.lang.annotation.RetentionPolicy.*;
 public @interface PlanningVariable {
 
     /**
-     * In a bidirectional relationship, the shadow side (= the slave side) uses this {@link #mappedBy()} property
-     * (and nothing else) to declare for which normal {@link PlanningVariable} (= the master side) it is a shadow.
-     * <p/>
-     * Both sides of a bidirectional relationship should be consistent: if A points to B then B must point to A.
-     * When planner changes a normal variable, it adjusts the shadow variable accordingly.
-     * In practice, planner ignores the shadow variables (except for consistency housekeeping).
-     * @return the variable property name on the opposite end of this bidirectional relationship
-     */
-    String mappedBy() default "";
-
-    /**
      * Any {@link ValueRangeProvider} annotation on a {@link PlanningSolution} or {@link PlanningEntity}
      * will automatically be registered with it's {@link ValueRangeProvider#id()}.
      * <p/>
-     * There should be at least 1 valueRangeRef (unless {@link #mappedBy()} is true).
+     * There should be at least 1 valueRangeRef.
      * @return 1 (or more) registered {@link ValueRangeProvider#id()}
      */
     String[] valueRangeProviderRefs() default {};
