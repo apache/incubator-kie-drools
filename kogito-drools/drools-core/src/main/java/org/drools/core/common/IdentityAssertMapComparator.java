@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.core.factmodel.traits.CoreWrapper;
+import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.AbstractHashTable.AbstractObjectComparator;
 
@@ -58,7 +60,13 @@ public class IdentityAssertMapComparator
         Object left = o1;
         final InternalFactHandle handle = ((InternalFactHandle) o2);
 
-        return left == handle.getObject();
+        if ( left == handle.getObject() ) {
+            return true;
+        } else if ( handle.getTraitType() == TraitTypeEnum.WRAPPED_TRAITABLE ) {
+            return left == ( (CoreWrapper) handle.getObject() ).getCore();
+        } else {
+            return false;
+        }
     }
 
     public int compare(final Object o1,

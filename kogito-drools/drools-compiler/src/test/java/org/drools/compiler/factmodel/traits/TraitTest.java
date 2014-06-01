@@ -16,6 +16,9 @@
 
 package org.drools.compiler.factmodel.traits;
 
+import org.drools.compiler.Option;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
 import org.junit.Assert;
 import org.drools.compiler.CommonTestMethodBase;
@@ -46,6 +49,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.command.Command;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
@@ -58,6 +62,7 @@ import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ClassObjectFilter;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
@@ -150,7 +155,7 @@ public class TraitTest extends CommonTestMethodBase {
         return session;
     }
 
-    private KnowledgeBase getKieBaseFromString( String drl ) {
+    private KnowledgeBase getKieBaseFromString( String drl, RuleBaseConfiguration... conf ) {
         KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         knowledgeBuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ),
                               ResourceType.DRL );
@@ -158,7 +163,7 @@ public class TraitTest extends CommonTestMethodBase {
             throw new RuntimeException( knowledgeBuilder.getErrors().toString() );
         }
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBase kbase = conf.length > 0 ? KnowledgeBaseFactory.newKnowledgeBase( conf[0] ) : KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
 
         return kbase;
@@ -5144,5 +5149,73 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
+
+
+
+    @Test
+    public void testDonThenReinsert() throws InterruptedException {
+        final String s1 = "package test;\n" +
+                          "import org.drools.core.factmodel.traits.*; \n" +
+                          "import org.drools.compiler.factmodel.traits.TraitTest.TBean;\n" +
+                          "global java.util.List list;\n" +
+                          "" +
+                          "declare TBean " +
+                          " @Traitable " +
+                          " @propertyReactive " +
+                          "end " +
+                          "" +
+                          "declare trait Mask " +
+                          " @propertyReactive " +
+                          "end " +
+                          "" +
+                          "rule 'Don ItemStyle' " +
+                          "	when\n" +
+                          "     $e : TBean( ) " +
+                          "	then " +
+                          "     System.out.println( 'Don' ); " +
+                          "		don( $e, Mask.class );\n" +
+                          "end\n" +
+                          "" +
+                          "rule \"React\" \n" +
+                          "	when \n" +
+                          "		$m : Mask() \n" +
+                          "then \n" +
+                          "     System.out.println( $m ); \n" +
+                          "end\n" +
+                          "" +
+                          "rule Zero when not Object() then System.out.println( 'Clean' ); end ";
+
+        KieBaseConfiguration kbx = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+
+        final RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setAssertBehaviour( RuleBaseConfiguration.AssertBehaviour.IDENTITY );
+
+        final KnowledgeBase kbase = getKieBaseFromString(s1, conf);
+
+        TraitFactory.setMode( mode, kbase );
+        ArrayList list = new ArrayList();
+
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        knowledgeSession.setGlobal( "list", list );
+        TBean e = new TBean( "aaa" );
+
+        int n = knowledgeSession.fireAllRules();
+        assertEquals( 1, n );
+
+        knowledgeSession.insert( e );
+        n = knowledgeSession.fireAllRules();
+        assertEquals( 2, n );
+
+        knowledgeSession.insert( e );
+        n = knowledgeSession.fireAllRules();
+        assertEquals( 0, n );
+
+        knowledgeSession.delete( knowledgeSession.getFactHandle( e ) );
+        n = knowledgeSession.fireAllRules();
+        assertEquals( 1, n );
+
+        assertEquals( 0, knowledgeSession.getObjects().size() );
+
+    }
 
 }

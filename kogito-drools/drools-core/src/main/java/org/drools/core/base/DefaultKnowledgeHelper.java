@@ -339,9 +339,14 @@ public class DefaultKnowledgeHelper
         }
         
         handle = getFactHandleFromWM( object );
-        
+
         if ( handle == null ) {
-            throw new RuntimeException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
+            if ( object instanceof CoreWrapper ) {
+                handle = getFactHandleFromWM( ((CoreWrapper) object).getCore() );
+            }
+            if ( handle == null ) {
+                throw new RuntimeException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
+            }
         }
         return handle;
     }
@@ -766,6 +771,10 @@ public class DefaultKnowledgeHelper
 
 
     protected <T, K> T applyTrait( K core, Class<T> trait, Object value, boolean logical ) throws LogicalTypeInconsistencyException {
+        if ( identityMap == null ) {
+            // traits and proxies can benefit from a cached lookup
+            identityMap = new IdentityHashMap<Object, FactHandle>(  );
+        }
         TraitFactory builder = TraitFactory.getTraitBuilderForKnowledgeBase( this.getKnowledgeRuntime().getKieBase() );
 
         TraitableBean inner = makeTraitable( core, builder, logical );

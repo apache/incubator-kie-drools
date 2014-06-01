@@ -16,6 +16,7 @@
 
 package org.drools.core.common;
 
+import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
@@ -62,6 +63,8 @@ public interface InternalFactHandle
     boolean isTraitable();
 
     boolean isTraiting();
+
+    TraitTypeEnum getTraitType();
     
     RightTuple getFirstRightTuple();
 
