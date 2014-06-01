@@ -16,10 +16,9 @@
 
 package org.drools.core.common;
 
+import org.drools.core.factmodel.traits.TraitFactory;
 import org.kie.api.runtime.rule.FactHandle;
-import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
-import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.StringUtils;
 import org.drools.core.reteoo.LeftTuple;
@@ -262,9 +261,16 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     public void setObject( final Object object ) {
         this.object = object;
         this.objectHashCode = ( object != null ) ? object.hashCode() : 0;
-        this.identityHashCode = determineIdentityHashCode( object );
         if ( isTraitOrTraitable() ) {
-            this.traitType = determineTraitType();
+            TraitTypeEnum newType = determineTraitType();
+            if ( ! ( this.traitType == TraitTypeEnum.LEGACY_TRAITABLE && newType != TraitTypeEnum.LEGACY_TRAITABLE ) ) {
+                this.identityHashCode = determineIdentityHashCode( object );
+            } else {
+                // we are replacing a non-traitable object with its proxy, so we need to preserve the identity hashcode
+            }
+            this.traitType = newType;
+        } else {
+            this.identityHashCode = determineIdentityHashCode( object );
         }
     }
 
@@ -617,24 +623,22 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     private TraitTypeEnum determineTraitType() {
         if ( isTraitOrTraitable() ) {
-            if ( object instanceof TraitProxy ) {
-                return TraitTypeEnum.TRAIT;
-            } else if ( object instanceof TraitableBean ) {
-                return TraitTypeEnum.TRAITABLE;
-            } else {
-                return TraitTypeEnum.LEGACY_TRAITABLE;
-            }
+            return TraitFactory.determineTraitType( object );
         } else {
             return TraitTypeEnum.NON_TRAIT;
         }
     }
 
     public boolean isTraitable() {
-        return traitType == TraitTypeEnum.TRAITABLE;
+        return traitType == TraitTypeEnum.TRAITABLE || traitType == TraitTypeEnum.WRAPPED_TRAITABLE;
     }
 
     public boolean isTraiting() {
         return traitType == TraitTypeEnum.TRAIT.TRAIT;
+    }
+
+    public TraitTypeEnum getTraitType() {
+        return traitType;
     }
 
 }

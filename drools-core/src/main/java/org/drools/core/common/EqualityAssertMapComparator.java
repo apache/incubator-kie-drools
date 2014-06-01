@@ -64,7 +64,7 @@ public class EqualityAssertMapComparator
         // o1 is an object, so unwrap o2 for comparison
         final InternalFactHandle handle = ((InternalFactHandle) o2);
         o2 = handle.getObject();
-        return o1 == o2 || o1.equals( o2 );
+        return o1 == o2 || o2.equals( o1 );
     }
 
     public int compare(final Object o1,
