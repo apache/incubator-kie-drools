@@ -16,6 +16,7 @@
 
 package org.drools.core.common;
 
+import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -109,6 +110,10 @@ public class QueryElementFactHandle
 
     public boolean isTraiting() {
         return false;
+    }
+
+    public TraitTypeEnum getTraitType() {
+        return TraitTypeEnum.NON_TRAIT;
     }
 
     public boolean isValid() {

@@ -1,5 +1,6 @@
 package org.drools.core.common;
 
+import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.factmodel.traits.TraitableBean;
@@ -148,7 +149,7 @@ public class DisconnectedFactHandle
     }
 
     public boolean isTraitable() {
-        return traitType == TraitTypeEnum.TRAITABLE;
+        return traitType == TraitTypeEnum.TRAITABLE || traitType == TraitTypeEnum.WRAPPED_TRAITABLE;
     }
 
     public boolean isTraiting() {
@@ -298,16 +299,14 @@ public class DisconnectedFactHandle
 
     private TraitTypeEnum determineTraitType() {
         if ( isTraitOrTraitable() ) {
-            if ( object instanceof TraitProxy ) {
-                return TraitTypeEnum.TRAIT;
-            } else if ( object instanceof TraitableBean ) {
-                return TraitTypeEnum.TRAITABLE;
-            } else {
-                return TraitTypeEnum.LEGACY_TRAITABLE;
-            }
+            return TraitFactory.determineTraitType( object );
         } else {
             return TraitTypeEnum.NON_TRAIT;
         }
     }
 
+    @Override
+    public TraitTypeEnum getTraitType() {
+        return traitType;
+    }
 }
