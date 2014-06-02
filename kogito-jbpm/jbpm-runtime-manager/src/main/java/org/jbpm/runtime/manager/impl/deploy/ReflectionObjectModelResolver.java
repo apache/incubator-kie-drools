@@ -50,6 +50,7 @@ public class ReflectionObjectModelResolver implements ObjectModelResolver {
 		knownContextParamMapping.put("kieSession", KieServices.class);
 		knownContextParamMapping.put("taskService", TaskService.class);
 		knownContextParamMapping.put("executorService", ExecutorService.class);
+		knownContextParamMapping.put("classLoader", ClassLoader.class);
 	}
 
 	@Override

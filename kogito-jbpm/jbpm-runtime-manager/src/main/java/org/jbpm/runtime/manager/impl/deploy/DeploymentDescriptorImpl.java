@@ -189,35 +189,51 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 	}
 
 	public void setMarshallingStrategies(List<ObjectModel> marshallingStrategies) {
-		this.marshallingStrategies = new HashSet<ObjectModel>(marshallingStrategies);
+		if (marshallingStrategies != null) {
+			this.marshallingStrategies = new HashSet<ObjectModel>(marshallingStrategies);
+		}
 	}
 
 	public void setEventListeners(List<ObjectModel> eventListeners) {
-		this.eventListeners = new HashSet<ObjectModel>(eventListeners);
+		if (eventListeners != null) {
+			this.eventListeners = new HashSet<ObjectModel>(eventListeners);
+		}
 	}
 
 	public void setTaskEventListeners(List<ObjectModel> taskEventListeners) {
-		this.taskEventListeners = new HashSet<ObjectModel>(taskEventListeners);
+		if (taskEventListeners != null) {
+			this.taskEventListeners = new HashSet<ObjectModel>(taskEventListeners);
+		}
 	}
 
 	public void setGlobals(List<NamedObjectModel> globals) {
-		this.globals = new HashSet<NamedObjectModel>(globals);
+		if (globals != null) {
+			this.globals = new HashSet<NamedObjectModel>(globals);
+		}
 	}
 
 	public void setWorkItemHandlers(List<NamedObjectModel> workItemHandlers) {
-		this.workItemHandlers = new HashSet<NamedObjectModel>(workItemHandlers);
+		if (workItemHandlers != null) {
+			this.workItemHandlers = new HashSet<NamedObjectModel>(workItemHandlers);
+		}
 	}
 
 	public void setEnvironmentEntries(List<NamedObjectModel> environmentEntires) {
-		this.environmentEntries = new HashSet<NamedObjectModel>(environmentEntires);
+		if (environmentEntires != null) {
+			this.environmentEntries = new HashSet<NamedObjectModel>(environmentEntires);
+		}
 	}
 
 	public void setConfiguration(List<NamedObjectModel> configuration) {
-		this.configuration = new HashSet<NamedObjectModel>(configuration);
+		if (configuration != null) {
+			this.configuration = new HashSet<NamedObjectModel>(configuration);
+		}
 	}
 	
 	public void setRequiredRoles(List<String> requiredRoles) {
-		this.requiredRoles = new HashSet<String>(requiredRoles);
+		if (requiredRoles != null) {
+			this.requiredRoles = new HashSet<String>(requiredRoles);
+		}
 	}
 
 

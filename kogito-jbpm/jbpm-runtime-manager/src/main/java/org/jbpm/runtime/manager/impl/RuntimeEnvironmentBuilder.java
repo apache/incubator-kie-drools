@@ -223,6 +223,7 @@ public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFacto
 			builder = getDefault();
 		}
 		Map<String, Object> contaxtParams = new HashMap<String, Object>();
+		contaxtParams.put("classLoader", kieContainer.getClassLoader());
 		// populate various properties of the builder
 		if (descriptor.getPersistenceUnit() != null) {
 			EntityManagerFactory emf = EntityManagerFactoryManager.get().getOrCreate(descriptor.getPersistenceUnit());

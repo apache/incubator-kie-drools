@@ -187,6 +187,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 		
 		Map<String, Object> contaxtParams = new HashMap<String, Object>();
 		contaxtParams.put("entityManagerFactory", emf);
+		contaxtParams.put("classLoader", kieContainer.getClassLoader());
 		// process object models that are globally configured (environment entries, session configuration)
 		for (NamedObjectModel model : descriptor.getEnvironmentEntries()) {
 			Object entry = getInstanceFromModel(model, kieContainer, contaxtParams);

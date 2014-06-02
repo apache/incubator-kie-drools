@@ -56,11 +56,11 @@ import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.internal.executor.api.ExecutorService;
+import org.kie.internal.runtime.conf.AuditMode;
+import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.manager.EventListenerProducer;
 import org.kie.internal.runtime.manager.GlobalProducer;
 import org.kie.internal.runtime.manager.WorkItemHandlerProducer;
-import org.kie.internal.runtime.conf.AuditMode;
-import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -139,6 +139,8 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         }
         
         if (kieContainer != null) {
+        	// add classloader as one of the parameters so it can be easily referenced
+        	parameters.put("classLoader", kieContainer.getClassLoader());
             KieSessionModel ksessionModel = null;
             if(StringUtils.isEmpty(ksessionName)) {
                 ksessionModel = ((KieContainerImpl)kieContainer).getKieProject().getDefaultKieSession();

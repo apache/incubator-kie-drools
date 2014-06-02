@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 import org.kie.internal.deployment.DeploymentUnit.RuntimeStrategy;
@@ -114,5 +116,40 @@ public class DeploymentDescriptorTest {
 		assertEquals(0, descriptor.getTaskEventListeners().size());
 		assertEquals(0, descriptor.getWorkItemHandlers().size());
 		assertEquals(0, descriptor.getRequiredRoles().size());
+	}
+	
+	@Test
+	public void testCreateDeploymentDescriptorWithSetters() {
+		DeploymentDescriptorImpl descriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
+		
+		descriptor.setAuditMode(AuditMode.JMS);
+		descriptor.setEnvironmentEntries(null);
+		
+		List<ObjectModel> marshallingStrategies = new ArrayList<ObjectModel>();
+		marshallingStrategies.add(new ObjectModel("org.jbpm.testCustomStrategy", 
+				new Object[]{
+				new ObjectModel("java.lang.String", new Object[]{"param1"}),
+				"param2"}));
+		descriptor.setMarshallingStrategies(marshallingStrategies);
+		
+		List<String> roles = new ArrayList<String>();
+		roles.add("experts");
+		
+		descriptor.setRequiredRoles(roles);
+		
+		assertNotNull(descriptor);
+		assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
+		assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
+		assertEquals(AuditMode.JMS, descriptor.getAuditMode());
+		assertEquals(PersistenceMode.JPA, descriptor.getPersistenceMode());
+		assertEquals(RuntimeStrategy.SINGLETON, descriptor.getRuntimeStrategy());
+		assertEquals(1, descriptor.getMarshallingStrategies().size());
+		assertEquals(0, descriptor.getConfiguration().size());
+		assertEquals(0, descriptor.getEnvironmentEntries().size());
+		assertEquals(0, descriptor.getEventListeners().size());
+		assertEquals(0, descriptor.getGlobals().size());		
+		assertEquals(0, descriptor.getTaskEventListeners().size());
+		assertEquals(0, descriptor.getWorkItemHandlers().size());
+		assertEquals(1, descriptor.getRequiredRoles().size());
 	}
 }

@@ -250,6 +250,7 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
         if (descriptor != null) {
         	Map<String, Object> params = new HashMap<String, Object>();
         	params.put("runtimeManager", getRuntimeManager());
+        	params.put("classLoader", getRuntimeManager().getEnvironment().getClassLoader());
         	for (ObjectModel model : descriptor.getTaskEventListeners()) {
         		Object taskListener = getInstanceFromModel(model, getRuntimeManager().getEnvironment().getClassLoader(), params);
         		if (taskListener != null) {
