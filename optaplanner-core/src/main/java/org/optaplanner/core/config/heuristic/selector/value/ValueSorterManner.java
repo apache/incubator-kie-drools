@@ -55,6 +55,7 @@ public enum ValueSorterManner {
             case INCREASING_STRENGTH:
             case INCREASING_STRENGTH_IF_AVAILABLE:
                 sorter = variableDescriptor.getIncreasingStrengthSorter();
+                break;
             case DECREASING_STRENGTH:
             case DECREASING_STRENGTH_IF_AVAILABLE:
                 sorter = variableDescriptor.getDecreasingStrengthSorter();
