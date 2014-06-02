@@ -66,8 +66,7 @@ public enum ValueSorterManner {
         }
         if (sorter == null) {
             throw new IllegalArgumentException("The sorterManner (" + this
-                    + ") on entity class ("
-                    + variableDescriptor.getEntityDescriptor().getEntityClass()
+                    + ") on entity class (" + variableDescriptor.getEntityDescriptor().getEntityClass()
                     + ")'s variable (" + variableDescriptor.getVariableName()
                     + ") fails because that variable getter's " + PlanningVariable.class.getSimpleName()
                     + " annotation does not declare any strength comparison.");
