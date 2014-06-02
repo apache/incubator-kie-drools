@@ -21,7 +21,7 @@ import org.optaplanner.core.impl.phase.Phase;
 
 /**
  * A {@link ConstructionHeuristicPhase} is a {@link Phase} which uses a construction heuristic algorithm,
- * such as first fit, best fit decreasing, cheapest insertion, ...
+ * such as First Fit, First Fit Decreasing, Cheapest Insertion, ...
  * @see Phase
  * @see AbstractPhase
  * @see DefaultConstructionHeuristicPhase

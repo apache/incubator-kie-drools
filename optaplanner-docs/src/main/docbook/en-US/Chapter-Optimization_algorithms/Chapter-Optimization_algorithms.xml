@@ -270,7 +270,7 @@
           </row>
 
           <row>
-            <entry>  <link linkend="bestFit">Best Fit</link></entry>
+            <entry>  <link linkend="weakestFit">Weakest Fit</link></entry>
 
             <entry>5/5</entry>
 
@@ -284,7 +284,35 @@
           </row>
 
           <row>
-            <entry>  <link linkend="bestFitDecreasing">Best Fit Decreasing</link></entry>
+            <entry>  <link linkend="weakestFitDecreasing">Weakest Fit Decreasing</link></entry>
+
+            <entry>5/5</entry>
+
+            <entry>2/5</entry>
+
+            <entry>4/5</entry>
+
+            <entry>2/5</entry>
+
+            <entry>No</entry>
+          </row>
+
+          <row>
+            <entry>  <link linkend="strongestFit">Strongest Fit</link></entry>
+
+            <entry>5/5</entry>
+
+            <entry>2/5</entry>
+
+            <entry>4/5</entry>
+
+            <entry>2/5</entry>
+
+            <entry>No</entry>
+          </row>
+
+          <row>
+            <entry>  <link linkend="strongestFitDecreasing">Strongest Fit Decreasing</link></entry>
 
             <entry>5/5</entry>
 

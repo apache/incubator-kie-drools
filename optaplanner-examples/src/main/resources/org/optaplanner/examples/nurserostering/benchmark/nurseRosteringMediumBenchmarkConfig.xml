@@ -43,7 +43,7 @@
         <!--<bestScoreLimit>0hard/-999999999soft</bestScoreLimit>-->
       </termination>
       <constructionHeuristic>
-        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
+        <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
       </constructionHeuristic>
     </solver>
   </inheritedSolverBenchmark>
@@ -79,7 +79,7 @@
     <name>tabuSearch-entityTabu</name>
     <solver>
       <constructionHeuristic>
-        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
+        <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>

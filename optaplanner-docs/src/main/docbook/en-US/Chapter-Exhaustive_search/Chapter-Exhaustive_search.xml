@@ -193,14 +193,25 @@
 
       <itemizedlist>
         <listitem>
-          <para><literal>INCREASING_STRENGTH</literal>: Try the planning values in increasing strength. Requires the
-          model to support <link linkend="planningValueStrength">planning value strength comparison</link>.</para>
+          <para><literal>INCREASING_STRENGTH</literal>: Evaluate the planning values in increasing strength. Requires
+          the model to support <link linkend="planningValueStrength">planning value strength comparison</link>.</para>
         </listitem>
 
         <listitem>
           <para><literal>INCREASING_STRENGTH_IF_AVAILABLE</literal> (default): If the model supports <link
           linkend="planningValueStrength">planning value strength comparison</link>, behave like
           <literal>INCREASING_STRENGTH</literal>, else like <literal>NONE</literal>.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>DECREASING_STRENGTH</literal>: Evaluate the planning values in descreasing strength. Requires
+          the model to support <link linkend="planningValueStrength">planning value strength comparison</link>.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>DECREASING_STRENGTH_IF_AVAILABLE</literal> (default): If the model supports <link
+          linkend="planningValueStrength">planning value strength comparison</link>, behave like
+          <literal>DECREASING_STRENGTH</literal>, else like <literal>NONE</literal>.</para>
         </listitem>
 
         <listitem>

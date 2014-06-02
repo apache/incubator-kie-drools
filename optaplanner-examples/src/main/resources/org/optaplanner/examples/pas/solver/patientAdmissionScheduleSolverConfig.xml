@@ -13,7 +13,7 @@
     <secondsSpentLimit>300</secondsSpentLimit>
   </termination>
   <constructionHeuristic>
-    <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+    <constructionHeuristicType>WEAKEST_FIT_DECREASING</constructionHeuristicType>
   </constructionHeuristic>
   <localSearch>
     <unionMoveSelector>

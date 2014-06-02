@@ -22,7 +22,7 @@
   <solverBenchmark>
     <solver>
       <constructionHeuristic>
-        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
+        <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
       </constructionHeuristic>
       <localSearch>
         <termination>

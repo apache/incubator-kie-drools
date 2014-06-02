@@ -221,7 +221,7 @@
         <scoreDrl>org/optaplanner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <constructionHeuristic>
-        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
+        <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>

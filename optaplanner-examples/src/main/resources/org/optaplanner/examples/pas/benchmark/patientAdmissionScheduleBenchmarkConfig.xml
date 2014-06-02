@@ -37,7 +37,7 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>FFD</name>
+    <name>First Fit Decreasing</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
@@ -46,10 +46,10 @@
   </solverBenchmark>
 
   <solverBenchmark>
-    <name>BFD</name>
+    <name>Weakest Fit Decreasing</name>
     <solver>
       <constructionHeuristic>
-        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicType>WEAKEST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
     </solver>
   </solverBenchmark>
@@ -58,7 +58,7 @@
     <name>old MH</name>
     <solver>
       <constructionHeuristic>
-        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicType>WEAKEST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
       <localSearch>
         <moveListFactory>
@@ -75,10 +75,10 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>TS 7</name>
+    <name>Tabu Search</name>
     <solver>
       <constructionHeuristic>
-        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicType>WEAKEST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
@@ -96,10 +96,10 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>LA 200</name>
+    <name>Late Acceptance</name>
     <solver>
       <constructionHeuristic>
-        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicType>WEAKEST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>

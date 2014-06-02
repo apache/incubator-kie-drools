@@ -48,7 +48,7 @@
         <secondsSpentLimit>11</secondsSpentLimit>
       </termination>
       <constructionHeuristic>
-        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
+        <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
       </constructionHeuristic>
     </solver>
   </inheritedSolverBenchmark>

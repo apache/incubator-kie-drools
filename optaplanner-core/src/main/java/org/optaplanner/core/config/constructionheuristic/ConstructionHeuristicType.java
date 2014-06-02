@@ -23,21 +23,67 @@ import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 
 public enum ConstructionHeuristicType {
+    /**
+     * A specific form of {@link #ALLOCATE_ENTITY_FROM_QUEUE}.
+     */
     FIRST_FIT,
+    /**
+     * A specific form of {@link #ALLOCATE_ENTITY_FROM_QUEUE}.
+     */
     FIRST_FIT_DECREASING,
-    BEST_FIT,
-    BEST_FIT_DECREASING,
-    CHEAPEST_INSERTION;
+    /**
+     * A specific form of {@link #ALLOCATE_ENTITY_FROM_QUEUE}.
+     */
+    WEAKEST_FIT,
+    /**
+     * A specific form of {@link #ALLOCATE_ENTITY_FROM_QUEUE}.
+     */
+    WEAKEST_FIT_DECREASING,
+    /**
+     * A specific form of {@link #ALLOCATE_ENTITY_FROM_QUEUE}.
+     */
+    STRONGEST_FIT,
+    /**
+     * A specific form of {@link #ALLOCATE_ENTITY_FROM_QUEUE}.
+     */
+    STRONGEST_FIT_DECREASING,
+    /**
+     * Put all entities in a queue.
+     * Assign the first entity (from that queue) to the best value.
+     * Repeat until all entities are assigned.
+     */
+    ALLOCATE_ENTITY_FROM_QUEUE,
+//    /**
+//     * Put all values in a round-robin queue.
+//     * Assign the best entity to the first value (from that queue).
+//     * Repeat until all entities are assigned.
+//     */
+//    ALLOCATE_TO_VALUE_FROM_QUEUE,
+    /**
+     * A specific form of {@link #ALLOCATE_FROM_POOL}.
+     */
+    CHEAPEST_INSERTION,
+    /**
+     * Put all entity-value combinations in a pool.
+     * Assign the best entity to best value.
+     * Repeat until all entities are assigned.
+     */
+    ALLOCATE_FROM_POOL;
 
     public EntitySorterManner getDefaultEntitySorterManner() {
         switch (this) {
             case FIRST_FIT:
-            case BEST_FIT:
+            case WEAKEST_FIT:
+            case STRONGEST_FIT:
                 return EntitySorterManner.NONE;
             case FIRST_FIT_DECREASING:
-            case BEST_FIT_DECREASING:
+            case WEAKEST_FIT_DECREASING:
+            case STRONGEST_FIT_DECREASING:
                 return EntitySorterManner.DECREASING_DIFFICULTY;
+            case ALLOCATE_ENTITY_FROM_QUEUE:
+//            case ALLOCATE_TO_VALUE_FROM_QUEUE:
             case CHEAPEST_INSERTION:
+            case ALLOCATE_FROM_POOL:
                 return EntitySorterManner.DECREASING_DIFFICULTY_IF_AVAILABLE;
             default:
                 throw new IllegalStateException("The constructionHeuristicType (" + this + ") is not implemented.");
@@ -49,10 +95,16 @@ public enum ConstructionHeuristicType {
             case FIRST_FIT:
             case FIRST_FIT_DECREASING:
                 return ValueSorterManner.NONE;
-            case BEST_FIT:
-            case BEST_FIT_DECREASING:
+            case WEAKEST_FIT:
+            case WEAKEST_FIT_DECREASING:
                 return ValueSorterManner.INCREASING_STRENGTH;
+            case STRONGEST_FIT:
+            case STRONGEST_FIT_DECREASING:
+                return ValueSorterManner.DECREASING_STRENGTH;
             case CHEAPEST_INSERTION:
+            case ALLOCATE_ENTITY_FROM_QUEUE:
+//            case ALLOCATE_TO_VALUE_FROM_QUEUE:
+            case ALLOCATE_FROM_POOL:
                 return ValueSorterManner.INCREASING_STRENGTH_IF_AVAILABLE;
             default:
                 throw new IllegalStateException("The constructionHeuristicType (" + this + ") is not implemented.");
@@ -63,13 +115,21 @@ public enum ConstructionHeuristicType {
         switch (this) {
             case FIRST_FIT:
             case FIRST_FIT_DECREASING:
-            case BEST_FIT:
-            case BEST_FIT_DECREASING:
+            case WEAKEST_FIT:
+            case WEAKEST_FIT_DECREASING:
+            case STRONGEST_FIT:
+            case STRONGEST_FIT_DECREASING:
+            case ALLOCATE_ENTITY_FROM_QUEUE:
                 return new QueuedEntityPlacerConfig();
+//            case ALLOCATE_TO_VALUE_FROM_QUEUE:
+//                throw new UnsupportedOperationException("The constructionHeuristicType ("
+//                        + this + ") is not yet supported.");
             case CHEAPEST_INSERTION:
+            case ALLOCATE_FROM_POOL:
                 return new PooledEntityPlacerConfig();
             default:
                 throw new IllegalStateException("The constructionHeuristicType (" + this + ") is not implemented.");
         }
     }
+
 }

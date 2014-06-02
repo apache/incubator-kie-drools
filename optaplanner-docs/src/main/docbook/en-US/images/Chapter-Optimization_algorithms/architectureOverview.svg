@@ -256,7 +256,7 @@
      gridtolerance="10"
      inkscape:window-width="1680"
      inkscape:window-height="991"
-     inkscape:window-x="1680"
+     inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
      inkscape:snap-grids="true"
@@ -414,7 +414,7 @@
            height="18.106121"
            width="144.84889"
            id="rect3263" /></flowRegion><flowPara
-         id="flowPara3265">Best Fit</flowPara></flowRoot>    <rect
+         id="flowPara3265">First Fit Decreasing</flowPara></flowRoot>    <rect
        ry="5"
        rx="4.9999986"
        y="702.86218"

@@ -54,7 +54,8 @@
         score does not deteriorate the last step score, ignoring all subsequent moves.</para>
       </note>
 
-      <para>For advanced configuration, see <link linkend="advancedGreedyFit">Advanced Greedy Fit</link>.</para>
+      <para>For advanced configuration, see <link linkend="allocateEntityFromQueue">Allocate Entity From
+      Queue</link>.</para>
     </section>
   </section>
 
@@ -97,12 +98,13 @@
         score does not deteriorate the last step score, ignoring all subsequent moves.</para>
       </note>
 
-      <para>For advanced configuration, see <link linkend="advancedGreedyFit">Advanced Greedy Fit</link>.</para>
+      <para>For advanced configuration, see <link linkend="allocateEntityFromQueue">Allocate Entity From
+      Queue</link>.</para>
     </section>
   </section>
 
-  <section xml:id="bestFit">
-    <title>Best Fit</title>
+  <section xml:id="weakestFit">
+    <title>Weakest Fit</title>
 
     <section>
       <title>Algorithm description</title>
@@ -115,7 +117,7 @@
       comparison</link>.</para>
 
       <note>
-        <para>One would expect that this algorithm has better results than First Fit. That's not always the case.</para>
+        <para>Do not presume that this algorithm has better results than First Fit. That's often not the case.</para>
       </note>
     </section>
 
@@ -125,7 +127,7 @@
       <para>Configure this solver phase:</para>
 
       <programlisting language="xml">  &lt;constructionHeuristic&gt;
-    &lt;constructionHeuristicType&gt;BEST_FIT&lt;/constructionHeuristicType&gt;
+    &lt;constructionHeuristicType&gt;WEAKEST_FIT&lt;/constructionHeuristicType&gt;
   &lt;/constructionHeuristic&gt;</programlisting>
 
       <note>
@@ -134,25 +136,26 @@
         score does not deteriorate the last step score, ignoring all subsequent moves.</para>
       </note>
 
-      <para>For advanced configuration, see <link linkend="advancedGreedyFit">Advanced Greedy Fit</link>.</para>
+      <para>For advanced configuration, see <link linkend="allocateEntityFromQueue">Allocate Entity From
+      Queue</link>.</para>
     </section>
   </section>
 
-  <section xml:id="bestFitDecreasing">
-    <title>Best Fit Decreasing</title>
+  <section xml:id="weakestFitDecreasing">
+    <title>Weakest Fit Decreasing</title>
 
     <section>
       <title>Algorithm description</title>
 
-      <para>Combines First Fit Decreasing and Best Fit. So it sorts the planning entities on decreasing difficulty and
-      the planning values on increasing strength.</para>
+      <para>Combines First Fit Decreasing and Weakest Fit. So it sorts the planning entities on decreasing difficulty
+      and the planning values on increasing strength.</para>
 
       <para>Requires the model to support <link linkend="planningEntityDifficulty">planning entity difficulty
       comparison</link> and <link linkend="planningValueStrength">planning value strength comparison</link>.</para>
 
       <note>
-        <para>One would expect that this algorithm has better results than First Fit, First Fit Decreasing and Best Fit.
-        That's not always the case.</para>
+        <para>Do not presume that this algorithm has better results than First Fit, First Fit Decreasing and Weakest
+        Fit. That's often not the case.</para>
       </note>
     </section>
 
@@ -162,7 +165,7 @@
       <para>Configure this solver phase:</para>
 
       <programlisting language="xml">  &lt;constructionHeuristic&gt;
-    &lt;constructionHeuristicType&gt;BEST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
+    &lt;constructionHeuristicType&gt;WEAKEST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
   &lt;/constructionHeuristic&gt;</programlisting>
 
       <note>
@@ -171,26 +174,105 @@
         score does not deteriorate the last step score, ignoring all subsequent moves.</para>
       </note>
 
-      <para>For advanced configuration, see <link linkend="advancedGreedyFit">Advanced Greedy Fit</link>.</para>
+      <para>For advanced configuration, see <link linkend="allocateEntityFromQueue">Allocate Entity From
+      Queue</link>.</para>
     </section>
   </section>
 
-  <section xml:id="advancedGreedyFit">
-    <title>Advanced Greedy Fit</title>
+  <section xml:id="allocateEntityFromQueue">
+    <title>Allocate Entity From Queue</title>
 
     <section>
       <title>Algorithm description</title>
 
-      <para>Advanced Greedy Fit is a versatile, generic form of First Fit, First Fit Decreasing, Best Fit and Best Fit
-      Decreasing.</para>
+      <para>Allocate Entity From Queue is a versatile, generic form of <link linkend="firstFit">First Fit</link>, <link
+      linkend="firstFitDecreasing">First Fit Decreasing</link>, <link linkend="weakestFit">Weakest Fit</link> and <link
+      linkend="weakestFitDecreasing">Weakest Fit Decreasing</link>. It works like this:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Put all entities in a queue.</para>
+        </listitem>
+
+        <listitem>
+          <para>Assign the first entity (from that queue) to the best value.</para>
+        </listitem>
+
+        <listitem>
+          <para>Repeat until all entities are assigned.</para>
+        </listitem>
+      </orderedlist>
     </section>
 
     <section>
       <title>Configuration</title>
 
-      <para>A Best Fit Decreasing configuration for a single entity class with a single variable (which is the verbose
-      version of the simple <literal>constructionHeuristicType</literal> <literal>BEST_FIT_DECREASING</literal>
-      configuration):</para>
+      <para>Simple configuration:</para>
+
+      <programlisting language="xml">  &lt;constructionHeuristic&gt;
+    &lt;constructionHeuristicType&gt;ALLOCATE_ENTITY_FROM_QUEUE&lt;/constructionHeuristicType&gt;
+  &lt;/constructionHeuristic&gt;</programlisting>
+
+      <para>Verbose simple configuration:</para>
+
+      <programlisting language="xml">  &lt;constructionHeuristic&gt;
+    &lt;constructionHeuristicType&gt;ALLOCATE_ENTITY_FROM_QUEUE&lt;/constructionHeuristicType&gt;
+    &lt;entitySorterManner&gt;DECREASING_DIFFICULTY_IF_AVAILABLE&lt;/entitySorterManner&gt;
+    &lt;valueSorterManner&gt;INCREASING_STRENGTH_IF_AVAILABLE&lt;/valueSorterManner&gt;
+  &lt;/constructionHeuristic&gt;</programlisting>
+
+      <para>The <literal>entitySorterManner</literal> options are:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><literal>DECREASING_DIFFICULTY</literal>: Initialize the more difficult planning entities first. This
+          usually increases pruning (and therefore improves scalability). Requires the model to support <link
+          linkend="planningEntityDifficulty">planning entity difficulty comparison</link>.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>DECREASING_DIFFICULTY_IF_AVAILABLE</literal> (default): If the model supports <link
+          linkend="planningEntityDifficulty">planning entity difficulty comparison</link>, behave like
+          <literal>DECREASING_DIFFICULTY</literal>, else like <literal>NONE</literal>.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>NONE</literal>: Initialize the planning entities in original order.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>The <literal>valueSorterManner</literal> options are:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><literal>INCREASING_STRENGTH</literal>: Evaluate the planning values in increasing strength. Requires
+          the model to support <link linkend="planningValueStrength">planning value strength comparison</link>.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>INCREASING_STRENGTH_IF_AVAILABLE</literal> (default): If the model supports <link
+          linkend="planningValueStrength">planning value strength comparison</link>, behave like
+          <literal>INCREASING_STRENGTH</literal>, else like <literal>NONE</literal>.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>DECREASING_STRENGTH</literal>: Evaluate the planning values in descreasing strength. Requires
+          the model to support <link linkend="planningValueStrength">planning value strength comparison</link>.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>DECREASING_STRENGTH_IF_AVAILABLE</literal> (default): If the model supports <link
+          linkend="planningValueStrength">planning value strength comparison</link>, behave like
+          <literal>DECREASING_STRENGTH</literal>, else like <literal>NONE</literal>.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>NONE</literal>: Try the planning values in original order.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Advanced detailed configuration. For example, a Best Fit Decreasing configuration for a single entity class
+      with a single variable:</para>
 
       <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;queuedEntityPlacer&gt;
@@ -391,6 +473,36 @@
     </section>
   </section>
 
+  <section xml:id="allocateToValueFromQueue">
+    <title>Allocate To Value From Queue</title>
+
+    <section>
+      <title>Algorithm description</title>
+
+      <para>Allocate To Value From Queue is a versatile, generic form of Nearest Neighbour. It works like this:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Put all values in a round-robin queue.</para>
+        </listitem>
+
+        <listitem>
+          <para>Assign the best entity to the first value (from that queue).</para>
+        </listitem>
+
+        <listitem>
+          <para>Repeat until all entities are assigned.</para>
+        </listitem>
+      </orderedlist>
+    </section>
+
+    <section>
+      <title>Configuration</title>
+
+      <para>Not yet implemented.</para>
+    </section>
+  </section>
+
   <section xml:id="cheapestInsertion">
     <title>Cheapest Insertion</title>
 
@@ -429,8 +541,7 @@
         score does not deteriorate the last step score, ignoring all subsequent moves.</para>
       </note>
 
-      <para>For advanced configuration, see <link linkend="advancedConstructiveInsertion">Advanced Constructive
-      Insertion</link>.</para>
+      <para>For advanced configuration, see <link linkend="allocateFromPool">Allocate from pool</link>.</para>
     </section>
   </section>
 
@@ -450,14 +561,28 @@
     </section>
   </section>
 
-  <section xml:id="advancedConstructiveInsertion">
-    <title>Advanced Constructive Insertion</title>
+  <section xml:id="allocateFromPool">
+    <title>Allocate From Pool</title>
 
     <section>
       <title>Algorithm description</title>
 
-      <para>Advanced Constructive Insertion is a versatile, generic form of <link linkend="cheapestInsertion">Cheapest
-      Insertion</link> and <link linkend="regretInsertion">Regret Insertion</link>.</para>
+      <para>Allocate From Pool is a versatile, generic form of <link linkend="cheapestInsertion">Cheapest
+      Insertion</link> and <link linkend="regretInsertion">Regret Insertion</link>. It works like this:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Put all entity-value combinations in a pool.</para>
+        </listitem>
+
+        <listitem>
+          <para>Assign the best entity to best value.</para>
+        </listitem>
+
+        <listitem>
+          <para>Repeat until all entities are assigned.</para>
+        </listitem>
+      </orderedlist>
     </section>
 
     <section>

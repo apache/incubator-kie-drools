@@ -59,6 +59,7 @@ public class GenuineVariableDescriptor {
     private boolean nullable;
     private SelectionFilter reinitializeVariableEntityFilter;
     private SelectionSorter increasingStrengthSorter;
+    private SelectionSorter decreasingStrengthSorter;
 
     private List<ShadowVariableDescriptor> shadowVariableDescriptorList = new ArrayList<ShadowVariableDescriptor>(4);
     private List<VariableListener> nonMappedByVariableListeners;
@@ -190,12 +191,16 @@ public class GenuineVariableDescriptor {
                     "strengthComparatorClass", strengthComparatorClass);
             increasingStrengthSorter = new ComparatorSelectionSorter(
                     strengthComparator, SelectionSorterOrder.ASCENDING);
+            decreasingStrengthSorter = new ComparatorSelectionSorter(
+                    strengthComparator, SelectionSorterOrder.DESCENDING);
         }
         if (strengthWeightFactoryClass != null) {
             SelectionSorterWeightFactory strengthWeightFactory = ConfigUtils.newInstance(this,
                     "strengthWeightFactoryClass", strengthWeightFactoryClass);
             increasingStrengthSorter = new WeightFactorySelectionSorter(
                     strengthWeightFactory, SelectionSorterOrder.ASCENDING);
+            decreasingStrengthSorter = new WeightFactorySelectionSorter(
+                    strengthWeightFactory, SelectionSorterOrder.DESCENDING);
         }
     }
 
@@ -299,6 +304,10 @@ public class GenuineVariableDescriptor {
 
     public SelectionSorter getIncreasingStrengthSorter() {
         return increasingStrengthSorter;
+    }
+
+    public SelectionSorter getDecreasingStrengthSorter() {
+        return decreasingStrengthSorter;
     }
 
     public long getValueCount(Solution solution, Object entity) {

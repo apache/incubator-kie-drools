@@ -24,6 +24,8 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicForagerConfig;
 import org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
+import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -42,6 +44,8 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig {
     // and also because the input config file should match the output config file
 
     protected ConstructionHeuristicType constructionHeuristicType = null;
+    protected EntitySorterManner entitySorterManner = null;
+    protected ValueSorterManner valueSorterManner = null;
 
     // TODO This is a List due to XStream limitations. With JAXB it could be just a EntityPlacerConfig instead.
     @XStreamImplicit
@@ -56,6 +60,22 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig {
 
     public void setConstructionHeuristicType(ConstructionHeuristicType constructionHeuristicType) {
         this.constructionHeuristicType = constructionHeuristicType;
+    }
+
+    public EntitySorterManner getEntitySorterManner() {
+        return entitySorterManner;
+    }
+
+    public void setEntitySorterManner(EntitySorterManner entitySorterManner) {
+        this.entitySorterManner = entitySorterManner;
+    }
+
+    public ValueSorterManner getValueSorterManner() {
+        return valueSorterManner;
+    }
+
+    public void setValueSorterManner(ValueSorterManner valueSorterManner) {
+        this.valueSorterManner = valueSorterManner;
     }
 
     public EntityPlacerConfig getEntityPlacerConfig() {
@@ -89,10 +109,10 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig {
         phase.setDecider(buildDecider(phaseConfigPolicy, phase.getTermination()));
         ConstructionHeuristicType constructionHeuristicType_ = constructionHeuristicType == null
                 ? ConstructionHeuristicType.FIRST_FIT : constructionHeuristicType;
-        phaseConfigPolicy.setEntitySorterManner(
-                constructionHeuristicType_.getDefaultEntitySorterManner());
-        phaseConfigPolicy.setValueSorterManner(
-                constructionHeuristicType_.getDefaultValueSorterManner());
+        phaseConfigPolicy.setEntitySorterManner(entitySorterManner != null ? entitySorterManner
+                : constructionHeuristicType_.getDefaultEntitySorterManner());
+        phaseConfigPolicy.setValueSorterManner(valueSorterManner != null ? valueSorterManner
+                : constructionHeuristicType_.getDefaultValueSorterManner());
         EntityPlacerConfig entityPlacerConfig;
         if (ConfigUtils.isEmptyCollection(entityPlacerConfigList)) {
             entityPlacerConfig = constructionHeuristicType_.newEntityPlacerConfig();
@@ -141,6 +161,10 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig {
         super.inherit(inheritedConfig);
         constructionHeuristicType = ConfigUtils.inheritOverwritableProperty(constructionHeuristicType,
                 inheritedConfig.getConstructionHeuristicType());
+        entitySorterManner = ConfigUtils.inheritOverwritableProperty(entitySorterManner,
+                inheritedConfig.getEntitySorterManner());
+        valueSorterManner = ConfigUtils.inheritOverwritableProperty(valueSorterManner,
+                inheritedConfig.getValueSorterManner());
         setEntityPlacerConfig(ConfigUtils.inheritOverwritableProperty(
                 getEntityPlacerConfig(), inheritedConfig.getEntityPlacerConfig()));
         if (foragerConfig == null) {

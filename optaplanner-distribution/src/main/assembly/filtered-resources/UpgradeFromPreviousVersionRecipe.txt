@@ -4353,3 +4353,25 @@ After in *.java:
     @PlanningShadowVariable(mappedBy = "previousStandstill")
     Customer getNextCustomer();
     void setNextCustomer(Customer nextCustomer);
+
+[MAJOR] The constructionHeuristicType BEST_FIT has been renamed into WEAKEST_FIT.
+The terminology "Best Fit" was not correct and did not allow for STRONGEST_FIT.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <constructionHeuristic>
+        <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
+
+[MAJOR] The constructionHeuristicType BEST_FIT_DECREASING has been renamed into WEAKEST_FIT_DECREASING.
+The terminology "Best Fit" was not correct and did not allow for STRONGEST_FIT_DECREASING.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <constructionHeuristic>
+        <constructionHeuristicType>WEAKEST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>

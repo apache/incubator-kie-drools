@@ -29,7 +29,7 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>FIRST_FIT</name>
+    <name>First Fit</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
@@ -37,7 +37,7 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>FIRST_FIT_DECREASING</name>
+    <name>First Fit Decreasing</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
@@ -45,23 +45,23 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>BEST_FIT</name>
+    <name>Weakest Fit</name>
     <solver>
       <constructionHeuristic>
-        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
+        <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
       </constructionHeuristic>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>BEST_FIT_DECREASING</name>
+    <name>Weakest Fit Decreasing</name>
     <solver>
       <constructionHeuristic>
-        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicType>WEAKEST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>Entity tabu</name>
+    <name>Entity Tabu Search</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>

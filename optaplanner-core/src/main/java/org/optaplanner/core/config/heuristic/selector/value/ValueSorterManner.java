@@ -24,18 +24,23 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
  * The manner of sorting a values for a {@link PlanningVariable}.
  */
 public enum ValueSorterManner {
+    NONE,
     INCREASING_STRENGTH,
     INCREASING_STRENGTH_IF_AVAILABLE,
-    NONE;
+    DECREASING_STRENGTH,
+    DECREASING_STRENGTH_IF_AVAILABLE;
 
     public boolean hasSorter(GenuineVariableDescriptor variableDescriptor) {
         switch (this) {
+            case NONE:
+                return false;
             case INCREASING_STRENGTH:
+            case DECREASING_STRENGTH:
                 return true;
             case INCREASING_STRENGTH_IF_AVAILABLE:
                 return variableDescriptor.getIncreasingStrengthSorter() != null;
-            case NONE:
-                return false;
+            case DECREASING_STRENGTH_IF_AVAILABLE:
+                return variableDescriptor.getDecreasingStrengthSorter() != null;
             default:
                 throw new IllegalStateException("The sorterManner ("
                         + this + ") is not implemented.");
@@ -45,24 +50,28 @@ public enum ValueSorterManner {
     public SelectionSorter determineSorter(GenuineVariableDescriptor variableDescriptor) {
         SelectionSorter sorter;
         switch (this) {
+            case NONE:
+                throw new IllegalStateException("Impossible state: hasSorter() should have returned null.");
             case INCREASING_STRENGTH:
             case INCREASING_STRENGTH_IF_AVAILABLE:
                 sorter = variableDescriptor.getIncreasingStrengthSorter();
-                if (sorter == null) {
-                    throw new IllegalArgumentException("The sorterManner (" + this
-                            + ") on entity class ("
-                            + variableDescriptor.getEntityDescriptor().getEntityClass()
-                            + ")'s variable (" + variableDescriptor.getVariableName()
-                            + ") fails because that variable getter's " + PlanningVariable.class.getSimpleName()
-                            + " annotation does not declare any strength comparison.");
-                }
-                return sorter;
-            case NONE:
-                throw new IllegalStateException("Impossible state: hasSorter() should have returned null.");
+            case DECREASING_STRENGTH:
+            case DECREASING_STRENGTH_IF_AVAILABLE:
+                sorter = variableDescriptor.getDecreasingStrengthSorter();
+                break;
             default:
                 throw new IllegalStateException("The sorterManner ("
                         + this + ") is not implemented.");
         }
+        if (sorter == null) {
+            throw new IllegalArgumentException("The sorterManner (" + this
+                    + ") on entity class ("
+                    + variableDescriptor.getEntityDescriptor().getEntityClass()
+                    + ")'s variable (" + variableDescriptor.getVariableName()
+                    + ") fails because that variable getter's " + PlanningVariable.class.getSimpleName()
+                    + " annotation does not declare any strength comparison.");
+        }
+        return sorter;
     }
 
 }
