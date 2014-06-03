@@ -5938,4 +5938,26 @@ public class Misc2Test extends CommonTestMethodBase {
             this.status = status;
         }
     }
+
+    public static class Host { }
+
+    @Test
+    public void testJITIncompatibleTypes() throws Exception {
+        // BZ-1101295
+        String drl =
+                "import " + Host.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "    $s: String()" +
+                "    Host($s == this)\n" +
+                "then\n" +
+                "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession ksession = helper.build().newKieSession();
+
+        ksession.insert(new Host());
+        ksession.insert("host");
+        ksession.fireAllRules();
+    }
 }

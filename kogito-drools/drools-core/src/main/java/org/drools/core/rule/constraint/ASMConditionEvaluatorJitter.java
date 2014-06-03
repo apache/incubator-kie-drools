@@ -6,7 +6,27 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.core.rule.builder.dialect.asm.GeneratorHelper;
-import org.drools.core.rule.constraint.ConditionAnalyzer.*;
+import org.drools.core.rule.constraint.ConditionAnalyzer.AritmeticExpression;
+import org.drools.core.rule.constraint.ConditionAnalyzer.AritmeticOperator;
+import org.drools.core.rule.constraint.ConditionAnalyzer.ArrayAccessInvocation;
+import org.drools.core.rule.constraint.ConditionAnalyzer.ArrayCreationExpression;
+import org.drools.core.rule.constraint.ConditionAnalyzer.ArrayLengthInvocation;
+import org.drools.core.rule.constraint.ConditionAnalyzer.BooleanOperator;
+import org.drools.core.rule.constraint.ConditionAnalyzer.CastExpression;
+import org.drools.core.rule.constraint.ConditionAnalyzer.CombinedCondition;
+import org.drools.core.rule.constraint.ConditionAnalyzer.Condition;
+import org.drools.core.rule.constraint.ConditionAnalyzer.ConstructorInvocation;
+import org.drools.core.rule.constraint.ConditionAnalyzer.EvaluatedExpression;
+import org.drools.core.rule.constraint.ConditionAnalyzer.Expression;
+import org.drools.core.rule.constraint.ConditionAnalyzer.FieldAccessInvocation;
+import org.drools.core.rule.constraint.ConditionAnalyzer.FixedExpression;
+import org.drools.core.rule.constraint.ConditionAnalyzer.FixedValueCondition;
+import org.drools.core.rule.constraint.ConditionAnalyzer.Invocation;
+import org.drools.core.rule.constraint.ConditionAnalyzer.ListAccessInvocation;
+import org.drools.core.rule.constraint.ConditionAnalyzer.MapAccessInvocation;
+import org.drools.core.rule.constraint.ConditionAnalyzer.MethodInvocation;
+import org.drools.core.rule.constraint.ConditionAnalyzer.SingleCondition;
+import org.drools.core.rule.constraint.ConditionAnalyzer.VariableExpression;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.util.NullType;
@@ -19,19 +39,19 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.drools.core.rule.builder.dialect.asm.GeneratorHelper.matchDeclarationsToTuple;
+import static org.drools.core.rule.constraint.ConditionAnalyzer.isFixed;
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
 import static org.drools.core.util.StringUtils.generateUUID;
-import static org.drools.core.rule.builder.dialect.asm.GeneratorHelper.matchDeclarationsToTuple;
-import static org.drools.core.rule.constraint.ConditionAnalyzer.isFixed;
 import static org.mvel2.asm.Opcodes.*;
-import static org.mvel2.asm.Opcodes.IASTORE;
 
 public class ASMConditionEvaluatorJitter {
 
@@ -948,9 +968,9 @@ public class ASMConditionEvaluatorJitter {
                 if (Number.class.isAssignableFrom(result) && !result.getSimpleName().startsWith("Big")) {
                     result = Double.class;
                 }
-            } else if (class1 == String.class) {
+            } else if (class1 == String.class && isCoercibleToString(class2)) {
                 result = convertFromPrimitiveType(class2);
-            } else if (class2 == String.class) {
+            } else if (class2 == String.class && isCoercibleToString(class1)) {
                 result = convertFromPrimitiveType(class1);
             }
 
@@ -970,6 +990,11 @@ public class ASMConditionEvaluatorJitter {
                 }
             }
             return result == Number.class ? Double.class : result;
+        }
+
+        private boolean isCoercibleToString(Class<?> clazz) {
+            return clazz.isPrimitive() || Number.class.isAssignableFrom(clazz) || Date.class.isAssignableFrom(clazz) ||
+                    Boolean.class == clazz || Character.class == clazz;
         }
 
         private Class<?> findCommonClass(Class<?> class1, Class<?> class2, boolean canBePrimitive) {
