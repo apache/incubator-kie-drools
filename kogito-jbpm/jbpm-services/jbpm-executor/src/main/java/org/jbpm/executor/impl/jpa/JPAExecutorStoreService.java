@@ -36,7 +36,7 @@ import org.kie.internal.executor.api.STATUS;
  * IMPORTANT: please keep all classes from package org.jbpm.shared.services.impl as FQCN
  * inside method body to avoid exception logged by CDI when used with in memory mode
  */
-public class JPAExecutorStoreService implements ExecutorStoreService {
+public class JPAExecutorStoreService implements ExecutorStoreService{
 	
 	private EntityManagerFactory emf;
     private CommandService commandService;

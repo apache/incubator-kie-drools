@@ -34,6 +34,8 @@ public class CDISimpleExecutorTest extends BasicExecutorBaseTest {
 
     @Deployment()
     public static Archive<?> createDeployment() {
+    	// setup data source as part of the deployment as it requires to be already active while boostraping archive
+    	pds = TestUtil.setupPoolingDataSource();
         return ShrinkWrap.create(JavaArchive.class, "executor-service.jar")
                 .addPackage("org.jbpm.shared.services.api")
                 .addPackage("org.jbpm.shared.services.impl")
@@ -59,7 +61,9 @@ public class CDISimpleExecutorTest extends BasicExecutorBaseTest {
     
     @BeforeClass
     public static void beforeClass() {
-    	pds = TestUtil.setupPoolingDataSource();
+    	if (pds == null) {
+    		pds = TestUtil.setupPoolingDataSource();
+    	}
     }
     
     @AfterClass

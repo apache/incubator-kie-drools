@@ -18,8 +18,10 @@ package org.jbpm.executor.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.jbpm.executor.ExecutorServiceFactory;
+import org.jbpm.executor.RequeueAware;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ErrorInfo;
 import org.kie.internal.executor.api.Executor;
@@ -34,7 +36,10 @@ import org.kie.internal.executor.api.STATUS;
  * via this service to ensure all internals are properly initialized
  *
  */
-public class ExecutorServiceImpl implements ExecutorService {
+public class ExecutorServiceImpl implements ExecutorService, RequeueAware {
+	
+    private TimeUnit timeunit = TimeUnit.valueOf(System.getProperty("org.kie.executor.timeunit", "SECONDS"));
+    private long maxRunningTime = Long.parseLong(System.getProperty("org.kie.executor.running.max", "600"));
     
     private Executor executor;
     private boolean executorStarted = false;
@@ -122,6 +127,9 @@ public class ExecutorServiceImpl implements ExecutorService {
     
     public void init() {
     	if (!executorStarted) {
+    		if (maxRunningTime > -1) {
+    			requeue(maxRunningTime);
+    		}
 	        executor.init();
 	        this.executorStarted = true;
     	}
@@ -192,5 +200,22 @@ public class ExecutorServiceImpl implements ExecutorService {
     public List<RequestInfo> getRequestsByBusinessKey(String businessKey) {
         return queryService.getRequestByBusinessKey(businessKey);
     }
+
+	@Override
+	public void requeue(Long olderThan) {		
+        if (adminService instanceof RequeueAware) {
+        	if (olderThan == null) {
+        		olderThan = maxRunningTime;
+        	}
+        	((RequeueAware) adminService).requeue(timeunit.convert(olderThan, TimeUnit.MILLISECONDS));
+        }
+	}
+
+	@Override
+	public void requeueById(Long requestId) {
+		if (adminService instanceof RequeueAware) {
+        	((RequeueAware) adminService).requeueById(requestId);
+        }
+	}
 
 }

@@ -215,6 +215,8 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
 				
 				if (request != null) {
 	                request.setStatus(STATUS.RUNNING);
+	                // update date on when it was started to be executed
+	                ((org.jbpm.executor.entities.RequestInfo)request).setTime(new Date());
 	                ctx.merge(request);
 	            }
 	    	} catch (NoResultException e) {

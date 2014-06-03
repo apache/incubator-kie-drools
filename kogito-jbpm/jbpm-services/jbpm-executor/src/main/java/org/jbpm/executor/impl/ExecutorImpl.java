@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import org.jbpm.executor.entities.RequestInfo;
@@ -117,8 +118,21 @@ public class ExecutorImpl implements Executor {
             logger.info("Starting Executor Component ...\n" + " \t - Thread Pool Size: {}" + "\n"
                     + " \t - Interval: {}" + " Seconds\n" + " \t - Retries per Request: {}\n",
                     threadPoolSize, interval, retries);
-    
+            
             scheduler = Executors.newScheduledThreadPool(threadPoolSize);
+            for (int i = 0; i < threadPoolSize; i++) {
+            	handle.add(scheduler.scheduleAtFixedRate(executorStoreService.buildExecutorRunnable(), 2, interval, timeunit));
+            }
+        }
+    }
+    
+    public void init(ThreadFactory threadFactory) {
+        if (!"true".equalsIgnoreCase(System.getProperty("org.kie.executor.disabled"))) {
+            logger.info("Starting Executor Component ...\n" + " \t - Thread Pool Size: {}" + "\n"
+                    + " \t - Interval: {}" + " Seconds\n" + " \t - Retries per Request: {}\n",
+                    threadPoolSize, interval, retries);
+            
+            scheduler = Executors.newScheduledThreadPool(threadPoolSize, threadFactory);
             for (int i = 0; i < threadPoolSize; i++) {
             	handle.add(scheduler.scheduleAtFixedRate(executorStoreService.buildExecutorRunnable(), 2, interval, timeunit));
             }
