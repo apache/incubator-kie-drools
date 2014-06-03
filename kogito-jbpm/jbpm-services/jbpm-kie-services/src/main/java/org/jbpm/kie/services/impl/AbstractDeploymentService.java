@@ -102,14 +102,19 @@ public abstract class AbstractDeploymentService implements DeploymentService {
                 if (descriptor.getRequiredRoles() != null && !descriptor.getRequiredRoles().isEmpty()) {
                 	((InternalRuntimeManager)manager).setSecurityManager(new IdentityRolesSecurityManager(identityProvider, descriptor.getRequiredRoles()));
                 }
+                
+                if (deploymentEvent != null) {
+                    deploymentEvent.fire(new DeploymentEvent(unit.getIdentifier(), deployedUnit));
+                }
             } catch (Exception e) {
                 deploymentsMap.remove(unit.getIdentifier());
+                if (undeploymentEvent != null && deployedUnit != null) {
+                    undeploymentEvent.fire(new DeploymentEvent(unit.getIdentifier(), deployedUnit));
+                }
                 throw new RuntimeException(e);
             }
         }
-        if (deploymentEvent != null) {
-            deploymentEvent.fire(new DeploymentEvent(unit.getIdentifier(), deployedUnit));
-        }
+
         
     }
     
