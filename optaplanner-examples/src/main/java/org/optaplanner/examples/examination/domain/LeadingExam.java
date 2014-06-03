@@ -24,8 +24,6 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.examination.domain.solver.ExamDifficultyWeightFactory;
 import org.optaplanner.examples.examination.domain.solver.PeriodUpdatingVariableListener;
-import org.optaplanner.examples.vehiclerouting.domain.solver.VehicleUpdatingVariableListener;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.solver.ArrivalTimeUpdatingVariableListener;
 
 @PlanningEntity
 @XStreamAlias("LeadingExam")

@@ -21,9 +21,6 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.examination.domain.FollowingExam;
 import org.optaplanner.examples.examination.domain.LeadingExam;
 import org.optaplanner.examples.examination.domain.Period;
-import org.optaplanner.examples.vehiclerouting.domain.Customer;
-import org.optaplanner.examples.vehiclerouting.domain.Standstill;
-import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 
 public class PeriodUpdatingVariableListener implements VariableListener<LeadingExam> {
 
@@ -32,7 +29,7 @@ public class PeriodUpdatingVariableListener implements VariableListener<LeadingE
     }
 
     public void afterEntityAdded(ScoreDirector scoreDirector, LeadingExam leadingExam) {
-        updateVehicle(scoreDirector, leadingExam);
+        updatePeriod(scoreDirector, leadingExam);
     }
 
     public void beforeVariableChanged(ScoreDirector scoreDirector, LeadingExam leadingExam) {
@@ -40,7 +37,7 @@ public class PeriodUpdatingVariableListener implements VariableListener<LeadingE
     }
 
     public void afterVariableChanged(ScoreDirector scoreDirector, LeadingExam leadingExam) {
-        updateVehicle(scoreDirector, leadingExam);
+        updatePeriod(scoreDirector, leadingExam);
     }
 
     public void beforeEntityRemoved(ScoreDirector scoreDirector, LeadingExam leadingExam) {
@@ -51,12 +48,12 @@ public class PeriodUpdatingVariableListener implements VariableListener<LeadingE
         // Do nothing
     }
 
-    protected void updateVehicle(ScoreDirector scoreDirector, LeadingExam leadingExam) {
+    protected void updatePeriod(ScoreDirector scoreDirector, LeadingExam leadingExam) {
         Period period = leadingExam.getPeriod();
         for (FollowingExam followingExam : leadingExam.getFollowingExamList()) {
-            scoreDirector.beforeVariableChanged(followingExam, "vehicle");
+            scoreDirector.beforeVariableChanged(followingExam, "period");
             followingExam.setPeriod(period);
-            scoreDirector.afterVariableChanged(followingExam, "vehicle");
+            scoreDirector.afterVariableChanged(followingExam, "period");
         }
     }
 
