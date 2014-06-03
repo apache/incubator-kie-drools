@@ -5728,9 +5728,9 @@ public class Misc2Test extends CommonTestMethodBase {
                      "dialect \"mvel\"\n" +
                      "when\n" +
                      "then\n" +
-                     "System\n" +
-                     ".out\n" +
-                     ".println(\"hello\");\n" +
+                     "System  \n" +
+                     "  .out  \n" +
+                     "  .println(\"hello\");\n" +
                      "end\n";
 
         KieServices ks = KieServices.Factory.get();

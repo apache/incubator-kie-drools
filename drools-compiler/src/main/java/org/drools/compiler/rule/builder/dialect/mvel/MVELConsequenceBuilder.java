@@ -218,6 +218,12 @@ public class MVELConsequenceBuilder
         for ( int i = 0; i < cs.length; i++ ) {
             char c = cs[i];
             switch ( c ) {
+                case ' ' :
+                case '\t' :
+                    if (!inString && lookAhead(cs, i+1) == '.') {
+                        continue;
+                    }
+                    break;
                 case '\"' :
                     if ( i == 0 || cs[i-1] != '\\' ) {
                         inString = !inString;
