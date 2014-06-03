@@ -29,6 +29,7 @@ import javax.script.ScriptException;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
+import org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig;
 import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.PlannerBenchmarkRunner;
@@ -64,6 +65,8 @@ public class PlannerBenchmarkConfig {
     @XStreamAlias("inheritedSolverBenchmark")
     private SolverBenchmarkConfig inheritedSolverBenchmarkConfig = null;
 
+    @XStreamImplicit(itemFieldName = "solverBenchmarkBluePrint")
+    private List<SolverBenchmarkBluePrintConfig> solverBenchmarkBluePrintConfigList = null;
     @XStreamImplicit(itemFieldName = "solverBenchmark")
     private List<SolverBenchmarkConfig> solverBenchmarkConfigList = null;
 
@@ -146,6 +149,14 @@ public class PlannerBenchmarkConfig {
         this.inheritedSolverBenchmarkConfig = inheritedSolverBenchmarkConfig;
     }
 
+    public List<SolverBenchmarkBluePrintConfig> getSolverBenchmarkBluePrintConfigList() {
+        return solverBenchmarkBluePrintConfigList;
+    }
+
+    public void setSolverBenchmarkBluePrintConfigList(List<SolverBenchmarkBluePrintConfig> solverBenchmarkBluePrintConfigList) {
+        this.solverBenchmarkBluePrintConfigList = solverBenchmarkBluePrintConfigList;
+    }
+
     public List<SolverBenchmarkConfig> getSolverBenchmarkConfigList() {
         return solverBenchmarkConfigList;
     }
@@ -161,7 +172,7 @@ public class PlannerBenchmarkConfig {
     public PlannerBenchmark buildPlannerBenchmark() {
         validate();
         generateSolverBenchmarkConfigNames();
-        inherit();
+        List<SolverBenchmarkConfig> effectiveSolverBenchmarkConfigList = buildEffectiveSolverBenchmarkConfigList();
 
         PlannerBenchmarkResult plannerBenchmarkResult = new PlannerBenchmarkResult();
         plannerBenchmarkResult.setName(name);
@@ -174,12 +185,12 @@ public class PlannerBenchmarkConfig {
                 : benchmarkReportConfig;
         plannerBenchmarkRunner.setBenchmarkReport(benchmarkReportConfig_.buildBenchmarkReport(plannerBenchmarkResult));
 
-        List<SolverBenchmarkResult> solverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>(solverBenchmarkConfigList.size());
-        List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = new ArrayList<ProblemBenchmarkResult>();
-        plannerBenchmarkResult.setUnifiedProblemBenchmarkResultList(unifiedProblemBenchmarkResultList);
-        for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
-            SolverBenchmarkResult solverBenchmarkResult = solverBenchmarkConfig.buildSolverBenchmark(plannerBenchmarkResult);
-            solverBenchmarkResultList.add(solverBenchmarkResult);
+        plannerBenchmarkResult.setUnifiedProblemBenchmarkResultList(new ArrayList<ProblemBenchmarkResult>());
+        List<SolverBenchmarkResult> solverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>(
+                effectiveSolverBenchmarkConfigList.size());
+        for (SolverBenchmarkConfig solverBenchmarkConfig : effectiveSolverBenchmarkConfigList) {
+            solverBenchmarkResultList.add(
+                    solverBenchmarkConfig.buildSolverBenchmark(plannerBenchmarkResult));
         }
         plannerBenchmarkResult.setSolverBenchmarkResultList(solverBenchmarkResultList);
         return plannerBenchmarkRunner;
@@ -192,44 +203,60 @@ public class PlannerBenchmarkConfig {
                     + ") is invalid because it does not follow the nameRegex (" + nameRegex + ")" +
                     " which might cause an illegal filename.");
         }
-        if (ConfigUtils.isEmptyCollection(solverBenchmarkConfigList)) {
+        if (ConfigUtils.isEmptyCollection(solverBenchmarkBluePrintConfigList)
+                && ConfigUtils.isEmptyCollection(solverBenchmarkConfigList)) {
             throw new IllegalArgumentException(
-                    "Configure at least 1 <solverBenchmark> in the <plannerBenchmark> configuration.");
+                    "Configure at least 1 <solverBenchmark> (or 1 <solverBenchmarkBluePrint>)"
+                    + " in the <plannerBenchmark> configuration.");
         }
     }
 
     protected void generateSolverBenchmarkConfigNames() {
-        Set<String> nameSet = new HashSet<String>(solverBenchmarkConfigList.size());
-        Set<SolverBenchmarkConfig> noNameBenchmarkConfigSet = new LinkedHashSet<SolverBenchmarkConfig>(solverBenchmarkConfigList.size());
-        for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
-            if (solverBenchmarkConfig.getName() != null) {
-                boolean unique = nameSet.add(solverBenchmarkConfig.getName());
-                if (!unique) {
-                    throw new IllegalStateException("The benchmark name (" + solverBenchmarkConfig.getName()
-                            + ") is used in more than 1 benchmark.");
+        if (solverBenchmarkConfigList != null) {
+            Set<String> nameSet = new HashSet<String>(solverBenchmarkConfigList.size());
+            Set<SolverBenchmarkConfig> noNameBenchmarkConfigSet = new LinkedHashSet<SolverBenchmarkConfig>(solverBenchmarkConfigList.size());
+            for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
+                if (solverBenchmarkConfig.getName() != null) {
+                    boolean unique = nameSet.add(solverBenchmarkConfig.getName());
+                    if (!unique) {
+                        throw new IllegalStateException("The benchmark name (" + solverBenchmarkConfig.getName()
+                                + ") is used in more than 1 benchmark.");
+                    }
+                } else {
+                    noNameBenchmarkConfigSet.add(solverBenchmarkConfig);
                 }
-            } else {
-                noNameBenchmarkConfigSet.add(solverBenchmarkConfig);
             }
-        }
-        int generatedNameIndex = 0;
-        for (SolverBenchmarkConfig solverBenchmarkConfig : noNameBenchmarkConfigSet) {
-            String generatedName = "Config_" + generatedNameIndex;
-            while (nameSet.contains(generatedName)) {
+            int generatedNameIndex = 0;
+            for (SolverBenchmarkConfig solverBenchmarkConfig : noNameBenchmarkConfigSet) {
+                String generatedName = "Config_" + generatedNameIndex;
+                while (nameSet.contains(generatedName)) {
+                    generatedNameIndex++;
+                    generatedName = "Config_" + generatedNameIndex;
+                }
+                solverBenchmarkConfig.setName(generatedName);
                 generatedNameIndex++;
-                generatedName = "Config_" + generatedNameIndex;
             }
-            solverBenchmarkConfig.setName(generatedName);
-            generatedNameIndex++;
         }
     }
 
-    protected void inherit() {
+    protected List<SolverBenchmarkConfig> buildEffectiveSolverBenchmarkConfigList() {
+        List<SolverBenchmarkConfig> effectiveSolverBenchmarkConfigList = new ArrayList<SolverBenchmarkConfig>(0);
+        if (solverBenchmarkConfigList != null) {
+            effectiveSolverBenchmarkConfigList.addAll(solverBenchmarkConfigList);
+        }
+        if (solverBenchmarkBluePrintConfigList != null) {
+            for (SolverBenchmarkBluePrintConfig solverBenchmarkBluePrintConfig : solverBenchmarkBluePrintConfigList) {
+                effectiveSolverBenchmarkConfigList.addAll(
+                        solverBenchmarkBluePrintConfig.buildSolverBenchmarkConfigList());
+            }
+        }
         if (inheritedSolverBenchmarkConfig != null) {
-            for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
+            for (SolverBenchmarkConfig solverBenchmarkConfig : effectiveSolverBenchmarkConfigList) {
+                // Side effect: changes the unmarshalled solverBenchmarkConfig
                 solverBenchmarkConfig.inherit(inheritedSolverBenchmarkConfig);
             }
         }
+        return effectiveSolverBenchmarkConfigList;
     }
 
     protected int resolveParallelBenchmarkCount() {
