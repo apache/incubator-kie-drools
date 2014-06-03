@@ -17,6 +17,7 @@ import org.drools.runtime.rule.Agenda;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.LiveQuery;
 import org.drools.runtime.rule.QueryResults;
+import org.drools.runtime.rule.Variable;
 import org.drools.runtime.rule.ViewChangedEventListener;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.time.SessionClock;
@@ -210,6 +211,13 @@ public class KnowledgeRuntimeAdapter implements org.drools.runtime.KnowledgeRunt
     }
 
     public QueryResults getQueryResults(String query, Object... arguments) {
+        if (arguments != null) {
+            for (int i = 0; i < arguments.length; i++) {
+                if (arguments[i] instanceof Variable) {
+                    arguments[i] = org.kie.api.runtime.rule.Variable.v;
+                }
+            }
+        }
         return new QueryResultsAdapter(delegate.getQueryResults(query, arguments));
     }
 
