@@ -179,6 +179,50 @@
       benchmark). The failing benchmarks will be clearly marked in the benchmark report.</para>
     </section>
 
+    <section xml:id="benchmarkBlueprint">
+      <title>Benchmark blueprint: a predefined configuration</title>
+
+      <para>To quickly configure and run a benchmark for typical solver configs, use a
+      <literal>solverBenchmarkBluePrint</literal> instead of <literal>solverBenchmark</literal>s:</para>
+
+      <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;plannerBenchmark&gt;
+  &lt;benchmarkDirectory&gt;local/data/nqueens&lt;/benchmarkDirectory&gt;
+  &lt;warmUpSecondsSpentLimit&gt;30&lt;/warmUpSecondsSpentLimit&gt;
+
+  &lt;inheritedSolverBenchmark&gt;
+    &lt;problemBenchmarks&gt;
+      &lt;xStreamAnnotatedClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/xStreamAnnotatedClass&gt;
+      &lt;inputSolutionFile&gt;data/nqueens/unsolved/32queens.xml&lt;/inputSolutionFile&gt;
+      &lt;inputSolutionFile&gt;data/nqueens/unsolved/64queens.xml&lt;/inputSolutionFile&gt;
+      &lt;problemStatisticType&gt;BEST_SCORE&lt;/problemStatisticType&gt;
+    &lt;/problemBenchmarks&gt;
+    &lt;solver&gt;
+      &lt;solutionClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/solutionClass&gt;
+      &lt;planningEntityClass&gt;org.optaplanner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
+      &lt;scoreDirectorFactory&gt;
+        &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
+        &lt;scoreDrl&gt;org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
+        &lt;initializingScoreTrend&gt;ONLY_DOWN&lt;/initializingScoreTrend&gt;
+      &lt;/scoreDirectorFactory&gt;
+    &lt;/solver&gt;
+  &lt;/inheritedSolverBenchmark&gt;
+
+  &lt;solverBenchmarkBluePrint&gt;
+    &lt;solverBenchmarkBluePrintType&gt;ALL_CONSTRUCTION_HEURISTIC_TYPES&lt;/solverBenchmarkBluePrintType&gt;
+  &lt;/solverBenchmarkBluePrint&gt;
+&lt;/plannerBenchmark&gt;</programlisting>
+
+      <para>The following <literal>SolverBenchmarkBluePrintType</literal>s are supported:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><literal>ALL_CONSTRUCTION_HEURISTIC_TYPES</literal>: Run all Construction Heuristic types (First Fit,
+          First Fit Decreasing, Cheapest Insertion, ...).</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
     <section xml:id="problemIO">
       <title>ProblemIO: input and output of Solution files</title>
 
