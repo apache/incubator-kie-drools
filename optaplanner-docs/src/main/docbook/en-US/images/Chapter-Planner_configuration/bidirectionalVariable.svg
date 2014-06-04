@@ -256,7 +256,7 @@
      gridtolerance="10"
      inkscape:window-width="1680"
      inkscape:window-height="991"
-     inkscape:window-x="1680"
+     inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
      inkscape:snap-grids="true"
@@ -350,11 +350,11 @@
          id="flowRegion3376"><rect
            style="font-size:20px;font-style:italic;fill:#5c3566;-inkscape-font-specification:Arial Italic"
            y="24.776779"
-           x="-70.000298"
+           x="-130.00031"
            height="60"
-           width="199.99997"
+           width="320.00037"
            id="rect3378" /></flowRegion><flowPara
-         id="flowPara3380">mappedBy variable</flowPara><flowPara
+         id="flowPara3380">inverse relationship variable</flowPara><flowPara
          id="flowPara4161">(shadow variable)</flowPara></flowRoot>    <flowRoot
        style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        id="flowRoot3382"
@@ -552,7 +552,7 @@
    id="flowSpan4175">genuine planning variable</flowSpan> changes,</flowPara><flowPara
          id="flowPara4173">then the <flowSpan
    style="fill:#5c3566"
-   id="flowSpan4179">mappedBy variable</flowSpan> changes accordingly.</flowPara></flowRoot>    <flowRoot
+   id="flowSpan4179">inverse relationship variable</flowSpan> changes accordingly.</flowPara></flowRoot>    <flowRoot
        style="font-size:20px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#4e9a06;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial Italic"
        id="flowRoot3087"
        xml:space="preserve"

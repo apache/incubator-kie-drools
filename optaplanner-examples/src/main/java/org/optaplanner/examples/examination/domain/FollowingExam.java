@@ -17,7 +17,11 @@
 package org.optaplanner.examples.examination.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
+import org.optaplanner.examples.examination.domain.solver.PeriodUpdatingVariableListener;
 
+@PlanningEntity
 @XStreamAlias("FollowingExam")
 public class FollowingExam extends Exam {
 
@@ -34,6 +38,8 @@ public class FollowingExam extends Exam {
         this.leadingExam = leadingExam;
     }
 
+    @CustomShadowVariable(variableListenerClass = PeriodUpdatingVariableListener.class,
+            sources = {@CustomShadowVariable.Source(entityClass = LeadingExam.class, variableName = "period")})
     public Period getPeriod() {
         return period;
     }

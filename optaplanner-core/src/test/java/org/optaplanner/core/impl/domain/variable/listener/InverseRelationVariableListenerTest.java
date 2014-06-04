@@ -22,7 +22,6 @@ import java.util.List;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.ChainedMappedByVariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.mappedby.TestdataMappedByChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.mappedby.TestdataMappedByChainedEntity;
@@ -32,14 +31,16 @@ import org.optaplanner.core.impl.testdata.domain.chained.mappedby.TestdataMapped
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class ChainedMappedByVariableListenerTest {
+public class InverseRelationVariableListenerTest {
 
     @Test
     public void chained() {
         SolutionDescriptor solutionDescriptor = TestdataMappedByChainedSolution.buildSolutionDescriptor();
-        ChainedMappedByVariableListener variableListener = new ChainedMappedByVariableListener(
+        InverseRelationVariableListener variableListener = new InverseRelationVariableListener(
                 solutionDescriptor.getEntityDescriptor(TestdataMappedByChainedObject.class)
-                        .getShadowVariableDescriptor("nextEntity"));
+                        .getShadowVariableDescriptor("nextEntity"),
+                solutionDescriptor.getEntityDescriptor(TestdataMappedByChainedEntity.class)
+                        .getVariableDescriptor("chainedObject"));
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
 
         TestdataMappedByChainedAnchor a0 = new TestdataMappedByChainedAnchor("a0");

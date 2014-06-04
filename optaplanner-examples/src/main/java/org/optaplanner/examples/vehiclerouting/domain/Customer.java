@@ -19,13 +19,13 @@ package org.optaplanner.examples.vehiclerouting.domain;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.vehiclerouting.domain.solver.VehicleUpdatingVariableListener;
 import org.optaplanner.examples.vehiclerouting.domain.solver.VrpCustomerDifficultyComparator;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.solver.ArrivalTimeUpdatingVariableListener;
 
 @PlanningEntity(difficultyComparatorClass = VrpCustomerDifficultyComparator.class)
 @XStreamAlias("VrpCustomer")
@@ -60,10 +60,8 @@ public class Customer extends AbstractPersistable implements Standstill {
         this.demand = demand;
     }
 
-    // HACK TODO remove ArrivalTimeUpdatingVariableListener.class and add it only for VrpTimeWindowedCustomer
     @PlanningVariable(valueRangeProviderRefs = {"vehicleRange", "customerRange"},
-            graphType = PlanningVariableGraphType.CHAINED,
-            variableListenerClasses = {VehicleUpdatingVariableListener.class, ArrivalTimeUpdatingVariableListener.class})
+            graphType = PlanningVariableGraphType.CHAINED)
     public Standstill getPreviousStandstill() {
         return previousStandstill;
     }
@@ -80,6 +78,8 @@ public class Customer extends AbstractPersistable implements Standstill {
         this.nextCustomer = nextCustomer;
     }
 
+    @CustomShadowVariable(variableListenerClass = VehicleUpdatingVariableListener.class,
+            sources = {@CustomShadowVariable.Source(variableName = "previousStandstill")})
     public Vehicle getVehicle() {
         return vehicle;
     }

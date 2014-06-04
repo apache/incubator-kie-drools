@@ -42,8 +42,7 @@ public class LeadingExam extends Exam {
         this.followingExamList = followingExamList;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"periodRange"},
-            variableListenerClasses = {PeriodUpdatingVariableListener.class})
+    @PlanningVariable(valueRangeProviderRefs = {"periodRange"})
     public Period getPeriod() {
         return period;
     }

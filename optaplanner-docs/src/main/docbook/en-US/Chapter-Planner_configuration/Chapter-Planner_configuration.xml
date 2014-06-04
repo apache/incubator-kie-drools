@@ -881,20 +881,22 @@ public class Customer ... {
 
 }</programlisting>
 
-        <para>And then annotate the other side as a <literal>@PlanningShadowVariable</literal> with a
-        <literal>mappedBy</literal> annotation.</para>
+        <para>And then annotate the other side as a <literal>@InverseRelationShadowVariable</literal> annotation.</para>
 
         <programlisting language="java">@PlanningEntity
 public interface Standstill {
 
-    @PlanningShadowVariable(mappedBy = "previousStandstill")
+    @InverseRelationShadowVariable(sourceVariableName = "previousStandstill")
     Customer getNextCustomer();
     void setNextCustomer(Customer nextCustomer);
 
 }</programlisting>
 
-        <para>The <literal>mappedBy</literal> variable is a form of a shadow variable: Planner uses a build-in
-        <literal>VariableListener</literal> to update its state.</para>
+        <para>The <literal>sourceVariableName</literal> property is the name of the planning variable on the return type
+        of the getter.</para>
+
+        <para>The <literal>@InverseRelationShadowVariable</literal> variable is a form of a shadow variable: Planner
+        uses a build-in <literal>VariableListener</literal> to update its state.</para>
       </section>
 
       <section xml:id="variableListener">
@@ -916,13 +918,32 @@ public interface Standstill {
         <para>As the customers for a vehicle change, the arrival time is automatically adjusted. For more information,
         see the <link linkend="vehicleRoutingDomainModel">vehicle routing domain model</link>.</para>
 
-        <para>To use custom <literal>VariableListener</literal>, implement the interface and annotate it on the genuine
-        planning variable(s) that trigger changes in the shadow variable(s):</para>
+        <para>To use custom <literal>VariableListener</literal>, implement the interface and annotate it on the shadow
+        variable(s) that needs to change. </para>
 
-        <programlisting language="java">    @PlanningVariable(..., variableListenerClasses = {VehicleUpdatingVariableListener.class, ArrivalTimeUpdatingVariableListener.class})
+        <programlisting language="java">    @PlanningVariable(...)
     public Standstill getPreviousStandstill() {
         return previousStandstill;
+    }
+
+    @CustomShadowVariable(variableListenerClass = VehicleUpdatingVariableListener.class,
+            sources = {@CustomShadowVariable.Source(variableName = "previousStandstill")})
+    public Vehicle getVehicle() {
+        return vehicle;
     }</programlisting>
+
+        <para>The <literal>variableName</literal> is the variable that triggers changes in the shadow
+        variable(s).</para>
+
+        <note>
+          <para>If the class of the trigger variable is different than the shadow variable, also specify the
+          <literal>entityClass</literal> on <literal>@CustomShadowVariable.Source</literal>. In that case, make sure
+          that that <literal>entityClass</literal> is also properly configured as a planning entity class in the solver
+          config, or the <literal>VariableListener</literal> will simply never trigger.</para>
+
+          <para>Any class that has a shadow variable, is a planning entity class, even it has no genuine planning
+          variables.</para>
+        </note>
 
         <para>For example, the VehicleUpdatingVariableListener assures that every <literal>Customer</literal> in a chain
         has the same <literal>Vehicle</literal>, namely the chain's anchor.</para>
@@ -953,9 +974,6 @@ public interface Standstill {
 
 }</programlisting>
 
-        <para>Any class that has a shadow variable, is a planning entity class, even it has no genuine planning
-        variables.</para>
-
         <warning>
           <para>A <literal>VariableListener</literal> can only change shadow variables. It must never change a genuine
           planning variable or a problem fact.</para>
@@ -967,8 +985,8 @@ public interface Standstill {
 
         <para>From a score calculation perspective, a shadow variable is like any other planning variable. From an
         optimization perspective, Planner effectively only optimizes the genuine variables (and mostly ignores the
-        shadow variables): it just assures that when a genuine variable changes, it changes any dependent shadow
-        variables accordingly.</para>
+        shadow variables): it just assures that when a genuine variable changes, any dependent shadow variables are
+        changed accordingly.</para>
       </section>
     </section>
 

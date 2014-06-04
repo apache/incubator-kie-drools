@@ -4343,17 +4343,6 @@ After in *.java:
         return previousStandstill;
     }
 
-[MAJOR] For the shadow variable of a bi-directional relationship,
-the declaration has changed from @PlanningVariable(mappedBy) to @PlanningShadowVariable(mappedBy).
-Before in *.java:
-    @PlanningVariable(mappedBy = "previousStandstill")
-    Customer getNextCustomer();
-    void setNextCustomer(Customer nextCustomer);
-After in *.java:
-    @PlanningShadowVariable(mappedBy = "previousStandstill")
-    Customer getNextCustomer();
-    void setNextCustomer(Customer nextCustomer);
-
 [MAJOR] The constructionHeuristicType BEST_FIT has been renamed into WEAKEST_FIT.
 The terminology "Best Fit" was not correct and did not allow for STRONGEST_FIT.
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
@@ -4375,3 +4364,51 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <constructionHeuristic>
         <constructionHeuristicType>WEAKEST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
+
+[MAJOR] For the shadow variable of a bi-directional relationship,
+the declaration has changed from @PlanningVariable(mappedBy) to @InverseRelationShadowVariable(sourceVariableName).
+Before in *.java:
+    @PlanningVariable(mappedBy = "previousStandstill")
+    Customer getNextCustomer();
+    void setNextCustomer(Customer nextCustomer);
+After in *.java:
+    @InverseRelationShadowVariable(sourceVariableName = "previousStandstill")
+    Customer getNextCustomer();
+    void setNextCustomer(Customer nextCustomer);
+
+[MAJOR] VariableListener: the VariableListener is now declared on the shadow side, instead of the @PlanningVariable side.
+This way, OptaPlanner recognizes the shadow variables, and all shadow variables are declared in a consistent matter.
+Furthermore, it allows a shadow variable to based on other shadow variable.
+Before in *.java:
+    @PlanningVariable(valueRangeProviderRefs = {"vehicleRange", "customerRange"},
+            graphType = PlanningVariableGraphType.CHAINED,
+            variableListenerClasses = {VehicleUpdatingVariableListener.class, ArrivalTimeUpdatingVariableListener.class})
+    public Standstill getPreviousStandstill() {
+        return previousStandstill;
+    }
+
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public Integer getArrivalTime() {
+        return arrivalTime;
+    }
+After in *.java:
+    @PlanningVariable(...)
+    public Standstill getPreviousStandstill() {
+        return previousStandstill;
+    }
+
+    @CustomShadowVariable(variableListenerClass = VehicleUpdatingVariableListener.class,
+            sources = {@CustomShadowVariable.Source(variableName = "previousStandstill")})
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    @CustomShadowVariable(variableListenerClass = ArrivalTimeUpdatingVariableListener.class,
+            sources = {@CustomShadowVariable.Source(variableName = "previousStandstill")})
+    public Integer getArrivalTime() {
+        return arrivalTime;
+    }
+

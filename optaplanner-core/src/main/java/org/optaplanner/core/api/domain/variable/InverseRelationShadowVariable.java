@@ -18,37 +18,32 @@ package org.optaplanner.core.api.domain.variable;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.util.Comparator;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
 /**
- * Specifies that a bean property can be changed and should be optimized by the optimization algorithms.
+ * Specifies that a bean property is the inverse of a {@link PlanningVariable}, which implies it's a shadow variable.
  * <p/>
  * It is specified on a getter of a java bean property of a {@link PlanningEntity} class.
  */
 @Target({METHOD})
 @Retention(RUNTIME)
-public @interface PlanningShadowVariable {
+public @interface InverseRelationShadowVariable {
 
     /**
-     * In a bidirectional relationship, the shadow side (= the slave side) uses this {@link #mappedBy()} property
-     * (and nothing else) to declare for which normal {@link PlanningShadowVariable} (= the master side) it is a shadow.
+     * In a bidirectional relationship, the shadow side (= the slave side) uses this property
+     * (and nothing else) to declare for which {@link PlanningVariable} (= the master side) it is a shadow.
      * <p/>
      * Both sides of a bidirectional relationship should be consistent: if A points to B then B must point to A.
-     * When planner changes a normal variable, it adjusts the shadow variable accordingly.
-     * In practice, planner ignores the shadow variables (except for consistency housekeeping).
+     * When the {@link Solver} changes a normal variable, it adjusts the shadow variable accordingly.
+     * In practice, the {@link Solver} ignores the shadow variables (except for consistency housekeeping).
      * @return the variable property name on the opposite end of this bidirectional relationship
      */
-    String mappedBy() default "";
+    String sourceVariableName();
 
 }

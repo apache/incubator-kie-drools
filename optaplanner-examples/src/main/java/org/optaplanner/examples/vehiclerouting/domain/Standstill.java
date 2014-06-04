@@ -17,8 +17,7 @@
 package org.optaplanner.examples.vehiclerouting.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.PlanningShadowVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 
 @PlanningEntity
 public interface Standstill {
@@ -36,7 +35,7 @@ public interface Standstill {
     /**
      * @return sometimes null
      */
-    @PlanningShadowVariable(mappedBy = "previousStandstill")
+    @InverseRelationShadowVariable(sourceVariableName = "previousStandstill")
     Customer getNextCustomer();
     void setNextCustomer(Customer nextCustomer);
 

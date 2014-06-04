@@ -16,18 +16,19 @@
 
 package org.optaplanner.core.impl.domain.variable.listener;
 
-import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class ChainedMappedByVariableListener implements VariableListener<Object> {
+public class InverseRelationVariableListener implements VariableListener<Object> {
 
     private final ShadowVariableDescriptor shadowVariableDescriptor;
-    private final GenuineVariableDescriptor mappedByVariableDescriptor;
+    private final VariableDescriptor sourceVariableDescriptor;
 
-    public ChainedMappedByVariableListener(ShadowVariableDescriptor shadowVariableDescriptor) {
+    public InverseRelationVariableListener(ShadowVariableDescriptor shadowVariableDescriptor,
+            VariableDescriptor sourceVariableDescriptor) {
         this.shadowVariableDescriptor = shadowVariableDescriptor;
-        mappedByVariableDescriptor = shadowVariableDescriptor.getMappedByVariableDescriptor();
+        this.sourceVariableDescriptor = sourceVariableDescriptor;
     }
 
     public void beforeEntityAdded(ScoreDirector scoreDirector, Object entity) {
@@ -55,16 +56,16 @@ public class ChainedMappedByVariableListener implements VariableListener<Object>
     }
 
     protected void insert(ScoreDirector scoreDirector, Object entity) {
-        Object shadowEntity = mappedByVariableDescriptor.getValue(entity);
+        Object shadowEntity = sourceVariableDescriptor.getValue(entity);
         if (shadowEntity != null) {
             Object shadowValue = shadowVariableDescriptor.getValue(shadowEntity);
             if (shadowValue != null) {
                 throw new IllegalStateException("The entity (" + entity
-                        + ") has a variable (" + mappedByVariableDescriptor.getVariableName()
+                        + ") has a variable (" + sourceVariableDescriptor.getVariableName()
                         + ") with value (" + shadowEntity
-                        + ") which has a mappedBy variable (" + shadowVariableDescriptor.getVariableName()
+                        + ") which has a sourceVariableName variable (" + shadowVariableDescriptor.getVariableName()
                         + ") with a value (" + shadowValue + ") which is not null.\n"
-                        + "Verify the consistency of your input problem for that mappedBy variable.");
+                        + "Verify the consistency of your input problem for that sourceVariableName variable.");
             }
             scoreDirector.beforeVariableChanged(shadowEntity, shadowVariableDescriptor.getVariableName());
             shadowVariableDescriptor.setValue(shadowEntity, entity);
@@ -73,16 +74,16 @@ public class ChainedMappedByVariableListener implements VariableListener<Object>
     }
 
     protected void retract(ScoreDirector scoreDirector, Object entity) {
-        Object shadowEntity = mappedByVariableDescriptor.getValue(entity);
+        Object shadowEntity = sourceVariableDescriptor.getValue(entity);
         if (shadowEntity != null) {
             Object shadowValue = shadowVariableDescriptor.getValue(shadowEntity);
             if (shadowValue != entity) {
                 throw new IllegalStateException("The entity (" + entity
-                        + ") has a variable (" + mappedByVariableDescriptor.getVariableName()
+                        + ") has a variable (" + sourceVariableDescriptor.getVariableName()
                         + ") with value (" + shadowEntity
-                        + ") which has a mappedBy variable (" + shadowVariableDescriptor.getVariableName()
+                        + ") which has a sourceVariableName variable (" + shadowVariableDescriptor.getVariableName()
                         + ") with a value (" + shadowValue + ") which is not that entity.\n"
-                        + "Verify the consistency of your input problem for that mappedBy variable.");
+                        + "Verify the consistency of your input problem for that sourceVariableName variable.");
             }
             scoreDirector.beforeVariableChanged(shadowEntity, shadowVariableDescriptor.getVariableName());
             shadowVariableDescriptor.setValue(shadowEntity, null);

@@ -3,6 +3,7 @@
   <!--<environmentMode>FAST_ASSERT</environmentMode>-->
   <solutionClass>org.optaplanner.examples.examination.domain.Examination</solutionClass>
   <planningEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</planningEntityClass>
+  <planningEntityClass>org.optaplanner.examples.examination.domain.FollowingExam</planningEntityClass>
   <planningEntityClass>org.optaplanner.examples.examination.domain.Exam</planningEntityClass>
 
   <scoreDirectorFactory>

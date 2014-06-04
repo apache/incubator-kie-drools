@@ -21,9 +21,9 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
-import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.projectjobscheduling.domain.solver.DelayStrengthComparator;
@@ -90,8 +90,7 @@ public class Allocation extends AbstractPersistable {
     }
 
     @PlanningVariable(valueRangeProviderRefs = {"executionModeRange"},
-            strengthWeightFactoryClass = ExecutionModeStrengthWeightFactory.class,
-            variableListenerClasses = {PredecessorsDoneDateUpdatingVariableListener.class})
+            strengthWeightFactoryClass = ExecutionModeStrengthWeightFactory.class)
     public ExecutionMode getExecutionMode() {
         return executionMode;
     }
@@ -101,8 +100,7 @@ public class Allocation extends AbstractPersistable {
     }
 
     @PlanningVariable(valueRangeProviderRefs = {"delayRange"},
-            strengthComparatorClass = DelayStrengthComparator.class,
-            variableListenerClasses = {PredecessorsDoneDateUpdatingVariableListener.class})
+            strengthComparatorClass = DelayStrengthComparator.class)
     public Integer getDelay() {
         return delay;
     }
@@ -111,6 +109,9 @@ public class Allocation extends AbstractPersistable {
         this.delay = delay;
     }
 
+    @CustomShadowVariable(variableListenerClass = PredecessorsDoneDateUpdatingVariableListener.class,
+            sources = {@CustomShadowVariable.Source(variableName = "executionMode"),
+                    @CustomShadowVariable.Source(variableName = "delay")})
     public Integer getPredecessorsDoneDate() {
         return predecessorsDoneDate;
     }

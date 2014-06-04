@@ -119,15 +119,4 @@ public @interface PlanningVariable {
 
     interface NullStrengthWeightFactory extends SelectionSorterWeightFactory {}
 
-    /**
-     * A {@link VariableListener} gets notified before and after a planning variable has changed.
-     * That listener changes shadow variables (often on other planning entities) accordingly,
-     * Those shadow variables can make the score calculation more natural to write.
-     * <p/>
-     * For example: VRP with time windows uses a {@link VariableListener} to update the arrival times
-     * of all the trailing entities when an entity is changed.
-     * @return never null
-     */
-    Class<? extends VariableListener>[] variableListenerClasses() default {};
-
 }
