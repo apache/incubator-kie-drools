@@ -57,6 +57,7 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -64,6 +65,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class XStreamJSon {
+    public static volatile boolean SORT_MAPS = false;
+
     public static XStream newJSonMarshaller() {
         JettisonMappedXmlDriver jet = new JettisonMappedXmlDriver();
         XStream xstream = new XStream( jet );
@@ -672,7 +675,13 @@ public class XStreamJSon {
             ExecutionResults result = (ExecutionResults) object;
             writer.startNode( "results" );
             if ( !result.getIdentifiers().isEmpty() ) {
-                for ( String identifier : result.getIdentifiers() ) {
+                // this gets sorted, otherwise unit tests will not pass
+                Collection<String> col = result.getIdentifiers();
+                String[] identifiers = col.toArray( new String[col.size()]);
+                if ( SORT_MAPS ) {
+                    Arrays.sort(identifiers);
+                }
+                for ( String identifier : identifiers ) {
                     writer.startNode( "result" );
 
                     writer.startNode( "identifier" );
