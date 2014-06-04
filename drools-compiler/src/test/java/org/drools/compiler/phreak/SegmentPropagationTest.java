@@ -13,11 +13,8 @@ import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Rule;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.drools.compiler.phreak.A.a;
-import static org.drools.compiler.phreak.B.b;
 import static org.drools.compiler.phreak.Pair.t;
 
 public class SegmentPropagationTest {
@@ -154,17 +151,13 @@ public class SegmentPropagationTest {
                                          t(a1, b0) )
                                 .delete( )
                                 .update( )
-              .postStaged( smem1 ).insert( t(a0, b1),
-                                           t(a0, b2),
-                                           t(a1, b0),
+              .postStaged( smem1 ).insert( t(a1, b0),
                                            t(a1, b2),
                                            t(a0, b1),
                                            t(a0, b2) )
                                   .delete( )
                                   .update( )
-                .postStaged( smem2 ).insert( t(a0, b1),
-                                             t(a0, b2),
-                                             t(a1, b0),
+                .postStaged( smem2 ).insert( t(a1, b0),
                                              t(a1, b2),
                                              t(a0, b1),
                                              t(a0, b2) )
@@ -181,13 +174,9 @@ public class SegmentPropagationTest {
                                 .delete( t(a1, b2),
                                          t(a0, b2) )
                                 .update( )
-              .postStaged( smem1 ).insert( t(a0, b1),
-                                           t(a0, b2),
-                                           t(a1, b0),
+              .postStaged( smem1 ).insert( t(a1, b0),
                                            t(a0, b1) )
-              .postStaged( smem2 ).insert( t(a0, b1),
-                                           t(a0, b2),
-                                           t(a1, b0),
+              .postStaged( smem2 ).insert( t(a1, b0),
                                            t(a0, b1) )
               .run();
                  
