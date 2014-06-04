@@ -5960,4 +5960,79 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.insert("host");
         ksession.fireAllRules();
     }
+
+    public static class TypeA {
+        private int id = 1;
+        public int getId() { return id; }
+    }
+
+    public static class TypeB {
+        private int parentId = 1;
+        private int id = 2;
+        public int getParentId() { return parentId; }
+        public int getId() { return id; }
+    }
+
+    public static class TypeC {
+        private int parentId = 2;
+        public int getParentId() { return parentId; }
+        public int getValue() { return 1; }
+    }
+
+    public static class TypeD {
+        private int parentId = 2;
+        private int value;
+        public int getParentId() { return parentId; }
+        public int getValue() { return value; }
+        public void setValue(int value) { this.value = value; }
+    }
+
+    @Test
+    public void testAccumulateWithNodeSharing() throws Exception {
+        // DROOLS-487
+        String drl =
+                "import " + TypeA.class.getCanonicalName() + ";\n" +
+                "import " + TypeB.class.getCanonicalName() + ";\n" +
+                "import " + TypeC.class.getCanonicalName() + ";\n" +
+                "import " + TypeD.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "    $a : TypeA()\n" +
+                "    $b : TypeB( parentId == $a.id )\n" +
+                "    $d : TypeD( parentId == $b.id, value == 1 )\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 no-loop when\n" +
+                "    $a : TypeA()\n" +
+                "    $b : TypeB( parentId == $a.id )\n" +
+                "then\n" +
+                "    update($b);" +
+                "end\n" +
+                "\n" +
+                "rule R3 when\n" +
+                "    $a : TypeA()\n" +
+                "    $b : TypeB( parentId == $a.id )\n" +
+                "    $d : TypeD( parentId == $b.id )\n" +
+                "    $result : Number() from accumulate(\n" +
+                "        $b_acc : TypeB()\n" +
+                "        and\n" +
+                "        $c : TypeC( parentId == $b_acc.id, $value : value )\n" +
+                "        sum($value)\n" +
+                "    )\n" +
+                "then\n" +
+                "    $d.setValue($result.intValue());\n" +
+                "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession ksession = helper.build().newKieSession();
+
+        ksession.insert(new TypeA());
+        ksession.insert(new TypeB());
+        ksession.insert(new TypeC());
+        TypeD d = new TypeD();
+        ksession.insert(d);
+        ksession.fireAllRules();
+        assertEquals(1, d.getValue());
+    }
 }
