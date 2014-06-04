@@ -65,6 +65,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 public class XStreamXML {
+    public static volatile boolean SORT_MAPS = false;
 
     public static XStream newXStreamMarshaller(XStream xstream) {
         XStreamHelper.setAliases( xstream );
@@ -808,7 +809,16 @@ public class XStreamXML {
                             HierarchicalStreamWriter writer,
                             MarshallingContext context) {
             ExecutionResults result = (ExecutionResults) object;
-            for ( String identifier : result.getIdentifiers() ) {
+
+            Collection<String> identifiers = result.getIdentifiers();
+            // this gets sorted, otherwise unit tests will not pass
+            if ( SORT_MAPS ) {
+                String[] array = identifiers.toArray( new String[identifiers.size()]);
+                Arrays.sort(array);
+                identifiers = Arrays.asList(array);
+            }
+
+            for ( String identifier : identifiers ) {
                 writer.startNode( "result" );
                 writer.addAttribute( "identifier",
                                      identifier );
@@ -828,7 +838,15 @@ public class XStreamXML {
                 writer.endNode();
             }
 
-            for ( String identifier : ((ExecutionResultImpl) result).getFactHandles().keySet() ) {
+            Collection<String> handles = ((ExecutionResultImpl) result).getFactHandles().keySet();
+            // this gets sorted, otherwise unit tests will not pass
+            if (SORT_MAPS) {
+                String[] array = handles.toArray( new String[handles.size()]);
+                Arrays.sort(array);
+                handles = Arrays.asList(array);
+            }
+
+            for ( String identifier : handles ) {
                 Object handle = result.getFactHandle( identifier );
                 if ( handle instanceof FactHandle ) {
                     writer.startNode( "fact-handle" );
