@@ -62,7 +62,7 @@
       <para>Most planning problems have only negative constraints and therefore have a negative score. In that case, the
       score is usually the sum of the weight of the negative constraints being broken, with a perfect score of 0. This
       explains why the score of a solution of 4 queens is the negative (and not the positive!) of the number of queen
-      couples which can attack each other.</para>
+      pairs which can attack each other.</para>
 
       <para>Negative and positive constraints can be combined, even in the same score level.</para>
 
@@ -80,8 +80,8 @@
 
       <para>Not all score constraints are equally important. If breaking one constraint is equally bad as breaking
       another constraint x times, then those 2 constraints have a different weight (but they are in the same score
-      level). For example in vehicle routing, you can make 2 "unhappy driver" constraint matches count as much as 1
-      "fuel tank usage" constraint match:</para>
+      level). For example in vehicle routing, you can make1 "unhappy driver" constraint match count as much as 2 "fuel
+      tank usage" constraint matches:</para>
 
       <mediaobject>
         <imageobject>
@@ -359,9 +359,8 @@
       <title>BendableScore</title>
 
       <para>A <literal>BendableScore</literal> has a configurable number of score levels. It has an array of hard
-      <literal>int</literal> values and an array of soft <literal>int</literal> value, for example 2 hard levels and 3
-      soft levels for a score <literal>-123/-456/-789/-012/-345</literal>. The number of hard and soft score levels
-      needs to be set at configuration time, it's not flexible to change during solving.</para>
+      <literal>int</literal> values and an array of soft <literal>int</literal> value, for example with 2 hard levels
+      and 3 soft levels, the score can be <literal>-123/-456/-789/-012/-345</literal>. </para>
 
       <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;BENDABLE&lt;/scoreDefinitionType&gt;
@@ -369,6 +368,9 @@
     &lt;bendableSoftLevelsSize&gt;3&lt;/bendableSoftLevelsSize&gt;
     ...
   &lt;/scoreDirectorFactory&gt;</programlisting>
+
+      <para>The number of hard and soft score levels needs to be set at configuration time: it's not flexible to change
+      during solving. </para>
     </section>
 
     <section xml:id="customScore">
@@ -378,8 +380,7 @@
 
       <para>To implement a custom Score, you'll also need to implement a custom <literal>ScoreDefinition</literal>.
       Extend <literal>AbstractScoreDefinition</literal> (preferable by copy pasting
-      <literal>HardSoftScoreDefinition</literal> or <literal>SimpleScoreDefinition</literal>) and start from
-      there.</para>
+      <literal>HardSoftScoreDefinition</literal>) and start from there.</para>
 
       <para>Then hook your custom <literal>ScoreDefinition</literal> in your
       <filename>SolverConfig.xml</filename>:</para>
