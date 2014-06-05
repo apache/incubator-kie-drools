@@ -110,7 +110,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         
         assertEquals(0, list.size());
         
-        Thread.sleep(2000);
+        Thread.sleep(2200);
         ksession.dispose();
         assertEquals(5, getNumberOfProcessInstances("Minimal"));
 

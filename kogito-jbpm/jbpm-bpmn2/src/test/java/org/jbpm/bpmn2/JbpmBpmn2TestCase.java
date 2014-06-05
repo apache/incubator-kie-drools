@@ -58,6 +58,7 @@ import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.marshalling.impl.ProcessInstanceResolverStrategy;
+import org.jbpm.persistence.util.PersistenceUtil;
 import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
@@ -180,18 +181,17 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
     }
 
     public static PoolingDataSource setupPoolingDataSource() {
-        PoolingDataSource pds = new PoolingDataSource();
-        pds.setUniqueName("jdbc/testDS1");
-        pds.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
-        pds.setMaxPoolSize(5);
-        pds.setAllowLocalTransactions(true);
-        pds.getDriverProperties().put("user", "sa");
-        pds.getDriverProperties().put("password", "");
-        pds.getDriverProperties().put("url",
-                "jdbc:h2:tcp://localhost/target/jbpm-bpmn-db");
-        pds.getDriverProperties().put("driverClassName", "org.h2.Driver");
-        pds.init();
-        return pds;
+        Properties dsProps = PersistenceUtil.getDatasourceProperties();
+        String jdbcUrl = dsProps.getProperty("url");
+        String driverClass = dsProps.getProperty("driverClassName");
+
+        // Setup the datasource
+        PoolingDataSource ds1 = PersistenceUtil.setupPoolingDataSource(dsProps, "jdbc/testDS1", false);
+        if( driverClass.startsWith("org.h2") ) { 
+            ds1.getDriverProperties().setProperty("url", jdbcUrl);
+        }
+        ds1.init();
+        return ds1;
     }
 
     public void setPersistence(boolean sessionPersistence) {
