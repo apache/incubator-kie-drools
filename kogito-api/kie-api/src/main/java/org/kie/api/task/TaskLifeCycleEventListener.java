@@ -33,6 +33,7 @@ public interface TaskLifeCycleEventListener extends EventListener {
     public void beforeTaskSuspendedEvent(TaskEvent event);
     public void beforeTaskForwardedEvent(TaskEvent event);
     public void beforeTaskDelegatedEvent(TaskEvent event);
+    public void beforeTaskNominatedEvent(TaskEvent event);
     
     public void afterTaskActivatedEvent(TaskEvent event);
     public void afterTaskClaimedEvent(TaskEvent event);
@@ -48,5 +49,6 @@ public interface TaskLifeCycleEventListener extends EventListener {
     public void afterTaskSuspendedEvent(TaskEvent event);
     public void afterTaskForwardedEvent(TaskEvent event);
     public void afterTaskDelegatedEvent(TaskEvent event);
+    public void afterTaskNominatedEvent(TaskEvent event);
     
 }
