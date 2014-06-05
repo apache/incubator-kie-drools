@@ -23,7 +23,7 @@ public interface TaskEvent extends Externalizable {
     public enum TaskEventType{STARTED, ACTIVATED, COMPLETED, 
                                 STOPPED, EXITED, FAILED, ADDED,
                                 CLAIMED, SKIPPED, SUSPENDED, CREATED, 
-                                FORWARDED, RELEASED, RESUMED, DELEGATED};
+                                FORWARDED, RELEASED, RESUMED, DELEGATED, NOMINATED};
    
     long getId();
 

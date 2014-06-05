@@ -31,5 +31,6 @@ public enum Operation {
     Register,
     Remove,
     Activate,
-    Exit
+    Exit,
+    Nominate
 }
