@@ -2,6 +2,7 @@ package org.jbpm.process.workitem.rest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.provider.JAXBElementProvider;
 import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.jbpm.bpmn2.handler.WorkItemHandlerRuntimeException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -251,6 +253,29 @@ public class RestWorkItemHandlerTest {
         
         WorkItemManager manager = new TestWorkItemManager(workItem);
         handler.executeWorkItem(workItem, manager);
+    }
+    
+    @Test
+    public void testHandleErrorOnNotSuccessfulResponse() {
+        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter( "Url", serverURL+"/notexisting");
+        workItem.setParameter( "Method", "GET" );
+        workItem.setParameter("HandleResponseErrors", "true");
+        
+        
+        WorkItemManager manager = new TestWorkItemManager(workItem);
+        try {
+        	handler.executeWorkItem(workItem, manager);
+        	fail("Should throw exception as it was instructed to do so");
+        } catch (WorkItemHandlerRuntimeException ex) {
+        	
+        	RESTServiceException e = (RESTServiceException) ex.getCause().getCause();
+        	assertEquals(500, e.getStatus());
+        	assertEquals(serverURL+"/notexisting", e.getEndoint());
+        	assertEquals("", e.getResponse());
+        }
     }
     
     private class TestWorkItemManager implements WorkItemManager {

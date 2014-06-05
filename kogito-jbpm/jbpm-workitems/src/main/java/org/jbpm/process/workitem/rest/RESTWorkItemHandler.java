@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -57,6 +57,8 @@ import org.slf4j.LoggerFactory;
  *  <li>Username - user name for authentication - overrides one given on handler initialization)</li>
  *  <li>Password - password for authentication - overrides one given on handler initialization)</li>
  *  <li>AuthUrl - url that is handling authentication (usually j_security_check url)</li>
+ *  <li>HandleResponseErrors - optional parameter that instructs handler to throw errors in case 
+ *  of non successful response codes (other than 2XX)</li>
  * </ul>
  */
 public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
@@ -66,7 +68,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 	private String username;
 	private String password;
 	private AuthenticationType type;
-	private String authUrl;
+	private String authUrl;	
 	
 	/**
 	 * Used when no authentication is required
@@ -103,14 +105,19 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 	}
 
 	public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+		boolean handleException = false;
     	// extract required parameters
         String urlStr = (String) workItem.getParameter("Url");
         String method = (String) workItem.getParameter("Method");
+        String handleExceptionStr = (String) workItem.getParameter("HandleResponseErrors");
         if (urlStr == null) {
             throw new IllegalArgumentException("Url is a required parameter");
         }
         if (method == null || method.trim().length() == 0) {
         	method = "GET";
+        }
+        if (handleExceptionStr != null) {
+        	handleException = Boolean.parseBoolean(handleExceptionStr);
         }
         Map<String,Object> params = workItem.getParameters();
 
@@ -147,9 +154,13 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 	            postProcessResult(theMethod.getResponseBodyAsString(), results);
 	            results.put("StatusMsg", "request to endpoint " + urlStr + " successfully completed " + theMethod.getStatusText());
 	        } else {
-	            logger.warn("Unsuccessful response from REST server (status {}, endpoint {}, response {}", 
-	                    responseCode, urlStr, theMethod.getResponseBodyAsString());
-	            results.put("StatusMsg", "endpoint " + urlStr + " could not be reached: " + theMethod.getResponseBodyAsString());
+	        	if (handleException) {
+	        		handleException(new RESTServiceException(responseCode, theMethod.getResponseBodyAsString(), urlStr));
+	        	} else {
+		            logger.warn("Unsuccessful response from REST server (status {}, endpoint {}, response {}", 
+		                    responseCode, urlStr, theMethod.getResponseBodyAsString());
+		            results.put("StatusMsg", "endpoint " + urlStr + " could not be reached: " + theMethod.getResponseBodyAsString());
+	        	}
 	        }
             results.put("Status", responseCode);
             
