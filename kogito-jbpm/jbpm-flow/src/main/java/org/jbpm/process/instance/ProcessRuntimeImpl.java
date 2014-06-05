@@ -572,7 +572,12 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
                     timerInstance.setPeriod(repeatValues[2]);
                 } else {
                     timerInstance.setDelay(repeatValues[0]);
-                    timerInstance.setPeriod(repeatValues[0]);
+                    try {
+                    	long period = DateTimeUtils.parseTimeString(timer.getPeriod());
+                    	timerInstance.setPeriod(period);
+                    } catch (RuntimeException e) {
+                    	timerInstance.setPeriod(repeatValues[0]);
+                    }
                 }
                 
                 break;

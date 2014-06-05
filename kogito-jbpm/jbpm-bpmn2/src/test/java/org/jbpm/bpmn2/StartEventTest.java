@@ -18,6 +18,7 @@ package org.jbpm.bpmn2;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +92,27 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         person.setName("john");
         ksession.insert(person);
         
+
+    }
+    
+    @Test
+    public void testTimerStartCycleLegacy() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-TimerStartCycleLegacy.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        final List<Long> list = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                list.add(event.getProcessInstance().getId());
+            }
+        });
+        System.out.println("About to start ###### " + new Date());
+        Thread.sleep(2000);
+        
+        assertEquals(0, list.size());
+        
+        Thread.sleep(2000);
+        ksession.dispose();
+        assertEquals(5, getNumberOfProcessInstances("Minimal"));
 
     }
 
