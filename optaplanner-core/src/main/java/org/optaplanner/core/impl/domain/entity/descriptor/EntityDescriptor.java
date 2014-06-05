@@ -132,8 +132,8 @@ public class EntityDescriptor {
     }
 
     private void processMethodAnnotations(DescriptorPolicy descriptorPolicy) {
-        // This only iterates public methods
-        for (Method method : entityClass.getMethods()) {
+        // Only iterate declared methods, not inherited methods, to avoid registering the same ValueRangeProvide twice
+        for (Method method : entityClass.getDeclaredMethods()) {
             if (method.isAnnotationPresent(ValueRangeProvider.class)) {
                 descriptorPolicy.addFromEntityValueRangeProvider(method);
             }
