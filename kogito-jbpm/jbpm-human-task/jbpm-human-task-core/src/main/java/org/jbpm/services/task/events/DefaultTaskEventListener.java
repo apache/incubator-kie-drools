@@ -88,6 +88,12 @@ public class DefaultTaskEventListener implements TaskLifeCycleEventListener {
 		// intentionally left blank
 
 	}
+	
+	@Override
+	public void beforeTaskNominatedEvent(TaskEvent event) {
+		// intentionally left blank
+		
+	}
 
 	@Override
 	public void afterTaskActivatedEvent(TaskEvent event) {
@@ -171,6 +177,12 @@ public class DefaultTaskEventListener implements TaskLifeCycleEventListener {
 	public void afterTaskDelegatedEvent(TaskEvent event) {
 		// intentionally left blank
 
+	}
+
+	@Override
+	public void afterTaskNominatedEvent(TaskEvent event) {
+		// intentionally left blank
+		
 	}
 
 }

@@ -174,6 +174,11 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
     public void afterTaskForwardedEvent(TaskEvent event) {
         createOrUpdateTask(event);
     }
+    
+    @Override
+    public void afterTaskNominatedEvent(TaskEvent event) {
+        createOrUpdateTask(event);
+    }
 
     /**
      * Creates or updates a bam task summary instance.
@@ -328,5 +333,9 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
 
 	@Override
 	public void beforeTaskDelegatedEvent(TaskEvent event) {
+	}
+	
+	@Override
+	public void beforeTaskNominatedEvent(TaskEvent event) {
 	}
 }

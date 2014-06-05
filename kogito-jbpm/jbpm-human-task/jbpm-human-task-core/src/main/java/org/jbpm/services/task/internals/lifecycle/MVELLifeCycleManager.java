@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +83,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
 
     void evalCommand(final Operation operation, final List<OperationCommand> commands, final Task task,
             final User user, final OrganizationalEntity targetEntity,
-            List<String> groupIds) throws PermissionDeniedException {
+            List<String> groupIds, OrganizationalEntity...entities) throws PermissionDeniedException {
 
         boolean statusMatched = false;
         final TaskData taskData = task.getTaskData();
@@ -98,7 +100,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                             throw new PermissionDeniedException(errorMessage);
                         }
 
-                        commands(command, task, user, targetEntity);
+                        commands(command, task, user, targetEntity, entities);
                     } else {
                         logger.debug("No match on status for task {} :status {}  != {}", task.getId(), task.getTaskData().getStatus(), status);
                     }
@@ -116,7 +118,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                             throw new PermissionDeniedException(errorMessage);
                         }
 
-                        commands(command, task, user, targetEntity);
+                        commands(command, task, user, targetEntity, entities);
                     } else {
                         logger.debug("No match on previous status for task {} :status {}  != {}", task.getId(), task.getTaskData().getStatus(), status);
                     }
@@ -190,7 +192,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
     }
 
     private void commands(final OperationCommand command, final Task task, final User user,
-            final OrganizationalEntity targetEntity) {
+            final OrganizationalEntity targetEntity, OrganizationalEntity...entities) {
 
 
         final PeopleAssignments people = task.getPeopleAssignments();
@@ -217,7 +219,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
         if (command.isSetNewOwnerToNull()) {
             taskData.setActualOwner(null);
         }
-
+        
         if (command.getExec() != null) {
             switch (command.getExec()) {
                 case Claim: {
@@ -228,15 +230,24 @@ public class MVELLifeCycleManager implements LifeCycleManager {
 
                     break;
                 }
+                case Nominate: {
+                	if (entities != null && entities.length > 0) {
+                		List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>(Arrays.asList(entities));
+                		((InternalPeopleAssignments) task.getPeopleAssignments()).setPotentialOwners(potentialOwners);
+                		assignOwnerAndStatus((InternalTaskData) task.getTaskData(), potentialOwners);                    	
+                    }
+                    break;
+                }
             }
         }
 
 
     }
+    
 
     public void taskOperation(final Operation operation, final long taskId, final String userId,
             final String targetEntityId, final Map<String, Object> data,
-            List<String> groupIds) throws TaskException {
+            List<String> groupIds, OrganizationalEntity...entities) throws TaskException {
 
         try {
             final List<OperationCommand> commands = operations.get(operation);
@@ -292,6 +303,10 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                 	taskEventSupport.fireBeforeTaskForwarded(task, persistenceContext);
                     break;
                 }
+                case Nominate: {
+                	taskEventSupport.fireBeforeTaskNominated(task, persistenceContext);
+                    break;
+                }
                 case Release: {
                 	taskEventSupport.fireBeforeTaskReleased(task, persistenceContext);
                     break;
@@ -319,7 +334,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
 
             }
             
-            evalCommand(operation, commands, task, user, targetEntity, groupIds);
+            evalCommand(operation, commands, task, user, targetEntity, groupIds, entities);
 
             switch (operation) {
                 case Activate: {
@@ -357,6 +372,10 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                 	taskEventSupport.fireAfterTaskForwarded(task, persistenceContext);
                     break;
                 }   
+                case Nominate: {
+                	taskEventSupport.fireAfterTaskNominated(task, persistenceContext);
+                    break;
+                }
                 case Release: {
                 	taskEventSupport.fireAfterTaskReleased(task, persistenceContext);
                     break;
@@ -462,19 +481,6 @@ public class MVELLifeCycleManager implements LifeCycleManager {
         }
     }
 
-    public void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
-        final Task task = persistenceContext.findTask(taskId);
-        final User user = persistenceContext.findUser(userId);
-        if (isAllowed(user, null, (List<OrganizationalEntity>) task.getPeopleAssignments().getBusinessAdministrators())) {
-            assignOwnerAndStatus((InternalTaskData) task.getTaskData(), potentialOwners);
-            if (task.getTaskData().getStatus() == Status.Ready) {
-                ((InternalPeopleAssignments) task.getPeopleAssignments()).setPotentialOwners(potentialOwners);
-            }
-
-        } else {
-            throw new PermissionDeniedException("User " + userId + " is not allowed to perform Nominate on Task " + taskId);
-        }
-    }
     
     /**
      * This method will potentially assign the actual owner of this TaskData and set the status

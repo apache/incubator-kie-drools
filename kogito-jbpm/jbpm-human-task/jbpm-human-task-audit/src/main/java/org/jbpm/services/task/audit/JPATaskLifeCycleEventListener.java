@@ -311,6 +311,25 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
             
         persistenceContext.merge(auditTaskImpl);
     }
+    
+    @Override
+    public void afterTaskNominatedEvent(TaskEvent event) {
+        String userId = "";
+        Task ti = event.getTask();
+        TaskPersistenceContext persistenceContext = ((TaskContext)event.getTaskContext()).getPersistenceContext();
+        if (ti.getTaskData().getActualOwner() != null) {
+            userId = ti.getTaskData().getActualOwner().getId();
+        }
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.NOMINATED, userId, new Date()));
+        //@TODO: Update Lucene Audit Task
+
+         AuditTaskImpl auditTaskImpl = persistenceContext.queryWithParametersInTransaction("getAuditTaskById", true, 
+				persistenceContext.addParametersToMap("taskId", ti.getId()),
+				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
+        auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
+            
+        persistenceContext.merge(auditTaskImpl);
+    }
 
     @Override
     public void beforeTaskActivatedEvent(TaskEvent event) {
@@ -379,6 +398,11 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
 
     @Override
     public void beforeTaskDelegatedEvent(TaskEvent event) {
+
+    }
+    
+    @Override
+    public void beforeTaskNominatedEvent(TaskEvent event) {
 
     }
 

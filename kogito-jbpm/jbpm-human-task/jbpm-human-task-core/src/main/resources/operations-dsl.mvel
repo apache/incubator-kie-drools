@@ -124,6 +124,12 @@
     			allowed = [ Allowed.Owner, Allowed.BusinessAdministrator ],
     			newStatus = Status.Ready
     		} ],
+	Operation.Nominate
+    	: [ new OperationCommand().{
+    			status = [ Status.Created ],
+    			allowed = [ Allowed.BusinessAdministrator ],
+    			exec = Operation.Nominate
+    		} ],    		
     Operation.Exit
         : [ new OperationCommand().{
                 status = [ Status.Created, Status.Ready, Status.Reserved, Status.InProgress, Status.Suspended ],

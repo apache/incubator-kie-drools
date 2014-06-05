@@ -278,4 +278,14 @@ public class ExternalTaskEventListener implements TaskLifeCycleEventListener {
 		
 		
 	}
+
+	@Override
+	public void beforeTaskNominatedEvent(TaskEvent event) {
+		
+	}
+
+	@Override
+	public void afterTaskNominatedEvent(TaskEvent event) {
+
+	}
 }

@@ -12,9 +12,7 @@ import java.util.Map;
 import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.commands.TaskContext;
 import org.jbpm.services.task.events.TaskEventSupport;
-import org.jbpm.services.task.identity.UserGroupLifeCycleManagerDecorator;
 import org.jbpm.services.task.internals.lifecycle.LifeCycleManager;
-import org.jbpm.services.task.internals.lifecycle.MVELLifeCycleManager;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.command.Command;
@@ -211,14 +209,9 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         lifeCycleManager.taskOperation(Operation.Suspend, taskId, userId, null, null, null);
     }
 
-    //@TODO: WHY THE HELL THIS IS NOT AN OPERATION???
-    public void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
-        if(lifeCycleManager instanceof UserGroupLifeCycleManagerDecorator){
-            ((MVELLifeCycleManager)((UserGroupLifeCycleManagerDecorator) lifeCycleManager).getManager()).nominate(taskId, userId, potentialOwners);
-        } else if(lifeCycleManager instanceof MVELLifeCycleManager){
-            ((MVELLifeCycleManager)lifeCycleManager).nominate(taskId, userId, potentialOwners);
-        }
-
+    public void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {      
+        lifeCycleManager.taskOperation(Operation.Nominate, taskId, userId, null, null, null, 
+        		potentialOwners.toArray(new OrganizationalEntity[potentialOwners.size()]));
     }
 
     public void setSubTaskStrategy(long taskId, SubTasksStrategy strategy) {

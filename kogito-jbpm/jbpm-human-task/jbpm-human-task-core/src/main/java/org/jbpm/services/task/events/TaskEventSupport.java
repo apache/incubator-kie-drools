@@ -135,6 +135,15 @@ public class TaskEventSupport extends AbstractEventSupport<TaskLifeCycleEventLis
         }
     }
     
+    public void fireBeforeTaskNominated(final Task task, TaskPersistenceContext context) {
+        final Iterator<TaskLifeCycleEventListener> iter = getEventListenersIterator();
+        if (iter.hasNext()) {
+            do{
+                iter.next().beforeTaskNominatedEvent(new TaskEventImpl(task, new EventTaskContext(context)));
+            } while (iter.hasNext());
+        }
+    }
+    
     // after methods
     
     public void fireAfterTaskActivated(final Task task, TaskPersistenceContext context) {
@@ -259,6 +268,15 @@ public class TaskEventSupport extends AbstractEventSupport<TaskLifeCycleEventLis
         if (iter.hasNext()) {
             do{
                 iter.next().afterTaskDelegatedEvent(new TaskEventImpl(task, new EventTaskContext(context)));
+            } while (iter.hasNext());
+        }
+    }
+    
+    public void fireAfterTaskNominated(final Task task, TaskPersistenceContext context) {
+        final Iterator<TaskLifeCycleEventListener> iter = getEventListenersIterator();
+        if (iter.hasNext()) {
+            do{
+                iter.next().afterTaskNominatedEvent(new TaskEventImpl(task, new EventTaskContext(context)));
             } while (iter.hasNext());
         }
     }
