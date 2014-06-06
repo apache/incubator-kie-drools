@@ -27,22 +27,16 @@ public interface TaskEvent extends Externalizable {
    
     long getId();
 
-    void setId(long id);
-
     long getTaskId();
-
-    void setTaskId(long taskId);
 
     TaskEventType getType();
 
-    void setType(TaskEventType type);
-
     String getUserId();
-
-    void setUserId(String userId);
     
     Date getLogTime();
     
-    void setLogTime(Date timestamp);
+    Long getProcessInstanceId();
+    
+    Long getWorkItemId();
     
 }
