@@ -235,6 +235,13 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
     @Override
     public List<TaskLifeCycleEventListener> getTaskListeners() {
         List<TaskLifeCycleEventListener> defaultListeners = new ArrayList<TaskLifeCycleEventListener>();
+        try {
+            for ( EventListenerProducer<TaskLifeCycleEventListener> producer : taskListenerProducer ) {
+            	defaultListeners.addAll( producer.getEventListeners(null, null) );
+            }
+        } catch ( Exception e ) {
+            logger.warn( "Cannot add listeners to task service due to {}", e.getMessage() );
+        }
         // add listeners from descriptor
         defaultListeners.addAll(getTaskListenersFromDescriptor());
         return defaultListeners;
