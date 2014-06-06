@@ -198,7 +198,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
 
     public final void beforeVariableChanged(Object entity, String variableName) {
         GenuineVariableDescriptor variableDescriptor = getSolutionDescriptor()
-                .findVariableDescriptor(entity, variableName);
+                .findGenuineVariableDescriptor(entity, variableName);
         if (variableDescriptor != null) {
             beforeVariableChanged(variableDescriptor, entity);
         } else {
@@ -209,7 +209,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
 
     public final void afterVariableChanged(Object entity, String variableName) {
         GenuineVariableDescriptor variableDescriptor = getSolutionDescriptor()
-                .findVariableDescriptor(entity, variableName);
+                .findGenuineVariableDescriptor(entity, variableName);
         if (variableDescriptor != null) {
             afterVariableChanged(variableDescriptor, entity);
         } else {

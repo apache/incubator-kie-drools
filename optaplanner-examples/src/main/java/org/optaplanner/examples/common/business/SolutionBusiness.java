@@ -280,7 +280,7 @@ public class SolutionBusiness {
 
     public ChangeMove createChangeMove(Object entity, String variableName, Object toPlanningValue) {
         GenuineVariableDescriptor variableDescriptor = ((InnerScoreDirector) guiScoreDirector).getSolutionDescriptor()
-                .findVariableDescriptor(entity, variableName);
+                .findGenuineVariableDescriptor(entity, variableName);
         if (variableDescriptor.isChained()) {
             return new ChainedChangeMove(entity, variableDescriptor, toPlanningValue);
         } else {

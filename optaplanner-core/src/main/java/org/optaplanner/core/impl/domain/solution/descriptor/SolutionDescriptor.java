@@ -282,9 +282,14 @@ public class SolutionDescriptor {
         return new VariableListenerSupport(variableListenerMap);
     }
 
-    public GenuineVariableDescriptor findVariableDescriptor(Object entity, String variableName) {
+    public GenuineVariableDescriptor findGenuineVariableDescriptor(Object entity, String variableName) {
         EntityDescriptor entityDescriptor = getEntityDescriptor(entity.getClass());
         return entityDescriptor.getGenuineVariableDescriptor(variableName);
+    }
+
+    public VariableDescriptor findVariableDescriptor(Object entity, String variableName) {
+        EntityDescriptor entityDescriptor = getEntityDescriptor(entity.getClass());
+        return entityDescriptor.getVariableDescriptor(variableName);
     }
 
     // ************************************************************************
