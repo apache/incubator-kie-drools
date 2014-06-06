@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
-import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -40,7 +39,7 @@ public class TestdataDeepCloningEntity extends TestdataObject {
     public static GenuineVariableDescriptor buildVariableDescriptorForValue() {
         SolutionDescriptor solutionDescriptor = TestdataDeepCloningSolution.buildSolutionDescriptor();
         EntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(TestdataDeepCloningEntity.class);
-        return entityDescriptor.getVariableDescriptor("value");
+        return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
     private TestdataValue value;

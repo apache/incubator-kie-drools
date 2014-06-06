@@ -129,8 +129,9 @@
     </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.examination.domain.Examination</solutionClass>
-      <planningEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</planningEntityClass>
       <planningEntityClass>org.optaplanner.examples.examination.domain.Exam</planningEntityClass>
+      <planningEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</planningEntityClass>
+      <planningEntityClass>org.optaplanner.examples.examination.domain.FollowingExam</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>org/optaplanner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>

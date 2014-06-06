@@ -42,12 +42,17 @@ import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
 import org.optaplanner.core.impl.domain.solution.cloner.PlanningCloneableSolutionCloner;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListenerSupport;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.api.domain.solution.Solution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SolutionDescriptor {
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private final Class<? extends Solution> solutionClass;
     private final BeanInfo solutionBeanInfo;
@@ -58,6 +63,7 @@ public class SolutionDescriptor {
     private final Map<String, PropertyAccessor> entityCollectionPropertyAccessorMap;
 
     private final Map<Class<?>, EntityDescriptor> entityDescriptorMap;
+    private final List<Class<?>> reversedEntityClassList;
 
     public SolutionDescriptor(Class<? extends Solution> solutionClass) {
         this.solutionClass = solutionClass;
@@ -71,18 +77,20 @@ public class SolutionDescriptor {
         entityPropertyAccessorMap = new LinkedHashMap<String, PropertyAccessor>(mapSize);
         entityCollectionPropertyAccessorMap = new LinkedHashMap<String, PropertyAccessor>(mapSize);
         entityDescriptorMap = new LinkedHashMap<Class<?>, EntityDescriptor>(mapSize);
+        reversedEntityClassList = new ArrayList<Class<?>>(mapSize);
     }
 
     public void addEntityDescriptor(EntityDescriptor entityDescriptor) {
         Class<?> entityClass = entityDescriptor.getEntityClass();
         for (Class<?> otherEntityClass : entityDescriptorMap.keySet()) {
-            if (otherEntityClass.isAssignableFrom(entityClass)) {
+            if (entityClass.isAssignableFrom(otherEntityClass)) {
                 throw new IllegalArgumentException("An earlier planningEntityClass (" + otherEntityClass
-                        + ") should not be a superclass of a later planningEntityClass (" + entityClass
-                        + "). Switch their declaration so superclasses are defined later.");
+                        + ") should not be a subclass of a later planningEntityClass (" + entityClass
+                        + "). Switch their declaration so superclasses are defined earlier.");
             }
         }
-        entityDescriptorMap.put(entityDescriptor.getEntityClass(), entityDescriptor);
+        entityDescriptorMap.put(entityClass, entityDescriptor);
+        reversedEntityClassList.add(0, entityClass);
     }
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {
@@ -156,7 +164,21 @@ public class SolutionDescriptor {
 
     public void afterAnnotationsProcessed(DescriptorPolicy descriptorPolicy) {
         for (EntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
-            entityDescriptor.afterAnnotationsProcessed(descriptorPolicy);
+            entityDescriptor.linkInheritedEntityDescriptors(descriptorPolicy);
+        }
+        for (EntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
+            entityDescriptor.linkShadowSources(descriptorPolicy);
+        }
+        if (logger.isTraceEnabled()) {
+            logger.trace("    Model annotations parsed for Solution {}:", solutionClass.getSimpleName());
+            for (Map.Entry<Class<?>, EntityDescriptor> entry : entityDescriptorMap.entrySet()) {
+                EntityDescriptor entityDescriptor = entry.getValue();
+                logger.trace("        Entity {}:", entityDescriptor.getEntityClass().getSimpleName());
+                for (VariableDescriptor variableDescriptor : entityDescriptor.getDeclaredVariableDescriptors()) {
+                    logger.trace("            Variable {} ({})", variableDescriptor.getVariableName(),
+                            variableDescriptor instanceof GenuineVariableDescriptor ? "genuine" : "shadow");
+                }
+            }
         }
     }
 
@@ -196,7 +218,7 @@ public class SolutionDescriptor {
         List<EntityDescriptor> genuineEntityDescriptorList = new ArrayList<EntityDescriptor>(
                 entityDescriptorMap.size());
         for (EntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
-            if (entityDescriptor.hasGenuineVariableDescriptor()) {
+            if (entityDescriptor.hasAnyDeclaredGenuineVariableDescriptor()) {
                 genuineEntityDescriptorList.add(entityDescriptor);
             }
         }
@@ -212,8 +234,9 @@ public class SolutionDescriptor {
     }
 
     public boolean hasEntityDescriptor(Class<?> entitySubclass) {
-        for (Map.Entry<Class<?>, EntityDescriptor> entry : entityDescriptorMap.entrySet()) {
-            if (entry.getKey().isAssignableFrom(entitySubclass)) {
+        // Reverse order to find the nearest ancestor
+        for (Class<?> entityClass : reversedEntityClassList) {
+            if (entityClass.isAssignableFrom(entitySubclass)) {
                 return true;
             }
         }
@@ -221,9 +244,10 @@ public class SolutionDescriptor {
     }
 
     public EntityDescriptor getEntityDescriptor(Class<?> entitySubclass) {
-        for (Map.Entry<Class<?>, EntityDescriptor> entry : entityDescriptorMap.entrySet()) {
-            if (entry.getKey().isAssignableFrom(entitySubclass)) {
-                return entry.getValue();
+        // Reverse order to find the nearest ancestor
+        for (Class<?> entityClass : reversedEntityClassList) {
+            if (entityClass.isAssignableFrom(entitySubclass)) {
+                return entityDescriptorMap.get(entityClass);
             }
         }
         // TODO move this into the client methods
@@ -239,7 +263,7 @@ public class SolutionDescriptor {
         Collection<GenuineVariableDescriptor> chainedVariableDescriptors
                 = new ArrayList<GenuineVariableDescriptor>();
         for (EntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
-            for (GenuineVariableDescriptor variableDescriptor : entityDescriptor.getVariableDescriptors()) {
+            for (GenuineVariableDescriptor variableDescriptor : entityDescriptor.getGenuineVariableDescriptors()) {
                 if (variableDescriptor.isChained()) {
                     chainedVariableDescriptors.add(variableDescriptor);
                 }
@@ -253,14 +277,14 @@ public class SolutionDescriptor {
         Map<GenuineVariableDescriptor, List<VariableListener>> variableListenerMap
                 = new LinkedHashMap<GenuineVariableDescriptor, List<VariableListener>>();
         for (EntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
-            entityDescriptor.addVariableListenersToMap(variableListenerMap);
+            entityDescriptor.addDeclaredVariableListenersToMap(variableListenerMap);
         }
         return new VariableListenerSupport(variableListenerMap);
     }
 
     public GenuineVariableDescriptor findVariableDescriptor(Object entity, String variableName) {
         EntityDescriptor entityDescriptor = getEntityDescriptor(entity.getClass());
-        return entityDescriptor.getVariableDescriptor(variableName);
+        return entityDescriptor.getGenuineVariableDescriptor(variableName);
     }
 
     // ************************************************************************

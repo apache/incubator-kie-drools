@@ -44,7 +44,7 @@ public class InitializedValueSelectorTest {
         EntityDescriptor entityDescriptor = TestdataNullableEntity.buildEntityDescriptor();
         TestdataNullableEntity e1 = new TestdataNullableEntity("e1");
         // This variable is unable to have entity's as values, but it's an interesting nullable test anyway
-        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("value");
+        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getGenuineVariableDescriptor("value");
         TestdataValue v1 = new TestdataValue("v1");
         TestdataValue v2 = null;
         TestdataValue v3 = new TestdataValue("v3");
@@ -79,7 +79,7 @@ public class InitializedValueSelectorTest {
     @Test
     public void originalSelectionChained() {
         EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
-        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
+        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getGenuineVariableDescriptor("chainedObject");
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1");
         TestdataChainedEntity a2 = new TestdataChainedEntity("a2");

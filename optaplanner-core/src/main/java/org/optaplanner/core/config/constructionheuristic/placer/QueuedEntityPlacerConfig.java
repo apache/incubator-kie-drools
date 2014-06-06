@@ -75,7 +75,7 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
         List<MoveSelectorConfig> moveSelectorConfigList_;
         if (ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
             EntityDescriptor entityDescriptor = entitySelector.getEntityDescriptor();
-            Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getVariableDescriptors();
+            Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();
             List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<MoveSelectorConfig>(
                     variableDescriptors.size());
             for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {

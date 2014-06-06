@@ -36,7 +36,7 @@ public class ReinitializeVariableValueSelectorTest {
     @Test
     public void oneVariable() {
         EntityDescriptor entityDescriptor = TestdataEntity.buildEntityDescriptor();
-        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("value");
+        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getGenuineVariableDescriptor("value");
         TestdataEntity e1 = new TestdataEntity("e1");
         TestdataEntity e2 = new TestdataEntity("e2");
         TestdataValue v1 = new TestdataValue("v1");
@@ -100,7 +100,7 @@ public class ReinitializeVariableValueSelectorTest {
     @Test
     public void multiVariable() {
         EntityDescriptor entityDescriptor = TestdataMultiVarEntity.buildEntityDescriptor();
-        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("secondaryValue");
+        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getGenuineVariableDescriptor("secondaryValue");
         TestdataMultiVarEntity e1 = new TestdataMultiVarEntity("e1");
         TestdataMultiVarEntity e2 = new TestdataMultiVarEntity("e2");
         TestdataValue p1 = new TestdataValue("p1");

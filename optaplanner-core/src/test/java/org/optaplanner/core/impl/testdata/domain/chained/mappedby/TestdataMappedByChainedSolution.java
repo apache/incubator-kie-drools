@@ -33,7 +33,7 @@ public class TestdataMappedByChainedSolution extends TestdataObject implements S
 
     public static SolutionDescriptor buildSolutionDescriptor() {
         return TestdataUtils.buildSolutionDescriptor(TestdataMappedByChainedSolution.class,
-                TestdataMappedByChainedEntity.class, TestdataMappedByChainedObject.class);
+                TestdataMappedByChainedObject.class, TestdataMappedByChainedEntity.class);
     }
 
     private List<TestdataMappedByChainedAnchor> chainedAnchorList;

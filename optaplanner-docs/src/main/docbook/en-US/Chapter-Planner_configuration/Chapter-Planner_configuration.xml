@@ -321,9 +321,9 @@ public class Lecture {
           to be kept up to date as the <literal>Lecture</literal> planning entities change. Instead, calculate the free
           time in the score constraints and put the result per teacher into a logically inserted score object.</para>
 
-          <para>If historic data needs to be considered too, then create problem fact to hold the historic data up to,
-          but <emphasis>not including</emphasis>, the planning window (so it doesn't change when a planning entity
-          changes) and let the score constraints take it into account.</para>
+          <para>If historic data needs to be considered too, then create problem fact to hold the total of the historic
+          assignments up to, but <emphasis>not including</emphasis>, the planning window (so it doesn't change when a
+          planning entity changes) and let the score constraints take it into account.</para>
         </note>
       </section>
 
@@ -374,7 +374,7 @@ public class Queen {
         </important>
 
         <para><emphasis>None of the current planning variable state should be used to compare planning entity
-        difficult.</emphasis> During construction heuristics, those variables are likely to be <literal>null</literal>
+        difficult.</emphasis> During Construction Heuristics, those variables are likely to be <literal>null</literal>
         anyway. For example, a <literal>Queen</literal>'s <literal>row</literal> variable should not be used.</para>
       </section>
     </section>
@@ -919,7 +919,7 @@ public interface Standstill {
         see the <link linkend="vehicleRoutingDomainModel">vehicle routing domain model</link>.</para>
 
         <para>To use custom <literal>VariableListener</literal>, implement the interface and annotate it on the shadow
-        variable(s) that needs to change. </para>
+        variable(s) that needs to change.</para>
 
         <programlisting language="java">    @PlanningVariable(...)
     public Standstill getPreviousStandstill() {

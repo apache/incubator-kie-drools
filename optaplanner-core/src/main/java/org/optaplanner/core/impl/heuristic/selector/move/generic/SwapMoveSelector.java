@@ -56,12 +56,12 @@ public class SwapMoveSelector extends GenericMoveSelector {
                     + ")'s variableDescriptors (" + variableDescriptors + ") is empty.");
         }
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
-            if (!leftEntityDescriptor.getEntityClass().equals(
-                    variableDescriptor.getEntityDescriptor().getEntityClass())) {
+            if (!variableDescriptor.getEntityDescriptor().getEntityClass().isAssignableFrom(
+                    leftEntityDescriptor.getEntityClass())) {
                 throw new IllegalStateException("The selector (" + this
                         + ") has a variableDescriptor with a entityClass ("
                         + variableDescriptor.getEntityDescriptor().getEntityClass()
-                        + ") which is not equal to the leftEntitySelector's entityClass ("
+                        + ") which is not equal or a superclass to the leftEntitySelector's entityClass ("
                         + leftEntityDescriptor.getEntityClass() + ").");
             }
             if (variableDescriptor.isChained()) {

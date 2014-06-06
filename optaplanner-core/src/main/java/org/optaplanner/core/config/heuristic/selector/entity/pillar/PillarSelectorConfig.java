@@ -111,7 +111,7 @@ public class PillarSelectorConfig extends SelectorConfig {
         EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(configPolicy,
                 minimumCacheType, SelectionOrder.ORIGINAL);
         Collection<GenuineVariableDescriptor> variableDescriptors = entitySelector.getEntityDescriptor()
-                .getVariableDescriptors();
+                .getGenuineVariableDescriptors();
         if (BooleanUtils.isFalse(subPillarEnabled)
                 && (minimumSubPillarSize != null || maximumSubPillarSize != null)) {
             throw new IllegalArgumentException("The pillarSelectorConfig (" + this

@@ -94,9 +94,9 @@ public abstract class SelectorConfig {
             EntityDescriptor entityDescriptor, String variableName) {
         GenuineVariableDescriptor variableDescriptor;
         if (variableName != null) {
-            variableDescriptor = entityDescriptor.getVariableDescriptor(variableName);
+            variableDescriptor = entityDescriptor.getGenuineVariableDescriptor(variableName);
             if (variableDescriptor == null) {
-                if (entityDescriptor.getPropertyDescriptor(variableName) == null) {
+                if (!entityDescriptor.hasProperty(variableName)) {
                     throw new IllegalArgumentException("The selectorConfig (" + this
                             + ") has a variableName (" + variableName
                             + ") for planningEntityClass (" + entityDescriptor.getEntityClass()
@@ -113,13 +113,13 @@ public abstract class SelectorConfig {
             }
         } else {
             Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor
-                    .getVariableDescriptors();
+                    .getGenuineVariableDescriptors();
             if (variableDescriptors.size() != 1) {
                 throw new IllegalArgumentException("The selectorConfig (" + this
                         + ") has no configured variableName (" + variableName
                         + ") for planningEntityClass (" + entityDescriptor.getEntityClass()
-                        + ") and because there are multiple in the variableNameSet ("
-                        + entityDescriptor.getPlanningVariableNameSet()
+                        + ") and because there are multiple variableNames ("
+                        + entityDescriptor.getGenuineVariableNameSet()
                         + "), it can not be deducted automatically.");
             }
             variableDescriptor = variableDescriptors.iterator().next();
@@ -129,7 +129,7 @@ public abstract class SelectorConfig {
 
     protected Collection<GenuineVariableDescriptor> deduceVariableDescriptors(
             EntityDescriptor entityDescriptor, List<String> variableNameIncludeList) {
-        Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getVariableDescriptors();
+        Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();
         if (variableNameIncludeList == null) {
             return variableDescriptors;
         }

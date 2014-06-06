@@ -26,7 +26,6 @@ import org.optaplanner.core.impl.testdata.domain.entityproviding.TestdataEntityP
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class SwapMoveTest {
 
@@ -45,7 +44,7 @@ public class SwapMoveTest {
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
         EntityDescriptor entityDescriptor = TestdataEntityProvidingEntity.buildEntityDescriptor();
 
-        SwapMove abMove = new SwapMove(entityDescriptor.getVariableDescriptors(), a, b);
+        SwapMove abMove = new SwapMove(entityDescriptor.getGenuineVariableDescriptors(), a, b);
         a.setValue(v1);
         b.setValue(v2);
         assertEquals(false, abMove.isMoveDoable(scoreDirector));
@@ -65,7 +64,7 @@ public class SwapMoveTest {
         b.setValue(v4);
         assertEquals(false, abMove.isMoveDoable(scoreDirector));
 
-        SwapMove acMove = new SwapMove(entityDescriptor.getVariableDescriptors(), a, c);
+        SwapMove acMove = new SwapMove(entityDescriptor.getGenuineVariableDescriptors(), a, c);
         a.setValue(v1);
         c.setValue(v4);
         assertEquals(false, acMove.isMoveDoable(scoreDirector));
@@ -73,7 +72,7 @@ public class SwapMoveTest {
         c.setValue(v5);
         assertEquals(false, acMove.isMoveDoable(scoreDirector));
 
-        SwapMove bcMove = new SwapMove(entityDescriptor.getVariableDescriptors(), b, c);
+        SwapMove bcMove = new SwapMove(entityDescriptor.getGenuineVariableDescriptors(), b, c);
         b.setValue(v2);
         c.setValue(v4);
         assertEquals(false, bcMove.isMoveDoable(scoreDirector));

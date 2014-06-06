@@ -36,7 +36,7 @@ public class SwapMoveSelectorTest {
                 new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
 
         SwapMoveSelector moveSelector = new SwapMoveSelector(entitySelector, entitySelector,
-                entitySelector.getEntityDescriptor().getVariableDescriptors(), false);
+                entitySelector.getEntityDescriptor().getGenuineVariableDescriptors(), false);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         moveSelector.solvingStarted(solverScope);
@@ -93,7 +93,7 @@ public class SwapMoveSelectorTest {
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.buildEntityDescriptor());
 
         SwapMoveSelector moveSelector = new SwapMoveSelector(entitySelector, entitySelector,
-                entitySelector.getEntityDescriptor().getVariableDescriptors(), false);
+                entitySelector.getEntityDescriptor().getGenuineVariableDescriptors(), false);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         moveSelector.solvingStarted(solverScope);
@@ -156,7 +156,7 @@ public class SwapMoveSelectorTest {
                 new TestdataEntity("x"), new TestdataEntity("y"), new TestdataEntity("z"));
 
         SwapMoveSelector moveSelector = new SwapMoveSelector(leftEntitySelector, rightEntitySelector,
-                leftEntitySelector.getEntityDescriptor().getVariableDescriptors(), false);
+                leftEntitySelector.getEntityDescriptor().getGenuineVariableDescriptors(), false);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         moveSelector.solvingStarted(solverScope);
@@ -229,7 +229,7 @@ public class SwapMoveSelectorTest {
         EntitySelector rightEntitySelector = SelectorTestUtils.mockEntitySelector(entityDescriptor);
 
         SwapMoveSelector moveSelector = new SwapMoveSelector(leftEntitySelector, rightEntitySelector,
-                leftEntitySelector.getEntityDescriptor().getVariableDescriptors(), false);
+                leftEntitySelector.getEntityDescriptor().getGenuineVariableDescriptors(), false);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         moveSelector.solvingStarted(solverScope);

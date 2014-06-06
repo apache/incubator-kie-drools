@@ -40,7 +40,7 @@ public class InverseRelationVariableListenerTest {
                 solutionDescriptor.getEntityDescriptor(TestdataMappedByChainedObject.class)
                         .getShadowVariableDescriptor("nextEntity"),
                 solutionDescriptor.getEntityDescriptor(TestdataMappedByChainedEntity.class)
-                        .getVariableDescriptor("chainedObject"));
+                        .getGenuineVariableDescriptor("chainedObject"));
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
 
         TestdataMappedByChainedAnchor a0 = new TestdataMappedByChainedAnchor("a0");

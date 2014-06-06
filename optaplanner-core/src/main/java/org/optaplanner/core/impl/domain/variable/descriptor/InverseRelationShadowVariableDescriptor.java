@@ -41,7 +41,7 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
 
     }
 
-    public void afterAnnotationsProcessed(DescriptorPolicy descriptorPolicy) {
+    public void linkShadowSources(DescriptorPolicy descriptorPolicy) {
         InverseRelationShadowVariable shadowVariableAnnotation = variablePropertyAccessor.getReadMethod()
                 .getAnnotation(InverseRelationShadowVariable.class);
         Class<?> masterClass = getVariablePropertyType();
@@ -56,7 +56,7 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
         }
         String sourceVariableName = shadowVariableAnnotation.sourceVariableName();
         // TODO support inverse on a shadow variable too
-        sourceVariableDescriptor = sourceEntityDescriptor.getVariableDescriptor(sourceVariableName);
+        sourceVariableDescriptor = sourceEntityDescriptor.getGenuineVariableDescriptor(sourceVariableName);
         if (sourceVariableDescriptor == null) {
             throw new IllegalArgumentException("The planningEntityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + InverseRelationShadowVariable.class.getSimpleName()

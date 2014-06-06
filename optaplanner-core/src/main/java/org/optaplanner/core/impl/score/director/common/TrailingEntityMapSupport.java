@@ -50,7 +50,7 @@ public class TrailingEntityMapSupport {
 
     public void insertInTrailingEntityMap(EntityDescriptor entityDescriptor, Object entity) {
         if (hasChainedVariables) {
-            for (GenuineVariableDescriptor variableDescriptor : entityDescriptor.getVariableDescriptors()) {
+            for (GenuineVariableDescriptor variableDescriptor : entityDescriptor.getGenuineVariableDescriptors()) {
                 if (variableDescriptor.isChained()) {
                     insertInTrailingEntityMap(variableDescriptor, entity);
                 }
@@ -84,7 +84,7 @@ public class TrailingEntityMapSupport {
 
     public void retractFromTrailingEntityMap(EntityDescriptor entityDescriptor, Object entity) {
         if (hasChainedVariables) {
-            for (GenuineVariableDescriptor variableDescriptor : entityDescriptor.getVariableDescriptors()) {
+            for (GenuineVariableDescriptor variableDescriptor : entityDescriptor.getGenuineVariableDescriptors()) {
                 if (variableDescriptor.isChained()) {
                     retractFromTrailingEntityMap(variableDescriptor, entity);
                 }

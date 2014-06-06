@@ -4412,3 +4412,24 @@ After in *.java:
         return arrivalTime;
     }
 
+[MINOR] Even classes that only have shadow variables (and extend a planning entity class),
+now need to be explicitly registered as planning entities.
+Previously, it was only required for inverse relationship shadow variables. Now it's required for all shadow variables.
+Before in *.java:
+    public class TimeWindowedCustomer extends Customer {
+After in *.java:
+    @PlanningEntity
+    public class TimeWindowedCustomer extends Customer {
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer</planningEntityClass>
+
+[MAJOR] Multiple <planningEntityClass> elements now need to be ordered by superclasses (and superinterfaces) first,
+instead of superclasses (and superinterfaces) last.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer</planningEntityClass>
+    <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</planningEntityClass>
+    <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.Standstill</planningEntityClass>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.Standstill</planningEntityClass>
+    <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</planningEntityClass>
+    <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer</planningEntityClass>

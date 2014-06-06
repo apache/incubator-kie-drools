@@ -133,8 +133,9 @@
     </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.examination.domain.Examination</solutionClass>
-      <planningEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</planningEntityClass>
       <planningEntityClass>org.optaplanner.examples.examination.domain.Exam</planningEntityClass>
+      <planningEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</planningEntityClass>
+      <planningEntityClass>org.optaplanner.examples.examination.domain.FollowingExam</planningEntityClass>
       <randomType>${randomType}</randomType>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>

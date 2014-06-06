@@ -36,7 +36,7 @@ public abstract class ShadowVariableDescriptor extends VariableDescriptor {
 
     public abstract void processAnnotations(DescriptorPolicy descriptorPolicy);
 
-    public abstract void afterAnnotationsProcessed(DescriptorPolicy descriptorPolicy);
+    public abstract void linkShadowSources(DescriptorPolicy descriptorPolicy);
 
     // ************************************************************************
     // Worker methods

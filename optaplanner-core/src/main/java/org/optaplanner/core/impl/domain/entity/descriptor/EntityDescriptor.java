@@ -22,6 +22,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -40,6 +41,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.CustomShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.InverseRelationShadowVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
@@ -59,8 +61,15 @@ public class EntityDescriptor {
     private SelectionFilter movableEntitySelectionFilter;
     private SelectionSorter decreasingDifficultySorter;
 
-    private Map<String, GenuineVariableDescriptor> genuineVariableDescriptorMap;
-    private Map<String, ShadowVariableDescriptor> shadowVariableDescriptorMap;
+    private List<EntityDescriptor> inheritedEntityDescriptorList;
+
+    // Only declared variable descriptors, excludes inherited variable descriptors
+    private Map<String, GenuineVariableDescriptor> declaredGenuineVariableDescriptorMap;
+    private Map<String, ShadowVariableDescriptor> declaredShadowVariableDescriptorMap;
+
+    // Caches the inherited and declared variable descriptors
+    private Map<String, GenuineVariableDescriptor> effectiveGenuineVariableDescriptorMap;
+    private Map<String, ShadowVariableDescriptor> effectiveShadowVariableDescriptorMap;
 
     public EntityDescriptor(SolutionDescriptor solutionDescriptor, Class<?> entityClass) {
         this.solutionDescriptor = solutionDescriptor;
@@ -142,12 +151,13 @@ public class EntityDescriptor {
 
     private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
         PropertyDescriptor[] propertyDescriptors = entityBeanInfo.getPropertyDescriptors();
-        genuineVariableDescriptorMap = new LinkedHashMap<String, GenuineVariableDescriptor>(propertyDescriptors.length);
-        shadowVariableDescriptorMap = new LinkedHashMap<String, ShadowVariableDescriptor>(propertyDescriptors.length);
+        declaredGenuineVariableDescriptorMap = new LinkedHashMap<String, GenuineVariableDescriptor>(propertyDescriptors.length);
+        declaredShadowVariableDescriptorMap = new LinkedHashMap<String, ShadowVariableDescriptor>(propertyDescriptors.length);
         boolean noPlanningVariableAnnotation = true;
         for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
             Method propertyGetter = propertyDescriptor.getReadMethod();
-            if (propertyGetter != null) {
+            // Only process declared methods, not inherited methods, to avoid registering the same variable twice
+            if (propertyGetter != null && propertyGetter.getDeclaringClass() == entityClass) {
                 Class<? extends Annotation> variableAnnotationClass = null;
                 for (Class<? extends Annotation> detectedAnnotationClass : Arrays.asList(
                         PlanningVariable.class, InverseRelationShadowVariable.class, CustomShadowVariable.class)) {
@@ -172,17 +182,17 @@ public class EntityDescriptor {
                     if (variableAnnotationClass.equals(PlanningVariable.class)) {
                         GenuineVariableDescriptor variableDescriptor = new GenuineVariableDescriptor(
                                 this, propertyDescriptor);
-                        genuineVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
+                        declaredGenuineVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
                         variableDescriptor.processAnnotations(descriptorPolicy);
                     } else if (variableAnnotationClass.equals(InverseRelationShadowVariable.class)) {
                         ShadowVariableDescriptor variableDescriptor = new InverseRelationShadowVariableDescriptor(
                                 this, propertyDescriptor);
-                        shadowVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
+                        declaredShadowVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
                         variableDescriptor.processAnnotations(descriptorPolicy);
                     } else if (variableAnnotationClass.equals(CustomShadowVariable.class)) {
                         ShadowVariableDescriptor variableDescriptor = new CustomShadowVariableDescriptor(
                                 this, propertyDescriptor);
-                        shadowVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
+                        declaredShadowVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
                         variableDescriptor.processAnnotations(descriptorPolicy);
                     } else {
                         throw new IllegalStateException("The variableAnnotationClass ("
@@ -198,13 +208,48 @@ public class EntityDescriptor {
         }
     }
 
-    public void afterAnnotationsProcessed(DescriptorPolicy descriptorPolicy) {
-        for (GenuineVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {
-            variableDescriptor.afterAnnotationsProcessed(descriptorPolicy);
+    public void linkInheritedEntityDescriptors(DescriptorPolicy descriptorPolicy) {
+        inheritedEntityDescriptorList = new ArrayList<EntityDescriptor>(4);
+        investigateParentsToLinkInherited(entityClass);
+        createEffectiveVariableDescriptorMaps();
+    }
+
+    private void investigateParentsToLinkInherited(Class<?> investigateClass) {
+        if (investigateClass == null || investigateClass.isArray()) {
+            return;
         }
-        for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptorMap.values()) {
-            shadowVariableDescriptor.afterAnnotationsProcessed(descriptorPolicy);
+        linkInherited(investigateClass.getSuperclass());
+        for (Class<?> superInterface : investigateClass.getInterfaces()) {
+            linkInherited(superInterface);
         }
+    }
+
+    private void linkInherited(Class<?> investigateClass) {
+        EntityDescriptor superEntityDescriptor = solutionDescriptor.getEntityDescriptorStrict(investigateClass);
+        if (superEntityDescriptor != null) {
+            inheritedEntityDescriptorList.add(superEntityDescriptor);
+        } else {
+            investigateParentsToLinkInherited(investigateClass);
+        }
+    }
+
+    public void linkShadowSources(DescriptorPolicy descriptorPolicy) {
+        for (ShadowVariableDescriptor shadowVariableDescriptor : declaredShadowVariableDescriptorMap.values()) {
+            shadowVariableDescriptor.linkShadowSources(descriptorPolicy);
+        }
+    }
+
+    private void createEffectiveVariableDescriptorMaps() {
+        effectiveGenuineVariableDescriptorMap = new LinkedHashMap<String, GenuineVariableDescriptor>(
+                declaredGenuineVariableDescriptorMap.size());
+        effectiveShadowVariableDescriptorMap = new LinkedHashMap<String, ShadowVariableDescriptor>(
+                declaredShadowVariableDescriptorMap.size());
+        for (EntityDescriptor inheritedEntityDescriptor : inheritedEntityDescriptorList) {
+            effectiveGenuineVariableDescriptorMap.putAll(inheritedEntityDescriptor.getGenuineVariableDescriptorMap());
+            effectiveShadowVariableDescriptorMap.putAll(inheritedEntityDescriptor.getShadowVariableDescriptorMap());
+        }
+        effectiveGenuineVariableDescriptorMap.putAll(declaredGenuineVariableDescriptorMap);
+        effectiveShadowVariableDescriptorMap.putAll(declaredShadowVariableDescriptorMap);
     }
 
     // ************************************************************************
@@ -235,46 +280,62 @@ public class EntityDescriptor {
         return decreasingDifficultySorter;
     }
 
-    public PropertyDescriptor getPropertyDescriptor(String propertyName) {
+    public boolean hasProperty(String propertyName) {
         for (PropertyDescriptor propertyDescriptor : entityBeanInfo.getPropertyDescriptors()) {
             if (propertyDescriptor.getName().equals(propertyName)) {
-                return propertyDescriptor;
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
-    public Collection<String> getPlanningVariableNameSet() {
-        return genuineVariableDescriptorMap.keySet();
+    public Collection<VariableDescriptor> getDeclaredVariableDescriptors() {
+        Collection<VariableDescriptor> variableDescriptors = new ArrayList<VariableDescriptor>(
+                declaredGenuineVariableDescriptorMap.size() + declaredShadowVariableDescriptorMap.size());
+        variableDescriptors.addAll(declaredGenuineVariableDescriptorMap.values());
+        variableDescriptors.addAll(declaredShadowVariableDescriptorMap.values());
+        return variableDescriptors;
     }
 
-    public Collection<GenuineVariableDescriptor> getVariableDescriptors() {
-        return genuineVariableDescriptorMap.values();
+    public boolean hasAnyDeclaredGenuineVariableDescriptor() {
+        return !declaredGenuineVariableDescriptorMap.isEmpty();
     }
 
-    public boolean hasVariableDescriptor(String propertyName) {
-        return genuineVariableDescriptorMap.containsKey(propertyName);
+    public Collection<String> getGenuineVariableNameSet() {
+        return effectiveGenuineVariableDescriptorMap.keySet();
+    }
+
+    public Map<String, GenuineVariableDescriptor> getGenuineVariableDescriptorMap() {
+        return effectiveGenuineVariableDescriptorMap;
+    }
+
+    public Map<String, ShadowVariableDescriptor> getShadowVariableDescriptorMap() {
+        return effectiveShadowVariableDescriptorMap;
+    }
+
+    public Collection<GenuineVariableDescriptor> getGenuineVariableDescriptors() {
+        return effectiveGenuineVariableDescriptorMap.values();
+    }
+
+    public boolean hasGenuineVariableDescriptor(String propertyName) {
+        return effectiveGenuineVariableDescriptorMap.containsKey(propertyName);
     }
     
-    public GenuineVariableDescriptor getVariableDescriptor(String propertyName) {
-        return genuineVariableDescriptorMap.get(propertyName);
-    }
-
-    public boolean hasGenuineVariableDescriptor() {
-        return !genuineVariableDescriptorMap.isEmpty();
+    public GenuineVariableDescriptor getGenuineVariableDescriptor(String propertyName) {
+        return effectiveGenuineVariableDescriptorMap.get(propertyName);
     }
 
     public boolean hasShadowVariableDescriptor(String propertyName) {
-        return shadowVariableDescriptorMap.containsKey(propertyName);
+        return effectiveShadowVariableDescriptorMap.containsKey(propertyName);
     }
 
     public ShadowVariableDescriptor getShadowVariableDescriptor(String propertyName) {
-        return shadowVariableDescriptorMap.get(propertyName);
+        return effectiveShadowVariableDescriptorMap.get(propertyName);
     }
 
-    public void addVariableListenersToMap(
+    public void addDeclaredVariableListenersToMap(
             Map<GenuineVariableDescriptor, List<VariableListener>> variableListenerMap) {
-        for (GenuineVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor variableDescriptor : declaredGenuineVariableDescriptorMap.values()) {
             variableListenerMap.put(variableDescriptor, variableDescriptor.buildVariableListenerList());
         }
     }
@@ -289,7 +350,7 @@ public class EntityDescriptor {
 
     public long getProblemScale(Solution solution, Object entity) {
         long problemScale = 1L;
-        for (GenuineVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
             problemScale *= variableDescriptor.getValueCount(solution, entity);
         }
         return problemScale;
@@ -297,7 +358,7 @@ public class EntityDescriptor {
 
     public int countUninitializedVariables(Object entity) {
         int uninitializedVariableCount = 0;
-        for (GenuineVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
             if (!variableDescriptor.isInitialized(entity)) {
                 uninitializedVariableCount++;
             }
@@ -306,7 +367,7 @@ public class EntityDescriptor {
     }
 
     public boolean isInitialized(Object entity) {
-        for (GenuineVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
             if (!variableDescriptor.isInitialized(entity)) {
                 return false;
             }

@@ -192,10 +192,6 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
         }
     }
 
-    public void afterAnnotationsProcessed(DescriptorPolicy descriptorPolicy) {
-        // Do nothing
-    }
-
     public void registerShadowVariableDescriptor(ShadowVariableDescriptor shadowVariableDescriptor) {
         shadowVariableDescriptorList.add(shadowVariableDescriptor);
     }

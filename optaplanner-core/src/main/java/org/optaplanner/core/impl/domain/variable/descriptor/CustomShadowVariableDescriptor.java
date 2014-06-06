@@ -20,7 +20,6 @@ import java.beans.PropertyDescriptor;
 import java.util.Arrays;
 
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
-import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
@@ -54,7 +53,7 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
         }
     }
 
-    public void afterAnnotationsProcessed(DescriptorPolicy descriptorPolicy) {
+    public void linkShadowSources(DescriptorPolicy descriptorPolicy) {
         CustomShadowVariable shadowVariableAnnotation = variablePropertyAccessor.getReadMethod()
                 .getAnnotation(CustomShadowVariable.class);
         SolutionDescriptor solutionDescriptor = entityDescriptor.getSolutionDescriptor();
@@ -76,7 +75,7 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
             }
             String sourceVariableName = source.variableName();
             // TODO work on non-genuine vars too
-            GenuineVariableDescriptor sourceVariableDescriptor = sourceEntityDescriptor.getVariableDescriptor(
+            GenuineVariableDescriptor sourceVariableDescriptor = sourceEntityDescriptor.getGenuineVariableDescriptor(
                     sourceVariableName);
             if (sourceVariableDescriptor == null) {
                 throw new IllegalArgumentException("The planningEntityClass (" + entityDescriptor.getEntityClass()
