@@ -27,12 +27,17 @@ import org.kie.internal.task.api.model.TaskEvent;
  * @author salaboy
  */
 public interface TaskAuditService {
+    
     void setTaskService(TaskService taskService);
     
     List<TaskEvent> getAllTaskEvents(long taskId, QueryFilter filter);
     
-    List<AuditTask> getAllHistoryAuditTasks( QueryFilter filter);
-    List<AuditTask> getAllHistoryAuditTasksByUser(String userId, QueryFilter filter);
+    List<TaskEvent> getAllTaskEventsByProcessInstanceId(long processInstanceId, QueryFilter filter);
+    
+    List<AuditTask> getAllAuditTasks( QueryFilter filter);
+    
+    List<AuditTask> getAllAuditTasksByUser(String userId, QueryFilter filter);
     
     
+      
 }

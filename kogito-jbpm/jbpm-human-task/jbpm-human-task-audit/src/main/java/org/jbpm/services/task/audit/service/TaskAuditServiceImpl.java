@@ -19,6 +19,7 @@ package org.jbpm.services.task.audit.service;
 import java.util.List;
 import org.jbpm.services.task.audit.commands.GetAllHistoryAuditTasksByUserCommand;
 import org.jbpm.services.task.audit.commands.GetAllHistoryAuditTasksCommand;
+import org.jbpm.services.task.audit.commands.GetAuditEventsByProcessInstanceIdCommand;
 import org.jbpm.services.task.audit.commands.GetAuditEventsCommand;
 import org.jbpm.services.task.audit.impl.model.api.AuditTask;
 import org.kie.api.task.TaskService;
@@ -30,7 +31,7 @@ import org.kie.internal.task.api.model.TaskEvent;
  *
  * @author salaboy
  */
-public class TaskAuditServiceImpl implements TaskAuditService {
+  public class TaskAuditServiceImpl implements TaskAuditService {
     
     private InternalTaskService taskService;
     
@@ -39,14 +40,20 @@ public class TaskAuditServiceImpl implements TaskAuditService {
         return taskService.execute(new GetAuditEventsCommand(taskId, filter));
     }
     
+    
+    @Override
+    public List<TaskEvent> getAllTaskEventsByProcessInstanceId(long processInstanceId, QueryFilter filter) {
+        return taskService.execute(new GetAuditEventsByProcessInstanceIdCommand(processInstanceId, filter));
+    }
+    
    
     @Override
-    public List<AuditTask> getAllHistoryAuditTasks( QueryFilter filter) {
+    public List<AuditTask> getAllAuditTasks( QueryFilter filter) {
         return taskService.execute(new GetAllHistoryAuditTasksCommand(filter));
     }
 
     @Override
-    public List<AuditTask> getAllHistoryAuditTasksByUser(String userId, QueryFilter filter) {
+    public List<AuditTask> getAllAuditTasksByUser(String userId, QueryFilter filter) {
         return taskService.execute(new GetAllHistoryAuditTasksByUserCommand(userId, filter));
     }
     

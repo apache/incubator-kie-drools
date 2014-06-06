@@ -71,8 +71,8 @@ public class CDITestHelper {
     public TaskService produceTaskService() {
     	return HumanTaskServiceFactory.newTaskServiceConfigurator()
 		.entityManagerFactory(produceEntityManagerFactory())
-		.listener(new JPATaskLifeCycleEventListener())
-		.listener(new BAMTaskEventListener())
+		.listener(new JPATaskLifeCycleEventListener(true))
+		.listener(new BAMTaskEventListener(true))
 		.getTaskService();
     }
     

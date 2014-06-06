@@ -26,162 +26,160 @@ import org.kie.internal.task.api.model.TaskEvent;
 /**
  *
  */
-
 @Entity
-@Table(name="TaskEvent")
-@SequenceGenerator(name="taskEventIdSeq", sequenceName="TASK_EVENT_ID_SEQ")
+@Table(name = "TaskEvent")
+@SequenceGenerator(name = "taskEventIdSeq", sequenceName = "TASK_EVENT_ID_SEQ")
 public class TaskEventImpl implements TaskEvent {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator="taskEventIdSeq")
-    @Column(name = "id")
-    private Long id;
-    
-    @Version
-    @Column(name = "OPTLOCK")
-    private Integer version;
-    
-    private Long taskId;
-    
-    @Enumerated(EnumType.STRING)
-    private TaskEventType type;
-    
-    
-    private String userId;
-    
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date logTime;
 
-    public TaskEventImpl() {
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "taskEventIdSeq")
+  @Column(name = "id")
+  private Long id;
+
+  @Version
+  @Column(name = "OPTLOCK")
+  private Integer version;
+
+  private Long taskId;
+
+  private Long workItemId;
+
+  @Enumerated(EnumType.STRING)
+  private TaskEventType type;
+
+  private Long processInstanceId;
+
+  private String userId;
+
+  @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+  private Date logTime;
+
+  public TaskEventImpl() {
+  }
+
+  public TaskEventImpl(long taskId, TaskEventType type, String userId) {
+    this.taskId = taskId;
+    this.type = type;
+    this.userId = userId;
+    this.logTime = new Date();
+  }
+
+  public TaskEventImpl(Long taskId, TaskEventType type, String userId, Date logTime) {
+    this.taskId = taskId;
+    this.type = type;
+    this.userId = userId;
+    this.logTime = logTime;
+  }
+
+  public TaskEventImpl(Long taskId, TaskEventType type, Long processInstanceId, Long workItemId, String userId, Date logTime) {
+    this.taskId = taskId;
+    this.type = type;
+    this.processInstanceId = processInstanceId;
+    this.workItemId = workItemId;
+    this.userId = userId;
+    this.logTime = logTime;
+  }
+
+  public TaskEventImpl(Long taskId, TaskEventType type, Long processInstanceId, Long workItemId, String userId) {
+    this(taskId, type, processInstanceId, workItemId, userId, new Date());
+
+  }
+
+  @Override
+  public long getId() {
+    return id;
+  }
+
+  @Override
+  public long getTaskId() {
+    return taskId;
+  }
+
+  @Override
+  public TaskEventType getType() {
+    return type;
+  }
+
+  @Override
+  public String getUserId() {
+    return userId;
+  }
+
+  @Override
+  public Date getLogTime() {
+    return logTime;
+  }
+
+  @Override
+  public Long getProcessInstanceId() {
+    return processInstanceId;
+  }
+
+  public Long getWorkItemId() {
+    return workItemId;
+  }
+
+  @Override
+  public void readExternal(ObjectInput in) throws IOException,
+          ClassNotFoundException {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void writeExternal(ObjectOutput out) throws IOException {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 3;
+    hash = 97 * hash + (this.id != null ? this.id.hashCode() : 0);
+    hash = 97 * hash + (this.version != null ? this.version.hashCode() : 0);
+    hash = 97 * hash + (this.taskId != null ? this.taskId.hashCode() : 0);
+    hash = 97 * hash + (this.workItemId != null ? this.workItemId.hashCode() : 0);
+    hash = 97 * hash + (this.type != null ? this.type.hashCode() : 0);
+    hash = 97 * hash + (this.processInstanceId != null ? this.processInstanceId.hashCode() : 0);
+    hash = 97 * hash + (this.userId != null ? this.userId.hashCode() : 0);
+    hash = 97 * hash + (this.logTime != null ? this.logTime.hashCode() : 0);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
     }
-
-    public TaskEventImpl(long taskId, TaskEventType type, String userId) {
-        this.taskId = taskId;
-        this.type = type;
-        this.userId = userId;
+    if (getClass() != obj.getClass()) {
+      return false;
     }
-
-    public TaskEventImpl(Long taskId, TaskEventType type, String userId, Date logTime) {
-        this.taskId = taskId;
-        this.type = type;
-        this.userId = userId;
-        this.logTime = logTime;
+    final TaskEventImpl other = (TaskEventImpl) obj;
+    if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+      return false;
     }
-    
-    
-
-    public long getId() {
-        return id;
+    if (this.version != other.version && (this.version == null || !this.version.equals(other.version))) {
+      return false;
     }
-
-    public void setId(long id) {
-        this.id = id;
+    if (this.taskId != other.taskId && (this.taskId == null || !this.taskId.equals(other.taskId))) {
+      return false;
     }
-
-    public long getTaskId() {
-        return taskId;
+    if (this.workItemId != other.workItemId && (this.workItemId == null || !this.workItemId.equals(other.workItemId))) {
+      return false;
     }
-
-    public void setTaskId(long taskId) {
-        this.taskId = taskId;
+    if (this.type != other.type) {
+      return false;
     }
-
-    public TaskEventType getType() {
-        return type;
+    if (this.processInstanceId != other.processInstanceId && (this.processInstanceId == null || !this.processInstanceId.equals(other.processInstanceId))) {
+      return false;
     }
-
-    public void setType(TaskEventType type) {
-        this.type = type;
+    if ((this.userId == null) ? (other.userId != null) : !this.userId.equals(other.userId)) {
+      return false;
     }
-
-    public String getUserId() {
-        return userId;
+    if (this.logTime != other.logTime && (this.logTime == null || !this.logTime.equals(other.logTime))) {
+      return false;
     }
+    return true;
+  }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public Date getLogTime() {
-        return logTime;
-    }
-
-    public void setLogTime(Date logTime) {
-        this.logTime = logTime;
-    }
-
-    public Integer getVersion() {
-		return version;
-	}
-
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
-
-	@Override
-    public void readExternal(ObjectInput in) throws IOException,
-            ClassNotFoundException {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        // TODO Auto-generated method stub
-        
-    }
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((logTime == null) ? 0 : logTime.hashCode());
-		result = prime * result + ((taskId == null) ? 0 : taskId.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
-		result = prime * result + ((version == null) ? 0 : version.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		TaskEventImpl other = (TaskEventImpl) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (logTime == null) {
-			if (other.logTime != null)
-				return false;
-		} else if (!logTime.equals(other.logTime))
-			return false;
-		if (taskId == null) {
-			if (other.taskId != null)
-				return false;
-		} else if (!taskId.equals(other.taskId))
-			return false;
-		if (type != other.type)
-			return false;
-		if (userId == null) {
-			if (other.userId != null)
-				return false;
-		} else if (!userId.equals(other.userId))
-			return false;
-		if (version == null) {
-			if (other.version != null)
-				return false;
-		} else if (!version.equals(other.version))
-			return false;
-		return true;
-	}
-    
-    
 }

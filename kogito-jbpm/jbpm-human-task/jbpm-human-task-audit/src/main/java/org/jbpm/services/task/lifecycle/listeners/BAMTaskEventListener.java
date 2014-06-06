@@ -66,7 +66,7 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
     /** Class logger. */
     private static final Logger logger = LoggerFactory.getLogger(BAMTaskEventListener.class);
 
-    public BAMTaskEventListener() {
+    public BAMTaskEventListener(boolean flag) {
     }
 
     public void afterTaskStartedEvent(TaskEvent event) {

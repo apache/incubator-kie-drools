@@ -45,8 +45,8 @@ public class LocalTaskAuditTest extends TaskAuditBaseTest {
 
 		this.taskService = (InternalTaskService) HumanTaskServiceFactory.newTaskServiceConfigurator()
 												.entityManagerFactory(emf)
-												.listener(new JPATaskLifeCycleEventListener())
-												.listener(new BAMTaskEventListener())
+												.listener(new JPATaskLifeCycleEventListener(true))
+												.listener(new BAMTaskEventListener(true))
 												.getTaskService();
                 
                 this.taskAuditService = TaskAuditServiceFactory.newTaskAuditServiceConfigurator().setTaskService(taskService).getTaskAuditService();

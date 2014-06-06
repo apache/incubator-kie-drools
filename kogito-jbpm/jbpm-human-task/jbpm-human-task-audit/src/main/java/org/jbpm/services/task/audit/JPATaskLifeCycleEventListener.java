@@ -19,7 +19,7 @@ import org.kie.internal.task.api.TaskPersistenceContext;
  */
 public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener {
 
-    public JPATaskLifeCycleEventListener() {
+    public JPATaskLifeCycleEventListener(boolean flag) {
     }
 
     @Override
@@ -30,7 +30,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         if (ti.getTaskData().getActualOwner() != null) {
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.STARTED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.STARTED, ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId ));
         
 // @TODO:     Update UserAuditTask to Lucene        
 
@@ -50,7 +50,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         if (ti.getTaskData().getActualOwner() != null) {
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.ACTIVATED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.ACTIVATED, ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId));
         
 // @TODO:     Update UserAuditTask to Lucene        
          AuditTaskImpl auditTaskImpl = persistenceContext.queryWithParametersInTransaction("getAuditTaskById", true, 
@@ -69,12 +69,12 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         if (ti.getTaskData().getActualOwner() != null) {
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.CLAIMED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.CLAIMED, ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId));
         //@TODO:      Remove  GroupAuditTask to Lucene
 
         //@TODO:      Create new   UserAuditTask to Lucene
 
-         AuditTaskImpl auditTaskImpl = persistenceContext.queryWithParametersInTransaction("getAuditTaskById", true, 
+        AuditTaskImpl auditTaskImpl = persistenceContext.queryWithParametersInTransaction("getAuditTaskById", true, 
 				persistenceContext.addParametersToMap("taskId", ti.getId()),
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
@@ -90,7 +90,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         if (ti.getTaskData().getActualOwner() != null) {
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.SKIPPED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.SKIPPED, ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId));
         //@TODO:  Find the UserAuditTask in the lucene index
 
       
@@ -117,7 +117,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         if (ti.getTaskData().getActualOwner() != null) {
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.STOPPED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.STOPPED, ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId));
         
       
            AuditTaskImpl auditTaskImpl = persistenceContext.queryWithParametersInTransaction("getAuditTaskById", true, 
@@ -137,7 +137,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         if (ti.getTaskData().getActualOwner() != null) {
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.COMPLETED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.COMPLETED, ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId));
 
         //@TODO:      Make sure that you find and remove the USerAuditTask from lucene once it is completed    
         //@TODO: Create a new HistoryAuditTask to keep track about the task. 
@@ -157,7 +157,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         if (ti.getTaskData().getActualOwner() != null) {
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.FAILED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.FAILED, ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId));
         
         // Same as task skipped
         
@@ -188,7 +188,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
                                                                                 ti.getTaskData().getParentId());
         persistenceContext.merge(auditTaskImpl);
         //@TODO: Create User or Group Task for Lucene
-        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.ADDED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.ADDED, ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId));
     }
 
     @Override
@@ -199,7 +199,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         if (ti.getTaskData().getActualOwner() != null) {
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.EXITED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.EXITED, ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId));
         
         //@TODO: Same as skipped
 
@@ -220,7 +220,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         if (ti.getTaskData().getActualOwner() != null) {
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.RELEASED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.RELEASED, ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId));
       
          AuditTaskImpl auditTaskImpl = persistenceContext.queryWithParametersInTransaction("getAuditTaskById", true, 
 				persistenceContext.addParametersToMap("taskId", ti.getId()),
@@ -241,7 +241,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         if (ti.getTaskData().getActualOwner() != null) {
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.RESUMED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.RESUMED, ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId));
        //@TODO: Update Lucene UserAudit Task
 
         
@@ -261,7 +261,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         if (ti.getTaskData().getActualOwner() != null) {
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.SUSPENDED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.SUSPENDED, ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId));
         
         //@TODO: Update Lucene Audit Task
 
@@ -281,7 +281,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         if (ti.getTaskData().getActualOwner() != null) {
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.FORWARDED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.FORWARDED, ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId));
         //@TODO: Update Lucene Audit Task
 
          AuditTaskImpl auditTaskImpl = persistenceContext.queryWithParametersInTransaction("getAuditTaskById", true, 
@@ -300,7 +300,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         if (ti.getTaskData().getActualOwner() != null) {
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.DELEGATED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.DELEGATED, ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId));
         
         //@TODO: Do I need to remove the USerAuditTask and create a GroupAuditTask in lucene???
 

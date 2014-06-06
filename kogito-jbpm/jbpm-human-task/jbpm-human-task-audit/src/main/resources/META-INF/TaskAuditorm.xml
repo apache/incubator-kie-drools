@@ -7,6 +7,11 @@
         <query>select t from TaskEventImpl t where t.taskId = :taskId</query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
+    <named-query name="getAllTasksEventsByProcessInstanceId">
+        <query>select t from TaskEventImpl t where t.processInstanceId = :processInstanceId</query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    
     <named-query name="getAllBAMTaskSummaries">
         <query>select b from BAMTaskSummaryImpl b where b.taskId = :taskId</query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->

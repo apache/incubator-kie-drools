@@ -15,34 +15,31 @@ import org.kie.internal.task.api.TaskContext;
 import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.model.TaskEvent;
 
-@XmlRootElement(name="get-audit-events-for-task-command")
+@XmlRootElement(name="get-task-audit-events-by-processinstanceid-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class GetAuditEventsCommand extends TaskCommand<List<TaskEvent>> {
+public class GetAuditEventsByProcessInstanceIdCommand extends TaskCommand<List<TaskEvent>> {
 
 	private static final long serialVersionUID = -7929370526623674312L;
         private QueryFilter filter;
-	public GetAuditEventsCommand() {
+        private long processInstanceId;
+        
+	public GetAuditEventsByProcessInstanceIdCommand() {
             this.filter = new QueryFilterImpl(0,0);
 	}
 	
-	public GetAuditEventsCommand(long taskId, QueryFilter filter) {
-		this.taskId = taskId;
+	public GetAuditEventsByProcessInstanceIdCommand(long processInstanceId, QueryFilter filter) {
+		this.processInstanceId = processInstanceId;
                 this.filter = filter;
 	}
        
 	@Override
 	public List<TaskEvent> execute(Context context) {
 		TaskPersistenceContext persistenceContext = ((TaskContext) context).getPersistenceContext();
-		if( this.taskId != null ) { 
-		    return persistenceContext.queryWithParametersInTransaction("getAllTasksEvents", 
-		            persistenceContext.addParametersToMap("taskId", taskId, "firstResult", filter.getOffset(), 
+		return persistenceContext.queryWithParametersInTransaction("getAllTasksEventsByProcessInstanceId", 
+		            persistenceContext.addParametersToMap("processInstanceId", processInstanceId, "firstResult", filter.getOffset(), 
                                     "maxResults", filter.getCount()),
 		            ClassUtil.<List<TaskEvent>>castClass(List.class));
-		} else { 
-		    return persistenceContext.queryStringWithParametersInTransaction("FROM TaskEventImpl",persistenceContext.addParametersToMap("firstResult", filter.getOffset(),
-                                                                                                "maxResults", filter.getCount()),
-		            ClassUtil.<List<TaskEvent>>castClass(List.class));
-		}
+		
 	}
 
 }

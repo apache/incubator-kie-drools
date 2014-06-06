@@ -159,7 +159,7 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
     @Override
 	public List<TaskLifeCycleEventListener> getTaskListeners() {
     	List<TaskLifeCycleEventListener> defaultListeners = new ArrayList<TaskLifeCycleEventListener>();
-        defaultListeners.add(new JPATaskLifeCycleEventListener());
+        defaultListeners.add(new JPATaskLifeCycleEventListener(true));
         // add any custom listeners
         defaultListeners.addAll(super.getTaskListeners());
         // add listeners from deployment descriptor

@@ -142,8 +142,9 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         bamTaskList = taskService.execute(new GetBAMTaskSummariesCommand());
         assertEquals( "BAM Task Summary list size after delete (task id: " + taskId + ") : ", 0, bamTaskList.size());
         
-        List<AuditTask> allHistoryAuditTasks = taskAuditService.getAllHistoryAuditTasks(new QueryFilterImpl(0,0));
+        List<AuditTask> allHistoryAuditTasks = taskAuditService.getAllAuditTasks(new QueryFilterImpl(0,0));
         assertEquals(2, allHistoryAuditTasks.size());
+        
     }
     
     
@@ -175,7 +176,7 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         
         taskService.exit(taskId, "Administrator");
         
-        List<AuditTask> allHistoryAuditTasks = taskAuditService.getAllHistoryAuditTasks(new QueryFilterImpl(0,0));
+        List<AuditTask> allHistoryAuditTasks = taskAuditService.getAllAuditTasks(new QueryFilterImpl(0,0));
         assertEquals(1, allHistoryAuditTasks.size());
         
         allGroupAuditTasks =taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
@@ -205,7 +206,7 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         
         taskService.exit(taskId, "Administrator");
         
-        List<AuditTask> allHistoryAuditTasks = taskAuditService.getAllHistoryAuditTasks(new QueryFilterImpl(0,0));
+        List<AuditTask> allHistoryAuditTasks = taskAuditService.getAllAuditTasks(new QueryFilterImpl(0,0));
         assertEquals(1, allHistoryAuditTasks.size());
         
         allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);

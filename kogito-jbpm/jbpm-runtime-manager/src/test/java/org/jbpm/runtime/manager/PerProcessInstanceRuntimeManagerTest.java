@@ -615,7 +615,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
 						customTaskServiceUsed.set(true);
 						return HumanTaskServiceFactory.newTaskServiceConfigurator()
 								.entityManagerFactory(produceEntityManagerFactory())
-								.listener(new JPATaskLifeCycleEventListener())
+								.listener(new JPATaskLifeCycleEventListener(true))
 								.getTaskService();
 					}
 
