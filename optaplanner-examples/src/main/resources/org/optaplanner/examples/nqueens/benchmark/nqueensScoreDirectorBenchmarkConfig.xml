@@ -13,7 +13,7 @@
     </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
-      <planningEntityClass>org.optaplanner.examples.nqueens.domain.Queen</planningEntityClass>
+      <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>
         <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>

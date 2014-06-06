@@ -84,8 +84,8 @@ public class SolutionDescriptor {
         Class<?> entityClass = entityDescriptor.getEntityClass();
         for (Class<?> otherEntityClass : entityDescriptorMap.keySet()) {
             if (entityClass.isAssignableFrom(otherEntityClass)) {
-                throw new IllegalArgumentException("An earlier planningEntityClass (" + otherEntityClass
-                        + ") should not be a subclass of a later planningEntityClass (" + entityClass
+                throw new IllegalArgumentException("An earlier entityClass (" + otherEntityClass
+                        + ") should not be a subclass of a later entityClass (" + entityClass
                         + "). Switch their declaration so superclasses are defined earlier.");
             }
         }

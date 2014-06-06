@@ -2,7 +2,7 @@
 <solver>
   <!--<environmentMode>FAST_ASSERT</environmentMode>-->
   <solutionClass>org.optaplanner.examples.pas.domain.PatientAdmissionSchedule</solutionClass>
-  <planningEntityClass>org.optaplanner.examples.pas.domain.BedDesignation</planningEntityClass>
+  <entityClass>org.optaplanner.examples.pas.domain.BedDesignation</entityClass>
 
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_MEDIUM_SOFT</scoreDefinitionType>

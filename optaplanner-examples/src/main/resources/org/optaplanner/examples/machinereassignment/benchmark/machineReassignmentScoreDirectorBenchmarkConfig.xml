@@ -22,7 +22,7 @@
 
     <solver>
       <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
-      <planningEntityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
+      <entityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</entityClass>
 
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>

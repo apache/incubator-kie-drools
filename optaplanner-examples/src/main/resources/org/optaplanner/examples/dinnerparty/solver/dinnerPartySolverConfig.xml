@@ -2,7 +2,7 @@
 <solver>
   <!--<environmentMode>FAST_ASSERT</environmentMode>-->
   <solutionClass>org.optaplanner.examples.dinnerparty.domain.DinnerParty</solutionClass>
-  <planningEntityClass>org.optaplanner.examples.dinnerparty.domain.SeatDesignation</planningEntityClass>
+  <entityClass>org.optaplanner.examples.dinnerparty.domain.SeatDesignation</entityClass>
 
   <scoreDirectorFactory>
     <scoreDefinitionType>SIMPLE</scoreDefinitionType>

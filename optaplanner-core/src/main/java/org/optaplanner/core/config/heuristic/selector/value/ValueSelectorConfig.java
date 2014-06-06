@@ -191,7 +191,7 @@ public class ValueSelectorConfig extends SelectorConfig {
                         + ") has an downcastEntityClass (" + downcastEntityClass
                         + ") that is not a known planning entity.\n"
                         + "Check your solver configuration. If that class (" + downcastEntityClass.getSimpleName()
-                        + ") is not in the planningEntityClassSet (" + solutionDescriptor.getEntityClassSet()
+                        + ") is not in the entityClassSet (" + solutionDescriptor.getEntityClassSet()
                         + "), check your Solution implementation's annotated methods too.");
             }
         }

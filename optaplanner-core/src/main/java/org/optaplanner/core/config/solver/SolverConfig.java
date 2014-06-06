@@ -56,8 +56,8 @@ public class SolverConfig {
     protected Class<? extends RandomFactory> randomFactoryClass = null;
 
     protected Class<? extends Solution> solutionClass = null;
-    @XStreamImplicit(itemFieldName = "planningEntityClass")
-    protected List<Class<?>> planningEntityClassList = null;
+    @XStreamImplicit(itemFieldName = "entityClass")
+    protected List<Class<?>> entityClassList = null;
 
     @XStreamAlias("scoreDirectorFactory")
     protected ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = null;
@@ -116,12 +116,12 @@ public class SolverConfig {
         this.solutionClass = solutionClass;
     }
 
-    public List<Class<?>> getPlanningEntityClassList() {
-        return planningEntityClassList;
+    public List<Class<?>> getEntityClassList() {
+        return entityClassList;
     }
 
-    public void setPlanningEntityClassList(List<Class<?>> planningEntityClassList) {
-        this.planningEntityClassList = planningEntityClassList;
+    public void setEntityClassList(List<Class<?>> entityClassList) {
+        this.entityClassList = entityClassList;
     }
 
     public ScoreDirectorFactoryConfig getScoreDirectorFactoryConfig() {
@@ -224,12 +224,12 @@ public class SolverConfig {
         DescriptorPolicy descriptorPolicy = new DescriptorPolicy();
         SolutionDescriptor solutionDescriptor = new SolutionDescriptor(solutionClass);
         solutionDescriptor.processAnnotations(descriptorPolicy);
-        if (ConfigUtils.isEmptyCollection(planningEntityClassList)) {
+        if (ConfigUtils.isEmptyCollection(entityClassList)) {
             throw new IllegalArgumentException(
-                    "Configure at least 1 <planningEntityClass> in the solver configuration.");
+                    "Configure at least 1 <entityClass> in the solver configuration.");
         }
-        for (Class<?> planningEntityClass : planningEntityClassList) {
-            EntityDescriptor entityDescriptor = new EntityDescriptor(solutionDescriptor, planningEntityClass);
+        for (Class<?> entityClass : entityClassList) {
+            EntityDescriptor entityDescriptor = new EntityDescriptor(solutionDescriptor, entityClass);
             solutionDescriptor.addEntityDescriptor(entityDescriptor);
             entityDescriptor.processAnnotations(descriptorPolicy);
         }
@@ -245,8 +245,8 @@ public class SolverConfig {
         randomFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 randomFactoryClass, inheritedConfig.getRandomFactoryClass());
         solutionClass = ConfigUtils.inheritOverwritableProperty(solutionClass, inheritedConfig.getSolutionClass());
-        planningEntityClassList = ConfigUtils.inheritMergeableListProperty(
-                planningEntityClassList, inheritedConfig.getPlanningEntityClassList());
+        entityClassList = ConfigUtils.inheritMergeableListProperty(
+                entityClassList, inheritedConfig.getEntityClassList());
         if (scoreDirectorFactoryConfig == null) {
             scoreDirectorFactoryConfig = inheritedConfig.getScoreDirectorFactoryConfig();
         } else if (inheritedConfig.getScoreDirectorFactoryConfig() != null) {

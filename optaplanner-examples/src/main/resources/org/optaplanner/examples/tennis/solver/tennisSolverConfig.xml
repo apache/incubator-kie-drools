@@ -5,7 +5,7 @@
 
   <!-- Domain model configuration -->
   <solutionClass>org.optaplanner.examples.tennis.domain.TennisSolution</solutionClass>
-  <planningEntityClass>org.optaplanner.examples.tennis.domain.TeamAssignment</planningEntityClass>
+  <entityClass>org.optaplanner.examples.tennis.domain.TeamAssignment</entityClass>
 
   <!-- Score configuration -->
   <scoreDirectorFactory>

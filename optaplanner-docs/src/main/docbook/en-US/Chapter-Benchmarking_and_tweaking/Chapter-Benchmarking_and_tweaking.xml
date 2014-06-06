@@ -76,7 +76,7 @@
     &lt;/problemBenchmarks&gt;
     &lt;solver&gt;
       &lt;solutionClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/solutionClass&gt;
-      &lt;planningEntityClass&gt;org.optaplanner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
+      &lt;entityClass&gt;org.optaplanner.examples.nqueens.domain.Queen&lt;/entityClass&gt;
       &lt;scoreDirectorFactory&gt;
         &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
         &lt;scoreDrl&gt;org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
@@ -199,7 +199,7 @@
     &lt;/problemBenchmarks&gt;
     &lt;solver&gt;
       &lt;solutionClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/solutionClass&gt;
-      &lt;planningEntityClass&gt;org.optaplanner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
+      &lt;entityClass&gt;org.optaplanner.examples.nqueens.domain.Queen&lt;/entityClass&gt;
       &lt;scoreDirectorFactory&gt;
         &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
         &lt;scoreDrl&gt;org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;

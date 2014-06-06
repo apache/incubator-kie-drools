@@ -45,7 +45,7 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
         variableListenerClass = shadowVariableAnnotation.variableListenerClass();
         CustomShadowVariable.Source[] sources = shadowVariableAnnotation.sources();
         if (sources.length < 1) {
-            throw new IllegalArgumentException("The planningEntityClass (" + entityDescriptor.getEntityClass()
+            throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + CustomShadowVariable.class.getSimpleName()
                     + " annotated property (" + variablePropertyAccessor.getName()
                     + ") with sources (" + Arrays.toString(sources)
@@ -66,7 +66,7 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
             } else {
                 sourceEntityDescriptor = solutionDescriptor.getEntityDescriptor(sourceEntityClass);
                 if (sourceEntityDescriptor == null) {
-                    throw new IllegalArgumentException("The planningEntityClass (" + entityDescriptor.getEntityClass()
+                    throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                             + ") has a " + CustomShadowVariable.class.getSimpleName()
                             + " annotated property (" + variablePropertyAccessor.getName()
                             + ") with a sourceEntityClass (" + sourceEntityClass
@@ -78,7 +78,7 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
             GenuineVariableDescriptor sourceVariableDescriptor = sourceEntityDescriptor.getGenuineVariableDescriptor(
                     sourceVariableName);
             if (sourceVariableDescriptor == null) {
-                throw new IllegalArgumentException("The planningEntityClass (" + entityDescriptor.getEntityClass()
+                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a " + CustomShadowVariable.class.getSimpleName()
                         + " annotated property (" + variablePropertyAccessor.getName()
                         + ") with sourceVariableName (" + sourceVariableName

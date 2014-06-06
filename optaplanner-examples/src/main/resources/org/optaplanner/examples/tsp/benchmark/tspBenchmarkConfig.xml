@@ -15,7 +15,7 @@
 
     <solver>
       <solutionClass>org.optaplanner.examples.tsp.domain.TravelingSalesmanTour</solutionClass>
-      <planningEntityClass>org.optaplanner.examples.tsp.domain.Visit</planningEntityClass>
+      <entityClass>org.optaplanner.examples.tsp.domain.Visit</entityClass>
 
       <scoreDirectorFactory>
         <scoreDefinitionType>SIMPLE_LONG</scoreDefinitionType>

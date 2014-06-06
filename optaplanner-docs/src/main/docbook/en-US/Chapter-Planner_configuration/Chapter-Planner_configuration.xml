@@ -73,7 +73,7 @@
 &lt;solver&gt;
   &lt;!-- Define the model --&gt;
   &lt;solutionClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/solutionClass&gt;
-  &lt;planningEntityClass&gt;org.optaplanner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
+  &lt;entityClass&gt;org.optaplanner.examples.nqueens.domain.Queen&lt;/entityClass&gt;
 
   &lt;!-- Define the score function --&gt;
   &lt;scoreDirectorFactory&gt;
@@ -304,7 +304,7 @@ public class Lecture {
 
         <programlisting language="java">&lt;solver&gt;
   ...
-  &lt;planningEntityClass&gt;org.optaplanner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
+  &lt;entityClass&gt;org.optaplanner.examples.nqueens.domain.Queen&lt;/entityClass&gt;
   ...
 &lt;/solver&gt;</programlisting>
 

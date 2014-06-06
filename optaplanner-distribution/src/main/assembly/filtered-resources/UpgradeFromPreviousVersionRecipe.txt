@@ -4433,3 +4433,9 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
     <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.Standstill</planningEntityClass>
     <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</planningEntityClass>
     <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer</planningEntityClass>
+
+[MAJOR] The element <planningEntityClass> has been renamed to <entityClass>.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <planningEntityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</planningEntityClass>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>

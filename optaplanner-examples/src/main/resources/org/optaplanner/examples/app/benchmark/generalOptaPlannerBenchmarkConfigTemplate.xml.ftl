@@ -25,7 +25,7 @@
     </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
-      <planningEntityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</planningEntityClass>
+      <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
       <randomType>${randomType}</randomType>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
@@ -58,7 +58,7 @@
     </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
-      <planningEntityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
+      <entityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</entityClass>
       <randomType>${randomType}</randomType>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
@@ -90,7 +90,7 @@
     </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</solutionClass>
-      <planningEntityClass>org.optaplanner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
+      <entityClass>org.optaplanner.examples.curriculumcourse.domain.Lecture</entityClass>
       <randomType>${randomType}</randomType>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
@@ -133,9 +133,9 @@
     </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.examination.domain.Examination</solutionClass>
-      <planningEntityClass>org.optaplanner.examples.examination.domain.Exam</planningEntityClass>
-      <planningEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</planningEntityClass>
-      <planningEntityClass>org.optaplanner.examples.examination.domain.FollowingExam</planningEntityClass>
+      <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
+      <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
+      <entityClass>org.optaplanner.examples.examination.domain.FollowingExam</entityClass>
       <randomType>${randomType}</randomType>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
@@ -215,7 +215,7 @@
     </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</solutionClass>
-      <planningEntityClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignment</planningEntityClass>
+      <entityClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignment</entityClass>
       <randomType>${randomType}</randomType>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
@@ -256,7 +256,7 @@
     </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
-      <planningEntityClass>org.optaplanner.examples.travelingtournament.domain.Match</planningEntityClass>
+      <entityClass>org.optaplanner.examples.travelingtournament.domain.Match</entityClass>
       <randomType>${randomType}</randomType>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>

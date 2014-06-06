@@ -48,7 +48,7 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
         EntityDescriptor sourceEntityDescriptor = getEntityDescriptor().getSolutionDescriptor()
                 .getEntityDescriptor(masterClass);
         if (sourceEntityDescriptor == null) {
-            throw new IllegalArgumentException("The planningEntityClass (" + entityDescriptor.getEntityClass()
+            throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
                     + " annotated property (" + variablePropertyAccessor.getName()
                     + ") with a masterClass (" + masterClass
@@ -58,7 +58,7 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
         // TODO support inverse on a shadow variable too
         sourceVariableDescriptor = sourceEntityDescriptor.getGenuineVariableDescriptor(sourceVariableName);
         if (sourceVariableDescriptor == null) {
-            throw new IllegalArgumentException("The planningEntityClass (" + entityDescriptor.getEntityClass()
+            throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
                     + " annotated property (" + variablePropertyAccessor.getName()
                     + ") with sourceVariableName (" + sourceVariableName
@@ -67,7 +67,7 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
         }
         if (!sourceVariableDescriptor.isChained()) {
             // TODO support for non-chained variables too
-            throw new IllegalArgumentException("The planningEntityClass (" + entityDescriptor.getEntityClass()
+            throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
                     + " annotated property (" + variablePropertyAccessor.getName()
                     + ") with sourceVariableName (" + sourceVariableName

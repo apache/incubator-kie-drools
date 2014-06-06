@@ -32,7 +32,7 @@
 
     <solver>
       <solutionClass>org.optaplanner.examples.projectjobscheduling.domain.Schedule</solutionClass>
-      <planningEntityClass>org.optaplanner.examples.projectjobscheduling.domain.Allocation</planningEntityClass>
+      <entityClass>org.optaplanner.examples.projectjobscheduling.domain.Allocation</entityClass>
 
       <scoreDirectorFactory>
         <scoreDefinitionType>BENDABLE</scoreDefinitionType>

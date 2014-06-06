@@ -2,9 +2,9 @@
 <solver>
   <!--<environmentMode>FAST_ASSERT</environmentMode>-->
   <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
-  <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.Standstill</planningEntityClass>
-  <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</planningEntityClass>
-  <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer</planningEntityClass>
+  <entityClass>org.optaplanner.examples.vehiclerouting.domain.Standstill</entityClass>
+  <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
+  <entityClass>org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer</entityClass>
 
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>

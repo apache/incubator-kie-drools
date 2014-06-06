@@ -73,7 +73,7 @@ public abstract class SelectorConfig {
                 throw new IllegalArgumentException("The selectorConfig (" + this
                         + ") has an entityClass (" + entityClass + ") that is not a known planning entity.\n"
                         + "Check your solver configuration. If that class (" + entityClass.getSimpleName()
-                        + ") is not in the planningEntityClassSet (" + solutionDescriptor.getEntityClassSet()
+                        + ") is not in the entityClassSet (" + solutionDescriptor.getEntityClassSet()
                         + "), check your Solution implementation's annotated methods too.");
             }
         } else {
@@ -81,7 +81,7 @@ public abstract class SelectorConfig {
             if (entityDescriptors.size() != 1) {
                 throw new IllegalArgumentException("The selectorConfig (" + this
                         + ") has no entityClass (" + entityClass
-                        + ") configured and because there are multiple in the planningEntityClassSet ("
+                        + ") configured and because there are multiple in the entityClassSet ("
                         + solutionDescriptor.getEntityClassSet()
                         + "), it can not be deducted automatically.");
             }
@@ -99,13 +99,13 @@ public abstract class SelectorConfig {
                 if (!entityDescriptor.hasProperty(variableName)) {
                     throw new IllegalArgumentException("The selectorConfig (" + this
                             + ") has a variableName (" + variableName
-                            + ") for planningEntityClass (" + entityDescriptor.getEntityClass()
+                            + ") for entityClass (" + entityDescriptor.getEntityClass()
                             + ") that does not have that as a getter.\n"
                             + "Check the spelling of the variableName (" + variableName + ").");
                 } else {
                     throw new IllegalArgumentException("The selectorConfig (" + this
                             + ") has a variableName (" + variableName
-                            + ") for planningEntityClass (" + entityDescriptor.getEntityClass()
+                            + ") for entityClass (" + entityDescriptor.getEntityClass()
                             + ") that is not annotated as a planning variable.\n"
                             + "Check if your planning entity's getter has the annotation "
                             + PlanningVariable.class.getSimpleName() + ".");
@@ -117,7 +117,7 @@ public abstract class SelectorConfig {
             if (variableDescriptors.size() != 1) {
                 throw new IllegalArgumentException("The selectorConfig (" + this
                         + ") has no configured variableName (" + variableName
-                        + ") for planningEntityClass (" + entityDescriptor.getEntityClass()
+                        + ") for entityClass (" + entityDescriptor.getEntityClass()
                         + ") and because there are multiple variableNames ("
                         + entityDescriptor.getGenuineVariableNameSet()
                         + "), it can not be deducted automatically.");

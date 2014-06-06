@@ -79,7 +79,7 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
     private void processNullable(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         nullable = planningVariableAnnotation.nullable();
         if (nullable && variablePropertyAccessor.getPropertyType().isPrimitive()) {
-            throw new IllegalArgumentException("The planningEntityClass (" + entityDescriptor.getEntityClass()
+            throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a PlanningVariable annotated property (" + variablePropertyAccessor.getName()
                     + ") with nullable (" + nullable + "), which is not compatible with the primitive propertyType ("
                     + variablePropertyAccessor.getPropertyType() + ").");
@@ -101,15 +101,14 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
         chained = planningVariableAnnotation.graphType() == PlanningVariableGraphType.CHAINED;
         if (chained && !variablePropertyAccessor.getPropertyType().isAssignableFrom(
                 entityDescriptor.getEntityClass())) {
-            throw new IllegalArgumentException("The planningEntityClass (" + entityDescriptor.getEntityClass()
+            throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a PlanningVariable annotated property (" + variablePropertyAccessor.getName()
                     + ") with chained (" + chained + ") and propertyType (" + variablePropertyAccessor.getPropertyType()
-                    + ") which is not a superclass/interface of or the same as the planningEntityClass ("
+                    + ") which is not a superclass/interface of or the same as the entityClass ("
                     + entityDescriptor.getEntityClass() + ").");
         }
         if (chained && nullable) {
-            throw new IllegalArgumentException("The planningEntityClass ("
-                    + entityDescriptor.getEntityClass()
+            throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a PlanningVariable annotated property (" + variablePropertyAccessor.getName()
                     + ") with chained (" + chained + "), which is not compatible with nullable (" + nullable + ").");
         }
@@ -118,7 +117,7 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
     private void processValueRangeRefs(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         String[] valueRangeProviderRefs = planningVariableAnnotation.valueRangeProviderRefs();
         if (ArrayUtils.isEmpty(valueRangeProviderRefs)) {
-            throw new IllegalArgumentException("The planningEntityClass (" + entityDescriptor.getEntityClass()
+            throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + PlanningVariable.class.getSimpleName()
                     + " annotated property (" + variablePropertyAccessor.getName()
                     + ") that has no valueRangeProviderRefs (" + Arrays.toString(valueRangeProviderRefs) + ").");
@@ -145,7 +144,7 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
             Method readMethod = descriptorPolicy.getFromEntityValueRangeProvider(valueRangeProviderRef);
             return new FromEntityPropertyValueRangeDescriptor(this, addNullInValueRange, readMethod);
         } else {
-            throw new IllegalArgumentException("The planningEntityClass (" + entityDescriptor.getEntityClass()
+            throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + PlanningVariable.class.getSimpleName()
                     + ") annotated property (" + variablePropertyAccessor.getName()
                     + ") with a valueRangeProviderRef (" + valueRangeProviderRef
@@ -168,7 +167,7 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
             strengthWeightFactoryClass = null;
         }
         if (strengthComparatorClass != null && strengthWeightFactoryClass != null) {
-            throw new IllegalStateException("The planningEntityClass (" + entityDescriptor.getEntityClass()
+            throw new IllegalStateException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") property (" + variablePropertyAccessor.getName()
                     + ") cannot have a strengthComparatorClass (" + strengthComparatorClass.getName()
                     + ") and a strengthWeightFactoryClass (" + strengthWeightFactoryClass.getName()

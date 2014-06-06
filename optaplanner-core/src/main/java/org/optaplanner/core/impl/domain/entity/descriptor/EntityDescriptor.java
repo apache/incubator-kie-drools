@@ -77,7 +77,7 @@ public class EntityDescriptor {
         try {
             entityBeanInfo = Introspector.getBeanInfo(entityClass);
         } catch (IntrospectionException e) {
-            throw new IllegalStateException("The planningEntityClass (" + entityClass
+            throw new IllegalStateException("The entityClass (" + entityClass
                     + ") is not a valid java bean.", e);
         }
     }
@@ -91,7 +91,7 @@ public class EntityDescriptor {
     private void processEntityAnnotations(DescriptorPolicy descriptorPolicy) {
         PlanningEntity entityAnnotation = entityClass.getAnnotation(PlanningEntity.class);
         if (entityAnnotation == null) {
-            throw new IllegalStateException("The planningEntityClass (" + entityClass
+            throw new IllegalStateException("The entityClass (" + entityClass
                     + ") has been specified as a planning entity in the configuration," +
                     " but does not have a " + PlanningEntity.class.getSimpleName() + " annotation.");
         }
@@ -121,7 +121,7 @@ public class EntityDescriptor {
             difficultyWeightFactoryClass = null;
         }
         if (difficultyComparatorClass != null && difficultyWeightFactoryClass != null) {
-            throw new IllegalStateException("The planningEntityClass (" + entityClass
+            throw new IllegalStateException("The entityClass (" + entityClass
                     + ") cannot have a difficultyComparatorClass (" + difficultyComparatorClass.getName()
                     + ") and a difficultyWeightFactoryClass (" + difficultyWeightFactoryClass.getName()
                     + ") at the same time.");
@@ -163,7 +163,7 @@ public class EntityDescriptor {
                         PlanningVariable.class, InverseRelationShadowVariable.class, CustomShadowVariable.class)) {
                     if (propertyGetter.isAnnotationPresent(detectedAnnotationClass)) {
                         if (variableAnnotationClass != null) {
-                            throw new IllegalStateException("The planningEntityClass (" + entityClass
+                            throw new IllegalStateException("The entityClass (" + entityClass
                                     + ") has a property (" + propertyDescriptor.getName() + ") that has both a "
                                     + variableAnnotationClass.getSimpleName() + " annotation and a "
                                     + detectedAnnotationClass.getSimpleName() + " annotation.");
@@ -174,7 +174,7 @@ public class EntityDescriptor {
                 if (variableAnnotationClass != null) {
                     noPlanningVariableAnnotation = false;
                     if (propertyDescriptor.getWriteMethod() == null) {
-                        throw new IllegalStateException("The planningEntityClass (" + entityClass
+                        throw new IllegalStateException("The entityClass (" + entityClass
                                 + ") has a " + variableAnnotationClass.getSimpleName()
                                 + " annotated property (" + propertyDescriptor.getName()
                                 + ") that should have a setter.");
@@ -202,7 +202,7 @@ public class EntityDescriptor {
             }
         }
         if (noPlanningVariableAnnotation) {
-            throw new IllegalStateException("The planningEntityClass (" + entityClass
+            throw new IllegalStateException("The entityClass (" + entityClass
                     + ") should have at least 1 getter with a " + PlanningVariable.class.getSimpleName()
                     + " annotation or a shadow variable annotation.");
         }

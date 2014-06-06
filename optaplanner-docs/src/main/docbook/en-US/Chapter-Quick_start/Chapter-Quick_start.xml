@@ -223,7 +223,7 @@
 
   &lt;!-- Domain model configuration --&gt;
   &lt;solutionClass&gt;org.optaplanner.examples.cloudbalancing.domain.CloudBalance&lt;/solutionClass&gt;
-  &lt;planningEntityClass&gt;org.optaplanner.examples.cloudbalancing.domain.CloudProcess&lt;/planningEntityClass&gt;
+  &lt;entityClass&gt;org.optaplanner.examples.cloudbalancing.domain.CloudProcess&lt;/entityClass&gt;
 
   &lt;!-- Score configuration --&gt;
   &lt;scoreDirectorFactory&gt;
@@ -259,7 +259,7 @@
           Planner aware of our domain classes:</para>
 
           <programlisting language="xml">  &lt;solutionClass&gt;org.optaplanner.examples.cloudbalancing.domain.CloudBalance&lt;/solutionClass&gt;
-  &lt;planningEntityClass&gt;org.optaplanner.examples.cloudbalancing.domain.CloudProcess&lt;/planningEntityClass&gt;</programlisting>
+  &lt;entityClass&gt;org.optaplanner.examples.cloudbalancing.domain.CloudProcess&lt;/entityClass&gt;</programlisting>
         </listitem>
 
         <listitem>

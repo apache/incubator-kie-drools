@@ -2,7 +2,7 @@
 <solver>
   <!--<environmentMode>FAST_ASSERT</environmentMode>-->
   <solutionClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
-  <planningEntityClass>org.optaplanner.examples.travelingtournament.domain.Match</planningEntityClass>
+  <entityClass>org.optaplanner.examples.travelingtournament.domain.Match</entityClass>
 
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
