@@ -90,9 +90,10 @@ public class ActionCallMethodBuilder {
                                                                    getAdjustedParameter( param,
                                                                                          dataType ),
                                                                    dataType );
-        actionFiled.setNature( inferFieldNature( boundParams,
-                                                 dataType,
-                                                 param ) );
+        actionFiled.setNature( inferFieldNature( dataType,
+                                                 param,
+                                                 boundParams,
+                                                 isJavaDialect ) );
         actionFiled.setField( methodName );
         return actionFiled;
     }

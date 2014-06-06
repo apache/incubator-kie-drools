@@ -93,7 +93,8 @@ public class RuleModelDRLPersistenceTest {
     public void testGenerateEmptyDRL() {
         String expected = "rule \"null\"\n\tdialect \"mvel\"\n\twhen\n\tthen\nend\n";
 
-        checkMarshallUnmarshall( expected, new RuleModel() );
+        checkMarshallUnmarshall( expected,
+                                 new RuleModel() );
     }
 
     private void checkMarshallUnmarshall( String expected,
@@ -109,16 +110,48 @@ public class RuleModelDRLPersistenceTest {
         String drl = ruleModelPersistence.marshal( m );
         assertNotNull( drl );
         if ( expected != null ) {
-            assertEqualsIgnoreWhitespace( expected, drl );
+            assertEqualsIgnoreWhitespace( expected,
+                                          drl );
+        }
+
+        RuleModel unmarshalledModel = ruleModelPersistence.unmarshal( drl,
+                                                                      Collections.EMPTY_LIST,
+                                                                      dmo );
+        if ( expected != null ) {
+            assertEqualsIgnoreWhitespace( expected,
+                                          ruleModelPersistence.marshal( unmarshalledModel ) );
+        } else {
+            assertEquals( drl,
+                          ruleModelPersistence.marshal( unmarshalledModel ) );
+        }
+    }
+
+    private void checkMarshallUnmarshallUsingDsl( String expected,
+                                                  RuleModel m ) {
+        checkMarshallUnmarshallUsingDsl( expected,
+                                         m,
+                                         mock( PackageDataModelOracle.class ) );
+    }
+
+    private void checkMarshallUnmarshallUsingDsl( String expected,
+                                                  RuleModel m,
+                                                  PackageDataModelOracle dmo ) {
+        String drl = ruleModelPersistence.marshal( m );
+        assertNotNull( drl );
+        if ( expected != null ) {
+            assertEqualsIgnoreWhitespace( expected,
+                                          drl );
         }
 
         RuleModel unmarshalledModel = ruleModelPersistence.unmarshalUsingDSL( drl,
                                                                               Collections.EMPTY_LIST,
                                                                               dmo );
         if ( expected != null ) {
-            assertEqualsIgnoreWhitespace( expected, ruleModelPersistence.marshal( unmarshalledModel ) );
+            assertEqualsIgnoreWhitespace( expected,
+                                          ruleModelPersistence.marshal( unmarshalledModel ) );
         } else {
-            assertEquals( drl, ruleModelPersistence.marshal( unmarshalledModel ) );
+            assertEquals( drl,
+                          ruleModelPersistence.marshal( unmarshalledModel ) );
         }
     }
 
@@ -156,7 +189,8 @@ public class RuleModelDRLPersistenceTest {
         m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -173,7 +207,8 @@ public class RuleModelDRLPersistenceTest {
 
         m.name = "my rule";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -243,7 +278,8 @@ public class RuleModelDRLPersistenceTest {
         m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -266,7 +302,8 @@ public class RuleModelDRLPersistenceTest {
         m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -278,7 +315,8 @@ public class RuleModelDRLPersistenceTest {
 
         m.name = "my rule";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -312,7 +350,8 @@ public class RuleModelDRLPersistenceTest {
 
         m.name = "my rule";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -375,7 +414,9 @@ public class RuleModelDRLPersistenceTest {
 
         m.name = "my rule";
 
-        checkMarshallUnmarshall( expected, m, dmo );
+        checkMarshallUnmarshall( expected,
+                                 m,
+                                 dmo );
     }
 
     @Test
@@ -408,7 +449,8 @@ public class RuleModelDRLPersistenceTest {
         actionCallMethod.setVariable( "keke" );
         m.rhs = new IAction[]{ actionCallMethod };
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -431,7 +473,8 @@ public class RuleModelDRLPersistenceTest {
         m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -459,7 +502,8 @@ public class RuleModelDRLPersistenceTest {
         m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -482,7 +526,8 @@ public class RuleModelDRLPersistenceTest {
         m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -505,7 +550,8 @@ public class RuleModelDRLPersistenceTest {
         m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -528,7 +574,8 @@ public class RuleModelDRLPersistenceTest {
         m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -558,8 +605,8 @@ public class RuleModelDRLPersistenceTest {
                 + "\t\t>update( p1 );\n" + "\t\t>retract( p1 );\n"
                 + "\t\tSend an email to administrator\n" + "end\n";
 
-        checkMarshallUnmarshall( expected,
-                                 m );
+        checkMarshallUnmarshallUsingDsl( expected,
+                                         m );
 
         String drl = ruleModelPersistence.marshal( m );
         assertEqualsIgnoreWhitespace( expected, drl );
@@ -572,7 +619,8 @@ public class RuleModelDRLPersistenceTest {
         DSLSentence dslSentence = (DSLSentence) actions[ actions.length - 1 ];
         assertEquals( "Send an email to {administrator}", dslSentence.getDefinition() );
 
-        assertEqualsIgnoreWhitespace( expected, ruleModelPersistence.marshal( unmarshalledModel ) );
+        checkMarshallUnmarshallUsingDsl( expected,
+                                         unmarshalledModel );
     }
 
     @Test
@@ -783,7 +831,8 @@ public class RuleModelDRLPersistenceTest {
         // System.out.println(s);
         assertTrue( s.contains( "Person( f1 : age)" ) );
 
-        checkMarshallUnmarshall( s, m );
+        checkMarshallUnmarshall( s,
+                                 m );
     }
 
     @Test
@@ -800,7 +849,8 @@ public class RuleModelDRLPersistenceTest {
 
         String s = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertTrue( s.indexOf( "Person( age == null )" ) != -1 );
-        checkMarshallUnmarshall( s, m );
+        checkMarshallUnmarshall( s,
+                                 m );
     }
 
     @Test
@@ -817,7 +867,8 @@ public class RuleModelDRLPersistenceTest {
 
         String s = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertTrue( s.indexOf( "Person( age != null )" ) != -1 );
-        checkMarshallUnmarshall( s, m );
+        checkMarshallUnmarshall( s,
+                                 m );
     }
 
     private RuleModel getModelWithNoConstraints() {
@@ -864,7 +915,8 @@ public class RuleModelDRLPersistenceTest {
         String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertTrue( result.indexOf( "( Person( age == 42 ) or Person( age == 43 ) )" ) > 0 );
 
-        checkMarshallUnmarshall( result, m );
+        checkMarshallUnmarshall( result,
+                                 m );
     }
 
     @Test
@@ -872,7 +924,8 @@ public class RuleModelDRLPersistenceTest {
         RuleModel m = getCompositeFOL( CompositeFactPattern.COMPOSITE_TYPE_EXISTS );
         String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertTrue( result.indexOf( "exists (Person( age == 42 ) and Person( age == 43 ))" ) > 0 );
-        checkMarshallUnmarshall( result, m );
+        checkMarshallUnmarshall( result,
+                                 m );
     }
 
     @Test
@@ -880,7 +933,8 @@ public class RuleModelDRLPersistenceTest {
         RuleModel m = getCompositeFOL( CompositeFactPattern.COMPOSITE_TYPE_NOT );
         String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertTrue( result.indexOf( "not (Person( age == 42 ) and Person( age == 43 ))" ) > 0 );
-        checkMarshallUnmarshall( result, m );
+        checkMarshallUnmarshall( result,
+                                 m );
     }
 
     @Test
@@ -902,7 +956,8 @@ public class RuleModelDRLPersistenceTest {
         System.out.println( result );
 
         assertTrue( result.indexOf( "exists (Person( age == 42 )) " ) > 0 );
-        checkMarshallUnmarshall( result, m );
+        checkMarshallUnmarshall( result,
+                                 m );
     }
 
     private RuleModel getCompositeFOL( String type ) {
@@ -1014,7 +1069,8 @@ public class RuleModelDRLPersistenceTest {
         assertEqualsIgnoreWhitespace( expected,
                                       actual );
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -1041,7 +1097,8 @@ public class RuleModelDRLPersistenceTest {
         // now it should appear, as we are binding a var to it
         expected = "rule \"boo\" dialect \"mvel\" when Person(q : field1) then end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -1073,7 +1130,8 @@ public class RuleModelDRLPersistenceTest {
                 + "     Person(field1 == \"goo\", field2 == variableHere)"
                 + " then " + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -1097,7 +1155,8 @@ public class RuleModelDRLPersistenceTest {
                 + "     Person( field1 == \"goo\" )"
                 + " then " + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -1126,7 +1185,8 @@ public class RuleModelDRLPersistenceTest {
                 + "     Person( field1 == \"Cheddar\" )"
                 + " then " + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -1153,7 +1213,8 @@ public class RuleModelDRLPersistenceTest {
                 + "     Person( field1 == CHEESE.Cheddar )"
                 + " then " + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -1179,7 +1240,8 @@ public class RuleModelDRLPersistenceTest {
                 + "     Person( field1 == 55 )"
                 + " then " + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -1205,7 +1267,8 @@ public class RuleModelDRLPersistenceTest {
                 + "     Person( field1 == \"27-Jun-2011\" )"
                 + " then " + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -1231,7 +1294,8 @@ public class RuleModelDRLPersistenceTest {
                 + "     Person( field1 == true )"
                 + " then " + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -1288,7 +1352,9 @@ public class RuleModelDRLPersistenceTest {
                 }}
                         );
 
-        checkMarshallUnmarshall( expected, m, dmo );
+        checkMarshallUnmarshall( expected,
+                                 m,
+                                 dmo );
     }
 
     @Test
@@ -1345,7 +1411,9 @@ public class RuleModelDRLPersistenceTest {
                 }}
                         );
 
-        checkMarshallUnmarshall( expected, m, dmo );
+        checkMarshallUnmarshall( expected,
+                                 m,
+                                 dmo );
     }
 
     @Test
@@ -1402,7 +1470,9 @@ public class RuleModelDRLPersistenceTest {
                 }}
                         );
 
-        checkMarshallUnmarshall( expected, m, dmo );
+        checkMarshallUnmarshall( expected,
+                                 m,
+                                 dmo );
     }
 
     @Test
@@ -1459,7 +1529,9 @@ public class RuleModelDRLPersistenceTest {
                 }}
                         );
 
-        checkMarshallUnmarshall( expected, m, dmo );
+        checkMarshallUnmarshall( expected,
+                                 m,
+                                 dmo );
     }
 
     @Test
@@ -1516,7 +1588,9 @@ public class RuleModelDRLPersistenceTest {
                 }}
                         );
 
-        checkMarshallUnmarshall( expected, m, dmo );
+        checkMarshallUnmarshall( expected,
+                                 m,
+                                 dmo );
     }
 
     @Test
@@ -1548,7 +1622,8 @@ public class RuleModelDRLPersistenceTest {
                 + "     Person(field1 == 44, field2 == variableHere)"
                 + " then " + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -1586,7 +1661,8 @@ public class RuleModelDRLPersistenceTest {
                 + "insert( fact0 ); \n"
                 + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -1626,7 +1702,9 @@ public class RuleModelDRLPersistenceTest {
                 + "insert( fact0 ); \n"
                 + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m,
+                                 dmo );
     }
 
     @Test
@@ -1664,7 +1742,8 @@ public class RuleModelDRLPersistenceTest {
                 + "insert( fact0 ); \n"
                 + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -1702,7 +1781,8 @@ public class RuleModelDRLPersistenceTest {
                 + "insert( fact0 ); \n"
                 + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -1734,7 +1814,8 @@ public class RuleModelDRLPersistenceTest {
                 + "     Person(field1 == true, field2 == variableHere)"
                 + " then " + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -1766,7 +1847,8 @@ public class RuleModelDRLPersistenceTest {
                 + "     Person(field1 == \"31-Jan-2010\", field2 == variableHere)"
                 + " then " + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -1797,7 +1879,8 @@ public class RuleModelDRLPersistenceTest {
                 + "     Person(field1 == \"bananna\", field2 == variableHere)"
                 + " then " + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -1824,7 +1907,8 @@ public class RuleModelDRLPersistenceTest {
                 + " then \n"
                 + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -1851,7 +1935,8 @@ public class RuleModelDRLPersistenceTest {
                 + " then \n"
                 + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -1878,7 +1963,8 @@ public class RuleModelDRLPersistenceTest {
                 + " then \n"
                 + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -1905,7 +1991,8 @@ public class RuleModelDRLPersistenceTest {
                 + " then \n"
                 + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -1942,7 +2029,8 @@ public class RuleModelDRLPersistenceTest {
             assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
             assertTrue( result.indexOf( "fact0.setDob( sdf.parse(\"31-Jan-2000\"" ) != -1 );
 
-            checkMarshallUnmarshall( null, m );
+            checkMarshallUnmarshall( null,
+                                     m );
         } finally {
             if ( oldValue == null ) {
                 System.clearProperty( "drools.dateformat" );
@@ -1989,7 +2077,8 @@ public class RuleModelDRLPersistenceTest {
             assertTrue( result.indexOf( "$p.setDob( sdf.parse(\"31-Jan-2000\"" ) != -1 );
             assertTrue( result.indexOf( "update( $p );" ) != -1 );
 
-            checkMarshallUnmarshall( null, m );
+            checkMarshallUnmarshall( null,
+                                     m );
         } finally {
             if ( oldValue == null ) {
                 System.clearProperty( "drools.dateformat" );
@@ -2037,7 +2126,8 @@ public class RuleModelDRLPersistenceTest {
             assertTrue( result.indexOf( "$p.setDob( sdf.parse(\"31-Jan-2000\"" ) != -1 );
             assertTrue( result.indexOf( "update( $p );" ) == -1 );
 
-            checkMarshallUnmarshall( null, m );
+            checkMarshallUnmarshall( null,
+                                     m );
         } finally {
             if ( oldValue == null ) {
                 System.clearProperty( "drools.dateformat" );
@@ -2105,7 +2195,8 @@ public class RuleModelDRLPersistenceTest {
 
         assertTrue( result.indexOf( "wim.internalExecuteWorkItem( wiWorkItem );" ) != -1 );
 
-        checkMarshallUnmarshall( null, m );
+        checkMarshallUnmarshall( null,
+                                 m );
     }
 
     @Test
@@ -2169,7 +2260,8 @@ public class RuleModelDRLPersistenceTest {
 
         assertTrue( result.indexOf( "wim.internalExecuteWorkItem( wiWorkItem );" ) != -1 );
 
-        checkMarshallUnmarshall( null, m );
+        checkMarshallUnmarshall( null,
+                                 m );
     }
 
     @Test
@@ -2278,7 +2370,8 @@ public class RuleModelDRLPersistenceTest {
 
         assertTrue( result.indexOf( "wim.internalExecuteWorkItem( wiWorkItem );" ) != -1 );
 
-        checkMarshallUnmarshall( null, m );
+        checkMarshallUnmarshall( null,
+                                 m );
     }
 
     @Test
@@ -2392,7 +2485,8 @@ public class RuleModelDRLPersistenceTest {
 
         assertTrue( result.indexOf( "wim.internalExecuteWorkItem( wiWorkItem );" ) != -1 );
 
-        checkMarshallUnmarshall( null, m );
+        checkMarshallUnmarshall( null,
+                                 m );
     }
 
     @Test
@@ -2457,7 +2551,8 @@ public class RuleModelDRLPersistenceTest {
 
         assertTrue( result.indexOf( "wim.internalExecuteWorkItem( wiWorkItem );" ) != -1 );
 
-        checkMarshallUnmarshall( null, m );
+        checkMarshallUnmarshall( null,
+                                 m );
     }
 
     @Test
@@ -2535,7 +2630,8 @@ public class RuleModelDRLPersistenceTest {
 
         assertTrue( result.indexOf( "wim.internalExecuteWorkItem( wiWorkItem );" ) != -1 );
 
-        checkMarshallUnmarshall( null, m );
+        checkMarshallUnmarshall( null,
+                                 m );
     }
 
     @Test
@@ -2610,7 +2706,8 @@ public class RuleModelDRLPersistenceTest {
         assertTrue( result.indexOf( "$r.setResultsStringResult( (java.lang.String) wiWorkItem.getResult( \"StringResult\" ) );" ) != -1 );
         assertTrue( result.indexOf( "insert( $r );" ) != -1 );
 
-        checkMarshallUnmarshall( null, m );
+        checkMarshallUnmarshall( null,
+                                 m );
     }
 
     @Test
@@ -2667,7 +2764,9 @@ public class RuleModelDRLPersistenceTest {
                 }}
                         );
 
-        checkMarshallUnmarshall( expected, m, dmo );
+        checkMarshallUnmarshall( expected,
+                                 m,
+                                 dmo );
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
@@ -2677,7 +2776,8 @@ public class RuleModelDRLPersistenceTest {
         final String cleanActual = actual.replaceAll( "\\s+",
                                                       "" );
 
-        assertEquals( cleanExpected, cleanActual );
+        assertEquals( cleanExpected,
+                      cleanActual );
     }
 
     @Test
@@ -2699,7 +2799,8 @@ public class RuleModelDRLPersistenceTest {
         String expected = "rule \"yeah\" " + "\tdialect \"mvel\"\n when "
                 + "Goober( goo == ( someFunc(x) ) )" + " then " + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -2719,7 +2820,8 @@ public class RuleModelDRLPersistenceTest {
         String expected = "rule \"yeah\" " + "\tdialect \"mvel\"\n when "
                 + "Goober( eval( field soundslike \"poo\" ) )" + " then " + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -2752,7 +2854,8 @@ public class RuleModelDRLPersistenceTest {
                 + "\tdialect \"mvel\"\n when "
                 + "Person( field1 == goo  || == \"blah\" )" + " then " + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -2810,7 +2913,6 @@ public class RuleModelDRLPersistenceTest {
         s = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertFalse( s.indexOf( "mvel" ) > -1 );
         assertTrue( s.indexOf( "goober" ) > -1 );
-
     }
 
     @Test
@@ -2830,7 +2932,8 @@ public class RuleModelDRLPersistenceTest {
         assertTrue( s.indexOf( "auto-focus true" ) > -1 );
         assertTrue( s.indexOf( "duration 42" ) > -1 );
 
-        checkMarshallUnmarshall( s, m );
+        checkMarshallUnmarshall( s,
+                                 m );
     }
 
     @Test
@@ -2850,7 +2953,8 @@ public class RuleModelDRLPersistenceTest {
         m.addRhsItem( add );
         m.name = "my rule";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -2939,7 +3043,9 @@ public class RuleModelDRLPersistenceTest {
                 }}
                         );
 
-        checkMarshallUnmarshall( expected, m, dmo );
+        checkMarshallUnmarshall( expected,
+                                 m,
+                                 dmo );
     }
 
     @Test
@@ -3045,7 +3151,9 @@ public class RuleModelDRLPersistenceTest {
                 }}
                         );
 
-        checkMarshallUnmarshall( expected, m, dmo );
+        checkMarshallUnmarshall( expected,
+                                 m,
+                                 dmo );
     }
 
     @Test
@@ -3134,7 +3242,9 @@ public class RuleModelDRLPersistenceTest {
                 }}
                         );
 
-        checkMarshallUnmarshall( expected, m, dmo );
+        checkMarshallUnmarshall( expected,
+                                 m,
+                                 dmo );
     }
 
     @Test
@@ -3240,7 +3350,9 @@ public class RuleModelDRLPersistenceTest {
                 }}
                         );
 
-        checkMarshallUnmarshall( expected, m, dmo );
+        checkMarshallUnmarshall( expected,
+                                 m,
+                                 dmo );
     }
 
     @Test
@@ -3287,7 +3399,8 @@ public class RuleModelDRLPersistenceTest {
             assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
             assertTrue( result.indexOf( "$p.method( \"String\", true, sdf.parse(\"31-Jan-2012\"), 100, 100B );" ) != -1 );
 
-            checkMarshallUnmarshall( null, m );
+            checkMarshallUnmarshall( null,
+                                     m );
 
         } finally {
             if ( oldValue == null ) {
@@ -3344,7 +3457,8 @@ public class RuleModelDRLPersistenceTest {
             assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
             assertTrue( result.indexOf( "$p.method( \"String\", true, sdf.parse(\"31-Jan-2012\"), 100, new java.math.BigDecimal(\"100\") );" ) != -1 );
 
-            checkMarshallUnmarshall( null, m );
+            checkMarshallUnmarshall( null,
+                                     m );
 
         } finally {
             if ( oldValue == null ) {
@@ -4112,7 +4226,8 @@ public class RuleModelDRLPersistenceTest {
                 + "insert( fact1 ); \n"
                 + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -4147,7 +4262,8 @@ public class RuleModelDRLPersistenceTest {
                 + "insert( fact1 ); \n"
                 + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
@@ -4182,7 +4298,8 @@ public class RuleModelDRLPersistenceTest {
                 + "insert( fact0 ); \n"
                 + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
