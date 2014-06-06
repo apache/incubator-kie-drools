@@ -330,11 +330,12 @@
 
       <programlisting language="xml">    &lt;subChainChangeMoveSelector&gt;
       ... &lt;!-- Normal selector properties --&gt;
+      &lt;entityClass&gt;...Customer&lt;/entityClass&gt;
       &lt;subChainSelector&gt;
-        &lt;entitySelector&gt;
-          &lt;entityClass&gt;...Customer&lt;/entityClass&gt;
+        &lt;valueSelector&gt;
+          &lt;variableName&gt;previousStandstill&lt;/variableName&gt;
           ...
-        &lt;/entitySelector&gt;
+        &lt;/valueSelector&gt;
         &lt;minimumSubChainSize&gt;2&lt;/minimumSubChainSize&gt;
         &lt;maximumSubChainSize&gt;40&lt;/maximumSubChainSize&gt;
       &lt;/subChainSelector&gt;
@@ -380,19 +381,20 @@
 
       <programlisting language="xml">    &lt;subChainSwapMoveSelector&gt;
       ... &lt;!-- Normal selector properties --&gt;
+      &lt;entityClass&gt;...Customer&lt;/entityClass&gt;
       &lt;subChainSelector&gt;
-        &lt;entitySelector&gt;
-          &lt;entityClass&gt;...Customer&lt;/entityClass&gt;
+        &lt;valueSelector&gt;
+          &lt;variableName&gt;previousStandstill&lt;/variableName&gt;
           ...
-        &lt;/entitySelector&gt;
+        &lt;/valueSelector&gt;
         &lt;minimumSubChainSize&gt;2&lt;/minimumSubChainSize&gt;
         &lt;maximumSubChainSize&gt;40&lt;/maximumSubChainSize&gt;
       &lt;/subChainSelector&gt;
       &lt;secondarySubChainSelector&gt;
-        &lt;entitySelector&gt;
-          &lt;entityClass&gt;...Customer&lt;/entityClass&gt;
+        &lt;valueSelector&gt;
+          &lt;variableName&gt;previousStandstill&lt;/variableName&gt;
           ...
-        &lt;/entitySelector&gt;
+        &lt;/valueSelector&gt;
         &lt;minimumSubChainSize&gt;2&lt;/minimumSubChainSize&gt;
         &lt;maximumSubChainSize&gt;40&lt;/maximumSubChainSize&gt;
       &lt;/secondarySubChainSelector&gt;
@@ -603,9 +605,9 @@
 
         <listitem>
           <para><literal>PHASE</literal>: Cached. Create each selection (<literal>Move</literal>, ...) at the beginning
-          of a solver phase and cache them in a list for the remainder of the phase.
-          Some selections cannot be phase cached because the list changes every step.
-          This scales up badly in memory footprint, but has a slight performance gain.</para>
+          of a solver phase and cache them in a list for the remainder of the phase. Some selections cannot be phase
+          cached because the list changes every step. This scales up badly in memory footprint, but has a slight
+          performance gain.</para>
         </listitem>
 
         <listitem>
