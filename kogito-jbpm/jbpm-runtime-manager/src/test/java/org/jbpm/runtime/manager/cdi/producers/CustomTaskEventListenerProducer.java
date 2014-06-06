@@ -16,7 +16,7 @@ public class CustomTaskEventListenerProducer implements EventListenerProducer<Ta
 	public List<TaskLifeCycleEventListener> getEventListeners(String identifier, Map<String, Object> params) {
 		
 		List<TaskLifeCycleEventListener> taskEventListeners = new ArrayList<TaskLifeCycleEventListener>();
-		taskEventListeners.add(new JPATaskLifeCycleEventListener());
+		taskEventListeners.add(new JPATaskLifeCycleEventListener(true));
 
 		
 		return taskEventListeners;
