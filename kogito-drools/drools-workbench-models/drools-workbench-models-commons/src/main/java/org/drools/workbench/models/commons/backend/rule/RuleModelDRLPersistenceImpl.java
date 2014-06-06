@@ -2574,9 +2574,10 @@ public class RuleModelDRLPersistenceImpl
                                                                          boundParams,
                                                                          isJavaDialect ),
                                                             dataType );
-        fieldValue.setNature( inferFieldNature( boundParams,
-                                                dataType,
-                                                value ) );
+        fieldValue.setNature( inferFieldNature( dataType,
+                                                value,
+                                                boundParams,
+                                                isJavaDialect ) );
         return fieldValue;
     }
 

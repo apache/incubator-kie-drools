@@ -2148,6 +2148,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         String marshalled = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         System.out.println( marshalled );
+
+
         assertEqualsIgnoreWhitespace( drl,
                                       marshalled );
     }

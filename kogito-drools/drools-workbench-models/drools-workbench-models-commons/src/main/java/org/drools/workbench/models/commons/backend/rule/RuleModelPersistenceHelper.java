@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ class RuleModelPersistenceHelper {
     }
 
     static String getSimpleFactType( String className,
-            PackageDataModelOracle dmo ) {
+                                     PackageDataModelOracle dmo ) {
         for ( String type : dmo.getProjectModelFields().keySet() ) {
             if ( type.equals( className ) ) {
                 return type.substring( type.lastIndexOf( "." ) + 1 );
@@ -40,25 +41,29 @@ class RuleModelPersistenceHelper {
         return className;
     }
 
-    static int inferFieldNature( final Map<String, String> boundParams,
-                                 final String dataType,
-                                 final String value ) {
+    static int inferFieldNature( final String dataType,
+                                 final String value,
+                                 final Map<String, String> boundParams,
+                                 final boolean isJavaDialect ) {
 
         if ( boundParams.containsKey( value ) ) {
             return FieldNatureType.TYPE_VARIABLE;
         }
 
-        return inferFieldNature(dataType, value);
+        return inferFieldNature( dataType,
+                                 value,
+                                 isJavaDialect );
     }
 
     static int inferFieldNature( final String dataType,
-                                 final String value) {
-        int nature = ( StringUtils.isEmpty(value) ? FieldNatureType.TYPE_UNDEFINED : FieldNatureType.TYPE_LITERAL );
+                                 final String value,
+                                 final boolean isJavaDialect ) {
+        int nature = ( StringUtils.isEmpty( value ) ? FieldNatureType.TYPE_UNDEFINED : FieldNatureType.TYPE_LITERAL );
 
         if ( dataType == DataType.TYPE_COLLECTION ) {
             return FieldNatureType.TYPE_FORMULA;
 
-        } else if ( DataType.TYPE_BOOLEAN.equals(dataType) ) {
+        } else if ( DataType.TYPE_BOOLEAN.equals( dataType ) ) {
             if ( !( Boolean.TRUE.equals( Boolean.parseBoolean( value ) ) || Boolean.FALSE.equals( Boolean.parseBoolean( value ) ) ) ) {
                 return FieldNatureType.TYPE_FORMULA;
             } else {
@@ -67,7 +72,10 @@ class RuleModelPersistenceHelper {
 
         } else if ( DataType.TYPE_DATE.equals( dataType ) ) {
             try {
-                new SimpleDateFormat( DateUtils.getDateFormatMask() ).parse( value );
+                new SimpleDateFormat( DateUtils.getDateFormatMask() ).parse( adjustParam( dataType,
+                                                                                          value,
+                                                                                          Collections.EMPTY_MAP,
+                                                                                          isJavaDialect ) );
                 return FieldNatureType.TYPE_LITERAL;
             } catch ( ParseException e ) {
                 return FieldNatureType.TYPE_FORMULA;
@@ -81,14 +89,17 @@ class RuleModelPersistenceHelper {
             }
 
         } else if ( DataType.TYPE_NUMERIC.equals( dataType ) ) {
-            if ( !NumberUtils.isNumber(value) ) {
+            if ( !NumberUtils.isNumber( value ) ) {
                 return FieldNatureType.TYPE_FORMULA;
             }
             return FieldNatureType.TYPE_LITERAL;
 
         } else if ( DataType.TYPE_NUMERIC_BIGDECIMAL.equals( dataType ) ) {
             try {
-                new BigDecimal( value );
+                new BigDecimal( adjustParam( dataType,
+                                             value,
+                                             Collections.EMPTY_MAP,
+                                             isJavaDialect ) );
                 return FieldNatureType.TYPE_LITERAL;
             } catch ( NumberFormatException e ) {
                 return FieldNatureType.TYPE_FORMULA;
@@ -96,7 +107,10 @@ class RuleModelPersistenceHelper {
 
         } else if ( DataType.TYPE_NUMERIC_BIGINTEGER.equals( dataType ) ) {
             try {
-                new BigInteger( value );
+                new BigInteger( adjustParam( dataType,
+                                             value,
+                                             Collections.EMPTY_MAP,
+                                             isJavaDialect ) );
                 return FieldNatureType.TYPE_LITERAL;
             } catch ( NumberFormatException e ) {
                 return FieldNatureType.TYPE_FORMULA;
@@ -257,20 +271,30 @@ class RuleModelPersistenceHelper {
         return DataType.TYPE_NUMERIC;
     }
 
-    static String adjustParam(
-            String dataType,
-            String param,
-            Map<String, String> boundParams,
-            boolean isJavaDialect ) {
+    static String adjustParam( String dataType,
+                               String param,
+                               Map<String, String> boundParams,
+                               boolean isJavaDialect ) {
         if ( dataType == DataType.TYPE_DATE ) {
-            return param.substring( "sdf.parse(\"".length(), param.length() - 2 );
+            return param.substring( "sdf.parse(\"".length(),
+                                    param.length() - 2 );
         } else if ( dataType == DataType.TYPE_STRING ) {
-            return param.substring( 1, param.length() - 1 );
-        } else if ( dataType == DataType.TYPE_NUMERIC_BIGDECIMAL || dataType == DataType.TYPE_NUMERIC_BIGINTEGER ) {
+            return param.substring( 1,
+                                    param.length() - 1 );
+        } else if ( dataType == DataType.TYPE_NUMERIC_BIGDECIMAL ) {
             if ( isJavaDialect ) {
-                return param.substring( "new java.math.BigDecimal(\"".length(), param.length() - 2 );
+                return param.substring( "new java.math.BigDecimal(\"".length(),
+                                        param.length() - 2 );
             } else {
                 return param.substring( 0, param.length() - 1 );
+            }
+        } else if ( dataType == DataType.TYPE_NUMERIC_BIGINTEGER ) {
+            if ( isJavaDialect ) {
+                return param.substring( "new java.math.BigInteger(\"".length(),
+                                        param.length() - 2 );
+            } else {
+                return param.substring( 0,
+                                        param.length() - 1 );
             }
         } else if ( boundParams.containsKey( param ) ) {
             return "=" + param;
