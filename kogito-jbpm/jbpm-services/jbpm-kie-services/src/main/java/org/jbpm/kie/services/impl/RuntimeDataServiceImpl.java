@@ -129,12 +129,12 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         return processIds;
     }
     
-    public Collection<ProcessInstanceDesc> getProcessInstances() { 
+    public Collection<ProcessInstanceDesc> getProcessInstances() {
         List<ProcessInstanceDesc> processInstances =  commandService.execute(
-        				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstances"));
-        		
-
-        return processInstances;
+			new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstances"));
+    	Collection<ProcessInstanceDesc> outputCollection = new HashSet<ProcessInstanceDesc>();
+        CollectionUtils.select(processInstances, new SecureInstancePredicate(identityProvider.getRoles()), outputCollection);
+        return Collections.unmodifiableCollection(outputCollection);
     }
     
     public Collection<ProcessInstanceDesc> getProcessInstances(List<Integer> states, String initiator) { 
@@ -152,9 +152,9 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
             processInstances = commandService.execute(
     				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstancesByStatusAndInitiator", params)); 
         }
-        
-        return processInstances;
-        
+        Collection<ProcessInstanceDesc> outputCollection = new HashSet<ProcessInstanceDesc>();
+        CollectionUtils.select(processInstances, new SecureInstancePredicate(identityProvider.getRoles()), outputCollection);
+        return Collections.unmodifiableCollection(outputCollection);
     }
 
     public Collection<ProcessInstanceDesc> getProcessInstancesByDeploymentId(String deploymentId, List<Integer> states) {
@@ -164,8 +164,9 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         List<ProcessInstanceDesc> processInstances = commandService.execute(
 				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstancesByDeploymentId",
                 params));
-
-        return processInstances;
+        Collection<ProcessInstanceDesc> outputCollection = new HashSet<ProcessInstanceDesc>();
+        CollectionUtils.select(processInstances, new SecureInstancePredicate(identityProvider.getRoles()), outputCollection);
+        return Collections.unmodifiableCollection(outputCollection);
     }
 
 
@@ -175,8 +176,9 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
     	List<ProcessInstanceDesc> processInstances = commandService.execute(
 				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstancesByProcessDefinition",
               params));
-
-        return processInstances;
+    	Collection<ProcessInstanceDesc> outputCollection = new HashSet<ProcessInstanceDesc>();
+        CollectionUtils.select(processInstances, new SecureInstancePredicate(identityProvider.getRoles()), outputCollection);
+        return Collections.unmodifiableCollection(outputCollection);
     }
     
     public ProcessInstanceDesc getProcessInstanceById(long processId) {
@@ -187,7 +189,12 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
 				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstanceById", 
                 params));
 
-        return processInstances.get(0);
+    	Collection<ProcessInstanceDesc> outputCollection = new HashSet<ProcessInstanceDesc>();
+        CollectionUtils.select(processInstances, new SecureInstancePredicate(identityProvider.getRoles()), outputCollection);
+        if (!outputCollection.isEmpty()) {
+        	return outputCollection.iterator().next();
+        }
+        return null;
    }
 
     
@@ -209,8 +216,9 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
             processInstances = commandService.execute(
     				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstancesByProcessIdAndStatusAndInitiator", params));
         }
-        return processInstances;
-
+        Collection<ProcessInstanceDesc> outputCollection = new HashSet<ProcessInstanceDesc>();
+        CollectionUtils.select(processInstances, new SecureInstancePredicate(identityProvider.getRoles()), outputCollection);
+        return Collections.unmodifiableCollection(outputCollection);
     }
 
     @Override
@@ -231,7 +239,9 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
             processInstances = commandService.execute(
     				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstancesByProcessNameAndStatusAndInitiator", params));
         }
-        return processInstances;
+        Collection<ProcessInstanceDesc> outputCollection = new HashSet<ProcessInstanceDesc>();
+        CollectionUtils.select(processInstances, new SecureInstancePredicate(identityProvider.getRoles()), outputCollection);
+        return Collections.unmodifiableCollection(outputCollection);
     }    
 
     public Collection<NodeInstanceDesc> getProcessInstanceHistory(String deploymentId, long processId) {
@@ -427,6 +437,32 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
     		
     		
     		return CollectionUtils.containsAny(roles, pDesc.getRoles());
+    	}
+    }
+    
+    private class SecureInstancePredicate implements Predicate {
+    	private List<String> roles;
+    	
+    	private SecureInstancePredicate(List<String> roles) {
+    		this.roles = roles;
+    	}
+    	
+    	public boolean evaluate(Object object) {
+    		ProcessInstanceDesc pInstDesc = (ProcessInstanceDesc) object;
+    		ProcessAssetDesc pDesc = getProcessesByDeploymentIdProcessId(pInstDesc.getDeploymentId(), pInstDesc.getProcessId());
+    		if (this.roles == null || this.roles.isEmpty()) {
+    			return true;
+    		}
+    		if (pDesc == null) {
+    			// if you can't see the process, you shouldn't see the instances either
+    			return false;
+    		}
+//          No need to check the list of roles, as if you can see the process, you already have the right role
+//    		if (pDesc.getRoles() == null || pDesc.getRoles().isEmpty()) {
+//   			return true;
+//	    	}
+//		    return CollectionUtils.containsAny(roles, pDesc.getRoles());
+    		return true;
     	}
     }
     
