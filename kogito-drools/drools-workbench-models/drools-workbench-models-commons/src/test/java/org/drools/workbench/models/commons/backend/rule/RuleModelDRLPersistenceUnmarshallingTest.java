@@ -63,6 +63,7 @@ import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -2148,7 +2149,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         String marshalled = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         System.out.println( marshalled );
-
 
         assertEqualsIgnoreWhitespace( drl,
                                       marshalled );
@@ -4640,6 +4640,215 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       sfp.getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
                       sfp.getConstraintValueType() );
+    }
+
+    @Test
+    @Ignore("https://issues.jboss.org/browse/DROOLS-517")
+    public void testRHSModifyBlockSingleFieldSingleLine() throws Exception {
+        //The value used in the "set" is intentionally yucky to catch extraction of the field's value errors!
+        String drl = "rule \"modify1\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    $p : Person( )\n" +
+                "  then\n" +
+                "  modify( $p ) { setFirstName( \",)\" ) }\n" +
+                "end";
+
+        addModelField( "Person",
+                       "firstName",
+                       "java.lang.String",
+                       DataType.TYPE_STRING );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
+
+        assertEquals( 1,
+                      m.rhs.length );
+        assertTrue( m.rhs[ 0 ] instanceof ActionUpdateField );
+
+        ActionUpdateField field = (ActionUpdateField) m.rhs[ 0 ];
+        assertEquals( "$p",
+                      field.getVariable() );
+
+        assertTrue( field.getFieldValues()[ 0 ] instanceof ActionFieldValue );
+        assertEquals( 1,
+                      field.getFieldValues().length );
+
+        ActionFieldValue value = field.getFieldValues()[ 0 ];
+        assertEquals( "firstName",
+                      value.getField() );
+        assertEquals( ",)",
+                      value.getValue() );
+        assertEquals( FieldNatureType.TYPE_LITERAL,
+                      value.getNature() );
+        assertEquals( DataType.TYPE_STRING,
+                      value.getType() );
+    }
+
+    @Test
+    @Ignore("https://issues.jboss.org/browse/DROOLS-517")
+    public void testRHSModifyBlockSingleFieldMultipleLines() throws Exception {
+        //The value used in the "set" is intentionally yucky to catch extraction of the field's value errors!
+        String drl = "rule \"modify1\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    $p : Person( )\n" +
+                "  then\n" +
+                "  modify( $p ) {\n" +
+                "    setFirstName( \",)\" )\n" +
+                "  }\n" +
+                "end";
+
+        addModelField( "Person",
+                       "firstName",
+                       "java.lang.String",
+                       DataType.TYPE_STRING );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
+
+        assertEquals( 1,
+                      m.rhs.length );
+        assertTrue( m.rhs[ 0 ] instanceof ActionUpdateField );
+
+        ActionUpdateField field = (ActionUpdateField) m.rhs[ 0 ];
+        assertEquals( "$p",
+                      field.getVariable() );
+
+        assertTrue( field.getFieldValues()[ 0 ] instanceof ActionFieldValue );
+        assertEquals( 1,
+                      field.getFieldValues().length );
+
+        ActionFieldValue value = field.getFieldValues()[ 0 ];
+        assertEquals( "firstName",
+                      value.getField() );
+        assertEquals( ",)",
+                      value.getValue() );
+        assertEquals( FieldNatureType.TYPE_LITERAL,
+                      value.getNature() );
+        assertEquals( DataType.TYPE_STRING,
+                      value.getType() );
+    }
+
+    @Test
+    @Ignore("https://issues.jboss.org/browse/DROOLS-517")
+    public void testRHSModifyBlockMultipleFieldsSingleLine() throws Exception {
+        //The value used in the "set" is intentionally yucky to catch extraction of the field's value errors!
+        String drl = "rule \"modify1\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    $p : Person( )\n" +
+                "  then\n" +
+                "  modify( $p ) { setFirstName( \",)\" ), setLastName( \",)\" ) }\n" +
+                "end";
+
+        addModelField( "Person",
+                       "firstName",
+                       "java.lang.String",
+                       DataType.TYPE_STRING );
+        addModelField( "Person",
+                       "lastName",
+                       "java.lang.String",
+                       DataType.TYPE_STRING );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
+
+        assertEquals( 1,
+                      m.rhs.length );
+        assertTrue( m.rhs[ 0 ] instanceof ActionUpdateField );
+
+        ActionUpdateField field = (ActionUpdateField) m.rhs[ 0 ];
+        assertEquals( "$p",
+                      field.getVariable() );
+
+        assertTrue( field.getFieldValues()[ 0 ] instanceof ActionFieldValue );
+        assertEquals( 2,
+                      field.getFieldValues().length );
+
+        ActionFieldValue value1 = field.getFieldValues()[ 0 ];
+        assertEquals( "firstName",
+                      value1.getField() );
+        assertEquals( ",)",
+                      value1.getValue() );
+        assertEquals( FieldNatureType.TYPE_LITERAL,
+                      value1.getNature() );
+        assertEquals( DataType.TYPE_STRING,
+                      value1.getType() );
+
+        ActionFieldValue value2 = field.getFieldValues()[ 0 ];
+        assertEquals( "lastName",
+                      value2.getField() );
+        assertEquals( ",)",
+                      value2.getValue() );
+        assertEquals( FieldNatureType.TYPE_LITERAL,
+                      value2.getNature() );
+        assertEquals( DataType.TYPE_STRING,
+                      value2.getType() );
+    }
+
+    @Test
+    @Ignore("https://issues.jboss.org/browse/DROOLS-517")
+    public void testRHSModifyBlockMultipleFieldsMultipleLines() throws Exception {
+        //The value used in the "set" is intentionally yucky to catch extraction of the field's value errors!
+        String drl = "rule \"modify1\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    $p : Person( )\n" +
+                "  then\n" +
+                "  modify( $p ) { \n" +
+                "    setFirstName( \",)\" ), \n" +
+                "    setLastName( \",)\" )\n" +
+                "  }\n" +
+                "end";
+
+        addModelField( "Person",
+                       "firstName",
+                       "java.lang.String",
+                       DataType.TYPE_STRING );
+        addModelField( "Person",
+                       "lastName",
+                       "java.lang.String",
+                       DataType.TYPE_STRING );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
+
+        assertEquals( 1,
+                      m.rhs.length );
+        assertTrue( m.rhs[ 0 ] instanceof ActionUpdateField );
+
+        ActionUpdateField field = (ActionUpdateField) m.rhs[ 0 ];
+        assertEquals( "$p",
+                      field.getVariable() );
+
+        assertTrue( field.getFieldValues()[ 0 ] instanceof ActionFieldValue );
+        assertEquals( 2,
+                      field.getFieldValues().length );
+
+        ActionFieldValue value1 = field.getFieldValues()[ 0 ];
+        assertEquals( "firstName",
+                      value1.getField() );
+        assertEquals( ",)",
+                      value1.getValue() );
+        assertEquals( FieldNatureType.TYPE_LITERAL,
+                      value1.getNature() );
+        assertEquals( DataType.TYPE_STRING,
+                      value1.getType() );
+
+        ActionFieldValue value2 = field.getFieldValues()[ 0 ];
+        assertEquals( "lastName",
+                      value2.getField() );
+        assertEquals( ",)",
+                      value2.getValue() );
+        assertEquals( FieldNatureType.TYPE_LITERAL,
+                      value2.getNature() );
+        assertEquals( DataType.TYPE_STRING,
+                      value2.getType() );
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
