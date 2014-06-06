@@ -189,7 +189,7 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
             } else {
                 LeftTuple current = insertFirst;
                 LeftTuple last = null;
-                while ( current != null ) {
+                while ( current != null && current != last ) {
                     last = current;
                     current = current.getStagedNext();
                 }
@@ -212,7 +212,7 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
             } else {
                 LeftTuple current = deleteFirst;
                 LeftTuple last = null;
-                while ( current != null ) {
+                while ( current != null && current != last ) {
                     last = current;
                     current = current.getStagedNext();
                 }
@@ -235,7 +235,7 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
             } else {
                 LeftTuple current = updateFirst;
                 LeftTuple last = null;
-                while ( current != null ) {
+                while ( current != null && current != last ) {
                     last = current;
                     current = current.getStagedNext();
                 }

@@ -185,7 +185,7 @@ public class RightTupleSetsImpl implements RightTupleSets {
         } else {
             RightTuple current = insertFirst;
             RightTuple last = null;
-            while ( current != null ) {
+            while ( current != null && current != last ) {
                 last = current;
                 current = current.getStagedNext();
             }
@@ -204,7 +204,7 @@ public class RightTupleSetsImpl implements RightTupleSets {
         } else {
             RightTuple current = deleteFirst;
             RightTuple last = null;
-            while ( current != null ) {
+            while ( current != null && current != last ) {
                 last = current;
                 current = current.getStagedNext();
             }
@@ -223,7 +223,7 @@ public class RightTupleSetsImpl implements RightTupleSets {
         } else {
             RightTuple current = updateFirst;
             RightTuple last = null;
-            while ( current != null ) {
+            while ( current != null && current != last ) {
                 last = current;
                 current = current.getStagedNext();
             }
