@@ -152,7 +152,7 @@
       <listitem>
         <para><emphasis role="bold"><literal>org.kie.example.repositories</literal></emphasis>: Folder from where demo
           repositories will be cloned. The demo repositories need to have been obtained and placed in this folder. Demo
-          repositories can be obtained from the kie-wb-6.1.0-SNAPSHOT-example-repositories.zip artifact. This System
+          repositories can be obtained from the kie-wb-6.2.0-SNAPSHOT-example-repositories.zip artifact. This System
           Property takes precedence over org.kie.demo and org.kie.example. Default: Not used.</para>
       </listitem>
 
