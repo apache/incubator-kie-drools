@@ -30,13 +30,13 @@ import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.solution.ProblemIO;
-import org.optaplanner.persistence.xstream.XStreamProblemIO;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 @XStreamAlias("problemBenchmarks")
 public class ProblemBenchmarksConfig {
 
-    private Class<ProblemIO> problemIOClass = null;
+    private Class<SolutionFileIO> solutionFileIOClass = null;
     @XStreamImplicit(itemFieldName = "xStreamAnnotatedClass")
     private List<Class> xStreamAnnotatedClassList = null;
     private Boolean writeOutputSolutionEnabled = null;
@@ -47,12 +47,12 @@ public class ProblemBenchmarksConfig {
     @XStreamImplicit(itemFieldName = "problemStatisticType")
     private List<ProblemStatisticType> problemStatisticTypeList = null;
 
-    public Class<ProblemIO> getProblemIOClass() {
-        return problemIOClass;
+    public Class<SolutionFileIO> getSolutionFileIOClass() {
+        return solutionFileIOClass;
     }
 
-    public void setProblemIOClass(Class<ProblemIO> problemIOClass) {
-        this.problemIOClass = problemIOClass;
+    public void setSolutionFileIOClass(Class<SolutionFileIO> solutionFileIOClass) {
+        this.solutionFileIOClass = solutionFileIOClass;
     }
 
     public List<Class> getXStreamAnnotatedClassList() {
@@ -94,7 +94,7 @@ public class ProblemBenchmarksConfig {
     public List<ProblemBenchmarkResult> buildProblemBenchmarkList(PlannerBenchmarkResult plannerBenchmark,
             SolverBenchmarkResult solverBenchmarkResult) {
         validate(solverBenchmarkResult);
-        ProblemIO problemIO = buildProblemIO();
+        SolutionFileIO solutionFileIO = buildSolutionFileIO();
         List<ProblemBenchmarkResult> problemBenchmarkResultList = new ArrayList<ProblemBenchmarkResult>(inputSolutionFileList.size());
         List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = plannerBenchmark.getUnifiedProblemBenchmarkResultList();
         for (File inputSolutionFile : inputSolutionFileList) {
@@ -103,7 +103,7 @@ public class ProblemBenchmarksConfig {
             }
             // 2 SolverBenchmarks containing equal ProblemBenchmarks should contain the same instance
             ProblemBenchmarkResult newProblemBenchmarkResult = buildProblemBenchmark(plannerBenchmark,
-                    problemIO, inputSolutionFile);
+                    solutionFileIO, inputSolutionFile);
             ProblemBenchmarkResult problemBenchmarkResult;
             int index = unifiedProblemBenchmarkResultList.indexOf(newProblemBenchmarkResult);
             if (index < 0) {
@@ -126,13 +126,13 @@ public class ProblemBenchmarksConfig {
         }
     }
 
-    private ProblemIO buildProblemIO() {
-        if (problemIOClass != null && xStreamAnnotatedClassList != null) {
-            throw new IllegalArgumentException("Cannot use problemIOClass (" + problemIOClass
+    private SolutionFileIO buildSolutionFileIO() {
+        if (solutionFileIOClass != null && xStreamAnnotatedClassList != null) {
+            throw new IllegalArgumentException("Cannot use solutionFileIOClass (" + solutionFileIOClass
                     + ") and xStreamAnnotatedClassList (" + xStreamAnnotatedClassList + ") together.");
         }
-        if (problemIOClass != null) {
-            return ConfigUtils.newInstance(this, "problemIOClass", problemIOClass);
+        if (solutionFileIOClass != null) {
+            return ConfigUtils.newInstance(this, "solutionFileIOClass", solutionFileIOClass);
         } else {
             Class[] xStreamAnnotatedClasses;
             if (xStreamAnnotatedClassList != null) {
@@ -140,16 +140,16 @@ public class ProblemBenchmarksConfig {
             } else {
                 xStreamAnnotatedClasses = new Class[0];
             }
-            return new XStreamProblemIO(xStreamAnnotatedClasses);
+            return new XStreamSolutionFileIO(xStreamAnnotatedClasses);
         }
     }
 
     private ProblemBenchmarkResult buildProblemBenchmark(PlannerBenchmarkResult plannerBenchmark,
-            ProblemIO problemIO, File inputSolutionFile) {
+            SolutionFileIO solutionFileIO, File inputSolutionFile) {
         ProblemBenchmarkResult problemBenchmarkResult = new ProblemBenchmarkResult(plannerBenchmark);
         String name = FilenameUtils.getBaseName(inputSolutionFile.getName());
         problemBenchmarkResult.setName(name);
-        problemBenchmarkResult.setProblemIO(problemIO);
+        problemBenchmarkResult.setSolutionFileIO(solutionFileIO);
         problemBenchmarkResult.setWriteOutputSolutionEnabled(
                 writeOutputSolutionEnabled == null ? false : writeOutputSolutionEnabled);
         problemBenchmarkResult.setInputSolutionFile(inputSolutionFile);
@@ -174,8 +174,8 @@ public class ProblemBenchmarksConfig {
     }
 
     public void inherit(ProblemBenchmarksConfig inheritedConfig) {
-        problemIOClass = ConfigUtils.inheritOverwritableProperty(problemIOClass,
-                inheritedConfig.getProblemIOClass());
+        solutionFileIOClass = ConfigUtils.inheritOverwritableProperty(solutionFileIOClass,
+                inheritedConfig.getSolutionFileIOClass());
         xStreamAnnotatedClassList = ConfigUtils.inheritMergeableListProperty(xStreamAnnotatedClassList,
                 inheritedConfig.getXStreamAnnotatedClassList());
         writeOutputSolutionEnabled = ConfigUtils.inheritOverwritableProperty(writeOutputSolutionEnabled,

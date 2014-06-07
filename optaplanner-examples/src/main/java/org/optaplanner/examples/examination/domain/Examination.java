@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.examination.domain.solver.TopicConflict;
-import org.optaplanner.persistence.xstream.XStreamScoreConverter;
+import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution()
 @XStreamAlias("Examination")

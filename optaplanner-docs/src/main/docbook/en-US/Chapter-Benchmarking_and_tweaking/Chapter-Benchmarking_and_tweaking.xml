@@ -148,7 +148,7 @@
       local search solver phase) and one or more <literal>&lt;inputSolutionFile&gt;</literal> elements. It will run the
       solver configuration on each of those unsolved solution files. The element <literal>name</literal> is optional,
       because it is generated if absent. The inputSolutionFile is read by a <link
-      linkend="problemIO">ProblemIO</link>.</para>
+      linkend="solutionFileIO">SolutionFileIO</link>.</para>
 
       <note>
         <para>Use a forward slash (<literal>/</literal>) as the file separator (for example in the element
@@ -223,36 +223,33 @@
       </itemizedlist>
     </section>
 
-    <section xml:id="problemIO">
-      <title>ProblemIO: input and output of Solution files</title>
+    <section xml:id="solutionFileIO">
+      <title>SolutionFileIO: input and output of Solution files</title>
 
-      <section xml:id="theProblemIOInterface">
-        <title><literal>ProblemIO</literal> interface</title>
+      <section xml:id="theSolutionFileIOInterface">
+        <title><literal>SolutionFileIO</literal> interface</title>
 
-        <para>The benchmarker needs to be able to read the input files to contain a <literal>Solution</literal> write
-        the best <literal>Solution</literal> of each benchmark to an output file. For that it uses a class that
-        implements the <literal>ProblemIO</literal> interface:</para>
+        <para>The benchmarker needs to be able to read the input files to load a <literal>Solution</literal>. Also, it
+        might need to write the best <literal>Solution</literal> of each benchmark to an output file. For that it uses a
+        class that implements the <literal>SolutionFileIO</literal> interface:</para>
 
-        <programlisting language="java">public interface ProblemIO {
+        <programlisting language="java">public interface SolutionFileIO {
 
-    String getFileExtension();
+    String getInputFileExtension();
+
+    String getOutputFileExtension();
 
     Solution read(File inputSolutionFile);
 
     void write(Solution solution, File outputSolutionFile);
 
 }</programlisting>
-
-        <warning>
-          <para>Your input files need to have been written with the same <literal>ProblemIO</literal> class as they are
-          being read by the benchmarker.</para>
-        </warning>
       </section>
 
-      <section xml:id="xStreamProblemIO">
-        <title><literal>XStreamProblemIO</literal>: the default <literal>ProblemIO</literal></title>
+      <section xml:id="xStreamSolutionFileIO">
+        <title><literal>XStreamSolutionFileIO</literal>: the default <literal>SolutionFileIO</literal></title>
 
-        <para>By default, a benchmarker uses a <literal>XStreamProblemIO</literal> instance to read and write
+        <para>By default, a benchmarker uses a <literal>XStreamSolutionFileIO</literal> instance to read and write
         solutions.</para>
 
         <para>You need to tell the benchmarker about your <literal>Solution</literal> class which is annotated with
@@ -264,9 +261,9 @@
       ...
     &lt;/problemBenchmarks&gt;</programlisting>
 
-        <para>Your input files need to have been written with a <literal>XStreamProblemIO</literal> instance, not just
-        any <literal>XStream</literal> instance, because the <literal>XStreamProblemIO</literal> uses a customized
-        <literal>XStream</literal> instance.</para>
+        <para>Your input files need to have been written with a <literal>XStreamSolutionFileIO</literal> instance, not
+        just any <literal>XStream</literal> instance, because the <literal>XStreamSolutionFileIO</literal> uses a
+        customized <literal>XStream</literal> instance.</para>
 
         <warning>
           <para>XStream (and XML in general) is a very verbose format. Reading or writing large datasets in this format
@@ -274,20 +271,24 @@
         </warning>
       </section>
 
-      <section xml:id="customProblemIO">
-        <title>Custom <literal>ProblemIO</literal></title>
+      <section xml:id="customSolutionFileIO">
+        <title>Custom <literal>SolutionFileIO</literal></title>
 
-        <para>Alternatively, you can implement your own <literal>ProblemIO</literal> implementation and configure it
-        with the <literal>problemIOClass</literal> element:</para>
+        <para>Alternatively, you can implement your own <literal>SolutionFileIO</literal> implementation and configure
+        it with the <literal>solutionFileIOClass</literal> element:</para>
 
         <programlisting language="xml">    &lt;problemBenchmarks&gt;
-      &lt;problemIOClass&gt;org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentProblemIO&lt;/problemIOClass&gt;
+      &lt;solutionFileIOClass&gt;org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO&lt;/solutionFileIOClass&gt;
       &lt;inputSolutionFile&gt;data/machinereassignment/import/model_a1_1.txt&lt;/inputSolutionFile&gt;
       ...
     &lt;/problemBenchmarks&gt;</programlisting>
 
+        <para>It's highly recommended that output files can be read as input files, which also implies that
+        <literal>getInputFileExtension()</literal> and <literal>getOutputFileExtension()</literal> return the same
+        value.</para>
+
         <warning>
-          <para>A <literal>ProblemIO</literal> implementation must be thread-safe.</para>
+          <para>A <literal>SolutionFileIO</literal> implementation must be thread-safe.</para>
         </warning>
       </section>
     </section>
@@ -317,7 +318,7 @@
       writing the best solution of each single benchmark can take quite some time and memory (causing an
       <literal>OutOfMemoryError</literal>), especially in a verbose format like XStream.</para>
 
-      <para>You can enable to write the output solution in the <literal>benchmarkDirectory</literal> with
+      <para>To write those solutions in the <literal>benchmarkDirectory</literal>, enable
       <literal>writeOutputSolutionEnabled</literal>:</para>
 
       <programlisting language="xml">    &lt;problemBenchmarks&gt;

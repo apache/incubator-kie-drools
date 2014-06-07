@@ -39,7 +39,7 @@ import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.solution.ProblemIO;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,8 +57,8 @@ public class ProblemBenchmarkResult {
 
     private String name = null;
 
-    @XStreamOmitField // TODO move problemIO out of ProblemBenchmarkResult
-    private ProblemIO problemIO = null;
+    @XStreamOmitField // TODO move solutionFileIO out of ProblemBenchmarkResult
+    private SolutionFileIO solutionFileIO = null;
     private boolean writeOutputSolutionEnabled = false;
 
     private File inputSolutionFile = null;
@@ -100,12 +100,12 @@ public class ProblemBenchmarkResult {
         this.name = name;
     }
 
-    public ProblemIO getProblemIO() {
-        return problemIO;
+    public SolutionFileIO getSolutionFileIO() {
+        return solutionFileIO;
     }
 
-    public void setProblemIO(ProblemIO problemIO) {
-        this.problemIO = problemIO;
+    public void setSolutionFileIO(SolutionFileIO solutionFileIO) {
+        this.solutionFileIO = solutionFileIO;
     }
 
     public boolean isWriteOutputSolutionEnabled() {
@@ -236,16 +236,16 @@ public class ProblemBenchmarkResult {
     }
 
     public Solution readPlanningProblem() {
-        return problemIO.read(inputSolutionFile);
+        return solutionFileIO.read(inputSolutionFile);
     }
 
     public void writeOutputSolution(SingleBenchmarkResult singleBenchmarkResult, Solution outputSolution) {
         if (!writeOutputSolutionEnabled) {
             return;
         }
-        String filename = getName() + "." + problemIO.getFileExtension();
+        String filename = getName() + "." + solutionFileIO.getOutputFileExtension();
         File outputSolutionFile = new File(singleBenchmarkResult.getSingleReportDirectory(), filename);
-        problemIO.write(outputSolution, outputSolutionFile);
+        solutionFileIO.write(outputSolution, outputSolutionFile);
     }
 
     // ************************************************************************

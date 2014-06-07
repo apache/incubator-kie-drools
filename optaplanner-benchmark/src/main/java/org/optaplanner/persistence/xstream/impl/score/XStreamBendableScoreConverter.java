@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.persistence.xstream;
+package org.optaplanner.persistence.xstream.impl.score;
 
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 

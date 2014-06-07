@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.persistence.xstream;
+package org.optaplanner.persistence.xstream.impl.score;
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -41,7 +41,7 @@ public class XStreamScoreConverter implements Converter {
             Class<? extends ScoreDefinition> scoreDefinitionClass) {
         if (BendableScore.class.equals(scoreClass)) {
             throw new IllegalArgumentException(XStreamScoreConverter.class + " is not compatible with scoreClass ("
-                    + scoreClass + "), use " + XStreamBendableScoreConverter.class + " instead.");
+                    + scoreClass + "), use " + XStreamBendableScoreConverter.class.getSimpleName() + " instead.");
         }
         try {
             scoreDefinition = scoreDefinitionClass.newInstance();

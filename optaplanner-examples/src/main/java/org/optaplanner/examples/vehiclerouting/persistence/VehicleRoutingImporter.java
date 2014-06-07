@@ -57,7 +57,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
 
     @Override
     public String getInputFileSuffix() {
-        return VehicleRoutingProblemIO.FILE_EXTENSION;
+        return VehicleRoutingFileIO.FILE_EXTENSION;
     }
 
     public TxtInputBuilder createTxtInputBuilder() {

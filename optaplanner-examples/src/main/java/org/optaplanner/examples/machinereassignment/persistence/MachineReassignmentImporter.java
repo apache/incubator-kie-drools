@@ -72,7 +72,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter {
 
     @Override
     public String getInputFileSuffix() {
-        return MachineReassignmentProblemIO.FILE_EXTENSION;
+        return MachineReassignmentFileIO.FILE_EXTENSION;
     }
 
     public TxtInputBuilder createTxtInputBuilder() {

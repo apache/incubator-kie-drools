@@ -40,7 +40,7 @@ public class XStreamXmlSolverFactory extends SolverFactory {
 
     /**
      * Builds the {@link XStream} setup which is used to read/write solver configs and benchmark configs.
-     * It should never be used to read/write {@link Solution} instances. Use XStreamProblemIO for that instead.
+     * It should never be used to read/write {@link Solution} instances. Use XStreamSolutionFileIO for that instead.
      * @return never null.
      */
     public static XStream buildXStream() {

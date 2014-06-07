@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.tsp.persistence;
+package org.optaplanner.examples.machinereassignment.persistence;
 
 import java.io.File;
 
-import org.optaplanner.core.impl.solution.ProblemIO;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.core.api.domain.solution.Solution;
 
-public class TspProblemIO implements ProblemIO {
+public class MachineReassignmentFileIO implements SolutionFileIO {
 
-    public static final String FILE_EXTENSION = "tsp";
+    public static final String FILE_EXTENSION = "txt";
 
-    private TspImporter importer = new TspImporter();
-    private TspExporter exporter = new TspExporter();
+    private MachineReassignmentImporter importer = new MachineReassignmentImporter();
+    private MachineReassignmentExporter exporter = new MachineReassignmentExporter();
 
-    public String getFileExtension() {
+    public String getInputFileExtension() {
+        return FILE_EXTENSION;
+    }
+
+    public String getOutputFileExtension() {
         return FILE_EXTENSION;
     }
 

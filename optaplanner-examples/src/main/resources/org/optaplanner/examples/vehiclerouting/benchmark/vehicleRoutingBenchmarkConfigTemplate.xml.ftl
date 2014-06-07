@@ -6,7 +6,7 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <problemIOClass>org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingProblemIO</problemIOClass>
+      <solutionFileIOClass>org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingFileIO</solutionFileIOClass>
       <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n32-k5.vrp</inputSolutionFile>
       <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n33-k5.vrp</inputSolutionFile>
       <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n33-k6.vrp</inputSolutionFile>

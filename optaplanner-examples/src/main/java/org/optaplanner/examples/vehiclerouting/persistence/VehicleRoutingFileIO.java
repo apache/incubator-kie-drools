@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.machinereassignment.persistence;
+package org.optaplanner.examples.vehiclerouting.persistence;
 
 import java.io.File;
 
-import org.optaplanner.core.impl.solution.ProblemIO;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.core.api.domain.solution.Solution;
 
-public class MachineReassignmentProblemIO implements ProblemIO {
+public class VehicleRoutingFileIO implements SolutionFileIO {
 
-    public static final String FILE_EXTENSION = "txt";
+    public static final String FILE_EXTENSION = "vrp";
 
-    private MachineReassignmentImporter importer = new MachineReassignmentImporter();
-    private MachineReassignmentExporter exporter = new MachineReassignmentExporter();
+    private VehicleRoutingImporter importer = new VehicleRoutingImporter();
 
-    public String getFileExtension() {
+    public String getInputFileExtension() {
+        return FILE_EXTENSION;
+    }
+
+    public String getOutputFileExtension() {
         return FILE_EXTENSION;
     }
 
@@ -37,7 +40,7 @@ public class MachineReassignmentProblemIO implements ProblemIO {
     }
 
     public void write(Solution solution, File outputSolutionFile) {
-        exporter.writeSolution(solution, outputSolutionFile);
+        throw new UnsupportedOperationException();
     }
 
 }

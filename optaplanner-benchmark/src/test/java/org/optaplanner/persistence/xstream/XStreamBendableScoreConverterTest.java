@@ -22,6 +22,7 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.impl.testdata.util.SerializationTestUtils;
+import org.optaplanner.persistence.xstream.impl.score.XStreamBendableScoreConverter;
 
 import static org.junit.Assert.*;
 

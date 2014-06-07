@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.testdata.util.SerializationTestUtils;
+import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 import static org.junit.Assert.*;
 

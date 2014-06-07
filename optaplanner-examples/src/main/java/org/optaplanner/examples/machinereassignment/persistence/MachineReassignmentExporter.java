@@ -37,7 +37,7 @@ public class MachineReassignmentExporter extends AbstractTxtSolutionExporter {
 
     @Override
     public String getOutputFileSuffix() {
-        return MachineReassignmentProblemIO.FILE_EXTENSION;
+        return MachineReassignmentFileIO.FILE_EXTENSION;
     }
 
     public TxtOutputBuilder createTxtOutputBuilder() {

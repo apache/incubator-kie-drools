@@ -6,7 +6,7 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <problemIOClass>org.optaplanner.examples.tsp.persistence.TspProblemIO</problemIOClass>
+      <solutionFileIOClass>org.optaplanner.examples.tsp.persistence.TspFileIO</solutionFileIOClass>
       <inputSolutionFile>data/tsp/import/dj38.tsp</inputSolutionFile>
       <inputSolutionFile>data/tsp/import/europe40.tsp</inputSolutionFile>
       <inputSolutionFile>data/tsp/import/lu980.tsp</inputSolutionFile>

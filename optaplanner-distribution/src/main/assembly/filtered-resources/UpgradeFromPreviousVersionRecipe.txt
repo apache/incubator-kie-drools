@@ -4426,16 +4426,62 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
 [MAJOR] Multiple <planningEntityClass> elements now need to be ordered by superclasses (and superinterfaces) first,
 instead of superclasses (and superinterfaces) last.
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
-    <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer</planningEntityClass>
-    <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</planningEntityClass>
-    <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.Standstill</planningEntityClass>
+    <planningEntityClass>...TimeWindowedCustomer</planningEntityClass>
+    <planningEntityClass>...Customer</planningEntityClass>
+    <planningEntityClass>...Standstill</planningEntityClass>
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
-    <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.Standstill</planningEntityClass>
-    <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</planningEntityClass>
-    <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer</planningEntityClass>
+    <planningEntityClass>...Standstill</planningEntityClass>
+    <planningEntityClass>...Customer</planningEntityClass>
+    <planningEntityClass>...TimeWindowedCustomer</planningEntityClass>
 
 [MAJOR] The element <planningEntityClass> has been renamed to <entityClass>.
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
     <planningEntityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</planningEntityClass>
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
     <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
+
+[MAJOR] XStreamScoreConverter and XStreamBendableScoreConverter have moved package.
+Before in *.java:
+    import org.optaplanner.persistence.xstream.XStreamScoreConverter;
+After in *.java:
+    import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
+Before in *.java:
+    import org.optaplanner.persistence.xstream.XStreamBendableScoreConverter;
+After in *.java:
+    import org.optaplanner.persistence.xstream.impl.score.XStreamBendableScoreConverter;
+
+[MAJOR] ProblemIO has been renamed to SolutionFileIO and moved package (into the public API).
+Before in *.java:
+    import org.optaplanner.core.impl.solution.ProblemIO;
+    public class MachineReassignmentFileIO implements ProblemIO {
+        ...
+    }
+After in *.java:
+    import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+    public class MachineReassignmentFileIO implements SolutionFileIO {
+        ...
+    }
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <problemBenchmarks>
+      <problemIOClass>...MachineReassignmentProblemIO</problemIOClass>
+      ...
+    </problemBenchmarks>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <problemBenchmarks>
+      <solutionFileIOClass>...MachineReassignmentFileIO</solutionFileIOClass>
+      ...
+    </problemBenchmarks>
+
+[MAJOR] The method SolutionFileIO.getFileExtension() has been split up in getInputFileExtension() and getOutputFileExtension();
+It's still highly recommended to use the same input and output file extension.
+Before in *.java:
+    public String getFileExtension() {
+        return FILE_EXTENSION;
+    }
+After in *.java:
+    public String getInputFileExtension() {
+        return FILE_EXTENSION;
+    }
+    public String getOutputFileExtension() {
+        return FILE_EXTENSION;
+    }

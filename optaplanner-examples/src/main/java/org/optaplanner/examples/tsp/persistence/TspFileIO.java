@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.vehiclerouting.persistence;
+package org.optaplanner.examples.tsp.persistence;
 
 import java.io.File;
 
-import org.optaplanner.core.impl.solution.ProblemIO;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.core.api.domain.solution.Solution;
 
-public class VehicleRoutingProblemIO implements ProblemIO {
+public class TspFileIO implements SolutionFileIO {
 
-    public static final String FILE_EXTENSION = "vrp";
+    private TspImporter importer = new TspImporter();
+    private TspExporter exporter = new TspExporter();
 
-    private VehicleRoutingImporter importer = new VehicleRoutingImporter();
+    public String getInputFileExtension() {
+        return TspImporter.INPUT_FILE_SUFFIX;
+    }
 
-    public String getFileExtension() {
-        return FILE_EXTENSION;
+    public String getOutputFileExtension() {
+        return TspExporter.OUTPUT_FILE_SUFFIX;
     }
 
     public Solution read(File inputSolutionFile) {
@@ -36,7 +39,7 @@ public class VehicleRoutingProblemIO implements ProblemIO {
     }
 
     public void write(Solution solution, File outputSolutionFile) {
-        throw new UnsupportedOperationException();
+        exporter.writeSolution(solution, outputSolutionFile);
     }
 
 }

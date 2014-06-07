@@ -26,7 +26,7 @@ import org.optaplanner.examples.tsp.domain.Visit;
 
 public class TspExporter extends AbstractTxtSolutionExporter {
 
-    private static final String OUTPUT_FILE_SUFFIX = "tour";
+    public static final String OUTPUT_FILE_SUFFIX = "tour";
 
     public static void main(String[] args) {
         new TspExporter().convertAll();
