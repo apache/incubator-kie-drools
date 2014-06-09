@@ -95,6 +95,10 @@ public class DependencyDescriptor {
                version.indexOf('[') >= 0 || version.indexOf(']') >= 0;
     }
 
+    public boolean isSameArtifact(ReleaseId releaseId) {
+        return groupId.equals(releaseId.getGroupId()) && artifactId.equals(releaseId.getArtifactId());
+    }
+
     public boolean isSnapshot() {
         return isSnapshot(version);
     }
