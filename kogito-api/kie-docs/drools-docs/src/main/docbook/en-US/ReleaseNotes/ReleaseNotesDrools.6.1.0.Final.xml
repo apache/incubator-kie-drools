@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section version="5.0" xml:base="../../" xml:id="drools.ReleaseNotesDrools.6.0.0"
-         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xmlns="http://docbook.org/ns/docbook"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
-         xmlns:ns="http://docbook.org/ns/docbook">
+<section version="5.0" 
+  xml:base="../../" 
+  xml:id="drools.ReleaseNotesDrools.6.1.0" 
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd" 
+  xmlns="http://docbook.org/ns/docbook" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+  xmlns:xlink="http://www.w3.org/1999/xlink" 
+  xmlns:xi="http://www.w3.org/2001/XInclude" 
+  xmlns:ns="http://docbook.org/ns/docbook">
 
   <title>What is New and Noteworthy in Drools 6.1.0</title>
       
@@ -46,28 +50,7 @@
       </itemizedlist>
     </para>
   </section>
-
-  <section>
-    <title>Data Modeler - round trip and source code preservation</title>
-    <para>Full round trip between Data modeler and Java source code is now supported. No matter where the Java code was
-        generated (e.g. Eclipse, Data modeller), data modeler will only update the necessary code blocks to maintain the
-        model updated.</para>
-  </section>
-
-  <section>
-      <title>Data Modeler - improved annotations</title>
-      <para>New annotations @TypeSafe, @ClassReactive, @PropertyReactive, @Timestamp, @Duration and @Expires were added
-        in order enrich current Drools annotations manged by the data modeler.</para>
-  </section>
-
-  <section>
-    <title>Asset Oracle - cross referencing</title>
-    <para>foo bar</para>
-  </section>
-  <section>
-    <title>General UI enhancements</title>
-    <para>foo bar</para>
-  </section>  
+  
 </section>
 
 
