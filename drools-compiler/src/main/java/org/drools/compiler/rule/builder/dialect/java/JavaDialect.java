@@ -426,6 +426,7 @@ public class JavaDialect
 
         // We've compiled everthing, so clear it for the next set of additions
         this.generatedClassList.clear();
+        this.errorHandlers.clear();
     }
 
     /**
