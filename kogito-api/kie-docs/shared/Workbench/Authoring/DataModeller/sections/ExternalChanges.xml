@@ -7,23 +7,24 @@
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>External changes to models</title>
+  <title>Roundtrip and concurrency</title>
 
-  <para>It is possible to modify a project's assets externally, i.e. accessing
-  them directly through the project's repository. While NOT a recommended
-  practice, it is important to be aware of the implications this
-  entails.</para>
+  <para>
+  Current version implements roundtrip and code preservation between Data modeler and Java source code.
+  No matter where the Java code was generated (e.g. Eclipse, Data modeller), the data modeler will only
+  create/delete/update the necessary code elements to maintain the model updated, i.e, fields, getter/setters,
+  constructors, equals method and hashCode method. Also whatever Type or Field annotation not managed by the
+  Data Modeler will be preserved when the Java sources are updated by the Data modeler.
+  </para>
 
-  <caution>
-    <para>Performing changes to the data model outside of the context of the
-    application is NOT recommended, and could lead to loss of
-    information!</para>
-  </caution>
+  <para>
+  Aside from code preservation, like in the other workbench editors, concurrent modification scenarios are still
+  possible. Common scenarios are when two different users are updating the model for the same project, e.g. using the
+  data modeler or executing a 'git push command' that modifies project sources.
+  </para>
 
   <para>From an application context's perspective, we can basically identify
-  two different scenarios:</para>
-
-  <para/>
+  two different main scenarios:</para>
 
   <section>
     <title>No changes have been undertaken through the application</title>
@@ -97,8 +98,8 @@
     application context.</para>
 
     <para>In this alternative scenario, immediately after the external user
-    commits his changes to the asset repository, a warning is issued to the
-    application user:</para>
+    commits his changes to the asset repository (or e.g. saves the model with the data modeler in a different session),
+    a warning is issued to the application user:</para>
 
     <figure>
       <title>External changes warning</title>

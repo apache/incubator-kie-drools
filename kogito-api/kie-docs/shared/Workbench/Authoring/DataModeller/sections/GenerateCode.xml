@@ -61,8 +61,8 @@
     <listitem>
       <para>The entity's label and description properties will translate into
         the Java annotations
-        "@org.kie.workbench.common.services.datamodeller.annotations.Label" and
-        "@org.kie.workbench.common.services.datamodeller.annotations.Description",
+        "@org.kie.api.definition.type.Label" and
+        "@org.kie.api.definition.type.Description",
         respectively. These annotations are merely a way of preserving the
         associated information, and as yet are not processed any further.
       </para>
@@ -76,6 +76,50 @@
         sense that it marks this Java class as a Drools Event Fact-Type.
       </para>
     </listitem>
+
+    <listitem>
+      <para>The entity's type safe property (if present) will be translated into
+        the "@org.kie.api.definition.type.TypeSafe Java annotation.
+        (see Drools)
+      </para>
+    </listitem>
+
+    <listitem>
+      <para>The entity's class reactive property (if present) will be translated into
+        the "@org.kie.api.definition.type.ClassReactive Java annotation.
+        (see Drools)
+      </para>
+    </listitem>
+
+    <listitem>
+      <para>The entity's property reactive property (if present) will be translated into
+        the "@org.kie.api.definition.type.PropertyReactive Java annotation.
+        (see Drools)
+      </para>
+    </listitem>
+
+    <listitem>
+      <para>The entity's timestamp property (if present) will be translated into
+        the "@org.kie.api.definition.type.Timestamp Java annotation.
+        (see Drools)
+      </para>
+    </listitem>
+
+    <listitem>
+      <para>The entity's duration property (if present) will be translated into
+        the "@org.kie.api.definition.type.Duration Java annotation.
+        (see Drools)
+      </para>
+    </listitem>
+
+    <listitem>
+      <para>The entity's expires property (if present) will be translated into
+        the "@org.kie.api.definition.type.Expires Java annotation.
+        (see Drools)
+      </para>
+    </listitem>
+
+
   </itemizedlist>
 
   <para/>
@@ -147,14 +191,6 @@
       </para>
     </listitem>
 
-    <listitem>
-      <para>The entity's role property (if present) will be translated into
-        the "@org.kie.api.definition.type.Role" Java annotation, that
-        <emphasis>IS</emphasis>
-        interpreted by the application platform, in the
-        sense that it marks this Java class as a Drools Event Fact-Type.
-      </para>
-    </listitem>
   </itemizedlist>
 
   <para/>
@@ -189,34 +225,34 @@
     */
     @org.kie.api.definition.type.Role(value =
     org.kie.api.definition.type.Role.Type.EVENT)
-    @org.kie.workbench.common.services.datamodeller.annotations.Label(value =
+    @org.kie.api.definition.type.Label(value =
     "Purchase Order")
-    @org.kie.workbench.common.services.datamodeller.annotations.Description(value =
+    @org.kie.api.definition.type.Description(value =
     "This entity models the client purchase orders.")
     public class PurchaseOrder extends org.jbpm.examples.purchases.parent
     implements java.io.Serializable {
 
     static final long serialVersionUID = 1L;
 
-    @org.kie.workbench.common.services.datamodeller.annotations.Label(value =
+    @org.kie.api.definition.type.Label(value =
     "Description")
     @org.kie.api.definition.type.Position(value = 0)
-    @org.kie.workbench.common.services.datamodeller.annotations.Description(value =
+    @org.kie.api.definition.type.Description(value =
     "A description for this purchase order.")
     private java.lang.String description;
 
-    @org.kie.workbench.common.services.datamodeller.annotations.Label(value =
+    @org.kie.api.definition.type.Label(value =
     "Lines")
     @org.kie.api.definition.type.Position(value = 1)
-    @org.kie.workbench.common.services.datamodeller.annotations.Description(value =
+    @org.kie.api.definition.type.Description(value =
     "The purchase order items (collection of Purchase Order Line sub-entities).")
     @org.kie.api.definition.type.Key
     private java.util.List&lt;org.jbpm.examples.purchases.PurchaseOrderLine&gt; lines;
 
-    @org.kie.workbench.common.services.datamodeller.annotations.Label(value =
+    @org.kie.api.definition.type.annotations.Label(value =
     "Header")
     @org.kie.api.definition.type.Position(value = 2)
-    @org.kie.workbench.common.services.datamodeller.annotations.Description(value =
+    @org.kie.api.definition.type.Description(value =
     "The purchase order header (Purchase Order Header sub-entity).")
     @org.kie.api.definition.type.Key
     private org.jbpm.examples.purchases.PurchaseOrderHeader header;

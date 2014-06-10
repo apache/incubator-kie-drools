@@ -44,16 +44,58 @@
       </listitem>
 
       <listitem>
-        <para>Role: this property allows the assignment of a Role to the
-          entity. The Role is a concept inherited from Drools Fusion, which for
-          the time being only allows one possible value ("Event"). An entity
-          that is designated with this value will be treated by the rules engine
-          as an event type Fact (See Drools Fusion for more information on this
-          matter).
+        <para>TypeSafe: this property allows to enable/disable the type safe behaviour for current type.
+          By default all type declarations are compiled with type safety enabled. (See Drools for more information
+          on this matter).
         </para>
+      </listitem>
 
+      <listitem>
+        <para>ClassReactive: this property allows to mark this type to be treated as "Class Reactive" by the Drools engine.
+          (See Drools for more information on this matter).
+        </para>
+      </listitem>
+
+      <listitem>
+        <para>PropertyReactive: this property allows to mark this type to be treated as "Property Reactive" by the Drools engine.
+          (See Drools for more information on this matter).
+        </para>
+      </listitem>
+
+      <listitem>
+        <para>Role: this property allows to configure how the Drools engine should handle instances of this type: either as
+          regular facts or as events. By default all types are handled as a regular fact, so for the time being the
+          only value that can be set is "Event" to declare that this type should be handled as an event.
+          (See Drools Fusion for more information on this matter).
+        </para>
+      </listitem>
+
+      <listitem>
+        <para>Timestamp: this property allows to configure the "timestamp" for an event, by selecting one of his attributes.
+          If set the engine will use the timestamp from the given attribute instead of reading it from the Session Clock.
+          If not, the engine will automatically assign a timestamp to the event.
+          (See Drools Fusion for more information on this matter).
+        </para>
+      </listitem>
+
+      <listitem>
+        <para>Duration: this property allows to configure the "duration" for an event, by selecting one of his attributes.
+          If set the engine will use the duration from the given attribute instead of using the default event duration = 0.
+          (See Drools Fusion for more information on this matter).
+        </para>
+      </listitem>
+
+
+      <listitem>
+        <para>Expires: this property allows to configure the "time offset" for an event expiration.
+          If set, this value must be a temporal interval in the form: [#d][#h][#m][#s][#[ms]] Where [ ] means an
+          optional parameter and # means a numeric value.
+          e.g.: 1d2h, means one day and two hours.
+          (See Drools Fusion for more information on this matter).
+        </para>
         <para/>
       </listitem>
+
     </itemizedlist>
   </section>
 
