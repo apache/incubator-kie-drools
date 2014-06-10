@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Group;
+import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
@@ -45,8 +46,10 @@ import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.AccessType;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.InternalComment;
+import org.kie.internal.task.api.model.InternalI18NText;
 import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 import org.kie.internal.task.api.model.InternalPeopleAssignments;
+import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
 
 public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
@@ -2318,5 +2321,42 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         } catch (RuntimeException e) {
         	assertTrue(e.getMessage().endsWith("please check that there is no group and user with same id"));
         }
+    }
+
+    @Test
+    public void testLongDescription() {
+        // BZ-1107473
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ],businessAdministrators = [ new User('Administrator') ], }),";
+        str += "name = 'This is my task name' })";
+
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 1000; i++) {
+            sb.append("a");
+        }
+        String comment = sb.toString();
+
+        // NOTE: AbstractHTWorkItemHandler stores "Comment" parameter as 'Description'
+        List<I18NText> descriptions = new ArrayList<I18NText>();
+        I18NText descText = TaskModelProvider.getFactory().newI18NText();
+        ((InternalI18NText) descText).setLanguage("en-UK");
+        ((InternalI18NText) descText).setText(comment);
+        descriptions.add(descText);
+        ((InternalTask)task).setDescriptions(descriptions);
+
+        taskService.addTask(task, new HashMap<String, Object>()); // Fails if shortText is longer than 255
+
+        long taskId = task.getId();
+
+        Task resultTask = taskService.getTaskById(taskId);
+        List<I18NText> resultDescriptions = resultTask.getDescriptions();
+
+        InternalI18NText resultDescription = (InternalI18NText)resultDescriptions.get(0);
+
+        assertEquals(1000, resultDescription.getText().length()); // This is text
+
+        // 6.1.x no longer uses shortText in API and Taskorm.xml so no assert.
     }
 }

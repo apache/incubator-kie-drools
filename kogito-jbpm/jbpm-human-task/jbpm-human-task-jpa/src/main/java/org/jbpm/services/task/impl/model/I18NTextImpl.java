@@ -83,7 +83,7 @@ public class I18NTextImpl implements InternalI18NText {
                     String text) {
         this.language = language;
         if (text != null && text.length() > 256) {
-            this.shortText = text.substring(0, 256);
+            this.shortText = text.substring(0, 255);
         } else {
             this.shortText = text;
         }
@@ -112,7 +112,7 @@ public class I18NTextImpl implements InternalI18NText {
 
     public void setText(String text) {
         if (text != null && text.length() > 256) {
-            this.shortText = text.substring(0, 256);
+            this.shortText = text.substring(0, 255);
         } else {
             this.shortText = text;
         }
