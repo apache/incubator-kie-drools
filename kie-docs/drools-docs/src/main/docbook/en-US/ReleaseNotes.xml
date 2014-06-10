@@ -11,4 +11,7 @@
   <xi:include href="../../../../../shared/Workbench/ReleaseNotes/ReleaseNotesWorkbench.6.0.0.Final.xml" />
   <xi:include href="../../../../../shared/integration/ReleaseNotes/ReleaseNotesIntegration.6.0.0.Final.xml" />
 
+  <xi:include href="ReleaseNotes/ReleaseNotesDrools.6.1.0.Final.xml" />  
+  <xi:include href="../../../../../shared/Workbench/ReleaseNotes/ReleaseNotesWorkbench.6.1.0.Final.xml" />
+       
 </chapter>
