@@ -47,19 +47,19 @@
 
       <orderedlist>
         <listitem>
-          <para>A 'primitive' type: these include most of the object
+          <para>A 'primitive java object' type: these include most of the object
             equivalents of the standard Java primitive types, such as Boolean,
             Short, Float, etc, as well as String, Date, BigDecimal and
             BigInteger.
           </para>
 
           <figure>
-            <title>Primitive field types</title>
+            <title>Primitive object field types</title>
 
             <screenshot>
               <mediaobject>
                 <imageobject>
-                  <imagedata fileref="images/Workbench/Authoring/DataModeller/types_primitive.jpg"/>
+                  <imagedata fileref="images/Workbench/Authoring/DataModeller/types_primitive_object.jpg"/>
                 </imageobject>
               </mediaobject>
             </screenshot>
@@ -101,6 +101,29 @@
 
           <para/>
         </listitem>
+
+        <listitem>
+          <para>A 'primitive java' type: these include java primitive types byte, short, int, long, float, double, char
+            and boolean.
+          </para>
+
+          <figure>
+            <title>Primitive field types</title>
+
+            <screenshot>
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="images/Workbench/Authoring/DataModeller/types_primitive.jpg"/>
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
+
+          <para/>
+
+          <para/>
+        </listitem>
+
       </orderedlist>
     </listitem>
   </itemizedlist>
