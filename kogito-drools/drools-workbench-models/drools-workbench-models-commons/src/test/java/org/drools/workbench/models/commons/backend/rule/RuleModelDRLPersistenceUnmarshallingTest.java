@@ -4851,6 +4851,76 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       value2.getType() );
     }
 
+    @Test
+    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1105043")
+    public void testLiteralStrFieldNames() throws Exception {
+        //The issue is fields that contain the "str" operator literal value
+        String drl = "rule \"rule1\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    Room( decoration == \"tapestry\" , strangeField == 11 )\n" +
+                "  then\n" +
+                "end";
+
+        addModelField( "Room",
+                       "decoration",
+                       "java.lang.String",
+                       DataType.TYPE_STRING );
+        addModelField( "Room",
+                       "strangeField",
+                       "java.lang.Integer",
+                       DataType.TYPE_NUMERIC_INTEGER );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
+
+        assertNotNull( m );
+        assertEquals( "rule1",
+                      m.name );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals( "Room",
+                      fp.getFactType() );
+
+        assertEquals( 2,
+                      fp.getNumberOfConstraints() );
+        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+
+        SingleFieldConstraint sfp0 = (SingleFieldConstraint) fp.getConstraint( 0 );
+        assertEquals( "Room",
+                      sfp0.getFactType() );
+        assertEquals( "decoration",
+                      sfp0.getFieldName() );
+        assertEquals( "==",
+                      sfp0.getOperator() );
+        assertEquals( "tapestry",
+                      sfp0.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      sfp0.getConstraintValueType() );
+        assertEquals( DataType.TYPE_STRING,
+                      sfp0.getFieldType() );
+
+        SingleFieldConstraint sfp1 = (SingleFieldConstraint) fp.getConstraint( 1 );
+        assertEquals( "Room",
+                      sfp1.getFactType() );
+        assertEquals( "strangeField",
+                      sfp1.getFieldName() );
+        assertEquals( "==",
+                      sfp1.getOperator() );
+        assertEquals( "11",
+                      sfp1.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      sfp1.getConstraintValueType() );
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      sfp1.getFieldType() );
+    }
+
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
         final String cleanExpected = expected.replaceAll( "\\s+",
