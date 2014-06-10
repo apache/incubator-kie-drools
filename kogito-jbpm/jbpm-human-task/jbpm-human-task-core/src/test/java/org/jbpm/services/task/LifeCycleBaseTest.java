@@ -53,6 +53,42 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
     
     @Test
+    /*
+    * Related to BZ-1105868 
+    */
+    public void testWithNoTaskAndEmptyLists(){
+      
+      List<TaskSummary> tasksAssignedAsPotentialOwner = taskService.getTasksAssignedAsPotentialOwner("nouser", new ArrayList<String>());
+      assertTrue(tasksAssignedAsPotentialOwner.isEmpty());
+      
+      List<TaskSummary> tasksAssignedAsPotentialOwner2 = taskService.getTasksAssignedAsPotentialOwner("nouser", (List<String>)null);
+      assertTrue(tasksAssignedAsPotentialOwner2.isEmpty());
+      
+      List<TaskSummary> tasksAssignedAsPotentialOwner3 = taskService.getTasksAssignedAsPotentialOwner("", (List<String>)null);
+      assertTrue(tasksAssignedAsPotentialOwner3.isEmpty());
+      
+      List<TaskSummary> tasksAssignedAsPotentialOwner4 = taskService.getTasksAssignedAsPotentialOwner(null,(List<String>) null);
+      assertTrue(tasksAssignedAsPotentialOwner4.isEmpty());
+      
+      List<TaskSummary> tasksAssignedAsPotentialOwner5 = taskService.getTasksAssignedAsPotentialOwner("salaboy", (List<String>)null);
+      assertTrue(tasksAssignedAsPotentialOwner5.isEmpty());
+      
+      List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwnerByStatusByGroup("Bobba Fet", null, null);
+      assertTrue(tasks.isEmpty());
+      
+      List<TaskSummary> tasks2 = taskService.getTasksAssignedAsPotentialOwnerByStatusByGroup("Bobba Fet", new ArrayList<String>(), null);
+      assertTrue(tasks2.isEmpty());
+      
+      List<TaskSummary> tasks3 = taskService.getTasksAssignedAsPotentialOwnerByStatusByGroup("Bobba Fet", new ArrayList<String>(), new ArrayList<Status>());
+      assertTrue(tasks3.isEmpty());
+      
+      List<TaskSummary> tasks4 = taskService.getTasksAssignedAsPotentialOwnerByStatusByGroup("admin", new ArrayList<String>(), new ArrayList<Status>());
+      assertTrue(tasks4.isEmpty());
+              
+      
+    }
+  
+    @Test
     public void testNewTaskWithNoPotentialOwners() {
 
         // One potential owner, should go straight to state Reserved
@@ -95,6 +131,8 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         
         taskService.getTasksAssignedAsPotentialOwner(potOwner, "en-UK");
     }
+    
+    
 
     @Test
     public void testNewTaskWithContent() {
