@@ -49,8 +49,17 @@
 
   <section>
     <title>Data Modeler - round trip and source code preservation</title>
-    <para>foo bar.</para>
+    <para>Full round trip between Data modeler and Java source code is now supported. No matter where the Java code was
+        generated (e.g. Eclipse, Data modeller), data modeler will only update the necessary code blocks to maintain the
+        model updated.</para>
   </section>
+
+  <section>
+      <title>Data Modeler - improved annotations</title>
+      <para>New annotations @TypeSafe, @ClassReactive, @PropertyReactive, @Timestamp, @Duration and @Expires were added
+        in order enrich current Drools annotations manged by the data modeler.</para>
+  </section>
+
   <section>
     <title>Asset Oracle - cross referencing</title>
     <para>foo bar</para>
@@ -60,3 +69,6 @@
     <para>foo bar</para>
   </section>  
 </section>
+
+
+
