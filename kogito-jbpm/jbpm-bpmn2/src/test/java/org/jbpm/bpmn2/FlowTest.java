@@ -1033,6 +1033,78 @@ public class FlowTest extends JbpmBpmn2TestCase {
         }
 
     }
+    
+    @Test
+    public void testInclusiveJoinWithLoopAndHumanTasks() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveGatewayWithHumanTasksProcess.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<String, Integer>(); 
+        ksession.addEventListener(new DefaultProcessEventListener(){
+
+            @Override
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {                 
+                logger.info("{} {}", event.getNodeInstance().getNodeName(), ((NodeInstanceImpl) event.getNodeInstance()).getLevel());
+                Integer value = nodeInstanceExecutionCounter.get(event.getNodeInstance().getNodeName());
+                if (value == null) {
+                    value = new Integer(0);
+                }
+                
+                value++;
+                nodeInstanceExecutionCounter.put(event.getNodeInstance().getNodeName(), value);
+            }
+
+            
+        });
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("firstXor", true);   
+        params.put("secondXor", true); 
+        params.put("thirdXor", true);
+        ProcessInstance processInstance = ksession.startProcess("InclusiveWithAdvancedLoop", params);
+        // simulate completion of first task
+        assertProcessInstanceActive(processInstance);
+        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        
+        assertProcessInstanceActive(processInstance);
+        List<WorkItem> workItems = handler.getWorkItems();
+        assertNotNull(workItems);
+        assertEquals(2, workItems.size());
+        
+        WorkItem remainingWork = null;
+        for (WorkItem wi : workItems) {
+            assertProcessInstanceActive(processInstance);
+            // complete second task that will trigger converging OR gateway
+            if(wi.getParameter("NodeName").equals("HT Form2")) {
+            	ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+            } else {
+            	remainingWork = wi;
+            }
+        }
+        
+        assertProcessInstanceActive(processInstance);
+        ksession.getWorkItemManager().completeWorkItem(remainingWork.getId(), null);
+        
+        assertProcessInstanceActive(processInstance);
+        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        
+        assertProcessInstanceCompleted(processInstance);
+        assertEquals(13, nodeInstanceExecutionCounter.size());
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("Start"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("HT Form1"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("and1"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("HT Form2"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("xor1"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("xor2"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("HT Form3"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("Koniec"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("xor 3"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("HT Form4"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("xor4"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("Koniec2"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("or1"));
+    }
 
     @Test
     public void testMultiInstanceLoopCharacteristicsProcess() throws Exception {

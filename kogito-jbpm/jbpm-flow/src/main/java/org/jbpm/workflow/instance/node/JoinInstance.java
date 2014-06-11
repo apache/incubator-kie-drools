@@ -197,25 +197,32 @@ public class JoinInstance extends NodeInstanceImpl {
 
 
     private boolean checkNodes(Set<Long> vistedNodes, Node startAt, Node currentNode, Node lookFor) {
+    	
         List<Connection> connections = currentNode.getOutgoingConnections(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
         // special handling for XOR split as it usually is used for arbitrary loops
-        if (currentNode instanceof Split && ((Split) currentNode).getType() == Split.TYPE_XOR) {            
+        if (currentNode instanceof Split && ((Split) currentNode).getType() == Split.TYPE_XOR) {
+        	if (vistedNodes.contains(startAt.getId())) {
+        		return false;
+        	}
             for (Connection conn : connections) {
-                Set<Long> xorCopy = new HashSet<Long>();
+                Set<Long> xorCopy = new HashSet<Long>(vistedNodes);
+                
                 Node nextNode = conn.getTo();
                 if (nextNode == null) {
                     continue;
                 } else {
                     xorCopy.add(nextNode.getId());
                     if (nextNode.getId() != lookFor.getId()) {
+          
                         checkNodes(xorCopy, currentNode, nextNode, lookFor);
                     }
                 }  
                 
-                if (xorCopy.contains(lookFor.getId()) && !xorCopy.contains(currentNode.getId())) {
+                if (xorCopy.contains(lookFor.getId())) {
                     vistedNodes.addAll(xorCopy);
                     return true;
                 }
+                
             }
         } else {
             for (Connection conn : connections) {
