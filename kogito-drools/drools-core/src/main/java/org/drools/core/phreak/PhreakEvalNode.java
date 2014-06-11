@@ -16,6 +16,9 @@ import org.drools.core.rule.EvalCondition;
 * To change this template use File | Settings | File Templates.
 */
 public class PhreakEvalNode {
+
+    private static final String EVAL_LEFT_TUPLE_DELETED = "EVAL_LEFT_TUPLE_DELETED";
+
     public void doNode(EvalConditionNode evalNode,
                        EvalMemory em,
                        LeftTupleSink sink,
@@ -77,12 +80,14 @@ public class PhreakEvalNode {
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            boolean wasPropagated = leftTuple.getFirstChild() != null;
+            boolean wasPropagated = leftTuple.getFirstChild() != null && leftTuple.getObject() != EVAL_LEFT_TUPLE_DELETED;
 
             boolean allowed = condition.isAllowed(leftTuple,
                                                   wm,
                                                   em.context);
             if (allowed) {
+                leftTuple.setObject(null);
+
                 if (wasPropagated) {
                     // update
                     LeftTuple childLeftTuple = leftTuple.getFirstChild();
@@ -107,6 +112,7 @@ public class PhreakEvalNode {
             } else {
                 if (wasPropagated) {
                     // retract
+                    leftTuple.setObject(EVAL_LEFT_TUPLE_DELETED);
 
                     LeftTuple childLeftTuple = leftTuple.getFirstChild();
                     childLeftTuple.setPropagationContext( leftTuple.getPropagationContext());

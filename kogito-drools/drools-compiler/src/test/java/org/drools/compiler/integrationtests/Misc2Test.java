@@ -6035,4 +6035,120 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals(1, d.getValue());
     }
+
+    public static class Reading {
+        private final String type;
+        private final int value;
+
+        public Reading(String type, int value) {
+            this.type = type;
+            this.value = value;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
+
+    public static class Alarm {
+        private String type;
+        private String level;
+
+        public String getLevel() {
+            return level;
+        }
+
+        public void setLevel(String level) {
+            this.level = level;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+    }
+
+    @Test
+    public void testDeletedEvalLeftTuple() throws Exception {
+        // BZ-1106300
+        String drl =
+                "import " + Reading.class.getCanonicalName() + ";\n" +
+                "import " + Alarm.class.getCanonicalName() + ";\n" +
+                "rule Normal when\n" +
+                "    Number( intValue <= 5) from accumulate( reading : Reading(), average( reading.getValue() ) )\n" +
+                "    alarm : Alarm ()\n" +
+                "then\n" +
+                "    System.out.println(kcontext.getRule().getName());" +
+                "    delete( alarm );\n" +
+                "end\n" +
+                "    \n" +
+                "rule Abnormal when\n" +
+                "    Number( intValue > 5, intValue <= 10 ) from accumulate( reading : Reading(), average( reading.getValue() ) )\n" +
+                "    not Alarm ()\n" +
+                "then\n" +
+                "    System.out.println(kcontext.getRule().getName());" +
+                "    Alarm alarm = new Alarm();\n" +
+                "    alarm.setType(\"t1\");\n" +
+                "    alarm.setLevel( \"ABNORMAL\" );\n" +
+                "    insert(alarm);\n" +
+                "end\n" +
+                "\n" +
+                "rule Severe when\n" +
+                "    Number( intValue > 10) from accumulate( reading : Reading(), average( reading.getValue() ) )\n" +
+                "    not Alarm ()\n" +
+                "then\n" +
+                "    System.out.println(kcontext.getRule().getName());" +
+                "    Alarm alarm = new Alarm();\n" +
+                "    alarm.setType(\"t1\");\n" +
+                "    alarm.setLevel( \"SEVERE\" );\n" +
+                "    insert(alarm);\n" +
+                "end\n" +
+                "\n" +
+                "rule AbnormalToSevere when\n" +
+                "    Number( intValue > 10) from accumulate( reading : Reading(), average( reading.getValue() ) )\n" +
+                "    alarm : Alarm (level == \"ABNORMAL\")\n" +
+                "then\n" +
+                "    System.out.println(kcontext.getRule().getName());" +
+                "    alarm.setLevel( \"SEVERE\" );\n" +
+                "    update(alarm);\n" +
+                "end\n" +
+                "\n" +
+                "rule SevereToAbnormal when\n" +
+                "    $type : String()\n" +
+                "    accumulate( reading : Reading( type == $type ), $avg : average( reading.getValue() ) )\n" +
+                "    eval( $avg.intValue() > 5 && $avg.intValue() <= 10 )\n" +
+                "    alarm : Alarm (type == $type, level == \"SEVERE\")\n" +
+                "then\n" +
+                "    System.out.println(kcontext.getRule().getName());" +
+                "    alarm.setLevel( \"ABNORMAL\" );\n" +
+                "    update(alarm);\n" +
+                "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession ksession = helper.build().newKieSession();
+
+        ksession.insert("t1");
+
+        ksession.insert(new Reading("t1", 12));
+        ksession.fireAllRules();
+        ksession.insert(new Reading("t1", 0));
+        ksession.fireAllRules();
+        ksession.insert(new Reading("t1", 0));
+        ksession.fireAllRules();
+
+        ksession.insert(new Reading("t1", 16));
+        ksession.fireAllRules();
+        ksession.insert(new Reading("t1", 32));
+        ksession.fireAllRules();
+        ksession.insert(new Reading("t1", -6));
+        ksession.fireAllRules();
+    }
 }
