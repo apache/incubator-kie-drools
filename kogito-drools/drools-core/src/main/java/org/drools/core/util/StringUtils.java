@@ -987,12 +987,12 @@ public class StringUtils {
                     case '(':
                     case '[':
                     case '{':
-                        nestedParam++;
+                        if (!isQuoted) nestedParam++;
                         break;
                     case ')':
                     case ']':
                     case '}':
-                        nestedParam--;
+                        if (!isQuoted) nestedParam--;
                         break;
                     case '"':
                     case '\'':
