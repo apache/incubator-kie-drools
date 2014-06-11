@@ -2207,13 +2207,18 @@ public class RuleModelDRLPersistenceImpl
     private static String findOperator( String expr ) {
         final Set<String> potentialOperators = new HashSet<String>();
         for ( Operator op : Operator.getAllOperators() ) {
+            String opString = op.getOperatorString();
             if ( op.isNegated() ) {
-                if ( expr.contains( " not " + op.getOperatorString() ) ) {
-                    return "not " + op.getOperatorString();
+                if ( expr.contains( " not " + opString ) ) {
+                    return "not " + opString;
                 }
             }
-            if ( expr.contains( op.getOperatorString() ) ) {
-                potentialOperators.add( op.getOperatorString() );
+            int opPos = expr.indexOf(opString);
+            if ( opPos >= 0 && !isInQuote(expr, opPos) &&
+                 !(Character.isLetter(opString.charAt(0)) &&
+                   (expr.length() == opPos + opString.length() || Character.isLetter(expr.charAt(opPos + opString.length())) ||
+                    (opPos > 0 && Character.isLetter(expr.charAt(opPos-1))))) ) {
+                potentialOperators.add( opString );
             }
         }
         String operator = "";
@@ -2235,6 +2240,16 @@ public class RuleModelDRLPersistenceImpl
             return "in";
         }
         return null;
+    }
+
+    private static boolean isInQuote(String expr, int pos) {
+        boolean isInQuote = false;
+        for (int i = pos-1; i >= 0; i--) {
+            if (expr.charAt(i) == '"') {
+                isInQuote = !isInQuote;
+            }
+        }
+        return isInQuote;
     }
 
     private static final String[] NULL_OPERATORS = new String[]{ "== null", "!= null" };
