@@ -16,16 +16,6 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.descr.AccumulateDescr;
@@ -113,6 +103,17 @@ import org.drools.workbench.models.datamodel.workitems.PortableParameterDefiniti
 import org.drools.workbench.models.datamodel.workitems.PortableStringParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.drools.core.util.StringUtils.splitArgumentsList;
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.*;
 
 /**
@@ -2258,6 +2259,9 @@ public class RuleModelDRLPersistenceImpl
         Map<String, Integer> setStatementsPosition = new HashMap<String, Integer>();
         Map<String, String> factsType = new HashMap<String, String>();
 
+        String modifiedVariable = null;
+        String modifiers = null;
+
         int lineCounter = -1;
         String[] lines = rhs.split( "\n" );
         for ( String line : lines ) {
@@ -2270,7 +2274,32 @@ public class RuleModelDRLPersistenceImpl
                 }
             }
             line = line.trim();
-            if ( line.startsWith( "insertLogical" ) ) {
+            if ( modifiedVariable != null ) {
+                int modifyBlockEnd = line.lastIndexOf('}');
+                if (modifiers == null) {
+                    modifiers = modifyBlockEnd > 0 ?
+                                line.substring( line.indexOf( '{' ) + 1, modifyBlockEnd ).trim() :
+                                line.substring( line.indexOf( '{' ) + 1 ).trim();
+                } else if (modifyBlockEnd != 0) {
+                    modifiers += modifyBlockEnd > 0 ?
+                                 line.substring( 0, modifyBlockEnd ).trim() :
+                                 line;
+                }
+                if (modifyBlockEnd >= 0) {
+                    ActionUpdateField action = new ActionUpdateField();
+                    action.setVariable( modifiedVariable );
+                    m.addRhsItem( action );
+                    addModifiersToAction( modifiedVariable,
+                                          modifiers,
+                                          action,
+                                          boundParams,
+                                          dmo,
+                                          m.getImports(),
+                                          isJavaDialect );
+                    modifiedVariable = null;
+                    modifiers = null;
+                }
+            } else if ( line.startsWith( "insertLogical" ) ) {
                 String fact = unwrapParenthesis( line );
                 String type = getStatementType( fact, factsType );
                 if ( type != null ) {
@@ -2287,7 +2316,7 @@ public class RuleModelDRLPersistenceImpl
                     }
                 }
             } else if ( line.startsWith( "insert" ) ) {
-                String fact = unwrapParenthesis( line );
+                String fact = unwrapParenthesis(line);
                 String type = getStatementType( fact, factsType );
                 if ( type != null ) {
                     ActionInsertFact action = new ActionInsertFact( type );
@@ -2315,7 +2344,28 @@ public class RuleModelDRLPersistenceImpl
                                     dmo,
                                     m.getImports(),
                                     isJavaDialect );
-            } else if ( line.startsWith( "retract" ) ) {
+            } else if ( line.startsWith( "modify" ) ) {
+                int modifyBlockEnd = line.lastIndexOf('}');
+                if (modifyBlockEnd > 0) {
+                    String variable = line.substring( line.indexOf( '(' ) + 1, line.indexOf( ')' ) ).trim();
+                    ActionUpdateField action = new ActionUpdateField();
+                    action.setVariable( variable );
+                    m.addRhsItem( action );
+                    addModifiersToAction( variable,
+                                          line.substring( line.indexOf( '{' ) + 1, modifyBlockEnd ).trim(),
+                                          action,
+                                          boundParams,
+                                          dmo,
+                                          m.getImports(),
+                                          isJavaDialect );
+                } else {
+                    modifiedVariable = line.substring( line.indexOf( '(' ) + 1, line.indexOf( ')' ) ).trim();
+                    int modifyBlockStart = line.indexOf('{');
+                    if (modifyBlockStart > 0) {
+                        modifiers = line.substring(modifyBlockStart+1).trim();
+                    }
+                }
+             } else if ( line.startsWith( "retract" ) || line.startsWith( "delete" ) ) {
                 String variable = unwrapParenthesis( line );
                 m.addRhsItem( new ActionRetractFact( variable ) );
             } else if ( line.startsWith( "org.drools.core.process.instance.impl.WorkItemImpl wiWorkItem" ) ) {
@@ -2323,7 +2373,7 @@ public class RuleModelDRLPersistenceImpl
                 pwd = new PortableWorkDefinition();
                 pwd.setName( "WorkItem" );
                 awi.setWorkDefinition( pwd );
-                m.addRhsItem( awi );
+                m.addRhsItem(awi);
             } else if ( line.startsWith( "wiWorkItem.getParameters().put" ) ) {
                 String statement = line.substring( "wiWorkItem.getParameters().put".length() );
                 statement = unwrapParenthesis( statement );
@@ -2457,7 +2507,7 @@ public class RuleModelDRLPersistenceImpl
                 return dslSentence;
             }
         }
-        dslSentence.setDefinition( dslLine );
+        dslSentence.setDefinition(dslLine);
         return dslSentence;
     }
 
@@ -2527,26 +2577,51 @@ public class RuleModelDRLPersistenceImpl
                 int dotPos = statement.indexOf( '.' );
                 int argStart = statement.indexOf( '(' );
                 String methodName = statement.substring( dotPos + 1, argStart ).trim();
-                String field = getSettedField( methodName );
-                String value = unwrapParenthesis( statement );
-                String dataType = inferDataType( action,
-                                                 field,
-                                                 boundParams,
-                                                 dmo,
-                                                 imports );
-                if ( dataType == null ) {
-                    dataType = inferDataType( value,
-                                              boundParams,
-                                              isJavaDialect );
-                }
-                action.addFieldValue( buildFieldValue( isJavaDialect,
-                                                       field,
-                                                       value,
-                                                       dataType,
-                                                       boundParams,
-                                                       dmo ) );
+                addSetterToAction(action, boundParams, dmo, imports, isJavaDialect, statement, methodName);
             }
         }
+    }
+
+    private void addModifiersToAction( String variable,
+                                       String modifiers,
+                                       ActionFieldList action,
+                                       Map<String, String> boundParams,
+                                       PackageDataModelOracle dmo,
+                                       Imports imports,
+                                       boolean isJavaDialect ) {
+         for (String statement : splitArgumentsList(modifiers)) {
+             int argStart = statement.indexOf( '(' );
+             String methodName = statement.substring( 0, argStart ).trim();
+             addSetterToAction(action, boundParams, dmo, imports, isJavaDialect, statement, methodName);
+         }
+    }
+
+
+    private void addSetterToAction( ActionFieldList action,
+                                    Map<String, String> boundParams,
+                                    PackageDataModelOracle dmo,
+                                    Imports imports,
+                                    boolean isJavaDialect,
+                                    String statement,
+                                    String methodName ) {
+        String field = getSettedField( methodName );
+        String value = unwrapParenthesis( statement );
+        String dataType = inferDataType( action,
+                                         field,
+                                         boundParams,
+                                         dmo,
+                                         imports );
+        if ( dataType == null ) {
+            dataType = inferDataType( value,
+                                      boundParams,
+                                      isJavaDialect );
+        }
+        action.addFieldValue(buildFieldValue(isJavaDialect,
+                                             field,
+                                             value,
+                                             dataType,
+                                             boundParams,
+                                             dmo));
     }
 
     private ActionFieldValue buildFieldValue( boolean isJavaDialect,

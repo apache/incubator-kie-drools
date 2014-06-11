@@ -15,13 +15,6 @@ package org.drools.workbench.models.commons.backend.rule;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.MethodInfo;
@@ -66,8 +59,16 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class RuleModelDRLPersistenceUnmarshallingTest {
 
@@ -4643,7 +4644,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("https://issues.jboss.org/browse/DROOLS-517")
     public void testRHSModifyBlockSingleFieldSingleLine() throws Exception {
         //The value used in the "set" is intentionally yucky to catch extraction of the field's value errors!
         String drl = "rule \"modify1\"\n" +
@@ -4687,7 +4687,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("https://issues.jboss.org/browse/DROOLS-517")
     public void testRHSModifyBlockSingleFieldMultipleLines() throws Exception {
         //The value used in the "set" is intentionally yucky to catch extraction of the field's value errors!
         String drl = "rule \"modify1\"\n" +
@@ -4733,7 +4732,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("https://issues.jboss.org/browse/DROOLS-517")
     public void testRHSModifyBlockMultipleFieldsSingleLine() throws Exception {
         //The value used in the "set" is intentionally yucky to catch extraction of the field's value errors!
         String drl = "rule \"modify1\"\n" +
@@ -4779,7 +4777,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( DataType.TYPE_STRING,
                       value1.getType() );
 
-        ActionFieldValue value2 = field.getFieldValues()[ 0 ];
+        ActionFieldValue value2 = field.getFieldValues()[ 1 ];
         assertEquals( "lastName",
                       value2.getField() );
         assertEquals( ",)",
@@ -4791,7 +4789,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("https://issues.jboss.org/browse/DROOLS-517")
     public void testRHSModifyBlockMultipleFieldsMultipleLines() throws Exception {
         //The value used in the "set" is intentionally yucky to catch extraction of the field's value errors!
         String drl = "rule \"modify1\"\n" +
@@ -4840,7 +4837,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( DataType.TYPE_STRING,
                       value1.getType() );
 
-        ActionFieldValue value2 = field.getFieldValues()[ 0 ];
+        ActionFieldValue value2 = field.getFieldValues()[ 1 ];
         assertEquals( "lastName",
                       value2.getField() );
         assertEquals( ",)",
