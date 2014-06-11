@@ -432,5 +432,85 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
         assertTrue(ids.contains("Jabba Hutt"));
     }
 
-   
+      @Test
+      public void testDelayedEmailNotificationOnDeadlineTaskCompletedMultipleTasks() throws Exception {
+
+
+          Map<String, Object> vars = new HashMap<String, Object>();
+          vars.put("now", new Date());
+
+          Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
+          
+          // create task 1
+          InternalTask task = (InternalTask) TaskFactory.evalTask(reader, vars);
+          
+          ((InternalTaskData) task.getTaskData()).setSkipable(true);
+          InternalPeopleAssignments assignments = (InternalPeopleAssignments) TaskModelProvider.getFactory().newPeopleAssignments();
+          List<OrganizationalEntity> ba = new ArrayList<OrganizationalEntity>();
+          User user = TaskModelProvider.getFactory().newUser();
+          ((InternalOrganizationalEntity) user).setId("Administrator");
+          ba.add(user);
+          assignments.setBusinessAdministrators(ba);
+          
+          List<OrganizationalEntity> po = new ArrayList<OrganizationalEntity>();
+          User user2 = TaskModelProvider.getFactory().newUser();
+          ((InternalOrganizationalEntity) user2).setId("Administrator");        
+          po.add(user2);
+          assignments.setPotentialOwners(po);
+          
+          task.setPeopleAssignments(assignments);
+          
+          
+          // create task 2
+          reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
+          InternalTask task2 = (InternalTask) TaskFactory.evalTask(reader, vars);          
+          ((InternalTaskData) task2.getTaskData()).setSkipable(true);          
+          task2.setPeopleAssignments(assignments);
+          
+          taskService.addTask(task, new HashMap<String, Object>());
+          taskService.addTask(task2, new HashMap<String, Object>());
+          long taskId = task.getId();
+
+          InternalContent content = (InternalContent) TaskModelProvider.getFactory().newContent();
+          
+          Map<String, String> params = fillMarshalSubjectAndBodyParams();
+          ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
+          content.setContent(marshalledObject.getContent());
+          taskService.addContent(taskId, content);
+          long contentId = content.getId();
+          
+          content = (InternalContent) taskService.getContentById(contentId);
+          Object unmarshallObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+          checkContentSubjectAndBody(unmarshallObject);
+          
+          taskService.start(taskId, "Administrator");
+          taskService.complete(taskId, "Administrator", null);
+          // emails should not be set yet
+          assertEquals(0, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
+          Thread.sleep(100);
+
+          // nor yet
+          assertEquals(0, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
+
+          long time = 0;
+          while (((MockNotificationListener)notificationListener).getEventsRecieved().size() != 1 && time < 5000) {
+              Thread.sleep(500);
+              time += 500;
+          }
+
+          // no email should be sent as task was completed before deadline was triggered
+          assertEquals(1, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
+          task = (InternalTask) taskService.getTaskById(taskId);
+          assertEquals(Status.Completed, task.getTaskData().getStatus());
+          assertEquals(0, ((InternalTask) task).getDeadlines().getStartDeadlines().size());
+          assertEquals(0, ((InternalTask) task).getDeadlines().getEndDeadlines().size());
+          
+          taskService.start(task2.getId(), "Administrator");
+          taskService.complete(task2.getId(), "Administrator", null);
+          
+          task = (InternalTask) taskService.getTaskById(task2.getId());
+          assertEquals(Status.Completed, task.getTaskData().getStatus());
+          assertEquals(0, ((InternalTask) task).getDeadlines().getStartDeadlines().size());
+          assertEquals(0, ((InternalTask) task).getDeadlines().getEndDeadlines().size());
+      }
 }

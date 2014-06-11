@@ -133,7 +133,8 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
  
             if (type == DeadlineType.START) {
                 List<Deadline> startDeadlines = deadlines.getStartDeadlines();
-                List<DeadlineSummaryImpl> resultList = (List<DeadlineSummaryImpl>)persistenceContext.queryInTransaction("UnescalatedStartDeadlines",
+                List<DeadlineSummaryImpl> resultList = (List<DeadlineSummaryImpl>)persistenceContext.queryWithParametersInTransaction("UnescalatedStartDeadlinesByTaskId",
+                		persistenceContext.addParametersToMap("taskId", taskId),
 						ClassUtil.<List<DeadlineSummaryImpl>>castClass(List.class));
                 for (DeadlineSummaryImpl summary : resultList) {
                     TaskDeadlineJob deadlineJob = new TaskDeadlineJob(summary.getTaskId(), summary.getDeadlineId(), DeadlineType.START);
@@ -152,7 +153,8 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                 }
             } else if (type == DeadlineType.END) {
                 List<Deadline> endDeadlines = deadlines.getStartDeadlines();
-                List<DeadlineSummaryImpl> resultList = (List<DeadlineSummaryImpl>)persistenceContext.queryInTransaction("UnescalatedEndDeadlines",
+                List<DeadlineSummaryImpl> resultList = (List<DeadlineSummaryImpl>)persistenceContext.queryWithParametersInTransaction("UnescalatedEndDeadlinesByTaskId",
+                		persistenceContext.addParametersToMap("taskId", taskId),
 						ClassUtil.<List<DeadlineSummaryImpl>>castClass(List.class));
                 for (DeadlineSummaryImpl summary : resultList) {
                     
