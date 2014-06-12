@@ -151,8 +151,7 @@ public class NotNode extends BetaNode {
         // This is because we need the first RightTuple to link with it's blocked
         boolean stagedInsertWasEmpty = false;
         if ( streamMode ) {
-            stagedInsertWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
-            memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, pctx, memory, pctx.getType()));
+            stagedInsertWasEmpty = memory.getSegmentMemory().getStreamQueue().addInsert(new RightTupleEntry(rightTuple, pctx, memory, pctx.getType()));
             //log.trace( "NotNode insert queue={} size={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), rightTuple );
         }  else {
             stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert( rightTuple );
@@ -184,8 +183,7 @@ public class NotNode extends BetaNode {
         boolean  stagedDeleteWasEmpty = false;
         if ( streamMode ) {
             PropagationContext pctx = rightTuple.getPropagationContext();
-            stagedDeleteWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
-            memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, pctx, memory, pctx.getType()));
+            stagedDeleteWasEmpty = memory.getSegmentMemory().getStreamQueue().addDelete(new RightTupleEntry(rightTuple, pctx, memory, pctx.getType()));
             //log.trace( "NotNode delete queue={} size={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), rightTuple );
         } else {
             stagedDeleteWasEmpty = stagedRightTuples.addDelete( rightTuple );

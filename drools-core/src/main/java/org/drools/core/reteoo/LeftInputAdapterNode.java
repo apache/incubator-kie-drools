@@ -16,17 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.getSettableProperties;
-import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
-import static org.drools.core.util.BitMaskUtil.intersect;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Deque;
-import java.util.Map;
-
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
@@ -54,6 +43,15 @@ import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Deque;
+import java.util.Map;
+
+import static org.drools.core.reteoo.PropertySpecificUtil.*;
+import static org.drools.core.util.BitMaskUtil.intersect;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern
@@ -264,13 +262,12 @@ public class LeftInputAdapterNode extends LeftTupleSource
         boolean stagedInsertWasEmpty = false;
 
         // mask check is necessary if insert is a result of a modify
-        if ( liaNode.isStreamMode() && sm.getTupleQueue() != null ) {
-            stagedInsertWasEmpty = sm.getTupleQueue().isEmpty();
+        if ( liaNode.isStreamMode() && sm.getStreamQueue() != null ) {
             int propagationType = pctx.getType() == PropagationContext.MODIFICATION ? PropagationContext.INSERTION : pctx.getType();
-            sm.getTupleQueue().add(new LeftTupleEntry(leftTuple, pctx, sm.getNodeMemories().getFirst(), propagationType));
+            stagedInsertWasEmpty = sm.getStreamQueue().addInsert(new LeftTupleEntry(leftTuple, pctx, sm.getNodeMemories().getFirst(), propagationType));
 
             if ( log.isTraceEnabled() ) {
-                log.trace( "LeftInputAdapterNode insert size={}  queue={} pctx={} lt={}", System.identityHashCode( sm.getTupleQueue() ), sm.getTupleQueue().size(), PhreakPropagationContext.intEnumToString(pctx), leftTuple);
+                log.trace( "LeftInputAdapterNode insert size={}  queue={} pctx={} lt={}", System.identityHashCode( sm.getStreamQueue() ), sm.getStreamQueue().size(), PhreakPropagationContext.intEnumToString(pctx), leftTuple);
             }
         }  else {
             stagedInsertWasEmpty = sm.getStagedLeftTuples().addInsert( leftTuple );
@@ -328,12 +325,11 @@ public class LeftInputAdapterNode extends LeftTupleSource
         leftTuple.setPropagationContext( pctx );
 
         boolean stagedDeleteWasEmpty = false;
-        if ( ((BaseNode)sm.getRootNode()).isStreamMode() && sm.getTupleQueue() != null ) {
-            stagedDeleteWasEmpty = sm.getTupleQueue().isEmpty();
+        if ( ((BaseNode)sm.getRootNode()).isStreamMode() && sm.getStreamQueue() != null ) {
             int propagationType = pctx.getType() == PropagationContext.MODIFICATION ? PropagationContext.DELETION : pctx.getType();
-            sm.getTupleQueue().add(new LeftTupleEntry(leftTuple, pctx, sm.getNodeMemories().getFirst(), propagationType));
+            stagedDeleteWasEmpty = sm.getStreamQueue().addDelete(new LeftTupleEntry(leftTuple, pctx, sm.getNodeMemories().getFirst(), propagationType));
             if ( log.isTraceEnabled() ) {
-                log.trace( "LeftInputAdapterNode delete size={}  queue={} pctx={} lt={}", System.identityHashCode( sm.getTupleQueue() ), sm.getTupleQueue().size(), PhreakPropagationContext.intEnumToString(pctx), leftTuple );
+                log.trace( "LeftInputAdapterNode delete size={}  queue={} pctx={} lt={}", System.identityHashCode( sm.getStreamQueue() ), sm.getStreamQueue().size(), PhreakPropagationContext.intEnumToString(pctx), leftTuple );
             }
         } else {
             stagedDeleteWasEmpty = leftTuples.addDelete(leftTuple);
@@ -388,9 +384,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 // if LeftTuple is already staged, leave it there
                 leftTuple.setPropagationContext( pctx );
                 boolean stagedUpdateWasEmpty = false;
-                if ( ((BaseNode)sm.getRootNode()).isStreamMode() && sm.getTupleQueue() != null ) {
-                    stagedUpdateWasEmpty = sm.getTupleQueue().isEmpty();
-                    sm.getTupleQueue().add(new LeftTupleEntry(leftTuple, pctx, sm.getNodeMemories().getFirst(), pctx.getType()));
+                if ( ((BaseNode)sm.getRootNode()).isStreamMode() && sm.getStreamQueue() != null ) {
+                    stagedUpdateWasEmpty = sm.getStreamQueue().addUpdate(new LeftTupleEntry(leftTuple, pctx, sm.getNodeMemories().getFirst(), pctx.getType()));
                 } else {
                     stagedUpdateWasEmpty = leftTuples.addUpdate(leftTuple);
                 }
