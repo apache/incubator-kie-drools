@@ -326,8 +326,11 @@ public class EntityDescriptor {
     }
 
     public void addDeclaredVariableListenersToMap(
-            Map<GenuineVariableDescriptor, List<VariableListener>> variableListenerMap) {
+            Map<VariableDescriptor, List<VariableListener>> variableListenerMap) {
         for (GenuineVariableDescriptor variableDescriptor : declaredGenuineVariableDescriptorMap.values()) {
+            variableListenerMap.put(variableDescriptor, variableDescriptor.buildVariableListenerList());
+        }
+        for (ShadowVariableDescriptor variableDescriptor : declaredShadowVariableDescriptorMap.values()) {
             variableListenerMap.put(variableDescriptor, variableDescriptor.buildVariableListenerList());
         }
     }

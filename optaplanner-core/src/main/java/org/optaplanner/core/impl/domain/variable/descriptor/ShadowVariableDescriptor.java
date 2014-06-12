@@ -20,6 +20,8 @@ import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
@@ -41,6 +43,10 @@ public abstract class ShadowVariableDescriptor extends VariableDescriptor {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    public List<VariableListener> buildVariableListenerList() {
+        return Collections.emptyList();
+    }
 
     public abstract VariableListener buildVariableListener();
 

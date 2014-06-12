@@ -274,8 +274,8 @@ public class SolutionDescriptor {
 
     public VariableListenerSupport buildVariableListenerSupport() {
         // Order is important, hence LinkedHashMap
-        Map<GenuineVariableDescriptor, List<VariableListener>> variableListenerMap
-                = new LinkedHashMap<GenuineVariableDescriptor, List<VariableListener>>();
+        Map<VariableDescriptor, List<VariableListener>> variableListenerMap
+                = new LinkedHashMap<VariableDescriptor, List<VariableListener>>();
         for (EntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
             entityDescriptor.addDeclaredVariableListenersToMap(variableListenerMap);
         }

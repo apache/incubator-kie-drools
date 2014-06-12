@@ -23,19 +23,20 @@ import java.util.Map;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class VariableListenerSupport {
 
-    private final Map<GenuineVariableDescriptor, List<VariableListener>> variableListenerMap;
+    private final Map<VariableDescriptor, List<VariableListener>> variableListenerMap;
     private final Map<EntityDescriptor, List<VariableListener>> entityVariableListenerMap;
 
     public VariableListenerSupport(
-            Map<GenuineVariableDescriptor, List<VariableListener>> variableListenerMap) {
+            Map<VariableDescriptor, List<VariableListener>> variableListenerMap) {
         this.variableListenerMap = variableListenerMap;
         entityVariableListenerMap = new LinkedHashMap<EntityDescriptor, List<VariableListener>>(
                 variableListenerMap.size());
-        for (Map.Entry<GenuineVariableDescriptor, List<VariableListener>> entry
+        for (Map.Entry<VariableDescriptor, List<VariableListener>> entry
                 : variableListenerMap.entrySet()) {
             EntityDescriptor entityDescriptor = entry.getKey().getEntityDescriptor();
             List<VariableListener> variableListenerList = entry.getValue();
