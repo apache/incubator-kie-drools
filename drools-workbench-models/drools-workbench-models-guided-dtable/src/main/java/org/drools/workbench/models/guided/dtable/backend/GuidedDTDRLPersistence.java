@@ -215,7 +215,6 @@ public class GuidedDTDRLPersistence {
 
                     } else if ( c instanceof ActionRetractFactCol52 ) {
                         doAction( actions,
-                                  (ActionRetractFactCol52) c,
                                   cell );
 
                     } else if ( c instanceof ActionWorkItemCol52 ) {
@@ -305,18 +304,13 @@ public class GuidedDTDRLPersistence {
     private void addAction( IAction action,
                             List<LabelledAction> actions ) {
         String binding = null;
-        LabelledAction a = null;
         if ( action instanceof ActionInsertFact ) {
             final ActionInsertFact af = (ActionInsertFact) action;
             binding = af.getBoundName();
-            a = findByLabelledAction( actions,
-                                      binding );
 
         } else if ( action instanceof ActionSetField ) {
             final ActionSetField af = (ActionSetField) action;
             binding = af.getVariable();
-            a = findByLabelledAction( actions,
-                                      binding );
         }
 
         //Binding is used to group related field setters together. It is essential for
@@ -328,13 +322,10 @@ public class GuidedDTDRLPersistence {
             binding = action.toString();
         }
 
-        if ( a == null ) {
-            a = new LabelledAction();
-            a.boundName = binding;
-            a.action = action;
-            actions.add( a );
-        }
-
+        final LabelledAction a = new LabelledAction();
+        a.boundName = binding;
+        a.action = action;
+        actions.add( a );
     }
 
     private void doAction( List<LabelledAction> actions,
@@ -429,10 +420,12 @@ public class GuidedDTDRLPersistence {
                            ActionSetFieldCol52 sf,
                            String cell ) {
         LabelledAction a = findByLabelledAction( actions,
-                                                 sf.getBoundName() );
+                                                 sf.getBoundName(),
+                                                 sf.isUpdate() );
         if ( a == null ) {
             a = new LabelledAction();
             a.boundName = sf.getBoundName();
+            a.isUpdate = sf.isUpdate();
             if ( !sf.isUpdate() ) {
                 a.action = new ActionSetField( sf.getBoundName() );
             } else {
@@ -454,7 +447,6 @@ public class GuidedDTDRLPersistence {
     }
 
     private void doAction( List<LabelledAction> actions,
-                           ActionRetractFactCol52 rf,
                            String cell ) {
         LabelledAction a = new LabelledAction();
         a.action = new ActionRetractFact( cell );
@@ -479,10 +471,20 @@ public class GuidedDTDRLPersistence {
     //ActionSetField and ActionUpdateField need to be grouped in this manner.
     private LabelledAction findByLabelledAction( List<LabelledAction> actions,
                                                  String boundName ) {
+        return findByLabelledAction( actions,
+                                     boundName,
+                                     false );
+    }
+
+    //Labelled Actions are used to group actions on the same bound Fact. Only
+    //ActionSetField and ActionUpdateField need to be grouped in this manner.
+    private LabelledAction findByLabelledAction( List<LabelledAction> actions,
+                                                 String boundName,
+                                                 boolean isUpdate ) {
         for ( LabelledAction labelledAction : actions ) {
             IAction action = labelledAction.action;
             if ( action instanceof ActionFieldList ) {
-                if ( labelledAction.boundName.equals( boundName ) ) {
+                if ( labelledAction.boundName.equals( boundName ) && labelledAction.isUpdate == isUpdate ) {
                     return labelledAction;
                 }
             }
@@ -821,6 +823,7 @@ public class GuidedDTDRLPersistence {
     private class LabelledAction {
 
         String boundName;
+        boolean isUpdate;
         IAction action;
     }
 

@@ -16,6 +16,17 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.descr.AccumulateDescr;
@@ -44,6 +55,10 @@ import org.drools.workbench.models.commons.backend.imports.ImportsParser;
 import org.drools.workbench.models.commons.backend.imports.ImportsWriter;
 import org.drools.workbench.models.commons.backend.packages.PackageNameParser;
 import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
+import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContext;
+import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContextFactory;
+import org.drools.workbench.models.commons.backend.rule.context.RHSGeneratorContext;
+import org.drools.workbench.models.commons.backend.rule.context.RHSGeneratorContextFactory;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.DataType;
@@ -103,17 +118,7 @@ import org.drools.workbench.models.datamodel.workitems.PortableParameterDefiniti
 import org.drools.workbench.models.datamodel.workitems.PortableStringParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static org.drools.core.util.StringUtils.splitArgumentsList;
+import static org.drools.core.util.StringUtils.*;
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.*;
 
 /**
@@ -179,11 +184,12 @@ public class RuleModelDRLPersistenceImpl
         this.marshalLHS( buf,
                          model,
                          isDSLEnhanced,
-                         new GeneratorContextFactory() );
+                         new LHSGeneratorContextFactory() );
         buf.append( "\tthen\n" );
         this.marshalRHS( buf,
                          model,
-                         isDSLEnhanced );
+                         isDSLEnhanced,
+                         new RHSGeneratorContextFactory() );
         this.marshalFooter( buf );
         return buf.toString();
     }
@@ -300,7 +306,7 @@ public class RuleModelDRLPersistenceImpl
     protected void marshalLHS( final StringBuilder buf,
                                final RuleModel model,
                                final boolean isDSLEnhanced,
-                               final GeneratorContextFactory generatorContextFactory ) {
+                               final LHSGeneratorContextFactory generatorContextFactory ) {
         String indentation = "\t\t";
         String nestedIndentation = indentation;
         boolean isNegated = model.isNegated();
@@ -334,7 +340,7 @@ public class RuleModelDRLPersistenceImpl
                                                       final StringBuilder buf,
                                                       final String nestedIndentation,
                                                       final boolean isNegated,
-                                                      final GeneratorContextFactory generatorContextFactory ) {
+                                                      final LHSGeneratorContextFactory generatorContextFactory ) {
         return new LHSPatternVisitor( isDSLEnhanced,
                                       bindingsPatterns,
                                       bindingsFields,
@@ -347,7 +353,8 @@ public class RuleModelDRLPersistenceImpl
 
     protected void marshalRHS( final StringBuilder buf,
                                final RuleModel model,
-                               final boolean isDSLEnhanced ) {
+                               final boolean isDSLEnhanced,
+                               final RHSGeneratorContextFactory generatorContextFactory ) {
         String indentation = "\t\t";
         if ( model.rhs != null ) {
 
@@ -367,20 +374,117 @@ public class RuleModelDRLPersistenceImpl
             //Marshall the model itself
             RHSActionVisitor actionVisitor = getRHSActionVisitor( isDSLEnhanced,
                                                                   buf,
-                                                                  indentation );
+                                                                  indentation,
+                                                                  generatorContextFactory );
+
+            //Reconcile ActionSetField and ActionUpdateField calls
+            final List<IAction> actions = new ArrayList<IAction>();
+            for ( IAction action : model.rhs ) {
+                if ( action instanceof ActionSetField ) {
+                    final ActionSetField asf = (ActionSetField) action;
+                    final ActionSetFieldWrapper afw = findExistingAction( asf,
+                                                                          actions );
+                    if ( afw == null ) {
+                        actions.add( new ActionSetFieldWrapper( asf,
+                                                                ( asf instanceof ActionUpdateField ) ) );
+                    } else {
+                        final List<ActionFieldValue> existingActionFieldValue = new ArrayList<ActionFieldValue>( Arrays.asList( afw.getAction().getFieldValues() ) );
+                        for ( ActionFieldValue afv : asf.getFieldValues() ) {
+                            existingActionFieldValue.add( afv );
+                        }
+                        final ActionFieldValue[] temp = new ActionFieldValue[ existingActionFieldValue.size() ];
+                        afw.getAction().setFieldValues( existingActionFieldValue.toArray( temp ) );
+                    }
+
+                } else {
+                    actions.add( action );
+                }
+            }
+            model.rhs = new IAction[ actions.size() ];
+            for ( int i = 0; i < actions.size(); i++ ) {
+                final IAction action = actions.get( i );
+                if ( action instanceof ActionSetFieldWrapper ) {
+                    model.rhs[ i ] = ( (ActionSetFieldWrapper) action ).getAction();
+                } else {
+                    model.rhs[ i ] = action;
+                }
+            }
+
+            //Now generate DRL
             for ( IAction action : model.rhs ) {
                 actionVisitor.visit( action );
             }
         }
     }
 
+    private ActionSetFieldWrapper findExistingAction( final ActionSetField asf,
+                                                      final List<IAction> actions ) {
+        for ( IAction action : actions ) {
+            if ( action instanceof ActionSetFieldWrapper ) {
+                final ActionSetFieldWrapper afw = (ActionSetFieldWrapper) action;
+                if ( asf.getVariable().equals( afw.getAction().getVariable() ) && ( asf instanceof ActionUpdateField ) == afw.isUpdate() ) {
+                    return afw;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static class ActionSetFieldWrapper implements IAction {
+
+        private final ActionSetField action;
+        private final boolean isUpdate;
+
+        private ActionSetFieldWrapper( final ActionSetField action,
+                                       final boolean isUpdate ) {
+            this.action = clone( action );
+            this.isUpdate = isUpdate;
+        }
+
+        private ActionSetField getAction() {
+            return action;
+        }
+
+        private boolean isUpdate() {
+            return isUpdate;
+        }
+
+        private ActionSetField clone( final ActionSetField action ) {
+            if ( action instanceof ActionUpdateField ) {
+                final ActionUpdateField auf = (ActionUpdateField) action;
+                final ActionUpdateField clone = new ActionUpdateField( auf.getVariable() );
+                clone.setFieldValues( auf.getFieldValues() );
+                return clone;
+
+            } else if ( action instanceof ActionCallMethod ) {
+                final ActionCallMethod acm = (ActionCallMethod) action;
+                final ActionCallMethod clone = new ActionCallMethod( acm.getVariable() );
+                clone.setState( acm.getState() );
+                clone.setMethodName( acm.getMethodName() );
+                clone.setFieldValues( acm.getFieldValues() );
+                return clone;
+
+            } else if ( action instanceof ActionSetField ) {
+                final ActionSetField clone = new ActionSetField( action.getVariable() );
+                clone.setFieldValues( action.getFieldValues() );
+                return clone;
+
+            } else {
+                return action;
+            }
+        }
+
+    }
+
     protected RHSActionVisitor getRHSActionVisitor( final boolean isDSLEnhanced,
                                                     final StringBuilder buf,
-                                                    final String indentation ) {
+                                                    final String indentation,
+                                                    final RHSGeneratorContextFactory generatorContextFactory ) {
         return new RHSActionVisitor( isDSLEnhanced,
                                      bindingsPatterns,
                                      bindingsFields,
                                      constraintValueBuilder,
+                                     generatorContextFactory,
                                      buf,
                                      indentation );
     }
@@ -422,13 +526,13 @@ public class RuleModelDRLPersistenceImpl
         private Map<String, IFactPattern> bindingsPatterns;
         private Map<String, FieldConstraint> bindingsFields;
         protected DRLConstraintValueBuilder constraintValueBuilder;
-        protected GeneratorContextFactory generatorContextFactory;
+        protected LHSGeneratorContextFactory generatorContextFactory;
 
         public LHSPatternVisitor( final boolean isDSLEnhanced,
                                   final Map<String, IFactPattern> bindingsPatterns,
                                   final Map<String, FieldConstraint> bindingsFields,
                                   final DRLConstraintValueBuilder constraintValueBuilder,
-                                  final GeneratorContextFactory generatorContextFactory,
+                                  final LHSGeneratorContextFactory generatorContextFactory,
                                   final StringBuilder b,
                                   final String indentation,
                                   final boolean isPatternNegated ) {
@@ -439,7 +543,7 @@ public class RuleModelDRLPersistenceImpl
             this.generatorContextFactory = generatorContextFactory;
             this.indentation = indentation;
             this.isPatternNegated = isPatternNegated;
-            buf = b;
+            this.buf = b;
         }
 
         public void visitFactPattern( final FactPattern pattern ) {
@@ -711,7 +815,7 @@ public class RuleModelDRLPersistenceImpl
         }
 
         private void generateConstraints( final FactPattern pattern ) {
-            GeneratorContext gctx = generatorContextFactory.newGeneratorContext();
+            LHSGeneratorContext gctx = generatorContextFactory.newGeneratorContext();
             preGenerateConstraints( gctx );
             for ( int constraintIndex = 0; constraintIndex < pattern.getFieldConstraints().length; constraintIndex++ ) {
                 FieldConstraint constr = pattern.getConstraintList().getConstraints()[ constraintIndex ];
@@ -721,28 +825,28 @@ public class RuleModelDRLPersistenceImpl
             }
         }
 
-        public void preGenerateConstraints( GeneratorContext gctx ) {
+        public void preGenerateConstraints( LHSGeneratorContext gctx ) {
             // empty, overridden by rule templates
         }
 
-        public void preGenerateNestedConnector( GeneratorContext gctx ) {
+        public void preGenerateNestedConnector( LHSGeneratorContext gctx ) {
             // empty, overridden by rule templates
         }
 
-        public void postGenerateNestedConnector( GeneratorContext gctx ) {
+        public void postGenerateNestedConnector( LHSGeneratorContext gctx ) {
             // empty, overridden by rule templates
         }
 
-        public void preGenerateNestedConstraint( GeneratorContext gctx ) {
+        public void preGenerateNestedConstraint( LHSGeneratorContext gctx ) {
             // empty, overridden by rule templates
         }
 
-        public void postGenerateNestedConstraint( GeneratorContext gctx ) {
+        public void postGenerateNestedConstraint( LHSGeneratorContext gctx ) {
             // empty, overridden by rule templates
         }
 
         public void generateSeparator( FieldConstraint constr,
-                                       GeneratorContext gctx ) {
+                                       LHSGeneratorContext gctx ) {
             if ( !gctx.isHasOutput() ) {
                 return;
             }
@@ -762,14 +866,14 @@ public class RuleModelDRLPersistenceImpl
          * readable DRL in the most common cases.
          */
         protected void generateConstraint( final FieldConstraint con,
-                                           final GeneratorContext gctx ) {
+                                           final LHSGeneratorContext gctx ) {
             generateSeparator( con,
                                gctx );
             if ( con instanceof CompositeFieldConstraint ) {
                 CompositeFieldConstraint cfc = (CompositeFieldConstraint) con;
                 FieldConstraint[] nestedConstraints = cfc.getConstraints();
                 if ( nestedConstraints != null ) {
-                    GeneratorContext nestedGctx = generatorContextFactory.newChildGeneratorContext( gctx );
+                    LHSGeneratorContext nestedGctx = generatorContextFactory.newChildGeneratorContext( gctx );
                     preGenerateConstraints( nestedGctx );
                     preGenerateNestedConstraint( gctx );
                     if ( gctx.getDepth() > 0 ) {
@@ -794,7 +898,7 @@ public class RuleModelDRLPersistenceImpl
         }
 
         private void generateSingleFieldConstraint( final SingleFieldConstraint constr,
-                                                    final GeneratorContext gctx ) {
+                                                    final LHSGeneratorContext gctx ) {
             if ( constr.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
                 buf.append( "eval( " );
                 buf.append( constr.getValue() );
@@ -868,8 +972,8 @@ public class RuleModelDRLPersistenceImpl
 
         private void generateConnectiveFieldRestriction( final SingleFieldConstraint constr,
                                                          final Map<String, String> parameters,
-                                                         final GeneratorContext gctx ) {
-            GeneratorContext cctx = generatorContextFactory.newChildGeneratorContext( gctx );
+                                                         final LHSGeneratorContext gctx ) {
+            LHSGeneratorContext cctx = generatorContextFactory.newChildGeneratorContext( gctx );
             preGenerateConstraints( cctx );
             cctx.setFieldConstraint( constr );
             if ( constr instanceof SingleFieldConstraintEBLeftSide ) {
@@ -950,7 +1054,7 @@ public class RuleModelDRLPersistenceImpl
                                                       final Map<String, String> parameters,
                                                       final String value,
                                                       final ExpressionFormLine expression,
-                                                      GeneratorContext gctx,
+                                                      LHSGeneratorContext gctx,
                                                       final boolean spaceBeforeOperator ) {
             addFieldRestriction( buf, type, fieldType, operator, parameters, value, expression, spaceBeforeOperator );
         }
@@ -1160,10 +1264,10 @@ public class RuleModelDRLPersistenceImpl
         protected StringBuilder buf;
         private boolean isDSLEnhanced;
         private String indentation;
-        //        private int idx = 0;
         private Map<String, IFactPattern> bindingsPatterns;
         private Map<String, FieldConstraint> bindingsFields;
         protected DRLConstraintValueBuilder constraintValueBuilder;
+        protected RHSGeneratorContextFactory generatorContextFactory;
 
         //Keep a record of Work Items that are instantiated for Actions that depend on them
         private Set<String> instantiatedWorkItems;
@@ -1172,15 +1276,17 @@ public class RuleModelDRLPersistenceImpl
                                  final Map<String, IFactPattern> bindingsPatterns,
                                  final Map<String, FieldConstraint> bindingsFields,
                                  final DRLConstraintValueBuilder constraintValueBuilder,
+                                 final RHSGeneratorContextFactory generatorContextFactory,
                                  final StringBuilder b,
                                  final String indentation ) {
             this.isDSLEnhanced = isDSLEnhanced;
             this.bindingsPatterns = bindingsPatterns;
             this.bindingsFields = bindingsFields;
             this.constraintValueBuilder = constraintValueBuilder;
+            this.generatorContextFactory = generatorContextFactory;
             this.indentation = indentation;
             this.instantiatedWorkItems = new HashSet<String>();
-            buf = b;
+            this.buf = b;
         }
 
         public void visitActionInsertFact( final ActionInsertFact action ) {
@@ -1246,14 +1352,17 @@ public class RuleModelDRLPersistenceImpl
         }
 
         public void visitActionUpdateField( final ActionUpdateField action ) {
-            this.visitActionSetField( action );
             buf.append( indentation );
             if ( isDSLEnhanced ) {
                 buf.append( ">" );
             }
-            buf.append( "update( " );
-            buf.append( action.getVariable() );
-            buf.append( " );\n" );
+            buf.append( "modify( " ).append( action.getVariable() ).append( " ) {\n" );
+            this.generateModifyMethodCalls( action.getFieldValues() );
+            buf.append( "\n" ).append( indentation );
+            if ( isDSLEnhanced ) {
+                buf.append( ">" );
+            }
+            buf.append( "}\n" );
         }
 
         public void visitActionGlobalCollectionAdd( final ActionGlobalCollectionAdd add ) {
@@ -1396,6 +1505,66 @@ public class RuleModelDRLPersistenceImpl
                 buildDefaultFieldValue( fieldValue,
                                         buf );
             }
+        }
+
+        private void generateModifyMethodCalls( final ActionFieldValue[] fieldValues ) {
+            RHSGeneratorContext gctx = generatorContextFactory.newGeneratorContext();
+            for ( int index = 0; index < fieldValues.length; index++ ) {
+                final ActionFieldValue fieldValue = fieldValues[ index ];
+                preGenerateSetMethodCallParameterValue( fieldValue,
+                                                        gctx );
+                generateModifyMethodSeparator( gctx,
+                                               fieldValue );
+                generateModifyMethodCall( gctx,
+                                          fieldValue );
+                gctx = generatorContextFactory.newChildGeneratorContext( gctx );
+            }
+        }
+
+        protected void preGenerateSetMethodCallParameterValue( final ActionFieldValue fieldValue,
+                                                               final RHSGeneratorContext gctx ) {
+            gctx.setHasOutput( true );
+        }
+
+        protected void generateModifyMethodCall( final RHSGeneratorContext gctx,
+                                                 final ActionFieldValue fieldValue ) {
+            buf.append( indentation ).append( indentation );
+            if ( isDSLEnhanced ) {
+                buf.append( ">" );
+            }
+
+            if ( fieldValue instanceof ActionFieldFunction ) {
+                buf.append( fieldValue.getField() );
+            } else {
+                buf.append( "set" );
+                buf.append( Character.toUpperCase( fieldValue.getField().charAt( 0 ) ) );
+                buf.append( fieldValue.getField().substring( 1 ) );
+            }
+            buf.append( "( " );
+            generateSetMethodCallParameterValue( buf,
+                                                 fieldValue );
+            buf.append( " )" );
+        }
+
+        protected void generateModifyMethodSeparator( final RHSGeneratorContext gctx,
+                                                      final ActionFieldValue fieldValue ) {
+            if ( gctx.getParent() == null ) {
+                return;
+            }
+            if ( doesParentHaveOutput( gctx ) && gctx.isHasOutput() ) {
+                buf.append( ", \n" );
+            }
+        }
+
+        private boolean doesParentHaveOutput( final RHSGeneratorContext gctx ) {
+            RHSGeneratorContext parent = gctx.getParent();
+            while ( parent != null ) {
+                if ( parent.isHasOutput() ) {
+                    return true;
+                }
+                parent = parent.getParent();
+            }
+            return false;
         }
 
         protected void buildFormulaFieldValue( final ActionFieldValue fieldValue,
@@ -2213,11 +2382,11 @@ public class RuleModelDRLPersistenceImpl
                     return "not " + opString;
                 }
             }
-            int opPos = expr.indexOf(opString);
-            if ( opPos >= 0 && !isInQuote(expr, opPos) &&
-                 !(Character.isLetter(opString.charAt(0)) &&
-                   (expr.length() == opPos + opString.length() || Character.isLetter(expr.charAt(opPos + opString.length())) ||
-                    (opPos > 0 && Character.isLetter(expr.charAt(opPos-1))))) ) {
+            int opPos = expr.indexOf( opString );
+            if ( opPos >= 0 && !isInQuote( expr, opPos ) &&
+                    !( Character.isLetter( opString.charAt( 0 ) ) &&
+                            ( expr.length() == opPos + opString.length() || Character.isLetter( expr.charAt( opPos + opString.length() ) ) ||
+                                    ( opPos > 0 && Character.isLetter( expr.charAt( opPos - 1 ) ) ) ) ) ) {
                 potentialOperators.add( opString );
             }
         }
@@ -2242,10 +2411,11 @@ public class RuleModelDRLPersistenceImpl
         return null;
     }
 
-    private static boolean isInQuote(String expr, int pos) {
+    private static boolean isInQuote( String expr,
+                                      int pos ) {
         boolean isInQuote = false;
-        for (int i = pos-1; i >= 0; i--) {
-            if (expr.charAt(i) == '"') {
+        for ( int i = pos - 1; i >= 0; i-- ) {
+            if ( expr.charAt( i ) == '"' ) {
                 isInQuote = !isInQuote;
             }
         }
@@ -2290,17 +2460,17 @@ public class RuleModelDRLPersistenceImpl
             }
             line = line.trim();
             if ( modifiedVariable != null ) {
-                int modifyBlockEnd = line.lastIndexOf('}');
-                if (modifiers == null) {
+                int modifyBlockEnd = line.lastIndexOf( '}' );
+                if ( modifiers == null ) {
                     modifiers = modifyBlockEnd > 0 ?
-                                line.substring( line.indexOf( '{' ) + 1, modifyBlockEnd ).trim() :
-                                line.substring( line.indexOf( '{' ) + 1 ).trim();
-                } else if (modifyBlockEnd != 0) {
+                            line.substring( line.indexOf( '{' ) + 1, modifyBlockEnd ).trim() :
+                            line.substring( line.indexOf( '{' ) + 1 ).trim();
+                } else if ( modifyBlockEnd != 0 ) {
                     modifiers += modifyBlockEnd > 0 ?
-                                 line.substring( 0, modifyBlockEnd ).trim() :
-                                 line;
+                            line.substring( 0, modifyBlockEnd ).trim() :
+                            line;
                 }
-                if (modifyBlockEnd >= 0) {
+                if ( modifyBlockEnd >= 0 ) {
                     ActionUpdateField action = new ActionUpdateField();
                     action.setVariable( modifiedVariable );
                     m.addRhsItem( action );
@@ -2331,7 +2501,7 @@ public class RuleModelDRLPersistenceImpl
                     }
                 }
             } else if ( line.startsWith( "insert" ) ) {
-                String fact = unwrapParenthesis(line);
+                String fact = unwrapParenthesis( line );
                 String type = getStatementType( fact, factsType );
                 if ( type != null ) {
                     ActionInsertFact action = new ActionInsertFact( type );
@@ -2360,8 +2530,8 @@ public class RuleModelDRLPersistenceImpl
                                     m.getImports(),
                                     isJavaDialect );
             } else if ( line.startsWith( "modify" ) ) {
-                int modifyBlockEnd = line.lastIndexOf('}');
-                if (modifyBlockEnd > 0) {
+                int modifyBlockEnd = line.lastIndexOf( '}' );
+                if ( modifyBlockEnd > 0 ) {
                     String variable = line.substring( line.indexOf( '(' ) + 1, line.indexOf( ')' ) ).trim();
                     ActionUpdateField action = new ActionUpdateField();
                     action.setVariable( variable );
@@ -2375,12 +2545,12 @@ public class RuleModelDRLPersistenceImpl
                                           isJavaDialect );
                 } else {
                     modifiedVariable = line.substring( line.indexOf( '(' ) + 1, line.indexOf( ')' ) ).trim();
-                    int modifyBlockStart = line.indexOf('{');
-                    if (modifyBlockStart > 0) {
-                        modifiers = line.substring(modifyBlockStart+1).trim();
+                    int modifyBlockStart = line.indexOf( '{' );
+                    if ( modifyBlockStart > 0 ) {
+                        modifiers = line.substring( modifyBlockStart + 1 ).trim();
                     }
                 }
-             } else if ( line.startsWith( "retract" ) || line.startsWith( "delete" ) ) {
+            } else if ( line.startsWith( "retract" ) || line.startsWith( "delete" ) ) {
                 String variable = unwrapParenthesis( line );
                 m.addRhsItem( new ActionRetractFact( variable ) );
             } else if ( line.startsWith( "org.drools.core.process.instance.impl.WorkItemImpl wiWorkItem" ) ) {
@@ -2388,7 +2558,7 @@ public class RuleModelDRLPersistenceImpl
                 pwd = new PortableWorkDefinition();
                 pwd.setName( "WorkItem" );
                 awi.setWorkDefinition( pwd );
-                m.addRhsItem(awi);
+                m.addRhsItem( awi );
             } else if ( line.startsWith( "wiWorkItem.getParameters().put" ) ) {
                 String statement = line.substring( "wiWorkItem.getParameters().put".length() );
                 statement = unwrapParenthesis( statement );
@@ -2522,7 +2692,7 @@ public class RuleModelDRLPersistenceImpl
                 return dslSentence;
             }
         }
-        dslSentence.setDefinition(dslLine);
+        dslSentence.setDefinition( dslLine );
         return dslSentence;
     }
 
@@ -2592,7 +2762,7 @@ public class RuleModelDRLPersistenceImpl
                 int dotPos = statement.indexOf( '.' );
                 int argStart = statement.indexOf( '(' );
                 String methodName = statement.substring( dotPos + 1, argStart ).trim();
-                addSetterToAction(action, boundParams, dmo, imports, isJavaDialect, statement, methodName);
+                addSetterToAction( action, boundParams, dmo, imports, isJavaDialect, statement, methodName );
             }
         }
     }
@@ -2604,13 +2774,12 @@ public class RuleModelDRLPersistenceImpl
                                        PackageDataModelOracle dmo,
                                        Imports imports,
                                        boolean isJavaDialect ) {
-         for (String statement : splitArgumentsList(modifiers)) {
-             int argStart = statement.indexOf( '(' );
-             String methodName = statement.substring( 0, argStart ).trim();
-             addSetterToAction(action, boundParams, dmo, imports, isJavaDialect, statement, methodName);
-         }
+        for ( String statement : splitArgumentsList( modifiers ) ) {
+            int argStart = statement.indexOf( '(' );
+            String methodName = statement.substring( 0, argStart ).trim();
+            addSetterToAction( action, boundParams, dmo, imports, isJavaDialect, statement, methodName );
+        }
     }
-
 
     private void addSetterToAction( ActionFieldList action,
                                     Map<String, String> boundParams,
@@ -2631,12 +2800,12 @@ public class RuleModelDRLPersistenceImpl
                                       boundParams,
                                       isJavaDialect );
         }
-        action.addFieldValue(buildFieldValue(isJavaDialect,
-                                             field,
-                                             value,
-                                             dataType,
-                                             boundParams,
-                                             dmo));
+        action.addFieldValue( buildFieldValue( isJavaDialect,
+                                               field,
+                                               value,
+                                               dataType,
+                                               boundParams,
+                                               dmo ) );
     }
 
     private ActionFieldValue buildFieldValue( boolean isJavaDialect,

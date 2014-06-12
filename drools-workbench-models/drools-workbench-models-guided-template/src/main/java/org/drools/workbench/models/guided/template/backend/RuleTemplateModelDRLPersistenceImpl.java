@@ -28,10 +28,12 @@ import org.drools.template.DataProvider;
 import org.drools.template.DataProviderCompiler;
 import org.drools.template.objects.ArrayDataProvider;
 import org.drools.workbench.models.commons.backend.rule.DRLConstraintValueBuilder;
-import org.drools.workbench.models.commons.backend.rule.GeneratorContext;
-import org.drools.workbench.models.commons.backend.rule.GeneratorContextFactory;
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
 import org.drools.workbench.models.commons.backend.rule.RuleModelPersistence;
+import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContext;
+import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContextFactory;
+import org.drools.workbench.models.commons.backend.rule.context.RHSGeneratorContext;
+import org.drools.workbench.models.commons.backend.rule.context.RHSGeneratorContextFactory;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
@@ -73,7 +75,7 @@ public class RuleTemplateModelDRLPersistenceImpl
                                                       final StringBuilder buf,
                                                       final String nestedIndentation,
                                                       final boolean isNegated,
-                                                      final GeneratorContextFactory generatorContextFactory ) {
+                                                      final LHSGeneratorContextFactory generatorContextFactory ) {
         return new LHSPatternVisitor( isDSLEnhanced,
                                       bindingsPatterns,
                                       bindingsFields,
@@ -87,11 +89,13 @@ public class RuleTemplateModelDRLPersistenceImpl
     @Override
     protected RHSActionVisitor getRHSActionVisitor( final boolean isDSLEnhanced,
                                                     final StringBuilder buf,
-                                                    final String indentation ) {
+                                                    final String indentation,
+                                                    final RHSGeneratorContextFactory generatorContextFactory ) {
         return new RHSActionVisitor( isDSLEnhanced,
                                      bindingsPatterns,
                                      bindingsFields,
                                      constraintValueBuilder,
+                                     generatorContextFactory,
                                      buf,
                                      indentation );
     }
@@ -102,7 +106,7 @@ public class RuleTemplateModelDRLPersistenceImpl
                                   final Map<String, IFactPattern> bindingsPatterns,
                                   final Map<String, FieldConstraint> bindingsFields,
                                   final DRLConstraintValueBuilder constraintValueBuilder,
-                                  final GeneratorContextFactory generatorContextFactory,
+                                  final LHSGeneratorContextFactory generatorContextFactory,
                                   final StringBuilder b,
                                   final String indentation,
                                   final boolean isPatternNegated ) {
@@ -117,12 +121,12 @@ public class RuleTemplateModelDRLPersistenceImpl
         }
 
         @Override
-        public void preGenerateConstraints( GeneratorContext gctx ) {
+        public void preGenerateConstraints( LHSGeneratorContext gctx ) {
             buf.append( "@code{hasOutput" + gctx.getDepth() + "_" + gctx.getOffset() + " = false}" );
         }
 
         @Override
-        public void preGenerateNestedConnector( GeneratorContext gctx ) {
+        public void preGenerateNestedConnector( LHSGeneratorContext gctx ) {
             if ( gctx.getVarsInScope().size() > 0 ) {
                 buf.append( "@if{(" );
                 for ( String var : gctx.getVarsInScope() ) {
@@ -130,7 +134,7 @@ public class RuleTemplateModelDRLPersistenceImpl
                 }
                 buf.delete( buf.length() - 4, buf.length() );
 
-                GeneratorContext parentContext = gctx.getParent();
+                LHSGeneratorContext parentContext = gctx.getParent();
                 if ( parentContext != null ) {
                     Set<String> parentVarsInScope = new HashSet<String>( parentContext.getVarsInScope() );
                     parentVarsInScope.removeAll( gctx.getVarsInScope() );
@@ -144,7 +148,7 @@ public class RuleTemplateModelDRLPersistenceImpl
                 }
                 buf.append( ") || hasNonTemplateOutput" ).append( gctx.getDepth() + "_" + gctx.getOffset() ).append( "}" );
             } else {
-                GeneratorContext parentContext = gctx.getParent();
+                LHSGeneratorContext parentContext = gctx.getParent();
                 if ( parentContext != null ) {
                     Set<String> parentVarsInScope = new HashSet<String>( parentContext.getVarsInScope() );
                     parentVarsInScope.removeAll( gctx.getVarsInScope() );
@@ -161,11 +165,11 @@ public class RuleTemplateModelDRLPersistenceImpl
         }
 
         @Override
-        public void postGenerateNestedConnector( GeneratorContext gctx ) {
+        public void postGenerateNestedConnector( LHSGeneratorContext gctx ) {
             if ( gctx.getVarsInScope().size() > 0 ) {
                 buf.append( "@end{}" );
             } else {
-                GeneratorContext parentContext = gctx.getParent();
+                LHSGeneratorContext parentContext = gctx.getParent();
                 if ( parentContext != null ) {
                     Set<String> parentVarsInScope = new HashSet<String>( parentContext.getVarsInScope() );
                     parentVarsInScope.removeAll( gctx.getVarsInScope() );
@@ -177,7 +181,7 @@ public class RuleTemplateModelDRLPersistenceImpl
         }
 
         @Override
-        public void preGenerateNestedConstraint( GeneratorContext gctx ) {
+        public void preGenerateNestedConstraint( LHSGeneratorContext gctx ) {
             if ( gctx.getVarsInScope().size() > 0 ) {
                 buf.append( "@if{!(" );
                 for ( String var : gctx.getVarsInScope() ) {
@@ -189,7 +193,7 @@ public class RuleTemplateModelDRLPersistenceImpl
         }
 
         @Override
-        public void postGenerateNestedConstraint( GeneratorContext gctx ) {
+        public void postGenerateNestedConstraint( LHSGeneratorContext gctx ) {
             if ( gctx.getVarsInScope().size() > 0 ) {
                 buf.append( "@end{}" );
             }
@@ -197,7 +201,7 @@ public class RuleTemplateModelDRLPersistenceImpl
 
         @Override
         protected void generateConstraint( final FieldConstraint constr,
-                                           GeneratorContext gctx ) {
+                                           LHSGeneratorContext gctx ) {
             boolean generateTemplateCheck = isTemplateKey( constr );
 
             if ( generateTemplateCheck ) {
@@ -230,7 +234,7 @@ public class RuleTemplateModelDRLPersistenceImpl
         }
 
         public void generateSeparator( FieldConstraint constr,
-                                       GeneratorContext gctx ) {
+                                       LHSGeneratorContext gctx ) {
             if ( !gctx.isHasOutput() ) {
                 return;
             }
@@ -253,6 +257,7 @@ public class RuleTemplateModelDRLPersistenceImpl
             }
         }
 
+        @Override
         protected void addConnectiveFieldRestriction( final StringBuilder buf,
                                                       final int type,
                                                       final String fieldType,
@@ -260,7 +265,7 @@ public class RuleTemplateModelDRLPersistenceImpl
                                                       final Map<String, String> parameters,
                                                       final String value,
                                                       final ExpressionFormLine expression,
-                                                      GeneratorContext gctx,
+                                                      final LHSGeneratorContext gctx,
                                                       boolean spaceBeforeOperator ) {
             boolean generateTemplateCheck = type == BaseSingleFieldConstraint.TYPE_TEMPLATE;
             if ( generateTemplateCheck ) {
@@ -311,6 +316,7 @@ public class RuleTemplateModelDRLPersistenceImpl
             }
         }
 
+        @Override
         public void visitFromCollectCompositeFactPattern( final FromCollectCompositeFactPattern pattern,
                                                           final boolean isSubPattern ) {
 
@@ -359,19 +365,21 @@ public class RuleTemplateModelDRLPersistenceImpl
                                  final Map<String, IFactPattern> bindingsPatterns,
                                  final Map<String, FieldConstraint> bindingsFields,
                                  final DRLConstraintValueBuilder constraintValueBuilder,
+                                 final RHSGeneratorContextFactory generatorContextFactory,
                                  final StringBuilder b,
                                  final String indentation ) {
             super( isDSLEnhanced,
                    bindingsPatterns,
                    bindingsFields,
                    constraintValueBuilder,
+                   generatorContextFactory,
                    b,
                    indentation );
         }
 
-        protected void generateSetMethodCall( String variableName,
-                                              ActionFieldValue fieldValue ) {
-
+        @Override
+        protected void generateSetMethodCall( final String variableName,
+                                              final ActionFieldValue fieldValue ) {
             if ( fieldValue.getNature() == FieldNatureType.TYPE_TEMPLATE ) {
                 buf.append( "@if{" + fieldValue.getValue() + " != empty}" );
                 super.generateSetMethodCall( variableName,
@@ -382,6 +390,54 @@ public class RuleTemplateModelDRLPersistenceImpl
                                              fieldValue );
 
             }
+        }
+
+        @Override
+        protected void preGenerateSetMethodCallParameterValue( final ActionFieldValue fieldValue,
+                                                               final RHSGeneratorContext gctx ) {
+            if ( fieldValue.getNature() == FieldNatureType.TYPE_TEMPLATE ) {
+                buf.append( "@if{" + fieldValue.getValue() + " != empty}" );
+                buf.append( "@code{hasOutput" + gctx.getOffset() + " = true}" );
+                super.preGenerateSetMethodCallParameterValue( fieldValue,
+                                                              gctx );
+                buf.append( "@end{}" );
+            } else {
+                buf.append( "@code{hasOutput" + gctx.getOffset() + " = true}" );
+                super.preGenerateSetMethodCallParameterValue( fieldValue,
+                                                              gctx );
+            }
+        }
+
+        @Override
+        protected void generateModifyMethodCall( final RHSGeneratorContext gctx,
+                                                 final ActionFieldValue fieldValue ) {
+            if ( fieldValue.getNature() == FieldNatureType.TYPE_TEMPLATE ) {
+                buf.append( "@if{" + fieldValue.getValue() + " != empty}" );
+                super.generateModifyMethodCall( gctx,
+                                                fieldValue );
+                buf.append( "@end{}" );
+
+            } else {
+                super.generateModifyMethodCall( gctx,
+                                                fieldValue );
+            }
+        }
+
+        @Override
+        protected void generateModifyMethodSeparator( final RHSGeneratorContext gctx,
+                                                      final ActionFieldValue fieldValue ) {
+            if ( gctx.getParent() == null ) {
+                return;
+            }
+            buf.append( "@if{hasOutput" + gctx.getOffset() + " && (" );
+            RHSGeneratorContext parent = gctx.getParent();
+            while ( parent != null ) {
+                buf.append( "hasOutput" + parent.getOffset() + ( parent.getParent() != null ? " || " : "" ) );
+                parent = parent.getParent();
+            }
+            buf.append( ")}" );
+            buf.append( ", \n" );
+            buf.append( "@end{}" );
         }
 
         @Override
@@ -434,6 +490,7 @@ public class RuleTemplateModelDRLPersistenceImpl
         return generatedDrl;
     }
 
+    @Override
     protected String marshalRule( final RuleModel model ) {
         boolean isDSLEnhanced = model.hasDSLSentences();
         bindingsPatterns = new HashMap<String, IFactPattern>();
@@ -443,7 +500,8 @@ public class RuleTemplateModelDRLPersistenceImpl
 
         StringBuilder buf = new StringBuilder();
         StringBuilder header = new StringBuilder();
-        GeneratorContextFactory generatorContextFactory = new GeneratorContextFactory();
+        LHSGeneratorContextFactory lhsGeneratorContextFactory = new LHSGeneratorContextFactory();
+        RHSGeneratorContextFactory rhsGeneratorContextFactory = new RHSGeneratorContextFactory();
 
         //Build rule
         this.marshalRuleHeader( model,
@@ -458,15 +516,19 @@ public class RuleTemplateModelDRLPersistenceImpl
         super.marshalLHS( buf,
                           model,
                           isDSLEnhanced,
-                          generatorContextFactory );
+                          lhsGeneratorContextFactory );
         buf.append( "\tthen\n" );
         super.marshalRHS( buf,
                           model,
-                          isDSLEnhanced );
+                          isDSLEnhanced,
+                          rhsGeneratorContextFactory );
         this.marshalFooter( buf );
 
-        for ( GeneratorContext gc : generatorContextFactory.getGeneratorContexts() ) {
+        for ( LHSGeneratorContext gc : lhsGeneratorContextFactory.getGeneratorContexts() ) {
             header.append( "@code{hasNonTemplateOutput" + gc.getDepth() + "_" + gc.getOffset() + " = " + gc.hasNonTemplateOutput() + "}" );
+        }
+        for ( RHSGeneratorContext gc : rhsGeneratorContextFactory.getGeneratorContexts() ) {
+            header.append( "@code{hasOutput" + gc.getOffset() + " = false}" );
         }
 
         return header.append( buf ).toString();
