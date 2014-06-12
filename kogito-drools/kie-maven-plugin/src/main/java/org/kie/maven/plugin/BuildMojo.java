@@ -12,23 +12,33 @@ import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.compiler.compiler.PMMLCompilerFactory;
 import org.drools.compiler.compiler.ProcessBuilderFactory;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.compiler.kie.builder.impl.KieMetaInfoBuilder;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.KieRepository;
-import org.kie.api.builder.Message;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.compiler.kie.builder.impl.KieMetaInfoBuilder;
 import org.drools.compiler.kie.builder.impl.KieProject;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
+import org.drools.compiler.kie.builder.impl.ZipKieModule;
+import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieRepository;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
 
 /**
  * This goal builds the drools file belonging to the kproject.
@@ -63,6 +73,8 @@ public class BuildMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
 
+        List<InternalKieModule> kmoduleDeps = new ArrayList<InternalKieModule>();
+
         try {
             Set<URL> urls = new HashSet<URL>();
             for (String element : project.getCompileClasspathElements()) {
@@ -74,6 +86,11 @@ public class BuildMojo extends AbstractMojo {
                 File file = artifact.getFile();
                 if (file != null) {
                     urls.add(file.toURI().toURL());
+                    KieModuleModel depModel = getDependencyKieModel(file);
+                    if (depModel != null) {
+                        ReleaseId releaseId = new ReleaseIdImpl(artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion());
+                        kmoduleDeps.add(new ZipKieModule(releaseId, depModel, file));
+                    }
                 }
             }
             urls.add(outputDirectory.toURI().toURL());
@@ -98,7 +115,11 @@ public class BuildMojo extends AbstractMojo {
 
         try {
             KieRepository kr = ks.getRepository();
-            KieModule kModule = kr.addKieModule(ks.getResources().newFileSystemResource(sourceFolder));
+            InternalKieModule kModule = (InternalKieModule)kr.addKieModule(ks.getResources().newFileSystemResource(sourceFolder));
+            for (InternalKieModule kmoduleDep : kmoduleDeps) {
+                kModule.addKieDependency(kmoduleDep);
+            }
+
             KieContainerImpl kContainer = (KieContainerImpl) ks.newKieContainer(kModule.getReleaseId());
 
             KieProject kieProject = kContainer.getKieProject();
@@ -117,5 +138,27 @@ public class BuildMojo extends AbstractMojo {
             Thread.currentThread().setContextClassLoader(contextClassLoader);
         }
         getLog().info("KieModule successfully built!");
+    }
+
+    private KieModuleModel getDependencyKieModel(File jar) {
+        ZipFile zipFile = null;
+        try {
+            zipFile = new ZipFile( jar );
+            ZipEntry zipEntry = zipFile.getEntry( KieModuleModelImpl.KMODULE_JAR_PATH );
+            if (zipEntry != null) {
+                KieModuleModel kieModuleModel = KieModuleModelImpl.fromXML(zipFile.getInputStream(zipEntry));
+                setDefaultsforEmptyKieModule(kieModuleModel);
+                return kieModuleModel;
+            }
+        } catch ( Exception e ) {
+        } finally {
+            if (zipFile != null) {
+                try {
+                    zipFile.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+        return null;
     }
 }
