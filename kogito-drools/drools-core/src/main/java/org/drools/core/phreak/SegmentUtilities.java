@@ -4,7 +4,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
-import org.drools.core.common.TupleEntryQueue;
+import org.drools.core.common.StreamTupleEntryQueue;
 import org.drools.core.common.SynchronizedLeftTupleSets;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -99,11 +99,11 @@ public class SegmentUtilities {
 
         while (true) {
             nodeTypesInSegment = updateNodeTypesMask(tupleSource, nodeTypesInSegment);
-            if ( tupleSource.isStreamMode() && smem.getTupleQueue() == null ) {
+            if ( tupleSource.isStreamMode() && smem.getStreamQueue() == null ) {
                 // need to make sure there is one Queue, for the rule, when a stream mode node is found.
 
-                TupleEntryQueue queue = initAndGetTupleQueue(tupleSource, wm);
-                smem.setTupleQueue( queue );
+                StreamTupleEntryQueue queue = initAndGetTupleQueue(tupleSource, wm);
+                smem.setStreamQueue( queue );
             }
             if (NodeTypeEnums.isBetaNode(tupleSource)) {
                 allLinkedTestMask = processBetaNode(tupleSource, wm, smem, nodePosMask, allLinkedTestMask, updateNodeBit);
@@ -435,7 +435,7 @@ public class SegmentUtilities {
                 PathMemory pmem = (PathMemory) wm.getNodeMemory((MemoryFactory) sink);
                 smem.getPathMemories().add(pmem);
                 pmem.getSegmentMemories()[smem.getPos()] = smem;
-                smem.setTupleQueue( pmem.getTupleQueue() );
+                smem.setStreamQueue( pmem.getStreamQueue() );
                 if (smem.isSegmentLinked()) {
                     // not's can cause segments to be linked, and the rules need to be notified for evaluation
                     smem.notifyRuleLinkSegment(wm);
@@ -464,7 +464,7 @@ public class SegmentUtilities {
         }
     }
 
-    public static TupleEntryQueue initAndGetTupleQueue(NetworkNode node, InternalWorkingMemory wm) {
+    public static StreamTupleEntryQueue initAndGetTupleQueue(NetworkNode node, InternalWorkingMemory wm) {
         // get's or initializes the queue, if it does not exist. It recurse to the outer most PathMemory
         // and then trickle the Queue back up to the inner PathMememories
         LeftTupleSink sink = null;
@@ -478,13 +478,13 @@ public class SegmentUtilities {
             sink = (LeftTupleSink)node;
         }
 
-        TupleEntryQueue queue = null;
+        StreamTupleEntryQueue queue = null;
         if (NodeTypeEnums.RightInputAdaterNode == sink.getType()) {
             RightInputAdapterNode rian = (RightInputAdapterNode) sink;
             RiaNodeMemory riaMem =  (RiaNodeMemory) wm.getNodeMemory((MemoryFactory)sink);
             RiaPathMemory pmem = riaMem.getRiaPathMemory();
 
-            queue = pmem.getTupleQueue();
+            queue = pmem.getStreamQueue();
             if ( queue == null ) {
                 ObjectSink[] nodes = rian.getSinkPropagator().getSinks();
                 // iterate the first child sink, we only need the first, as all reach the same outer rtn
@@ -492,10 +492,10 @@ public class SegmentUtilities {
             }
         } else if (NodeTypeEnums.isTerminalNode(sink)) {
             PathMemory pmem =  (PathMemory) wm.getNodeMemory((MemoryFactory) sink);
-            queue =  pmem.getTupleQueue();
+            queue =  pmem.getStreamQueue();
             if ( queue == null ) {
                 pmem.initQueue();
-                queue = pmem.getTupleQueue();
+                queue = pmem.getStreamQueue();
             }
         }
         return queue;

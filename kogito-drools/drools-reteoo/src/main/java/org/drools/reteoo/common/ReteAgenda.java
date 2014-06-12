@@ -26,6 +26,7 @@ import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.EventSupport;
+import org.drools.core.common.GarbageCollector;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
@@ -308,7 +309,7 @@ public class ReteAgenda
         if ( log.isTraceEnabled() ) {
             log.trace("Added {} to eager evaluation list.", item.getRule().getName() );
         }
-        eager.add( item );
+        eager.add(item);
     }
 
     @Override
@@ -1484,5 +1485,28 @@ public class ReteAgenda
 
     public ActivationsFilter getActivationsFilter() {
         return this.activationsFilter;
+    }
+
+    public GarbageCollector getGarbageCollector() {
+        return DUMMY_GARBAGE_COLLECTOR;
+    }
+
+    private static final GarbageCollector DUMMY_GARBAGE_COLLECTOR = new DummyGarbageCollector();
+
+    public static class DummyGarbageCollector implements GarbageCollector {
+        @Override
+        public void increaseDeleteCounter() { }
+
+        @Override
+        public void gcUnlinkedRules() { }
+
+        @Override
+        public void forceGcUnlinkedRules() { }
+
+        @Override
+        public void remove(RuleAgendaItem item) { }
+
+        @Override
+        public void add(RuleAgendaItem item) { }
     }
 }

@@ -12,12 +12,18 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.audit.WorkingMemoryFileLogger;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.evaluators.TimeIntervalParser;
+import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.RightTupleSets;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.Rete;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
@@ -4994,27 +5000,27 @@ public class CepEspTest extends CommonTestMethodBase {
                 "global java.util.List list\n" +
                 "\n" +
                 "declare Integer\n" +
-                "    @role(event)\n" +
+                " @role(event)\n" +
                 "end\n" +
                 "\n" +
                 "rule R1\n" +
                 "salience salience1.get()\n" +
                 "when\n" +
-                "    $i : Integer()\n" +
+                " $i : Integer()\n" +
                 "then\n" +
-                "    retract($i);\n" +
-                "    salience1.decrementAndGet();\n" +
-                "    list.add(1);\n" +
-                "end    \n" +
+                " retract($i);\n" +
+                " salience1.decrementAndGet();\n" +
+                " list.add(1);\n" +
+                "end \n" +
                 "\n" +
                 "rule R2\n" +
                 "salience salience2.get()\n" +
                 "when\n" +
-                "    $i : Integer()\n" +
+                " $i : Integer()\n" +
                 "then\n" +
-                "    retract($i);\n" +
-                "    salience2.decrementAndGet();\n" +
-                "    list.add(2);\n" +
+                " retract($i);\n" +
+                " salience2.decrementAndGet();\n" +
+                " list.add(2);\n" +
                 "end";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -5040,5 +5046,218 @@ public class CepEspTest extends CommonTestMethodBase {
         }
 
         assertEquals(list, Arrays.asList(2, 1, 2, 1, 2, 1, 2, 1, 2, 1));
+    }
+
+    @Test
+    public void testRightTupleLeak() throws Exception {
+        // DROOLS-516
+        String drl =
+                "declare Integer @role(event) end\n" +
+                "declare Long @role(event) end\n" +
+                "\n" +
+                "rule R1 when\n" +
+                " $long : Long()\n" +
+                " Integer( this > $long )\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                " $i : Integer()\n" +
+                "then\n" +
+                " retract( $i );\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KieSession ksession = kbase.newKieSession();
+
+        for (int i = 0; i < 10; i++) {
+            ksession.insert(new Integer(i));
+            ksession.fireAllRules();
+        }
+
+        // force gc
+        ((DefaultAgenda)ksession.getAgenda()).getGarbageCollector().forceGcUnlinkedRules();
+
+        Rete rete = ((KnowledgeBaseImpl)kbase).getRete();
+        JoinNode joinNode = null;
+        for (ObjectTypeNode otn : rete.getObjectTypeNodes()) {
+            if ( Integer.class == otn.getObjectType().getValueType().getClassType() ) {
+                joinNode = (JoinNode)otn.getSinkPropagator().getSinks()[0];
+                break;
+            }
+        }
+
+        assertNotNull(joinNode);
+        InternalWorkingMemory wm = (InternalWorkingMemory)ksession;
+        BetaMemory memory = (BetaMemory)wm.getNodeMemory(joinNode);
+        assertEquals(0, memory.getSegmentMemory().getStreamQueue().size());
+
+        RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
+        assertEquals(0, stagedRightTuples.deleteSize());
+        assertEquals(0, stagedRightTuples.insertSize());
+    }
+
+    @Test
+    public void testRightTupleLeak2() throws Exception {
+        // DROOLS-516
+        String drl =
+                "declare Integer @role(event) end\n" +
+                "declare Long @role(event) end\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R1 when\n" +
+                " $long : Long()\n" +
+                " $i : Integer( this > $long )\n" +
+                "then\n" +
+                " list.add($i);\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                " $i : Integer( this > 3 )\n" +
+                "then\n" +
+                " retract( $i );\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KieSession ksession = kbase.newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+
+        for (int i = 0; i < 10; i++) {
+            ksession.insert(new Integer(i));
+            ksession.fireAllRules();
+        }
+
+        // force gc
+        ((DefaultAgenda)ksession.getAgenda()).getGarbageCollector().forceGcUnlinkedRules();
+
+        Rete rete = ((KnowledgeBaseImpl)kbase).getRete();
+        JoinNode joinNode = null;
+        for (ObjectTypeNode otn : rete.getObjectTypeNodes()) {
+            if ( Integer.class == otn.getObjectType().getValueType().getClassType() ) {
+                joinNode = (JoinNode)otn.getSinkPropagator().getSinks()[0];
+                break;
+            }
+        }
+
+        assertNotNull(joinNode);
+        InternalWorkingMemory wm = (InternalWorkingMemory)ksession;
+        BetaMemory memory = (BetaMemory)wm.getNodeMemory(joinNode);
+        assertEquals(0, memory.getSegmentMemory().getStreamQueue().size());
+
+        RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
+        assertEquals(0, stagedRightTuples.deleteSize());
+        assertEquals(4, stagedRightTuples.insertSize());
+
+        ksession.insert(new Long(0));
+        ksession.fireAllRules();
+
+        assertEquals(3, list.size());
+        assertTrue(list.containsAll(Arrays.asList(1, 2, 3)));
+    }
+
+    @Test
+    public void testRightTupleLeak3() throws Exception {
+        // DROOLS-516
+        String drl =
+                "declare Integer @role(event) end\n" +
+                "declare Long @role(event) end\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R1 when\n" +
+                " $long : Long()\n" +
+                " $i : Integer( this > $long )\n" +
+                " String()\n" +
+                "then\n" +
+                " list.add($i);\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                " $long : Long()\n" +
+                " $i : Integer( this > $long )\n" +
+                " eval( $i % 2 == 0 )\n" +
+                "then\n" +
+                " retract($i);\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KieSession ksession = kbase.newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+
+        FactHandle sFH = ksession.insert("");
+        ksession.insert(new Long(0));
+        ksession.fireAllRules();
+
+        for (int i = 0; i < 10; i++) {
+            ksession.insert(new Integer(i));
+            if (i == 6) {
+                ksession.delete(sFH);
+            }
+        }
+        ksession.fireAllRules();
+
+        // force gc
+        ((DefaultAgenda)ksession.getAgenda()).getGarbageCollector().forceGcUnlinkedRules();
+
+        Rete rete = ((KnowledgeBaseImpl)kbase).getRete();
+        JoinNode joinNode = null;
+        for (ObjectTypeNode otn : rete.getObjectTypeNodes()) {
+            if ( Integer.class == otn.getObjectType().getValueType().getClassType() ) {
+                joinNode = (JoinNode)otn.getSinkPropagator().getSinks()[0];
+                break;
+            }
+        }
+
+        assertNotNull(joinNode);
+        InternalWorkingMemory wm = (InternalWorkingMemory)ksession;
+        BetaMemory memory = (BetaMemory)wm.getNodeMemory(joinNode);
+        assertEquals(0, memory.getSegmentMemory().getStreamQueue().size());
+
+        RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
+        assertEquals(4, stagedRightTuples.deleteSize());
+        assertEquals(0, stagedRightTuples.insertSize());
+
+        ksession.insert("");
+        ksession.fireAllRules();
+
+        assertEquals(0, stagedRightTuples.deleteSize());
+        assertEquals(0, stagedRightTuples.insertSize());
+
+        System.out.println(list);
+
+        assertEquals(5, list.size());
+        assertTrue(list.containsAll(Arrays.asList(1, 3, 5, 7, 9)));
     }
 }

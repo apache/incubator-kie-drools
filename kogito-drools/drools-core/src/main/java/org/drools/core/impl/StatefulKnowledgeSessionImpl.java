@@ -840,8 +840,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, this, lmem, false, queryObject.isOpen() );
 
         RuleBaseConfiguration conf = this.kBase.getConfiguration();
-        if( conf.isPhreakEnabled() && lmem.getSegmentMemory().getTupleQueue() != null ) {
-            RuleExecutor.flushTupleQueue(lmem.getSegmentMemory().getTupleQueue());
+        if ( conf.isPhreakEnabled() ) {
+            RuleExecutor.flushTupleQueue(lmem.getSegmentMemory().getStreamQueue());
         }
 
         List<PathMemory> pmems =  lmem.getSegmentMemory().getPathMemories();

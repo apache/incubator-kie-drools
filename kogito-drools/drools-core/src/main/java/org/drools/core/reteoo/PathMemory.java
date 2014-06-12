@@ -7,8 +7,7 @@ import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NetworkNode;
-import org.drools.core.common.TupleEntryQueue;
-import org.drools.core.common.TupleEntryQueueImpl;
+import org.drools.core.common.StreamTupleEntryQueue;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.util.AbstractBaseLinkedListNode;
@@ -26,7 +25,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     private volatile RuleAgendaItem    agendaItem;
     private          SegmentMemory[]   segmentMemories;
     private          SegmentMemory     segmentMemory;
-    protected TupleEntryQueue queue;
+    protected StreamTupleEntryQueue queue;
 
     public PathMemory(NetworkNode networkNode) {
         this.networkNode = networkNode;
@@ -34,10 +33,10 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     public void initQueue() {
-        this.queue = new TupleEntryQueueImpl();
+        this.queue = new StreamTupleEntryQueue();
     }
 
-    public TupleEntryQueue getTupleQueue() {
+    public StreamTupleEntryQueue getStreamQueue() {
         return queue;
     }
 
@@ -89,31 +88,39 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         }
     }
 
-    public synchronized void doLinkRule(InternalWorkingMemory wm) {
+    public boolean hasAgendaItem() {
+        return agendaItem != null;
+    }
+
+    public synchronized RuleAgendaItem getOrCreateRuleAgendaItem(InternalWorkingMemory wm) {
+        ensureAgendaItemCreated(wm);
+        return agendaItem;
+    }
+
+    private TerminalNode ensureAgendaItemCreated(InternalWorkingMemory wm) {
         TerminalNode rtn = (TerminalNode) getNetworkNode();
-        if (log.isTraceEnabled()) {
-            log.trace("    LinkRule name={}", rtn.getRule().getName());
-        }
         if (agendaItem == null) {
             int salience = ( rtn.getRule().getSalience() instanceof MVELSalienceExpression)
                            ? 0
                            : rtn.getRule().getSalience().getValue(null, rtn.getRule(), wm);
             agendaItem = ((InternalAgenda) wm.getAgenda()).createRuleAgendaItem(salience, this, rtn);
+        }
+        return rtn;
+    }
+
+    public synchronized void doLinkRule(InternalWorkingMemory wm) {
+        TerminalNode rtn = ensureAgendaItemCreated(wm);
+        if (log.isTraceEnabled()) {
+            log.trace(" LinkRule name={}", rtn.getRule().getName());
         }
 
         queueRuleAgendaItem(wm);
     }
 
     public synchronized void doUnlinkRule(InternalWorkingMemory wm) {
-        TerminalNode rtn = (TerminalNode) getNetworkNode();
+        TerminalNode rtn = ensureAgendaItemCreated(wm);
         if (log.isTraceEnabled()) {
             log.trace("    UnlinkRule name={}", rtn.getRule().getName());
-        }
-        if (agendaItem == null) {
-            int salience = ( rtn.getRule().getSalience() instanceof MVELSalienceExpression)
-                           ? 0
-                           : rtn.getRule().getSalience().getValue(null, rtn.getRule(), wm);
-            agendaItem = ((InternalAgenda) wm.getAgenda()).createRuleAgendaItem(salience, this, rtn);
         }
 
         queueRuleAgendaItem(wm);

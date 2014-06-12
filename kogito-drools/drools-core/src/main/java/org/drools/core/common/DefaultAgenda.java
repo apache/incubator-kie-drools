@@ -41,6 +41,7 @@ import org.drools.core.spi.RuleFlowGroup;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.index.LeftTupleList;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.AgendaFilter;
@@ -54,10 +55,13 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -90,7 +94,7 @@ public class DefaultAgenda
 
     private Map<String, InternalAgendaGroup>                     agendaGroups;
 
-    private Map<String, InternalActivationGroup>                         activationGroups;
+    private Map<String, InternalActivationGroup>                 activationGroups;
 
     private LinkedList<AgendaGroup>                              focusStack;
 
@@ -98,7 +102,7 @@ public class DefaultAgenda
 
     private InternalAgendaGroup                                  main;
 
-    private LinkedList<RuleAgendaItem>                           eager;
+    private final LinkedList<RuleAgendaItem>                     eager = new LinkedList<RuleAgendaItem>();
 
     private AgendaGroupFactory                                   agendaGroupFactory;
 
@@ -109,15 +113,19 @@ public class DefaultAgenda
     private org.kie.api.runtime.rule.ConsequenceExceptionHandler consequenceExceptionHandler;
 
     protected AtomicBoolean                                      halt               = new AtomicBoolean( true );
-    protected volatile boolean                                 fireUntilHalt      = false;
+    protected volatile boolean                                   fireUntilHalt      = false;
 
     protected int                                                activationCounter;
 
     private boolean                                              declarativeAgenda;
 
+    private boolean                                              streamMode;
+
     private ObjectTypeConf                                       activationObjectTypeConf;
 
     private ActivationsFilter                                    activationsFilter;
+
+    private GarbageCollector                                     garbageCollector;
 
     // ------------------------------------------------------------
     // Constructors
@@ -149,7 +157,6 @@ public class DefaultAgenda
 
             this.focusStack.add( this.main );
         }
-        eager = new LinkedList<RuleAgendaItem>();
 
         Object object = ClassUtils.instantiateObject( kBase.getConfiguration().getConsequenceExceptionHandler(),
                                                       kBase.getConfiguration().getClassLoader() );
@@ -160,6 +167,10 @@ public class DefaultAgenda
         }
 
         this.declarativeAgenda = kBase.getConfiguration().isDeclarativeAgenda();
+        this.streamMode = kBase.getConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM;
+        if (this.streamMode) {
+            this.garbageCollector = new DefaultGarbageCollector();
+        }
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -174,6 +185,7 @@ public class DefaultAgenda
         knowledgeHelper = (KnowledgeHelper) in.readObject();
         legacyConsequenceExceptionHandler = (ConsequenceExceptionHandler) in.readObject();
         declarativeAgenda = in.readBoolean();
+        streamMode = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -186,7 +198,8 @@ public class DefaultAgenda
         out.writeObject( agendaGroupFactory );
         out.writeObject( knowledgeHelper );
         out.writeObject( legacyConsequenceExceptionHandler );
-        out.writeBoolean( declarativeAgenda );
+        out.writeBoolean(declarativeAgenda);
+        out.writeBoolean( streamMode );
     }
 
     public RuleAgendaItem createRuleAgendaItem(final int salience,
@@ -672,7 +685,7 @@ public class DefaultAgenda
     }
 
     public void deactivateRuleFlowGroup(final String name) {
-        deactivateRuleFlowGroup((InternalRuleFlowGroup ) getRuleFlowGroup(name));
+        deactivateRuleFlowGroup((InternalRuleFlowGroup) getRuleFlowGroup(name));
     }
 
     public void deactivateRuleFlowGroup(final InternalRuleFlowGroup group) {
@@ -767,7 +780,7 @@ public class DefaultAgenda
 
         // reset all activation groups.
         for ( InternalActivationGroup group : this.activationGroups.values() ) {
-            group.setTriggeredForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
+            group.setTriggeredForRecency(this.workingMemory.getFactHandleFactory().getRecency());
             group.reset();
 
         }
@@ -925,6 +938,10 @@ public class DefaultAgenda
                     }
 
                     if (item != null) {
+                        if (streamMode) {
+                            garbageCollector.remove(item);
+                        }
+
                         localFireCount = item.getRuleExecutor().evaluateNetworkAndFire(this.workingMemory, filter,
                                                                                        fireCount, fireLimit);
                         if ( localFireCount == 0 ) {
@@ -950,7 +967,7 @@ public class DefaultAgenda
         synchronized (eager) {
             while ( !eager.isEmpty() ) {
                 RuleExecutor ruleExecutor = eager.removeFirst().getRuleExecutor();
-                ruleExecutor.flushTupleQueue();
+                ruleExecutor.flushTupleQueue(ruleExecutor.getPathMemory().getStreamQueue());
                 ruleExecutor.evaluateNetwork(this.workingMemory);
             }
         }
@@ -1171,6 +1188,10 @@ public class DefaultAgenda
                                 }
                             }
                         }
+                    } else {
+                        if (streamMode) {
+                            garbageCollector.gcUnlinkedRules();
+                        }
                     }
                 }
                 if ( log.isTraceEnabled() ) {
@@ -1202,6 +1223,9 @@ public class DefaultAgenda
             } finally {
                 this.halt.set(true);
             }
+        }
+        if (streamMode) {
+            garbageCollector.gcUnlinkedRules();
         }
         return fireCount;
     }
@@ -1236,5 +1260,42 @@ public class DefaultAgenda
 
     public KnowledgeHelper getKnowledgeHelper() {
         return knowledgeHelper;
+    }
+
+    public GarbageCollector getGarbageCollector() {
+        return garbageCollector;
+    }
+
+    public static class DefaultGarbageCollector implements GarbageCollector {
+        private static final int GC_THRESHOLD = 1000;
+        private Set<RuleAgendaItem> unlinked = new HashSet<RuleAgendaItem>();
+
+        private volatile int deleteCounter = 0;
+
+        public synchronized void increaseDeleteCounter() {
+            deleteCounter++;
+        }
+
+        public synchronized void gcUnlinkedRules() {
+            if (deleteCounter > GC_THRESHOLD) {
+                forceGcUnlinkedRules();
+            }
+        }
+
+        public synchronized void forceGcUnlinkedRules() {
+            for (RuleAgendaItem item : unlinked) {
+                item.getRuleExecutor().gcStreamQueue();
+            }
+            unlinked.clear();
+            deleteCounter = 0;
+        }
+
+        public synchronized void remove(RuleAgendaItem item) {
+            unlinked.remove(item);
+        }
+
+        public synchronized void add(RuleAgendaItem item) {
+            unlinked.add(item);
+        }
     }
 }
