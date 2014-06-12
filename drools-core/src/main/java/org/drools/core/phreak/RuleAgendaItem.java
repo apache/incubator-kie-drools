@@ -74,4 +74,24 @@ public class RuleAgendaItem extends AgendaItemImpl implements LinkedListNode<Rul
         previous = null;
         next = null;
     }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (object == this) {
+            return true;
+        }
+
+        return object instanceof RuleAgendaItem && getRule().equals(((RuleAgendaItem) object).getRule());
+    }
+
+    /**
+     * Return the hashCode of the
+     * <code>TupleKey<code> as the hashCode of the AgendaItem
+     *
+     * @return
+     */
+    @Override
+    public int hashCode() {
+        return getRule().hashCode();
+    }
 }

@@ -11,16 +11,29 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.audit.WorkingMemoryFileLogger;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.evaluators.TimeIntervalParser;
+import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.GarbageCollector;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+import org.drools.core.common.Memory;
+import org.drools.core.common.NodeMemories;
+import org.drools.core.common.RightTupleSets;
+import org.drools.core.common.StreamTupleEntryQueue;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.Rete;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Rule;
 import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.SessionPseudoClock;
 import org.drools.core.time.impl.DurationTimer;
@@ -62,6 +75,7 @@ import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 
 import java.io.File;
@@ -5026,52 +5040,268 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void test2NotsWithTemporalConstraints() {
-        // BZ-1122738 DROOLS-479
-        String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
-                     "import java.util.Date\n" +
-                     "\n" +
-                     "declare OtherFact\n" +
-                     "    @role( event )\n" +
-                     "end\n" +
-                     "\n" +
-                     "declare SimpleEvent\n" +
-                     "    @role( event )\n" +
-                     "    @timestamp( dateEvt )\n" +
-                     "end\n" +
-                     "\n" +
-                     "\n" +
-                     "rule R\n" +
-                     "    when\n" +
-                     "        $e : SimpleEvent()\n" +
-                     "        not OtherFact( this after[0, 1h] $e )\n" +
-                     "        not OtherFact( this after[0, 1h] $e )\n" +
-                     "    then\n" +
-                     "        $e.setCode(\"code2\");\n" +
-                     "    end\n " +
-                     "";
+    public void testRightTupleLeak() throws Exception {
+        // DROOLS-516
+        String drl =
+                "declare Integer @role(event) end\n" +
+                "declare Long @role(event) end\n" +
+                "\n" +
+                "rule R1 when\n" +
+                " $long : Long()\n" +
+                " Integer( this > $long )\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                " $i : Integer()\n" +
+                "then\n" +
+                " retract( $i );\n" +
+                "end";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
+
         KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         baseConfig.setOption( EventProcessingOption.STREAM );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        KieSession ksession = kbase.newKieSession();
 
-        final KieSession ksession = kbase.newKieSession(sessionConfig, null);
-        PseudoClockScheduler clock = ksession.getSessionClock();
-        clock.setStartupTime(System.currentTimeMillis());
+        for (int i = 0; i < 10; i++) {
+            ksession.insert(new Integer(i));
+            ksession.fireAllRules();
+        }
 
-        SimpleEvent event = new SimpleEvent("code1");
-        event.setDateEvt(System.currentTimeMillis() - (2 * 60 * 60 * 1000));
-        ksession.insert(event);
+        // force gc
+        GarbageCollector gc = ((AgendaImpl)ksession.getAgenda()).getAgenda().getGarbageCollector();
+        assertEquals(20, gc.getDeleteCounter()); // 10 LT for R2 + 10 RT for R1
+        gc.forceGcUnlinkedRules();
+
+        Rete rete = ((KnowledgeBaseImpl)kbase).getRete();
+        JoinNode joinNode = null;
+        for (ObjectTypeNode otn : rete.getObjectTypeNodes()) {
+            if ( Integer.class == otn.getObjectType().getValueType().getClassType() ) {
+                joinNode = (JoinNode)otn.getSinkPropagator().getSinks()[0];
+                break;
+            }
+        }
+
+        assertNotNull(joinNode);
+        InternalWorkingMemory wm = ((InternalWorkingMemoryEntryPoint)ksession).getInternalWorkingMemory();
+        BetaMemory memory = (BetaMemory)wm.getNodeMemory(joinNode);
+        assertEquals(0, memory.getSegmentMemory().getStreamQueue().size());
+
+        RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
+        assertEquals(0, stagedRightTuples.deleteSize());
+        assertEquals(0, stagedRightTuples.insertSize());
+    }
+
+    @Test
+    public void testRightTupleLeak2() throws Exception {
+        // DROOLS-516
+        String drl =
+                "declare Integer @role(event) end\n" +
+                "declare Long @role(event) end\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R1 when\n" +
+                " $long : Long()\n" +
+                " $i : Integer( this > $long )\n" +
+                "then\n" +
+                " list.add($i);\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                " $i : Integer( this > 3 )\n" +
+                "then\n" +
+                " retract( $i );\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KieSession ksession = kbase.newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+
+        for (int i = 0; i < 10; i++) {
+            ksession.insert(new Integer(i));
+            ksession.fireAllRules();
+        }
+
+        // force gc
+        ((AgendaImpl)ksession.getAgenda()).getAgenda().getGarbageCollector().forceGcUnlinkedRules();
+
+        Rete rete = ((KnowledgeBaseImpl)kbase).getRete();
+        JoinNode joinNode = null;
+        for (ObjectTypeNode otn : rete.getObjectTypeNodes()) {
+            if ( Integer.class == otn.getObjectType().getValueType().getClassType() ) {
+                joinNode = (JoinNode)otn.getSinkPropagator().getSinks()[0];
+                break;
+            }
+        }
+
+        assertNotNull(joinNode);
+        InternalWorkingMemory wm = ((InternalWorkingMemoryEntryPoint)ksession).getInternalWorkingMemory();
+        BetaMemory memory = (BetaMemory)wm.getNodeMemory(joinNode);
+        assertEquals(0, memory.getSegmentMemory().getStreamQueue().size());
+
+        RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
+        assertEquals(0, stagedRightTuples.deleteSize());
+        assertEquals(4, stagedRightTuples.insertSize());
+
+        ksession.insert(new Long(0));
         ksession.fireAllRules();
-        assertEquals("code2", event.getCode());
+
+        assertEquals(3, list.size());
+        assertTrue(list.containsAll(Arrays.asList(1, 2, 3)));
+    }
+
+    @Test
+    public void testRightTupleLeak3() throws Exception {
+        // DROOLS-516
+        String drl =
+                "declare Integer @role(event) end\n" +
+                "declare Long @role(event) end\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R1 when\n" +
+                " $long : Long()\n" +
+                " $i : Integer( this > $long )\n" +
+                " String()\n" +
+                "then\n" +
+                " list.add($i);\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                " $long : Long()\n" +
+                " $i : Integer( this > $long )\n" +
+                " eval( $i % 2 == 0 )\n" +
+                "then\n" +
+                " retract($i);\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KieSession ksession = kbase.newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+
+        FactHandle sFH = ksession.insert("");
+        ksession.insert(new Long(0));
+        ksession.fireAllRules();
+
+        for (int i = 0; i < 10; i++) {
+            ksession.insert(new Integer(i));
+            if (i == 6) {
+                ksession.delete(sFH);
+            }
+        }
+        ksession.fireAllRules();
+
+        // force gc
+        ((AgendaImpl)ksession.getAgenda()).getAgenda().getGarbageCollector().forceGcUnlinkedRules();
+
+        Rete rete = ((KnowledgeBaseImpl)kbase).getRete();
+        JoinNode joinNode = null;
+        for (ObjectTypeNode otn : rete.getObjectTypeNodes()) {
+            if ( Integer.class == otn.getObjectType().getValueType().getClassType() ) {
+                joinNode = (JoinNode)otn.getSinkPropagator().getSinks()[0];
+                break;
+            }
+        }
+
+        assertNotNull(joinNode);
+        InternalWorkingMemory wm = ((InternalWorkingMemoryEntryPoint)ksession).getInternalWorkingMemory();
+        BetaMemory memory = (BetaMemory)wm.getNodeMemory(joinNode);
+        assertEquals(0, memory.getSegmentMemory().getStreamQueue().size());
+
+        RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
+        assertEquals(4, stagedRightTuples.deleteSize());
+        assertEquals(0, stagedRightTuples.insertSize());
+
+        ksession.insert("");
+        ksession.fireAllRules();
+
+        assertEquals(0, stagedRightTuples.deleteSize());
+        assertEquals(0, stagedRightTuples.insertSize());
+
+        System.out.println(list);
+
+        assertEquals(5, list.size());
+        assertTrue(list.containsAll(Arrays.asList(1, 3, 5, 7, 9)));
+    }
+
+    @Test
+    public void testDurationMemoryLeakWithAlwaysLinkedRules() throws Exception {
+        String drl =
+                "import org.drools.compiler.StockTick;\n " +
+
+                "declare StockTick\n"+
+                " @role( event )\n"+
+                " @timestamp( time )\n"+
+                "end\n"+
+
+                "rule Clear \n"+
+                "when\n"+
+                " $droo : StockTick( company == \"DROO\" )\n"+
+                "then\n"+
+                " delete($droo);\n"+
+                "end\n"+
+
+                "rule Cancel\n"+
+                "when\n"+
+                " $oord : StockTick( company != \"DROO\" )\n"+
+                " not StockTick( company == \"DROO\" )\n"+
+                "then\n"+
+                "end";
+
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession ksession = helper.build( EventProcessingOption.STREAM ).newKieSession();
+
+        assertEquals("FactCount should be 0[1]", 0, ksession.getFactCount());
+
+        for ( int j = 0; j < 100; j++ ) {
+            ksession.insert(new StockTick(0, "DROO", 1.00));
+        }
+        ksession.fireAllRules();
+        assertEquals("FactCount should still be 0[2]", 0, ksession.getFactCount());
+
+        ((AgendaImpl)ksession.getAgenda()).getAgenda().getGarbageCollector().forceGcUnlinkedRules();
+
+        NodeMemories nm = ((InternalWorkingMemoryEntryPoint)ksession).getInternalWorkingMemory().getNodeMemories();
+        for ( int j = 0; j < nm.length(); j++ ) {
+            Memory mem = nm.peekNodeMemory( j );
+            if ( mem != null && mem instanceof PathMemory) {
+                PathMemory pathMemory = (PathMemory) mem;
+                StreamTupleEntryQueue kiu = pathMemory.getStreamQueue();
+                System.out.println( kiu + " >> " + kiu.size() );
+                assertEquals( 0, kiu.size() );
+            }
+        }
     }
 }

@@ -187,9 +187,7 @@ public class PhreakQueryNode {
     }
 
     public void flushTupleQuery( LiaNodeMemory lm, InternalWorkingMemory wm ) {
-        if ( lm.getSegmentMemory().getTupleQueue() != null ) {
-            RuleExecutor.flushTupleQueue( lm.getSegmentMemory().getTupleQueue() );
-        }
+        RuleExecutor.flushTupleQueue( lm.getSegmentMemory().getStreamQueue() );
     }
 
 }

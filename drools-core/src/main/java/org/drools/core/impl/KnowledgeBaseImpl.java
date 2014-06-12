@@ -60,6 +60,7 @@ import org.drools.core.event.knowlegebase.impl.BeforeProcessAddedEventImpl;
 import org.drools.core.event.knowlegebase.impl.BeforeProcessRemovedEventImpl;
 import org.drools.core.event.knowlegebase.impl.BeforeRuleAddedEventImpl;
 import org.drools.core.event.knowlegebase.impl.BeforeRuleRemovedEventImpl;
+import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.rule.Package;
 import org.kie.internal.KnowledgeBase;
@@ -407,5 +408,9 @@ public class KnowledgeBaseImpl
 
     public void removeKiePackage(String packageName) {
         removeKnowledgePackage(packageName);
+    }
+
+    public Rete getRete() {
+        return ((InternalRuleBase)ruleBase).getRete();
     }
 }

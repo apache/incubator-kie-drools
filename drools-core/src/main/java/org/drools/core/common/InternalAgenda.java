@@ -219,4 +219,6 @@ public interface InternalAgenda
     void addItemToActivationGroup(AgendaItem item);
 
     boolean createPostponedActivation(LeftTuple postponedTuple, PropagationContext propagationContext, InternalWorkingMemory workingMemory, TerminalNode terminalNode);
+
+    GarbageCollector getGarbageCollector();
 }

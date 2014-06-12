@@ -16,29 +16,6 @@
 
 package org.drools.core.common;
 
-import java.io.ByteArrayOutputStream;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Queue;
-import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.drools.core.Agenda;
 import org.drools.core.FactException;
 import org.drools.core.FactHandle;
@@ -76,7 +53,6 @@ import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Assert;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.phreak.SegmentUtilities;
-import org.drools.core.phreak.StackEntry;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -116,7 +92,6 @@ import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.type.DateFormats;
 import org.drools.core.type.DateFormatsImpl;
 import org.drools.core.util.index.LeftTupleList;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessEventManager;
 import org.kie.api.marshalling.Marshaller;
@@ -140,6 +115,29 @@ import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import java.io.ByteArrayOutputStream;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Queue;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Implementation of <code>WorkingMemory</code>.
@@ -542,8 +540,8 @@ public class AbstractWorkingMemory
         LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, this, lmem, false, queryObject.isOpen() );
 
         RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
-        if( conf.isPhreakEnabled() && lmem.getSegmentMemory().getTupleQueue() != null ) {
-            RuleExecutor.flushTupleQueue( lmem.getSegmentMemory().getTupleQueue() );
+        if( conf.isPhreakEnabled() && lmem.getSegmentMemory().getStreamQueue() != null ) {
+            RuleExecutor.flushTupleQueue( lmem.getSegmentMemory().getStreamQueue() );
         }
 
         List<PathMemory> pmems =  lmem.getSegmentMemory().getPathMemories();
