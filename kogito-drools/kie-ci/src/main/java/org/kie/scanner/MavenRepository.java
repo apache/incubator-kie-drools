@@ -7,9 +7,11 @@ import org.apache.maven.settings.Repository;
 import org.apache.maven.settings.RepositoryPolicy;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
-import org.kie.api.builder.ReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.kie.api.builder.ReleaseId;
 import org.kie.scanner.embedder.MavenSettings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.collection.CollectResult;
@@ -42,6 +44,8 @@ import java.util.List;
 import static org.kie.scanner.DependencyDescriptor.isRangedVersion;
 
 public class MavenRepository {
+
+    private static final Logger log = LoggerFactory.getLogger(MavenRepository.class);
 
     private static MavenRepository defaultMavenRepository;
 
@@ -191,6 +195,7 @@ public class MavenRepository {
             ArtifactResult artifactResult = aether.getSystem().resolveArtifact(aether.getSession(), artifactRequest);
             return artifactResult.getArtifact();
         } catch (ArtifactResolutionException e) {
+            log.warn("Unable to resolve artifact: " + artifactName, e);
             return null;
         }
     }
@@ -206,6 +211,7 @@ public class MavenRepository {
             VersionRangeResult versionRangeResult = aether.getSystem().resolveVersionRange(aether.getSession(), versionRequest);
             return versionRangeResult.getHighestVersion();
         } catch (VersionRangeResolutionException e) {
+            log.warn("Unable to resolve version range for artifact: " + artifactName, e);
             return null;
         }
     }
