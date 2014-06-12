@@ -86,4 +86,14 @@
     </para>
   </section>
   
+  <section>
+    <title>Generation of <code>modify(x) {...}</code> blocks</title>
+    <para>The Guided Rule Editor, Guided Template Editor and Guided Decision Table Editor have been
+      changed to generate <code>modify(x){...}</code></para>
+    <para>Historically these editors supported the older <code>update(x)</code> syntax and hence
+      rules created within the Workbench would not respond correctly to
+        <code>@PropertyReactive</code> and associated annotations within a model. This has now been
+      rectified with the use of <code>modify(x){...}</code> blocks.</para>
+  </section>
+  
 </section>
