@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.models.commons.backend.rule;
+package org.drools.workbench.models.commons.backend.rule.context;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,25 +22,24 @@ import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 
 /**
- * DRL generation context object
+ * LHS DRL generation context object
  */
-public class GeneratorContext {
+public class LHSGeneratorContext {
 
     private Set<String> varsInScope = new HashSet<String>();
     private FieldConstraint fieldConstraint;
-    private GeneratorContext parent;
+    private LHSGeneratorContext parent;
     private int depth;
     private int offset;
     private boolean hasOutput;
     private boolean hasNonTemplateOutput;
-    private int childCount;
 
-    GeneratorContext() {
+    LHSGeneratorContext() {
     }
 
-    GeneratorContext( GeneratorContext parent,
-                      int depth,
-                      int offset ) {
+    LHSGeneratorContext( final LHSGeneratorContext parent,
+                         final int depth,
+                         final int offset ) {
         this.parent = parent;
         this.depth = depth;
         this.offset = offset;
@@ -50,11 +49,11 @@ public class GeneratorContext {
         return fieldConstraint;
     }
 
-    public void setFieldConstraint( FieldConstraint fieldConstraint ) {
+    public void setFieldConstraint( final FieldConstraint fieldConstraint ) {
         this.fieldConstraint = fieldConstraint;
         this.varsInScope.clear();
-        Set<InterpolationVariable> vars = new HashSet<InterpolationVariable>();
-        GeneratorContextRuleModelVisitor visitor = new GeneratorContextRuleModelVisitor( vars );
+        final Set<InterpolationVariable> vars = new HashSet<InterpolationVariable>();
+        final GeneratorContextRuleModelVisitor visitor = new GeneratorContextRuleModelVisitor( vars );
         visitor.visit( fieldConstraint );
         for ( InterpolationVariable var : vars ) {
             varsInScope.add( var.getVarName() );
@@ -62,7 +61,7 @@ public class GeneratorContext {
         hasNonTemplateOutput = visitor.hasNonTemplateOutput();
     }
 
-    public GeneratorContext getParent() {
+    public LHSGeneratorContext getParent() {
         return parent;
     }
 

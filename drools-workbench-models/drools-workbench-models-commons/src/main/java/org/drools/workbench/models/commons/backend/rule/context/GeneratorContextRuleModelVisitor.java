@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.models.commons.backend.rule;
+package org.drools.workbench.models.commons.backend.rule.context;
 
 import java.util.Set;
 
@@ -53,27 +53,23 @@ public class GeneratorContextRuleModelVisitor {
     private Set<InterpolationVariable> vars;
     private boolean hasNonTemplateOutput;
 
-    public GeneratorContextRuleModelVisitor() {
-        //Empty constructor for Errai marshalling
-    }
-
-    public GeneratorContextRuleModelVisitor( Set<InterpolationVariable> vars ) {
+    public GeneratorContextRuleModelVisitor( final Set<InterpolationVariable> vars ) {
         this.vars = vars;
     }
 
-    public GeneratorContextRuleModelVisitor( IPattern pattern,
-                                             Set<InterpolationVariable> vars ) {
+    public GeneratorContextRuleModelVisitor( final IPattern pattern,
+                                             final Set<InterpolationVariable> vars ) {
         this.vars = vars;
         this.model.addLhsItem( pattern );
     }
 
-    public GeneratorContextRuleModelVisitor( IAction action,
-                                             Set<InterpolationVariable> vars ) {
+    public GeneratorContextRuleModelVisitor( final IAction action,
+                                             final Set<InterpolationVariable> vars ) {
         this.vars = vars;
         this.model.addRhsItem( action );
     }
 
-    private void parseStringPattern( String text ) {
+    private void parseStringPattern( final String text ) {
         if ( text == null || text.length() == 0 ) {
             return;
         }
@@ -83,8 +79,8 @@ public class GeneratorContextRuleModelVisitor {
             int end = text.indexOf( '}',
                                     pos + 2 );
             if ( end != -1 ) {
-                String varName = text.substring( pos + 2,
-                                                 end );
+                final String varName = text.substring( pos + 2,
+                                                       end );
                 pos = end + 1;
                 InterpolationVariable var = new InterpolationVariable( varName,
                                                                        DataType.TYPE_OBJECT );
@@ -95,7 +91,7 @@ public class GeneratorContextRuleModelVisitor {
         }
     }
 
-    public void visit( Object o ) {
+    public void visit( final Object o ) {
         if ( o == null ) {
             return;
         }
@@ -127,11 +123,13 @@ public class GeneratorContextRuleModelVisitor {
             visitActionFieldList( (ActionUpdateField) o );
         } else if ( o instanceof ActionSetField ) {
             visitActionFieldList( (ActionSetField) o );
+        } else if ( o instanceof ActionFieldValue ) {
+            visitActionFieldValue( (ActionFieldValue) o );
         }
     }
 
     //ActionInsertFact, ActionSetField, ActionpdateField
-    private void visitActionFieldList( ActionInsertFact afl ) {
+    private void visitActionFieldList( final ActionInsertFact afl ) {
         String factType = afl.getFactType();
         for ( ActionFieldValue afv : afl.getFieldValues() ) {
             InterpolationVariable var = new InterpolationVariable( afv.getValue(),
@@ -146,7 +144,7 @@ public class GeneratorContextRuleModelVisitor {
         }
     }
 
-    private void visitActionFieldList( ActionSetField afl ) {
+    private void visitActionFieldList( final ActionSetField afl ) {
         String factType = model.getLHSBindingType( afl.getVariable() );
         for ( ActionFieldValue afv : afl.getFieldValues() ) {
             InterpolationVariable var = new InterpolationVariable( afv.getValue(),
@@ -161,7 +159,7 @@ public class GeneratorContextRuleModelVisitor {
         }
     }
 
-    private void visitActionFieldList( ActionUpdateField afl ) {
+    private void visitActionFieldList( final ActionUpdateField afl ) {
         String factType = model.getLHSBindingType( afl.getVariable() );
         for ( ActionFieldValue afv : afl.getFieldValues() ) {
             InterpolationVariable var = new InterpolationVariable( afv.getValue(),
@@ -176,7 +174,13 @@ public class GeneratorContextRuleModelVisitor {
         }
     }
 
-    private void visitCompositeFactPattern( CompositeFactPattern pattern ) {
+    private void visitActionFieldValue( final ActionFieldValue afv ) {
+        if ( afv.getNature() != FieldNatureType.TYPE_TEMPLATE ) {
+            hasNonTemplateOutput = true;
+        }
+    }
+
+    private void visitCompositeFactPattern( final CompositeFactPattern pattern ) {
         if ( pattern.getPatterns() != null ) {
             for ( IFactPattern fp : pattern.getPatterns() ) {
                 visit( fp );
@@ -184,7 +188,7 @@ public class GeneratorContextRuleModelVisitor {
         }
     }
 
-    private void visitCompositeFieldConstraint( CompositeFieldConstraint cfc ) {
+    private void visitCompositeFieldConstraint( final CompositeFieldConstraint cfc ) {
         if ( cfc.getConstraints() != null ) {
             for ( FieldConstraint fc : cfc.getConstraints() ) {
                 visit( fc );
@@ -198,18 +202,18 @@ public class GeneratorContextRuleModelVisitor {
         parseStringPattern( text );
     }
 
-    private void visitFactPattern( FactPattern pattern ) {
+    private void visitFactPattern( final FactPattern pattern ) {
         this.factPattern = pattern;
         for ( FieldConstraint fc : pattern.getFieldConstraints() ) {
             visit( fc );
         }
     }
 
-    private void visitFreeFormLine( FreeFormLine ffl ) {
+    private void visitFreeFormLine( final FreeFormLine ffl ) {
         parseStringPattern( ffl.getText() );
     }
 
-    private void visitFromAccumulateCompositeFactPattern( FromAccumulateCompositeFactPattern pattern ) {
+    private void visitFromAccumulateCompositeFactPattern( final FromAccumulateCompositeFactPattern pattern ) {
         visit( pattern.getFactPattern() );
         visit( pattern.getSourcePattern() );
 
@@ -218,17 +222,17 @@ public class GeneratorContextRuleModelVisitor {
         parseStringPattern( pattern.getReverseCode() );
     }
 
-    private void visitFromCollectCompositeFactPattern( FromCollectCompositeFactPattern pattern ) {
+    private void visitFromCollectCompositeFactPattern( final FromCollectCompositeFactPattern pattern ) {
         visit( pattern.getFactPattern() );
         visit( pattern.getRightPattern() );
     }
 
-    private void visitFromCompositeFactPattern( FromCompositeFactPattern pattern ) {
+    private void visitFromCompositeFactPattern( final FromCompositeFactPattern pattern ) {
         visit( pattern.getFactPattern() );
         parseStringPattern( pattern.getExpression().getText() );
     }
 
-    private void visitRuleModel( RuleModel model ) {
+    private void visitRuleModel( final RuleModel model ) {
         this.model = model;
         if ( model.lhs != null ) {
             for ( IPattern pat : model.lhs ) {
@@ -242,11 +246,11 @@ public class GeneratorContextRuleModelVisitor {
         }
     }
 
-    private void visitSingleFieldConstraint( SingleFieldConstraint sfc ) {
-        InterpolationVariable var = new InterpolationVariable( sfc.getValue(),
-                                                               sfc.getFieldType(),
-                                                               ( factPattern == null ? "" : factPattern.getFactType() ),
-                                                               sfc.getFieldName() );
+    private void visitSingleFieldConstraint( final SingleFieldConstraint sfc ) {
+        final InterpolationVariable var = new InterpolationVariable( sfc.getValue(),
+                                                                     sfc.getFieldType(),
+                                                                     ( factPattern == null ? "" : factPattern.getFactType() ),
+                                                                     sfc.getFieldName() );
         if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == sfc.getConstraintValueType() && !vars.contains( var ) ) {
             vars.add( var );
         } else {
@@ -271,16 +275,16 @@ public class GeneratorContextRuleModelVisitor {
         }
     }
 
-    private void visitSingleFieldConstraint( SingleFieldConstraintEBLeftSide sfexp ) {
-        String genericType = sfexp.getExpressionLeftSide().getGenericType();
+    private void visitSingleFieldConstraint( final SingleFieldConstraintEBLeftSide sfexp ) {
+        final String genericType = sfexp.getExpressionLeftSide().getGenericType();
         String factType = sfexp.getExpressionLeftSide().getPreviousClassType();
         if ( factType == null ) {
             factType = sfexp.getExpressionLeftSide().getClassType();
         }
-        InterpolationVariable var = new InterpolationVariable( sfexp.getValue(),
-                                                               genericType,
-                                                               factType,
-                                                               sfexp.getFieldName() );
+        final InterpolationVariable var = new InterpolationVariable( sfexp.getValue(),
+                                                                     genericType,
+                                                                     factType,
+                                                                     sfexp.getFieldName() );
         if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == sfexp.getConstraintValueType() && !vars.contains( var ) ) {
             vars.add( var );
         } else {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.models.commons.backend.rule;
+package org.drools.workbench.models.commons.backend.rule.context;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,25 +21,24 @@ import java.util.List;
 /**
  * Factory for Generator Contexts
  */
-public class GeneratorContextFactory {
+public class RHSGeneratorContextFactory {
 
-    private List<GeneratorContext> contexts = new ArrayList<GeneratorContext>();
+    private List<RHSGeneratorContext> contexts = new ArrayList<RHSGeneratorContext>();
 
-    public GeneratorContext newGeneratorContext() {
-        final GeneratorContext gc = new GeneratorContext();
+    public RHSGeneratorContext newGeneratorContext() {
+        final RHSGeneratorContext gc = new RHSGeneratorContext();
         contexts.add( gc );
         return gc;
     }
 
-    public GeneratorContext newChildGeneratorContext( GeneratorContext parent ) {
-        final GeneratorContext gc = new GeneratorContext( parent,
-                                                          parent.getDepth() + 1,
-                                                          parent.getOffset() + 1 );
+    public RHSGeneratorContext newChildGeneratorContext( final RHSGeneratorContext parent ) {
+        final RHSGeneratorContext gc = new RHSGeneratorContext( parent,
+                                                                parent.getOffset() + 1 );
         contexts.add( gc );
         return gc;
     }
 
-    public List<GeneratorContext> getGeneratorContexts() {
+    public List<RHSGeneratorContext> getGeneratorContexts() {
         return contexts;
     }
 
