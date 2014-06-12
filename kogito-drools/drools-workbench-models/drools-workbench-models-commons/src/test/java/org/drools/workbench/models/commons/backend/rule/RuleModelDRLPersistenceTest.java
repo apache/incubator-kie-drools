@@ -328,8 +328,9 @@ public class RuleModelDRLPersistenceTest {
                 "  when\n" +
                 "    m:Message()\n" +
                 "  then\n" +
-                "    m.setText( \"Hello \" + \"world\" );\n" +
-                "    update(m);\n" +
+                "    modify( m ) {\n" +
+                "      setText( \"Hello \" + \"world\" )\n" +
+                "    }\n" +
                 "end\n";
         final RuleModel m = new RuleModel();
 
@@ -581,39 +582,59 @@ public class RuleModelDRLPersistenceTest {
     @Test
     public void testMoreComplexRendering() {
         final RuleModel m = getComplexModel( false );
-        String expected = "rule \"Complex Rule\"\n" + "\tno-loop true\n"
-                + "\tsalience -10\n" + "\tagenda-group \"aGroup\"\n"
-                + "\tdialect \"mvel\"\n" + "\twhen\n"
-                + "\t\tp1 : Person( f1 : age < 42 )\n"
-                + "\t\tnot (Cancel( )) \n" + "\tthen\n"
-                + "\t\tp1.setStatus( \"rejected\" );\n"
-                + "\t\tupdate( p1 );\n" + "\t\tretract( p1 );\n"
-                + "end\n";
+        String expected = "rule \"Complex Rule\"\n" +
+                "no-loop true\n" +
+                "salience -10\n" +
+                "agenda-group \"aGroup\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  p1 : Person( f1 : age < 42 )\n" +
+                "  not (Cancel( )) \n" +
+                "then\n" +
+                "  modify( p1 ) {\n" +
+                "    setStatus( \"rejected\" ),\n" +
+                "    setName( \"Fred\" )\n" +
+                "  }\n" +
+                "  retract( p1 );\n" +
+                "end\n";
 
-        checkMarshallUnmarshall( expected, m );
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
     @Test
     public void testMoreComplexRenderingWithDsl() {
         final RuleModel m = getComplexModel( true );
-        String expected = "rule \"Complex Rule\"\n" + "\tno-loop true\n"
-                + "\tsalience -10\n" + "\tagenda-group \"aGroup\"\n"
-                + "\tdialect \"mvel\"\n" + "\twhen\n"
-                + "\t\t>p1 : Person( f1 : age < 42 )\n"
-                + "\t\t>not (Cancel( )) \n" + "\tthen\n"
-                + "\t\t>p1.setStatus( \"rejected\" );\n"
-                + "\t\t>update( p1 );\n" + "\t\t>retract( p1 );\n"
-                + "\t\tSend an email to administrator\n" + "end\n";
+        String expected = "rule \"Complex Rule\"\n" +
+                "no-loop true\n" +
+                "salience -10\n" +
+                "agenda-group \"aGroup\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  >p1 : Person( f1 : age < 42 )\n" +
+                "  >not (Cancel( )) \n" +
+                "then\n" +
+                "  >modify( p1 ) {\n" +
+                "    >setStatus( \"rejected\" ),\n" +
+                "    >setName( \"Fred\" )\n" +
+                "  >}\n" +
+                "  >retract( p1 );\n" +
+                "Send an email to administrator\n" +
+                "end\n";
 
         checkMarshallUnmarshallUsingDsl( expected,
                                          m );
 
         String drl = ruleModelPersistence.marshal( m );
-        assertEqualsIgnoreWhitespace( expected, drl );
+        assertEqualsIgnoreWhitespace( expected,
+                                      drl );
 
         String dslFile = "[then]Send an email to {administrator}=sendMailTo({administrator});";
 
-        RuleModel unmarshalledModel = ruleModelPersistence.unmarshalUsingDSL( drl, null, dmo, dslFile );
+        RuleModel unmarshalledModel = ruleModelPersistence.unmarshalUsingDSL( drl,
+                                                                              null,
+                                                                              dmo,
+                                                                              dslFile );
 
         IAction[] actions = unmarshalledModel.rhs;
         DSLSentence dslSentence = (DSLSentence) actions[ actions.length - 1 ];
@@ -804,12 +825,15 @@ public class RuleModelDRLPersistenceTest {
         comp.addFactPattern( new FactPattern( "Cancel" ) );
         m.addLhsItem( comp );
 
-        final ActionUpdateField set = new ActionUpdateField();
-        set.setVariable( "p1" );
-        set.addFieldValue( new ActionFieldValue( "status",
-                                                 "rejected",
-                                                 DataType.TYPE_STRING ) );
-        m.addRhsItem( set );
+        final ActionUpdateField upd1 = new ActionUpdateField();
+        upd1.setVariable( "p1" );
+        upd1.addFieldValue( new ActionFieldValue( "status",
+                                                  "rejected",
+                                                  DataType.TYPE_STRING ) );
+        upd1.addFieldValue( new ActionFieldValue( "name",
+                                                  "Fred",
+                                                  DataType.TYPE_STRING ) );
+        m.addRhsItem( upd1 );
 
         final ActionRetractFact ret = new ActionRetractFact( "p1" );
         m.addRhsItem( ret );
@@ -2074,8 +2098,8 @@ public class RuleModelDRLPersistenceTest {
             String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
 
             assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
-            assertTrue( result.indexOf( "$p.setDob( sdf.parse(\"31-Jan-2000\"" ) != -1 );
-            assertTrue( result.indexOf( "update( $p );" ) != -1 );
+            assertTrue( result.indexOf( "setDob( sdf.parse(\"31-Jan-2000\"" ) != -1 );
+            assertTrue( result.indexOf( "modify( $p ) {" ) != -1 );
 
             checkMarshallUnmarshall( null,
                                      m );
@@ -4427,6 +4451,155 @@ public class RuleModelDRLPersistenceTest {
                 + "Number( this != null, intValue() == 0 )\n"
                 + "then\n"
                 + "end";
+
+        checkMarshallUnmarshall( expected,
+                                 m );
+    }
+
+    @Test
+    public void testRHSChangeMultipleFieldsModifyBoth() {
+        String expected = "" +
+                "rule \"my rule\" \n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    $p : Person()\n" +
+                "  then\n" +
+                "    modify( $p ) {\n" +
+                "      setName( \"Fred\" ),\n" +
+                "      setAge( 55 )\n" +
+                "    }\n" +
+                "end\n";
+        final RuleModel m = new RuleModel();
+
+        FactPattern factPattern = new FactPattern();
+        factPattern.setFactType( "Person" );
+        factPattern.setBoundName( "$p" );
+        m.lhs = new IPattern[]{ factPattern };
+
+        ActionUpdateField auf = new ActionUpdateField();
+        auf.setVariable( "$p" );
+        ActionFieldValue afv1 = new ActionFieldValue();
+        afv1.setField( "name" );
+        afv1.setType( DataType.TYPE_STRING );
+        afv1.setNature( FieldNatureType.TYPE_LITERAL );
+        afv1.setValue( "Fred" );
+        ActionFieldValue afv2 = new ActionFieldValue();
+        afv2.setField( "age" );
+        afv2.setType( DataType.TYPE_NUMERIC_INTEGER );
+        afv2.setNature( FieldNatureType.TYPE_LITERAL );
+        afv2.setValue( "55" );
+
+        auf.setFieldValues( new ActionFieldValue[]{ afv1, afv2 } );
+        m.rhs = new IAction[]{ auf };
+
+        m.name = "my rule";
+
+        checkMarshallUnmarshall( expected,
+                                 m );
+    }
+
+    @Test
+    public void testRHSChangeMultipleFieldsModifyOneUpdateOther() {
+        String expected = "" +
+                "rule \"my rule\" \n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    $p : Person()\n" +
+                "  then\n" +
+                "    modify( $p ) {\n" +
+                "      setName( \"Fred\" )\n" +
+                "    }\n" +
+                "  $p.setAge( 55 );\n" +
+                "end\n";
+        final RuleModel m = new RuleModel();
+
+        FactPattern factPattern = new FactPattern();
+        factPattern.setFactType( "Person" );
+        factPattern.setBoundName( "$p" );
+        m.lhs = new IPattern[]{ factPattern };
+
+        ActionUpdateField auf = new ActionUpdateField();
+        auf.setVariable( "$p" );
+        ActionFieldValue afv1 = new ActionFieldValue();
+        afv1.setField( "name" );
+        afv1.setType( DataType.TYPE_STRING );
+        afv1.setNature( FieldNatureType.TYPE_LITERAL );
+        afv1.setValue( "Fred" );
+
+        auf.setFieldValues( new ActionFieldValue[]{ afv1 } );
+
+        ActionSetField asf = new ActionSetField();
+        asf.setVariable( "$p" );
+        ActionFieldValue afv2 = new ActionFieldValue();
+        afv2.setField( "age" );
+        afv2.setType( DataType.TYPE_NUMERIC_INTEGER );
+        afv2.setNature( FieldNatureType.TYPE_LITERAL );
+        afv2.setValue( "55" );
+
+        asf.setFieldValues( new ActionFieldValue[]{ afv2 } );
+
+        m.rhs = new IAction[]{ auf, asf };
+
+        m.name = "my rule";
+
+        checkMarshallUnmarshall( expected,
+                                 m );
+    }
+
+    @Test
+    public void testRHSChangeMultipleFieldsBlockModify() {
+        String expected = "" +
+                "rule \"my rule\" \n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    $p : Person()\n" +
+                "  then\n" +
+                "    modify( $p ) {\n" +
+                "      setName( \"Fred\" ),\n" +
+                "      setAge( 55 )\n" +
+                "    }\n" +
+                "    $p.setGender( \"X\" );" +
+                "end\n";
+        final RuleModel m = new RuleModel();
+
+        FactPattern factPattern = new FactPattern();
+        factPattern.setFactType( "Person" );
+        factPattern.setBoundName( "$p" );
+        m.lhs = new IPattern[]{ factPattern };
+
+        ActionUpdateField auf1 = new ActionUpdateField();
+        auf1.setVariable( "$p" );
+        ActionFieldValue afv1 = new ActionFieldValue();
+        afv1.setField( "name" );
+        afv1.setType( DataType.TYPE_STRING );
+        afv1.setNature( FieldNatureType.TYPE_LITERAL );
+        afv1.setValue( "Fred" );
+
+        auf1.setFieldValues( new ActionFieldValue[]{ afv1 } );
+
+        ActionSetField asf = new ActionSetField();
+        asf.setVariable( "$p" );
+        ActionFieldValue afv2 = new ActionFieldValue();
+        afv2.setField( "gender" );
+        afv2.setType( DataType.TYPE_STRING );
+        afv2.setNature( FieldNatureType.TYPE_LITERAL );
+        afv2.setValue( "X" );
+
+        asf.setFieldValues( new ActionFieldValue[]{ afv2 } );
+
+        ActionUpdateField auf2 = new ActionUpdateField();
+        auf2.setVariable( "$p" );
+        ActionFieldValue afv3 = new ActionFieldValue();
+        afv3.setField( "age" );
+        afv3.setType( DataType.TYPE_NUMERIC_INTEGER );
+        afv3.setNature( FieldNatureType.TYPE_LITERAL );
+        afv3.setValue( "55" );
+
+        auf2.setFieldValues( new ActionFieldValue[]{ afv3 } );
+
+        m.rhs = new IAction[]{ auf1, asf, auf2 };
+
+        m.name = "my rule";
 
         checkMarshallUnmarshall( expected,
                                  m );

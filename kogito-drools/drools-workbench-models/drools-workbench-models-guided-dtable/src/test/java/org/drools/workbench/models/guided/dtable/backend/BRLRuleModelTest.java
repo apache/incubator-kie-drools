@@ -16,24 +16,26 @@
 package org.drools.workbench.models.guided.dtable.backend;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.guided.dtable.shared.model.adaptors.ActionInsertFactCol52ActionInsertFactAdaptor;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.adaptors.ActionInsertFactCol52ActionInsertLogicalFactAdaptor;
-import org.drools.workbench.models.guided.dtable.shared.model.adaptors.Pattern52FactPatternAdaptor;
-import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.junit.Test;
-import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
+import org.drools.workbench.models.datamodel.rule.ActionUpdateField;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
+import org.drools.workbench.models.guided.dtable.backend.util.DataUtilities;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
+import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.models.guided.dtable.shared.model.adaptors.ActionInsertFactCol52ActionInsertFactAdaptor;
+import org.drools.workbench.models.guided.dtable.shared.model.adaptors.ActionInsertFactCol52ActionInsertLogicalFactAdaptor;
+import org.drools.workbench.models.guided.dtable.shared.model.adaptors.Pattern52FactPatternAdaptor;
+import org.junit.Test;
 
 import static org.junit.Assert.*;
 
@@ -293,7 +295,7 @@ public class BRLRuleModelTest {
 
         ActionInsertFact r1 = model.getRHSBoundFact( "$ins" );
         assertNotNull( r1 );
-        assertTrue( r1 instanceof ActionInsertFactCol52ActionInsertFactAdaptor);
+        assertTrue( r1 instanceof ActionInsertFactCol52ActionInsertFactAdaptor );
         ActionInsertFactCol52ActionInsertFactAdaptor raif1 = (ActionInsertFactCol52ActionInsertFactAdaptor) r1;
         assertEquals( "Person",
                       raif1.getFactType() );
@@ -388,7 +390,7 @@ public class BRLRuleModelTest {
 
         ActionInsertFact r2 = model.getRHSBoundFact( "$ins2" );
         assertNotNull( r2 );
-        assertTrue( r2 instanceof ActionInsertFactCol52ActionInsertLogicalFactAdaptor);
+        assertTrue( r2 instanceof ActionInsertFactCol52ActionInsertLogicalFactAdaptor );
         ActionInsertFactCol52ActionInsertLogicalFactAdaptor raif2 = (ActionInsertFactCol52ActionInsertLogicalFactAdaptor) r2;
         assertEquals( "Person2",
                       raif2.getFactType() );
@@ -674,6 +676,398 @@ public class BRLRuleModelTest {
         assertNull( raif2.getFieldValues()[ 0 ].getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
                       raif2.getFieldValues()[ 0 ].getNature() );
+    }
+
+    @Test
+    public void testUpdateModifyMultipleFields() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "x" );
+        p1.setFactType( "Context" );
+
+        ConditionCol52 c = new ConditionCol52();
+        c.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        p1.getChildColumns().add( c );
+        dt.getConditions().add( p1 );
+
+        BRLActionColumn brlAction1 = new BRLActionColumn();
+        ActionUpdateField auf1 = new ActionUpdateField( "x" );
+        auf1.addFieldValue( new ActionFieldValue( "age",
+                                                  "$age",
+                                                  DataType.TYPE_NUMERIC_INTEGER ) );
+        auf1.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+
+        brlAction1.getDefinition().add( auf1 );
+        brlAction1.getChildColumns().add( new BRLActionVariableColumn( "$age",
+                                                                       DataType.TYPE_NUMERIC_INTEGER,
+                                                                       "Context",
+                                                                       "age" ) );
+        dt.getActionCols().add( brlAction1 );
+
+        BRLActionColumn brlAction2 = new BRLActionColumn();
+        ActionUpdateField auf2 = new ActionUpdateField( "x" );
+        auf2.addFieldValue( new ActionFieldValue( "name",
+                                                  "$name",
+                                                  DataType.TYPE_STRING ) );
+        auf2.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+
+        brlAction2.getDefinition().add( auf2 );
+        brlAction2.getChildColumns().add( new BRLActionVariableColumn( "$name",
+                                                                       DataType.TYPE_STRING,
+                                                                       "Context",
+                                                                       "name" ) );
+        dt.getActionCols().add( brlAction2 );
+
+        dt.setData( DataUtilities.makeDataLists( new String[][]{
+                new String[]{ "1", "desc", "x", "55", "Fred" }
+        } ) );
+        String drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
+        final String expected1 = "//from row number: 1\n" +
+                "//desc\n" +
+                "rule \"Row 1 null\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  x : Context( )\n" +
+                "then\n" +
+                "  modify( x ) {\n" +
+                "    setAge( 55 ), \n" +
+                "    setName( \"Fred\" )\n" +
+                "}\n" +
+                "end\n";
+        assertEqualsIgnoreWhitespace( expected1,
+                                      drl );
+
+        dt.setData( DataUtilities.makeDataLists( new String[][]{
+                new String[]{ "1", "desc", "x", "", "Fred" }
+        } ) );
+        drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
+        final String expected2 = "//from row number: 1\n" +
+                "//desc\n" +
+                "rule \"Row 1 null\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  x : Context( )\n" +
+                "then\n" +
+                "  modify( x ) {\n" +
+                "    setName( \"Fred\" )\n" +
+                "}\n" +
+                "end\n";
+        assertEqualsIgnoreWhitespace( expected2,
+                                      drl );
+
+        dt.setData( DataUtilities.makeDataLists( new String[][]{
+                new String[]{ "1", "desc", "x", "55", "" }
+        } ) );
+        drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
+        final String expected3 = "//from row number: 1\n" +
+                "//desc\n" +
+                "rule \"Row 1 null\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  x : Context( )\n" +
+                "then\n" +
+                "  modify( x ) {\n" +
+                "    setAge( 55 ) \n" +
+                "}\n" +
+                "end\n";
+        assertEqualsIgnoreWhitespace( expected3,
+                                      drl );
+    }
+
+    @Test
+    public void testUpdateModifyMultipleFieldsWithMultipleSkipped1() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "x" );
+        p1.setFactType( "Context" );
+
+        ConditionCol52 c = new ConditionCol52();
+        c.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        p1.getChildColumns().add( c );
+        dt.getConditions().add( p1 );
+
+        BRLActionColumn brlAction1 = new BRLActionColumn();
+        ActionUpdateField auf1 = new ActionUpdateField( "x" );
+        auf1.addFieldValue( new ActionFieldValue( "f1",
+                                                  "$f1",
+                                                  DataType.TYPE_STRING ) );
+        auf1.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+
+        brlAction1.getDefinition().add( auf1 );
+        brlAction1.getChildColumns().add( new BRLActionVariableColumn( "$f1",
+                                                                       DataType.TYPE_STRING,
+                                                                       "Context",
+                                                                       "f1" ) );
+        ActionUpdateField auf2 = new ActionUpdateField( "x" );
+        auf2.addFieldValue( new ActionFieldValue( "f2",
+                                                  "$f2",
+                                                  DataType.TYPE_STRING ) );
+        auf2.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+
+        brlAction1.getDefinition().add( auf2 );
+        brlAction1.getChildColumns().add( new BRLActionVariableColumn( "$f2",
+                                                                       DataType.TYPE_STRING,
+                                                                       "Context",
+                                                                       "f2" ) );
+
+        ActionUpdateField auf3 = new ActionUpdateField( "x" );
+        auf3.addFieldValue( new ActionFieldValue( "f3",
+                                                  "$f3",
+                                                  DataType.TYPE_STRING ) );
+        auf3.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+
+        brlAction1.getDefinition().add( auf3 );
+        brlAction1.getChildColumns().add( new BRLActionVariableColumn( "$f3",
+                                                                       DataType.TYPE_STRING,
+                                                                       "Context",
+                                                                       "f3" ) );
+
+        dt.getActionCols().add( brlAction1 );
+
+        dt.setData( DataUtilities.makeDataLists( new String[][]{
+                new String[]{ "1", "desc", "x", "v1", "v2", "v3" }
+        } ) );
+        String drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
+        final String expected = "//from row number: 1\n" +
+                "//desc\n" +
+                "rule \"Row 1 null\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  x : Context( )\n" +
+                "then\n" +
+                "  modify( x ) {\n" +
+                "    setF1( \"v1\" ), \n" +
+                "    setF2( \"v2\" ),\n" +
+                "    setF3( \"v3\" )\n" +
+                "}\n" +
+                "end\n";
+        assertEqualsIgnoreWhitespace( expected,
+                                      drl );
+    }
+
+    @Test
+    public void testUpdateModifyMultipleFieldsWithMultipleSkipped2() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "x" );
+        p1.setFactType( "Context" );
+
+        ConditionCol52 c = new ConditionCol52();
+        c.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        p1.getChildColumns().add( c );
+        dt.getConditions().add( p1 );
+
+        BRLActionColumn brlAction1 = new BRLActionColumn();
+        ActionUpdateField auf1 = new ActionUpdateField( "x" );
+        auf1.addFieldValue( new ActionFieldValue( "f1",
+                                                  "$f1",
+                                                  DataType.TYPE_STRING ) );
+        auf1.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+
+        brlAction1.getDefinition().add( auf1 );
+        brlAction1.getChildColumns().add( new BRLActionVariableColumn( "$f1",
+                                                                       DataType.TYPE_STRING,
+                                                                       "Context",
+                                                                       "f1" ) );
+        ActionUpdateField auf2 = new ActionUpdateField( "x" );
+        auf2.addFieldValue( new ActionFieldValue( "f2",
+                                                  "$f2",
+                                                  DataType.TYPE_STRING ) );
+        auf2.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+
+        brlAction1.getDefinition().add( auf2 );
+        brlAction1.getChildColumns().add( new BRLActionVariableColumn( "$f2",
+                                                                       DataType.TYPE_STRING,
+                                                                       "Context",
+                                                                       "f2" ) );
+
+        ActionUpdateField auf3 = new ActionUpdateField( "x" );
+        auf3.addFieldValue( new ActionFieldValue( "f3",
+                                                  "$f3",
+                                                  DataType.TYPE_STRING ) );
+        auf3.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+
+        brlAction1.getDefinition().add( auf3 );
+        brlAction1.getChildColumns().add( new BRLActionVariableColumn( "$f3",
+                                                                       DataType.TYPE_STRING,
+                                                                       "Context",
+                                                                       "f3" ) );
+
+        dt.getActionCols().add( brlAction1 );
+
+        dt.setData( DataUtilities.makeDataLists( new String[][]{
+                new String[]{ "1", "desc", "x", null, "v2", "v3" }
+        } ) );
+        String drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
+        final String expected = "//from row number: 1\n" +
+                "//desc\n" +
+                "rule \"Row 1 null\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  x : Context( )\n" +
+                "then\n" +
+                "  modify( x ) {\n" +
+                "    setF2( \"v2\" ),\n" +
+                "    setF3( \"v3\" )\n" +
+                "}\n" +
+                "end\n";
+        assertEqualsIgnoreWhitespace( expected,
+                                      drl );
+    }
+
+    @Test
+    public void testUpdateModifyMultipleFieldsWithMultipleSkipped3() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "x" );
+        p1.setFactType( "Context" );
+
+        ConditionCol52 c = new ConditionCol52();
+        c.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        p1.getChildColumns().add( c );
+        dt.getConditions().add( p1 );
+
+        BRLActionColumn brlAction1 = new BRLActionColumn();
+        ActionUpdateField auf1 = new ActionUpdateField( "x" );
+        auf1.addFieldValue( new ActionFieldValue( "f1",
+                                                  "$f1",
+                                                  DataType.TYPE_STRING ) );
+        auf1.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+
+        brlAction1.getDefinition().add( auf1 );
+        brlAction1.getChildColumns().add( new BRLActionVariableColumn( "$f1",
+                                                                       DataType.TYPE_STRING,
+                                                                       "Context",
+                                                                       "f1" ) );
+        ActionUpdateField auf2 = new ActionUpdateField( "x" );
+        auf2.addFieldValue( new ActionFieldValue( "f2",
+                                                  "$f2",
+                                                  DataType.TYPE_STRING ) );
+        auf2.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+
+        brlAction1.getDefinition().add( auf2 );
+        brlAction1.getChildColumns().add( new BRLActionVariableColumn( "$f2",
+                                                                       DataType.TYPE_STRING,
+                                                                       "Context",
+                                                                       "f2" ) );
+
+        ActionUpdateField auf3 = new ActionUpdateField( "x" );
+        auf3.addFieldValue( new ActionFieldValue( "f3",
+                                                  "$f3",
+                                                  DataType.TYPE_STRING ) );
+        auf3.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+
+        brlAction1.getDefinition().add( auf3 );
+        brlAction1.getChildColumns().add( new BRLActionVariableColumn( "$f3",
+                                                                       DataType.TYPE_STRING,
+                                                                       "Context",
+                                                                       "f3" ) );
+
+        dt.getActionCols().add( brlAction1 );
+
+        dt.setData( DataUtilities.makeDataLists( new String[][]{
+                new String[]{ "1", "desc", "x", null, null, "v3" }
+        } ) );
+        String drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
+        final String expected = "//from row number: 1\n" +
+                "//desc\n" +
+                "rule \"Row 1 null\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  x : Context( )\n" +
+                "then\n" +
+                "  modify( x ) {\n" +
+                "    setF3( \"v3\" )\n" +
+                "}\n" +
+                "end\n";
+        assertEqualsIgnoreWhitespace( expected,
+                                      drl );
+    }
+
+    @Test
+    public void testUpdateModifyMultipleFieldsWithMultipleSkipped4() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "x" );
+        p1.setFactType( "Context" );
+
+        ConditionCol52 c = new ConditionCol52();
+        c.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        p1.getChildColumns().add( c );
+        dt.getConditions().add( p1 );
+
+        BRLActionColumn brlAction1 = new BRLActionColumn();
+        ActionUpdateField auf1 = new ActionUpdateField( "x" );
+        auf1.addFieldValue( new ActionFieldValue( "f1",
+                                                  "$f1",
+                                                  DataType.TYPE_STRING ) );
+        auf1.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+
+        brlAction1.getDefinition().add( auf1 );
+        brlAction1.getChildColumns().add( new BRLActionVariableColumn( "$f1",
+                                                                       DataType.TYPE_STRING,
+                                                                       "Context",
+                                                                       "f1" ) );
+        ActionUpdateField auf2 = new ActionUpdateField( "x" );
+        auf2.addFieldValue( new ActionFieldValue( "f2",
+                                                  "$f2",
+                                                  DataType.TYPE_STRING ) );
+        auf2.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+
+        brlAction1.getDefinition().add( auf2 );
+        brlAction1.getChildColumns().add( new BRLActionVariableColumn( "$f2",
+                                                                       DataType.TYPE_STRING,
+                                                                       "Context",
+                                                                       "f2" ) );
+
+        ActionUpdateField auf3 = new ActionUpdateField( "x" );
+        auf3.addFieldValue( new ActionFieldValue( "f3",
+                                                  "$f3",
+                                                  DataType.TYPE_STRING ) );
+        auf3.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+
+        brlAction1.getDefinition().add( auf3 );
+        brlAction1.getChildColumns().add( new BRLActionVariableColumn( "$f3",
+                                                                       DataType.TYPE_STRING,
+                                                                       "Context",
+                                                                       "f3" ) );
+
+        dt.getActionCols().add( brlAction1 );
+
+        dt.setData( DataUtilities.makeDataLists( new String[][]{
+                new String[]{ "1", "desc", "x", "v1", null, "v3" }
+        } ) );
+        String drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
+        final String expected = "//from row number: 1\n" +
+                "//desc\n" +
+                "rule \"Row 1 null\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  x : Context( )\n" +
+                "then\n" +
+                "  modify( x ) {\n" +
+                "    setF1( \"v1\" ),\n" +
+                "    setF3( \"v3\" )\n" +
+                "}\n" +
+                "end\n";
+        assertEqualsIgnoreWhitespace( expected,
+                                      drl );
+    }
+
+    private void assertEqualsIgnoreWhitespace( final String expected,
+                                               final String actual ) {
+        final String cleanExpected = expected.replaceAll( "\\s+",
+                                                          "" );
+        final String cleanActual = actual.replaceAll( "\\s+",
+                                                      "" );
+
+        assertEquals( cleanExpected,
+                      cleanActual );
     }
 
 }

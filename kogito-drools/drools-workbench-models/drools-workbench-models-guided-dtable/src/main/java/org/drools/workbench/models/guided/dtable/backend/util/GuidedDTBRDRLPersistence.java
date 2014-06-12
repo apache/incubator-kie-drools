@@ -21,9 +21,11 @@ import java.util.regex.Pattern;
 
 import org.drools.core.util.StringUtils;
 import org.drools.workbench.models.commons.backend.rule.DRLConstraintValueBuilder;
-import org.drools.workbench.models.commons.backend.rule.GeneratorContext;
-import org.drools.workbench.models.commons.backend.rule.GeneratorContextFactory;
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
+import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContext;
+import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContextFactory;
+import org.drools.workbench.models.commons.backend.rule.context.RHSGeneratorContext;
+import org.drools.workbench.models.commons.backend.rule.context.RHSGeneratorContextFactory;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
@@ -56,7 +58,7 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
                                                       final StringBuilder buf,
                                                       final String nestedIndentation,
                                                       final boolean isNegated,
-                                                      final GeneratorContextFactory generatorContextFactory ) {
+                                                      final LHSGeneratorContextFactory generatorContextFactory ) {
         return new LHSPatternVisitor( isDSLEnhanced,
                                       rowDataProvider,
                                       bindingsPatterns,
@@ -71,12 +73,14 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
     @Override
     protected RHSActionVisitor getRHSActionVisitor( final boolean isDSLEnhanced,
                                                     final StringBuilder buf,
-                                                    final String indentation ) {
+                                                    final String indentation,
+                                                    final RHSGeneratorContextFactory generatorContextFactory ) {
         return new RHSActionVisitor( isDSLEnhanced,
                                      rowDataProvider,
                                      bindingsPatterns,
                                      bindingsFields,
                                      constraintValueBuilder,
+                                     generatorContextFactory,
                                      buf,
                                      indentation );
     }
@@ -91,7 +95,7 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
                                   final Map<String, IFactPattern> bindingsPatterns,
                                   final Map<String, FieldConstraint> bindingsFields,
                                   final DRLConstraintValueBuilder constraintValueBuilder,
-                                  final GeneratorContextFactory generatorContextFactory,
+                                  final LHSGeneratorContextFactory generatorContextFactory,
                                   final StringBuilder b,
                                   final String indentation,
                                   final boolean isPatternNegated ) {
@@ -115,7 +119,7 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
 
         @Override
         protected void generateConstraint( final FieldConstraint constr,
-                                           GeneratorContext gctx ) {
+                                           LHSGeneratorContext gctx ) {
             if ( isValidFieldConstraint( constr ) ) {
                 super.generateConstraint( constr,
                                           gctx );
@@ -129,7 +133,7 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
                                                       final Map<String, String> parameters,
                                                       final String value,
                                                       final ExpressionFormLine expression,
-                                                      GeneratorContext gctx,
+                                                      LHSGeneratorContext gctx,
                                                       final boolean spaceBeforeOperator ) {
             boolean generateTemplateCheck = type == BaseSingleFieldConstraint.TYPE_TEMPLATE;
             if ( generateTemplateCheck && !gctx.isHasOutput() && operator.startsWith( "||" ) || operator.startsWith( "&&" ) ) {
@@ -210,12 +214,14 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
                                  final Map<String, IFactPattern> bindingsPatterns,
                                  final Map<String, FieldConstraint> bindingsFields,
                                  final DRLConstraintValueBuilder constraintValueBuilder,
+                                 final RHSGeneratorContextFactory generatorContextFactory,
                                  final StringBuilder b,
                                  final String indentation ) {
             super( isDSLEnhanced,
                    bindingsPatterns,
                    bindingsFields,
                    constraintValueBuilder,
+                   generatorContextFactory,
                    b,
                    indentation );
             this.rowDataProvider = rowDataProvider;
@@ -236,10 +242,35 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
             return true;
         }
 
+        @Override
         protected void generateSetMethodCall( final String variableName,
                                               final ActionFieldValue fieldValue ) {
             if ( isValidFieldConstraint( fieldValue ) ) {
                 super.generateSetMethodCall( variableName, fieldValue );
+            }
+        }
+
+        @Override
+        protected void preGenerateSetMethodCallParameterValue( final ActionFieldValue fieldValue,
+                                                               final RHSGeneratorContext gctx ) {
+            gctx.setHasOutput( isValidFieldConstraint( fieldValue ) );
+        }
+
+        @Override
+        protected void generateModifyMethodCall( final RHSGeneratorContext gctx,
+                                                 final ActionFieldValue fieldValue ) {
+            if ( isValidFieldConstraint( fieldValue ) ) {
+                super.generateModifyMethodCall( gctx,
+                                                fieldValue );
+            }
+        }
+
+        @Override
+        protected void generateModifyMethodSeparator( final RHSGeneratorContext gctx,
+                                                      final ActionFieldValue fieldValue ) {
+            if ( isValidFieldConstraint( fieldValue ) ) {
+                super.generateModifyMethodSeparator( gctx,
+                                                     fieldValue );
             }
         }
 

@@ -21,6 +21,7 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;
+import org.drools.workbench.models.datamodel.rule.ActionUpdateField;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
@@ -3308,6 +3309,470 @@ public class RuleTemplateModelDRLPersistenceTest {
                 + "end";
 
         m.addRow( new String[]{ "foo", "bar" } );
+
+        checkMarshall( expected,
+                       m );
+    }
+
+    @Test
+    public void testActionModifyTwoFieldsFirstTemplateSecondTemplate1() {
+        TemplateModel m = new TemplateModel();
+        m.name = "r1";
+
+        FactPattern fp = new FactPattern( "Person" );
+        fp.setBoundName( "$p" );
+        m.addLhsItem( fp );
+
+        ActionUpdateField auf1 = new ActionUpdateField( "$p" );
+        ActionFieldValue afv0 = new ActionFieldValue();
+        afv0.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv0.setField( "field1" );
+        afv0.setValue( "$f1" );
+        auf1.addFieldValue( afv0 );
+        ActionFieldValue afv1 = new ActionFieldValue();
+        afv1.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv1.setField( "field2" );
+        afv1.setValue( "$f2" );
+        auf1.addFieldValue( afv1 );
+
+        m.addRhsItem( auf1 );
+
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  modify( $p ) {\n" +
+                "    setField1(\"foo\"),\n" +
+                "    setField2(\"bar\")\n" +
+                "  }\n" +
+                "end";
+
+        m.addRow( new String[]{ "foo", "bar" } );
+
+        checkMarshall( expected,
+                       m );
+    }
+
+    @Test
+    public void testActionModifyTwoFieldsFirstTemplateSecondTemplate2() {
+        TemplateModel m = new TemplateModel();
+        m.name = "r1";
+
+        FactPattern fp = new FactPattern( "Person" );
+        fp.setBoundName( "$p" );
+        m.addLhsItem( fp );
+
+        ActionUpdateField auf1 = new ActionUpdateField( "$p" );
+        ActionFieldValue afv0 = new ActionFieldValue();
+        afv0.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv0.setField( "field1" );
+        afv0.setValue( "$f1" );
+        auf1.addFieldValue( afv0 );
+        ActionFieldValue afv1 = new ActionFieldValue();
+        afv1.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv1.setField( "field2" );
+        afv1.setValue( "$f2" );
+        auf1.addFieldValue( afv1 );
+
+        m.addRhsItem( auf1 );
+
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  modify( $p ) {\n" +
+                "    setField1(\"foo\")\n" +
+                "  }\n" +
+                "end";
+
+        m.addRow( new String[]{ "foo", null } );
+
+        checkMarshall( expected,
+                       m );
+    }
+
+    @Test
+    public void testActionModifyTwoFieldsFirstTemplateSecondTemplate3() {
+        TemplateModel m = new TemplateModel();
+        m.name = "r1";
+
+        FactPattern fp = new FactPattern( "Person" );
+        fp.setBoundName( "$p" );
+        m.addLhsItem( fp );
+
+        ActionUpdateField auf1 = new ActionUpdateField( "$p" );
+        ActionFieldValue afv0 = new ActionFieldValue();
+        afv0.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv0.setField( "field1" );
+        afv0.setValue( "$f1" );
+        auf1.addFieldValue( afv0 );
+        ActionFieldValue afv1 = new ActionFieldValue();
+        afv1.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv1.setField( "field2" );
+        afv1.setValue( "$f2" );
+        auf1.addFieldValue( afv1 );
+
+        m.addRhsItem( auf1 );
+
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  modify( $p ) {\n" +
+                "    setField2(\"bar\")\n" +
+                "  }\n" +
+                "end";
+
+        m.addRow( new String[]{ null, "bar" } );
+
+        checkMarshall( expected,
+                       m );
+    }
+
+    @Test
+    public void testActionModifyTwoFieldsFirstTemplateSecondLiteral1() {
+        TemplateModel m = new TemplateModel();
+        m.name = "r1";
+
+        FactPattern fp = new FactPattern( "Person" );
+        fp.setBoundName( "$p" );
+        m.addLhsItem( fp );
+
+        ActionUpdateField auf1 = new ActionUpdateField( "$p" );
+        ActionFieldValue afv0 = new ActionFieldValue();
+        afv0.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv0.setField( "field1" );
+        afv0.setValue( "$f1" );
+        auf1.addFieldValue( afv0 );
+        ActionFieldValue afv1 = new ActionFieldValue();
+        afv1.setNature( FieldNatureType.TYPE_LITERAL );
+        afv1.setField( "field2" );
+        afv1.setValue( "bar" );
+        auf1.addFieldValue( afv1 );
+
+        m.addRhsItem( auf1 );
+
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  modify( $p ) {\n" +
+                "    setField1(\"foo\"),\n" +
+                "    setField2(\"bar\")\n" +
+                "  }\n" +
+                "end";
+
+        m.addRow( new String[]{ "foo" } );
+
+        checkMarshall( expected,
+                       m );
+    }
+
+    @Test
+    public void testActionModifyTwoFieldsFirstTemplateSecondLiteral2() {
+        TemplateModel m = new TemplateModel();
+        m.name = "r1";
+
+        FactPattern fp = new FactPattern( "Person" );
+        fp.setBoundName( "$p" );
+        m.addLhsItem( fp );
+
+        ActionUpdateField auf1 = new ActionUpdateField( "$p" );
+        ActionFieldValue afv0 = new ActionFieldValue();
+        afv0.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv0.setField( "field1" );
+        afv0.setValue( "$f1" );
+        auf1.addFieldValue( afv0 );
+        ActionFieldValue afv1 = new ActionFieldValue();
+        afv1.setNature( FieldNatureType.TYPE_LITERAL );
+        afv1.setField( "field2" );
+        afv1.setValue( "bar" );
+        auf1.addFieldValue( afv1 );
+
+        m.addRhsItem( auf1 );
+
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  modify( $p ) {\n" +
+                "    setField2(\"bar\")\n" +
+                "  }\n" +
+                "end";
+
+        m.addRow( new String[]{ null } );
+
+        checkMarshall( expected,
+                       m );
+    }
+
+    @Test
+    public void testActionModifyTwoFieldsFirstLiteralSecondTemplate1() {
+        TemplateModel m = new TemplateModel();
+        m.name = "r1";
+
+        FactPattern fp = new FactPattern( "Person" );
+        fp.setBoundName( "$p" );
+        m.addLhsItem( fp );
+
+        ActionUpdateField auf1 = new ActionUpdateField( "$p" );
+        ActionFieldValue afv0 = new ActionFieldValue();
+        afv0.setNature( FieldNatureType.TYPE_LITERAL );
+        afv0.setField( "field1" );
+        afv0.setValue( "foo" );
+        auf1.addFieldValue( afv0 );
+        ActionFieldValue afv1 = new ActionFieldValue();
+        afv1.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv1.setField( "field2" );
+        afv1.setValue( "$f2" );
+        auf1.addFieldValue( afv1 );
+
+        m.addRhsItem( auf1 );
+
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  modify( $p ) {\n" +
+                "    setField1(\"foo\"),\n" +
+                "    setField2(\"bar\")\n" +
+                "  }\n" +
+                "end";
+
+        m.addRow( new String[]{ "bar" } );
+
+        checkMarshall( expected,
+                       m );
+    }
+
+    @Test
+    public void testActionModifyTwoFieldsFirstLiteralSecondTemplate2() {
+        TemplateModel m = new TemplateModel();
+        m.name = "r1";
+
+        FactPattern fp = new FactPattern( "Person" );
+        fp.setBoundName( "$p" );
+        m.addLhsItem( fp );
+
+        ActionUpdateField auf1 = new ActionUpdateField( "$p" );
+        ActionFieldValue afv0 = new ActionFieldValue();
+        afv0.setNature( FieldNatureType.TYPE_LITERAL );
+        afv0.setField( "field1" );
+        afv0.setValue( "foo" );
+        auf1.addFieldValue( afv0 );
+        ActionFieldValue afv1 = new ActionFieldValue();
+        afv1.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv1.setField( "field2" );
+        afv1.setValue( "$f2" );
+        auf1.addFieldValue( afv1 );
+
+        m.addRhsItem( auf1 );
+
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  modify( $p ) {\n" +
+                "    setField1(\"foo\")\n" +
+                "  }\n" +
+                "end";
+
+        m.addRow( new String[]{ null } );
+
+        checkMarshall( expected,
+                       m );
+    }
+
+    @Test
+    public void testUpdateModifyMultipleFieldsWithMultipleSkipped1() {
+        TemplateModel m = new TemplateModel();
+        m.name = "r1";
+
+        FactPattern fp = new FactPattern( "Person" );
+        fp.setBoundName( "$p" );
+        m.addLhsItem( fp );
+
+        ActionUpdateField auf1 = new ActionUpdateField( "$p" );
+        ActionFieldValue afv0 = new ActionFieldValue();
+        afv0.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv0.setField( "field1" );
+        afv0.setValue( "$f1" );
+        auf1.addFieldValue( afv0 );
+
+        ActionFieldValue afv1 = new ActionFieldValue();
+        afv1.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv1.setField( "field2" );
+        afv1.setValue( "$f2" );
+        auf1.addFieldValue( afv1 );
+
+        ActionFieldValue afv2 = new ActionFieldValue();
+        afv2.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv2.setField( "field3" );
+        afv2.setValue( "$f3" );
+        auf1.addFieldValue( afv2 );
+
+        m.addRhsItem( auf1 );
+
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  modify( $p ) {\n" +
+                "    setField1(\"v1\"),\n" +
+                "    setField2(\"v2\"),\n" +
+                "    setField3(\"v3\")\n" +
+                "  }\n" +
+                "end";
+
+        m.addRow( new String[]{ "v1", "v2", "v3" } );
+
+        checkMarshall( expected,
+                       m );
+    }
+
+    @Test
+    public void testUpdateModifyMultipleFieldsWithMultipleSkipped2() {
+        TemplateModel m = new TemplateModel();
+        m.name = "r1";
+
+        FactPattern fp = new FactPattern( "Person" );
+        fp.setBoundName( "$p" );
+        m.addLhsItem( fp );
+
+        ActionUpdateField auf1 = new ActionUpdateField( "$p" );
+        ActionFieldValue afv0 = new ActionFieldValue();
+        afv0.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv0.setField( "field1" );
+        afv0.setValue( "$f1" );
+        auf1.addFieldValue( afv0 );
+
+        ActionFieldValue afv1 = new ActionFieldValue();
+        afv1.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv1.setField( "field2" );
+        afv1.setValue( "$f2" );
+        auf1.addFieldValue( afv1 );
+
+        ActionFieldValue afv2 = new ActionFieldValue();
+        afv2.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv2.setField( "field3" );
+        afv2.setValue( "$f3" );
+        auf1.addFieldValue( afv2 );
+
+        m.addRhsItem( auf1 );
+
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  modify( $p ) {\n" +
+                "    setField2(\"v2\"),\n" +
+                "    setField3(\"v3\")\n" +
+                "  }\n" +
+                "end";
+
+        m.addRow( new String[]{ null, "v2", "v3" } );
+
+        checkMarshall( expected,
+                       m );
+    }
+
+    @Test
+    public void testUpdateModifyMultipleFieldsWithMultipleSkipped3() {
+        TemplateModel m = new TemplateModel();
+        m.name = "r1";
+
+        FactPattern fp = new FactPattern( "Person" );
+        fp.setBoundName( "$p" );
+        m.addLhsItem( fp );
+
+        ActionUpdateField auf1 = new ActionUpdateField( "$p" );
+        ActionFieldValue afv0 = new ActionFieldValue();
+        afv0.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv0.setField( "field1" );
+        afv0.setValue( "$f1" );
+        auf1.addFieldValue( afv0 );
+
+        ActionFieldValue afv1 = new ActionFieldValue();
+        afv1.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv1.setField( "field2" );
+        afv1.setValue( "$f2" );
+        auf1.addFieldValue( afv1 );
+
+        ActionFieldValue afv2 = new ActionFieldValue();
+        afv2.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv2.setField( "field3" );
+        afv2.setValue( "$f3" );
+        auf1.addFieldValue( afv2 );
+
+        m.addRhsItem( auf1 );
+
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  modify( $p ) {\n" +
+                "    setField3(\"v3\")\n" +
+                "  }\n" +
+                "end";
+
+        m.addRow( new String[]{ null, null, "v3" } );
+
+        checkMarshall( expected,
+                       m );
+    }
+
+    @Test
+    public void testUpdateModifyMultipleFieldsWithMultipleSkipped4() {
+        TemplateModel m = new TemplateModel();
+        m.name = "r1";
+
+        FactPattern fp = new FactPattern( "Person" );
+        fp.setBoundName( "$p" );
+        m.addLhsItem( fp );
+
+        ActionUpdateField auf1 = new ActionUpdateField( "$p" );
+        ActionFieldValue afv0 = new ActionFieldValue();
+        afv0.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv0.setField( "field1" );
+        afv0.setValue( "$f1" );
+        auf1.addFieldValue( afv0 );
+
+        ActionFieldValue afv1 = new ActionFieldValue();
+        afv1.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv1.setField( "field2" );
+        afv1.setValue( "$f2" );
+        auf1.addFieldValue( afv1 );
+
+        ActionFieldValue afv2 = new ActionFieldValue();
+        afv2.setNature( FieldNatureType.TYPE_TEMPLATE );
+        afv2.setField( "field3" );
+        afv2.setValue( "$f3" );
+        auf1.addFieldValue( afv2 );
+
+        m.addRhsItem( auf1 );
+
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  modify( $p ) {\n" +
+                "    setField1(\"v1\"),\n" +
+                "    setField3(\"v3\")\n" +
+                "  }\n" +
+                "end";
+
+        m.addRow( new String[]{ "v1", null, "v3" } );
 
         checkMarshall( expected,
                        m );
