@@ -6,7 +6,7 @@ import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
-import org.drools.core.common.TupleEntryQueue;
+import org.drools.core.common.StreamTupleEntryQueue;
 import org.drools.core.common.SynchronizedLeftTupleSets;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
@@ -40,13 +40,13 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     private          boolean            active;
     private          SegmentMemory      previous;
     private          SegmentMemory      next;
-    private TupleEntryQueue queue;
+    private StreamTupleEntryQueue queue;
 
     public SegmentMemory(NetworkNode rootNode) {
         this(rootNode, null);
     }
 
-    public SegmentMemory(NetworkNode rootNode, TupleEntryQueue queue) {
+    public SegmentMemory(NetworkNode rootNode, StreamTupleEntryQueue queue) {
         this.rootNode = rootNode;
         this.linkedNodeMask = new AtomicBitwiseLong();
         this.dirtyNodeMask = new AtomicBitwiseLong();
@@ -56,11 +56,11 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         this.queue = queue;
     }
 
-    public TupleEntryQueue getTupleQueue() {
+    public StreamTupleEntryQueue getStreamQueue() {
         return queue;
     }
 
-    public void setTupleQueue(TupleEntryQueue queue) {
+    public void setStreamQueue(StreamTupleEntryQueue queue) {
         this.queue = queue;
     }
 
@@ -367,10 +367,10 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
                 }
             }
 
-            if ( hasQueue && smem.getTupleQueue() == null ) {
+            if ( hasQueue && smem.getStreamQueue() == null ) {
                 // need to make sure there is one Queue, for the rule, when a stream mode node is found.
-                TupleEntryQueue queue = SegmentUtilities.initAndGetTupleQueue(smem.getTipNode(), wm);
-                smem.setTupleQueue( queue );
+                StreamTupleEntryQueue queue = SegmentUtilities.initAndGetTupleQueue(smem.getTipNode(), wm);
+                smem.setStreamQueue( queue );
             }
 
             if (hasSyncStagedLeftTuple) {

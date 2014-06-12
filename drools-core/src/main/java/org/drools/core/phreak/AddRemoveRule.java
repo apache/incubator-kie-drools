@@ -894,7 +894,7 @@ public class AddRemoveRule {
 
      public static SegmentMemory splitSegment(SegmentMemory sm1, LeftTupleSource splitNode) {
          // create new segment, starting after split
-         SegmentMemory sm2 = new SegmentMemory(splitNode.getSinkPropagator().getFirstLeftTupleSink(), sm1.getTupleQueue() ); // we know there is only one sink
+         SegmentMemory sm2 = new SegmentMemory(splitNode.getSinkPropagator().getFirstLeftTupleSink(), sm1.getStreamQueue() ); // we know there is only one sink
 
          if ( sm1.getFirst() != null ) {
              for ( SegmentMemory sm = sm1.getFirst(); sm != null;) {
