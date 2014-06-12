@@ -1,0 +1,23 @@
+package org.kie.sample
+
+import java.util.*
+import org.kie.sample.model.*
+
+rule "When there is a fire turn on the sprinkler"
+when
+    $fire: Fire($room : room)
+    $sprinkler : Sprinkler( room == $room, !on )
+then
+    modify( $sprinkler ) { setOn( true ) };
+    System.out.println( "Turn on the sprinkler for room " + $room.getName() );
+end
+
+rule "When the fire is gone turn off the sprinkler"
+when
+    $room : Room( )
+    $sprinkler : Sprinkler( room == $room, on )
+    not Fire( room == $room )
+then
+    modify( $sprinkler ) { setOn( false ) };
+    System.out.println( "Turn off the sprinkler for room " + $room.getName() );
+end

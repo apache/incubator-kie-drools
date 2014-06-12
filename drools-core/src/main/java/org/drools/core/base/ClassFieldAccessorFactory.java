@@ -16,7 +16,6 @@
 
 package org.drools.core.base;
 
-import org.drools.core.base.ClassFieldAccessorCache.ByteArrayClassLoader;
 import org.drools.core.base.ClassFieldAccessorCache.CacheEntry;
 import org.drools.core.base.extractors.BaseBooleanClassFieldReader;
 import org.drools.core.base.extractors.BaseBooleanClassFieldWriter;
@@ -41,6 +40,7 @@ import org.drools.core.base.extractors.BaseShortClassFieldWriter;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.asm.ClassFieldInspector;
+import org.drools.core.util.ByteArrayClassLoader;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;

@@ -196,7 +196,7 @@ public class ClasspathKieProject extends AbstractKieProject {
             rootPath = IoUtils.asSystemSpecificPath( rootPath, rootPath.lastIndexOf( ':' ) );
         }
 
-        if ( urlPathToAdd.endsWith( ".jar" ) || urlPathToAdd.endsWith( "/content" ) ) {
+        if ( urlPathToAdd.endsWith( ".apk" ) || urlPathToAdd.endsWith( ".jar" ) || urlPathToAdd.endsWith( "/content" ) ) {
             pomProperties = getPomPropertiesFromZipFile(rootPath);
         } else {
             pomProperties = getPomPropertiesFromFileSystem(rootPath);
