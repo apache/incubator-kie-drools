@@ -1,0 +1,4 @@
+package org.kie.test
+declare FactB
+    fieldA: FactA
+end

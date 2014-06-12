@@ -16,6 +16,8 @@
 
 package org.drools.core.base;
 
+import org.drools.core.util.ByteArrayClassLoader;
+import org.drools.core.util.ClassUtils;
 import org.drools.core.util.asm.ClassFieldInspector;
 
 import java.security.ProtectionDomain;
@@ -152,7 +154,10 @@ public class ClassFieldAccessorCache {
             if ( parentClassLoader == null ) {
                 throw new RuntimeException( "ClassFieldAccessorFactory cannot have a null parent ClassLoader" );
             }
-            this.byteArrayClassLoader = new ByteArrayClassLoader( parentClassLoader );
+            this.byteArrayClassLoader = ClassUtils.isAndroid() ?
+                    (ByteArrayClassLoader) ClassUtils.instantiateObject(
+                            "org.drools.android.MultiDexClassLoader", null, parentClassLoader) :
+                    new DefaultByteArrayClassLoader( parentClassLoader );
         }
 
         public ByteArrayClassLoader getByteArrayClassLoader() {
@@ -223,8 +228,8 @@ public class ClassFieldAccessorCache {
 
     }
 
-    public static class ByteArrayClassLoader extends ClassLoader {
-        public ByteArrayClassLoader(final ClassLoader parent) {
+    public static class DefaultByteArrayClassLoader extends ClassLoader implements ByteArrayClassLoader {
+        public DefaultByteArrayClassLoader(final ClassLoader parent) {
             super( parent );
         }
 

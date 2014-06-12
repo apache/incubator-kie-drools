@@ -18,7 +18,7 @@ public class Drools {
 
     static {
         droolsFullVersion = Drools.class.getPackage().getImplementationVersion();
-        if (droolsFullVersion == null) {
+        if (droolsFullVersion == null || droolsFullVersion.equals("0.0")) {
             InputStream is = null;
             try {
                 is = Drools.class.getClassLoader().getResourceAsStream("drools.versions.properties");

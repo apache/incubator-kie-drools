@@ -125,6 +125,9 @@ public class IoUtils {
             Enumeration< ? extends ZipEntry> entries = zipFile.entries();
             while ( entries.hasMoreElements() ) {
                 ZipEntry entry = entries.nextElement();
+                if (entry.getName().endsWith(".dex")) {
+                    continue; //avoid out of memory error, it is useless anyway
+                }                
                 byte[] bytes = readBytesFromInputStream( zipFile.getInputStream( entry ) );
                 files.put( entry.getName(),
                            bytes );

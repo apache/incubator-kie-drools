@@ -1,0 +1,29 @@
+package org.kie.sample
+
+import java.util.*
+import org.kie.sample.model.*
+
+rule "Raise the alarm when we have one or more fires"
+when
+    exists Fire()
+then
+    insert( new Alarm() );
+    System.out.println( "Raise the alarm" );
+end
+
+rule "Cancel the alarm when all the fires have gone"
+when
+    not Fire()
+    $alarm : Alarm()
+then
+    retract( $alarm );
+    System.out.println( "Cancel the alarm" );
+end
+
+rule "Status output when things are ok"
+when
+    not Alarm()
+    not Sprinkler( on == true )
+then
+    System.out.println( "Everything is ok" );
+end
