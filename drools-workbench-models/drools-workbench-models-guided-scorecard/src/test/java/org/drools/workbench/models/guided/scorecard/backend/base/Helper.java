@@ -35,16 +35,6 @@ public class Helper {
                 "  <version>1.0</version>\n" +
                 "  <packaging>kjar</packaging>\n" +
                 "  <name>p0</name>\n" +
-                "  <build>\n" +
-                "    <plugins>\n" +
-                "      <plugin>\n" +
-                "        <groupId>org.kie</groupId>\n" +
-                "        <artifactId>kie-maven-plugin</artifactId>\n" +
-                "        <version>6.1.0-SNAPSHOT</version>\n" +
-                "        <extensions>true</extensions>\n" +
-                "      </plugin>\n" +
-                "    </plugins>\n" +
-                "  </build>\n" +
                 "</project>";
     }
 
