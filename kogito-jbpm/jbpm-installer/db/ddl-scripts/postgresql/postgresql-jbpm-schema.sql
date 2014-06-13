@@ -11,6 +11,26 @@
         primary key (id)
     );
 
+    create table AuditTaskImpl (
+        id int8 not null,
+        activationTime date,
+        actualOwner varchar(255),
+        createdBy varchar(255),
+        createdOn date,
+        deploymentId varchar(255),
+        description varchar(255),
+        dueDate date,
+        name varchar(255),
+        parentId int8 not null,
+        priority int4 not null,
+        processId varchar(255),
+        processInstanceId int8 not null,
+        processSessionId int4 not null,
+        status varchar(255),
+        taskId int8,
+        primary key (id)
+    );
+
     create table BAMTaskSummary (
         pk int8 not null,
         createdDate timestamp,
@@ -301,10 +321,12 @@
     create table TaskEvent (
         id int8 not null,
         logTime timestamp,
+        processInstanceId int8,
         taskId int8,
         type varchar(255),
         userId varchar(255),
         OPTLOCK int4,
+        workItemId int8,
         primary key (id)
     );
 
@@ -580,6 +602,8 @@
         references Task;
 
     create sequence ATTACHMENT_ID_SEQ;
+
+    create sequence AUDIT_ID_SEQ;
 
     create sequence BAM_TASK_ID_SEQ;
 

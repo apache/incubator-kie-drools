@@ -11,6 +11,26 @@
         primary key (id)
     );
 
+    create table AuditTaskImpl (
+        id numeric(19,0) identity not null,
+        activationTime datetime,
+        actualOwner varchar(255),
+        createdBy varchar(255),
+        createdOn datetime,
+        deploymentId varchar(255),
+        description varchar(255),
+        dueDate datetime,
+        name varchar(255),
+        parentId numeric(19,0) not null,
+        priority int not null,
+        processId varchar(255),
+        processInstanceId numeric(19,0) not null,
+        processSessionId int not null,
+        status varchar(255),
+        taskId numeric(19,0),
+        primary key (id)
+    );
+
     create table BAMTaskSummary (
         pk numeric(19,0) identity not null,
         createdDate datetime,
@@ -301,10 +321,12 @@
     create table TaskEvent (
         id numeric(19,0) identity not null,
         logTime datetime,
+        processInstanceId numeric(19,0),
         taskId numeric(19,0),
         type varchar(255),
         userId varchar(255),
         OPTLOCK int,
+        workItemId numeric(19,0),
         primary key (id)
     );
 

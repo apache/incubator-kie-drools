@@ -11,6 +11,26 @@
         primary key (id)
     ) ENGINE=InnoDB;
 
+    create table AuditTaskImpl (
+        id bigint not null auto_increment,
+        activationTime date,
+        actualOwner varchar(255),
+        createdBy varchar(255),
+        createdOn date,
+        deploymentId varchar(255),
+        description varchar(255),
+        dueDate date,
+        name varchar(255),
+        parentId bigint not null,
+        priority integer not null,
+        processId varchar(255),
+        processInstanceId bigint not null,
+        processSessionId integer not null,
+        status varchar(255),
+        taskId bigint,
+        primary key (id)
+    ) ENGINE=InnoDB;
+
     create table BAMTaskSummary (
         pk bigint not null auto_increment,
         createdDate datetime,
@@ -301,10 +321,12 @@
     create table TaskEvent (
         id bigint not null auto_increment,
         logTime datetime,
+        processInstanceId bigint,
         taskId bigint,
         type varchar(255),
         userId varchar(255),
         OPTLOCK integer,
+        workItemId bigint,
         primary key (id)
     ) ENGINE=InnoDB;
 

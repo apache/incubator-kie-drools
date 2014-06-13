@@ -1,4 +1,4 @@
-    create table Attachment (
+   create table Attachment (
         id number(19,0) not null,
         accessType number(10,0),
         attachedAt timestamp,
@@ -8,6 +8,26 @@
         attachment_size number(10,0),
         attachedBy_id varchar2(255 char),
         TaskData_Attachments_Id number(19,0),
+        primary key (id)
+    );
+
+    create table AuditTaskImpl (
+        id number(19,0) not null,
+        activationTime date,
+        actualOwner varchar2(255 char),
+        createdBy varchar2(255 char),
+        createdOn date,
+        deploymentId varchar2(255 char),
+        description varchar2(255 char),
+        dueDate date,
+        name varchar2(255 char),
+        parentId number(19,0) not null,
+        priority number(10,0) not null,
+        processId varchar2(255 char),
+        processInstanceId number(19,0) not null,
+        processSessionId number(10,0) not null,
+        status varchar2(255 char),
+        taskId number(19,0),
         primary key (id)
     );
 
@@ -301,10 +321,12 @@
     create table TaskEvent (
         id number(19,0) not null,
         logTime timestamp,
+        processInstanceId number(19,0),
         taskId number(19,0),
         type varchar2(255 char),
         userId varchar2(255 char),
         OPTLOCK number(10,0),
+        workItemId number(19,0),
         primary key (id)
     );
 
@@ -580,6 +602,8 @@
         references Task;
 
     create sequence ATTACHMENT_ID_SEQ;
+
+    create sequence AUDIT_ID_SEQ;
 
     create sequence BAM_TASK_ID_SEQ;
 
