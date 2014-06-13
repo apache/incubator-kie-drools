@@ -141,8 +141,7 @@
         </screenshot>
       </figure>
       <para>On the formula expression:
-        <programlisting>="<b>" + {sum(po_lines/line_total)} + "</b>"
-        </programlisting>
+        <command>={sum(po_lines/line_total)}</command>
         we are using the XPATH function sum() that is going to summarize the totals of all the lines. So after creating
         some Lines the form will look like this:
       </para>
