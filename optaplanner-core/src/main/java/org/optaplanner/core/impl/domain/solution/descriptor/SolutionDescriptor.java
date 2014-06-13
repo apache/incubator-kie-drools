@@ -238,7 +238,7 @@ public class SolutionDescriptor {
     }
 
     public boolean hasEntityDescriptor(Class<?> entitySubclass) {
-        EntityDescriptor entityDescriptor = lowestEntityDescriptorCache.get(entitySubclass);
+        EntityDescriptor entityDescriptor = findEntityDescriptor(entitySubclass);
         return entityDescriptor != null;
     }
 
