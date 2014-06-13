@@ -1,10 +1,9 @@
-#
-# Quartz seems to work best with the driver mm.mysql-2.0.7-bin.jar
-#
-# In your Quartz properties file, you'll need to set 
-# org.quartz.jobStore.driverDelegateClass = org.quartz.impl.jdbcjobstore.StdJDBCDelegate
-#
-
+--
+-- Quartz seems to work best with the driver mm.mysql-2.0.7-bin.jar
+--
+-- In your Quartz properties file, you'll need to set
+-- org.quartz.jobStore.driverDelegateClass = org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+--
 
 CREATE TABLE QRTZ_JOB_DETAILS
   (
@@ -96,15 +95,12 @@ CREATE TABLE QRTZ_TRIGGER_LISTENERS
         REFERENCES QRTZ_TRIGGERS(TRIGGER_NAME,TRIGGER_GROUP)
 );
 
-
 CREATE TABLE QRTZ_CALENDARS
   (
     CALENDAR_NAME  VARCHAR(200) NOT NULL,
     CALENDAR BLOB NOT NULL,
     PRIMARY KEY (CALENDAR_NAME)
 );
-
-
 
 CREATE TABLE QRTZ_PAUSED_TRIGGER_GRPS
   (
@@ -143,12 +139,10 @@ CREATE TABLE QRTZ_LOCKS
     PRIMARY KEY (LOCK_NAME)
 );
 
-
 INSERT INTO QRTZ_LOCKS values('TRIGGER_ACCESS');
 INSERT INTO QRTZ_LOCKS values('JOB_ACCESS');
 INSERT INTO QRTZ_LOCKS values('CALENDAR_ACCESS');
 INSERT INTO QRTZ_LOCKS values('STATE_ACCESS');
 INSERT INTO QRTZ_LOCKS values('MISFIRE_ACCESS');
-
 
 commit;
