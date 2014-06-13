@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="." xml:id="sect-formmodeler-UsingFormsclient"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns2="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Using forms on client applications</title>
+
+  <para>
+    This chapter intends to describe how you can embed process forms and interact with them on another webapp including the
+    new Javascript API provided by the platform.
+  </para>
+  <para>
+    You can find the library inside the <literal>kie-wb-*.war</literal> on the js file located on
+    <literal>js/jbpm-forms-rest-integration.js</literal>.
+  </para>
+  <section>
+    <title>What does the API provides?</title>
+    <para>
+      This JavaScript API tries to be a simple mechanism to use forms on remote applications allowing to load the forms from
+      different KIE Workbench instances, submit them, launch processes/tasks and execute callback functions when the actions are done.
+    </para>
+    <para>
+      The basic methods are:
+      <variablelist>
+        <varlistentry>
+          <term><command>showStartProcessForm(hostUrl, deploymentId, processId, divId, onsuccessCallback, onerrorCallback):</command>
+            Makes a call to the REST endpoint to obtain the form URL and if it gets a valid response will embed the process start form on the given div. The parameteres needed are:</term>
+          <listitem>
+            <itemizedlist>
+              <listitem>
+                <para><emphasis>hostURL</emphasis>: the URL of the KIE Workbench instance that holds the deployments.</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>deploymentId</emphasis>: the deployment identifier that contains the process to run.</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>processId</emphasis>: the identifier of the process to run.</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>divId</emphasis>: the identifier of the div that has to contain the form.</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>onsuccessCallback</emphasis> (optional): a javascript function that will be executed if the form is going to be rendered. This function will receive the server response as a parameter</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>onerrorCallback</emphasis> (optional): a javascript function that will be executed if any error occurs and it is impossible to render the form. This function will receive the server response as a parameter</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><command>startProcess(divId, onsuccessCallback, onerrorCallback):</command>
+            Submits the form loaded on the given div and starts the process. The parameteres needed are:</term>
+          <listitem>
+            <itemizedlist>
+              <listitem>
+                <para><emphasis>divId</emphasis>: the identifier of the div that to contains the form.</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>onsuccessCallback</emphasis> (optional): a javascript function that will be executed after the process is started. This function will receive the server response as a parameter</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>onerrorCallback</emphasis> (optional): a javascript function that will be executed if any error occurs and it is impossible to start the process. This function will receive the server response as a parameter</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><command>showTaskForm(hostUrl, taskId, divId, onsuccessCallback, onerrorCallback):</command>
+            Makes a call to the REST endpoint to obtain the form URL and if it gets a valid response will embed the task form on the given div. The parameteres needed are:</term>
+          <listitem>
+            <itemizedlist>
+              <listitem>
+                <para><emphasis>hostURL</emphasis>: the URL of the KIE Workbench instance that holds the deployments.</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>taskId</emphasis>: the identifier of the task to show the form.</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>divId</emphasis>: the identifier of the div that has to contain the form.</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>onsuccessCallback</emphasis> (optional): a javascript function that will be executed if the form is going to be rendered. This function will receive the server response as a parameter</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>onerrorCallback</emphasis> (optional): a javascript function that will be executed if any error occurs and it is impossible to render the form. This function will receive the server response as a parameter</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><command>claimTask(divId, onsuccessCallback, onerrorCallback):</command>
+            Claims the task whose form is being rendered</term>
+          <listitem>
+            <itemizedlist>
+              <listitem>
+                <para><emphasis>divId</emphasis>: the identifier of the div that contains the form.</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>onsuccessCallback</emphasis> (optional): a javascript function that will be executed after the task is claimed. This function will receive the server response as a parameter</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>onerrorCallback</emphasis> (optional): a javascript function that will be executed if any error occurs and it is impossible to claim the task. This function will receive the server response as a parameter</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><command>startTask(divId, onsuccessCallback, onerrorCallback):</command>
+            Starts the task whose form is being rendered</term>
+          <listitem>
+            <itemizedlist>
+              <listitem>
+                <para><emphasis>divId</emphasis>: the identifier of the div that contains the form.</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>onsuccessCallback</emphasis> (optional): a javascript function that will be executed after the task is started. This function will receive the server response as a parameter</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>onerrorCallback</emphasis> (optional): a javascript function that will be executed if any error occurs and it is impossible to start the task. This function will receive the server response as a parameter</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><command>releaseTask(divId, onsuccessCallback, onerrorCallback):</command>
+            Releases the task whose form is being rendered</term>
+          <listitem>
+            <itemizedlist>
+              <listitem>
+                <para><emphasis>divId</emphasis>: the identifier of the div that contains the form.</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>onsuccessCallback</emphasis> (optional): a javascript function that will be executed after the task is released. This function will receive the server response as a parameter</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>onerrorCallback</emphasis> (optional): a javascript function that will be executed if any error occurs and it is impossible to release the task. This function will receive the server response as a parameter</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><command>saveTask(divId, onsuccessCallback, onerrorCallback):</command>
+            Submits the form and saves the state of the task whose form is being rendered</term>
+          <listitem>
+            <itemizedlist>
+              <listitem>
+                <para><emphasis>divId</emphasis>: the identifier of the div that contains the form.</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>onsuccessCallback</emphasis> (optional): a javascript function that will be executed after the task is saved. This function will receive the server response as a parameter</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>onerrorCallback</emphasis> (optional): a javascript function that will be executed if any error occurs and it is impossible to save the task. This function will receive the server response as a parameter</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><command>completeTask(divId, onsuccessCallback, onerrorCallback):</command>
+            Submits the form and completes task whose form is being rendered</term>
+          <listitem>
+            <itemizedlist>
+              <listitem>
+                <para><emphasis>divId</emphasis>: the identifier of the div that contains the form.</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>onsuccessCallback</emphasis> (optional): a javascript function that will be executed after the task is completed. This function will receive the server response as a parameter</para>
+              </listitem>
+              <listitem>
+                <para><emphasis>onerrorCallback</emphasis> (optional): a javascript function that will be executed if any error occurs and it is impossible to complete the task. This function will receive the server response as a parameter</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><command>clearContainer(divId):</command>
+            Cleans the div content and the related data stored on the component.</term>
+          <listitem>
+            <itemizedlist>
+              <listitem>
+                <para><emphasis>divId</emphasis>: the identifier of the div that contains the form.</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </para>
+  </section>
+
+  <section>
+    <title>Sample usage</title>
+    <para>
+      Now let's see an example how you can use the library to load the HR process form and start a new process instance.
+      We are going to define a HTML page that will contain very simple components:
+      <itemizedlist>
+        <listitem>
+          <para><emphasis>"Show Process Form"</emphasis> BUTTON: The button that is going to make a call to a <emphasis>showProcessForm()</emphasis> function to embedd the process form.</para>
+        </listitem>
+        <listitem>
+          <para><emphasis>"myform"</emphasis> DIV: the div that will containt the form</para>
+        </listitem>
+        <listitem>
+          <para><emphasis>"Start Process"</emphasis> BUTTON: the button that will call the <emphasis>startProcess()</emphasis> function that submits the form and start a new process instance. At the begining it will be hidden and only will be displayed when the form is going to be rendered.</para>
+        </listitem>
+      </itemizedlist>
+      First we are look at the HTML code:
+    </para>
+    <programlisting language="html">
+&lt;head&gt;
+  &lt;script src="js/jbpm-forms-rest-integration.js"&gt;&lt;/script&gt;
+  &lt;script&gt;
+      var formsAPI = new jBPMFormsAPI();
+  &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;input type="button" id="showformButton"
+      value="Show Process Form" onclick="showProcessForm()"&gt;
+  &lt;p/&gt;
+  &lt;div id="myform" style="border: solid black 1px; width: 500px; height: 200px;"&gt;
+  &lt;/div&gt;
+  &lt;p/&gt;
+  &lt;input type="button" id="startprocessButton"
+      style="display: none;" value="Start Process" onclick="startProcess()"&gt;
+&lt;/body&gt;
+    </programlisting>
+    <para>
+      Notice that in first place we have added the js library and created an instance of the jBPMFormsAPI object that
+      will manage the form rendering.
+    </para>
+    <para>
+      Now let's see how the <command>showProcessForm()</command> function looks like:
+    </para>
+    <programlisting language="javascript">
+function showProcessForm() {
+  var onsuccessCallback = function(response) {
+    document.getElementById("showformButton").style.display = "none";
+    document.getElementById("startprocessButton").style.display = "block";
+  }
+
+  var onerrorCallback = function(errorMessage) {
+    alert("Unable to load the form, something wrong happened: " + errorMessage);
+    formsAPI.clearContainer("myform");
+  }
+  formsAPI.showStartProcessForm("http://localhost:8080/kie-wb/", "org.jbpm:HR:1.0", "hiring", "myform", onsuccessCallback, onerrorCallback);
+}
+    </programlisting>
+    <para>
+      As you can see, first we are defining the callback functions:
+      <variablelist>
+        <varlistentry>
+          <term><command>onsuccessCallback:</command>
+            This function is going to be called when the call to the REST endpoint and the form is going to be rendered.
+            On this example we simply hide the <emphasis>"Show Process Form"</emphasis> button and show the
+            <emphasis>"Start Process"</emphasis> button in  order to allow to submit the form and start the process.
+            This function takes as a parameter the response of the REST call to inform the user that everything gone well.
+          </term>
+        </varlistentry>
+        <varlistentry>
+          <term><command>onerrorCallback:</command>
+            This function is going to be called if any error occurs (e.g. any communication error with the REST endpoint or unexpected js errors)
+            On this example we simply show an alert showing the error message received and clear the <emphasis>"myform"</emphasis> DIV status.
+          </term>
+        </varlistentry>
+      </variablelist>
+      Once we defined the callback function we proceed to call the <command>formsAPI.showStartProcessForm(...)</command> that is going
+      make the REST call and embedd the form inside the specified div. Notice that we are providing a bunch of information
+      in order to load the form, the URL where the KIE-Workbench is running (in this example "http://localhost:8080/kie-wb/"),
+      the deployment where the process is located ("org.jbpm:HR:1.0"), the process id ("hiring"), the DIV id that is
+      going to contain the form ("myform") and the callback functions (onsuccessCallback and onerrorCallback).
+    </para>
+    <para>
+      Now let's take a look at the <emphasis>startProcess()</emphasis> that is the one that is going to submit the form
+      and start the process:
+    </para>
+    <programlisting language="javascript">
+function startProcess() {
+  var onsuccessCallback = function(response) {
+    document.getElementById("showformButton").style.display = "block";
+    document.getElementById("startprocessButton").style.display = "none";
+    formsAPI.clearContainer("myform");
+    alert(response);
+  }
+
+  var onerrorCallback = function(response) {
+    document.getElementById("showformButton").style.display = "block";
+    document.getElementById("startprocessButton").style.display = "none";
+    formsAPI.clearContainer("myform");
+    alert("Unable to start the process, something wrong happened: " + response);
+  }
+  formsAPI.startProcess("myform", onsuccessCallback, onerrorCallback);
+}
+    </programlisting>
+    <para>
+      As <command>showProcessForm()</command>, first we are defining the callback functions. Both are doing basically the
+      same:
+      <itemizedlist>
+        <listitem>
+          <para>Show the <emphasis>"Show Process Form"</emphasis> button and hide the <emphasis>"Start Process"</emphasis>
+            button to allow start another process instance.</para>
+        </listitem>
+        <listitem>
+          <para>Clear the <emphasis>"myform"</emphasis> DIV status</para>
+        </listitem>
+        <listitem>
+          <para>Show an alert with the response notifying that the process has started well or if an error occured</para>
+        </listitem>
+      </itemizedlist>
+    </para>
+    <para>
+      Once that is done we just do the call to the <command>formsAPI.startProcess(...)</command> that will send a message
+      to the component that renders the form inside the <emphasis>"myform"</emphasis> DIV and will exectue the callback
+      functions when the action is done.
+      Notice that we don't need the provide any other information than the DIV that contains the form and optionally the
+      callback functions.
+    </para>
+    <para>
+      With a simple code like this you'll be able to run process/task forms that are located on different Kie-Workbench
+      instances from any other application.
+    </para>
+    <figure>
+      <title>Using forms on client applications I: Before showing the form</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/FormModeler/43_embed_form.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+    <figure>
+      <title>Using forms on client applications II: Showing the process form</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/FormModeler/44_embed_form.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+    <figure>
+      <title>Using forms on client applications III: After process started</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/FormModeler/45_embed_form.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+  </section>
+</section>

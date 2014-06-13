@@ -5,7 +5,7 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
 
-  <title>Form Modeler</title>
+  <title>Forms</title>
 
   <para>
     This chapter intends to describe in a simple ways all the steps required to create a process with human tasks, generate and modify the forms for these tasks and execute them.
@@ -48,5 +48,6 @@
   <xi:include href="FormModeler/ConfigureProcess.xml" />
   <xi:include href="FormModeler/GeneratingForms.xml" />
   <xi:include href="FormModeler/EditForms.xml" />
+  <xi:include href="FormModeler/UsingFormsClient.xml" />
 </chapter>
 

@@ -18,7 +18,7 @@
   </para>
 
   <section xml:id="remote.rest.runtime">
-    <title>Runtime calls</title>
+    <title xml:id='remote.rest.runtime.title'>Runtime calls</title>
 
     <para>This section lists REST calls that interface with </para>
 
@@ -52,6 +52,22 @@
               </listitem>
               <listitem>
                 <para>This operation takes <emphasis>map query parameters</emphasis> (see above), which will be used as parameters for the process instance.</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>[POST] <command>/runtime/<emphasis>{deploymentId}</emphasis>/process/<emphasis>{processDefId}</emphasis>/startform</command></term>
+          <listitem>
+            <itemizedlist>
+              <listitem>
+                <para>Checks that exists the process idetified by <emphasis>prodessDefId</emphasis> on the given deployment and generates an URL to show the start form on a remote application.</para>
+              </listitem>
+              <listitem>
+                <para>Returns a <code>JaxbProcessInstanceFormResponse</code> instance, that contains the URL to the start process form.</para>
+              </listitem>
+              <listitem>
+                <para>The <emphasis>prodessDefId</emphasis>component of the URL must conform to the following regex: <code>[_a-zA-Z0-9-:\.]+</code></para>
               </listitem>
             </itemizedlist>
           </listitem>
@@ -1357,7 +1373,19 @@
             </itemizedlist>
           </listitem>
         </varlistentry>
-
+          <varlistentry>
+              <term>[GET] <command>/task/<emphasis>{taskId}</emphasis>/showTaskForm</command></term>
+              <listitem>
+                  <itemizedlist>
+                      <listitem>
+                          <para>Checks that the task idetified by <emphasis>taskId</emphasis> exists and generates an URL to show the task form on a remote application.</para>
+                      </listitem>
+                      <listitem>
+                          <para>Returns a <code>JaxbTaskFormResponse</code> instance, that contains the URL to the task form.</para>
+                      </listitem>
+                  </itemizedlist>
+              </listitem>
+          </varlistentry>
       </variablelist>
     </section>
 
@@ -2720,6 +2748,11 @@
 					<entry>POST</entry>
 					<entry>start a process instance based on the Process definition (accepts query map parameters)</entry>
 				</row>
+                <row valign="top">
+                    <entry>/runtime/{deploymentId}/process/{procDefID}/startform</entry>
+                    <entry>POST</entry>
+                    <entry>returns a valid URL to the start process form to be shown on a client aplication.</entry>
+                </row>
 				<row valign="top">
 					<entry>/runtime/{deploymentId}/process/instance/{procInstanceID}</entry>
 					<entry>GET</entry>
@@ -2933,6 +2966,13 @@
 						<para>returns the content of a task</para>
 					</entry>
 				</row>
+                <row valign="top">
+                    <entry>/task/{taskID}/showTaskForm</entry>
+                    <entry>GET</entry>
+                    <entry>
+                        <para>returns a valid URL to the task form to be shown on a client aplication.</para>
+                    </entry>
+                </row>
 			</tbody>
 		</tgroup>
 	</table>

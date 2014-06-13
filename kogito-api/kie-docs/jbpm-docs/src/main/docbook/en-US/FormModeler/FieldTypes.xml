@@ -181,6 +181,15 @@
 
                 <entry>no</entry>
               </row>
+              <row>
+                <entry>Document</entry>
+
+                <entry>File input to upload documents.</entry>
+
+                <entry>org.jbpm.document.Document</entry>
+
+                <entry>yes</entry>
+              </row>
             </tbody>
           </tgroup>
         </table>
