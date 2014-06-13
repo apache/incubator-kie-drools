@@ -4272,8 +4272,8 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
   </customPhase>
 
 
-From 6.1.0.Beta4 to 6.1.0.Beta5
--------------------------------
+From 6.1.0.Beta4 to 6.1.0.CR1
+-----------------------------
 
 [IMPL_DETAIL] The method ScoreDefinition.getLevelCount() has been renamed to ScoreDefinition.getLevelsSize().
 
@@ -4485,3 +4485,9 @@ After in *.java:
     public String getOutputFileExtension() {
         return FILE_EXTENSION;
     }
+
+
+From 6.1.0.CR1 to 6.1.0.CR2
+---------------------------
+
+[IMPL_DETAIL] SolutionDescriptor.getEntityDescriptor(...) has been renamed to SolutionDescriptor.findEntityDescriptorOrFail(...)

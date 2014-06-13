@@ -64,7 +64,7 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
             if (sourceEntityClass.equals(CustomShadowVariable.Source.NullEntityClass.class)) {
                 sourceEntityDescriptor = entityDescriptor;
             } else {
-                sourceEntityDescriptor = solutionDescriptor.getEntityDescriptor(sourceEntityClass);
+                sourceEntityDescriptor = solutionDescriptor.findEntityDescriptor(sourceEntityClass);
                 if (sourceEntityDescriptor == null) {
                     throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                             + ") has a " + CustomShadowVariable.class.getSimpleName()

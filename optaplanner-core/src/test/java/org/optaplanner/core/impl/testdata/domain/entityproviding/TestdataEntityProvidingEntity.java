@@ -31,7 +31,7 @@ public class TestdataEntityProvidingEntity extends TestdataObject {
 
     public static EntityDescriptor buildEntityDescriptor() {
         SolutionDescriptor solutionDescriptor = TestdataEntityProvidingSolution.buildSolutionDescriptor();
-        return solutionDescriptor.getEntityDescriptor(TestdataEntityProvidingEntity.class);
+        return solutionDescriptor.findEntityDescriptorOrFail(TestdataEntityProvidingEntity.class);
     }
 
     private final List<TestdataValue> valueRange;

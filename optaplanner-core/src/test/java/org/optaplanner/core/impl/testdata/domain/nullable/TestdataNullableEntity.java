@@ -12,7 +12,7 @@ public class TestdataNullableEntity extends TestdataObject {
 
     public static EntityDescriptor buildEntityDescriptor() {
         SolutionDescriptor solutionDescriptor = TestdataNullableSolution.buildSolutionDescriptor();
-        return solutionDescriptor.getEntityDescriptor(TestdataNullableEntity.class);
+        return solutionDescriptor.findEntityDescriptorOrFail(TestdataNullableEntity.class);
     }
 
     private TestdataValue value;

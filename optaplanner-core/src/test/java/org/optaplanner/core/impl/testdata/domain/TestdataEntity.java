@@ -11,12 +11,12 @@ public class TestdataEntity extends TestdataObject {
 
     public static EntityDescriptor buildEntityDescriptor() {
         SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        return solutionDescriptor.getEntityDescriptor(TestdataEntity.class);
+        return solutionDescriptor.findEntityDescriptorOrFail(TestdataEntity.class);
     }
 
     public static GenuineVariableDescriptor buildVariableDescriptorForValue() {
         SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(TestdataEntity.class);
+        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataEntity.class);
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 

@@ -43,7 +43,7 @@ public class TrailingEntityMapSupport {
             }
             // TODO Remove when all starting entities call afterEntityAdded too
             for (Object entity : entityList) {
-                insertInTrailingEntityMap(solutionDescriptor.getEntityDescriptor(entity.getClass()), entity);
+                insertInTrailingEntityMap(solutionDescriptor.findEntityDescriptorOrFail(entity.getClass()), entity);
             }
         }
     }

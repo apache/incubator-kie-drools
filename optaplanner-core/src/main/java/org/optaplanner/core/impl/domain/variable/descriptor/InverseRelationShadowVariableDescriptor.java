@@ -46,7 +46,7 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
                 .getAnnotation(InverseRelationShadowVariable.class);
         Class<?> masterClass = getVariablePropertyType();
         EntityDescriptor sourceEntityDescriptor = getEntityDescriptor().getSolutionDescriptor()
-                .getEntityDescriptor(masterClass);
+                .findEntityDescriptor(masterClass);
         if (sourceEntityDescriptor == null) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + InverseRelationShadowVariable.class.getSimpleName()

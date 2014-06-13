@@ -70,7 +70,7 @@ public class DefaultPillarSelectorTest {
 //        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
 //                a, b, c, d);
 //        GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
-//                entitySelector.getEntityDescriptor(), "value");
+//                entitySelector.findEntityDescriptorOrFail(), "value");
 //        DefaultPillarSelector selector = new DefaultPillarSelector(
 //                entitySelector, Collections.singletonList(variableDescriptor), false,
 //                true, minimumPillarSize, maximumPillarSize);

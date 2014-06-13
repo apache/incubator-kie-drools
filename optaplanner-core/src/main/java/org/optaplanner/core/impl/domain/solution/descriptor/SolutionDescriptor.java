@@ -23,6 +23,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +65,7 @@ public class SolutionDescriptor {
 
     private final Map<Class<?>, EntityDescriptor> entityDescriptorMap;
     private final List<Class<?>> reversedEntityClassList;
+    private final Map<Class<?>, EntityDescriptor> lowestEntityDescriptorCache;
 
     public SolutionDescriptor(Class<? extends Solution> solutionClass) {
         this.solutionClass = solutionClass;
@@ -78,6 +80,7 @@ public class SolutionDescriptor {
         entityCollectionPropertyAccessorMap = new LinkedHashMap<String, PropertyAccessor>(mapSize);
         entityDescriptorMap = new LinkedHashMap<Class<?>, EntityDescriptor>(mapSize);
         reversedEntityClassList = new ArrayList<Class<?>>(mapSize);
+        lowestEntityDescriptorCache = new HashMap<Class<?>, EntityDescriptor>(mapSize);
     }
 
     public void addEntityDescriptor(EntityDescriptor entityDescriptor) {
@@ -91,6 +94,7 @@ public class SolutionDescriptor {
         }
         entityDescriptorMap.put(entityClass, entityDescriptor);
         reversedEntityClassList.add(0, entityClass);
+        lowestEntityDescriptorCache.put(entityClass, entityDescriptor);
     }
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {
@@ -234,29 +238,36 @@ public class SolutionDescriptor {
     }
 
     public boolean hasEntityDescriptor(Class<?> entitySubclass) {
-        // Reverse order to find the nearest ancestor
-        for (Class<?> entityClass : reversedEntityClassList) {
-            if (entityClass.isAssignableFrom(entitySubclass)) {
-                return true;
-            }
-        }
-        return false;
+        EntityDescriptor entityDescriptor = lowestEntityDescriptorCache.get(entitySubclass);
+        return entityDescriptor != null;
     }
 
-    public EntityDescriptor getEntityDescriptor(Class<?> entitySubclass) {
-        // Reverse order to find the nearest ancestor
-        for (Class<?> entityClass : reversedEntityClassList) {
-            if (entityClass.isAssignableFrom(entitySubclass)) {
-                return entityDescriptorMap.get(entityClass);
+    public EntityDescriptor findEntityDescriptorOrFail(Class<?> entitySubclass) {
+        EntityDescriptor entityDescriptor = findEntityDescriptor(entitySubclass);
+        if (entityDescriptor == null) {
+            throw new IllegalArgumentException("A planning entity is an instance of a entitySubclass ("
+                    + entitySubclass + ") that is not configured as a planning entity.\n" +
+                    "If that class (" + entitySubclass.getSimpleName()
+                    + ") (or superclass thereof) is not a entityClass (" + getEntityClassSet()
+                    + "), check your Solution implementation's annotated methods.\n" +
+                    "If it is, check your solver configuration.");
+        }
+        return entityDescriptor;
+    }
+
+    public EntityDescriptor findEntityDescriptor(Class<?> entitySubclass) {
+        EntityDescriptor entityDescriptor = lowestEntityDescriptorCache.get(entitySubclass);
+        if (entityDescriptor == null) {
+            // Reverse order to find the nearest ancestor
+            for (Class<?> entityClass : reversedEntityClassList) {
+                if (entityClass.isAssignableFrom(entitySubclass)) {
+                    entityDescriptor = entityDescriptorMap.get(entityClass);
+                    lowestEntityDescriptorCache.put(entitySubclass, entityDescriptor);
+                    break;
+                }
             }
         }
-        // TODO move this into the client methods
-        throw new IllegalArgumentException("A planning entity is an instance of a entitySubclass ("
-                + entitySubclass + ") that is not configured as a planning entity.\n" +
-                "If that class (" + entitySubclass.getSimpleName()
-                + ") (or superclass thereof) is not a entityClass (" + getEntityClassSet()
-                + "), check your Solution implementation's annotated methods.\n" +
-                "If it is, check your solver configuration.");
+        return entityDescriptor;
     }
     
     public Collection<GenuineVariableDescriptor> getChainedVariableDescriptors() {
@@ -283,12 +294,12 @@ public class SolutionDescriptor {
     }
 
     public GenuineVariableDescriptor findGenuineVariableDescriptor(Object entity, String variableName) {
-        EntityDescriptor entityDescriptor = getEntityDescriptor(entity.getClass());
+        EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
         return entityDescriptor.getGenuineVariableDescriptor(variableName);
     }
 
     public VariableDescriptor findVariableDescriptor(Object entity, String variableName) {
-        EntityDescriptor entityDescriptor = getEntityDescriptor(entity.getClass());
+        EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
         return entityDescriptor.getVariableDescriptor(variableName);
     }
 
@@ -402,7 +413,7 @@ public class SolutionDescriptor {
         for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
             Object entity = extractEntity(entityPropertyAccessor, solution);
             if (entity != null) {
-                EntityDescriptor entityDescriptor = getEntityDescriptor(entity.getClass());
+                EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
                 problemScale += entityDescriptor.getProblemScale(solution, entity);
             }
         }
@@ -410,7 +421,7 @@ public class SolutionDescriptor {
             Collection<?> entityCollection = extractEntityCollection(
                     entityCollectionPropertyAccessor, solution);
             for (Object entity : entityCollection) {
-                EntityDescriptor entityDescriptor = getEntityDescriptor(entity.getClass());
+                EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
                 problemScale += entityDescriptor.getProblemScale(solution, entity);
             }
         }
@@ -422,7 +433,7 @@ public class SolutionDescriptor {
         for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
             Object entity = extractEntity(entityPropertyAccessor, solution);
             if (entity != null) {
-                EntityDescriptor entityDescriptor = getEntityDescriptor(entity.getClass());
+                EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
                 uninitializedVariableCount += entityDescriptor.countUninitializedVariables(entity);
             }
         }
@@ -430,7 +441,7 @@ public class SolutionDescriptor {
             Collection<?> entityCollection = extractEntityCollection(
                     entityCollectionPropertyAccessor, solution);
             for (Object entity : entityCollection) {
-                EntityDescriptor entityDescriptor = getEntityDescriptor(entity.getClass());
+                EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
                 uninitializedVariableCount += entityDescriptor.countUninitializedVariables(entity);
             }
         }
@@ -446,7 +457,7 @@ public class SolutionDescriptor {
         for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
             Object entity = extractEntity(entityPropertyAccessor, solution);
             if (entity != null) {
-                EntityDescriptor entityDescriptor = getEntityDescriptor(entity.getClass());
+                EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
                 if (!entityDescriptor.isInitialized(entity)) {
                     if (!entityDescriptor.hasMovableEntitySelectionFilter()
                             || entityDescriptor.getMovableEntitySelectionFilter().accept(scoreDirector, entity)) {
@@ -459,7 +470,7 @@ public class SolutionDescriptor {
             Collection<?> entityCollection = extractEntityCollection(
                     entityCollectionPropertyAccessor, solution);
             for (Object entity : entityCollection) {
-                EntityDescriptor entityDescriptor = getEntityDescriptor(entity.getClass());
+                EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
                 if (!entityDescriptor.isInitialized(entity)) {
                     if (!entityDescriptor.hasMovableEntitySelectionFilter()
                             || entityDescriptor.getMovableEntitySelectionFilter().accept(scoreDirector, entity)) {

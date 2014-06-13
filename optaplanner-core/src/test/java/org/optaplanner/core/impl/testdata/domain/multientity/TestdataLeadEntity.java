@@ -28,7 +28,7 @@ public class TestdataLeadEntity extends TestdataObject {
 
     public static EntityDescriptor buildEntityDescriptor() {
         SolutionDescriptor solutionDescriptor = TestdataMultiEntitySolution.buildSolutionDescriptor();
-        return solutionDescriptor.getEntityDescriptor(TestdataLeadEntity.class);
+        return solutionDescriptor.findEntityDescriptorOrFail(TestdataLeadEntity.class);
     }
 
     private TestdataValue value;

@@ -37,9 +37,9 @@ public class InverseRelationVariableListenerTest {
     public void chained() {
         SolutionDescriptor solutionDescriptor = TestdataMappedByChainedSolution.buildSolutionDescriptor();
         InverseRelationVariableListener variableListener = new InverseRelationVariableListener(
-                solutionDescriptor.getEntityDescriptor(TestdataMappedByChainedObject.class)
+                solutionDescriptor.findEntityDescriptorOrFail(TestdataMappedByChainedObject.class)
                         .getShadowVariableDescriptor("nextEntity"),
-                solutionDescriptor.getEntityDescriptor(TestdataMappedByChainedEntity.class)
+                solutionDescriptor.findEntityDescriptorOrFail(TestdataMappedByChainedEntity.class)
                         .getGenuineVariableDescriptor("chainedObject"));
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
 

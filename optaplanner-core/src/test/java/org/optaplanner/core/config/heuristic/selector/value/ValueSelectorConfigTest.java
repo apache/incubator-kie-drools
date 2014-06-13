@@ -36,7 +36,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
     public void phaseOriginal() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
-                .getEntityDescriptor(TestdataEntity.class);
+                .findEntityDescriptorOrFail(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
@@ -52,7 +52,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
     public void stepOriginal() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
-                .getEntityDescriptor(TestdataEntity.class);
+                .findEntityDescriptorOrFail(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.STEP);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
@@ -69,7 +69,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
     public void justInTimeOriginal() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
-                .getEntityDescriptor(TestdataEntity.class);
+                .findEntityDescriptorOrFail(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
@@ -85,7 +85,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
     public void phaseRandom() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
-                .getEntityDescriptor(TestdataEntity.class);
+                .findEntityDescriptorOrFail(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
@@ -101,7 +101,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
     public void stepRandom() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
-                .getEntityDescriptor(TestdataEntity.class);
+                .findEntityDescriptorOrFail(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.STEP);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
@@ -118,7 +118,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
     public void justInTimeRandom() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
-                .getEntityDescriptor(TestdataEntity.class);
+                .findEntityDescriptorOrFail(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
@@ -134,7 +134,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
     public void phaseShuffled() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
-                .getEntityDescriptor(TestdataEntity.class);
+                .findEntityDescriptorOrFail(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
@@ -151,7 +151,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
     public void stepShuffled() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
-                .getEntityDescriptor(TestdataEntity.class);
+                .findEntityDescriptorOrFail(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.STEP);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
@@ -168,7 +168,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
     public void justInTimeShuffled() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
-                .getEntityDescriptor(TestdataEntity.class);
+                .findEntityDescriptorOrFail(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);

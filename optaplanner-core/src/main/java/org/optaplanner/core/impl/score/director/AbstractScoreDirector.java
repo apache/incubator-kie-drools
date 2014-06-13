@@ -189,11 +189,11 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     // ************************************************************************
 
     public final void beforeEntityAdded(Object entity) {
-        beforeEntityAdded(getSolutionDescriptor().getEntityDescriptor(entity.getClass()), entity);
+        beforeEntityAdded(getSolutionDescriptor().findEntityDescriptorOrFail(entity.getClass()), entity);
     }
 
     public final void afterEntityAdded(Object entity) {
-        afterEntityAdded(getSolutionDescriptor().getEntityDescriptor(entity.getClass()), entity);
+        afterEntityAdded(getSolutionDescriptor().findEntityDescriptorOrFail(entity.getClass()), entity);
     }
 
     public final void beforeVariableChanged(Object entity, String variableName) {
@@ -219,11 +219,11 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public final void beforeEntityRemoved(Object entity) {
-        beforeEntityRemoved(getSolutionDescriptor().getEntityDescriptor(entity.getClass()), entity);
+        beforeEntityRemoved(getSolutionDescriptor().findEntityDescriptorOrFail(entity.getClass()), entity);
     }
 
     public final void afterEntityRemoved(Object entity) {
-        afterEntityRemoved(getSolutionDescriptor().getEntityDescriptor(entity.getClass()), entity);
+        afterEntityRemoved(getSolutionDescriptor().findEntityDescriptorOrFail(entity.getClass()), entity);
     }
 
     public void beforeEntityAdded(EntityDescriptor entityDescriptor, Object entity) {

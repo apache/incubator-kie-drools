@@ -33,12 +33,12 @@ public class TestdataDeepCloningEntity extends TestdataObject {
 
     public static EntityDescriptor buildEntityDescriptor() {
         SolutionDescriptor solutionDescriptor = TestdataDeepCloningSolution.buildSolutionDescriptor();
-        return solutionDescriptor.getEntityDescriptor(TestdataDeepCloningEntity.class);
+        return solutionDescriptor.findEntityDescriptorOrFail(TestdataDeepCloningEntity.class);
     }
 
     public static GenuineVariableDescriptor buildVariableDescriptorForValue() {
         SolutionDescriptor solutionDescriptor = TestdataDeepCloningSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(TestdataDeepCloningEntity.class);
+        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataDeepCloningEntity.class);
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 

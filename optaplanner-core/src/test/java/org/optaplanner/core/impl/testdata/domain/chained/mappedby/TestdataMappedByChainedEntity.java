@@ -12,7 +12,7 @@ public class TestdataMappedByChainedEntity extends TestdataObject implements Tes
 
     public static EntityDescriptor buildEntityDescriptor() {
         SolutionDescriptor solutionDescriptor = TestdataMappedByChainedSolution.buildSolutionDescriptor();
-        return solutionDescriptor.getEntityDescriptor(TestdataMappedByChainedEntity.class);
+        return solutionDescriptor.findEntityDescriptorOrFail(TestdataMappedByChainedEntity.class);
     }
 
     private TestdataMappedByChainedObject chainedObject;

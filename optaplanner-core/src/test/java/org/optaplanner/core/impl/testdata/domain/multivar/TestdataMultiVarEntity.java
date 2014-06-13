@@ -28,7 +28,7 @@ public class TestdataMultiVarEntity extends TestdataObject {
 
     public static EntityDescriptor buildEntityDescriptor() {
         SolutionDescriptor solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
-        return solutionDescriptor.getEntityDescriptor(TestdataMultiVarEntity.class);
+        return solutionDescriptor.findEntityDescriptorOrFail(TestdataMultiVarEntity.class);
     }
 
     private TestdataValue primaryValue;

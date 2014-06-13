@@ -16,7 +16,7 @@ public class TestdataEntityCollectionPropertyEntity extends TestdataObject {
 
     public static EntityDescriptor buildEntityDescriptor() {
         SolutionDescriptor solutionDescriptor = TestdataEntityCollectionPropertySolution.buildSolutionDescriptor();
-        return solutionDescriptor.getEntityDescriptor(TestdataEntityCollectionPropertyEntity.class);
+        return solutionDescriptor.findEntityDescriptorOrFail(TestdataEntityCollectionPropertyEntity.class);
     }
 
     private List<TestdataEntityCollectionPropertyEntity> entityList;

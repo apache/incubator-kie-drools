@@ -13,12 +13,12 @@ public class TestdataChainedEntity extends TestdataObject implements TestdataCha
 
     public static EntityDescriptor buildEntityDescriptor() {
         SolutionDescriptor solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
-        return solutionDescriptor.getEntityDescriptor(TestdataChainedEntity.class);
+        return solutionDescriptor.findEntityDescriptorOrFail(TestdataChainedEntity.class);
     }
 
     public static GenuineVariableDescriptor buildVariableDescriptorForChainedObject() {
         SolutionDescriptor solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(TestdataChainedEntity.class);
+        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataChainedEntity.class);
         return entityDescriptor.getGenuineVariableDescriptor("chainedObject");
     }
 
