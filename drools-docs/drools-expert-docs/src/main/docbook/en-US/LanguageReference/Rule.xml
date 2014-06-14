@@ -2358,7 +2358,7 @@ end</programlisting>
           engine and rules can start to use them without any restrictions. To
           implement a new Accumulate Function all one needs to do is to create
           a Java class that implements the
-          <code>org.drools.core.runtime.rule.TypedAccumulateFunction</code>
+          <code>org.kie.api.runtime.rule.AccumulateFunction</code>
           interface and add a line to the configuration file or set a system
           property to let the engine know about the new function. As an
           example of an Accumulate Function implementation, the following is
@@ -2368,7 +2368,7 @@ end</programlisting>
           <programlisting language="java">/**
  * An implementation of an accumulator capable of calculating average values
  */
-public class AverageAccumulateFunction implements org.drools.core.runtime.rule.TypedAccumulateFunction {
+public class AverageAccumulateFunction implements AccumulateFunction {
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 
@@ -2381,7 +2381,7 @@ public class AverageAccumulateFunction implements org.drools.core.runtime.rule.T
     public static class AverageData implements Externalizable {
         public int    count = 0;
         public double total = 0;
-
+        
         public AverageData() {}
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -2397,14 +2397,14 @@ public class AverageAccumulateFunction implements org.drools.core.runtime.rule.T
     }
 
     /* (non-Javadoc)
-     * @see org.drools.base.accumulators.AccumulateFunction#createContext()
+     * @see org.kie.base.accumulators.AccumulateFunction#createContext()
      */
     public Serializable createContext() {
         return new AverageData();
     }
 
     /* (non-Javadoc)
-     * @see org.drools.core.base.accumulators.AccumulateFunction#init(java.lang.Object)
+     * @see org.kie.base.accumulators.AccumulateFunction#init(java.lang.Object)
      */
     public void init(Serializable context) throws Exception {
         AverageData data = (AverageData) context;
@@ -2413,7 +2413,7 @@ public class AverageAccumulateFunction implements org.drools.core.runtime.rule.T
     }
 
     /* (non-Javadoc)
-     * @see org.drools.core.base.accumulators.AccumulateFunction#accumulate(java.lang.Object, java.lang.Object)
+     * @see org.kie.base.accumulators.AccumulateFunction#accumulate(java.lang.Object, java.lang.Object)
      */
     public void accumulate(Serializable context,
                            Object value) {
@@ -2423,7 +2423,7 @@ public class AverageAccumulateFunction implements org.drools.core.runtime.rule.T
     }
 
     /* (non-Javadoc)
-     * @see org.drools.core.base.accumulators.AccumulateFunction#reverse(java.lang.Object, java.lang.Object)
+     * @see org.kie.base.accumulators.AccumulateFunction#reverse(java.lang.Object, java.lang.Object)
      */
     public void reverse(Serializable context,
                         Object value) throws Exception {
@@ -2433,7 +2433,7 @@ public class AverageAccumulateFunction implements org.drools.core.runtime.rule.T
     }
 
     /* (non-Javadoc)
-     * @see org.drools.core.base.accumulators.AccumulateFunction#getResult(java.lang.Object)
+     * @see org.kie.base.accumulators.AccumulateFunction#getResult(java.lang.Object)
      */
     public Object getResult(Serializable context) throws Exception {
         AverageData data = (AverageData) context;
@@ -2441,7 +2441,7 @@ public class AverageAccumulateFunction implements org.drools.core.runtime.rule.T
     }
 
     /* (non-Javadoc)
-     * @see org.drools.core.base.accumulators.AccumulateFunction#supportsReverse()
+     * @see org.kie.base.accumulators.AccumulateFunction#supportsReverse()
      */
     public boolean supportsReverse() {
         return true;
