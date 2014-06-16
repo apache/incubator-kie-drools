@@ -1,0 +1,67 @@
+<settings>
+  <localRepository>/home/mwinkler/QA/jenkins/WORKSPACE/business-central-maven-repo</localRepository>
+
+  <servers>
+    <server>
+      <id>kie-wb-m2-repo</id>
+      <username>testadmin</username>
+      <password>admin1234;</password>
+      <configuration>
+        <wagonProvider>httpclient</wagonProvider>
+        <httpConfiguration>
+          <all>
+            <usePreemptive>true</usePreemptive>
+          </all>
+        </httpConfiguration>
+      </configuration>
+    </server>
+    <server>
+      <id>foo</id>
+      <username>testadmin</username>
+      <password>admin1234;</password>
+      <configuration>
+        <wagonProvider>httpclient</wagonProvider>
+        <httpConfiguration>
+          <all>
+            <usePreemptive>true</usePreemptive>
+          </all>
+        </httpConfiguration>
+      </configuration>
+    </server>
+  </servers>
+
+  <mirrors>
+    <mirror>
+      <id>qa</id>
+      <mirrorOf>external:*,!foo</mirrorOf>
+      <url>http://nexuszzz.qa.jboss.com:8081/nexus/content/groups/public-all</url>
+    </mirror>
+  </mirrors>
+
+  <profiles>
+    <profile>
+      <id>kie-wb-m2-profile</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <repositories>
+        <repository>
+          <id>kie-wb-m2-repo</id>
+          <name>KIE-WB M2 Repo</name>
+          <url>http://localhost:8080/business-central/maven2</url>
+          <snapshots>
+            <updatePolicy>always</updatePolicy>
+          </snapshots>
+        </repository>
+        <repository>
+          <id>foo</id>
+          <name>foo Repo</name>
+          <url>http://www.foo.org</url>
+          <snapshots>
+            <updatePolicy>always</updatePolicy>
+          </snapshots>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+</settings>
