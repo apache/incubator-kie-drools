@@ -80,6 +80,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.any;
@@ -4982,5 +4983,62 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals(1, list.size());
     }
 
+    @Test
+    public void testDynamicSalienceInStreamMode() throws Exception {
+        // DROOLS-526
+        String drl =
+                "import java.util.concurrent.atomic.AtomicInteger;\n" +
+                "\n" +
+                "global AtomicInteger salience1\n" +
+                "global AtomicInteger salience2\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "declare Integer\n" +
+                "    @role(event)\n" +
+                "end\n" +
+                "\n" +
+                "rule R1\n" +
+                "salience salience1.get()\n" +
+                "when\n" +
+                "    $i : Integer()\n" +
+                "then\n" +
+                "    retract($i);\n" +
+                "    salience1.decrementAndGet();\n" +
+                "    list.add(1);\n" +
+                "end    \n" +
+                "\n" +
+                "rule R2\n" +
+                "salience salience2.get()\n" +
+                "when\n" +
+                "    $i : Integer()\n" +
+                "then\n" +
+                "    retract($i);\n" +
+                "    salience2.decrementAndGet();\n" +
+                "    list.add(2);\n" +
+                "end";
 
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KieSession ksession = kbase.newKieSession();
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+        ksession.setGlobal("salience1", new AtomicInteger(9));
+        ksession.setGlobal("salience2", new AtomicInteger(10));
+
+        for (int i = 0; i < 10; i++) {
+            ksession.insert(i);
+            ksession.fireAllRules();
+        }
+
+        assertEquals(list, Arrays.asList(2, 1, 2, 1, 2, 1, 2, 1, 2, 1));
+    }
 }

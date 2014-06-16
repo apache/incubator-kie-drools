@@ -1,7 +1,5 @@
 package org.drools.core.phreak;
 
-import java.util.Comparator;
-
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.EventSupport;
@@ -25,6 +23,8 @@ import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Comparator;
 
 public class RuleExecutor {
 
@@ -198,6 +198,10 @@ public class RuleExecutor {
                 }
             }
         }
+    }
+
+    public void flushTupleQueue( ) {
+        flushTupleQueue( pmem.getTupleQueue() );
     }
 
     public static void flushTupleQueue( TupleEntryQueue tupleQueue ) {
