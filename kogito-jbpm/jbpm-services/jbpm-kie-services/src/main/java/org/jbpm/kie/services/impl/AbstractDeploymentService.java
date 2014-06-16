@@ -108,6 +108,7 @@ public abstract class AbstractDeploymentService implements DeploymentService {
                 }
             } catch (Exception e) {
                 deploymentsMap.remove(unit.getIdentifier());
+                manager.close();
                 if (undeploymentEvent != null && deployedUnit != null) {
                     undeploymentEvent.fire(new DeploymentEvent(unit.getIdentifier(), deployedUnit));
                 }

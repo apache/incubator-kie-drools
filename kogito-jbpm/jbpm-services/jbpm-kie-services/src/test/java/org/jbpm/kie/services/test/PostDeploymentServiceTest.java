@@ -1,6 +1,7 @@
 package org.jbpm.kie.services.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -41,6 +42,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.deployment.DeployedUnit;
 import org.kie.internal.deployment.DeploymentService;
 import org.kie.internal.deployment.DeploymentUnit;
+import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.scanner.MavenRepository;
 
@@ -216,6 +218,7 @@ public class PostDeploymentServiceTest extends AbstractBaseTest {
         
         DeployedUnit deployedGeneral = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
         assertNull(deployedGeneral);
+        assertFalse(RuntimeManagerRegistry.get().isRegistered(deploymentUnit.getIdentifier()));
         
     }
 }
