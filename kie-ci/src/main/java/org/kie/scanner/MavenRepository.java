@@ -53,11 +53,19 @@ public class MavenRepository {
     private final Collection<RemoteRepository> extraRepositories;
     private final Collection<RemoteRepository> remoteRepositoriesForRequest;
 
-    private MavenRepository(Aether aether) {
+    protected MavenRepository(Aether aether) {
         this.aether = aether;
-        Settings settings = MavenSettings.getSettings();
+        Settings settings = getSettings();
         extraRepositories = initExtraRepositories(settings);
         remoteRepositoriesForRequest = initRemoteRepositoriesForRequest(settings);
+    }
+
+    protected Settings getSettings() {
+        return MavenSettings.getSettings();
+    }
+
+    Collection<RemoteRepository> getRemoteRepositoriesForRequest() {
+        return remoteRepositoriesForRequest;
     }
 
     public static synchronized MavenRepository getMavenRepository() {
@@ -96,7 +104,7 @@ public class MavenRepository {
 
     private RemoteRepository resolveMirroredRepo(Settings settings, RemoteRepository repo) {
         for (Mirror mirror : settings.getMirrors()) {
-            if (isMirror(repo.getId(), mirror.getMirrorOf())) {
+            if (isMirror(repo, mirror.getMirrorOf())) {
                 return setRemoteRepositoryAuthentication(settings,
                                                          new RemoteRepository(mirror.getId(), mirror.getLayout(), mirror.getUrl()),
                                                          mirror.getId());
@@ -105,10 +113,12 @@ public class MavenRepository {
         return repo;
     }
 
-    private boolean isMirror(String repoId, String mirrorOf)  {
+    private boolean isMirror(RemoteRepository repo, String mirrorOf)  {
         return mirrorOf.equals("*") ||
-               ( mirrorOf.startsWith("*") && !mirrorOf.contains("!" + repoId) ) ||
-               ( !mirrorOf.startsWith("*") && mirrorOf.contains(repoId) );
+               ( mirrorOf.equals("external:*") && !repo.getUrl().startsWith("file:") ) ||
+               ( mirrorOf.startsWith("external:*") && !repo.getUrl().startsWith("file:") && !mirrorOf.contains("!" + repo.getId()) ) ||
+               ( mirrorOf.startsWith("*") && !mirrorOf.contains("!" + repo.getId()) ) ||
+               ( !mirrorOf.startsWith("*") && !mirrorOf.startsWith("external:*") && mirrorOf.contains(repo.getId()) );
     }
 
     private boolean isProfileActive(Settings settings, Profile profile) {
