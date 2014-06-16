@@ -35,8 +35,8 @@ public class BenchmarkReportConfig {
 
     private Locale locale = null;
     private SolverRankingType solverRankingType = null;
-    private Class<Comparator<SolverBenchmarkResult>> solverRankingComparatorClass = null;
-    private Class<SolverRankingWeightFactory> solverRankingWeightFactoryClass = null;
+    private Class<? extends Comparator<SolverBenchmarkResult>> solverRankingComparatorClass = null;
+    private Class<? extends SolverRankingWeightFactory> solverRankingWeightFactoryClass = null;
 
     public Locale getLocale() {
         return locale;
@@ -54,19 +54,19 @@ public class BenchmarkReportConfig {
         this.solverRankingType = solverRankingType;
     }
 
-    public Class<Comparator<SolverBenchmarkResult>> getSolverRankingComparatorClass() {
+    public Class<? extends Comparator<SolverBenchmarkResult>> getSolverRankingComparatorClass() {
         return solverRankingComparatorClass;
     }
 
-    public void setSolverRankingComparatorClass(Class<Comparator<SolverBenchmarkResult>> solverRankingComparatorClass) {
+    public void setSolverRankingComparatorClass(Class<? extends Comparator<SolverBenchmarkResult>> solverRankingComparatorClass) {
         this.solverRankingComparatorClass = solverRankingComparatorClass;
     }
 
-    public Class<SolverRankingWeightFactory> getSolverRankingWeightFactoryClass() {
+    public Class<? extends SolverRankingWeightFactory> getSolverRankingWeightFactoryClass() {
         return solverRankingWeightFactoryClass;
     }
 
-    public void setSolverRankingWeightFactoryClass(Class<SolverRankingWeightFactory> solverRankingWeightFactoryClass) {
+    public void setSolverRankingWeightFactoryClass(Class<? extends SolverRankingWeightFactory> solverRankingWeightFactoryClass) {
         this.solverRankingWeightFactoryClass = solverRankingWeightFactoryClass;
     }
 
