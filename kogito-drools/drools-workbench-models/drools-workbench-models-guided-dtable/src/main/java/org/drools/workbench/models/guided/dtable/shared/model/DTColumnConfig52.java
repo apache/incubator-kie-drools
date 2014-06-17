@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DTColumnConfig52
-        implements BaseColumn, DiffColumn {
+        implements BaseColumn,
+                   DiffColumn {
 
     private static final long serialVersionUID = 510l;
 
@@ -33,7 +34,6 @@ public class DTColumnConfig52
     public static final String FIELD_WIDTH = "width";
 
     public static final String FIELD_HEADER = "header";
-
 
     // Legacy Default Values were String however since 5.4 they are stored in a DTCellValue52 object
     public String defaultValue;
@@ -56,7 +56,9 @@ public class DTColumnConfig52
 
     public String getDefaultValueAsString() {
         String result = "";
-        if (typedDefaultValue != null) result = typedDefaultValue.getValueAsString();
+        if ( typedDefaultValue != null ) {
+            result = typedDefaultValue.getValueAsString();
+        }
         return result;
     }
 
@@ -73,43 +75,72 @@ public class DTColumnConfig52
     }
 
     @Override
-    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
-        if (otherColumn == null) return null;
+    public List<BaseColumnFieldDiff> diff( BaseColumn otherColumn ) {
+        if ( otherColumn == null ) {
+            return null;
+        }
 
         List<BaseColumnFieldDiff> result = new ArrayList<BaseColumnFieldDiff>();
         DTColumnConfig52 other = (DTColumnConfig52) otherColumn;
 
         // Field: hide column.
         if ( this.isHideColumn() != other.isHideColumn() ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_HIDE_COLUMN, this.isHideColumn(), other.isHideColumn()));
+            result.add( new BaseColumnFieldDiffImpl( FIELD_HIDE_COLUMN,
+                                                     this.isHideColumn(),
+                                                     other.isHideColumn() ) );
         }
 
         // Field: default value.
-        // NOTE: Compare using getDefaultValueAsString because then if data types differs it will appear as changed field.
-        // And data type can be changed due to legacy implementations (see ConditionPopup#makeDefaultValueWidget)
-        if ( !isEqualOrNull( this.getDefaultValueAsString(),
-                other.getDefaultValueAsString() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_DEFAULT_VALUE, this.getDefaultValueAsString(), other.getDefaultValueAsString()));
+        if ( !BaseColumnFieldDiffImpl.isEqualOrNull( this.getDefaultValue(),
+                                                     other.getDefaultValue() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_DEFAULT_VALUE,
+                                                     extractDefaultValue( this.getDefaultValue() ),
+                                                     extractDefaultValue( other.getDefaultValue() ) ) );
         }
 
         // Field: width.
         if ( this.getWidth() != other.getWidth() ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_WIDTH, this.getWidth(), other.getWidth()));
+            result.add( new BaseColumnFieldDiffImpl( FIELD_WIDTH,
+                                                     this.getWidth(),
+                                                     other.getWidth() ) );
         }
 
         // Field: header.
         if ( !isEqualOrNull( this.getHeader(),
-                other.getHeader() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_HEADER, this.getHeader(), other.getHeader()));
+                             other.getHeader() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_HEADER,
+                                                     this.getHeader(),
+                                                     other.getHeader() ) );
         }
 
         return result;
     }
 
+    private Object extractDefaultValue( final DTCellValue52 dcv ) {
+        switch ( dcv.getDataType() ) {
+            case BOOLEAN:
+                return dcv.getBooleanValue();
+            case DATE:
+                return dcv.getDateValue();
+            case NUMERIC:
+            case NUMERIC_BIGDECIMAL:
+            case NUMERIC_BIGINTEGER:
+            case NUMERIC_BYTE:
+            case NUMERIC_DOUBLE:
+            case NUMERIC_FLOAT:
+            case NUMERIC_INTEGER:
+            case NUMERIC_LONG:
+            case NUMERIC_SHORT:
+                return dcv.getNumericValue();
+            default:
+                return dcv.getStringValue();
+        }
+    }
+
     // Check whether two Objects are equal or both null
-    public static boolean isEqualOrNull( Object s1,
-                                         Object s2 ) {
-        return BaseColumnFieldDiffImpl.isEqualOrNull(s1, s2);
+    public static boolean isEqualOrNull( final Object s1,
+                                         final Object s2 ) {
+        return BaseColumnFieldDiffImpl.isEqualOrNull( s1, s2 );
     }
 
     public void setHideColumn( boolean hideColumn ) {
