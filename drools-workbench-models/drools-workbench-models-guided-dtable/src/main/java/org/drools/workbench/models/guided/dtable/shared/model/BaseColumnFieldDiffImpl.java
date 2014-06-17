@@ -19,17 +19,20 @@ import java.util.List;
 import java.util.Map;
 
 public class BaseColumnFieldDiffImpl implements BaseColumnFieldDiff {
+
     private String fieldName;
     private Object oldValue;
     private Object newValue;
 
     /**
      * Default no-arg constructor for errai marshalling.
-     * */
+     */
     public BaseColumnFieldDiffImpl() {
     }
 
-    public BaseColumnFieldDiffImpl(String fieldName, Object oldValue, Object newValue) {
+    public BaseColumnFieldDiffImpl( String fieldName,
+                                    Object oldValue,
+                                    Object newValue ) {
         this.fieldName = fieldName;
         this.oldValue = oldValue;
         this.newValue = newValue;
@@ -39,7 +42,7 @@ public class BaseColumnFieldDiffImpl implements BaseColumnFieldDiff {
         return fieldName;
     }
 
-    public void setFieldName(String fieldName) {
+    public void setFieldName( String fieldName ) {
         this.fieldName = fieldName;
     }
 
@@ -47,7 +50,7 @@ public class BaseColumnFieldDiffImpl implements BaseColumnFieldDiff {
         return oldValue;
     }
 
-    public void setOldValue(Object oldValue) {
+    public void setOldValue( Object oldValue ) {
         this.oldValue = oldValue;
     }
 
@@ -55,25 +58,35 @@ public class BaseColumnFieldDiffImpl implements BaseColumnFieldDiff {
         return newValue;
     }
 
-    public void setValue(Object newValue) {
+    public void setValue( Object newValue ) {
         this.newValue = newValue;
     }
 
-    public static boolean hasChanged(String fieldName, List<BaseColumnFieldDiff> source) {
-        if (fieldName == null) return false;
-        if (source != null && !source.isEmpty()) {
-            for (BaseColumnFieldDiff diffCol : source) {
-                if (fieldName.equals(diffCol.getFieldName())) return true;
+    public static boolean hasChanged( String fieldName,
+                                      List<BaseColumnFieldDiff> source ) {
+        if ( fieldName == null ) {
+            return false;
+        }
+        if ( source != null && !source.isEmpty() ) {
+            for ( BaseColumnFieldDiff diffCol : source ) {
+                if ( fieldName.equals( diffCol.getFieldName() ) ) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    public static BaseColumnFieldDiff getDiff(String fieldName, List<BaseColumnFieldDiff> source) {
-        if (fieldName == null) return null;
-        if (source != null && !source.isEmpty()) {
-            for (BaseColumnFieldDiff diffCol : source) {
-                if (fieldName.equals(diffCol.getFieldName())) return diffCol;
+    public static BaseColumnFieldDiff getDiff( String fieldName,
+                                               List<BaseColumnFieldDiff> source ) {
+        if ( fieldName == null ) {
+            return null;
+        }
+        if ( source != null && !source.isEmpty() ) {
+            for ( BaseColumnFieldDiff diffCol : source ) {
+                if ( fieldName.equals( diffCol.getFieldName() ) ) {
+                    return diffCol;
+                }
             }
         }
         return null;
@@ -81,12 +94,10 @@ public class BaseColumnFieldDiffImpl implements BaseColumnFieldDiff {
 
     /**
      * Check whether two Objects are equal or both null.
-     *
      * @param s1 The object.
      * @param s2 The other  object.
      * @return Whether two Objects are equal or both null
      */
-
     public static boolean isEqualOrNull( Object s1,
                                          Object s2 ) {
         if ( s1 == null
@@ -101,13 +112,46 @@ public class BaseColumnFieldDiffImpl implements BaseColumnFieldDiff {
     }
 
     /**
+     * Check whether two Objects are equal or both null.
+     * @param dcv1 The DTCellValue52.
+     * @param dcv2 The other DTCellValue52.
+     * @return Whether two DTCellValue52s are equal or both null
+     */
+    public static boolean isEqualOrNull( final DTCellValue52 dcv1,
+                                         final DTCellValue52 dcv2 ) {
+        if ( dcv1 == null && dcv2 == null ) {
+            return true;
+        } else if ( !dcv1.getDataType().equals( dcv2.getDataType() ) ) {
+            return false;
+        } else {
+            //Both DataTypes are equal here, so just check one DCV's type
+            switch ( dcv1.getDataType() ) {
+                case BOOLEAN:
+                    return dcv1.getBooleanValue().equals( dcv2.getBooleanValue() );
+                case DATE:
+                    return dcv1.getDateValue().equals( dcv2.getDateValue() );
+                case NUMERIC:
+                case NUMERIC_BIGDECIMAL:
+                case NUMERIC_BIGINTEGER:
+                case NUMERIC_BYTE:
+                case NUMERIC_DOUBLE:
+                case NUMERIC_FLOAT:
+                case NUMERIC_INTEGER:
+                case NUMERIC_LONG:
+                case NUMERIC_SHORT:
+                    return dcv1.getNumericValue().equals( dcv2.getNumericValue() );
+                default:
+                    return dcv1.getStringValue().equals( dcv2.getStringValue() );
+            }
+        }
+    }
+
+    /**
      * Check whether two List are same size or both null.
-     *
      * @param s1 The fist list..
      * @param s2 The other  list.
      * @return Whether two List are same size or both null
      */
-
     public static boolean isEqualOrNull( List s1,
                                          List s2 ) {
         if ( s1 == null
@@ -123,7 +167,6 @@ public class BaseColumnFieldDiffImpl implements BaseColumnFieldDiff {
 
     /**
      * Check whether two Map are same size or both null.
-     *
      * @param s1 The fist Map..
      * @param s2 The other  Map.
      * @return Whether two Map are same size or both null
