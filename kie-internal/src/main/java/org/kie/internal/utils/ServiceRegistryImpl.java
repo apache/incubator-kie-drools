@@ -37,7 +37,13 @@ import org.kie.api.builder.KieScannerFactoryService;
 import org.kie.api.concurrent.KieExecutors;
 import org.kie.api.marshalling.KieMarshallers;
 import org.kie.api.persistence.jpa.KieStoreServices;
+import org.kie.internal.assembler.KieAssemblers;
+import org.kie.internal.assembler.KieAssemblersImpl;
 import org.kie.internal.process.CorrelationKeyFactory;
+import org.kie.internal.runtime.KieRuntimes;
+import org.kie.internal.runtime.KieRuntimesImpl;
+import org.kie.internal.weaver.KieWeavers;
+import org.kie.internal.weaver.KieWeaversImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +58,9 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ServiceRegistryImpl
         implements
         ServiceRegistry {
+    public final String fileName = "kie.conf";
+    public final String path =  "META-INF/" + fileName;
+
     private static final ServiceRegistry          instance        = new ServiceRegistryImpl();
 
     protected static final transient Logger logger          = LoggerFactory.getLogger( ServiceRegistryImpl.class );
@@ -194,14 +203,24 @@ public class ServiceRegistryImpl
                      "org.drools.core.concurrent.ExecutorProviderImpl");
         addDefault(  KieServices.class,
                      "org.drools.compiler.kie.builder.impl.KieServicesImpl");
-        addDefaultFactory(KieScannerFactoryService.class,
-                          "org.kie.scanner.KieScannerFactoryServiceImpl");
+        addDefaultFactory( KieScannerFactoryService.class,
+                           "org.kie.scanner.KieScannerFactoryServiceImpl");
         addDefault( KieStoreServices.class,
                     "org.drools.persistence.jpa.KnowledgeStoreServiceImpl");
         addDefault( CorrelationKeyFactory.class,
-                "org.jbpm.persistence.correlation.JPACorrelationKeyFactory");
+                    "org.jbpm.persistence.correlation.JPACorrelationKeyFactory");
         addDefault( ClassLoaderResolver.class,
                     "org.kie.scanner.MavenClassLoaderResolver" );
+
+
+        defaultServices.put( KieAssemblers.class.getName(),
+                             new ReturnInstance( new KieAssemblersImpl()) );
+        defaultServices.put( KieWeavers.class.getName(),
+                             new ReturnInstance( new KieWeaversImpl()) );
+        defaultServices.put( KieRuntimes.class.getName(),
+                             new ReturnInstance( new KieRuntimesImpl()) );
+
+        ServiceDiscovery.discoverFactories(path, this);
     }
 
     public synchronized void addDefault(Class cls,

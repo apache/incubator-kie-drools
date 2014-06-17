@@ -65,6 +65,7 @@
               org.kie.api.runtime.rule,
               org.kie.api.task,
               org.kie.api.task.model,
+              org.mvel2,
               org.slf4j
             </Import-Package>
             <Export-Package>
@@ -105,5 +106,9 @@
       <artifactId>jaxb-impl</artifactId>
       <scope>provided</scope>
     </dependency>
+      <dependency>
+          <groupId>org.mvel</groupId>
+          <artifactId>mvel2</artifactId>
+      </dependency>
   </dependencies>
 </project>
