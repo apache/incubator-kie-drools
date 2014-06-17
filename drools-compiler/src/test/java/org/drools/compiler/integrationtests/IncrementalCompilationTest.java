@@ -1,11 +1,20 @@
 package org.drools.compiler.integrationtests;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -23,15 +32,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static java.util.Arrays.asList;
+import static java.util.Arrays.*;
 
 public class IncrementalCompilationTest extends CommonTestMethodBase {
 
@@ -102,7 +103,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         int i = 0;
         for ( String ruleName : ruleNames ) {
-            assertEquals( ruleName, i++, ((RuleImpl) rules.get( ruleName )).getLoadOrder() );
+            assertEquals( ruleName, i++, ( (RuleImpl) rules.get( ruleName ) ).getLoadOrder() );
         }
     }
 
@@ -589,25 +590,25 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         assertEquals( 3, kpkg.getRules().size() );
         Map<String, Rule> rules = rulestoMap( kpkg.getRules() );
 
-        assertNotNull(((org.drools.core.definitions.rule.impl.RuleImpl) rules.get("R1")));
-        assertNotNull(((org.drools.core.definitions.rule.impl.RuleImpl) rules.get("R2")));
-        assertNotNull(((org.drools.core.definitions.rule.impl.RuleImpl) rules.get("R3")));
- 
-        RuleTerminalNode rtn1_1  = (RuleTerminalNode) ((KnowledgeBaseImpl)kc.getKieBase()).getReteooBuilder().getTerminalNodes( "R1" )[0];
-        RuleTerminalNode rtn2_1  = (RuleTerminalNode) ((KnowledgeBaseImpl)kc.getKieBase()).getReteooBuilder().getTerminalNodes( "R2" )[0];
-        RuleTerminalNode rtn3_1  = (RuleTerminalNode) ((KnowledgeBaseImpl)kc.getKieBase()).getReteooBuilder().getTerminalNodes( "R3" )[0];
- 
+        assertNotNull( ( (org.drools.core.definitions.rule.impl.RuleImpl) rules.get( "R1" ) ) );
+        assertNotNull( ( (org.drools.core.definitions.rule.impl.RuleImpl) rules.get( "R2" ) ) );
+        assertNotNull( ( (org.drools.core.definitions.rule.impl.RuleImpl) rules.get( "R3" ) ) );
+
+        RuleTerminalNode rtn1_1 = (RuleTerminalNode) ( (KnowledgeBaseImpl) kc.getKieBase() ).getReteooBuilder().getTerminalNodes( "R1" )[ 0 ];
+        RuleTerminalNode rtn2_1 = (RuleTerminalNode) ( (KnowledgeBaseImpl) kc.getKieBase() ).getReteooBuilder().getTerminalNodes( "R2" )[ 0 ];
+        RuleTerminalNode rtn3_1 = (RuleTerminalNode) ( (KnowledgeBaseImpl) kc.getKieBase() ).getReteooBuilder().getTerminalNodes( "R3" )[ 0 ];
+
         // Create a new jar for version 1.1.0
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
         km = createAndDeployJar( ks, releaseId2, drl1 + drl3 );
 
         // try to update the container to version 1.1.0
-        kc.updateToVersion(releaseId2);
+        kc.updateToVersion( releaseId2 );
 
-        KnowledgeBaseImpl rb_2 = ((KnowledgeBaseImpl) kc.getKieBase());
- 
-        RuleTerminalNode rtn1_2  = (RuleTerminalNode) rb_2.getReteooBuilder().getTerminalNodes( "R1" )[0];
-        RuleTerminalNode rtn3_2  = (RuleTerminalNode) rb_2.getReteooBuilder().getTerminalNodes( "R3" )[0];
+        KnowledgeBaseImpl rb_2 = ( (KnowledgeBaseImpl) kc.getKieBase() );
+
+        RuleTerminalNode rtn1_2 = (RuleTerminalNode) rb_2.getReteooBuilder().getTerminalNodes( "R1" )[ 0 ];
+        RuleTerminalNode rtn3_2 = (RuleTerminalNode) rb_2.getReteooBuilder().getTerminalNodes( "R3" )[ 0 ];
         assertNull( rb_2.getReteooBuilder().getTerminalNodes( "R2" ) );
 
         assertSame( rtn3_1, rtn3_2 );
@@ -1001,35 +1002,35 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         // DROOLS-462
 
         String drl1 = "global java.util.List list\n" +
-                      "rule R1 when\n" +
-                      " $s : String() " +
-                      "then\n" +
-                      " list.add( \"a\" + $s );" +
-                      "end\n";
+                "rule R1 when\n" +
+                " $s : String() " +
+                "then\n" +
+                " list.add( \"a\" + $s );" +
+                "end\n";
 
         String drl2 = "global java.util.List list\n" +
-                      "rule R1 when\n" +
-                      " $s : String() " +
-                      "then\n" +
-                      " list.add( \"b\" + $s );" +
-                      "end\n";
+                "rule R1 when\n" +
+                " $s : String() " +
+                "then\n" +
+                " list.add( \"b\" + $s );" +
+                "end\n";
 
         ReleaseId releaseId = KieServices.Factory.get().newReleaseId( "org.test", "test", "1.0.0-SNAPSHOT" );
         KieServices ks = KieServices.Factory.get();
 
         KieModuleModel kproj = ks.newKieModuleModel();
-        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
-                                          .addPackage("org.pkg1");
-        kieBaseModel1.newKieSessionModel("KSession1");
-        KieBaseModel kieBaseModel2 = kproj.newKieBaseModel("KBase2")
-                                          .addPackage("org.pkg2")
-                                          .addInclude("KBase1");
-        kieBaseModel2.newKieSessionModel("KSession2");
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel( "KBase1" )
+                .addPackage( "org.pkg1" );
+        kieBaseModel1.newKieSessionModel( "KSession1" );
+        KieBaseModel kieBaseModel2 = kproj.newKieBaseModel( "KBase2" )
+                .addPackage( "org.pkg2" )
+                .addInclude( "KBase1" );
+        kieBaseModel2.newKieSessionModel( "KSession2" );
 
         KieFileSystem kfs = ks.newKieFileSystem()
-                              .generateAndWritePomXML(releaseId)
-                              .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl1)
-                              .writeKModuleXML(kproj.toXML());
+                .generateAndWritePomXML( releaseId )
+                .write( "src/main/resources/KBase1/org/pkg1/r1.drl", drl1 )
+                .writeKModuleXML( kproj.toXML() );
 
         KieBuilder kieBuilder = ks.newKieBuilder( kfs );
 
@@ -1039,18 +1040,18 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         KieContainer kc = ks.newKieContainer( releaseId );
 
-        KieSession ksession = kc.newKieSession("KSession2");
+        KieSession ksession = kc.newKieSession( "KSession2" );
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );
         ksession.insert( "Foo" );
         ksession.fireAllRules();
 
         assertEquals( 1, list.size() );
-        assertEquals("aFoo", list.get(0));
+        assertEquals( "aFoo", list.get( 0 ) );
         list.clear();
 
-        kfs.delete("src/main/resources/KBase1/org/pkg1/r1.drl");
-        kfs.write("src/main/resources/KBase1/org/pkg1/r2.drl", drl2);
+        kfs.delete( "src/main/resources/KBase1/org/pkg1/r1.drl" );
+        kfs.write( "src/main/resources/KBase1/org/pkg1/r2.drl", drl2 );
 
         IncrementalResults results = ( (InternalKieBuilder) kieBuilder ).incrementalBuild();
         assertEquals( 0, results.getAddedMessages().size() );
@@ -1066,4 +1067,67 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         assertEquals( 2, list.size() );
         assertTrue( list.containsAll( asList( "bBar", "bFoo" ) ) );
     }
+
+    @Test
+    @Ignore("https://issues.jboss.org/browse/DROOLS-527")
+    public void testIncrementalCompilationWithInvalidDRL() throws Exception {
+        String drl1 = "Smurf";
+
+        String drl2_1 = "package org.drools.compiler\n" +
+                "rule R2\n" +
+                "when\n" +
+                "   $m : Mesage()\n" +
+                "then\n" +
+                "end\n";
+
+        String drl2_2 = "package org.drools.compiler\n" +
+                "rule R2\n" +
+                "when\n" +
+                "   $m : Message()\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+
+        //First file contains errors
+        kfs.write( "src/main/resources/r1.drl",
+                   drl1 );
+
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        Results results1 = kieBuilder.getResults();
+        assertEquals( 2,
+                      results1.getMessages().size() );
+
+        //Second file also contains errors.. expect some added messages
+        kfs.write( "src/main/resources/r2.drl",
+                   drl2_1 );
+        IncrementalResults results2 = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
+
+        assertEquals( 1,
+                      results2.getAddedMessages().size() );
+        assertEquals( 0,
+                      results2.getRemovedMessages().size() );
+
+        //Correct second file... expect original errors relating to the file to be removed
+        kfs.write( "src/main/resources/r2.drl",
+                   drl2_2 );
+        IncrementalResults results3 = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
+
+        assertEquals( 0,
+                      results3.getAddedMessages().size() );
+        assertEquals( 1,
+                      results3.getRemovedMessages().size() );
+
+        //Remove first file... expect related errors to be removed
+        kfs.delete( "src/main/resources/r1.drl" );
+        IncrementalResults results4 = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r1.drl" ).build();
+
+        assertEquals( 0,
+                      results4.getAddedMessages().size() );
+        assertEquals( 1,
+                      results4.getRemovedMessages().size() );
+
+    }
+
 }
