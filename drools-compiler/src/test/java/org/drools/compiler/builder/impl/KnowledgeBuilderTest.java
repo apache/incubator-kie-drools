@@ -895,7 +895,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        assertLength( 1,
+        assertLength( 2,
                       builder.getErrors().getErrors() );
         final ParserError err = (ParserError) builder.getErrors().getErrors()[0];
         assertEquals( 42,
