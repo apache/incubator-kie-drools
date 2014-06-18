@@ -837,10 +837,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     void compileAllRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         pkgRegistry.setDialect(getPackageDialect(packageDescr));
 
-        // only try to compile if there are no parse errors
-        if (!hasErrors()) {
-            compileRules(packageDescr, pkgRegistry);
-        }
+        compileRules(packageDescr, pkgRegistry);
 
         compileAll();
         try {

@@ -1,20 +1,11 @@
 package org.drools.compiler.integrationtests;
 
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -32,7 +23,15 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 
-import static java.util.Arrays.*;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Arrays.asList;
 
 public class IncrementalCompilationTest extends CommonTestMethodBase {
 
@@ -484,7 +483,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                 .write( "src/main/resources/r1.drl", drl1 );
 
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-        assertEquals( 1, kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
+        assertEquals( 2, kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
     }
 
     @Test
@@ -1069,7 +1068,6 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("https://issues.jboss.org/browse/DROOLS-527")
     public void testIncrementalCompilationWithInvalidDRL() throws Exception {
         String drl1 = "Smurf";
 
@@ -1091,8 +1089,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         KieFileSystem kfs = ks.newKieFileSystem();
 
         //First file contains errors
-        kfs.write( "src/main/resources/r1.drl",
-                   drl1 );
+        kfs.write( "src/main/resources/r1.drl", drl1 );
 
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
         Results results1 = kieBuilder.getResults();
@@ -1100,8 +1097,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                       results1.getMessages().size() );
 
         //Second file also contains errors.. expect some added messages
-        kfs.write( "src/main/resources/r2.drl",
-                   drl2_1 );
+        kfs.write( "src/main/resources/r2.drl", drl2_1 );
         IncrementalResults results2 = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
 
         assertEquals( 1,
@@ -1110,8 +1106,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                       results2.getRemovedMessages().size() );
 
         //Correct second file... expect original errors relating to the file to be removed
-        kfs.write( "src/main/resources/r2.drl",
-                   drl2_2 );
+        kfs.write( "src/main/resources/r2.drl", drl2_2 );
         IncrementalResults results3 = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
 
         assertEquals( 0,
@@ -1125,9 +1120,8 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         assertEquals( 0,
                       results4.getAddedMessages().size() );
-        assertEquals( 1,
+        assertEquals( 2,
                       results4.getRemovedMessages().size() );
 
     }
-
 }
