@@ -426,14 +426,16 @@ public class MemoryFileSystem
     private void writeJarEntries(Folder f,
                                  ZipOutputStream out) throws IOException {
         for ( Resource rs : f.getMembers() ) {
+            String rname = rs.getPath().toPortableString();
             if ( rs instanceof Folder ) {
-                ZipEntry entry = new ZipEntry( rs.getPath().toPortableString() );
+                rname = rname.endsWith("/") ? rname : rname + "/"; // a folder name must end with / according to ZIP spec
+                ZipEntry entry = new ZipEntry( rname );
                 out.putNextEntry( entry );
 
                 writeJarEntries( (Folder) rs,
                                  out );
             } else {
-                ZipEntry entry = new ZipEntry( rs.getPath().toPortableString() );
+                ZipEntry entry = new ZipEntry( rname );
                 out.putNextEntry( entry );
 
                 byte[] contents = getFileContents( (MemoryFile) rs );
