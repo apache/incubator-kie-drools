@@ -16,6 +16,7 @@ import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstanceManager;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.process.instance.timer.TimerManager;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.StateBasedNodeInstance;
 import org.jbpm.workflow.instance.node.TimerNodeInstance;
 import org.kie.api.definition.process.Process;
@@ -91,7 +92,20 @@ public class JPAProcessInstanceManager
         org.jbpm.process.instance.ProcessInstance processInstance = null;
         processInstance = (org.jbpm.process.instance.ProcessInstance) this.processInstances.get(id);
         if (processInstance != null) {
-            return processInstance;
+            if (((WorkflowProcessInstanceImpl) processInstance).isPersisted() && !readOnly) {
+            	ProcessPersistenceContextManager ppcm 
+        	    = (ProcessPersistenceContextManager) this.kruntime.getEnvironment().get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER );
+            	ppcm.beginCommandScopedEntityManager();
+            	ProcessPersistenceContext context = ppcm.getProcessPersistenceContext();
+                ProcessInstanceInfo processInstanceInfo = context.findProcessInstanceInfo( id );
+                if ( processInstanceInfo == null ) {
+                    return null;
+                }
+  
+                processInstanceInfo.updateLastReadDate();
+  
+            }
+        	return processInstance;
         }
 
     	// Make sure that the cmd scoped entity manager has started

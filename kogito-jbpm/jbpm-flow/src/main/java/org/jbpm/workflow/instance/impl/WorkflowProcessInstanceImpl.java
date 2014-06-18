@@ -75,6 +75,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	private List<String> completedNodeIds = new ArrayList<String>();
 	private Map<String, Integer> iterationLevels = new HashMap<String, Integer>();
 	private int currentLevel;
+	private boolean persisted = false;
 
 	public NodeContainer getNodeContainer() {
 		return getWorkflowProcess();
@@ -559,5 +560,13 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     public Map<String, Integer> getIterationLevels() {
         return iterationLevels;
     }
+
+	public boolean isPersisted() {
+		return persisted;
+	}
+
+	public void setPersisted(boolean persisted) {
+		this.persisted = persisted;
+	}
     
 }
