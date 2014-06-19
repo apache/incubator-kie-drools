@@ -159,6 +159,7 @@
               javax.enterprise.util,
               javax.inject,
               javax.persistence,
+              javax.xml,
               javax.xml.bind,
               javax.xml.bind.annotation,
               javax.xml.validation,
