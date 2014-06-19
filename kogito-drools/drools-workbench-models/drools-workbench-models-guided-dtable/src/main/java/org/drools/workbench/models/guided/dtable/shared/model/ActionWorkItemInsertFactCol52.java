@@ -52,19 +52,25 @@ public class ActionWorkItemInsertFactCol52 extends ActionInsertFactCol52 {
         // Field: workItemName.
         if ( !isEqualOrNull( this.getWorkItemName(),
                              other.getWorkItemName() ) ) {
-            result.add( new BaseColumnFieldDiffImpl( FIELD_WORK_ITEM_NAME, this.getWorkItemName(), other.getWorkItemName() ) );
+            result.add( new BaseColumnFieldDiffImpl( FIELD_WORK_ITEM_NAME,
+                                                     this.getWorkItemName(),
+                                                     other.getWorkItemName() ) );
         }
 
         // Field: workItemResultParameterName.
         if ( !isEqualOrNull( this.getWorkItemResultParameterName(),
                              other.getWorkItemResultParameterName() ) ) {
-            result.add( new BaseColumnFieldDiffImpl( FIELD_WORK_ITEM_RESULT_PARAM_NAME, this.getWorkItemResultParameterName(), other.getWorkItemResultParameterName() ) );
+            result.add( new BaseColumnFieldDiffImpl( FIELD_WORK_ITEM_RESULT_PARAM_NAME,
+                                                     this.getWorkItemResultParameterName(),
+                                                     other.getWorkItemResultParameterName() ) );
         }
 
         // Field: parameterClassName.
         if ( !isEqualOrNull( this.getParameterClassName(),
                              other.getParameterClassName() ) ) {
-            result.add( new BaseColumnFieldDiffImpl( FIELD_PARAMETER_CLASSNAME, this.getParameterClassName(), other.getParameterClassName() ) );
+            result.add( new BaseColumnFieldDiffImpl( FIELD_PARAMETER_CLASSNAME,
+                                                     this.getParameterClassName(),
+                                                     other.getParameterClassName() ) );
         }
 
         return result;

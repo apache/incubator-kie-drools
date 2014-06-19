@@ -20,7 +20,6 @@ import java.math.BigInteger;
 import java.util.Date;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.DataType.DataTypes;
 
 /**
@@ -441,18 +440,6 @@ public class DTCellValue52 {
             return false;
         }
         return true;
-    }
-
-    /**
-     * BZ-996944: To display the changed value into audit logging.
-     * @return The value as a String.
-     */
-    public String getValueAsString() {
-        if (valueBoolean != null) return valueBoolean.toString();
-        if (valueDate != null) return valueDate.toString();
-        if (valueNumeric != null) return valueNumeric.toString();
-        if (valueString != null) return valueString;
-        return "";
     }
 
     /**

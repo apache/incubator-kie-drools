@@ -54,14 +54,6 @@ public class DTColumnConfig52
         return typedDefaultValue;
     }
 
-    public String getDefaultValueAsString() {
-        String result = "";
-        if ( typedDefaultValue != null ) {
-            result = typedDefaultValue.getValueAsString();
-        }
-        return result;
-    }
-
     public int getWidth() {
         return width;
     }
@@ -116,7 +108,7 @@ public class DTColumnConfig52
         return result;
     }
 
-    private Object extractDefaultValue( final DTCellValue52 dcv ) {
+    protected Object extractDefaultValue( final DTCellValue52 dcv ) {
         switch ( dcv.getDataType() ) {
             case BOOLEAN:
                 return dcv.getBooleanValue();

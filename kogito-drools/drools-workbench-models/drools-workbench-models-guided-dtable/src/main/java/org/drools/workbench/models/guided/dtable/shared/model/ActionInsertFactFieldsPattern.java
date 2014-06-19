@@ -32,15 +32,19 @@ public class ActionInsertFactFieldsPattern extends Pattern52 {
     public static final String FIELD_IS_INSERTED_LOGICALLY = "isInsertedLogically";
 
     @Override
-    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
-        if (otherColumn == null) return null;
+    public List<BaseColumnFieldDiff> diff( BaseColumn otherColumn ) {
+        if ( otherColumn == null ) {
+            return null;
+        }
 
-        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        List<BaseColumnFieldDiff> result = super.diff( otherColumn );
         ActionInsertFactFieldsPattern other = (ActionInsertFactFieldsPattern) otherColumn;
 
         // Field: isInsertedLogically.
         if ( this.isInsertedLogically() != other.isInsertedLogically() ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_IS_INSERTED_LOGICALLY, this.isInsertedLogically(), other.isInsertedLogically()));
+            result.add( new BaseColumnFieldDiffImpl( FIELD_IS_INSERTED_LOGICALLY,
+                                                     this.isInsertedLogically(),
+                                                     other.isInsertedLogically() ) );
         }
 
         return result;
@@ -57,13 +61,13 @@ public class ActionInsertFactFieldsPattern extends Pattern52 {
     @Override
     public ActionInsertFactFieldsPattern clonePattern() {
         ActionInsertFactFieldsPattern cloned = (ActionInsertFactFieldsPattern) super.clonePattern();
-        cloned.setInsertedLogically(isInsertedLogically);
+        cloned.setInsertedLogically( isInsertedLogically );
         return cloned;
     }
 
     @Override
-    public void update(Pattern52 other) {
-        super.update(other);
-        setInsertedLogically(((ActionInsertFactFieldsPattern)other).isInsertedLogically);
+    public void update( Pattern52 other ) {
+        super.update( other );
+        setInsertedLogically( ( (ActionInsertFactFieldsPattern) other ).isInsertedLogically );
     }
 }

@@ -15,11 +15,10 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.auditlog;
 
+import java.util.List;
+
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
-import org.drools.workbench.models.guided.dtable.shared.model.DiffColumn;
-
-import java.util.List;
 
 /**
  * An Audit Event when a column is updated
@@ -53,9 +52,9 @@ public class UpdateColumnAuditLogEntry extends InsertColumnAuditLogEntry {
     public UpdateColumnAuditLogEntry( final String userName,
                                       final BaseColumn originalColumn,
                                       final BaseColumn newColumn,
-                                      final List<BaseColumnFieldDiff> diffs) {
+                                      final List<BaseColumnFieldDiff> diffs ) {
         super( userName,
-                newColumn );
+               newColumn );
         this.originalDetails = getDetails( originalColumn );
         this.diffs = diffs;
     }

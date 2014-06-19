@@ -18,6 +18,9 @@ package org.drools.workbench.models.guided.dtable.shared.auditlog;
 import org.drools.workbench.models.datamodel.auditlog.AuditLogEntry;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
@@ -53,6 +56,7 @@ public class InsertColumnAuditLogEntry extends AuditLogEntry {
     }
 
     protected ColumnDetails getDetails( final BaseColumn column ) {
+        //Order of columns is important to account for sub-types and super-types
         if ( column instanceof MetadataCol52 ) {
             return new MetadataColumnDetails( (MetadataCol52) column );
         } else if ( column instanceof AttributeCol52 ) {
@@ -65,14 +69,20 @@ public class InsertColumnAuditLogEntry extends AuditLogEntry {
             return new LimitedEntryConditionColumnDetails( (LimitedEntryConditionCol52) column );
         } else if ( column instanceof BRLActionColumn ) {
             return new ColumnDetails( column );
+        } else if ( column instanceof ActionWorkItemInsertFactCol52 ) {
+            return new ActionWorkItemInsertFactColumnDetails( (ActionWorkItemInsertFactCol52) column );
         } else if ( column instanceof ActionInsertFactCol52 ) {
             return new ActionInsertFactColumnDetails( (ActionInsertFactCol52) column );
         } else if ( column instanceof LimitedEntryActionInsertFactCol52 ) {
             return new LimitedEntryActionInsertFactColumnDetails( (LimitedEntryActionInsertFactCol52) column );
+        } else if ( column instanceof ActionWorkItemSetFieldCol52 ) {
+            return new ActionWorkItemSetFieldColumnDetails( (ActionWorkItemSetFieldCol52) column );
         } else if ( column instanceof ActionSetFieldCol52 ) {
             return new ActionSetFieldColumnDetails( (ActionSetFieldCol52) column );
         } else if ( column instanceof LimitedEntryActionSetFieldCol52 ) {
             return new LimitedEntryActionSetFieldColumnDetails( (LimitedEntryActionSetFieldCol52) column );
+        } else if ( column instanceof ActionWorkItemCol52 ) {
+            return new ActionWorkItemColumnDetails( (ActionWorkItemCol52) column );
         } else {
             return new ColumnDetails( column );
         }

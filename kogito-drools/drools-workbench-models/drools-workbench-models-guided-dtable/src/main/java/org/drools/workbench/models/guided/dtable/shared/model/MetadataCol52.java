@@ -15,7 +15,6 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,16 +38,20 @@ public class MetadataCol52 extends DTColumnConfig52 {
     }
 
     @Override
-    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
-        if (otherColumn == null) return null;
+    public List<BaseColumnFieldDiff> diff( BaseColumn otherColumn ) {
+        if ( otherColumn == null ) {
+            return null;
+        }
 
-        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        List<BaseColumnFieldDiff> result = super.diff( otherColumn );
         MetadataCol52 other = (MetadataCol52) otherColumn;
 
         // Field: metadata.
         if ( !isEqualOrNull( this.getMetadata(),
-                other.getMetadata() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_METADATA, this.getMetadata(), other.getMetadata()));
+                             other.getMetadata() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_METADATA,
+                                                     this.getMetadata(),
+                                                     other.getMetadata() ) );
         }
 
         return result;
@@ -56,16 +59,15 @@ public class MetadataCol52 extends DTColumnConfig52 {
 
     /**
      * Clones this metadata column instance.
-     *
      * @return The cloned instance.
      */
     public MetadataCol52 cloneColumn() {
         MetadataCol52 cloned = new MetadataCol52();
-        cloned.setMetadata(getMetadata());
-        cloned.setWidth(getWidth());
-        cloned.setHideColumn(isHideColumn());
-        cloned.setHeader(getHeader());
-        cloned.setDefaultValue(getDefaultValue() != null ? getDefaultValue().cloneDefaultValueCell() : null );
+        cloned.setMetadata( getMetadata() );
+        cloned.setWidth( getWidth() );
+        cloned.setHideColumn( isHideColumn() );
+        cloned.setHeader( getHeader() );
+        cloned.setDefaultValue( getDefaultValue() != null ? getDefaultValue().cloneDefaultValueCell() : null );
         return cloned;
     }
 

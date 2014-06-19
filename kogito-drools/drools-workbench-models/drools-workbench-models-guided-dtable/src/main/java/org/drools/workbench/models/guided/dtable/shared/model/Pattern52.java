@@ -26,7 +26,8 @@ import org.drools.workbench.models.datamodel.rule.HasCEPWindow;
  */
 public class Pattern52
         implements CompositeColumn<ConditionCol52>,
-                   HasCEPWindow, DiffColumn {
+                   HasCEPWindow,
+                   DiffColumn {
 
     // The type of the fact - class - eg Driver, Purchase, Cheese etc.
     private String factType;
@@ -60,47 +61,56 @@ public class Pattern52
 
     public static final String FIELD_ENTRY_POINT_NAME = "entryPointName";
 
-
     public Pattern52() {
         this.conditions = new ArrayList<ConditionCol52>();
     }
 
     @Override
-    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
-        if (otherColumn == null) return null;
+    public List<BaseColumnFieldDiff> diff( BaseColumn otherColumn ) {
+        if ( otherColumn == null ) {
+            return null;
+        }
 
         List<BaseColumnFieldDiff> result = new ArrayList<BaseColumnFieldDiff>();
         Pattern52 other = (Pattern52) otherColumn;
 
-
-
         // Field: factType.
-        if ( !BaseColumnFieldDiffImpl.isEqualOrNull(this.getFactType(),
-                other.getFactType()) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_FACT_TYPE, this.getFactType(), other.getFactType()));
+        if ( !BaseColumnFieldDiffImpl.isEqualOrNull( this.getFactType(),
+                                                     other.getFactType() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_FACT_TYPE,
+                                                     this.getFactType(),
+                                                     other.getFactType() ) );
         }
 
         // Field: boundName.
-        if ( !BaseColumnFieldDiffImpl.isEqualOrNull(this.getBoundName(),
-                other.getBoundName()) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_BOUND_NAME, this.getBoundName(), other.getBoundName()));
+        if ( !BaseColumnFieldDiffImpl.isEqualOrNull( this.getBoundName(),
+                                                     other.getBoundName() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_BOUND_NAME,
+                                                     this.getBoundName(),
+                                                     other.getBoundName() ) );
         }
 
         // Field: isNegated.
         if ( this.isNegated() != other.isNegated() ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_IS_NEGATED, this.isNegated(), other.isNegated()));
+            result.add( new BaseColumnFieldDiffImpl( FIELD_IS_NEGATED,
+                                                     this.isNegated(),
+                                                     other.isNegated() ) );
         }
 
         // Field: window.
-        if ( !BaseColumnFieldDiffImpl.isEqualOrNull(this.getWindow(),
-                other.getWindow()) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_WINDOW, this.getWindow(), other.getWindow()));
+        if ( !BaseColumnFieldDiffImpl.isEqualOrNull( this.getWindow(),
+                                                     other.getWindow() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_WINDOW,
+                                                     this.getWindow(),
+                                                     other.getWindow() ) );
         }
 
         // Field: entryPointName.
-        if ( !BaseColumnFieldDiffImpl.isEqualOrNull(this.getEntryPointName(),
-                other.getEntryPointName()) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_ENTRY_POINT_NAME, this.getEntryPointName(), other.getEntryPointName()));
+        if ( !BaseColumnFieldDiffImpl.isEqualOrNull( this.getEntryPointName(),
+                                                     other.getEntryPointName() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_ENTRY_POINT_NAME,
+                                                     this.getEntryPointName(),
+                                                     other.getEntryPointName() ) );
         }
 
         return result;
@@ -108,32 +118,30 @@ public class Pattern52
 
     /**
      * Clones this pattern instance.
-     *
      * @return The cloned instance.
      */
     public Pattern52 clonePattern() {
         Pattern52 cloned = new Pattern52();
-        cloned.setBoundName(getBoundName());
-        cloned.setChildColumns(new ArrayList<ConditionCol52>(getChildColumns()));
-        cloned.setEntryPointName(getEntryPointName());
-        cloned.setFactType(getFactType());
-        cloned.setNegated(isNegated());
-        cloned.setWindow(getWindow());
+        cloned.setBoundName( getBoundName() );
+        cloned.setChildColumns( new ArrayList<ConditionCol52>( getChildColumns() ) );
+        cloned.setEntryPointName( getEntryPointName() );
+        cloned.setFactType( getFactType() );
+        cloned.setNegated( isNegated() );
+        cloned.setWindow( getWindow() );
         return cloned;
     }
 
     /**
      * Update this pattern instance properties with the given ones from other pattern instance.
-     *
      * @param other The pattern to obtain the properties to set.
      */
-    public void update(Pattern52 other) {
-        setBoundName(other.getBoundName());
-        setChildColumns(other.getChildColumns());
-        setEntryPointName(other.getEntryPointName());
-        setFactType(other.getFactType());
-        setNegated(other.isNegated());
-        setWindow(other.getWindow());
+    public void update( Pattern52 other ) {
+        setBoundName( other.getBoundName() );
+        setChildColumns( other.getChildColumns() );
+        setEntryPointName( other.getEntryPointName() );
+        setFactType( other.getFactType() );
+        setNegated( other.isNegated() );
+        setWindow( other.getWindow() );
     }
 
     public String getFactType() {
