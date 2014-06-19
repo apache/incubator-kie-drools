@@ -5,9 +5,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
   xmlns:ns="http://docbook.org/ns/docbook">
-  <title>New and Noteworthy in jBPM 6.1.0</title> jBPM 6.1 comes with a ton of smaller improvements
-  and bug fixes (done over the last few months on top of 6.0.1.Final), and also includes some
-  important new features, adding on top of the foundation devilered as part of jBPM 6.0. <section>
+  <title>New and Noteworthy in jBPM 6.1.0</title>
+  <para>jBPM 6.1 comes with a ton of smaller improvements and bug fixes (done over the last few months
+  on top of 6.0.1.Final), and also includes some important new features, adding to the foundation
+  delivered as part of jBPM 6.0.</para>
+  <section>
     <title>Embedding forms in external applications</title>
   </section>
   <section>
@@ -15,6 +17,10 @@
   </section>
   <section>
     <title>Web Service (SOAP) interface for remote API</title>
+    <para>The execution server, that is part of the jbpm-console web tooling, now also comes
+    with a Web Service interface (in addition to the existing REST, JMS and Java client interfaces).
+    </para>
+    <!-- marco to add more details -->
   </section>
   <section>
     <title>Deployment descriptors</title>
@@ -53,10 +59,10 @@
       process. If not, the user will not see this process or process instance in the process
       definition or process instance list respectively. </para>
   </section>
-  <section>
+  <!-- marco to add more details - section>
     <title>Remote API updates</title>
     <para/>
-  </section>
+  </section-->
   <section>
     <title>jBPM installer updates</title>
     <para>The installer is updated to support: <itemizedlist>
@@ -116,7 +122,7 @@
         <listitem>
           <para>Removed limitation on custom implementations of work item handler, event listeners
             that had to be placed on global classpath - usually in jbpm-console.war/WEB-INF/lib.
-            With that clustom classes can be added as maven dependencies into the project and will
+            With that custom classes can be added as maven dependencies into the project and will
             be registered on underlying components (ksession).</para>
         </listitem>
       </itemizedlist>
