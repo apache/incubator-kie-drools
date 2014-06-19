@@ -15,8 +15,6 @@
  */
 package org.drools.examples.sudoku.swing;
 
-import java.util.Set;
-
 /**
  * An interface representing a 9x9 Sudoku Grid of Cells.
  */

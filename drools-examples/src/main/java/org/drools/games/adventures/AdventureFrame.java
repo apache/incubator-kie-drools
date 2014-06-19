@@ -57,8 +57,7 @@ import net.miginfocom.swing.MigLayout;
 import org.kie.api.runtime.Channel;
 
 public class AdventureFrame extends JFrame {
-    private final ToolTipListener    toolTipListener    = new ToolTipListener();
-    private final ConstraintListener constraintListener = new ConstraintListener();
+	private static final long serialVersionUID = -2971230034285417733L;
     private static final Font        BUTT_FONT          = new Font( "monospaced",
                                                                     Font.PLAIN,
                                                                     12 );
@@ -661,7 +660,11 @@ public class AdventureFrame extends JFrame {
         ActionListener,
         KeyEventDispatcher
     {
-        private static final Color ERROR_COLOR = new Color( 255,
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1138162616435978635L;
+		private static final Color ERROR_COLOR = new Color( 255,
                                                             180,
                                                             180 );
         private final JPanel       mainPanel   = new JPanel( new MigLayout( "fillx,flowy,ins dialog",

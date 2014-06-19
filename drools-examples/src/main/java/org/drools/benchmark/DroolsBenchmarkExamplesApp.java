@@ -28,16 +28,12 @@ import javax.swing.JPanel;
 import org.drools.benchmark.manners.MannersBenchmark;
 import org.drools.benchmark.waltz.WaltzBenchmark;
 import org.drools.benchmark.waltzdb.WaltzDbBenchmark;
-import org.drools.tutorials.banking.BankingExample1;
-import org.drools.tutorials.banking.BankingExample2;
-import org.drools.tutorials.banking.BankingExample3;
-import org.drools.tutorials.banking.BankingExample4;
-import org.drools.tutorials.banking.BankingExample5;
-import org.drools.tutorials.banking.BankingExample6;
 
 public class DroolsBenchmarkExamplesApp extends JFrame {
 
-    public static void main(String[] args) {
+	private static final long serialVersionUID = -8611457695691657705L;
+
+	public static void main(String[] args) {
         DroolsBenchmarkExamplesApp droolsBenchmarkExamplesApp = new DroolsBenchmarkExamplesApp();
         droolsBenchmarkExamplesApp.pack();
         droolsBenchmarkExamplesApp.setVisible(true);
@@ -53,17 +49,23 @@ public class DroolsBenchmarkExamplesApp extends JFrame {
         JPanel contentPane = new JPanel(new GridLayout(0, 1));
         contentPane.add(new JLabel("Which benchmark do you want to see in the output?"));
         contentPane.add(new JButton(new AbstractAction("MannersBenchmark") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = 7519505832576886598L;
+
+			public void actionPerformed(ActionEvent e) {
                 MannersBenchmark.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("WaltzBenchmark") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = 805017998264074606L;
+
+			public void actionPerformed(ActionEvent e) {
                 WaltzBenchmark.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("WaltzDbBenchmark") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = -1870160785132166475L;
+
+			public void actionPerformed(ActionEvent e) {
                 WaltzDbBenchmark.main(new String[0]);
             }
         }));

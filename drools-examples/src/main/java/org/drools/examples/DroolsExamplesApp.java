@@ -51,8 +51,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DroolsExamplesApp extends JFrame {
+	private static final long serialVersionUID = 5511989981501462030L;
 
-    public static void main(String[] args) {
+	public static void main(String[] args) {
         DroolsExamplesApp droolsExamplesApp = new DroolsExamplesApp();
         droolsExamplesApp.pack();
         droolsExamplesApp.setVisible(true);
@@ -72,27 +73,37 @@ public class DroolsExamplesApp extends JFrame {
         contentPane.add(new JLabel("Which GUI example do you want to see?"));
 
         contentPane.add(new JButton(new AbstractAction("SudokuExample") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = 826335283932936110L;
+
+			public void actionPerformed(ActionEvent e) {
                 new SudokuExample().init(false);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("PetStoreExample") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = -2858687803954344152L;
+
+			public void actionPerformed(ActionEvent e) {
                 new PetStoreExample().init(false);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("TextAdventure") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = 6738368225425313447L;
+
+			public void actionPerformed(ActionEvent e) {
                 new TextAdventure().init(false);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("Pong") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = 4687421449425270200L;
+
+			public void actionPerformed(ActionEvent e) {
                 new PongMain().init(false);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("WumpusWorld") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = 821103188056845210L;
+
+			public void actionPerformed(ActionEvent e) {
                 new WumpusWorldMain().init(false);
             }
         }));
@@ -100,82 +111,114 @@ public class DroolsExamplesApp extends JFrame {
         contentPane.add(new JLabel("Which output example do you want to see?"));
 
         contentPane.add(new JButton(new AbstractAction("HelloWorldExample") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = -5689396653133154206L;
+
+			public void actionPerformed(ActionEvent e) {
                 HelloWorldExample.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("FibonacciExample") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = -8413095787165679797L;
+
+			public void actionPerformed(ActionEvent e) {
                 FibonacciExample.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("ShoppingExample") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = 2394887300311853362L;
+
+			public void actionPerformed(ActionEvent e) {
                 ShoppingExample.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("HonestPoliticianExample") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = -834426138171650395L;
+
+			public void actionPerformed(ActionEvent e) {
                 HonestPoliticianExample.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("GolfingExample") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = -2581665804843270981L;
+
+			public void actionPerformed(ActionEvent e) {
                 GolfingExample.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("SimpleRuleTemplateExample") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = -2558081417593825468L;
+
+			public void actionPerformed(ActionEvent e) {
                 SimpleRuleTemplateExample.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("TroubleTicketExample") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = 7960525920219679429L;
+
+			public void actionPerformed(ActionEvent e) {
                 TroubleTicketExample.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("TroubleTicketExampleWithDT") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = 1147091777873824856L;
+
+			public void actionPerformed(ActionEvent e) {
                 TroubleTicketExampleWithDT.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("TroubleTicketExampleWithDSL") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = -8665408797950741235L;
+
+			public void actionPerformed(ActionEvent e) {
                 TroubleTicketExampleWithDSL.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("StateExampleUsingSalience") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = 4126835375804937460L;
+
+			public void actionPerformed(ActionEvent e) {
                 StateExampleUsingSalience.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("StateExampleUsingAgendaGroup") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = 8950581127960817265L;
+
+			public void actionPerformed(ActionEvent e) {
                 StateExampleUsingAgendaGroup.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("PricingRuleTemplateExample") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = -6068257670386662680L;
+
+			public void actionPerformed(ActionEvent e) {
                 PricingRuleTemplateExample.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("PricingRuleDTExample") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = -624957573008325165L;
+
+			public void actionPerformed(ActionEvent e) {
                 PricingRuleDTExample.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("DataDrivenTemplateExample") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = 7306790457258874155L;
+
+			public void actionPerformed(ActionEvent e) {
                 DataDrivenTemplateExample.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("WorkItemConsequenceExample1") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = 6726420738656439424L;
+
+			public void actionPerformed(ActionEvent e) {
                 WorkItemConsequenceExample1.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("WorkItemConsequenceExample2") {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = 7798898015603969809L;
+
+			public void actionPerformed(ActionEvent e) {
                 WorkItemConsequenceExample2.main(new String[0]);
             }
         }));
