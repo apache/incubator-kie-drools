@@ -46,44 +46,44 @@ public class BankingExamplesApp extends JFrame {
         JPanel contentPane = new JPanel(new GridLayout(0, 1));
         contentPane.add(new JLabel("Which tutorial do you want to see in the output?"));
         contentPane.add(new JButton(new AbstractAction("BankingExample1") {
-			private static final long serialVersionUID = -5392823353007946183L;
+            private static final long serialVersionUID = -5392823353007946183L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 BankingExample1.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("BankingExample2") {
-			private static final long serialVersionUID = -808299533709717562L;
+            private static final long serialVersionUID = -808299533709717562L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 BankingExample2.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("BankingExample3") {
-			private static final long serialVersionUID = 8664543708864863721L;
+            private static final long serialVersionUID = 8664543708864863721L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 BankingExample3.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("BankingExample4") {
-			private static final long serialVersionUID = -6338034649624286831L;
+            private static final long serialVersionUID = -6338034649624286831L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 BankingExample4.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("BankingExample5") {
-			private static final long serialVersionUID = 9073459862429160302L;
+            private static final long serialVersionUID = 9073459862429160302L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 BankingExample5.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("BankingExample6") {
-			private static final long serialVersionUID = 6381220686035667623L;
+            private static final long serialVersionUID = 6381220686035667623L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 BankingExample6.main(new String[0]);
             }
         }));

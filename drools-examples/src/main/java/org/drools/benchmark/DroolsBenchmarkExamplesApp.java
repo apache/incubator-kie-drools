@@ -19,6 +19,7 @@ package org.drools.benchmark;
 import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -31,9 +32,9 @@ import org.drools.benchmark.waltzdb.WaltzDbBenchmark;
 
 public class DroolsBenchmarkExamplesApp extends JFrame {
 
-	private static final long serialVersionUID = -8611457695691657705L;
+    private static final long serialVersionUID = -8611457695691657705L;
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
         DroolsBenchmarkExamplesApp droolsBenchmarkExamplesApp = new DroolsBenchmarkExamplesApp();
         droolsBenchmarkExamplesApp.pack();
         droolsBenchmarkExamplesApp.setVisible(true);
@@ -49,23 +50,23 @@ public class DroolsBenchmarkExamplesApp extends JFrame {
         JPanel contentPane = new JPanel(new GridLayout(0, 1));
         contentPane.add(new JLabel("Which benchmark do you want to see in the output?"));
         contentPane.add(new JButton(new AbstractAction("MannersBenchmark") {
-			private static final long serialVersionUID = 7519505832576886598L;
+            private static final long serialVersionUID = 7519505832576886598L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 MannersBenchmark.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("WaltzBenchmark") {
-			private static final long serialVersionUID = 805017998264074606L;
+            private static final long serialVersionUID = 805017998264074606L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 WaltzBenchmark.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("WaltzDbBenchmark") {
-			private static final long serialVersionUID = -1870160785132166475L;
+            private static final long serialVersionUID = -1870160785132166475L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 WaltzDbBenchmark.main(new String[0]);
             }
         }));
