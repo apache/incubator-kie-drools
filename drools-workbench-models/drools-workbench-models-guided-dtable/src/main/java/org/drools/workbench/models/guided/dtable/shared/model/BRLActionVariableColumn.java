@@ -62,34 +62,44 @@ public class BRLActionVariableColumn extends ActionCol52
     }
 
     @Override
-    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
-        if (otherColumn == null) return null;
+    public List<BaseColumnFieldDiff> diff( BaseColumn otherColumn ) {
+        if ( otherColumn == null ) {
+            return null;
+        }
 
-        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        List<BaseColumnFieldDiff> result = super.diff( otherColumn );
         BRLActionVariableColumn other = (BRLActionVariableColumn) otherColumn;
 
         // Field: varName.
         if ( !isEqualOrNull( this.getVarName(),
-                other.getVarName() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_VAR_NAME, this.getVarName(), other.getVarName()));
+                             other.getVarName() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_VAR_NAME,
+                                                     this.getVarName(),
+                                                     other.getVarName() ) );
         }
 
         // Field: fieldType.
         if ( !isEqualOrNull( this.getFieldType(),
-                other.getFieldType() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_FIELD_TYPE, this.getFieldType(), other.getFieldType()));
+                             other.getFieldType() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_FIELD_TYPE,
+                                                     this.getFieldType(),
+                                                     other.getFieldType() ) );
         }
 
         // Field: factType.
         if ( !isEqualOrNull( this.getFactType(),
-                other.getFactType() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_FACT_TYPE, this.getFactType(), other.getFactType()));
+                             other.getFactType() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_FACT_TYPE,
+                                                     this.getFactType(),
+                                                     other.getFactType() ) );
         }
 
         // Field: factField.
         if ( !isEqualOrNull( this.getFactField(),
-                other.getFactField() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_FACT_FIELD, this.getFactField(), other.getFactField()));
+                             other.getFactField() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_FACT_FIELD,
+                                                     this.getFactField(),
+                                                     other.getFactField() ) );
         }
 
         return result;

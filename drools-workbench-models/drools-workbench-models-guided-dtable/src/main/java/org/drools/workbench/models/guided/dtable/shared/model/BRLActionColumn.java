@@ -41,22 +41,28 @@ public class BRLActionColumn extends ActionCol52
     public static final String FIELD_CHILD_COLUMNS = "childColumns";
 
     @Override
-    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
-        if (otherColumn == null) return null;
+    public List<BaseColumnFieldDiff> diff( BaseColumn otherColumn ) {
+        if ( otherColumn == null ) {
+            return null;
+        }
 
-        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        List<BaseColumnFieldDiff> result = super.diff( otherColumn );
         BRLActionColumn other = (BRLActionColumn) otherColumn;
 
         // Field: definition.
         if ( !isEqualOrNull( this.getDefinition(),
-                other.getDefinition() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_DEFINITION, this.getDefinition(), other.getDefinition()));
+                             other.getDefinition() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_DEFINITION,
+                                                     this.getDefinition(),
+                                                     other.getDefinition() ) );
         }
 
         // Field: childColumns.
         if ( !isEqualOrNull( this.getChildColumns(),
-                other.getChildColumns() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_CHILD_COLUMNS, this.getChildColumns(), other.getChildColumns()));
+                             other.getChildColumns() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_CHILD_COLUMNS,
+                                                     this.getChildColumns(),
+                                                     other.getChildColumns() ) );
         }
 
         return result;
