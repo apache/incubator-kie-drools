@@ -706,6 +706,25 @@
     </listitem>
 
     <listitem>
+      <para>Document (org.jbpm.document.Document)</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Specific properties
+            <itemizedlist>
+
+              <listitem>
+                <para>Required: Indicates if it’s mandatory to fill this
+                  field.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
       <para>Simple subform (Object)</para>
 
       <itemizedlist>

@@ -79,11 +79,6 @@
     </programlisting>
     As you can see this Interface defines the methods that determines how the field has to be shown on the screen for when the form is shown on insert(getInputHTML(...)) or readonly (getShowHTML(...)) mode.
     It also provides the method (getValue(...)) that reads the needed parameters from the request and to obtain the correct field value. Te returned value type must match with the type of the field added on the form.
-    So (for example) you can create a File input that uploads a file to a server folder and saves a String with the storage path as the field value, so on your forms you can turn all the text compatible fields (Short Text, Long Text, Rich Text and Email) on Input File.
   </para>
-  <para>
-    To see ho can it be done look at the example on
-    <link xlink:href="https://github.com/droolsjbpm/jbpm-form-modeler/tree/master/jbpm-form-modeler-sample-custom-types/jbpm-form-modeler-custom-file-type">https://github.com/droolsjbpm/jbpm-form-modeler/tree/master/jbpm-form-modeler-sample-custom-types/jbpm-form-modeler-custom-file-type</link>.
-  </para>
-  <para>Please note that this is just a sample and it only should be used with learning purposes.</para>
+
 </section>
