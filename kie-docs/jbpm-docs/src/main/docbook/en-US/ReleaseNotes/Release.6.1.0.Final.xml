@@ -11,9 +11,19 @@
   delivered as part of jBPM 6.0.</para>
   <section>
     <title>Embedding forms in external applications</title>
+    <para>Now you can embed and run process/task forms that live inside the Kie-Workbench just adding a JavaScript
+      library to your webapps.
+      Look at the <link linkend="sect-formmodeler-UsingFormsclient">Using forms on client applications</link> section
+      to see the full functionality and usage examples.
+    </para>
   </section>
   <section>
     <title>Attaching documents to forms</title>
+    <para>Added new file type to manage upload documents on forms and store them on process variables. Using the
+      <emphasis>Pluggable Variable Persistence</emphasis> you'll be able to create your own <emphasis>Marshalling
+      Strategy</emphasis> and store the document contents on different systems (Database, Alfresco, Google Docs...)
+      or use the default implementation and store them in your File System.
+    </para>
   </section>
   <section>
     <title>Web Service (SOAP) interface for remote API</title>

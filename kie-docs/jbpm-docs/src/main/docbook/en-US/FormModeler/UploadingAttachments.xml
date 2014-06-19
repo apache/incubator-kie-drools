@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="." xml:id="sect-formmodeler-attachments"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns2="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Document attachments</title>
+
+  <para>
+    On this section we are going to describe step by step how to attach documents to your process variables from your
+    forms and how you can configure to store the uploaded documents anywhere (File System, Data Base, Alfresco...)
+    using the <emphasis>Pluggable Variable Persistence</emphasis>.
+  </para>
+
+  <section>
+    <title>Process and forms configuration</title>
+    <para>To make your process manage documents you have to define your process variables as usual using
+      the Custom Type <code>org.jbpm.document.Document</code>. Each variable defined as <emphasis>Document</emphasis>
+      will be shown on the form as a FILE input.
+    </para>
+
+    <figure>
+      <title>Defining a document variable</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/FormModeler/46_document_variable.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+    <para>When the process forms are genereated and a <code>org.jbpm.document.Document</code> variable si found
+      a File input will be placed on the form.
+    </para>
+    <figure>
+      <title>Form generated showing a <code>org.jbpm.document.Document</code> input</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/FormModeler/47_doc_input.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+    <para>Each time a document is uploaded using a form the Form Engine will generate an instance of
+      <code>org.jbpm.document.Document</code> to be stored on the process variable.
+    </para>
+  </section>
+
+  <section>
+    <title>Marshalling strategy and deployment configuration</title>
+    <para>In order to store the document using the <emphasis>Pluggable Variable Persistence</emphasis> you'll have to
+      define your <emphasis>Marshalling Strategy</emphasis> to manage the uploaded Documents.
+      To start create a Maven project with your favourite IDE and add the following dependencies:
+      <programlisting language="xml">
+&lt;dependency&gt;
+  &lt;groupId&gt;org.kie&lt;/groupId&gt;
+  &lt;artifactId&gt;kie-api&lt;/artifactId&gt;
+  &lt;version&gt;{version}&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.jbpm&lt;/groupId&gt;
+  &lt;artifactId&gt;jbpm-document&lt;/artifactId&gt;
+  &lt;version&gt;{version}&lt;/version&gt;
+&lt;/dependency&gt;
+      </programlisting>
+      Once you did that is time to create your <emphasis>Marshalling Strategy</emphasis>, to do so you just have to create
+      a class implementing:
+      <programlisting language="java">
+package org.kie.api.marshalling;
+
+public interface ObjectMarshallingStrategy {
+
+  public boolean accept(Object object);
+
+  public void write(ObjectOutputStream os, Object object)
+        throws IOException;
+
+  public Object read(ObjectInputStream os)
+        throws IOException, ClassNotFoundException;
+
+  public byte[] marshal( Context context, ObjectOutputStream os, Object object )
+        throws IOException;
+
+  public Object unmarshal( Context context, ObjectInputStream is, byte[] object,
+        ClassLoader classloader ) throws IOException, ClassNotFoundException;
+
+  public Context createContext();
+}
+      </programlisting>
+
+      The methods to implement are:
+      <itemizedlist>
+        <listitem>
+          <para><command>public boolean accept(Object object):</command>
+            Determines if the given object can be marshalled by the strategy</para>
+        </listitem>
+        <listitem>
+          <para><command>byte[] marshal( Context context, ObjectOutputStream os, Object object ):</command>
+            Marshals the given object and returns the marshalled object as byte[]</para>
+        </listitem>
+        <listitem>
+          <para><command>Object unmarshal( Context context, ObjectInputStream is, byte[] object, ClassLoader classloader ):</command>
+            Reads the object received as byte[] and returns the unmarshalled object</para>
+        </listitem>
+        <listitem>
+          <para><command>void write(ObjectOutputStream os, Object object):</command>
+            Implement for backguards compatibility, it should do the same functionallity than
+            <command>byte[] marshal( Context context, ObjectOutputStream os, Object object )</command></para>
+        </listitem>
+        <listitem>
+          <para><command>Object read(ObjectInputStream os):</command>
+            Implement for backguards compatibility, it should do the same functionallity than
+            <command>Object unmarshal( Context context, ObjectInputStream is, byte[] object, ClassLoader classloader )</command></para>
+        </listitem>
+      </itemizedlist>
+
+      You can see how the default <emphasis>DocumentMarshallingStrategy</emphasis> is implemented looking at
+      <link xlink:href="https://github.com/droolsjbpm/jbpm/blob/master/jbpm-document/src/main/java/org/jbpm/document/marshalling/DocumentMarshallingStrategy.java">this link</link>.
+    </para>
+    <para>
+      After creating your <emphasis>Marshalling Strategy</emphasis> and add it to your server classpath the only thing
+      remaining is to configure your project deployment descriptor add it to the marshalling strategies list.
+      To do it you just have to open the Kie-Workbench on your browser, open your project on the Authoring view and
+      edit the <emphasis>kie-deployment-descriptor.xml</emphasis> file located on <code>&lt;yourproject&gt;/src/main/resources/META-INF</code>
+      and add your <emphasis>Marshalling Strategy</emphasis> to the <code>&lt;marshalling-strategies&gt;</code> list
+      like this:
+      <programlisting language="xml">
+&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;deployment-descriptor
+    xsi:schemaLocation="http://www.jboss.org/jbpm deployment-descriptor.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;persistence-unit&gt;org.jbpm.domain&lt;/persistence-unit&gt;
+  &lt;audit-persistence-unit&gt;org.jbpm.domain&lt;/audit-persistence-unit&gt;
+  &lt;audit-mode&gt;JPA&lt;/audit-mode&gt;
+  &lt;persistence-mode&gt;JPA&lt;/persistence-mode&gt;
+  &lt;runtime-strategy&gt;SINGLETON&lt;/runtime-strategy&gt;
+  &lt;marshalling-strategies&gt;
+    &lt;marshalling-strategy&gt;
+      &lt;resolver&gt;reflection&lt;/resolver&gt;
+      &lt;identifier&gt;
+        org.jbpm.document.marshalling.DocumentMarshallingStrategy
+      &lt;/identifier&gt;
+    &lt;/marshalling-strategy&gt;
+  &lt;/marshalling-strategies&gt;
+  &lt;event-listeners/&gt;
+  &lt;task-event-listeners/&gt;
+  &lt;globals/&gt;
+  &lt;work-item-handlers/&gt;
+  &lt;environment-entries/&gt;
+  &lt;configurations/&gt;
+  &lt;required-roles/&gt;
+&lt;/deployment-descriptor&gt;
+      </programlisting>
+    </para>
+    <para>
+      Since this is done you're able to build your project and upload your documents on your process.
+    </para>
+    <figure>
+      <title>File input before file is uploaded</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/FormModeler/48_file_input_before.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+    <figure>
+      <title>File input with an uploaded file</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/FormModeler/49_file_input_after.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+    <note>
+      <para>On this example we are configuring the default <code>DocumentMarshallingStrategy</code>, please use it  for test and
+        demo purposes.
+      </para>
+    </note>
+  </section>
+</section>

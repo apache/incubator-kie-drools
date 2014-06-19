@@ -48,6 +48,7 @@
   <xi:include href="FormModeler/ConfigureProcess.xml" />
   <xi:include href="FormModeler/GeneratingForms.xml" />
   <xi:include href="FormModeler/EditForms.xml" />
+  <xi:include href="FormModeler/UploadingAttachments.xml"/>
   <xi:include href="FormModeler/UsingFormsClient.xml" />
 </chapter>
 
