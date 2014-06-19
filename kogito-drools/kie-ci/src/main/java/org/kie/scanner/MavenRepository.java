@@ -116,9 +116,9 @@ public class MavenRepository {
     private boolean isMirror(RemoteRepository repo, String mirrorOf)  {
         return mirrorOf.equals("*") ||
                ( mirrorOf.equals("external:*") && !repo.getUrl().startsWith("file:") ) ||
-               ( mirrorOf.startsWith("external:*") && !repo.getUrl().startsWith("file:") && !mirrorOf.contains("!" + repo.getId()) ) ||
+               ( mirrorOf.contains("external:*") && !repo.getUrl().startsWith("file:") && !mirrorOf.contains("!" + repo.getId()) ) ||
                ( mirrorOf.startsWith("*") && !mirrorOf.contains("!" + repo.getId()) ) ||
-               ( !mirrorOf.startsWith("*") && !mirrorOf.startsWith("external:*") && mirrorOf.contains(repo.getId()) );
+               ( !mirrorOf.startsWith("*") && !mirrorOf.contains("external:*") && mirrorOf.contains(repo.getId()) );
     }
 
     private boolean isProfileActive(Settings settings, Profile profile) {

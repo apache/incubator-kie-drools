@@ -33,7 +33,7 @@
   <mirrors>
     <mirror>
       <id>qa</id>
-      <mirrorOf>external:*,!foo</mirrorOf>
+      <mirrorOf>!foo,external:*</mirrorOf>
       <url>http://nexuszzz.qa.jboss.com:8081/nexus/content/groups/public-all</url>
     </mirror>
   </mirrors>
