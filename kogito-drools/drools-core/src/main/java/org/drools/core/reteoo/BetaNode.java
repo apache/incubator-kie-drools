@@ -69,7 +69,8 @@ public abstract class BetaNode extends LeftTupleSource
         RightTupleSink,
         MemoryFactory {
 
-    protected static transient Logger log = LoggerFactory.getLogger(BetaNode.class);
+    protected static final Logger log = LoggerFactory.getLogger(BetaNode.class);
+    protected static final boolean isLogTraceEnabled = log.isTraceEnabled();
 
     protected ObjectSource rightInput;
 
@@ -286,13 +287,13 @@ public abstract class BetaNode extends LeftTupleSource
         if ( streamMode ) {
             int propagationType = pctx.getType() == PropagationContext.MODIFICATION ? PropagationContext.INSERTION : pctx.getType();
             stagedInsertWasEmpty = memory.getSegmentMemory().getStreamQueue().addInsert(new RightTupleEntry(rightTuple, pctx, memory, propagationType));
-            if ( log.isTraceEnabled() ) {
+            if ( isLogTraceEnabled ) {
                 log.trace( "JoinNode insert queue={} size={} pctx={} lt={}", System.identityHashCode( memory.getSegmentMemory().getStreamQueue() ), memory.getSegmentMemory().getStreamQueue().size(), PhreakPropagationContext.intEnumToString(pctx), rightTuple );
             }
         }  else {
             stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert(rightTuple);
         }
-        if ( log.isTraceEnabled() ) {
+        if ( isLogTraceEnabled ) {
             log.trace("BetaNode insert={} stagedInsertWasEmpty={}",  memory.getStagedRightTuples().insertSize(), stagedInsertWasEmpty );
         }
         if ( memory.getAndIncCounter() == 0 ) {
@@ -355,7 +356,7 @@ public abstract class BetaNode extends LeftTupleSource
             PropagationContext pctx = rightTuple.getPropagationContext();
             int propagationType = pctx.getType() == PropagationContext.MODIFICATION ? PropagationContext.DELETION : pctx.getType();
             stagedDeleteWasEmpty = memory.getSegmentMemory().getStreamQueue().addDelete(new RightTupleEntry(rightTuple, pctx, memory, propagationType));
-            if ( log.isTraceEnabled() ) {
+            if ( isLogTraceEnabled ) {
                 log.trace( "{} delete queue={} size={} pctx={} lt={}", getClass().getSimpleName(), System.identityHashCode( memory.getSegmentMemory().getStreamQueue() ), memory.getSegmentMemory().getStreamQueue().size(), PhreakPropagationContext.intEnumToString(rightTuple.getPropagationContext()), rightTuple );
             }
 

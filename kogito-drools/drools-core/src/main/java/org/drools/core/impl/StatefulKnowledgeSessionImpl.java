@@ -1242,10 +1242,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         if ( this.firing.compareAndSet( false,
                                         true ) ) {
             try {
-                synchronized ( this ) {
-                    executeQueuedActions();
-                    this.agenda.fireUntilHalt( agendaFilter );
-                }
+                executeQueuedActions();
+                this.agenda.fireUntilHalt( agendaFilter );
             } finally {
                 this.firing.set( false );
             }
