@@ -26,7 +26,9 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         implements
         LinkedListNode<SegmentMemory> {
 
-    protected static transient Logger log = LoggerFactory.getLogger(SegmentMemory.class);
+    protected static final Logger log = LoggerFactory.getLogger(SegmentMemory.class);
+    protected static final boolean isLogTraceEnabled = log.isTraceEnabled();
+
     private          NetworkNode        rootNode;
     private          NetworkNode        tipNode;
     private          LinkedList<Memory> nodeMemories;
@@ -137,7 +139,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
                          InternalWorkingMemory wm) {
         linkedNodeMask.getAndBitwiseOr( mask );
         //dirtyNodeMask = dirtyNodeMask | mask;
-        if (log.isTraceEnabled()) {
+        if (isLogTraceEnabled) {
             log.trace("LinkNode notify=true nmask={} smask={} spos={} rules={}", mask, linkedNodeMask, pos, getRuleNames());
         }
 
@@ -147,7 +149,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     public void linkNodeWithoutRuleNotify(long mask) {
         linkedNodeMask.getAndBitwiseOr( mask );
         //dirtyNodeMask = dirtyNodeMask | mask;
-        if (log.isTraceEnabled()) {
+        if (isLogTraceEnabled) {
             log.trace("LinkNode notify=false nmask={} smask={} spos={} rules={}", mask, linkedNodeMask, pos, getRuleNames());
         }
 
@@ -188,7 +190,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         //dirtyNodeMask = dirtyNodeMask | mask;
 
 
-        if (log.isTraceEnabled()) {
+        if (isLogTraceEnabled) {
             log.trace("UnlinkNode notify=true nmask={} smask={} spos={} rules={}", mask, linkedNodeMask, pos, getRuleNames());
         }
 
@@ -212,7 +214,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     public void unlinkNodeWithoutRuleNotify(long mask) {
         linkedNodeMask.getAndBitwiseXor( mask );
         //dirtyNodeMask = dirtyNodeMask | mask;
-        if (log.isTraceEnabled()) {
+        if (isLogTraceEnabled) {
             log.trace("UnlinkNode notify=false nmask={} smask={} spos={} rules={}", mask, linkedNodeMask, pos, getRuleNames());
         }
     }
@@ -334,6 +336,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         private List<MemoryPrototype>       memories = new ArrayList<MemoryPrototype>();
         private boolean                     hasQueue;
         private boolean                     hasSyncStagedLeftTuple;
+        private List<NetworkNode>           nodesInSegment;
 
         private Prototype(SegmentMemory smem) {
             this.rootNode = smem.rootNode;
@@ -357,7 +360,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
             smem.segmentPosMaskBit = segmentPosMaskBit;
             smem.pos = pos;
             int i = 0;
-            for (NetworkNode node : smem.getNodesInSegment()) {
+            for (NetworkNode node : getNodesInSegment(smem)) {
                 Memory mem = wm.getNodeMemory((MemoryFactory) node);
                 mem.setSegmentMemory(smem);
                 smem.getNodeMemories().add(mem);
@@ -377,6 +380,13 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
                 smem.setStagedTuples( new SynchronizedLeftTupleSets() );
             }
             return smem;
+        }
+
+        private List<NetworkNode> getNodesInSegment(SegmentMemory smem) {
+            if (nodesInSegment == null) {
+                nodesInSegment = smem.getNodesInSegment();
+            }
+            return nodesInSegment;
         }
     }
 
