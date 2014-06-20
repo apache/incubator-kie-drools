@@ -164,8 +164,13 @@ public class ClasspathKieProject extends AbstractKieProject {
         setDefaultsforEmptyKieModule(kieProject);
 
         String pomProperties = getPomProperties( fixedURL );
-        
-        ReleaseId releaseId = ReleaseIdImpl.fromPropertiesString(pomProperties);
+        if (pomProperties == null) {
+            log.warn("Cannot find maven pom properties for this project. Using the container's default ReleaseId");
+        }
+
+        ReleaseId releaseId = pomProperties != null ?
+                              ReleaseIdImpl.fromPropertiesString(pomProperties) :
+                              KieServices.Factory.get().getRepository().getDefaultReleaseId();
 
         String rootPath = fixedURL;
         if ( rootPath.lastIndexOf( ':' ) > 0 ) {
