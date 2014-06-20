@@ -63,46 +63,56 @@ public class ActionSetFieldCol52 extends ActionCol52 {
      */
     private boolean update = false;
 
-
     @Override
-    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
-        if (otherColumn == null) return null;
+    public List<BaseColumnFieldDiff> diff( BaseColumn otherColumn ) {
+        if ( otherColumn == null ) {
+            return null;
+        }
 
-        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        List<BaseColumnFieldDiff> result = super.diff( otherColumn );
         ActionSetFieldCol52 other = (ActionSetFieldCol52) otherColumn;
 
         // Field: bound name..
         if ( !isEqualOrNull( this.getBoundName(),
-                other.getBoundName() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_BOUND_NAME, this.getBoundName(), other.getBoundName()));
+                             other.getBoundName() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_BOUND_NAME,
+                                                     this.getBoundName(),
+                                                     other.getBoundName() ) );
         }
 
         // Field: factField..
         if ( !isEqualOrNull( this.getFactField(),
-                other.getFactField() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_FACT_FIELD, this.getFactField(), other.getFactField()));
+                             other.getFactField() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_FACT_FIELD,
+                                                     this.getFactField(),
+                                                     other.getFactField() ) );
         }
 
         // Field: type..
         if ( !isEqualOrNull( this.getType(),
-                other.getType() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_TYPE, this.getType(), other.getType()));
+                             other.getType() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_TYPE,
+                                                     this.getType(),
+                                                     other.getType() ) );
         }
 
         // Field: valueList..
         if ( !isEqualOrNull( this.getValueList(),
-                other.getValueList() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_VALUE_LIST, this.getValueList(), other.getValueList()));
+                             other.getValueList() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_VALUE_LIST,
+                                                     this.getValueList(),
+                                                     other.getValueList() ) );
         }
 
         // Field: update..
-        if ( this.isUpdate() != other.isUpdate()) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_UPDATE, this.isUpdate(), other.isUpdate()));
+        if ( this.isUpdate() != other.isUpdate() ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_UPDATE,
+                                                     this.isUpdate(),
+                                                     other.isUpdate() ) );
         }
 
         return result;
     }
-
 
     public void setValueList( String valueList ) {
         this.valueList = valueList;

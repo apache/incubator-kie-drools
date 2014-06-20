@@ -19,19 +19,16 @@ import java.util.List;
 
 /**
  * A column than can perform diff with another column.
- *
  * E.g.: Useful when querying the differences in a user edited column for update column event.
- *
- * BZ-996944: The idea is to show the changed fileds and its values in audit log events.
+ * BZ-996944: The idea is to show the changed fields and its values in audit log events.
  */
 public interface DiffColumn {
 
     /**
      * Analyze differences between two columns of same type.
-     *
      * @param otherColumn The column to compare with this one.
      * @return A list of fields and its values that have changed.
      */
-    List<BaseColumnFieldDiff> diff(BaseColumn otherColumn);
+    List<BaseColumnFieldDiff> diff( BaseColumn otherColumn );
 
 }

@@ -41,27 +41,34 @@ public class AttributeCol52 extends DTColumnConfig52 {
     public static final String FIELD_USE_ROW_NUMBER = "useRowNumber";
 
     @Override
-    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
-        if (otherColumn == null) return null;
+    public List<BaseColumnFieldDiff> diff( BaseColumn otherColumn ) {
+        if ( otherColumn == null ) {
+            return null;
+        }
 
-        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        List<BaseColumnFieldDiff> result = super.diff( otherColumn );
         AttributeCol52 other = (AttributeCol52) otherColumn;
-
 
         // Field: attribute.
         if ( !isEqualOrNull( this.getAttribute(),
-                other.getAttribute() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_ATTRIBUTE, this.getAttribute(), other.getAttribute()));
+                             other.getAttribute() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_ATTRIBUTE,
+                                                     this.getAttribute(),
+                                                     other.getAttribute() ) );
         }
 
         // Field: reverseOrder.
         if ( this.isReverseOrder() != other.isReverseOrder() ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_REVERSE_ORDER, this.isReverseOrder(), other.isReverseOrder()));
+            result.add( new BaseColumnFieldDiffImpl( FIELD_REVERSE_ORDER,
+                                                     this.isReverseOrder(),
+                                                     other.isReverseOrder() ) );
         }
 
         // Field: useRowNumber.
         if ( this.isUseRowNumber() != other.isUseRowNumber() ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_USE_ROW_NUMBER, this.isUseRowNumber(), other.isUseRowNumber()));
+            result.add( new BaseColumnFieldDiffImpl( FIELD_USE_ROW_NUMBER,
+                                                     this.isUseRowNumber(),
+                                                     other.isUseRowNumber() ) );
         }
 
         return result;
@@ -69,18 +76,17 @@ public class AttributeCol52 extends DTColumnConfig52 {
 
     /**
      * Clones this metadata column instance.
-     *
      * @return The cloned instance.
      */
     public AttributeCol52 cloneColumn() {
         AttributeCol52 cloned = new AttributeCol52();
-        cloned.setAttribute(getAttribute());
-        cloned.setReverseOrder(isReverseOrder());
-        cloned.setUseRowNumber(isUseRowNumber());
-        cloned.setWidth(getWidth());
-        cloned.setHideColumn(isHideColumn());
-        cloned.setHeader(getHeader());
-        cloned.setDefaultValue(getDefaultValue() != null ? getDefaultValue().cloneDefaultValueCell() : null );
+        cloned.setAttribute( getAttribute() );
+        cloned.setReverseOrder( isReverseOrder() );
+        cloned.setUseRowNumber( isUseRowNumber() );
+        cloned.setWidth( getWidth() );
+        cloned.setHideColumn( isHideColumn() );
+        cloned.setHeader( getHeader() );
+        cloned.setDefaultValue( getDefaultValue() != null ? getDefaultValue().cloneDefaultValueCell() : null );
         return cloned;
     }
 

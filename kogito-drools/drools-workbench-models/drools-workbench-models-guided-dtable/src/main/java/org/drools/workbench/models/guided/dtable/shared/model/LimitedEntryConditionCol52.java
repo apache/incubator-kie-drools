@@ -35,16 +35,20 @@ public class LimitedEntryConditionCol52 extends ConditionCol52
     public static final String FIELD_VALUE = "value";
 
     @Override
-    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
-        if (otherColumn == null) return null;
+    public List<BaseColumnFieldDiff> diff( BaseColumn otherColumn ) {
+        if ( otherColumn == null ) {
+            return null;
+        }
 
-        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        List<BaseColumnFieldDiff> result = super.diff( otherColumn );
         LimitedEntryConditionCol52 other = (LimitedEntryConditionCol52) otherColumn;
 
         // Field: default value.
-        if ( !isEqualOrNull( this.getValue(),
-                other.getValue() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_VALUE, this.getValueAsString(), other.getValueAsString()));
+        if ( !BaseColumnFieldDiffImpl.isEqualOrNull( this.getValue(),
+                                                     other.getValue() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_VALUE,
+                                                     extractDefaultValue( this.getValue() ),
+                                                     extractDefaultValue( other.getValue() ) ) );
         }
 
         return result;
@@ -56,11 +60,6 @@ public class LimitedEntryConditionCol52 extends ConditionCol52
 
     public void setValue( DTCellValue52 value ) {
         this.value = value;
-    }
-
-    public String getValueAsString() {
-        if (value != null) return value.getValueAsString();
-        return "";
     }
 
 }

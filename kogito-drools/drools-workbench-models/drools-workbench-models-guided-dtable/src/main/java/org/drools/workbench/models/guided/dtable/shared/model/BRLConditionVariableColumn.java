@@ -56,22 +56,28 @@ public class BRLConditionVariableColumn extends ConditionCol52
     }
 
     @Override
-    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
-        if (otherColumn == null) return null;
+    public List<BaseColumnFieldDiff> diff( BaseColumn otherColumn ) {
+        if ( otherColumn == null ) {
+            return null;
+        }
 
-        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        List<BaseColumnFieldDiff> result = super.diff( otherColumn );
         BRLConditionVariableColumn other = (BRLConditionVariableColumn) otherColumn;
 
         // Field: varName.
         if ( !isEqualOrNull( this.getVarName(),
-                other.getVarName() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_VAR_NAME, this.getVarName(), other.getVarName()));
+                             other.getVarName() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_VAR_NAME,
+                                                     this.getVarName(),
+                                                     other.getVarName() ) );
         }
 
         // Field: factType.
         if ( !isEqualOrNull( this.getFactType(),
-                other.getFactType() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_FACT_TYPE, this.getFactType(), other.getFactType()));
+                             other.getFactType() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_FACT_TYPE,
+                                                     this.getFactType(),
+                                                     other.getFactType() ) );
         }
 
         return result;

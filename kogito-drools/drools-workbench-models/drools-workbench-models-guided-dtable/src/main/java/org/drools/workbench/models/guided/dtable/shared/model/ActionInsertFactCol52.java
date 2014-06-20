@@ -31,7 +31,6 @@ public class ActionInsertFactCol52 extends ActionCol52 {
     public static final String FIELD_VALUE_LIST = "valueList";
     public static final String FIELD_IS_INSERT_LOGICAL = "isInsertLogical";
 
-
     /**
      * The fact type (class) that is to be created. eg Driver, Purchase, Cheese.
      */
@@ -66,46 +65,60 @@ public class ActionInsertFactCol52 extends ActionCol52 {
     private boolean isInsertLogical = false;
 
     @Override
-    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
-        if (otherColumn == null) return null;
+    public List<BaseColumnFieldDiff> diff( BaseColumn otherColumn ) {
+        if ( otherColumn == null ) {
+            return null;
+        }
 
-        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        List<BaseColumnFieldDiff> result = super.diff( otherColumn );
 
         ActionInsertFactCol52 other = (ActionInsertFactCol52) otherColumn;
 
         // Field: fact type.
         if ( !isEqualOrNull( this.getFactType(),
-                other.getFactType() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_FACT_TYPE, this.getFactType(), other.getFactType()));
+                             other.getFactType() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_FACT_TYPE,
+                                                     this.getFactType(),
+                                                     other.getFactType() ) );
         }
 
         // Field: bundle name.
         if ( !isEqualOrNull( this.getBoundName(),
-                other.getBoundName() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_BOUND_NAME, this.getBoundName(), other.getBoundName()));
+                             other.getBoundName() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_BOUND_NAME,
+                                                     this.getBoundName(),
+                                                     other.getBoundName() ) );
         }
 
         // Field: fact field.
         if ( !isEqualOrNull( this.getFactField(),
-                other.getFactField() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_FACT_FIELD, this.getFactField(), other.getFactField()));
+                             other.getFactField() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_FACT_FIELD,
+                                                     this.getFactField(),
+                                                     other.getFactField() ) );
         }
 
         // Field: type.
         if ( !isEqualOrNull( this.getType(),
-                other.getType() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_TYPE, this.getType(), other.getType()));
+                             other.getType() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_TYPE,
+                                                     this.getType(),
+                                                     other.getType() ) );
         }
 
         // Field: value list.
         if ( !isEqualOrNull( this.getValueList(),
-                other.getValueList() ) ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_VALUE_LIST, this.getValueList(), other.getValueList()));
+                             other.getValueList() ) ) {
+            result.add( new BaseColumnFieldDiffImpl( FIELD_VALUE_LIST,
+                                                     this.getValueList(),
+                                                     other.getValueList() ) );
         }
 
         // Field: isInsertLogical.
         if ( this.isInsertLogical() != other.isInsertLogical() ) {
-            result.add(new BaseColumnFieldDiffImpl(FIELD_IS_INSERT_LOGICAL, this.isInsertLogical(), other.isInsertLogical()));
+            result.add( new BaseColumnFieldDiffImpl( FIELD_IS_INSERT_LOGICAL,
+                                                     this.isInsertLogical(),
+                                                     other.isInsertLogical() ) );
         }
 
         return result;
