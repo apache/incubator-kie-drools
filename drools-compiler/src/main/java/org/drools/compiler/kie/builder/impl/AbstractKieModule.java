@@ -14,6 +14,7 @@ import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
+import org.drools.core.util.Drools;
 import org.drools.core.util.StringUtils;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
@@ -305,6 +306,15 @@ public abstract class AbstractKieModule
                 ExtensionRegistry registry = KieModuleCacheHelper.buildRegistry();
                 try {
                     Header _header = KieModuleCacheHelper.readFromStreamWithHeaderPreloaded(new ByteArrayInputStream(fileContents), registry);
+
+                    if (!Drools.isCompatible(_header.getVersion().getVersionMajor(),
+                                             _header.getVersion().getVersionMinor(),
+                                             _header.getVersion().getVersionRevision())) {
+                        // if cache has been built with an incompatible version avoid to use it
+                        log.warn("Compilation cache has been built with an incompatible version, so don't use it");
+                        return null;
+                    }
+
                     KModuleCache _cache = KModuleCache.parseFrom(_header.getPayload());
 
                     cache = new CompilationCache();
