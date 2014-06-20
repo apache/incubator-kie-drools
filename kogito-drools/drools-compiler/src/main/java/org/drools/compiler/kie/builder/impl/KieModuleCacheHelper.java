@@ -16,6 +16,13 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import com.google.protobuf.ByteString;
+import com.google.protobuf.ExtensionRegistry;
+import com.google.protobuf.Message;
+import org.drools.compiler.kie.builder.impl.KieModuleCache.Header;
+import org.drools.core.util.Drools;
+import org.drools.core.util.KeyStoreHelper;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,13 +32,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 
-import org.drools.compiler.kie.builder.impl.KieModuleCache.Header;
-import org.drools.core.util.KeyStoreHelper;
-
-import com.google.protobuf.ByteString;
-import com.google.protobuf.ExtensionRegistry;
-import com.google.protobuf.Message;
-
 public class KieModuleCacheHelper {
     
     public static void writeToStreamWithHeader( OutputStream stream,
@@ -39,9 +39,9 @@ public class KieModuleCacheHelper {
         KieModuleCache.Header.Builder _header = KieModuleCache.Header.newBuilder();
         // need to automate this version numbering somehow
         _header.setVersion( KieModuleCache.Version.newBuilder()
-                            .setVersionMajor( 6 )
-                            .setVersionMinor( 0 )
-                            .setVersionRevision( 0 )
+                            .setVersionMajor( Drools.getMajorVersion() )
+                            .setVersionMinor( Drools.getMinorVersion() )
+                            .setVersionRevision( Drools.getRevisionVersion() )
                             .build() );
         
         byte[] buff = payload.toByteArray();
