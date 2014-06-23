@@ -147,7 +147,7 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
                         "new org.jbpm.process.core.timer.impl.RegisteredTimerServiceDelegate(\""+timerServiceId+"\")");
                 
                 if (!schedulerService.isTransactional()) {
-                    schedulerService.setInterceptor(new TransactionAwareSchedulerServiceInterceptor(environment, schedulerService));
+                    schedulerService.setInterceptor(new TransactionAwareSchedulerServiceInterceptor(environment, manager, schedulerService));
                 }
             }
         }

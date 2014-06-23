@@ -92,7 +92,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     	}
         local.set(null);
         try {
-            if (canDestroy()) {
+            if (canDestroy(runtime)) {
                 runtime.getKieSession().destroy();
             } else {
                 if (runtime instanceof Disposable) {

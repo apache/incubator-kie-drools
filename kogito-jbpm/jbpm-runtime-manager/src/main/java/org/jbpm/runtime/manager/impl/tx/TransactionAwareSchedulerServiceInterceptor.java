@@ -16,15 +16,23 @@
 
 package org.jbpm.runtime.manager.impl.tx;
 
+import org.drools.core.time.JobContext;
+import org.drools.core.time.SelfRemovalJobContext;
 import org.drools.core.time.impl.TimerJobInstance;
 import org.drools.persistence.OrderedTransactionSynchronization;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionManagerHelper;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
+import org.jbpm.process.core.timer.NamedJobContext;
 import org.jbpm.process.core.timer.impl.DelegateSchedulerServiceInterceptor;
+import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
+import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 /**
  * Transaction aware scheduler service interceptor that will delay actual scheduling of the
@@ -39,10 +47,12 @@ import org.kie.api.runtime.manager.RuntimeEnvironment;
 public class TransactionAwareSchedulerServiceInterceptor extends DelegateSchedulerServiceInterceptor {
 
 	private RuntimeEnvironment environment;
+	private RuntimeManager manager;
 	
-    public TransactionAwareSchedulerServiceInterceptor(RuntimeEnvironment environment, GlobalSchedulerService schedulerService) {
+    public TransactionAwareSchedulerServiceInterceptor(RuntimeEnvironment environment, RuntimeManager manager, GlobalSchedulerService schedulerService) {
         super(schedulerService);
         this.environment = environment;
+        this.manager = manager;
     }
 
     @Override
@@ -51,7 +61,8 @@ public class TransactionAwareSchedulerServiceInterceptor extends DelegateSchedul
     		super.internalSchedule(timerJobInstance);
     		return;
     	}
-        TransactionManager tm = getTransactionManager();
+    	
+        TransactionManager tm = getTransactionManager(timerJobInstance.getJobContext());
         if (tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
                 && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
                 && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
@@ -108,12 +119,45 @@ public class TransactionAwareSchedulerServiceInterceptor extends DelegateSchedul
     	return value.equals(envEntry);
     }
     
-    protected TransactionManager getTransactionManager() {
-    	Object txm = environment.getEnvironment().get(EnvironmentName.TRANSACTION_MANAGER);
+    protected TransactionManager getTransactionManager(JobContext jobContext) {
+    	
+    	Object txm = getEnvironment(jobContext).get(EnvironmentName.TRANSACTION_MANAGER);
     	if (txm != null && txm instanceof TransactionManager) {
     		return (TransactionManager) txm;
     	}
     	
     	return new JtaTransactionManager(null, null, null);
+    }
+    
+    protected Environment getEnvironment(JobContext jobContext) {
+    	JobContext ctxorig = jobContext;
+        if (ctxorig instanceof SelfRemovalJobContext) {
+            ctxorig = ((SelfRemovalJobContext) ctxorig).getJobContext();
+        }
+    	// first attempt to get knowledge runtime's environment if job context is a process one
+    	if (ctxorig instanceof ProcessJobContext) {
+    		return ((ProcessJobContext) ctxorig).getKnowledgeRuntime().getEnvironment();
+    	} else {
+    		// next if we have manager set use it to get ksession's environment of active RuntimeEngine
+    		// while running this there must be an active RuntimeEngine present
+	    	if (manager != null) {
+	    		RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(getProcessInstancId(ctxorig)));
+	    		return engine.getKieSession().getEnvironment();
+	    	} else {
+	    		// last resort use the runtime environment's environment template
+	    		return environment.getEnvironment();
+	    	}
+    	}
+    }
+    
+    protected Long getProcessInstancId(JobContext jobContext) {
+        
+        if (jobContext instanceof ProcessJobContext) {
+            return ((ProcessJobContext) jobContext).getProcessInstanceId();
+        } else if(jobContext instanceof NamedJobContext){
+        	return ((NamedJobContext)jobContext).getProcessInstanceId();
+        } else {
+            return null; 
+        }
     }
 }

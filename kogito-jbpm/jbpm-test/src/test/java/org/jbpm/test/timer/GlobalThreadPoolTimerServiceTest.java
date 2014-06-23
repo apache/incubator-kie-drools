@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jbpm.process.core.timer.impl.ThreadPoolSchedulerService;
-import org.jbpm.test.timer.TimerBaseTest.TestRegisterableItemsFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -33,6 +33,7 @@ import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManager;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -128,7 +129,7 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     		return;
     	}
         // register it if there is an active transaction as we assume then to be running in a managed environment e.g CMT       
-        TransactionManager tm = getTransactionManager();
+        TransactionManager tm = getTransactionManager(runtime.getKieSession().getEnvironment());
         if (tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
                 && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
                 && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
@@ -199,11 +200,11 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     }
     
 
-    protected boolean canDestroy() {
+    protected boolean canDestroy(RuntimeEngine runtime) {
     	if (hasEnvironmentEntry("IS_JTA_TRANSACTION", false)) {
     		return false;
     	}
-        TransactionManager tm = getTransactionManager();
+        TransactionManager tm = getTransactionManager(runtime.getKieSession().getEnvironment());
         if (tm.getStatus() == JtaTransactionManager.STATUS_NO_TRANSACTION ||
                 tm.getStatus() == JtaTransactionManager.STATUS_ACTIVE) {
             return true;
@@ -219,8 +220,11 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     	return value.equals(envEntry);
     }
     
-    protected TransactionManager getTransactionManager() {
-    	Object txm = environment.getEnvironment().get(EnvironmentName.TRANSACTION_MANAGER);
+    protected TransactionManager getTransactionManager(Environment env) {
+    	if (env == null) {
+    		env = environment.getEnvironment();
+    	}
+    	Object txm = env.get(EnvironmentName.TRANSACTION_MANAGER);
     	if (txm != null && txm instanceof TransactionManager) {
     		return (TransactionManager) txm;
     	}
