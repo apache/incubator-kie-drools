@@ -351,6 +351,32 @@ public class EntityDescriptor {
         return variableDescriptor;
     }
 
+    public String buildInvalidVariableNameExceptionMessage(String variableName) {
+        if (!hasProperty(variableName)) {
+            String exceptionMessage = "The variableName (" + variableName
+                    + ") for entityClass (" + entityClass
+                    + ") does not exists as a property (getter/setter) on that class.\n"
+                    + "Check the spelling of the variableName (" + variableName + ").";
+            if (variableName.length() >= 2
+                    && !Character.isUpperCase(variableName.charAt(0))
+                    && Character.isUpperCase(variableName.charAt(1))) {
+                String correctedVariableName = variableName.substring(0, 1).toUpperCase()
+                        + variableName.substring(1);
+                exceptionMessage += " It probably needs to be correctedVariableName ("
+                        + correctedVariableName + ") instead because the JavaBeans spec states" +
+                        " the first letter should be a upper case if the second is upper case.";
+            }
+            return exceptionMessage;
+        }
+        return "The variableName (" + variableName
+                + ") for entityClass (" + entityClass
+                + ") exists as a property (getter/setter) on that class,"
+                + " but not as an annotated as a planning variable.\n"
+                + "Check if your planning entity's getter has the annotation "
+                + PlanningVariable.class.getSimpleName() + " (or a shadow variable annotation).";
+
+    }
+
     // ************************************************************************
     // Extraction methods
     // ************************************************************************

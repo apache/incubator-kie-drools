@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
@@ -96,20 +97,11 @@ public abstract class SelectorConfig {
         if (variableName != null) {
             variableDescriptor = entityDescriptor.getGenuineVariableDescriptor(variableName);
             if (variableDescriptor == null) {
-                if (!entityDescriptor.hasProperty(variableName)) {
-                    throw new IllegalArgumentException("The selectorConfig (" + this
-                            + ") has a variableName (" + variableName
-                            + ") for entityClass (" + entityDescriptor.getEntityClass()
-                            + ") that does not have that as a getter.\n"
-                            + "Check the spelling of the variableName (" + variableName + ").");
-                } else {
-                    throw new IllegalArgumentException("The selectorConfig (" + this
-                            + ") has a variableName (" + variableName
-                            + ") for entityClass (" + entityDescriptor.getEntityClass()
-                            + ") that is not annotated as a planning variable.\n"
-                            + "Check if your planning entity's getter has the annotation "
-                            + PlanningVariable.class.getSimpleName() + ".");
-                }
+                throw new IllegalArgumentException("The selectorConfig (" + this
+                        + ") has a variableName (" + variableName
+                        + ") which is not a valid planning variable on entityClass ("
+                        + entityDescriptor.getEntityClass() + ").\n"
+                        + entityDescriptor.buildInvalidVariableNameExceptionMessage(variableName));
             }
         } else {
             Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor

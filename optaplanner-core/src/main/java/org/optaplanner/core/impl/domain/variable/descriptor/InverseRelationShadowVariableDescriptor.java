@@ -63,7 +63,8 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
                     + " annotated property (" + variablePropertyAccessor.getName()
                     + ") with sourceVariableName (" + sourceVariableName
                     + ") which is not a valid planning variable on entityClass ("
-                    + sourceEntityDescriptor.getEntityClass() + ").");
+                    + sourceEntityDescriptor.getEntityClass() + ").\n"
+                    + entityDescriptor.buildInvalidVariableNameExceptionMessage(sourceVariableName));
         }
         if (!sourceVariableDescriptor.isChained()) {
             // TODO support for non-chained variables too

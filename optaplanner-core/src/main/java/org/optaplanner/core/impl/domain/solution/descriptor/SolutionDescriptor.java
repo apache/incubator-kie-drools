@@ -35,6 +35,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.cloner.PlanningCloneable;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
@@ -298,9 +299,27 @@ public class SolutionDescriptor {
         return entityDescriptor.getGenuineVariableDescriptor(variableName);
     }
 
+    public GenuineVariableDescriptor findGenuineVariableDescriptorOrFail(Object entity, String variableName) {
+        EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getGenuineVariableDescriptor(variableName);
+        if (variableDescriptor == null) {
+            throw new IllegalArgumentException(entityDescriptor.buildInvalidVariableNameExceptionMessage(variableName));
+        }
+        return variableDescriptor;
+    }
+
     public VariableDescriptor findVariableDescriptor(Object entity, String variableName) {
         EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
         return entityDescriptor.getVariableDescriptor(variableName);
+    }
+
+    public VariableDescriptor findVariableDescriptorOrFail(Object entity, String variableName) {
+        EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+        VariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor(variableName);
+        if (variableDescriptor == null) {
+            throw new IllegalArgumentException(entityDescriptor.buildInvalidVariableNameExceptionMessage(variableName));
+        }
+        return variableDescriptor;
     }
 
     // ************************************************************************

@@ -83,7 +83,8 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
                         + " annotated property (" + variablePropertyAccessor.getName()
                         + ") with sourceVariableName (" + sourceVariableName
                         + ") which is not a valid planning variable on entityClass ("
-                        + sourceEntityDescriptor.getEntityClass() + ").");
+                        + sourceEntityDescriptor.getEntityClass() + ").\n"
+                        + entityDescriptor.buildInvalidVariableNameExceptionMessage(sourceVariableName));
             }
             sourceVariableDescriptor.registerShadowVariableDescriptor(this);
         }

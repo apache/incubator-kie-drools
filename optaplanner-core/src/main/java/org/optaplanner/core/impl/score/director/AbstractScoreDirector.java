@@ -28,6 +28,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListenerSupport;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.common.TrailingEntityMapSupport;
@@ -197,10 +198,10 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public final void beforeVariableChanged(Object entity, String variableName) {
-        GenuineVariableDescriptor variableDescriptor = getSolutionDescriptor()
-                .findGenuineVariableDescriptor(entity, variableName);
-        if (variableDescriptor != null) {
-            beforeVariableChanged(variableDescriptor, entity);
+        VariableDescriptor variableDescriptor = getSolutionDescriptor()
+                .findVariableDescriptorOrFail(entity, variableName);
+        if (variableDescriptor instanceof GenuineVariableDescriptor) {
+            beforeVariableChanged((GenuineVariableDescriptor) variableDescriptor, entity); // TODO
         } else {
             // Shadow variable (either a mappedBy or a not registered shadow variable)
             beforeShadowVariableChanged(entity, variableName);
@@ -208,10 +209,10 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public final void afterVariableChanged(Object entity, String variableName) {
-        GenuineVariableDescriptor variableDescriptor = getSolutionDescriptor()
-                .findGenuineVariableDescriptor(entity, variableName);
-        if (variableDescriptor != null) {
-            afterVariableChanged(variableDescriptor, entity);
+        VariableDescriptor variableDescriptor = getSolutionDescriptor()
+                .findVariableDescriptorOrFail(entity, variableName);
+        if (variableDescriptor instanceof GenuineVariableDescriptor) {
+            afterVariableChanged((GenuineVariableDescriptor) variableDescriptor, entity); // TODO
         } else {
             // Shadow variable (either a mappedBy or a not registered shadow variable)
             afterShadowVariableChanged(entity, variableName);
