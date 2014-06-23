@@ -15,6 +15,13 @@ package org.drools.workbench.models.commons.backend.rule;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.MethodInfo;
@@ -58,16 +65,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class RuleModelDRLPersistenceUnmarshallingTest {
 
@@ -4914,6 +4913,71 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       sfp1.getConstraintValueType() );
         assertEquals( DataType.TYPE_NUMERIC_INTEGER,
                       sfp1.getFieldType() );
+    }
+
+    @Test
+    public void testMethodCallWithTwoParametersIntegerAndString() throws Exception {
+        String drl = "package org.mortgages;\n" +
+                "rule \"test\"\n" +
+                " dialect \"mvel\"\n" +
+                " when\n" +
+                "  $t : TestClass()\n" +
+                " then\n" +
+                "  $t.testFunction( 123, \"hello\" );\n" +
+                "end";
+
+        final HashMap<String, List<MethodInfo>> map = new HashMap<String, List<MethodInfo>>();
+        final ArrayList<MethodInfo> methodInfos = new ArrayList<MethodInfo>();
+        final ArrayList<String> params = new ArrayList<String>();
+        params.add( "Integer" );
+        params.add( "String" );
+        methodInfos.add( new MethodInfo( "testFunction",
+                                         params,
+                                         "java.lang.Void",
+                                         null,
+                                         "TestClass" ) );
+        map.put( "TestClass",
+                 methodInfos );
+
+        when( dmo.getProjectMethodInformation() ).thenReturn( map );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+
+        assertEquals( 1,
+                      m.rhs.length );
+
+        ActionCallMethod actionCallMethod = (ActionCallMethod) m.rhs[ 0 ];
+        assertEquals( "testFunction",
+                      actionCallMethod.getMethodName() );
+        assertEquals( "$t",
+                      actionCallMethod.getVariable() );
+        assertEquals( 2,
+                      actionCallMethod.getFieldValues().length );
+
+        assertEquals( "testFunction",
+                      actionCallMethod.getFieldValue( 0 ).getField() );
+        assertEquals( "123",
+                      actionCallMethod.getFieldValue( 0 ).getValue() );
+        assertEquals( FieldNatureType.TYPE_LITERAL,
+                      actionCallMethod.getFieldValue( 0 ).getNature() );
+        assertEquals( "Integer",
+                      actionCallMethod.getFieldValue( 0 ).getType() );
+
+        assertEquals( "testFunction",
+                      actionCallMethod.getFieldValue( 1 ).getField() );
+        assertEquals( "hello",
+                      actionCallMethod.getFieldValue( 1 ).getValue() );
+        assertEquals( FieldNatureType.TYPE_LITERAL,
+                      actionCallMethod.getFieldValue( 1 ).getNature() );
+        assertEquals( "String",
+                      actionCallMethod.getFieldValue( 1 ).getType() );
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
