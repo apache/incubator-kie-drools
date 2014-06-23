@@ -21,6 +21,7 @@ public class ActionCallMethodBuilder {
     private String methodName;
     private String variable;
     private String[] parameters;
+    private int index;
 
     public ActionCallMethodBuilder( RuleModel model,
                                     PackageDataModelOracle dmo,
@@ -35,7 +36,6 @@ public class ActionCallMethodBuilder {
     public ActionCallMethod get( String variable,
                                  String methodName,
                                  String[] parameters ) {
-
         this.variable = variable;
         this.methodName = methodName;
         this.parameters = parameters;
@@ -43,7 +43,7 @@ public class ActionCallMethodBuilder {
         ActionCallMethod actionCallMethod = new ActionCallMethod();
         actionCallMethod.setMethodName( methodName );
         actionCallMethod.setVariable( variable );
-        actionCallMethod.setState( 1 );
+        actionCallMethod.setState( ActionCallMethod.TYPE_DEFINED );
 
         for ( ActionFieldFunction parameter : getActionFieldFunctions() ) {
             actionCallMethod.addFieldValue( parameter );
@@ -56,7 +56,7 @@ public class ActionCallMethodBuilder {
 
         List<ActionFieldFunction> actionFieldFunctions = new ArrayList<ActionFieldFunction>();
 
-        int index = 0;
+        this.index = 0;
         for ( String param : parameters ) {
             param = param.trim();
             if ( param.length() == 0 ) {
@@ -64,8 +64,7 @@ public class ActionCallMethodBuilder {
             }
 
             actionFieldFunctions.add( getActionFieldFunction( param,
-                                                              getDataType( param,
-                                                                           index ) ) );
+                                                              getDataType( param ) ) );
         }
         return actionFieldFunctions;
     }
@@ -98,8 +97,7 @@ public class ActionCallMethodBuilder {
         return actionFiled;
     }
 
-    private String getDataType( String param,
-                                int index ) {
+    private String getDataType( String param ) {
         String dataType;
 
         MethodInfo methodInfo = getMethodInfo();
