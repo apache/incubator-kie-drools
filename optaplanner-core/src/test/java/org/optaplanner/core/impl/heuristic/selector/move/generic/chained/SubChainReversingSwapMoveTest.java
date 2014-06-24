@@ -62,16 +62,16 @@ public class SubChainReversingSwapMoveTest {
         SelectorTestUtils.assertChain(a0, a1, a2, b3, b2);
         SelectorTestUtils.assertChain(b0, b1, a5, a4, a3);
 
-        verify(scoreDirector).beforeVariableChanged(a3, "chainedObject");
-        verify(scoreDirector).afterVariableChanged(a3, "chainedObject");
-        verify(scoreDirector).beforeVariableChanged(a4, "chainedObject");
-        verify(scoreDirector).afterVariableChanged(a4, "chainedObject");
-        verify(scoreDirector).beforeVariableChanged(a5, "chainedObject");
-        verify(scoreDirector).afterVariableChanged(a5, "chainedObject");
-        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(b2, "chainedObject");
-        verify(scoreDirector, atLeastOnce()).afterVariableChanged(b2, "chainedObject");
-        verify(scoreDirector).beforeVariableChanged(b3, "chainedObject");
-        verify(scoreDirector).afterVariableChanged(b3, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a3);
+        verify(scoreDirector).afterVariableChanged(variableDescriptor, a3);
+        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a4);
+        verify(scoreDirector).afterVariableChanged(variableDescriptor, a4);
+        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a5);
+        verify(scoreDirector).afterVariableChanged(variableDescriptor, a5);
+        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(variableDescriptor, b2);
+        verify(scoreDirector, atLeastOnce()).afterVariableChanged(variableDescriptor, b2);
+        verify(scoreDirector).beforeVariableChanged(variableDescriptor, b3);
+        verify(scoreDirector).afterVariableChanged(variableDescriptor, b3);
 
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5);
@@ -104,16 +104,16 @@ public class SubChainReversingSwapMoveTest {
 
         SelectorTestUtils.assertChain(a0, a1, a2, a7, a6, a5, a4, a3);
 
-        verify(scoreDirector).beforeVariableChanged(a3, "chainedObject");
-        verify(scoreDirector).afterVariableChanged(a3, "chainedObject");
-        verify(scoreDirector).beforeVariableChanged(a4, "chainedObject");
-        verify(scoreDirector).afterVariableChanged(a4, "chainedObject");
-        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(a5, "chainedObject");
-        verify(scoreDirector, atLeastOnce()).afterVariableChanged(a5, "chainedObject");
-        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(a6, "chainedObject");
-        verify(scoreDirector, atLeastOnce()).afterVariableChanged(a6, "chainedObject");
-        verify(scoreDirector).beforeVariableChanged(a7, "chainedObject");
-        verify(scoreDirector).afterVariableChanged(a7, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a3);
+        verify(scoreDirector).afterVariableChanged(variableDescriptor, a3);
+        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a4);
+        verify(scoreDirector).afterVariableChanged(variableDescriptor, a4);
+        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(variableDescriptor, a5);
+        verify(scoreDirector, atLeastOnce()).afterVariableChanged(variableDescriptor, a5);
+        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(variableDescriptor, a6);
+        verify(scoreDirector, atLeastOnce()).afterVariableChanged(variableDescriptor, a6);
+        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a7);
+        verify(scoreDirector).afterVariableChanged(variableDescriptor, a7);
 
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6, a7);
@@ -149,20 +149,20 @@ public class SubChainReversingSwapMoveTest {
         SelectorTestUtils.assertChain(a0, a1, b2, b1, a5);
         SelectorTestUtils.assertChain(b0, a4, a3, a2, b3);
 
-        verify(scoreDirector).beforeVariableChanged(a2, "chainedObject");
-        verify(scoreDirector).afterVariableChanged(a2, "chainedObject");
-        verify(scoreDirector).beforeVariableChanged(a3, "chainedObject");
-        verify(scoreDirector).afterVariableChanged(a3, "chainedObject");
-        verify(scoreDirector).beforeVariableChanged(a4, "chainedObject");
-        verify(scoreDirector).afterVariableChanged(a4, "chainedObject");
-        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(a5, "chainedObject");
-        verify(scoreDirector, atLeastOnce()).afterVariableChanged(a5, "chainedObject");
-        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(b1, "chainedObject");
-        verify(scoreDirector, atLeastOnce()).afterVariableChanged(b1, "chainedObject");
-        verify(scoreDirector).beforeVariableChanged(b2, "chainedObject");
-        verify(scoreDirector).afterVariableChanged(b2, "chainedObject");
-        verify(scoreDirector).beforeVariableChanged(b3, "chainedObject");
-        verify(scoreDirector).afterVariableChanged(b3, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a2);
+        verify(scoreDirector).afterVariableChanged(variableDescriptor, a2);
+        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a3);
+        verify(scoreDirector).afterVariableChanged(variableDescriptor, a3);
+        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a4);
+        verify(scoreDirector).afterVariableChanged(variableDescriptor, a4);
+        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(variableDescriptor, a5);
+        verify(scoreDirector, atLeastOnce()).afterVariableChanged(variableDescriptor, a5);
+        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(variableDescriptor, b1);
+        verify(scoreDirector, atLeastOnce()).afterVariableChanged(variableDescriptor, b1);
+        verify(scoreDirector).beforeVariableChanged(variableDescriptor, b2);
+        verify(scoreDirector).afterVariableChanged(variableDescriptor, b2);
+        verify(scoreDirector).beforeVariableChanged(variableDescriptor, b3);
+        verify(scoreDirector).afterVariableChanged(variableDescriptor, b3);
 
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5);
@@ -195,18 +195,18 @@ public class SubChainReversingSwapMoveTest {
 
         SelectorTestUtils.assertChain(a0, a1, a6, a5, a4, a3, a2, a7);
 
-        verify(scoreDirector).beforeVariableChanged(a2, "chainedObject");
-        verify(scoreDirector).afterVariableChanged(a2, "chainedObject");
-        verify(scoreDirector).beforeVariableChanged(a3, "chainedObject");
-        verify(scoreDirector).afterVariableChanged(a3, "chainedObject");
-        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(a4, "chainedObject");
-        verify(scoreDirector, atLeastOnce()).afterVariableChanged(a4, "chainedObject");
-        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(a5, "chainedObject");
-        verify(scoreDirector, atLeastOnce()).afterVariableChanged(a5, "chainedObject");
-        verify(scoreDirector).beforeVariableChanged(a6, "chainedObject");
-        verify(scoreDirector).afterVariableChanged(a6, "chainedObject");
-        verify(scoreDirector).beforeVariableChanged(a7, "chainedObject");
-        verify(scoreDirector).afterVariableChanged(a7, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a2);
+        verify(scoreDirector).afterVariableChanged(variableDescriptor, a2);
+        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a3);
+        verify(scoreDirector).afterVariableChanged(variableDescriptor, a3);
+        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(variableDescriptor, a4);
+        verify(scoreDirector, atLeastOnce()).afterVariableChanged(variableDescriptor, a4);
+        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(variableDescriptor, a5);
+        verify(scoreDirector, atLeastOnce()).afterVariableChanged(variableDescriptor, a5);
+        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a6);
+        verify(scoreDirector).afterVariableChanged(variableDescriptor, a6);
+        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a7);
+        verify(scoreDirector).afterVariableChanged(variableDescriptor, a7);
 
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6, a7);
@@ -238,18 +238,18 @@ public class SubChainReversingSwapMoveTest {
 
         SelectorTestUtils.assertChain(a0, a1, a6, a5, a4, a3, a2, a7);
 
-        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(a2, "chainedObject");
-        verify(scoreDirector, atLeastOnce()).afterVariableChanged(a2, "chainedObject");
-        verify(scoreDirector).beforeVariableChanged(a3, "chainedObject");
-        verify(scoreDirector).afterVariableChanged(a3, "chainedObject");
-        verify(scoreDirector).beforeVariableChanged(a4, "chainedObject");
-        verify(scoreDirector).afterVariableChanged(a4, "chainedObject");
-        verify(scoreDirector).beforeVariableChanged(a5, "chainedObject");
-        verify(scoreDirector).afterVariableChanged(a5, "chainedObject");
-        verify(scoreDirector).beforeVariableChanged(a6, "chainedObject");
-        verify(scoreDirector).afterVariableChanged(a6, "chainedObject");
-        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(a7, "chainedObject");
-        verify(scoreDirector, atLeastOnce()).afterVariableChanged(a7, "chainedObject");
+        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(variableDescriptor, a2);
+        verify(scoreDirector, atLeastOnce()).afterVariableChanged(variableDescriptor, a2);
+        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a3);
+        verify(scoreDirector).afterVariableChanged(variableDescriptor, a3);
+        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a4);
+        verify(scoreDirector).afterVariableChanged(variableDescriptor, a4);
+        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a5);
+        verify(scoreDirector).afterVariableChanged(variableDescriptor, a5);
+        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a6);
+        verify(scoreDirector).afterVariableChanged(variableDescriptor, a6);
+        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(variableDescriptor, a7);
+        verify(scoreDirector, atLeastOnce()).afterVariableChanged(variableDescriptor, a7);
 
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6, a7);

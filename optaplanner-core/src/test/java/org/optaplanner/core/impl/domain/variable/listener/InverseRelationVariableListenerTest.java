@@ -22,6 +22,7 @@ import java.util.List;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.mappedby.TestdataMappedByChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.mappedby.TestdataMappedByChainedEntity;
@@ -36,9 +37,11 @@ public class InverseRelationVariableListenerTest {
     @Test
     public void chained() {
         SolutionDescriptor solutionDescriptor = TestdataMappedByChainedSolution.buildSolutionDescriptor();
+        ShadowVariableDescriptor nextEntityVariableDescriptor
+                = solutionDescriptor.findEntityDescriptorOrFail(TestdataMappedByChainedObject.class)
+                .getShadowVariableDescriptor("nextEntity");
         InverseRelationVariableListener variableListener = new InverseRelationVariableListener(
-                solutionDescriptor.findEntityDescriptorOrFail(TestdataMappedByChainedObject.class)
-                        .getShadowVariableDescriptor("nextEntity"),
+                nextEntityVariableDescriptor,
                 solutionDescriptor.findEntityDescriptorOrFail(TestdataMappedByChainedEntity.class)
                         .getGenuineVariableDescriptor("chainedObject"));
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
@@ -69,8 +72,8 @@ public class InverseRelationVariableListenerTest {
         assertEquals(a3, b1.getNextEntity());
 
         InOrder inOrder = inOrder(scoreDirector);
-        inOrder.verify(scoreDirector).beforeVariableChanged(b1, "nextEntity");
-        inOrder.verify(scoreDirector).afterVariableChanged(b1, "nextEntity");
+        inOrder.verify(scoreDirector).beforeVariableChanged(nextEntityVariableDescriptor, b1);
+        inOrder.verify(scoreDirector).afterVariableChanged(nextEntityVariableDescriptor, b1);
         inOrder.verifyNoMoreInteractions();
     }
 
