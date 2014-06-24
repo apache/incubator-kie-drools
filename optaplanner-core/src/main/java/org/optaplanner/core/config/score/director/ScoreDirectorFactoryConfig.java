@@ -40,6 +40,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.config.util.KeyAsElementMapConverter;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.bendablebigdecimal.BendableBigDecimalScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
@@ -239,6 +240,7 @@ public class ScoreDirectorFactoryConfig {
 
     public ScoreDefinition buildScoreDefinition() {
         if (scoreDefinitionType != ScoreDefinitionType.BENDABLE
+                && scoreDefinitionType != ScoreDefinitionType.BENDABLE_BIG_DECIMAL
                 && (bendableHardLevelsSize != null || bendableSoftLevelsSize != null)) {
             throw new IllegalArgumentException("With scoreDefinitionType (" + scoreDefinitionType
                     + ") there must be no bendableHardLevelsSize (" + bendableHardLevelsSize
@@ -282,6 +284,13 @@ public class ScoreDirectorFactoryConfig {
                                 + ") and a bendableSoftLevelsSize (" + bendableSoftLevelsSize + ").");
                     }
                     return new BendableScoreDefinition(bendableHardLevelsSize, bendableSoftLevelsSize);
+                case BENDABLE_BIG_DECIMAL:
+                    if (bendableHardLevelsSize == null || bendableSoftLevelsSize == null) {
+                        throw new IllegalArgumentException("With scoreDefinitionType (" + scoreDefinitionType
+                                + ") there must be a bendableHardLevelsSize (" + bendableHardLevelsSize
+                                + ") and a bendableSoftLevelsSize (" + bendableSoftLevelsSize + ").");
+                    }
+                    return new BendableBigDecimalScoreDefinition(bendableHardLevelsSize, bendableSoftLevelsSize);
                 default:
                     throw new IllegalStateException("The scoreDefinitionType (" + scoreDefinitionType
                             + ") is not implemented.");
