@@ -200,23 +200,13 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     public final void beforeVariableChanged(Object entity, String variableName) {
         VariableDescriptor variableDescriptor = getSolutionDescriptor()
                 .findVariableDescriptorOrFail(entity, variableName);
-        if (variableDescriptor instanceof GenuineVariableDescriptor) {
-            beforeVariableChanged((GenuineVariableDescriptor) variableDescriptor, entity); // TODO
-        } else {
-            // Shadow variable (either a mappedBy or a not registered shadow variable)
-            beforeShadowVariableChanged(entity, variableName);
-        }
+        beforeVariableChanged(variableDescriptor, entity);
     }
 
     public final void afterVariableChanged(Object entity, String variableName) {
         VariableDescriptor variableDescriptor = getSolutionDescriptor()
                 .findVariableDescriptorOrFail(entity, variableName);
-        if (variableDescriptor instanceof GenuineVariableDescriptor) {
-            afterVariableChanged((GenuineVariableDescriptor) variableDescriptor, entity); // TODO
-        } else {
-            // Shadow variable (either a mappedBy or a not registered shadow variable)
-            afterShadowVariableChanged(entity, variableName);
-        }
+        afterVariableChanged(variableDescriptor, entity);
     }
 
     public final void beforeEntityRemoved(Object entity) {
@@ -239,22 +229,14 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         }
     }
 
-    public void beforeVariableChanged(GenuineVariableDescriptor variableDescriptor, Object entity) {
+    public void beforeVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
         trailingEntityMapSupport.retractFromTrailingEntityMap(variableDescriptor, entity);
         variableListenerSupport.beforeVariableChanged(this, variableDescriptor, entity);
     }
 
-    public void afterVariableChanged(GenuineVariableDescriptor variableDescriptor, Object entity) {
+    public void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
         trailingEntityMapSupport.insertInTrailingEntityMap(variableDescriptor, entity);
         variableListenerSupport.afterVariableChanged(this, variableDescriptor, entity);
-    }
-
-    public void beforeShadowVariableChanged(Object entity, String variableName) {
-        // Hook
-    }
-
-    public void afterShadowVariableChanged(Object entity, String variableName) {
-        // Hook
     }
 
     public void beforeEntityRemoved(EntityDescriptor entityDescriptor, Object entity) {

@@ -22,6 +22,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 
 /**
  * The ScoreDirector holds the {@link Solution workingSolution}
@@ -76,6 +77,12 @@ public interface ScoreDirector {
     void beforeVariableChanged(Object entity, String variableName);
 
     void afterVariableChanged(Object entity, String variableName);
+
+    // TODO VariableDescriptor is not likely to go to public API
+
+    void beforeVariableChanged(VariableDescriptor variableDescriptor, Object entity);
+
+    void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity);
 
     void beforeEntityRemoved(Object entity);
 

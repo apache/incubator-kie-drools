@@ -91,12 +91,12 @@ public class SwapMove implements Move {
             Object oldLeftValue = variableDescriptor.getValue(leftEntity);
             Object oldRightValue = variableDescriptor.getValue(rightEntity);
             if (!ObjectUtils.equals(oldLeftValue, oldRightValue)) {
-                scoreDirector.beforeVariableChanged(leftEntity, variableDescriptor.getVariableName());
+                scoreDirector.beforeVariableChanged(variableDescriptor, leftEntity);
                 variableDescriptor.setValue(leftEntity, oldRightValue);
-                scoreDirector.afterVariableChanged(leftEntity, variableDescriptor.getVariableName());
-                scoreDirector.beforeVariableChanged(rightEntity, variableDescriptor.getVariableName());
+                scoreDirector.afterVariableChanged(variableDescriptor, leftEntity);
+                scoreDirector.beforeVariableChanged(variableDescriptor, rightEntity);
                 variableDescriptor.setValue(rightEntity, oldLeftValue);
-                scoreDirector.afterVariableChanged(rightEntity, variableDescriptor.getVariableName());
+                scoreDirector.afterVariableChanged(variableDescriptor, rightEntity);
             }
         }
     }

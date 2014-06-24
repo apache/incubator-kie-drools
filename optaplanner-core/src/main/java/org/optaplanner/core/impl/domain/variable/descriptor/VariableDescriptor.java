@@ -27,11 +27,13 @@ public abstract class VariableDescriptor {
     protected final EntityDescriptor entityDescriptor;
 
     protected final PropertyAccessor variablePropertyAccessor;
+    protected final String variableName;
 
     public VariableDescriptor(EntityDescriptor entityDescriptor,
             PropertyDescriptor propertyDescriptor) {
         this.entityDescriptor = entityDescriptor;
         variablePropertyAccessor = new ReflectionPropertyAccessor(propertyDescriptor);
+        variableName = variablePropertyAccessor.getName();
     }
 
     // ************************************************************************
@@ -43,7 +45,7 @@ public abstract class VariableDescriptor {
     }
 
     public String getVariableName() {
-        return variablePropertyAccessor.getName();
+        return variableName;
     }
 
     public Class<?> getVariablePropertyType() {
@@ -64,7 +66,7 @@ public abstract class VariableDescriptor {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + variablePropertyAccessor.getName()
+        return getClass().getSimpleName() + "(" + variableName
                 + " of " + entityDescriptor.getEntityClass().getName() + ")";
     }
 

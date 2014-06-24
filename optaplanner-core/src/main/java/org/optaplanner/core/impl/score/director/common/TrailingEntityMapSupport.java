@@ -12,6 +12,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 
 public class TrailingEntityMapSupport {
 
@@ -58,8 +59,10 @@ public class TrailingEntityMapSupport {
         }
     }
 
-    public void insertInTrailingEntityMap(GenuineVariableDescriptor variableDescriptor, Object entity) {
-        if (hasChainedVariables && variableDescriptor.isChained()) {
+    public void insertInTrailingEntityMap(VariableDescriptor variableDescriptor, Object entity) {
+        if (hasChainedVariables
+                && variableDescriptor instanceof GenuineVariableDescriptor
+                && ((GenuineVariableDescriptor) variableDescriptor).isChained()) {
             Map<Object, Set<Object>> valueToTrailingEntityMap = trailingEntitiesMap.get(variableDescriptor);
             if (valueToTrailingEntityMap == null) {
                 throw new IllegalStateException("The ScoreDirector (" + getClass() + ") is bugged,"
@@ -92,8 +95,10 @@ public class TrailingEntityMapSupport {
         }
     }
 
-    public void retractFromTrailingEntityMap(GenuineVariableDescriptor variableDescriptor, Object entity) {
-        if (hasChainedVariables && variableDescriptor.isChained()) {
+    public void retractFromTrailingEntityMap(VariableDescriptor variableDescriptor, Object entity) {
+        if (hasChainedVariables
+                && variableDescriptor instanceof GenuineVariableDescriptor
+                && ((GenuineVariableDescriptor) variableDescriptor).isChained()) {
             Map<Object, Set<Object>> valueToTrailingEntityMap = trailingEntitiesMap.get(variableDescriptor);
             if (valueToTrailingEntityMap == null) {
                 throw new IllegalStateException("The ScoreDirector (" + getClass() + ") is bugged,"

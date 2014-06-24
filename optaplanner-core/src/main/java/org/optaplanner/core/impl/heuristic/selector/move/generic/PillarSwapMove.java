@@ -78,14 +78,14 @@ public class PillarSwapMove implements Move {
             Object oldRightValue = variableDescriptor.getValue(rightPillar.get(0));
             if (!ObjectUtils.equals(oldLeftValue, oldRightValue)) {
                 for (Object leftEntity : leftPillar) {
-                    scoreDirector.beforeVariableChanged(leftEntity, variableDescriptor.getVariableName());
+                    scoreDirector.beforeVariableChanged(variableDescriptor, leftEntity);
                     variableDescriptor.setValue(leftEntity, oldRightValue);
-                    scoreDirector.afterVariableChanged(leftEntity, variableDescriptor.getVariableName());
+                    scoreDirector.afterVariableChanged(variableDescriptor, leftEntity);
                 }
                 for (Object rightEntity : rightPillar) {
-                    scoreDirector.beforeVariableChanged(rightEntity, variableDescriptor.getVariableName());
+                    scoreDirector.beforeVariableChanged(variableDescriptor, rightEntity);
                     variableDescriptor.setValue(rightEntity, oldLeftValue);
-                    scoreDirector.afterVariableChanged(rightEntity, variableDescriptor.getVariableName());
+                    scoreDirector.afterVariableChanged(variableDescriptor, rightEntity);
                 }
             }
         }

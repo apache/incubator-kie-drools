@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.director.incremental;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.api.domain.solution.Solution;
@@ -76,27 +77,15 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
     }
 
     @Override
-    public void beforeVariableChanged(GenuineVariableDescriptor variableDescriptor, Object entity) {
+    public void beforeVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
         incrementalScoreCalculator.beforeVariableChanged(entity, variableDescriptor.getVariableName());
         super.beforeVariableChanged(variableDescriptor, entity);
     }
 
     @Override
-    public void afterVariableChanged(GenuineVariableDescriptor variableDescriptor, Object entity) {
+    public void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
         incrementalScoreCalculator.afterVariableChanged(entity, variableDescriptor.getVariableName());
         super.afterVariableChanged(variableDescriptor, entity);
-    }
-
-    @Override
-    public void beforeShadowVariableChanged(Object entity, String variableName) {
-        incrementalScoreCalculator.beforeVariableChanged(entity, variableName);
-        super.beforeShadowVariableChanged(entity, variableName);
-    }
-
-    @Override
-    public void afterShadowVariableChanged(Object entity, String variableName) {
-        incrementalScoreCalculator.afterVariableChanged(entity, variableName);
-        super.afterShadowVariableChanged(entity, variableName);
     }
 
     @Override

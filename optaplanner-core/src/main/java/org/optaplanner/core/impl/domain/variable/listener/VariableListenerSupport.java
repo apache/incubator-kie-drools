@@ -64,14 +64,14 @@ public class VariableListenerSupport {
         }
     }
 
-    public void beforeVariableChanged(ScoreDirector scoreDirector, GenuineVariableDescriptor variableDescriptor,
+    public void beforeVariableChanged(ScoreDirector scoreDirector, VariableDescriptor variableDescriptor,
             Object entity) {
         for (VariableListener variableListener : variableListenerMap.get(variableDescriptor)) {
             variableListener.beforeVariableChanged(scoreDirector, entity);
         }
     }
 
-    public void afterVariableChanged(ScoreDirector scoreDirector, GenuineVariableDescriptor variableDescriptor,
+    public void afterVariableChanged(ScoreDirector scoreDirector, VariableDescriptor variableDescriptor,
             Object entity) {
         for (VariableListener variableListener : variableListenerMap.get(variableDescriptor)) {
             variableListener.afterVariableChanged(scoreDirector, entity);

@@ -67,9 +67,9 @@ public class InverseRelationVariableListener implements VariableListener<Object>
                         + ") with a value (" + shadowValue + ") which is not null.\n"
                         + "Verify the consistency of your input problem for that sourceVariableName variable.");
             }
-            scoreDirector.beforeVariableChanged(shadowEntity, shadowVariableDescriptor.getVariableName());
+            scoreDirector.beforeVariableChanged(shadowVariableDescriptor, shadowEntity);
             shadowVariableDescriptor.setValue(shadowEntity, entity);
-            scoreDirector.afterVariableChanged(shadowEntity, shadowVariableDescriptor.getVariableName());
+            scoreDirector.afterVariableChanged(shadowVariableDescriptor, shadowEntity);
         }
     }
 
@@ -85,9 +85,9 @@ public class InverseRelationVariableListener implements VariableListener<Object>
                         + ") with a value (" + shadowValue + ") which is not that entity.\n"
                         + "Verify the consistency of your input problem for that sourceVariableName variable.");
             }
-            scoreDirector.beforeVariableChanged(shadowEntity, shadowVariableDescriptor.getVariableName());
+            scoreDirector.beforeVariableChanged(shadowVariableDescriptor, shadowEntity);
             shadowVariableDescriptor.setValue(shadowEntity, null);
-            scoreDirector.afterVariableChanged(shadowEntity, shadowVariableDescriptor.getVariableName());
+            scoreDirector.afterVariableChanged(shadowVariableDescriptor, shadowEntity);
         }
     }
 

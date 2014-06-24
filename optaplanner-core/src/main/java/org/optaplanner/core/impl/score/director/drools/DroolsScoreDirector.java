@@ -26,6 +26,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.api.domain.solution.Solution;
@@ -141,20 +142,12 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         super.afterEntityAdded(entityDescriptor, entity);
     }
 
-    // public void beforeVariableChanged(GenuineVariableDescriptor variableDescriptor, Object entity) // Do nothing
+    // public void beforeVariableChanged(VariableDescriptor variableDescriptor, Object entity) // Do nothing
 
     @Override
-    public void afterVariableChanged(GenuineVariableDescriptor variableDescriptor, Object entity) {
+    public void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
         update(entity);
         super.afterVariableChanged(variableDescriptor, entity);
-    }
-
-    // public void beforeShadowVariableChanged(Object entity, String variableName) // Do nothing
-
-    @Override
-    public void afterShadowVariableChanged(Object entity, String variableName) {
-        update(entity);
-        super.afterShadowVariableChanged(entity, variableName);
     }
 
     private void update(Object entity) {

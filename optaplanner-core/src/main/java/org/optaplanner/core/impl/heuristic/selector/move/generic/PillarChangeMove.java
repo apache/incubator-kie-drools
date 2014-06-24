@@ -68,9 +68,9 @@ public class PillarChangeMove implements Move {
 
     public void doMove(ScoreDirector scoreDirector) {
         for (Object entity : pillar) {
-            scoreDirector.beforeVariableChanged(entity, variableDescriptor.getVariableName());
+            scoreDirector.beforeVariableChanged(variableDescriptor, entity);
             variableDescriptor.setValue(entity, toPlanningValue);
-            scoreDirector.afterVariableChanged(entity, variableDescriptor.getVariableName());
+            scoreDirector.afterVariableChanged(variableDescriptor, entity);
         }
     }
 

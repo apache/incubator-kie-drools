@@ -46,13 +46,13 @@ public class ChainedSwapMove extends SwapMove {
             Object oldRightValue = variableDescriptor.getValue(rightEntity);
             if (!ObjectUtils.equals(oldLeftValue, oldRightValue)) {
                 if (!variableDescriptor.isChained()) {
-                    scoreDirector.beforeVariableChanged(leftEntity, variableDescriptor.getVariableName());
+                    scoreDirector.beforeVariableChanged(variableDescriptor, leftEntity);
                     variableDescriptor.setValue(leftEntity, oldRightValue);
-                    scoreDirector.afterVariableChanged(leftEntity, variableDescriptor.getVariableName());
+                    scoreDirector.afterVariableChanged(variableDescriptor, leftEntity);
 
-                    scoreDirector.beforeVariableChanged(rightEntity, variableDescriptor.getVariableName());
+                    scoreDirector.beforeVariableChanged(variableDescriptor, rightEntity);
                     variableDescriptor.setValue(rightEntity, oldLeftValue);
-                    scoreDirector.afterVariableChanged(rightEntity, variableDescriptor.getVariableName());
+                    scoreDirector.afterVariableChanged(variableDescriptor, rightEntity);
                 } else {
                     if (oldRightValue != leftEntity) {
                         ChainedMoveUtils.doChainedChange(scoreDirector, leftEntity, variableDescriptor, oldRightValue);

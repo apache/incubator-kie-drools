@@ -62,9 +62,9 @@ public class ChangeMove implements Move {
     }
 
     public void doMove(ScoreDirector scoreDirector) {
-        scoreDirector.beforeVariableChanged(entity, variableDescriptor.getVariableName());
+        scoreDirector.beforeVariableChanged(variableDescriptor, entity);
         variableDescriptor.setValue(entity, toPlanningValue);
-        scoreDirector.afterVariableChanged(entity, variableDescriptor.getVariableName());
+        scoreDirector.afterVariableChanged(variableDescriptor, entity);
     }
 
     public Collection<? extends Object> getPlanningEntities() {

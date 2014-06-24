@@ -38,13 +38,13 @@ public class ChainedMoveUtils {
 
         // Close the old chain
         if (oldTrailingEntity != null) {
-            scoreDirector.beforeVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
+            scoreDirector.beforeVariableChanged(variableDescriptor, oldTrailingEntity);
         }
         // Change the entity
-        scoreDirector.beforeVariableChanged(entity, variableDescriptor.getVariableName());
+        scoreDirector.beforeVariableChanged(variableDescriptor, entity);
         // Reroute the new chain
         if (newTrailingEntity != null) {
-            scoreDirector.beforeVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
+            scoreDirector.beforeVariableChanged(variableDescriptor, newTrailingEntity);
         }
 
         // Close the old chain
@@ -60,13 +60,13 @@ public class ChainedMoveUtils {
 
         // Close the old chain
         if (oldTrailingEntity != null) {
-            scoreDirector.afterVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
+            scoreDirector.afterVariableChanged(variableDescriptor, oldTrailingEntity);
         }
         // Change the entity
-        scoreDirector.afterVariableChanged(entity, variableDescriptor.getVariableName());
+        scoreDirector.afterVariableChanged(variableDescriptor, entity);
         // Reroute the new chain
         if (newTrailingEntity != null) {
-            scoreDirector.afterVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
+            scoreDirector.afterVariableChanged(variableDescriptor, newTrailingEntity);
         }
     }
 
@@ -84,13 +84,13 @@ public class ChainedMoveUtils {
 
         // Close the old chain
         if (oldTrailingEntity != null) {
-            scoreDirector.beforeVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
+            scoreDirector.beforeVariableChanged(variableDescriptor, oldTrailingEntity);
         }
         // Change the entity
-        scoreDirector.beforeVariableChanged(firstEntity, variableDescriptor.getVariableName());
+        scoreDirector.beforeVariableChanged(variableDescriptor, firstEntity);
         // Reroute the new chain
         if (newTrailingEntity != null) {
-            scoreDirector.beforeVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
+            scoreDirector.beforeVariableChanged(variableDescriptor, newTrailingEntity);
         }
 
         // Close the old chain
@@ -106,13 +106,13 @@ public class ChainedMoveUtils {
 
         // Close the old chain
         if (oldTrailingEntity != null) {
-            scoreDirector.afterVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
+            scoreDirector.afterVariableChanged(variableDescriptor, oldTrailingEntity);
         }
         // Change the entity
-        scoreDirector.afterVariableChanged(firstEntity, variableDescriptor.getVariableName());
+        scoreDirector.afterVariableChanged(variableDescriptor, firstEntity);
         // Reroute the new chain
         if (newTrailingEntity != null) {
-            scoreDirector.afterVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
+            scoreDirector.afterVariableChanged(variableDescriptor, newTrailingEntity);
         }
     }
 
@@ -131,17 +131,17 @@ public class ChainedMoveUtils {
 
         // Close the old chain
         if (oldTrailingEntity != null) {
-            scoreDirector.beforeVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
+            scoreDirector.beforeVariableChanged(variableDescriptor, oldTrailingEntity);
         }
         // Change the entity
         for (ListIterator<Object> it = entityList.listIterator(entityList.size()); it.hasPrevious();) {
             Object entity = it.previous();
-            scoreDirector.beforeVariableChanged(entity, variableDescriptor.getVariableName());
+            scoreDirector.beforeVariableChanged(variableDescriptor, entity);
         }
         if (!unmovedReverse) {
             // Reroute the new chain
             if (newTrailingEntity != null) {
-                scoreDirector.beforeVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
+                scoreDirector.beforeVariableChanged(variableDescriptor, newTrailingEntity);
             }
         }
 
@@ -170,17 +170,17 @@ public class ChainedMoveUtils {
 
         // Close the old chain
         if (oldTrailingEntity != null) {
-            scoreDirector.afterVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
+            scoreDirector.afterVariableChanged(variableDescriptor, oldTrailingEntity);
         }
         // Change the entity
         for (ListIterator<Object> it = entityList.listIterator(entityList.size()); it.hasPrevious();) {
             Object entity = it.previous();
-            scoreDirector.afterVariableChanged(entity, variableDescriptor.getVariableName());
+            scoreDirector.afterVariableChanged(variableDescriptor, entity);
         }
         if (!unmovedReverse) {
             // Reroute the new chain
             if (newTrailingEntity != null) {
-                scoreDirector.afterVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
+                scoreDirector.afterVariableChanged(variableDescriptor, newTrailingEntity);
             }
         }
     }
