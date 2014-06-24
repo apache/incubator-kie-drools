@@ -333,6 +333,7 @@
                     <location name="/" handler="welcome-content"/>
                     <filter-ref name="server-header"/>
                     <filter-ref name="x-powered-by-header"/>
+                    <single-sign-on path="/"/>
                 </host>
             </server>
             <servlet-container name="default">
