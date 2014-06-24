@@ -24,25 +24,6 @@ import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 
 public class HardSoftScoreDefinition extends AbstractFeasibilityScoreDefinition<HardSoftScore> {
 
-    private double hardScoreTimeGradientWeight = 0.75; // TODO this is a guess
-
-    public double getHardScoreTimeGradientWeight() {
-        return hardScoreTimeGradientWeight;
-    }
-
-    /**
-     * It's recommended to use a number which can be exactly represented as a double,
-     * such as 0.5, 0.25, 0.75, 0.125, ... but not 0.1, 0.2, ...
-     * @param hardScoreTimeGradientWeight 0.0 <= hardScoreTimeGradientWeight <= 1.0
-     */
-    public void setHardScoreTimeGradientWeight(double hardScoreTimeGradientWeight) {
-        this.hardScoreTimeGradientWeight = hardScoreTimeGradientWeight;
-        if (hardScoreTimeGradientWeight < 0.0 || hardScoreTimeGradientWeight > 1.0) {
-            throw new IllegalArgumentException("Property hardScoreTimeGradientWeight (" + hardScoreTimeGradientWeight
-                    + ") must be greater or equal to 0.0 and smaller or equal to 1.0.");
-        }
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************

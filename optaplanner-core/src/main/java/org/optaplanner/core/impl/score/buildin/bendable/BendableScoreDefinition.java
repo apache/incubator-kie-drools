@@ -29,8 +29,6 @@ public class BendableScoreDefinition extends AbstractFeasibilityScoreDefinition<
     private final int hardLevelsSize;
     private final int softLevelsSize;
 
-    private double recursiveTimeGradientWeight = 0.50; // TODO this is a guess
-
     public BendableScoreDefinition(int hardLevelsSize, int softLevelsSize) {
         this.hardLevelsSize = hardLevelsSize;
         this.softLevelsSize = softLevelsSize;
@@ -42,23 +40,6 @@ public class BendableScoreDefinition extends AbstractFeasibilityScoreDefinition<
 
     public int getSoftLevelsSize() {
         return softLevelsSize;
-    }
-
-    public double getRecursiveTimeGradientWeight() {
-        return recursiveTimeGradientWeight;
-    }
-
-    /**
-     * It's recommended to use a number which can be exactly represented as a double,
-     * such as 0.5, 0.25, 0.75, 0.125, ... but not 0.1, 0.2, ...
-     * @param recursiveTimeGradientWeight 0.0 <= recursiveTimeGradientWeight <= 1.0
-     */
-    public void setRecursiveTimeGradientWeight(double recursiveTimeGradientWeight) {
-        this.recursiveTimeGradientWeight = recursiveTimeGradientWeight;
-        if (recursiveTimeGradientWeight < 0.0 || recursiveTimeGradientWeight > 1.0) {
-            throw new IllegalArgumentException("Property recursiveTimeGradientWeight (" + recursiveTimeGradientWeight
-                    + ") must be greater or equal to 0.0 and smaller or equal to 1.0.");
-        }
     }
 
     // ************************************************************************
