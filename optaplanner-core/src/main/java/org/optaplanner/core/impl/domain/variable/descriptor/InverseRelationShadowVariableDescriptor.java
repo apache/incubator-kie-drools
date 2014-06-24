@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 
 public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescriptor {
 
-    protected GenuineVariableDescriptor sourceVariableDescriptor;
+    protected VariableDescriptor sourceVariableDescriptor;
 
     public InverseRelationShadowVariableDescriptor(EntityDescriptor entityDescriptor,
             PropertyDescriptor propertyDescriptor) {
@@ -55,8 +55,7 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
                     + ") which is not a valid planning entity.");
         }
         String sourceVariableName = shadowVariableAnnotation.sourceVariableName();
-        // TODO support inverse on a shadow variable too
-        sourceVariableDescriptor = sourceEntityDescriptor.getGenuineVariableDescriptor(sourceVariableName);
+        sourceVariableDescriptor = sourceEntityDescriptor.getVariableDescriptor(sourceVariableName);
         if (sourceVariableDescriptor == null) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
@@ -66,13 +65,14 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
                     + sourceEntityDescriptor.getEntityClass() + ").\n"
                     + entityDescriptor.buildInvalidVariableNameExceptionMessage(sourceVariableName));
         }
-        if (!sourceVariableDescriptor.isChained()) {
-            // TODO support for non-chained variables too
+        if (!(sourceVariableDescriptor instanceof GenuineVariableDescriptor) ||
+                !((GenuineVariableDescriptor) sourceVariableDescriptor).isChained()) {
+            // TODO support for non-chained variables too, including shadow variables
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
                     + " annotated property (" + variablePropertyAccessor.getName()
                     + ") with sourceVariableName (" + sourceVariableName
-                    + ") which is not chained (" + sourceVariableDescriptor.isChained() + ").");
+                    + ") which is not chained.");
         }
         sourceVariableDescriptor.registerShadowVariableDescriptor(this);
     }

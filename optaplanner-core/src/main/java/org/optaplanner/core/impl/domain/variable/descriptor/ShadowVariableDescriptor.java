@@ -44,10 +44,6 @@ public abstract class ShadowVariableDescriptor extends VariableDescriptor {
     // Worker methods
     // ************************************************************************
 
-    public List<VariableListener> buildVariableListenerList() {
-        return Collections.emptyList();
-    }
-
     public abstract VariableListener buildVariableListener();
 
 }

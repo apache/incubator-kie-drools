@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
@@ -66,15 +65,19 @@ public class VariableListenerSupport {
 
     public void beforeVariableChanged(ScoreDirector scoreDirector, VariableDescriptor variableDescriptor,
             Object entity) {
-        for (VariableListener variableListener : variableListenerMap.get(variableDescriptor)) {
-            variableListener.beforeVariableChanged(scoreDirector, entity);
+        if (variableDescriptor.hasAnyShadow()) {
+            for (VariableListener variableListener : variableListenerMap.get(variableDescriptor)) {
+                variableListener.beforeVariableChanged(scoreDirector, entity);
+            }
         }
     }
 
     public void afterVariableChanged(ScoreDirector scoreDirector, VariableDescriptor variableDescriptor,
             Object entity) {
-        for (VariableListener variableListener : variableListenerMap.get(variableDescriptor)) {
-            variableListener.afterVariableChanged(scoreDirector, entity);
+        if (variableDescriptor.hasAnyShadow()) {
+            for (VariableListener variableListener : variableListenerMap.get(variableDescriptor)) {
+                variableListener.afterVariableChanged(scoreDirector, entity);
+            }
         }
     }
 

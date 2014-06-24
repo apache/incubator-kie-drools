@@ -74,8 +74,7 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
                 }
             }
             String sourceVariableName = source.variableName();
-            // TODO work on non-genuine vars too
-            GenuineVariableDescriptor sourceVariableDescriptor = sourceEntityDescriptor.getGenuineVariableDescriptor(
+            VariableDescriptor sourceVariableDescriptor = sourceEntityDescriptor.getVariableDescriptor(
                     sourceVariableName);
             if (sourceVariableDescriptor == null) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()

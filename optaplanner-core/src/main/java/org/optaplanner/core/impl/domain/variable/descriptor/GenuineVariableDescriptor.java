@@ -56,8 +56,6 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
     private SelectionSorter increasingStrengthSorter;
     private SelectionSorter decreasingStrengthSorter;
 
-    private List<ShadowVariableDescriptor> shadowVariableDescriptorList = new ArrayList<ShadowVariableDescriptor>(4);
-
     public GenuineVariableDescriptor(EntityDescriptor entityDescriptor,
             PropertyDescriptor propertyDescriptor) {
         super(entityDescriptor, propertyDescriptor);
@@ -191,10 +189,6 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
         }
     }
 
-    public void registerShadowVariableDescriptor(ShadowVariableDescriptor shadowVariableDescriptor) {
-        shadowVariableDescriptorList.add(shadowVariableDescriptor);
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************
@@ -217,15 +211,6 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
 
     public boolean isValueRangeEntityIndependent() {
         return valueRangeDescriptor.isEntityIndependent();
-    }
-
-    public List<VariableListener> buildVariableListenerList() {
-        List<VariableListener> variableListenerList = new ArrayList<VariableListener>(shadowVariableDescriptorList.size());
-        // Always trigger the build-in shadow variables first
-        for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptorList) {
-            variableListenerList.add(shadowVariableDescriptor.buildVariableListener());
-        }
-        return variableListenerList;
     }
 
     // ************************************************************************

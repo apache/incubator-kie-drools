@@ -17,10 +17,13 @@
 package org.optaplanner.core.impl.domain.variable.descriptor;
 
 import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 
 public abstract class VariableDescriptor {
 
@@ -28,6 +31,8 @@ public abstract class VariableDescriptor {
 
     protected final PropertyAccessor variablePropertyAccessor;
     protected final String variableName;
+
+    private List<ShadowVariableDescriptor> shadowVariableDescriptorList = new ArrayList<ShadowVariableDescriptor>(4);
 
     public VariableDescriptor(EntityDescriptor entityDescriptor,
             PropertyDescriptor propertyDescriptor) {
@@ -50,6 +55,27 @@ public abstract class VariableDescriptor {
 
     public Class<?> getVariablePropertyType() {
         return variablePropertyAccessor.getPropertyType();
+    }
+
+    // ************************************************************************
+    // Shadows
+    // ************************************************************************
+
+    public void registerShadowVariableDescriptor(ShadowVariableDescriptor shadowVariableDescriptor) {
+        shadowVariableDescriptorList.add(shadowVariableDescriptor);
+    }
+
+    public boolean hasAnyShadow() {
+        return !shadowVariableDescriptorList.isEmpty();
+    }
+
+    public List<VariableListener> buildVariableListenerList() {
+        List<VariableListener> variableListenerList = new ArrayList<VariableListener>(shadowVariableDescriptorList.size());
+        // Always trigger the build-in shadow variables first
+        for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptorList) {
+            variableListenerList.add(shadowVariableDescriptor.buildVariableListener());
+        }
+        return variableListenerList;
     }
 
     // ************************************************************************
