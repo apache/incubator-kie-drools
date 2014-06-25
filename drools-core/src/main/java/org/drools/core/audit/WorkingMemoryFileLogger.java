@@ -17,15 +17,19 @@
 package org.drools.core.audit;
 
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.audit.event.LogEvent;
+import org.drools.core.util.IoUtils;
 import org.kie.api.event.rule.AgendaGroupPoppedEvent;
 import org.kie.api.event.rule.AgendaGroupPushedEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
@@ -119,10 +123,12 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
         if ( !initialized ) {
             initializeLog();
         }
-        FileWriter fileWriter = null;
+        Writer writer = null;
         try {
-            fileWriter = new FileWriter( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"),
-                                         true );
+            FileOutputStream fileOut = new FileOutputStream( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log" ),
+                                                             true );
+            writer = new OutputStreamWriter( fileOut,
+                                             IoUtils.UTF8_CHARSET );
             final XStream xstream = new XStream();
             WorkingMemoryLog log = null;
             synchronized ( this.events ) {
@@ -130,15 +136,15 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
                                            isPhreak ? "PHREAK" : "RETEOO");
                 clear();
             }
-            fileWriter.write( xstream.toXML( log ) + "\n" );
+            writer.write( xstream.toXML( log ) + "\n" );
         } catch ( final FileNotFoundException exc ) {
             throw new RuntimeException( "Could not create the log file.  Please make sure that directory that the log file should be placed in does exist." );
         } catch ( final Throwable t ) {
             logger.error("error", t);
         } finally {
-            if ( fileWriter != null ) {
+            if ( writer != null ) {
                 try {
-                    fileWriter.close();
+                    writer.close();
                 } catch ( Exception e ) {
                 }
             }
@@ -155,8 +161,10 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
 
     private void initializeLog() {
         try {
-            FileWriter writer = new FileWriter( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"),
-                                                false );
+            FileOutputStream fileOut = new FileOutputStream( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"),
+                                                             false );
+            Writer writer = new OutputStreamWriter( fileOut,
+                                                    IoUtils.UTF8_CHARSET );
             writer.append( "<object-stream>\n" );
             writer.close();
             initialized = true;
@@ -169,8 +177,10 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
 
     private void closeLog() {
         try {
-            FileWriter writer = new FileWriter( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"),
-                                                true );
+            FileOutputStream fileOut = new FileOutputStream( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"),
+                                                             true);
+            Writer writer = new OutputStreamWriter( fileOut,
+                                                    IoUtils.UTF8_CHARSET);
             writer.append( "</object-stream>\n" );
             writer.close();
         } catch ( final FileNotFoundException exc ) {

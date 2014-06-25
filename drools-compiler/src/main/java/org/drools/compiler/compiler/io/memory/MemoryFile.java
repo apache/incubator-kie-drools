@@ -3,6 +3,7 @@ package org.drools.compiler.compiler.io.memory;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.Path;
+import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 
 import java.io.ByteArrayInputStream;
@@ -59,7 +60,7 @@ public class MemoryFile implements File {
             throw new IOException( "File does not exists, cannot set contents" );
         }
         
-        mfs.setFileContents( this, StringUtils.toString( is ).getBytes() );
+        mfs.setFileContents( this, StringUtils.toString( is ).getBytes( IoUtils.UTF8_CHARSET ) );
     }
 
     public void create(InputStream is) throws IOException {

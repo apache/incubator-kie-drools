@@ -2,6 +2,7 @@ package org.drools.games.adventures;
 
 import org.apache.commons.io.IOUtils;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.util.IoUtils;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
@@ -42,8 +43,8 @@ public class GameEngine {
                       c );
             Map<String, Map> map;
             try {
-                map = (Map<String, Map>) MVEL.executeExpression( MVEL.compileExpression( new String( IOUtils.toByteArray(getClass().getResource("data.mvel").openStream()) ) ),
-                                                                 vars );
+                String mvelContent = new String(IOUtils.toByteArray(getClass().getResource("data.mvel").openStream()), IoUtils.UTF8_CHARSET);
+                map = (Map<String, Map>) MVEL.executeExpression(MVEL.compileExpression(mvelContent), vars );
             } catch ( IOException e ) {
                 throw new RuntimeException( e );
             }

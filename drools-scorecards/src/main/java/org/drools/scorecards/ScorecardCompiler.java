@@ -17,6 +17,7 @@
 package org.drools.scorecards;
 
 import org.dmg.pmml.pmml_4_1.descr.PMML;
+import org.drools.core.util.IoUtils;
 import org.drools.pmml.pmml_4_1.PMML4Compiler;
 import org.drools.scorecards.parser.AbstractScorecardParser;
 import org.drools.scorecards.parser.ScorecardParseException;
@@ -127,7 +128,7 @@ public class ScorecardCompiler {
         }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PMML4Compiler.dumpModel( pmmlDocument, baos );
-        return new String( baos.toByteArray() );
+        return new String( baos.toByteArray(), IoUtils.UTF8_CHARSET );
     }
 
     public String getDRL(){

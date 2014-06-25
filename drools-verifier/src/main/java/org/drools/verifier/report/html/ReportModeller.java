@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.drools.core.util.IoUtils;
 import org.mvel2.templates.TemplateRuntime;
 
 abstract class ReportModeller {
@@ -71,7 +72,7 @@ abstract class ReportModeller {
                                String text) throws IOException {
         zout.putNextEntry( new JarEntry( fileName ) );
 
-        ByteArrayInputStream i = new ByteArrayInputStream( text.getBytes() );
+        ByteArrayInputStream i = new ByteArrayInputStream( text.getBytes( IoUtils.UTF8_CHARSET ) );
 
         int len = 0;
         byte[] copyBuf = new byte[1024];

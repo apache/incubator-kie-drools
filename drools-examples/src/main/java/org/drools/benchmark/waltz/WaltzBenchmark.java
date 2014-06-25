@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.core.util.IoUtils;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.RuleRuntime;
 import org.kie.internal.KnowledgeBase;
@@ -81,7 +82,9 @@ public abstract class WaltzBenchmark {
     private static void loadLines(RuleRuntime wm,
                                   String filename) {
         try {
-            BufferedReader reader = new BufferedReader( new InputStreamReader( WaltzBenchmark.class.getResourceAsStream( "data/" + filename ) ) );
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader( WaltzBenchmark.class.getResourceAsStream( "data/" + filename ),
+                                           IoUtils.UTF8_CHARSET ) );
             Pattern pat = Pattern.compile( ".*make line \\^p1 ([0-9]*) \\^p2 ([0-9]*).*" );
             String line = reader.readLine();
             while ( line != null ) {

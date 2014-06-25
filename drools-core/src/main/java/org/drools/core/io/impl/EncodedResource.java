@@ -17,6 +17,7 @@
 package org.drools.core.io.impl;
 
 import org.drools.core.io.internal.InternalResource;
+import org.drools.core.util.IoUtils;
 import org.kie.api.io.Resource;
 
 import java.io.Externalizable;
@@ -109,7 +110,7 @@ public class EncodedResource  extends BaseResource implements InternalResource, 
             return new InputStreamReader(this.resource.getInputStream(), this.encoding);
         }
         else {
-            return new InputStreamReader(this.resource.getInputStream());
+            return new InputStreamReader(this.resource.getInputStream(), IoUtils.UTF8_CHARSET);
         }
     }
     

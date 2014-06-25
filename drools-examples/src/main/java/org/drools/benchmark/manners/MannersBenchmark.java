@@ -16,6 +16,7 @@
 
 package org.drools.benchmark.manners;
 
+import org.drools.core.util.IoUtils;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -106,7 +107,7 @@ public class MannersBenchmark {
         List<Object> list = new ArrayList<Object>();
 
         try {
-            BufferedReader br = new BufferedReader( new InputStreamReader( inputStream ) );
+            BufferedReader br = new BufferedReader( new InputStreamReader( inputStream, IoUtils.UTF8_CHARSET ) );
 
             String line;
             while ( (line = br.readLine()) != null ) {
@@ -208,7 +209,7 @@ public class MannersBenchmark {
         writer.write( LINE_SEPARATOR );
         writer.write( "(context (state start))" + LINE_SEPARATOR );
 
-        return new ByteArrayInputStream( writer.getBuffer().toString().getBytes() );
+        return new ByteArrayInputStream( writer.getBuffer().toString().getBytes( IoUtils.UTF8_CHARSET ) );
     }
 
 }
