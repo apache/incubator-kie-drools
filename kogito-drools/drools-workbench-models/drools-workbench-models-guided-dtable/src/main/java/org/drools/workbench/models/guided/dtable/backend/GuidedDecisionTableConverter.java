@@ -1,5 +1,6 @@
 package org.drools.workbench.models.guided.dtable.backend;
 
+import org.drools.core.util.IoUtils;
 import org.drools.workbench.models.commons.backend.BaseConverter;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.IAction;
@@ -17,12 +18,12 @@ public class GuidedDecisionTableConverter extends BaseConverter {
     @Override
     public FormatConversionResult convert( String name,
                                            byte[] input ) {
-        String xml = new String( input );
+        String xml = new String( input, IoUtils.UTF8_CHARSET );
         GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal( xml );
 
         String drl = new StringBuilder().append( GuidedDTDRLPersistence.getInstance().marshal( model ) ).toString();
 
-        return new FormatConversionResult( getDestinationName( name, hasDSLSentences( model ) ), drl.getBytes() );
+        return new FormatConversionResult( getDestinationName( name, hasDSLSentences( model ) ), drl.getBytes( IoUtils.UTF8_CHARSET ) );
     }
 
     // Check is the model uses DSLSentences and hence requires expansion. THis code is copied from GuidedDecisionTableUtils.

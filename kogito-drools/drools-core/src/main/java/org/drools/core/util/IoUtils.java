@@ -11,9 +11,12 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -23,6 +26,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class IoUtils {
+
+    public static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
 
     public static int findPort() {
         for( int i = 1024; i < 65535; i++) {
@@ -65,7 +70,7 @@ public class IoUtils {
         StringBuffer sb = new StringBuffer();
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader(file));
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), IoUtils.UTF8_CHARSET));
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 sb.append(line).append("\n");
             }

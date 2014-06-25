@@ -10,6 +10,7 @@ import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.TypeMetaInfo;
+import org.drools.core.util.IoUtils;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
@@ -37,7 +38,7 @@ public class KieMetaInfoBuilder {
     public void writeKieModuleMetaInfo() {
         KieModuleMetaInfo info = generateKieModuleMetaInfo();
         trgMfs.write( KieModuleModelImpl.KMODULE_INFO_JAR_PATH,
-                      info.marshallMetaInfos().getBytes(),
+                      info.marshallMetaInfos().getBytes( IoUtils.UTF8_CHARSET ),
                       true );
     }
 

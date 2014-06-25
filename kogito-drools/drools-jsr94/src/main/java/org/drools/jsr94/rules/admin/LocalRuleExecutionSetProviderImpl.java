@@ -31,6 +31,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.util.IoUtils;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
 import org.drools.jsr94.rules.Constants;
@@ -85,10 +86,10 @@ public class LocalRuleExecutionSetProviderImpl
                                                       InputType.XLS );
                 return createRuleExecutionSet( new StringReader( drl ), properties );
             } else {
-                return createRuleExecutionSet( new InputStreamReader( ruleExecutionSetStream ), properties);
+                return createRuleExecutionSet( new InputStreamReader( ruleExecutionSetStream, IoUtils.UTF8_CHARSET ), properties);
             }
         } else         
-            return createRuleExecutionSet( new InputStreamReader( ruleExecutionSetStream ), properties);
+            return createRuleExecutionSet( new InputStreamReader( ruleExecutionSetStream, IoUtils.UTF8_CHARSET ), properties);
     }
     
 

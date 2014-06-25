@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.common.ProjectClassLoader;
+import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.io.internal.InternalResource;
 import org.kie.api.io.Resource;
@@ -230,7 +231,7 @@ public class ClassPathResource extends BaseResource
         if ( this.encoding != null ) {
             return new InputStreamReader( getInputStream(), encoding );
         } else {
-            return new InputStreamReader( getInputStream() );
+            return new InputStreamReader( getInputStream(), IoUtils.UTF8_CHARSET );
         }
     }
 

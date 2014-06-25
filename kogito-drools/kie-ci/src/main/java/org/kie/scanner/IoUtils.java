@@ -2,9 +2,12 @@ package org.kie.scanner;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.UUID;
 
 class IoUtils {
+
+    public static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
 
     public static File getTmpDirectory() {
         File tmp = new File( System.getProperty( "java.io.tmpdir" ) );

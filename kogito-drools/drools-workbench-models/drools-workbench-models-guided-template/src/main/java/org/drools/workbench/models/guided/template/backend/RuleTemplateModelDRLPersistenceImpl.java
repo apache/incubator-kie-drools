@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.core.util.IoUtils;
 import org.drools.template.DataProvider;
 import org.drools.template.DataProviderCompiler;
 import org.drools.template.objects.ArrayDataProvider;
@@ -482,7 +483,7 @@ public class RuleTemplateModelDRLPersistenceImpl
         final DataProvider dataProvider = chooseDataProvider( model );
         final DataProviderCompiler tplCompiler = new DataProviderCompiler();
         final String generatedDrl = tplCompiler.compile( dataProvider,
-                                                         new ByteArrayInputStream( ruleTemplate.getBytes() ),
+                                                         new ByteArrayInputStream( ruleTemplate.getBytes( IoUtils.UTF8_CHARSET ) ),
                                                          false );
 
         log.debug( "generated drl:\n{}", generatedDrl );

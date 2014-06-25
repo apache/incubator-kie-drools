@@ -2,6 +2,7 @@ package org.drools.compiler.kie.builder.impl;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.core.util.IoUtils;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.internal.io.ResourceTypeImpl;
@@ -38,7 +39,7 @@ public class KieFileSystemImpl
 
     public KieFileSystem write(String path,
                                String text) {
-        return write( path, text.getBytes() );
+        return write( path, text.getBytes( IoUtils.UTF8_CHARSET ) );
     }
 
     public KieFileSystem write(String path,

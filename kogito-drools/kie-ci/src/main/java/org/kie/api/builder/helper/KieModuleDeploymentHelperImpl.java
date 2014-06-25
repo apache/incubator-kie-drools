@@ -20,6 +20,7 @@ import java.util.zip.ZipInputStream;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.core.util.IoUtils;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -254,7 +255,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
         File pomFile = new File(System.getProperty("java.io.tmpdir"), pomFileName);
         try {
             FileOutputStream fos = new FileOutputStream(pomFile);
-            fos.write(config.pomText.getBytes());
+            fos.write(config.pomText.getBytes(IoUtils.UTF8_CHARSET));
             fos.flush();
             fos.close();
         } catch (IOException ioe) {
@@ -482,9 +483,9 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
     }
     
     private static String convertFileToString(InputStream in) {
-        InputStreamReader input = new InputStreamReader(in);
+        InputStreamReader input = new InputStreamReader(in, IoUtils.UTF8_CHARSET);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        OutputStreamWriter output = new OutputStreamWriter(baos);
+        OutputStreamWriter output = new OutputStreamWriter(baos, IoUtils.UTF8_CHARSET);
         char[] buffer = new char[4096];
         int n = 0;
         try {
@@ -492,10 +493,11 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
                 output.write(buffer, 0, n);
             }
             output.flush();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return baos.toString();
+        return new String(baos.toByteArray(), IoUtils.UTF8_CHARSET);
     }
 
     /**

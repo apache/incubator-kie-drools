@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
 
+import org.drools.core.util.IoUtils;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
@@ -49,7 +50,7 @@ public class PlainTextReportWriter
             str.append( "\n" );
         }
 
-        out.write( str.toString().getBytes() );
+        out.write( str.toString().getBytes( IoUtils.UTF8_CHARSET ) );
     }
 
 }

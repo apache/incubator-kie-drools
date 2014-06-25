@@ -163,7 +163,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
                 ZipEntry entry = entries.nextElement();
                 String pathName = entry.getName();
                 if(pathName.endsWith("bpmn2")){
-                  processes.put(pathName, new String(readBytesFromZipEntry(jarFile, entry)));
+                  processes.put(pathName, new String(readBytesFromZipEntry(jarFile, entry), IoUtils.UTF8_CHARSET));
                 }
                 if (!indexClass(pathName)) {
                     if (pathName.endsWith(KieModuleModelImpl.KMODULE_INFO_JAR_PATH)) {
@@ -203,7 +203,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
     }
 
     private void indexMetaInfo(byte[] bytes) {
-        KieModuleMetaInfo info = KieModuleMetaInfo.unmarshallMetaInfos(new String(bytes));
+        KieModuleMetaInfo info = KieModuleMetaInfo.unmarshallMetaInfos(new String(bytes, IoUtils.UTF8_CHARSET));
         typeMetaInfos.putAll(info.getTypeMetaInfos());
         rulesByPackage.putAll(info.getRulesByPackage());
     }
