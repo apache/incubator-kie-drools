@@ -1751,8 +1751,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       sfp0.getConstraintValueType() );
         assertNull( sfp0.getParent() );
 
-        assertTrue( fp.getConstraint( 1 ) instanceof SingleFieldConstraint );
-        SingleFieldConstraint sfp1 = (SingleFieldConstraint) fp.getConstraint( 1 );
+        assertTrue( fp.getConstraint( 1 ) instanceof SingleFieldConstraintEBLeftSide );
+        SingleFieldConstraintEBLeftSide sfp1 = (SingleFieldConstraintEBLeftSide) fp.getConstraint( 1 );
         assertEquals( "ParentType",
                       sfp1.getFactType() );
         assertEquals( "parentChildField",
@@ -1764,11 +1764,10 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertNull( sfp1.getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_UNDEFINED,
                       sfp1.getConstraintValueType() );
-        assertSame( sfp0,
-                    sfp1.getParent() );
+        assertNull( sfp1.getParent() );
 
-        assertTrue( fp.getConstraint( 2 ) instanceof SingleFieldConstraint );
-        SingleFieldConstraint sfp2 = (SingleFieldConstraint) fp.getConstraint( 2 );
+        assertTrue( fp.getConstraint( 2 ) instanceof SingleFieldConstraintEBLeftSide );
+        SingleFieldConstraintEBLeftSide sfp2 = (SingleFieldConstraintEBLeftSide) fp.getConstraint( 2 );
         assertEquals( "childField",
                       sfp2.getFieldName() );
         assertEquals( "java.lang.String",
@@ -1779,8 +1778,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       sfp2.getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
                       sfp2.getConstraintValueType() );
-        assertSame( sfp1,
-                    sfp2.getParent() );
+        assertNull( sfp2.getParent() );
     }
 
     @Test
@@ -4978,6 +4976,208 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       actionCallMethod.getFieldValue( 1 ).getNature() );
         assertEquals( "String",
                       actionCallMethod.getFieldValue( 1 ).getType() );
+    }
+
+    @Test
+    public void testLHSNumberExpressionWithoutThisPrefix() throws Exception {
+        String drl = "package org.mortgages;\n" +
+                "import java.lang.Number\n" +
+                "rule \"test\"\n" +
+                " dialect \"mvel\"\n" +
+                " when\n" +
+                "  Number( intValue() > 5 )\n" +
+                " then\n" +
+                "end";
+
+        final HashMap<String, List<MethodInfo>> map = new HashMap<String, List<MethodInfo>>();
+        final ArrayList<MethodInfo> methodInfos = new ArrayList<MethodInfo>();
+        methodInfos.add( new MethodInfo( "intValue",
+                                         Collections.EMPTY_LIST,
+                                         "int",
+                                         null,
+                                         DataType.TYPE_NUMERIC_INTEGER ) );
+        map.put( "java.lang.Number",
+                 methodInfos );
+
+        when( dmo.getProjectMethodInformation() ).thenReturn( map );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+
+        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
+        final FactPattern fp = (FactPattern) m.lhs[ 0 ];
+        assertEquals( "Number",
+                      fp.getFactType() );
+
+        assertEquals( 1,
+                      fp.getNumberOfConstraints() );
+        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraintEBLeftSide );
+        final SingleFieldConstraintEBLeftSide exp = (SingleFieldConstraintEBLeftSide) fp.getConstraint( 0 );
+        assertEquals( "int",
+                      exp.getFieldType() );
+        assertEquals( ">",
+                      exp.getOperator() );
+        assertEquals( "5",
+                      exp.getValue() );
+
+        assertEquals( 2,
+                      exp.getExpressionLeftSide().getParts().size() );
+        assertTrue( exp.getExpressionLeftSide().getParts().get( 0 ) instanceof ExpressionUnboundFact );
+        final ExpressionUnboundFact expPart0 = (ExpressionUnboundFact) exp.getExpressionLeftSide().getParts().get( 0 );
+        assertEquals( "Number",
+                      expPart0.getFact().getFactType() );
+
+        assertTrue( exp.getExpressionLeftSide().getParts().get( 1 ) instanceof ExpressionMethod );
+        final ExpressionMethod expPart1 = (ExpressionMethod) exp.getExpressionLeftSide().getParts().get( 1 );
+        assertEquals( "intValue",
+                      expPart1.getName() );
+    }
+
+    @Test
+    public void testLHSNumberExpressionWithThisPrefix() throws Exception {
+        String drl = "package org.mortgages;\n" +
+                "import java.lang.Number\n" +
+                "rule \"test\"\n" +
+                " dialect \"mvel\"\n" +
+                " when\n" +
+                "  Number( this.intValue() > 5 )\n" +
+                " then\n" +
+                "end";
+
+        final HashMap<String, List<MethodInfo>> map = new HashMap<String, List<MethodInfo>>();
+        final ArrayList<MethodInfo> methodInfos = new ArrayList<MethodInfo>();
+        methodInfos.add( new MethodInfo( "intValue",
+                                         Collections.EMPTY_LIST,
+                                         "int",
+                                         null,
+                                         DataType.TYPE_NUMERIC_INTEGER ) );
+        map.put( "java.lang.Number",
+                 methodInfos );
+
+        when( dmo.getProjectMethodInformation() ).thenReturn( map );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+
+        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
+        final FactPattern fp = (FactPattern) m.lhs[ 0 ];
+        assertEquals( "Number",
+                      fp.getFactType() );
+
+        assertEquals( 1,
+                      fp.getNumberOfConstraints() );
+        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraintEBLeftSide );
+        final SingleFieldConstraintEBLeftSide exp = (SingleFieldConstraintEBLeftSide) fp.getConstraint( 0 );
+        assertEquals( "int",
+                      exp.getFieldType() );
+        assertEquals( ">",
+                      exp.getOperator() );
+        assertEquals( "5",
+                      exp.getValue() );
+
+        assertEquals( 3,
+                      exp.getExpressionLeftSide().getParts().size() );
+        assertTrue( exp.getExpressionLeftSide().getParts().get( 0 ) instanceof ExpressionUnboundFact );
+        final ExpressionUnboundFact expPart0 = (ExpressionUnboundFact) exp.getExpressionLeftSide().getParts().get( 0 );
+        assertEquals( "Number",
+                      expPart0.getFact().getFactType() );
+
+        assertTrue( exp.getExpressionLeftSide().getParts().get( 1 ) instanceof ExpressionField );
+        final ExpressionField expPart1 = (ExpressionField) exp.getExpressionLeftSide().getParts().get( 1 );
+        assertEquals( "this",
+                      expPart1.getName() );
+
+        assertTrue( exp.getExpressionLeftSide().getParts().get( 2 ) instanceof ExpressionMethod );
+        final ExpressionMethod expPart2 = (ExpressionMethod) exp.getExpressionLeftSide().getParts().get( 2 );
+        assertEquals( "intValue",
+                      expPart2.getName() );
+    }
+
+    @Test
+    public void testLHSNestedMethodCalls() throws Exception {
+        String drl = "package org.mortgages;\n" +
+                "rule \"test\"\n" +
+                " dialect \"mvel\"\n" +
+                " when\n" +
+                "  Parent( methodToGetChild1().methodToGetChild2().field1 > 5 )\n" +
+                " then\n" +
+                "end";
+
+        addMethodInformation( "Parent",
+                              "methodToGetChild1",
+                              Collections.EMPTY_LIST,
+                              "Child1",
+                              null,
+                              "Child1" );
+        addMethodInformation( "Child1",
+                              "methodToGetChild2",
+                              Collections.EMPTY_LIST,
+                              "Child2",
+                              null,
+                              "Child2" );
+        addModelField( "Child2",
+                       "field1",
+                       "int",
+                       DataType.TYPE_NUMERIC_INTEGER );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+
+        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
+        final FactPattern fp = (FactPattern) m.lhs[ 0 ];
+        assertEquals( "Parent",
+                      fp.getFactType() );
+
+        assertEquals( 1,
+                      fp.getNumberOfConstraints() );
+        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraintEBLeftSide );
+        final SingleFieldConstraintEBLeftSide exp = (SingleFieldConstraintEBLeftSide) fp.getConstraint( 0 );
+        assertEquals( "int",
+                      exp.getFieldType() );
+        assertEquals( ">",
+                      exp.getOperator() );
+        assertEquals( "5",
+                      exp.getValue() );
+
+        assertEquals( 4,
+                      exp.getExpressionLeftSide().getParts().size() );
+        assertTrue( exp.getExpressionLeftSide().getParts().get( 0 ) instanceof ExpressionUnboundFact );
+        final ExpressionUnboundFact expPart0 = (ExpressionUnboundFact) exp.getExpressionLeftSide().getParts().get( 0 );
+        assertEquals( "Parent",
+                      expPart0.getFact().getFactType() );
+
+        assertTrue( exp.getExpressionLeftSide().getParts().get( 1 ) instanceof ExpressionMethod );
+        final ExpressionMethod expPart1 = (ExpressionMethod) exp.getExpressionLeftSide().getParts().get( 1 );
+        assertEquals( "methodToGetChild1",
+                      expPart1.getName() );
+
+        assertTrue( exp.getExpressionLeftSide().getParts().get( 2 ) instanceof ExpressionMethod );
+        final ExpressionMethod expPart2 = (ExpressionMethod) exp.getExpressionLeftSide().getParts().get( 2 );
+        assertEquals( "methodToGetChild2",
+                      expPart2.getName() );
+
+        assertTrue( exp.getExpressionLeftSide().getParts().get( 3 ) instanceof ExpressionField );
+        final ExpressionField expPart3 = (ExpressionField) exp.getExpressionLeftSide().getParts().get( 3 );
+        assertEquals( "field1",
+                      expPart3.getName() );
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
