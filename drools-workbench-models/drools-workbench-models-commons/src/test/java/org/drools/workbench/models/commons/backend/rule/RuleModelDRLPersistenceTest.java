@@ -16,6 +16,7 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import java.util.Map;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
+import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
@@ -4408,6 +4410,18 @@ public class RuleModelDRLPersistenceTest {
         con2.setValue( "0" );
         p.addConstraint( con2 );
 
+        final HashMap<String, List<MethodInfo>> map = new HashMap<String, List<MethodInfo>>();
+        final ArrayList<MethodInfo> methodInfos = new ArrayList<MethodInfo>();
+        methodInfos.add( new MethodInfo( "intValue",
+                                         Collections.EMPTY_LIST,
+                                         "int",
+                                         null,
+                                         DataType.TYPE_NUMERIC_INTEGER ) );
+        map.put( "Number",
+                 methodInfos );
+
+        when( dmo.getProjectMethodInformation() ).thenReturn( map );
+
         String expected = "rule \"test\"\n"
                 + "dialect \"mvel\"\n"
                 + "when\n"
@@ -4416,7 +4430,8 @@ public class RuleModelDRLPersistenceTest {
                 + "end";
 
         checkMarshallUnmarshall( expected,
-                                 m );
+                                 m,
+                                 dmo );
     }
 
     @Test
@@ -4445,6 +4460,18 @@ public class RuleModelDRLPersistenceTest {
         con2.setValue( "0" );
         p.addConstraint( con2 );
 
+        final HashMap<String, List<MethodInfo>> map = new HashMap<String, List<MethodInfo>>();
+        final ArrayList<MethodInfo> methodInfos = new ArrayList<MethodInfo>();
+        methodInfos.add( new MethodInfo( "intValue",
+                                         Collections.EMPTY_LIST,
+                                         "int",
+                                         null,
+                                         DataType.TYPE_NUMERIC_INTEGER ) );
+        map.put( "Number",
+                 methodInfos );
+
+        when( dmo.getProjectMethodInformation() ).thenReturn( map );
+
         String expected = "rule \"test\"\n"
                 + "dialect \"mvel\"\n"
                 + "when\n"
@@ -4453,7 +4480,8 @@ public class RuleModelDRLPersistenceTest {
                 + "end";
 
         checkMarshallUnmarshall( expected,
-                                 m );
+                                 m,
+                                 dmo );
     }
 
     @Test
