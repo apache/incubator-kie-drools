@@ -6,6 +6,7 @@ import javax.transaction.UserTransaction;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 
 /**
@@ -19,13 +20,15 @@ public class ProcessPersistenceTest extends JbpmJUnitBaseTestCase {
 
 	@Test
 	public void testProcess() {
-	    createRuntimeManager("hello.bpmn");
+	    RuntimeManager manager = createRuntimeManager("hello.bpmn");
 	    RuntimeEngine runtimeEngine = getRuntimeEngine();
 	    KieSession ksession = runtimeEngine.getKieSession();
 		ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
 		// check whether the process instance has completed successfully
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
 		assertNodeTriggered(processInstance.getId(), "StartProcess", "Hello", "EndProcess");
+		manager.disposeRuntimeEngine(runtimeEngine);
+		manager.close();
 	}
 
 	@Test

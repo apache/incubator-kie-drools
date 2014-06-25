@@ -191,8 +191,8 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
 
     @After
     public void tearDown() throws Exception {
-        clearHistory();
         disposeRuntimeManager();
+        clearHistory();
         if (setupDataSource) {
             if (emf != null) {
                 emf.close();
@@ -639,7 +639,11 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     
     protected void clearHistory() {
         if (sessionPersistence && logService != null) {
-            logService.clear();
+        	RuntimeManager manager = createRuntimeManager();
+        	RuntimeEngine engine = manager.getRuntimeEngine(null);
+        	engine.getAuditLogService().clear();
+        	manager.disposeRuntimeEngine(engine);
+        	manager.close();
         } else if (inMemoryLogger != null) {
             inMemoryLogger.clear();
         }
