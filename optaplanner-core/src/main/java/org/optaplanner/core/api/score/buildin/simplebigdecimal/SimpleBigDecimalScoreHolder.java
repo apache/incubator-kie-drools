@@ -48,8 +48,8 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder {
 
     public void addConstraintMatch(RuleContext kcontext, final BigDecimal weight) {
         score = (score == null) ? weight : score.add(weight);
-        registerBigDecimalConstraintMatch(kcontext, 0, weight, new Runnable() {
-            public void run() {
+        registerBigDecimalConstraintMatch(kcontext, 0, weight, new BigDecimalConstraintUndoListener() {
+            public void undo() {
                 score = score.subtract(weight);
             }
         });

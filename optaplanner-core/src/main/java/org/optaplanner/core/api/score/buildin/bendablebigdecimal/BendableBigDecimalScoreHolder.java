@@ -71,8 +71,8 @@ public class BendableBigDecimalScoreHolder extends AbstractScoreHolder {
 
     public void addHardConstraintMatch(RuleContext kcontext, final int hardLevel, final BigDecimal weight) {
         hardScores[hardLevel] = hardScores[hardLevel].add(weight);
-        registerBigDecimalConstraintMatch(kcontext, hardLevel, weight, new Runnable() {
-            public void run() {
+        registerBigDecimalConstraintMatch(kcontext, hardLevel, weight, new BigDecimalConstraintUndoListener() {
+            public void undo() {
                 hardScores[hardLevel] = hardScores[hardLevel].subtract(weight);
             }
         });
@@ -80,8 +80,8 @@ public class BendableBigDecimalScoreHolder extends AbstractScoreHolder {
 
     public void addSoftConstraintMatch(RuleContext kcontext, final int softLevel, final BigDecimal weight) {
         softScores[softLevel] = softScores[softLevel].add(weight);
-        registerBigDecimalConstraintMatch(kcontext, softLevel, weight, new Runnable() {
-            public void run() {
+        registerBigDecimalConstraintMatch(kcontext, softLevel, weight, new BigDecimalConstraintUndoListener() {
+            public void undo() {
                 softScores[softLevel] = softScores[softLevel].subtract(weight);
             }
         });

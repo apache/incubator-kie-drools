@@ -46,8 +46,8 @@ public class SimpleLongScoreHolder extends AbstractScoreHolder {
 
     public void addConstraintMatch(RuleContext kcontext, final long weight) {
         score += weight;
-        registerLongConstraintMatch(kcontext, 0, weight, new Runnable() {
-            public void run() {
+        registerLongConstraintMatch(kcontext, 0, weight, new LongConstraintUndoListener() {
+            public void undo() {
                 score -= weight;
             }
         });

@@ -4491,3 +4491,27 @@ From 6.1.0.CR1 to 6.1.0.CR2
 ---------------------------
 
 [IMPL_DETAIL] SolutionDescriptor.getEntityDescriptor(...) has been renamed to SolutionDescriptor.findEntityDescriptorOrFail(...)
+
+
+From 6.1.0.Final to 6.2.0.Beta1
+-------------------------------
+
+[MINOR] If you have a custom ScoreDefinition: the methods ScoreHolder.register*ConstraintMatch have been refactored.
+Before in *.java:
+    public void addConstraintMatch(RuleContext kcontext, final int weight) {
+        ...
+        registerIntConstraintMatch(kcontext, 0, weight, new Runnable() {
+            public void run() {
+                ...
+            }
+        });
+    }
+After in *.java:
+    public void addConstraintMatch(RuleContext kcontext, final int weight) {
+        ...
+        registerIntConstraintMatch(kcontext, 0, weight, new IntConstraintUndoListener() {
+            public void undo() {
+                ...
+            }
+        });
+    }
