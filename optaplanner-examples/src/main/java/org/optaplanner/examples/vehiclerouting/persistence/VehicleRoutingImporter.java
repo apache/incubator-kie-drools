@@ -76,15 +76,15 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
 
         public Solution readSolution() throws IOException {
             String firstLine = readStringValue();
-            if (firstLine.trim().startsWith("NAME :")) {
+            if (firstLine.matches("\\s*NAME\\s*:.*")) {
                 schedule = new VehicleRoutingSolution();
                 schedule.setId(0L);
-                schedule.setName(removePrefixSuffixFromLine(firstLine, "NAME :", ""));
+                schedule.setName(removePrefixSuffixFromLine(firstLine, "\\s*NAME\\s*:", ""));
                 readBasicFormat();
-            } else if (splitBySpace(firstLine).length == 3) {
+            } else if (splitBySpacesOrTabs(firstLine).length == 3) {
                 schedule = new VehicleRoutingSolution();
                 schedule.setId(0L);
-                String[] tokens = splitBySpace(firstLine, 3);
+                String[] tokens = splitBySpacesOrTabs(firstLine, 3);
                 locationListSize = Integer.parseInt(tokens[0]);
                 vehicleListSize = Integer.parseInt(tokens[1]);
                 capacity = Integer.parseInt(tokens[2]);
@@ -120,14 +120,14 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         }
 
         private void readBasicHeaders() throws IOException {
-            readUntilConstantLine("TYPE : CVRP");
-            locationListSize = readIntegerValue("DIMENSION :");
-            String edgeWeightType = readStringValue("EDGE_WEIGHT_TYPE :");
+            readUntilConstantLine("TYPE *: CVRP");
+            locationListSize = readIntegerValue("DIMENSION *:");
+            String edgeWeightType = readStringValue("EDGE_WEIGHT_TYPE *:");
             if (!edgeWeightType.equalsIgnoreCase("EUC_2D")) {
                 // Only Euclidean distance is implemented in Location.getDistance(Location)
                 throw new IllegalArgumentException("The edgeWeightType (" + edgeWeightType + ") is not supported.");
             }
-            capacity = readIntegerValue("CAPACITY :");
+            capacity = readIntegerValue("CAPACITY *:");
         }
 
         private void readBasicLocationList() throws IOException {
@@ -136,7 +136,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             locationMap = new HashMap<Long, Location>(locationListSize);
             for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
-                String[] lineTokens = splitBySpace(line.trim().replaceAll(" +", " "), 3);
+                String[] lineTokens = splitBySpacesOrTabs(line.trim(), 3);
                 Location location = new Location();
                 location.setId(Long.parseLong(lineTokens[0]));
                 location.setLatitude(Double.parseDouble(lineTokens[1]));
@@ -155,7 +155,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             List<Customer> customerList = new ArrayList<Customer>(locationListSize);
             for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
-                String[] lineTokens = splitBySpace(line.trim().replaceAll(" +", " "), 2);
+                String[] lineTokens = splitBySpacesOrTabs(line.trim(), 2);
                 Customer customer = new Customer();
                 long id = Long.parseLong(lineTokens[0]);
                 customer.setId(id);
@@ -198,7 +198,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         private void createBasicVehicleList() throws IOException {
             String inputFileName = inputFile.getName();
             if (inputFileName.toLowerCase().startsWith("tutorial")) {
-                vehicleListSize = readIntegerValue("VEHICLES :");
+                vehicleListSize = readIntegerValue("VEHICLES *:");
             } else {
                 String inputFileNameRegex = "^.+\\-k(\\d+)\\.vrp$";
                 if (!inputFileName.matches(inputFileNameRegex)) {
@@ -241,7 +241,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             locationMap = new HashMap<Long, Location>(locationListSize);
             for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
-                String[] lineTokens = splitBySpace(line.trim().replaceAll(" +", " "), 3);
+                String[] lineTokens = splitBySpacesOrTabs(line.trim(), 3);
                 Location location = new Location();
                 location.setId((long) i);
                 location.setLatitude(Double.parseDouble(lineTokens[1]));
@@ -287,13 +287,13 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         private void readTimeWindowedHeaders() throws IOException {
             readEmptyLine();
             readConstantLine("VEHICLE");
-            readConstantLine("NUMBER     CAPACITY");
+            readConstantLine("NUMBER +CAPACITY");
             String[] lineTokens = splitBySpacesOrTabs(readStringValue(), 2);
             vehicleListSize = Integer.parseInt(lineTokens[0]);
             capacity = Integer.parseInt(lineTokens[1]);
             readEmptyLine();
             readConstantLine("CUSTOMER");
-            readRegexConstantLine("CUST\\s+NO\\.\\s+XCOORD\\.\\s+YCOORD\\.\\s+DEMAND\\s+READY\\s+TIME\\s+DUE\\s+DATE\\s+SERVICE\\s+TIME");
+            readConstantLine("CUST\\s+NO\\.\\s+XCOORD\\.\\s+YCOORD\\.\\s+DEMAND\\s+READY\\s+TIME\\s+DUE\\s+DATE\\s+SERVICE\\s+TIME");
             readEmptyLine();
         }
 

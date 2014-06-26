@@ -98,7 +98,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
             generateNightList();
             readPatientListAndAdmissionPartListAndRequiredPatientEquipmentListAndPreferredPatientEquipmentList();
             readEmptyLine();
-            readConstantLine("END.");
+            readConstantLine("END\\.");
             createBedDesignationList();
             // TODO not all nights are planned, only the "planning horizon" nights are planned
             BigInteger possibleSolutionSize = BigInteger.valueOf(patientAdmissionSchedule.getBedList().size()).pow(

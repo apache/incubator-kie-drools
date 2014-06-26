@@ -221,7 +221,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter {
         }
 
         private void readPeriodPenaltyList() throws IOException {
-            readConstantLine("[PeriodHardConstraints]");
+            readConstantLine("\\[PeriodHardConstraints\\]");
             List<Topic> topicList = examination.getTopicList();
             List<PeriodPenalty> periodPenaltyList = new ArrayList<PeriodPenalty>();
             String line = bufferedReader.readLine();

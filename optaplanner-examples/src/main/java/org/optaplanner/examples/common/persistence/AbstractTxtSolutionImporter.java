@@ -114,64 +114,55 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
             return FilenameUtils.getBaseName(inputFile.getPath());
         }
 
+        // ************************************************************************
+        // Read methods
+        // ************************************************************************
+
         public void readEmptyLine() throws IOException {
             readConstantLine("");
         }
 
-        public void readConstantLine(String constantValue) throws IOException {
+        public void readConstantLine(String constantRegex) throws IOException {
             String line = bufferedReader.readLine();
             if (line == null) {
                 throw new IllegalArgumentException("File ends before a line is expected to be a constant value ("
-                        + constantValue + ").");
+                        + constantRegex + ").");
             }
             String value = line.trim();
-            if (!value.equals(constantValue)) {
+            if (!value.matches(constantRegex)) {
                 throw new IllegalArgumentException("Read line (" + line + ") is expected to be a constant value ("
-                        + constantValue + ").");
+                        + constantRegex + ").");
             }
         }
 
-        public void readUntilConstantLine(String constantValue) throws IOException {
+        public void readUntilConstantLine(String constantRegex) throws IOException {
             String line;
             String value;
             do {
                 line = bufferedReader.readLine();
                 if (line == null) {
-                    throw new IllegalArgumentException("File ends before a line is expected to be a constant value ("
-                            + constantValue + ").");
+                    throw new IllegalArgumentException("File ends before a line is expected to be a constant regex ("
+                            + constantRegex + ").");
                 }
                 value = line.trim();
-            } while (!value.equals(constantValue));
-        }
-
-        public void readRegexConstantLine(String regex) throws IOException {
-            String line = bufferedReader.readLine();
-            if (line == null) {
-                throw new IllegalArgumentException("File ends before a line is expected to be a regex ("
-                        + regex + ").");
-            }
-            String value = line.trim();
-            if (!value.matches(regex)) {
-                throw new IllegalArgumentException("Read line (" + line + ") is expected to be a regex ("
-                        + regex + ").");
-            }
+            } while (!value.matches(constantRegex));
         }
 
         public int readIntegerValue() throws IOException {
             return readIntegerValue("");
         }
 
-        public int readIntegerValue(String prefix) throws IOException {
-            return readIntegerValue(prefix, "");
+        public int readIntegerValue(String prefixRegex) throws IOException {
+            return readIntegerValue(prefixRegex, "");
         }
 
-        public int readIntegerValue(String prefix, String suffix) throws IOException {
+        public int readIntegerValue(String prefixRegex, String suffixRegex) throws IOException {
             String line = bufferedReader.readLine();
             if (line == null) {
                 throw new IllegalArgumentException("File ends before a line is expected to contain an integer value ("
-                        + prefix + "<value>" + suffix + ").");
+                        + prefixRegex + "<value>" + suffixRegex + ").");
             }
-            String value = removePrefixSuffixFromLine(line, prefix, suffix);
+            String value = removePrefixSuffixFromLine(line, prefixRegex, suffixRegex);
             try {
                 return Integer.parseInt(value);
             } catch (NumberFormatException e) {
@@ -184,17 +175,17 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
             return readLongValue("");
         }
 
-        public long readLongValue(String prefix) throws IOException {
-            return readLongValue(prefix, "");
+        public long readLongValue(String prefixRegex) throws IOException {
+            return readLongValue(prefixRegex, "");
         }
 
-        public long readLongValue(String prefix, String suffix) throws IOException {
+        public long readLongValue(String prefixRegex, String suffixRegex) throws IOException {
             String line = bufferedReader.readLine();
             if (line == null) {
                 throw new IllegalArgumentException("File ends before a line is expected to contain an integer value ("
-                        + prefix + "<value>" + suffix + ").");
+                        + prefixRegex + "<value>" + suffixRegex + ").");
             }
-            String value = removePrefixSuffixFromLine(line, prefix, suffix);
+            String value = removePrefixSuffixFromLine(line, prefixRegex, suffixRegex);
             try {
                 return Long.parseLong(value);
             } catch (NumberFormatException e) {
@@ -207,34 +198,38 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
             return readStringValue("");
         }
 
-        public String readStringValue(String prefix) throws IOException {
-            return readStringValue(prefix, "");
+        public String readStringValue(String prefixRegex) throws IOException {
+            return readStringValue(prefixRegex, "");
         }
 
-        public String readStringValue(String prefix, String suffix) throws IOException {
+        public String readStringValue(String prefixRegex, String suffixRegex) throws IOException {
             String line = bufferedReader.readLine();
             if (line == null) {
                 throw new IllegalArgumentException("File ends before a line is expected to contain an string value ("
-                        + prefix + "<value>" + suffix + ").");
+                        + prefixRegex + "<value>" + suffixRegex + ").");
             }
-            return removePrefixSuffixFromLine(line, prefix, suffix);
+            return removePrefixSuffixFromLine(line, prefixRegex, suffixRegex);
         }
 
-        public String removePrefixSuffixFromLine(String line, String prefix, String suffix) {
+        public String removePrefixSuffixFromLine(String line, String prefixRegex, String suffixRegex) {
             String value = line.trim();
-            if (!value.startsWith(prefix)) {
-                throw new IllegalArgumentException("Read line (" + line + ") is expected to start with prefix ("
-                        + prefix + ").");
+            if (!value.matches("^" + prefixRegex + ".*")) {
+                throw new IllegalArgumentException("Read line (" + line + ") is expected to start with prefixRegex ("
+                        + prefixRegex + ").");
             }
-            value = value.substring(prefix.length());
-            if (!value.endsWith(suffix)) {
-                throw new IllegalArgumentException("Read line (" + line + ") is expected to end with suffix ("
-                        + suffix + ").");
+            value = value.replaceAll("^" + prefixRegex + "(.*)", "$1");
+            if (!value.matches(".*" + suffixRegex + "$")) {
+                throw new IllegalArgumentException("Read line (" + line + ") is expected to end with suffixRegex ("
+                        + suffixRegex + ").");
             }
-            value = value.substring(0, value.length() - suffix.length());
+            value = value.replaceAll("(.*)" + suffixRegex + "$", "$1");
             value = value.trim();
             return value;
         }
+
+        // ************************************************************************
+        // Split methods
+        // ************************************************************************
 
         public String[] splitBySpace(String line) {
             return splitBySpace(line, null);

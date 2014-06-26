@@ -68,8 +68,8 @@ public class TspImporter extends AbstractTxtSolutionImporter {
             travelingSalesmanTour = new TravelingSalesmanTour();
             travelingSalesmanTour.setId(0L);
             String firstLine = readStringValue();
-            if (firstLine.trim().startsWith("NAME :")) {
-                travelingSalesmanTour.setName(removePrefixSuffixFromLine(firstLine, "NAME :", ""));
+            if (firstLine.matches("\\s*NAME\\s*:.*")) {
+                travelingSalesmanTour.setName(removePrefixSuffixFromLine(firstLine, "\\s*NAME\\s*:", ""));
                 readTspLibFormat();
             } else {
                 travelingSalesmanTour.setName(FilenameUtils.getBaseName(inputFile.getName()));
@@ -96,9 +96,9 @@ public class TspImporter extends AbstractTxtSolutionImporter {
         }
 
         private void readTspLibHeaders() throws IOException {
-            readUntilConstantLine("TYPE : TSP");
-            cityListSize = readIntegerValue("DIMENSION :");
-            String edgeWeightType = readStringValue("EDGE_WEIGHT_TYPE :");
+            readUntilConstantLine("TYPE *: +TSP");
+            cityListSize = readIntegerValue("DIMENSION *:");
+            String edgeWeightType = readStringValue("EDGE_WEIGHT_TYPE *:");
             if (!edgeWeightType.equalsIgnoreCase("EUC_2D")) {
                 // Only Euclidean distance is implemented in City.getDistance(City)
                 throw new IllegalArgumentException("The edgeWeightType (" + edgeWeightType + ") is not supported.");

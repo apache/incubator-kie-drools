@@ -90,7 +90,7 @@ public class CurriculumCourseImporter extends AbstractTxtSolutionImporter {
             readUnavailablePeriodPenaltyList(
                     schedule, courseMap, periodMap, unavailablePeriodPenaltyListSize);
             readEmptyLine();
-            readConstantLine("END.");
+            readConstantLine("END\\.");
             createLectureList(schedule);
 
             int possibleForOneLectureSize = schedule.getPeriodList().size() * schedule.getRoomList().size();

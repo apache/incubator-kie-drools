@@ -186,29 +186,29 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter {
             }
 
             private void readHeader() throws IOException {
-                readRegexConstantLine("\\*+");
-                readStringValue("file with basedata            :");
-                readStringValue("initial value random generator:");
-                readRegexConstantLine("\\*+");
-                int projects = readIntegerValue("projects                      :");
+                readConstantLine("\\*+");
+                readStringValue("file with basedata *:");
+                readStringValue("initial value random generator *:");
+                readConstantLine("\\*+");
+                int projects = readIntegerValue("projects *:");
                 if (projects != 1) {
                     throw new IllegalArgumentException("The projects value (" + projects + ") should always be 1.");
                 }
-                jobListSize = readIntegerValue("jobs (incl. supersource/sink ):");
-                int horizon = readIntegerValue("horizon                       :");
+                jobListSize = readIntegerValue("jobs \\(incl\\. supersource/sink *\\) *:");
+                int horizon = readIntegerValue("horizon *:");
                 // Ignore horizon
             }
 
             private void readResourceList() throws IOException {
                 readConstantLine("RESOURCES");
-                int renewableResourceSize = readIntegerValue("- renewable                 :", "R");
+                int renewableResourceSize = readIntegerValue("\\- renewable *:", "R");
                 if (renewableResourceSize < globalResourceListSize) {
                     throw new IllegalArgumentException("The renewableResourceSize (" + renewableResourceSize
                             + ") can not be less than globalResourceListSize (" + globalResourceListSize + ").");
                 }
                 renewableLocalResourceSize = renewableResourceSize - globalResourceListSize;
-                nonrenewableLocalResourceSize = readIntegerValue("- nonrenewable              :", "N");
-                int doublyConstrainedResourceSize = readIntegerValue("- doubly constrained        :", "D");
+                nonrenewableLocalResourceSize = readIntegerValue("\\- nonrenewable *:", "N");
+                int doublyConstrainedResourceSize = readIntegerValue("\\- doubly constrained *:", "D");
                 if (doublyConstrainedResourceSize != 0) {
                     throw new IllegalArgumentException("The doublyConstrainedResourceSize ("
                             + doublyConstrainedResourceSize + ") should always be 0.");
@@ -233,12 +233,12 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter {
                 }
                 project.setLocalResourceList(localResourceList);
                 schedule.getResourceList().addAll(localResourceList);
-                readRegexConstantLine("\\*+");
+                readConstantLine("\\*+");
             }
 
             private void readProjectInformation() throws IOException {
                 readConstantLine("PROJECT INFORMATION:");
-                readConstantLine("pronr.  #jobs rel.date duedate tardcost  MPM-Time");
+                readConstantLine("pronr\\. +\\#jobs +rel\\.date +duedate +tardcost +MPM\\-Time");
                 String[] tokens = splitBySpacesOrTabs(readStringValue(), 6);
                 if (Integer.parseInt(tokens[0]) != 1) {
                     throw new IllegalArgumentException("The project information tokens (" + Arrays.toString(tokens)
@@ -249,12 +249,12 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter {
                             + ") index 1 should be " + (jobListSize - 2) +".");
                 }
                 // Ignore releaseDate, dueDate, tardinessCost and mpmTime
-                readRegexConstantLine("\\*+");
+                readConstantLine("\\*+");
             }
 
             private void readPrecedenceRelations() throws IOException {
                 readConstantLine("PRECEDENCE RELATIONS:");
-                readConstantLine("jobnr.    #modes  #successors   successors");
+                readConstantLine("jobnr\\. +\\#modes +\\#successors +successors");
                 List<Job> jobList = new ArrayList<Job>(jobListSize);
                 for (int i = 0; i < jobListSize; i++) {
                     Job job = new Job();
@@ -307,13 +307,13 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter {
                     }
                     job.setSuccessorJobList(successorJobList);
                 }
-                readRegexConstantLine("\\*+");
+                readConstantLine("\\*+");
             }
 
             private void readRequestDurations() throws IOException {
                 readConstantLine("REQUESTS/DURATIONS:");
                 splitBySpacesOrTabs(readStringValue());
-                readRegexConstantLine("\\-+");
+                readConstantLine("\\-+");
                 int resourceSize = globalResourceListSize + renewableLocalResourceSize + nonrenewableLocalResourceSize;
                 for (int i = 0; i < jobListSize; i++) {
                     Job job = project.getJobList().get(i);
@@ -356,7 +356,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter {
                         schedule.getResourceRequirementList().addAll(resourceRequirementList);
                     }
                 }
-                readRegexConstantLine("\\*+");
+                readConstantLine("\\*+");
             }
 
             private void readResourceAvailabilities() throws IOException {
@@ -373,7 +373,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter {
                         resource.setCapacity(capacity);
                     }
                 }
-                readRegexConstantLine("\\*+");
+                readConstantLine("\\*+");
             }
 
             private void detectPointlessSuccessor() {

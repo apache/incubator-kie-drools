@@ -114,7 +114,7 @@ public class DinnerPartyImporter extends AbstractTxtSolutionImporter {
         private void readJobListGuestListAndHobbyPracticianList(DinnerParty dinnerParty)
                 throws IOException {
             readConstantLine("Code,Name,JobType,Job,Gender,Hobby1,Hobby2,Hobby3");
-            readConstantLine("-------------------------------------------------");
+            readConstantLine("\\-+");
             int guestSize = dinnerParty.getSeatList().size();
 
             List<Guest> guestList = new ArrayList<Guest>(guestSize);
