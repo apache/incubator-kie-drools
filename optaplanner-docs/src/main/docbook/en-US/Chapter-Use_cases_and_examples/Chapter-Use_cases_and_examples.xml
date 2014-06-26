@@ -160,7 +160,7 @@
                 </listitem>
 
                 <listitem>
-                  <para><link xlink:href="http://www.tsp.gatech.edu/">TSP web</link></para>
+                  <para><link xlink:href="http://www.math.uwaterloo.ca/tsp/">TSP web</link></para>
                 </listitem>
               </itemizedlist></entry>
 
@@ -953,7 +953,7 @@
 
         <para>The problem is defined by <link
         xlink:href="http://en.wikipedia.org/wiki/Travelling_salesman_problem">Wikipedia</link>. It is <link
-        xlink:href="http://www.tsp.gatech.edu/">one of the most intensively studied problems</link> in computational
+        xlink:href="http://www.math.uwaterloo.ca/tsp/">one of the most intensively studied problems</link> in computational
         mathematics. Yet, in the real world, it's often only part of a planning problem, along with other constraints,
         such as employee shift rostering constraints.</para>
       </section>
