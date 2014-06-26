@@ -57,7 +57,8 @@
     <para>In order to store the document using the <emphasis>Pluggable Variable Persistence</emphasis> you'll have to
       define your <emphasis>Marshalling Strategy</emphasis> to manage the uploaded Documents.
       To start create a Maven project with your favourite IDE and add the following dependencies:
-      <programlisting language="xml">
+    </para>
+    <programlisting language="xml">
 &lt;dependency&gt;
   &lt;groupId&gt;org.kie&lt;/groupId&gt;
   &lt;artifactId&gt;kie-api&lt;/artifactId&gt;
@@ -68,10 +69,12 @@
   &lt;artifactId&gt;jbpm-document&lt;/artifactId&gt;
   &lt;version&gt;{version}&lt;/version&gt;
 &lt;/dependency&gt;
-      </programlisting>
+    </programlisting>
+    <para>
       Once you did that is time to create your <emphasis>Marshalling Strategy</emphasis>, to do so you just have to create
       a class implementing:
-      <programlisting language="java">
+    </para>
+    <programlisting language="java">
 package org.kie.api.marshalling;
 
 public interface ObjectMarshallingStrategy {
@@ -91,9 +94,8 @@ public interface ObjectMarshallingStrategy {
         ClassLoader classloader ) throws IOException, ClassNotFoundException;
 
   public Context createContext();
-}
-      </programlisting>
-
+    </programlisting>
+    <para>
       The methods to implement are:
       <itemizedlist>
         <listitem>
@@ -130,7 +132,8 @@ public interface ObjectMarshallingStrategy {
       edit the <emphasis>kie-deployment-descriptor.xml</emphasis> file located on <code>&lt;yourproject&gt;/src/main/resources/META-INF</code>
       and add your <emphasis>Marshalling Strategy</emphasis> to the <code>&lt;marshalling-strategies&gt;</code> list
       like this:
-      <programlisting language="xml">
+    </para>
+    <programlisting language="xml">
 &lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;deployment-descriptor
     xsi:schemaLocation="http://www.jboss.org/jbpm deployment-descriptor.xsd"
@@ -156,8 +159,7 @@ public interface ObjectMarshallingStrategy {
   &lt;configurations/&gt;
   &lt;required-roles/&gt;
 &lt;/deployment-descriptor&gt;
-      </programlisting>
-    </para>
+    </programlisting>
     <para>
       Since this is done you're able to build your project and upload your documents on your process.
     </para>
