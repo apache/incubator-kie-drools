@@ -23,8 +23,8 @@
       <para>Imagine that you have a form that contains a date field “Creation date” that has to be set
         by default with the current date. To do that you should edit the field properties and set
         a Default value formula like:
-        <programlisting language="java">=new java.util.Date();</programlisting>
       </para>
+      <programlisting language="java">=new java.util.Date();</programlisting>
 
       <figure>
         <title>Setting default value formula</title>
@@ -94,11 +94,9 @@
           </mediaobject>
         </screenshot>
       </figure>
-      <para>Is possible to create formulas to operate with values stored in subforms using expressions
-        like
-        <programlisting language="shell">={a_field/a_subform_field}</programlisting>
-        Look at the next image to see how it works:
-      </para>
+      <para>Is possible to create formulas to operate with values stored in subforms using expressions like</para>
+      <programlisting language="shell">={a_field/a_subform_field}</programlisting>
+      <para>Look at the next image to see how it works:</para>
       <figure>
         <screenshot>
           <mediaobject>
@@ -111,9 +109,8 @@
       <para>This form has a subform field called po_header that is showing a form with the fields
         header_creationDate, header_customer and header_project. We want the Description field
         on our parent form to show some information from the header. Look at the Description
-        field properties formula.
-        <programlisting language="shell">="Customer: " + {po_header/header_customer} + " Project: " + {po_header/header_project}</programlisting>
-      </para>
+        field properties formula.</para>
+      <programlisting language="shell">="Customer: " + {po_header/header_customer} + " Project: " + {po_header/header_project}</programlisting>
       <para>This formula returns a text when the fields header_customer and header_projects are filled
         on the child form, so from now the parent form will be filled like this:
       </para>
@@ -182,9 +179,9 @@
         </screenshot>
       </figure>
       <para>As you can see that field is being shown as a select box and it has a range formula that
-        specifies the values like this:
-        <programlisting language="shell">{approve,Approve order;reject,Reject order;modifications,Request Modifications}</programlisting>
-        This expression is defining 3 duos of value/”text to show” separated with the character ‘,’
+        specifies the values like this:</para>
+      <programlisting language="shell">{approve,Approve order;reject,Reject order;modifications,Request Modifications}</programlisting>
+      <para>This expression is defining 3 duos of value/”text to show” separated with the character ‘,’
         and each of this duos is separated from each other other with the ‘;’ character. So due
         this formula the resulting select box will show:
       </para>
