@@ -505,20 +505,16 @@ $ mvn exec:exec
     </mediaobject>
 
     <para>See <link linkend="architectureOverview">the architecture overview</link> to learn more about the optional
-    integration with Drools. </para>
+    integration with Drools.</para>
   </section>
 
   <section xml:id="questionsIssuesAndBlog">
     <title>Questions, issues and blog</title>
 
-    <para>Your questions and comments are welcome on <link xlink:href="http://www.jboss.org/drools/lists.html">the user
-    mailing list</link>. Start the subject of your mail with <literal>[planner]</literal>. You can read/write to the
-    user mailing list without littering your mailbox through <link
-    xlink:href="http://drools.46999.n3.nabble.com/Drools-User-forum-f47000.html">this web forum</link> or <link
-    xlink:href="nntp://news.gmane.org/gmane.comp.java.drools.user">this newsgroup</link>.</para>
-
-    <para>Feel free to report an issue (such as a bug, improvement or a new feature request) for the OptaPlanner code or
-    for this manual to <link xlink:href="https://issues.jboss.org/browse/PLANNER">our issue tracker</link>.</para>
+    <para>Questions and suggestions are welcome on <link
+    xlink:href="http://www.optaplanner.org/community/forum.html">our forum</link>. Report any issue (such as a bug,
+    improvement or a new feature request) for the OptaPlanner code or for this manual in <link
+    xlink:href="https://issues.jboss.org/browse/PLANNER">our issue tracker</link>.</para>
 
     <para>Pull requests are very welcome and get priority treatment! By open sourcing your improvements, you 'll benefit
     from our peer review and from our improvements made upon your improvements.</para>
@@ -526,7 +522,8 @@ $ mvn exec:exec
     <para>Check <link xlink:href="http://www.optaplanner.org/blog/">our blog</link>, Google+ (<link
     xlink:href="https://plus.google.com/+OptaPlannerOrg">OptaPlanner</link>, <link
     xlink:href="https://plus.google.com/+GeoffreyDeSmet">Geoffrey De Smet</link>) and twitter (<link
-    xlink:href="http://twitter.com/geoffreydesmet">Geoffrey De Smet</link>) for news and articles. If OptaPlanner helps
-    you solve your problem, don't forget to blog or tweet about it!</para>
+    xlink:href="http://twitter.com/optaplanner">OptaPlanner</link>, <link
+    xlink:href="http://twitter.com/geoffreydesmet">Geoffrey De Smet</link>) for news and articles. <emphasis
+    role="bold">If OptaPlanner helps you, help us by blogging or tweeting about it!</emphasis></para>
   </section>
 </chapter>
