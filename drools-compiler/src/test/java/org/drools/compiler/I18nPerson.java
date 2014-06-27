@@ -27,6 +27,7 @@ public class I18nPerson implements Serializable {
     private String élève; // "student" in French (creates a weird getter/setter name)
     private String имя; // "name" in Russian
     private String 名称; // "name" in Chinese
+    private boolean フラグ; // "flag" in Japanese
 
     public String getGarçon() {
         return garçon;
@@ -60,4 +61,11 @@ public class I18nPerson implements Serializable {
         this.名称 = 名称;
     }
 
+    public boolean isフラグ() {
+        return フラグ;
+    }
+
+    public void setフラグ(boolean フラグ) {
+        this.フラグ = フラグ;
+    }
 }
