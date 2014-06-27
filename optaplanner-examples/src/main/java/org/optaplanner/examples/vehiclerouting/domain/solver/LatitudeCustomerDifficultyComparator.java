@@ -22,7 +22,7 @@ import java.util.Comparator;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 
-public class VrpCustomerDifficultyComparator implements Comparator<Customer>, Serializable {
+public class LatitudeCustomerDifficultyComparator implements Comparator<Customer>, Serializable {
 
     public int compare(Customer a, Customer b) {
         return new CompareToBuilder()
