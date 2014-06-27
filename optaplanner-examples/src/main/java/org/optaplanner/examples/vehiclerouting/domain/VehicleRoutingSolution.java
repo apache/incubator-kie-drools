@@ -110,7 +110,7 @@ public class VehicleRoutingSolution extends AbstractPersistable implements Solut
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(locationList);
         facts.addAll(depotList);
-        // Do not add the planning entity's (customerList) because that will be done automatically
+        // Do not add the planning entities (vehicleList, customerList) because that will be done automatically
         return facts;
     }
 
