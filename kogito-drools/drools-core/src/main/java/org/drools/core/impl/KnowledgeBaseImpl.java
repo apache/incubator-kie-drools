@@ -579,8 +579,8 @@ public class KnowledgeBaseImpl
     private void populateGlobalsMap(Map<String, String> globs) throws ClassNotFoundException {
         this.globals = new HashMap<String, Class<?>>();
         for (Map.Entry<String, String> entry : globs.entrySet()) {
-            this.globals.put(entry.getKey(),
-                             this.rootClassLoader.loadClass(entry.getValue()));
+            addGlobal(entry.getKey(),
+                      this.rootClassLoader.loadClass(entry.getValue()));
         }
     }
 
@@ -1047,8 +1047,8 @@ public class KnowledgeBaseImpl
                         pkg.addGlobal( identifier,
                                        this.rootClassLoader.loadClass( type ) );
                         // this isn't a package merge, it's adding to the rulebase, but I've put it here for convienience
-                        this.globals.put( identifier,
-                                          this.rootClassLoader.loadClass( type ) );
+                        addGlobal(identifier,
+                                  this.rootClassLoader.loadClass(type));
                     }
                 }
             }
@@ -1107,6 +1107,10 @@ public class KnowledgeBaseImpl
                 pkg.addProcess(flow);
             }
         }
+    }
+
+    public void addGlobal(String identifier, Class clazz) {
+        this.globals.put( identifier, clazz );
     }
 
     protected void setupRete() {

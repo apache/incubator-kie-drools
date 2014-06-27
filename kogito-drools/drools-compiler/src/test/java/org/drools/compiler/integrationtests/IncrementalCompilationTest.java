@@ -1124,4 +1124,53 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                       results4.getRemovedMessages().size() );
 
     }
+
+    @Test
+    public void testKJarUpgradeSameSessionAddingGlobal() throws Exception {
+        // DROOLS-523
+        String drl1 = "package org.drools.compiler\n" +
+                      "global java.lang.String foo\n" +
+                      "rule R1 when\n" +
+                      "   $m : Message()\n" +
+                      "then\n" +
+                      "end\n";
+
+        String drl2_1 = "package org.drools.compiler\n" +
+                        "rule R2_1 when\n" +
+                        "   $m : Message( message == \"Hi Universe\" )\n" +
+                        "then\n" +
+                        "end\n";
+
+        String drl2_2 = "package org.drools.compiler\n" +
+                        "global java.lang.String foo\n" +
+                        "rule R2_2 when\n" +
+                        "   $m : Message( message == foo )\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl1, drl2_1 );
+
+        // Create a session and fire rules
+        KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+        KieSession ksession = kc.newKieSession();
+        ksession.insert( new Message( "Hello World" ) );
+        assertEquals( 1, ksession.fireAllRules() );
+
+        // Create a new jar for version 1.1.0
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        km = createAndDeployJar( ks, releaseId2, drl1, drl2_2 );
+
+        // try to update the container to version 1.1.0
+        kc.updateToVersion( releaseId2 );
+
+        ksession.setGlobal("foo", "Hello World");
+
+        // continue working with the session
+        ksession.insert( new Message( "Hello World" ) );
+        assertEquals( 2, ksession.fireAllRules() );
+    }
 }
