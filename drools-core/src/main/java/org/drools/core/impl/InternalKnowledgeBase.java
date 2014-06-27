@@ -1,6 +1,5 @@
 package org.drools.core.impl;
 
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.common.InternalWorkingMemory;
@@ -12,12 +11,13 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteooBuilder;
-import org.drools.core.rule.*;
+import org.drools.core.rule.InvalidPatternException;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.TripleStore;
-import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 
 import java.io.IOException;
@@ -96,6 +96,8 @@ public interface InternalKnowledgeBase extends KnowledgeBase {
 
     void addRule( InternalKnowledgePackage pkg, RuleImpl rule ) throws InvalidPatternException;
     void removeRule( InternalKnowledgePackage pkg, RuleImpl rule ) throws InvalidPatternException;
+
+    void addGlobal(String identifier, Class clazz);
 
     void removeObjectsGeneratedFromResource(Resource resource);
 

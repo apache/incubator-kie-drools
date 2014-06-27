@@ -1474,6 +1474,9 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                                                    clazz);
                 this.globals.put(identifier,
                                  clazz);
+                if (kBase != null) {
+                    kBase.addGlobal(identifier, clazz);
+                }
             } catch (final ClassNotFoundException e) {
                 addBuilderResult(new GlobalError(global, e.getMessage()));
                 e.printStackTrace();
