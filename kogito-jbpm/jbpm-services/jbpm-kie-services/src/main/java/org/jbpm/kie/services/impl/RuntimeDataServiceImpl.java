@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -164,9 +165,15 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         List<ProcessInstanceDesc> processInstances = commandService.execute(
 				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstancesByDeploymentId",
                 params));
-        Collection<ProcessInstanceDesc> outputCollection = new HashSet<ProcessInstanceDesc>();
-        CollectionUtils.select(processInstances, new SecureInstancePredicate(identityProvider.getRoles()), outputCollection);
-        return Collections.unmodifiableCollection(outputCollection);
+        
+        try {
+	        Collection<ProcessInstanceDesc> outputCollection = new HashSet<ProcessInstanceDesc>();
+	        CollectionUtils.select(processInstances, new SecureInstancePredicate(identityProvider.getRoles()), outputCollection);
+	        return Collections.unmodifiableCollection(outputCollection);
+        } catch(ContextNotActiveException e) {
+        	// in case there is no way to get roles from identity provider return complete list
+        	return processInstances;
+        }
     }
 
 
