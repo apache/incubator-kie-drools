@@ -6151,4 +6151,53 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.insert(new Reading("t1", -6));
         ksession.fireAllRules();
     }
+
+    public static class C1 {
+        private int counter = 0;
+        private final List<C2> c2s = Arrays.asList(new C2(), new C2());
+
+        public List<C2> getC2s() { return c2s; }
+
+        public int getSize() { return getC2s().size(); }
+
+        public int getCounter() { return counter; }
+        public void setCounter(int counter) { this.counter = counter; }
+    }
+
+    public static class C2 {
+        private final List<C3> c3s = Arrays.asList(new C3(1), new C3(2));
+        public List<C3> getC3s() { return c3s; }
+    }
+
+    public static class C3 {
+        public final int value;
+        public C3(int value) { this.value = value; }
+        public int getValue() { return value; }
+    }
+
+    @Test
+    public void testDeleteFromLeftTuple() throws Exception {
+        // DROOLS-518
+        String drl =
+                "import " + C1.class.getCanonicalName() + ";\n" +
+                "import " + C2.class.getCanonicalName() + ";\n" +
+                "import " + C3.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "    $c1 : C1 ( $c2s : c2s, $c2 : c2s.get(counter), counter < size )\n" +
+                "    C2 ( $c3s : c3s, this == $c2 ) from $c2s\n" +
+                "    accumulate( C3 ( $value : value ) from $c3s;\n" +
+                "                $sum : sum($value)\n" +
+                "              )\n" +
+                "then\n" +
+                "    $c1.setCounter($c1.getCounter() + 1);\n" +
+                "    update( $c1 );\n" +
+                "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession ksession = helper.build().newKieSession();
+
+        ksession.insert(new C1());
+        ksession.fireAllRules();
+    }
 }

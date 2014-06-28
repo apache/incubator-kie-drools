@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
+
 /**
 * Created with IntelliJ IDEA.
 * User: mdproctor
@@ -199,25 +201,7 @@ public class PhreakFromNode {
 
             for (RightTuple rightTuple : previousMatches.values()) {
                 for (RightTuple current = rightTuple; current != null; current = (RightTuple) rightIt.next(current)) {
-                    LeftTuple childLeftTuple = current.getFirstChild();
-                    if (childLeftTuple != null) {
-                        // childLeftTuple is null, if the constraints in the 'from' pattern fail
-                        childLeftTuple.unlinkFromLeftParent();
-                        childLeftTuple.unlinkFromRightParent();
-
-                        switch (childLeftTuple.getStagedType()) {
-                            // handle clash with already staged entries
-                            case LeftTuple.INSERT:
-                                stagedLeftTuples.removeInsert(childLeftTuple);
-                                break;
-                            case LeftTuple.UPDATE:
-                                stagedLeftTuples.removeUpdate(childLeftTuple);
-                                break;
-                        }
-
-                        childLeftTuple.setPropagationContext(propagationContext);
-                        trgLeftTuples.addDelete(childLeftTuple);
-                    }
+                    deleteChildLeftTuple(propagationContext, trgLeftTuples, stagedLeftTuples, current.getFirstChild());
                 }
             }
 
@@ -320,35 +304,30 @@ public class PhreakFromNode {
                 trgLeftTuples.addInsert(childLeftTuple);
             } else {
                 LeftTuple childLeftTuple = rightTuple.firstChild;
-
-                switch (childLeftTuple.getStagedType()) {
-                    // handle clash with already staged entries
-                    case LeftTuple.INSERT:
-                        stagedLeftTuples.removeInsert(childLeftTuple);
-                        break;
-                    case LeftTuple.UPDATE:
-                        stagedLeftTuples.removeUpdate(childLeftTuple);
-                        break;
-                }
-
                 childLeftTuple.setPropagationContext(propagationContext);
-                trgLeftTuples.addUpdate(childLeftTuple);
+                updateChildLeftTuple(childLeftTuple, stagedLeftTuples, trgLeftTuples);
             }
         } else {
-            LeftTuple childLeftTuple = rightTuple.firstChild;
-            if (childLeftTuple != null) {
-                switch (childLeftTuple.getStagedType()) {
-                    // handle clash with already staged entries
-                    case LeftTuple.INSERT:
-                        stagedLeftTuples.removeInsert(childLeftTuple);
-                        break;
-                    case LeftTuple.UPDATE:
-                        stagedLeftTuples.removeUpdate(childLeftTuple);
-                        break;
-                }
-                childLeftTuple.setPropagationContext(propagationContext);
-                trgLeftTuples.addDelete(childLeftTuple);
+            deleteChildLeftTuple(propagationContext, trgLeftTuples, stagedLeftTuples, rightTuple.firstChild);
+        }
+    }
+
+    private void deleteChildLeftTuple(PropagationContext propagationContext, LeftTupleSets trgLeftTuples, LeftTupleSets stagedLeftTuples, LeftTuple childLeftTuple) {
+        if (childLeftTuple != null) {
+            childLeftTuple.unlinkFromLeftParent();
+            childLeftTuple.unlinkFromRightParent();
+
+            switch (childLeftTuple.getStagedType()) {
+                // handle clash with already staged entries
+                case LeftTuple.INSERT:
+                    stagedLeftTuples.removeInsert(childLeftTuple);
+                    break;
+                case LeftTuple.UPDATE:
+                    stagedLeftTuples.removeUpdate(childLeftTuple);
+                    break;
             }
+            childLeftTuple.setPropagationContext(propagationContext);
+            trgLeftTuples.addDelete(childLeftTuple);
         }
     }
 }
