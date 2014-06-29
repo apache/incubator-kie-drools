@@ -181,8 +181,8 @@ public abstract class AbstractKieModule implements InternalKieModule {
 		AbstractKieModule kModule = (AbstractKieModule) kieProject
 				.getKieModuleForKBase(kBaseModel.getName());
 		Collection<String> fileNames = kModule.getFileNames();
-		KnowledgeBuilder kbuilder = compileKieBase(kModule, kBaseModel,
-				kieProject, fileNames, messages);
+		KnowledgeBuilder kbuilder = compileKieBase(kBaseModel, kieProject,
+				fileNames, messages);
 
 		// cache KnowledgeBuilder and results
 		kModule.cacheKnowledgeBuilderForKieBase(kBaseModel.getName(), kbuilder);
@@ -191,10 +191,11 @@ public abstract class AbstractKieModule implements InternalKieModule {
 		return kbuilder;
 	}
 
-	static KnowledgeBuilder compileKieBase(AbstractKieModule kModule,
-			KieBaseModelImpl kBaseModel, KieProject kieProject,
-			Collection<String> fileNames, ResultsImpl messages) {
-
+	static KnowledgeBuilder compileKieBase(KieBaseModelImpl kBaseModel,
+			KieProject kieProject, Collection<String> fileNames,
+			ResultsImpl messages) {
+		AbstractKieModule kModule = (AbstractKieModule) kieProject
+				.getKieModuleForKBase(kBaseModel.getName());
 		KnowledgeBuilderConfigurationImpl pconf = new KnowledgeBuilderConfigurationImpl(
 				kieProject.getClonedClassLoader());
 		pconf.setCompilationCache(kModule.getCompilationCache(kBaseModel
@@ -207,12 +208,15 @@ public abstract class AbstractKieModule implements InternalKieModule {
 		Map<String, InternalKieModule> assets = new HashMap<String, InternalKieModule>();
 
 		boolean allIncludesAreValid = true;
+
 		for (String include : kieProject.getTransitiveIncludes(kBaseModel)) {
 			if (StringUtils.isEmpty(include)) {
 				continue;
 			}
+
 			InternalKieModule includeModule = kieProject
 					.getKieModuleForKBase(include);
+
 			if (includeModule == null) {
 				String text = "Unable to build KieBase, could not find include: "
 						+ include;
@@ -222,6 +226,7 @@ public abstract class AbstractKieModule implements InternalKieModule {
 				allIncludesAreValid = false;
 				continue;
 			}
+
 			addFiles(assets, kieProject.getKieBaseModel(include),
 					includeModule, fileNames);
 		}
