@@ -68,6 +68,14 @@ public class BuildMojo extends AbstractMojo {
 	 * @required
 	 */
 	private MavenProject project;
+	
+	/**
+	 * Max compilation thread number,
+	 * 
+	 * @parameter default-value="4"
+	 * @required
+	 */
+	private int numThreads;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		ClassLoader contextClassLoader = Thread.currentThread()
@@ -84,16 +92,21 @@ public class BuildMojo extends AbstractMojo {
 			Thread.currentThread().setContextClassLoader(
 					getProjectClassLoader(urls));
 
-			KieProject kieProject = createKieProject(kmoduleDeps);
-			ResultsImpl messages = kieProject.verify();
+			ResultsImpl messages = new ResultsImpl();
+			InternalKieModule kieModule = createInternalKieModule(kmoduleDeps);
+
+			KieServices ks = KieServices.Factory.get();
+			KieContainerImpl kContainer = (KieContainerImpl) ks
+					.newKieContainer(kieModule.getReleaseId());
+
+			KieProject kieProject = kContainer.getKieProject();
+
+			kieProject.buildProject(kieModule, new DiskResourceStore(
+					outputDirectory), messages, numThreads);
 
 			if (messages.hasMessages(ERROR)) {
 				throw new MojoFailureException("Build failed!");
 			}
-			// else {
-			// new KieMetaInfoBuilder(new DiskResourceStore(outputDirectory),
-			// (InternalKieModule) kModule).writeKieModuleMetaInfo();
-			// }
 		} catch (Exception ex) {
 			throw new MojoFailureException("Something bad happened!", ex);
 		} finally {
@@ -103,7 +116,8 @@ public class BuildMojo extends AbstractMojo {
 		getLog().info("KieModule successfully built!");
 	}
 
-	private KieProject createKieProject(List<InternalKieModule> kmoduleDeps) {
+	private InternalKieModule createInternalKieModule(
+			List<InternalKieModule> kmoduleDeps) {
 		KieServices ks = KieServices.Factory.get();
 		KieRepository kr = ks.getRepository();
 		InternalKieModule kModule = (InternalKieModule) kr.addKieModule(ks
@@ -113,11 +127,7 @@ public class BuildMojo extends AbstractMojo {
 			kModule.addKieDependency(kmoduleDep);
 		}
 
-		KieContainerImpl kContainer = (KieContainerImpl) ks
-				.newKieContainer(kModule.getReleaseId());
-
-		KieProject kieProject = kContainer.getKieProject();
-		return kieProject;
+		return kModule;
 	}
 
 	private ClassLoader getProjectClassLoader(Set<URL> urls) {

@@ -2,6 +2,7 @@ package org.drools.compiler.kie.builder.impl;
 
 import static java.lang.Math.abs;
 import static java.util.concurrent.Executors.newFixedThreadPool;
+import static org.drools.compiler.kie.builder.impl.AbstractKieModule.buildKnowledgePackages;
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.compileKieBase;
 
 import java.text.DecimalFormat;
@@ -15,6 +16,8 @@ import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 
+import org.drools.compiler.commons.jci.stores.ResourceStore;
+import org.drools.compiler.kie.builder.impl.KieMetaInfoBuilder.MetaInfos;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.kie.api.builder.Message.Level;
@@ -46,12 +49,18 @@ public abstract class AbstractKieProject implements KieProject {
 
 	public ResultsImpl verify() {
 		ResultsImpl messages = new ResultsImpl();
-		verify(messages, 1);
-
+		verify(messages);
 		return messages;
 	}
 
-	public void verify(ResultsImpl messages, int numThreads) {
+	public void verify(ResultsImpl messages) {
+		for (KieBaseModel model : kBaseModels.values()) {
+			buildKnowledgePackages((KieBaseModelImpl) model, this, messages);
+		}
+	}
+
+	public ResultsImpl buildProject(InternalKieModule kModule, ResourceStore trgMfs,
+			ResultsImpl messages, int numThreads) {
 		Collection<KieBaseModel> kbases = kBaseModels.values();
 		ExecutorService executor = newFixedThreadPool(numThreads);
 		CompletionService<JobResult> compService = new ExecutorCompletionService<JobResult>(
@@ -61,8 +70,9 @@ public abstract class AbstractKieProject implements KieProject {
 			compService.submit(new BuildJob(this, kbase, messages));
 		}
 
-		checkAllCompletedJobs(kbases, executor, compService);
+		checkAllCompletedJobs(kModule, trgMfs, kbases, executor, compService);
 
+		return messages;
 	}
 
 	public KieBaseModel getDefaultKieBaseModel() {
@@ -174,17 +184,25 @@ public abstract class AbstractKieProject implements KieProject {
 		}
 	}
 
-	private void checkAllCompletedJobs(Collection<KieBaseModel> kbases,
+	private void checkAllCompletedJobs(InternalKieModule kModule,
+			ResourceStore trgMfs, Collection<KieBaseModel> kbases,
 			ExecutorService executor, CompletionService<JobResult> compService) {
 		try {
 			int jobsSize = kbases.size();
+			MetaInfos metaInfos = null;
+			KieMetaInfoBuilder kMetaInfoBuilder = new KieMetaInfoBuilder(
+					trgMfs, kModule);
 
 			for (int i = 0; i < jobsSize; ++i) {
 				JobResult jobResult = compService.take().get();
-				// addToCompilationCache(jobResult);
-
 				checkJob(jobsSize, i, jobResult);
+
+				metaInfos = kMetaInfoBuilder
+						.writeKieModuleMetaInfoIncrementally(metaInfos,
+								jobResult.kBuilder, jobResult.baseName);
 			}
+			
+			kMetaInfoBuilder.writeKieModuleMetaInfo(metaInfos);
 		} catch (Exception ex) {
 			log.error("Something bad happened!", ex);
 		} finally {
@@ -192,7 +210,7 @@ public abstract class AbstractKieProject implements KieProject {
 			executor.shutdownNow();
 		}
 	}
-	
+
 	private void checkJob(int jobsSize, int i, JobResult jobResult) {
 		if (jobResult.messages.hasMessages(Level.ERROR)) {
 			log.error("Compilation failed  (" + (i + 1) + "/" + jobsSize
