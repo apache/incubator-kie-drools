@@ -8,10 +8,11 @@ import org.drools.core.reteoo.SegmentMemory;
  */
 public interface Memory extends LinkedListNode<Memory> {
     
-    public short getNodeType();
+    short getNodeType();
     
-    public SegmentMemory getSegmentMemory();
+    SegmentMemory getSegmentMemory();
 
-    public void setSegmentMemory(SegmentMemory segmentMemory);
+    void setSegmentMemory(SegmentMemory segmentMemory);
 
+    void reset();
 }

@@ -63,7 +63,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -132,7 +131,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
         this.kBase.readLock();
         try {
             ksession = (StatefulKnowledgeSession) wmFactory.createWorkingMemory(this.kBase.nextWorkingMemoryCounter(), this.kBase,
-                                                                                    (SessionConfiguration) this.conf, this.environment);
+                                                                                (SessionConfiguration) this.conf, this.environment);
 
             StatefulKnowledgeSessionImpl ksessionImpl = (StatefulKnowledgeSessionImpl) ksession;
 

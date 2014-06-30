@@ -185,5 +185,9 @@ public class RightTupleIndexRBTree implements RightTupleMemory, Externalizable {
         public boolean isFullIterator() {
             return false;
         }
-    }  
+    }
+
+    public void clear() {
+        tree = new RightTupleRBTree<Comparable<Comparable>>();
+    }
 }

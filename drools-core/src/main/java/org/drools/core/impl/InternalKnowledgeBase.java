@@ -1,6 +1,7 @@
 package org.drools.core.impl;
 
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
@@ -11,12 +12,14 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteooBuilder;
+import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.TripleStore;
 import org.kie.api.io.Resource;
+import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 
@@ -76,6 +79,8 @@ public interface InternalKnowledgeBase extends KnowledgeBase {
 
     void disposeStatefulSession(StatefulKnowledgeSessionImpl statefulSession);
 
+    StatefulKnowledgeSessionImpl getCachedSession(SessionConfiguration config, Environment environment);
+
     TripleStore getTripleStore();
 
     TraitRegistry getTraitRegistry();
@@ -93,6 +98,8 @@ public interface InternalKnowledgeBase extends KnowledgeBase {
     InternalWorkingMemory[] getWorkingMemories();
 
     void invalidateSegmentPrototype(LeftTupleSource tupleSource);
+    SegmentMemory createSegmentFromPrototype(InternalWorkingMemory wm, LeftTupleSource tupleSource);
+    SegmentMemory.Prototype getSegmentPrototype(SegmentMemory segment);
 
     void addRule( InternalKnowledgePackage pkg, RuleImpl rule ) throws InvalidPatternException;
     void removeRule( InternalKnowledgePackage pkg, RuleImpl rule ) throws InvalidPatternException;

@@ -33,6 +33,7 @@ import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.ConcurrentNodeMemories;
+import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.EventFactHandle;
@@ -436,11 +437,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                 logger.close();
             } catch (Exception e) { /* the logger was already closed, swallow */ }
         }
-        this.kBase.disposeStatefulSession( this );
 
-        if (this.kBase.getConfiguration().isMBeansEnabled()) {
-            DroolsManagementAgent.getInstance().unregisterKnowledgeSession(this);
-        }
         for (WorkingMemoryEntryPoint ep : this.entryPoints.values()) {
             ep.dispose();
         }
@@ -455,7 +452,13 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         if (timerService != null) {
             this.timerService.shutdown();
         }
+
         alive = false;
+
+        this.kBase.disposeStatefulSession( this );
+        if (this.kBase.getConfiguration().isMBeansEnabled()) {
+            DroolsManagementAgent.getInstance().unregisterKnowledgeSession(this);
+        }
     }
 
     public boolean isAlive() {
@@ -938,6 +941,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                               value );
         }
 
+        @Override
+        public void clear() {
+            if (globals instanceof GlobalResolver) {
+                ((GlobalResolver)globals).clear();
+            }
+        }
     }
 
     // ------------------------------------------------------------
@@ -981,7 +990,35 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void reset() {
-        throw new UnsupportedOperationException( "This should not be called" );
+        if (actionQueue != null) {
+            actionQueue.clear();
+        }
+
+        if (nodeMemories != null) {
+            nodeMemories.resetAllMemories(this);
+        }
+
+        ((DefaultAgenda)this.agenda).reset();
+
+        this.globalResolver.clear();
+        this.kieBaseEventListeners.clear();
+        this.handleFactory.clear( 0, 0 );
+        this.propagationIdCounter.set( 0 );
+        this.opCounter.set( 0 );
+        this.lastIdleTimestamp.set( -1 );
+
+        initTransient();
+
+        timerService = TimerServiceFactory.getTimerService(this.config);
+        ((AcceptsTimerJobFactoryManager) timerService).setTimerJobFactoryManager( config.getTimerJobFactoryManager() );
+
+        if (this.processRuntime != null) {
+            this.processRuntime = createProcessRuntime();
+        }
+
+        initInitialFact(kBase, null);
+
+        alive = true;
     }
 
     public void reset(int handleId,
@@ -2106,5 +2143,4 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
         return this.marshallingStore;
     }
-
 }

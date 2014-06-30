@@ -197,7 +197,7 @@ public class SegmentUtilities {
     }
 
     private static SegmentMemory restoreSegmentFromPrototype(InternalWorkingMemory wm, LeftTupleSource segmentRoot, int nodeTypesInSegment) {
-        SegmentMemory smem = ((KnowledgeBaseImpl)wm.getKnowledgeBase()).getSegmentFromPrototype(wm, segmentRoot);
+        SegmentMemory smem = wm.getKnowledgeBase().createSegmentFromPrototype(wm, segmentRoot);
         if ( smem != null ) {
             // there is a prototype for this segment memory
             for (NetworkNode node : smem.getNodesInSegment()) {

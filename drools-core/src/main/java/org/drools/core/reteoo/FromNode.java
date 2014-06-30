@@ -207,7 +207,7 @@ public class FromNode extends LeftTupleSource
                                           this.betaConstraints.createContext(),
                                           NodeTypeEnums.FromNode );
         return new FromMemory( beta,
-                               this.dataProvider.createContext(),
+                               this.dataProvider,
                                this.alphaConstraints );
     }
    
@@ -274,15 +274,18 @@ public class FromNode extends LeftTupleSource
         Memory {
         private static final long serialVersionUID = 510l;
 
+        private DataProvider      dataProvider;
+
         public BetaMemory         betaMemory;
         public Object             providerContext;
         public ContextEntry[]     alphaContexts;
 
         public FromMemory(BetaMemory betaMemory,
-                          Object providerContext,
+                          DataProvider dataProvider,
                           AlphaNodeFieldConstraint[] constraints) {
             this.betaMemory = betaMemory;
-            this.providerContext = providerContext;
+            this.dataProvider = dataProvider;
+            this.providerContext = dataProvider.createContext();
             this.alphaContexts = new ContextEntry[constraints.length];
             for ( int i = 0; i < constraints.length; i++ ) {
                 this.alphaContexts[i] = constraints[i].createContextEntry();
@@ -308,7 +311,11 @@ public class FromNode extends LeftTupleSource
         public void setBetaMemory(BetaMemory betaMemory) {
             this.betaMemory = betaMemory;
         }
-                
+
+        public void reset() {
+            this.betaMemory.reset();
+            this.providerContext = dataProvider.createContext();
+        }
     }
     
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,

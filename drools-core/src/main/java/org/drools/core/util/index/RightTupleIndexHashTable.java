@@ -515,4 +515,12 @@ public class RightTupleIndexHashTable extends AbstractHashTable
     public IndexType getIndexType() {
         return IndexType.EQUAL;
     }
+
+    public void clear() {
+        super.clear();
+        this.startResult = PRIME;
+        this.factSize = 0;
+        this.fullFastIterator = null;
+        this.tupleValueFullIterator = null;
+    }
 }

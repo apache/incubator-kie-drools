@@ -1,7 +1,10 @@
 package org.drools.compiler.integrationtests;
 
+import org.drools.compiler.integrationtests.DynamicRulesChangesTest.Fire;
+import org.drools.compiler.integrationtests.DynamicRulesChangesTest.Room;
+import org.drools.compiler.integrationtests.DynamicRulesChangesTest.Sprinkler;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.junit.Ignore;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -15,8 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-
-import org.drools.compiler.integrationtests.DynamicRulesChangesTest.*;
 
 public class SegmentMemoryPrototypeTest {
     private static final String DRL =
@@ -82,6 +83,23 @@ public class SegmentMemoryPrototypeTest {
         // Create a 2nd KieSession (that will use segment memory prototype) and check that it works as the former one
         KieSession ksession2 = kbase.newKieSession();
         checkKieSession(ksession2);
+    }
+
+    @Test
+    public void testSessionCache() throws Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(DRL.getBytes()),
+                      ResourceType.DRL );
+
+        InternalKnowledgeBase kbase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kbase.newKieSession();
+        checkKieSession(ksession);
+
+        ksession.dispose();
+        ksession.reset();
+        checkKieSession(ksession);
     }
 
     private void checkKieSession(KieSession ksession) {
