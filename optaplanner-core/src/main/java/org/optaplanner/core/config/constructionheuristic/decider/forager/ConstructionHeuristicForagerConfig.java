@@ -21,6 +21,7 @@ import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.DefaultConstructionHeuristicForager;
+import org.optaplanner.core.impl.score.definition.FeasibilityScoreDefinition;
 
 @XStreamAlias("constructionHeuristicForagerConfig")
 public class ConstructionHeuristicForagerConfig {
@@ -41,11 +42,18 @@ public class ConstructionHeuristicForagerConfig {
 
     public ConstructionHeuristicForager buildForager(HeuristicConfigPolicy configPolicy) {
         ConstructionHeuristicPickEarlyType pickEarlyType_;
-        if (this.pickEarlyType == null) {
+        if (pickEarlyType == null) {
             pickEarlyType_ = configPolicy.getScoreDirectorFactory().getInitializingScoreTrend().isOnlyDown()
                     ? ConstructionHeuristicPickEarlyType.FIRST_NON_DETERIORATING_SCORE : ConstructionHeuristicPickEarlyType.NEVER;
         } else {
-            pickEarlyType_ = this.pickEarlyType;
+            if ((pickEarlyType == ConstructionHeuristicPickEarlyType.FIRST_FEASIBLE_SCORE
+                    || pickEarlyType == ConstructionHeuristicPickEarlyType.FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD)
+                    && !(configPolicy.getScoreDefinition() instanceof FeasibilityScoreDefinition)) {
+                throw new IllegalArgumentException("The pickEarlyType (" + pickEarlyType
+                        + ") is not compatible with the scoreDefinition (" + configPolicy.getScoreDefinition() + ").");
+
+            }
+            pickEarlyType_ = pickEarlyType;
         }
         return new DefaultConstructionHeuristicForager(pickEarlyType_);
     }

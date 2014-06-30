@@ -32,4 +32,9 @@ public abstract class AbstractScoreDefinition<S extends Score> implements ScoreD
         return score.toString();
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
+
 }

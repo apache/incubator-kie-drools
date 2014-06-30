@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.constructionheuristic.decider.forager;
 
 import java.util.Comparator;
 
+import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.comparator.NaturalScoreComparator;
 import org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicPickEarlyType;
@@ -72,6 +73,18 @@ public class DefaultConstructionHeuristicForager extends AbstractConstructionHeu
                 Score lastStepScore = moveScope.getStepScope().getPhaseScope()
                         .getLastCompletedStepScope().getScore();
                 if (scoreComparator.compare(moveScope.getScore(), lastStepScore) >= 0) {
+                    earlyPickedMoveScope = moveScope;
+                }
+                break;
+            case FIRST_FEASIBLE_SCORE:
+                if (((FeasibilityScore) moveScope.getScore()).isFeasible()) {
+                    earlyPickedMoveScope = moveScope;
+                }
+                break;
+            case FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD:
+                Score lastStepScoreDifference = moveScope.getScore().subtract(moveScope.getStepScope().getPhaseScope()
+                        .getLastCompletedStepScope().getScore());
+                if (((FeasibilityScore) lastStepScoreDifference).isFeasible()) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;

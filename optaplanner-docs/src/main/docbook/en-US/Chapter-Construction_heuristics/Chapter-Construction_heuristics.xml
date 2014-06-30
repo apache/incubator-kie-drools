@@ -435,7 +435,7 @@
     <section xml:id="constructionHeuristicsPickEarlyType">
       <title>Pick early type</title>
 
-      <para>There are 2 pick early types for Construction Heuristics:</para>
+      <para>There are several pick early types for Construction Heuristics:</para>
 
       <itemizedlist>
         <listitem>
@@ -462,14 +462,44 @@
       &lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt;
     &lt;/forager&gt;
   &lt;/constructionHeuristic&gt;</programlisting>
+
+          <note>
+            <para>If there are only negative constraints, but the <link
+            linkend="initializingScoreTrend">InitializingScoreTrend</link> is strictly not <literal>ONLY_DOWN</literal>,
+            it can sometimes make sense to apply FIRST_NON_DETERIORATING_SCORE. Use the <link
+            linkend="benchmarkingAndTweaking">Benchmarker</link> to decide if the score quality loss is worth the time
+            gain.</para>
+          </note>
+        </listitem>
+
+        <listitem>
+          <para><literal>FIRST_FEASIBLE_SCORE</literal>: Initialize the variable(s) with the first move that has a
+          feasible score.</para>
+
+          <programlisting language="xml">  &lt;constructionHeuristic&gt;
+    ...
+    &lt;forager&gt;
+      &lt;pickEarlyType&gt;FIRST_FEASIBLE_SCORE&lt;/pickEarlyType&gt;
+    &lt;/forager&gt;
+  &lt;/constructionHeuristic&gt;</programlisting>
+
+          <para>If the <link linkend="initializingScoreTrend">InitializingScoreTrend</link> is
+          <literal>ONLY_DOWN</literal>, use <literal>FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD</literal> instead,
+          because that's faster without any disadvantages.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD</literal>: Initialize the variable(s) with the
+          first move that doesn't deteriorate the feasibility of the score any further.</para>
+
+          <programlisting language="xml">  &lt;constructionHeuristic&gt;
+    ...
+    &lt;forager&gt;
+      &lt;pickEarlyType&gt;FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD&lt;/pickEarlyType&gt;
+    &lt;/forager&gt;
+  &lt;/constructionHeuristic&gt;</programlisting>
         </listitem>
       </itemizedlist>
-
-      <para>If there are only negative constraints, but the <link
-      linkend="initializingScoreTrend">InitializingScoreTrend</link> is strictly not <literal>ONLY_DOWN</literal>, it
-      can make sense to apply FIRST_NON_DETERIORATING_SCORE. Use the <link
-      linkend="benchmarkingAndTweaking">Benchmarker</link> to decide if the score quality loss is worth the time
-      gain.</para>
     </section>
   </section>
 
