@@ -180,9 +180,8 @@ public abstract class AbstractKieModule implements InternalKieModule {
 			KieProject kieProject, ResultsImpl messages) {
 		AbstractKieModule kModule = (AbstractKieModule) kieProject
 				.getKieModuleForKBase(kBaseModel.getName());
-		Collection<String> fileNames = kModule.getFileNames();
 		KnowledgeBuilder kbuilder = compileKieBase(kBaseModel, kieProject,
-				fileNames, messages);
+				messages);
 
 		// cache KnowledgeBuilder and results
 		kModule.cacheKnowledgeBuilderForKieBase(kBaseModel.getName(), kbuilder);
@@ -192,14 +191,14 @@ public abstract class AbstractKieModule implements InternalKieModule {
 	}
 
 	static KnowledgeBuilder compileKieBase(KieBaseModelImpl kBaseModel,
-			KieProject kieProject, Collection<String> fileNames,
-			ResultsImpl messages) {
+			KieProject kieProject, ResultsImpl messages) {
 		AbstractKieModule kModule = (AbstractKieModule) kieProject
 				.getKieModuleForKBase(kBaseModel.getName());
 		KnowledgeBuilderConfigurationImpl pconf = new KnowledgeBuilderConfigurationImpl(
 				kieProject.getClonedClassLoader());
 		pconf.setCompilationCache(kModule.getCompilationCache(kBaseModel
 				.getName()));
+		Collection<String> fileNames = kModule.getFileNames();
 
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
 				.newKnowledgeBuilder(pconf);
