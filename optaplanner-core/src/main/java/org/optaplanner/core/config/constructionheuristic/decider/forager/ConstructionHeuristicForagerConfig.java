@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.constructionheuristic.decider.forager.Construct
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.DefaultConstructionHeuristicForager;
 import org.optaplanner.core.impl.score.definition.FeasibilityScoreDefinition;
 
-@XStreamAlias("constructionHeuristicForagerConfig")
+@XStreamAlias("constructionHeuristicForager")
 public class ConstructionHeuristicForagerConfig {
 
     private ConstructionHeuristicPickEarlyType pickEarlyType = null;
