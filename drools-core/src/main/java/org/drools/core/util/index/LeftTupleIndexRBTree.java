@@ -179,5 +179,9 @@ public class LeftTupleIndexRBTree implements LeftTupleMemory, Externalizable {
         public boolean isFullIterator() {
             return false;
         }
-    }  
+    }
+
+    public void clear() {
+        tree = new LeftTupleRBTree<Comparable<Comparable>>();
+    }
 }

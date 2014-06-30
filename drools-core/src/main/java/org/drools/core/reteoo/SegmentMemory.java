@@ -326,6 +326,15 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         return nodes;
     }
 
+    public void reset(Prototype prototype) {
+        this.dirtyNodeMask.set(0);
+        this.linkedNodeMask.set( prototype != null ? prototype.linkedNodeMask : 0 );
+        if (queue != null) {
+            queue.takeAllForFlushing();
+        }
+        stagedLeftTuples.resetAll();
+    }
+
     public static class Prototype {
         private NetworkNode                 rootNode;
         private NetworkNode                 tipNode;

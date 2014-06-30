@@ -16,11 +16,10 @@
 
 package org.drools.core.spi;
 
-import java.io.Externalizable;
-
 public interface GlobalResolver {
-    public Object resolveGlobal(String identifier);
+    Object resolveGlobal(String identifier);
 
-    public void setGlobal(String identifier,
-                          Object value);
+    void setGlobal(String identifier, Object value);
+
+    void clear();
 }

@@ -21,37 +21,38 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 
 public interface LeftTupleMemory {
-    public Iterator iterator();
+    Iterator iterator();
 
-    public LeftTuple getFirst(RightTuple rightTuple);
+    LeftTuple getFirst(RightTuple rightTuple);
     
-    public void removeAdd(LeftTuple tuple);
+    void removeAdd(LeftTuple tuple);
 
-    public void add(LeftTuple tuple);
+    void add(LeftTuple tuple);
 
-    public void remove(LeftTuple leftTuple);
+    void remove(LeftTuple leftTuple);
 
-    public boolean contains(LeftTuple leftTuple);
+    boolean contains(LeftTuple leftTuple);
 
-    public boolean isIndexed();
+    boolean isIndexed();
 
-    public int size();
+    int size();
 
-    public Entry[] toArray();
+    Entry[] toArray();
 
-    public FastIterator fastIterator();
+    FastIterator fastIterator();
 
     /**
      * Iterates the entire data structure, regardless of whether TupleMemory is hashed or not.
      * @return
      */    
-    public FastIterator fullFastIterator();
+    FastIterator fullFastIterator();
     
     /**
      * Iterator that resumes from the current RightTuple, regardless of whether the TupleMemory is hashed or not 
      * @param rightTuple
      * @return
      */    
-    public FastIterator fullFastIterator(LeftTuple leftTuple);
+    FastIterator fullFastIterator(LeftTuple leftTuple);
 
+    void clear();
 }

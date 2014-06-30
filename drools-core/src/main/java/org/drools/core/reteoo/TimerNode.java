@@ -320,6 +320,11 @@ public class TimerNode extends LeftTupleSource
         public void setNodeCleanWithoutNotify() {
             memory.updateCleanNodeMask( nodePosMaskBit );
         }
+
+        public void reset() {
+            insertOrUpdateLeftTuples.clear();
+            deleteLeftTuples.clear();
+        }
     }
 
     @Override

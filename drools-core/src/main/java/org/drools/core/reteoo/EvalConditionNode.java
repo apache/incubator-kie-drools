@@ -276,6 +276,8 @@ public class EvalConditionNode extends LeftTupleSource
         public SegmentMemory getSegmentMemory() {
             return this.memory;
         }
+
+        public void reset() { }
     }
 
     protected ObjectTypeNode getObjectTypeNode() {

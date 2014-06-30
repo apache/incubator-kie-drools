@@ -16,18 +16,18 @@
 
 package org.drools.core.util.index;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleMemory;
+import org.drools.core.reteoo.RightTuple;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleMemory;
-import org.drools.core.reteoo.RightTuple;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 public class LeftTupleIndexHashTable extends AbstractHashTable
     implements
@@ -444,9 +444,6 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
     /**
      * We use this method to aviod to table lookups for the same hashcode; which is what we would have to do if we did
      * a get and then a create if the value is null.
-     * 
-     * @param value
-     * @return
      */
     private LeftTupleList getOrCreate(final LeftTuple tuple) {
         final int hashCode = this.index.hashCodeOf( tuple );
@@ -508,4 +505,11 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         return builder.toString();
     }
 
+    public void clear() {
+        super.clear();
+        this.startResult = PRIME;
+        this.factSize = 0;
+        this.fullFastIterator = null;
+        this.tupleValueFullIterator = null;
+    }
 }
