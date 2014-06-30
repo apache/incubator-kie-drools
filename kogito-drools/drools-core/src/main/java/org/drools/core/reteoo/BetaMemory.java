@@ -20,14 +20,8 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.RightTupleSets;
 import org.drools.core.common.SynchronizedRightTupleSets;
-import org.drools.core.phreak.TupleEntry;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Queue;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         implements
@@ -144,5 +138,16 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
 
     public void setNodeCleanWithoutNotify() {
         segmentMemory.updateCleanNodeMask( nodePosMaskBit );
+    }
+
+    public void reset() {
+        if (leftTupleMemory != null) {
+            leftTupleMemory.clear();
+        }
+        if (rightTupleMemory != null) {
+            rightTupleMemory.clear();
+        }
+        stagedRightTuples.resetAll();
+        counter = 0;
     }
 }

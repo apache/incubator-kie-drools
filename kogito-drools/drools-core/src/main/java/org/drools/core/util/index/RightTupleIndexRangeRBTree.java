@@ -1,16 +1,15 @@
 package org.drools.core.util.index;
 
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RightTupleMemory;
+import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.RBTree;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RightTupleMemory;
-
 import org.drools.core.util.index.IndexUtil.ConstraintType;
-import org.drools.core.util.AbstractHashTable.FieldIndex;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -234,5 +233,9 @@ public class RightTupleIndexRangeRBTree implements RightTupleMemory, Externaliza
         public boolean isFullIterator() {
             return false;
         }
-    }    
+    }
+
+    public void clear() {
+        tree = new RBTree<Comparable<Comparable>, RightTupleList>();
+    }
 }

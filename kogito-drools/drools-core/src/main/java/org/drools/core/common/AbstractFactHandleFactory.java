@@ -16,12 +16,12 @@
 
 package org.drools.core.common;
 
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.FactHandleFactory;
 import org.kie.api.runtime.rule.EntryPoint;
+
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class AbstractFactHandleFactory
     implements
@@ -117,5 +117,10 @@ public abstract class AbstractFactHandleFactory
     public void clear(int id, long counter) {
         this.id = new AtomicInteger( id );
         this.counter = new AtomicLong( counter );
+    }
+
+    public void reset() {
+        id.set(0);
+        counter.set(0);
     }
 }

@@ -34,24 +34,6 @@ import org.drools.core.common.WorkingMemoryFactory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.event.knowlegebase.impl.AfterFunctionRemovedEventImpl;
-import org.drools.core.event.knowlegebase.impl.AfterKiePackageAddedEventImpl;
-import org.drools.core.event.knowlegebase.impl.AfterKiePackageRemovedEventImpl;
-import org.drools.core.event.knowlegebase.impl.AfterKnowledgeBaseLockedEventImpl;
-import org.drools.core.event.knowlegebase.impl.AfterKnowledgeBaseUnlockedEventImpl;
-import org.drools.core.event.knowlegebase.impl.AfterProcessAddedEventImpl;
-import org.drools.core.event.knowlegebase.impl.AfterProcessRemovedEventImpl;
-import org.drools.core.event.knowlegebase.impl.AfterRuleAddedEventImpl;
-import org.drools.core.event.knowlegebase.impl.AfterRuleRemovedEventImpl;
-import org.drools.core.event.knowlegebase.impl.BeforeFunctionRemovedEventImpl;
-import org.drools.core.event.knowlegebase.impl.BeforeKiePackageAddedEventImpl;
-import org.drools.core.event.knowlegebase.impl.BeforeKiePackageRemovedEventImpl;
-import org.drools.core.event.knowlegebase.impl.BeforeKnowledgeBaseLockedEventImpl;
-import org.drools.core.event.knowlegebase.impl.BeforeKnowledgeBaseUnlockedEventImpl;
-import org.drools.core.event.knowlegebase.impl.BeforeProcessAddedEventImpl;
-import org.drools.core.event.knowlegebase.impl.BeforeProcessRemovedEventImpl;
-import org.drools.core.event.knowlegebase.impl.BeforeRuleAddedEventImpl;
-import org.drools.core.event.knowlegebase.impl.BeforeRuleRemovedEventImpl;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.management.DroolsManagementAgent;
@@ -80,7 +62,6 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.Resource;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.internal.KnowledgeBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.definition.process.Process;
@@ -192,6 +173,8 @@ public class KnowledgeBaseImpl
 
     public final Set<KieBaseEventListener> kieBaseListeners = new HashSet<KieBaseEventListener>();
 
+    private transient SessionsCache sessionsCache;
+
     public KnowledgeBaseImpl() { }
 
     public KnowledgeBaseImpl(final String id,
@@ -229,6 +212,13 @@ public class KnowledgeBaseImpl
             DroolsManagementAgent.getInstance().registerKnowledgeBase(this);
         }
 
+        if ( this.config.getSessionCacheOption().isEnabled() ) {
+            if ( this.config.isPhreakEnabled() ) {
+                sessionsCache = new SessionsCache(this.config.getSessionCacheOption().isAsync());
+            } else {
+                logger.warn("Session cache can be enabled only in PHREAK mode");
+            }
+        }
     }
 
     public int nextWorkingMemoryCounter() {
@@ -286,7 +276,7 @@ public class KnowledgeBaseImpl
     }
 
     public StatefulKnowledgeSession newStatefulKnowledgeSession() {
-        return newStatefulKnowledgeSession(null, EnvironmentFactory.newEnvironment() );
+        return newStatefulKnowledgeSession(null, EnvironmentFactory.newEnvironment());
     }
     
     public StatefulKnowledgeSession newStatefulKnowledgeSession(KieSessionConfiguration conf, Environment environment) {
@@ -621,10 +611,17 @@ public class KnowledgeBaseImpl
         statefulSessionLock.lock();
 
         try {
+            if (sessionsCache != null) {
+                sessionsCache.store(statefulSession);
+            }
             this.statefulSessions.remove(statefulSession);
         } finally {
             statefulSessionLock.unlock();
         }
+    }
+
+    public StatefulKnowledgeSessionImpl getCachedSession(SessionConfiguration config, Environment environment) {
+        return sessionsCache != null ? sessionsCache.getCachedSession(config) : null;
     }
 
     public FactHandleFactory getFactHandleFactory() {
@@ -1210,9 +1207,9 @@ public class KnowledgeBaseImpl
     public void retractObject(final FactHandle handle,
                               final PropagationContext context,
                               final StatefulKnowledgeSessionImpl workingMemory) {
-        getRete().retractObject( (InternalFactHandle) handle,
-                                 context,
-                                 workingMemory );
+        getRete().retractObject((InternalFactHandle) handle,
+                                context,
+                                workingMemory);
     }
 
     public StatefulKnowledgeSessionImpl newStatefulSession(boolean keepReference) {
@@ -1326,7 +1323,7 @@ public class KnowledgeBaseImpl
     }
 
     public void addPackage(final InternalKnowledgePackage newPkg) {
-        addPackages( Collections.singleton( newPkg ) );
+        addPackages( Collections.singleton(newPkg) );
     }
 
     public void registerSegmentPrototype(LeftTupleSource tupleSource, SegmentMemory smem) {
@@ -1343,12 +1340,16 @@ public class KnowledgeBaseImpl
         }
     }
 
-    public SegmentMemory getSegmentFromPrototype(InternalWorkingMemory wm, LeftTupleSource tupleSource) {
+    public SegmentMemory createSegmentFromPrototype(InternalWorkingMemory wm, LeftTupleSource tupleSource) {
         SegmentMemory.Prototype proto = segmentProtos.get(tupleSource.getId());
         if (proto == null) {
             return null;
         }
         return proto.newSegmentMemory(wm);
+    }
+
+    public SegmentMemory.Prototype getSegmentPrototype(SegmentMemory segment) {
+        return segmentProtos.get(segment.getRootNode().getId());
     }
 
     private static class TypeDeclarationCandidate {

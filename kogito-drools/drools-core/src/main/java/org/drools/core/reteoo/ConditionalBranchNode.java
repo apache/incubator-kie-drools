@@ -238,6 +238,8 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         public SegmentMemory getSegmentMemory() {
             return segmentMemory;
         }
+
+        public void reset() { }
     }
 
     protected ObjectTypeNode getObjectTypeNode() {

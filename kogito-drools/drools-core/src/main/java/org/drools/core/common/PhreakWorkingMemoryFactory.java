@@ -14,6 +14,10 @@ import java.io.Serializable;
 public class PhreakWorkingMemoryFactory implements WorkingMemoryFactory, Serializable {
 
     public InternalWorkingMemory createWorkingMemory(int id, InternalKnowledgeBase kBase, SessionConfiguration config, Environment environment) {
+        InternalWorkingMemory cachedWm = kBase.getCachedSession(config, environment);
+        if (cachedWm != null) {
+            return cachedWm;
+        }
         return new StatefulKnowledgeSessionImpl(id, kBase, true, config,  environment);
     }
 

@@ -195,4 +195,10 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         return "[RuleMem " + getRule().getName() + "]";
     }
 
+    public void reset() {
+        if (this.queue != null) {
+            this.queue = new StreamTupleEntryQueue();
+        }
+        this.linkedSegmentMask.set(0);
+    }
 }

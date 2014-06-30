@@ -15,12 +15,6 @@
  */
 
 package org.drools.core.reteoo;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.evaluators.IsAEvaluatorDefinition;
 import org.drools.core.common.InternalFactHandle;
@@ -37,6 +31,12 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.Operator;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
+import java.util.Map;
 
 import static org.drools.core.util.BitMaskUtil.intersect;
 
@@ -271,7 +271,7 @@ public class AlphaNode extends ObjectSource
         }
 
         public SegmentMemory getSegmentMemory() {
-            throw new UnsupportedOperationException();
+            return null;
         }
 
         public void setSegmentMemory(SegmentMemory segmentMemory) {
@@ -298,6 +298,7 @@ public class AlphaNode extends ObjectSource
             throw new UnsupportedOperationException();
         }
 
+        public void reset() { }
     }
 
     /**

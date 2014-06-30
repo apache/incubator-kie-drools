@@ -763,7 +763,7 @@ public class DefaultAgenda
     public void clear() {
         // reset focus stack
         this.focusStack.clear();
-        this.focusStack.add( getMainAgendaGroup() );
+        this.focusStack.add(getMainAgendaGroup());
 
         //reset all agenda groups
         for ( InternalAgendaGroup group : this.agendaGroups.values() ) {
@@ -782,8 +782,27 @@ public class DefaultAgenda
         for ( InternalActivationGroup group : this.activationGroups.values() ) {
             group.setTriggeredForRecency(this.workingMemory.getFactHandleFactory().getRecency());
             group.reset();
-
         }
+    }
+
+    public void reset() {
+        // reset focus stack
+        this.focusStack.clear();
+        this.focusStack.add( getMainAgendaGroup() );
+
+        //reset all agenda groups
+        for ( InternalAgendaGroup group : this.agendaGroups.values() ) {
+            group.reset();
+        }
+
+        // reset all activation groups.
+        for ( InternalActivationGroup group : this.activationGroups.values() ) {
+            group.setTriggeredForRecency(this.workingMemory.getFactHandleFactory().getRecency());
+            group.reset();
+        }
+
+        eager.clear();
+        activationCounter = 0;
     }
 
     public void clearAndCancel() {

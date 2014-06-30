@@ -18,6 +18,7 @@ package org.drools.core.common;
 
 
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 /**
  * An interface for node memories implementation
@@ -50,4 +51,5 @@ public interface NodeMemories {
      */
     int length();
 
+    void resetAllMemories(StatefulKnowledgeSession session);
 }

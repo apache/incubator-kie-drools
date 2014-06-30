@@ -754,7 +754,7 @@ public class ObjectTypeNode extends ObjectSource
         }
 
         public SegmentMemory getSegmentMemory() {
-            throw new UnsupportedOperationException();
+            return null;
         }
 
         public void setSegmentMemory(SegmentMemory segmentMemory) {
@@ -779,6 +779,10 @@ public class ObjectTypeNode extends ObjectSource
 
         public Memory getNext() {
             throw new UnsupportedOperationException();
+        }
+
+        public void reset() {
+            memory.clear();
         }
 
         public String toString() {

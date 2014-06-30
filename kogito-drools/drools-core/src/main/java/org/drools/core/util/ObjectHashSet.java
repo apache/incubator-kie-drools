@@ -54,12 +54,6 @@ public class ObjectHashSet extends AbstractHashTable {
                     true );
     }
 
-    public void clear() {
-        this.table = new Entry[Math.min( this.table.length,
-                                         16 )];
-        this.threshold = (int) (this.table.length * this.loadFactor);
-    }
-
     public boolean add(final Object value,
                        final boolean checkExists) {
         final int hashCode = this.comparator.hashCodeOf( value );

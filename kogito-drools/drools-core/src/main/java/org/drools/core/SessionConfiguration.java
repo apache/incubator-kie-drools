@@ -16,14 +16,6 @@
 
 package org.drools.core;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
 import org.drools.core.command.CommandService;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.process.instance.WorkItemManagerFactory;
@@ -50,6 +42,14 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.conf.ForceEagerActivationFilter;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.utils.ChainedProperties;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * SessionConfiguration
@@ -549,4 +549,30 @@ public class SessionConfiguration
         return this.queryListener;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SessionConfiguration that = (SessionConfiguration) o;
+
+        if (keepReference != that.keepReference) return false;
+        if (beliefSystemType != that.beliefSystemType) return false;
+        if (clockType != that.clockType) return false;
+        if (timerJobFactoryType != that.timerJobFactoryType) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        if (this == defaultInstance) {
+            return 0;
+        }
+        int result = (keepReference ? 1 : 0);
+        result = 31 * result + clockType.hashCode();
+        result = 31 * result + beliefSystemType.hashCode();
+        result = 31 * result + timerJobFactoryType.hashCode();
+        return result;
+    }
 }

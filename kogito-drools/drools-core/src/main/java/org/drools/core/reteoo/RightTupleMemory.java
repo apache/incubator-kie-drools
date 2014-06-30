@@ -75,4 +75,6 @@ public interface RightTupleMemory {
     int size();
 
     IndexType getIndexType();
+
+    void clear();
 }

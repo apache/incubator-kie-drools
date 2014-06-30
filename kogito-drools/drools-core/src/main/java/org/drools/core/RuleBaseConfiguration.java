@@ -16,16 +16,6 @@
 
 package org.drools.core;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.PriorityQueueAgendaGroupFactory;
@@ -52,6 +42,7 @@ import org.kie.api.conf.SingleValueKieBaseOption;
 import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
 import org.kie.internal.builder.conf.ClassLoaderCacheOption;
 import org.kie.internal.builder.conf.RuleEngineOption;
+import org.kie.internal.builder.conf.SessionCacheOption;
 import org.kie.internal.conf.AlphaThresholdOption;
 import org.kie.internal.conf.CompositeKeyDepthOption;
 import org.kie.internal.conf.ConsequenceExceptionHandlerOption;
@@ -68,6 +59,16 @@ import org.kie.internal.conf.ShareBetaNodesOption;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * RuleBaseConfiguration
@@ -116,6 +117,7 @@ public class RuleBaseConfiguration
     private static final long serialVersionUID = 510l;
 
     public static final boolean DEFAULT_PHREAK = true;
+    public static final boolean DEFAULT_SESSION_CACHE = true;
 
     public static final String DEFAULT_SIGN_ON_SERIALIZATION = "false";
 
@@ -149,6 +151,8 @@ public class RuleBaseConfiguration
     private EventProcessingOption eventProcessingMode;
 
     private IndexPrecedenceOption indexPrecedenceOption;
+
+    private SessionCacheOption sessionCacheOption;
 
     // if "true", rulebase builder will try to split
     // the rulebase into multiple partitions that can be evaluated
@@ -206,6 +210,7 @@ public class RuleBaseConfiguration
         out.writeBoolean(phreakEnabled);
         out.writeBoolean(declarativeAgenda);
         out.writeObject(componentFactory);
+        out.writeObject(sessionCacheOption);
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -237,6 +242,7 @@ public class RuleBaseConfiguration
         phreakEnabled = in.readBoolean();
         declarativeAgenda = in.readBoolean();
         componentFactory = (KieComponentFactory) in.readObject();
+        sessionCacheOption = (SessionCacheOption) in.readObject();
     }
 
     /**
@@ -328,6 +334,8 @@ public class RuleBaseConfiguration
             setClassLoaderCacheEnabled(StringUtils.isEmpty(value) ? true : Boolean.valueOf(value));
         } else if ( name.equals( RuleEngineOption.PROPERTY_NAME ) ) {
             setPhreakEnabled(StringUtils.isEmpty(value) ? DEFAULT_PHREAK : value.equalsIgnoreCase(RuleEngineOption.PHREAK.toString()));
+        } else if ( name.equals( SessionCacheOption.PROPERTY_NAME ) ) {
+            setSessionCacheOption(SessionCacheOption.determineOption(StringUtils.isEmpty(value) ? "none" : value));
         }
     }
 
@@ -474,6 +482,9 @@ public class RuleBaseConfiguration
         setPhreakEnabled(Boolean.valueOf(this.chainedProperties.getProperty(RuleEngineOption.PROPERTY_NAME,
                                                                             DEFAULT_PHREAK ? RuleEngineOption.PHREAK.toString() : RuleEngineOption.RETEOO.toString())
                                                                .equalsIgnoreCase(RuleEngineOption.PHREAK.toString())));
+
+        setSessionCacheOption(SessionCacheOption.determineOption(this.chainedProperties.getProperty(SessionCacheOption.PROPERTY_NAME, "none")));
+
         setDeclarativeAgendaEnabled( Boolean.valueOf( this.chainedProperties.getProperty( DeclarativeAgendaOption.PROPERTY_NAME,
                                                                                           "false" ) ) );        
 
@@ -746,6 +757,15 @@ public class RuleBaseConfiguration
     public void setPhreakEnabled(boolean enabled) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.phreakEnabled = enabled;
+    }
+
+    public SessionCacheOption getSessionCacheOption() {
+        return this.sessionCacheOption;
+    }
+    
+    public void setSessionCacheOption(SessionCacheOption sessionCacheOption) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.sessionCacheOption = sessionCacheOption;
     }
 
     
@@ -1254,6 +1274,8 @@ public class RuleBaseConfiguration
             setClassLoaderCacheEnabled(((ClassLoaderCacheOption) option).isClassLoaderCacheEnabled());
         } else if (option instanceof RuleEngineOption) {
             setPhreakEnabled(((RuleEngineOption) option).isLRUnlinkingEnabled());
+        } else if (option instanceof SessionCacheOption) {
+            setSessionCacheOption((SessionCacheOption) option);
         } else if (option instanceof DeclarativeAgendaOption) {
             setDeclarativeAgendaEnabled(((DeclarativeAgendaOption) option).isDeclarativeAgendaEnabled());
         }

@@ -645,6 +645,10 @@ public class LeftInputAdapterNode extends LeftTupleSource
         public void setNodeDirty(InternalWorkingMemory wm) {
             segmentMemory.notifyRuleLinkSegment(wm, nodePosMaskBit);
         }
+
+        public void reset() {
+            counter = 0;
+        }
     }
 
     /**

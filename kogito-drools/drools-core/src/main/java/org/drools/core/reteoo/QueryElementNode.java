@@ -670,6 +670,10 @@ public class QueryElementNode extends LeftTupleSource
         public void setNodeCleanWithoutNotify() {
             smem.updateCleanNodeMask( nodePosMaskBit );
         }
+
+        public void reset() {
+            resultLeftTuples.resetAll();
+        }
     }
 
     protected ObjectTypeNode getObjectTypeNode() {

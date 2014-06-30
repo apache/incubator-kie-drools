@@ -16,17 +16,17 @@
 
 package org.drools.core.util;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
-import org.drools.core.util.index.LeftTupleIndexHashTable;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexEvaluator;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ReadAccessor;
+import org.drools.core.util.index.LeftTupleIndexHashTable;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 public abstract class AbstractHashTable
     implements
@@ -778,5 +778,13 @@ public abstract class AbstractHashTable
                                                                                                                                              object2 );
         }
 
+    }
+
+    public void clear() {
+        this.table = new Entry[Math.min( this.table.length,
+                                         16 )];
+        this.threshold = (int) (this.table.length * this.loadFactor);
+        this.size = 0;
+        this.iterator = null;
     }
 }

@@ -374,7 +374,7 @@ public class PropagationQueuingNode extends ObjectSource
         }
 
         public SegmentMemory getSegmentMemory() {
-            throw new UnsupportedOperationException();
+            return null;
         }
 
         public void setSegmentMemory(SegmentMemory segmentMemory) {
@@ -383,6 +383,11 @@ public class PropagationQueuingNode extends ObjectSource
 
         public void nullPrevNext() {
             throw new UnsupportedOperationException();
+        }
+
+        public void reset() {
+            queue.clear();
+            isQueued.set(false);
         }
     }
 
