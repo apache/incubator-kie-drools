@@ -62,12 +62,15 @@
       <para>In a typical project (following the Maven directory structure), that solverConfig XML file would be located
       at
       <literal>$PROJECT_DIR/src/main/resources/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml</literal>.
-      Alternatively, a <literal>SolverFactory</literal> can be created from a <literal>File</literal>, an
+      On some environments (OSGi, JBoss modules, ...), classpath resources in your jars might not be available in by
+      default to the classes in optaplanner's jars.</para>
+
+      <para>Alternatively, a <literal>SolverFactory</literal> can be created from a <literal>File</literal>, an
       <literal>InputStream</literal> or a <literal>Reader</literal> with methods such as
       <literal>SolverFactory.createFromXmlFile()</literal>. However, for portability reasons, a classpath resource is
       recommended.</para>
 
-      <para>A solver configuration file looks something like this:</para>
+      <para>A solver configuration file looks like this:</para>
 
       <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;solver&gt;
@@ -112,9 +115,9 @@
       <para>These various parts of a configuration are explained further in this manual.</para>
 
       <para><emphasis role="bold">OptaPlanner makes it relatively easy to switch optimization algorithm(s) just by
-      changing the configuration.</emphasis> There's even a <literal>Benchmark</literal> utility which allows you to
-      play out different configurations against each other and report the most appropriate configuration for your
-      problem. You could for example play out tabu search versus simulated annealing, on 4 queens and 64 queens.</para>
+      changing the configuration.</emphasis> There's even a <literal>Benchmarker</literal> utility which allows you to
+      play out different configurations against each other and report the most appropriate configuration for your use
+      case.</para>
     </section>
 
     <section>
