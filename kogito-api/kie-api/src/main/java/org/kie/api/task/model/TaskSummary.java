@@ -25,16 +25,16 @@ public interface TaskSummary extends QuickTaskSummary {
 
     Status getStatus();
     
-    boolean isSkipable();
+    Boolean isSkipable();
 
     User getActualOwner();
 
     User getCreatedBy();
     
-    int getProcessSessionId();
+    Integer getProcessSessionId();
 
     List<String> getPotentialOwners();
     
-    boolean isQuickTaskSummary();
+    Boolean isQuickTaskSummary();
 
 }

@@ -25,13 +25,13 @@ import java.util.Date;
  */
 public interface QuickTaskSummary extends Externalizable {
     
-    long getId();
+    Long getId();
 
     String getName();
 
     String getStatusId();
 
-    int getPriority();
+    Integer getPriority();
 
     String getActualOwnerId();
 
@@ -45,10 +45,10 @@ public interface QuickTaskSummary extends Externalizable {
 
     String getProcessId();
     
-    long getProcessInstanceId();
+    Long getProcessInstanceId();
     
     String getDeploymentId();
     
-    long getParentId();
+    Long getParentId();
 
 }
