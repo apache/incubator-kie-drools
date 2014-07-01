@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.jbpm.services.task.impl.model.xml.AbstractJaxbTaskObject.GetterUser;
 import org.jbpm.services.task.impl.model.xml.adapter.StatusXmlAdapter;
 import org.jbpm.services.task.impl.model.xml.adapter.SubTasksStrategyXmlAdapter;
@@ -41,14 +42,25 @@ import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.model.SubTasksStrategy;
 
+/**
+ * FYI: information in this class must satisfy one of the following requirements: 
+ * 
+ * 1. Have both a getter and a setter method
+ * 2. Have a getter method and be represented via a field
+ * 3. The field must be 
+ *
+ * If you add a new field to this class, then it *MUST* be a 
+ *
+ */
 @XmlRootElement(name="task-summary")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso(value={Status.class, SubTasksStrategy.class})
+@JsonIgnoreProperties({"statusId"})
 public class JaxbTaskSummary implements TaskSummary {
 
     @XmlElement
     @XmlSchemaType(name="long")
-    private long id;
+    private Long id;
     
     @XmlElement
     @XmlSchemaType(name="string")
@@ -68,11 +80,11 @@ public class JaxbTaskSummary implements TaskSummary {
     
     @XmlElement
     @XmlSchemaType(name="int")
-    private int priority;
+    private Integer priority;
     
     @XmlElement
     @XmlSchemaType(name="boolean")
-    private boolean skipable;
+    private Boolean skipable;
     
     @XmlElement(name="actual-owner")
     private String actualOwnerId;
@@ -102,7 +114,7 @@ public class JaxbTaskSummary implements TaskSummary {
     
     @XmlElement(name="process-session-id")
     @XmlSchemaType(name="int")
-    private int processSessionId;
+    private Integer processSessionId;
     
     @XmlElement(name="deployment-id")
     @XmlSchemaType(name="string")
@@ -110,7 +122,7 @@ public class JaxbTaskSummary implements TaskSummary {
 
     @XmlElement(name="quick-task-summary")
     @XmlSchemaType(name="boolean")
-    private boolean quickTaskSummary;
+    private Boolean quickTaskSummary;
     
     @XmlElement(name="sub-task-strategy")
     @XmlJavaTypeAdapter(value=SubTasksStrategyXmlAdapter.class, type=SubTasksStrategy.class)
@@ -118,7 +130,7 @@ public class JaxbTaskSummary implements TaskSummary {
     
     @XmlElement(name="parent-id")
     @XmlSchemaType(name="long")
-    private long parentId;
+    private Long parentId;
     
     @XmlElement(name="potential-owner")
     private List<String> potentialOwners;
@@ -147,6 +159,7 @@ public class JaxbTaskSummary implements TaskSummary {
         this.processSessionId = taskSum.getProcessSessionId();
         this.deploymentId = taskSum.getDeploymentId();
         this.quickTaskSummary = false;
+        this.parentId = taskSum.getParentId();
     }
     
     
@@ -162,7 +175,7 @@ public class JaxbTaskSummary implements TaskSummary {
         unsupported(Task.class); 
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -170,7 +183,7 @@ public class JaxbTaskSummary implements TaskSummary {
         this.id = id;
     }
 
-    public long getProcessInstanceId() {
+    public Long getProcessInstanceId() {
         return processInstanceId;
     }
 
@@ -210,7 +223,7 @@ public class JaxbTaskSummary implements TaskSummary {
         this.status = status;
     }
 
-    public int getPriority() {
+    public Integer getPriority() {
         return priority;
     }
 
@@ -218,7 +231,7 @@ public class JaxbTaskSummary implements TaskSummary {
         this.priority = priority;
     }
 
-    public boolean isSkipable() {
+    public Boolean isSkipable() {
         return skipable;
     }
 
@@ -307,7 +320,7 @@ public class JaxbTaskSummary implements TaskSummary {
         this.processId = processId;
     }
 
-    public int getProcessSessionId() {
+    public Integer getProcessSessionId() {
         return processSessionId;
     }
 
@@ -333,12 +346,12 @@ public class JaxbTaskSummary implements TaskSummary {
     }
 
     @Override
-    public boolean isQuickTaskSummary() {
+    public Boolean isQuickTaskSummary() {
         return quickTaskSummary;
     }
 
     @Override
-    public long getParentId() {
+    public Long getParentId() {
         return parentId;
     }
 

@@ -42,7 +42,7 @@ public class JsonTaskSerializationTest extends AbstractTaskSerializationTest {
             this.setSerializationConfig(this.getSerializationConfig().withAnnotationIntrospector(introspector));
             this.setAnnotationIntrospector(introspector);
 
-            this.disableDefaultTyping();
+            this.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         }
     }
 

@@ -964,7 +964,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         results = ((InternalTaskService) taskService).execute(queryCmd);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
-        assertEquals( "Did not order when returning tasks (first task id: " + results.get(0).getId(), firstTaskid, results.get(0).getId());
+        assertEquals( "Did not order when returning tasks (first task id: " + results.get(0).getId(), firstTaskid, results.get(0).getId().longValue());
         
         // single param tests
         results = taskService.getTasksByVariousFields(workItemIds, null, null, null, null, null, null, false);

@@ -80,11 +80,11 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(1, tasks.size());
         TaskSummary task = tasks.get(0);
         assertEquals("TaskName", task.getName());
-        assertEquals(10, task.getPriority());
+        assertEquals(10, task.getPriority().intValue());
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Reserved, task.getStatus());
         assertEquals("Darth Vader", task.getActualOwner().getId());
-        assertEquals(10, task.getProcessInstanceId());
+        assertEquals(10, task.getProcessInstanceId().intValue());
 
         taskService.start(task.getId(), "Darth Vader");
         taskService.complete(task.getId(), "Darth Vader", null);
@@ -109,7 +109,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(1, tasks.size());
         TaskSummary task = tasks.get(0);
         assertEquals("TaskName", task.getName());
-        assertEquals(10, task.getPriority());
+        assertEquals(10, task.getPriority().intValue());
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Ready, task.getStatus());
 
@@ -140,7 +140,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(1, tasks.size());
         TaskSummary taskSummary = tasks.get(0);
         assertEquals("TaskName", taskSummary.getName());
-        assertEquals(10, taskSummary.getPriority());
+        assertEquals(10, taskSummary.getPriority().intValue());
         assertEquals("Comment", taskSummary.getDescription());
         assertEquals(Status.Ready, taskSummary.getStatus());
 
@@ -209,7 +209,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(1, tasks.size());
         TaskSummary task = tasks.get(0);
         assertEquals("TaskName", task.getName());
-        assertEquals(10, task.getPriority());
+        assertEquals(10, task.getPriority().intValue());
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Reserved, task.getStatus());
         assertEquals("Darth Vader", task.getActualOwner().getId());
@@ -239,7 +239,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(1, tasks.size());
         TaskSummary task = tasks.get(0);
         assertEquals("TaskName", task.getName());
-        assertEquals(10, task.getPriority());
+        assertEquals(10, task.getPriority().intValue());
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Reserved, task.getStatus());
         assertEquals("Darth Vader", task.getActualOwner().getId());
@@ -301,7 +301,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(1, tasks.size());
         TaskSummary taskSummary = tasks.get(0);
         assertEquals("TaskName", taskSummary.getName());
-        assertEquals(10, taskSummary.getPriority());
+        assertEquals(10, taskSummary.getPriority().intValue());
         assertEquals("Comment", taskSummary.getDescription());
         assertEquals(Status.Reserved, taskSummary.getStatus());
         assertEquals("Darth Vader", taskSummary.getActualOwner().getId());
@@ -368,7 +368,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(1, tasks.size());
         TaskSummary taskSummary = tasks.get(0);
         assertEquals("TaskName", taskSummary.getName());
-        assertEquals(10, taskSummary.getPriority());
+        assertEquals(10, taskSummary.getPriority().intValue());
         assertEquals("Comment", taskSummary.getDescription());
         assertEquals(Status.Reserved, taskSummary.getStatus());
         assertEquals("Darth Vader", taskSummary.getActualOwner().getId());
@@ -425,7 +425,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(1, tasks.size());
         TaskSummary taskSummary = tasks.get(0);
         assertEquals("TaskName", taskSummary.getName());
-        assertEquals(10, taskSummary.getPriority());
+        assertEquals(10, taskSummary.getPriority().intValue());
         assertEquals("Comment", taskSummary.getDescription());
         assertEquals(Status.Reserved, taskSummary.getStatus());
         assertEquals("Darth Vader", taskSummary.getActualOwner().getId());
@@ -557,12 +557,12 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(1, tasks.size());
         TaskSummary task = tasks.get(0);
         assertEquals("TaskName", task.getName());
-        assertEquals(10, task.getPriority());
+        assertEquals(10, task.getPriority().intValue());
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Reserved, task.getStatus());
         assertEquals("Darth Vader", task.getActualOwner().getId());
         assertEquals("john", task.getCreatedBy().getId());
-        assertEquals(10, task.getProcessInstanceId());
+        assertEquals(10, task.getProcessInstanceId().intValue());
 
         taskService.start(task.getId(), "Darth Vader");
         taskService.complete(task.getId(), "Darth Vader", null);
@@ -588,12 +588,12 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(1, tasks.size());
         TaskSummary task = tasks.get(0);
         assertEquals("TaskName", task.getName());
-        assertEquals(10, task.getPriority());
+        assertEquals(10, task.getPriority().intValue());
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Reserved, task.getStatus());
         assertEquals("Darth Vader", task.getActualOwner().getId());
         assertEquals("Darth Vader", task.getCreatedBy().getId());
-        assertEquals(10, task.getProcessInstanceId());
+        assertEquals(10, task.getProcessInstanceId().intValue());
 
         taskService.start(task.getId(), "Darth Vader");
         taskService.complete(task.getId(), "Darth Vader", null);
@@ -621,11 +621,11 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(1, tasks.size());
         TaskSummary task = tasks.get(0);
         assertEquals("TaskName", task.getName());
-        assertEquals(10, task.getPriority());
+        assertEquals(10, task.getPriority().intValue());
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Reserved, task.getStatus());
         assertEquals("Darth Vader", task.getActualOwner().getId());
-        assertEquals(10, task.getProcessInstanceId());
+        assertEquals(10, task.getProcessInstanceId().intValue());
 
         taskService.start(task.getId(), "Darth Vader");
         taskService.complete(task.getId(), "Darth Vader", null);
@@ -652,11 +652,11 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(1, tasks.size());
         TaskSummary task = tasks.get(0);
         assertEquals("TaskName", task.getName());
-        assertEquals(10, task.getPriority());
+        assertEquals(10, task.getPriority().intValue());
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Reserved, task.getStatus());
         assertEquals("Darth Vader", task.getActualOwner().getId());
-        assertEquals(10, task.getProcessInstanceId());
+        assertEquals(10, task.getProcessInstanceId().intValue());
 
         taskService.start(task.getId(), "Darth Vader");
         taskService.complete(task.getId(), "Darth Vader", null);
@@ -684,11 +684,11 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(1, tasks.size());
         TaskSummary task = tasks.get(0);
         assertEquals("TaskName", task.getName());
-        assertEquals(10, task.getPriority());
+        assertEquals(10, task.getPriority().intValue());
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Reserved, task.getStatus());
         assertEquals("Darth Vader", task.getActualOwner().getId());
-        assertEquals(10, task.getProcessInstanceId());
+        assertEquals(10, task.getProcessInstanceId().intValue());
         
         assertEquals(DateTimeUtils.parseDateTime("2013-11-25T10:35:00Z"), task.getExpirationTime().getTime());
 
@@ -717,11 +717,11 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertEquals(1, tasks.size());
         TaskSummary task = tasks.get(0);
         assertEquals("TaskName", task.getName());
-        assertEquals(10, task.getPriority());
+        assertEquals(10, task.getPriority().intValue());
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Reserved, task.getStatus());
         assertEquals("Darth Vader", task.getActualOwner().getId());
-        assertEquals(10, task.getProcessInstanceId());
+        assertEquals(10, task.getProcessInstanceId().intValue());
         
         assertTrue( currentTime + DateTimeUtils.parseDuration("2d") > task.getExpirationTime().getTime());
 

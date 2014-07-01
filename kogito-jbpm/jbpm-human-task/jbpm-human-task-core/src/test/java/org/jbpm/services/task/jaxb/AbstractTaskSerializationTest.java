@@ -189,6 +189,7 @@ public abstract class AbstractTaskSerializationTest {
                 new Date(), new Date(), new Date(), 
                 "f", 5, 2l, "deploymentId",
                 SubTasksStrategy.EndParentOnAllSubTasksEnd, 6l);
+        taskSumImpl.setParentId(4l);
 
         JaxbTaskSummary jaxbTaskSum = new JaxbTaskSummary(taskSumImpl);
         JaxbTaskSummary jaxbTaskSumCopy = testRoundTrip(jaxbTaskSum);

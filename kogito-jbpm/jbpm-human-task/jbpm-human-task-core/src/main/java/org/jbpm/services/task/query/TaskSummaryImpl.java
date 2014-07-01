@@ -286,7 +286,7 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         }
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -294,7 +294,7 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         this.id = id;
     }
 
-    public long getProcessInstanceId() {
+    public Long getProcessInstanceId() {
         return processInstanceId;
     }
 
@@ -334,7 +334,7 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         this.status = status;
     }
 
-    public int getPriority() {
+    public Integer getPriority() {
         return priority;
     }
 
@@ -342,7 +342,7 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         this.priority = priority;
     }
 
-    public boolean isSkipable() {
+    public Boolean isSkipable() {
         return skipable;
     }
 
@@ -404,7 +404,7 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         this.processId = processId;
     }
 
-    public int getProcessSessionId() {
+    public Integer getProcessSessionId() {
         return processSessionId;
     }
 
@@ -420,7 +420,7 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         this.subTaskStrategy = subTaskStrategy;
     }
 
-    public long getParentId() {
+    public Long getParentId() {
         return parentId;
     }
 
@@ -436,7 +436,7 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         this.potentialOwners = potentialOwners;
     }
 
-    public boolean isQuickTaskSummary() {
+    public Boolean isQuickTaskSummary() {
         return quickTaskSummary;
     }
 
