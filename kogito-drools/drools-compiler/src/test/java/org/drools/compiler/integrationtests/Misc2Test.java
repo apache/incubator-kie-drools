@@ -6200,4 +6200,46 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.insert(new C1());
         ksession.fireAllRules();
     }
+
+    public interface I0 {
+        String getValue();
+    }
+
+    public interface I1 extends I0 { }
+
+    public static class X implements I0 {
+        @Override
+        public String getValue() {
+            return "x";
+        }
+    }
+
+    public static class Y extends X implements I1 { }
+
+    public static class Z implements I1 {
+        @Override
+        public String getValue() {
+            return "x";
+        }
+    }
+
+    @Test
+    public void testMethodResolution() throws Exception {
+        // DROOLS-509
+        String drl =
+                "import " + I1.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "    I1 ( value == \"x\" )\n" +
+                "then\n" +
+                "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession ksession = helper.build().newKieSession();
+
+        ksession.insert(new Y());
+        ksession.fireAllRules();
+        ksession.insert(new Z());
+        ksession.fireAllRules();
+    }
 }

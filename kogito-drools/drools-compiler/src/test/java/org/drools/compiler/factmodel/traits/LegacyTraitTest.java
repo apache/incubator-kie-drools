@@ -1,8 +1,8 @@
+
+
 package org.drools.compiler.factmodel.traits;
 
-import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitFactory;
-import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
@@ -32,13 +32,6 @@ public class LegacyTraitTest {
         return session;
     }
 
-    public static interface Pers {
-        public String getName();
-    }
-
-    public static interface Patient extends Pers {
-    }
-
     // Getters and setters are both needed. They should refer to an attribute with the same name
     public static class PatientImpl implements Patient {
         private String name;
@@ -51,19 +44,30 @@ public class LegacyTraitTest {
 
     }
 
+    public static interface Pers {
+        public String getName();
+    }
+
+    public static interface Patient extends Pers {
+    }
+
     public static interface Procedure {
         public Patient getSubject();
         public void setSubject(Patient p);
     }
 
-    @Traitable()
-    // Getters and setters are both needed. They should refer to an attribute with the same name
+    public static interface ExtendedProcedure extends Procedure {
+        public Pers getPers();
+        public void setPers(Pers pers);
+    }
+
     public class ProcedureImpl implements Procedure {
 
         public ProcedureImpl() {
         }
 
         private Patient subject;
+
         @Override
         public Patient getSubject() {
             return this.subject;
@@ -73,54 +77,97 @@ public class LegacyTraitTest {
         }
     }
 
-    // @Trait not necessary, since will need "declare trait" in DRL anyway.
-    // To be a full trait, the interface should also extend Thing.
-    public interface Surgery extends Procedure {
+    public class ExtendedProcedureImpl extends ProcedureImpl implements ExtendedProcedure {
 
+        public ExtendedProcedureImpl() {
+        }
+
+        private Pers pers;
+
+        @Override
+        public Pers getPers() {
+            return this.pers;
+        }
+        public void setPers(Pers pers) {
+            this.pers = pers;
+        }
     }
+
 
     @Test
     public void traitWithPojoInterface() {
         String source = "package org.drools.compiler.test;" +
                         "import org.drools.compiler.factmodel.traits.LegacyTraitTest.Procedure; " +
                         "import org.drools.compiler.factmodel.traits.LegacyTraitTest; " +
-                        "import org.drools.compiler.factmodel.traits.LegacyTraitTest.ProcedureImpl; " +
-                        "import org.drools.compiler.factmodel.traits.LegacyTraitTest.Surgery; " +
+                        "import org.drools.compiler.factmodel.traits.LegacyTraitTest.ExtendedProcedureImpl; " +
+                        "import org.drools.compiler.factmodel.traits.LegacyTraitTest.ExtendedProcedure; " +
 
                         // enhanced so that declaration is not needed
                         // "declare ProcedureImpl end " +
+                        "declare trait ExtendedProcedure " +
+                        "   @role( event )" +
+                        "end " +
 
                         // Surgery must be declared as trait, since it does not extend Thing
-                        "declare trait Surgery end " +
+                        "declare trait Surgery extends ExtendedProcedure end " +
+
+                        "declare ExtendedProcedureImpl " +
+                        "    @Traitable " +
+                        "end " +
 
                         "rule 'Don Procedure' " +
                         "when " +
-                        "    $p : Procedure() " +
+                        "    $p : ExtendedProcedure() " +
                         "then " +
                         "    don( $p, Surgery.class ); " +
                         "end " +
 
-                        "rule 'Print Provider' " +
+                        "rule 'Test 1' " +
                         "dialect 'mvel' " +
                         "when " +
-                        "    $s : Surgery() " +
+                        "    $s1 : ExtendedProcedure( $subject : subject ) " +
+                        "    $s2 : ExtendedProcedure( subject == $subject ) " +
                         "then " +
-                        "    System.out.println( $s.subject.name ); " +
+                        "end " +
+
+                        "rule 'Test 2' " +
+                        "dialect 'mvel' " +
+                        "when " +
+                        "    $s1 : ExtendedProcedure( $subject : subject.name ) " +
+                        "    $s2 : ExtendedProcedure( subject.name == $subject ) " +
+                        "then " +
+                        "end " +
+
+                        "rule 'Test 3' " +
+                        "dialect 'mvel' " +
+                        "when " +
+                        "    $s1 : ExtendedProcedure( ) " +
+                        "then " +
+                        "    update( $s1 ); " +
                         "end " +
                         "\n";
 
         StatefulKnowledgeSession ks = getSessionFromString( source );
         TraitFactory.setMode( VirtualPropertyMode.MAP, ks.getKieBase() );
 
-        ProcedureImpl procedure = new ProcedureImpl();
+        ExtendedProcedureImpl procedure1 = new ExtendedProcedureImpl();
+        ExtendedProcedureImpl procedure2 = new ExtendedProcedureImpl();
 
-        PatientImpl patient = new PatientImpl();
-        patient.setName("John");
-        procedure.setSubject( patient );
+        PatientImpl patient1 = new PatientImpl();
+        patient1.setName("John");
+        procedure1.setSubject( patient1 );
+        procedure1.setPers(new PatientImpl());
 
-        ks.insert( procedure );
+        PatientImpl patient2 = new PatientImpl();
+        patient2.setName("John");
+        procedure2.setSubject( patient2 );
+        procedure2.setPers(new PatientImpl());
 
-        ks.fireAllRules();
+        ks.insert( procedure1 );
+        ks.insert( procedure2 );
+
+        ks.fireAllRules( 500 );
     }
 
 }
+
