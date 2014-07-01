@@ -37,6 +37,7 @@ import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.core.rule.Collect;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.TypeDeclaration;
@@ -503,7 +504,7 @@ public class TypeDeclarationBuilder {
         return cls;
     }
 
-    private void fillFieldTypes(AbstractClassTypeDeclarationDescr typeDescr,
+    public void fillFieldTypes( AbstractClassTypeDeclarationDescr typeDescr,
                                 PackageDescr packageDescr) {
 
         for (TypeFieldDescr field : typeDescr.getFields().values()) {
@@ -541,12 +542,15 @@ public class TypeDeclarationBuilder {
      * from which descriptors are generated (ii) Both (i) and (iii) are applied,
      * but the declared fields override the inspected ones
      *
+     *
+     *
      * @param typeDescr
      *            The base class descriptor, to be completed with the inherited
      *            fields descriptors
+     * @param unprocessableDescrs
      * @return true if all went well
      */
-    private boolean mergeInheritedFields(TypeDeclarationDescr typeDescr) {
+    private boolean mergeInheritedFields( TypeDeclarationDescr typeDescr, List<TypeDefinition> unresolvedTypes, Map<String,TypeDeclarationDescr> unprocessableDescrs ) {
 
         if (typeDescr.getSuperTypes().isEmpty())
             return false;
@@ -561,16 +565,20 @@ public class TypeDeclarationBuilder {
             merge = mergeInheritedFields(simpleSuperTypeName,
                                          superTypePackageName,
                                          fullSuper,
-                                         typeDescr) || merge;
+                                         typeDescr,
+                                         unresolvedTypes,
+                                         unprocessableDescrs) || merge;
         }
 
         return merge;
     }
 
-    private boolean mergeInheritedFields(String simpleSuperTypeName,
-                                         String superTypePackageName,
-                                         String fullSuper,
-                                         TypeDeclarationDescr typeDescr) {
+    private boolean mergeInheritedFields( String simpleSuperTypeName,
+                                          String superTypePackageName,
+                                          String fullSuper,
+                                          TypeDeclarationDescr typeDescr,
+                                          List<TypeDefinition> unresolvedTypes,
+                                          Map<String,TypeDeclarationDescr> unprocessableDescrs ) {
 
         Map<String, TypeFieldDescr> fieldMap = new LinkedHashMap<String, TypeFieldDescr>();
 
@@ -581,8 +589,13 @@ public class TypeDeclarationBuilder {
         } else {
             // If there is no regisrty the type isn't a DRL-declared type, which is forbidden.
             // Avoid NPE JIRA-3041 when trying to access the registry. Avoid subsequent problems.
-            kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, "Cannot extend supertype '" + fullSuper + "' (not a declared type)"));
-            typeDescr.setType(null, null);
+            // DROOLS-536 At this point, the declarations might exist, but the package might not have been processed yet
+            unprocessableDescrs.put( typeDescr.getType().getFullName(), typeDescr );
+            return false;
+        }
+
+        if ( unprocessableDescrs.containsKey( fullSuper ) ) {
+            unprocessableDescrs.put( typeDescr.getType().getFullName(), typeDescr );
             return false;
         }
 
@@ -595,7 +608,7 @@ public class TypeDeclarationBuilder {
             // look for the supertype declaration in available packages
             TypeDeclaration superTypeDeclaration = pack.getTypeDeclaration(simpleSuperTypeName);
 
-            if (superTypeDeclaration != null) {
+            if (superTypeDeclaration != null && superTypeDeclaration.getTypeClassDef() != null ) {
                 ClassDefinition classDef = superTypeDeclaration.getTypeClassDef();
                 // inherit fields
                 for (org.kie.api.definition.type.FactField fld : classDef.getFields()) {
@@ -607,9 +620,18 @@ public class TypeDeclarationBuilder {
                 // new classes are already distinguished from tagged external classes
                 isSuperClassTagged = !superTypeDeclaration.isNovel();
             } else {
-                isSuperClassDeclared = false;
+                for ( TypeDefinition def : unresolvedTypes ) {
+                    if ( def.getTypeClassName().equals( fullSuper ) ) {
+                        TypeDeclarationDescr td = (TypeDeclarationDescr) def.typeDescr;
+                        for ( TypeFieldDescr tf : td.getFields().values() ) {
+                            fieldMap.put( tf.getFieldName(), tf.cloneAsInherited() );
+                        }
+                        isSuperClassDeclared = def.type.isNovel();
+                        break;
+                    }
+                    isSuperClassDeclared = false;
+                }
             }
-
         } else {
             isSuperClassDeclared = false;
         }
@@ -699,7 +721,10 @@ public class TypeDeclarationBuilder {
         PatternDescr fldType = new PatternDescr();
         TypeFieldDescr inheritedFldDescr = new TypeFieldDescr();
         inheritedFldDescr.setFieldName(fld.getName());
-        fldType.setObjectType(((FieldDefinition) fld).getFieldAccessor().getExtractToClassName());
+        if ( ((FieldDefinition) fld).getFieldAccessor() != null ) {
+            // target class may have not been resolved yet
+            fldType.setObjectType(((FieldDefinition) fld).getFieldAccessor().getExtractToClassName());
+        }
         inheritedFldDescr.setPattern(fldType);
         if (fld.isKey()) {
             inheritedFldDescr.getAnnotations().put(TypeDeclaration.ATTR_KEY,
@@ -726,9 +751,9 @@ public class TypeDeclarationBuilder {
         return inheritedFldDescr;
     }
 
-    void processTypes(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
+    void processTypes(PackageRegistry pkgRegistry, PackageDescr packageDescr, Map<String,TypeDeclarationDescr> unprocessableDescrs) {
         // process types in 2 steps to deal with circular and recursive declarations
-        processUnresolvedTypes(pkgRegistry, processTypeDeclarations(pkgRegistry, packageDescr, new ArrayList<TypeDefinition>()));
+        processUnresolvedTypes(pkgRegistry, processTypeDeclarations(pkgRegistry, packageDescr, new ArrayList<TypeDefinition>(), unprocessableDescrs ) );
     }
 
     void processUnresolvedTypes(PackageRegistry pkgRegistry, List<TypeDefinition> unresolvedTypeDefinitions) {
@@ -941,7 +966,7 @@ public class TypeDeclarationBuilder {
         }
     }
 
-    List<TypeDefinition> processTypeDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr, List<TypeDefinition> unresolvedTypes) {
+    List<TypeDefinition> processTypeDeclarations( PackageRegistry pkgRegistry, PackageDescr packageDescr, List<TypeDefinition> unresolvedTypes, Map<String,TypeDeclarationDescr> unprocessableDescrs ) {
 
         Map<String, PackageDescr> foreignPackages = null;
 
@@ -1075,120 +1100,147 @@ public class TypeDeclarationBuilder {
                 continue;
             }
 
-            //descriptor needs fields inherited from superclass
-            if (typeDescr instanceof TypeDeclarationDescr) {
-                TypeDeclarationDescr tDescr = (TypeDeclarationDescr) typeDescr;
-                for (QualifiedName qname : tDescr.getSuperTypes()) {
-                    //descriptor needs fields inherited from superclass
-                    if (mergeInheritedFields(tDescr)) {
-                        //descriptor also needs metadata from superclass
-                        for (AbstractClassTypeDeclarationDescr descr : sortedTypeDescriptors) {
-                            // sortedTypeDescriptors are sorted by inheritance order, so we'll always find the superClass (if any) before the subclass
-                            if (qname.equals(descr.getType())) {
-                                typeDescr.getAnnotations().putAll(descr.getAnnotations());
-                                break;
-                            } else if (typeDescr.getType().equals(descr.getType())) {
-                                break;
-                            }
+            processTypeDeclaration( pkgRegistry, typeDescr, sortedTypeDescriptors, unresolvedTypes, unprocessableDescrs );
+        }
+        return unresolvedTypes;
+    }
 
+    public void processTypeDeclaration( PackageRegistry pkgRegistry,
+                                        AbstractClassTypeDeclarationDescr typeDescr,
+                                        Collection<AbstractClassTypeDeclarationDescr> sortedTypeDescriptors,
+                                        List<TypeDefinition> unresolvedTypes,
+                                        Map<String,TypeDeclarationDescr> unprocessableDescrs ) {
+        //descriptor needs fields inherited from superclass
+        if (typeDescr instanceof TypeDeclarationDescr) {
+            TypeDeclarationDescr tDescr = (TypeDeclarationDescr) typeDescr;
+            for (QualifiedName qname : tDescr.getSuperTypes()) {
+                //descriptor needs fields inherited from superclass
+                if (mergeInheritedFields(tDescr, unresolvedTypes, unprocessableDescrs)) {
+                    //descriptor also needs metadata from superclass
+                    for (AbstractClassTypeDeclarationDescr descr : sortedTypeDescriptors) {
+                        // sortedTypeDescriptors are sorted by inheritance order, so we'll always find the superClass (if any) before the subclass
+                        if (qname.equals(descr.getType())) {
+                            typeDescr.getAnnotations().putAll(descr.getAnnotations());
+                            break;
+                        } else if (typeDescr.getType().equals(descr.getType())) {
+                            break;
                         }
+
                     }
                 }
-            }
-
-            // Go on with the build
-            TypeDeclaration type = new TypeDeclaration(typeDescr.getTypeName());
-            if (typeDescr.getResource() == null) {
-                typeDescr.setResource(kbuilder.getCurrentResource());
-            }
-            type.setResource(typeDescr.getResource());
-
-            TypeDeclaration parent = null;
-            if (!typeDescr.getSuperTypes().isEmpty()) {
-                // parent might have inheritable properties
-                PackageRegistry sup = kbuilder.getPackageRegistry(typeDescr.getSuperTypeNamespace());
-                if (sup != null) {
-                    parent = sup.getPackage().getTypeDeclaration(typeDescr.getSuperTypeName());
-                    if (parent == null) {
-                        kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, "Declared class " + typeDescr.getTypeName() + " can't extend class " + typeDescr.getSuperTypeName() + ", it should be declared"));
-                    } else {
-                        if (parent.getNature() == TypeDeclaration.Nature.DECLARATION && kbuilder.getKnowledgeBase() != null) {
-                            // trying to find a definition
-                            parent = kbuilder.getKnowledgeBase().getPackagesMap().get(typeDescr.getSuperTypeNamespace()).getTypeDeclaration(typeDescr.getSuperTypeName());
-                        }
-                    }
-                }
-            }
-
-            // is it a regular fact or an event?
-            AnnotationDescr annotationDescr = getSingleAnnotation(typeDescr, TypeDeclaration.Role.ID);
-            String role = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
-            if (role != null) {
-                type.setRole(TypeDeclaration.Role.parseRole(role));
-            } else if (parent != null) {
-                type.setRole(parent.getRole());
-            }
-
-            annotationDescr = getSingleAnnotation(typeDescr, TypeDeclaration.ATTR_TYPESAFE);
-            String typesafe = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
-            if (typesafe != null) {
-                type.setTypesafe(Boolean.parseBoolean(typesafe));
-            } else if (parent != null && isSet(parent.getSetMask(), TypeDeclaration.TYPESAFE_BIT)) {
-                type.setTypesafe(parent.isTypesafe());
-            }
-
-            // is it a pojo or a template?
-            annotationDescr = getSingleAnnotation(typeDescr, TypeDeclaration.Format.ID);
-            String format = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
-            if (format != null) {
-                type.setFormat(TypeDeclaration.Format.parseFormat(format));
-            }
-
-            // is it a class, a trait or an enum?
-            annotationDescr = getSingleAnnotation(typeDescr, TypeDeclaration.Kind.ID);
-            String kind = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
-            if (kind != null) {
-                type.setKind(TypeDeclaration.Kind.parseKind(kind));
-            }
-            if (typeDescr instanceof EnumDeclarationDescr) {
-                type.setKind(TypeDeclaration.Kind.ENUM);
-            }
-
-            annotationDescr = getSingleAnnotation(typeDescr, TypeDeclaration.ATTR_CLASS);
-            String className = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
-            if (isEmpty(className)) {
-                className = type.getTypeName();
-            }
-
-            try {
-
-                // the type declaration is generated in any case (to be used by subclasses, if any)
-                // the actual class will be generated only if needed
-                if (!kbuilder.hasErrors()) {
-                    generateDeclaredBean(typeDescr,
-                                         type,
-                                         pkgRegistry,
-                                         unresolvedTypes);
-
-                    Class<?> clazz = pkgRegistry.getTypeResolver().resolveType(typeDescr.getType().getFullName());
-                    type.setTypeClass(clazz);
-                }
-
-            } catch (final ClassNotFoundException e) {
-                kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
-                                                                  "Class '" + className +
-                                                                  "' not found for type declaration of '" +
-                                                                  type.getTypeName() + "'"));
-                continue;
-            }
-
-            if (!processTypeFields(pkgRegistry, typeDescr, type, true)) {
-                unresolvedTypes.add(new TypeDefinition(type, typeDescr));
             }
         }
 
-        return unresolvedTypes;
+        if ( unprocessableDescrs.containsKey( typeDescr.getType().getFullName() ) ) {
+            return;
+        }
+
+//        for ( QualifiedName qualifiedName : typeDescr.getSuperTypes() ) {
+//            for ( TypeDefinition def : unresolvedTypes ) {
+//                if ( def.typeDescr.getType().equals( qualifiedName ) ) {
+//                    unresolvedTypes.add(  )
+//                }
+//            }
+//        }
+
+        // Go on with the build
+        TypeDeclaration type = new TypeDeclaration(typeDescr.getTypeName());
+        if (typeDescr.getResource() == null) {
+            typeDescr.setResource(kbuilder.getCurrentResource());
+        }
+        type.setResource(typeDescr.getResource());
+
+        TypeDeclaration parent = null;
+        if (!typeDescr.getSuperTypes().isEmpty()) {
+            // parent might have inheritable properties
+            PackageRegistry sup = kbuilder.getPackageRegistry(typeDescr.getSuperTypeNamespace());
+            if (sup != null) {
+                parent = sup.getPackage().getTypeDeclaration(typeDescr.getSuperTypeName());
+                if ( parent == null ) {
+                    for ( TypeDefinition tdef : unresolvedTypes ) {
+                        if ( tdef.getTypeClassName().equals( typeDescr.getSuperTypes().get( 0 ).getFullName() ) ) {
+                            parent = tdef.type;
+                        }
+                    }
+                }
+                if (parent == null) {
+                    kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, "Declared class " + typeDescr.getTypeName() + " can't extend class " + typeDescr.getSuperTypeName() + ", it should be declared"));
+                } else {
+                    if (parent.getNature() == TypeDeclaration.Nature.DECLARATION && kbuilder.getKnowledgeBase() != null) {
+                        // trying to find a definition
+                        parent = kbuilder.getKnowledgeBase().getPackagesMap().get(typeDescr.getSuperTypeNamespace()).getTypeDeclaration(typeDescr.getSuperTypeName());
+                    }
+                }
+            }
+        }
+
+        // is it a regular fact or an event?
+        AnnotationDescr annotationDescr = getSingleAnnotation(typeDescr, TypeDeclaration.Role.ID);
+        String role = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
+        if (role != null) {
+            type.setRole(TypeDeclaration.Role.parseRole(role));
+        } else if (parent != null) {
+            type.setRole(parent.getRole());
+        }
+
+        annotationDescr = getSingleAnnotation(typeDescr, TypeDeclaration.ATTR_TYPESAFE);
+        String typesafe = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
+        if (typesafe != null) {
+            type.setTypesafe(Boolean.parseBoolean(typesafe));
+        } else if (parent != null && isSet(parent.getSetMask(), TypeDeclaration.TYPESAFE_BIT)) {
+            type.setTypesafe(parent.isTypesafe());
+        }
+
+        // is it a pojo or a template?
+        annotationDescr = getSingleAnnotation(typeDescr, TypeDeclaration.Format.ID);
+        String format = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
+        if (format != null) {
+            type.setFormat(TypeDeclaration.Format.parseFormat(format));
+        }
+
+        // is it a class, a trait or an enum?
+        annotationDescr = getSingleAnnotation(typeDescr, TypeDeclaration.Kind.ID);
+        String kind = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
+        if (kind != null) {
+            type.setKind(TypeDeclaration.Kind.parseKind(kind));
+        }
+        if (typeDescr instanceof EnumDeclarationDescr) {
+            type.setKind(TypeDeclaration.Kind.ENUM);
+        }
+
+        annotationDescr = getSingleAnnotation(typeDescr, TypeDeclaration.ATTR_CLASS);
+        String className = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
+        if (isEmpty(className)) {
+            className = type.getTypeName();
+        }
+
+        try {
+
+            // the type declaration is generated in any case (to be used by subclasses, if any)
+            // the actual class will be generated only if needed
+            if (!kbuilder.hasErrors()) {
+                generateDeclaredBean(typeDescr,
+                                     type,
+                                     pkgRegistry,
+                                     unresolvedTypes);
+
+                Class<?> clazz = pkgRegistry.getTypeResolver().resolveType(typeDescr.getType().getFullName());
+                type.setTypeClass(clazz);
+            }
+
+        } catch (final ClassNotFoundException e) {
+            kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
+                                                               "Class '" + className +
+                                                               "' not found for type declaration of '" +
+                                                               type.getTypeName() + "'"));
+            return;
+        }
+
+        if (!processTypeFields(pkgRegistry, typeDescr, type, true)) {
+            unresolvedTypes.add(new TypeDefinition(type, typeDescr));
+        }
     }
+
 
     private AnnotationDescr getSingleAnnotation(AbstractClassTypeDeclarationDescr typeDescr, String name) {
         AnnotationDescr annotationDescr = typeDescr.getAnnotation(name);
