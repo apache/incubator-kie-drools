@@ -43,7 +43,8 @@ import org.kie.api.io.Resource;
 public class TypeDeclaration
     implements
     KnowledgeDefinition,
-    Externalizable {
+    Externalizable,
+    Comparable<TypeDeclaration> {
 
     public static final int ROLE_BIT                    = 1;
     public static final int TYPESAFE_BIT                = 2;
@@ -164,6 +165,7 @@ public class TypeDeclaration
     private transient ObjectType   objectType;
     private long                   expirationOffset = -1;
 
+    private int                    order;
     private List<TypeDeclaration>  redeclarations;
 
     public TypeDeclaration() {
@@ -598,4 +600,18 @@ public class TypeDeclaration
     public String getId() {
         return getTypeName();
     }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder( int order ) {
+        this.order = order;
+    }
+
+    @Override
+    public int compareTo( TypeDeclaration o ) {
+        return this.order - o.order;
+    }
+
 }

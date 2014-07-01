@@ -564,8 +564,8 @@ public class KnowledgeBaseImpl
     private Map<String, String> buildGlobalMapForSerialization() {
         Map<String, String> gl = new HashMap<String, String>();
         for (Map.Entry<String, Class<?>> entry : this.globals.entrySet()) {
-            gl.put(entry.getKey(),
-                   entry.getValue().getName());
+            gl.put( entry.getKey(),
+                    entry.getValue().getName() );
         }
         return gl;
     }
@@ -754,60 +754,46 @@ public class KnowledgeBaseImpl
 
             }
 
-
+            List<TypeDeclaration> allTypeDeclarations = new ArrayList<TypeDeclaration>();
             // Add all Type Declarations, this has to be done first incase packages cross reference each other during build process.
             for ( InternalKnowledgePackage newPkg : clonedPkgs ) {
                 // we have to do this before the merging, as it does some classloader resolving
-                String lastType = null;
+                if ( newPkg.getTypeDeclarations() != null ) {
+                    for ( TypeDeclaration newDecl : newPkg.getTypeDeclarations().values() ) {
+                        allTypeDeclarations.add( newDecl );
+                    }
+                }
+            }
+            Collections.sort( allTypeDeclarations );
+
+            String lastType = null;
+            try {
+                // add type declarations according to the global order
+                for ( TypeDeclaration newDecl : allTypeDeclarations ) {
+                    lastType = newDecl.getTypeClassName();
+                    InternalKnowledgePackage newPkg = null;
+                    for ( InternalKnowledgePackage kpkg : clonedPkgs ) {
+                        if ( kpkg.getTypeDeclarations().containsKey( newDecl.getTypeName() ) ) {
+                            newPkg = kpkg;
+                            break;
+                        }
+                    }
+                    processTypeDeclaration( newDecl, newPkg );
+                }
+
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException( "unable to resolve Type Declaration class '" + lastType + "'", e );
+            }
+
+            for ( InternalKnowledgePackage newPkg : clonedPkgs ) {
+                // Add functions
                 try {
-                    // Add the type declarations to the RuleBase
-                    if ( newPkg.getTypeDeclarations() != null ) {
-                        JavaDialectRuntimeData runtime = ((JavaDialectRuntimeData) newPkg.getDialectRuntimeRegistry().getDialectData( "java" ));
+                    JavaDialectRuntimeData runtime = ((JavaDialectRuntimeData) newPkg.getDialectRuntimeRegistry().getDialectData( "java" ));
 
-                        // add type declarations
-                        for ( TypeDeclaration newDecl : newPkg.getTypeDeclarations().values() ) {
-                            lastType = newDecl.getTypeClassName();
-
-
-                            TypeDeclaration typeDeclaration = this.classTypeDeclaration.get( newDecl.getTypeClassName() );
-                            if ( typeDeclaration == null ) {
-                                String className = newDecl.getTypeClassName();
-
-                                byte [] def = runtime.getClassDefinition(convertClassToResourcePath(className));
-                                Class<?> definedKlass = registerAndLoadTypeDefinition( className, def );
-
-                                if ( definedKlass == null && typeDeclaration.isNovel() ) {
-                                    throw new RuntimeException( "Registering null bytes for class " + className );
-                                }
-
-                                if (newDecl.getTypeClassDef() == null) {
-                                    newDecl.setTypeClassDef( new ClassDefinition() );
-                                }
-                                newDecl.getTypeClassDef().setDefinedClass( definedKlass );
-                                newDecl.setTypeClass( definedKlass );
-
-                                this.classTypeDeclaration.put( className, newDecl );
-                                typeDeclaration = newDecl;
-                            } else {
-                                Class<?> definedKlass = typeDeclaration.getTypeClass();
-
-                                newDecl.getTypeClassDef().setDefinedClass( definedKlass );
-                                newDecl.setTypeClass( definedKlass );
-
-                                mergeTypeDeclarations( typeDeclaration,
-                                                       newDecl );
-                            }
-
-                            // update existing OTNs
-                            updateDependentTypes( newPkg,
-                                                  typeDeclaration );
-                        }
-
-                        for ( Function function : newPkg.getFunctions().values() ) {
-                            String functionClassName = function.getClassName();
-                            byte [] def = runtime.getStore().get(convertClassToResourcePath(functionClassName));
-                            registerAndLoadTypeDefinition( functionClassName, def );
-                        }
+                    for ( Function function : newPkg.getFunctions().values() ) {
+                        String functionClassName = function.getClassName();
+                        byte [] def = runtime.getStore().get(convertClassToResourcePath(functionClassName));
+                        registerAndLoadTypeDefinition( functionClassName, def );
                     }
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException( "unable to resolve Type Declaration class '" + lastType + "'", e );
@@ -869,6 +855,43 @@ public class KnowledgeBaseImpl
         } finally {
             unlock();
         }
+    }
+
+    protected void processTypeDeclaration( TypeDeclaration newDecl, InternalKnowledgePackage newPkg ) throws ClassNotFoundException {
+        JavaDialectRuntimeData runtime = ((JavaDialectRuntimeData) newPkg.getDialectRuntimeRegistry().getDialectData( "java" ));
+
+        TypeDeclaration typeDeclaration = this.classTypeDeclaration.get( newDecl.getTypeClassName() );
+        if ( typeDeclaration == null ) {
+            String className = newDecl.getTypeClassName();
+
+            byte [] def = runtime.getClassDefinition(convertClassToResourcePath(className));
+            Class<?> definedKlass = registerAndLoadTypeDefinition( className, def );
+
+            if ( definedKlass == null && typeDeclaration.isNovel() ) {
+                throw new RuntimeException( "Registering null bytes for class " + className );
+            }
+
+            if (newDecl.getTypeClassDef() == null) {
+                newDecl.setTypeClassDef( new ClassDefinition() );
+            }
+            newDecl.getTypeClassDef().setDefinedClass( definedKlass );
+            newDecl.setTypeClass( definedKlass );
+
+            this.classTypeDeclaration.put( className, newDecl );
+            typeDeclaration = newDecl;
+        } else {
+            Class<?> definedKlass = typeDeclaration.getTypeClass();
+
+            newDecl.getTypeClassDef().setDefinedClass( definedKlass );
+            newDecl.setTypeClass( definedKlass );
+
+            mergeTypeDeclarations( typeDeclaration,
+                                   newDecl );
+        }
+
+        // update existing OTNs
+        updateDependentTypes( newPkg,
+                              typeDeclaration );
     }
 
     public Class<?> registerAndLoadTypeDefinition( String className, byte[] def ) throws ClassNotFoundException {
