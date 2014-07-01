@@ -1,10 +1,12 @@
 package org.drools.compiler.kie.builder.impl;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import static org.drools.core.util.IoUtils.recursiveListFile;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.drools.core.util.IoUtils;
@@ -12,13 +14,15 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 
 public class FileKieModule extends AbstractKieModule implements InternalKieModule {
-    private final File             file;   
+    private final File file;
+    private final Collection<String> fileNames;
 
     public FileKieModule(ReleaseId releaseId,
                       KieModuleModel kieProject,
                       File file) {
         super(releaseId, kieProject );
         this.file = file;
+        this.fileNames = new ArrayList<String>();
     }
 
     @Override
@@ -53,7 +57,11 @@ public class FileKieModule extends AbstractKieModule implements InternalKieModul
 
     @Override
     public Collection<String> getFileNames() {
-        return IoUtils.recursiveListFile( file );
+    	if (fileNames.isEmpty()) {
+    		fileNames.addAll(recursiveListFile( file ));
+    	}
+    	
+    	return fileNames;
     }
 
 
