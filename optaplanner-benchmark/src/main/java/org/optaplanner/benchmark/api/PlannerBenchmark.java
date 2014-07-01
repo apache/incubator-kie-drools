@@ -19,7 +19,7 @@ package org.optaplanner.benchmark.api;
 import org.optaplanner.core.api.solver.SolverFactory;
 
 /**
- *
+ * A planner benchmark that runs a number of single benchmarks.
  * <p/>
  * Build by a {@link PlannerBenchmarkFactory}.
  */
