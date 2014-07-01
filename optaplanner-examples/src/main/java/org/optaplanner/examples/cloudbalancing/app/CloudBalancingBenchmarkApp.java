@@ -28,6 +28,8 @@ public class CloudBalancingBenchmarkApp extends CommonBenchmarkApp {
         super(
                 new ArgOption("default",
                         "org/optaplanner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfig.xml"),
+                new ArgOption("stepLimit",
+                        "org/optaplanner/examples/cloudbalancing/benchmark/cloudBalancingStepLimitBenchmarkConfig.xml"),
                 new ArgOption("scoreDirector",
                         "org/optaplanner/examples/cloudbalancing/benchmark/cloudBalancingScoreDirectorBenchmarkConfig.xml"),
                 new ArgOption("template",
