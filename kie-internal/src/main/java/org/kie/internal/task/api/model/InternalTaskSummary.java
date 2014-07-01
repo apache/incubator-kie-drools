@@ -58,7 +58,7 @@ public interface InternalTaskSummary extends TaskSummary {
 
     void setSubTaskStrategy(SubTasksStrategy subTaskStrategy);
 
-    long getParentId();
+    Long getParentId();
 
     void setParentId(long parentId);
 
