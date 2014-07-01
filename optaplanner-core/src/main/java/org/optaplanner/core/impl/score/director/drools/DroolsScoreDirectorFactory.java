@@ -17,6 +17,8 @@
 package org.optaplanner.core.impl.score.director.drools;
 
 import org.kie.api.KieBase;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.definition.rule.Global;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 
@@ -29,12 +31,26 @@ public class DroolsScoreDirectorFactory extends AbstractScoreDirectorFactory {
 
     protected KieBase kieBase;
 
-    public KieBase getKieBase() {
-        return kieBase;
+    public DroolsScoreDirectorFactory(KieBase kieBase) {
+        this.kieBase = kieBase;
+        boolean hasGlobalScoreHolder = false;
+        for (KiePackage kiePackage : kieBase.getKiePackages()) {
+            for (Global global : kiePackage.getGlobalVariables()) {
+                if (DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY.equals(global.getName())) {
+                    hasGlobalScoreHolder = true;
+                    break;
+                }
+            }
+        }
+        if (!hasGlobalScoreHolder) {
+            throw new IllegalArgumentException("The kieBase with kiePackages (" + kieBase.getKiePackages()
+                    + ") has no global field called " + DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY + ".\n"
+                    + "Check if the rule files are found and if the global field is spelled correctly.");
+        }
     }
 
-    public void setKieBase(KieBase kieBase) {
-        this.kieBase = kieBase;
+    public KieBase getKieBase() {
+        return kieBase;
     }
 
     // ************************************************************************

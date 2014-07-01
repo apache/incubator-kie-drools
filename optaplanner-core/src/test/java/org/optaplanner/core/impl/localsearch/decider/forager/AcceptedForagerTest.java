@@ -28,6 +28,9 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.heuristic.move.DummyMove;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -191,10 +194,10 @@ public class AcceptedForagerTest {
     private LocalSearchPhaseScope createPhaseScope() {
         DefaultSolverScope solverScope = new DefaultSolverScope();
         LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
-        DroolsScoreDirectorFactory scoreDirectorFactory = new DroolsScoreDirectorFactory();
-        scoreDirectorFactory.setSolutionDescriptor(TestdataSolution.buildSolutionDescriptor());
-        scoreDirectorFactory.setScoreDefinition(new SimpleScoreDefinition());
-        solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector());
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
+        when(scoreDirector.getSolutionDescriptor()).thenReturn(TestdataSolution.buildSolutionDescriptor());
+        when(scoreDirector.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
+        solverScope.setScoreDirector(scoreDirector);
         Random workingRandom = mock(Random.class);
         when(workingRandom.nextInt(2)).thenReturn(0);
         solverScope.setWorkingRandom(workingRandom);

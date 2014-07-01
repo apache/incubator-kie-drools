@@ -324,8 +324,7 @@ public class ScoreDirectorFactoryConfig {
     }
 
     private AbstractScoreDirectorFactory buildDroolsScoreDirectorFactory() {
-        DroolsScoreDirectorFactory scoreDirectorFactory = new DroolsScoreDirectorFactory();
-        scoreDirectorFactory.setKieBase(buildKieBase());
+        DroolsScoreDirectorFactory scoreDirectorFactory = new DroolsScoreDirectorFactory(buildKieBase());
         return scoreDirectorFactory;
     }
 
