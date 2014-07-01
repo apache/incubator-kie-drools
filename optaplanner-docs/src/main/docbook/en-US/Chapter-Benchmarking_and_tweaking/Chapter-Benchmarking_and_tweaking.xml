@@ -451,6 +451,12 @@
       <para>Shows the best score per problem scale for each solver configuration.</para>
 
       <para>Useful for visualizing the scalability of each solver configuration.</para>
+
+      <note>
+        <para>The problem scale will report <literal>0</literal> if any <literal>@ValueRangeProvider</literal> method
+        signature returns ValueRange (instead of <literal>CountableValueRange</literal> or
+        <literal>Collection</literal>).</para>
+      </note>
     </section>
 
     <section xml:id="benchmarkReportWinningScoreDifferenceSummary">
