@@ -897,39 +897,60 @@ public class ConditionAnalyzer {
             this(method, null);
         }
 
-        public MethodInvocation(Method method, String conditionClass) {
-            this.method = getMethodFromSuperclass(method, conditionClass);
+        public MethodInvocation(Method method, String conditionClassName) {
+            this.method = getMethodFromSuperclass(method, conditionClassName);
         }
 
-        private Method getMethodFromSuperclass(Method method, String conditionClass) {
+        private Method getMethodFromSuperclass(Method method, String conditionClassName) {
             if (method == null || Modifier.isStatic(method.getModifiers())) {
                 return method;
             }
             Class<?> declaringClass = method.getDeclaringClass();
+            Class<?> conditionClass = conditionClassName != null ? getConditionClass(declaringClass, conditionClassName) : null;
+            if (conditionClass != null) {
+                try {
+                    return conditionClass.getMethod(method.getName(), method.getParameterTypes());
+                } catch (Exception e) { }
+            }
+
+            return getMethodForUnknownConditionClass(method, declaringClass);
+        }
+
+        private Method getMethodForUnknownConditionClass(Method method, Class<?> declaringClass) {
             Class<?> declaringSuperclass = declaringClass.getSuperclass();
             if (declaringSuperclass != null) {
                 try {
-                    return getMethodFromSuperclass(declaringSuperclass.getMethod(method.getName(), method.getParameterTypes()), conditionClass);
+                    return getMethodForUnknownConditionClass(declaringSuperclass.getMethod(method.getName(), method.getParameterTypes()), declaringSuperclass);
                 } catch (Exception e) { }
             }
-            Method iMethod = getMethodFromInterface(declaringClass, method, conditionClass);
+            Method iMethod = getMethodFromInterface(declaringClass, method);
             return iMethod == null ? method : iMethod;
         }
 
-        private Method getMethodFromInterface(Class<?> clazz, Method method, String conditionClass) {
-            if (conditionClass == null || !clazz.getName().equals(conditionClass)) {
-                for (Class<?> interfaze : clazz.getInterfaces()) {
-                    Method iMethod = getMethodFromInterface(interfaze, method, conditionClass);
-                    if (iMethod != null) {
-                        return iMethod;
-                    }
+        private Method getMethodFromInterface(Class<?> clazz, Method method) {
+            for (Class<?> interfaze : clazz.getInterfaces()) {
+                Method iMethod = getMethodFromInterface(interfaze, method);
+                if (iMethod != null) {
+                    return iMethod;
                 }
-                return null;
             }
             try {
                 return clazz.getMethod(method.getName(), method.getParameterTypes());
             } catch (Exception e) { }
             return null;
+        }
+
+        private Class<?> getConditionClass(Class<?> declaringClass, String conditionClassName) {
+            if (declaringClass.getName().equals(conditionClassName)) {
+                return declaringClass;
+            }
+            for (Class<?> interfaze : declaringClass.getInterfaces()) {
+                if (interfaze.getName().equals(conditionClassName)) {
+                    return interfaze;
+                }
+            }
+            Class<?> declaringSuperclass = declaringClass.getSuperclass();
+            return declaringSuperclass != null ? getConditionClass(declaringSuperclass, conditionClassName) : null;
         }
 
         public Method getMethod() {
