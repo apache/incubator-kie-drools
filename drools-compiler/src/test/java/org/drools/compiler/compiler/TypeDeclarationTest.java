@@ -10,6 +10,9 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.io.KieResources;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -38,6 +41,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Collection;
+import java.util.Collections;
 
 public class TypeDeclarationTest {
 
@@ -753,6 +757,77 @@ public class TypeDeclarationTest {
         KieBase kieBase = kieServices.newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
 
         FactType type = kieBase.getFactType( "org.drools.compiler", "Person" );
+
+    }
+
+    @Test
+    public void testCrossPackageDeclares() {
+        String pkg1 =
+                "package org.drools.compiler.test1; " +
+                "import org.drools.compiler.test2.GrandChild; " +
+                "import org.drools.compiler.test2.Child; " +
+                "import org.drools.compiler.test2.BarFuu; " +
+
+                "declare FuBaz foo : String end " +
+
+                "declare Parent " +
+                "   unknown : BarFuu " +
+                "end " +
+
+                "declare GreatChild extends GrandChild " +
+                "   father : Child " +
+                "end "
+                ;
+
+        String pkg2 =
+                "package org.drools.compiler.test2; " +
+                "import org.drools.compiler.test1.Parent; " +
+                "import org.drools.compiler.test1.FuBaz; " +
+
+                "declare BarFuu " +
+                "   baz : FuBaz " +
+                "end " +
+
+                "declare Child extends Parent " +
+                "end " +
+
+                "declare GrandChild extends Child " +
+                "   notknown : FuBaz " +
+                "end "
+                ;
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+
+        kfs.generateAndWritePomXML( ks.newReleaseId( "test", "foo", "1.0" ) );
+        KieModuleModel km = ks.newKieModuleModel();
+        km.newKieBaseModel( "rules" )
+                .addPackage( "org.drools.compiler.test2" )
+                .addPackage( "org.drools.compiler.test1" );
+        kfs.writeKModuleXML( km.toXML() );
+
+        KieResources kr = ks.getResources();
+        Resource r1 = kr.newByteArrayResource( pkg1.getBytes() )
+                .setResourceType( ResourceType.DRL )
+                .setSourcePath( "org/drools/compiler/test1/p1.drl" );
+        Resource r2 = kr.newByteArrayResource( pkg2.getBytes() )
+                .setResourceType( ResourceType.DRL )
+                .setSourcePath( "org/drools/compiler/test2/p2.drl" );
+
+        kfs.write( r1 );
+        kfs.write( r2 );
+
+        KieBuilder builder = ks.newKieBuilder( kfs );
+        builder.buildAll();
+
+        assertEquals( Collections.emptyList(), builder.getResults().getMessages( Message.Level.ERROR ) );
+
+        KieContainer kc = ks.newKieContainer(builder.getKieModule().getReleaseId());
+        FactType ft = kc.getKieBase( "rules" ).getFactType( "org.drools.compiler.test2", "Child" );
+
+        assertNotNull( ft );
+        assertNotNull( ft.getFactClass() );
+        assertEquals( "org.drools.compiler.test1.Parent", ft.getFactClass().getSuperclass().getName() );
 
     }
 }

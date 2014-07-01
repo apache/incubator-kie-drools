@@ -103,7 +103,11 @@ public class CommandFactoryServiceImpl implements KieCommands {
     public Command newDelete(FactHandle factHandle) {
         return new DeleteCommand( factHandle );
     }
-    
+
+    public Command newDeleteObject(Object object,String entryPoint) {
+        return new DeleteObjectCommand( object, entryPoint );
+    }
+
     public Setter newSetter(String accessor,
                              String value) {
         return new SetterImpl(accessor, value);
