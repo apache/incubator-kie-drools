@@ -1,8 +1,8 @@
 package org.drools.compiler.builder.impl;
 
-import org.drools.compiler.builder.impl.TypeDefinition;
 import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
@@ -291,9 +291,24 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
             }
         }
 
+        Map<String,TypeDeclarationDescr> unprocesseableDescrs = new HashMap<String,TypeDeclarationDescr>();
         List<TypeDefinition> unresolvedTypes = new ArrayList<TypeDefinition>();
         for (CompositePackageDescr packageDescr : packages) {
-            buildTypeDeclarations(packageDescr, unresolvedTypes);
+            buildTypeDeclarations(packageDescr, unresolvedTypes, unprocesseableDescrs);
+        }
+
+        if ( ! unprocesseableDescrs.isEmpty() ) {
+            List<AbstractClassTypeDeclarationDescr> unsortedDescrs = new ArrayList<AbstractClassTypeDeclarationDescr>( unprocesseableDescrs.values() );
+            Collection<AbstractClassTypeDeclarationDescr> sortedDescrs = kBuilder.getTypeBuilder().sortByHierarchy( unsortedDescrs );
+            for ( AbstractClassTypeDeclarationDescr descr : sortedDescrs ) {
+                unprocesseableDescrs.remove( descr.getType().getFullName() );
+                PackageRegistry pkg = kBuilder.getPackageRegistry().get( descr.getType().getNamespace() );
+                kBuilder.getTypeBuilder().processTypeDeclaration( pkg,
+                                                                  descr,
+                                                                  sortedDescrs,
+                                                                  unresolvedTypes,
+                                                                  unprocesseableDescrs );
+            }
         }
 
         for (TypeDefinition unresolvedType : unresolvedTypes) {
@@ -307,7 +322,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
     }
 
-    private List<TypeDefinition> buildTypeDeclarations(CompositePackageDescr packageDescr, List<TypeDefinition> unresolvedTypes) {
+    private List<TypeDefinition> buildTypeDeclarations(CompositePackageDescr packageDescr, List<TypeDefinition> unresolvedTypes, Map<String,TypeDeclarationDescr> unprocessableDescrs) {
         kBuilder.setAssetFilter(packageDescr.getFilter());
         PackageRegistry pkgRegistry = kBuilder.createPackageRegistry(packageDescr);
         if (pkgRegistry == null) {
@@ -315,9 +330,9 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
 
         kBuilder.processEntryPointDeclarations(pkgRegistry, packageDescr);
-        List<TypeDefinition> processTypeDeclarations = kBuilder.getTypeBuilder().processTypeDeclarations(pkgRegistry, packageDescr, unresolvedTypes);
+        List<TypeDefinition> defsWithUnresolvedTypes = kBuilder.getTypeBuilder().processTypeDeclarations(pkgRegistry, packageDescr, unresolvedTypes, unprocessableDescrs);
         kBuilder.setAssetFilter(null);
-        return processTypeDeclarations;
+        return defsWithUnresolvedTypes;
     }
 
     private Collection<CompositePackageDescr> buildPackageDescr() {

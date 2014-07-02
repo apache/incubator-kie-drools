@@ -764,17 +764,27 @@ public class TypeDeclarationTest {
     public void testCrossPackageDeclares() {
         String pkg1 =
                 "package org.drools.compiler.test1; " +
+                "import org.drools.compiler.test2.GrandChild; " +
 
-                "declare Parent end " +
-                "\n";
+                "declare FuBaz foo : String end " +
+
+                "declare Parent " +
+                "end " +
+
+                "declare GreatChild extends GrandChild " +
+                "end "
+                ;
 
         String pkg2 =
                 "package org.drools.compiler.test2; " +
-                "import org.drools.compiler.test1.Parent " +
+                "import org.drools.compiler.test1.Parent; " +
 
-                "declare Child extends Parent end " +
+                "declare Child extends Parent " +
+                "end " +
 
-                "\n";
+                "declare GrandChild extends Child " +
+                "end "
+                ;
 
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();

@@ -30,6 +30,7 @@ import org.drools.compiler.compiler.ResourceTypeBuilderRegistry;
 import org.drools.compiler.compiler.ResourceTypeDeclarationWarning;
 import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.compiler.ScoreCardFactory;
+import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.compiler.lang.ExpanderException;
 import org.drools.compiler.lang.descr.AccumulateImportDescr;
@@ -41,6 +42,7 @@ import org.drools.compiler.lang.descr.GlobalDescr;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.WindowDeclarationDescr;
 import org.drools.compiler.lang.dsl.DSLMappingFile;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
@@ -1433,9 +1435,13 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
         processEntryPointDeclarations(pkgRegistry, packageDescr);
 
-        typeBuilder.processTypes(pkgRegistry, packageDescr);
+        Map<String,TypeDeclarationDescr> unprocessableDescrs = new HashMap<String, TypeDeclarationDescr>();
+        typeBuilder.processTypes(pkgRegistry, packageDescr, unprocessableDescrs);
+        for ( TypeDeclarationDescr descr : unprocessableDescrs.values() ) {
+            this.addBuilderResult( new TypeDeclarationError( descr, "Unable to process type " + descr.getTypeName() ) );
+        }
 
-        processOtherDeclarations(pkgRegistry, packageDescr);
+        processOtherDeclarations( pkgRegistry, packageDescr );
     }
 
     void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {

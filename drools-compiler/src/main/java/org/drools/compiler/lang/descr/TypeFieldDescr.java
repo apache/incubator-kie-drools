@@ -132,4 +132,15 @@ public class TypeFieldDescr extends AnnotatedBaseDescr
         this.inherited = inherited;
     }
 
+    public TypeFieldDescr cloneAsInherited() {
+        TypeFieldDescr clone = new TypeFieldDescr( fieldName, pattern );
+        clone.index = this.index;
+        clone.initExpr = this.initExpr;
+        clone.inherited = true;
+        for ( AnnotationDescr ad : this.getAnnotations().values() ) {
+            clone.addAnnotation( ad );
+        }
+        return clone;
+    }
+
 }
