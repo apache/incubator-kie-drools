@@ -268,7 +268,7 @@ public class DeploymentServiceTest extends AbstractBaseTest {
         assertNull(engineSupport.getKieSession().getProcessInstance(supportPI.getState()));
     }
     
-    @Test(expected=IllegalStateException.class)
+    @Test(expected=RuntimeException.class)
     public void testDuplicatedDeployment() {
             
         assertNotNull(deploymentService);

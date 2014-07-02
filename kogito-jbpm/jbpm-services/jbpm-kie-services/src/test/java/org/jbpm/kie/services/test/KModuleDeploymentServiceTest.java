@@ -260,7 +260,7 @@ public class KModuleDeploymentServiceTest extends AbstractBaseTest {
         
     }
 
-    @Test(expected=IllegalStateException.class)
+    @Test(expected=RuntimeException.class)
     public void testDuplicatedDeployment() {
             
         assertNotNull(deploymentService);

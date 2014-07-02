@@ -77,65 +77,71 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
     
     @Override
     public void deploy(DeploymentUnit unit) {
-        super.deploy(unit);
-        if (!(unit instanceof KModuleDeploymentUnit)) {
-            throw new IllegalArgumentException("Invalid deployment unit provided - " + unit.getClass().getName());
-        }
-        KModuleDeploymentUnit kmoduleUnit = (KModuleDeploymentUnit) unit;
-        KieServices ks = KieServices.Factory.get();
-        DeployedUnitImpl deployedUnit = new DeployedUnitImpl(unit);
-        ReleaseId releaseId = ks.newReleaseId(kmoduleUnit.getGroupId(), kmoduleUnit.getArtifactId(), kmoduleUnit.getVersion());
-
-        MavenRepository repository = getMavenRepository();
-        repository.resolveArtifact(releaseId.toExternalForm());
-
-        KieContainer kieContainer = ks.newKieContainer(releaseId);
-
-        String kbaseName = kmoduleUnit.getKbaseName();
-        if (StringUtils.isEmpty(kbaseName)) {
-            KieBaseModel defaultKBaseModel = ((KieContainerImpl)kieContainer).getKieProject().getDefaultKieBaseModel();
-            if (defaultKBaseModel != null) {
-                kbaseName = defaultKBaseModel.getName();
-            } else {
-                kbaseName = DEFAULT_KBASE_NAME;
-            }
-        }
-        InternalKieModule module = (InternalKieModule) ((KieContainerImpl)kieContainer).getKieModuleForKBase(kbaseName);
-        if (module == null) {
-            throw new IllegalStateException("Cannot find kbase, either it does not exist or there are multiple default kbases in kmodule.xml");
-        }
-
-        Map<String, String> formsData = new HashMap<String, String>();
-        Collection<String> files = module.getFileNames();
-        
-        processResources(module, formsData, files, kieContainer, kmoduleUnit, deployedUnit, releaseId);
-        
-        if (module.getKieDependencies() != null) {
-	        Collection<InternalKieModule> dependencies = module.getKieDependencies().values();
-	        for (InternalKieModule depModule : dependencies) {
-	        	
-	        	logger.debug("Processing dependency module " + depModule.getReleaseId());
-	        	files = depModule.getFileNames();
-	        	
-	        	processResources(depModule, formsData, files, kieContainer, kmoduleUnit, deployedUnit, depModule.getReleaseId());
+    	try {
+	        super.deploy(unit);
+	        if (!(unit instanceof KModuleDeploymentUnit)) {
+	            throw new IllegalArgumentException("Invalid deployment unit provided - " + unit.getClass().getName());
 	        }
-        }
-
-
-        KieBase kbase = kieContainer.getKieBase(kbaseName);        
-
-        AuditEventBuilder auditLoggerBuilder = setupAuditLogger(identityProvider, unit.getIdentifier());
-
-        RuntimeEnvironmentBuilder builder = boostrapRuntimeEnvironmentBuilder(
-        		kmoduleUnit, deployedUnit, kieContainer, kmoduleUnit.getMergeMode())
-                .knowledgeBase(kbase)
-                .classLoader(kieContainer.getClassLoader());
-        if (beanManager != null) {
-            builder.registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, auditLoggerBuilder, kieContainer,
-                    kmoduleUnit.getKsessionName()));
-        }
-        commonDeploy(unit, deployedUnit, builder.get());
-        kmoduleUnit.setDeployed(true);
+	        KModuleDeploymentUnit kmoduleUnit = (KModuleDeploymentUnit) unit;
+	        KieServices ks = KieServices.Factory.get();
+	        DeployedUnitImpl deployedUnit = new DeployedUnitImpl(unit);
+	        ReleaseId releaseId = ks.newReleaseId(kmoduleUnit.getGroupId(), kmoduleUnit.getArtifactId(), kmoduleUnit.getVersion());
+	
+	        MavenRepository repository = getMavenRepository();
+	        repository.resolveArtifact(releaseId.toExternalForm());
+	
+	        KieContainer kieContainer = ks.newKieContainer(releaseId);
+	
+	        String kbaseName = kmoduleUnit.getKbaseName();
+	        if (StringUtils.isEmpty(kbaseName)) {
+	            KieBaseModel defaultKBaseModel = ((KieContainerImpl)kieContainer).getKieProject().getDefaultKieBaseModel();
+	            if (defaultKBaseModel != null) {
+	                kbaseName = defaultKBaseModel.getName();
+	            } else {
+	                kbaseName = DEFAULT_KBASE_NAME;
+	            }
+	        }
+	        InternalKieModule module = (InternalKieModule) ((KieContainerImpl)kieContainer).getKieModuleForKBase(kbaseName);
+	        if (module == null) {
+	            throw new IllegalStateException("Cannot find kbase, either it does not exist or there are multiple default kbases in kmodule.xml");
+	        }
+	
+	        Map<String, String> formsData = new HashMap<String, String>();
+	        Collection<String> files = module.getFileNames();
+	        
+	        processResources(module, formsData, files, kieContainer, kmoduleUnit, deployedUnit, releaseId);
+	        
+	        if (module.getKieDependencies() != null) {
+		        Collection<InternalKieModule> dependencies = module.getKieDependencies().values();
+		        for (InternalKieModule depModule : dependencies) {
+		        	
+		        	logger.debug("Processing dependency module " + depModule.getReleaseId());
+		        	files = depModule.getFileNames();
+		        	
+		        	processResources(depModule, formsData, files, kieContainer, kmoduleUnit, deployedUnit, depModule.getReleaseId());
+		        }
+	        }
+	
+	
+	        KieBase kbase = kieContainer.getKieBase(kbaseName);        
+	
+	        AuditEventBuilder auditLoggerBuilder = setupAuditLogger(identityProvider, unit.getIdentifier());
+	
+	        RuntimeEnvironmentBuilder builder = boostrapRuntimeEnvironmentBuilder(
+	        		kmoduleUnit, deployedUnit, kieContainer, kmoduleUnit.getMergeMode())
+	                .knowledgeBase(kbase)
+	                .classLoader(kieContainer.getClassLoader());
+	        if (beanManager != null) {
+	            builder.registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, auditLoggerBuilder, kieContainer,
+	                    kmoduleUnit.getKsessionName()));
+	        }
+	        commonDeploy(unit, deployedUnit, builder.get());
+	        kmoduleUnit.setDeployed(true);
+    	} catch (Throwable e) {
+    		logger.warn("Unexpected error while deploying unit {}", unit.getIdentifier(), e);
+    		// catch all possible errors to be able to report them to caller as RuntimeException
+    		throw new RuntimeException(e);
+    	}
     }
 
     
@@ -282,7 +288,9 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                     logger.debug( "Loaded {} into the classpath from deployment {}", className, releaseId.toExternalForm());
                 } catch (ClassNotFoundException cnfe) {
                     throw new IllegalArgumentException("Class " + className + " not found in the project");
-                }
+                } catch (NoClassDefFoundError e) {
+                	throw new IllegalArgumentException("Class " + className + " not found in the project");
+				}
             }
         }
     }
