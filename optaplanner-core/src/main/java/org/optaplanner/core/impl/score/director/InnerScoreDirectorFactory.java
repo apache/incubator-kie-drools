@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.director;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
@@ -36,6 +37,17 @@ public interface InnerScoreDirectorFactory extends ScoreDirectorFactory {
 
     @Override
     InnerScoreDirector buildScoreDirector();
+
+    /**
+     * Like {@link #buildScoreDirector()}, but optionally disables {@link ConstraintMatch} tracking
+     * for more performance (presuming the {@link ScoreDirector} implementation actually supports it to begin with).
+     * @param constraintMatchEnabledPreference false if a {@link ScoreDirector} implementation
+     * should not do {@link ConstraintMatch} tracking even if it supports it.
+     * @return never null
+     * @see ScoreDirector#isConstraintMatchEnabled()
+     * @see ScoreDirector#getConstraintMatchTotals()
+     */
+    InnerScoreDirector buildScoreDirector(boolean constraintMatchEnabledPreference);
 
     /**
      * @return never null

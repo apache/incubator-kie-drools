@@ -53,7 +53,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
 
     protected final F scoreDirectorFactory;
 
-    protected boolean constraintMatchEnabledPreference = true;
+    protected final boolean constraintMatchEnabledPreference;
 
     protected TrailingEntityMapSupport trailingEntityMapSupport;
     protected VariableListenerSupport variableListenerSupport;
@@ -65,8 +65,9 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
 
     protected long calculateCount = 0L;
 
-    protected AbstractScoreDirector(F scoreDirectorFactory) {
+    protected AbstractScoreDirector(F scoreDirectorFactory, boolean constraintMatchEnabledPreference) {
         this.scoreDirectorFactory = scoreDirectorFactory;
+        this.constraintMatchEnabledPreference = constraintMatchEnabledPreference;
         SolutionDescriptor solutionDescriptor = getSolutionDescriptor();
         trailingEntityMapSupport = new TrailingEntityMapSupport(solutionDescriptor);
         variableListenerSupport = solutionDescriptor.buildVariableListenerSupport();
@@ -172,7 +173,8 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     public AbstractScoreDirector clone() {
         // Breaks incremental score calculation.
         // Subclasses should overwrite this method to avoid breaking it if possible.
-        AbstractScoreDirector clone = (AbstractScoreDirector) scoreDirectorFactory.buildScoreDirector();
+        AbstractScoreDirector clone = (AbstractScoreDirector) scoreDirectorFactory.buildScoreDirector(
+                constraintMatchEnabledPreference);
         clone.setWorkingSolution(cloneWorkingSolution());
         return clone;
     }
@@ -299,7 +301,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         if (assertionScoreDirectorFactory == null) {
             assertionScoreDirectorFactory = scoreDirectorFactory;
         }
-        InnerScoreDirector uncorruptedScoreDirector = assertionScoreDirectorFactory.buildScoreDirector();
+        InnerScoreDirector uncorruptedScoreDirector = assertionScoreDirectorFactory.buildScoreDirector(true);
         uncorruptedScoreDirector.setWorkingSolution(workingSolution);
         Score uncorruptedScore = uncorruptedScoreDirector.calculateScore();
         if (!workingScore.equals(uncorruptedScore)) {

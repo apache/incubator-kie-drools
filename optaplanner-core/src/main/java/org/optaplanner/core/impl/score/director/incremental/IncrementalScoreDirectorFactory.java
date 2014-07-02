@@ -41,10 +41,10 @@ public class IncrementalScoreDirectorFactory extends AbstractScoreDirectorFactor
     // Complex methods
     // ************************************************************************
 
-    public IncrementalScoreDirector buildScoreDirector() {
+    public IncrementalScoreDirector buildScoreDirector(boolean constraintMatchEnabledPreference) {
         IncrementalScoreCalculator incrementalScoreCalculator = ConfigUtils.newInstance(this,
                 "incrementalScoreCalculatorClass", incrementalScoreCalculatorClass);
-        return new IncrementalScoreDirector(this, incrementalScoreCalculator);
+        return new IncrementalScoreDirector(this, constraintMatchEnabledPreference, incrementalScoreCalculator);
     }
 
 }

@@ -57,8 +57,8 @@ public class DroolsScoreDirectorFactory extends AbstractScoreDirectorFactory {
     // Complex methods
     // ************************************************************************
 
-    public DroolsScoreDirector buildScoreDirector() {
-        return new DroolsScoreDirector(this);
+    public DroolsScoreDirector buildScoreDirector(boolean constraintMatchEnabledPreference) {
+        return new DroolsScoreDirector(this, constraintMatchEnabledPreference);
     }
 
 }

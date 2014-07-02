@@ -35,8 +35,8 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
     private final IncrementalScoreCalculator incrementalScoreCalculator;
 
     public IncrementalScoreDirector(IncrementalScoreDirectorFactory scoreDirectorFactory,
-            IncrementalScoreCalculator incrementalScoreCalculator) {
-        super(scoreDirectorFactory);
+            boolean constraintMatchEnabledPreference, IncrementalScoreCalculator incrementalScoreCalculator) {
+        super(scoreDirectorFactory, constraintMatchEnabledPreference);
         this.incrementalScoreCalculator = incrementalScoreCalculator;
     }
 

@@ -30,9 +30,9 @@ public class EasyScoreDirector extends AbstractScoreDirector<EasyScoreDirectorFa
 
     private final EasyScoreCalculator easyScoreCalculator;
 
-    public EasyScoreDirector(EasyScoreDirectorFactory scoreDirectorFactory,
+    public EasyScoreDirector(EasyScoreDirectorFactory scoreDirectorFactory, boolean constraintMatchEnabledPreference,
             EasyScoreCalculator easyScoreCalculator) {
-        super(scoreDirectorFactory);
+        super(scoreDirectorFactory, constraintMatchEnabledPreference);
         this.easyScoreCalculator = easyScoreCalculator;
     }
 

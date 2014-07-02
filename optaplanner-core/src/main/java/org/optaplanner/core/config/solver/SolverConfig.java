@@ -159,6 +159,7 @@ public class SolverConfig {
         solver.setBasicPlumbingTermination(basicPlumbingTermination);
         EnvironmentMode environmentMode = this.environmentMode == null ? EnvironmentMode.REPRODUCIBLE
                 : this.environmentMode;
+        solver.setEnvironmentMode(environmentMode);
 
         RandomFactory randomFactory;
         if (randomFactoryClass != null) {

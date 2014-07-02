@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.director;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.slf4j.Logger;
@@ -75,10 +76,14 @@ public abstract class AbstractScoreDirectorFactory implements InnerScoreDirector
     // Complex methods
     // ************************************************************************
 
+    public InnerScoreDirector buildScoreDirector() {
+        return buildScoreDirector(true);
+    }
+
     public void assertScoreFromScratch(Solution solution) {
         // Get the score before uncorruptedScoreDirector.calculateScore() modifies it
         Score score = solution.getScore();
-        InnerScoreDirector uncorruptedScoreDirector = buildScoreDirector();
+        InnerScoreDirector uncorruptedScoreDirector = buildScoreDirector(true);
         uncorruptedScoreDirector.setWorkingSolution(solution);
         Score uncorruptedScore = uncorruptedScoreDirector.calculateScore();
         uncorruptedScoreDirector.dispose();

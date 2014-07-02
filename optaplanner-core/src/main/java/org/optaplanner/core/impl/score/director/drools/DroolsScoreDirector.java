@@ -43,8 +43,9 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     protected KieSession kieSession;
     protected ScoreHolder workingScoreHolder;
 
-    public DroolsScoreDirector(DroolsScoreDirectorFactory scoreDirectorFactory) {
-        super(scoreDirectorFactory);
+    public DroolsScoreDirector(DroolsScoreDirectorFactory scoreDirectorFactory,
+            boolean constraintMatchEnabledPreference) {
+        super(scoreDirectorFactory, constraintMatchEnabledPreference);
     }
 
     protected KieBase getKieBase() {

@@ -58,7 +58,7 @@ public class AbstractScoreDirectorTest {
         AbstractScoreDirectorFactory scoreDirectorFactory = mock(AbstractScoreDirectorFactory.class);
         when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         AbstractScoreDirector scoreDirector = new AbstractScoreDirector<AbstractScoreDirectorFactory>(
-                scoreDirectorFactory) {
+                scoreDirectorFactory, false) {
             public Score calculateScore() {
                 return SimpleScore.valueOf(-100);
             }

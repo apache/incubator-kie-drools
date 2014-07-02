@@ -40,8 +40,8 @@ public class EasyScoreDirectorFactory extends AbstractScoreDirectorFactory {
     // Complex methods
     // ************************************************************************
 
-    public EasyScoreDirector buildScoreDirector() {
-        return new EasyScoreDirector(this, easyScoreCalculator);
+    public EasyScoreDirector buildScoreDirector(boolean constraintMatchEnabledPreference) {
+        return new EasyScoreDirector(this, constraintMatchEnabledPreference, easyScoreCalculator);
     }
 
 }

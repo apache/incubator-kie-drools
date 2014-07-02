@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
@@ -46,8 +47,9 @@ public class DefaultSolver implements Solver {
 
     protected SolverEventSupport solverEventSupport = new SolverEventSupport(this);
 
-    protected InnerScoreDirectorFactory scoreDirectorFactory;
+    protected EnvironmentMode environmentMode;
     protected RandomFactory randomFactory;
+    protected InnerScoreDirectorFactory scoreDirectorFactory;
 
     protected BasicPlumbingTermination basicPlumbingTermination;
     // Note that the basicPlumbingTermination is a component of this termination
@@ -58,6 +60,14 @@ public class DefaultSolver implements Solver {
     protected AtomicBoolean solving = new AtomicBoolean(false);
 
     protected DefaultSolverScope solverScope = new DefaultSolverScope();
+
+    public EnvironmentMode getEnvironmentMode() {
+        return environmentMode;
+    }
+
+    public void setEnvironmentMode(EnvironmentMode environmentMode) {
+        this.environmentMode = environmentMode;
+    }
 
     public RandomFactory getRandomFactory() {
         return randomFactory;
@@ -170,8 +180,8 @@ public class DefaultSolver implements Solver {
     }
 
     public void solvingStarted(DefaultSolverScope solverScope) {
-        solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector());
         solverScope.setWorkingRandom(randomFactory.createRandom());
+        solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(environmentMode.isAsserted()));
         solverScope.setWorkingSolutionFromBestSolution();
         bestSolutionRecaller.solvingStarted(solverScope);
         for (Phase phase : phaseList) {
@@ -179,10 +189,11 @@ public class DefaultSolver implements Solver {
         }
         int startingSolverCount = solverScope.getStartingSolverCount() + 1;
         solverScope.setStartingSolverCount(startingSolverCount);
-        logger.info("Solving {}: time spent ({}), best score ({}), random ({}).",
+        logger.info("Solving {}: time spent ({}), best score ({}), environment mode ({}), random ({}).",
                 (startingSolverCount == 1 ? "started" : "restarted"),
                 solverScope.calculateTimeMillisSpent(),
                 solverScope.getBestScoreWithUninitializedPrefix(),
+                environmentMode.name(),
                 (randomFactory != null ? randomFactory : "not fixed"));
     }
 
@@ -213,10 +224,12 @@ public class DefaultSolver implements Solver {
         // Avoid divide by zero exception on a fast CPU
         long averageCalculateCountPerSecond = solverScope.getCalculateCount() * 1000L
                 / (timeMillisSpent == 0L ? 1L : timeMillisSpent);
-        logger.info("Solving ended: time spent ({}), best score ({}), average calculate count per second ({}).",
+        logger.info("Solving ended: time spent ({}), best score ({}), average calculate count per second ({}),"
+                        + " environment mode ({}).",
                 timeMillisSpent,
                 solverScope.getBestScoreWithUninitializedPrefix(),
-                averageCalculateCountPerSecond);
+                averageCalculateCountPerSecond,
+                environmentMode.name());
         solving.set(false);
     }
 

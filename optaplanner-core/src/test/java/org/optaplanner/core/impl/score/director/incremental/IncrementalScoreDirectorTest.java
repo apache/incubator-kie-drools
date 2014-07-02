@@ -58,7 +58,7 @@ public class IncrementalScoreDirectorTest {
         when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         IncrementalScoreCalculator incrementalScoreCalculator = mock(IncrementalScoreCalculator.class);
         IncrementalScoreDirector scoreDirector = new IncrementalScoreDirector(
-                scoreDirectorFactory, incrementalScoreCalculator) {
+                scoreDirectorFactory, false, incrementalScoreCalculator) {
             public Score calculateScore() {
                 return SimpleScore.valueOf(-100);
             }
