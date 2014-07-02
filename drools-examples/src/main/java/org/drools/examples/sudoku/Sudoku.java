@@ -99,6 +99,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
             }
             System.out.println();
         }
+        fmt.close();
     }
     
     /**

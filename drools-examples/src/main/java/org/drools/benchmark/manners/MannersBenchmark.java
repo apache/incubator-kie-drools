@@ -16,16 +16,6 @@
 
 package org.drools.benchmark.manners;
 
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -38,6 +28,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
+
+import org.kie.api.io.ResourceType;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.definition.KnowledgePackage;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class MannersBenchmark {
 
@@ -79,8 +79,8 @@ public class MannersBenchmark {
             }
     
             InputStream is = MannersBenchmark.class.getResourceAsStream( "data/" + filename );
-            List list = getInputObjects( is );
-            for ( Iterator it = list.iterator(); it.hasNext(); ) {
+            List<Object> list = getInputObjects( is );
+            for ( Iterator<Object> it = list.iterator(); it.hasNext(); ) {
                 Object object = it.next();
                 ksession.insert( object );
             }

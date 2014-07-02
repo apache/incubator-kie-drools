@@ -338,6 +338,8 @@ public class GameUI {
     }
 
     public static class SensorPanel extends JPanel {
+        private static final long serialVersionUID = 1622713437729912206L;
+
         private GameUI        gameUI;
 
         private BufferedImage bi;
@@ -372,6 +374,8 @@ public class GameUI {
     }
 
     public static class CavePanel extends JPanel {
+        private static final long serialVersionUID = 1450946361698294838L;
+
         private GameUI        gameUI;
 
         private BufferedImage bi;
