@@ -765,24 +765,34 @@ public class TypeDeclarationTest {
         String pkg1 =
                 "package org.drools.compiler.test1; " +
                 "import org.drools.compiler.test2.GrandChild; " +
+                "import org.drools.compiler.test2.Child; " +
+                "import org.drools.compiler.test2.BarFuu; " +
 
                 "declare FuBaz foo : String end " +
 
                 "declare Parent " +
+                "   unknown : BarFuu " +
                 "end " +
 
                 "declare GreatChild extends GrandChild " +
+                "   father : Child " +
                 "end "
                 ;
 
         String pkg2 =
                 "package org.drools.compiler.test2; " +
                 "import org.drools.compiler.test1.Parent; " +
+                "import org.drools.compiler.test1.FuBaz; " +
+
+                "declare BarFuu " +
+                "   baz : FuBaz " +
+                "end " +
 
                 "declare Child extends Parent " +
                 "end " +
 
                 "declare GrandChild extends Child " +
+                "   notknown : FuBaz " +
                 "end "
                 ;
 
