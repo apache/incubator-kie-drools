@@ -3,14 +3,18 @@ package org.drools.core.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Drools {
 
-    private static String droolsFullVersion;
+    private static Pattern VERSION_PAT = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)([\\.-](.*))?");
 
+    private static String droolsFullVersion;
     private static int droolsMajorVersion;
     private static int droolsMinorVersion;
     private static int droolsRevisionVersion;
+    private static String droolsRevisionClassifier;
 
     static {
         droolsFullVersion = Drools.class.getPackage().getImplementationVersion();
@@ -35,13 +39,13 @@ public class Drools {
             }
         }
 
-        String[] versionSplit = droolsFullVersion.split("\\.");
-        droolsMajorVersion = Integer.parseInt(versionSplit[0]);
-        droolsMinorVersion = Integer.parseInt(versionSplit[1]);
-        int pos = versionSplit[2].indexOf('-');
-        droolsRevisionVersion = pos >= 0 ?
-                                Integer.parseInt(versionSplit[2].substring(0, pos)) :
-                                Integer.parseInt(versionSplit[2]);
+        Matcher m = VERSION_PAT.matcher(droolsFullVersion);
+        if( m.matches() ) {
+            droolsMajorVersion = Integer.parseInt(m.group(1));
+            droolsMinorVersion = Integer.parseInt(m.group(2));
+            droolsRevisionVersion = Integer.parseInt(m.group(3));
+            droolsRevisionClassifier = m.group(5);
+        }
     }
 
     public static String getFullVersion() {
@@ -58,6 +62,10 @@ public class Drools {
 
     public static int getRevisionVersion() {
         return droolsRevisionVersion;
+    }
+
+    public static String getRevisionClassifier() {
+        return droolsRevisionClassifier;
     }
 
     public static boolean isCompatible(int major, int minor, int revision) {
