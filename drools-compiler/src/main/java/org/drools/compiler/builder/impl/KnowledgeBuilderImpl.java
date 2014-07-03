@@ -833,7 +833,9 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         // merge into existing package
         mergePackage(pkgRegistry, packageDescr);
 
-        compileAllRules(packageDescr, pkgRegistry);
+        if (!hasErrors()){
+            compileAllRules(packageDescr, pkgRegistry);
+        }
     }
 
     void compileAllRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
