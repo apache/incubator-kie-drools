@@ -10089,6 +10089,48 @@ import static org.mockito.Mockito.*;
 
          kbase.addKnowledgePackages(loadKnowledgePackagesFromString(rule2) );
      }
+     
+    /**
+     * See DROOLS-543
+     * @throws Exception 
+     */
+    @Test
+    public void testCorrectErrorMessageOnDeclaredTypeCompilation() throws Exception {
+
+        StringBuilder rules = new StringBuilder();
+        rules.append("package org.drools.test\n");
+        rules.append("dialect \"java\"\n");
+
+        rules.append("rule \"Some Test Rule\"\n");
+        rules.append("salience 10\n");
+        rules.append("when\n");
+        rules.append("    String()\n");
+        rules.append("then\n");
+        rules.append("System.out.println(\"Hi\")\n");
+        rules.append("end\n");
+
+        //Note that 'SomeNonexistenClass' class doesn't exist
+        rules.append("declare A\n");
+        rules.append("    a : SomeNonexistenClass    @key\n");
+        rules.append("    b : int         @key\n");
+        rules.append("end\n");
+
+        //Note that the NPE happens only if we have more than 1 declared type
+        //and this type has an array
+        rules.append("declare C\n");
+        rules.append("    d : int         @key\n");
+        rules.append("    e : int[]\n");
+        rules.append("end\n");
+        
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add(ResourceFactory.newByteArrayResource(rules.toString().getBytes()),
+                ResourceType.DRL);
+
+        assertTrue(kbuilder.hasErrors());
+        
+    }
 
      public static class RuleTime {
          public Date getTime() {
