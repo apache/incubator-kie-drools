@@ -3,6 +3,7 @@ package org.drools.compiler.compiler;
 import org.junit.Assert;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.factmodel.UnknownFactFieldException;
 import org.drools.core.rule.TypeDeclaration;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -828,6 +829,43 @@ public class TypeDeclarationTest {
         assertNotNull( ft );
         assertNotNull( ft.getFactClass() );
         assertEquals( "org.drools.compiler.test1.Parent", ft.getFactClass().getSuperclass().getName() );
+    }
+    
+    @Test
+    public void testUnknownFieldShouldThrowProperException() throws InstantiationException, IllegalAccessException {
+        String drl = "package org.test; " +
 
+                     // existing java class
+                     "declare Pet" +
+                     "  " +
+                     "end \n" +
+
+                     "";
+        KieServices kieServices = KieServices.Factory.get();
+        KieFileSystem kfs = kieServices.newKieFileSystem();
+        kfs.write( kieServices.getResources().newByteArrayResource( drl.getBytes() )
+                           .setSourcePath( "test.drl" )
+                           .setResourceType( ResourceType.DRL ) );
+        KieBuilder kieBuilder = kieServices.newKieBuilder( kfs );
+        kieBuilder.buildAll();
+
+        assertFalse( kieBuilder.getResults().hasMessages( Message.Level.ERROR ) );
+        KieBase kieBase = kieServices.newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
+    	
+    	FactType factType = kieBase.getFactType("org.test", "Pet");
+    	Object instance = factType.newInstance();
+    	try
+    	{
+    		factType.get(instance, "unknownField");
+    		fail("Should have thrown an exception");
+    	}
+    	catch(UnknownFactFieldException expectedException)
+    	{
+    		assertTrue(expectedException.getMessage().contains("unknownField"));
+    	}
+    	catch(RuntimeException exceptionOfUnwantedType)
+    	{
+    		throw new AssertionError("Bad exception type. Should have been an " + UnknownFactFieldException.class.getSimpleName(), exceptionOfUnwantedType);
+    	}
     }
 }
