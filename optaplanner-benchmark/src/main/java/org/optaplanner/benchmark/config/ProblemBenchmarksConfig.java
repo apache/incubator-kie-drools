@@ -91,18 +91,19 @@ public class ProblemBenchmarksConfig {
     // Builder methods
     // ************************************************************************
 
-    public List<ProblemBenchmarkResult> buildProblemBenchmarkList(PlannerBenchmarkResult plannerBenchmark,
-            SolverBenchmarkResult solverBenchmarkResult) {
+    public List<ProblemBenchmarkResult> buildProblemBenchmarkList(SolverBenchmarkResult solverBenchmarkResult) {
         validate(solverBenchmarkResult);
+        PlannerBenchmarkResult plannerBenchmarkResult = solverBenchmarkResult.getPlannerBenchmarkResult();
         SolutionFileIO solutionFileIO = buildSolutionFileIO();
         List<ProblemBenchmarkResult> problemBenchmarkResultList = new ArrayList<ProblemBenchmarkResult>(inputSolutionFileList.size());
-        List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = plannerBenchmark.getUnifiedProblemBenchmarkResultList();
+        List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList
+                = plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList();
         for (File inputSolutionFile : inputSolutionFileList) {
             if (!inputSolutionFile.exists()) {
                 throw new IllegalArgumentException("The inputSolutionFile (" + inputSolutionFile + ") does not exist.");
             }
             // 2 SolverBenchmarks containing equal ProblemBenchmarks should contain the same instance
-            ProblemBenchmarkResult newProblemBenchmarkResult = buildProblemBenchmark(plannerBenchmark,
+            ProblemBenchmarkResult newProblemBenchmarkResult = buildProblemBenchmark(plannerBenchmarkResult,
                     solutionFileIO, inputSolutionFile);
             ProblemBenchmarkResult problemBenchmarkResult;
             int index = unifiedProblemBenchmarkResultList.indexOf(newProblemBenchmarkResult);
@@ -144,9 +145,9 @@ public class ProblemBenchmarksConfig {
         }
     }
 
-    private ProblemBenchmarkResult buildProblemBenchmark(PlannerBenchmarkResult plannerBenchmark,
+    private ProblemBenchmarkResult buildProblemBenchmark(PlannerBenchmarkResult plannerBenchmarkResult,
             SolutionFileIO solutionFileIO, File inputSolutionFile) {
-        ProblemBenchmarkResult problemBenchmarkResult = new ProblemBenchmarkResult(plannerBenchmark);
+        ProblemBenchmarkResult problemBenchmarkResult = new ProblemBenchmarkResult(plannerBenchmarkResult);
         String name = FilenameUtils.getBaseName(inputSolutionFile.getName());
         problemBenchmarkResult.setName(name);
         problemBenchmarkResult.setSolutionFileIO(solutionFileIO);
