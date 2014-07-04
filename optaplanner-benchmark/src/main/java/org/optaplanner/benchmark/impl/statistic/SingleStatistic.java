@@ -62,7 +62,7 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
     protected SingleStatistic(SingleBenchmarkResult singleBenchmarkResult, StatisticType statisticType) {
         this.singleBenchmarkResult = singleBenchmarkResult;
         this.statisticType = statisticType;
-        pointList = new ArrayList<P>();
+        initPointList();
     }
 
     public SingleBenchmarkResult getSingleBenchmarkResult() {
@@ -104,6 +104,10 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
     // Write methods
     // ************************************************************************
 
+    public void initPointList() {
+        pointList = new ArrayList<P>();
+    }
+
     protected abstract String getCsvHeader();
 
     public void writeCsvStatisticFile() {
@@ -129,7 +133,6 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
         File csvFile = getCsvFile();
         ScoreDefinition scoreDefinition = singleBenchmarkResult.getSolverBenchmarkResult().getSolverConfig()
                 .getScoreDirectorFactoryConfig().buildScoreDefinition();
-        List<P> pointList = getPointList();
         if (!pointList.isEmpty()) {
             throw new IllegalStateException("The pointList with size (" + pointList.size() + ") should be empty.");
         }

@@ -127,6 +127,13 @@ public class BenchmarkResultIO {
             solverBenchmarkResult.setPlannerBenchmarkResult(plannerBenchmarkResult);
             for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
                 singleBenchmarkResult.setSolverBenchmarkResult(solverBenchmarkResult);
+                if (singleBenchmarkResult.getSingleStatisticList() == null) {
+                    singleBenchmarkResult.setSingleStatisticList(new ArrayList<SingleStatistic>(0));
+                }
+                for (SingleStatistic singleStatistic : singleBenchmarkResult.getSingleStatisticList()) {
+                    singleStatistic.setSingleBenchmarkResult(singleBenchmarkResult);
+                    singleStatistic.initPointList();
+                }
             }
         }
         for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
@@ -139,12 +146,6 @@ public class BenchmarkResultIO {
             }
             for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
                 singleBenchmarkResult.setProblemBenchmarkResult(problemBenchmarkResult);
-                if (singleBenchmarkResult.getSingleStatisticList() == null) {
-                    singleBenchmarkResult.setSingleStatisticList(new ArrayList<SingleStatistic>(0));
-                }
-                for (SingleStatistic singleStatistic : singleBenchmarkResult.getSingleStatisticList()) {
-                    singleStatistic.setSingleBenchmarkResult(singleBenchmarkResult);
-                }
             }
         }
     }

@@ -17,6 +17,7 @@
 package org.optaplanner.benchmark.impl.result;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -271,6 +272,11 @@ public class SingleBenchmarkResult {
     protected static SingleBenchmarkResult createMerge(SolverBenchmarkResult solverBenchmarkResult,
             ProblemBenchmarkResult problemBenchmarkResult, SingleBenchmarkResult oldResult) {
         SingleBenchmarkResult newResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
+        newResult.singleStatisticList = new ArrayList<SingleStatistic>(oldResult.singleStatisticList.size());
+        for (SingleStatistic oldSingleStatistic : oldResult.singleStatisticList) {
+            newResult.singleStatisticList.add(
+                    ((SingleStatisticType) oldSingleStatistic.getStatisticType()).buildSingleStatistic(newResult));
+        }
 
         newResult.initSingleStatisticMap();
         for (SingleStatistic singleStatistic : newResult.effectiveSingleStatisticMap.values()) {
