@@ -33,21 +33,9 @@ public class MoveCountPerStepSingleStatistic extends SingleStatistic<MoveCountPe
 
     private MoveCountPerStepSingleStatisticListener listener;
 
-    private List<MoveCountPerStepStatisticPoint> pointList;
-
     public MoveCountPerStepSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         super(singleBenchmarkResult, ProblemStatisticType.MOVE_COUNT_PER_STEP);
         listener = new MoveCountPerStepSingleStatisticListener();
-        pointList = new ArrayList<MoveCountPerStepStatisticPoint>();
-    }
-
-    public List<MoveCountPerStepStatisticPoint> getPointList() {
-        return pointList;
-    }
-
-    @Override
-    public void setPointList(List<MoveCountPerStepStatisticPoint> pointList) {
-        this.pointList = pointList;
     }
 
     // ************************************************************************

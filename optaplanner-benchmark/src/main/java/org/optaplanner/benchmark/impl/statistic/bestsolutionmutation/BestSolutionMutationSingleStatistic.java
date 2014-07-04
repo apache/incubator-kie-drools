@@ -35,21 +35,9 @@ public class BestSolutionMutationSingleStatistic extends SingleStatistic<BestSol
 
     private BestSolutionMutationSingleStatisticListener listener;
 
-    private List<BestSolutionMutationStatisticPoint> pointList;
-
     public BestSolutionMutationSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         super(singleBenchmarkResult, ProblemStatisticType.BEST_SOLUTION_MUTATION);
         listener = new BestSolutionMutationSingleStatisticListener();
-        pointList = new ArrayList<BestSolutionMutationStatisticPoint>();
-    }
-
-    public List<BestSolutionMutationStatisticPoint> getPointList() {
-        return pointList;
-    }
-
-    @Override
-    public void setPointList(List<BestSolutionMutationStatisticPoint> pointList) {
-        this.pointList = pointList;
     }
 
     // ************************************************************************

@@ -32,21 +32,9 @@ public class StepScoreSingleStatistic extends SingleStatistic<StepScoreStatistic
 
     private final StepScoreSingleStatisticListener listener;
 
-    private List<StepScoreStatisticPoint> pointList;
-
     public StepScoreSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         super(singleBenchmarkResult, ProblemStatisticType.STEP_SCORE);
         listener = new StepScoreSingleStatisticListener();
-        pointList = new ArrayList<StepScoreStatisticPoint>();
-    }
-
-    public List<StepScoreStatisticPoint> getPointList() {
-        return pointList;
-    }
-
-    @Override
-    public void setPointList(List<StepScoreStatisticPoint> pointList) {
-        this.pointList = pointList;
     }
 
     // ************************************************************************

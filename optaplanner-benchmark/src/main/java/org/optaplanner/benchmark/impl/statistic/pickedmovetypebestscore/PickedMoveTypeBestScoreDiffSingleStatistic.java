@@ -50,22 +50,9 @@ public class PickedMoveTypeBestScoreDiffSingleStatistic extends SingleStatistic<
     @XStreamOmitField
     private PickedMoveTypeBestScoreDiffSingleStatisticListener listener;
 
-    @XStreamOmitField
-    private List<PickedMoveTypeBestScoreDiffStatisticPoint> pointList;
-
     public PickedMoveTypeBestScoreDiffSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         super(singleBenchmarkResult, SingleStatisticType.PICKED_MOVE_TYPE_BEST_SCORE_DIFF);
         listener = new PickedMoveTypeBestScoreDiffSingleStatisticListener();
-        pointList = new ArrayList<PickedMoveTypeBestScoreDiffStatisticPoint>();
-    }
-
-    public List<PickedMoveTypeBestScoreDiffStatisticPoint> getPointList() {
-        return pointList;
-    }
-
-    @Override
-    public void setPointList(List<PickedMoveTypeBestScoreDiffStatisticPoint> pointList) {
-        this.pointList = pointList;
     }
 
     // ************************************************************************

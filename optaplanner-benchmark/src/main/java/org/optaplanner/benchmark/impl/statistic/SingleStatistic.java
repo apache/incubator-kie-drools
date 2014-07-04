@@ -33,6 +33,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreStatisticPoint;
 import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.calculatecount.CalculateCountProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.memoryuse.MemoryUseProblemStatistic;
@@ -55,9 +56,13 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
 
     protected final StatisticType statisticType;
 
+    @XStreamOmitField
+    protected List<P> pointList;
+
     protected SingleStatistic(SingleBenchmarkResult singleBenchmarkResult, StatisticType statisticType) {
         this.singleBenchmarkResult = singleBenchmarkResult;
         this.statisticType = statisticType;
+        pointList = new ArrayList<P>();
     }
 
     public SingleBenchmarkResult getSingleBenchmarkResult() {
@@ -72,8 +77,12 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
         return statisticType;
     }
 
-    public abstract List<P> getPointList();
-    public abstract void setPointList(List<P> pointList);
+    public List<P> getPointList() {
+        return pointList;
+    }
+    public void setPointList(List<P> pointList) {
+        this.pointList = pointList;
+    }
 
     public String getCsvFilePath() {
         return singleBenchmarkResult.getSingleReportDirectoryPath() + "/" + statisticType.name() + ".csv";

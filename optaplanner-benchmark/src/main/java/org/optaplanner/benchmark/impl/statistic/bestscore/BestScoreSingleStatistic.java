@@ -32,22 +32,9 @@ public class BestScoreSingleStatistic extends SingleStatistic<BestScoreStatistic
 
     private final BestScoreSingleStatisticListener listener;
 
-    private List<BestScoreStatisticPoint> pointList;
-
     public BestScoreSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         super(singleBenchmarkResult, ProblemStatisticType.BEST_SCORE);
         listener = new BestScoreSingleStatisticListener();
-        pointList = new ArrayList<BestScoreStatisticPoint>();
-    }
-
-    @Override
-    public List<BestScoreStatisticPoint> getPointList() {
-        return pointList;
-    }
-
-    @Override
-    public void setPointList(List<BestScoreStatisticPoint> pointList) {
-        this.pointList = pointList;
     }
 
     // ************************************************************************

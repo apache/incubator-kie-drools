@@ -35,8 +35,6 @@ public class CalculateCountSingleStatistic extends SingleStatistic<CalculateCoun
 
     private final CalculateCountSingleStatisticListener listener;
 
-    private List<CalculateCountStatisticPoint> pointList;
-
     public CalculateCountSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         this(singleBenchmarkResult, 1000L);
     }
@@ -49,16 +47,6 @@ public class CalculateCountSingleStatistic extends SingleStatistic<CalculateCoun
         }
         this.timeMillisThresholdInterval = timeMillisThresholdInterval;
         listener = new CalculateCountSingleStatisticListener();
-        pointList = new ArrayList<CalculateCountStatisticPoint>();
-    }
-
-    public List<CalculateCountStatisticPoint> getPointList() {
-        return pointList;
-    }
-
-    @Override
-    public void setPointList(List<CalculateCountStatisticPoint> pointList) {
-        this.pointList = pointList;
     }
 
     // ************************************************************************

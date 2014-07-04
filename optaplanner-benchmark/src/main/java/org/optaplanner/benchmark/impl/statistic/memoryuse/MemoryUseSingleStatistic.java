@@ -34,8 +34,6 @@ public class MemoryUseSingleStatistic extends SingleStatistic<MemoryUseStatistic
 
     private MemoryUseSingleStatisticListener listener;
 
-    private List<MemoryUseStatisticPoint> pointList;
-
     public MemoryUseSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         this(singleBenchmarkResult, 1000L);
     }
@@ -48,16 +46,6 @@ public class MemoryUseSingleStatistic extends SingleStatistic<MemoryUseStatistic
         }
         this.timeMillisThresholdInterval = timeMillisThresholdInterval;
         listener = new MemoryUseSingleStatisticListener();
-        pointList = new ArrayList<MemoryUseStatisticPoint>();
-    }
-
-    public List<MemoryUseStatisticPoint> getPointList() {
-        return pointList;
-    }
-
-    @Override
-    public void setPointList(List<MemoryUseStatisticPoint> pointList) {
-        this.pointList = pointList;
     }
 
     // ************************************************************************
