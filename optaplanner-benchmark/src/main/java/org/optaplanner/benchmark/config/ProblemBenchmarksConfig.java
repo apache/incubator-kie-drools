@@ -91,7 +91,7 @@ public class ProblemBenchmarksConfig {
     // Builder methods
     // ************************************************************************
 
-    public List<ProblemBenchmarkResult> buildProblemBenchmarkList(SolverBenchmarkResult solverBenchmarkResult) {
+    public void buildProblemBenchmarkList(SolverBenchmarkResult solverBenchmarkResult) {
         validate(solverBenchmarkResult);
         PlannerBenchmarkResult plannerBenchmarkResult = solverBenchmarkResult.getPlannerBenchmarkResult();
         SolutionFileIO solutionFileIO = buildSolutionFileIO();
@@ -113,10 +113,9 @@ public class ProblemBenchmarksConfig {
             } else {
                 problemBenchmarkResult = unifiedProblemBenchmarkResultList.get(index);
             }
-            addSingleBenchmark(solverBenchmarkResult, problemBenchmarkResult);
             problemBenchmarkResultList.add(problemBenchmarkResult);
+            buildSingleBenchmark(solverBenchmarkResult, problemBenchmarkResult);
         }
-        return problemBenchmarkResultList;
     }
 
     private void validate(SolverBenchmarkResult solverBenchmarkResult) {
@@ -166,7 +165,7 @@ public class ProblemBenchmarksConfig {
         return problemBenchmarkResult;
     }
 
-    private void addSingleBenchmark(
+    private void buildSingleBenchmark(
             SolverBenchmarkResult solverBenchmarkResult, ProblemBenchmarkResult problemBenchmarkResult) {
         SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
         singleBenchmarkResult.initSingleStatisticMap();

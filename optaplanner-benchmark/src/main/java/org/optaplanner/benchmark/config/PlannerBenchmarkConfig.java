@@ -186,13 +186,11 @@ public class PlannerBenchmarkConfig {
         plannerBenchmarkRunner.setBenchmarkReport(benchmarkReportConfig_.buildBenchmarkReport(plannerBenchmarkResult));
 
         plannerBenchmarkResult.setUnifiedProblemBenchmarkResultList(new ArrayList<ProblemBenchmarkResult>());
-        List<SolverBenchmarkResult> solverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>(
-                effectiveSolverBenchmarkConfigList.size());
+        plannerBenchmarkResult.setSolverBenchmarkResultList(new ArrayList<SolverBenchmarkResult>(
+                effectiveSolverBenchmarkConfigList.size()));
         for (SolverBenchmarkConfig solverBenchmarkConfig : effectiveSolverBenchmarkConfigList) {
-            solverBenchmarkResultList.add(
-                    solverBenchmarkConfig.buildSolverBenchmark(plannerBenchmarkResult));
+            solverBenchmarkConfig.buildSolverBenchmark(plannerBenchmarkResult);
         }
-        plannerBenchmarkResult.setSolverBenchmarkResultList(solverBenchmarkResultList);
         return plannerBenchmarkRunner;
     }
 

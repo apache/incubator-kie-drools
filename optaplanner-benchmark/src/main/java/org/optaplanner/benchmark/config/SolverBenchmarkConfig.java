@@ -65,7 +65,7 @@ public class SolverBenchmarkConfig {
     // Builder methods
     // ************************************************************************
 
-    public SolverBenchmarkResult buildSolverBenchmark(PlannerBenchmarkResult plannerBenchmark) {
+    public void buildSolverBenchmark(PlannerBenchmarkResult plannerBenchmark) {
         validate();
         SolverBenchmarkResult solverBenchmarkResult = new SolverBenchmarkResult(plannerBenchmark);
         solverBenchmarkResult.setName(name);
@@ -74,9 +74,8 @@ public class SolverBenchmarkConfig {
         ProblemBenchmarksConfig problemBenchmarksConfig_
                 = problemBenchmarksConfig == null ? new ProblemBenchmarksConfig()
                 : problemBenchmarksConfig;
-        // ProblemBenchmarksConfig adds the ProblemBenchmark directly to the unifiedProblemBenchmarkList
+        plannerBenchmark.getSolverBenchmarkResultList().add(solverBenchmarkResult);
         problemBenchmarksConfig_.buildProblemBenchmarkList(solverBenchmarkResult);
-        return solverBenchmarkResult;
     }
 
     private void validate() {
