@@ -18,10 +18,14 @@ package org.optaplanner.benchmark.impl.result;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
@@ -42,8 +46,17 @@ public class SingleBenchmarkResult {
     @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
     private ProblemBenchmarkResult problemBenchmarkResult;
 
+    /**
+     * Does not include {@link ProblemStatisticType}s.
+     */
+    @XStreamImplicit()
+    private List<SingleStatistic> singleStatisticList = null;
+
+    /**
+     * Includes both {@link ProblemStatisticType}s and {@link SingleStatisticType}s.
+     */
     @XStreamOmitField // Lazily restored when read through ProblemStatistic and CSV files
-    private Map<StatisticType, SingleStatistic> singleStatisticMap;
+    private Map<StatisticType, SingleStatistic> effectiveSingleStatisticMap;
 
     private Integer entityCount = null;
     private Long usedMemoryAfterInputSolution = null;
@@ -69,12 +82,23 @@ public class SingleBenchmarkResult {
         this.problemBenchmarkResult = problemBenchmarkResult;
     }
 
+    public List<SingleStatistic> getSingleStatisticList() {
+        return singleStatisticList;
+    }
+
+    public void setSingleStatisticList(List<SingleStatistic> singleStatisticList) {
+        this.singleStatisticList = singleStatisticList;
+    }
+
     public void initSingleStatisticMap() {
-        singleStatisticMap = new HashMap<StatisticType, SingleStatistic>(
+        effectiveSingleStatisticMap = new HashMap<StatisticType, SingleStatistic>(
                 problemBenchmarkResult.getProblemStatisticList().size());
         for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
             SingleStatistic singleStatistic = problemStatistic.createSingleStatistic(this);
-            singleStatisticMap.put(problemStatistic.getProblemStatisticType(), singleStatistic);
+            effectiveSingleStatisticMap.put(singleStatistic.getStatisticType(), singleStatistic);
+        }
+        for (SingleStatistic singleStatistic : singleStatisticList) {
+            effectiveSingleStatisticMap.put(singleStatistic.getStatisticType(), singleStatistic);
         }
     }
 
@@ -94,8 +118,8 @@ public class SingleBenchmarkResult {
         this.problemBenchmarkResult = problemBenchmarkResult;
     }
 
-    public Map<StatisticType, SingleStatistic> getSingleStatisticMap() {
-        return singleStatisticMap;
+    public Map<StatisticType, SingleStatistic> getEffectiveSingleStatisticMap() {
+        return effectiveSingleStatisticMap;
     }
 
     public Integer getEntityCount() {
@@ -215,7 +239,7 @@ public class SingleBenchmarkResult {
     }
 
     public SingleStatistic getSingleStatistic(StatisticType statisticType) {
-        return singleStatisticMap.get(statisticType);
+        return effectiveSingleStatisticMap.get(statisticType);
     }
 
     // ************************************************************************
@@ -249,7 +273,7 @@ public class SingleBenchmarkResult {
         SingleBenchmarkResult newResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
 
         newResult.initSingleStatisticMap();
-        for (SingleStatistic singleStatistic : newResult.singleStatisticMap.values()) {
+        for (SingleStatistic singleStatistic : newResult.effectiveSingleStatisticMap.values()) {
             singleStatistic.setPointList(oldResult.getSingleStatistic(singleStatistic.getStatisticType()).getPointList());
         }
         // Skip oldResult.reportDirectory

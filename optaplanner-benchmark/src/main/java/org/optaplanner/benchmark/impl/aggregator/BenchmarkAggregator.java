@@ -81,7 +81,7 @@ public class BenchmarkAggregator {
         Date startingTimestamp = new Date();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             singleBenchmarkResult.initSingleStatisticMap();
-            for (SingleStatistic singleStatistic : singleBenchmarkResult.getSingleStatisticMap().values()) {
+            for (SingleStatistic singleStatistic : singleBenchmarkResult.getEffectiveSingleStatisticMap().values()) {
                 singleStatistic.readCsvStatisticFile();
             }
         }

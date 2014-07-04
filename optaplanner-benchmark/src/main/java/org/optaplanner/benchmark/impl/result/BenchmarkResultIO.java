@@ -35,6 +35,7 @@ import com.thoughtworks.xstream.converters.ConversionException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,14 +131,20 @@ public class BenchmarkResultIO {
         }
         for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
             problemBenchmarkResult.setPlannerBenchmarkResult(plannerBenchmarkResult);
-            for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
-                singleBenchmarkResult.setProblemBenchmarkResult(problemBenchmarkResult);
-            }
             if (problemBenchmarkResult.getProblemStatisticList() == null) {
                 problemBenchmarkResult.setProblemStatisticList(new ArrayList<ProblemStatistic>(0));
             }
             for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
                 problemStatistic.setProblemBenchmarkResult(problemBenchmarkResult);
+            }
+            for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
+                singleBenchmarkResult.setProblemBenchmarkResult(problemBenchmarkResult);
+                if (singleBenchmarkResult.getSingleStatisticList() == null) {
+                    singleBenchmarkResult.setSingleStatisticList(new ArrayList<SingleStatistic>(0));
+                }
+                for (SingleStatistic singleStatistic : singleBenchmarkResult.getSingleStatisticList()) {
+                    singleStatistic.setSingleBenchmarkResult(singleBenchmarkResult);
+                }
             }
         }
     }

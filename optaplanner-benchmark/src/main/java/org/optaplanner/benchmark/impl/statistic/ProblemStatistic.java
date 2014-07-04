@@ -95,7 +95,7 @@ public abstract class ProblemStatistic {
         List<SingleBenchmarkResult> singleBenchmarkResultList = problemBenchmarkResult.getSingleBenchmarkResultList();
         List<SingleStatistic> singleStatisticList = new ArrayList<SingleStatistic>(singleBenchmarkResultList.size());
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            singleStatisticList.add(singleBenchmarkResult.getSingleStatisticMap().get(problemStatisticType));
+            singleStatisticList.add(singleBenchmarkResult.getEffectiveSingleStatisticMap().get(problemStatisticType));
         }
         return singleStatisticList;
     }

@@ -28,22 +28,44 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamInclude;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.calculatecount.CalculateCountProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.memoryuse.MemoryUseProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.movecountperstep.MoveCountPerStepProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.stepscore.StepScoreProblemStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 /**
  * 1 statistic of {@link SingleBenchmarkResult}
  */
+@XStreamInclude({
+        PickedMoveTypeBestScoreDiffSingleStatistic.class
+})
 public abstract class SingleStatistic<P extends StatisticPoint> {
 
-    protected final SingleBenchmarkResult singleBenchmarkResult;
+    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
+    protected SingleBenchmarkResult singleBenchmarkResult;
+
     protected final StatisticType statisticType;
 
     protected SingleStatistic(SingleBenchmarkResult singleBenchmarkResult, StatisticType statisticType) {
         this.singleBenchmarkResult = singleBenchmarkResult;
         this.statisticType = statisticType;
+    }
+
+    public SingleBenchmarkResult getSingleBenchmarkResult() {
+        return singleBenchmarkResult;
+    }
+
+    public void setSingleBenchmarkResult(SingleBenchmarkResult singleBenchmarkResult) {
+        this.singleBenchmarkResult = singleBenchmarkResult;
     }
 
     public StatisticType getStatisticType() {

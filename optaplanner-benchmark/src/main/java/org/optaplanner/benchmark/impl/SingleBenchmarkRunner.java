@@ -71,7 +71,7 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
         // Intentionally create a fresh solver for every SingleBenchmarkResult to reset Random, tabu lists, ...
         Solver solver = singleBenchmarkResult.getSolverBenchmarkResult().getSolverConfig().buildSolver();
 
-        for (SingleStatistic singleStatistic : singleBenchmarkResult.getSingleStatisticMap().values()) {
+        for (SingleStatistic singleStatistic : singleBenchmarkResult.getEffectiveSingleStatisticMap().values()) {
             singleStatistic.open(solver);
         }
 
@@ -87,7 +87,7 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
         singleBenchmarkResult.setTimeMillisSpent(timeMillisSpent);
         singleBenchmarkResult.setCalculateCount(solverScope.getCalculateCount());
 
-        for (SingleStatistic singleStatistic : singleBenchmarkResult.getSingleStatisticMap().values()) {
+        for (SingleStatistic singleStatistic : singleBenchmarkResult.getEffectiveSingleStatisticMap().values()) {
             singleStatistic.close(solver);
             singleStatistic.writeCsvStatisticFile();
         }
