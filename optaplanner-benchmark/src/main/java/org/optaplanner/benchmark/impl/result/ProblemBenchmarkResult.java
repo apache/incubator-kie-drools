@@ -30,6 +30,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang.ObjectUtils;
+import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.ranking.SingleBenchmarkRankingComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -339,6 +340,11 @@ public class ProblemBenchmarkResult {
         }
     }
 
+    /**
+     * Used by {@link ProblemBenchmarksConfig#buildProblemBenchmarkList(SolverBenchmarkResult)}.
+     * @param o sometimes null
+     * @return true if equal
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
