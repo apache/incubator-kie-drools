@@ -19,6 +19,7 @@ package org.optaplanner.benchmark.impl.statistic.pickedmovetypebestscore;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
@@ -43,6 +44,7 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
+@XStreamAlias("pickedMoveTypeBestScoreDiffSingleStatistic")
 public class PickedMoveTypeBestScoreDiffSingleStatistic extends SingleStatistic<PickedMoveTypeBestScoreDiffStatisticPoint> {
 
     @XStreamOmitField
