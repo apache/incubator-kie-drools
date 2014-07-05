@@ -22,7 +22,9 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
+import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationStatisticPoint;
 import org.optaplanner.benchmark.impl.statistic.movecountperstep.MoveCountPerStepMeasurement;
@@ -45,7 +47,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
 @XStreamAlias("pickedMoveTypeBestScoreDiffSingleStatistic")
-public class PickedMoveTypeBestScoreDiffSingleStatistic extends SingleStatistic<PickedMoveTypeBestScoreDiffStatisticPoint> {
+public class PickedMoveTypeBestScoreDiffSingleStatistic extends PureSingleStatistic<PickedMoveTypeBestScoreDiffStatisticPoint> {
 
     @XStreamOmitField
     private PickedMoveTypeBestScoreDiffSingleStatisticListener listener;
@@ -121,6 +123,15 @@ public class PickedMoveTypeBestScoreDiffSingleStatistic extends SingleStatistic<
             List<String> csvLine) {
         return new PickedMoveTypeBestScoreDiffStatisticPoint(Long.valueOf(csvLine.get(0)),
                 csvLine.get(1), scoreDefinition.parseScore(csvLine.get(2)));
+    }
+
+    // ************************************************************************
+    // Write methods
+    // ************************************************************************
+
+    @Override
+    public void writeGraphFiles(BenchmarkReport benchmarkReport) {
+        // TODO generated
     }
 
 }

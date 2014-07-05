@@ -19,6 +19,7 @@ package org.optaplanner.benchmark.config.statistic;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreProblemStatistic;
@@ -33,7 +34,7 @@ public enum SingleStatisticType implements StatisticType {
     PICKED_MOVE_TYPE_STEP_SCORE_DIFF,
     PICKED_MOVE_TYPE_BEST_SCORE_DIFF;
 
-    public SingleStatistic buildSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
+    public PureSingleStatistic buildPureSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         // Keep in sync with ProblemStatistic XStreamInclude list
         switch (this) {
 //            case PICKED_MOVE_TYPE_STEP_SCORE_DIFF:

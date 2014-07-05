@@ -25,11 +25,10 @@ import java.util.Map;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.core.api.score.FeasibilityScore;
@@ -47,15 +46,9 @@ public class SingleBenchmarkResult {
     @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
     private ProblemBenchmarkResult problemBenchmarkResult;
 
-    /**
-     * Does not include {@link ProblemStatisticType}s.
-     */
     @XStreamImplicit()
-    private List<SingleStatistic> singleStatisticList = null;
+    private List<PureSingleStatistic> pureSingleStatisticList = null;
 
-    /**
-     * Includes both {@link ProblemStatisticType}s and {@link SingleStatisticType}s.
-     */
     @XStreamOmitField // Lazily restored when read through ProblemStatistic and CSV files
     private Map<StatisticType, SingleStatistic> effectiveSingleStatisticMap;
 
@@ -83,12 +76,12 @@ public class SingleBenchmarkResult {
         this.problemBenchmarkResult = problemBenchmarkResult;
     }
 
-    public List<SingleStatistic> getSingleStatisticList() {
-        return singleStatisticList;
+    public List<PureSingleStatistic> getPureSingleStatisticList() {
+        return pureSingleStatisticList;
     }
 
-    public void setSingleStatisticList(List<SingleStatistic> singleStatisticList) {
-        this.singleStatisticList = singleStatisticList;
+    public void setPureSingleStatisticList(List<PureSingleStatistic> pureSingleStatisticList) {
+        this.pureSingleStatisticList = pureSingleStatisticList;
     }
 
     public void initSingleStatisticMap() {
@@ -98,8 +91,8 @@ public class SingleBenchmarkResult {
             SingleStatistic singleStatistic = problemStatistic.createSingleStatistic(this);
             effectiveSingleStatisticMap.put(singleStatistic.getStatisticType(), singleStatistic);
         }
-        for (SingleStatistic singleStatistic : singleStatisticList) {
-            effectiveSingleStatisticMap.put(singleStatistic.getStatisticType(), singleStatistic);
+        for (PureSingleStatistic pureSingleStatistic : pureSingleStatisticList) {
+            effectiveSingleStatisticMap.put(pureSingleStatistic.getStatisticType(), pureSingleStatistic);
         }
     }
 
@@ -272,10 +265,10 @@ public class SingleBenchmarkResult {
     protected static SingleBenchmarkResult createMerge(SolverBenchmarkResult solverBenchmarkResult,
             ProblemBenchmarkResult problemBenchmarkResult, SingleBenchmarkResult oldResult) {
         SingleBenchmarkResult newResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
-        newResult.singleStatisticList = new ArrayList<SingleStatistic>(oldResult.singleStatisticList.size());
-        for (SingleStatistic oldSingleStatistic : oldResult.singleStatisticList) {
-            newResult.singleStatisticList.add(
-                    ((SingleStatisticType) oldSingleStatistic.getStatisticType()).buildSingleStatistic(newResult));
+        newResult.pureSingleStatisticList = new ArrayList<PureSingleStatistic>(oldResult.pureSingleStatisticList.size());
+        for (PureSingleStatistic oldSingleStatistic : oldResult.pureSingleStatisticList) {
+            newResult.pureSingleStatisticList.add(
+                    oldSingleStatistic.getSingleStatisticType().buildPureSingleStatistic(newResult));
         }
 
         newResult.initSingleStatisticMap();

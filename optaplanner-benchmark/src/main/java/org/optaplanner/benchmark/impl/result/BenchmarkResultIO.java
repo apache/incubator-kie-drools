@@ -35,6 +35,7 @@ import com.thoughtworks.xstream.converters.ConversionException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
 import org.slf4j.Logger;
@@ -127,12 +128,12 @@ public class BenchmarkResultIO {
             solverBenchmarkResult.setPlannerBenchmarkResult(plannerBenchmarkResult);
             for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
                 singleBenchmarkResult.setSolverBenchmarkResult(solverBenchmarkResult);
-                if (singleBenchmarkResult.getSingleStatisticList() == null) {
-                    singleBenchmarkResult.setSingleStatisticList(new ArrayList<SingleStatistic>(0));
+                if (singleBenchmarkResult.getPureSingleStatisticList() == null) {
+                    singleBenchmarkResult.setPureSingleStatisticList(new ArrayList<PureSingleStatistic>(0));
                 }
-                for (SingleStatistic singleStatistic : singleBenchmarkResult.getSingleStatisticList()) {
-                    singleStatistic.setSingleBenchmarkResult(singleBenchmarkResult);
-                    singleStatistic.initPointList();
+                for (PureSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
+                    pureSingleStatistic.setSingleBenchmarkResult(singleBenchmarkResult);
+                    pureSingleStatistic.initPointList();
                 }
             }
         }

@@ -30,7 +30,7 @@ import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
@@ -181,14 +181,14 @@ public class ProblemBenchmarksConfig {
     private void buildSingleBenchmark(
             SolverBenchmarkResult solverBenchmarkResult, ProblemBenchmarkResult problemBenchmarkResult) {
         SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
-        List<SingleStatistic> singleStatisticList = new ArrayList<SingleStatistic>(
+        List<PureSingleStatistic> pureSingleStatisticList = new ArrayList<PureSingleStatistic>(
                 singleStatisticTypeList == null ? 0 : singleStatisticTypeList.size());
         if (problemStatisticTypeList != null) {
             for (SingleStatisticType singleStatisticType : singleStatisticTypeList) {
-                singleStatisticList.add(singleStatisticType.buildSingleStatistic(singleBenchmarkResult));
+                pureSingleStatisticList.add(singleStatisticType.buildPureSingleStatistic(singleBenchmarkResult));
             }
         }
-        singleBenchmarkResult.setSingleStatisticList(singleStatisticList);
+        singleBenchmarkResult.setPureSingleStatisticList(pureSingleStatisticList);
         singleBenchmarkResult.initSingleStatisticMap();
         solverBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
         problemBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);

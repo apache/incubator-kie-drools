@@ -47,7 +47,7 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
  * 1 statistic of {@link SingleBenchmarkResult}
  */
 @XStreamInclude({
-        PickedMoveTypeBestScoreDiffSingleStatistic.class
+        PureSingleStatistic.class
 })
 public abstract class SingleStatistic<P extends StatisticPoint> {
 
