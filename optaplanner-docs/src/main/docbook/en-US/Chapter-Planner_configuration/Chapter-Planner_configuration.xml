@@ -1724,25 +1724,25 @@ INFO  Solving ended: time spent (24), best score (0), average calculate count pe
                   </listitem>
                   <listitem>
                   Into that directory upload all the optaplanner .jar libraries with its dependencies.
-                  In the case of Optaplanner 6.1.0.CR1, these are:
+                  <note>In following example ${version} is always related to corresponding library only:</note>
                      <itemizedlist>
-                          <listitem>antlr-runtime-3.5.jar</listitem>
-                           <listitem>commons-io-2.1.jar</listitem>
-                           <listitem>commons-lang-2.6.jar</listitem>
-                           <listitem>commons-math3-3.2.jar</listitem>
-                           <listitem>drools-compiler-6.1.0.CR1.jar</listitem>
-                           <listitem>drools-core-6.1.0.CR1.jar</listitem>
-                           <listitem>ecj-4.3.1.jar</listitem>
-                           <listitem>guava-13.0.1.jar</listitem>
-                           <listitem>kie-api-6.1.0.CR1.jar</listitem>
-                           <listitem>kie-internal-6.1.0.CR1.jar</listitem>
-                           <listitem>mvel2-2.1.9.Final.jar</listitem>
-                           <listitem>optaplanner-core-6.1.0.CR1.jar</listitem>
-                           <listitem>protobuf-java-2.5.0.jar</listitem>
-                           <listitem>slf4j-api-1.7.2.jar</listitem>
-                           <listitem>xmlpull-1.1.3.1.jar</listitem>
-                           <listitem>xpp3_min-1.1.4c.jar</listitem>
-                           <listitem>xstream-1.4.7.jar</listitem>
+			<listitem>antlr-runtime.${version}.jar</listitem>
+			<listitem>commons-io.${version}.jar</listitem>
+			<listitem>commons-lang.${version}.jar</listitem>
+			<listitem>commons-math3.${version}.jar</listitem>
+			<listitem>drools-compiler.${version}.jar</listitem>
+			<listitem>drools-core.${version}.jar</listitem>
+			<listitem>ecj.${version}.jar</listitem>
+			<listitem>guava.${version}.jar</listitem>
+			<listitem>kie-api.${version}.jar</listitem>
+			<listitem>kie-internal.${version}.jar</listitem>
+			<listitem>mvel2.${version}.jar</listitem>
+			<listitem>optaplanner-core.${version}.jar</listitem>
+			<listitem>protobuf-java.${version}.jar</listitem>
+			<listitem>slf4j-api.${version}.jar</listitem>
+			<listitem>xmlpull.${version}.jar</listitem>
+			<listitem>xpp3_min.${version}.jar</listitem>
+			<listitem>xstream.${version}.jar</listitem>
                      </itemizedlist>
                   </listitem>
                   <listitem>
@@ -1756,23 +1756,23 @@ INFO  Solving ended: time spent (24), best score (0), average calculate count pe
   -->
 <module xmlns="urn:jboss:module:1.3" name="org.optaplanner">
     <resources>
-        <resource-root path="antlr-runtime-3.5.jar"/>
-        <resource-root path="commons-io-2.1.jar"/>
-        <resource-root path="commons-lang-2.6.jar"/>
-        <resource-root path="commons-math3-3.2.jar"/>
-        <resource-root path="drools-compiler-6.1.0.CR1.jar"/>
-        <resource-root path="drools-core-6.1.0.CR1.jar"/>
-        <resource-root path="ecj-4.3.1.jar"/>
-        <resource-root path="guava-13.0.1.jar"/>
-        <resource-root path="kie-api-6.1.0.CR1.jar"/>
-        <resource-root path="kie-internal-6.1.0.CR1.jar"/>
-        <resource-root path="mvel2-2.1.9.Final.jar"/>
-        <resource-root path="optaplanner-core-6.1.0.CR1.jar"/>
-        <resource-root path="protobuf-java-2.5.0.jar"/>
-        <resource-root path="slf4j-api-1.7.2.jar"/>
-        <resource-root path="xmlpull-1.1.3.1.jar"/>
-        <resource-root path="xpp3_min-1.1.4c.jar"/>
-        <resource-root path="xstream-1.4.7.jar"/>
+	<resource-root path="antlr-runtime.${version}.jar"/>"
+	<resource-root path="commons-io.${version}.jar"/>"
+	<resource-root path="commons-lang.${version}.jar"/>"
+	<resource-root path="commons-math3.${version}.jar"/>"
+	<resource-root path="drools-compiler.${version}.jar"/>"
+	<resource-root path="drools-core.${version}.jar"/>"
+	<resource-root path="ecj.${version}.jar"/>"
+	<resource-root path="guava.${version}.jar"/>"
+	<resource-root path="kie-api.${version}.jar"/>"
+	<resource-root path="kie-internal.${version}.jar"/>"
+	<resource-root path="mvel2.${version}.jar"/>"
+	<resource-root path="optaplanner-core.${version}.jar"/>"
+	<resource-root path="protobuf-java.${version}.jar"/>"
+	<resource-root path="slf4j-api.${version}.jar"/>"
+	<resource-root path="xmlpull.${version}.jar"/>"
+	<resource-root path="xpp3_min.${version}.jar"/>"
+	<resource-root path="xstream.${version}.jar"/>"
         <resource-root path="."/> 
     </resources>
     <dependencies>
