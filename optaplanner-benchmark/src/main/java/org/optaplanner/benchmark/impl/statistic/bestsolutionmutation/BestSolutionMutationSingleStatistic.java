@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.impl.statistic.ProblemBasedSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -31,7 +32,7 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.api.domain.solution.Solution;
 
-public class BestSolutionMutationSingleStatistic extends SingleStatistic<BestSolutionMutationStatisticPoint> {
+public class BestSolutionMutationSingleStatistic extends ProblemBasedSingleStatistic<BestSolutionMutationStatisticPoint> {
 
     private BestSolutionMutationSingleStatisticListener listener;
 

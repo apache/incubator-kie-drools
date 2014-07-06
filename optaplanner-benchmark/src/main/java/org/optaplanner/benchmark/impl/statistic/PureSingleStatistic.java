@@ -51,11 +51,12 @@ public abstract class PureSingleStatistic<P extends StatisticPoint> extends Sing
     protected final SingleStatisticType singleStatisticType;
 
     protected PureSingleStatistic(SingleBenchmarkResult singleBenchmarkResult, SingleStatisticType singleStatisticType) {
-        super(singleBenchmarkResult, singleStatisticType);
+        super(singleBenchmarkResult);
         this.singleStatisticType = singleStatisticType;
     }
 
-    public SingleStatisticType getSingleStatisticType() {
+    @Override
+    public SingleStatisticType getStatisticType() {
         return singleStatisticType;
     }
 

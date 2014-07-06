@@ -32,14 +32,6 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreStatisticPoint;
-import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.calculatecount.CalculateCountProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.memoryuse.MemoryUseProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.movecountperstep.MoveCountPerStepProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.stepscore.StepScoreProblemStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
@@ -54,14 +46,11 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
     @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
     protected SingleBenchmarkResult singleBenchmarkResult;
 
-    protected final StatisticType statisticType;
-
     @XStreamOmitField
     protected List<P> pointList;
 
-    protected SingleStatistic(SingleBenchmarkResult singleBenchmarkResult, StatisticType statisticType) {
+    protected SingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         this.singleBenchmarkResult = singleBenchmarkResult;
-        this.statisticType = statisticType;
         initPointList();
     }
 
@@ -73,9 +62,7 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
         this.singleBenchmarkResult = singleBenchmarkResult;
     }
 
-    public StatisticType getStatisticType() {
-        return statisticType;
-    }
+    public abstract StatisticType getStatisticType();
 
     public List<P> getPointList() {
         return pointList;
@@ -85,7 +72,7 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
     }
 
     public String getCsvFilePath() {
-        return singleBenchmarkResult.getSingleReportDirectoryPath() + "/" + statisticType.name() + ".csv";
+        return singleBenchmarkResult.getSingleReportDirectoryPath() + "/" + getStatisticType().name() + ".csv";
     }
 
     public File getCsvFile() {
@@ -151,7 +138,7 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
             if (!getCsvHeader().equals(line)) {
                 throw new IllegalStateException("The read line (" + line
                         + ") is expected to be the header line (" + getCsvHeader()
-                        + ") for statisticType (" + statisticType + ").");
+                        + ") for statisticType (" + getStatisticType() + ").");
             }
             for (line = reader.readLine(); line != null && !line.isEmpty(); line = reader.readLine()) {
                 List<String> csvLine = StatisticPoint.parseCsvLine(line);

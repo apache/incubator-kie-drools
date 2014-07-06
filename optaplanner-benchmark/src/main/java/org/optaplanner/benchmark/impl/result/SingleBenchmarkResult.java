@@ -268,7 +268,7 @@ public class SingleBenchmarkResult {
         newResult.pureSingleStatisticList = new ArrayList<PureSingleStatistic>(oldResult.pureSingleStatisticList.size());
         for (PureSingleStatistic oldSingleStatistic : oldResult.pureSingleStatisticList) {
             newResult.pureSingleStatisticList.add(
-                    oldSingleStatistic.getSingleStatisticType().buildPureSingleStatistic(newResult));
+                    oldSingleStatistic.getStatisticType().buildPureSingleStatistic(newResult));
         }
 
         newResult.initSingleStatisticMap();
