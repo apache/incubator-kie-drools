@@ -16,17 +16,36 @@
 
 package org.optaplanner.benchmark.impl.statistic.pickedmovetypebestscore;
 
+import java.awt.BasicStroke;
+import java.io.File;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.renderer.xy.XYStepRenderer;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreStatisticPoint;
 import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationStatisticPoint;
+import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.movecountperstep.MoveCountPerStepMeasurement;
 import org.optaplanner.benchmark.impl.statistic.movecountperstep.MoveCountPerStepStatisticPoint;
 import org.optaplanner.benchmark.impl.statistic.stepscore.StepScoreStatisticPoint;
@@ -42,6 +61,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.DefaultSolver;
@@ -52,9 +72,19 @@ public class PickedMoveTypeBestScoreDiffSingleStatistic extends PureSingleStatis
     @XStreamOmitField
     private PickedMoveTypeBestScoreDiffSingleStatisticListener listener;
 
+    @XStreamOmitField
+    protected List<File> graphFileList = null;
+
     public PickedMoveTypeBestScoreDiffSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         super(singleBenchmarkResult, SingleStatisticType.PICKED_MOVE_TYPE_BEST_SCORE_DIFF);
         listener = new PickedMoveTypeBestScoreDiffSingleStatisticListener();
+    }
+
+    /**
+     * @return never null
+     */
+    public List<File> getGraphFileList() {
+        return graphFileList;
     }
 
     // ************************************************************************
@@ -131,7 +161,53 @@ public class PickedMoveTypeBestScoreDiffSingleStatistic extends PureSingleStatis
 
     @Override
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
-        // TODO generated
+        List<Map<String, XYSeries>> moveTypeToSeriesMapList
+                = new ArrayList<Map<String, XYSeries>>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
+        for (PickedMoveTypeBestScoreDiffStatisticPoint point : getPointList()) {
+            long timeMillisSpent = point.getTimeMillisSpent();
+            String moveType = point.getMoveType();
+            double[] levelValues = ScoreUtils.extractLevelDoubles(point.getBestScoreDiff());
+            for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
+                if (i >= moveTypeToSeriesMapList.size()) {
+                    moveTypeToSeriesMapList.add(new LinkedHashMap<String, XYSeries>());
+                }
+                Map<String, XYSeries> moveTypeToSeriesMap = moveTypeToSeriesMapList.get(i);
+                XYSeries series = moveTypeToSeriesMap.get(moveType);
+                if (series == null) {
+                    series = new XYSeries(moveType);
+                    moveTypeToSeriesMap.put(moveType, series);
+                }
+                series.add(timeMillisSpent, levelValues[i]);
+            }
+        }
+        graphFileList = new ArrayList<File>(moveTypeToSeriesMapList.size());
+        for (int scoreLevelIndex = 0; scoreLevelIndex < moveTypeToSeriesMapList.size(); scoreLevelIndex++) {
+            XYPlot plot = createPlot(benchmarkReport, scoreLevelIndex);
+            XYItemRenderer renderer = new XYLineAndShapeRenderer(true, false);
+            plot.setRenderer(renderer);
+            XYSeriesCollection seriesCollection = new XYSeriesCollection();
+            for (XYSeries series : moveTypeToSeriesMapList.get(scoreLevelIndex).values()) {
+                seriesCollection.addSeries(series);
+            }
+            plot.setDataset(seriesCollection);
+            JFreeChart chart = new JFreeChart(
+                    singleBenchmarkResult.getName() + " picked move type best score diff level " + scoreLevelIndex + " statistic",
+                    JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+            graphFileList.add(writeChartToImageFile(chart,
+                    "PickedMoveTypeBestScoreDiffStatisticLevel" + scoreLevelIndex));
+        }
+    }
+
+    private XYPlot createPlot(BenchmarkReport benchmarkReport, int scoreLevelIndex) {
+        Locale locale = benchmarkReport.getLocale();
+        NumberAxis xAxis = new NumberAxis("Time spent");
+        xAxis.setNumberFormatOverride(new MillisecondsSpentNumberFormat(locale));
+        NumberAxis yAxis = new NumberAxis("Best score diff level " + scoreLevelIndex);
+        yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
+        yAxis.setAutoRangeIncludesZero(true);
+        XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        return plot;
     }
 
 }

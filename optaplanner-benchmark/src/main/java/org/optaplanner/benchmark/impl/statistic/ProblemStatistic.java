@@ -38,6 +38,7 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.calculatecount.CalculateCountProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.common.GraphSupport;
 import org.optaplanner.benchmark.impl.statistic.memoryuse.MemoryUseProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.movecountperstep.MoveCountPerStepProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.stepscore.StepScoreProblemStatistic;
@@ -117,17 +118,8 @@ public abstract class ProblemStatistic {
     }
 
     protected File writeChartToImageFile(JFreeChart chart, String fileNameBase) {
-        BufferedImage chartImage = chart.createBufferedImage(1024, 768);
         File chartFile = new File(problemBenchmarkResult.getProblemReportDirectory(), fileNameBase + ".png");
-        OutputStream out = null;
-        try {
-            out = new FileOutputStream(chartFile);
-            ImageIO.write(chartImage, "png", out);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing chartFile: " + chartFile, e);
-        } finally {
-            IOUtils.closeQuietly(out);
-        }
+        GraphSupport.writeChartToImageFile(chart, chartFile);
         return chartFile;
     }
 

@@ -31,9 +31,11 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.io.IOUtils;
+import org.jfree.chart.JFreeChart;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.statistic.common.GraphSupport;
 import org.optaplanner.benchmark.impl.statistic.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffSingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
@@ -62,5 +64,11 @@ public abstract class PureSingleStatistic<P extends StatisticPoint> extends Sing
     // ************************************************************************
 
     public abstract void writeGraphFiles(BenchmarkReport benchmarkReport);
+
+    protected File writeChartToImageFile(JFreeChart chart, String fileNameBase) {
+        File chartFile = new File(singleBenchmarkResult.getSingleReportDirectory(), fileNameBase + ".png");
+        GraphSupport.writeChartToImageFile(chart, chartFile);
+        return chartFile;
+    }
 
 }
