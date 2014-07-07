@@ -183,7 +183,7 @@ public class ProblemBenchmarksConfig {
         SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
         List<PureSingleStatistic> pureSingleStatisticList = new ArrayList<PureSingleStatistic>(
                 singleStatisticTypeList == null ? 0 : singleStatisticTypeList.size());
-        if (problemStatisticTypeList != null) {
+        if (singleStatisticTypeList != null) {
             for (SingleStatisticType singleStatisticType : singleStatisticTypeList) {
                 pureSingleStatisticList.add(singleStatisticType.buildPureSingleStatistic(singleBenchmarkResult));
             }
