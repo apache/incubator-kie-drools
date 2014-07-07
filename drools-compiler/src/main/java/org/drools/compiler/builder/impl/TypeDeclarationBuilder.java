@@ -965,7 +965,7 @@ public class TypeDeclarationBuilder {
         }
     }
 
-    List<TypeDefinition> processTypeDeclarations( PackageRegistry pkgRegistry, PackageDescr packageDescr, List<TypeDefinition> unresolvedTypes, Map<String,TypeDeclarationDescr> unprocessableDescrs ) {
+    List<TypeDefinition> processTypeDeclarations( PackageRegistry pkgRegistry, PackageDescr packageDescr, List<TypeDefinition> unresolvedTypes, Map<String, TypeDeclarationDescr> unprocessableDescrs ) {
 
         Map<String, PackageDescr> foreignPackages = null;
 
@@ -1083,7 +1083,7 @@ public class TypeDeclarationBuilder {
         }
 
         // sort declarations : superclasses must be generated first
-        Collection<AbstractClassTypeDeclarationDescr> sortedTypeDescriptors = sortByHierarchy(packageDescr.getClassAndEnumDeclarationDescrs());
+        Collection<AbstractClassTypeDeclarationDescr> sortedTypeDescriptors = sortByHierarchy(kbuilder, packageDescr.getClassAndEnumDeclarationDescrs());
 
         for (AbstractClassTypeDeclarationDescr typeDescr : sortedTypeDescriptors) {
             registerGeneratedType(typeDescr);
@@ -1108,7 +1108,7 @@ public class TypeDeclarationBuilder {
                                         AbstractClassTypeDeclarationDescr typeDescr,
                                         Collection<AbstractClassTypeDeclarationDescr> sortedTypeDescriptors,
                                         List<TypeDefinition> unresolvedTypes,
-                                        Map<String,TypeDeclarationDescr> unprocessableDescrs ) {
+                                        Map<String, TypeDeclarationDescr> unprocessableDescrs ) {
         //descriptor needs fields inherited from superclass
         if (typeDescr instanceof TypeDeclarationDescr) {
             TypeDeclarationDescr tDescr = (TypeDeclarationDescr) typeDescr;
@@ -1133,14 +1133,6 @@ public class TypeDeclarationBuilder {
         if ( unprocessableDescrs.containsKey( typeDescr.getType().getFullName() ) ) {
             return;
         }
-
-//        for ( QualifiedName qualifiedName : typeDescr.getSuperTypes() ) {
-//            for ( TypeDefinition def : unresolvedTypes ) {
-//                if ( def.typeDescr.getType().equals( qualifiedName ) ) {
-//                    unresolvedTypes.add(  )
-//                }
-//            }
-//        }
 
         // Go on with the build
         TypeDeclaration type = new TypeDeclaration(typeDescr.getTypeName());
@@ -1256,9 +1248,8 @@ public class TypeDeclarationBuilder {
      * resulting collection. This ensures that superclasses are processed before
      * their subclasses
      */
-    public Collection<AbstractClassTypeDeclarationDescr> sortByHierarchy(List<AbstractClassTypeDeclarationDescr> typeDeclarations) {
+    public static Collection<AbstractClassTypeDeclarationDescr> sortByHierarchy(KnowledgeBuilderImpl kbuilder, Collection<? extends AbstractClassTypeDeclarationDescr> typeDeclarations) {
 
-        HierarchySorter<QualifiedName> sorter = new HierarchySorter<QualifiedName>();
         Map<QualifiedName, Collection<QualifiedName>> taxonomy = new HashMap<QualifiedName, Collection<QualifiedName>>();
         Map<QualifiedName, AbstractClassTypeDeclarationDescr> cache = new HashMap<QualifiedName, AbstractClassTypeDeclarationDescr>();
 
@@ -1271,7 +1262,7 @@ public class TypeDeclarationBuilder {
                 taxonomy.put(name, new ArrayList<QualifiedName>());
             } else {
                 kbuilder.addBuilderResult(new TypeDeclarationError(tdescr,
-                                                          "Found duplicate declaration for type " + tdescr.getType()));
+                                                                   "Found duplicate declaration for type " + tdescr.getType()));
             }
 
             Collection<QualifiedName> supers = taxonomy.get(name);
@@ -1284,7 +1275,7 @@ public class TypeDeclarationBuilder {
                     } else {
                         circular = true;
                         kbuilder.addBuilderResult(new TypeDeclarationError(tdescr,
-                                                                          "Found circular dependency for type " + tdescr.getTypeName()));
+                                                                           "Found circular dependency for type " + tdescr.getTypeName()));
                         break;
                     }
                 }
@@ -1302,7 +1293,7 @@ public class TypeDeclarationBuilder {
             }
 
         }
-        List<QualifiedName> sorted = sorter.sort(taxonomy);
+        List<QualifiedName> sorted = new HierarchySorter<QualifiedName>().sort(taxonomy);
         ArrayList list = new ArrayList(sorted.size());
         for (QualifiedName name : sorted) {
             list.add(cache.get(name));
@@ -1311,9 +1302,9 @@ public class TypeDeclarationBuilder {
         return list;
     }
 
-    private boolean hasCircularDependency(QualifiedName name,
-                                          QualifiedName typeName,
-                                          Map<QualifiedName, Collection<QualifiedName>> taxonomy) {
+    private static boolean hasCircularDependency(QualifiedName name,
+                                                 QualifiedName typeName,
+                                                 Map<QualifiedName, Collection<QualifiedName>> taxonomy) {
         if (name.equals(typeName)) {
             return true;
         }
