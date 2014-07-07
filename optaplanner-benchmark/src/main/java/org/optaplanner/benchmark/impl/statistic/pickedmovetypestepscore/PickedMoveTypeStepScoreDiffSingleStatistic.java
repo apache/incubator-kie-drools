@@ -158,7 +158,10 @@ public class PickedMoveTypeStepScoreDiffSingleStatistic extends PureSingleStatis
                     series = new XYIntervalSeries(moveType);
                     moveTypeToSeriesMap.put(moveType, series);
                 }
-                series.add(timeMillisSpent, timeMillisSpent, timeMillisSpent, levelValues[i], 0.0, levelValues[i]);
+                double yValue = levelValues[i];
+                // In an XYInterval the yLow must be lower than yHigh
+                series.add(timeMillisSpent, timeMillisSpent, timeMillisSpent,
+                        yValue, (yValue > 0.0) ? 0.0 : yValue, (yValue > 0.0) ? yValue : 0.0);
             }
         }
         graphFileList = new ArrayList<File>(moveTypeToSeriesMapList.size());
