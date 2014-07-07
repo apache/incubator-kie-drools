@@ -164,6 +164,15 @@ public class ClassDefinition
     public final FieldDefinition getField(final String fieldName) {
         return this.fields.get( fieldName );
     }
+    
+    public final FieldDefinition getExistingField(final String fieldName) {
+    	FieldDefinition field = getField(fieldName);
+    	if (field==null)
+        {
+        	throw new UnknownFactFieldException(this, fieldName);
+        }
+		return field;
+    }
 
     public FieldDefinition getFieldByAlias( String alias ) {
         for ( FactField factField : getFields() ) {
@@ -246,13 +255,13 @@ public class ClassDefinition
 
     public Object get(Object bean,
                       String field) {
-        return this.getField( field ).getFieldAccessor().getValue( bean );
+        return this.getExistingField( field ).getFieldAccessor().getValue( bean );
     }
 
     public void set(Object bean,
                     String field,
                     Object value) {
-        this.getField( field ).getFieldAccessor().setValue( bean,
+        this.getExistingField( field ).getFieldAccessor().setValue( bean,
                                                             value );
     }
 
