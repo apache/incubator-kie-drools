@@ -28,19 +28,20 @@ import org.optaplanner.benchmark.impl.statistic.calculatecount.CalculateCountPro
 import org.optaplanner.benchmark.impl.statistic.memoryuse.MemoryUseProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.movecountperstep.MoveCountPerStepProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.pickedmovetypestepscore.PickedMoveTypeStepScoreDiffSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.stepscore.StepScoreProblemStatistic;
 
 public enum SingleStatisticType implements StatisticType {
-    PICKED_MOVE_TYPE_STEP_SCORE_DIFF,
-    PICKED_MOVE_TYPE_BEST_SCORE_DIFF;
+    PICKED_MOVE_TYPE_BEST_SCORE_DIFF,
+    PICKED_MOVE_TYPE_STEP_SCORE_DIFF;
 
     public PureSingleStatistic buildPureSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         // Keep in sync with ProblemStatistic XStreamInclude list
         switch (this) {
-//            case PICKED_MOVE_TYPE_STEP_SCORE_DIFF:
-//                return new PickedMoveTypeStepScoreDiffSingleStatistic(singleBenchmarkResult);
             case PICKED_MOVE_TYPE_BEST_SCORE_DIFF:
                 return new PickedMoveTypeBestScoreDiffSingleStatistic(singleBenchmarkResult);
+            case PICKED_MOVE_TYPE_STEP_SCORE_DIFF:
+                return new PickedMoveTypeStepScoreDiffSingleStatistic(singleBenchmarkResult);
             default:
                 throw new IllegalStateException("The singleStatisticType (" + this + ") is not implemented.");
         }
