@@ -35,6 +35,9 @@ import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.renderer.xy.XYStepRenderer;
+import org.jfree.chart.renderer.xy.YIntervalRenderer;
+import org.jfree.data.xy.XYIntervalSeries;
+import org.jfree.data.xy.XYIntervalSeriesCollection;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
@@ -161,32 +164,32 @@ public class PickedMoveTypeBestScoreDiffSingleStatistic extends PureSingleStatis
 
     @Override
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
-        List<Map<String, XYSeries>> moveTypeToSeriesMapList
-                = new ArrayList<Map<String, XYSeries>>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
+        List<Map<String, XYIntervalSeries>> moveTypeToSeriesMapList
+                = new ArrayList<Map<String, XYIntervalSeries>>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
         for (PickedMoveTypeBestScoreDiffStatisticPoint point : getPointList()) {
             long timeMillisSpent = point.getTimeMillisSpent();
             String moveType = point.getMoveType();
             double[] levelValues = ScoreUtils.extractLevelDoubles(point.getBestScoreDiff());
             for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                 if (i >= moveTypeToSeriesMapList.size()) {
-                    moveTypeToSeriesMapList.add(new LinkedHashMap<String, XYSeries>());
+                    moveTypeToSeriesMapList.add(new LinkedHashMap<String, XYIntervalSeries>());
                 }
-                Map<String, XYSeries> moveTypeToSeriesMap = moveTypeToSeriesMapList.get(i);
-                XYSeries series = moveTypeToSeriesMap.get(moveType);
+                Map<String, XYIntervalSeries> moveTypeToSeriesMap = moveTypeToSeriesMapList.get(i);
+                XYIntervalSeries series = moveTypeToSeriesMap.get(moveType);
                 if (series == null) {
-                    series = new XYSeries(moveType);
+                    series = new XYIntervalSeries(moveType);
                     moveTypeToSeriesMap.put(moveType, series);
                 }
-                series.add(timeMillisSpent, levelValues[i]);
+                series.add(timeMillisSpent, timeMillisSpent, timeMillisSpent, levelValues[i], 0.0, levelValues[i]);
             }
         }
         graphFileList = new ArrayList<File>(moveTypeToSeriesMapList.size());
         for (int scoreLevelIndex = 0; scoreLevelIndex < moveTypeToSeriesMapList.size(); scoreLevelIndex++) {
             XYPlot plot = createPlot(benchmarkReport, scoreLevelIndex);
-            XYItemRenderer renderer = new XYLineAndShapeRenderer(true, false);
+            XYItemRenderer renderer = new YIntervalRenderer();
             plot.setRenderer(renderer);
-            XYSeriesCollection seriesCollection = new XYSeriesCollection();
-            for (XYSeries series : moveTypeToSeriesMapList.get(scoreLevelIndex).values()) {
+            XYIntervalSeriesCollection seriesCollection = new XYIntervalSeriesCollection();
+            for (XYIntervalSeries series : moveTypeToSeriesMapList.get(scoreLevelIndex).values()) {
                 seriesCollection.addSeries(series);
             }
             plot.setDataset(seriesCollection);
