@@ -37,7 +37,6 @@ import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.rule.Collect;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.TypeDeclaration;
@@ -1215,19 +1214,15 @@ public class TypeDeclarationBuilder {
         }
 
         try {
-
             // the type declaration is generated in any case (to be used by subclasses, if any)
             // the actual class will be generated only if needed
-            if (!kbuilder.hasErrors()) {
-                generateDeclaredBean(typeDescr,
-                                     type,
-                                     pkgRegistry,
-                                     unresolvedTypes);
+            generateDeclaredBean(typeDescr,
+                                 type,
+                                 pkgRegistry,
+                                 unresolvedTypes);
 
-                Class<?> clazz = pkgRegistry.getTypeResolver().resolveType(typeDescr.getType().getFullName());
-                type.setTypeClass(clazz);
-            }
-
+            Class<?> clazz = pkgRegistry.getTypeResolver().resolveType(typeDescr.getType().getFullName());
+            type.setTypeClass(clazz);
         } catch (final ClassNotFoundException e) {
             kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                "Class '" + className +

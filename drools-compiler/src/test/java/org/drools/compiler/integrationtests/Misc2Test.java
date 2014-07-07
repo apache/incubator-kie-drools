@@ -6242,4 +6242,30 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.insert(new Z());
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testCorrectErrorMessageOnDeclaredTypeCompilation() throws Exception {
+        // DROOLS-543
+        String str = "rule R\n" +
+                     "salience 10\n" +
+                     "when\n" +
+                     " String()\n" +
+                     "then\n" +
+                     "System.out.println(\"Hi\");\n" +
+                     "end\n" +
+                     "declare A\n" +
+                     " a : SomeNonexistenClass @key\n" +
+                     " b : int @key\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare C\n" +
+                     " d : int @key\n" +
+                     " e : int[]\n" +
+                     "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        assertEquals(1, results.getMessages().size());
+    }
 }
