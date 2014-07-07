@@ -28,6 +28,9 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.renderer.xy.YIntervalRenderer;
+import org.jfree.data.xy.XYIntervalSeries;
+import org.jfree.data.xy.XYIntervalSeriesCollection;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
@@ -65,28 +68,26 @@ public class BestSolutionMutationProblemStatistic extends ProblemStatistic {
 
     @Override
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
-        Locale locale = benchmarkReport.getLocale();
-        NumberAxis xAxis = new NumberAxis("Time spent");
-        xAxis.setNumberFormatOverride(new MillisecondsSpentNumberFormat(locale));
-        NumberAxis yAxis = new NumberAxis("Best solution mutation count");
-        yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
-        yAxis.setAutoRangeIncludesZero(true);
-        XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
-        plot.setOrientation(PlotOrientation.VERTICAL);
+        XYPlot plot = createPlot(benchmarkReport);
         int seriesIndex = 0;
         for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
-            XYSeries series = new XYSeries(singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix());
-            XYItemRenderer renderer = new XYLineAndShapeRenderer();
+            XYIntervalSeries series = new XYIntervalSeries(singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix());
+            XYItemRenderer renderer = new YIntervalRenderer();
             if (singleBenchmarkResult.isSuccess()) {
                 BestSolutionMutationSingleStatistic singleStatistic = (BestSolutionMutationSingleStatistic)
                         singleBenchmarkResult.getSingleStatistic(problemStatisticType);
                 for (BestSolutionMutationStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpent = point.getTimeMillisSpent();
                     long mutationCount = point.getMutationCount();
-                    series.add(timeMillisSpent, mutationCount);
+                    double yValue = mutationCount;
+                    // In an XYInterval the yLow must be lower than yHigh
+                    series.add(timeMillisSpent, timeMillisSpent, timeMillisSpent,
+                            yValue, (yValue > 0.0) ? 0.0 : yValue, (yValue > 0.0) ? yValue : 0.0);
                 }
             }
-            plot.setDataset(seriesIndex, new XYSeriesCollection(series));
+            XYIntervalSeriesCollection dataset = new XYIntervalSeriesCollection();
+            dataset.addSeries(series);
+            plot.setDataset(seriesIndex, dataset);
 
             if (singleBenchmarkResult.getSolverBenchmarkResult().isFavorite()) {
                 // Make the favorite more obvious
@@ -98,6 +99,18 @@ public class BestSolutionMutationProblemStatistic extends ProblemStatistic {
         JFreeChart chart = new JFreeChart(problemBenchmarkResult.getName() + " best solution mutation statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         graphFile = writeChartToImageFile(chart, problemBenchmarkResult.getName() + "BestSolutionMutationStatistic");
+    }
+
+    private XYPlot createPlot(BenchmarkReport benchmarkReport) {
+        Locale locale = benchmarkReport.getLocale();
+        NumberAxis xAxis = new NumberAxis("Time spent");
+        xAxis.setNumberFormatOverride(new MillisecondsSpentNumberFormat(locale));
+        NumberAxis yAxis = new NumberAxis("Best solution mutation count");
+        yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
+        yAxis.setAutoRangeIncludesZero(true);
+        XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        return plot;
     }
 
 }
