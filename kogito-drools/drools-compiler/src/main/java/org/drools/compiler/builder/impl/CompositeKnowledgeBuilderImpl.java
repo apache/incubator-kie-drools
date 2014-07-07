@@ -8,7 +8,6 @@ import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
-import org.drools.core.rule.TypeDeclaration;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
@@ -19,7 +18,6 @@ import org.kie.internal.builder.ResourceChangeSet;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -295,14 +293,14 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
             }
         }
 
-        Map<String,TypeDeclarationDescr> unprocesseableDescrs = new HashMap<String,TypeDeclarationDescr>();
+        Map<String, TypeDeclarationDescr> unprocesseableDescrs = new HashMap<String, TypeDeclarationDescr>();
         List<TypeDefinition> unresolvedTypes = new ArrayList<TypeDefinition>();
         for (CompositePackageDescr packageDescr : packages) {
             buildTypeDeclarations(packageDescr, unresolvedTypes, unprocesseableDescrs);
         }
 
         if ( ! unprocesseableDescrs.isEmpty() ) {
-            List<AbstractClassTypeDeclarationDescr> sortedDescrs = new ArrayList<AbstractClassTypeDeclarationDescr>( unprocesseableDescrs.values() );
+            Collection<AbstractClassTypeDeclarationDescr> sortedDescrs = TypeDeclarationBuilder.sortByHierarchy( kBuilder, unprocesseableDescrs.values() );
             for ( AbstractClassTypeDeclarationDescr descr : sortedDescrs ) {
                 unprocesseableDescrs.remove( descr.getType().getFullName() );
                 PackageRegistry pkg = kBuilder.getPackageRegistry().get( descr.getType().getNamespace() );
@@ -321,11 +319,9 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         // now we need to sort TypeDeclarations based on the mutual, cross-package dependencies.
         // This can't be done at the beginning, before the build pass, since the names are not yet fully qualified there.
         // TODO there may be more efficient ways to do it (?)
-        Collection<AbstractClassTypeDeclarationDescr> sorted = kBuilder.getTypeBuilder().sortByHierarchy( allDescrs );
         int j = 0;
-        for ( AbstractClassTypeDeclarationDescr descr : sorted ) {
-            TypeDeclaration decl = kBuilder.getPackageRegistry( descr.getNamespace() ).getPackage().getTypeDeclaration( descr.getTypeName() );
-            decl.setOrder( j++ );
+        for ( AbstractClassTypeDeclarationDescr descr : TypeDeclarationBuilder.sortByHierarchy( kBuilder, allDescrs ) ) {
+            kBuilder.getPackageRegistry( descr.getNamespace() ).getPackage().getTypeDeclaration( descr.getTypeName() ).setOrder( j++ );
         }
 
         for (CompositePackageDescr packageDescr : packages) {
@@ -335,7 +331,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
     }
 
-    private List<TypeDefinition> buildTypeDeclarations(CompositePackageDescr packageDescr, List<TypeDefinition> unresolvedTypes, Map<String,TypeDeclarationDescr> unprocessableDescrs) {
+    private List<TypeDefinition> buildTypeDeclarations(CompositePackageDescr packageDescr, List<TypeDefinition> unresolvedTypes, Map<String, TypeDeclarationDescr> unprocessableDescrs) {
         kBuilder.setAssetFilter(packageDescr.getFilter());
         PackageRegistry pkgRegistry = kBuilder.createPackageRegistry(packageDescr);
         if (pkgRegistry == null) {
