@@ -16,11 +16,16 @@
 
 package org.drools.core.factmodel;
 
+import org.kie.api.definition.type.Annotation;
+import org.kie.api.definition.type.FactField;
+import org.kie.api.definition.type.FactType;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,11 +33,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Arrays;
-
-import org.kie.api.definition.type.Annotation;
-import org.kie.api.definition.type.FactField;
-import org.kie.api.definition.type.FactType;
 
 /**
  * Declares a class to be dynamically created
@@ -246,14 +246,17 @@ public class ClassDefinition
 
     public Object get(Object bean,
                       String field) {
-        return this.getField( field ).getFieldAccessor().getValue( bean );
+        FieldDefinition fieldDefinition = getField( field );
+        return fieldDefinition != null ? fieldDefinition.getFieldAccessor().getValue( bean ) : null;
     }
 
     public void set(Object bean,
                     String field,
                     Object value) {
-        this.getField( field ).getFieldAccessor().setValue( bean,
-                                                            value );
+        FieldDefinition fieldDefinition = getField( field );
+        if (fieldDefinition != null) {
+            fieldDefinition.getFieldAccessor().setValue( bean, value );
+        }
     }
 
     public Map<String, Object> getAsMap(Object bean) {

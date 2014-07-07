@@ -1,9 +1,9 @@
 package org.drools.compiler.compiler;
 
-import org.junit.Assert;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.rule.TypeDeclaration;
+import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -11,7 +11,12 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.definition.type.Annotation;
+import org.kie.api.definition.type.FactField;
+import org.kie.api.definition.type.FactType;
 import org.kie.api.io.KieResources;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
@@ -20,21 +25,9 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
-import org.kie.api.definition.type.Annotation;
-import org.kie.api.definition.type.FactField;
-import org.kie.api.definition.type.FactType;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -42,6 +35,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Collection;
 import java.util.Collections;
+
+import static org.junit.Assert.*;
 
 public class TypeDeclarationTest {
 
@@ -828,6 +823,31 @@ public class TypeDeclarationTest {
         assertNotNull( ft );
         assertNotNull( ft.getFactClass() );
         assertEquals( "org.drools.compiler.test1.Parent", ft.getFactClass().getSuperclass().getName() );
+    }
 
+
+    @Test
+    public void testUnknownField() throws InstantiationException, IllegalAccessException {
+        // DROOLS-546
+        String drl = "package org.test; " +
+                     "declare Pet" +
+                     " " +
+                     "end \n";
+
+        KieServices kieServices = KieServices.Factory.get();
+        KieFileSystem kfs = kieServices.newKieFileSystem();
+        kfs.write( kieServices.getResources().newByteArrayResource( drl.getBytes() )
+                              .setSourcePath( "test.drl" )
+                              .setResourceType( ResourceType.DRL ) );
+        KieBuilder kieBuilder = kieServices.newKieBuilder( kfs );
+        kieBuilder.buildAll();
+
+        assertFalse( kieBuilder.getResults().hasMessages( Message.Level.ERROR ) );
+        KieBase kieBase = kieServices.newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
+
+        FactType factType = kieBase.getFactType("org.test", "Pet");
+        Object instance = factType.newInstance();
+        factType.get(instance, "unknownField");
+        factType.set(instance, "unknownField", "myValue");
     }
 }
