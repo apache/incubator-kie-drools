@@ -53,6 +53,10 @@ public abstract class VariableDescriptor {
         return variableName;
     }
 
+    public String getSimpleEntityAndVariableName() {
+        return entityDescriptor.getEntityClass().getSimpleName() + "." + variableName;
+    }
+
     public Class<?> getVariablePropertyType() {
         return variablePropertyAccessor.getPropertyType();
     }

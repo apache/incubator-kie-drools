@@ -22,7 +22,7 @@ import java.util.Collections;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.util.CodeAssertable;
 
-public class DummyMove implements Move, CodeAssertable {
+public class DummyMove extends AbstractMove implements CodeAssertable {
 
     protected String code;
 

@@ -4515,3 +4515,12 @@ After in *.java:
             }
         });
     }
+
+[MAJOR] If you have a custom Move implementation, now extract AbstractMove
+Before in *.java:
+    public class CloudComputerChangeMove implements Move {...}
+After in *.java:
+    public class CloudComputerChangeMove extends AbstractMove {...}
+
+[MINOR] The interface Move has a new method getSimpleMoveTypeDescription().
+Extend AbstractMove so to avoid having to implement it.

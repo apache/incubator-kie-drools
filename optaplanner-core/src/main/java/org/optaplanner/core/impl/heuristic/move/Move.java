@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType;
@@ -30,13 +31,17 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.api.domain.solution.Solution;
 
 /**
- * A Move represents a change of 1 or more planning variables of 1 or more planning entities in the {@link Solution}.
+ * A Move represents a change of 1 or more planning variables of 1 or more planning entities
+ * in the working {@link Solution}.
  * <p/>
  * Usually the move holds a direct reference to each planning entity of the {@link Solution}
- * that it will change when {@link #doMove(ScoreDirector)} is called.
+ * which it will change when {@link #doMove(ScoreDirector)} is called.
  * On that change it should also notify the {@link ScoreDirector} accordingly.
  * <p/>
  * A Move should implement {@link Object#equals(Object)} and {@link Object#hashCode()}.
+ * <p/>
+ * An implementation must extend {@link AbstractMove} to ensure backwards compatibility in future versions.
+ * @see AbstractMove
  */
 public interface Move {
 
@@ -73,6 +78,19 @@ public interface Move {
      * @param scoreDirector never null, the {@link ScoreDirector} that needs to get notified of the changes.
      */
     void doMove(ScoreDirector scoreDirector);
+
+    // ************************************************************************
+    // Introspection methods
+    // ************************************************************************
+
+    /**
+     * Describes the move type for statistical purposes.
+     * For example "ChangeMove(Process.computer)".
+     * </p>
+     * The format is not formalized. Never parse the {@link String} returned by this method.
+     * @return never null
+     */
+    String getSimpleMoveTypeDescription();
 
     /**
      * Returns all planning entities that are being changed by this move.

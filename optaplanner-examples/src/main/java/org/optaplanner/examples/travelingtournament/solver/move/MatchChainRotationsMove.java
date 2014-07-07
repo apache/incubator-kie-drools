@@ -24,12 +24,13 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.travelingtournament.domain.Day;
 import org.optaplanner.examples.travelingtournament.domain.Match;
 
-public class MatchChainRotationsMove implements Move {
+public class MatchChainRotationsMove extends AbstractMove {
 
     private List<Match> firstMatchList;
     private List<Match> secondMatchList;

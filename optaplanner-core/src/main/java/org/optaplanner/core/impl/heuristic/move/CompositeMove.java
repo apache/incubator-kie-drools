@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * to create its undoMove correctly.
  * @see Move
  */
-public class CompositeMove implements Move {
+public class CompositeMove extends AbstractMove {
 
     public static Move buildMove(List<Move> moveList) {
         int size = moveList.size();
@@ -84,6 +84,22 @@ public class CompositeMove implements Move {
         for (Move move : moveList) {
             move.doMove(scoreDirector);
         }
+    }
+
+    // ************************************************************************
+    // Introspection methods
+    // ************************************************************************
+
+    public String getSimpleMoveTypeDescription() {
+        StringBuilder moveTypeDescription = new StringBuilder(20 * (moveList.size() + 1));
+        moveTypeDescription.append(getClass().getSimpleName()).append("(");
+        String delimiter = "";
+        for (Move move : moveList) {
+            moveTypeDescription.append(delimiter).append(move.getSimpleMoveTypeDescription());
+            delimiter = ", ";
+        }
+        moveTypeDescription.append(")");
+        return moveTypeDescription.toString();
     }
 
     public Collection<? extends Object> getPlanningEntities() {

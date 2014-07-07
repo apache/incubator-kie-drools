@@ -24,13 +24,14 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Non-cacheable
  */
-public class PillarSwapMove implements Move {
+public class PillarSwapMove extends AbstractMove {
 
     protected final Collection<GenuineVariableDescriptor> variableDescriptors;
 
@@ -89,6 +90,23 @@ public class PillarSwapMove implements Move {
                 }
             }
         }
+    }
+
+    // ************************************************************************
+    // Introspection methods
+    // ************************************************************************
+
+    @Override
+    public String getSimpleMoveTypeDescription() {
+        StringBuilder moveTypeDescription = new StringBuilder(20 * (variableDescriptors.size() + 1));
+        moveTypeDescription.append(getClass().getSimpleName()).append("(");
+        String delimiter = "";
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
+            moveTypeDescription.append(delimiter).append(variableDescriptor.getSimpleEntityAndVariableName());
+            delimiter = ", ";
+        }
+        moveTypeDescription.append(")");
+        return moveTypeDescription.toString();
     }
 
     public Collection<? extends Object> getPlanningEntities() {

@@ -27,11 +27,12 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.api.domain.solution.Solution;
 
-public class SwapMove implements Move {
+public class SwapMove extends AbstractMove {
 
     protected final Collection<GenuineVariableDescriptor> variableDescriptors;
 
@@ -99,6 +100,23 @@ public class SwapMove implements Move {
                 scoreDirector.afterVariableChanged(variableDescriptor, rightEntity);
             }
         }
+    }
+
+    // ************************************************************************
+    // Introspection methods
+    // ************************************************************************
+
+    @Override
+    public String getSimpleMoveTypeDescription() {
+        StringBuilder moveTypeDescription = new StringBuilder(20 * (variableDescriptors.size() + 1));
+        moveTypeDescription.append(getClass().getSimpleName()).append("(");
+        String delimiter = "";
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
+            moveTypeDescription.append(delimiter).append(variableDescriptor.getSimpleEntityAndVariableName());
+            delimiter = ", ";
+        }
+        moveTypeDescription.append(")");
+        return moveTypeDescription.toString();
     }
 
     public Collection<? extends Object> getPlanningEntities() {

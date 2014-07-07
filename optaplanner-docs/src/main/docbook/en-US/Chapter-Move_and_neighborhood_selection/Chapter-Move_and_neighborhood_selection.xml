@@ -1199,7 +1199,7 @@
       <para>Let's take a look at the <literal>Move</literal> implementation for 4 queens which moves a queen to a
       different row:</para>
 
-      <programlisting language="java">public class RowChangeMove implements Move {
+      <programlisting language="java">public class RowChangeMove extends AbstractMove {
 
     private Queen queen;
     private Row toRow;

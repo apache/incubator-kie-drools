@@ -8,7 +8,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 /**
  * Makes no changes.
  */
-public class NoChangeMove implements Move {
+public class NoChangeMove extends AbstractMove {
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return true;
@@ -21,6 +21,10 @@ public class NoChangeMove implements Move {
     public void doMove(ScoreDirector scoreDirector) {
         // do nothing
     }
+
+    // ************************************************************************
+    // Introspection methods
+    // ************************************************************************
 
     public Collection<? extends Object> getPlanningEntities() {
         return Collections.<Object>emptyList();

@@ -16,7 +16,6 @@
 
 package org.optaplanner.benchmark.impl.statistic.pickedmovetypebestscore;
 
-import java.awt.BasicStroke;
 import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -31,34 +30,17 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.chart.renderer.xy.XYStepRenderer;
 import org.jfree.chart.renderer.xy.YIntervalRenderer;
 import org.jfree.data.xy.XYIntervalSeries;
 import org.jfree.data.xy.XYIntervalSeriesCollection;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreStatisticPoint;
-import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationStatisticPoint;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
-import org.optaplanner.benchmark.impl.statistic.movecountperstep.MoveCountPerStepMeasurement;
-import org.optaplanner.benchmark.impl.statistic.movecountperstep.MoveCountPerStepStatisticPoint;
-import org.optaplanner.benchmark.impl.statistic.stepscore.StepScoreStatisticPoint;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
-import org.optaplanner.core.api.solver.event.SolverEventListener;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.solution.mutation.MutationCounter;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
@@ -66,7 +48,6 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
 @XStreamAlias("pickedMoveTypeBestScoreDiffSingleStatistic")
@@ -130,8 +111,7 @@ public class PickedMoveTypeBestScoreDiffSingleStatistic extends PureSingleStatis
         private void localSearchStepEnded(LocalSearchStepScope stepScope) {
             if (stepScope.getBestScoreImproved()) {
                 long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
-                // TODO add support for CompositeMove's
-                String moveType = stepScope.getStep().getClass().getSimpleName();
+                String moveType = stepScope.getStep().getSimpleMoveTypeDescription();
                 Score newBestScore = stepScope.getScore();
                 Score bestScoreDiff = newBestScore.subtract(oldBestScore);
                 oldBestScore = newBestScore;
