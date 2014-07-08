@@ -43,6 +43,8 @@ public interface KieCommands {
 
     Command newDelete(FactHandle factHandle);
 
+    Command newDeleteObject(Object object, String entryPoint);
+
     Setter newSetter(String accessor,
                      String value);
 
@@ -54,6 +56,10 @@ public interface KieCommands {
     Command newFireAllRules(int max);
 
     Command newFireAllRules(String outidentifier);
+
+    Command newGetFactHandle(Object object);
+
+    Command newGetFactHandleInEntryPoint(Object object, String entryPoint);
 
     Command newGetObject(FactHandle factHandle);
 
@@ -118,5 +124,6 @@ public interface KieCommands {
     Command<FactHandle> fromExternalFactHandleCommand(String factHandleExternalForm, boolean disconnected);
 
     Command newAgendaGroupSetFocus(String name);
+
 }
 
