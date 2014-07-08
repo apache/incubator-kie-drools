@@ -528,9 +528,7 @@
       <title>Enabling a problem statistic</title>
 
       <para>The benchmarker supports outputting problem statistics as graphs and CSV (comma separated values) files to
-      the <literal>benchmarkDirectory</literal>.</para>
-
-      <para>To configure graph and CSV output of a statistic, just add a <literal>problemStatisticType</literal>
+      the <literal>benchmarkDirectory</literal>. To configure one, add a <literal>problemStatisticType</literal>
       line:</para>
 
       <programlisting language="xml">&lt;plannerBenchmark&gt;
@@ -546,11 +544,10 @@
   ...
 &lt;/plannerBenchmark&gt;</programlisting>
 
-      <para>Multiple <literal>problemStatisticType</literal> elements are allowed. Some statistic types might influence
-      performance and benchmark results noticeably.</para>
+      <para>Multiple <literal>problemStatisticType</literal> elements are allowed.</para>
 
       <note>
-        <para>These statistic per data set can slow down the solver noticeably, which can affect the benchmark results.
+        <para>These statistic per dataset can slow down the solver noticeably, which affects the benchmark results.
         That's why they are optional and not enabled by default.</para>
 
         <para>The non-optional summary statistics cannot slow down the solver noticeably.</para>
@@ -726,6 +723,85 @@
       <warning>
         <para>The memory use statistic has been seen to affect the solver noticeably.</para>
       </warning>
+    </section>
+  </section>
+
+  <section xml:id="benchmarkReportStatisticPerSingleBenchmark">
+    <title>Statistic per single benchmark (graph and CSV)</title>
+
+    <section>
+      <title>Enabling a single statistic</title>
+
+      <para>A single statistic is a statics for 1 dataset for 1 solver configuration. Unlike a problem statistic, it
+      does not aggregate over solver configurations.</para>
+
+      <para>The benchmarker supports outputting single statistics as graphs and CSV (comma separated values) files to
+      the <literal>benchmarkDirectory</literal>. To configure one, add a <literal>singleStatisticType</literal>
+      line:</para>
+
+      <programlisting language="xml">&lt;plannerBenchmark&gt;
+  &lt;benchmarkDirectory&gt;local/data/nqueens/solved&lt;/benchmarkDirectory&gt;
+  &lt;inheritedSolverBenchmark&gt;
+    &lt;problemBenchmarks&gt;
+      ...
+      &lt;problemStatisticType&gt;...&lt;/problemStatisticType&gt;
+      &lt;singleStatisticType&gt;PICKED_MOVE_TYPE_BEST_SCORE_DIFF&lt;/singleStatisticType&gt;
+    &lt;/problemBenchmarks&gt;
+    ...
+  &lt;/inheritedSolverBenchmark&gt;
+  ...
+&lt;/plannerBenchmark&gt;</programlisting>
+
+      <para>Multiple <literal>singleStatisticType</literal> elements are allowed. </para>
+
+      <note>
+        <para>These statistic per single benchmark can slow down the solver noticeably, which affects the benchmark
+        results. That's why they are optional and not enabled by default.</para>
+      </note>
+
+      <para>The following types are supported:</para>
+    </section>
+
+    <section xml:id="benchmarkReportPickedMoveTypeBestScoreDiffOverTimeStatistic">
+      <title>Picked move type best score diff over time statistic (graph and CSV)</title>
+
+      <para>To see which move types improve the best score (and how much) over time, add:</para>
+
+      <programlisting language="xml">    &lt;problemBenchmarks&gt;
+      ...
+      &lt;singleStatisticType&gt;PICKED_MOVE_TYPE_BEST_SCORE_DIFF&lt;/singleStatisticType&gt;
+    &lt;/problemBenchmarks&gt;</programlisting>
+
+      <figure>
+        <title>Picked move type best score diff over time statistic</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/pickedMoveTypeBestScoreDiffStatistic.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section xml:id="benchmarkReportPickedMoveTypeStepScoreDiffOverTimeStatistic">
+      <title>Picked move type step score diff over time statistic (graph and CSV)</title>
+
+      <para>To see how much each winning step affects the step score over time, add:</para>
+
+      <programlisting language="xml">    &lt;problemBenchmarks&gt;
+      ...
+      &lt;singleStatisticType&gt;PICKED_MOVE_TYPE_STEP_SCORE_DIFF&lt;/singleStatisticType&gt;
+    &lt;/problemBenchmarks&gt;</programlisting>
+
+      <figure>
+        <title>Picked move type step score diff over time statistic</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/pickedMoveTypeStepScoreDiffStatistic.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
     </section>
   </section>
 
