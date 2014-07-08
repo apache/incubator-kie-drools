@@ -30,4 +30,5 @@ public interface QueryFilter {
     String getOrderBy();
     String getFilterParams();
     Map<String, Object> getParams();
+    boolean isAscending();
 }
