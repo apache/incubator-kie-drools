@@ -16,10 +16,11 @@
 
 
 .benchmark-report-nav {
-    padding-top: 10px;
     position: fixed;
     z-index: 1030;
     width: inherit;
+    max-height: 100%;
+    overflow-y: auto;
 }
 
 .main-page-header h1 {

@@ -68,36 +68,42 @@
     <div class="row-fluid">
         <div class="span2">
             <div class="benchmark-report-nav">
-                <a href="http://www.optaplanner.org"><img src="website/img/optaPlannerLogo.png" alt="OptaPlanner"/></a>
-                <ul class="nav nav-list">
-                    <li><a href="#summary">Summary</a></li>
-                    <li>
-                        <ul class="nav nav-list">
-                            <li><a href="#summary_result">Result</a></li>
-                            <li><a href="#summary_performance">Performance</a></li>
-                        </ul>
-                    </li>
-                    <li class="divider"></li>
-                    <li><a href="#problemBenchmarkResult">Problem benchmarks</a></li>
-                    <li>
-                        <ul class="nav nav-list">
-                        <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
-                            <li><a href="#problemBenchmark_${problemBenchmarkResult.anchorId}">${problemBenchmarkResult.name}</a></li>
-                        </#list>
-                        </ul>
-                    </li>
-                    <li class="divider"></li>
-                    <li><a href="#solverBenchmarkResult">Solver benchmarks</a></li>
-                    <li>
-                        <ul class="nav nav-list">
-                        <#list benchmarkReport.plannerBenchmarkResult.solverBenchmarkResultList as solverBenchmarkResult>
-                            <li><a href="#solverBenchmark_${solverBenchmarkResult.anchorId}">${solverBenchmarkResult.name}&nbsp;<@addSolverRankingBadge solverBenchmarkResult=solverBenchmarkResult/></a></li>
-                        </#list>
-                        </ul>
-                    </li>
-                    <li class="divider"></li>
-                    <li><a href="#benchmarkInformation">Benchmark information</a></li>
-                </ul>
+                <div style="margin-top: 10px;">
+                    <a href="http://www.optaplanner.org">
+                        <img src="website/img/optaPlannerLogo.png" alt="OptaPlanner"/>
+                    </a>
+                </div>
+                <div style="margin-top: 10px; margin-bottom: 10px;">
+                    <ul class="nav nav-list">
+                        <li><a href="#summary">Summary</a></li>
+                        <li>
+                            <ul class="nav nav-list">
+                                <li><a href="#summary_result">Result</a></li>
+                                <li><a href="#summary_performance">Performance</a></li>
+                            </ul>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="#problemBenchmarkResult">Problem benchmarks</a></li>
+                        <li>
+                            <ul class="nav nav-list">
+                            <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
+                                <li><a href="#problemBenchmark_${problemBenchmarkResult.anchorId}">${problemBenchmarkResult.name}</a></li>
+                            </#list>
+                            </ul>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="#solverBenchmarkResult">Solver benchmarks</a></li>
+                        <li>
+                            <ul class="nav nav-list">
+                            <#list benchmarkReport.plannerBenchmarkResult.solverBenchmarkResultList as solverBenchmarkResult>
+                                <li><a href="#solverBenchmark_${solverBenchmarkResult.anchorId}">${solverBenchmarkResult.name}&nbsp;<@addSolverRankingBadge solverBenchmarkResult=solverBenchmarkResult/></a></li>
+                            </#list>
+                            </ul>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="#benchmarkInformation">Benchmark information</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
         <div class="span10">
