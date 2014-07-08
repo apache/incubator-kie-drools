@@ -169,8 +169,18 @@ public class CommandFactoryServiceImpl implements KieCommands {
         return new FireAllRulesCommand(max);
     }
 
-        public Command newFireAllRules(String outidentifier) {
+    public Command newFireAllRules(String outidentifier) {
         return new FireAllRulesCommand(outidentifier);
+    }
+
+    @Override
+    public Command newGetFactHandle( Object object ) {
+        return new GetFactHandleCommand( object );
+    }
+
+    @Override
+    public Command newGetFactHandleInEntryPoint( Object object, String entryPoint ) {
+        return new GetFactHandleInEntryPointCommand( object, entryPoint );
     }
 
     public Command newStartProcess(String processId) {
