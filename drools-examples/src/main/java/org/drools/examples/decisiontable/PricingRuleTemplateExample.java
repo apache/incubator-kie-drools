@@ -15,6 +15,7 @@
  */
 package org.drools.examples.decisiontable;
 
+import org.drools.core.util.IoUtils;
 import org.drools.decisiontable.ExternalSpreadsheetCompiler;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.kie.internal.KnowledgeBase;
@@ -95,8 +96,8 @@ public class PricingRuleTemplateExample {
 
         //compile the drls
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ByteArrayResource(basePricingDRL.getBytes()), ResourceType.DRL);
-        kbuilder.add(new ByteArrayResource(promotionalPricingDRL.getBytes()), ResourceType.DRL);
+        kbuilder.add(new ByteArrayResource(basePricingDRL.getBytes(IoUtils.UTF8_CHARSET)), ResourceType.DRL);
+        kbuilder.add(new ByteArrayResource(promotionalPricingDRL.getBytes(IoUtils.UTF8_CHARSET)), ResourceType.DRL);
 
         //compilation errors?
         if (kbuilder.hasErrors()) {

@@ -29,6 +29,7 @@ import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.commons.jci.stores.ResourceStore;
 import org.drools.core.util.ClassUtils;
+import org.drools.core.util.IoUtils;
 import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.internal.compiler.ClassFile;
 import org.eclipse.jdt.internal.compiler.CompilationResult;
@@ -118,7 +119,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                 //throw new RuntimeException("resource " + fileName + " could not be found");
             }
 
-            return new String(content).toCharArray();
+            return new String(content, IoUtils.UTF8_CHARSET).toCharArray();
         }
 
         public char[] getMainTypeName() {

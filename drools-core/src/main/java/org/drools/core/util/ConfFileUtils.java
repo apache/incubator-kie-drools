@@ -124,7 +124,7 @@ public class ConfFileUtils {
         }
         
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader( url.openStream() ));
+            BufferedReader reader = new BufferedReader(new InputStreamReader( url.openStream(), IoUtils.UTF8_CHARSET));
             String line = null;
         
             while ( ( line = reader.readLine() ) != null ) { // while loop begins here

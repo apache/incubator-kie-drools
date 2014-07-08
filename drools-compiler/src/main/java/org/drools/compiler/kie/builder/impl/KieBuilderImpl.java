@@ -11,6 +11,7 @@ import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
+import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -373,7 +374,7 @@ public class KieBuilderImpl
         }
 
         if ( setDefaultsforEmptyKieModule( kModuleModel ) ) {
-            kModuleModelXml = kModuleModel.toXML().getBytes();
+            kModuleModelXml = kModuleModel.toXML().getBytes( IoUtils.UTF8_CHARSET );
         }
     }
 
@@ -419,7 +420,7 @@ public class KieBuilderImpl
             return mfs.getBytes( "pom.xml" );
         } else {
             // There is no pom.xml, and thus no ReleaseId, so generate a pom.xml from the global detault.
-            return generatePomXml( KieServices.Factory.get().getRepository().getDefaultReleaseId() ).getBytes();
+            return generatePomXml( KieServices.Factory.get().getRepository().getDefaultReleaseId() ).getBytes( IoUtils.UTF8_CHARSET );
         }
     }
 
@@ -432,14 +433,14 @@ public class KieBuilderImpl
                           pomXml,
                           true );
             trgMfs.write( g.getPomPropertiesPath(),
-                          generatePomProperties( releaseId ).getBytes(),
+                          generatePomProperties( releaseId ).getBytes( IoUtils.UTF8_CHARSET ),
                           true );
 
         }
 
         if ( kModuleModelXml != null ) {
             trgMfs.write( KieModuleModelImpl.KMODULE_JAR_PATH,
-                          kModuleModel.toXML().getBytes(),
+                          kModuleModel.toXML().getBytes( IoUtils.UTF8_CHARSET ),
                           true );
         }
     }

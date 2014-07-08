@@ -17,6 +17,7 @@
 package org.drools.core.io.impl;
 
 import org.drools.core.io.internal.InternalResource;
+import org.drools.core.util.IoUtils;
 import org.kie.api.io.Resource;
 
 import java.io.ByteArrayInputStream;
@@ -78,7 +79,11 @@ public class ByteArrayResource extends BaseResource
     }
     
     public Reader getReader() throws IOException {
-        return encoding != null ? new InputStreamReader( getInputStream(), encoding ) : new InputStreamReader( getInputStream() );
+        if (this.encoding != null) {
+            return new InputStreamReader( getInputStream(), encoding );
+        } else {
+            return new InputStreamReader( getInputStream(), IoUtils.UTF8_CHARSET );
+        }
     }
 
     @Override

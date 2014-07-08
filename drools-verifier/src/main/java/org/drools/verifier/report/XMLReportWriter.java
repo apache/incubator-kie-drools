@@ -19,6 +19,7 @@ package org.drools.verifier.report;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.drools.core.util.IoUtils;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Gap;
@@ -51,7 +52,7 @@ public class XMLReportWriter
         xstream.alias( "LiteralRestriction",
                        LiteralRestriction.class );
 
-        out.write( ("<?xml version=\"1.0\"?>\n" + xstream.toXML( result )).getBytes() );
+        out.write( ("<?xml version=\"1.0\"?>\n" + xstream.toXML( result )).getBytes( IoUtils.UTF8_CHARSET ) );
     }
 
 }

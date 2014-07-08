@@ -314,7 +314,7 @@ public class MemoryFileSystem
                 printFs( (Folder) rs,
                          out );
             } else {
-                out.println( new String( getFileContents( (MemoryFile) rs ) ) );
+                out.println( new String( getFileContents( (MemoryFile) rs ), IoUtils.UTF8_CHARSET ) );
             }
         }
     }
@@ -510,7 +510,8 @@ public class MemoryFileSystem
     public String findPomProperties() {
         for( Entry<String, byte[]> content : fileContents.entrySet() ) {
             if ( content.getKey().endsWith( "pom.properties" ) && content.getKey().startsWith( "META-INF/maven/" ) ) {
-                return StringUtils.readFileAsString( new InputStreamReader( new ByteArrayInputStream( content.getValue() ) ) );
+                ByteArrayInputStream byteArrayIs =  new ByteArrayInputStream( content.getValue() );
+                return StringUtils.readFileAsString( new InputStreamReader( byteArrayIs, IoUtils.UTF8_CHARSET ) );
             }
         }
         return null;
