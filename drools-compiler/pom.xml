@@ -260,7 +260,7 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
         <configuration>
-          <excludeFilterFile>src/main/findbugs/findbugs-exclude.xml</excludeFilterFile>
+          <excludeFilterFile>${project.basedir}/src/main/findbugs/findbugs-exclude.xml</excludeFilterFile>
         </configuration>
       </plugin>
     </plugins>
