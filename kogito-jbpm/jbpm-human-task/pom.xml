@@ -87,4 +87,3 @@
     </plugins>
   </build> 
 </project>
->>>>>>> e4b741b... BZ-1058604 - Implement REST operation for cleaning all data displayed by Jbpm Dashboard
