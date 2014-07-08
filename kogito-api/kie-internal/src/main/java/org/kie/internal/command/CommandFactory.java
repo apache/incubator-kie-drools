@@ -123,6 +123,18 @@ public class CommandFactory {
         return getCommandFactoryProvider().newDelete(factHandle);
     }
 
+    public static Command newDeleteObject( Object object, String entryPoint ) {
+        return getCommandFactoryProvider().newDeleteObject( object, entryPoint );
+    }
+
+    public static Command newGetFactHandle( Object object ) {
+        return getCommandFactoryProvider().newGetFactHandle( object );
+    }
+
+    public static Command newGetFactHandleInEntryPoint( Object object, String entryPoint ) {
+        return getCommandFactoryProvider().newGetFactHandleInEntryPoint( object, entryPoint );
+    }
+
     public static Setter newSetter(String accessor,
                                    String value) {
         return getCommandFactoryProvider().newSetter( accessor,
