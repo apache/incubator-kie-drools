@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import com.google.common.collect.Lists;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -91,11 +92,15 @@ public class CompositeMove extends AbstractMove {
     // ************************************************************************
 
     public String getSimpleMoveTypeDescription() {
+        Set<String> childMoveTypeDescriptionSet = new TreeSet<String>();
+        for (Move move : moveList) {
+            childMoveTypeDescriptionSet.add(move.getSimpleMoveTypeDescription());
+        }
         StringBuilder moveTypeDescription = new StringBuilder(20 * (moveList.size() + 1));
         moveTypeDescription.append(getClass().getSimpleName()).append("(");
         String delimiter = "";
-        for (Move move : moveList) {
-            moveTypeDescription.append(delimiter).append(move.getSimpleMoveTypeDescription());
+        for (String childMoveTypeDescription : childMoveTypeDescriptionSet) {
+            moveTypeDescription.append(delimiter).append("* ").append(childMoveTypeDescription);
             delimiter = ", ";
         }
         moveTypeDescription.append(")");
