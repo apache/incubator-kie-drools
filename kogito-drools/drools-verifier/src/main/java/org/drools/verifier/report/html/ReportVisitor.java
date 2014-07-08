@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.core.util.IoUtils;
 import org.mvel2.templates.TemplateRuntime;
 
 
@@ -44,7 +45,8 @@ abstract class ReportVisitor {
         StringBuffer str = new StringBuffer("");
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    ReportVisitor.class.getResourceAsStream(fileName)));
+                    ReportVisitor.class.getResourceAsStream(fileName),
+                    IoUtils.UTF8_CHARSET));
             String line = null;
             while ((line = reader.readLine()) != null) {
                 str.append(line);

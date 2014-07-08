@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.io.internal.InternalResource;
 import org.kie.api.io.Resource;
@@ -246,10 +247,10 @@ public class UrlResource extends BaseResource
         if (con instanceof HttpURLConnection) {
             if ("enabled".equalsIgnoreCase(basicAuthentication)) {
                 String userpassword = username + ":" + password;
-                byte[] authEncBytes = userpassword.getBytes();
+                byte[] authEncBytes = userpassword.getBytes(IoUtils.UTF8_CHARSET);
 
                 ((HttpURLConnection) con).setRequestProperty("Authorization",
-                        "Basic " + new String(authEncBytes));
+                        "Basic " + new String(authEncBytes, IoUtils.UTF8_CHARSET));
             }
 
         }
@@ -258,7 +259,11 @@ public class UrlResource extends BaseResource
     }
 
     public Reader getReader() throws IOException {
-        return encoding != null ? new InputStreamReader( getInputStream(), encoding ) : new InputStreamReader( getInputStream() );
+        if (this.encoding != null) {
+            return new InputStreamReader( getInputStream(), this.encoding );
+        } else {
+            return new InputStreamReader( getInputStream(), IoUtils.UTF8_CHARSET );
+        }
     }
 
     /**
@@ -327,10 +332,10 @@ public class UrlResource extends BaseResource
                 ((HttpURLConnection) conn).setRequestMethod("HEAD");
                 if ("enabled".equalsIgnoreCase(basicAuthentication)) {
                     String userpassword = username + ":" + password;
-                    byte[] authEncBytes = userpassword.getBytes();
+                    byte[] authEncBytes = userpassword.getBytes(IoUtils.UTF8_CHARSET);
 
                     ((HttpURLConnection) conn).setRequestProperty("Authorization",
-                            "Basic " + new String(authEncBytes));
+                            "Basic " + new String(authEncBytes, IoUtils.UTF8_CHARSET));
                 }
             }
             long date = conn.getLastModified();

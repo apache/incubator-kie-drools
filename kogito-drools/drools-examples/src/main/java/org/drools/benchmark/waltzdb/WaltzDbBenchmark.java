@@ -16,6 +16,7 @@
 
 package org.drools.benchmark.waltzdb;
 
+import org.drools.core.util.IoUtils;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -81,7 +82,9 @@ public class WaltzDbBenchmark {
     private static List<Line> loadLines(String filename) {
         List<Line> result = new ArrayList<Line>();
         try {
-            BufferedReader reader = new BufferedReader( new InputStreamReader( WaltzDbBenchmark.class.getResourceAsStream( "data/" + filename ) ) );
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader( WaltzDbBenchmark.class.getResourceAsStream( "data/" + filename ),
+                                           IoUtils.UTF8_CHARSET ) );
             Pattern pat = Pattern.compile( ".*make line \\^p1 ([0-9]*) \\^p2 ([0-9]*).*" );
             String line = reader.readLine();
             while ( line != null ) {
@@ -103,7 +106,9 @@ public class WaltzDbBenchmark {
     private static List<Label> loadLabels(String filename) {
         List<Label> result = new ArrayList<Label>();
         try {
-            BufferedReader reader = new BufferedReader( new InputStreamReader( WaltzDbBenchmark.class.getResourceAsStream( "data/" + filename ) ) );
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader( WaltzDbBenchmark.class.getResourceAsStream( "data/" + filename ),
+                                           IoUtils.UTF8_CHARSET ) );
             Pattern pat = Pattern.compile( ".*make label \\^type ([0-9a-z]*) \\^name ([0-9a-zA-Z]*) \\^id ([0-9]*) \\^n1 ([B+-]*) \\^n2 ([B+-]*)( \\^n3 ([B+-]*))?.*" );
             String line = reader.readLine();
             while ( line != null ) {

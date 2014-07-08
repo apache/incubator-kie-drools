@@ -17,6 +17,7 @@
 package org.drools.core.io.impl;
 
 import org.drools.core.io.internal.InternalResource;
+import org.drools.core.util.IoUtils;
 import org.kie.api.io.Resource;
 
 import java.io.FileNotFoundException;
@@ -56,10 +57,10 @@ public class InputStreamResource  extends BaseResource implements InternalResour
     }
 
     public Reader getReader() throws IOException {
-        if (encoding == null) {
-            return new InputStreamReader( getInputStream() );
+        if (this.encoding != null) {
+            return new InputStreamReader( getInputStream(), this.encoding );
         } else {
-            return new InputStreamReader( getInputStream(), encoding );
+            return new InputStreamReader( getInputStream(), IoUtils.UTF8_CHARSET );
         }
     }
 

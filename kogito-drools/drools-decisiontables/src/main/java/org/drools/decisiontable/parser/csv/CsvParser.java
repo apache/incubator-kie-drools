@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.core.util.IoUtils;
 import org.drools.decisiontable.parser.DecisionTableParser;
 import org.drools.template.parser.DataListener;
 import org.drools.template.parser.DecisionTableParseException;
@@ -56,8 +57,7 @@ public class CsvParser implements DecisionTableParser {
     }
 
     public void parseFile(final InputStream inStream) {
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(
-                inStream));
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(inStream, IoUtils.UTF8_CHARSET));
         try {
             startSheet();
             processRows(reader);

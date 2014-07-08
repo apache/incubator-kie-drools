@@ -16,6 +16,7 @@
 
 package org.drools.examples.templates;
 
+import org.drools.core.util.IoUtils;
 import org.drools.decisiontable.ExternalSpreadsheetCompiler;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.kie.internal.KnowledgeBase;
@@ -88,7 +89,7 @@ public class SimpleRuleTemplateExample {
 
         //compile the drl
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        kbuilder.add(new ByteArrayResource(drl.getBytes(IoUtils.UTF8_CHARSET)), ResourceType.DRL);
 
         //compilation errors?
         if (kbuilder.hasErrors()) {

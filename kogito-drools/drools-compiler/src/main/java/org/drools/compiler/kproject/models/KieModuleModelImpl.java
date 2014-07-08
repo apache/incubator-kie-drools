@@ -7,6 +7,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.core.util.AbstractXStreamConverter;
+import org.drools.core.util.IoUtils;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.xml.sax.SAXException;
@@ -241,7 +242,7 @@ public class KieModuleModelImpl implements KieModuleModel {
         }
 
         private static void validate(String kModuleString) {
-            validate(new StreamSource(new ByteArrayInputStream(kModuleString.getBytes())));
+            validate(new StreamSource(new ByteArrayInputStream(kModuleString.getBytes(IoUtils.UTF8_CHARSET))));
         }
 
         private static void validate(Source source) {

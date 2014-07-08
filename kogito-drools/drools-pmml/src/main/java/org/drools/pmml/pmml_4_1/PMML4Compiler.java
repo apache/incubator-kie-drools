@@ -27,6 +27,7 @@ import org.dmg.pmml.pmml_4_1.descr.TreeModel;
 import org.drools.compiler.compiler.PMMLCompiler;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.ClassPathResource;
+import org.drools.core.util.IoUtils;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
@@ -462,7 +463,7 @@ public class PMML4Compiler implements PMMLCompiler {
     }
 
     private Resource buildOutputResource( Resource resource, String theory ) {
-        ByteArrayResource byteArrayResource = new ByteArrayResource( theory.getBytes() );
+        ByteArrayResource byteArrayResource = new ByteArrayResource( theory.getBytes( IoUtils.UTF8_CHARSET ) );
         byteArrayResource.setResourceType( ResourceType.PMML );
 
         if ( resource.getSourcePath() != null ) {

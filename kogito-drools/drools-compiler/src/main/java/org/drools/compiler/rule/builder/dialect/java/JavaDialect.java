@@ -74,6 +74,7 @@ import org.drools.core.io.internal.InternalResource;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.LineMappings;
+import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
@@ -608,10 +609,10 @@ public class JavaDialect
 
         if (src != null) {
             src.add( fileName,
-                     text.getBytes() );
+                     text.getBytes( IoUtils.UTF8_CHARSET ) );
         } else {
             this.src.add( fileName,
-                          text.getBytes() );
+                          text.getBytes( IoUtils.UTF8_CHARSET ) );
         }
 
         this.errorHandlers.put( fileName,

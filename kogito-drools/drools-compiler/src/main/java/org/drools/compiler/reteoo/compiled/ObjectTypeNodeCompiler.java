@@ -13,6 +13,7 @@ import org.drools.core.reteoo.compiled.HashedAlphasDeclaration;
 import org.drools.core.reteoo.compiled.ObjectTypeNodeParser;
 import org.drools.core.reteoo.compiled.SetNodeReferenceHandler;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
+import org.drools.core.util.IoUtils;
 
 import java.util.Collection;
 
@@ -169,7 +170,7 @@ public class ObjectTypeNodeCompiler {
         String generatedSourceName = compiler.getName();
 
         JavaDialect dialect = (JavaDialect) pkgReg.getDialectCompiletimeRegistry().getDialect("java");
-        dialect.addSrc(compiler.getBinaryName(), source.getBytes());
+        dialect.addSrc(compiler.getBinaryName(), source.getBytes(IoUtils.UTF8_CHARSET));
         kBuilder.compileAll();
         kBuilder.updateResults();
 

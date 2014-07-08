@@ -4,6 +4,7 @@ import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.commons.jci.stores.ResourceStore;
 import org.drools.core.common.ProjectClassLoader;
+import org.drools.core.util.IoUtils;
 
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
@@ -98,7 +99,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
         }
 
         CompilationUnit(String name, ResourceReader pReader) {
-            this(name, new String(pReader.getBytes(name)));
+            this(name, new String(pReader.getBytes(name), IoUtils.UTF8_CHARSET));
         }
 
         @Override

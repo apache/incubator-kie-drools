@@ -20,9 +20,11 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -33,6 +35,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import org.drools.core.util.IoUtils;
 import org.drools.examples.sudoku.swing.SudokuGridSamples;
 import org.drools.examples.sudoku.swing.SudokuGridView;
 import org.kie.api.KieServices;
@@ -130,11 +133,11 @@ public class SudokuExample implements ActionListener {
 
     private void runFile(String path){
         Integer[][] values = new Integer[9][];
-        FileReader fr = null;
+        Reader fileIsReader = null;
         BufferedReader rdr = null;
         try {
-            fr = new FileReader( path );
-            rdr = new BufferedReader( fr );
+            fileIsReader = new InputStreamReader(new FileInputStream(path), IoUtils.UTF8_CHARSET);
+            rdr = new BufferedReader( fileIsReader );
             String line = rdr.readLine();
             for( int iRow = 0; iRow < 9;  iRow++ ){
                 values[iRow] = new Integer[9];

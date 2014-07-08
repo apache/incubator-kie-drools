@@ -16,6 +16,8 @@
 
 package org.drools.template.parser;
 
+import org.drools.core.util.IoUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,7 +74,7 @@ public class DefaultTemplateContainer implements TemplateContainer {
         try {
             final ColumnFactory cf = new ColumnFactory();
             final BufferedReader templateReader = new BufferedReader(
-                    new InputStreamReader(templateStream));
+                    new InputStreamReader(templateStream, IoUtils.UTF8_CHARSET));
             String line = null;
             StringBuffer header = new StringBuffer();
             boolean inTemplate = false;

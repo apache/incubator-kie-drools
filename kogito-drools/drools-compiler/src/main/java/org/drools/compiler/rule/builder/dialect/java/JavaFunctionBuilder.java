@@ -4,6 +4,7 @@ import org.drools.core.base.TypeResolver;
 import org.drools.compiler.compiler.FunctionError;
 import org.drools.compiler.rule.builder.FunctionBuilder;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.core.rule.LineMappings;
@@ -28,7 +29,8 @@ public class JavaFunctionBuilder
     //    private static final StringTemplateGroup functionGroup = new StringTemplateGroup( new InputStreamReader( JavaFunctionBuilder.class.getResourceAsStream( "javaFunction.stg" ) ),
     //                                                                                      AngleBracketTemplateLexer.class );
 
-    private static final String template = StringUtils.readFileAsString( new InputStreamReader( JavaFunctionBuilder.class.getResourceAsStream( "javaFunction.mvel" ) ) );
+    private static final String template = StringUtils.readFileAsString(
+            new InputStreamReader( JavaFunctionBuilder.class.getResourceAsStream( "javaFunction.mvel" ), IoUtils.UTF8_CHARSET ) );
 
     public JavaFunctionBuilder() {
 

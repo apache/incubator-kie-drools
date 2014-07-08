@@ -2,6 +2,7 @@ package org.drools.compiler.kie.builder.impl;
 
 import org.drools.compiler.kie.builder.impl.event.KieModuleDiscovered;
 import org.drools.compiler.kie.builder.impl.event.KieServicesEventListerner;
+import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
@@ -15,9 +16,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
@@ -234,7 +235,8 @@ public class ClasspathKieProject extends AbstractKieProject {
             }
             ZipEntry zipEntry = zipFile.getEntry( file );
 
-            String pomProps = StringUtils.readFileAsString( new InputStreamReader( zipFile.getInputStream( zipEntry ) ) );
+            String pomProps = StringUtils.readFileAsString(
+                    new InputStreamReader( zipFile.getInputStream( zipEntry ), IoUtils.UTF8_CHARSET ) );
             log.debug( "Found and used pom.properties " + file);
             return pomProps;
         } catch ( Exception e ) {
@@ -250,14 +252,14 @@ public class ClasspathKieProject extends AbstractKieProject {
     }
 
     private static String getPomPropertiesFromFileSystem(String rootPath) {
-        FileReader reader = null;
+        Reader reader = null;
         try {
             File file = KieBuilderImpl.findPomProperties( new File( rootPath ) );
             if ( file == null ) {
                 log.warn( "Unable to find pom.properties in " + rootPath );
                 return null;
             }
-            reader = new FileReader( file );
+            reader = new InputStreamReader( new FileInputStream( file ), IoUtils.UTF8_CHARSET );
             log.debug( "Found and used pom.properties " + file);
             return StringUtils.toString( reader );
         } catch ( Exception e ) {

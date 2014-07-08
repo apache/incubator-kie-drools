@@ -15,6 +15,7 @@ import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
 import org.drools.core.util.Drools;
+import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
@@ -163,7 +164,7 @@ public abstract class AbstractKieModule
         if (typesMetaInfo == null) {
             byte[] bytes = getBytes(KieModuleModelImpl.KMODULE_INFO_JAR_PATH);
             if (bytes != null) {
-                typesMetaInfo = KieModuleMetaInfo.unmarshallMetaInfos(new String(bytes)).getTypeMetaInfos();
+                typesMetaInfo = KieModuleMetaInfo.unmarshallMetaInfos(new String(bytes, IoUtils.UTF8_CHARSET)).getTypeMetaInfos();
             }
         }
         return typesMetaInfo;

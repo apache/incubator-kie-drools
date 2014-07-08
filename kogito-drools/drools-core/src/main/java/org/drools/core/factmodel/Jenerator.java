@@ -27,6 +27,7 @@ import java.util.jar.JarOutputStream;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.drools.core.util.IoUtils;
 
 /**
  * This will generate a jar from a meta model.
@@ -66,7 +67,7 @@ public class Jenerator {
 
     private byte[] toXML(Fact[] facts) {
         XStream x = new XStream(new DomDriver());
-        return x.toXML(facts).getBytes();
+        return x.toXML(facts).getBytes(IoUtils.UTF8_CHARSET);
 
     }
 
