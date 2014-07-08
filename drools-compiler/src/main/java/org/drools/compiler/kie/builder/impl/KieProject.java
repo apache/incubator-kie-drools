@@ -1,5 +1,6 @@
 package org.drools.compiler.kie.builder.impl;
 
+import org.drools.compiler.commons.jci.stores.ResourceStore;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
@@ -7,31 +8,35 @@ import org.kie.api.builder.model.KieSessionModel;
 import java.util.Set;
 
 public interface KieProject {
-    
-    ReleaseId getGAV();
-    
-    InternalKieModule getKieModuleForKBase(String kBaseName);
 
-    KieBaseModel getKieBaseModel(String kBaseName);
+	ReleaseId getGAV();
 
-    KieBaseModel getDefaultKieBaseModel();
+	InternalKieModule getKieModuleForKBase(String kBaseName);
 
-    KieSessionModel getKieSessionModel(String kSessionName);
+	KieBaseModel getKieBaseModel(String kBaseName);
 
-    KieSessionModel getDefaultKieSession();
+	KieBaseModel getDefaultKieBaseModel();
 
-    KieSessionModel getDefaultStatelessKieSession();
+	KieSessionModel getKieSessionModel(String kSessionName);
 
-    void init();   
-    
-    ClassLoader getClassLoader();
+	KieSessionModel getDefaultKieSession();
 
-    ClassLoader getClonedClassLoader();
+	KieSessionModel getDefaultStatelessKieSession();
 
-    ResultsImpl verify();
+	void init();
 
-    long getCreationTimestamp();
+	ClassLoader getClassLoader();
 
-    Set<String> getTransitiveIncludes(String kBaseName);
-    Set<String> getTransitiveIncludes(KieBaseModel kBaseModel);
+	ClassLoader getClonedClassLoader();
+
+	ResultsImpl verify();
+
+	ResultsImpl buildProject(InternalKieModule kModule, ResourceStore trgMfs,
+			ResultsImpl messages, int numThreads);
+
+	long getCreationTimestamp();
+
+	Set<String> getTransitiveIncludes(String kBaseName);
+
+	Set<String> getTransitiveIncludes(KieBaseModel kBaseModel);
 }
