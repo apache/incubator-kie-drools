@@ -205,7 +205,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
                         Map<String, Object> params = new HashMap<String, Object>();
                         params.put("expirationDate", expirationDate);
 		return getTasksAssignedAsPotentialOwner(userId, null, statuses, 
-                        new QueryFilterImpl( "t.taskData.expirationTime = :expirationDate", params, "order by t.id DESC"));
+                        new QueryFilterImpl( "t.taskData.expirationTime = :expirationDate", params, "order by t.id", false));
 	}
 
 	@Override
@@ -214,7 +214,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("expirationDate", expirationDate);
 		return getTasksAssignedAsPotentialOwner(userId, null, statuses, 
-                        new QueryFilterImpl( "(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", params, "order by t.id DESC"));
+                        new QueryFilterImpl( "(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", params, "order by t.id", false));
 	}
         
         @Override
@@ -424,7 +424,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 		
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put("expirationDate", expirationDate);
-                return getTasksOwned(userId, statuses, new QueryFilterImpl("t.taskData.expirationTime = :expirationDate", params, "order by t.id DESC"));
+                return getTasksOwned(userId, statuses, new QueryFilterImpl("t.taskData.expirationTime = :expirationDate", params, "order by t.id", false));
 	}
 
 	@Override
@@ -432,7 +432,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 			String userId, List<Status> statuses, Date expirationDate) {
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put("expirationDate", expirationDate);
-                return getTasksOwned(userId, statuses, new QueryFilterImpl("(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", params, "order by t.id DESC"));
+                return getTasksOwned(userId, statuses, new QueryFilterImpl("(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", params, "order by t.id", false));
 	}
 
 	@Override

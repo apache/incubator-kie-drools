@@ -32,6 +32,7 @@ public class QueryFilterImpl implements QueryFilter{
     private String language ="";
     private String orderBy = "";
     private String filterParams = "";
+    private boolean ascending;
     private Map<String, Object> params = new HashMap<String, Object>();
 
     public QueryFilterImpl(int offset, int count) {
@@ -45,6 +46,14 @@ public class QueryFilterImpl implements QueryFilter{
         this.singleResult = singleResult;
     }
 
+    public QueryFilterImpl(int offset, int count, String orderBy, boolean ascending) {
+      this.offset = offset;
+      this.count = count;
+      this.orderBy = orderBy;
+      this.ascending = ascending;
+    }
+    
+
     public QueryFilterImpl(int offset, int count, boolean singleResult, String filterParams, String language, String orderBy) {
         this.offset = offset;
         this.count = count;
@@ -54,10 +63,11 @@ public class QueryFilterImpl implements QueryFilter{
         this.orderBy = orderBy;
     }
     
-    public QueryFilterImpl( String filterParams, Map<String, Object> params, String orderBy) {
+    public QueryFilterImpl( String filterParams, Map<String, Object> params, String orderBy, boolean isAscending) {
         this.filterParams = filterParams;
         this.params = params;
         this.orderBy = orderBy;
+        this.ascending = isAscending;
     }
     
     public QueryFilterImpl( String filterParams, Map<String, Object> params, String orderBy,int offset, int count ) {
@@ -103,5 +113,8 @@ public class QueryFilterImpl implements QueryFilter{
         return params;
     }
 
-    
+    public boolean isAscending() {
+      return ascending;
+    }
+
 }

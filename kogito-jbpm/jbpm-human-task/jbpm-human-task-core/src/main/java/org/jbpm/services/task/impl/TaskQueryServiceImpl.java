@@ -293,15 +293,23 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         if(filter != null){
            params.put("firstResult",filter.getOffset());
            params.put("maxResults", filter.getCount());
-           if(!"".equals(filter.getFilterParams())){
+           if(!"".equals(filter.getFilterParams()) && !filter.getOrderBy().equals("")){
                for(String key : filter.getParams().keySet()){
                    params.put(key, filter.getParams().get(key));
                }
+               String orderBy = adaptOrderBy(filter.getOrderBy());
                return (List<TaskSummary>) persistenceContext
-                       .queryStringWithParametersInTransaction(TASKS_ASSIGNED_AS_POTENTIALOWNER_TEMPLATE + filter.getFilterParams() + " " +filter.getOrderBy(), 
+                       .queryStringWithParametersInTransaction(TASKS_ASSIGNED_AS_POTENTIALOWNER_TEMPLATE +
+                                          " and " + filter.getFilterParams() + "order by " +orderBy +" "+ ((filter.isAscending())?"ASC":"DESC"), 
                                         params,
                                         ClassUtil.<List<TaskSummary>>castClass(List.class));
            
+           }else if(!filter.getOrderBy().equals("")){
+             String orderBy = adaptOrderBy(filter.getOrderBy());
+             return (List<TaskSummary>) persistenceContext
+                       .queryStringWithParametersInTransaction(TASKS_ASSIGNED_AS_POTENTIALOWNER_TEMPLATE + " order by " +orderBy +" "+ ((filter.isAscending())?"ASC":"DESC"), 
+                                        params,
+                                        ClassUtil.<List<TaskSummary>>castClass(List.class));
            }
         }
         return (List<TaskSummary>) persistenceContext.queryWithParametersInTransaction("NewTasksAssignedAsPotentialOwner", 
@@ -310,6 +318,28 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                 
     }
 
+    private String adaptOrderBy(String orderBy){
+      if(orderBy != null){
+        if(orderBy.equals("Task")){
+          return "t.name";
+        }else if(orderBy.equals("Description")){
+          return "t.description";
+        }else if(orderBy.equals("Id")){
+          return "t.id";
+        }else if(orderBy.equals("Priority")){
+          return "t.priority";
+        }else if(orderBy.equals("Status")){
+          return "t.taskData.status";
+        }else if(orderBy.equals("Created On")){
+          return "t.taskData.createdOn";
+        }else if(orderBy.equals("Created By")){
+          return "t.taskData.createdBy.id";
+        }else if(orderBy.equals("Due On")){
+          return "t.taskData.expirationTime";
+        }
+      }
+      return orderBy;
+    }
     public List<TaskSummary> getTasksOwned(String userId, List<Status> status, QueryFilter filter) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", userId);
@@ -380,7 +410,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("expirationDate", expirationDate);
         return (List<TaskSummary>) getTasksAssignedAsPotentialOwner(userId, groupIds, status,
-                new QueryFilterImpl("t.taskData.expirationTime = :expirationDate", params, "order by t.id DESC"));
+                new QueryFilterImpl("t.taskData.expirationTime = :expirationDate", params, "order by t.id", false));
         
         
 
@@ -392,7 +422,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("expirationDate", expirationDate);
         return (List<TaskSummary>) getTasksAssignedAsPotentialOwner(userId, groupIds, status,
-                new QueryFilterImpl("(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", params, "order by t.id DESC"));
+                new QueryFilterImpl("(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", params, "order by t.id", false));
         
     }
     @Override
@@ -400,7 +430,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("expirationDate", expirationDate);
         return (List<TaskSummary>) getTasksOwned(userId, status,
-                new QueryFilterImpl( "t.taskData.expirationTime = :expirationDate", params, "order by t.id DESC"));
+                new QueryFilterImpl( "t.taskData.expirationTime = :expirationDate", params, "order by t.id", false));
         
         
 
@@ -413,7 +443,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         params.put("expirationDate", expirationDate);
         return (List<TaskSummary>) getTasksOwned(userId, status,
                 new QueryFilterImpl( "(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)"
-                        , params, "order by t.id DESC"));
+                        , params, "order by t.id", false));
         
     }
     
@@ -646,7 +676,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
 "                t.archived = 0 and\n" +
 "                ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and\n" +
 "                potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and\n" +
-"                t.taskData.status in (:status) and \n";
+"                t.taskData.status in (:status) \n";
 
     
     private static String TASKS_OWNED_TEMPLATE = "select distinct \n" +
