@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DocumentImpl implements Document {
+	
     private String identifier;
     private String name;
     private String link;
     private long size;
     private Date lastModified;
     private byte[] content;
-
     private Map<String, String> attributes;
 
     public DocumentImpl() {
@@ -117,6 +117,7 @@ public class DocumentImpl implements Document {
     public String toString() {
         return "Document{" +
                 "identifier='" + identifier + '\'' +
+                ", link='" + link + '\'' +
                 ", name='" + name + '\'' +
                 ", size=" + size +
                 ", lastModified=" + lastModified +
