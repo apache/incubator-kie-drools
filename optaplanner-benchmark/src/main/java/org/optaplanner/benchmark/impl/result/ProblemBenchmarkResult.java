@@ -18,25 +18,32 @@ package org.optaplanner.benchmark.impl.result;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang.ObjectUtils;
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
+import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.ranking.SingleBenchmarkRankingComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -192,6 +199,29 @@ public class ProblemBenchmarkResult {
             }
         }
         return false;
+    }
+
+    public Collection<SingleStatisticType> extractSingleStatisticTypeList() {
+        Set<SingleStatisticType> singleStatisticTypeSet = new LinkedHashSet<SingleStatisticType>();
+        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
+            for (PureSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
+                singleStatisticTypeSet.add(pureSingleStatistic.getStatisticType());
+            }
+        }
+        return singleStatisticTypeSet;
+    }
+
+    public List<PureSingleStatistic> extractPureSingleStatisticList(SingleStatisticType singleStatisticType) {
+        List<PureSingleStatistic> pureSingleStatisticList = new ArrayList<PureSingleStatistic>(
+                singleBenchmarkResultList.size());
+        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
+            for (PureSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
+                if (pureSingleStatistic.getStatisticType() == singleStatisticType) {
+                    pureSingleStatisticList.add(pureSingleStatistic);
+                }
+            }
+        }
+        return pureSingleStatisticList;
     }
 
     // ************************************************************************

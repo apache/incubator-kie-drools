@@ -54,4 +54,9 @@ public enum ProblemStatisticType implements StatisticType {
         }
     }
 
+    public boolean hasScoreLevels() {
+        return this == BEST_SCORE
+                || this == STEP_SCORE;
+    }
+
 }

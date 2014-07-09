@@ -16,6 +16,7 @@
 
 package org.optaplanner.benchmark.config.statistic;
 
+import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
@@ -45,6 +46,15 @@ public enum SingleStatisticType implements StatisticType {
             default:
                 throw new IllegalStateException("The singleStatisticType (" + this + ") is not implemented.");
         }
+    }
+
+    public String getAnchorId() {
+        return ReportHelper.escapeHtmlId(name());
+    }
+
+    public boolean hasScoreLevels() {
+        return this == PICKED_MOVE_TYPE_BEST_SCORE_DIFF
+                || this == PICKED_MOVE_TYPE_STEP_SCORE_DIFF;
     }
 
 }

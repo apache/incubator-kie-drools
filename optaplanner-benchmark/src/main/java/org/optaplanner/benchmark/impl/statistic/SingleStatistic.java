@@ -31,6 +31,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.io.IOUtils;
+import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
@@ -154,5 +155,13 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
     }
 
     protected abstract P createPointFromCsvLine(ScoreDefinition scoreDefinition, List<String> csvLine);
+
+    // ************************************************************************
+    // Report accumulates
+    // ************************************************************************
+
+    public String getAnchorId() {
+        return ReportHelper.escapeHtmlId(singleBenchmarkResult.getName() + "_" + getStatisticType().name());
+    }
 
 }
