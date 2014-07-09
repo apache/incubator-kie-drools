@@ -29,6 +29,8 @@ package org.jbpm.services.cdi;
  * user.
  */
 public interface RequestScopedBackupIdentityProvider {
+	
+	public static final String UNKNOWN = "unknown";
 
     String getName();
     

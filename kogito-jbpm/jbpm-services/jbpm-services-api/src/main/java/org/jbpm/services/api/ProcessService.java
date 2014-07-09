@@ -52,6 +52,8 @@ public interface ProcessService {
 	 * Aborts the specified process
 	 * 
 	 * @param processInstanceId process instance's unique identifier
+	 * @throws DeploymentNotFoundException in case deployment unit was not found
+	 * @throws ProcessInstanceNotFoundException in case process instance with given id was not found
 	 */
     void abortProcessInstance(Long processInstanceId);
     
@@ -59,6 +61,8 @@ public interface ProcessService {
 	 * Aborts all specified processes
 	 * 
 	 * @param processInstanceIds list of process instance unique identifiers
+	 * @throws DeploymentNotFoundException in case deployment unit was not found
+	 * @throws ProcessInstanceNotFoundException in case process instance with given id was not found
 	 */
     void abortProcessInstances(List<Long> processInstanceIds);
 
@@ -68,6 +72,8 @@ public interface ProcessService {
 	 * @param processInstanceId the process instance's unique identifier
 	 * @param signalName the signal's id in the process
 	 * @param event the event object to be passed in with the event
+	 * @throws DeploymentNotFoundException in case deployment unit was not found
+	 * @throws ProcessInstanceNotFoundException in case process instance with given id was not found
 	 */
     void signalProcessInstance(Long processInstanceId, String signalName, Object event);
     
@@ -77,6 +83,8 @@ public interface ProcessService {
 	 * @param processInstanceIds list of process instance unique identifiers
 	 * @param signalName the signal's id in the process
 	 * @param event the event object to be passed in with the event
+	 * @throws DeploymentNotFoundException in case deployment unit was not found
+	 * @throws ProcessInstanceNotFoundException in case process instance with given id was not found
 	 */
     void signalProcessInstances(List<Long> processInstanceIds, String signalName, Object event);
     
@@ -86,6 +94,7 @@ public interface ProcessService {
 	 * 
 	 * @param processInstanceId The process instance's unique identifier
 	 * @return Process instance information
+	 * @throws DeploymentNotFoundException in case deployment unit was not found
 	 */
     ProcessInstance getProcessInstance(Long processInstanceId);
 
@@ -94,6 +103,8 @@ public interface ProcessService {
 	 * @param processInstanceId The process instance's unique identifier.
 	 * @param variableName The variable name to set.
 	 * @param variable The variable value.
+	 * @throws DeploymentNotFoundException in case deployment unit was not found
+	 * @throws ProcessInstanceNotFoundException in case process instance with given id was not found
 	 */
     void setProcessVariable(Long processInstanceId, String variableId, Object value);
     
@@ -101,6 +112,8 @@ public interface ProcessService {
 	 * Sets process variables.
 	 * @param processInstanceId The process instance's unique identifier.
 	 * @param variables map of process variables (key - variable name, value - variable value)
+	 * @throws DeploymentNotFoundException in case deployment unit was not found
+	 * @throws ProcessInstanceNotFoundException in case process instance with given id was not found
 	 */
     void setProcessVariables(Long processInstanceId, Map<String, Object> variables);
     
@@ -108,12 +121,16 @@ public interface ProcessService {
 	 * Gets a process instance's variable.
 	 * @param processInstanceId the process instance's unique identifier.
 	 * @param variableName the variable name to get from the process.
+	 * @throws DeploymentNotFoundException in case deployment unit was not found
+	 * @throws ProcessInstanceNotFoundException in case process instance with given id was not found
 	*/
     Object getProcessInstanceVariable(Long processInstanceId, String variableName);
 
 	/**
 	 * Gets a process instance's variable values.
 	 * @param processInstanceId The process instance's unique identifier.
+	 * @throws DeploymentNotFoundException in case deployment unit was not found
+	 * @throws ProcessInstanceNotFoundException in case process instance with given id was not found
 	*/
 	Map<String, Object> getProcessInstanceVariables(Long processInstanceId);
 
@@ -129,6 +146,8 @@ public interface ProcessService {
 	 * 
 	 * @param id workItem id
 	 * @param results results of the workItem
+	 * @throws DeploymentNotFoundException in case deployment unit was not found
+     * @throws WorkItemNotFoundException in case work item with given id was not found
 	 */
     void completeWorkItem(Long id, Map<String, Object> results);
 
@@ -136,6 +155,8 @@ public interface ProcessService {
      * Abort the specified workItem
      * 
      * @param id workItem id
+     * @throws DeploymentNotFoundException in case deployment unit was not found
+     * @throws WorkItemNotFoundException in case work item with given id was not found
      */
     void abortWorkItem(Long id);
     
@@ -144,6 +165,8 @@ public interface ProcessService {
      * 
      * @param id workItem id
      * @return The specified workItem
+     * @throws DeploymentNotFoundException in case deployment unit was not found
+     * @throws WorkItemNotFoundException in case work item with given id was not found
      */
     WorkItem getWorkItem(Long id);
 
@@ -152,6 +175,8 @@ public interface ProcessService {
      * 
      * @param processInstanceId process instance id
      * @return The list of active workItems for the process instance
+     * @throws DeploymentNotFoundException in case deployment unit was not found
+	 * @throws ProcessInstanceNotFoundException in case process instance with given id was not found
      */
     List<WorkItem> getWorkItemByProcessInstance(Long processInstanceId);
     
@@ -161,6 +186,7 @@ public interface ProcessService {
      * @param deploymentId deployment information for the process's kjar
      * @param command actual command for execution
      * @return results of command execution
+     * @throws DeploymentNotFoundException in case deployment unit was not found
      */
     public <T> T execute(String deploymentId, Command<T> command);
     
@@ -170,6 +196,7 @@ public interface ProcessService {
      * @param context context implementation to be used to get runtime engine
      * @param command actual command for execution
      * @return results of command execution
+     * @throws DeploymentNotFoundException in case deployment unit was not found
      */
     public <T> T execute(String deploymentId, Context<?> context, Command<T> command);
 

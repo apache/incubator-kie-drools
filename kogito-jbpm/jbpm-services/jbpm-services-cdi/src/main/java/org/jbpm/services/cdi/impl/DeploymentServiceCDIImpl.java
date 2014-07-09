@@ -19,6 +19,7 @@ package org.jbpm.services.cdi.impl;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
@@ -35,6 +36,7 @@ import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.cdi.Deploy;
 import org.jbpm.services.cdi.Kjar;
+import org.jbpm.services.cdi.RequestScopedBackupIdentityProvider;
 import org.jbpm.services.cdi.Undeploy;
 import org.jbpm.services.cdi.impl.manager.InjectableRegisterableItemsFactory;
 import org.kie.api.runtime.KieContainer;
@@ -54,6 +56,9 @@ public class DeploymentServiceCDIImpl extends KModuleDeploymentService {
     @Inject
     @Undeploy
     protected Event<DeploymentEvent> undeploymentEvent;
+    
+    @Inject
+    private Instance<RequestScopedBackupIdentityProvider> backupProviders;
     
     @PostConstruct
     public void onInit() {
@@ -116,6 +121,12 @@ public class DeploymentServiceCDIImpl extends KModuleDeploymentService {
         return InjectableRegisterableItemsFactory.getFactory(beanManager, auditLoggerBuilder, kieContainer,
                     unit.getKsessionName());
         
+	}
+
+	@Override
+	protected AuditEventBuilder setupAuditLogger(IdentityProvider identityProvider, String deploymentUnitId) {
+		
+		return super.setupAuditLogger(new IdentityProviderCDIWrapper(identityProvider, backupProviders), deploymentUnitId);
 	}
 	
 	

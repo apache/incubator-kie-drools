@@ -14,7 +14,12 @@
         <include>org.jbpm:jbpm-bpmn2</include>
         <include>org.jbpm:jbpm-audit</include>
         <include>org.jbpm:jbpm-workitems</include>
+        <include>org.jbpm:jbpm-services-api</include>
         <include>org.jbpm:jbpm-kie-services</include>
+        <include>org.jbpm:jbpm-services-cdi</include>
+        <include>org.jbpm:jbpm-services-ejb-api</include>
+        <include>org.jbpm:jbpm-services-ejb-impl</include>
+        <include>org.jbpm:jbpm-services-ejb-client</include>
         <include>org.jbpm:jbpm-executor</include>
         <include>org.jbpm:jbpm-form-services</include>
         <include>org.jbpm:jbpm-human-task-core</include>
@@ -38,7 +43,12 @@
         <exclude>org.jbpm:jbpm-bpmn2</exclude>
         <exclude>org.jbpm:jbpm-audit</exclude>
         <exclude>org.jbpm:jbpm-workitems</exclude>
+        <exclude>org.jbpm:jbpm-services-api</exclude>
         <exclude>org.jbpm:jbpm-kie-services</exclude>
+        <exclude>org.jbpm:jbpm-services-cdi</exclude>
+        <exclude>org.jbpm:jbpm-services-ejb-api</exclude>
+        <exclude>org.jbpm:jbpm-services-ejb-impl</exclude>
+        <exclude>org.jbpm:jbpm-services-ejb-client</exclude>
         <exclude>org.jbpm:jbpm-executor</exclude>
         <exclude>org.jbpm:jbpm-form-services</exclude>
         <exclude>org.jbpm:jbpm-human-task-core</exclude>

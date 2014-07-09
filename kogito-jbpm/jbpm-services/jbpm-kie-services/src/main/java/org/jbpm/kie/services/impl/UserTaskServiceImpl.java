@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.api.RuntimeDataService;
+import org.jbpm.services.api.TaskNotFoundException;
 import org.jbpm.services.api.UserTaskService;
 import org.jbpm.services.api.model.UserTaskInstanceDesc;
 import org.jbpm.services.task.commands.TaskCommand;
@@ -116,6 +117,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void activate(Long taskId, String userId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -135,6 +139,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void claim(Long taskId, String userId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -155,6 +162,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void complete(Long taskId, String userId, Map<String, Object> params) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -178,6 +188,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void delegate(Long taskId, String userId, String targetUserId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -197,6 +210,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void exit(Long taskId, String userId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -216,6 +232,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void fail(Long taskId, String userId, Map<String, Object> faultData) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -238,6 +257,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void forward(Long taskId, String userId, String targetEntityId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -257,6 +279,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void release(Long taskId, String userId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -276,6 +301,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void resume(Long taskId, String userId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -295,6 +323,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void skip(Long taskId, String userId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -314,6 +345,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void start(Long taskId, String userId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -333,6 +367,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void stop(Long taskId, String userId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -352,6 +389,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void suspend(Long taskId, String userId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -371,6 +411,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void nominate(Long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -390,6 +433,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void setPriority(Long taskId, int priority) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -409,6 +455,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void setExpirationDate(Long taskId, Date date) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -428,6 +477,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void setSkipable(Long taskId, boolean skipable) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -447,6 +499,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void setName(Long taskId, String name) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -473,6 +528,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void setDescription(Long taskId, String description) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -498,6 +556,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public Long saveContent(Long taskId, Map<String, Object> values) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -520,6 +581,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void deleteContent(Long taskId, Long contentId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -540,6 +604,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public Map<String, Object> getTaskOutputContentByTaskId(Long taskId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -572,6 +639,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public Map<String, Object> getTaskInputContentByTaskId(Long taskId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -603,6 +673,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public Long addComment(Long taskId, String text, String addedBy, Date addedOn) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -626,6 +699,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void deleteComment(Long taskId, Long commentId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -645,6 +721,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public List<Comment> getCommentsByTaskId(Long taskId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -664,6 +743,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public Comment getCommentById(Long taskId, Long commentId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -683,6 +765,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public Long addAttachment(Long taskId, String userId, Object attachment) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -715,6 +800,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public void deleteAttachment(Long taskId, Long attachmentId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -734,6 +822,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public Attachment getAttachmentById(Long taskId, Long attachmentId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -753,6 +844,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public List<Attachment> getAttachmentsByTaskId(Long taskId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -802,6 +896,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	@Override
 	public Task getTask(Long taskId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			return null;
+		}
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {

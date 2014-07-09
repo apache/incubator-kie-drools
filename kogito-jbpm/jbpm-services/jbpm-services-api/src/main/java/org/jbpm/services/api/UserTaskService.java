@@ -36,6 +36,7 @@ public interface UserTaskService {
 	 * 
 	 * @param taskId
 	 * @param userId
+	 * @throws TaskNotFoundException in case task with given id was not found
 	 */
 	void activate(Long taskId, String userId);
 
@@ -44,6 +45,7 @@ public interface UserTaskService {
 	 * 
 	 * @param taskId
 	 * @param userId
+	 * @throws TaskNotFoundException in case task with given id was not found
 	 */
 	void claim(Long taskId, String userId);
 
@@ -54,6 +56,7 @@ public interface UserTaskService {
 	 * @param taskId
 	 * @param userId
 	 * @param data
+	 * @throws TaskNotFoundException in case task with given id was not found
 	 */
 	void complete(Long taskId, String userId, Map<String, Object> params);
 	
@@ -65,6 +68,7 @@ public interface UserTaskService {
 	 * @param taskId
 	 * @param userId
 	 * @param targetUserId
+	 * @throws TaskNotFoundException in case task with given id was not found
 	 */
 	void delegate(Long taskId, String userId, String targetUserId);
 
@@ -74,6 +78,7 @@ public interface UserTaskService {
 	 * 
 	 * @param taskId
 	 * @param userId
+	 * @throws TaskNotFoundException in case task with given id was not found
 	 */
 	void exit(Long taskId, String userId);
 
@@ -87,6 +92,7 @@ public interface UserTaskService {
 	 * @param taskId
 	 * @param userId
 	 * @param faultData
+	 * @throws TaskNotFoundException in case task with given id was not found
 	 */
 	void fail(Long taskId, String userId, Map<String, Object> faultData);
 
@@ -100,6 +106,7 @@ public interface UserTaskService {
 	 * @param taskId
 	 * @param userId
 	 * @param targetEntityId
+	 * @throws TaskNotFoundException in case task with given id was not found
 	 */
 	void forward(Long taskId, String userId, String targetEntityId);
 
@@ -108,6 +115,7 @@ public interface UserTaskService {
 	 * 
 	 * @param taskId
 	 * @param userId
+	 * @throws TaskNotFoundException in case task with given id was not found
 	 */
 	void release(Long taskId, String userId);
 	
@@ -117,6 +125,7 @@ public interface UserTaskService {
 	 * 
 	 * @param taskId
 	 * @param userId
+	 * @throws TaskNotFoundException in case task with given id was not found
 	 */
 	void resume(Long taskId, String userId);
 
@@ -125,6 +134,7 @@ public interface UserTaskService {
 	 * 
 	 * @param taskId
 	 * @param userId
+	 * @throws TaskNotFoundException in case task with given id was not found
 	 */
 	void skip(Long taskId, String userId);
 
@@ -133,6 +143,7 @@ public interface UserTaskService {
 	 * 
 	 * @param taskId
 	 * @param userId
+	 * @throws TaskNotFoundException in case task with given id was not found
 	 */
 	void start(Long taskId, String userId);
 	
@@ -144,6 +155,7 @@ public interface UserTaskService {
 	 * 
 	 * @param taskId
 	 * @param userId
+	 * @throws TaskNotFoundException in case task with given id was not found
 	 */
 	void stop(Long taskId, String userId);
 
@@ -152,6 +164,7 @@ public interface UserTaskService {
 	 * 
 	 * @param taskId
 	 * @param userId
+	 * @throws TaskNotFoundException in case task with given id was not found
 	 */
 	void suspend(Long taskId, String userId);
 
@@ -161,6 +174,7 @@ public interface UserTaskService {
 	 * @param taskId
 	 * @param userId
 	 * @param potentialOwners
+	 * @throws TaskNotFoundException in case task with given id was not found
 	 */
 	void nominate(Long taskId, String userId, List<OrganizationalEntity> potentialOwners);
 	
@@ -170,6 +184,7 @@ public interface UserTaskService {
 	 * Sets priority of a task to given value
 	 * @param taskId
 	 * @param priority
+	 * @throws TaskNotFoundException in case task with given id was not found
 	 */
     void setPriority(Long taskId, int priority);
 
@@ -177,6 +192,7 @@ public interface UserTaskService {
      * Sets expiration date of a task to given value
      * @param taskId
      * @param date
+     * @throws TaskNotFoundException in case task with given id was not found
      */
     void setExpirationDate(Long taskId, Date date);
 
@@ -184,6 +200,7 @@ public interface UserTaskService {
      * Sets skipable property of a task to given value
      * @param taskId
      * @param skipable
+     * @throws TaskNotFoundException in case task with given id was not found
      */
     void setSkipable(Long taskId, boolean skipable);
     
@@ -191,6 +208,7 @@ public interface UserTaskService {
      * Sets name of the task
      * @param taskId
      * @param name
+     * @throws TaskNotFoundException in case task with given id was not found
      */
     void setName(Long taskId, String name);
     
@@ -198,6 +216,7 @@ public interface UserTaskService {
      * Sets description of the task
      * @param taskId
      * @param description
+     * @throws TaskNotFoundException in case task with given id was not found
      */
     void setDescription(Long taskId, String description);
 
@@ -209,6 +228,7 @@ public interface UserTaskService {
      * @param taskId
      * @param values
      * @return
+     * @throws TaskNotFoundException in case task with given id was not found
      */
     Long saveContent(Long taskId, Map<String, Object> values);
 
@@ -216,6 +236,7 @@ public interface UserTaskService {
      * Returns task output data currently stored, might be null of no data is stored
      * @param taskId
      * @return
+     * @throws TaskNotFoundException in case task with given id was not found
      */
     Map<String, Object> getTaskOutputContentByTaskId(Long taskId);
 
@@ -223,6 +244,7 @@ public interface UserTaskService {
      * Returns task input data of a task
      * @param taskId
      * @return
+     * @throws TaskNotFoundException in case task with given id was not found
      */
     Map<String, Object> getTaskInputContentByTaskId(Long taskId);
     
@@ -230,6 +252,7 @@ public interface UserTaskService {
      * Deletes content given by <code>contentId</code> from given task
      * @param taskId
      * @param contentId
+     * @throws TaskNotFoundException in case task with given id was not found
      */
     void deleteContent(Long taskId, Long contentId);
     
@@ -242,6 +265,7 @@ public interface UserTaskService {
      * @param addedBy
      * @param addedOn
      * @return
+     * @throws TaskNotFoundException in case task with given id was not found
      */
     Long addComment(Long taskId, String text, String addedBy, Date addedOn);
 
@@ -249,6 +273,7 @@ public interface UserTaskService {
      * Deletes comment from a task
      * @param taskId
      * @param commentId
+     * @throws TaskNotFoundException in case task with given id was not found
      */
     void deleteComment(Long taskId, Long commentId);
 
@@ -256,6 +281,7 @@ public interface UserTaskService {
      * Get comments for a task
      * @param taskId
      * @return
+     * @throws TaskNotFoundException in case task with given id was not found
      */
     List<Comment> getCommentsByTaskId(Long taskId);
 
@@ -263,6 +289,7 @@ public interface UserTaskService {
      * Get comment by identifier
      * @param commentId
      * @return
+     * @throws TaskNotFoundException in case task with given id was not found
      */
     Comment getCommentById(Long taskId, Long commentId);
     
@@ -274,6 +301,7 @@ public interface UserTaskService {
      * @param userId
      * @param attachment
      * @return
+     * @throws TaskNotFoundException in case task with given id was not found
      */
     Long addAttachment(Long taskId, String userId, Object attachment);
     
@@ -281,6 +309,7 @@ public interface UserTaskService {
      * Delete attachment from a task
      * @param taskId
      * @param attachmentId
+     * @throws TaskNotFoundException in case task with given id was not found
      */
     void deleteAttachment(Long taskId, Long attachmentId);
     
@@ -288,6 +317,7 @@ public interface UserTaskService {
 	 * Get attachment by identifier
 	 * @param attachmentId
 	 * @return
+	 * @throws TaskNotFoundException in case task with given id was not found
 	 */
 	Attachment getAttachmentById(Long taskId, Long attachmentId);
 	
@@ -295,6 +325,7 @@ public interface UserTaskService {
 	 * Get attachments for a task
 	 * @param taskId
 	 * @return
+	 * @throws TaskNotFoundException in case task with given id was not found
 	 */
 	List<Attachment> getAttachmentsByTaskId(Long taskId);
 	
@@ -302,6 +333,7 @@ public interface UserTaskService {
 	 * Returns task instance
 	 * @param taskId
 	 * @return
+	 * @throws TaskNotFoundException in case task with given id was not found
 	 */
 	Task getTask(Long taskId);
 	

@@ -35,6 +35,7 @@ import java.util.Map;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.test.util.AbstractBaseTest;
+import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.UserTaskInstanceDesc;
 import org.jbpm.services.task.commands.GetTaskCommand;
@@ -101,11 +102,15 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     @After
     public void cleanup() {
     	if (processInstanceId != null) {
-	    	// let's abort process instance to leave the system in clear state
-	    	processService.abortProcessInstance(processInstanceId);
-	    	
-	    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
-	    	assertNull(pi);
+    		try {
+		    	// let's abort process instance to leave the system in clear state
+		    	processService.abortProcessInstance(processInstanceId);
+		    	
+		    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
+		    	assertNull(pi);
+    		} catch (ProcessInstanceNotFoundException e) {
+    			// ignore it as it might already be completed/aborted
+    		}
     	}
         cleanupSingletonSessionId();
         if (units != null && !units.isEmpty()) {
