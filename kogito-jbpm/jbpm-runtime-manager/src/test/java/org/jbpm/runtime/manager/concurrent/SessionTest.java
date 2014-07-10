@@ -32,6 +32,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
@@ -270,10 +271,11 @@ public class SessionTest extends AbstractBaseTest {
         
         manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);
         RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
         UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
         ut.begin();
         
-        ProcessInstance processInstance = runtime.getKieSession().startProcess("com.sample.bpmn.hello", null);
+        ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello", null);
         logger.debug("Started process instance {}", processInstance.getId());
         long workItemId = ((HumanTaskNodeInstance) ((WorkflowProcessInstance) processInstance).getNodeInstances().iterator().next()).getWorkItemId();
         long taskId = runtime.getTaskService().getTaskByWorkItemId(workItemId).getId();
@@ -302,16 +304,17 @@ public class SessionTest extends AbstractBaseTest {
         manager.disposeRuntimeEngine(runtime);
         
         runtime = manager.getRuntimeEngine(EmptyContext.get());
+        ksession = runtime.getKieSession();
         ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
         ut.begin();        
-        processInstance = runtime.getKieSession().startProcess("com.sample.bpmn.hello", null);
+        processInstance = ksession.startProcess("com.sample.bpmn.hello", null);
         workItemId = ((HumanTaskNodeInstance) ((WorkflowProcessInstance) processInstance).getNodeInstances().iterator().next()).getWorkItemId();
         taskId = runtime.getTaskService().getTaskByWorkItemId(workItemId).getId();
         runtime.getTaskService().claim(taskId, "mary");
         logger.debug("Started process instance {}", processInstance.getId());
         ut.commit();
 
-        assertNotNull(runtime.getKieSession().getProcessInstance(processInstance.getId()));
+        assertNotNull(ksession.getProcessInstance(processInstance.getId()));
         tasks = runtime.getTaskService().getTasksOwnedByStatus("mary", statusses, "en-UK");
         assertEquals(1, tasks.size());
 
@@ -323,7 +326,7 @@ public class SessionTest extends AbstractBaseTest {
         runtime.getTaskService().complete(taskId, "mary", null);
         ut.commit();
         
-        assertNull(runtime.getKieSession().getProcessInstance(processInstance.getId()));
+        assertNull(ksession.getProcessInstance(processInstance.getId()));
         tasks = runtime.getTaskService().getTasksOwnedByStatus("mary", statusses, "en-UK");
         assertEquals(0, tasks.size());
         manager.disposeRuntimeEngine(runtime);
@@ -343,9 +346,10 @@ public class SessionTest extends AbstractBaseTest {
         
         manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);
         RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
 		UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
 		ut.begin();		
-		ProcessInstance processInstance = runtime.getKieSession().startProcess("com.sample.bpmn.hello", null);
+		ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello", null);
 		logger.debug("Started process instance {}", processInstance.getId());
 		long workItemId = ((HumanTaskNodeInstance) ((WorkflowProcessInstance) processInstance).getNodeInstances().iterator().next()).getWorkItemId();
 		long taskId = runtime.getTaskService().getTaskByWorkItemId(workItemId).getId();

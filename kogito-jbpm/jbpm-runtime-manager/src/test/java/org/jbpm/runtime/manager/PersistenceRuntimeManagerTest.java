@@ -78,6 +78,7 @@ public class PersistenceRuntimeManagerTest extends AbstractBaseTest {
         // ksession for process instance #1
         // since there is no process instance yet we need to get new session
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        runtime.getKieSession();
         
         sessions = em.createQuery("from SessionInfo").getResultList();
         assertEquals(1, sessions.size());
@@ -138,6 +139,7 @@ public class PersistenceRuntimeManagerTest extends AbstractBaseTest {
         // ksession for process instance #1
         // since there is no process instance yet we need to get new session
         RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        runtime.getKieSession();
         
         sessions = em.createQuery("from SessionInfo").getResultList();
         assertEquals(1, sessions.size());

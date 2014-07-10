@@ -30,6 +30,7 @@ import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.runtime.manager.api.SchedulerProvider;
 import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManager;
+import org.jbpm.services.task.wih.ExternalTaskEventListener;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
@@ -40,11 +41,14 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
+import org.kie.internal.runtime.manager.Disposable;
+import org.kie.internal.runtime.manager.DisposeListener;
 import org.kie.internal.runtime.manager.InternalRegisterableItemsFactory;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.SecurityManager;
 import org.kie.internal.task.api.ContentMarshallerContext;
+import org.kie.internal.task.api.EventService;
 import org.kie.internal.task.api.InternalTaskService;
 
 /**
@@ -65,6 +69,8 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     protected RuntimeManagerRegistry registry = RuntimeManagerRegistry.get();
     protected RuntimeEnvironment environment;
     protected DeploymentDescriptor deploymentDescriptor;
+    
+    protected boolean engineInitEager = Boolean.parseBoolean(System.getProperty("org.jbpm.rm.engine.eager", "false"));
 
 	protected String identifier;
     
@@ -79,7 +85,11 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
             throw new IllegalStateException("RuntimeManager with id " + identifier + " is already active");
         }
         internalSetDeploymentDescriptor();
-        ((InternalRegisterableItemsFactory)environment.getRegisterableItemsFactory()).setRuntimeManager(this);        
+        ((InternalRegisterableItemsFactory)environment.getRegisterableItemsFactory()).setRuntimeManager(this);
+        String eagerInit = (String)((SimpleRuntimeEnvironment)environment).getEnvironmentTemplate().get("RuntimeEngineEagerInit");
+        if (eagerInit != null) {
+        	engineInitEager = Boolean.parseBoolean(eagerInit);
+        }
     }
     
     private void internalSetDeploymentDescriptor() {
@@ -185,11 +195,27 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
         this.identifier = identifier;
     }
     
-
-    protected void configureRuntimeOnTaskService(InternalTaskService internalTaskService) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected void configureRuntimeOnTaskService(InternalTaskService internalTaskService, RuntimeEngine engine) {
         if (internalTaskService != null) {
             internalTaskService.addMarshallerContext(getIdentifier(), 
                 new ContentMarshallerContext(environment.getEnvironment(), environment.getClassLoader()));
+            ExternalTaskEventListener listener = new ExternalTaskEventListener();
+            if (internalTaskService instanceof EventService) {
+                ((EventService)internalTaskService).registerTaskEventListener(listener);
+            }
+            
+            if (engine != null && engine instanceof Disposable) {
+                ((Disposable)engine).addDisposeListener(new DisposeListener() {
+                    
+                    @Override
+                    public void onDispose(RuntimeEngine runtime) {
+                        if (runtime.getTaskService() instanceof EventService) {
+                            ((EventService)runtime.getTaskService()).clearTaskEventListeners();;
+                        }
+                    }
+                });
+            }
         }
     }
     

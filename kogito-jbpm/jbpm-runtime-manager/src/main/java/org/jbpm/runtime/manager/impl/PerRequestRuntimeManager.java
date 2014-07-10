@@ -22,7 +22,9 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.task.TaskService;
 import org.kie.internal.runtime.manager.Disposable;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
 import org.kie.internal.task.api.InternalTaskService;
@@ -58,17 +60,24 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     		throw new IllegalStateException("Runtime manager " + identifier + " is already closed");
     	}
     	checkPermission();
+    	RuntimeEngine runtime = null;
         if (local.get() != null) {
             return local.get();
         }
-        InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();
-        configureRuntimeOnTaskService(internalTaskService);
-        RuntimeEngine runtime = new RuntimeEngineImpl(factory.newKieSession(), internalTaskService);
-        ((RuntimeEngineImpl) runtime).setManager(this);
-        registerDisposeCallback(runtime, new DisposeSessionTransactionSynchronization(this, runtime));
-        registerDisposeCallback(runtime, new DestroySessionTransactionSynchronization(runtime.getKieSession()));
-        registerItems(runtime);
-        attachManager(runtime);
+    	if (engineInitEager) {
+	        InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();	        
+	        runtime = new RuntimeEngineImpl(factory.newKieSession(), internalTaskService);
+	        ((RuntimeEngineImpl) runtime).setManager(this);
+	        
+	        configureRuntimeOnTaskService(internalTaskService, runtime);
+	        registerDisposeCallback(runtime, new DisposeSessionTransactionSynchronization(this, runtime));
+	        registerDisposeCallback(runtime, new DestroySessionTransactionSynchronization(runtime.getKieSession()));
+	        registerItems(runtime);
+	        attachManager(runtime);
+    	} else {
+    		runtime = new RuntimeEngineImpl(context, new PerRequestInitializer());
+	        ((RuntimeEngineImpl) runtime).setManager(this);
+    	}
         local.set(runtime);
         return runtime;
     }
@@ -139,7 +148,35 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
 
     @Override
     public void init() {
-        configureRuntimeOnTaskService((InternalTaskService) taskServiceFactory.newTaskService());
+        configureRuntimeOnTaskService((InternalTaskService) taskServiceFactory.newTaskService(), null);
+    }
+    
+    private class PerRequestInitializer implements RuntimeEngineInitlializer {
+
+    	
+    	@Override
+    	public KieSession initKieSession(Context<?> context, InternalRuntimeManager manager, RuntimeEngine engine) {
+    		RuntimeEngine inUse = local.get();
+    		if (inUse != null && ((RuntimeEngineImpl) inUse).internalGetKieSession() != null) {
+                return inUse.getKieSession();
+            }
+    		KieSession ksession = factory.newKieSession();
+    		((RuntimeEngineImpl)engine).internalSetKieSession(ksession);
+    		registerDisposeCallback(engine, new DisposeSessionTransactionSynchronization(manager, engine));
+            registerDisposeCallback(engine, new DestroySessionTransactionSynchronization(ksession));
+            registerItems(engine);
+            attachManager(engine);
+    		return ksession;
+    	}
+
+    	@Override    	
+    	public TaskService initTaskService(Context<?> context, InternalRuntimeManager manager, RuntimeEngine engine) {
+    		InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();
+            configureRuntimeOnTaskService(internalTaskService, engine);
+            
+    		return internalTaskService;
+    	}
+
     }
 
 }

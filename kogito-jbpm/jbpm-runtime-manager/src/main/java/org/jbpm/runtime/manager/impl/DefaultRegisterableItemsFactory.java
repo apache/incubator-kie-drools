@@ -30,7 +30,6 @@ import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
-import org.jbpm.services.task.wih.ExternalTaskEventListener;
 import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -47,9 +46,6 @@ import org.kie.internal.runtime.conf.NamedObjectModel;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.conf.ObjectModelResolver;
 import org.kie.internal.runtime.conf.ObjectModelResolverProvider;
-import org.kie.internal.runtime.manager.Disposable;
-import org.kie.internal.runtime.manager.DisposeListener;
-import org.kie.internal.task.api.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -179,28 +175,12 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
 	}
 
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	
     protected WorkItemHandler getHTWorkItemHandler(RuntimeEngine runtime) {
-        
-        ExternalTaskEventListener listener = new ExternalTaskEventListener();
 
         LocalHTWorkItemHandler humanTaskHandler = new LocalHTWorkItemHandler();
         humanTaskHandler.setRuntimeManager(((RuntimeEngineImpl)runtime).getManager());
-        if (runtime.getTaskService() instanceof EventService) {
-            ((EventService)runtime.getTaskService()).registerTaskEventListener(listener);
-        }
-        
-        if (runtime instanceof Disposable) {
-            ((Disposable)runtime).addDisposeListener(new DisposeListener() {
                 
-                @Override
-                public void onDispose(RuntimeEngine runtime) {
-                    if (runtime.getTaskService() instanceof EventService) {
-                        ((EventService)runtime.getTaskService()).clearTaskEventListeners();;
-                    }
-                }
-            });
-        }
         return humanTaskHandler;
     }
 

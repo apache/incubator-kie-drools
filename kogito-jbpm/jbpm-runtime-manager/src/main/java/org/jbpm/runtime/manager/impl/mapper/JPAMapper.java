@@ -199,7 +199,8 @@ public class JPAMapper implements Mapper {
     }
     
     
-    public List<Integer> findKSessionToInit(String ownerId) {
+    @SuppressWarnings("unchecked")
+	public List<Integer> findKSessionToInit(String ownerId) {
         EntityManager em = emf.createEntityManager();
         Query findQuery = em.createNamedQuery("FindKSessionToInit").setParameter("ownerId", ownerId);
         return findQuery.getResultList();

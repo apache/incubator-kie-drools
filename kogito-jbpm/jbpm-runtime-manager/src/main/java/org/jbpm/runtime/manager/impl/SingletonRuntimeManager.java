@@ -80,7 +80,7 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
         String location = getLocation();
         Integer knownSessionId = getPersistedSessionId(location, identifier);
         InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();
-        configureRuntimeOnTaskService(internalTaskService);
+        
         
         if (knownSessionId > 0) {
             try {
@@ -96,6 +96,7 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
             persistSessionId(location, identifier, singleton.getKieSession().getId());
         }
         ((RuntimeEngineImpl) singleton).setManager(this);
+        configureRuntimeOnTaskService(internalTaskService, singleton);
         registerItems(this.singleton);
         attachManager(this.singleton);
         this.registry.register(this);

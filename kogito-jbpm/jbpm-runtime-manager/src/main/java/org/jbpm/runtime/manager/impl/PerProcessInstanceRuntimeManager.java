@@ -42,7 +42,9 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.task.TaskService;
 import org.kie.internal.runtime.manager.Disposable;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.Mapper;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
@@ -91,34 +93,51 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     		throw new IllegalStateException("Runtime manager " + identifier + " is already closed");
     	}
     	checkPermission();
-        Object contextId = context.getContextId();
-        KieSession ksession = null;
-        Integer ksessionId = null;
-        if (contextId == null || context instanceof EmptyContext ) { 
-            ksession = factory.newKieSession();
-            ksessionId = ksession.getId();                 
-        } else {
-            RuntimeEngine localRuntime = findLocalRuntime(contextId);
-            if (localRuntime != null) {
-                return localRuntime;
-            }
-            ksessionId = mapper.findMapping(context, this.identifier);
-            if (ksessionId == null) {
-                throw new SessionNotFoundException("No session found for context " + context.getContextId());
-            }
-            ksession = factory.findKieSessionById(ksessionId);
-        }
-        InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();
-        configureRuntimeOnTaskService(internalTaskService);
-        RuntimeEngine runtime = new RuntimeEngineImpl(ksession, internalTaskService);
-        ((RuntimeEngineImpl) runtime).setManager(this);
-        registerDisposeCallback(runtime, new DisposeSessionTransactionSynchronization(this, runtime));
-        registerItems(runtime);
-        attachManager(runtime);
-        
+    	RuntimeEngine runtime = null;
+    	Object contextId = context.getContextId();
+    	if (engineInitEager) {
+			KieSession ksession = null;
+			Integer ksessionId = null;
+			if (contextId == null || context instanceof EmptyContext) {
+				ksession = factory.newKieSession();
+				ksessionId = ksession.getId();
+			} else {
+				RuntimeEngine localRuntime = findLocalRuntime(contextId);
+				if (localRuntime != null) {
+					return localRuntime;
+				}
+				ksessionId = mapper.findMapping(context, this.identifier);
+				if (ksessionId == null) {
+					throw new SessionNotFoundException("No session found for context " + context.getContextId());
+				}
+				ksession = factory.findKieSessionById(ksessionId);
+			}
+			InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();			
+			runtime = new RuntimeEngineImpl(ksession, internalTaskService);
+			((RuntimeEngineImpl) runtime).setManager(this);
+			configureRuntimeOnTaskService(internalTaskService, runtime);
+			registerDisposeCallback(runtime, new DisposeSessionTransactionSynchronization(this, runtime));
+			registerItems(runtime);
+			attachManager(runtime);
+			ksession.addEventListener(new MaintainMappingListener(ksessionId, runtime, this.identifier));
+    	} else {
+    		RuntimeEngine localRuntime = findLocalRuntime(contextId);
+			if (localRuntime != null) {
+				return localRuntime;
+			}
+    		// lazy initialization of ksession and task service
+	    	if (contextId != null && !(context instanceof EmptyContext)) {
+	    		Integer found = mapper.findMapping(context, this.identifier);
+			    if (found == null) {
+			        throw new SessionNotFoundException("No session found for context " + context.getContextId());
+			    }
+	    	}
+	    	runtime = new RuntimeEngineImpl(context, new PerProcessInstanceInitializer());
+	        ((RuntimeEngineImpl) runtime).setManager(this);
+    	}
+
         saveLocalRuntime(contextId, runtime);
         
-        ksession.addEventListener(new MaintainMappingListener(ksessionId, runtime, this.identifier));
         return runtime;
     }
     
@@ -390,6 +409,48 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             }
             return null;
         }
+    }
+    
+    private class PerProcessInstanceInitializer implements RuntimeEngineInitlializer {
+
+    	
+    	@Override
+    	public KieSession initKieSession(Context<?> context, InternalRuntimeManager manager, RuntimeEngine engine) {
+    		
+    		
+    		Object contextId = context.getContextId();
+    		
+    		KieSession ksession = null;
+            Integer ksessionId = null;
+            if (contextId == null || context instanceof EmptyContext ) { 
+                ksession = factory.newKieSession();
+                ksessionId = ksession.getId();                 
+            } else {
+                RuntimeEngine localRuntime = ((PerProcessInstanceRuntimeManager)manager).findLocalRuntime(contextId);
+                if (localRuntime != null && ((RuntimeEngineImpl)engine).internalGetKieSession() != null) {
+                    return localRuntime.getKieSession();
+                }
+                ksessionId = mapper.findMapping(context, manager.getIdentifier());
+                if (ksessionId == null) {
+                    throw new SessionNotFoundException("No session found for context " + context.getContextId());
+                }
+                ksession = factory.findKieSessionById(ksessionId);
+            }
+            ((RuntimeEngineImpl)engine).internalSetKieSession(ksession);
+            registerItems(engine);
+            attachManager(engine);
+            registerDisposeCallback(engine, new DisposeSessionTransactionSynchronization(manager, engine));
+            ksession.addEventListener(new MaintainMappingListener(ksessionId, engine, manager.getIdentifier()));
+    		return ksession;
+    	}
+
+    	@Override
+    	public TaskService initTaskService(Context<?> context, InternalRuntimeManager manager, RuntimeEngine engine) {
+    		InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();
+            configureRuntimeOnTaskService(internalTaskService, engine);
+    		return internalTaskService;
+    	}
+
     }
 
 }

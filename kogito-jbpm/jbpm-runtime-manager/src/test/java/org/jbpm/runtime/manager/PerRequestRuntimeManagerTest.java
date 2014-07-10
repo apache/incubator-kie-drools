@@ -186,6 +186,7 @@ public class PerRequestRuntimeManagerTest extends AbstractBaseTest {
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
     			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
+                .addEnvironmentEntry("RuntimeEngineEagerInit", "true")
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-CallActivity.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-CallActivitySubProcess.bpmn2"), ResourceType.BPMN2)
                 .get();

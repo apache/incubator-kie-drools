@@ -20,6 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.audit.AuditService;
@@ -38,6 +39,9 @@ import org.kie.internal.runtime.manager.InternalRuntimeManager;
  */
 public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
 
+	private RuntimeEngineInitlializer initializer;
+	private Context<?> context;
+	
     private KieSession ksession;
     private TaskService taskService;
     private AuditService auditService;
@@ -53,10 +57,18 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
         this.taskService = taskService;
     }
     
+    public RuntimeEngineImpl(Context<?> context, RuntimeEngineInitlializer initializer) {
+    	this.context = context;
+        this.initializer = initializer;
+    }
+    
     @Override
     public KieSession getKieSession() {
         if (this.disposed) {
             throw new IllegalStateException("This runtime is already diposed");
+        }
+        if (ksession == null && initializer != null) {
+        	ksession = initializer.initKieSession(context, (InternalRuntimeManager) manager, this);
         }
         return this.ksession;
     }
@@ -67,7 +79,12 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
             throw new IllegalStateException("This runtime is already diposed");
         }
         if (taskService == null) {
-        	throw new UnsupportedOperationException("TaskService was not configured");
+        	if (initializer != null) {
+        		taskService = initializer.initTaskService(context, (InternalRuntimeManager) manager, this);
+        	}
+        	if (taskService == null) {
+        		throw new UnsupportedOperationException("TaskService was not configured");
+        	}
         }
         return this.taskService;
     }
@@ -79,12 +96,14 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
             for (DisposeListener listener : listeners) {
                 listener.onDispose(this);
             }
-            try {
-                ksession.dispose();
-            } catch(IllegalStateException e){
-                // do nothing most likely ksession was already disposed
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (ksession != null) {
+	            try {
+	                ksession.dispose();
+	            } catch(IllegalStateException e){
+	                // do nothing most likely ksession was already disposed
+	            } catch (Exception e) {
+	                e.printStackTrace();
+	            }
             }
             if (auditService != null) {
             	auditService.dispose();
@@ -118,12 +137,19 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
 		if (auditService == null) {
 			boolean usePersistence = ((InternalRuntimeManager)manager).getEnvironment().usePersistence();
 			if (usePersistence) {
-				auditService = new JPAAuditLogService(ksession.getEnvironment());
+				auditService = new JPAAuditLogService(getKieSession().getEnvironment());
 			} else {
 				throw new UnsupportedOperationException("AuditService was not configured, supported only with persistence");
 			}
 		}
 		return auditService;
 	}
+	
+	public KieSession internalGetKieSession() {
+		return ksession;
+	}
 
+	public void internalSetKieSession(KieSession ksession) {
+		this.ksession = ksession;
+	}
 }
