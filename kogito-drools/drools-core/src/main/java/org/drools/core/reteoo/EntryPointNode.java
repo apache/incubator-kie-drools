@@ -62,7 +62,7 @@ public class EntryPointNode extends ObjectSource
 
     private static final long               serialVersionUID = 510l;
 
-    protected static transient Logger log = LoggerFactory.getLogger(EntryPointNode.class);
+    protected static final transient Logger log = LoggerFactory.getLogger(EntryPointNode.class);
 
     /**
      * The entry point ID for this node

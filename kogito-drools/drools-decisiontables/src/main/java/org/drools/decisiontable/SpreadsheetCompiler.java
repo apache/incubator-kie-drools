@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SpreadsheetCompiler {
 
-    protected static transient Logger logger = LoggerFactory.getLogger(SpreadsheetCompiler.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(SpreadsheetCompiler.class);
 
     /**
      * Generates DRL from the input stream containing the spreadsheet.

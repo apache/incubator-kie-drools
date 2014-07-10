@@ -25,7 +25,7 @@ public class KBuilderSeverityOption
     MultiValueKnowledgeBuilderOption {
 
     private static final long    serialVersionUID = 1492178699571897026L;
-    public static String         PROPERTY_NAME    = "drools.kbuilder.severity.";
+    public static final String   PROPERTY_NAME    = "drools.kbuilder.severity.";
     private final String         key;
     private final ResultSeverity severity;
 

@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  */
 public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
 
-    protected static transient Logger logger = LoggerFactory.getLogger(WorkingMemoryFileLogger.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(WorkingMemoryFileLogger.class);
 
     private List<LogEvent> events            = new ArrayList<LogEvent>();
     private String         fileName          = "event";

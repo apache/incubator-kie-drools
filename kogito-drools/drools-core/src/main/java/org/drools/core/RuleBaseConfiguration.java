@@ -121,7 +121,7 @@ public class RuleBaseConfiguration
 
     public static final String DEFAULT_SIGN_ON_SERIALIZATION = "false";
 
-    protected static transient Logger logger = LoggerFactory.getLogger(RuleBaseConfiguration.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(RuleBaseConfiguration.class);
 
     private ChainedProperties chainedProperties;
 

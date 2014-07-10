@@ -89,38 +89,30 @@ public class MVELDialect
 
     private final static String                          EXPRESSION_DIALECT_NAME    = "MVEL";
 
-    protected static PatternBuilder                      PATTERN_BUILDER            = new PatternBuilder();
-    protected static QueryBuilder                        QUERY_BUILDER              = new QueryBuilder();
-    protected static MVELAccumulateBuilder               ACCUMULATE_BUILDER         = new MVELAccumulateBuilder();
-    protected static SalienceBuilder                     SALIENCE_BUILDER           = new MVELSalienceBuilder();
-    protected static EnabledBuilder                      ENABLED_BUILDER            = new MVELEnabledBuilder();
-    protected static MVELEvalBuilder                     EVAL_BUILDER               = new MVELEvalBuilder();
-    protected static MVELPredicateBuilder                PREDICATE_BUILDER          = new MVELPredicateBuilder();
-    protected static MVELReturnValueBuilder              RETURN_VALUE_BUILDER       = new MVELReturnValueBuilder();
-    protected static MVELConsequenceBuilder              CONSEQUENCE_BUILDER        = new MVELConsequenceBuilder();
-    // private final JavaRuleClassBuilder rule = new JavaRuleClassBuilder();
-    protected static MVELFromBuilder                     FROM_BUILDER               = new MVELFromBuilder();
-    protected static JavaFunctionBuilder                 FUNCTION_BUILDER           = new JavaFunctionBuilder();
-    protected static CollectBuilder                      COLLECT_BUILDER            = new CollectBuilder();
+    protected static final PatternBuilder                PATTERN_BUILDER            = new PatternBuilder();
+    protected static final QueryBuilder                  QUERY_BUILDER              = new QueryBuilder();
+    protected static final MVELAccumulateBuilder         ACCUMULATE_BUILDER         = new MVELAccumulateBuilder();
+    protected static final SalienceBuilder               SALIENCE_BUILDER           = new MVELSalienceBuilder();
+    protected static final EnabledBuilder                ENABLED_BUILDER            = new MVELEnabledBuilder();
+    protected static final MVELEvalBuilder               EVAL_BUILDER               = new MVELEvalBuilder();
+    protected static final MVELPredicateBuilder          PREDICATE_BUILDER          = new MVELPredicateBuilder();
+    protected static final MVELReturnValueBuilder        RETURN_VALUE_BUILDER       = new MVELReturnValueBuilder();
+    protected static final MVELConsequenceBuilder        CONSEQUENCE_BUILDER        = new MVELConsequenceBuilder();
 
-    protected static ForallBuilder                       FORALL_BUILDER             = new ForallBuilder();
-    protected static EntryPointBuilder                   ENTRY_POINT_BUILDER        = new EntryPointBuilder();
-    protected static WindowReferenceBuilder              WINDOW_REFERENCE_BUILDER   = new WindowReferenceBuilder();
+    protected static final MVELFromBuilder               FROM_BUILDER               = new MVELFromBuilder();
+    protected static final JavaFunctionBuilder           FUNCTION_BUILDER           = new JavaFunctionBuilder();
+    protected static final CollectBuilder                COLLECT_BUILDER            = new CollectBuilder();
 
-    protected static GroupElementBuilder                 GE_BUILDER                 = new GroupElementBuilder();
-    protected static NamedConsequenceBuilder             NAMED_CONSEQUENCE_BUILDER  = new NamedConsequenceBuilder();
-    protected static ConditionalBranchBuilder            CONDITIONAL_BRANCH_BUILDER = new ConditionalBranchBuilder();
+    protected static final ForallBuilder                 FORALL_BUILDER             = new ForallBuilder();
+    protected static final EntryPointBuilder             ENTRY_POINT_BUILDER        = new EntryPointBuilder();
+    protected static final WindowReferenceBuilder        WINDOW_REFERENCE_BUILDER   = new WindowReferenceBuilder();
+
+    protected static final GroupElementBuilder           GE_BUILDER                 = new GroupElementBuilder();
+    protected static final NamedConsequenceBuilder       NAMED_CONSEQUENCE_BUILDER  = new NamedConsequenceBuilder();
+    protected static final ConditionalBranchBuilder      CONDITIONAL_BRANCH_BUILDER = new ConditionalBranchBuilder();
 
     // a map of registered builders
     private static Map<Class< ? >, EngineElementBuilder> builders;
-
-    public static void setPatternBuilder(PatternBuilder PATTERN_BUILDER) {
-        MVELDialect.PATTERN_BUILDER = PATTERN_BUILDER;
-    }
-
-    public static void setGEBuilder(GroupElementBuilder GE_BUILDER) {
-        MVELDialect.GE_BUILDER = GE_BUILDER;
-    }
 
     static {
         initBuilder();

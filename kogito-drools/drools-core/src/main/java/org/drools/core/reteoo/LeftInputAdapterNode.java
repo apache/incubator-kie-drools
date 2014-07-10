@@ -64,7 +64,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         ObjectSinkNode,
         MemoryFactory {
 
-    protected static transient Logger log = LoggerFactory.getLogger(LeftInputAdapterNode.class);
+    protected static final transient Logger log = LoggerFactory.getLogger(LeftInputAdapterNode.class);
 
     private static final long serialVersionUID = 510l;
     private ObjectSource objectSource;

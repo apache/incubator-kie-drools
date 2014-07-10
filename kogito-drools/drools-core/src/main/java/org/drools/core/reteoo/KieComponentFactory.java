@@ -45,7 +45,7 @@ import java.io.Serializable;
 
 public class KieComponentFactory implements Serializable {
 
-    public static KieComponentFactory DEFAULT = new KieComponentFactory();
+    public static final KieComponentFactory DEFAULT = new KieComponentFactory();
 
     public static KieComponentFactory getDefault() {
         return DEFAULT;
