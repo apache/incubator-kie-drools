@@ -21,7 +21,8 @@ public class TestdataEntityCollectionPropertyEntity extends TestdataObject {
 
     private List<TestdataEntityCollectionPropertyEntity> entityList;
     private Set<TestdataEntityCollectionPropertyEntity> entitySet;
-    private Map<String, TestdataEntityCollectionPropertyEntity> entityMap;
+    private Map<String, TestdataEntityCollectionPropertyEntity> stringToEntityMap;
+    private Map<TestdataEntityCollectionPropertyEntity, String> entityToStringMap;
 
     private TestdataValue value;
 
@@ -53,12 +54,20 @@ public class TestdataEntityCollectionPropertyEntity extends TestdataObject {
         this.entitySet = entitySet;
     }
 
-    public Map<String, TestdataEntityCollectionPropertyEntity> getEntityMap() {
-        return entityMap;
+    public Map<String, TestdataEntityCollectionPropertyEntity> getStringToEntityMap() {
+        return stringToEntityMap;
     }
 
-    public void setEntityMap(Map<String, TestdataEntityCollectionPropertyEntity> entityMap) {
-        this.entityMap = entityMap;
+    public void setStringToEntityMap(Map<String, TestdataEntityCollectionPropertyEntity> stringToEntityMap) {
+        this.stringToEntityMap = stringToEntityMap;
+    }
+
+    public Map<TestdataEntityCollectionPropertyEntity, String> getEntityToStringMap() {
+        return entityToStringMap;
+    }
+
+    public void setEntityToStringMap(Map<TestdataEntityCollectionPropertyEntity, String> entityToStringMap) {
+        this.entityToStringMap = entityToStringMap;
     }
 
     @PlanningVariable(valueRangeProviderRefs = "valueRange")

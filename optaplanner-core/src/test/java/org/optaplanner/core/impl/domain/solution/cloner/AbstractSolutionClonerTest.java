@@ -341,17 +341,24 @@ public abstract class AbstractSolutionClonerTest {
         TestdataEntityCollectionPropertyEntity c = new TestdataEntityCollectionPropertyEntity("c", val3);
         a.setEntityList(Arrays.asList(b, c));
         a.setEntitySet(new HashSet<TestdataEntityCollectionPropertyEntity>(Arrays.asList(b, c)));
-        a.setEntityMap(new HashMap<String, TestdataEntityCollectionPropertyEntity>());
-        a.getEntityMap().put("b", b);
-        a.getEntityMap().put("c", c);
+        a.setStringToEntityMap(new HashMap<String, TestdataEntityCollectionPropertyEntity>());
+        a.getStringToEntityMap().put("b", b);
+        a.getStringToEntityMap().put("c", c);
+        a.setEntityToStringMap(new HashMap<TestdataEntityCollectionPropertyEntity, String>());
+        a.getEntityToStringMap().put(b, "b");
+        a.getEntityToStringMap().put(c, "c");
+
         b.setEntityList(Collections.<TestdataEntityCollectionPropertyEntity>emptyList());
         b.setEntitySet(new HashSet<TestdataEntityCollectionPropertyEntity>());
-        b.setEntityMap(new HashMap<String, TestdataEntityCollectionPropertyEntity>());
+        b.setStringToEntityMap(new HashMap<String, TestdataEntityCollectionPropertyEntity>());
+        b.setEntityToStringMap(null);
+
         c.setEntityList(Arrays.asList(a, c));
         c.setEntitySet(new HashSet<TestdataEntityCollectionPropertyEntity>(Arrays.asList(a, c)));
-        c.setEntityMap(new HashMap<String, TestdataEntityCollectionPropertyEntity>());
-        c.getEntityMap().put("a", a);
-        c.getEntityMap().put("c", c);
+        c.setStringToEntityMap(new HashMap<String, TestdataEntityCollectionPropertyEntity>());
+        c.getStringToEntityMap().put("a", a);
+        c.getStringToEntityMap().put("c", c);
+        c.setEntityToStringMap(null);
 
         TestdataEntityCollectionPropertySolution original = new TestdataEntityCollectionPropertySolution("solution");
         List<TestdataValue> valueList = Arrays.asList(val1, val2, val3);
@@ -371,26 +378,38 @@ public abstract class AbstractSolutionClonerTest {
         TestdataEntityCollectionPropertyEntity cloneA = cloneEntityList.get(0);
         TestdataEntityCollectionPropertyEntity cloneB = cloneEntityList.get(1);
         TestdataEntityCollectionPropertyEntity cloneC = cloneEntityList.get(2);
+
         assertEntityCollectionPropertyEntityClone(a, cloneA, "a", "1");
+        assertNotSame(a.getEntityList(), cloneA.getEntityList());
         assertEquals(2, cloneA.getEntityList().size());
         assertSame(cloneB, cloneA.getEntityList().get(0));
         assertSame(cloneC, cloneA.getEntityList().get(1));
+        assertNotSame(a.getEntitySet(), cloneA.getEntitySet());
         assertEquals(2, cloneA.getEntitySet().size());
-        assertEquals(2, cloneA.getEntityMap().size());
-        assertSame(cloneB, cloneA.getEntityMap().get("b"));
-        assertSame(cloneC, cloneA.getEntityMap().get("c"));
+        assertNotSame(a.getStringToEntityMap(), cloneA.getStringToEntityMap());
+        assertEquals(2, cloneA.getStringToEntityMap().size());
+        assertSame(cloneB, cloneA.getStringToEntityMap().get("b"));
+        assertSame(cloneC, cloneA.getStringToEntityMap().get("c"));
+        assertNotSame(a.getEntityToStringMap(), cloneA.getEntityToStringMap());
+        assertEquals(2, cloneA.getEntityToStringMap().size());
+        assertEquals("b", cloneA.getEntityToStringMap().get(cloneB));
+        assertEquals("c", cloneA.getEntityToStringMap().get(cloneC));
+
         assertEntityCollectionPropertyEntityClone(b, cloneB, "b", "1");
         assertEquals(0, cloneB.getEntityList().size());
         assertEquals(0, cloneB.getEntitySet().size());
-        assertEquals(0, cloneB.getEntityMap().size());
+        assertEquals(0, cloneB.getStringToEntityMap().size());
+        assertNull(cloneB.getEntityToStringMap());
+
         assertEntityCollectionPropertyEntityClone(c, cloneC, "c", "3");
         assertEquals(2, cloneC.getEntityList().size());
         assertSame(cloneA, cloneC.getEntityList().get(0));
         assertSame(cloneC, cloneC.getEntityList().get(1));
         assertEquals(2, cloneC.getEntitySet().size());
-        assertEquals(2, cloneC.getEntityMap().size());
-        assertSame(cloneA, cloneC.getEntityMap().get("a"));
-        assertSame(cloneC, cloneC.getEntityMap().get("c"));
+        assertEquals(2, cloneC.getStringToEntityMap().size());
+        assertSame(cloneA, cloneC.getStringToEntityMap().get("a"));
+        assertSame(cloneC, cloneC.getStringToEntityMap().get("c"));
+        assertNull(cloneC.getEntityToStringMap());
     }
 
     private void assertEntityCollectionPropertyEntityClone(TestdataEntityCollectionPropertyEntity originalEntity,
