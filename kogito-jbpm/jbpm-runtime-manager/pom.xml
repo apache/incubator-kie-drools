@@ -223,7 +223,7 @@
               org.kie.scanner;resolution:=optional,
               org.mvel2,
               org.slf4j,
-              org.sonatype.aether.artifact;resolution:=optional,
+              org.eclipse.aether.artifact;resolution:=optional,
               org.xml.sax
             </Import-Package>
             <Private-Package></Private-Package>
