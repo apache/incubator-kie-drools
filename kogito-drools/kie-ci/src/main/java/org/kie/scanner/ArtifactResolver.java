@@ -8,7 +8,7 @@ import org.kie.scanner.embedder.EmbeddedPomParser;
 import org.kie.api.builder.ReleaseId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.eclipse.aether.artifact.Artifact;
+import org.sonatype.aether.artifact.Artifact;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -69,7 +69,7 @@ class ArtifactResolver {
     }
 
     public static ArtifactResolver getResolverFor(ReleaseId releaseId, boolean allowDefaultPom) {
-        File pomFile = getPomFileForGAV(releaseId, allowDefaultPom);
+        File pomFile = getPomFileForGAV(releaseId);
         if (pomFile != null) {
             ArtifactResolver artifactResolver = getResolverFor(pomFile);
             if (artifactResolver != null) {
@@ -101,9 +101,9 @@ class ArtifactResolver {
         return new ArtifactResolver(mavenProject);
     }
 
-    private static File getPomFileForGAV(ReleaseId releaseId, boolean allowDefaultPom) {
+    private static File getPomFileForGAV(ReleaseId releaseId) {
         String artifactName = releaseId.getGroupId() + ":" + releaseId.getArtifactId() + ":pom:" + releaseId.getVersion();
-        Artifact artifact = MavenRepository.getMavenRepository().resolveArtifact(artifactName, !allowDefaultPom);
+        Artifact artifact = MavenRepository.getMavenRepository().resolveArtifact(artifactName);
         return artifact != null ? artifact.getFile() : null;
     }
 
