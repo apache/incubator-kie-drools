@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -38,6 +39,7 @@ public class TestdataDeepCloningSolution extends TestdataObject implements Solut
 
     private List<TestdataValue> valueList;
     private List<TestdataDeepCloningEntity> entityList;
+    private List<String> generalShadowVariableList;
 
     private SimpleScore score;
 
@@ -64,6 +66,15 @@ public class TestdataDeepCloningSolution extends TestdataObject implements Solut
 
     public void setEntityList(List<TestdataDeepCloningEntity> entityList) {
         this.entityList = entityList;
+    }
+
+    @DeepPlanningClone
+    public List<String> getGeneralShadowVariableList() {
+        return generalShadowVariableList;
+    }
+
+    public void setGeneralShadowVariableList(List<String> generalShadowVariableList) {
+        this.generalShadowVariableList = generalShadowVariableList;
     }
 
     public SimpleScore getScore() {

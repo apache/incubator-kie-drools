@@ -446,6 +446,8 @@ public abstract class AbstractSolutionClonerTest {
         original.setValueList(valueList);
         List<TestdataDeepCloningEntity> originalEntityList = Arrays.asList(a, b, c, d);
         original.setEntityList(originalEntityList);
+        List<String> generalShadowVariableList = Arrays.asList("shadow g1", "shadow g2");
+        original.setGeneralShadowVariableList(generalShadowVariableList);
 
         TestdataDeepCloningSolution clone = cloner.cloneSolution(original);
 
@@ -464,6 +466,12 @@ public abstract class AbstractSolutionClonerTest {
         assertDeepCloningEntityClone(c, cloneC, "c", "3");
         TestdataDeepCloningEntity cloneD = cloneEntityList.get(3);
         assertDeepCloningEntityClone(d, cloneD, "d", "3");
+
+        List<String> cloneGeneralShadowVariableList = clone.getGeneralShadowVariableList();
+        assertNotSame(generalShadowVariableList, cloneGeneralShadowVariableList);
+        assertEquals(2, cloneGeneralShadowVariableList.size());
+        assertEquals("shadow g1", cloneGeneralShadowVariableList.get(0));
+        assertEquals("shadow g2", cloneGeneralShadowVariableList.get(1));
 
         b.setValue(val2);
         assertCode("2", b.getValue());
