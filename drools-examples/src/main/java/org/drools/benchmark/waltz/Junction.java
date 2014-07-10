@@ -23,11 +23,11 @@ package org.drools.benchmark.waltz;
 
 
 public class Junction {
-    public static String TEE = "tee";
+    public static final String TEE = "tee";
 
-    public static String FORK = "fork";
+    public static final String FORK = "fork";
 
-    public static String ARROW = "arrow";
+    public static final String ARROW = "arrow";
 
     public static String L = "L";
 

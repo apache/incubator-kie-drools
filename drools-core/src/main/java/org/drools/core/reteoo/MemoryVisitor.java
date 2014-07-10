@@ -39,7 +39,7 @@ public class MemoryVisitor extends ReflectiveVisitor
     implements
     Externalizable {
 
-    protected static transient Logger logger = LoggerFactory.getLogger(MemoryVisitor.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(MemoryVisitor.class);
 
     private InternalWorkingMemory workingMemory;
     private int                   indent = 0;

@@ -292,8 +292,8 @@ public abstract class AbstractHashTable
         extends
         AbstractObjectComparator {
 
-        private static final long      serialVersionUID = 510l;
-        public static ObjectComparator INSTANCE         = new InstanceEquals();
+        private static final long            serialVersionUID = 510l;
+        public static final ObjectComparator INSTANCE         = new InstanceEquals();
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
@@ -324,8 +324,8 @@ public abstract class AbstractHashTable
         extends
         AbstractObjectComparator {
 
-        private static final long      serialVersionUID = 510l;
-        public static ObjectComparator INSTANCE         = new EqualityEquals();
+        private static final long            serialVersionUID = 510l;
+        public static final ObjectComparator INSTANCE         = new EqualityEquals();
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {

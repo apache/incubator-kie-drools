@@ -111,7 +111,7 @@ public class KnowledgeBaseImpl
     InternalKnowledgeBase,
     Externalizable {
 
-    protected static transient Logger logger = LoggerFactory.getLogger(KnowledgeBaseImpl.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(KnowledgeBaseImpl.class);
 
     private static final long serialVersionUID = 510l;
 

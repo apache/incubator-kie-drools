@@ -43,7 +43,7 @@ public class Activator
     implements
     BundleActivator {
 
-    protected static transient Logger logger = LoggerFactory.getLogger(Activator.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(Activator.class);
 
     private ServiceRegistration kbuilderReg;
 

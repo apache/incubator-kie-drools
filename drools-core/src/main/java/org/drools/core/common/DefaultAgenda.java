@@ -83,7 +83,7 @@ public class DefaultAgenda
         Externalizable,
         InternalAgenda {
 
-    protected static transient Logger                            log                = LoggerFactory.getLogger( DefaultAgenda.class );
+    protected static final transient Logger                      log                = LoggerFactory.getLogger( DefaultAgenda.class );
 
     private static final long                                    serialVersionUID   = 510l;
 

@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 public class DebugProcessEventListener implements ProcessEventListener {
 
-    protected static transient Logger logger = LoggerFactory.getLogger(DebugProcessEventListener.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(DebugProcessEventListener.class);
 
     public void afterNodeLeft(ProcessNodeLeftEvent event) {
         logger.info(event.toString());
