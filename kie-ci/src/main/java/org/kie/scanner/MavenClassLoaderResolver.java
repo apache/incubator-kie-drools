@@ -17,7 +17,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.internal.utils.ClassLoaderResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.eclipse.aether.artifact.Artifact;
+import org.sonatype.aether.artifact.Artifact;
 
 
 public class MavenClassLoaderResolver implements ClassLoaderResolver {

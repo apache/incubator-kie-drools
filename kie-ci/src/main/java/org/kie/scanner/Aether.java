@@ -1,25 +1,23 @@
 package org.kie.scanner;
 
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
+import org.apache.maven.repository.internal.MavenRepositorySystemSession;
+import org.apache.maven.repository.internal.MavenServiceLocator;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.wagon.Wagon;
 import org.apache.maven.wagon.providers.http.HttpWagon;
-import org.eclipse.aether.DefaultRepositorySystemSession;
-import org.eclipse.aether.RepositorySystem;
-import org.eclipse.aether.RepositorySystemSession;
-import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
-import org.eclipse.aether.impl.DefaultServiceLocator;
-import org.eclipse.aether.repository.LocalRepository;
-import org.eclipse.aether.repository.RemoteRepository;
-import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
-import org.eclipse.aether.spi.connector.transport.TransporterFactory;
-import org.eclipse.aether.transport.file.FileTransporterFactory;
-import org.eclipse.aether.transport.http.HttpTransporterFactory;
-import org.eclipse.aether.transport.wagon.WagonProvider;
 import org.kie.scanner.embedder.MavenSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sonatype.aether.RepositorySystem;
+import org.sonatype.aether.RepositorySystemSession;
+import org.sonatype.aether.connector.file.FileRepositoryConnectorFactory;
+import org.sonatype.aether.connector.wagon.WagonProvider;
+import org.sonatype.aether.connector.wagon.WagonRepositoryConnectorFactory;
+import org.sonatype.aether.repository.LocalRepository;
+import org.sonatype.aether.repository.RemoteRepository;
+import org.sonatype.aether.spi.connector.RepositoryConnectorFactory;
+import org.sonatype.aether.util.DefaultRepositorySystemSession;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -85,24 +83,24 @@ public class Aether {
     }
 
     private RepositorySystem newRepositorySystem() {
-        DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
-        locator.addService( RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class );
-        locator.addService( TransporterFactory.class, FileTransporterFactory.class );
-        locator.addService( TransporterFactory.class, HttpTransporterFactory.class );
+        MavenServiceLocator locator = new MavenServiceLocator();
+        locator.addService( RepositoryConnectorFactory.class, FileRepositoryConnectorFactory.class );
+        locator.addService( RepositoryConnectorFactory.class, WagonRepositoryConnectorFactory.class );
         locator.setServices( WagonProvider.class, new ManualWagonProvider() );
 
         return locator.getService( RepositorySystem.class );
     }
 
-    private RepositorySystemSession newRepositorySystemSession( RepositorySystem system ) {
-        LocalRepository localRepo = new LocalRepository( localRepoDir );
-        DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
-        session.setLocalRepositoryManager( system.newLocalRepositoryManager( session, localRepo ) );
+    private DefaultRepositorySystemSession newRepositorySystemSession( RepositorySystem system ) {
+        LocalRepository localRepo = new LocalRepository(localRepoDir);
+        MavenRepositorySystemSession session = new MavenRepositorySystemSession();
+        session.setLocalRepositoryManager( system.newLocalRepositoryManager( localRepo ) );
+        session.setOffline(offline);
         return session;
     }
 
     private RemoteRepository newCentralRepository() {
-        return new RemoteRepository.Builder( "central", "default", "http://repo1.maven.org/maven2/" ).build();
+        return new RemoteRepository( "central", "default", "http://repo1.maven.org/maven2/" );
     }
 
     private RemoteRepository newLocalRepository() {
@@ -112,7 +110,7 @@ public class Aether {
         }
         try {
             String localRepositoryUrl = m2RepoDir.toURI().toURL().toExternalForm();
-            return new RemoteRepository.Builder( "local", "default", localRepositoryUrl ).build();
+            return new RemoteRepository( "local", "default", localRepositoryUrl );
         } catch (MalformedURLException e) { }
         return null;
     }

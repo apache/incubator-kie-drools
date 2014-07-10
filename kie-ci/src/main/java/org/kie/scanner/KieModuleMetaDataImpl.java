@@ -7,7 +7,7 @@ import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.rule.TypeMetaInfo;
 import org.kie.api.builder.ReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.eclipse.aether.artifact.Artifact;
+import org.sonatype.aether.artifact.Artifact;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
