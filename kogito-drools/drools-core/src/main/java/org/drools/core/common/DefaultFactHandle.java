@@ -66,6 +66,8 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     private TraitTypeEnum           traitType;
 
+    private boolean                 valid = true;
+
     // ----------------------------------------------------------------------
     // Constructors
     // ----------------------------------------------------------------------
@@ -245,13 +247,11 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     }
 
     public void invalidate() {
-        //this.id = -1;
-        //this.object = null;
-        //this.entryPoint = null;
+        valid = false;
     }
 
     public boolean isValid() {
-        return ( this.id != -1 );
+        return valid;
     }
 
     public Object getObject() {
