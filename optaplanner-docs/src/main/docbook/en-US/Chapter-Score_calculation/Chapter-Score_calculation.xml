@@ -196,7 +196,7 @@
     </section>
 
     <section xml:id="scoreInterface">
-      <title>The <literal>Score</literal> interface</title>
+      <title><literal>Score</literal> interface</title>
 
       <para>A score is represented by the <literal>Score</literal> interface, which naturally extends
       <literal>Comparable</literal>:</para>

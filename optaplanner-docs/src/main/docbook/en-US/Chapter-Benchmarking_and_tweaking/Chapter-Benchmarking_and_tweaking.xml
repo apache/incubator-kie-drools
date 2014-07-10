@@ -226,7 +226,7 @@
     <section xml:id="solutionFileIO">
       <title>SolutionFileIO: input and output of Solution files</title>
 
-      <section xml:id="theSolutionFileIOInterface">
+      <section xml:id="solutionFileIOInterface">
         <title><literal>SolutionFileIO</literal> interface</title>
 
         <para>The benchmarker needs to be able to read the input files to load a <literal>Solution</literal>. Also, it

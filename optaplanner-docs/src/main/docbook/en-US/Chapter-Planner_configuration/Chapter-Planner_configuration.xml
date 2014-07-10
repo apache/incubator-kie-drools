@@ -7,7 +7,7 @@
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Planner configuration</title>
 
-  <section>
+  <section xml:id="plannerConfigurationOverview">
     <title>Overview</title>
 
     <para>Solving a planning problem with OptaPlanner consists out of 5 steps:</para>
@@ -48,8 +48,8 @@
   <section>
     <title>Solver configuration</title>
 
-    <section>
-      <title>Solver configuration by XML file</title>
+    <section xml:id="solverConfigurationByXML">
+      <title>Solver configuration by XML</title>
 
       <para>Build a <literal>Solver</literal> instance with the <literal>SolverFactory</literal>. Configure it with a
       solver configuration XML file, provided as a classpath resource (as definied by
@@ -120,7 +120,7 @@
       case.</para>
     </section>
 
-    <section>
+    <section xml:id="solverConfigurationByJavaAPI">
       <title>Solver configuration by Java API</title>
 
       <para>A solver configuration can also be configured with the <literal>SolverConfig</literal> API. This especially
@@ -145,10 +145,10 @@
     </section>
   </section>
 
-  <section>
-    <title>Model your planning problem</title>
+  <section xml:id="modelAPlanningProblem">
+    <title>Model a planning problem</title>
 
-    <section>
+    <section xml:id="isThisClassAProblemFactOrPlanningEntity">
       <title>Is this class a problem fact or planning entity?</title>
 
       <para>Look at a dataset of your planning problem. You 'll recognize domain classes in there, each of which can be
@@ -473,7 +473,7 @@ public class Queen {
       </section>
     </section>
 
-    <section>
+    <section xml:id="planningValueAndPlanningValueRanges">
       <title>Planning value and planning value ranges</title>
 
       <section>
@@ -993,10 +993,10 @@ public interface Standstill {
       </section>
     </section>
 
-    <section>
+    <section xml:id="planningProblemAndPlanningSolution">
       <title>Planning problem and planning solution</title>
 
-      <section>
+      <section xml:id="planningProblemInstance">
         <title>Planning problem instance</title>
 
         <para>A dataset for a planning problem needs to be wrapped in a class for the <literal>Solver</literal> to
@@ -1012,8 +1012,8 @@ public interface Standstill {
         So it's not a feasible solution. It's not even a possible solution. It's an uninitialized solution.</para>
       </section>
 
-      <section>
-        <title>The <literal>Solution</literal> interface</title>
+      <section xml:id="solutionInterface">
+        <title><literal>Solution</literal> interface</title>
 
         <para>You need to present the problem as a <literal>Solution</literal> instance to the
         <literal>Solver</literal>. So you need to have a class that implements the <literal>Solution</literal>
@@ -1046,7 +1046,7 @@ public interface Standstill {
 }</programlisting>
       </section>
 
-      <section>
+      <section xml:id="getScoreAndSetScoreMethods">
         <title>The <literal>getScore()</literal> and <literal>setScore()</literal> methods</title>
 
         <para>A <literal>Solution</literal> requires a score property. The score property is <literal>null</literal> if
