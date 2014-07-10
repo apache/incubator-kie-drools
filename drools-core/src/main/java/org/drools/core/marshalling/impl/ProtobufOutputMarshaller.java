@@ -60,6 +60,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.RightInputAdapterNode;
@@ -864,6 +865,10 @@ public class ProtobufOutputMarshaller {
             ProtobufMessages.Timers.Builder _timers = ProtobufMessages.Timers.newBuilder();
             for ( TimerJobInstance timer : sortedTimers ) {
                 JobContext jctx = ((SelfRemovalJobContext) timer.getJobContext()).getJobContext();
+                if (jctx instanceof ObjectTypeNode.ExpireJobContext &&
+                    !((ObjectTypeNode.ExpireJobContext) jctx).getExpireAction().getFactHandle().isValid()) {
+                    continue;
+                }
                 TimersOutputMarshaller writer = outCtx.writersByClass.get( jctx.getClass() );
                 Timer _timer = writer.serialize( jctx, outCtx );
                 if ( _timer != null ) {
