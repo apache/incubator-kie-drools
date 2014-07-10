@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FindBugsFilter>
   <Match>
-    <Class name="~org\.drools\.core\.marshalling\.impl\.ProtobufMessages.*"/>
+    <Class name="~org\.drools\.core\.marshalling\.impl\.ProtobufMessages.*" />
   </Match>
 
   <!-- As discussed with Mario Fusco, following fields are used as a configuration mean
@@ -18,4 +18,3 @@
   </Match>
 
 </FindBugsFilter>
-
